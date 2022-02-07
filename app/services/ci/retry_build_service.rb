@@ -70,7 +70,9 @@ module Ci
     def check_assignable_runners!(build); end
 
     def clone_build(build)
-      project.builds.new(build_attributes(build))
+      project.builds.new(build_attributes(build)).tap do |new_build|
+        yield(new_build) if block_given?
+      end
     end
 
     def build_attributes(build)

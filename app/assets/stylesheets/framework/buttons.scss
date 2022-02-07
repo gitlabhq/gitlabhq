@@ -366,29 +366,6 @@
     background-color: transparent;
     border-color: transparent;
   }
-
-  &.btn-secondary-hover-link,
-  &.btn-default-hover-link {
-    color: $gl-text-color-secondary;
-
-    &:hover,
-    &:active,
-    &:focus {
-      color: $blue-600;
-      text-decoration: none;
-    }
-  }
-
-  &.btn-primary-hover-link {
-    color: inherit;
-
-    &:hover,
-    &:active,
-    &:focus {
-      color: $blue-600;
-      text-decoration: none;
-    }
-  }
 }
 
 // The .btn-svg class is available for legacy icon buttons to

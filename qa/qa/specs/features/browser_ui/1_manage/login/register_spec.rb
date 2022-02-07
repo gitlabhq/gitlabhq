@@ -64,7 +64,9 @@ module QA
             Page::Profile::Accounts::Show.perform do |show|
               show.delete_account(user.password)
             end
-            Support::Waiter.wait_until { !user.exists? }
+
+            # TODO: Remove retry_on_exception once https://gitlab.com/gitlab-org/gitlab/-/issues/24294 is resolved
+            Support::Waiter.wait_until(retry_on_exception: true, sleep_interval: 3) { !user.exists? }
           end
 
           it 'allows recreating with same credentials', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do

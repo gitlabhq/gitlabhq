@@ -388,7 +388,7 @@ RSpec.describe MergeRequests::MergeService do
         end
 
         it 'logs and saves error if there is an error when squashing' do
-          error_message = 'Failed to squash. Should be done manually'
+          error_message = 'Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch.'
 
           allow_any_instance_of(MergeRequests::SquashService).to receive(:squash!).and_return(nil)
           merge_request.update!(squash: true)

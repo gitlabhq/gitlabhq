@@ -202,7 +202,7 @@ any Kubernetes-specific commands from the authorized project.
 
 First, configure your Agent:
 
-1. Go to you your Agent's configuration repository.
+1. Go to your Agent's configuration repository.
 1. Edit your Agent's `config.yaml` file authorizing the [project](#authorize-projects-to-use-an-agent) or [group](#authorize-groups-to-use-an-agent) you want to run Kubernetes commands from.
 
 Then, configure the other project:
@@ -230,6 +230,14 @@ To get the list of available contexts:
 
 1. Open your terminal and connect to your cluster.
 1. Run `kubectl config get-contexts`.
+
+### `kubectl` commands not supported
+
+The commands `kubectl exec`, `kubectl cp`, and `kubectl attach` are not supported by the CI/CD tunnel.
+Anything else that uses the same API endpoints does not work either as they use the deprecated
+SPDY protocol.
+We [plan to add support for these features](https://gitlab.com/gitlab-org/gitlab/-/issues/346248)
+in a future version of GitLab.
 
 ## Use impersonation to restrict project and group access **(PREMIUM)**
 

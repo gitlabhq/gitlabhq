@@ -8,7 +8,7 @@ module Gitlab
     InvalidQueueError = Class.new(StandardError)
 
     WORKER_KEY = 'worker_class'
-    ALLOWED_KEYS = Gitlab::ApplicationContext::KNOWN_KEYS + [WORKER_KEY]
+    ALLOWED_KEYS = Gitlab::ApplicationContext.known_keys.map(&:to_s) + [WORKER_KEY]
 
     attr_reader :queue_name
 
@@ -53,7 +53,7 @@ module Gitlab
     private
 
     def transform_key(key)
-      if Gitlab::ApplicationContext::KNOWN_KEYS.include?(key)
+      if Gitlab::ApplicationContext.known_keys.include?(key.to_sym)
         "meta.#{key}"
       elsif key == WORKER_KEY
         'class'

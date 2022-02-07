@@ -17,7 +17,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
   it 'reflects dashboard issues count' do
     visit issues_path
 
-    expect_counters('issues', '1')
+    expect_counters('issues', '1', n_("%d assigned issue", "%d assigned issues", 1) % 1)
 
     issue.assignees = []
 
@@ -26,14 +26,14 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
     travel_to(3.minutes.from_now) do
       visit issues_path
 
-      expect_counters('issues', '0')
+      expect_counters('issues', '0', n_("%d assigned issue", "%d assigned issues", 0) % 0)
     end
   end
 
   it 'reflects dashboard merge requests count' do
     visit merge_requests_path
 
-    expect_counters('merge_requests', '1')
+    expect_counters('merge_requests', '1', n_("%d merge request", "%d merge requests", 1) % 1)
 
     merge_request.update!(assignees: [])
 
@@ -42,7 +42,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
     travel_to(3.minutes.from_now) do
       visit merge_requests_path
 
-      expect_counters('merge_requests', '0')
+      expect_counters('merge_requests', '0', n_("%d merge request", "%d merge requests", 0) % 0)
     end
   end
 
@@ -54,13 +54,14 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
     merge_requests_dashboard_path(assignee_username: user.username)
   end
 
-  def expect_counters(issuable_type, count)
+  def expect_counters(issuable_type, count, badge_label)
     dashboard_count = find('.gl-tabs-nav li a.active')
     nav_count = find(".dashboard-shortcuts-#{issuable_type}")
-    header_count = find(".header-content .#{issuable_type.tr('_', '-')}-count")
 
     expect(dashboard_count).to have_content(count)
     expect(nav_count).to have_content(count)
-    expect(header_count).to have_content(count)
+    within("span[aria-label='#{badge_label}']") do
+      expect(page).to have_content(count)
+    end
   end
 end

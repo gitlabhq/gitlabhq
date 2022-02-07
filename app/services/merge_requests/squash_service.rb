@@ -9,9 +9,9 @@ module MergeRequests
         return success(squash_sha: merge_request.diff_head_sha)
       end
 
-      return error(s_('MergeRequests|This project does not allow squashing commits when merge requests are accepted.')) if squash_forbidden?
+      return error(s_("MergeRequests|Squashing not allowed: This project doesn't allow you to squash commits when merging.")) if squash_forbidden?
 
-      squash! || error(s_('MergeRequests|Failed to squash. Should be done manually.'))
+      squash! || error(s_('MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch.'))
     end
 
     private

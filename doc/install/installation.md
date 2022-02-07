@@ -560,10 +560,6 @@ sudo -u git -H cp config/puma.rb.example config/puma.rb
 # cores you have available. You can get that number via the `nproc` command.
 sudo -u git -H editor config/puma.rb
 
-# Configure Git global settings for git user
-# 'autocrlf' is needed for the web editor
-sudo -u git -H git config --global core.autocrlf input
-
 # Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
 sudo -u git -H git config --global gc.auto 0
 

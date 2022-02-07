@@ -8810,6 +8810,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="boardepicancestorsauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="boardepicancestorsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
+| <a id="boardepicancestorscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
+| <a id="boardepicancestorscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
 | <a id="boardepicancestorsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="boardepicancestorsiid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="boardepicancestorsiidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -8826,6 +8828,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicancestorsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="boardepicancestorsstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="boardepicancestorstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
+| <a id="boardepicancestorsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
+| <a id="boardepicancestorsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
 
 ##### `BoardEpic.children`
 
@@ -8843,6 +8847,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="boardepicchildrenauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="boardepicchildrenconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
+| <a id="boardepicchildrencreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
+| <a id="boardepicchildrencreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
 | <a id="boardepicchildrenenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="boardepicchildreniid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="boardepicchildreniidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -8859,6 +8865,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicchildrenstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="boardepicchildrenstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="boardepicchildrentimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
+| <a id="boardepicchildrenupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
+| <a id="boardepicchildrenupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
 
 ##### `BoardEpic.currentUserTodos`
 
@@ -10326,6 +10334,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="epicancestorsauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="epicancestorsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
+| <a id="epicancestorscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
+| <a id="epicancestorscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
 | <a id="epicancestorsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="epicancestorsiid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="epicancestorsiidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -10342,6 +10352,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicancestorsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="epicancestorsstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="epicancestorstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
+| <a id="epicancestorsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
+| <a id="epicancestorsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
 
 ##### `Epic.children`
 
@@ -10359,6 +10371,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="epicchildrenauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="epicchildrenconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
+| <a id="epicchildrencreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
+| <a id="epicchildrencreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
 | <a id="epicchildrenenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="epicchildreniid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="epicchildreniidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -10375,6 +10389,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicchildrenstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="epicchildrenstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="epicchildrentimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
+| <a id="epicchildrenupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
+| <a id="epicchildrenupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
 
 ##### `Epic.currentUserTodos`
 
@@ -11049,6 +11065,8 @@ Returns [`Epic`](#epic).
 | ---- | ---- | ----------- |
 | <a id="groupepicauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="groupepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
+| <a id="groupepiccreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
+| <a id="groupepiccreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
 | <a id="groupepicenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="groupepiciid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="groupepiciidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -11065,6 +11083,8 @@ Returns [`Epic`](#epic).
 | <a id="groupepicstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="groupepicstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="groupepictimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
+| <a id="groupepicupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
+| <a id="groupepicupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
 
 ##### `Group.epicBoard`
 
@@ -11094,6 +11114,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupepicsauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="groupepicsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
+| <a id="groupepicscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
+| <a id="groupepicscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
 | <a id="groupepicsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="groupepicsiid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="groupepicsiidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -11110,6 +11132,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupepicsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="groupepicsstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="groupepicstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
+| <a id="groupepicsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
+| <a id="groupepicsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
 
 ##### `Group.groupMembers`
 
@@ -17041,12 +17065,16 @@ Roadmap sort values.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="epicsortcreated_at_asc"></a>`CREATED_AT_ASC` | Sort by created_at by ascending order. |
+| <a id="epicsortcreated_at_desc"></a>`CREATED_AT_DESC` | Sort by created_at by descending order. |
 | <a id="epicsortend_date_asc"></a>`END_DATE_ASC` | Sort by end date in ascending order. |
 | <a id="epicsortend_date_desc"></a>`END_DATE_DESC` | Sort by end date in descending order. |
 | <a id="epicsortstart_date_asc"></a>`START_DATE_ASC` | Sort by start date in ascending order. |
 | <a id="epicsortstart_date_desc"></a>`START_DATE_DESC` | Sort by start date in descending order. |
 | <a id="epicsorttitle_asc"></a>`TITLE_ASC` | Sort by title in ascending order. |
 | <a id="epicsorttitle_desc"></a>`TITLE_DESC` | Sort by title in descending order. |
+| <a id="epicsortupdated_at_asc"></a>`UPDATED_AT_ASC` | Sort by updated_at by ascending order. |
+| <a id="epicsortupdated_at_desc"></a>`UPDATED_AT_DESC` | Sort by updated_at by descending order. |
 | <a id="epicsortend_date_asc"></a>`end_date_asc` **{warning-solid}** | **Deprecated** in 13.11. Use END_DATE_ASC. |
 | <a id="epicsortend_date_desc"></a>`end_date_desc` **{warning-solid}** | **Deprecated** in 13.11. Use END_DATE_DESC. |
 | <a id="epicsortstart_date_asc"></a>`start_date_asc` **{warning-solid}** | **Deprecated** in 13.11. Use START_DATE_ASC. |

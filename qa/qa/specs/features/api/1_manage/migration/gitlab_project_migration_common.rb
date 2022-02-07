@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.shared_context 'with gitlab project migration', quarantine: {
+  # Disable on staging until bulk_import_projects toggle is on by default
+  # Otherwise tests running in parallel can disable feature in the middle of other test
+  RSpec.shared_context 'with gitlab project migration', :requires_admin, except: { subdomain: :staging }, quarantine: {
     only: { job: 'praefect' },
     type: :investigating,
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/348999'

@@ -146,6 +146,11 @@ msgid_plural "%d approvers (you've approved)"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d assigned issue"
+msgid_plural "%d assigned issues"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -11382,9 +11387,6 @@ msgstr ""
 msgid "Date merged"
 msgstr ""
 
-msgid "Date picker"
-msgstr ""
-
 msgid "Date range"
 msgstr ""
 
@@ -14121,9 +14123,6 @@ msgid "Error occurred while updating the %{issuableType} status"
 msgstr ""
 
 msgid "Error occurred while updating the issue status"
-msgstr ""
-
-msgid "Error occurred while updating the issue weight"
 msgstr ""
 
 msgid "Error occurred. A blocked user cannot be deactivated"
@@ -22680,13 +22679,13 @@ msgstr ""
 msgid "MergeRequests|Create issue to resolve thread"
 msgstr ""
 
-msgid "MergeRequests|Failed to squash. Should be done manually."
-msgstr ""
-
 msgid "MergeRequests|Saving the comment failed"
 msgstr ""
 
-msgid "MergeRequests|This project does not allow squashing commits when merge requests are accepted."
+msgid "MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch."
+msgstr ""
+
+msgid "MergeRequests|Squashing not allowed: This project doesn't allow you to squash commits when merging."
 msgstr ""
 
 msgid "MergeRequests|Thread stays resolved"
@@ -27080,6 +27079,18 @@ msgid "Policy management project does have any policies in %{policy_path}"
 msgstr ""
 
 msgid "Policy project doesn't exist"
+msgstr ""
+
+msgid "PolicyRuleMultiSelect|%{firstLabel} +%{numberOfAdditionalLabels} more"
+msgstr ""
+
+msgid "PolicyRuleMultiSelect|All %{itemTypeName}"
+msgstr ""
+
+msgid "PolicyRuleMultiSelect|Select %{itemTypeName}"
+msgstr ""
+
+msgid "PolicyRuleMultiSelect|Select all"
 msgstr ""
 
 msgid "Polling interval multiplier"
@@ -33402,12 +33413,6 @@ msgstr ""
 msgid "Sidebar|None"
 msgstr ""
 
-msgid "Sidebar|Only numeral characters allowed"
-msgstr ""
-
-msgid "Sidebar|Weight"
-msgstr ""
-
 msgid "Sidekiq job compression threshold (bytes)"
 msgstr ""
 
@@ -37794,6 +37799,9 @@ msgid "To-do item successfully marked as done."
 msgstr ""
 
 msgid "Today"
+msgstr ""
+
+msgid "Todos count"
 msgstr ""
 
 msgid "Todos|Are you looking for things to do? Take a look at %{strongStart}%{openIssuesLinkStart}open issues%{openIssuesLinkEnd}%{strongEnd}, contribute to %{strongStart}%{mergeRequestLinkStart}a merge request%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}, or mention someone in a comment to automatically assign them a new to-do item."

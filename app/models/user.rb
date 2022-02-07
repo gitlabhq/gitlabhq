@@ -668,7 +668,8 @@ class User < ApplicationRecord
 
       sanitized_order_sql = Arel.sql(sanitize_sql_array([order, query: query]))
 
-      scope = options[:with_private_emails] ? search_with_secondary_emails(query) : search_with_public_emails(query)
+      scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
+      scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
 
       scope.reorder(sanitized_order_sql, :name)
     end
@@ -685,50 +686,32 @@ class User < ApplicationRecord
       reorder(:name)
     end
 
-    def search_with_public_emails(query)
-      return none if query.blank?
-
-      query = query.downcase
-
-      where(
-        fuzzy_arel_match(:name, query, use_minimum_char_limit: user_search_minimum_char_limit)
-          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: user_search_minimum_char_limit))
-          .or(arel_table[:public_email].eq(query))
-      )
-    end
-
-    def search_without_secondary_emails(query)
-      return none if query.blank?
-
-      query = query.downcase
-
-      where(
-        fuzzy_arel_match(:name, query, lower_exact_match: true)
-          .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
-          .or(arel_table[:email].eq(query))
-      )
-    end
-
     # searches user by given pattern
-    # it compares name, email, username fields and user's secondary emails with given pattern
+    # it compares name and username fields with given pattern
     # This method uses ILIKE on PostgreSQL.
+    def search_by_name_or_username(query, use_minimum_char_limit: nil)
+      use_minimum_char_limit = user_search_minimum_char_limit if use_minimum_char_limit.nil?
 
-    def search_with_secondary_emails(query)
-      return none if query.blank?
+      where(
+        fuzzy_arel_match(:name, query, use_minimum_char_limit: use_minimum_char_limit)
+          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: use_minimum_char_limit))
+      )
+    end
 
-      query = query.downcase
+    def with_public_email(email_address)
+      where(public_email: email_address)
+    end
 
+    def with_primary_or_secondary_email(email_address)
       email_table = Email.arel_table
       matched_by_email_user_id = email_table
         .project(email_table[:user_id])
-        .where(email_table[:email].eq(query))
+        .where(email_table[:email].eq(email_address))
         .take(1) # at most 1 record as there is a unique constraint
 
       where(
-        fuzzy_arel_match(:name, query, use_minimum_char_limit: user_search_minimum_char_limit)
-          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: user_search_minimum_char_limit))
-          .or(arel_table[:email].eq(query))
-          .or(arel_table[:id].eq(matched_by_email_user_id))
+        arel_table[:email].eq(email_address)
+        .or(arel_table[:id].eq(matched_by_email_user_id))
       )
     end
 

@@ -1,4 +1,4 @@
-import Store from 'ee_else_ce/sidebar/stores/sidebar_store';
+import Store from '~/sidebar/stores/sidebar_store';
 import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';

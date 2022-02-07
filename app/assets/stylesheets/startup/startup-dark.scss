@@ -7,12 +7,8 @@ body.gl-dark {
   --gray-100: #404040;
   --gray-600: #bfbfbf;
   --gray-900: #fafafa;
-  --gray-950: #fff;
   --green-100: #0d532a;
-  --green-400: #108548;
   --green-700: #91d4a8;
-  --blue-400: #1f75cb;
-  --orange-400: #ab6100;
   --indigo-900-alpha-008: rgba(235, 235, 250, 0.08);
   --gl-text-color: #fafafa;
   --border-color: #4f4f4f;
@@ -314,9 +310,17 @@ h1 {
   padding-left: 0.6em;
   border-radius: 10rem;
 }
+.badge-success {
+  color: #fff;
+  background-color: #2da160;
+}
 .badge-info {
   color: #fff;
   background-color: #428fdc;
+}
+.badge-warning {
+  color: #fff;
+  background-color: #c17d10;
 }
 .bg-transparent {
   background-color: transparent !important;
@@ -390,6 +394,34 @@ a.gl-badge.badge-info:active {
   background-color: #0b5cad;
 }
 a.gl-badge.badge-info:active {
+  box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.8),
+    0 0 0 1px rgba(51, 51, 51, 0.4), 0 0 0 4px rgba(66, 143, 220, 0.48);
+  outline: none;
+}
+.gl-badge.badge-success {
+  background-color: #0d532a;
+  color: #91d4a8;
+}
+a.gl-badge.badge-success.active,
+a.gl-badge.badge-success:active {
+  color: #ecf4ee;
+  background-color: #24663b;
+}
+a.gl-badge.badge-success:active {
+  box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.8),
+    0 0 0 1px rgba(51, 51, 51, 0.4), 0 0 0 4px rgba(66, 143, 220, 0.48);
+  outline: none;
+}
+.gl-badge.badge-warning {
+  background-color: #703800;
+  color: #e9be74;
+}
+a.gl-badge.badge-warning.active,
+a.gl-badge.badge-warning:active {
+  color: #fdf1dd;
+  background-color: #8f4700;
+}
+a.gl-badge.badge-warning:active {
   box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.8),
     0 0 0 1px rgba(51, 51, 51, 0.4), 0 0 0 4px rgba(66, 143, 220, 0.48);
   outline: none;
@@ -919,36 +951,6 @@ input {
   font-weight: 600;
   line-height: 18px;
   margin: 4px 0 4px 2px;
-}
-.title-container .badge.badge-pill:not(.gl-badge),
-.navbar-nav .badge.badge-pill:not(.gl-badge) {
-  position: inherit;
-  font-weight: 400;
-  margin-left: -6px;
-  font-size: 11px;
-  color: var(--gray-950, #333);
-  padding: 0 5px;
-  line-height: 12px;
-  border-radius: 7px;
-  box-shadow: 0 1px 0 rgba(76, 78, 84, 0.2);
-}
-.title-container .badge.badge-pill:not(.gl-badge).green-badge,
-.navbar-nav .badge.badge-pill:not(.gl-badge).green-badge {
-  background-color: var(--green-400, #108548);
-}
-.title-container .badge.badge-pill:not(.gl-badge).merge-requests-count,
-.navbar-nav .badge.badge-pill:not(.gl-badge).merge-requests-count {
-  background-color: var(--orange-400, #ab6100);
-}
-.title-container .badge.badge-pill:not(.gl-badge).todos-count,
-.navbar-nav .badge.badge-pill:not(.gl-badge).todos-count {
-  background-color: var(--blue-400, #1f75cb);
-}
-.title-container .canary-badge .badge,
-.navbar-nav .canary-badge .badge {
-  font-size: 12px;
-  line-height: 16px;
-  padding: 0 0.5rem;
 }
 @media (max-width: 575.98px) {
   .navbar-gitlab .container-fluid {
@@ -2022,17 +2024,8 @@ body.gl-dark {
   white-space: nowrap;
   width: 1px;
 }
-.gl-bg-green-500 {
-  background-color: #2da160;
-}
 .gl-border-none\! {
   border-style: none !important;
-}
-.gl-rounded-pill {
-  border-radius: 0.75rem;
-}
-.gl-text-white {
-  color: #333;
 }
 .gl-display-none {
   display: none;
@@ -2055,9 +2048,8 @@ body.gl-dark {
 .gl-pr-2 {
   padding-right: 0.25rem;
 }
-.gl-py-1 {
-  padding-top: 0.125rem;
-  padding-bottom: 0.125rem;
+.gl-ml-n2 {
+  margin-left: -0.25rem;
 }
 .gl-ml-3 {
   margin-left: 0.5rem;

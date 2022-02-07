@@ -100,8 +100,7 @@ module QA
 
       def exists?
         api_get
-        # TODO: remove 'InternalServerError' from below line after https://gitlab.com/gitlab-org/gitlab/-/issues/349337 has been resolved
-      rescue ResourceNotFoundError, InternalServerError
+      rescue ResourceNotFoundError
         false
       end
 

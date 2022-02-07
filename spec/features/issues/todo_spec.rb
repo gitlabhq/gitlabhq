@@ -19,13 +19,13 @@ RSpec.describe 'Manually create a todo item from issue', :js do
       expect(page).to have_content 'Mark as done'
     end
 
-    page.within '.header-content .todos-count' do
+    page.within ".header-content span[aria-label='#{_('Todos count')}']" do
       expect(page).to have_content '1'
     end
 
     visit project_issue_path(project, issue)
 
-    page.within '.header-content .todos-count' do
+    page.within ".header-content span[aria-label='#{_('Todos count')}']" do
       expect(page).to have_content '1'
     end
   end
@@ -36,10 +36,10 @@ RSpec.describe 'Manually create a todo item from issue', :js do
       click_button 'Mark as done'
     end
 
-    expect(page).to have_selector('.todos-count', visible: false)
+    expect(page).to have_selector(".header-content span[aria-label='#{_('Todos count')}']", visible: false)
 
     visit project_issue_path(project, issue)
 
-    expect(page).to have_selector('.todos-count', visible: false)
+    expect(page).to have_selector(".header-content span[aria-label='#{_('Todos count')}']", visible: false)
   end
 end

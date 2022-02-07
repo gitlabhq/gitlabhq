@@ -274,14 +274,8 @@
       font-weight: $gl-font-weight-normal;
     }
 
-    .no-value,
-    .btn-default-hover-link,
-    .btn-secondary-hover-link {
+    .no-value {
       color: $gl-text-color-secondary;
-    }
-
-    .btn-secondary-hover-link:hover {
-      color: $blue-600;
     }
 
     .sidebar-collapsed-icon {

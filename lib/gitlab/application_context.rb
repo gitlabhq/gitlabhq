@@ -9,7 +9,17 @@ module Gitlab
     Attribute = Struct.new(:name, :type)
 
     LOG_KEY = Labkit::Context::LOG_KEY
-    KNOWN_KEYS = Labkit::Context::KNOWN_KEYS
+    KNOWN_KEYS = [
+      :user,
+      :project,
+      :root_namespace,
+      :client_id,
+      :caller_id,
+      :remote_ip,
+      :related_class,
+      :feature_category
+    ].freeze
+    private_constant :KNOWN_KEYS
 
     APPLICATION_ATTRIBUTES = [
       Attribute.new(:project, Project),
@@ -21,6 +31,10 @@ module Gitlab
       Attribute.new(:related_class, String),
       Attribute.new(:feature_category, String)
     ].freeze
+
+    def self.known_keys
+      KNOWN_KEYS
+    end
 
     def self.with_context(args, &block)
       application_context = new(**args)

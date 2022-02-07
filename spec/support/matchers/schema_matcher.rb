@@ -36,12 +36,38 @@ end
 
 RSpec::Matchers.define :match_response_schema do |schema, dir: nil, **options|
   match do |response|
-    schema_path = Pathname.new(SchemaPath.expand(schema, dir))
-    validator = SchemaPath.validator(schema_path)
+    @schema_path = Pathname.new(SchemaPath.expand(schema, dir))
+    validator = SchemaPath.validator(@schema_path)
 
-    data = Gitlab::Json.parse(response.body)
+    @data = Gitlab::Json.parse(response.body)
 
-    validator.valid?(data)
+    @schema_errors = validator.validate(@data)
+    @schema_errors.none?
+  end
+
+  failure_message do |actual|
+    message = []
+
+    message << <<~MESSAGE
+      expected JSON response to match schema #{@schema_path.inspect}.
+
+      JSON input: #{Gitlab::Json.pretty_generate(@data).indent(2)}
+
+      Schema errors:
+    MESSAGE
+
+    @schema_errors.each do |error|
+      property_name, actual_value = error.values_at('data_pointer', 'data')
+      property_name = 'root' if property_name.empty?
+
+      message << <<~MESSAGE
+        Property: #{property_name}
+          Actual value: #{Gitlab::Json.pretty_generate(actual_value).indent(2)}
+          Error: #{JSONSchemer::Errors.pretty(error)}
+      MESSAGE
+    end
+
+    message.join("\n")
   end
 end
 

@@ -415,49 +415,6 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
   }
 }
 
-.title-container,
-.navbar-nav {
-  .badge.badge-pill:not(.gl-badge) {
-    position: inherit;
-    font-weight: $gl-font-weight-normal;
-    margin-left: -6px;
-    font-size: 11px;
-    color: var(--gray-950, $white);
-    padding: 0 5px;
-    line-height: 12px;
-    border-radius: 7px;
-    box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
-
-    &.green-badge {
-      background-color: var(--green-400, $green-400);
-    }
-
-    &.merge-requests-count {
-      background-color: var(--orange-400, $orange-400);
-    }
-
-    &.todos-count {
-      background-color: var(--blue-400, $blue-400);
-    }
-  }
-
-  .canary-badge {
-    .badge {
-      font-size: $gl-font-size-small;
-      line-height: $gl-line-height;
-      padding: 0 $grid-size;
-    }
-
-    &:hover {
-      text-decoration: none;
-
-      .badge {
-        text-decoration: none;
-      }
-    }
-  }
-}
-
 @include media-breakpoint-down(xs) {
   .navbar-gitlab .container-fluid {
     font-size: 18px;

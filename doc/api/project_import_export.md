@@ -243,8 +243,8 @@ curl --request POST \
 }
 ```
 
-The `ContentType` header must return a valid number. The maximum file size is 10 gigabytes.
-The `ContentLength` header must be `application/gzip`.
+The `Content-Length` header must return a valid number. The maximum file size is 10 gigabytes.
+The `Content-Type` header must be `application/gzip`.
 
 ## Import status
 

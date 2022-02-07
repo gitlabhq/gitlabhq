@@ -3,7 +3,7 @@
 require_relative 'gitlab_project_migration_common'
 
 module QA
-  RSpec.describe 'Manage', :requires_admin do
+  RSpec.describe 'Manage' do
     describe 'Gitlab migration' do
       include_context 'with gitlab project migration'
 

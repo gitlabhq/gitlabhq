@@ -16,7 +16,7 @@
                 = logo_text
           - if Gitlab.com_and_canary?
             = link_to Gitlab::Saas.canary_toggle_com_url, class: 'canary-badge bg-transparent', data: { qa_selector: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer' do
-              %span.gl-badge.gl-bg-green-500.gl-text-white.gl-rounded-pill.gl-font-weight-bold.gl-py-1
+              = gl_badge_tag({ variant: :success }) do
                 = _('Next')
 
         - if current_user
@@ -64,7 +64,7 @@
                 container: 'body' } do
                 = sprite_icon('issues')
                 - issues_count = assigned_issuables_count(:issues)
-                %span.badge.badge-pill.issues-count.green-badge{ class: ('hidden' if issues_count == 0) }
+                = gl_badge_tag({ size: :sm, variant: :success }, { class: "gl-ml-n2 #{(' gl-display-none' if issues_count == 0)}", "aria-label": n_("%d assigned issue", "%d assigned issues", issues_count) % issues_count }) do
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
@@ -77,7 +77,7 @@
                 track_property: 'navigation',
                 container: 'body' } do
                 = sprite_icon('git-merge')
-                %span.badge.badge-pill.merge-requests-count.js-merge-requests-count{ class: ('hidden' if user_merge_requests_counts[:total] == 0) }
+                = gl_badge_tag({ size: :sm, variant: :warning }, { class: "js-merge-requests-count gl-ml-n2#{(' gl-display-none' if user_merge_requests_counts[:total] == 0)}", "aria-label": n_("%d merge request", "%d merge requests", user_merge_requests_counts[:total]) % user_merge_requests_counts[:total] }) do
                   = number_with_delimiter(user_merge_requests_counts[:total])
                 = sprite_icon('chevron-down', css_class: 'caret-down gl-mx-0!')
               .dropdown-menu.dropdown-menu-right
@@ -87,12 +87,12 @@
                   %li
                     = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
                       = _('Assigned to you')
-                      %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-assigned-mr-count{ class: "" }
+                      = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-assigned-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:assigned]
                   %li
                     = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
                       = _('Review requests for you')
-                      %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-reviewer-mr-count{ class: "" }
+                      = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-reviewer-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:review_requested]
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
@@ -103,7 +103,9 @@
                 track_property: 'navigation',
                 container: 'body' } do
                 = sprite_icon('todo-done')
-                %span.badge.badge-pill.todos-count.js-todos-count{ class: ('hidden' if todos_pending_count == 0) }
+                -# The todos' counter badge's visibility is being toggled by adding or removing the .hidden class in Js.
+                -# We'll eventually migrate to .gl-display-none: https://gitlab.com/gitlab-org/gitlab/-/issues/351792.
+                = gl_badge_tag({ size: :sm, variant: :info }, { class: "js-todos-count gl-ml-n2#{(' hidden' if todos_pending_count == 0)}", "aria-label": _("Todos count") }) do
                   = todos_count_format(todos_pending_count)
           %li.nav-item.header-help.dropdown.d-none.d-md-block{ **tracking_attrs('main_navigation', 'click_question_mark_link', 'navigation') }
             = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown" } do
