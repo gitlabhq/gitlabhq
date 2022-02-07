@@ -236,9 +236,12 @@ Don't see the event you want in any of the epics linked above? You can either:
 
 ### Disabled events
 
-#### Repository push
+#### Repository push (DEPRECATED)
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
 
 The current architecture of audit events is not prepared to receive a very high amount of records.
 It may make the user interface for your project or audit events very busy, and the disk space consumed by the
