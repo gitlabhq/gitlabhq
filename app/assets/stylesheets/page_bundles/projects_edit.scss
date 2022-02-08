@@ -9,7 +9,7 @@
   }
 
   .highlight-changes & {
-    background: $highlight-changes-color;
+    background: var(--green-50, $highlight-changes-color);
     transition: none;
   }
 }

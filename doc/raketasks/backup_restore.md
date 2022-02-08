@@ -966,6 +966,7 @@ sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 ```
 
 Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:backup:restore` instead.
+Some [known non-blocking error messages may appear](#restoring-database-backup-using-omnibus-packages-outputs-warnings).
 
 WARNING:
 `gitlab-rake gitlab:backup:restore` doesn't set the correct file system

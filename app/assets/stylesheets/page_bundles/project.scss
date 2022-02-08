@@ -49,7 +49,7 @@
 .project-repo-buttons {
   .btn {
     svg {
-      fill: $gray-500;
+      fill: var(--gray-500, $gray-500);
     }
   }
 
@@ -148,13 +148,13 @@
       background-color: transparent;
       font-size: $gl-font-size;
       line-height: $gl-btn-line-height;
-      color: $gl-text-color-secondary;
+      color: var(--gray-500, $gl-text-color-secondary);
       white-space: pre-wrap;
     }
 
     .stat-link {
       border-bottom: 0;
-      color: $black;
+      color: var(--black, $black);
 
       &:hover,
       &:focus {
@@ -163,17 +163,17 @@
       }
 
       .project-stat-value {
-        color: $gl-text-color;
+        color: var(--gl-text-color, $gl-text-color);
       }
 
       .icon {
-        color: $gl-text-color-secondary;
+        color: var(--gray-500, $gl-text-color-secondary);
       }
 
       .add-license-link {
         &,
         .icon {
-          color: $blue-600;
+          color: var(--blue-600, $blue-600);
         }
       }
     }
@@ -200,13 +200,13 @@
   margin-bottom: 7px;
 
   h5 {
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
   }
 
   .light-well {
     border-radius: 2px;
 
-    color: $well-light-text-color;
+    color: var(--gray-600, $well-light-text-color);
     font-size: 13px;
     line-height: 1.6em;
   }

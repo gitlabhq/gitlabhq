@@ -98,7 +98,7 @@ that can process jobs in the `background_migration` queue.
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
 ```
 
 **For installations from source:**

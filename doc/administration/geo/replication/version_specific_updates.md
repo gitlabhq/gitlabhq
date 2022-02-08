@@ -10,6 +10,21 @@ Review this page for update instructions for your version. These steps
 accompany the [general steps](updating_the_geo_sites.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to 14.2 through 14.7
+
+There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
+that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
+
+Since GitLab 14.2, verification failures result in synchronization failures and cause
+a resynchronization of these objects.
+
+As verification is not yet implemented for files stored in object storage (see
+[issue 13845](https://gitlab.com/gitlab-org/gitlab/-/issues/13845) for more details), this
+results in a loop that consistently fails for all objects stored in object storage.
+
+For information on how to fix this, see
+[Troubleshooting - Failed syncs with GitLab-managed object storage replication](troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+
 ## Updating to 14.4
 
 There is [an issue in GitLab 14.4.0 through 14.4.2](../../../update/index.md#1440) that can affect Geo and other features that rely on cronjobs. We recommend upgrading to GitLab 14.4.3 or later.

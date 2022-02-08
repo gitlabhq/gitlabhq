@@ -832,86 +832,18 @@ variables:
 
 ## Reports JSON format
 
-The SAST tool emits a JSON report file. For more information, see the
-[schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json).
+SAST outputs a report file in JSON format. The report file contains details of all found vulnerabilities. 
+To download the report file, you can either: 
 
-The JSON report file can be downloaded from the CI pipelines page, or the
-pipelines tab on merge requests by [setting `artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`. For more information see [Downloading artifacts](../../../ci/pipelines/job_artifacts.md).
+- Download the file from the CI/CD pipelines page.
+- In the pipelines tab on merge requests, set [`artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`.  
+ 
+For information, see [Download job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
 
-Here's an example SAST report:
+For details of the report file's schema, see
+[SAST report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json).
 
-```json-doc
-{
-  "version": "2.0",
-  "vulnerabilities": [
-    {
-      "id": "9e96e0ab-23da-4d7d-a09e-0acbaa5e83ca",
-      "category": "sast",
-      "name": "Predictable pseudorandom number generator",
-      "message": "Predictable pseudorandom number generator",
-      "description": "The use of java.util.Random is predictable",
-      "severity": "Medium",
-      "confidence": "Medium",
-      "scanner": {
-        "id": "find_sec_bugs",
-        "name": "Find Security Bugs"
-      },
-      "location": {
-        "file": "groovy/src/main/groovy/com/gitlab/security_products/tests/App.groovy",
-        "start_line": 47,
-        "end_line": 47,
-        "class": "com.gitlab.security_products.tests.App",
-        "method": "generateSecretToken2",
-        "dependency": {
-          "package": {}
-        }
-      },
-      "identifiers": [
-        {
-          "type": "find_sec_bugs_type",
-          "name": "Find Security Bugs-PREDICTABLE_RANDOM",
-          "value": "PREDICTABLE_RANDOM",
-          "url": "https://find-sec-bugs.github.io/bugs.htm#PREDICTABLE_RANDOM"
-        },
-        {
-          "type": "cwe",
-          "name": "CWE-330",
-          "value": "330",
-          "url": "https://cwe.mitre.org/data/definitions/330.html"
-        }
-      ]
-    },
-    {
-      "id": "e6dbf91f-4c07-46f7-a365-0169489c27d1",
-      "category": "sast",
-      "message": "Probable insecure usage of temp file/directory.",
-      "severity": "Medium",
-      "confidence": "Medium",
-      "scanner": {
-        "id": "bandit",
-        "name": "Bandit"
-      },
-      "location": {
-        "file": "python/hardcoded/hardcoded-tmp.py",
-        "start_line": 10,
-        "end_line": 10,
-        "dependency": {
-          "package": {}
-        }
-      },
-      "identifiers": [
-        {
-          "type": "bandit_test_id",
-          "name": "Bandit Test ID B108",
-          "value": "B108",
-          "url": "https://docs.openstack.org/bandit/latest/plugins/b108_hardcoded_tmp_directory.html"
-        }
-      ]
-    },
-  ],
-  "remediations": []
-}
-```
+For an example SAST report file, see [`gl-secret-detection-report.json`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/qa/expect/secrets/gl-secret-detection-report.json) example.
 
 ## Running SAST in an offline environment
 
