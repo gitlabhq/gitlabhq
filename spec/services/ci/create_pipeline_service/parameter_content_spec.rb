@@ -15,7 +15,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       variables:
         DAST_VERSION: 1
-        SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+        SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
 
       dast:
         stage: dast

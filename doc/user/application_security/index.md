@@ -92,9 +92,11 @@ For more details about each of the security scanning tools, see their respective
 
 ### Override the default registry base address
 
-By default, GitLab security scanners use `registry.gitlab.com/security-products` as the
+By default, GitLab security scanners use `registry.gitlab.com/gitlab-org/security-products/analyzers` as the
 base address for Docker images. You can override this globally by setting the CI/CD variable
-`SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once.
+`SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once, except
+the container-scanning analyzer which uses
+`registry.gitlab.com/security-products/container-scanning` as its registry.
 
 ### Use security scanning tools with merge request pipelines
 

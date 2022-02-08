@@ -5,7 +5,7 @@
   extends:
     - .reports:rules:schedule-dast
   image:
-    name: "registry.gitlab.com/security-products/dast:$DAST_VERSION"
+    name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"
   resource_group: dast_scan
   variables:
     DAST_USERNAME_FIELD: "user[login]"

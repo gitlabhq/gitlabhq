@@ -1125,9 +1125,9 @@ Once the Docker image is hosted locally, the `SECURE_ANALYZERS_PREFIX` variable 
 NOTE:
 DAST API and API Fuzzing both use the same underlying Docker image `api-fuzzing:1`.
 
-For example, the below line sets a registry for the image `registry.gitlab.com/security-products/api-fuzzing:1`:
+For example, the below line sets a registry for the image `registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:1`:
 
-`SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"`
+`SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"`
 
 NOTE:
 Setting `SECURE_ANALYZERS_PREFIX` changes the Docker image registry location for all GitLab Secure templates.

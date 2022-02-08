@@ -24,14 +24,14 @@
 variables:
   # Setting this variable affects all Security templates
   # (SAST, Dependency Scanning, ...)
-  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
   #
   DAST_API_VERSION: "1"
-  DAST_API_IMAGE: "api-security"
+  DAST_API_IMAGE: $SECURE_ANALYZERS_PREFIX/api-fuzzing:$DAST_API_VERSION
 
 dast_api:
   stage: dast
-  image: $SECURE_ANALYZERS_PREFIX/$DAST_API_IMAGE:$DAST_API_VERSION
+  image: $DAST_API_IMAGE
   allow_failure: true
   rules:
     - if: $DAST_API_DISABLED

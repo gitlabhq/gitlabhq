@@ -779,11 +779,11 @@ import the following default dependency scanning analyzer images from `registry.
 your [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/dependency-scanning/gemnasium:2
-registry.gitlab.com/security-products/dependency-scanning/gemnasium-maven:2
-registry.gitlab.com/security-products/dependency-scanning/gemnasium-python:2
-registry.gitlab.com/security-products/dependency-scanning/retire.js:2
-registry.gitlab.com/security-products/dependency-scanning/bundler-audit:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/retire.js:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/bundler-audit:2
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
@@ -1082,4 +1082,4 @@ analyzers, edit your `gitlab-ci.yml` file and either:
 
   For example, currently the `gemnasium-maven-dependency_scanning` job pulls the latest
   `gemnasium-maven` Docker image because `DS_ANALYZER_IMAGE` is set to
-  `"$SECURE_ANALYZERS_PREFIX/dependency-scanning/gemnasium-maven:$DS_MAJOR_VERSION"`.
+  `"$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"`.

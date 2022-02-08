@@ -5,9 +5,9 @@ stages:
   - dast
 
 variables:
-  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
   DAST_API_VERSION: "1"
-  DAST_API_IMAGE: $SECURE_ANALYZERS_PREFIX/api-security:$DAST_API_VERSION
+  DAST_API_IMAGE: $SECURE_ANALYZERS_PREFIX/api-fuzzing:$DAST_API_VERSION
 
 dast:
   stage: dast

@@ -322,6 +322,13 @@ See the [official Kubernetes documentation for more details](https://kubernetes.
 
 ## Surface network security alerts from cluster to GitLab **(ULTIMATE)**
 
+> [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476) in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477) in GitLab 15.0.
+
+WARNING:
+Cilium integration is in its end-of-life process. It's [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476)
+for use in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
+in GitLab 15.0.
+
 The GitLab Agent provides an [integration with Cilium](index.md#kubernetes-network-security-alerts).
 To integrate, add a top-level `cilium` section to your `config.yml` file. Currently, the
 only configuration option is the Hubble relay address:

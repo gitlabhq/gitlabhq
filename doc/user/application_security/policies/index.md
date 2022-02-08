@@ -17,7 +17,7 @@ can access these by navigating to your project's **Security & Compliance > Polic
 
 GitLab supports the following security policies:
 
-- [Container Network Policy](#container-network-policy)
+- [Container Network Policy](#container-network-policy) (Deprecated in GitLab 14.8)
 - [Scan Execution Policy](#scan-execution-policy-schema)
 
 ## Policy management
@@ -79,7 +79,13 @@ mode to fix your policy before Rule mode is available again.
 
 ## Container Network Policy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32365) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32365) in GitLab 12.9.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476) in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477) in GitLab 15.0.
+
+WARNING:
+Container Network Policy is in its end-of-life process. It's [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476)
+for use in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
+in GitLab 15.0.
 
 The **Container Network Policy** section provides packet flow metrics for
 your application's Kubernetes namespace. This section has the following

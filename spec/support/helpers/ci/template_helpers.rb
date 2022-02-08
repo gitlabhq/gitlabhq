@@ -3,7 +3,7 @@
 module Ci
   module TemplateHelpers
     def secure_analyzers_prefix
-      'registry.gitlab.com/security-products'
+      'registry.gitlab.com/gitlab-org/security-products/analyzers'
     end
   end
 end

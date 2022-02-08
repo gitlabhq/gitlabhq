@@ -1,11 +1,7 @@
 variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
-  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
-  # These placeholders will be removed in %15.0 with deprecation of previous registry path, see https://gitlab.com/groups/gitlab-org/-/epics/6162
-  DEFAULT_SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
-  DEPRECATED_SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
-
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
 
 iac-sast:
@@ -35,9 +31,4 @@ kics-iac-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /kics/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"

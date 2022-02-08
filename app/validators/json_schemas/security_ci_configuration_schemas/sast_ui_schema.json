@@ -2,8 +2,8 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "global": [
         {
-            "field": "SECURE_ANALYZERS_PREFIX",
-            "label": "Image prefix",
+            "field" : "SECURE_ANALYZERS_PREFIX",
+            "label" : "Image prefix",
             "type": "string",
             "default_value": "",
             "value": "",

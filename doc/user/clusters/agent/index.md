@@ -131,6 +131,13 @@ Support for separated private manifest and configuration repositories is tracked
 
 ## Kubernetes Network Security Alerts **(ULTIMATE)**
 
+> [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476) in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477) in GitLab 15.0.
+
+WARNING:
+Cilium integration is in its end-of-life process. It's [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476)
+for use in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
+in GitLab 15.0.
+
 The GitLab Agent also provides an integration with Cilium. This integration provides a simple way to
 generate network policy-related alerts and to surface those alerts in GitLab.
 

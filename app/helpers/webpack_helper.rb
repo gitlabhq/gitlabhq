@@ -83,16 +83,8 @@ module WebpackHelper
   end
 
   def webpack_public_host
-    # We do not proxy the webpack output in the 'test' environment,
-    # so we must reference the webpack dev server directly.
-    if Rails.env.test? && Gitlab.config.webpack.dev_server.enabled
-      host = Gitlab.config.webpack.dev_server.host
-      port = Gitlab.config.webpack.dev_server.port
-      protocol = Gitlab.config.webpack.dev_server.https ? 'https' : 'http'
-      "#{protocol}://#{host}:#{port}"
-    else
-      ActionController::Base.asset_host.try(:chomp, '/')
-    end
+    # We proxy webpack output in 'test' and 'dev' environment, so we can just use asset_host
+    ActionController::Base.asset_host.try(:chomp, '/')
   end
 
   def webpack_public_path

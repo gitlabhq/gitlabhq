@@ -7,7 +7,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Threat Monitoring **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14707) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14707) in GitLab 12.9.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476) in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477) in GitLab 15.0.
+
+WARNING:
+Threat Monitoring is in its end-of-life process. It's [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/7476)
+for use in GitLab 14.8, and planned for [removal](https://gitlab.com/groups/gitlab-org/-/epics/7477)
+in GitLab 15.0.
 
 The **Threat Monitoring** page provides alerts and metrics
 for the GitLab application runtime security features. You can access

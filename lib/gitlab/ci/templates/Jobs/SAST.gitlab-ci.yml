@@ -6,10 +6,7 @@
 variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
-  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
-  # These placeholders will be removed in %15.0 with deprecation of previous registry path, see https://gitlab.com/groups/gitlab-org/-/epics/6162
-  DEFAULT_SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
-  DEPRECATED_SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
 
   SAST_EXCLUDED_ANALYZERS: ""
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
@@ -48,14 +45,7 @@ bandit-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /bandit/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.py'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.py'
 
@@ -71,15 +61,7 @@ brakeman-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.rb'
-        - '**/Gemfile'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.rb'
         - '**/Gemfile'
@@ -96,18 +78,7 @@ eslint-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /eslint/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.html'
-        - '**/*.js'
-        - '**/*.jsx'
-        - '**/*.ts'
-        - '**/*.tsx'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.html'
         - '**/*.js'
@@ -127,15 +98,7 @@ flawfinder-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /flawfinder/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.c'
-        - '**/*.cpp'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.c'
         - '**/*.cpp'
@@ -153,14 +116,7 @@ kubesec-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /kubesec/
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $SCAN_KUBERNETES_MANIFESTS == 'true' &&
-          $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-    - if: $CI_COMMIT_BRANCH &&
           $SCAN_KUBERNETES_MANIFESTS == 'true'
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
 
 gosec-sast:
   extends: .sast-analyzer
@@ -174,14 +130,7 @@ gosec-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /gosec/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.go'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.go'
 
@@ -201,17 +150,7 @@ mobsf-android-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true' &&
-          $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.apk'
-        - '**/AndroidManifest.xml'
-    - if: $CI_COMMIT_BRANCH &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.apk'
         - '**/AndroidManifest.xml'
@@ -224,17 +163,7 @@ mobsf-ios-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true' &&
-          $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.ipa'
-        - '**/*.xcodeproj/*'
-    - if: $CI_COMMIT_BRANCH &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.ipa'
         - '**/*.xcodeproj/*'
@@ -251,14 +180,7 @@ nodejs-scan-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /nodejs-scan/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/package.json'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/package.json'
 
@@ -274,14 +196,7 @@ phpcs-security-audit-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /phpcs-security-audit/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.php'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.php'
 
@@ -297,14 +212,7 @@ pmd-apex-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /pmd-apex/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.cls'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.cls'
 
@@ -313,7 +221,6 @@ security-code-scan-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: '3'
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -322,29 +229,15 @@ security-code-scan-sast:
       when: never
     # This rule shim will be removed in %15.0,
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/350935
-    - if: $CI_COMMIT_BRANCH && $CI_SERVER_VERSION_MAJOR == '14' && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SAST_ANALYZER_IMAGE_TAG: '2'
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.csproj'
-        - '**/*.vbproj'
     - if: $CI_COMMIT_BRANCH && $CI_SERVER_VERSION_MAJOR == '14'
       variables:
         SAST_ANALYZER_IMAGE_TAG: '2'
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
-      exists:
-        - '**/*.csproj'
-        - '**/*.vbproj'
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
       exists:
         - '**/*.csproj'
         - '**/*.vbproj'
     - if: $CI_COMMIT_BRANCH
       variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
+        SAST_ANALYZER_IMAGE_TAG: '3'
       exists:
         - '**/*.csproj'
         - '**/*.vbproj'
@@ -361,20 +254,7 @@ semgrep-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.py'
-        - '**/*.js'
-        - '**/*.jsx'
-        - '**/*.ts'
-        - '**/*.tsx'
-        - '**/*.c'
-        - '**/*.go'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.py'
         - '**/*.js'
@@ -396,14 +276,7 @@ sobelow-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /sobelow/
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - 'mix.exs'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - 'mix.exs'
 
@@ -423,17 +296,7 @@ spotbugs-sast:
       when: never
     - if: $SAST_DISABLED
       when: never
-    - if: $CI_COMMIT_BRANCH && $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/sast"
-      exists:
-        - '**/*.groovy'
-        - '**/*.java'
-        - '**/*.scala'
-        - '**/*.kt'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '**/*.groovy'
         - '**/*.java'
