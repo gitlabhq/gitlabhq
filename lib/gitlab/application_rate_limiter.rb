@@ -14,7 +14,7 @@ module Gitlab
       # Threshold value can be either an Integer or a Proc
       # in order to not evaluate it's value every time this method is called
       # and only do that when it's needed.
-      def rate_limits
+      def rate_limits # rubocop:disable Metrics/AbcSize
         {
           issues_create:                { threshold: -> { application_settings.issues_create_limit }, interval: 1.minute },
           notes_create:                 { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },
@@ -32,7 +32,7 @@ module Gitlab
           group_testing_hook:           { threshold: 5, interval: 1.minute },
           profile_add_new_email:        { threshold: 5, interval: 1.minute },
           web_hook_calls:               { interval: 1.minute },
-          users_get_by_id:              { threshold: 10, interval: 1.minute },
+          users_get_by_id:              { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
           username_exists:              { threshold: 20, interval: 1.minute },
           user_sign_up:                 { threshold: 20, interval: 1.minute },
           profile_resend_email_confirmation:  { threshold: 5, interval: 1.minute },

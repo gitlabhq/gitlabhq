@@ -1,14 +1,16 @@
 <script>
-import { GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlSafeHtmlDirective, GlLoadingIcon } from '@gitlab/ui';
 import LineNumbers from '~/vue_shared/components/line_numbers.vue';
 import { sanitize } from '~/lib/dompurify';
+import { ROUGE_TO_HLJS_LANGUAGE_MAP } from './constants';
+import { wrapLines } from './utils';
 
 const LINE_SELECT_CLASS_NAME = 'hll';
-const PLAIN_TEXT_LANGUAGE = 'plaintext';
 
 export default {
   components: {
     LineNumbers,
+    GlLoadingIcon,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -18,17 +20,12 @@ export default {
       type: Object,
       required: true,
     },
-    autoDetect: {
-      type: Boolean,
-      required: false,
-      default: true, // We'll eventually disable autoDetect and pass the language explicitly to reduce the footprint (https://gitlab.com/gitlab-org/gitlab/-/issues/348145)
-    },
   },
   data() {
     return {
       languageDefinition: null,
       content: this.blob.rawTextBlob,
-      language: this.blob.language || PLAIN_TEXT_LANGUAGE,
+      language: ROUGE_TO_HLJS_LANGUAGE_MAP[this.blob.language],
       hljs: null,
     };
   },
@@ -40,14 +37,14 @@ export default {
       let highlightedContent;
 
       if (this.hljs) {
-        if (this.autoDetect) {
+        if (!this.language) {
           highlightedContent = this.hljs.highlightAuto(this.content).value;
         } else if (this.languageDefinition) {
           highlightedContent = this.hljs.highlight(this.content, { language: this.language }).value;
         }
       }
 
-      return this.wrapLines(highlightedContent);
+      return wrapLines(highlightedContent);
     },
   },
   watch: {
@@ -61,14 +58,14 @@ export default {
   async mounted() {
     this.hljs = await this.loadHighlightJS();
 
-    if (!this.autoDetect) {
+    if (this.language) {
       this.languageDefinition = await this.loadLanguage();
     }
   },
   methods: {
     loadHighlightJS() {
-      // With auto-detect enabled we load all common languages else we load only the core (smallest footprint)
-      return this.autoDetect ? import('highlight.js/lib/common') : import('highlight.js/lib/core');
+      // If no language can be mapped to highlight.js we load all common languages else we load only the core (smallest footprint)
+      return !this.language ? import('highlight.js/lib/common') : import('highlight.js/lib/core');
     },
     async loadLanguage() {
       let languageDefinition;
@@ -81,15 +78,6 @@ export default {
       }
 
       return languageDefinition;
-    },
-    wrapLines(content) {
-      return (
-        content &&
-        content
-          .split('\n')
-          .map((line, i) => `<span id="LC${i + 1}" class="line">${line}</span>`)
-          .join('\r\n')
-      );
     },
     selectLine() {
       const hash = sanitize(this.$route.hash);
@@ -113,7 +101,9 @@ export default {
 };
 </script>
 <template>
+  <gl-loading-icon v-if="!highlightedContent" size="sm" class="gl-my-5" />
   <div
+    v-else
     class="file-content code js-syntax-highlight blob-content gl-display-flex"
     :class="$options.userColorScheme"
     data-type="simple"

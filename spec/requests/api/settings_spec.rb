@@ -141,7 +141,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             personal_access_token_prefix: "GL-",
             user_deactivation_emails_enabled: false,
             admin_mode: true,
-            suggest_pipeline_enabled: false
+            suggest_pipeline_enabled: false,
+            users_get_by_id_limit: 456
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -196,6 +197,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['admin_mode']).to be(true)
         expect(json_response['user_deactivation_emails_enabled']).to be(false)
         expect(json_response['suggest_pipeline_enabled']).to be(false)
+        expect(json_response['users_get_by_id_limit']).to eq(456)
       end
     end
 

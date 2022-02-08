@@ -7,7 +7,6 @@
 #
 # @example:
 #   class SomeEventSubscriber
-#     include ApplicationWorker
 #     include Gitlab::EventStore::Subscriber
 #
 #     def handle_event(event)
@@ -18,6 +17,14 @@
 module Gitlab
   module EventStore
     module Subscriber
+      extend ActiveSupport::Concern
+
+      included do
+        include ApplicationWorker
+
+        loggable_arguments 0, 1
+      end
+
       def perform(event_type, data)
         raise InvalidEvent, event_type unless self.class.const_defined?(event_type)
 

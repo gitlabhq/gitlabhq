@@ -8751,9 +8751,6 @@ msgstr ""
 msgid "Comma-separated list of email addresses."
 msgstr ""
 
-msgid "Comma-separated list of users allowed to exceed the rate limit."
-msgstr ""
-
 msgid "Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr ""
 
@@ -21734,6 +21731,9 @@ msgstr ""
 msgid "List of all merge commits"
 msgstr ""
 
+msgid "List of users allowed to exceed the rate limit."
+msgstr ""
+
 msgid "List options"
 msgstr ""
 
@@ -22359,6 +22359,9 @@ msgid "Maximum push size"
 msgstr ""
 
 msgid "Maximum push size (MB)"
+msgstr ""
+
+msgid "Maximum requests per 10 minutes per user"
 msgstr ""
 
 msgid "Maximum requests per minute"
@@ -33140,6 +33143,9 @@ msgstr ""
 msgid "Set the milestone to %{milestone_reference}."
 msgstr ""
 
+msgid "Set the per-user rate limit for getting a user by ID via the API."
+msgstr ""
+
 msgid "Set the per-user rate limit for notes created by web or API requests."
 msgstr ""
 
@@ -39585,6 +39591,9 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
+msgid "Users API rate limit"
+msgstr ""
+
 msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
 msgstr ""
 
@@ -39908,6 +39917,9 @@ msgid "View group in admin area"
 msgstr ""
 
 msgid "View group labels"
+msgstr ""
+
+msgid "View group pipeline usage quota"
 msgstr ""
 
 msgid "View incident details at"

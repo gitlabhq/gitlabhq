@@ -631,6 +631,20 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.issues_create_limit).to eq(0)
       end
 
+      it 'changes Users API rate limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-users-api-limits') do
+          fill_in 'Maximum requests per 10 minutes per user', with: 0
+          fill_in 'Users to exclude from the rate limit', with: 'someone, someone_else'
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.users_get_by_id_limit).to eq(0)
+        expect(current_settings.users_get_by_id_limit_allowlist).to eq(%w[someone someone_else])
+      end
+
       shared_examples 'regular throttle rate limit settings' do
         it 'changes rate limit settings' do
           visit network_admin_application_settings_path

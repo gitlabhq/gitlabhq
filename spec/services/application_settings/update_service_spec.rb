@@ -475,6 +475,24 @@ RSpec.describe ApplicationSettings::UpdateService do
     end
   end
 
+  context 'when users_get_by_id_limit and users_get_by_id_limit_allowlist_raw are passed' do
+    let(:params) do
+      {
+        users_get_by_id_limit: 456,
+        users_get_by_id_limit_allowlist_raw: 'someone, someone_else'
+      }
+    end
+
+    it 'updates users_get_by_id_limit and users_get_by_id_limit_allowlist value' do
+      subject.execute
+
+      application_settings.reload
+
+      expect(application_settings.users_get_by_id_limit).to eq(456)
+      expect(application_settings.users_get_by_id_limit_allowlist).to eq(%w[someone someone_else])
+    end
+  end
+
   context 'when require_admin_approval_after_user_signup changes' do
     context 'when it goes from enabled to disabled' do
       let(:params) { { require_admin_approval_after_user_signup: false } }

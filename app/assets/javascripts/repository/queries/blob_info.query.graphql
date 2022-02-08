@@ -20,6 +20,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
           rawSize
           rawTextBlob
           fileType
+          language
           path
           editBlobPath
           ideEditPath

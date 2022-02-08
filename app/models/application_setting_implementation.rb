@@ -231,7 +231,9 @@ module ApplicationSettingImplementation
         rate_limiting_response_text: nil,
         whats_new_variant: 0,
         user_deactivation_emails_enabled: true,
-        user_email_lookup_limit: 60
+        user_email_lookup_limit: 60,
+        users_get_by_id_limit: 300,
+        users_get_by_id_limit_allowlist: []
       }
     end
 
@@ -332,6 +334,14 @@ module ApplicationSettingImplementation
 
   def notes_create_limit_allowlist_raw=(values)
     self.notes_create_limit_allowlist = strings_to_array(values).map(&:downcase)
+  end
+
+  def users_get_by_id_limit_allowlist_raw
+    array_to_string(self.users_get_by_id_limit_allowlist)
+  end
+
+  def users_get_by_id_limit_allowlist_raw=(values)
+    self.users_get_by_id_limit_allowlist = strings_to_array(values).map(&:downcase)
   end
 
   def asset_proxy_whitelist=(values)

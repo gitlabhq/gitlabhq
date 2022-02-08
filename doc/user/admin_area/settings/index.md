@@ -137,6 +137,7 @@ The **Network** settings contain:
 - [Incident Management Limits](../../../operations/incident_management/index.md) - Limit the
   number of inbound alerts that can be sent to a project.
 - [Notes creation limit](rate_limit_on_notes_creation.md) - Set a rate limit on the note creation requests.
+- [Get single user limit](rate_limit_on_users_api.md) - Set a rate limit on users API endpoint to get a user by ID.
 
 ### Preferences
 

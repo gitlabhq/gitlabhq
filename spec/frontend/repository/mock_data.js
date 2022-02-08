@@ -5,6 +5,7 @@ export const simpleViewerMock = {
   rawSize: 123,
   rawTextBlob: 'raw content',
   fileType: 'text',
+  language: 'javascript',
   path: 'some_file.js',
   webPath: 'some_file.js',
   editBlobPath: 'some_file.js/edit',

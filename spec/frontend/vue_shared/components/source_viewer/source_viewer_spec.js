@@ -1,8 +1,10 @@
 import hljs from 'highlight.js/lib/core';
+import { GlLoadingIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import SourceViewer from '~/vue_shared/components/source_viewer.vue';
+import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
+import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/vue_shared/components/source_viewer/constants';
 import LineNumbers from '~/vue_shared/components/line_numbers.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -12,43 +14,50 @@ const router = new VueRouter();
 
 describe('Source Viewer component', () => {
   let wrapper;
-  const language = 'javascript';
+  const language = 'docker';
+  const mappedLanguage = ROUGE_TO_HLJS_LANGUAGE_MAP[language];
   const content = `// Some source code`;
   const DEFAULT_BLOB_DATA = { language, rawTextBlob: content };
   const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
 
-  hljs.highlight.mockImplementation(() => ({ value: highlightedContent }));
-  hljs.highlightAuto.mockImplementation(() => ({ value: highlightedContent }));
-
-  const createComponent = async (props = { autoDetect: false }) => {
+  const createComponent = async (blob = {}) => {
     wrapper = shallowMountExtended(SourceViewer, {
       router,
-      propsData: { blob: { ...DEFAULT_BLOB_DATA }, ...props },
+      propsData: { blob: { ...DEFAULT_BLOB_DATA, ...blob } },
     });
     await waitForPromises();
   };
 
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findLineNumbers = () => wrapper.findComponent(LineNumbers);
   const findHighlightedContent = () => wrapper.findByTestId('test-highlighted');
   const findFirstLine = () => wrapper.find('#LC1');
 
-  beforeEach(() => createComponent());
+  beforeEach(() => {
+    hljs.highlight.mockImplementation(() => ({ value: highlightedContent }));
+    hljs.highlightAuto.mockImplementation(() => ({ value: highlightedContent }));
+
+    return createComponent();
+  });
 
   afterEach(() => wrapper.destroy());
 
   describe('highlight.js', () => {
     it('registers the language definition', async () => {
-      const languageDefinition = await import(`highlight.js/lib/languages/${language}`);
+      const languageDefinition = await import(`highlight.js/lib/languages/${mappedLanguage}`);
 
-      expect(hljs.registerLanguage).toHaveBeenCalledWith(language, languageDefinition.default);
+      expect(hljs.registerLanguage).toHaveBeenCalledWith(
+        mappedLanguage,
+        languageDefinition.default,
+      );
     });
 
     it('highlights the content', () => {
-      expect(hljs.highlight).toHaveBeenCalledWith(content, { language });
+      expect(hljs.highlight).toHaveBeenCalledWith(content, { language: mappedLanguage });
     });
 
-    describe('auto-detect enabled', () => {
-      beforeEach(() => createComponent({ autoDetect: true }));
+    describe('auto-detects if a language cannot be loaded', () => {
+      beforeEach(() => createComponent({ language: 'some_unknown_language' }));
 
       it('highlights the content with auto-detection', () => {
         expect(hljs.highlightAuto).toHaveBeenCalledWith(content);
@@ -57,6 +66,13 @@ describe('Source Viewer component', () => {
   });
 
   describe('rendering', () => {
+    it('renders a loading icon if no highlighted content is available yet', async () => {
+      hljs.highlight.mockImplementation(() => ({ value: null }));
+      await createComponent();
+
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+
     it('renders Line Numbers', () => {
       expect(findLineNumbers().props('lines')).toBe(1);
     });

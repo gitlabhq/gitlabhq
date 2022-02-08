@@ -15,7 +15,7 @@ import ForkSuggestion from '~/repository/components/fork_suggestion.vue';
 import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
-import SourceViewer from '~/vue_shared/components/source_viewer.vue';
+import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
 import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { isLoggedIn } from '~/lib/utils/common_utils';

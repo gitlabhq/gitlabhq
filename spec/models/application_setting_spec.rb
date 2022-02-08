@@ -141,7 +141,7 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value('default' => 101).for(:repository_storages_weighted).with_message("value for 'default' must be between 0 and 100") }
     it { is_expected.not_to allow_value('default' => 100, shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist") }
 
-    %i[notes_create_limit user_email_lookup_limit].each do |setting|
+    %i[notes_create_limit user_email_lookup_limit users_get_by_id_limit].each do |setting|
       it { is_expected.to allow_value(400).for(setting) }
       it { is_expected.not_to allow_value('two').for(setting) }
       it { is_expected.not_to allow_value(nil).for(setting) }
@@ -157,6 +157,11 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value(many_usernames(101)).for(:notes_create_limit_allowlist) }
     it { is_expected.not_to allow_value(nil).for(:notes_create_limit_allowlist) }
     it { is_expected.to allow_value([]).for(:notes_create_limit_allowlist) }
+
+    it { is_expected.to allow_value(many_usernames(100)).for(:users_get_by_id_limit_allowlist) }
+    it { is_expected.not_to allow_value(many_usernames(101)).for(:users_get_by_id_limit_allowlist) }
+    it { is_expected.not_to allow_value(nil).for(:users_get_by_id_limit_allowlist) }
+    it { is_expected.to allow_value([]).for(:users_get_by_id_limit_allowlist) }
 
     it { is_expected.to allow_value('all_tiers').for(:whats_new_variant) }
     it { is_expected.to allow_value('current_tier').for(:whats_new_variant) }

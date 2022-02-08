@@ -232,7 +232,6 @@ the event safely via the `handle_event` method. For example:
 ```ruby
 module MergeRequests
   class UpdateHeadPipelineWorker
-    include ApplicationWorker
     include Gitlab::EventStore::Subscriber
 
     def handle_event(event)

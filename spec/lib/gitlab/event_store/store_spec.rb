@@ -10,7 +10,6 @@ RSpec.describe Gitlab::EventStore::Store do
   let(:worker) do
     stub_const('EventSubscriber', Class.new).tap do |klass|
       klass.class_eval do
-        include ApplicationWorker
         include Gitlab::EventStore::Subscriber
 
         def handle_event(event)
@@ -23,7 +22,6 @@ RSpec.describe Gitlab::EventStore::Store do
   let(:another_worker) do
     stub_const('AnotherEventSubscriber', Class.new).tap do |klass|
       klass.class_eval do
-        include ApplicationWorker
         include Gitlab::EventStore::Subscriber
       end
     end
@@ -32,7 +30,6 @@ RSpec.describe Gitlab::EventStore::Store do
   let(:unrelated_worker) do
     stub_const('UnrelatedEventSubscriber', Class.new).tap do |klass|
       klass.class_eval do
-        include ApplicationWorker
         include Gitlab::EventStore::Subscriber
       end
     end
@@ -252,6 +249,10 @@ RSpec.describe Gitlab::EventStore::Store do
     let(:worker_instance) { worker.new }
 
     subject { worker_instance.perform(event_name, data) }
+
+    it 'is a Sidekiq worker' do
+      expect(worker_instance).to be_a(ApplicationWorker)
+    end
 
     it 'handles the event' do
       expect(worker_instance).to receive(:handle_event).with(instance_of(event.class))

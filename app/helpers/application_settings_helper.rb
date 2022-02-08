@@ -423,7 +423,9 @@ module ApplicationSettingsHelper
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
       :suggest_pipeline_enabled,
-      :user_email_lookup_limit
+      :user_email_lookup_limit,
+      :users_get_by_id_limit,
+      :users_get_by_id_limit_allowlist_raw
     ].tap do |settings|
       settings << :deactivate_dormant_users unless Gitlab.com?
     end

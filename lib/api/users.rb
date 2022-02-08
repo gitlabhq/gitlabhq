@@ -143,7 +143,12 @@ module API
         forbidden!('Not authorized!') unless current_user
 
         if Feature.enabled?(:rate_limit_user_by_id_endpoint, type: :development)
-          check_rate_limit! :users_get_by_id, scope: current_user unless current_user.admin?
+          unless current_user.admin?
+            check_rate_limit!(:users_get_by_id,
+              scope: current_user,
+              users_allowlist: Gitlab::CurrentSettings.current_application_settings.users_get_by_id_limit_allowlist
+            )
+          end
         end
 
         user = User.find_by(id: params[:id])

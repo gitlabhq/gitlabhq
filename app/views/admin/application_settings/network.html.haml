@@ -122,6 +122,18 @@
   .settings-content
     = render 'note_limits'
 
+%section.settings.as-users-api-limits.no-animate#js-users-api-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Users API rate limit')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Set the per-user rate limit for getting a user by ID via the API.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/rate_limit_on_users_api.md'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = render 'users_api_limits'
+
 %section.settings.as-import-export-limits.no-animate#js-import-export-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4

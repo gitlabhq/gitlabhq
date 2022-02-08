@@ -569,11 +569,13 @@
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - changes: *code-qa-patterns
+    - changes: *workhorse-patterns
 
 .frontend:rules:compile-test-assets:
   rules:
-    - changes: *code-backstage-qa-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+    - changes: *code-backstage-qa-patterns
+    - changes: *workhorse-patterns
 
 .frontend:rules:compile-test-assets-as-if-foss:
   rules:
@@ -583,6 +585,7 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - changes: *code-backstage-qa-patterns
     - changes: *startup-css-patterns
+    - changes: *workhorse-patterns
 
 .frontend:rules:compile-test-assets-as-if-jh:
   rules:
@@ -604,6 +607,7 @@
       allow_failure: true
     - changes: *startup-css-patterns
       allow_failure: true
+    - changes: *workhorse-patterns
 
 .frontend:rules:default-frontend-jobs:
   rules:
@@ -1335,8 +1339,9 @@
 
 .rails:rules:detect-tests:
   rules:
-    - changes: *code-backstage-qa-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+    - changes: *code-backstage-qa-patterns
+    - changes: *workhorse-patterns
 
 .rails:rules:detect-previous-failed-tests:
   rules:
@@ -1803,6 +1808,8 @@
       allow_failure: true
     - changes: *startup-css-patterns
       allow_failure: true
+    - changes: *workhorse-patterns
+      allow_failure: true
 
 #######################
 # Test metadata rules #
@@ -1810,7 +1817,7 @@
 .test-metadata:rules:retrieve-tests-metadata:
   rules:
     - changes: *code-backstage-patterns
-      when: on_success
+    - changes: *workhorse-patterns
     - <<: *if-merge-request-labels-run-all-rspec
 
 .test-metadata:rules:update-tests-metadata:
@@ -1827,8 +1834,7 @@
 ###################
 .workhorse:rules:workhorse:
   rules:
-    - <<: *if-default-refs
-      changes: *workhorse-patterns
+    - changes: *workhorse-patterns
 
 ###################
 # yaml-lint rules #

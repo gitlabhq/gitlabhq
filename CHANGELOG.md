@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.7.2 (2022-02-08)
+
+### Added (1 change)
+
+- [Allow self-hosted instances to render same-origin Iframe](gitlab-org/gitlab@eb7c78363cdfc670286967872d8458fc5f6d82e8) ([merge request](gitlab-org/gitlab!79966))
+
+### Fixed (4 changes)
+
+- [Geo: Fix reverify object stored files](gitlab-org/gitlab@603700dcca3b8f25a3b80b44b11a73df549c0cb3) ([merge request](gitlab-org/gitlab!79966)) **GitLab Enterprise Edition**
+- [Geo: Fix verification failures of remote stored files](gitlab-org/gitlab@2eb8ac7e88dcd40f0e8266966655962e4d6e3171) ([merge request](gitlab-org/gitlab!79966)) **GitLab Enterprise Edition**
+- [GitLab Version - CE Admin Dashboard [RUN ALL RSPEC] [RUN AS-IF-FOSS]](gitlab-org/gitlab@f2253ce2d729fa202a26b54f3ca870b932ea1855) ([merge request](gitlab-org/gitlab!79966))
+- [Fix cluster integration HTTP adapter](gitlab-org/gitlab@c05027ef4d7ec35fc16e8e16dc6e5af201f665c3) ([merge request](gitlab-org/gitlab!79966))
+
+### Changed (1 change)
+
+- [Update to ruby-magic v0.5.4](gitlab-org/gitlab@ced6ef1001730dc2851f58f7db3229d1c585b9d3) ([merge request](gitlab-org/gitlab!79966))
+
+### Removed (1 change)
+
+- [Disable sandboxed_mermaid feature flag by default](gitlab-org/gitlab@70c40d43169bd48d360ed7a6a03c33c05d5e3738) ([merge request](gitlab-org/gitlab!79966))
+
 ## 14.7.1 (2022-02-03)
 
 ### Security
