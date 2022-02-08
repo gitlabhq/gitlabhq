@@ -88,12 +88,6 @@ RSpec.describe Ci::HasVariable do
         }
       end
 
-      before do
-        # CreatePipelineService normally writes this because this feature flag
-        # cannot be checked in a tight loop
-        ::Gitlab::SafeRequestStore[:enable_ci_variable_caching] = true
-      end
-
       it 'decrypts once' do
         expect(OpenSSL::PKCS5).to receive(:pbkdf2_hmac).once.and_call_original
 
@@ -115,20 +109,6 @@ RSpec.describe Ci::HasVariable do
         new_variable.value = '98765'
 
         expect(new_variable.to_runner_variable).not_to eq(old_value)
-      end
-
-      context 'with enable_ci_variable_caching feature flag disabled' do
-        before do
-          # CreatePipelineService normally writes this because this feature flag
-          # cannot be checked in a tight loop
-          ::Gitlab::SafeRequestStore[:enable_ci_variable_caching] = false
-        end
-
-        it 'decrypts twice' do
-          expect(OpenSSL::PKCS5).to receive(:pbkdf2_hmac).twice.and_call_original
-
-          2.times { expect(subject.reload.to_runner_variable).to eq(expected) }
-        end
       end
     end
   end

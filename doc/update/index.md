@@ -676,7 +676,7 @@ When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled,
 
 Users who were signed in before Maintenance mode was enabled will continue to be signed in. If the admin who enabled Maintenance mode loses their session, then they will not be able to disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
 
-[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0, and is expected to be backported to GitLab 14.3 and 14.4.
+[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 
 ## Miscellaneous
 

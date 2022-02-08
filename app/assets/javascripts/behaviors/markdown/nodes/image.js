@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 
-import { defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { Image as BaseImage } from 'tiptap-extensions';
 import { placeholderImage } from '~/lazy_loader';
+import { defaultMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
 
 export default class Image extends BaseImage {

@@ -480,7 +480,7 @@ to use the same URL. This is defined during [link creation](../../../api/release
 The format of the URL is:
 
 ```plaintext
-https://host/namespace/project/releases/:release/downloads/:filepath
+https://host/namespace/project/-/releases/:release/downloads/:filepath
 ```
 
 If you have an asset for the `v11.9.0-rc2` release in the `gitlab-org`
@@ -498,7 +498,7 @@ namespace and `gitlab-runner` project on `gitlab.com`, for example:
 This asset has a direct link of:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab-runner/releases/v11.9.0-rc2/downloads/binaries/gitlab-runner-linux-amd64
+https://gitlab.com/gitlab-org/gitlab-runner/-/releases/v11.9.0-rc2/downloads/binaries/gitlab-runner-linux-amd64
 ```
 
 The physical location of the asset can change at any time and the direct link remains unchanged.

@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require 'active_support/testing/time_helpers'
+
 RSpec.describe QA::Tools::TestResourceDataProcessor do
   include QA::Support::Helpers::StubEnv
+  include ActiveSupport::Testing::TimeHelpers
 
   subject(:processor) { Class.new(described_class).instance }
 
@@ -19,13 +22,18 @@ RSpec.describe QA::Tools::TestResourceDataProcessor do
         api_path: api_path,
         fabrication_method: method,
         fabrication_time: time,
-        http_method: :post
+        http_method: :post,
+        timestamp: Time.now.to_s
       }]
     }
   end
 
   before do
     processor.collect(resource: resource, info: info, fabrication_method: method, fabrication_time: time)
+  end
+
+  around do |example|
+    freeze_time { example.run }
   end
 
   describe '.collect' do

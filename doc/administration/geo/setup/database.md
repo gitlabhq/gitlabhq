@@ -40,7 +40,7 @@ instructions on setting up replication with a Patroni cluster.
 
 The GitLab **primary** node where the write operations happen connects to
 the **primary** database server, and **secondary** nodes
-connect to their own database servers (which are also read-only).
+connect to their own database servers (which are read-only).
 
 We recommend using [PostgreSQL replication slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
 to ensure that the **primary** node retains all the data necessary for the **secondary** nodes to

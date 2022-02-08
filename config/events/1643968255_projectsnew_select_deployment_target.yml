@@ -1,0 +1,20 @@
+---
+description: Deployment target option selected from new project creation form
+category: projects:new
+action: select_deployment_target
+label_description: new_project_deployment_target
+property_description: selected option (string)
+product_section: ops
+product_stage: configure
+product_group: group::configure
+product_category:
+milestone: "14.8"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79873
+distributions:
+- ce
+- ee
+tiers: 
+- free
+- premium
+- ultimate
+

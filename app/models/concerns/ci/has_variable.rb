@@ -31,8 +31,6 @@ module Ci
     end
 
     def to_runner_variable
-      return uncached_runner_variable unless ::Gitlab::SafeRequestStore.read(:enable_ci_variable_caching)
-
       var_cache_key = to_runner_variable_cache_key
 
       return uncached_runner_variable unless var_cache_key

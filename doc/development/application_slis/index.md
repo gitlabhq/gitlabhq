@@ -57,31 +57,10 @@ Gitlab::Metrics::Sli.initialize_sli(:received_email, [
 ])
 ```
 
-Metrics must be initialized before they get
-scraped for the first time. This could be done at the start time of the
-process that will emit them, in which case we need to pay attention
-not to increase application's boot time too much. This is preferable
-if possible.
-
-Alternatively, if initializing would take too long, this can be done
-during the first scrape. We need to make sure we don't do it for every
-scrape. This can be done as follows:
-
-```ruby
-def initialize_request_slis_if_needed!
-  return if Gitlab::Metrics::Sli.initialized?(:rails_request_apdex)
-  Gitlab::Metrics::Sli.initialize_sli(:rails_request_apdex, possible_request_labels)
-end
-```
-
-Also pay attention to do it for the different metrics
-endpoints we have. Currently the
-[`WebExporter`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/metrics/exporter/web_exporter.rb)
-and the
-[`HealthController`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/health_controller.rb)
-for Rails and
-[`SidekiqExporter`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/metrics/exporter/sidekiq_exporter.rb)
-for Sidekiq.
+Metrics must be initialized before they get scraped for the first time.
+This currently happens during the `on_master_start` [life-cycle event](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/cluster/lifecycle_events.rb).
+Since this delays application readiness until metrics initialization returns, make sure the overhead
+this adds is understood and acceptable.
 
 ## Tracking operations for an SLI
 

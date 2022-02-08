@@ -71,6 +71,7 @@ based on [Container Network Policies](../../application_security/policies/index.
 from GitLab CI/CD jobs while keeping the cluster's APIs safe and unexposed
 to the internet.
 - [Deploy the GitLab Runner in a Kubernetes cluster](https://docs.gitlab.com/runner/install/kubernetes-agent.html).
+- [Scan your Kubernetes cluster for vulnerabilities](../../application_security/cluster_image_scanning/index.md).
 
 See the [Agent roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329) to track its development.
 

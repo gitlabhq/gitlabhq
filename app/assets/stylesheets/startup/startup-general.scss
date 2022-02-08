@@ -1316,7 +1316,8 @@ input {
 .nav-sidebar-inner-scroll {
   height: 100%;
   width: 100%;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .nav-sidebar-inner-scroll > div.context-header {
   margin-top: 0.25rem;

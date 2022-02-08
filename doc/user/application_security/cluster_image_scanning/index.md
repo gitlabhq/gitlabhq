@@ -301,7 +301,9 @@ the security vulnerabilities in your groups, projects, and pipelines.
 
 ## Interacting with the vulnerabilities
 
-After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
+After you find a vulnerability, you can address it in the [vulnerability report](../vulnerabilities/index.md)
+or the [GitLab Agent's](../../clusters/agent/install/index.md#view-vulnerabilities-in-cluster-images)
+details section.
 
 ## Troubleshooting
 

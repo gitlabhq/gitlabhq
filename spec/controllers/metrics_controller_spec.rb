@@ -67,12 +67,6 @@ RSpec.describe MetricsController, :request_store do
         expect(response.body).to match(/^prometheus_counter 1$/)
       end
 
-      it 'initializes the rails request SLIs' do
-        expect(Gitlab::Metrics::RailsSlis).to receive(:initialize_request_slis_if_needed!).and_call_original
-
-        get :index
-      end
-
       context 'prometheus metrics are disabled' do
         before do
           allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(false)

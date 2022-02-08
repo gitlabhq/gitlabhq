@@ -175,5 +175,5 @@ within GitLab. Closing the issue triggers a background worker to update the
 GitLab Status Page website.
 
 If you
-[make a published issue confidential](../../user/project/issues/confidential_issues.md#making-an-issue-confidential),
+[make a published issue confidential](../../user/project/issues/confidential_issues.md#make-an-issue-confidential),
 GitLab unpublishes it from your GitLab Status Page website.

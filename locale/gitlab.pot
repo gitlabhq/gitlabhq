@@ -12110,7 +12110,49 @@ msgstr ""
 msgid "Deployment Frequency"
 msgstr ""
 
+msgid "Deployment Target|Project deployment target (optional)"
+msgstr ""
+
+msgid "Deployment Target|Select the deployment target"
+msgstr ""
+
 msgid "Deployment frequency"
+msgstr ""
+
+msgid "DeploymentTarget|GitLab Pages"
+msgstr ""
+
+msgid "DeploymentTarget|Heroku"
+msgstr ""
+
+msgid "DeploymentTarget|Infrastructure provider (Terraform, Cloudformation, and so on)"
+msgstr ""
+
+msgid "DeploymentTarget|Kubernetes (GKE, EKS, OpenShift, and so on)"
+msgstr ""
+
+msgid "DeploymentTarget|Managed container runtime (Fargate, Cloud Run, DigitalOcean App)"
+msgstr ""
+
+msgid "DeploymentTarget|Mobile app store"
+msgstr ""
+
+msgid "DeploymentTarget|None"
+msgstr ""
+
+msgid "DeploymentTarget|Other hosting service"
+msgstr ""
+
+msgid "DeploymentTarget|Registry (package or container)"
+msgstr ""
+
+msgid "DeploymentTarget|Self-managed container runtime (Podman, Docker Swarm, Docker Compose)"
+msgstr ""
+
+msgid "DeploymentTarget|Serverless backend (Lambda, Cloud functions)"
+msgstr ""
+
+msgid "DeploymentTarget|Virtual machine (for example, EC2)"
 msgstr ""
 
 msgid "Deployments"

@@ -38,7 +38,8 @@ module QA
           api_path: api_path,
           fabrication_method: fabrication_method,
           fabrication_time: fabrication_time,
-          http_method: resource.api_fabrication_http_method
+          http_method: resource.api_fabrication_http_method,
+          timestamp: Time.now.to_s
         }
       end
 

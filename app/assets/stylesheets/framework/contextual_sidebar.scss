@@ -338,7 +338,8 @@
 .nav-sidebar-inner-scroll {
   @include gl-h-full;
   @include gl-w-full;
-  @include gl-overflow-auto;
+  @include gl-overflow-x-hidden;
+  @include gl-overflow-y-auto;
 
   > div.context-header {
     @include gl-mt-2;

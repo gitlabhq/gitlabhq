@@ -194,6 +194,23 @@ the first time or after more than an hour of inactivity.
 To check what else is planned for the Agent's UI and provide feedback,
 see the [related epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).
 
+### View vulnerabilities in cluster images **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8 [with a flag](../../../../administration/feature_flags.md) named `cluster_vulnerabilities`. Disabled by default.
+
+Users with at least the [Developer role](../../../permissions.md)
+can view cluster vulnerabilities. You can access them through the [vulnerability report](../../../application_security/vulnerabilities/index.md)
+or in your cluster's image through the following process:
+
+1. Configure [cluster image scanning](../../../application_security/cluster_image_scanning/index.md)
+   to your build process.
+1. Go to your Agent's configuration repository.
+1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select the **Agent** tab.
+1. Select the Agent you want to see the vulnerabilities for.
+
+![Cluster Agent security tab UI](../../img/cluster_agent_security_tab_v14_8.png)
+
 ## Create multiple Agents
 
 You can create and install multiple Agents using the same process

@@ -4,6 +4,7 @@ import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import NewProjectCreationApp from './components/app.vue';
 import NewProjectUrlSelect from './components/new_project_url_select.vue';
+import DeploymentTargetSelect from './components/deployment_target_select.vue';
 
 export function initNewProjectCreation() {
   const el = document.querySelector('.js-new-project-creation');
@@ -63,4 +64,17 @@ export function initNewProjectUrlSelect() {
         render: (createElement) => createElement(NewProjectUrlSelect),
       }),
   );
+}
+
+export function initDeploymentTargetSelect() {
+  const el = document.querySelector('.js-deployment-target-select');
+
+  if (!el) {
+    return null;
+  }
+
+  return new Vue({
+    el,
+    render: (createElement) => createElement(DeploymentTargetSelect),
+  });
 }

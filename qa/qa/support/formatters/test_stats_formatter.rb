@@ -99,7 +99,7 @@ module QA
         # @param [Symbol] http_method
         # @param [Integer] fabrication_time
         # @return [Hash]
-        def fabrication_stats(resource:, info:, fabrication_method:, http_method:, fabrication_time:, **)
+        def fabrication_stats(resource:, info:, fabrication_method:, http_method:, fabrication_time:, timestamp:, **)
           {
             name: 'fabrication-stats',
             time: time,
@@ -113,7 +113,8 @@ module QA
             fields: {
               fabrication_time: fabrication_time,
               info: info,
-              job_url: QA::Runtime::Env.ci_job_url
+              job_url: QA::Runtime::Env.ci_job_url,
+              timestamp: timestamp
             }
           }
         end

@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require 'rspec/core/sandbox'
+require 'active_support/testing/time_helpers'
 
 describe QA::Support::Formatters::TestStatsFormatter do
   include QA::Support::Helpers::StubEnv
   include QA::Specs::Helpers::RSpec
+  include ActiveSupport::Testing::TimeHelpers
 
   let(:url) { "http://influxdb.net" }
   let(:token) { "token" }
@@ -214,7 +216,8 @@ describe QA::Support::Formatters::TestStatsFormatter do
             api_path: '/project',
             fabrication_method: :api,
             fabrication_time: 1,
-            http_method: :post
+            http_method: :post,
+            timestamp: Time.now.to_s
           }]
         }
       end
@@ -233,9 +236,14 @@ describe QA::Support::Formatters::TestStatsFormatter do
           fields: {
             fabrication_time: 1,
             info: "with id '1'",
-            job_url: ci_job_url
+            job_url: ci_job_url,
+            timestamp: Time.now.to_s
           }
         }
+      end
+
+      around do |example|
+        freeze_time { example.run }
       end
 
       it 'exports fabrication stats data to influxdb' do
