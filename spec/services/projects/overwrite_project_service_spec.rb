@@ -81,16 +81,58 @@ RSpec.describe Projects::OverwriteProjectService do
         end
       end
 
-      it 'removes the original project' do
-        subject.execute(project_from)
+      it 'schedules original project for deletion' do
+        expect_next_instance_of(Projects::DestroyService) do |service|
+          expect(service).to receive(:async_execute)
+        end
 
-        expect { Project.find(project_from.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        subject.execute(project_from)
       end
 
       it 'renames the project' do
+        original_path = project_from.full_path
+
         subject.execute(project_from)
 
-        expect(project_to.full_path).to eq project_from.full_path
+        expect(project_to.full_path).to eq(original_path)
+      end
+
+      it 'renames source project to temp name' do
+        allow(SecureRandom).to receive(:hex).and_return('test')
+
+        subject.execute(project_from)
+
+        expect(project_from.full_path).to include('-old-test')
+      end
+
+      context 'when project rename fails' do
+        before do
+          expect(subject).to receive(:move_relationships_between).with(project_from, project_to)
+          expect(subject).to receive(:move_relationships_between).with(project_to, project_from)
+        end
+
+        context 'source rename' do
+          it 'moves relations back to source project and raises an exception' do
+            allow(subject).to receive(:rename_project).and_return(status: :error)
+
+            expect { subject.execute(project_from) }.to raise_error(StandardError, 'Source project rename failed during project overwrite')
+          end
+        end
+
+        context 'new project rename' do
+          it 'moves relations back, renames source project back to original name and raises' do
+            name = project_from.name
+            path = project_from.path
+
+            allow(subject).to receive(:rename_project).and_call_original
+            allow(subject).to receive(:rename_project).with(project_to, name, path).and_return(status: :error)
+
+            expect { subject.execute(project_from) }.to raise_error(StandardError, 'New project rename failed during project overwrite')
+
+            expect(project_from.name).to eq(name)
+            expect(project_from.path).to eq(path)
+          end
+        end
       end
     end
 
@@ -121,7 +163,7 @@ RSpec.describe Projects::OverwriteProjectService do
       end
     end
 
-    context 'forks' do
+    context 'forks', :sidekiq_inline do
       context 'when moving a root forked project' do
         it 'moves the descendant forks' do
           expect(project_from.forks.count).to eq 2
@@ -147,6 +189,7 @@ RSpec.describe Projects::OverwriteProjectService do
           expect(project_to.fork_network.fork_network_members.map(&:project)).not_to include project_from
         end
       end
+
       context 'when moving a intermediate forked project' do
         let(:project_to) { create(:project, namespace: lvl1_forked_project_1.namespace) }
 
@@ -180,22 +223,26 @@ RSpec.describe Projects::OverwriteProjectService do
     end
 
     context 'if an exception is raised' do
+      before do
+        allow(subject).to receive(:rename_project).and_raise(StandardError)
+      end
+
       it 'rollbacks changes' do
         updated_at = project_from.updated_at
-
-        allow(subject).to receive(:rename_project).and_raise(StandardError)
 
         expect { subject.execute(project_from) }.to raise_error(StandardError)
         expect(Project.find(project_from.id)).not_to be_nil
         expect(project_from.reload.updated_at.change(usec: 0)).to eq updated_at.change(usec: 0)
       end
 
-      it 'tries to restore the original project repositories' do
-        allow(subject).to receive(:rename_project).and_raise(StandardError)
-
-        expect(subject).to receive(:attempt_restore_repositories).with(project_from)
+      it 'removes fork network member' do
+        expect(ForkNetworkMember).to receive(:create!)
+        expect(ForkNetworkMember).to receive(:find_by)
+        expect(subject).to receive(:remove_source_project_from_fork_network).and_call_original
 
         expect { subject.execute(project_from) }.to raise_error(StandardError)
+
+        expect(project_from.fork_network_member).to be_nil
       end
     end
   end

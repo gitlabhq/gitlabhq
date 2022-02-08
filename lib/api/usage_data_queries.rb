@@ -18,7 +18,7 @@ module API
       get 'queries' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/325534')
 
-        queries = Gitlab::UsageDataQueries.data
+        queries = Gitlab::Usage::ServicePingReport.for(output: :metrics_queries)
 
         present queries
       end

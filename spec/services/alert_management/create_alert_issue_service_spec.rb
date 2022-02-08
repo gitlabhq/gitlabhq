@@ -43,10 +43,10 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
         expect(execute).to be_success
       end
 
-      it 'updates alert.issue_id' do
+      it 'sets alert.issue_id in the same ActiveRecord query execution' do
         execute
 
-        expect(alert.reload.issue_id).to eq(created_issue.id)
+        expect(alert.issue_id).to eq(created_issue.id)
       end
 
       it 'creates a system note' do

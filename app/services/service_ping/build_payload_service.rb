@@ -19,7 +19,7 @@ module ServicePing
     end
 
     def raw_payload
-      @raw_payload ||= ::Gitlab::Usage::ServicePingReport.for(mode: :values)
+      @raw_payload ||= ::Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
     end
   end
 end

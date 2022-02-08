@@ -4,17 +4,17 @@ namespace :gitlab do
   namespace :usage_data do
     desc 'GitLab | UsageData | Generate raw SQLs for usage ping in YAML'
     task dump_sql_in_yaml: :environment do
-      puts Gitlab::UsageDataQueries.data.to_yaml
+      puts Gitlab::Usage::ServicePingReport.for(output: :metrics_queries).to_yaml
     end
 
     desc 'GitLab | UsageData | Generate raw SQLs for usage ping in JSON'
     task dump_sql_in_json: :environment do
-      puts Gitlab::Json.pretty_generate(Gitlab::UsageDataQueries.data)
+      puts Gitlab::Json.pretty_generate(Gitlab::Usage::ServicePingReport.for(output: :metrics_queries))
     end
 
     desc 'GitLab | UsageData | Generate usage ping in JSON'
     task generate: :environment do
-      puts Gitlab::Json.pretty_generate(Gitlab::Usage::ServicePingReport.for(mode: :values))
+      puts Gitlab::Json.pretty_generate(Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values))
     end
 
     desc 'GitLab | UsageData | Generate usage ping and send it to Versions Application'

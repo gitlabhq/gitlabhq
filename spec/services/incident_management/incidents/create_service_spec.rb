@@ -83,6 +83,25 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
       it 'result payload contains an Issue object' do
         expect(create_incident.payload[:issue]).to be_kind_of(Issue)
       end
+
+      context 'with alert' do
+        let(:alert) { create(:alert_management_alert, project: project) }
+
+        subject(:create_incident) { described_class.new(project, user, title: title, description: description, alert: alert).execute }
+
+        it 'associates the alert with the incident' do
+          expect(create_incident[:issue].alert_management_alert).to eq(alert)
+        end
+
+        context 'the alert prevents the issue from saving' do
+          let(:alert) { create(:alert_management_alert, :with_validation_errors, project: project) }
+
+          it 'responds with errors' do
+            expect(create_incident).to be_error
+            expect(create_incident.message).to eq('Hosts hosts array is over 255 chars')
+          end
+        end
+      end
     end
   end
 end

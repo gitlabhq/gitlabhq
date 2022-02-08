@@ -76,6 +76,12 @@ RSpec.describe API::Helpers do
           expect(subject.find_project(non_existing_id)).to be_nil
         end
       end
+
+      context 'when project id is not provided' do
+        it 'returns nil' do
+          expect(subject.find_project(nil)).to be_nil
+        end
+      end
     end
 
     context 'when ID is used as an argument' do

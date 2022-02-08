@@ -16,7 +16,7 @@ class Admin::InstanceReviewController < Admin::ApplicationController
     }
 
     if Gitlab::CurrentSettings.usage_ping_enabled?
-      data = Gitlab::Usage::ServicePingReport.for(mode: :values, cached: true)
+      data = Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values, cached: true)
       counts = data[:counts]
 
       result[:instance_review].merge!(

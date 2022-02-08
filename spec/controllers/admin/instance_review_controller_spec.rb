@@ -23,7 +23,7 @@ RSpec.describe Admin::InstanceReviewController do
         stub_application_setting(usage_ping_enabled: true)
         stub_usage_data_connections
         stub_database_flavor_check
-        ::Gitlab::Usage::ServicePingReport.for(mode: :values)
+        ::Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
         subject
       end
 

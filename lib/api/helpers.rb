@@ -117,6 +117,8 @@ module API
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
+      return unless id
+
       projects = Project.without_deleted
 
       if id.is_a?(Integer) || id =~ /^\d+$/

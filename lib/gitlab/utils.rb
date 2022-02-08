@@ -203,6 +203,13 @@ module Gitlab
     rescue Addressable::URI::InvalidURIError, TypeError
     end
 
+    def add_url_parameters(url, params)
+      uri = parse_url(url.to_s)
+      uri.query_values = uri.query_values.to_h.merge(params.to_h.stringify_keys)
+      uri.query_values = nil if uri.query_values.empty?
+      uri.to_s
+    end
+
     def removes_sensitive_data_from_url(uri_string)
       uri = parse_url(uri_string)
 

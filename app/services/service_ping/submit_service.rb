@@ -33,7 +33,7 @@ module ServicePing
         }
         submit_payload({ error: error_payload }, url: error_url)
 
-        usage_data = Gitlab::Usage::ServicePingReport.for(mode: :values)
+        usage_data = Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
         response = submit_usage_data_payload(usage_data)
       end
 

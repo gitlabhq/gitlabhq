@@ -13,9 +13,14 @@ GitLab administrators are responsible for the overall security of their instance
 provides a Credentials inventory to keep track of all the credentials that can be used to access
 their self-managed instance.
 
-Using Credentials inventory, you can see all the personal access tokens (PAT), SSH keys, and GPG keys
-that exist in your GitLab instance. In addition, you can [revoke](#revoke-a-users-personal-access-token)
-and [delete](#delete-a-users-ssh-key) and see:
+Use Credentials inventory to see for your GitLab instance all:
+
+- Personal access tokens (PAT).
+- Project access tokens (GitLab 14.8 and later).
+- SSH keys.
+- GPG keys.
+
+You can also [revoke](#revoke-a-users-personal-access-token) and [delete](#delete-a-users-ssh-key) and see:
 
 - Who they belong to.
 - Their access scope.
@@ -27,10 +32,6 @@ To access the Credentials inventory:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Credentials**.
-
-The following is an example of the Credentials inventory page:
-
-![Credentials inventory page](img/credentials_inventory_v13_10.png)
 
 ## Revoke a user's personal access token
 
@@ -48,6 +49,15 @@ If you see a **Revoke** button, you can revoke that user's PAT. Whether you see 
 | Revoked     | No                     | No                 | Not applicable; token is already revoked                                   |
 
 When a PAT is revoked from the credentials inventory, the instance notifies the user by email.
+
+## Revoke a user's project access token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243833) in GitLab 14.8.
+
+The **Revoke** button next to a project access token can be selected to revoke that particular project access token. This will both:
+
+- Revoke the token project access token.
+- Enqueue a background worker to delete the project bot user.
 
 ## Delete a user's SSH key
 
