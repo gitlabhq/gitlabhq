@@ -59,3 +59,6 @@ export const PipelineKeyOptions = [
 ];
 
 export const TOAST_MESSAGE = s__('Pipeline|Creating pipeline.');
+
+export const BUTTON_TOOLTIP_RETRY = __('Retry failed jobs');
+export const BUTTON_TOOLTIP_CANCEL = __('Cancel');

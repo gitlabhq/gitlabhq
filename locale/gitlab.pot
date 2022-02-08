@@ -30864,6 +30864,9 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
+msgid "Retry failed jobs"
+msgstr ""
+
 msgid "Retry job"
 msgstr ""
 

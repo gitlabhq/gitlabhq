@@ -1,15 +1,13 @@
 <script>
 import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
 import eventHub from '../../event_hub';
+import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '../../constants';
 import PipelineMultiActions from './pipeline_multi_actions.vue';
 import PipelinesManualActions from './pipelines_manual_actions.vue';
 
 export default {
-  i18n: {
-    cancelTitle: __('Cancel'),
-    redeployTitle: __('Retry'),
-  },
+  BUTTON_TOOLTIP_RETRY,
+  BUTTON_TOOLTIP_CANCEL,
   directives: {
     GlTooltip: GlTooltipDirective,
     GlModalDirective,
@@ -75,12 +73,13 @@ export default {
       <gl-button
         v-if="pipeline.flags.retryable"
         v-gl-tooltip.hover
-        :aria-label="$options.i18n.redeployTitle"
-        :title="$options.i18n.redeployTitle"
+        :aria-label="$options.BUTTON_TOOLTIP_RETRY"
+        :title="$options.BUTTON_TOOLTIP_RETRY"
         :disabled="isRetrying"
         :loading="isRetrying"
         class="js-pipelines-retry-button"
         data-qa-selector="pipeline_retry_button"
+        data-testid="pipelines-retry-button"
         icon="repeat"
         variant="default"
         category="secondary"
@@ -91,14 +90,15 @@ export default {
         v-if="pipeline.flags.cancelable"
         v-gl-tooltip.hover
         v-gl-modal-directive="'confirmation-modal'"
-        :aria-label="$options.i18n.cancelTitle"
-        :title="$options.i18n.cancelTitle"
+        :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
+        :title="$options.BUTTON_TOOLTIP_CANCEL"
         :loading="isCancelling"
         :disabled="isCancelling"
         icon="cancel"
         variant="danger"
         category="primary"
         class="js-pipelines-cancel-button gl-ml-1"
+        data-testid="pipelines-cancel-button"
         @click="handleCancelClick"
       />
 
