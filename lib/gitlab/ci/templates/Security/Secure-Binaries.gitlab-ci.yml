@@ -14,11 +14,14 @@
 # Docs: https://docs.gitlab.com/ee/topics/airgap/
 
 variables:
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec, semgrep,
+    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep,
     bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
     license-finder,
-    dast, dast-runner-validation, api-fuzzing
+    dast, dast-runner-validation, api-security
 
   SECURE_BINARIES_DOWNLOAD_IMAGES: "true"
   SECURE_BINARIES_PUSH_IMAGES: "true"
@@ -40,7 +43,7 @@ variables:
   script:
     - docker info
     - env
-    - if [ -z "$SECURE_BINARIES_IMAGE" ]; then export SECURE_BINARIES_IMAGE=${SECURE_BINARIES_IMAGE:-"registry.gitlab.com/gitlab-org/security-products/analyzers/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"}; fi
+    - if [ -z "$SECURE_BINARIES_IMAGE" ]; then export SECURE_BINARIES_IMAGE=${SECURE_BINARIES_IMAGE:-"registry.gitlab.com/security-products/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"}; fi
     - docker pull --quiet ${SECURE_BINARIES_IMAGE}
     - mkdir -p output/$(dirname ${CI_JOB_NAME})
     - |
@@ -63,22 +66,27 @@ variables:
 # SAST jobs
 #
 
-bandit:
+.download_sast_images:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_IMAGE: "${SECURE_ANALYZERS_PREFIX}/sast/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"
+
+bandit:
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bbandit\b/
 
 brakeman:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bbrakeman\b/
 
 gosec:
-  extends: .download_images
+  extends: .download_sast_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
@@ -87,28 +95,28 @@ gosec:
           $SECURE_BINARIES_ANALYZERS =~ /\bgosec\b/
 
 spotbugs:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bspotbugs\b/
 
 flawfinder:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bflawfinder\b/
 
 phpcs-security-audit:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bphpcs-security-audit\b/
 
 security-code-scan:
-  extends: .download_images
+  extends: .download_sast_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
@@ -117,21 +125,21 @@ security-code-scan:
           $SECURE_BINARIES_ANALYZERS =~ /\bsecurity-code-scan\b/
 
 nodejs-scan:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bnodejs-scan\b/
 
 eslint:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\beslint\b/
 
 secrets:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -140,28 +148,28 @@ secrets:
     SECURE_BINARIES_ANALYZER_VERSION: "3"
 
 semgrep:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsemgrep\b/
 
 sobelow:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsobelow\b/
 
 pmd-apex:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/
 
 kubesec:
-  extends: .download_images
+  extends: .download_sast_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -171,36 +179,41 @@ kubesec:
 # Dependency Scanning jobs
 #
 
-bundler-audit:
+.download_ds_images:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_IMAGE: "${SECURE_ANALYZERS_PREFIX}/dependency-scanning/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"
+
+bundler-audit:
+  extends: .download_ds_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bbundler-audit\b/
 
 retire.js:
-  extends: .download_images
+  extends: .download_ds_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bretire\.js\b/
 
 gemnasium:
-  extends: .download_images
+  extends: .download_ds_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium\b/
 
 gemnasium-maven:
-  extends: .download_images
+  extends: .download_ds_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium-maven\b/
 
 gemnasium-python:
-  extends: .download_images
+  extends: .download_ds_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -213,6 +226,7 @@ gemnasium-python:
 license-finder:
   extends: .download_images
   variables:
+    SECURE_BINARIES_IMAGE: "${SECURE_ANALYZERS_PREFIX}/license-compliance/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"
     SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
@@ -223,8 +237,13 @@ license-finder:
 # DAST
 #
 
-dast:
+.download_dast_images:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_IMAGE: "${SECURE_ANALYZERS_PREFIX}/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"
+
+dast:
+  extends: .download_dast_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "2"
   only:
@@ -233,20 +252,19 @@ dast:
           $SECURE_BINARIES_ANALYZERS =~ /\bdast\b/
 
 dast-runner-validation:
-  extends: .download_images
+  extends: .download_dast_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "1"
-    SECURE_BINARIES_IMAGE: "registry.gitlab.com/security-products/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bdast-runner-validation\b/
 
-api-fuzzing:
-  extends: .download_images
+api-security:
+  extends: .download_dast_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "1"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bapi-fuzzing\b/
+          $SECURE_BINARIES_ANALYZERS =~ /\bapi-security\b/

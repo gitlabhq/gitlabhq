@@ -2,10 +2,6 @@
 
 module Clusters
   class ClusterPresenter < Gitlab::View::Presenter::Delegated
-    include ::Gitlab::Utils::StrongMemoize
-
-    delegator_override_with ::Gitlab::Utils::StrongMemoize # TODO: Remove `::Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
-
     presents ::Clusters::Cluster, as: :cluster
 
     def provider_label

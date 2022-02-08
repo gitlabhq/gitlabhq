@@ -6,9 +6,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include MarkupHelper
   include TreeHelper
   include ChecksCollaboration
-  include Gitlab::Utils::StrongMemoize
-
-  delegator_override_with Gitlab::Utils::StrongMemoize # TODO: Remove `Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
 
   APPROVALS_WIDGET_BASE_TYPE = 'base'
 

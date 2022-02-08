@@ -440,10 +440,7 @@ To change the number of projects listed, change the number in `limit(50)`.
 #### Delete job artifacts from jobs completed before a specific date
 
 WARNING:
-These commands remove data permanently from the database and from disk. We
-highly recommend running them only under the guidance of a Support Engineer, or
-running them in a test environment with a backup of the instance ready to be
-restored, just in case.
+These commands remove data permanently from both the database and from disk. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
 
 If you need to manually remove job artifacts associated with multiple jobs while
 **retaining their job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):
@@ -490,10 +487,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 #### Delete job artifacts and logs from jobs completed before a specific date
 
 WARNING:
-These commands remove data permanently from both the database and from disk. We
-highly recommend running them only under the guidance of a Support Engineer, or
-running them in a test environment with a backup of the instance ready to be
-restored, just in case.
+These commands remove data permanently from both the database and from disk. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
 
 If you need to manually remove **all** job artifacts associated with multiple jobs,
 **including job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):

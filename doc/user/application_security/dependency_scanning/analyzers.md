@@ -45,7 +45,7 @@ Any custom change to the official analyzers can be achieved by using a
 You can switch to a custom Docker registry that provides the official analyzer
 images under a different prefix. For instance, the following instructs Dependency
 Scanning to pull `my-docker-registry/gl-images/gemnasium`
-instead of `registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium`.
+instead of `registry.gitlab.com/security-products/dependency-scanning/gemnasium`.
 In `.gitlab-ci.yml` define:
 
 ```yaml

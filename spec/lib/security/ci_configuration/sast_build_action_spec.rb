@@ -6,7 +6,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   let(:default_sast_values) do
     { 'global' =>
       [
-        { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/gitlab-org/security-products/analyzers', 'value' => 'registry.gitlab.com/gitlab-org/security-products/analyzers' }
+        { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/security-products', 'value' => 'registry.gitlab.com/security-products' }
       ],
       'pipeline' =>
       [
@@ -19,7 +19,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   let(:params) do
     { 'global' =>
       [
-        { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/gitlab-org/security-products/analyzers', 'value' => 'new_registry' }
+        { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/security-products', 'value' => 'new_registry' }
       ],
       'pipeline' =>
       [
@@ -164,7 +164,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       let(:params) do
         { 'global' =>
           [
-            { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/gitlab-org/security-products/analyzers', 'value' => 'registry.gitlab.com/gitlab-org/security-products/analyzers' }
+            { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/security-products', 'value' => 'registry.gitlab.com/security-products' }
           ],
           'pipeline' =>
           [
@@ -219,21 +219,21 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
 
     def existing_gitlab_ci_and_template_array_without_sast
       { "stages" => %w(test security),
-       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000" },
        "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
        "include" => [{ "template" => "existing.yml" }] }
     end
 
     def existing_gitlab_ci_and_single_template_with_sast_and_default_stage
       { "stages" => %w(test),
-       "variables" => { "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+       "variables" => { "SECURE_ANALYZERS_PREFIX" => "localhost:5000" },
        "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "test" },
        "include" => { "template" => "Security/SAST.gitlab-ci.yml" } }
     end
 
     def existing_gitlab_ci_and_single_template_without_sast
       { "stages" => %w(test security),
-       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000" },
        "sast" => { "variables" => { "SEARCH_MAX_DEPTH" => 1 }, "stage" => "security" },
        "include" => { "template" => "existing.yml" } }
     end
@@ -246,13 +246,13 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
 
     def existing_gitlab_ci_with_no_sast_section
       { "stages" => %w(test security),
-       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000" },
        "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
     end
 
     def existing_gitlab_ci_with_no_sast_variables
       { "stages" => %w(test security),
-       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000/analyzers" },
+       "variables" => { "RANDOM" => "make sure this persists", "SECURE_ANALYZERS_PREFIX" => "localhost:5000" },
        "sast" => { "stage" => "security" },
        "include" => [{ "template" => "Security/SAST.gitlab-ci.yml" }] }
     end
@@ -275,7 +275,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
         let(:params) do
           { 'global' =>
             [
-              { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/gitlab-org/security-products/analyzers', 'value' => '' }
+              { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/security-products', 'value' => '' }
             ] }
         end
 

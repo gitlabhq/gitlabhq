@@ -11,7 +11,11 @@
 variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
-  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+  # These placeholders will be removed in %15.0 with deprecation of previous registry path, see https://gitlab.com/groups/gitlab-org/-/epics/6162
+  DEFAULT_SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+  DEPRECATED_SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+
   DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
   DS_EXCLUDED_ANALYZERS: ""
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
@@ -53,7 +57,25 @@ gemnasium-dependency_scanning:
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/ &&
+          $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/dependency-scanning"
+      exists:
+        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+        - '{composer.lock,*/composer.lock,*/*/composer.lock}'
+        - '{gems.locked,*/gems.locked,*/*/gems.locked}'
+        - '{go.sum,*/go.sum,*/*/go.sum}'
+        - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
+        - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
+        - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
+        - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
+        - '{conan.lock,*/conan.lock,*/*/conan.lock}'
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
         - '{composer.lock,*/composer.lock,*/*/composer.lock}'
@@ -84,7 +106,20 @@ gemnasium-maven-dependency_scanning:
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/ &&
+          $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/dependency-scanning"
+      exists:
+        - '{build.gradle,*/build.gradle,*/*/build.gradle}'
+        - '{build.gradle.kts,*/build.gradle.kts,*/*/build.gradle.kts}'
+        - '{build.sbt,*/build.sbt,*/*/build.sbt}'
+        - '{pom.xml,*/pom.xml,*/*/pom.xml}'
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '{build.gradle,*/build.gradle,*/*/build.gradle}'
         - '{build.gradle.kts,*/build.gradle.kts,*/*/build.gradle.kts}'
@@ -110,7 +145,21 @@ gemnasium-python-dependency_scanning:
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/ &&
+          $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/dependency-scanning"
+      exists:
+        - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
+        - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
+        - '{Pipfile,*/Pipfile,*/*/Pipfile}'
+        - '{requires.txt,*/requires.txt,*/*/requires.txt}'
+        - '{setup.py,*/setup.py,*/*/setup.py}'
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
         - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
@@ -122,7 +171,16 @@ gemnasium-python-dependency_scanning:
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/ &&
+          $PIP_REQUIREMENTS_FILE &&
+          $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/dependency-scanning"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/ &&
           $PIP_REQUIREMENTS_FILE
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
 
 bundler-audit-dependency_scanning:
   extends: .ds-analyzer
@@ -140,7 +198,17 @@ bundler-audit-dependency_scanning:
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /bundler-audit/ &&
+          $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/dependency-scanning"
+      exists:
+        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /bundler-audit/
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
       exists:
         - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
 
@@ -160,6 +228,16 @@ retire-js-dependency_scanning:
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /retire.js/ &&
+          $SECURE_ANALYZERS_PREFIX == $DEFAULT_SECURE_ANALYZERS_PREFIX
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEFAULT_SECURE_ANALYZERS_PREFIX/dependency-scanning"
+      exists:
+        - '{package.json,*/package.json,*/*/package.json}'
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /retire.js/
       exists:
         - '{package.json,*/package.json,*/*/package.json}'
+      variables:
+        SECURE_ANALYZERS_PREFIX: "$DEPRECATED_SECURE_ANALYZERS_PREFIX"
