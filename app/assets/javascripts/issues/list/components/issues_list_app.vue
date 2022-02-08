@@ -70,6 +70,7 @@ import {
   getInitialPageParams,
   getSortKey,
   getSortOptions,
+  isSortKey,
 } from '../utils';
 import NewIssueDropdown from './new_issue_dropdown.vue';
 
@@ -138,7 +139,8 @@ export default {
     const state = getParameterByName(PARAM_STATE);
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
     const dashboardSortKey = getSortKey(this.initialSort);
-    const graphQLSortKey = this.initialSort?.toUpperCase();
+    const graphQLSortKey =
+      isSortKey(this.initialSort?.toUpperCase()) && this.initialSort.toUpperCase();
 
     // The initial sort is an old enum value when it is saved on the dashboard issues page.
     // The initial sort is a GraphQL enum value when it is saved on the Vue issues list page.

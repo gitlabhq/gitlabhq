@@ -44,7 +44,7 @@ and the documentation for it has been removed from the official page. This
 means that the original reason to use Docker Machine is no longer valid too.
 
 To keep supporting our customers and the wider community we need to design a
-new mechanism for GitLab Runner autoscaling. It not only needs to support
+new mechanism for GitLab Runner auto-scaling. It not only needs to support
 auto-scaling, but it also needs to do that in the way to enable us to build on
 top of it to improve efficiency, reliability and availability.
 
@@ -144,7 +144,7 @@ on a single machine bring. It is difficult to predict that, so ideally we
 should build a PoC that will help us to better understand what we can expect
 from this.
 
-To run this experiement we most likely we will need to build an experimental
+To run this experiment we most likely we will need to build an experimental
 plugin, that not only allows us to schedule running multiple builds on a single
 machine, but also has a set of comprehensive metrics built into it, to make it
 easier to understand how it performs.
@@ -204,7 +204,7 @@ document, define requirements and score the solution accordingly. This will
 allow us to choose a solution that will work best for us and the wider
 community.
 
-### Plugin system design principles
+### Design principles
 
 Our goal is to design a GitLab Runner plugin system interface that is flexible
 and simple for the wider community to consume. As we cannot build plugins for
@@ -215,7 +215,16 @@ To achieve this goal, we will follow a few critical design principles. These
 principles will guide our development process for the new plugin system
 abstraction.
 
-General high-level principles:
+#### General high-level principles
+
+1. Design the new auto-scaling architecture aiming for having more choices and
+   flexibility in the future, instead of imposing new constraints.
+1. Design the new auto-scaling architecture to experiment with running multiple
+   jobs in parallel, on a single machine.
+1. Design the new provisioning architecture to replace Docker Machine in a way
+   that the wider community can easily build on top of the new abstractions.
+
+#### Principles for the new plugin system
 
 1. Make the entry barrier for writing a new plugin low.
 1. Developing a new plugin should be simple and require only basic knowledge of
@@ -227,7 +236,7 @@ General high-level principles:
 1. Invest in a flexible solution, avoid one-way-door decisions, foster iteration.
 1. When in doubts err on the side of making things more simple for the wider community.
 
-A few most important technical details:
+#### The most important technical details
 
 1. Favor gRPC communication between a plugin and GitLab Runner.
 1. Make it possible to version communication interface and support many versions.

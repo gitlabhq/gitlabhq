@@ -24,6 +24,7 @@ import {
   getInitialPageParams,
   getSortKey,
   getSortOptions,
+  isSortKey,
 } from '~/issues/list/utils';
 
 describe('getInitialPageParams', () => {
@@ -42,6 +43,16 @@ describe('getSortKey', () => {
   it.each(Object.keys(urlSortParams))('returns %s given the correct inputs', (sortKey) => {
     const sort = urlSortParams[sortKey];
     expect(getSortKey(sort)).toBe(sortKey);
+  });
+});
+
+describe('isSortKey', () => {
+  it.each(Object.keys(urlSortParams))('returns true given %s', (sort) => {
+    expect(isSortKey(sort)).toBe(true);
+  });
+
+  it.each(['', 'asdf', null, undefined])('returns false given %s', (sort) => {
+    expect(isSortKey(sort)).toBe(false);
   });
 });
 

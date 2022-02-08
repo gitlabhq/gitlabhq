@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Provision GitLab Cloud Native Hybrid on AWS EKS **(FREE SELF)**
 
-GitLab "Cloud Native Hybrid" is a hybrid of the cloud native technology Kubernetes (EKS) and EC2. While as much of the GitLab application as possible runs in Kubernetes or on AWS services (PaaS), the GitLab service Gitaly must still be run on Ec2. Gitaly is a layer designed to overcome limitations of the Git binaries in a horizontally scaled architecture. You can read more here about why Gitaly was built and why the limitations of Git mean that it must currently run on instance compute in [Git Characteristics That Make Horizontal Scaling Difficult](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/DESIGN.md#git-characteristics-that-make-horizontal-scaling-difficult).
+GitLab "Cloud Native Hybrid" is a hybrid of the cloud native technology Kubernetes (EKS) and EC2. While as much of the GitLab application as possible runs in Kubernetes or on AWS services (PaaS), the GitLab service Gitaly must still be run on EC2. Gitaly is a layer designed to overcome limitations of the Git binaries in a horizontally scaled architecture. You can read more here about why Gitaly was built and why the limitations of Git mean that it must currently run on instance compute in [Git Characteristics That Make Horizontal Scaling Difficult](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/DESIGN.md#git-characteristics-that-make-horizontal-scaling-difficult).
 
 Amazon provides a managed Kubernetes service offering known as [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/).
 

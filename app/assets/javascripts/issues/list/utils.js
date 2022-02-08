@@ -50,6 +50,8 @@ export const getInitialPageParams = (sortKey) =>
 export const getSortKey = (sort) =>
   Object.keys(urlSortParams).find((key) => urlSortParams[key] === sort);
 
+export const isSortKey = (sort) => Object.keys(urlSortParams).includes(sort);
+
 export const getDueDateValue = (value) => (DUE_DATE_VALUES.includes(value) ? value : undefined);
 
 export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) => {

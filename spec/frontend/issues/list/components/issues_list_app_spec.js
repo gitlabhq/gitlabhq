@@ -343,6 +343,20 @@ describe('CE IssuesListApp component', () => {
         });
       });
 
+      describe('when initial sort value is invalid', () => {
+        it.each(['', 'asdf', null, undefined])(
+          'initial sort is set to value CREATED_DESC',
+          (sort) => {
+            wrapper = mountComponent({ provide: { initialSort: sort } });
+
+            expect(findIssuableList().props()).toMatchObject({
+              initialSortBy: CREATED_DESC,
+              urlParams: { sort: urlSortParams[CREATED_DESC] },
+            });
+          },
+        );
+      });
+
       describe('when sort is manual and issue repositioning is disabled', () => {
         beforeEach(() => {
           wrapper = mountComponent({

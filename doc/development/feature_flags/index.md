@@ -513,7 +513,7 @@ Feature.remove(:feature_flag_name)
 
 - Any change behind a feature flag **disabled** by default **should not** have a changelog entry.
   - **Exception:** database migrations **should** have a changelog entry.
-- Any change related to a feature flag itself (flag removal, default-on setting) **should** have a changelog entry.
+- Any change related to a feature flag itself (flag removal, default-on setting) **should** have [a changelog entry](../changelog.md).
   Use the flowchart to determine the changelog entry type.
 
   ```mermaid

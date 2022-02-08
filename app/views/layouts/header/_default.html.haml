@@ -16,7 +16,7 @@
                 = logo_text
           - if Gitlab.com_and_canary?
             = link_to Gitlab::Saas.canary_toggle_com_url, class: 'canary-badge bg-transparent', data: { qa_selector: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer' do
-              = gl_badge_tag({ variant: :success }) do
+              = gl_badge_tag({ variant: :success, size: :sm }) do
                 = _('Next')
 
         - if current_user
