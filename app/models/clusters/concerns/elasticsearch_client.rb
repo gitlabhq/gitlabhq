@@ -15,7 +15,7 @@ module Clusters
 
           proxy_url = kube_client.proxy_url('service', service_name, ELASTICSEARCH_PORT, ELASTICSEARCH_NAMESPACE)
 
-          Elasticsearch::Client.new(url: proxy_url) do |faraday|
+          Elasticsearch::Client.new(url: proxy_url, adapter: :net_http) do |faraday|
             # ensures headers containing auth data are appended to original client options
             faraday.headers.merge!(kube_client.headers)
             # ensure TLS certs are properly verified
