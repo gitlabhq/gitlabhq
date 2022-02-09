@@ -79,6 +79,29 @@ RSpec.describe ProjectImportState, type: :model do
 
       expect(import_state.last_error).to eq(error_message)
     end
+
+    it 'removes project import data' do
+      import_data = ProjectImportData.new(data: { 'test' => 'some data' })
+      project = create(:project, import_data: import_data)
+      import_state = create(:import_state, :started, project: project)
+
+      expect do
+        import_state.mark_as_failed(error_message)
+      end.to change { project.reload.import_data }.from(import_data).to(nil)
+    end
+
+    context 'when remove_import_data_on_failure feature flag is disabled' do
+      it 'removes project import data' do
+        stub_feature_flags(remove_import_data_on_failure: false)
+
+        project = create(:project, import_data: ProjectImportData.new(data: { 'test' => 'some data' }))
+        import_state = create(:import_state, :started, project: project)
+
+        expect do
+          import_state.mark_as_failed(error_message)
+        end.not_to change { project.reload.import_data }
+      end
+    end
   end
 
   describe '#human_status_name' do

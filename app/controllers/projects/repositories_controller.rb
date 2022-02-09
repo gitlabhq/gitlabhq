@@ -23,7 +23,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   feature_category :source_code_management
 
   def create
-    @project.create_repository
+    @project.create_repository unless @project.repository_exists?
 
     redirect_to project_path(@project)
   end

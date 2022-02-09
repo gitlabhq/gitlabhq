@@ -50,6 +50,7 @@ module QA
 
       def stop_primary_node
         stop_node(@primary_node)
+        wait_until_node_is_removed_from_healthy_storages(@primary_node)
       end
 
       def start_primary_node
@@ -67,6 +68,7 @@ module QA
 
       def stop_secondary_node
         stop_node(@secondary_node)
+        wait_until_node_is_removed_from_healthy_storages(@stop_secondary_node)
       end
 
       def start_secondary_node
@@ -75,6 +77,7 @@ module QA
 
       def stop_tertiary_node
         stop_node(@tertiary_node)
+        wait_until_node_is_removed_from_healthy_storages(@tertiary_node)
       end
 
       def start_tertiary_node
@@ -82,18 +85,37 @@ module QA
       end
 
       def start_node(name)
-        shell "docker start #{name}"
-      end
+        state = node_state(name)
+        return if state == "running"
 
-      def stop_node(name)
-        shell "docker stop #{name}"
+        if state == "paused"
+          shell "docker unpause #{name}"
+        end
+
+        if state == "stopped"
+          shell "docker start #{name}"
+        end
+
         wait_until_shell_command_matches(
           "docker inspect -f {{.State.Running}} #{name}",
-          /false/,
+          /true/,
           sleep_interval: 3,
           max_duration: 180,
           retry_on_exception: true
         )
+      end
+
+      def stop_node(name)
+        shell "docker pause #{name}"
+      end
+
+      def node_state(name)
+        state = "stopped"
+        wait_until_shell_command("docker inspect -f {{.State.Status}} #{name}") do |line|
+          QA::Runtime::Logger.debug(line)
+          break state = "running" if line.include?("running")
+          break state = "paused" if line.include?("paused")
+        end
       end
 
       def clear_replication_queue
@@ -204,9 +226,8 @@ module QA
       def wait_for_praefect
         QA::Runtime::Logger.info("Waiting for health check on praefect")
         Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
-          # praefect runs a grpc server on port 2305, which will return an error 'Connection refused' until such time it is ready
-          wait_until_shell_command("docker exec #{@gitaly_cluster} bash -c 'curl #{@praefect}:2305'") do |line|
-            break if line.include?('curl: (1) Received HTTP/0.9 when not allowed')
+          wait_until_shell_command("docker exec #{@praefect} gitlab-ctl status praefect") do |line|
+            break true if line.include?('run: praefect: ')
 
             QA::Runtime::Logger.debug(line.chomp)
           end
@@ -269,9 +290,8 @@ module QA
       def wait_for_gitaly_health_check(node)
         QA::Runtime::Logger.info("Waiting for health check on #{node}")
         Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
-          # gitaly runs a grpc server on port 8075, which will return an error 'Connection refused' until such time it is ready
-          wait_until_shell_command("docker exec #{@praefect} bash -c 'curl #{node}:8075'") do |line|
-            break if line.include?('curl: (1) Received HTTP/0.9 when not allowed')
+          wait_until_shell_command("docker exec #{node} gitlab-ctl status gitaly") do |line|
+            break true if line.include?('run: gitaly: ')
 
             QA::Runtime::Logger.debug(line.chomp)
           end

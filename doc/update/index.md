@@ -106,7 +106,7 @@ sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrati
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
 ```
 
 ### Batched background migrations

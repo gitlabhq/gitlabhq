@@ -231,7 +231,6 @@ Naming/HeredocDelimiterNaming:
 Naming/MethodParameterName:
   Exclude:
     - 'lib/gitlab/diff/inline_diff.rb'
-    - 'spec/support/helpers/key_generator_helper.rb'
 
 # Offense count: 218
 # Cop supports --auto-correct.

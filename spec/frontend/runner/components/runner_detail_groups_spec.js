@@ -1,7 +1,7 @@
-import { GlAvatar } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import RunnerDetailGroups from '~/runner/components/runner_detail_groups.vue';
+import RunnerAssignedItem from '~/runner/components/runner_assigned_item.vue';
 
 import { runnerData, runnerWithGroupData } from '../mock_data';
 
@@ -13,7 +13,7 @@ describe('RunnerDetailGroups', () => {
   let wrapper;
 
   const findHeading = () => wrapper.find('h3');
-  const findGroupAvatar = () => wrapper.findByTestId('group-avatar');
+  const findRunnerAssignedItems = () => wrapper.findAllComponents(RunnerAssignedItem);
 
   const createComponent = ({ runner = mockGroupRunner, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerDetailGroups, {
@@ -33,28 +33,23 @@ describe('RunnerDetailGroups', () => {
     expect(findHeading().text()).toBe('Assigned Group');
   });
 
-  describe('When there is group runner', () => {
+  describe('When there is a group runner', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('Shows a group avatar', () => {
-      const avatar = findGroupAvatar();
+    it('Shows a project', () => {
+      createComponent();
 
-      expect(avatar.attributes('href')).toBe(mockGroup.webUrl);
-      expect(avatar.findComponent(GlAvatar).props()).toMatchObject({
-        alt: mockGroup.name,
-        entityName: mockGroup.name,
-        src: mockGroup.avatarUrl,
-        shape: 'rect',
-        size: 48,
+      const item = findRunnerAssignedItems().at(0);
+      const { webUrl, name, fullName, avatarUrl } = mockGroup;
+
+      expect(item.props()).toMatchObject({
+        href: webUrl,
+        name,
+        fullName,
+        avatarUrl,
       });
-    });
-
-    it('Shows a group link', () => {
-      const groupFullName = wrapper.findByText(mockGroup.fullName);
-
-      expect(groupFullName.attributes('href')).toBe(mockGroup.webUrl);
     });
   });
 

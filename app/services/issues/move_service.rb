@@ -2,6 +2,8 @@
 
 module Issues
   class MoveService < Issuable::Clone::BaseService
+    extend ::Gitlab::Utils::Override
+
     MoveError = Class.new(StandardError)
 
     def execute(issue, target_project)
@@ -47,11 +49,19 @@ module Issues
         .sent_notifications.update_all(project_id: new_entity.project_id, noteable_id: new_entity.id)
     end
 
+    override :update_old_entity
     def update_old_entity
       super
 
       rewrite_related_issues
       mark_as_moved
+    end
+
+    override :update_new_entity
+    def update_new_entity
+      super
+
+      copy_contacts
     end
 
     def create_new_entity
@@ -97,6 +107,13 @@ module Issues
 
       target_issue_links = IssueLink.for_target_issue(original_entity)
       target_issue_links.update_all(target_id: new_entity.id)
+    end
+
+    def copy_contacts
+      return unless Feature.enabled?(:customer_relations, original_entity.project.root_ancestor)
+      return unless original_entity.project.root_ancestor == new_entity.project.root_ancestor
+
+      new_entity.customer_relations_contacts = original_entity.customer_relations_contacts
     end
 
     def notify_participants

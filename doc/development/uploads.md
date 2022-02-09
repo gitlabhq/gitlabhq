@@ -346,3 +346,83 @@ object using `UploadedFile#from_params`! This method can be unsafe to use depend
 passed. Instead, use the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
 object that [`multipart.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/middleware/multipart.rb)
 builds automatically for you.
+
+### Document Object Storage buckets and CarrierWave integration
+
+When using Object Storage, GitLab expects each kind of upload to maintain its own bucket in the respective
+Object Storage destination. Moreover, the integration with CarrierWave is not used all the time.
+The [Object Storage Working Group](https://about.gitlab.com/company/team/structure/working-groups/object-storage/)
+is investigating an approach that unifies Object Storage buckets into a single one and removes CarrierWave
+so as to simplify implementation and administration of uploads.
+
+Therefore, document new uploads here by slotting them into the following tables:
+
+- [Feature bucket details](#feature-bucket-details)
+- [CarrierWave integration](#carrierwave-integration)
+
+#### Feature bucket details
+
+| Feature                                  | Upload technology | Uploader              | Bucket structure                                                                                          |
+|------------------------------------------|-------------------|-----------------------|-----------------------------------------------------------------------------------------------------------|
+| Job artifacts                            | `direct upload`     | `workhorse`             | `/artifacts/<proj_id_hash>/<date>/<job_id>/<artifact_id>`                                                 |
+| Pipeline artifacts                       | `carrierwave`       | `sidekiq`               | `/artifacts/<proj_id_hash>/pipelines/<pipeline_id>/artifacts/<artifact_id>`                               |
+| Live job traces                          | `fog`               | `sidekiq`               | `/artifacts/tmp/builds/<job_id>/chunks/<chunk_index>.log`                                                 |
+| Job traces archive                       | `carrierwave`       | `sidekiq`               | `/artifacts/<proj_id_hash>/<date>/<job_id>/<artifact_id>/job.log`                                         |
+| Autoscale runner caching                 | N/A               | `gitlab-runner`         | `/gitlab-com-[platform-]runners-cache/???`                                                                |
+| Backups                                  | N/A               | `s3cmd`, `awscli`, or `gcs` | `/gitlab-backups/???`                                                                                     |
+| Git LFS                                  | `direct upload`     | `workhorse`             | `/lsf-objects/<lfs_obj_oid[0:2]>/<lfs_obj_oid[2:2]>`                                                      |
+| Design management files                  | `disk buffering`    | `rails controller`      | `/lsf-objects/<lfs_obj_oid[0:2]>/<lfs_obj_oid[2:2]>`                                                      |
+| Design management thumbnails             | `carrierwave`       | `sidekiq`               | `/uploads/design_management/action/image_v432x230/<model_id>`                                             |
+| Generic file uploads                     | `direct upload`     | `workhorse`             | `/uploads/@hashed/[0:2]/[2:4]/<hash1>/<hash2>/file`                                                       |
+| Generic file uploads - personal snippets | `direct upload`     | `workhorse`             | `/uploads/personal_snippet/<snippet_id>/<filename>`                                                       |
+| Global appearance settings               | `disk buffering`    | `rails controller`      | `/uploads/appearance/...`                                                                                 |
+| Topics                                   | `disk buffering`    | `rails controller`      | `/uploads/projects/topic/...`                                                                             |
+| Avatar images                            | `direct upload`     | `workhorse`             | `/uploads/[user,group,project]/avatar/<model_id>`                                                         |
+| Import/export                            | `direct upload`     | `workhorse`             | `/uploads/import_export_upload/???`                                                                       |
+| GitLab Migration                         | `carrierwave`       | `sidekiq`               | `/uploads/bulk_imports/???`                                                                               |
+| MR diffs                                 | `carrierwave`       | `sidekiq`               | `/external-diffs/merge_request_diffs/mr-<mr_id>/diff-<diff_id>`                                           |
+| Package manager archives                 | `direct upload`     | `sidekiq`               | `/packages/<proj_id_hash>/packages/<pkg_segment>/files/<pkg_file_id>`                                     |
+| Package manager archives                 | `direct upload`     | `sidekiq`               | `/packages/<container_id_hash>/debian_*_component_file/<component_file_id>`                               |
+| Package manager archives                 | `direct upload`     | `sidekiq`               | `/packages/<container_id_hash>/debian_*_distribution/<distribution_file_id>`                              |
+| Container image cache (?)                | `direct upload`     | `workhorse`             | `/dependency-proxy/<group_id_hash>/dependency_proxy/<group_id>/files/<proxy_id>/<blob_id or manifest_id>` |
+| Terraform state files                    | `carrierwave`       | `rails controller`      | `/terraform/<proj_id_hash>/<terraform_state_id>`                                                          |
+| Pages content archives                   | `carrierwave`       | `sidekiq`               | `/gitlab-gprd-pages/<proj_id_hash>/pages_deployments/<deployment_id>/`                                    |
+
+#### CarrierWave integration
+
+| File                                                    | Carrierwave usage                                                                | Categorized         |
+|---------------------------------------------------------|----------------------------------------------------------------------------------|---------------------|
+| `app/models/project.rb`                                 | `include Avatarable`                                                             | :white_check_mark:  |
+| `app/models/projects/topic.rb`                          | `include Avatarable`                                                             | :white_check_mark:  |
+| `app/models/group.rb`                                   | `include Avatarable`                                                             | :white_check_mark:  |
+| `app/models/user.rb`                                    | `include Avatarable`                                                             | :white_check_mark:  |
+| `app/models/terraform/state_version.rb`                 | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/ci/job_artifact.rb`                         | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/ci/pipeline_artifact.rb`                    | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/pages_deployment.rb`                        | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/lfs_object.rb`                              | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/dependency_proxy/blob.rb`                   | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/dependency_proxy/manifest.rb`               | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/packages/composer/cache_file.rb`            | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/packages/package_file.rb`                   | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `app/models/concerns/packages/debian/component_file.rb` | `include FileStoreMounter`                                                       | :white_check_mark:  |
+| `ee/app/models/issuable_metric_image.rb`                | `include FileStoreMounter`                                                       |                     |
+| `ee/app/models/vulnerabilities/remediation.rb`          | `include FileStoreMounter`                                                       |                     |
+| `ee/app/models/vulnerabilities/export.rb`               | `include FileStoreMounter`                                                       |                     |
+| `app/models/packages/debian/project_distribution.rb`    | `include Packages::Debian::Distribution`                                         | :white_check_mark:  |
+| `app/models/packages/debian/group_distribution.rb`      | `include Packages::Debian::Distribution`                                         | :white_check_mark:  |
+| `app/models/packages/debian/project_component_file.rb`  | `include Packages::Debian::ComponentFile`                                        | :white_check_mark:  |
+| `app/models/packages/debian/group_component_file.rb`    | `include Packages::Debian::ComponentFile`                                        | :white_check_mark:  |
+| `app/models/merge_request_diff.rb`                      | `mount_uploader :external_diff, ExternalDiffUploader`                            | :white_check_mark:  |
+| `app/models/note.rb`                                    | `mount_uploader :attachment, AttachmentUploader`                                 | :white_check_mark:  |
+| `app/models/appearance.rb`                              | `mount_uploader :logo,         AttachmentUploader`                               | :white_check_mark:  |
+| `app/models/appearance.rb`                              | `mount_uploader :header_logo,  AttachmentUploader`                               | :white_check_mark:  |
+| `app/models/appearance.rb`                              | `mount_uploader :favicon,      FaviconUploader`                                  | :white_check_mark:  |
+| `app/models/project.rb`                                 | `mount_uploader :bfg_object_map, AttachmentUploader`                             |                     |
+| `app/models/import_export_upload.rb`                    | `mount_uploader :import_file, ImportExportUploader`                              | :white_check_mark:  |
+| `app/models/import_export_upload.rb`                    | `mount_uploader :export_file, ImportExportUploader`                              | :white_check_mark:  |
+| `app/models/ci/deleted_object.rb`                       | `mount_uploader :file, DeletedObjectUploader`                                    |                     |
+| `app/models/design_management/action.rb`                | `mount_uploader :image_v432x230, DesignManagement::DesignV432x230Uploader`       | :white_check_mark:  |
+| `app/models/concerns/packages/debian/distribution.rb`   | `mount_uploader :signed_file, Packages::Debian::DistributionReleaseFileUploader` | :white_check_mark:  |
+| `app/models/bulk_imports/export_upload.rb`              | `mount_uploader :export_file, ExportUploader`                                    | :white_check_mark:  |
+| `ee/app/models/user_permission_export_upload.rb`        | `mount_uploader :file, AttachmentUploader`                                       |                     |

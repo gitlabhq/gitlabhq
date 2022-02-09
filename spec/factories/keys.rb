@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-require_relative '../support/helpers/key_generator_helper'
-
 FactoryBot.define do
   factory :key do
     title
-    key { Spec::Support::Helpers::KeyGeneratorHelper.new(1024).generate + ' dummy@gitlab.com' }
+    key { SSHData::PrivateKey::RSA.generate(1024, unsafe_allow_small_key: true).public_key.openssh(comment: 'dummy@gitlab.com') }
 
     factory :key_without_comment do
-      key { Spec::Support::Helpers::KeyGeneratorHelper.new(1024).generate }
+      key { SSHData::PrivateKey::RSA.generate(1024, unsafe_allow_small_key: true).public_key.openssh }
     end
 
     factory :deploy_key, class: 'DeployKey'

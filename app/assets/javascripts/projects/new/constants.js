@@ -12,7 +12,7 @@ export const DEPLOYMENT_TARGET_SELECTIONS = [
   s__('DeploymentTarget|Serverless backend (Lambda, Cloud functions)'),
   s__('DeploymentTarget|GitLab Pages'),
   s__('DeploymentTarget|Other hosting service'),
-  s__('DeploymentTarget|None'),
+  s__('DeploymentTarget|No deployment planned'),
 ];
 
 export const NEW_PROJECT_FORM = 'new_project';
