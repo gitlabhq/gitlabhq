@@ -426,3 +426,29 @@ Examples:
    curl --request DELETE --data 'name_regex_delete=.*' --data 'older_than=1month' \
         --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
    ```
+
+## Instance-wide endpoints
+
+Beside the group- and project-specific GitLab APIs explained above,
+the Container Registry has its own endpoints.
+To query those, follow the Registry's built-in mechanism to obtain and use an
+[authentication token](https://docs.docker.com/registry/spec/auth/token/).
+
+NOTE:
+These are different from project or personal access tokens in the GitLab application.
+
+### Listing all container repositories
+
+```plaintext
+GET /v2/_catalogue
+```
+
+To list all container repositories on your GitLab instance, admin credentials are required:
+
+```shell
+$ curl --request GET --user "<admin-username>:<admin-password>" "https://gitlab.example.com/jwt/auth?service=container_registry&scope=registry:catalog:*"
+{"token":" ... "}
+
+$ curl --header "Authorization: Bearer <token_from_above>" https://gitlab.example.com:5050/v2/_catalog
+{"repositories":["user/project1", "group/subgroup/project2", ... ]}
+```

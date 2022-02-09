@@ -21,6 +21,8 @@ module Issues
     def execute(skip_system_notes: false)
       @issue = @build_service.execute
 
+      handle_move_between_ids(@issue)
+
       filter_resolve_discussion_params
 
       create(@issue, skip_system_notes: skip_system_notes)

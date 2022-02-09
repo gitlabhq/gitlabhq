@@ -1,12 +1,14 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import ItemTitle from '~/work_items/components/item_title.vue';
 import { resolvers } from '~/work_items/graphql/resolvers';
+import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import { projectWorkItemTypesQueryResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -14,13 +16,20 @@ describe('Create work item component', () => {
   let wrapper;
   let fakeApollo;
 
+  const querySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
+
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTitleInput = () => wrapper.findComponent(ItemTitle);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
+  const findContent = () => wrapper.find('[data-testid="content"]');
+  const findLoadingTypesIcon = () => wrapper.find('[data-testid="loading-types"]');
 
-  const createComponent = ({ data = {}, props = {} } = {}) => {
-    fakeApollo = createMockApollo([], resolvers);
+  const createComponent = ({ data = {}, props = {}, queryHandler = querySuccessHandler } = {}) => {
+    fakeApollo = createMockApollo([[projectWorkItemTypesQuery, queryHandler]], resolvers);
     wrapper = shallowMount(CreateWorkItem, {
       apolloProvider: fakeApollo,
       data() {
@@ -36,6 +45,9 @@ describe('Create work item component', () => {
           go: jest.fn(),
           push: jest.fn(),
         },
+      },
+      provide: {
+        fullPath: 'full-path',
       },
     });
   };
@@ -84,6 +96,10 @@ describe('Create work item component', () => {
     it('does not add right margin for cancel button', () => {
       expect(findCancelButton().classes()).not.toContain('gl-mr-3');
     });
+
+    it('does not add padding for content', () => {
+      expect(findContent().classes('gl-px-5')).toBe(false);
+    });
   });
 
   describe('when displayed in a modal', () => {
@@ -117,6 +133,44 @@ describe('Create work item component', () => {
 
     it('adds right margin for cancel button', () => {
       expect(findCancelButton().classes()).toContain('gl-mr-3');
+    });
+
+    it('adds padding for content', () => {
+      expect(findContent().classes('gl-px-5')).toBe(true);
+    });
+  });
+
+  it('displays a loading icon inside dropdown when work items query is loading', () => {
+    createComponent();
+
+    expect(findLoadingTypesIcon().exists()).toBe(true);
+  });
+
+  it('displays an alert when work items query is rejected', async () => {
+    createComponent({ queryHandler: jest.fn().mockRejectedValue('Houston, we have a problem') });
+    await waitForPromises();
+
+    expect(findAlert().exists()).toBe(true);
+    expect(findAlert().text()).toContain('fetching work item types');
+  });
+
+  describe('when work item types are fetched', () => {
+    beforeEach(() => {
+      createComponent();
+      return waitForPromises();
+    });
+
+    it('displays a list of work item types', () => {
+      expect(findDropdownItems()).toHaveLength(2);
+      expect(findDropdownItems().at(0).text()).toContain('Issue');
+    });
+
+    it('selects a work item type on click', async () => {
+      expect(findDropdown().props('text')).toBe('Type');
+      findDropdownItems().at(0).vm.$emit('click');
+      await nextTick();
+
+      expect(findDropdown().props('text')).toBe('Issue');
     });
   });
 

@@ -36,7 +36,7 @@ file is correct. Paste in full `.gitlab-ci.yml` files or individual jobs configu
 to verify the basic syntax.
 
 When a `.gitlab-ci.yml` file is present in a project, you can also use the CI Lint
-tool to [simulate the creation of a full pipeline](lint.md#pipeline-simulation).
+tool to [simulate the creation of a full pipeline](lint.md#simulate-a-pipeline).
 It does deeper verification of the configuration syntax.
 
 ## Verify variables

@@ -169,7 +169,7 @@ POST /projects/:id/ci/lint
 | Attribute  | Type    | Required | Description |
 | ---------- | ------- | -------- | -------- |
 | `content`  | string  | yes      | The CI/CD configuration content. |
-| `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#pipeline-simulation), or only do static check. This is false by default. |
+| `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#simulate-a-pipeline), or only do static check. This is false by default. |
 | `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
 
 Example request:

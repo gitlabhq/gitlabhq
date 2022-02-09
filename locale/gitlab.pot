@@ -11630,6 +11630,9 @@ msgstr ""
 msgid "Delete pipeline"
 msgstr ""
 
+msgid "Delete pipeline schedule"
+msgstr ""
+
 msgid "Delete project"
 msgstr ""
 
@@ -33809,9 +33812,6 @@ msgstr ""
 msgid "Something went wrong trying to load issue contacts."
 msgstr ""
 
-msgid "Something went wrong when creating a work item. Please try again"
-msgstr ""
-
 msgid "Something went wrong when reordering designs. Please try again"
 msgstr ""
 
@@ -41091,6 +41091,15 @@ msgid "WorkItem|Create work item"
 msgstr ""
 
 msgid "WorkItem|New Task"
+msgstr ""
+
+msgid "WorkItem|Something went wrong when creating a work item. Please try again"
+msgstr ""
+
+msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
+msgstr ""
+
+msgid "WorkItem|Type"
 msgstr ""
 
 msgid "WorkItem|Work Items"

@@ -92,6 +92,23 @@ RSpec.describe Issues::CreateService do
         end
       end
 
+      context 'when setting a position' do
+        let(:issue_before) { create(:issue, project: project, relative_position: 10) }
+        let(:issue_after) { create(:issue, project: project, relative_position: 50) }
+
+        before do
+          project.add_reporter(user)
+
+          opts.merge!(move_between_ids: [issue_before.id, issue_after.id])
+        end
+
+        it 'sets the correct relative position' do
+          expect(issue).to be_persisted
+          expect(issue.relative_position).to be_present
+          expect(issue.relative_position).to be_between(issue_before.relative_position, issue_after.relative_position)
+        end
+      end
+
       it_behaves_like 'not an incident issue'
 
       context 'when issue is incident type' do

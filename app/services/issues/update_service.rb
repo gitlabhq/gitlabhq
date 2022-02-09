@@ -2,8 +2,6 @@
 
 module Issues
   class UpdateService < Issues::BaseService
-    extend ::Gitlab::Utils::Override
-
     # NOTE: For Issues::UpdateService, we default the spam_params to nil, because spam_checking is not
     # necessary in many cases, and we don't want to require every caller to explicitly pass it as nil
     # to disable spam checking.
@@ -90,14 +88,6 @@ module Issues
     def handle_task_changes(issuable)
       todo_service.resolve_todos_for_target(issuable, current_user)
       todo_service.update_issue(issuable, current_user)
-    end
-
-    def handle_move_between_ids(issue)
-      issue.check_repositioning_allowed! if params[:move_between_ids]
-
-      super
-
-      rebalance_if_needed(issue)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -215,14 +205,6 @@ module Issues
         current_user,
         status_change_reason: @escalation_status_change_reason # Defined in IssuableBaseService before save
       ).execute
-    end
-
-    def issuable_for_positioning(id, positioning_scope)
-      return unless id
-
-      issue = positioning_scope.find(id)
-
-      issue if can?(current_user, :update_issue, issue)
     end
 
     def create_confidentiality_note(issue)

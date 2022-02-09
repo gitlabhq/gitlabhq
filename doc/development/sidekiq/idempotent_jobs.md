@@ -185,30 +185,6 @@ end
 Duplicate jobs can happen when the TTL is reached, so make sure you lower this only for jobs
 that can tolerate some duplication.
 
-## Deduplication with load balancing
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6763) in GitLab 14.4.
-
-Jobs that declare either `:sticky` or `:delayed` data consistency
-are eligible for database load-balancing.
-In both cases, jobs are [scheduled in the future](#scheduling-jobs-in-the-future) with a short delay (1 second).
-This minimizes the chance of replication lag after a write.
-
-If you really want to deduplicate jobs eligible for load balancing,
-specify `including_scheduled: true` argument when defining deduplication strategy:
-
-```ruby
-class DelayedIdempotentWorker
-  include ApplicationWorker
-  data_consistency :delayed
-
-  deduplicate :until_executing, including_scheduled: true
-  idempotent!
-
-  # ...
-end
-```
-
 ### Preserve the latest WAL location for idempotent jobs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69372) in GitLab 14.3.

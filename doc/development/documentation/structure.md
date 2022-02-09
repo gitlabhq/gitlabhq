@@ -5,10 +5,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: What to include in GitLab documentation pages.
 ---
 
-# Documentation topic types
+# Documentation topic types (CTRT)
 
 At GitLab, we have not traditionally used types for our content. However, we are starting to
-move in this direction, and we now use four primary topic types:
+move in this direction, and we now use four primary topic types (CTRT):
 
 - [Concept](#concept)
 - [Task](#task)
@@ -154,7 +154,7 @@ If multiple causes or workarounds exist, consider putting them into a table form
 ## Other types of content
 
 There are other types of content in the GitLab documentation that don't
-classify as one of the four primary [topic types](#documentation-topic-types).
+classify as one of the four primary [topic types](#documentation-topic-types-ctrt).
 These include:
 
 - [Tutorials](#tutorials)
@@ -174,7 +174,7 @@ In general, you might consider using a tutorial when:
 
 Tutorials are learning aids that complement our core documentation.
 They do not introduce new features.
-Always use the primary [topic types](#documentation-topic-types) to document new features.
+Always use the primary [topic types](#documentation-topic-types-ctrt) to document new features.
 
 Tutorials should be in this format:
 

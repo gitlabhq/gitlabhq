@@ -263,7 +263,8 @@ module QA
           # status as unmerged, the test will fail.
           # Revisit after merge page re-architect is done https://gitlab.com/groups/gitlab-org/-/epics/5598
           # To remove page refresh logic if possible
-          retry_until(max_attempts: 3, reload: true) do
+          # We don't raise on failure because this method is used as a predicate matcher
+          retry_until(max_attempts: 3, reload: true, raise_on_failure: false) do
             has_element?(:merged_status_content, text: 'The changes were merged into', wait: 20)
           end
         end

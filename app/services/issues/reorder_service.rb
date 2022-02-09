@@ -21,7 +21,7 @@ module Issues
 
     def move_between_ids
       strong_memoize(:move_between_ids) do
-        ids = [params[:move_after_id], params[:move_before_id]]
+        ids = [params[:move_before_id], params[:move_after_id]]
                 .map(&:to_i)
                 .map { |m| m > 0 ? m : nil }
 

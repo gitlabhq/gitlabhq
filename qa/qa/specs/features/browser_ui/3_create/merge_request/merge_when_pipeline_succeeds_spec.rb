@@ -88,7 +88,7 @@ module QA
               mr.wait_until_ready_to_merge(transient_test: transient_test)
 
               mr.retry_until(reload: true, message: 'Wait until ready to click MWPS') do
-                merge_request = merge_request.reload!
+                merge_request.reload!
 
                 # Don't try to click MWPS if the MR is merged or the pipeline is complete
                 break if merge_request.state == 'merged' || mr.wait_until { project.pipelines.last }[:status] == 'success'
@@ -102,8 +102,10 @@ module QA
               end
 
               aggregate_failures do
-                expect(mr.merged?).to be_truthy, "Expected content 'The changes were merged' but it did not appear."
+                expect { mr.merged? }.to eventually_be_truthy.within(max_duration: 60), "Expected content 'The changes were merged' but it did not appear."
                 expect(merge_request.reload!.merge_when_pipeline_succeeds).to be_truthy
+                expect(merge_request.state).to eq('merged')
+                expect(project.pipelines.last[:status]).to eq('success')
               end
             end
           end

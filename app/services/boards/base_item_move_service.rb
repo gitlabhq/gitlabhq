@@ -91,7 +91,7 @@ module Boards
     end
 
     def move_between_ids(move_params)
-      ids = [move_params[:move_after_id], move_params[:move_before_id]]
+      ids = [move_params[:move_before_id], move_params[:move_after_id]]
               .map(&:to_i)
               .map { |m| m > 0 ? m : nil }
 

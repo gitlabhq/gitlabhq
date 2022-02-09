@@ -259,10 +259,11 @@ these scenarios, since `:always` should be considered the exception, not the rul
 To allow for reads to be served from replicas, we added two additional consistency modes: `:sticky` and `:delayed`.
 
 When you declare either `:sticky` or `:delayed` consistency, workers become eligible for database
-load-balancing. In both cases, jobs are enqueued with a short delay.
-This minimizes the likelihood of replication lag after a write.
+load-balancing. 
 
-The difference is in what happens when there is replication lag after the delay: `sticky` workers
+In both cases, if the replica is not up-to-date and the time from scheduling the job was less than the minimum delay interval,
+ the jobs sleep up to the minimum delay interval (0.8 seconds). This gives the replication process time to finish.
+The difference is in what happens when there is still replication lag after the delay: `sticky` workers
 switch over to the primary right away, whereas `delayed` workers fail fast and are retried once.
 If they still encounter replication lag, they also switch to the primary instead.
 **If your worker never performs any writes, it is strongly advised to apply one of these consistency settings,

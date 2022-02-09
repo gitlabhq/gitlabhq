@@ -34,3 +34,17 @@ export const updateWorkItemMutationResponse = {
     },
   },
 };
+
+export const projectWorkItemTypesQueryResponse = {
+  data: {
+    workspace: {
+      id: '1',
+      workItemTypes: {
+        nodes: [
+          { id: 'work-item-1', name: 'Issue' },
+          { id: 'work-item-2', name: 'Incident' },
+        ],
+      },
+    },
+  },
+};

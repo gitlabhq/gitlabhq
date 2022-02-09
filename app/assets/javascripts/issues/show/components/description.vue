@@ -95,7 +95,7 @@ export default {
     this.renderGFM();
     this.updateTaskStatusText();
 
-    if (this.workItemsEnabled) {
+    if (this.workItemsEnabled && this.$el) {
       this.renderTaskActions();
     }
   },
@@ -174,8 +174,11 @@ export default {
         );
         button.id = `js-task-button-${index}`;
         this.taskButtons.push(button.id);
-        button.innerHTML =
-          '<svg data-testid="ellipsis_v-icon" role="img" aria-hidden="true" class="dropdown-icon gl-icon s14"><use href="/assets/icons-7f1680a3670112fe4c8ef57b9dfb93f0f61b43a2a479d7abd6c83bcb724b9201.svg#ellipsis_v"></use></svg>';
+        button.innerHTML = `
+          <svg data-testid="ellipsis_v-icon" role="img" aria-hidden="true" class="dropdown-icon gl-icon s14">
+            <use href="${gon.sprite_icons}#ellipsis_v"></use>
+          </svg>
+        `;
         item.prepend(button);
       });
     },
@@ -191,7 +194,7 @@ export default {
       const taskBadge = document.createElement('span');
       taskBadge.innerHTML = `
         <svg data-testid="issue-open-m-icon" role="img" aria-hidden="true" class="gl-icon gl-fill-green-500 s12">
-          <use href="/assets/icons-7f1680a3670112fe4c8ef57b9dfb93f0f61b43a2a479d7abd6c83bcb724b9201.svg#issue-open-m"></use>
+          <use href="${gon.sprite_icons}#issue-open-m"></use>
         </svg>
         <span class="badge badge-info badge-pill gl-badge sm gl-mr-1">
           ${__('Task')}
@@ -245,7 +248,7 @@ export default {
       modal-id="create-task-modal"
       :title="s__('WorkItem|New Task')"
       hide-footer
-      body-class="gl-py-0!"
+      body-class="gl-p-0!"
     >
       <create-work-item
         :is-modal="true"

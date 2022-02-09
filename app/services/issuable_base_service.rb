@@ -494,7 +494,7 @@ class IssuableBaseService < ::BaseProjectService
   def handle_move_between_ids(issuable_position)
     return unless params[:move_between_ids]
 
-    after_id, before_id = params.delete(:move_between_ids)
+    before_id, after_id = params.delete(:move_between_ids)
 
     positioning_scope = issuable_position.class.relative_positioning_query_base(issuable_position)
 

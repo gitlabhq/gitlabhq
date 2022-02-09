@@ -2,6 +2,7 @@
 
 module Issues
   class BaseService < ::IssuableBaseService
+    extend ::Gitlab::Utils::Override
     include IncidentManagement::UsageData
     include IssueTypeHelpers
 
@@ -59,6 +60,23 @@ module Issues
       params.delete(:sentry_issue_attributes) unless current_user.can?(:update_sentry_issue, project)
 
       issue.system_note_timestamp = params[:created_at] || params[:updated_at]
+    end
+
+    override :handle_move_between_ids
+    def handle_move_between_ids(issue)
+      issue.check_repositioning_allowed! if params[:move_between_ids]
+
+      super
+
+      rebalance_if_needed(issue)
+    end
+
+    def issuable_for_positioning(id, positioning_scope)
+      return unless id
+
+      issue = positioning_scope.find(id)
+
+      issue if can?(current_user, :update_issue, issue)
     end
 
     def create_assignee_note(issue, old_assignees)

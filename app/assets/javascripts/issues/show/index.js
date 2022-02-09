@@ -74,6 +74,8 @@ export function initIssueApp(issueData, store) {
     return undefined;
   }
 
+  const { fullPath } = el.dataset;
+
   if (gon?.features?.fixCommentScroll) {
     scrollToTargetOnResize();
   }
@@ -88,6 +90,7 @@ export function initIssueApp(issueData, store) {
     store,
     provide: {
       canCreateIncident,
+      fullPath,
     },
     computed: {
       ...mapGetters(['getNoteableData']),

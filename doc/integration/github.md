@@ -4,116 +4,117 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Integrate your GitLab instance with GitHub **(FREE SELF)**
+# Use GitHub as an authentication provider **(FREE SELF)**
 
-You can integrate your GitLab instance with GitHub.com and GitHub Enterprise. This integration
-enables users to import projects from GitHub, or sign in to your GitLab instance
-with their GitHub account.
+You can integrate your GitLab instance with GitHub.com and GitHub Enterprise.
+You can import projects from GitHub, or sign in to GitLab
+with your GitHub credentials.
 
-## Security check
+## Create an OAuth app in GitHub
 
-Some integrations risk compromising GitLab accounts. To help mitigate this
-[OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
-vulnerability, append `/users/auth` to the end of the authorization callback URL.
+To enable the GitHub OmniAuth provider, you need an OAuth 2.0 client ID and client
+secret from GitHub:
+
+1. Sign in to GitHub.
+1. [Create an OAuth App](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
+   and provide the following information:
+   - The URL of your GitLab instance, such as `https://gitlab.example.com`.
+   - The authorization callback URL, such as, `https://gitlab.example.com/users/auth`.
+     Include the port number if your GitLab instance uses a non-default port.
+
+### Check for security vulnerabilities
+
+For some integrations, the [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
+vulnerability can compromise GitLab accounts.
+To mitigate this vulnerability, append `/users/auth` to the authorization
+callback URL.
 
 However, as far as we know, GitHub does not validate the subdomain part of the `redirect_uri`.
-This means that a subdomain takeover, an XSS, or an open redirect on any subdomain of
+Therefore, a subdomain takeover, an XSS, or an open redirect on any subdomain of
 your website could enable the covert redirect attack.
 
-## Enabling GitHub OAuth
+## Enable GitHub OAuth in GitLab
 
-To enable the GitHub OmniAuth provider, you need an OAuth 2 Client ID and Client Secret from GitHub. To get these credentials, sign into GitHub and follow their procedure for [Creating an OAuth App](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app).
+1. [Configure the initial settings](omniauth.md#configure-initial-settings) in GitLab.
 
-When you create an OAuth 2 app in GitHub, you need the following information:
+1. Edit the GitLab configuration file using the following information:
 
-- The URL of your GitLab instance, such as `https://gitlab.example.com`.
-- The authorization callback URL; in this case, `https://gitlab.example.com/users/auth`. Include the port number if your GitLab instance uses a non-default port.
+   | GitHub setting | Value in the GitLab configuration file | Description             |
+   |----------------|----------------------------------------|-------------------------|
+   | Client ID      | `YOUR_APP_ID`                          | OAuth 2.0 client ID     |
+   | Client secret  | `YOUR_APP_SECRET`                      | OAuth 2.0 client secret |
+   | URL            | `https://github.example.com/`          | GitHub deployment URL   |
 
-See [Configure initial settings](omniauth.md#configure-initial-settings) for initial settings.
+   - **For Omnibus installations**
 
-After you have configured the GitHub provider, you need the following information. You must substitute that information in the GitLab configuration file in these next steps.
+     1. Open the `/etc/gitlab/gitlab.rb` file.
 
-| Setting from GitHub  | Substitute in the GitLab configuration file  | Description |
-|:---------------------|:---------------------------------------------|:------------|
-| Client ID            | `YOUR_APP_ID`                                | OAuth 2 Client ID |
-| Client Secret        | `YOUR_APP_SECRET`                            | OAuth 2 Client Secret |
-| URL                  | `https://github.example.com/`                | GitHub Deployment URL |
+        For GitHub.com, update the following section:
 
-Follow these steps to incorporate the GitHub OAuth 2 app in your GitLab server:
+        ```ruby
+        gitlab_rails['omniauth_providers'] = [
+          {
+            name: "github",
+            # label: "Provider name", # optional label for login button, defaults to "GitHub"
+            app_id: "YOUR_APP_ID",
+            app_secret: "YOUR_APP_SECRET",
+            args: { scope: "user:email" }
+          }
+        ]
+        ```
 
-**For Omnibus installations**
+        For GitHub Enterprise, update the following section and replace
+        `https://github.example.com/` with your GitHub URL:
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+        ```ruby
+        gitlab_rails['omniauth_providers'] = [
+          {
+            name: "github",
+            # label: "Provider name", # optional label for login button, defaults to "GitHub"
+            app_id: "YOUR_APP_ID",
+            app_secret: "YOUR_APP_SECRET",
+            url: "https://github.example.com/",
+            args: { scope: "user:email" }
+          }
+        ]
+        ```
 
-   For GitHub.com:
+     1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+        GitLab.
 
-   ```ruby
-   gitlab_rails['omniauth_providers'] = [
-     {
-       name: "github",
-       # label: "Provider name", # optional label for login button, defaults to "GitHub"
-       app_id: "YOUR_APP_ID",
-       app_secret: "YOUR_APP_SECRET",
-       args: { scope: "user:email" }
-     }
-   ]
-   ```
+   - **For installations from source**
 
-   For GitHub Enterprise:
+     1. Open the `config/gitlab.yml` file.
 
-   ```ruby
-   gitlab_rails['omniauth_providers'] = [
-     {
-       name: "github",
-       # label: "Provider name", # optional label for login button, defaults to "GitHub"
-       app_id: "YOUR_APP_ID",
-       app_secret: "YOUR_APP_SECRET",
-       url: "https://github.example.com/",
-       args: { scope: "user:email" }
-     }
-   ]
-   ```
+        For GitHub.com, update the following section:
 
-   **Replace `https://github.example.com/` with your GitHub URL.**
+        ```yaml
+        - { name: 'github',
+            # label: 'Provider name', # optional label for login button, defaults to "GitHub"
+            app_id: 'YOUR_APP_ID',
+            app_secret: 'YOUR_APP_SECRET',
+            args: { scope: 'user:email' } }
+        ```
 
-1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
+        For GitHub Enterprise, update the following section and replace
+        `https://github.example.com/` with your GitHub URL:
 
----
+        ```yaml
+        - { name: 'github',
+            # label: 'Provider name', # optional label for login button, defaults to "GitHub"
+            app_id: 'YOUR_APP_ID',
+            app_secret: 'YOUR_APP_SECRET',
+            url: "https://github.example.com/",
+            args: { scope: 'user:email' } }
+        ```
 
-**For installations from source**
+     1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
+        GitLab.
 
-1. Navigate to your repository and edit `config/gitlab.yml`:
+1. Refresh the GitLab sign-in page. A GitHub icon should display below the
+   sign-in form.
 
-   For GitHub.com:
-
-   ```yaml
-   - { name: 'github',
-       # label: 'Provider name', # optional label for login button, defaults to "GitHub"
-       app_id: 'YOUR_APP_ID',
-       app_secret: 'YOUR_APP_SECRET',
-       args: { scope: 'user:email' } }
-   ```
-
-   For GitHub Enterprise:
-
-   ```yaml
-   - { name: 'github',
-       # label: 'Provider name', # optional label for login button, defaults to "GitHub"
-       app_id: 'YOUR_APP_ID',
-       app_secret: 'YOUR_APP_SECRET',
-       url: "https://github.example.com/",
-       args: { scope: 'user:email' } }
-   ```
-
-   **Replace `https://github.example.com/` with your GitHub URL.**
-
-1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source) GitLab for the changes to take effect.
-
----
-
-1. Refresh the GitLab sign in page. You should now see a GitHub icon below the regular sign in form.
-
-1. Click the icon to begin the authentication process. GitHub asks the user to sign in and authorize the GitLab application.
+1. Select the icon. Sign in to GitHub and authorize the GitLab application.
 
 ## GitHub Enterprise with self-signed Certificate
 

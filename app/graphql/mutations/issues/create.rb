@@ -51,6 +51,14 @@ module Mutations
                required: false,
                description: 'Array of user IDs to assign to the issue.'
 
+      argument :move_before_id, ::Types::GlobalIDType[::Issue],
+               required: false,
+               description: 'Global ID of issue that should be placed before the current issue.'
+
+      argument :move_after_id, ::Types::GlobalIDType[::Issue],
+               required: false,
+               description: 'Global ID of issue that should be placed after the current issue.'
+
       field :issue,
             Types::IssueType,
             null: true,
@@ -92,6 +100,13 @@ module Mutations
         params[:milestone_id] &&= params[:milestone_id]&.model_id
         params[:assignee_ids] &&= params[:assignee_ids].map { |assignee_id| assignee_id&.model_id }
         params[:label_ids] &&= params[:label_ids].map { |label_id| label_id&.model_id }
+
+        if params[:move_before_id].present? || params[:move_after_id].present?
+          params[:move_between_ids] = [
+            params.delete(:move_before_id)&.model_id,
+            params.delete(:move_after_id)&.model_id
+          ]
+        end
 
         params
       end
