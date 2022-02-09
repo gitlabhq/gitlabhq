@@ -108,7 +108,9 @@ The certificate [fingerprint algorithm](../../../integration/saml.md#notes-on-co
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/339888) in GitLab 14.7 to not enforce SSO checks for Git activity originating from CI/CD jobs.
 
-With this option enabled, users (except users with the Owner role) must access GitLab using your group GitLab single sign-on URL to access group resources. Users added manually as members can't access group resources.
+With this option enabled, users must access GitLab using your group GitLab single sign-on URL to access group resources.
+Users can't be added as new members manually.
+Users with the Owner role can use the standard sign in process to make necessary changes to top-level group settings.
 
 SSO enforcement does not affect sign in or access to any resources outside of the group. Users can view which groups and projects they are a member of without SSO sign in.
 
