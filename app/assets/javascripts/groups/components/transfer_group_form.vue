@@ -64,6 +64,7 @@ export default {
         :empty-namespace-title="$options.i18n.emptyNamespaceTitle"
         :include-headers="false"
         include-empty-namespace
+        data-testid="transfer-group-namespace-select"
         @select="handleSelected"
       />
       <input type="hidden" name="new_parent_group_id" :value="selectedId" />

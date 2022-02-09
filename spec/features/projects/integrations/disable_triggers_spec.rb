@@ -3,16 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe 'Disable individual triggers', :js do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   let(:checkbox_selector) { 'input[name$="_events]"]' }
 
   before do
-    visit_project_integration(service_name)
+    visit_project_integration(integration_name)
   end
 
-  context 'service has multiple supported events' do
-    let(:service_name) { 'Jenkins' }
+  context 'integration has multiple supported events' do
+    let(:integration_name) { 'Jenkins' }
 
     it 'shows trigger checkboxes' do
       event_count = Integrations::Jenkins.supported_events.count
@@ -22,8 +22,8 @@ RSpec.describe 'Disable individual triggers', :js do
     end
   end
 
-  context 'services only has one supported event' do
-    let(:service_name) { 'Asana' }
+  context 'integrations only has one supported event' do
+    let(:integration_name) { 'Asana' }
 
     it "doesn't show unnecessary Trigger checkboxes" do
       expect(page).not_to have_content "Trigger"

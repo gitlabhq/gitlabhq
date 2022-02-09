@@ -32975,9 +32975,6 @@ msgstr ""
 msgid "Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email."
 msgstr ""
 
-msgid "Service Usage Data"
-msgstr ""
-
 msgid "Service account generated successfully"
 msgstr ""
 
@@ -36991,6 +36988,12 @@ msgid "This is the number of %{billable_users_link_start}billable users%{link_en
 msgstr ""
 
 msgid "This is your current session"
+msgstr ""
+
+msgid "This issue cannot be assigned to a confidential epic because it is public."
+msgstr ""
+
+msgid "This issue cannot be made public because it belongs to a confidential epic."
 msgstr ""
 
 msgid "This issue is confidential and should only be visible to team members with at least Reporter access."
@@ -43869,12 +43872,6 @@ msgid "then"
 msgstr ""
 
 msgid "this document"
-msgstr ""
-
-msgid "this issue cannot be assigned to a confidential epic since it is public"
-msgstr ""
-
-msgid "this issue cannot be made public since it belongs to a confidential epic"
 msgstr ""
 
 msgid "time summary"

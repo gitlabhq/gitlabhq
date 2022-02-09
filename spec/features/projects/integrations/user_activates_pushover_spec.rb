@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates Pushover' do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   before do
     stub_request(:post, /.*api.pushover.net.*/)
   end
 
-  it 'activates service', :js do
+  it 'activates integration', :js do
     visit_project_integration('Pushover')
     fill_in('API key', with: 'verySecret')
     fill_in('User key', with: 'verySecret')

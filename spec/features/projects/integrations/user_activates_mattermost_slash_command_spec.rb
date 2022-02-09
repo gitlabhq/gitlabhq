@@ -4,14 +4,14 @@ require 'spec_helper'
 
 RSpec.describe 'Set up Mattermost slash commands', :js do
   describe 'user visits the mattermost slash command config page' do
-    include_context 'project service activation'
+    include_context 'project integration activation'
 
     before do
       stub_mattermost_setting(enabled: mattermost_enabled)
       visit_project_integration('Mattermost slash commands')
     end
 
-    context 'mattermost service is enabled' do
+    context 'mattermost integration is enabled' do
       let(:mattermost_enabled) { true }
 
       describe 'activation' do
@@ -84,7 +84,9 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
       end
 
       it 'shows an error alert with the error message if there is an error requesting teams' do
-        allow_any_instance_of(Integrations::MattermostSlashCommands).to receive(:list_teams) { [[], 'test mattermost error message'] }
+        allow_next_instance_of(Integrations::MattermostSlashCommands) do |integration|
+          allow(integration).to receive(:list_teams).and_return([[], 'test mattermost error message'])
+        end
 
         click_link 'Add to Mattermost'
 
@@ -113,7 +115,9 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
       def stub_teams(count: 0)
         teams = create_teams(count)
 
-        allow_any_instance_of(Integrations::MattermostSlashCommands).to receive(:list_teams) { [teams, nil] }
+        allow_next_instance_of(Integrations::MattermostSlashCommands) do |integration|
+          allow(integration).to receive(:list_teams).and_return([teams, nil])
+        end
 
         teams
       end
@@ -129,7 +133,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
       end
     end
 
-    context 'mattermost service is not enabled' do
+    context 'mattermost integration is not enabled' do
       let(:mattermost_enabled) { false }
 
       it 'shows the correct trigger url' do

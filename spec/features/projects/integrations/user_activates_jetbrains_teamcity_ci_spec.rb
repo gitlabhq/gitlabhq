@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates JetBrains TeamCity CI' do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   before do
     stub_request(:post, /.*teamcity.example.com.*/)
   end
 
-  it 'activates service', :js do
+  it 'activates integration', :js do
     visit_project_integration('JetBrains TeamCity')
     check('Push')
     check('Merge Request')

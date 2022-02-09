@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates PivotalTracker' do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   before do
     stub_request(:post, /.*www.pivotaltracker.com.*/)
   end
 
-  it 'activates service', :js do
+  it 'activates integration', :js do
     visit_project_integration('Pivotal Tracker')
     fill_in('Token', with: 'verySecret')
 

@@ -729,8 +729,16 @@ the security vulnerabilities in your groups, projects and pipelines.
 
 ## Vulnerabilities database update
 
-If you use container scanning and want more information about the vulnerabilities database update,
-see the [maintenance table](../vulnerabilities/index.md#vulnerability-scanner-maintenance).
+All analyzer images are [updated daily](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/README.md#image-updates).
+
+The images include the latest advisory database available for their respective scanner. Each
+scanner includes data from multiple sources:
+
+- [Grype](https://github.com/anchore/grype#grypes-database).
+- [Trivy](https://aquasecurity.github.io/trivy/latest/vulnerability/detection/data-source/).
+
+Database update information for other analyzers is available in the
+[maintenance table](../vulnerabilities/index.md#vulnerability-scanner-maintenance).
 
 ## Interacting with the vulnerabilities
 

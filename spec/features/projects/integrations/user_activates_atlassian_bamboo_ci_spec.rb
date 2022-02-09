@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates Atlassian Bamboo CI' do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   before do
     stub_request(:get, /.*bamboo.example.com.*/)
   end
 
-  it 'activates service', :js do
+  it 'activates integration', :js do
     visit_project_integration('Atlassian Bamboo')
     fill_in('Bamboo URL', with: 'http://bamboo.example.com')
     fill_in('Build key', with: 'KEY')

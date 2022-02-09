@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates Prometheus' do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   before do
     stub_request(:get, /.*prometheus.example.com.*/)
   end
 
-  it 'does not activate service and informs about deprecation', :js do
+  it 'does not activate integration and informs about deprecation', :js do
     visit_project_integration('Prometheus')
     check('Active')
     fill_in('API URL', with: 'http://prometheus.example.com')

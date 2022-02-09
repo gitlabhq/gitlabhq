@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates Packagist' do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   before do
     stub_request(:post, /.*packagist.org.*/)
   end
 
-  it 'activates service', :js do
+  it 'activates integration', :js do
     visit_project_integration('Packagist')
     fill_in('Username', with: 'theUser')
     fill_in('Token', with: 'verySecret')

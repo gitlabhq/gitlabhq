@@ -54,7 +54,7 @@ describe('UpgradeBanner component', () => {
 
       createComponent();
 
-      expectTracking('display_banner', SECURITY_UPGRADE_BANNER);
+      expectTracking('render', SECURITY_UPGRADE_BANNER);
     });
   });
 

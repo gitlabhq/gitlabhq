@@ -75,7 +75,7 @@ If a test failed in the project's default branch in the last 14 days, a message 
 
 ## How to set it up
 
-To enable the Unit test reports in merge requests, you need to add
+To enable the Unit test reports in merge requests, you must add
 [`artifacts:reports:junit`](yaml/artifacts_reports.md#artifactsreportsjunit)
 in `.gitlab-ci.yml`, and specify the path(s) of the generated test reports.
 The reports must be `.xml` files, otherwise [GitLab returns an Error 500](https://gitlab.com/gitlab-org/gitlab/-/issues/216575).

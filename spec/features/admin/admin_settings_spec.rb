@@ -794,7 +794,7 @@ RSpec.describe 'Admin updates settings' do
       end
     end
 
-    context 'Service Usage Data page' do
+    context 'Service usage data page' do
       before do
         stub_usage_data_connections
         stub_database_flavor_check

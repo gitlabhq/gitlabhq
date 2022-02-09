@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Integrations settings form', :js do
   include IntegrationsHelper
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   # Github integration is EE, so let's remove it here.
   integration_names = Integration.available_integration_names - %w[github]

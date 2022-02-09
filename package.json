@@ -241,7 +241,7 @@
     "jest-util": "^26.5.2",
     "jsdoc": "^3.5.5",
     "jsdoc-vue": "^1.0.0",
-    "markdownlint-cli": "0.26.0",
+    "markdownlint-cli": "0.31.0",
     "md5": "^2.2.1",
     "miragejs": "^0.1.40",
     "mock-apollo-client": "^0.7.0",

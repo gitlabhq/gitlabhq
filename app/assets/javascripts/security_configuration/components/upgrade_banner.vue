@@ -28,7 +28,7 @@ export default {
     buttonText: s__('SecurityConfiguration|Upgrade or start a free trial'),
   },
   mounted() {
-    this.track('display_banner', { label: SECURITY_UPGRADE_BANNER });
+    this.track('render', { label: SECURITY_UPGRADE_BANNER });
   },
   methods: {
     bannerClosed() {

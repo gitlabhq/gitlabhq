@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'project service Jira context' do
+RSpec.shared_context 'project integration Jira context' do
   let(:url) { 'https://jira.example.com' }
   let(:test_url) { 'https://jira.example.com/rest/api/2/serverInfo' }
 

@@ -271,7 +271,7 @@
                   = _('Metrics and profiling')
             - if Feature.enabled?(:admin_application_settings_service_usage_data_center, default_enabled: :yaml)
               = nav_link(path: ['application_settings#service_usage_data']) do
-                = link_to service_usage_data_admin_application_settings_path, title: _('Service Usage Data') do
+                = link_to service_usage_data_admin_application_settings_path, title: _('Service usage data') do
                   %span
                     = _('Service usage data')
             = nav_link(path: 'application_settings#network') do

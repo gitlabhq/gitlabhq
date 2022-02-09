@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views services', :js do
-  include_context 'project service activation'
+RSpec.describe 'User views integrations', :js do
+  include_context 'project integration activation'
 
-  it 'shows the list of available services' do
+  it 'shows the list of available integrations' do
     visit_project_integrations
 
     expect(page).to have_content('Integrations')

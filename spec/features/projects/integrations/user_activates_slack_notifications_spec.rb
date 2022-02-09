@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates Slack notifications', :js do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
-  context 'when service is not configured yet' do
+  context 'when integration is not configured yet' do
     before do
       visit_project_integration('Slack notifications')
     end
 
-    it 'activates service' do
+    it 'activates integration' do
       fill_in('Webhook', with: 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685')
 
       click_test_then_save_integration
@@ -19,7 +19,7 @@ RSpec.describe 'User activates Slack notifications', :js do
     end
   end
 
-  context 'when service is already configured' do
+  context 'when integration is already configured' do
     let(:integration) { Integrations::Slack.new }
     let(:project) { create(:project, slack_integration: integration) }
 

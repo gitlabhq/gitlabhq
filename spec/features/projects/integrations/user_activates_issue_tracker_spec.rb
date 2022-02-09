@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates issue tracker', :js do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   let(:url) { 'http://tracker.example.com' }
 
@@ -17,7 +17,7 @@ RSpec.describe 'User activates issue tracker', :js do
   end
 
   shared_examples 'external issue tracker activation' do |tracker:, skip_new_issue_url: false, skip_test: false|
-    describe 'user sets and activates the Service' do
+    describe 'user sets and activates the integration' do
       context 'when the connection test succeeds' do
         before do
           stub_request(:head, url).to_return(headers: { 'Content-Type' => 'application/json' })
@@ -32,7 +32,7 @@ RSpec.describe 'User activates issue tracker', :js do
           end
         end
 
-        it 'activates the service' do
+        it 'activates the integration' do
           expect(page).to have_content("#{tracker} settings saved and active.")
           expect(current_path).to eq(edit_project_integration_path(project, tracker.parameterize(separator: '_')))
         end
@@ -45,7 +45,7 @@ RSpec.describe 'User activates issue tracker', :js do
       end
 
       context 'when the connection test fails' do
-        it 'activates the service' do
+        it 'activates the integration' do
           stub_request(:head, url).to_raise(Gitlab::HTTP::Error)
 
           visit_project_integration(tracker)
@@ -63,7 +63,7 @@ RSpec.describe 'User activates issue tracker', :js do
       end
     end
 
-    describe 'user disables the service' do
+    describe 'user disables the integration' do
       before do
         visit_project_integration(tracker)
         fill_form(disable: true, skip_new_issue_url: skip_new_issue_url)
@@ -71,7 +71,7 @@ RSpec.describe 'User activates issue tracker', :js do
         click_button('Save changes')
       end
 
-      it 'saves but does not activate the service' do
+      it 'saves but does not activate the integration' do
         expect(page).to have_content("#{tracker} settings saved, but not active.")
         expect(current_path).to eq(edit_project_integration_path(project, tracker.parameterize(separator: '_')))
       end

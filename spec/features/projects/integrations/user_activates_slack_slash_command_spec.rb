@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Slack slash commands', :js do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   before do
     visit_project_integration('Slack slash commands')

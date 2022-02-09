@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates Emails on push' do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
-  it 'activates service', :js do
+  it 'activates integration', :js do
     visit_project_integration('Emails on push')
     fill_in('Recipients', with: 'qa@company.name')
 

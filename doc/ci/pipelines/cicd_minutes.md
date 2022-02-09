@@ -149,7 +149,7 @@ namespace.
 
 ## How CI/CD minutes are calculated
 
-CI/CD minutes are calculated based on:
+CI/CD minutes for individual jobs are calculated based on:
 
 - The duration the job runs.
 - The visibility of the projects where the job runs.
@@ -173,6 +173,10 @@ For example:
   overall consumption for the `gitlab-org` namespace, not the `alice` namespace.
 - If a pipeline runs for one of the personal projects for `alice`, the CI/CD minutes
   are added to the overall consumption for the `alice` namespace.
+
+The CI/CD minutes used by one pipeline is the total CI/CD minutes used by all the jobs
+that ran in the pipeline. The CI/CD minute usage for a pipeline can be higher than
+the duration of the pipeline if many jobs ran at the same time.
 
 ### Cost factor
 
