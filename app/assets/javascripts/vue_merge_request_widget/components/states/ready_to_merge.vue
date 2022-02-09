@@ -14,7 +14,6 @@ import {
 import { isEmpty } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import createFlash from '~/flash';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
@@ -22,7 +21,6 @@ import { __, s__ } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import MergeRequest from '../../../merge_request';
 import {
   AUTO_MERGE_STRATEGIES,
   WARNING,
@@ -51,7 +49,7 @@ const MERGE_SUCCESS_STATUS = 'success';
 const MERGE_HOOK_VALIDATION_ERROR_STATUS = 'hook_validation_error';
 
 const { transitions } = STATE_MACHINE;
-const { MERGE, MERGED, MERGE_FAILURE, AUTO_MERGE } = transitions;
+const { MERGE, MERGE_FAILURE, AUTO_MERGE, MERGING } = transitions;
 
 export default {
   name: 'ReadyToMerge',
@@ -412,7 +410,7 @@ export default {
             eventHub.$emit('MRWidgetUpdateRequested');
             this.mr.transitionStateMachine({ transition: AUTO_MERGE });
           } else if (data.status === MERGE_SUCCESS_STATUS) {
-            this.initiateMergePolling();
+            this.mr.transitionStateMachine({ transition: MERGING });
           } else if (hasError) {
             eventHub.$emit('FailedToMerge', data.merge_error);
             this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
@@ -442,52 +440,6 @@ export default {
     },
     onMergeWithFailedPipelineConfirmation() {
       this.handleMergeButtonClick(false, true, true);
-    },
-    initiateMergePolling() {
-      simplePoll(
-        (continuePolling, stopPolling) => {
-          this.handleMergePolling(continuePolling, stopPolling);
-        },
-        { timeout: 0 },
-      );
-    },
-    handleMergePolling(continuePolling, stopPolling) {
-      this.service
-        .poll()
-        .then((res) => res.data)
-        .then((data) => {
-          if (data.state === 'merged') {
-            // If state is merged we should update the widget and stop the polling
-            eventHub.$emit('MRWidgetUpdateRequested');
-            eventHub.$emit('FetchActionsContent');
-            MergeRequest.hideCloseButton();
-            MergeRequest.decreaseCounter();
-            this.mr.transitionStateMachine({ transition: MERGED });
-            stopPolling();
-
-            refreshUserMergeRequestCounts();
-
-            // If user checked remove source branch and we didn't remove the branch yet
-            // we should start another polling for source branch remove process
-            if (this.removeSourceBranch && data.source_branch_exists) {
-              this.initiateRemoveSourceBranchPolling();
-            }
-          } else if (data.merge_error) {
-            eventHub.$emit('FailedToMerge', data.merge_error);
-            this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
-            stopPolling();
-          } else {
-            // MR is not merged yet, continue polling until the state becomes 'merged'
-            continuePolling();
-          }
-        })
-        .catch(() => {
-          createFlash({
-            message: __('Something went wrong while merging this merge request. Please try again.'),
-          });
-          this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
-          stopPolling();
-        });
     },
     initiateRemoveSourceBranchPolling() {
       // We need to show source branch is being removed spinner in another component

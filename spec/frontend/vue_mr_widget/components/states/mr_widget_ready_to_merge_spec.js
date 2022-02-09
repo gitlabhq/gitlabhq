@@ -328,7 +328,7 @@ describe('ReadyToMerge', () => {
 
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
         jest.spyOn(wrapper.vm.service, 'merge').mockReturnValue(returnPromise('success'));
-        jest.spyOn(wrapper.vm, 'initiateMergePolling').mockImplementation(() => {});
+        jest.spyOn(wrapper.vm.mr, 'transitionStateMachine');
         wrapper.vm.handleMergeButtonClick();
 
         expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
@@ -337,7 +337,9 @@ describe('ReadyToMerge', () => {
 
         setImmediate(() => {
           expect(wrapper.vm.isMakingRequest).toBeTruthy();
-          expect(wrapper.vm.initiateMergePolling).toHaveBeenCalled();
+          expect(wrapper.vm.mr.transitionStateMachine).toHaveBeenCalledWith({
+            transition: 'start-merge',
+          });
 
           const params = wrapper.vm.service.merge.mock.calls[0][0];
 
@@ -345,26 +347,6 @@ describe('ReadyToMerge', () => {
           expect(params.auto_merge_strategy).toBeUndefined();
           done();
         });
-      });
-    });
-
-    describe('initiateMergePolling', () => {
-      it('should call simplePoll', () => {
-        createComponent();
-
-        wrapper.vm.initiateMergePolling();
-
-        expect(simplePoll).toHaveBeenCalledWith(expect.any(Function), { timeout: 0 });
-      });
-
-      it('should call handleMergePolling', () => {
-        createComponent();
-
-        jest.spyOn(wrapper.vm, 'handleMergePolling').mockImplementation(() => {});
-
-        wrapper.vm.initiateMergePolling();
-
-        expect(wrapper.vm.handleMergePolling).toHaveBeenCalled();
       });
     });
 

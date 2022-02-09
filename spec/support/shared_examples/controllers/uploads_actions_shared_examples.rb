@@ -205,10 +205,30 @@ RSpec.shared_examples 'handle uploads' do
               allow_any_instance_of(FileUploader).to receive(:image?).and_return(true)
             end
 
-            it "responds with status 200" do
-              show_upload
+            context "enforce_auth_checks_on_uploads feature flag" do
+              context "with flag enabled" do
+                before do
+                  stub_feature_flags(enforce_auth_checks_on_uploads: true)
+                end
 
-              expect(response).to have_gitlab_http_status(:ok)
+                it "responds with status 302" do
+                  show_upload
+
+                  expect(response).to have_gitlab_http_status(:redirect)
+                end
+              end
+
+              context "with flag disabled" do
+                before do
+                  stub_feature_flags(enforce_auth_checks_on_uploads: false)
+                end
+
+                it "responds with status 200" do
+                  show_upload
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                end
+              end
             end
           end
 
@@ -276,10 +296,30 @@ RSpec.shared_examples 'handle uploads' do
                 allow_any_instance_of(FileUploader).to receive(:image?).and_return(true)
               end
 
-              it "responds with status 200" do
-                show_upload
+              context "enforce_auth_checks_on_uploads feature flag" do
+                context "with flag enabled" do
+                  before do
+                    stub_feature_flags(enforce_auth_checks_on_uploads: true)
+                  end
 
-                expect(response).to have_gitlab_http_status(:ok)
+                  it "responds with status 404" do
+                    show_upload
+
+                    expect(response).to have_gitlab_http_status(:not_found)
+                  end
+                end
+
+                context "with flag disabled" do
+                  before do
+                    stub_feature_flags(enforce_auth_checks_on_uploads: false)
+                  end
+
+                  it "responds with status 200" do
+                    show_upload
+
+                    expect(response).to have_gitlab_http_status(:ok)
+                  end
+                end
               end
             end
 
