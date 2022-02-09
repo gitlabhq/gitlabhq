@@ -1,14 +1,16 @@
 <script>
-import { GlModal, GlModalDirective, GlFormInput, GlButton } from '@gitlab/ui';
+import { GlModal, GlModalDirective, GlFormInput, GlButton, GlAlert, GlSprintf } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';
 
 export default {
   components: {
+    GlAlert,
     GlModal,
     GlFormInput,
     GlButton,
+    GlSprintf,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -20,6 +22,26 @@ export default {
     },
     formPath: {
       type: String,
+      required: true,
+    },
+    isFork: {
+      type: Boolean,
+      required: true,
+    },
+    issuesCount: {
+      type: Number,
+      required: true,
+    },
+    mergeRequestsCount: {
+      type: Number,
+      required: true,
+    },
+    forksCount: {
+      type: Number,
+      required: true,
+    },
+    starsCount: {
+      type: Number,
       required: true,
     },
   },
@@ -55,8 +77,17 @@ export default {
   },
   strings: {
     deleteProject: __('Delete project'),
-    title: __('Delete project. Are you ABSOLUTELY SURE?'),
-    confirmText: __('Please type the following to confirm:'),
+    title: __('Are you absolutely sure?'),
+    confirmText: __('Enter the following to confirm:'),
+    isForkAlertTitle: __('You are about to delete this forked project containing:'),
+    isNotForkAlertTitle: __('You are about to delete this project containing:'),
+    isForkAlertBody: __('This process deletes the project repository and all related resources.'),
+    isNotForkAlertBody: __(
+      'This project is %{strongStart}NOT%{strongEnd} a fork. This process deletes the project repository and all related resources.',
+    ),
+    isNotForkMessage: __(
+      'This project is %{strongStart}NOT%{strongEnd} a fork, and has the following:',
+    ),
   },
 };
 </script>
@@ -83,7 +114,52 @@ export default {
     >
       <template #modal-title>{{ $options.strings.title }}</template>
       <div>
-        <slot name="modal-body"></slot>
+        <gl-alert class="gl-mb-5" variant="danger" :dismissible="false">
+          <h4 v-if="isFork" data-testid="delete-alert-title" class="gl-alert-title">
+            {{ $options.strings.isForkAlertTitle }}
+          </h4>
+          <h4 v-else data-testid="delete-alert-title" class="gl-alert-title">
+            {{ $options.strings.isNotForkAlertTitle }}
+          </h4>
+          <ul>
+            <li>
+              <gl-sprintf :message="n__('%d issue', '%d issues', issuesCount)">
+                <template #issuesCount>{{ issuesCount }}</template>
+              </gl-sprintf>
+            </li>
+            <li>
+              <gl-sprintf
+                :message="n__('%d merge requests', '%d merge requests', mergeRequestsCount)"
+              >
+                <template #mergeRequestsCount>{{ mergeRequestsCount }}</template>
+              </gl-sprintf>
+            </li>
+            <li>
+              <gl-sprintf :message="n__('%d fork', '%d forks', forksCount)">
+                <template #forksCount>{{ forksCount }}</template>
+              </gl-sprintf>
+            </li>
+            <li>
+              <gl-sprintf :message="n__('%d star', '%d stars', starsCount)">
+                <template #starsCount>{{ starsCount }}</template>
+              </gl-sprintf>
+            </li>
+          </ul>
+          <gl-sprintf
+            v-if="isFork"
+            data-testid="delete-alert-body"
+            :message="$options.strings.isForkAlertBody"
+          />
+          <gl-sprintf
+            v-else
+            data-testid="delete-alert-body"
+            :message="$options.strings.isNotForkAlertBody"
+          >
+            <template #strong="{ content }">
+              <strong>{{ content }}</strong>
+            </template>
+          </gl-sprintf>
+        </gl-alert>
         <p class="gl-mb-1">{{ $options.strings.confirmText }}</p>
         <p>
           <code class="gl-white-space-pre-wrap">{{ confirmPhrase }}</code>

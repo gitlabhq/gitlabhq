@@ -22,10 +22,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
-  before_action :set_issuables_index, if: ->(c) {
-    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) ||
-    (c.action_name.to_sym == :index && Feature.disabled?(:vue_issues_list, project&.group, default_enabled: :yaml))
-  }
+  before_action :set_issuables_index, if: ->(c) { SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) }
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -80,6 +77,8 @@ class Projects::IssuesController < Projects::ApplicationController
   attr_accessor :vulnerability_id
 
   def index
+    set_issuables_index if !html_request? || Feature.disabled?(:vue_issues_list, project&.group, default_enabled: :yaml)
+
     @issues = @issuables
 
     respond_to do |format|

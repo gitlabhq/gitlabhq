@@ -49,16 +49,17 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
         primarybuttontext=""
         secondarybuttonlink=""
         secondarybuttontext=""
-        title="You are about to permanently delete this project"
+        title=""
         variant="danger"
       >
-        <p>
-          This project is 
-          <strong>
-            NOT
-          </strong>
-           a fork, and has the following:
-        </p>
+        <h4
+          class="gl-alert-title"
+          data-testid="delete-alert-title"
+        >
+          
+          You are about to delete this project containing:
+        
+        </h4>
          
         <ul>
           <li>
@@ -77,25 +78,17 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
             4 stars
           </li>
         </ul>
-         After a project is permanently deleted, it 
+         This project is 
         <strong>
-          cannot be recovered
+          NOT
         </strong>
-        . Permanently deleting this project will 
-        <strong>
-          immediately delete
-        </strong>
-         its repositories and 
-        <strong>
-          all related resources
-        </strong>
-        , including issues, merge requests etc.
+         a fork. This process deletes the project repository and all related resources.
       </gl-alert-stub>
        
       <p
         class="gl-mb-1"
       >
-        Please type the following to confirm:
+        Enter the following to confirm:
       </p>
        
       <p>

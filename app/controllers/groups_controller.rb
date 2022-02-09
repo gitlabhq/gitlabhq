@@ -210,7 +210,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def issues
-    return super if Feature.disabled?(:vue_issues_list, group, default_enabled: :yaml)
+    return super if !html_request? || Feature.disabled?(:vue_issues_list, group, default_enabled: :yaml)
 
     @has_issues = IssuesFinder.new(current_user, group_id: group.id).execute
       .non_archived
@@ -220,7 +220,6 @@ class GroupsController < Groups::ApplicationController
 
     respond_to do |format|
       format.html
-      format.atom { render layout: 'xml.atom' }
     end
   end
 

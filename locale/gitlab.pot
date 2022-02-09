@@ -3099,12 +3099,6 @@ msgstr ""
 msgid "AdvancedSearch|Reindex required"
 msgstr ""
 
-msgid "After a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc."
-msgstr ""
-
-msgid "After a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. You will lose this project's repository and %{strongStart}all related resources%{strongEnd}, including issues and merge requests."
-msgstr ""
-
 msgid "After a successful password update you will be redirected to login screen."
 msgstr ""
 
@@ -4657,10 +4651,10 @@ msgstr ""
 msgid "Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "Are you ABSOLUTELY SURE you wish to delete this project?"
+msgid "Are you ABSOLUTELY SURE you wish to remove this group?"
 msgstr ""
 
-msgid "Are you ABSOLUTELY SURE you wish to remove this group?"
+msgid "Are you absolutely sure?"
 msgstr ""
 
 msgid "Are you sure that you want to archive this project?"
@@ -10706,9 +10700,6 @@ msgstr ""
 msgid "Customer relations"
 msgstr ""
 
-msgid "Customizable by an administrator."
-msgstr ""
-
 msgid "Customizable by owners."
 msgstr ""
 
@@ -11558,9 +11549,6 @@ msgstr ""
 msgid "Definition"
 msgstr ""
 
-msgid "Delayed Project Deletion (%{adjourned_deletion})"
-msgstr ""
-
 msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after its timer finishes."
 msgstr ""
 
@@ -11642,9 +11630,6 @@ msgstr ""
 msgid "Delete project"
 msgstr ""
 
-msgid "Delete project. Are you ABSOLUTELY SURE?"
-msgstr ""
-
 msgid "Delete row"
 msgstr ""
 
@@ -11670,6 +11655,9 @@ msgid "Delete this attachment"
 msgstr ""
 
 msgid "Delete this epic and all descendants?"
+msgstr ""
+
+msgid "Delete this project"
 msgstr ""
 
 msgid "Delete user list"
@@ -13659,6 +13647,9 @@ msgid "Enter the %{name} title"
 msgstr ""
 
 msgid "Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes."
+msgstr ""
+
+msgid "Enter the following to confirm:"
 msgstr ""
 
 msgid "Enter the name of your application, and we'll return a unique %{type}."
@@ -26229,9 +26220,6 @@ msgstr ""
 msgid "Permalink"
 msgstr ""
 
-msgid "Permanently delete project"
-msgstr ""
-
 msgid "Permanently remove group"
 msgstr ""
 
@@ -27121,9 +27109,6 @@ msgid "Please try and refresh the page. If the problem persists please contact s
 msgstr ""
 
 msgid "Please type %{phrase_code} to proceed or close this modal to cancel."
-msgstr ""
-
-msgid "Please type the following to confirm:"
 msgstr ""
 
 msgid "Please use this form to report to the admin users who create spam issues, comments or behave inappropriately."
@@ -28752,12 +28737,6 @@ msgstr ""
 msgid "Projects to index"
 msgstr ""
 
-msgid "Projects will be permanently deleted after a %{waiting_period}-day waiting period."
-msgstr ""
-
-msgid "Projects will be permanently deleted immediately."
-msgstr ""
-
 msgid "Projects with critical vulnerabilities"
 msgstr ""
 
@@ -29716,9 +29695,6 @@ msgid "Recently used"
 msgstr ""
 
 msgid "Reconfigure"
-msgstr ""
-
-msgid "Recovering projects"
 msgstr ""
 
 msgid "Recovery Codes"
@@ -30853,6 +30829,9 @@ msgid "Restore group"
 msgstr ""
 
 msgid "Restore project"
+msgstr ""
+
+msgid "Restoring projects"
 msgstr ""
 
 msgid "Restoring the group will prevent the group, its subgroups and projects from being removed on this date."
@@ -36801,10 +36780,10 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key"
 msgstr ""
 
-msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}immediately%{strongClose}, including its repositories and all related resources, including issues and merge requests."
+msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this project contains. %{strongOpen}There is no going back%{strongClose}"
 msgstr ""
 
-msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}on %{date}%{strongClose}, including its repositories and all related resources, including issues and merge requests."
+msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} on %{date} and everything this project contains."
 msgstr ""
 
 msgid "This action will %{strongOpen}permanently remove%{strongClose} %{codeOpen}%{group}%{codeClose} %{strongOpen}immediately%{strongClose}."
@@ -36931,9 +36910,6 @@ msgid "This field is required."
 msgstr ""
 
 msgid "This file was modified for readability, and can't accept suggestions. Edit it directly."
-msgstr ""
-
-msgid "This forked project has the following:"
 msgstr ""
 
 msgid "This form is disabled in preview"
@@ -37185,7 +37161,13 @@ msgstr ""
 msgid "This pipeline was triggered by a schedule."
 msgstr ""
 
+msgid "This process deletes the project repository and all related resources."
+msgstr ""
+
 msgid "This project"
+msgstr ""
+
+msgid "This project can be restored until %{date}."
 msgstr ""
 
 msgid "This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}. To make this project %{visibilityLevel}, you must first %{openEditLink}change the visibility%{closeEditLink} of the parent group."
@@ -37204,6 +37186,9 @@ msgid "This project has no active access tokens."
 msgstr ""
 
 msgid "This project is %{strongStart}NOT%{strongEnd} a fork, and has the following:"
+msgstr ""
+
+msgid "This project is %{strongStart}NOT%{strongEnd} a fork. This process deletes the project repository and all related resources."
 msgstr ""
 
 msgid "This project is archived and cannot be commented on."
@@ -41171,7 +41156,10 @@ msgstr ""
 msgid "You are about to add %{usersTag} people to the discussion. They will all receive a notification."
 msgstr ""
 
-msgid "You are about to permanently delete this project"
+msgid "You are about to delete this forked project containing:"
+msgstr ""
+
+msgid "You are about to delete this project containing:"
 msgstr ""
 
 msgid "You are about to transfer the control of your account to %{group_name} group. This action is NOT reversible, you won't be able to access any of your groups and projects outside of %{group_name} once this transfer is complete."
@@ -41400,9 +41388,6 @@ msgid "You can only transfer the project to namespaces you manage."
 msgstr ""
 
 msgid "You can only upload one design when dropping onto an existing design."
-msgstr ""
-
-msgid "You can recover this project until %{date}"
 msgstr ""
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
