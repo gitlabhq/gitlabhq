@@ -78,14 +78,16 @@ Instead of:
 Use title case **Admin Area** to refer to the area of the UI that you access when you select **Menu > Admin**.
 This area of the UI says **Admin Area** at the top of the page and on the menu.
 
-## Agent
+## agent
 
-Use **Agent** to refer to the [GitLab Agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
-Capitalize the word **Agent**. For example:
+Use lowercase to refer to the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
+For example:
 
-- Install the GitLab Agent.
-- Install the Agent in your cluster.
-- Select an Agent from the list.
+- To connect your cluster to GitLab, use the GitLab agent for Kubernetes.
+- Install the agent in your cluster.
+- Select an agent from the list.
+
+Do not use title case **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
 ## allow, enable
 

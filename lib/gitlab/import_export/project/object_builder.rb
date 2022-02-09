@@ -55,7 +55,7 @@ module Gitlab
         def where_clause_for_klass
           return attrs_to_arel(attributes.slice('filename')).and(table[:issue_id].eq(nil)) if design?
 
-          attrs_to_arel(attributes.slice('iid')) if merge_request?
+          attrs_to_arel(attributes.slice('iid', 'target_project_id')) if merge_request?
         end
 
         def prepare_attributes

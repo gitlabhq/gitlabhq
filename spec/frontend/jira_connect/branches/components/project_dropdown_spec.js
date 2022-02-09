@@ -1,4 +1,10 @@
-import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlAvatarLabeled,
+  GlDropdown,
+  GlDropdownItem,
+  GlLoadingIcon,
+  GlSearchBoxByType,
+} from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -56,8 +62,8 @@ describe('ProjectDropdown', () => {
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findDropdownItemByText = (text) =>
-    findAllDropdownItems().wrappers.find((item) => item.text() === text);
+  const findDropdownItemByProjectId = (projectId) =>
+    wrapper.find(`[data-testid="test-project-${projectId}"]`);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
   function createMockApolloProvider({ mockGetProjectsQuery = mockGetProjectsQuerySuccess } = {}) {
@@ -106,18 +112,31 @@ describe('ProjectDropdown', () => {
       expect(findDropdown().props('loading')).toBe(false);
     });
 
-    it('renders dropdown items', () => {
+    it('renders dropdown items with correct props', () => {
       const dropdownItems = findAllDropdownItems();
+      const avatars = dropdownItems.wrappers.map((item) => item.findComponent(GlAvatarLabeled));
+      const avatarAttributes = avatars.map((avatar) => avatar.attributes());
+      const avatarProps = avatars.map((avatar) => avatar.props());
+
       expect(dropdownItems.wrappers).toHaveLength(mockProjects.length);
-      expect(dropdownItems.wrappers.map((item) => item.text())).toEqual(
-        mockProjects.map((project) => project.nameWithNamespace),
+      expect(avatarProps).toMatchObject(
+        mockProjects.map((project) => ({
+          label: project.name,
+          subLabel: project.nameWithNamespace,
+        })),
+      );
+      expect(avatarAttributes).toMatchObject(
+        mockProjects.map((project) => ({
+          src: project.avatarUrl,
+          'entity-name': project.name,
+        })),
       );
     });
 
     describe('when selecting a dropdown item', () => {
       it('emits `change` event with the selected project name', async () => {
         const mockProject = mockProjects[0];
-        const itemToSelect = findDropdownItemByText(mockProject.nameWithNamespace);
+        const itemToSelect = findDropdownItemByProjectId(mockProject.id);
         await itemToSelect.vm.$emit('click');
 
         expect(wrapper.emitted('change')[0]).toEqual([mockProject]);
@@ -134,7 +153,7 @@ describe('ProjectDropdown', () => {
       });
 
       it('sets `isChecked` prop of the corresponding dropdown item to `true`', () => {
-        expect(findDropdownItemByText(mockProject.nameWithNamespace).props('isChecked')).toBe(true);
+        expect(findDropdownItemByProjectId(mockProject.id).props('isChecked')).toBe(true);
       });
 
       it('sets dropdown text to `selectedBranchName` value', () => {

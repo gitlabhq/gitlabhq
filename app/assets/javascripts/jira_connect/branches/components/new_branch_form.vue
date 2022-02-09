@@ -141,13 +141,6 @@ export default {
     </gl-form-group>
 
     <gl-form-group
-      :label="$options.i18n.I18N_NEW_BRANCH_LABEL_BRANCH"
-      label-for="branch-name-input"
-    >
-      <gl-form-input id="branch-name-input" v-model="branchName" type="text" required />
-    </gl-form-group>
-
-    <gl-form-group
       :label="$options.i18n.I18N_NEW_BRANCH_LABEL_SOURCE"
       label-for="source-branch-select"
     >
@@ -158,6 +151,14 @@ export default {
         @change="onSourceBranchSelect"
         @error="onError"
       />
+    </gl-form-group>
+
+    <gl-form-group
+      :label="$options.i18n.I18N_NEW_BRANCH_LABEL_BRANCH"
+      label-for="branch-name-input"
+      class="gl-max-w-62"
+    >
+      <gl-form-input id="branch-name-input" v-model="branchName" type="text" required />
     </gl-form-group>
 
     <div class="form-actions">

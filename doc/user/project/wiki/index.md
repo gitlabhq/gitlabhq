@@ -323,9 +323,17 @@ Previously added wiki pages are preserved in case you
 want to re-enable the wiki. To re-enable it, repeat the process
 to disable the wiki but toggle it on (in blue).
 
-## Content Editor **(FREE)**
+## Content Editor
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5643) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5643) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345398) switching between editing experiences in GitLab 14.7 [with a flag](../../../administration/feature_flags.md) named `wiki_switch_between_content_editor_raw_markdown`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available.
+To hide the feature, ask an administrator to
+[disable the feature flag](../../../administration/feature_flags.md) named
+`wiki_switch_between_content_editor_raw_markdown`.
+On GitLab.com, this feature is available.
 
 GitLab version 14.0 introduces a WYSIWYG editing experience for GitLab Flavored Markdown
 in Wikis through the [Content Editor](../../../development/fe_guide/content_editor.md).

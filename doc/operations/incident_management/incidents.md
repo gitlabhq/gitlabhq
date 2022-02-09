@@ -27,9 +27,8 @@ you can create an incident manually from the Incidents List or the Issues List.
 
 To create an incident from the Incidents List:
 
-1. Navigate to **Monitor > Incidents** and click **Create Incident**.
-1. Create a new issue using the `incident` template available when creating it.
-1. Create a new issue and assign the `incident` label to it.
+1. Navigate to **Monitor > Incidents** and select **Create Incident**.
+1. Create a new issue using the `incident` template.
 
 ![Incident List Create](img/incident_list_create_v13_3.png)
 

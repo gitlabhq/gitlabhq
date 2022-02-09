@@ -1,5 +1,11 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlSearchBoxByType,
+  GlLoadingIcon,
+  GlDropdownItem,
+  GlAvatarLabeled,
+} from '@gitlab/ui';
 import { __ } from '~/locale';
 import { PROJECTS_PER_PAGE } from '../constants';
 import getProjectsQuery from '../graphql/queries/get_projects.query.graphql';
@@ -14,6 +20,7 @@ export default {
     GlDropdownItem,
     GlSearchBoxByType,
     GlLoadingIcon,
+    GlAvatarLabeled,
   },
   props: {
     selectedProject: {
@@ -56,7 +63,7 @@ export default {
       return Boolean(this.$apollo.queries.projects.loading);
     },
     projectDropdownText() {
-      return this.selectedProject?.nameWithNamespace || __('Select a project');
+      return this.selectedProject?.nameWithNamespace || this.$options.i18n.selectProjectText;
     },
   },
   methods: {
@@ -70,11 +77,19 @@ export default {
       return project.id === this.selectedProject?.id;
     },
   },
+  i18n: {
+    selectProjectText: __('Select a project'),
+  },
 };
 </script>
 
 <template>
-  <gl-dropdown :text="projectDropdownText" :loading="initialProjectsLoading">
+  <gl-dropdown
+    :text="projectDropdownText"
+    :loading="initialProjectsLoading"
+    menu-class="gl-w-auto!"
+    :header-text="$options.i18n.selectProjectText"
+  >
     <template #header>
       <gl-search-box-by-type v-model.trim="projectSearchQuery" :debounce="250" />
     </template>
@@ -85,10 +100,20 @@ export default {
         v-for="project in projects"
         :key="project.id"
         is-check-item
+        is-check-centered
         :is-checked="isProjectSelected(project)"
+        :data-testid="`test-project-${project.id}`"
         @click="onProjectSelect(project)"
       >
-        {{ project.nameWithNamespace }}
+        <gl-avatar-labeled
+          class="gl-text-truncate"
+          shape="rect"
+          :size="32"
+          :src="project.avatarUrl"
+          :label="project.name"
+          :entity-name="project.name"
+          :sub-label="project.nameWithNamespace"
+        />
       </gl-dropdown-item>
     </template>
   </gl-dropdown>
