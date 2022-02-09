@@ -383,3 +383,8 @@
   redis_slot: geo
   aggregation: daily
   feature_flag: track_geo_proxy_events
+# Growth
+- name: users_clicking_registration_features_offer
+  category: growth
+  redis_slot: users
+  aggregation: weekly

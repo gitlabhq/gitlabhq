@@ -24,38 +24,6 @@ RSpec.describe ApplicationExperiment, :experiment do
     expect { experiment('namespaced/stub') { } }.not_to raise_error
   end
 
-  describe "#enabled?" do
-    before do
-      allow(application_experiment).to receive(:enabled?).and_call_original
-
-      allow(Feature::Definition).to receive(:get).and_return('_instance_')
-      allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
-      allow(Feature).to receive(:get).and_return(double(state: :on))
-    end
-
-    it "is enabled when all criteria are met" do
-      expect(application_experiment).to be_enabled
-    end
-
-    it "isn't enabled if the feature definition doesn't exist" do
-      expect(Feature::Definition).to receive(:get).with('namespaced_stub').and_return(nil)
-
-      expect(application_experiment).not_to be_enabled
-    end
-
-    it "isn't enabled if we're not in dev or dotcom environments" do
-      expect(Gitlab).to receive(:dev_env_or_com?).and_return(false)
-
-      expect(application_experiment).not_to be_enabled
-    end
-
-    it "isn't enabled if the feature flag state is :off" do
-      expect(Feature).to receive(:get).with('namespaced_stub').and_return(double(state: :off))
-
-      expect(application_experiment).not_to be_enabled
-    end
-  end
-
   describe "#publish" do
     let(:should_track) { true }
 
@@ -214,26 +182,6 @@ RSpec.describe ApplicationExperiment, :experiment do
       )
     end
 
-    it "tracks the event correctly even when using the base class" do
-      subject = Gitlab::Experiment.new(:unnamed)
-      subject.track(:action, context: [fake_context])
-
-      expect_snowplow_event(
-        category: 'unnamed',
-        action: 'action',
-        context: [
-          {
-            schema: 'iglu:com.gitlab/fake/jsonschema/0-0-0',
-            data: { data: '_data_' }
-          },
-          {
-            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
-            data: { experiment: 'unnamed', key: subject.context.key, variant: 'control' }
-          }
-        ]
-      )
-    end
-
     context "when using known context resources" do
       let(:user) { build(:user, id: non_existing_record_id) }
       let(:project) { build(:project, id: non_existing_record_id) }
@@ -347,23 +295,15 @@ RSpec.describe ApplicationExperiment, :experiment do
   end
 
   context "when resolving variants" do
-    it "uses the default value as specified in the yaml" do
-      expect(Feature).to receive(:enabled?).with('namespaced_stub', application_experiment, type: :experiment, default_enabled: :yaml)
-
-      expect(application_experiment.variant.name).to eq('control')
+    before do
+      stub_feature_flags(namespaced_stub: true)
     end
 
-    context "when rolled out to 100%" do
-      before do
-        stub_feature_flags(namespaced_stub: true)
-      end
+    it "returns an assigned name" do
+      application_experiment.variant(:variant1) {}
+      application_experiment.variant(:variant2) {}
 
-      it "returns an assigned name" do
-        application_experiment.variant(:variant1) {}
-        application_experiment.variant(:variant2) {}
-
-        expect(application_experiment.variant.name).to eq('variant2')
-      end
+      expect(application_experiment.assigned.name).to eq('variant2')
     end
   end
 

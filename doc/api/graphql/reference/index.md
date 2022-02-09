@@ -9675,6 +9675,7 @@ Represents a DAST profile schedule.
 | <a id="dastprofileschedulecadence"></a>`cadence` | [`DastProfileCadence`](#dastprofilecadence) | Cadence of the DAST profile schedule. |
 | <a id="dastprofilescheduleid"></a>`id` | [`DastProfileScheduleID!`](#dastprofilescheduleid) | ID of the DAST profile schedule. |
 | <a id="dastprofileschedulenextrunat"></a>`nextRunAt` | [`Time`](#time) | Next run time of the DAST profile schedule in the given timezone. |
+| <a id="dastprofilescheduleownervalid"></a>`ownerValid` | [`Boolean`](#boolean) | Status of the current owner of the DAST profile schedule. |
 | <a id="dastprofileschedulestartsat"></a>`startsAt` | [`Time`](#time) | Start time of the DAST profile schedule in the given timezone. |
 | <a id="dastprofilescheduletimezone"></a>`timezone` | [`String`](#string) | Time zone of the start time of the DAST profile schedule. |
 

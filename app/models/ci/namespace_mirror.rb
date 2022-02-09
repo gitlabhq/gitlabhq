@@ -15,9 +15,6 @@ module Ci
     end
 
     scope :by_namespace_id, -> (namespace_id) { where(namespace_id: namespace_id) }
-    scope :namespace_id_from_traversal_ids, -> do
-      select('ci_namespace_mirrors.traversal_ids[array_length(ci_namespace_mirrors.traversal_ids, 1)] AS namespace_id')
-    end
 
     class << self
       def sync!(event)

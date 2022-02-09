@@ -42,7 +42,11 @@ module Gitlab
       include Gitlab::Usage::TimeFrame
 
       def data
-        uncached_data
+        clear_memoized
+
+        with_finished_at(:recording_ce_finished_at) do
+          usage_data_metrics
+        end
       end
 
       def license_usage_data
@@ -682,14 +686,6 @@ module Gitlab
       end
 
       private
-
-      def uncached_data
-        clear_memoized
-
-        with_finished_at(:recording_ce_finished_at) do
-          usage_data_metrics
-        end
-      end
 
       def stage_manage_events(time_period)
         if time_period.empty?

@@ -2230,32 +2230,20 @@ class User < ApplicationRecord
   end
 
   def ci_owned_project_runners_from_group_members
-    cte_project_ids = Gitlab::SQL::CTE.new(
-      :cte_project_ids,
-      Ci::ProjectMirror
-        .select(:project_id)
-        .joins('JOIN ci_namespace_mirrors ON ci_namespace_mirrors.traversal_ids[array_length(ci_namespace_mirrors.traversal_ids, 1)] = ci_project_mirrors.namespace_id')
-        .merge(ci_namespace_mirrors_for_group_members(Gitlab::Access::MAINTAINER))
-    )
-
-    Ci::Runner
+    Ci::RunnerProject
       .select('ci_runners.*')
-      .joins(:runner_projects)
-      .where('ci_runner_projects.project_id IN (SELECT project_id FROM cte_project_ids)')
-      .with(cte_project_ids.to_arel)
+      .joins(:runner)
+      .joins('JOIN ci_project_mirrors ON ci_project_mirrors.project_id = ci_runner_projects.project_id')
+      .joins('JOIN ci_namespace_mirrors ON ci_namespace_mirrors.namespace_id = ci_project_mirrors.namespace_id')
+      .merge(ci_namespace_mirrors_for_group_members(Gitlab::Access::MAINTAINER))
   end
 
   def ci_owned_group_runners
-    cte_namespace_ids = Gitlab::SQL::CTE.new(
-      :cte_namespace_ids,
-      ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER).namespace_id_from_traversal_ids
-    )
-
-    Ci::Runner
+    Ci::RunnerNamespace
       .select('ci_runners.*')
-      .joins(:runner_namespaces)
-      .where('ci_runner_namespaces.namespace_id IN (SELECT namespace_id FROM cte_namespace_ids)')
-      .with(cte_namespace_ids.to_arel)
+      .joins(:runner)
+      .joins('JOIN ci_namespace_mirrors ON ci_namespace_mirrors.namespace_id = ci_runner_namespaces.namespace_id')
+      .merge(ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER))
   end
 
   def ci_namespace_mirrors_for_group_members(level)

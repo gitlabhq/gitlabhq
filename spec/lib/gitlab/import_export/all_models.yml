@@ -529,6 +529,7 @@ project:
 - vulnerability_feedback
 - vulnerability_identifiers
 - vulnerability_scanners
+- dast_profiles
 - dast_site_profiles
 - dast_scanner_profiles
 - dast_sites
