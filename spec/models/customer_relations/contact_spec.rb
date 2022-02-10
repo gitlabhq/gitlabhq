@@ -26,6 +26,18 @@ RSpec.describe CustomerRelations::Contact, type: :model do
     it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :email
   end
 
+  describe '.reference_prefix' do
+    it { expect(described_class.reference_prefix).to eq('[contact:') }
+  end
+
+  describe '.reference_prefix_quoted' do
+    it { expect(described_class.reference_prefix_quoted).to eq('["contact:') }
+  end
+
+  describe '.reference_postfix' do
+    it { expect(described_class.reference_postfix).to eq(']') }
+  end
+
   describe '#unique_email_for_group_hierarchy' do
     let_it_be(:parent) { create(:group) }
     let_it_be(:group) { create(:group, parent: parent) }

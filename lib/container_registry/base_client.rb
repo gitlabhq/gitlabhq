@@ -57,7 +57,7 @@ module ContainerRegistry
 
     def faraday(timeout_enabled: true)
       @faraday ||= faraday_base(timeout_enabled: timeout_enabled) do |conn|
-        initialize_connection(conn, @options, &method(:accept_manifest))
+        initialize_connection(conn, @options, &method(:configure_connection))
       end
     end
 
@@ -105,7 +105,7 @@ module ContainerRegistry
       faraday_redirect.get(uri)
     end
 
-    def accept_manifest(conn)
+    def configure_connection(conn)
       conn.headers['Accept'] = ACCEPTED_TYPES
 
       conn.response :json, content_type: 'application/json'

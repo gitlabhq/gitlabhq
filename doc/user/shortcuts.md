@@ -158,7 +158,7 @@ These shortcuts are available when using a [filtered search input](search/index.
 | <kbd>⌘</kbd> (Mac) + <kbd>⌫</kbd>                      | Clear entire search filter. |
 | <kbd>⌥</kbd> (Mac) / <kbd>Control</kbd> + <kbd>⌫</kbd> | Clear one token at a time. |
 
-## Epics **(ULTIMATE)**
+## Epics **(PREMIUM)**
 
 These shortcuts are available when viewing [epics](group/epics/index.md):
 

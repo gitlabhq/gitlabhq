@@ -651,9 +651,11 @@ which variables take precedence.
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call),
-   [scheduled pipeline variables](../pipelines/schedules.md#using-variables),
-   and [manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
+1. These all have the same (highest) precedence:
+   - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
+   - [Scheduled pipeline variables](../pipelines/schedules.md#using-variables).
+   - [Manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
+   - Variables added when [creating a pipeline with the API](../../api/pipelines.md#create-a-new-pipeline).
 1. Project [variables](#custom-cicd-variables).
 1. Group [variables](#add-a-cicd-variable-to-a-group).
 1. Instance [variables](#add-a-cicd-variable-to-an-instance).

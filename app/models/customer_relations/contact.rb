@@ -26,6 +26,18 @@ class CustomerRelations::Contact < ApplicationRecord
   validate :validate_email_format
   validate :unique_email_for_group_hierarchy
 
+  def self.reference_prefix
+    '[contact:'
+  end
+
+  def self.reference_prefix_quoted
+    '["contact:'
+  end
+
+  def self.reference_postfix
+    ']'
+  end
+
   def self.find_ids_by_emails(group, emails)
     raise ArgumentError, "Cannot lookup more than #{MAX_PLUCK} emails" if emails.length > MAX_PLUCK
 

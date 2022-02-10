@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RequireVerificationForNamespaceCreationExperiment < ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
+class RequireVerificationForNamespaceCreationExperiment < ApplicationExperiment
   exclude :existing_user
 
   EXPERIMENT_START_DATE = Date.new(2022, 1, 31)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ContainerRegistry
-  class Migration
+  module Migration
     class << self
       delegate :container_registry_import_max_tags_count, to: ::Gitlab::CurrentSettings
       delegate :container_registry_import_max_retries, to: ::Gitlab::CurrentSettings

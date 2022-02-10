@@ -19,7 +19,7 @@ module Gitlab
 
       relations = [
         # The project a user has direct access to.
-        user.projects.select_for_project_authorization,
+        user.projects_with_active_memberships.select_for_project_authorization,
 
         # The personal projects of the user.
         user.personal_projects.select_as_maintainer_for_project_authorization,
@@ -65,7 +65,7 @@ module Gitlab
       group_group_links = GroupGroupLink.arel_table
 
       # Namespaces the user is a member of.
-      cte << user.groups
+      cte << user.groups_with_active_memberships
         .select([namespaces[:id], members[:access_level]])
         .except(:order)
 
@@ -99,6 +99,7 @@ module Gitlab
         .and(members[:source_type].eq('Namespace'))
         .and(members[:requested_at].eq(nil))
         .and(members[:user_id].eq(user.id))
+        .and(members[:state].eq(::Member::STATE_ACTIVE))
         .and(members[:access_level].gt(Gitlab::Access::MINIMAL_ACCESS))
 
       Arel::Nodes::OuterJoin.new(members, Arel::Nodes::On.new(cond))
@@ -120,6 +121,7 @@ module Gitlab
                     .and(members[:source_type].eq('Namespace'))
                     .and(members[:requested_at].eq(nil))
                     .and(members[:user_id].eq(user.id))
+                    .and(members[:state].eq(::Member::STATE_ACTIVE))
                     .and(members[:access_level].gt(Gitlab::Access::MINIMAL_ACCESS))
       Arel::Nodes::InnerJoin.new(members, Arel::Nodes::On.new(cond))
     end

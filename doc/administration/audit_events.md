@@ -51,7 +51,10 @@ There are two kinds of events logged:
 When a user is being [impersonated](../user/admin_area/index.md#user-impersonation), their actions are logged as audit events as usual, with two additional details:
 
 1. Usual audit events include information about the impersonating administrator. These are visible in their respective Audit Event pages depending on their type (Group/Project/User).
-1. Extra audit events are recorded for the start and stop of the administrator's impersonation session. These are visible in the instance Audit Events.
+1. Extra audit events are recorded for the start and stop of the administrator's impersonation session. These are visible in
+   the:
+   - Instance audit events.
+   - Group audit events for all groups the user belongs to (GitLab 14.8 and later). This is limited to 20 groups for performance reasons.
 
 ![audit events](img/impersonated_audit_events_v13_8.png)
 
@@ -103,6 +106,7 @@ From there, you can see the following actions:
 - Group CI/CD variable added, removed, or protected status changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.3.
 - Compliance framework created, updated, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340649) in GitLab 14.5.
 - Event streaming destination created, updated, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) in GitLab 14.6.
+- Instance administrator started or stopped impersonation of a group member. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) in GitLab 14.8.
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 

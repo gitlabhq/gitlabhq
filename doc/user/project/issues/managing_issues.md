@@ -319,7 +319,7 @@ You can move all open issues from one project to another.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have access to the Rails console of the GitLab instance.
 
 To do it:
 
@@ -510,9 +510,9 @@ Alternatively:
 
 ## Promote an issue to an epic **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab Ultimate 11.6.
-> - Moved to GitLab Premium in 12.8.
-> - Promoting issues to epics via the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233974) in GitLab Premium 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab 11.6.
+> - Moved from GitLab Ultimate to GitLab Premium in 12.8.
+> - Promoting issues to epics via the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233974) in GitLab 13.6.
 
 You can promote an issue to an [epic](../../group/epics/index.md) in the immediate parent group.
 

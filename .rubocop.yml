@@ -666,6 +666,7 @@ Gitlab/NamespacedClass:
     - 'ee/elastic/**/*.rb'
     - 'scripts/**/*'
     - 'spec/migrations/**/*.rb'
+    - 'app/experiments/**/*_experiment.rb'
 
 Lint/HashCompareByIdentity:
   Enabled: true

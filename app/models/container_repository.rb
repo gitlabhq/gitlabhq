@@ -10,6 +10,7 @@ class ContainerRepository < ApplicationRecord
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
   IDLE_MIGRATION_STATES = %w[default pre_import_done import_done import_aborted import_skipped].freeze
   ACTIVE_MIGRATION_STATES = %w[pre_importing importing].freeze
+  ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + ['pre_import_done']).freeze
   MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
 
   belongs_to :project
@@ -17,7 +18,7 @@ class ContainerRepository < ApplicationRecord
   validates :name, length: { minimum: 0, allow_nil: false }
   validates :name, uniqueness: { scope: :project_id }
   validates :migration_state, presence: true, inclusion: { in: MIGRATION_STATES }
-  validates :migration_aborted_in_state, inclusion: { in: ACTIVE_MIGRATION_STATES }, allow_nil: true
+  validates :migration_aborted_in_state, inclusion: { in: ABORTABLE_MIGRATION_STATES }, allow_nil: true
 
   validates :migration_retries_count, presence: true,
                                       numericality: { greater_than_or_equal_to: 0 },
@@ -43,6 +44,9 @@ class ContainerRepository < ApplicationRecord
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :waiting_for_cleanup, -> { where(expiration_policy_cleanup_status: WAITING_CLEANUP_STATUSES) }
   scope :expiration_policy_started_at_nil_or_before, ->(timestamp) { where('expiration_policy_started_at < ? OR expiration_policy_started_at IS NULL', timestamp) }
+  scope :with_migration_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_import_started_at, '01-01-1970') < ?", timestamp) }
+  scope :with_migration_pre_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_started_at, '01-01-1970') < ?", timestamp) }
+  scope :with_migration_pre_import_done_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_done_at, '01-01-1970') < ?", timestamp) }
   scope :with_stale_ongoing_cleanup, ->(threshold) { cleanup_ongoing.where('expiration_policy_started_at < ?', threshold) }
 
   state_machine :migration_state, initial: :default do
@@ -96,7 +100,7 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :abort_import do
-      transition ACTIVE_MIGRATION_STATES.map(&:to_sym) => :import_aborted
+      transition ABORTABLE_MIGRATION_STATES.map(&:to_sym) => :import_aborted
     end
 
     event :skip_import do
@@ -179,6 +183,22 @@ class ContainerRepository < ApplicationRecord
 
   def self.with_unfinished_cleanup
     with_enabled_policy.cleanup_unfinished
+  end
+
+  def self.with_stale_migration(before_timestamp)
+    stale_pre_importing = with_migration_states(:pre_importing)
+                            .with_migration_pre_import_started_at_nil_or_before(before_timestamp)
+    stale_pre_import_done = with_migration_states(:pre_import_done)
+                              .with_migration_pre_import_done_at_nil_or_before(before_timestamp)
+    stale_importing = with_migration_states(:importing)
+                        .with_migration_import_started_at_nil_or_before(before_timestamp)
+
+    union = ::Gitlab::SQL::Union.new([
+          stale_pre_importing,
+          stale_pre_import_done,
+          stale_importing
+        ])
+    from("(#{union.to_sql}) #{ContainerRepository.table_name}")
   end
 
   def skip_import(reason:)

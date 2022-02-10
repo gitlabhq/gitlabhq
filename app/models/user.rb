@@ -149,6 +149,7 @@ class User < ApplicationRecord
   has_many :members
   has_many :group_members, -> { where(requested_at: nil).where("access_level >= ?", Gitlab::Access::GUEST) }, class_name: 'GroupMember'
   has_many :groups, through: :group_members
+  has_many :groups_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :group_members, source: :group
   has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }) }, through: :group_members, source: :group
   has_many :maintainers_groups, -> { where(members: { access_level: Gitlab::Access::MAINTAINER }) }, through: :group_members, source: :group
   has_many :developer_groups, -> { where(members: { access_level: ::Gitlab::Access::DEVELOPER }) }, through: :group_members, source: :group
@@ -170,6 +171,7 @@ class User < ApplicationRecord
   has_many :project_members, -> { where(requested_at: nil) }
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
+  has_many :projects_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :project_members, source: :project
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :starred_projects, through: :users_star_projects, source: :project
   has_many :project_authorizations, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent

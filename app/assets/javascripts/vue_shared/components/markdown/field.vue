@@ -9,6 +9,7 @@ import axios from '~/lib/utils/axios_utils';
 import { stripHtml } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
 
@@ -23,6 +24,7 @@ export default {
     GlIcon,
     Suggestions,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     /**
      * This prop should be bound to the value of the `<textarea>` element
@@ -217,6 +219,7 @@ export default {
         labels: this.enableAutocomplete,
         snippets: this.enableAutocomplete,
         vulnerabilities: this.enableAutocomplete,
+        contacts: this.enableAutocomplete && this.glFeatures.contactsAutocomplete,
       },
       true,
     );

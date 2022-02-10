@@ -273,6 +273,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:container_registry_migration_guard
+  :worker_name: ContainerRegistry::Migration::GuardWorker
+  :feature_category: :container_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:database_batched_background_migration
   :worker_name: Database::BatchedBackgroundMigrationWorker
   :feature_category: :database

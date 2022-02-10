@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CombinedRegistrationExperiment < ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
+class CombinedRegistrationExperiment < ApplicationExperiment
   include Rails.application.routes.url_helpers
 
   def key_for(source, _ = nil)

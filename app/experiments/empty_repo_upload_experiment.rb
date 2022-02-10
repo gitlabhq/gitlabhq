@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EmptyRepoUploadExperiment < ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
+class EmptyRepoUploadExperiment < ApplicationExperiment
   include ProjectCommitCount
 
   TRACKING_START_DATE = DateTime.parse('2021/4/20')

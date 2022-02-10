@@ -6,7 +6,8 @@ RSpec.describe 'GFM autocomplete', :js do
   let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let_it_be(:user2) { create(:user, name: 'Marge Simpson', username: 'msimpson') }
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:project) { create(:project, group: group) }
   let_it_be(:issue) { create(:issue, project: project, assignees: [user]) }
   let_it_be(:label) { create(:label, project: project, title: 'special+') }
   let_it_be(:label_scoped) { create(:label, project: project, title: 'scoped::label') }
@@ -19,9 +20,9 @@ RSpec.describe 'GFM autocomplete', :js do
   let_it_be(:label_xss) { create(:label, project: project, title: label_xss_title) }
 
   before_all do
-    project.add_maintainer(user)
-    project.add_maintainer(user_xss)
-    project.add_maintainer(user2)
+    group.add_maintainer(user)
+    group.add_maintainer(user_xss)
+    group.add_maintainer(user2)
   end
 
   describe 'new issue page' do
@@ -378,6 +379,30 @@ RSpec.describe 'GFM autocomplete', :js do
             expect(page.all('li')[2]).to have_content milestone1.title
             expect(page.all('li')[3]).to have_content milestone_no_duedate.title
           end
+        end
+      end
+    end
+
+    context 'contact' do
+      let_it_be(:contacts) { create_list(:contact, 2, group: group) }
+
+      before do
+        fill_in 'Comment', with: '/add_contacts [contact:'
+
+        wait_for_requests
+      end
+
+      it 'shows contacts list in the autocomplete menu' do
+        page.within(find_autocomplete_menu) do
+          expect(page).to have_selector('li', count: 2)
+        end
+      end
+
+      it 'shows all contacts' do
+        page.within(find_autocomplete_menu) do
+          expected_data = contacts.map { |c| "#{c.first_name} #{c.last_name} #{c.email}"}
+
+          expect(page.all('li').map(&:text)).to match_array(expected_data)
         end
       end
     end

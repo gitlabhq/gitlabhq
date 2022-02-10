@@ -4,6 +4,8 @@ module ContainerRegistry
   class GitlabApiClient < BaseClient
     include Gitlab::Utils::StrongMemoize
 
+    JSON_TYPE = 'application/json'
+
     IMPORT_RESPONSES = {
       200 => :already_imported,
       202 => :ok,
@@ -46,9 +48,20 @@ module ContainerRegistry
     private
 
     def start_import_for(path, pre:)
-      faraday.put("/gitlab/v1/import/#{path}") do |req|
+      faraday.put(import_url_for(path)) do |req|
         req.params['pre'] = pre.to_s
       end
+    end
+
+    def import_url_for(path)
+      "/gitlab/v1/import/#{path}/"
+    end
+
+    # overrides the default configuration
+    def configure_connection(conn)
+      conn.headers['Accept'] = [JSON_TYPE]
+
+      conn.response :json, content_type: JSON_TYPE
     end
   end
 end

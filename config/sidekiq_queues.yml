@@ -47,6 +47,8 @@
   - 1
 - - audit_events_audit_event_streaming
   - 1
+- - audit_events_user_impersonation_event_create
+  - 1
 - - authorized_keys
   - 2
 - - authorized_project_update

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class NewProjectSastEnabledExperiment < ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
+class NewProjectSastEnabledExperiment < ApplicationExperiment
   def publish(_result = nil)
     super
 

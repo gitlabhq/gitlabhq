@@ -48,8 +48,14 @@ module Issues
     end
 
     def add_by_email
-      contact_ids = ::CustomerRelations::Contact.find_ids_by_emails(project_group, params[:add_emails])
+      contact_ids = ::CustomerRelations::Contact.find_ids_by_emails(project_group, emails(:add_emails))
       add_by_id(contact_ids)
+    end
+
+    def emails(key)
+      params[key].map do |email|
+        extract_email_from_request_param(email)
+      end
     end
 
     def add_by_id(contact_ids)
@@ -69,7 +75,7 @@ module Issues
     end
 
     def remove_by_email
-      contact_ids = ::CustomerRelations::IssueContact.find_contact_ids_by_emails(issue.id, params[:remove_emails])
+      contact_ids = ::CustomerRelations::IssueContact.find_contact_ids_by_emails(issue.id, emails(:remove_emails))
       remove_by_id(contact_ids)
     end
 
@@ -78,6 +84,13 @@ module Issues
       issue.issue_customer_relations_contacts
         .where(contact_id: contact_ids) # rubocop: disable CodeReuse/ActiveRecord
         .delete_all
+    end
+
+    def extract_email_from_request_param(email_param)
+      email_param.delete_prefix(::CustomerRelations::Contact.reference_prefix_quoted)
+                 .delete_prefix(::CustomerRelations::Contact.reference_prefix)
+                 .delete_suffix(::CustomerRelations::Contact.reference_postfix)
+                 .tr('"', '')
     end
 
     def allowed?

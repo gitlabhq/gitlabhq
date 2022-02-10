@@ -7,20 +7,31 @@ RSpec.describe Issues::SetCrmContactsService do
   let_it_be(:group) { create(:group, :crm_enabled) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:contacts) { create_list(:contact, 4, group: group) }
-
-  let(:issue) { create(:issue, project: project) }
-  let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
-
-  before do
-    create(:issue_customer_relations_contact, issue: issue, contact: contacts[0])
-    create(:issue_customer_relations_contact, issue: issue, contact: contacts[1])
+  let_it_be(:issue, reload: true) { create(:issue, project: project) }
+  let_it_be(:issue_contact_1) do
+    create(:issue_customer_relations_contact, issue: issue, contact: contacts[0]).contact
   end
+
+  let_it_be(:issue_contact_2) do
+    create(:issue_customer_relations_contact, issue: issue, contact: contacts[1]).contact
+  end
+
+  let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
 
   subject(:set_crm_contacts) do
     described_class.new(project: project, current_user: user, params: params).execute(issue)
   end
 
   describe '#execute' do
+    shared_examples 'setting contacts' do
+      it 'updates the issue with correct contacts' do
+        response = set_crm_contacts
+
+        expect(response).to be_success
+        expect(issue.customer_relations_contacts).to match_array(expected_contacts)
+      end
+    end
+
     context 'when the user has no permission' do
       let(:params) { { replace_ids: [contacts[1].id, contacts[2].id] } }
 
@@ -67,56 +78,56 @@ RSpec.describe Issues::SetCrmContactsService do
 
       context 'replace' do
         let(:params) { { replace_ids: [contacts[1].id, contacts[2].id] } }
+        let(:expected_contacts) { [contacts[1], contacts[2]] }
 
-        it 'updates the issue with correct contacts' do
-          response = set_crm_contacts
-
-          expect(response).to be_success
-          expect(issue.customer_relations_contacts).to match_array([contacts[1], contacts[2]])
-        end
+        it_behaves_like 'setting contacts'
       end
 
       context 'add' do
-        let(:params) { { add_ids: [contacts[3].id] } }
+        let(:added_contact) { contacts[3] }
+        let(:params) { { add_ids: [added_contact.id] } }
+        let(:expected_contacts) { [issue_contact_1, issue_contact_2, added_contact] }
 
-        it 'updates the issue with correct contacts' do
-          response = set_crm_contacts
-
-          expect(response).to be_success
-          expect(issue.customer_relations_contacts).to match_array([contacts[0], contacts[1], contacts[3]])
-        end
+        it_behaves_like 'setting contacts'
       end
 
       context 'add by email' do
-        let(:params) { { add_emails: [contacts[3].email] } }
+        let(:added_contact) { contacts[3] }
+        let(:expected_contacts) { [issue_contact_1, issue_contact_2, added_contact] }
 
-        it 'updates the issue with correct contacts' do
-          response = set_crm_contacts
+        context 'with pure emails in params' do
+          let(:params) { { add_emails: [contacts[3].email] } }
 
-          expect(response).to be_success
-          expect(issue.customer_relations_contacts).to match_array([contacts[0], contacts[1], contacts[3]])
+          it_behaves_like 'setting contacts'
+        end
+
+        context 'with autocomplete prefix emails in params' do
+          let(:params) { { add_emails: ["[\"contact:\"#{contacts[3].email}\"]"] } }
+
+          it_behaves_like 'setting contacts'
         end
       end
 
       context 'remove' do
         let(:params) { { remove_ids: [contacts[0].id] } }
+        let(:expected_contacts) { [contacts[1]] }
 
-        it 'updates the issue with correct contacts' do
-          response = set_crm_contacts
-
-          expect(response).to be_success
-          expect(issue.customer_relations_contacts).to match_array([contacts[1]])
-        end
+        it_behaves_like 'setting contacts'
       end
 
       context 'remove by email' do
-        let(:params) { { remove_emails: [contacts[0].email] } }
+        let(:expected_contacts) { [contacts[1]] }
 
-        it 'updates the issue with correct contacts' do
-          response = set_crm_contacts
+        context 'with pure email in params' do
+          let(:params) { { remove_emails: [contacts[0].email] } }
 
-          expect(response).to be_success
-          expect(issue.customer_relations_contacts).to match_array([contacts[1]])
+          it_behaves_like 'setting contacts'
+        end
+
+        context 'with autocomplete prefix and suffix email in params' do
+          let(:params) { { remove_emails: ["[contact:#{contacts[0].email}]"] } }
+
+          it_behaves_like 'setting contacts'
         end
       end
 
@@ -145,15 +156,19 @@ RSpec.describe Issues::SetCrmContactsService do
 
       context 'when combining params' do
         let(:error_invalid_params) { 'You cannot combine replace_ids with add_ids or remove_ids' }
+        let(:expected_contacts) { [contacts[0], contacts[3]] }
 
         context 'add and remove' do
-          let(:params) { { remove_ids: [contacts[1].id], add_ids: [contacts[3].id] } }
+          context 'with contact ids' do
+            let(:params) { { remove_ids: [contacts[1].id], add_ids: [contacts[3].id] } }
 
-          it 'updates the issue with correct contacts' do
-            response = set_crm_contacts
+            it_behaves_like 'setting contacts'
+          end
 
-            expect(response).to be_success
-            expect(issue.customer_relations_contacts).to match_array([contacts[0], contacts[3]])
+          context 'with contact emails' do
+            let(:params) { { remove_emails: [contacts[1].email], add_emails: ["[\"contact:#{contacts[3].email}]"] } }
+
+            it_behaves_like 'setting contacts'
           end
         end
 

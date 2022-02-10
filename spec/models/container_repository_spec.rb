@@ -37,12 +37,12 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     it { is_expected.to validate_presence_of(:migration_retries_count) }
     it { is_expected.to validate_numericality_of(:migration_retries_count).is_greater_than_or_equal_to(0) }
 
-    it { is_expected.to validate_inclusion_of(:migration_aborted_in_state).in_array(ContainerRepository::ACTIVE_MIGRATION_STATES) }
+    it { is_expected.to validate_inclusion_of(:migration_aborted_in_state).in_array(described_class::ABORTABLE_MIGRATION_STATES) }
     it { is_expected.to allow_value(nil).for(:migration_aborted_in_state) }
 
     context 'migration_state' do
       it { is_expected.to validate_presence_of(:migration_state) }
-      it { is_expected.to validate_inclusion_of(:migration_state).in_array(ContainerRepository::MIGRATION_STATES) }
+      it { is_expected.to validate_inclusion_of(:migration_state).in_array(described_class::MIGRATION_STATES) }
 
       describe 'pre_importing' do
         it 'validates expected attributes' do
@@ -161,7 +161,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     end
 
     shared_examples 'transitioning from allowed states' do |allowed_states|
-      ContainerRepository::MIGRATION_STATES.each do |state|
+      described_class::MIGRATION_STATES.each do |state|
         result = allowed_states.include?(state)
 
         context "when transitioning from #{state}" do
@@ -283,7 +283,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
       subject { repository.abort_import }
 
-      it_behaves_like 'transitioning from allowed states', %w[pre_importing importing]
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing pre_import_done importing]
 
       it 'sets migration_aborted_at and migration_aborted_at and increments the retry count' do
         expect { subject }.to change { repository.migration_aborted_at }
@@ -634,7 +634,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       let(:path) { ContainerRegistry::Path.new(project.full_path + '/some/image') }
 
       it 'does not throw validation errors and only creates one repository' do
-        expect { repository_creation_race(path) }.to change { ContainerRepository.count }.by(1)
+        expect { repository_creation_race(path) }.to change { described_class.count }.by(1)
       end
 
       it 'retrieves a persisted repository for all concurrent calls' do
@@ -652,7 +652,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         Thread.new do
           true while wait_for_it
 
-          ::ContainerRepository.find_or_create_from_path(path)
+          described_class.find_or_create_from_path(path)
         end
       end
       wait_for_it = false
@@ -788,6 +788,36 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     it { is_expected.to contain_exactly(repository1, repository2, repository4) }
   end
 
+  describe '.with_migration_import_started_at_nil_or_before' do
+    let_it_be(:repository1) { create(:container_repository, migration_import_started_at: 5.minutes.ago) }
+    let_it_be(:repository2) { create(:container_repository, migration_import_started_at: nil) }
+    let_it_be(:repository3) { create(:container_repository, migration_import_started_at: 10.minutes.ago) }
+
+    subject { described_class.with_migration_import_started_at_nil_or_before(7.minutes.ago) }
+
+    it { is_expected.to contain_exactly(repository2, repository3) }
+  end
+
+  describe '.with_migration_pre_import_started_at_nil_or_before' do
+    let_it_be(:repository1) { create(:container_repository, migration_pre_import_started_at: 5.minutes.ago) }
+    let_it_be(:repository2) { create(:container_repository, migration_pre_import_started_at: nil) }
+    let_it_be(:repository3) { create(:container_repository, migration_pre_import_started_at: 10.minutes.ago) }
+
+    subject { described_class.with_migration_pre_import_started_at_nil_or_before(7.minutes.ago) }
+
+    it { is_expected.to contain_exactly(repository2, repository3) }
+  end
+
+  describe '.with_migration_pre_import_done_at_nil_or_before' do
+    let_it_be(:repository1) { create(:container_repository, migration_pre_import_done_at: 5.minutes.ago) }
+    let_it_be(:repository2) { create(:container_repository, migration_pre_import_done_at: nil) }
+    let_it_be(:repository3) { create(:container_repository, migration_pre_import_done_at: 10.minutes.ago) }
+
+    subject { described_class.with_migration_pre_import_done_at_nil_or_before(7.minutes.ago) }
+
+    it { is_expected.to contain_exactly(repository2, repository3) }
+  end
+
   describe '.with_stale_ongoing_cleanup' do
     let_it_be(:repository1) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 1.day.ago) }
     let_it_be(:repository2) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 25.minutes.ago) }
@@ -837,7 +867,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
   describe '#migration_in_active_state?' do
     subject { container_repository.migration_in_active_state? }
 
-    ContainerRepository::MIGRATION_STATES.each do |state|
+    described_class::MIGRATION_STATES.each do |state|
       context "when in #{state} migration_state" do
         let(:container_repository) { create(:container_repository, state.to_sym)}
 
@@ -849,7 +879,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
   describe '#migration_importing?' do
     subject { container_repository.migration_importing? }
 
-    ContainerRepository::MIGRATION_STATES.each do |state|
+    described_class::MIGRATION_STATES.each do |state|
       context "when in #{state} migration_state" do
         let(:container_repository) { create(:container_repository, state.to_sym)}
 
@@ -861,7 +891,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
   describe '#migration_pre_importing?' do
     subject { container_repository.migration_pre_importing? }
 
-    ContainerRepository::MIGRATION_STATES.each do |state|
+    described_class::MIGRATION_STATES.each do |state|
       context "when in #{state} migration_state" do
         let(:container_repository) { create(:container_repository, state.to_sym)}
 
@@ -921,5 +951,35 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         it { is_expected.to eq([repository]) }
       end
     end
+  end
+
+  describe '.with_stale_migration' do
+    let_it_be(:repository) { create(:container_repository) }
+    let_it_be(:stale_pre_importing_old_timestamp) { create(:container_repository, :pre_importing, migration_pre_import_started_at: 10.minutes.ago) }
+    let_it_be(:stale_pre_importing_nil_timestamp) { create(:container_repository, :pre_importing).tap { |r| r.update_column(:migration_pre_import_started_at, nil) } }
+    let_it_be(:stale_pre_importing_recent_timestamp) { create(:container_repository, :pre_importing, migration_pre_import_started_at: 2.minutes.ago) }
+
+    let_it_be(:stale_pre_import_done_old_timestamp) { create(:container_repository, :pre_import_done, migration_pre_import_done_at: 10.minutes.ago) }
+    let_it_be(:stale_pre_import_done_nil_timestamp) { create(:container_repository, :pre_import_done).tap { |r| r.update_column(:migration_pre_import_done_at, nil) } }
+    let_it_be(:stale_pre_import_done_recent_timestamp) { create(:container_repository, :pre_import_done, migration_pre_import_done_at: 2.minutes.ago) }
+
+    let_it_be(:stale_importing_old_timestamp) { create(:container_repository, :importing, migration_import_started_at: 10.minutes.ago) }
+    let_it_be(:stale_importing_nil_timestamp) { create(:container_repository, :importing).tap { |r| r.update_column(:migration_import_started_at, nil) } }
+    let_it_be(:stale_importing_recent_timestamp) { create(:container_repository, :importing, migration_import_started_at: 2.minutes.ago) }
+
+    let(:stale_migrations) do
+      [
+        stale_pre_importing_old_timestamp,
+        stale_pre_importing_nil_timestamp,
+        stale_pre_import_done_old_timestamp,
+        stale_pre_import_done_nil_timestamp,
+        stale_importing_old_timestamp,
+        stale_importing_nil_timestamp
+      ]
+    end
+
+    subject { described_class.with_stale_migration(5.minutes.ago) }
+
+    it { is_expected.to contain_exactly(*stale_migrations) }
   end
 end

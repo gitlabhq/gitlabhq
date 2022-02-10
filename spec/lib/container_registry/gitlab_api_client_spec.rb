@@ -7,6 +7,8 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
 
   include_context 'container registry client'
 
+  let(:path) { 'namespace/path/to/repository' }
+
   describe '#supports_gitlab_api?' do
     subject { client.supports_gitlab_api? }
 
@@ -30,9 +32,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
 
       it 'returns the expected result' do
         if expect_registry_to_be_pinged
-          expect_next_instance_of(Faraday::Connection) do |connection|
-            expect(connection).to receive(:run_request).and_call_original
-          end
+          expect(Faraday::Connection).to receive(:new).and_call_original
         else
           expect(Faraday::Connection).not_to receive(:new)
         end
@@ -54,9 +54,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
   end
 
   describe '#pre_import_repository' do
-    let(:path) { 'namespace/path/to/repository' }
-
-    subject { client.pre_import_repository('namespace/path/to/repository') }
+    subject { client.pre_import_repository(path) }
 
     where(:status_code, :expected_result) do
       200 | :already_imported
@@ -80,9 +78,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
   end
 
   describe '#pre_import_repository' do
-    let(:path) { 'namespace/path/to/repository' }
-
-    subject { client.import_repository('namespace/path/to/repository') }
+    subject { client.import_repository(path) }
 
     where(:status_code, :expected_result) do
       200 | :already_imported
@@ -129,9 +125,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
 
       it 'returns the expected result' do
         if expect_registry_to_be_pinged
-          expect_next_instance_of(Faraday::Connection) do |connection|
-            expect(connection).to receive(:run_request).and_call_original
-          end
+          expect(Faraday::Connection).to receive(:new).and_call_original
         else
           expect(Faraday::Connection).not_to receive(:new)
         end
@@ -166,13 +160,15 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
   end
 
   def stub_pre_import(path, status_code, pre:)
-    stub_request(:put, "#{registry_api_url}/gitlab/v1/import/#{path}?pre=#{pre}")
+    stub_request(:put, "#{registry_api_url}/gitlab/v1/import/#{path}/?pre=#{pre}")
+      .with(headers: { 'Accept' => described_class::JSON_TYPE })
       .to_return(status: status_code, body: '')
   end
 
   def stub_registry_gitlab_api_support(supported = true)
     status_code = supported ? 200 : 404
     stub_request(:get, "#{registry_api_url}/gitlab/v1/")
+      .with(headers: { 'Accept' => described_class::JSON_TYPE })
       .to_return(status: status_code, body: '')
   end
 end

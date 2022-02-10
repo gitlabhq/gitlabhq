@@ -287,7 +287,7 @@ module Gitlab
 
         desc _('Add customer relation contacts')
         explanation _('Add customer relation contact(s).')
-        params 'contact@example.com person@example.org'
+        params '[contact:contact@example.com] [contact:person@example.org]'
         types Issue
         condition do
           current_user.can?(:set_issue_crm_contacts, quick_action_target) &&
@@ -302,7 +302,7 @@ module Gitlab
 
         desc _('Remove customer relation contacts')
         explanation _('Remove customer relation contact(s).')
-        params 'contact@example.com person@example.org'
+        params '[contact:contact@example.com] [contact:person@example.org]'
         types Issue
         condition do
           current_user.can?(:set_issue_crm_contacts, quick_action_target) &&

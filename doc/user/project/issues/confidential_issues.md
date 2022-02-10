@@ -51,7 +51,7 @@ the issue even if they were actively participating before the change.
 ## Confidential issue indicators
 
 There are a few things that visually separate a confidential issue from a
-regular one. In the issues index page view, you can see the eye-slash (**(eye-slash)**) icon
+regular one. In the issues index page view, you can see the eye-slash (**{eye-slash}**) icon
 next to the issues that are marked as confidential:
 
 ![Confidential issues index page](img/confidential_issues_index_page.png)

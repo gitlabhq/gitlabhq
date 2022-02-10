@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ForceCompanyTrialExperiment < ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
+class ForceCompanyTrialExperiment < ApplicationExperiment
   exclude :setup_for_personal
 
   private

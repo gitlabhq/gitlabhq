@@ -86,6 +86,7 @@ export const defaultAutocompleteConfig = {
   labels: true,
   snippets: true,
   vulnerabilities: true,
+  contacts: true,
 };
 
 class GfmAutoComplete {
@@ -127,6 +128,7 @@ class GfmAutoComplete {
     if (this.enableMap.mergeRequests) this.setupMergeRequests($input);
     if (this.enableMap.labels) this.setupLabels($input);
     if (this.enableMap.snippets) this.setupSnippets($input);
+    if (this.enableMap.contacts) this.setupContacts($input);
 
     $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
@@ -174,9 +176,16 @@ class GfmAutoComplete {
         let tpl = '/${name} ';
         let referencePrefix = null;
         if (value.params.length > 0) {
-          [[referencePrefix]] = value.params;
-          if (/^[@%~]/.test(referencePrefix)) {
+          const regexp = /\[[a-z]+:/;
+          const match = regexp.exec(value.params);
+          if (match) {
+            [referencePrefix] = match;
             tpl += '<%- referencePrefix %>';
+          } else {
+            [[referencePrefix]] = value.params;
+            if (/^[@%~]/.test(referencePrefix)) {
+              tpl += '<%- referencePrefix %>';
+            }
           }
         }
         return template(tpl, { interpolate: /<%=([\s\S]+?)%>/g })({ referencePrefix });
@@ -619,6 +628,42 @@ class GfmAutoComplete {
     });
   }
 
+  setupContacts($input) {
+    $input.atwho({
+      at: '[contact:',
+      suffix: ']',
+      alias: 'contacts',
+      searchKey: 'search',
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.email != null) {
+          tmpl = GfmAutoComplete.Contacts.templateFunction(value);
+        }
+        return tmpl;
+      },
+      data: GfmAutoComplete.defaultLoadingData,
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${email}',
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(contacts) {
+          return $.map(contacts, (m) => {
+            if (m.email == null) {
+              return m;
+            }
+            return {
+              id: m.id,
+              email: m.email,
+              firstName: m.first_name,
+              lastName: m.last_name,
+              search: `${m.email}`,
+            };
+          });
+        },
+      },
+    });
+  }
+
   getDefaultCallbacks() {
     const self = this;
 
@@ -790,6 +835,7 @@ GfmAutoComplete.atTypeMap = {
   '/': 'commands',
   '[vulnerability:': 'vulnerabilities',
   $: 'snippets',
+  '[contact:': 'contacts',
 };
 
 GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities'];
@@ -881,6 +927,11 @@ GfmAutoComplete.Milestones = {
       })}</li>`;
     }
     return `<li>${escape(title)}</li>`;
+  },
+};
+GfmAutoComplete.Contacts = {
+  templateFunction({ email, firstName, lastName }) {
+    return `<li><small>${firstName} ${lastName}</small> ${escape(email)}</li>`;
   },
 };
 GfmAutoComplete.Loading = {

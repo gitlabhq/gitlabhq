@@ -7,43 +7,10 @@
     "title": { "type": "string" },
     "description": { "type": ["string", "null"] },
     "state": { "type": "string" },
-    "merged_by": {
-      "type": ["object", "null"],
-      "properties": {
-        "name": { "type": "string" },
-        "username": { "type": "string" },
-        "id": { "type": "integer" },
-        "state": { "type": "string" },
-        "avatar_url": { "type": "uri" },
-        "web_url": { "type": "uri" }
-      },
-      "additionalProperties": false
-    },
-    "merge_user": {
-      "type": ["object", "null"],
-      "properties": {
-        "name": { "type": "string" },
-        "username": { "type": "string" },
-        "id": { "type": "integer" },
-        "state": { "type": "string" },
-        "avatar_url": { "type": "uri" },
-        "web_url": { "type": "uri" }
-      },
-      "additionalProperties": false
-    },
+    "merged_by": { "$ref": "user/basic.json" },
+    "merge_user": { "$ref": "user/basic.json" },
     "merged_at": { "type": ["string", "null"] },
-    "closed_by": {
-      "type": ["object", "null"],
-      "properties": {
-        "name": { "type": "string" },
-        "username": { "type": "string" },
-        "id": { "type": "integer" },
-        "state": { "type": "string" },
-        "avatar_url": { "type": "uri" },
-        "web_url": { "type": "uri" }
-      },
-      "additionalProperties": false
-    },
+    "closed_by": { "$ref": "user/basic.json" },
     "closed_at": { "type": ["string", "null"], "format": "date-time" },
     "created_at": { "type": "string", "format": "date-time" },
     "updated_at": { "type": "string", "format": "date-time" },
@@ -51,31 +18,15 @@
     "source_branch": { "type": "string" },
     "upvotes": { "type": "integer" },
     "downvotes": { "type": "integer" },
-    "author": {
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "username": { "type": "string" },
-        "id": { "type": "integer" },
-        "state": { "type": "string" },
-        "avatar_url": { "type": "uri" },
-        "web_url": { "type": "uri" }
-      },
-      "additionalProperties": false
-    },
-    "assignee": {
-      "type": ["object", "null"],
-      "properties": {
-        "name": { "type": "string" },
-        "username": { "type": "string" },
-        "id": { "type": "integer" },
-        "state": { "type": "string" },
-        "avatar_url": { "type": "uri" },
-        "web_url": { "type": "uri" }
-      },
-      "additionalProperties": false
-    },
+    "author": { "$ref": "user/basic.json" },
+    "assignee": { "$ref": "user/basic.json" },
     "assignees": {
+      "type": "array",
+      "items": {
+        "$ref": "user/basic.json"
+      }
+    },
+    "reviewers": {
       "type": "array",
       "items": {
         "$ref": "user/basic.json"

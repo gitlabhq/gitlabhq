@@ -402,7 +402,7 @@ To set a WIP limit for a list:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34723) in GitLab 12.8.
 > - [View blocking issues when hovering over blocked icon](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10.
 
-If an issue is blocked by another issue, an icon appears next to its title to indicate its blocked
+If an issue is [blocked by another issue](issues/related_issues.md#blocking-issues), an icon appears next to its title to indicate its blocked
 status.
 
 When you hover over the blocked icon (**{issue-block}**), a detailed information popover is displayed.

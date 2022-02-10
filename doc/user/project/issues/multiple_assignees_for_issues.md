@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Multiple Assignees for Issues **(PREMIUM)**
 
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 In large teams, where there is shared ownership of an issue, it can be difficult
 to track who is working on it, who already completed their contributions, who

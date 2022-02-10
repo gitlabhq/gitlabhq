@@ -63,6 +63,11 @@ describe('Markdown field component', () => {
           textareaValue,
           lines,
         },
+        provide: {
+          glFeatures: {
+            contactsAutocomplete: true,
+          },
+        },
       },
     );
   }

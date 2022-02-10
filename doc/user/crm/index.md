@@ -6,7 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Customer relations management (CRM) **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `customer_relations`.
+On GitLab.com, this feature is not available.
 
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.
@@ -133,7 +137,7 @@ API.
 
 ### Add contacts to an issue
 
-To add contacts to an issue use the `/add_contacts`
+To add contacts to an issue use the `/add_contacts [contact:address@example.com]`
 [quick action](../project/quick_actions.md).
 
 You can also add, remove, or replace issue contacts using the
@@ -142,9 +146,25 @@ API.
 
 ### Remove contacts from an issue
 
-To remove contacts from an issue use the `/remove_contacts`
+To remove contacts from an issue use the `/remove_contacts [contact:address@example.com]`
 [quick action](../project/quick_actions.md).
 
 You can also add, remove, or replace issue contacts using the
 [GraphQL](../../api/graphql/reference/index.md#mutationissuesetcrmcontacts)
 API.
+
+## Autocomplete contacts **(FREE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `contacts_autocomplete`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `contacts_autocomplete`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+When you use the `/add_contacts` or `/remove_contacts` quick actions, follow them with `[contact:` and an autocomplete list appears:
+
+```plaintext
+/add_contacts [contact:
+/remove_contacts [contact:
+```

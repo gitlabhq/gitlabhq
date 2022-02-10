@@ -25243,6 +25243,12 @@ CREATE INDEX idx_container_exp_policies_on_project_id_next_run_at_enabled ON con
 
 CREATE INDEX idx_container_repos_on_exp_cleanup_status_project_id_start_date ON container_repositories USING btree (expiration_policy_cleanup_status, project_id, expiration_policy_started_at);
 
+CREATE INDEX idx_container_repos_on_import_started_at_when_importing ON container_repositories USING btree (migration_import_started_at) WHERE (migration_state = 'importing'::text);
+
+CREATE INDEX idx_container_repos_on_pre_import_done_at_when_pre_import_done ON container_repositories USING btree (migration_pre_import_done_at) WHERE (migration_state = 'pre_import_done'::text);
+
+CREATE INDEX idx_container_repos_on_pre_import_started_at_when_pre_importing ON container_repositories USING btree (migration_pre_import_started_at) WHERE (migration_state = 'pre_importing'::text);
+
 CREATE INDEX idx_deployment_clusters_on_cluster_id_and_kubernetes_namespace ON deployment_clusters USING btree (cluster_id, kubernetes_namespace);
 
 CREATE INDEX idx_devops_adoption_segments_namespace_end_time ON analytics_devops_adoption_snapshots USING btree (namespace_id, end_time);

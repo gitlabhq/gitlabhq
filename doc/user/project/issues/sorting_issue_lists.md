@@ -27,7 +27,7 @@ The available sorting options can change based on the context of the list.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34247/) in GitLab 13.7.
 
 When you sort by **Blocking**, the issue list changes to sort descending by the
-number of issues each issue is blocking.
+number of issues each issue is [blocking](related_issues.md#blocking-issues).
 
 ## Sorting by created date
 
