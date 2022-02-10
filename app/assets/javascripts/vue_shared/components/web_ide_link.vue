@@ -1,9 +1,9 @@
 <script>
-import $ from 'jquery';
 import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
 
 const KEY_EDIT = 'edit';
 const KEY_WEB_IDE = 'webide';
@@ -16,6 +16,7 @@ export default {
     GlModal,
     GlSprintf,
     GlLink,
+    ConfirmForkModal,
   },
   i18n: {
     modal: {
@@ -103,11 +104,22 @@ export default {
       required: false,
       default: false,
     },
+    forkPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    forkModalId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       selection: KEY_WEB_IDE,
       showEnableGitpodModal: false,
+      showForkModal: false,
     };
   },
   computed: {
@@ -128,7 +140,7 @@ export default {
                 return;
               }
 
-              this.showJQueryModal('#modal-confirm-fork-edit');
+              this.showModal('showForkModal');
             },
           }
         : { href: this.editUrl };
@@ -171,7 +183,7 @@ export default {
                 return;
               }
 
-              this.showJQueryModal('#modal-confirm-fork-webide');
+              this.showModal('showForkModal');
             },
           }
         : { href: this.webIdeUrl };
@@ -247,9 +259,6 @@ export default {
     select(key) {
       this.selection = key;
     },
-    showJQueryModal(id) {
-      $(id).modal('show');
-    },
     showModal(dataKey) {
       this[dataKey] = true;
     },
@@ -282,5 +291,11 @@ export default {
         </template>
       </gl-sprintf>
     </gl-modal>
+    <confirm-fork-modal
+      v-if="showWebIdeButton || showEditButton"
+      v-model="showForkModal"
+      :modal-id="forkModalId"
+      :fork-path="forkPath"
+    />
   </div>
 </template>

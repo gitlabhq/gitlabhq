@@ -46,7 +46,10 @@ module API
       get ':id/ci/lint', urgency: :low do
         authorize! :download_code, user_project
 
-        content = user_project.repository.gitlab_ci_yml_for(user_project.commit.id, user_project.ci_config_path_or_default)
+        if user_project.commit.present?
+          content = user_project.repository.gitlab_ci_yml_for(user_project.commit.id, user_project.ci_config_path_or_default)
+        end
+
         result = Gitlab::Ci::Lint
           .new(project: user_project, current_user: current_user)
           .validate(content, dry_run: params[:dry_run])

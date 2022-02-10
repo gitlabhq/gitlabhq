@@ -18,16 +18,34 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
   end
 
   shared_examples 'deleting the project' do
-    before do
-      # Run sidekiq immediately to check that renamed repository will be removed
-      destroy_project(project, user, {})
-    end
-
     it 'deletes the project', :sidekiq_inline do
+      destroy_project(project, user, {})
+
       expect(Project.unscoped.all).not_to include(project)
 
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, remove_path + '.git')).to be_falsey
+    end
+
+    it 'publishes a ProjectDeleted event with project id and namespace id' do
+      expected_data = { project_id: project.id, namespace_id: project.namespace_id }
+      expect(Gitlab::EventStore)
+        .to receive(:publish)
+        .with(event_type(Projects::ProjectDeletedEvent).containing(expected_data))
+
+      destroy_project(project, user, {})
+    end
+
+    context 'when feature flag publish_project_deleted_event is disabled' do
+      before do
+        stub_feature_flags(publish_project_deleted_event: false)
+      end
+
+      it 'does not publish an event' do
+        expect(Gitlab::EventStore).not_to receive(:publish)
+
+        destroy_project(project, user, {})
+      end
     end
   end
 

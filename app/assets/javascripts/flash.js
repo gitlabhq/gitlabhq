@@ -18,6 +18,13 @@ const VARIANT_DANGER = 'danger';
 const VARIANT_INFO = 'info';
 const VARIANT_TIP = 'tip';
 
+const TYPE_TO_VARIANT = {
+  [FLASH_TYPES.ALERT]: VARIANT_DANGER,
+  [FLASH_TYPES.NOTICE]: VARIANT_INFO,
+  [FLASH_TYPES.SUCCESS]: VARIANT_SUCCESS,
+  [FLASH_TYPES.WARNING]: VARIANT_WARNING,
+};
+
 const FLASH_CLOSED_EVENT = 'flashClosed';
 
 const getCloseEl = (flashEl) => {
@@ -61,7 +68,7 @@ const createAction = (config) => `
 `;
 
 const createFlashEl = (message, type) => `
-  <div class="flash-${type}">
+  <div class="flash-${type}" data-testid="alert-${TYPE_TO_VARIANT[type]}">
     <div class="flash-text">
       ${escape(message)}
       <div class="close-icon-wrapper js-close-icon">
@@ -188,6 +195,9 @@ const createAlert = function createAlert({
             primaryButtonText: primaryButton?.text,
             secondaryButtonLink: secondaryButton?.link,
             secondaryButtonText: secondaryButton?.text,
+          },
+          attrs: {
+            'data-testid': `alert-${variant}`,
           },
           on,
         },

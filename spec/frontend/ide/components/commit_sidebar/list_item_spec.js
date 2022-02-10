@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import listItem from '~/ide/components/commit_sidebar/list_item.vue';
 import { createRouter } from '~/ide/ide_router';
@@ -55,32 +56,28 @@ describe('Multi-file editor commit sidebar list item', () => {
     expect(findPathText()).toEqual(f.name);
   });
 
-  it('opens a closed file in the editor when clicking the file path', (done) => {
+  it('opens a closed file in the editor when clicking the file path', async () => {
     jest.spyOn(vm, 'openPendingTab');
     jest.spyOn(router, 'push').mockImplementation(() => {});
 
     findPathEl.click();
 
-    setImmediate(() => {
-      expect(vm.openPendingTab).toHaveBeenCalled();
-      expect(router.push).toHaveBeenCalled();
+    await nextTick();
 
-      done();
-    });
+    expect(vm.openPendingTab).toHaveBeenCalled();
+    expect(router.push).toHaveBeenCalled();
   });
 
-  it('calls updateViewer with diff when clicking file', (done) => {
+  it('calls updateViewer with diff when clicking file', async () => {
     jest.spyOn(vm, 'openFileInEditor');
     jest.spyOn(vm, 'updateViewer');
     jest.spyOn(router, 'push').mockImplementation(() => {});
 
     findPathEl.click();
 
-    setImmediate(() => {
-      expect(vm.updateViewer).toHaveBeenCalledWith('diff');
+    await waitForPromises();
 
-      done();
-    });
+    expect(vm.updateViewer).toHaveBeenCalledWith('diff');
   });
 
   describe('computed', () => {

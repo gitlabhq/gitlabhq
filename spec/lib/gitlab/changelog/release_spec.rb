@@ -139,6 +139,16 @@ RSpec.describe Gitlab::Changelog::Release do
         OUT
       end
     end
+
+    context 'when template parser raises an error' do
+      before do
+        allow(config).to receive(:template).and_raise(Gitlab::TemplateParser::Error)
+      end
+
+      it 'raises a Changelog error' do
+        expect { release.to_markdown }.to raise_error(Gitlab::Changelog::Error)
+      end
+    end
   end
 
   describe '#header_start_position' do

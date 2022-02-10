@@ -67,7 +67,7 @@ module Gitlab
         markdown =
           begin
             @config.template.evaluate(state, data).strip
-          rescue TemplateParser::ParseError => e
+          rescue TemplateParser::Error => e
             raise Error, e.message
           end
 

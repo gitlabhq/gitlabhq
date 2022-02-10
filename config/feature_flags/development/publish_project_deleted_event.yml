@@ -1,0 +1,8 @@
+---
+name: publish_project_deleted_event
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78862
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351073
+milestone: '14.8'
+type: development
+group: group::pipeline insights
+default_enabled: false

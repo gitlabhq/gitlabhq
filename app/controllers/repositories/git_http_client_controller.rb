@@ -17,6 +17,9 @@ module Repositories
 
     prepend_before_action :authenticate_user, :parse_repo_path
 
+    skip_around_action :sessionless_bypass_admin_mode!
+    around_action :bypass_admin_mode!, if: :authenticated_user
+
     feature_category :source_code_management
 
     def authenticated_user
@@ -135,6 +138,12 @@ module Repositories
       download_request? &&
       container &&
       Guest.can?(repo_type.guest_read_ability, container)
+    end
+
+    def bypass_admin_mode!(&block)
+      return yield unless Gitlab::CurrentSettings.admin_mode
+
+      Gitlab::Auth::CurrentUserMode.bypass_session!(authenticated_user.id, &block)
     end
   end
 end

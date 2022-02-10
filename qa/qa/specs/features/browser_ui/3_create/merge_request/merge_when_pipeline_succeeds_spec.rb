@@ -31,6 +31,26 @@ module QA
         it 'merges after pipeline succeeds' do
           transient_test = repeat > 1
 
+          # Push a new pipeline config file
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            commit.project = project
+            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.add_files(
+              [
+                {
+                  file_path: '.gitlab-ci.yml',
+                  content: <<~EOF
+                    test:
+                      tags: ["runner-for-#{project.name}"]
+                      script: sleep 20
+                      only:
+                        - merge_requests
+                  EOF
+                }
+              ]
+            )
+          end
+
           repeat.times do |i|
             QA::Runtime::Logger.info("Transient bug test - Trial #{i}") if transient_test
 
@@ -55,22 +75,16 @@ module QA
             # start it.
             merge_request.visit!
 
-            # Push a new pipeline config file
+            # Push a new file to trigger a new pipeline
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               commit.project = project
-              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.commit_message = 'Add new file'
               commit.branch = branch_name
               commit.add_files(
                 [
                   {
-                    file_path: '.gitlab-ci.yml',
-                    content: <<~EOF
-                      test:
-                        tags: ["runner-for-#{project.name}"]
-                        script: sleep 20
-                        only:
-                          - merge_requests
-                    EOF
+                    file_path: "#{branch_name}-file.md",
+                    content: "file content"
                   }
                 ]
               )

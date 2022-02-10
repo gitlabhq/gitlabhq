@@ -857,7 +857,7 @@ RSpec.describe 'Pipelines', :js do
           it 'increments jobs_cache_index' do
             click_button 'Clear runner caches'
             wait_for_requests
-            expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
+            expect(page.find('[data-testid="alert-info"]')).to have_content 'Project cache successfully reset.'
           end
         end
 
@@ -865,7 +865,7 @@ RSpec.describe 'Pipelines', :js do
           it 'sets jobs_cache_index to 1' do
             click_button 'Clear runner caches'
             wait_for_requests
-            expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
+            expect(page.find('[data-testid="alert-info"]')).to have_content 'Project cache successfully reset.'
           end
         end
       end

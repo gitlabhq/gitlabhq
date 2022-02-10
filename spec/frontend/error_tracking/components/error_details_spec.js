@@ -583,33 +583,25 @@ describe('ErrorDetails', () => {
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
 
-    it('should track IGNORE status update', () => {
+    it('should track IGNORE status update', async () => {
       Tracking.event.mockClear();
-      findUpdateIgnoreStatusButton().vm.$emit('click');
-      setImmediate(() => {
-        const { category, action } = trackErrorStatusUpdateOptions('ignored');
-        expect(Tracking.event).toHaveBeenCalledWith(category, action);
-      });
+      await findUpdateIgnoreStatusButton().trigger('click');
+      const { category, action } = trackErrorStatusUpdateOptions('ignored');
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
 
-    it('should track RESOLVE status update', () => {
+    it('should track RESOLVE status update', async () => {
       Tracking.event.mockClear();
-      findUpdateResolveStatusButton().vm.$emit('click');
-      setImmediate(() => {
-        const { category, action } = trackErrorStatusUpdateOptions('resolved');
-        expect(Tracking.event).toHaveBeenCalledWith(category, action);
-      });
+      await findUpdateResolveStatusButton().trigger('click');
+      const { category, action } = trackErrorStatusUpdateOptions('resolved');
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
 
-    it('should track external Sentry link views', () => {
+    it('should track external Sentry link views', async () => {
       Tracking.event.mockClear();
-      findExternalUrl().trigger('click');
-      setImmediate(() => {
-        const { category, action, label, property } = trackClickErrorLinkToSentryOptions(
-          externalUrl,
-        );
-        expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property });
-      });
+      await findExternalUrl().trigger('click');
+      const { category, action, label, property } = trackClickErrorLinkToSentryOptions(externalUrl);
+      expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property });
     });
   });
 });

@@ -236,7 +236,7 @@ RSpec.describe 'Project' do
     it 'does not show an error' do
       wait_for_requests
 
-      expect(page).not_to have_selector('.flash-alert')
+      expect(page).not_to have_selector('[data-testid="alert-danger"]')
     end
   end
 
@@ -316,7 +316,7 @@ RSpec.describe 'Project' do
         wait_for_requests
 
         expect(page).to have_selector('.tree-item')
-        expect(page).not_to have_selector('.flash-alert')
+        expect(page).not_to have_selector('[data-testid="alert-danger"]')
       end
 
       context 'for signed commit' do

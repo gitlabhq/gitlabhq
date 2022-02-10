@@ -34,6 +34,7 @@ module Gitlab
       # Add subscriptions here:
 
       store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
+      store.subscribe ::Namespaces::UpdateRootStatisticsWorker, to: ::Projects::ProjectDeletedEvent
     end
     private_class_method :configure!
   end

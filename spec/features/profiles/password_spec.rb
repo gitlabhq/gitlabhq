@@ -41,7 +41,7 @@ RSpec.describe 'Profile > Password' do
         it 'shows a success message' do
           fill_passwords(Gitlab::Password.test_default, Gitlab::Password.test_default)
 
-          page.within('.flash-notice') do
+          page.within('[data-testid="alert-info"]') do
             expect(page).to have_content('Password was successfully updated. Please sign in again.')
           end
         end

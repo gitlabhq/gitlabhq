@@ -79,7 +79,7 @@ RSpec.describe 'Groups > Members > Leave group' do
 
     visit group_path(group, leave: 1)
 
-    expect(find('.flash-alert')).to have_content 'You do not have permission to leave this group'
+    expect(find('[data-testid="alert-danger"]')).to have_content 'You do not have permission to leave this group'
   end
 
   def left_group_message(group)

@@ -984,7 +984,7 @@ RSpec.describe 'File blob', :js do
         visit_blob('README.md')
 
         expect(page).to have_selector('.file-content')
-        expect(page).not_to have_selector('.flash-alert')
+        expect(page).not_to have_selector('[data-testid="alert-danger"]')
       end
 
       it 'displays a GPG badge' do

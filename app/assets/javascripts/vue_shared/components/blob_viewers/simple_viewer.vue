@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import LineHighlighter from '~/blob/line_highlighter';
 import { HIGHLIGHT_CLASS_NAME } from './constants';
 import ViewerMixin from './mixins';
 
@@ -20,13 +21,22 @@ export default {
     };
   },
   computed: {
+    refactorBlobViewerEnabled() {
+      return this.glFeatures.refactorBlobViewer;
+    },
+
     lineNumbers() {
       return this.content.split('\n').length;
     },
   },
   mounted() {
-    const { hash } = window.location;
-    if (hash) this.scrollToLine(hash, true);
+    if (this.refactorBlobViewerEnabled) {
+      // This line will be removed once we start using highlight.js on the frontend (https://gitlab.com/groups/gitlab-org/-/epics/7146)
+      new LineHighlighter(); // eslint-disable-line no-new
+    } else {
+      const { hash } = window.location;
+      if (hash) this.scrollToLine(hash, true);
+    }
   },
   methods: {
     scrollToLine(hash, scroll = false) {

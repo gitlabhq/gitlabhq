@@ -66,6 +66,11 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
           expect(build_names).not_to include('review')
         end
 
+        it 'when CI_DEPLOY_FREEZE is present' do
+          create(:ci_variable, project: project, key: 'CI_DEPLOY_FREEZE', value: 'true')
+          expect(build_names).to eq %w(placeholder)
+        end
+
         it 'when CANARY_ENABLED' do
           create(:ci_variable, project: project, key: 'CANARY_ENABLED', value: 'true')
 

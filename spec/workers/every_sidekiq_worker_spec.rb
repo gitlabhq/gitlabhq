@@ -349,6 +349,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Namespaces::OnboardingPipelineCreatedWorker' => 3,
         'Namespaces::OnboardingProgressWorker' => 3,
         'Namespaces::OnboardingUserAddedWorker' => 3,
+        'Namespaces::RefreshRootStatisticsWorker' => 3,
         'Namespaces::RootStatisticsWorker' => 3,
         'Namespaces::ScheduleAggregationWorker' => 3,
         'NetworkPolicyMetricsWorker' => 3,

@@ -21,6 +21,6 @@ RSpec.describe 'Projects > Members > Group member cannot leave group project' do
   it 'renders a flash message if attempting to leave by url', :js do
     visit project_path(project, leave: 1)
 
-    expect(find('.flash-alert')).to have_content 'You do not have permission to leave this project'
+    expect(find('[data-testid="alert-danger"]')).to have_content 'You do not have permission to leave this project'
   end
 end

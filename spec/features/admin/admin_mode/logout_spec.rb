@@ -32,7 +32,7 @@ RSpec.describe 'Admin Mode Logout', :js do
   it 'disable shows flash notice' do
     gitlab_disable_admin_mode
 
-    expect(page).to have_selector('.flash-notice')
+    expect(page).to have_selector('[data-testid="alert-info"]')
   end
 
   context 'on a read-only instance' do

@@ -164,8 +164,7 @@ may need to set the `production -> elasticsearch -> indexer_path` setting in you
 
 ## Enable Advanced Search
 
-For GitLab instances with more than 50GB repository data you can follow the instructions for [Indexing large
-instances](#indexing-large-instances) below.
+For GitLab instances with more than 50GB repository data you can follow the instructions for [how to index large instances efficiently](#how-to-index-large-instances-efficiently) below.
 
 To enable Advanced Search, you must have administrator access to GitLab:
 
@@ -552,7 +551,7 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 - The `Number of Elasticsearch shards` setting usually corresponds with the number of CPUs available in your cluster. For example, if you have a 3-node cluster with 4 cores each, this means you benefit from having at least 3*4=12 shards in the cluster. It's only possible to change the shards number by using [Split index API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-split-index.html) or by reindexing to a different index with a changed number of shards.
 - The `Number of Elasticsearch replicas` setting should most of the time be equal to `1` (each shard has 1 replica). Using `0` is not recommended, because losing one node corrupts the index.
 
-### Indexing large instances
+### How to index large instances efficiently
 
 This section may be helpful in the event that the other
 [basic instructions](#enable-advanced-search) cause problems
@@ -749,6 +748,86 @@ However, some larger installations may wish to tune the merge policy settings:
   ```
 
 - Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
+
+## Index large instances with dedicated Sidekiq nodes or processes
+
+Indexing a large instance can be a lengthy and resource-intensive process that has the potential
+of overwhelming Sidekiq nodes and processes. This negatively affects the GitLab performance and
+availability.
+
+As GitLab allows you to start multiple Sidekiq processes, you can create an
+additional process dedicated to indexing a set of queues (or queue group). This way, you can
+ensure that indexing queues always have a dedicated worker, while the rest of the queues have
+another dedicated worker to avoid contention.
+
+For this purpose, use the [queue selector](../administration/operations/extra_sidekiq_processes.md#queue-selector)
+option that allows a more general selection of queue groups using a [worker matching query](../administration/operations/extra_sidekiq_routing.md#worker-matching-query).
+
+To handle these two queue groups, we generally recommend one of the following two options. You can either:
+
+- [Use two queue groups on one single node](#single-node-two-processes).
+- [Use two queue groups, one on each node](#two-nodes-one-process-for-each).
+
+For the steps below, consider:
+
+- `feature_category=global_search` as an indexing queue group with its own Sidekiq process.
+- `feature_category!=global_search` as a non-indexing queue group that has its own Sidekiq process.
+
+### Single node, two processes
+
+To create both an indexing and a non-indexing Sidekiq process in one node:
+
+1. On your Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
+
+   ```ruby
+   sidekiq['enable'] = true
+    sidekiq['queue_selector'] = true
+    sidekiq['queue_groups'] = [
+      "feature_category=global_search",
+      "feature_category!=global_search"
+    ]
+   ```
+
+1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+for the changes to take effect.
+
+WARNING:
+When starting multiple processes, the number of processes cannot exceed the number of CPU
+cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
+to the available workload and concurrency settings. For more details, see how to
+[run multiple Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
+
+### Two nodes, one process for each
+
+To handle these queue groups on two nodes:
+
+1. To set up the indexing Sidekiq process, on your indexing Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
+
+    ```ruby
+    sidekiq['enable'] = true
+     sidekiq['queue_selector'] = true
+     sidekiq['queue_groups'] = [
+       "feature_category=global_search"
+     ]
+    ```
+
+1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+for the changes to take effect.
+
+1. To set up the non-indexing Sidekiq process, on your non-indexing Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
+
+    ```ruby
+    sidekiq['enable'] = true
+     sidekiq['queue_selector'] = true
+     sidekiq['queue_groups'] = [
+       "feature_category!=global_search"
+     ]
+    ```
+
+    to set up a non-indexing Sidekiq process.
+
+1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+for the changes to take effect.
 
 ## Reverting to Basic Search
 
@@ -991,6 +1070,13 @@ Advanced Search will store all the projects in the same Elasticsearch indexes,
 however searches will only surface results that can be viewed by the user.
 Advanced Search will honor all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
+
+### Indexing fails with `error: elastic: Error 429 (Too Many Requests)`
+
+If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
+
+- To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
+- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../administration/operations/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
 
 ### Access requirements for the self-managed AWS OpenSearch Service
 

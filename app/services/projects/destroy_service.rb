@@ -37,6 +37,8 @@ module Projects
       system_hook_service.execute_hooks_for(project, :destroy)
       log_info("Project \"#{project.full_path}\" was deleted")
 
+      publish_project_deleted_event_for(project) if Feature.enabled?(:publish_project_deleted_event, default_enabled: :yaml)
+
       current_user.invalidate_personal_projects_count
 
       true
@@ -259,6 +261,12 @@ module Projects
 
     def flush_caches(project)
       Projects::ForksCountService.new(project).delete_cache
+    end
+
+    def publish_project_deleted_event_for(project)
+      data = { project_id: project.id, namespace_id: project.namespace_id }
+      event = Projects::ProjectDeletedEvent.new(data: data)
+      Gitlab::EventStore.publish(event)
     end
   end
 end

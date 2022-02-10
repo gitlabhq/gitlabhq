@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
+import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
 
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
@@ -13,6 +14,7 @@ const TEST_WEB_IDE_URL = '/-/ide/project/gitlab-test/test/edit/main/-/';
 const TEST_GITPOD_URL = 'https://gitpod.test/';
 const TEST_USER_PREFERENCES_GITPOD_PATH = '/-/profile/preferences#user_gitpod_enabled';
 const TEST_USER_PROFILE_ENABLE_GITPOD_PATH = '/-/profile?user%5Bgitpod_enabled%5D=true';
+const forkPath = '/some/fork/path';
 
 const ACTION_EDIT = {
   href: TEST_EDIT_URL,
@@ -74,6 +76,7 @@ describe('Web IDE link component', () => {
         editUrl: TEST_EDIT_URL,
         webIdeUrl: TEST_WEB_IDE_URL,
         gitpodUrl: TEST_GITPOD_URL,
+        forkPath,
         ...props,
       },
       stubs: {
@@ -96,6 +99,7 @@ describe('Web IDE link component', () => {
   const findActionsButton = () => wrapper.find(ActionsButton);
   const findLocalStorageSync = () => wrapper.find(LocalStorageSync);
   const findModal = () => wrapper.findComponent(GlModal);
+  const findForkConfirmModal = () => wrapper.findComponent(ConfirmForkModal);
 
   it.each([
     {
@@ -231,16 +235,28 @@ describe('Web IDE link component', () => {
   });
 
   describe('edit actions', () => {
-    it.each([
+    const testActions = [
       {
-        props: { showWebIdeButton: true, showEditButton: false },
+        props: {
+          showWebIdeButton: true,
+          showEditButton: false,
+          forkPath,
+          forkModalId: 'edit-modal',
+        },
         expectedEventPayload: 'ide',
       },
       {
-        props: { showWebIdeButton: false, showEditButton: true },
+        props: {
+          showWebIdeButton: false,
+          showEditButton: true,
+          forkPath,
+          forkModalId: 'webide-modal',
+        },
         expectedEventPayload: 'simple',
       },
-    ])(
+    ];
+
+    it.each(testActions)(
       'emits the correct event when an action handler is called',
       async ({ props, expectedEventPayload }) => {
         createComponent({ ...props, needsToFork: true, disableForkModal: true });
@@ -250,6 +266,29 @@ describe('Web IDE link component', () => {
         expect(wrapper.emitted('edit')).toEqual([[expectedEventPayload]]);
       },
     );
+
+    it.each(testActions)('renders the fork confirmation modal', async ({ props }) => {
+      createComponent({ ...props, needsToFork: true });
+
+      expect(findForkConfirmModal().exists()).toBe(true);
+      expect(findForkConfirmModal().props()).toEqual({
+        visible: false,
+        forkPath,
+        modalId: props.forkModalId,
+      });
+    });
+
+    it.each(testActions)('opens the modal when the button is clicked', async ({ props }) => {
+      createComponent({ ...props, needsToFork: true }, mountExtended);
+
+      await findActionsButton().trigger('click');
+
+      expect(findForkConfirmModal().props()).toEqual({
+        visible: true,
+        forkPath,
+        modalId: props.forkModalId,
+      });
+    });
   });
 
   describe('when Gitpod is not enabled', () => {

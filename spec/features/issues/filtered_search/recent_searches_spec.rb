@@ -104,7 +104,7 @@ RSpec.describe 'Recent searches', :js do
     set_recent_searches(project_1_local_storage_key, 'fail')
     visit project_issues_path(project_1)
 
-    expect(find('.flash-alert')).to have_text('An error occurred while parsing recent searches')
+    expect(find('[data-testid="alert-danger"]')).to have_text('An error occurred while parsing recent searches')
   end
 
   context 'on tablet/mobile screen' do

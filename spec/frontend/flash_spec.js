@@ -517,16 +517,12 @@ describe('Flash', () => {
         `;
       });
 
-      it('removes global flash on click', (done) => {
+      it('removes global flash on click', () => {
         addDismissFlashClickListener(el, false);
 
         el.querySelector('.js-close-icon').click();
 
-        setImmediate(() => {
-          expect(document.querySelector('.flash')).toBeNull();
-
-          done();
-        });
+        expect(document.querySelector('.flash')).toBeNull();
       });
     });
 

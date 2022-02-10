@@ -295,6 +295,8 @@
   - 1
 - - namespaces_sync_namespace_name
   - 1
+- - namespaces_update_root_statistics
+  - 1
 - - new_epic
   - 2
 - - new_issue

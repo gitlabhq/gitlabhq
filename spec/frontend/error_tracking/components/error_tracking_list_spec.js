@@ -447,7 +447,7 @@ describe('ErrorTrackingList', () => {
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
 
-    it('should track status updates', () => {
+    it('should track status updates', async () => {
       Tracking.event.mockClear();
       const status = 'ignored';
       findErrorActions().vm.$emit('update-issue-status', {
@@ -455,10 +455,10 @@ describe('ErrorTrackingList', () => {
         status,
       });
 
-      setImmediate(() => {
-        const { category, action } = trackErrorStatusUpdateOptions(status);
-        expect(Tracking.event).toHaveBeenCalledWith(category, action);
-      });
+      await nextTick();
+
+      const { category, action } = trackErrorStatusUpdateOptions(status);
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
   });
 });

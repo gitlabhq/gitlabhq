@@ -103,7 +103,7 @@ canary:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   rules:
-    - if: '$CI_DEPLOY_FREEZE != null'
+    - if: '$CI_DEPLOY_FREEZE'
       when: never
     - if: '($CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == "") && ($KUBECONFIG == null || $KUBECONFIG == "")'
       when: never
@@ -135,7 +135,7 @@ canary:
 production:
   <<: *production_template
   rules:
-    - if: '$CI_DEPLOY_FREEZE != null'
+    - if: '$CI_DEPLOY_FREEZE'
       when: never
     - if: '($CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == "") && ($KUBECONFIG == null || $KUBECONFIG == "")'
       when: never
@@ -153,7 +153,7 @@ production_manual:
   <<: *production_template
   allow_failure: false
   rules:
-    - if: '$CI_DEPLOY_FREEZE != null'
+    - if: '$CI_DEPLOY_FREEZE'
       when: never
     - if: '($CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == "") && ($KUBECONFIG == null || $KUBECONFIG == "")'
       when: never
@@ -192,7 +192,7 @@ production_manual:
   resource_group: production
   allow_failure: true
   rules:
-    - if: '$CI_DEPLOY_FREEZE != null'
+    - if: '$CI_DEPLOY_FREEZE'
       when: never
     - if: '($CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == "") && ($KUBECONFIG == null || $KUBECONFIG == "")'
       when: never
@@ -207,7 +207,7 @@ production_manual:
 .timed_rollout_template: &timed_rollout_template
   <<: *rollout_template
   rules:
-    - if: '$CI_DEPLOY_FREEZE != null'
+    - if: '$CI_DEPLOY_FREEZE'
       when: never
     - if: '($CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == "") && ($KUBECONFIG == null || $KUBECONFIG == "")'
       when: never

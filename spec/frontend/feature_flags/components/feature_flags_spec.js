@@ -71,12 +71,12 @@ describe('Feature flags', () => {
   describe('when limit exceeded', () => {
     const provideData = { ...mockData, featureFlagsLimitExceeded: true };
 
-    beforeEach((done) => {
+    beforeEach(() => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { page: '1' } })
         .reply(200, getRequestData, {});
       factory(provideData);
-      setImmediate(done);
+      return waitForPromises();
     });
 
     it('makes the new feature flag button do nothing if clicked', () => {
@@ -116,12 +116,12 @@ describe('Feature flags', () => {
       userListPath: null,
     };
 
-    beforeEach((done) => {
+    beforeEach(() => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { page: '1' } })
         .reply(200, getRequestData, {});
       factory(provideData);
-      setImmediate(done);
+      return waitForPromises();
     });
 
     it('does not render configure button', () => {
@@ -202,7 +202,7 @@ describe('Feature flags', () => {
     });
 
     describe('with paginated feature flags', () => {
-      beforeEach((done) => {
+      beforeEach(() => {
         mock.onGet(mockState.endpoint, { params: { page: '1' } }).replyOnce(200, getRequestData, {
           'x-next-page': '2',
           'x-page': '1',
@@ -214,7 +214,7 @@ describe('Feature flags', () => {
 
         factory();
         jest.spyOn(store, 'dispatch');
-        setImmediate(done);
+        return waitForPromises();
       });
 
       it('should render a table with feature flags', () => {
@@ -270,11 +270,11 @@ describe('Feature flags', () => {
   });
 
   describe('unsuccessful request', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       mock.onGet(mockState.endpoint, { params: { page: '1' } }).replyOnce(500, {});
 
       factory();
-      setImmediate(done);
+      return waitForPromises();
     });
 
     it('should render error state', () => {
@@ -300,12 +300,12 @@ describe('Feature flags', () => {
   });
 
   describe('rotate instance id', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { page: '1' } })
         .reply(200, getRequestData, {});
       factory();
-      setImmediate(done);
+      return waitForPromises();
     });
 
     it('should fire the rotate action when a `token` event is received', () => {

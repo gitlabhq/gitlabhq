@@ -110,7 +110,7 @@ RSpec.describe API::Lint do
     context 'when authenticated' do
       let_it_be(:api_user) { create(:user) }
 
-      context 'with valid .gitlab-ci.yaml content' do
+      context 'with valid .gitlab-ci.yml content' do
         let(:yaml_content) do
           File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
         end
@@ -140,7 +140,7 @@ RSpec.describe API::Lint do
         end
       end
 
-      context 'with valid .gitlab-ci.yaml with warnings' do
+      context 'with valid .gitlab-ci.yml with warnings' do
         let(:yaml_content) { { job: { script: 'ls', rules: [{ when: 'always' }] } }.to_yaml }
 
         it 'passes validation but returns warnings' do
@@ -153,7 +153,7 @@ RSpec.describe API::Lint do
         end
       end
 
-      context 'with valid .gitlab-ci.yaml using deprecated keywords' do
+      context 'with valid .gitlab-ci.yml using deprecated keywords' do
         let(:yaml_content) { { job: { script: 'ls', type: 'test' }, types: ['test'] }.to_yaml }
 
         it 'passes validation but returns warnings' do
@@ -166,7 +166,7 @@ RSpec.describe API::Lint do
         end
       end
 
-      context 'with an invalid .gitlab_ci.yml' do
+      context 'with an invalid .gitlab-ci.yml' do
         context 'with invalid syntax' do
           let(:yaml_content) { 'invalid content' }
 
@@ -382,6 +382,15 @@ RSpec.describe API::Lint do
 
       before do
         project.add_developer(api_user)
+      end
+
+      context 'with no commit' do
+        it 'returns error about providing content' do
+          ci_lint
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['errors']).to match_array(['Please provide content of .gitlab-ci.yml'])
+        end
       end
 
       context 'with valid .gitlab-ci.yml content' do
