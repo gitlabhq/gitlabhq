@@ -127,6 +127,14 @@ RSpec.describe API::Commits do
         it_behaves_like 'project commits'
       end
 
+      context 'with incorrect ref_name parameter' do
+        let(:route) { "/projects/#{project_id}/repository/commits?ref_name=-main" }
+
+        it_behaves_like '400 response' do
+          let(:request) { get api(route, user) }
+        end
+      end
+
       context "path optional parameter" do
         it "returns project commits matching provided path parameter" do
           path = 'files/ruby/popen.rb'

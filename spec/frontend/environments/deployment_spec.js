@@ -209,6 +209,36 @@ describe('~/environments/components/deployment.vue', () => {
       const username = wrapper.findByRole('link', { name: `@${deployment.user.username}` });
 
       expect(username.attributes('href')).toBe(deployment.user.path);
+      const job = wrapper.findByRole('link', { name: deployment.deployable.name });
+      expect(job.attributes('href')).toBe(deployment.deployable.buildPath);
+      const apiBadge = wrapper.findByText(__('API'));
+      expect(apiBadge.exists()).toBe(false);
+    });
+  });
+  describe('with API deployment', () => {
+    beforeEach(async () => {
+      wrapper = createWrapper({ propsData: { deployment: { ...deployment, deployable: null } } });
+      await wrapper.findComponent({ ref: 'details-toggle' }).trigger('click');
+    });
+
+    it('shows API instead of a job name', () => {
+      const apiBadge = wrapper.findByText(__('API'));
+      expect(apiBadge.exists()).toBe(true);
+    });
+  });
+  describe('without a job path', () => {
+    beforeEach(async () => {
+      wrapper = createWrapper({
+        propsData: {
+          deployment: { ...deployment, deployable: { name: deployment.deployable.name } },
+        },
+      });
+      await wrapper.findComponent({ ref: 'details-toggle' }).trigger('click');
+    });
+
+    it('shows a span instead of a link', () => {
+      const job = wrapper.findByText(deployment.deployable.name);
+      expect(job.attributes('href')).toBeUndefined();
     });
   });
 });

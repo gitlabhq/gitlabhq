@@ -80,6 +80,15 @@ export default {
     userPath() {
       return this.user?.path;
     },
+    deployable() {
+      return this.deployment?.deployable;
+    },
+    jobName() {
+      return truncate(this.deployable?.name ?? '', 25);
+    },
+    jobPath() {
+      return this.deployable?.buildPath;
+    },
   },
   methods: {
     toggleCollapse() {
@@ -94,6 +103,8 @@ export default {
     showDetails: __('Show details'),
     hideDetails: __('Hide details'),
     triggerer: s__('Deployment|Triggerer'),
+    job: __('Job'),
+    api: __('API'),
   },
   headerClasses: [
     'gl-display-flex',
@@ -173,6 +184,20 @@ export default {
         <div v-if="user" class="gl-display-flex gl-flex-direction-column">
           <span class="gl-text-gray-500 gl-font-weight-bold">{{ $options.i18n.triggerer }}</span>
           <gl-link :href="userPath" class="gl-font-monospace gl-mt-3"> @{{ username }} </gl-link>
+        </div>
+        <div class="gl-display-flex gl-flex-direction-column gl-ml-5">
+          <span class="gl-text-gray-500 gl-font-weight-bold" :class="{ 'gl-ml-3': !deployable }">
+            {{ $options.i18n.job }}
+          </span>
+          <gl-link v-if="jobPath" :href="jobPath" class="gl-font-monospace gl-mt-3">
+            {{ jobName }}
+          </gl-link>
+          <span v-else-if="jobName" class="gl-font-monospace gl-mt-3">
+            {{ jobName }}
+          </span>
+          <gl-badge v-else class="gl-font-monospace gl-mt-3" variant="info">
+            {{ $options.i18n.api }}
+          </gl-badge>
         </div>
       </div>
     </gl-collapse>

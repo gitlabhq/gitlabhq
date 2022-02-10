@@ -32,7 +32,7 @@ module API
         success Entities::Commit
       end
       params do
-        optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
+        optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used', regexp: /\A#{Gitlab::PathRegex.git_reference_regex}\z|\A\z/
         optional :since, type: DateTime, desc: 'Only commits after or on this date will be returned'
         optional :until, type: DateTime, desc: 'Only commits before or on this date will be returned'
         optional :path, type: String, desc: 'The file path'

@@ -234,7 +234,7 @@ module Gitlab
       @git_reference_regex ||= single_line_regexp %r{
         (?!
            (?# doesn't begins with)
-           \/|                    (?# rule #6)
+           \/|-|                  (?# rule #6)
            (?# doesn't contain)
            .*(?:
               [\/.]\.|            (?# rule #1,3)

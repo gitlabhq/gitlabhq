@@ -32,7 +32,7 @@ RSpec.describe ExtractsPath do
   describe '#assign_ref_vars' do
     let(:ref) { sample_commit[:id] }
     let(:path) { sample_commit[:line_code_path] }
-    let(:params) { { path: path, ref: ref } }
+    let(:params) { ActionController::Parameters.new(path: path, ref: ref) }
 
     it_behaves_like 'assigns ref vars'
 
@@ -54,7 +54,8 @@ RSpec.describe ExtractsPath do
 
     context 'ref only exists without .atom suffix' do
       context 'with a path' do
-        let(:params) { { ref: 'v1.0.0.atom', path: 'README.md' } }
+        let(:ref) { 'v1.0.0.atom' }
+        let(:path) { 'README.md' }
 
         it 'renders a 404' do
           expect(self).to receive(:render_404)
@@ -64,7 +65,8 @@ RSpec.describe ExtractsPath do
       end
 
       context 'without a path' do
-        let(:params) { { ref: 'v1.0.0.atom' } }
+        let(:ref) { 'v1.0.0.atom' }
+        let(:path) { nil }
 
         before do
           assign_ref_vars
@@ -82,7 +84,8 @@ RSpec.describe ExtractsPath do
 
     context 'ref exists with .atom suffix' do
       context 'with a path' do
-        let(:params) { { ref: 'master.atom', path: 'README.md' } }
+        let(:ref) { 'master.atom' }
+        let(:path) { 'README.md' }
 
         before do
           repository = @project.repository
@@ -102,7 +105,8 @@ RSpec.describe ExtractsPath do
       end
 
       context 'without a path' do
-        let(:params) { { ref: 'master.atom' } }
+        let(:ref) { 'master.atom' }
+        let(:path) { nil }
 
         before do
           repository = @project.repository
@@ -125,7 +129,8 @@ RSpec.describe ExtractsPath do
     end
 
     context 'ref and path are nil' do
-      let(:params) { { path: nil, ref: nil } }
+      let(:path) { nil }
+      let(:ref) { nil }
 
       it 'does not set commit' do
         expect(container.repository).not_to receive(:commit).with('')

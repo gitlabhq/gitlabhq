@@ -18,6 +18,9 @@ module Mutations
       argument :state_event, Types::WorkItems::StateEventEnum,
                description: 'Close or reopen a work item.',
                required: false
+      argument :title, GraphQL::Types::String,
+               required: false,
+               description: copy_field_description(Types::WorkItemType, :title)
 
       field :work_item, Types::WorkItemType,
             null: true,

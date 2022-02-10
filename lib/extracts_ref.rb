@@ -126,8 +126,10 @@ module ExtractsRef
 
   # overridden in subclasses, do not remove
   def get_id
-    id = [params[:id] || params[:ref]]
-    id << "/" + params[:path] unless params[:path].blank?
+    allowed_params = params.permit(:id, :ref, :path)
+
+    id = [allowed_params[:id] || allowed_params[:ref]]
+    id << "/" + allowed_params[:path] unless allowed_params[:path].blank?
     id.join
   end
 

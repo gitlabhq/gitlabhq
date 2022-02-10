@@ -10,7 +10,7 @@ RSpec.describe 'Update a work item' do
   let_it_be(:work_item, refind: true) { create(:work_item, project: project) }
 
   let(:work_item_event) { 'CLOSE' }
-  let(:input) { { 'stateEvent' => work_item_event } }
+  let(:input) { { 'stateEvent' => work_item_event, 'title' => 'updated title' } }
 
   let(:mutation) { graphql_mutation(:workItemUpdate, input.merge('id' => work_item.to_global_id.to_s)) }
 
@@ -26,15 +26,18 @@ RSpec.describe 'Update a work item' do
     let(:current_user) { developer }
 
     context 'when the work item is open' do
-      it 'closes the work item' do
+      it 'closes and updates the work item' do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
           work_item.reload
-        end.to change(work_item, :state).from('opened').to('closed')
+        end.to change(work_item, :state).from('opened').to('closed').and(
+          change(work_item, :title).from(work_item.title).to('updated title')
+        )
 
         expect(response).to have_gitlab_http_status(:success)
         expect(mutation_response['workItem']).to include(
-          'state' => 'CLOSED'
+          'state' => 'CLOSED',
+          'title' => 'updated title'
         )
       end
     end
