@@ -1,5 +1,6 @@
 <script>
-import { GlFormGroup, GlButton, GlFormInput, GlForm, GlAlert } from '@gitlab/ui';
+import { GlFormGroup, GlButton, GlFormInput, GlForm, GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   CREATE_BRANCH_ERROR_GENERIC,
   CREATE_BRANCH_ERROR_WITH_CONTEXT,
@@ -7,6 +8,7 @@ import {
   I18N_NEW_BRANCH_LABEL_BRANCH,
   I18N_NEW_BRANCH_LABEL_SOURCE,
   I18N_NEW_BRANCH_SUBMIT_BUTTON_TEXT,
+  I18N_NEW_BRANCH_PERMISSION_ALERT,
 } from '../constants';
 import createBranchMutation from '../graphql/mutations/create_branch.mutation.graphql';
 import ProjectDropdown from './project_dropdown.vue';
@@ -17,6 +19,8 @@ const DEFAULT_ALERT_PARAMS = {
   title: '',
   message: '',
   variant: DEFAULT_ALERT_VARIANT,
+  link: undefined,
+  dismissible: true,
 };
 
 export default {
@@ -27,10 +31,16 @@ export default {
     GlFormInput,
     GlForm,
     GlAlert,
+    GlSprintf,
+    GlLink,
     ProjectDropdown,
     SourceBranchDropdown,
   },
-  inject: ['initialBranchName'],
+  inject: {
+    initialBranchName: {
+      default: '',
+    },
+  },
   data() {
     return {
       selectedProject: null,
@@ -40,6 +50,7 @@ export default {
       alertParams: {
         ...DEFAULT_ALERT_PARAMS,
       },
+      hasPermission: false,
     };
   },
   computed: {
@@ -49,19 +60,38 @@ export default {
     showAlert() {
       return Boolean(this.alertParams?.message);
     },
+    isBranchNameValid() {
+      return (this.branchName ?? '').trim().length > 0;
+    },
     disableSubmitButton() {
-      return !(this.selectedProject && this.selectedSourceBranchName && this.branchName);
+      return !(this.selectedProject && this.selectedSourceBranchName && this.isBranchNameValid);
     },
   },
   methods: {
-    displayAlert({ title, message, variant = DEFAULT_ALERT_VARIANT } = {}) {
+    displayAlert({
+      title,
+      message,
+      variant = DEFAULT_ALERT_VARIANT,
+      link,
+      dismissible = true,
+    } = {}) {
       this.alertParams = {
         title,
         message,
         variant,
+        link,
+        dismissible,
       };
     },
-    onAlertDismiss() {
+    setPermissionAlert() {
+      this.displayAlert({
+        message: I18N_NEW_BRANCH_PERMISSION_ALERT,
+        variant: 'warning',
+        link: helpPagePath('user/permissions', { anchor: 'project-members-permissions' }),
+        dismissible: false,
+      });
+    },
+    dismissAlert() {
       this.alertParams = {
         ...DEFAULT_ALERT_PARAMS,
       };
@@ -69,6 +99,14 @@ export default {
     onProjectSelect(project) {
       this.selectedProject = project;
       this.selectedSourceBranchName = null; // reset branch selection
+      this.hasPermission = this.selectedProject.userPermissions.pushCode;
+
+      if (!this.hasPermission) {
+        this.setPermissionAlert();
+      } else {
+        // clear alert if the user has permissions for the newly-selected project.
+        this.dismissAlert();
+      }
     },
     onSourceBranchSelect(branchName) {
       this.selectedSourceBranchName = branchName;
@@ -127,10 +165,18 @@ export default {
       class="gl-mb-5"
       :variant="alertParams.variant"
       :title="alertParams.title"
-      @dismiss="onAlertDismiss"
+      :dismissible="alertParams.dismissible"
+      @dismiss="dismissAlert"
     >
-      {{ alertParams.message }}
+      <gl-sprintf :message="alertParams.message">
+        <template #link="{ content }">
+          <gl-link :href="alertParams.link" target="_blank">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
     </gl-alert>
+
     <gl-form-group :label="$options.i18n.I18N_NEW_BRANCH_LABEL_DROPDOWN" label-for="project-select">
       <project-dropdown
         id="project-select"
@@ -140,26 +186,28 @@ export default {
       />
     </gl-form-group>
 
-    <gl-form-group
-      :label="$options.i18n.I18N_NEW_BRANCH_LABEL_SOURCE"
-      label-for="source-branch-select"
-    >
-      <source-branch-dropdown
-        id="source-branch-select"
-        :selected-project="selectedProject"
-        :selected-branch-name="selectedSourceBranchName"
-        @change="onSourceBranchSelect"
-        @error="onError"
-      />
-    </gl-form-group>
+    <template v-if="selectedProject && hasPermission">
+      <gl-form-group
+        :label="$options.i18n.I18N_NEW_BRANCH_LABEL_SOURCE"
+        label-for="source-branch-select"
+      >
+        <source-branch-dropdown
+          id="source-branch-select"
+          :selected-project="selectedProject"
+          :selected-branch-name="selectedSourceBranchName"
+          @change="onSourceBranchSelect"
+          @error="onError"
+        />
+      </gl-form-group>
 
-    <gl-form-group
-      :label="$options.i18n.I18N_NEW_BRANCH_LABEL_BRANCH"
-      label-for="branch-name-input"
-      class="gl-max-w-62"
-    >
-      <gl-form-input id="branch-name-input" v-model="branchName" type="text" required />
-    </gl-form-group>
+      <gl-form-group
+        :label="$options.i18n.I18N_NEW_BRANCH_LABEL_BRANCH"
+        label-for="branch-name-input"
+        class="gl-max-w-62"
+      >
+        <gl-form-input id="branch-name-input" v-model="branchName" type="text" required />
+      </gl-form-group>
+    </template>
 
     <div class="form-actions">
       <gl-button

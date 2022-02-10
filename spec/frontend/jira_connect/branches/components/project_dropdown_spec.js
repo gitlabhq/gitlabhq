@@ -14,30 +14,7 @@ import ProjectDropdown from '~/jira_connect/branches/components/project_dropdown
 import { PROJECTS_PER_PAGE } from '~/jira_connect/branches/constants';
 import getProjectsQuery from '~/jira_connect/branches/graphql/queries/get_projects.query.graphql';
 
-const mockProjects = [
-  {
-    id: 'test',
-    name: 'test',
-    nameWithNamespace: 'test',
-    avatarUrl: 'https://gitlab.com',
-    path: 'test-path',
-    fullPath: 'test-path',
-    repository: {
-      empty: false,
-    },
-  },
-  {
-    id: 'gitlab',
-    name: 'GitLab',
-    nameWithNamespace: 'gitlab-org/gitlab',
-    avatarUrl: 'https://gitlab.com',
-    path: 'gitlab',
-    fullPath: 'gitlab-org/gitlab',
-    repository: {
-      empty: false,
-    },
-  },
-];
+import { mockProjects } from '../mock_data';
 
 const mockProjectsQueryResponse = {
   data: {
@@ -134,7 +111,7 @@ describe('ProjectDropdown', () => {
     });
 
     describe('when selecting a dropdown item', () => {
-      it('emits `change` event with the selected project name', async () => {
+      it('emits `change` event with the selected project', async () => {
         const mockProject = mockProjects[0];
         const itemToSelect = findDropdownItemByProjectId(mockProject.id);
         await itemToSelect.vm.$emit('click');
@@ -146,7 +123,7 @@ describe('ProjectDropdown', () => {
     describe('when `selectedProject` prop is specified', () => {
       const mockProject = mockProjects[0];
 
-      beforeEach(async () => {
+      beforeEach(() => {
         wrapper.setProps({
           selectedProject: mockProject,
         });

@@ -12,6 +12,11 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
     {
       'test' => {
         'monitoring' => {
+          'web_exporter' => {
+            'address' => 'localhost',
+            'enabled' => true,
+            'port' => 3807
+          },
           'sidekiq_exporter' => {
             'address' => 'localhost',
             'enabled' => true,
@@ -22,56 +27,58 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
     }
   end
 
-  context 'with a running server' do
-    let(:metrics_dir) { Dir.mktmpdir }
+  %w(puma sidekiq).each do |target|
+    context "with a running server targeting #{target}" do
+      let(:metrics_dir) { Dir.mktmpdir }
 
-    before do
-      # We need to send a request to localhost
-      WebMock.allow_net_connect!
+      before do
+        # We need to send a request to localhost
+        WebMock.allow_net_connect!
 
-      config_file.write(YAML.dump(config))
-      config_file.close
+        config_file.write(YAML.dump(config))
+        config_file.close
 
-      env = {
-        'GITLAB_CONFIG' => config_file.path,
-        'METRICS_SERVER_TARGET' => 'sidekiq',
-        'WIPE_METRICS_DIR' => '1',
-        'prometheus_multiproc_dir' => metrics_dir
-      }
-      @pid = Process.spawn(env, 'bin/metrics-server', pgroup: true)
-    end
-
-    after do
-      webmock_enable!
-
-      if @pid
-        pgrp = Process.getpgid(@pid)
-
-        Timeout.timeout(10) do
-          Process.kill('TERM', -pgrp)
-          Process.waitpid(@pid)
-        end
-
-        expect(Gitlab::ProcessManagement.process_alive?(@pid)).to be(false)
+        env = {
+          'GITLAB_CONFIG' => config_file.path,
+          'METRICS_SERVER_TARGET' => target,
+          'WIPE_METRICS_DIR' => '1',
+          'prometheus_multiproc_dir' => metrics_dir
+        }
+        @pid = Process.spawn(env, 'bin/metrics-server', pgroup: true)
       end
-    rescue Errno::ESRCH => _
-      # 'No such process' means the process died before
-    ensure
-      config_file.unlink
-      FileUtils.rm_rf(metrics_dir, secure: true)
-    end
 
-    it 'serves /metrics endpoint' do
-      expect do
-        Timeout.timeout(10) do
-          http_ok = false
-          until http_ok
-            sleep 1
-            response = Gitlab::HTTP.try_get("http://localhost:3807/metrics", allow_local_requests: true)
-            http_ok = response&.success?
+      after do
+        webmock_enable!
+
+        if @pid
+          pgrp = Process.getpgid(@pid)
+
+          Timeout.timeout(10) do
+            Process.kill('TERM', -pgrp)
+            Process.waitpid(@pid)
           end
+
+          expect(Gitlab::ProcessManagement.process_alive?(@pid)).to be(false)
         end
-      end.not_to raise_error
+      rescue Errno::ESRCH => _
+        # 'No such process' means the process died before
+      ensure
+        config_file.unlink
+        FileUtils.rm_rf(metrics_dir, secure: true)
+      end
+
+      it 'serves /metrics endpoint' do
+        expect do
+          Timeout.timeout(10) do
+            http_ok = false
+            until http_ok
+              sleep 1
+              response = Gitlab::HTTP.try_get("http://localhost:3807/metrics", allow_local_requests: true)
+              http_ok = response&.success?
+            end
+          end
+        end.not_to raise_error
+      end
     end
   end
 end

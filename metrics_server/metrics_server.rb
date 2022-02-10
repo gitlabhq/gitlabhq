@@ -7,7 +7,7 @@ require_relative 'dependencies'
 class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   class << self
     def spawn(target, metrics_dir:, wipe_metrics_dir: false, trapped_signals: [])
-      raise "The only valid target is 'sidekiq' currently" unless target == 'sidekiq'
+      raise "Target must be one of [puma,sidekiq]" unless %w(puma sidekiq).include?(target)
 
       pid = Process.fork
 
@@ -52,11 +52,18 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
     # Warming up ensures that these files exist prior to the exporter starting up.
     Gitlab::Metrics::Samplers::RubySampler.initialize_instance(prefix: name, warmup: true).start
 
-    exporter_class = "Gitlab::Metrics::Exporter::#{@target.camelize}Exporter".constantize
-    settings = Settings.new(Settings.monitoring[name])
-    server = exporter_class.instance(settings, gc_requests: true, synchronous: true)
+    default_opts = { gc_requests: true, synchronous: true }
+    exporter =
+      case @target
+      when 'puma'
+        Gitlab::Metrics::Exporter::WebExporter.instance(**default_opts)
+      else
+        exporter_class = "Gitlab::Metrics::Exporter::#{@target.camelize}Exporter".constantize
+        settings = Settings.new(Settings.monitoring[name])
+        exporter_class.instance(settings, **default_opts)
+      end
 
-    server.start
+    exporter.start
   end
 
   def name

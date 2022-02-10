@@ -6,10 +6,16 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import PipelinesManualActions from '~/pipelines/components/pipelines_list/pipelines_manual_actions.vue';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 
 jest.mock('~/flash');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
+  return {
+    confirmAction: jest.fn(),
+  };
+});
 
 describe('Pipelines Actions dropdown', () => {
   let wrapper;
@@ -36,6 +42,7 @@ describe('Pipelines Actions dropdown', () => {
     wrapper = null;
 
     mock.restore();
+    confirmAction.mockReset();
   });
 
   describe('manual actions', () => {
@@ -112,11 +119,11 @@ describe('Pipelines Actions dropdown', () => {
 
     it('makes post request after confirming', async () => {
       mock.onPost(scheduledJobAction.path).reply(200);
-      jest.spyOn(window, 'confirm').mockReturnValue(true);
+      confirmAction.mockResolvedValueOnce(true);
 
       findAllDropdownItems().at(0).vm.$emit('click');
 
-      expect(window.confirm).toHaveBeenCalled();
+      expect(confirmAction).toHaveBeenCalled();
 
       await waitForPromises();
 
@@ -125,11 +132,11 @@ describe('Pipelines Actions dropdown', () => {
 
     it('does not make post request if confirmation is cancelled', async () => {
       mock.onPost(scheduledJobAction.path).reply(200);
-      jest.spyOn(window, 'confirm').mockReturnValue(false);
+      confirmAction.mockResolvedValueOnce(false);
 
       findAllDropdownItems().at(0).vm.$emit('click');
 
-      expect(window.confirm).toHaveBeenCalled();
+      expect(confirmAction).toHaveBeenCalled();
 
       await waitForPromises();
 

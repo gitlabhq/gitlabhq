@@ -1163,17 +1163,33 @@ RSpec.describe API::Groups do
         expect(json_response.length).to eq(3)
       end
 
-      it "returns projects including those in subgroups" do
-        subgroup = create(:group, parent: group1)
-        create(:project, group: subgroup)
-        create(:project, group: subgroup)
+      context 'when include_subgroups is true' do
+        it "returns projects including those in subgroups" do
+          subgroup = create(:group, parent: group1)
+          create(:project, group: subgroup)
+          create(:project, group: subgroup)
 
-        get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
+          get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an(Array)
-        expect(json_response.length).to eq(5)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an(Array)
+          expect(json_response.length).to eq(5)
+        end
+      end
+
+      context 'when include_ancestor_groups is true' do
+        it 'returns ancestors groups projects' do
+          subgroup = create(:group, parent: group1)
+          subgroup_project = create(:project, group: subgroup)
+
+          get api("/groups/#{subgroup.id}/projects", user1), params: { include_ancestor_groups: true }
+
+          records = Gitlab::Json.parse(response.body)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(records.map { |r| r['id'] }).to match_array([project1.id, project3.id, subgroup_project.id, archived_project.id])
+        end
       end
 
       it "does not return a non existing group" do

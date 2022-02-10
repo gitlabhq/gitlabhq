@@ -729,6 +729,7 @@ class Project < ApplicationRecord
   scope :joins_import_state, -> { joins("INNER JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
   scope :for_group, -> (group) { where(group: group) }
   scope :for_group_and_its_subgroups, ->(group) { where(namespace_id: group.self_and_descendants.select(:id)) }
+  scope :for_group_and_its_ancestor_groups, ->(group) { where(namespace_id: group.self_and_ancestors.select(:id)) }
 
   class << self
     # Searches for a list of projects based on the query given in `query`.

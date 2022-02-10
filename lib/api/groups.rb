@@ -293,6 +293,7 @@ module API
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
         optional :with_shared, type: Boolean, default: true, desc: 'Include projects shared to this group'
         optional :include_subgroups, type: Boolean, default: false, desc: 'Includes projects in subgroups of this group'
+        optional :include_ancestor_groups, type: Boolean, default: false, desc: 'Includes projects in ancestors of this group'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user on projects'
 
         use :pagination
@@ -302,7 +303,8 @@ module API
       get ":id/projects" do
         finder_options = {
           only_owned: !params[:with_shared],
-          include_subgroups: params[:include_subgroups]
+          include_subgroups: params[:include_subgroups],
+          include_ancestor_groups: params[:include_ancestor_groups]
         }
 
         projects = find_group_projects(params, finder_options)

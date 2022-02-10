@@ -2,6 +2,7 @@
 import { GlDropdown, GlDropdownItem, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { s__, __, sprintf } from '~/locale';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import eventHub from '../../event_hub';
@@ -28,7 +29,7 @@ export default {
     };
   },
   methods: {
-    onClickAction(action) {
+    async onClickAction(action) {
       if (action.scheduled_at) {
         const confirmationMessage = sprintf(
           s__(
@@ -36,9 +37,10 @@ export default {
           ),
           { jobName: action.name },
         );
-        // https://gitlab.com/gitlab-org/gitlab-foss/issues/52156
-        // eslint-disable-next-line no-alert
-        if (!window.confirm(confirmationMessage)) {
+
+        const confirmed = await confirmAction(confirmationMessage);
+
+        if (!confirmed) {
           return;
         }
       }

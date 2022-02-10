@@ -224,9 +224,9 @@ branches by using the GitLab web interface:
 1. Next to the branch you want to delete, select the **Delete** button (**{remove}**).
 1. On the confirmation dialog, type the branch name and select **Delete protected branch**.
 
-You can delete a protected branch from the UI only.
-This prevents you from accidentally deleting a branch
-from the command line or from a Git client application.
+Protected branches can only be deleted by using GitLab either from the UI or API.
+This prevents accidentally deleting a branch through local Git commands or
+third-party Git clients.
 
 <!-- ## Troubleshooting
 

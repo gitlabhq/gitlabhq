@@ -91,11 +91,6 @@ printer = RubyProf::CallStackPrinter.new(result)
 printer.print(File.open('/tmp/profile.html', 'w'))
 ```
 
-[GitLab-Profiler](https://gitlab.com/gitlab-com/gitlab-profiler) is a project
-that builds on this to add some additional niceties, such as allowing
-configuration with a single YAML file for multiple URLs, and uploading of the
-profile and log output to S3.
-
 ## Speedscope flamegraphs
 
 You can generate a flamegraph for a particular URL by selecting a flamegraph sampling mode button in the performance bar or by adding the `performance_bar=flamegraph` parameter to the request.

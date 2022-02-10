@@ -15,9 +15,16 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
   # we need to reset it after testing.
   let!(:old_multiprocess_files_dir) { prometheus_config.multiprocess_files_dir }
 
+  let(:ruby_sampler_double) { double(Gitlab::Metrics::Samplers::RubySampler) }
+
   before do
     # We do not want this to have knock-on effects on the test process.
     allow(Gitlab::ProcessManagement).to receive(:modify_signals)
+
+    # This being a singleton, we stub it out because only one instance is allowed
+    # to exist per process.
+    allow(Gitlab::Metrics::Samplers::RubySampler).to receive(:initialize_instance).and_return(ruby_sampler_double)
+    allow(ruby_sampler_double).to receive(:start)
   end
 
   after do
@@ -27,35 +34,49 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     FileUtils.rm_rf(metrics_dir, secure: true)
   end
 
-  describe '.spawn' do
-    context 'when in parent process' do
-      it 'forks into a new process and detaches it' do
-        expect(Process).to receive(:fork).and_return(99)
-        expect(Process).to receive(:detach).with(99)
+  %w(puma sidekiq).each do |target|
+    context "when targeting #{target}" do
+      describe '.spawn' do
+        context 'when in parent process' do
+          it 'forks into a new process and detaches it' do
+            expect(Process).to receive(:fork).and_return(99)
+            expect(Process).to receive(:detach).with(99)
 
-        described_class.spawn('sidekiq', metrics_dir: metrics_dir)
-      end
-    end
-
-    context 'when in child process' do
-      before do
-        # This signals the process that it's "inside" the fork
-        expect(Process).to receive(:fork).and_return(nil)
-        expect(Process).not_to receive(:detach)
-      end
-
-      it 'starts the metrics server with the given arguments' do
-        expect_next_instance_of(MetricsServer) do |server|
-          expect(server).to receive(:start)
+            described_class.spawn(target, metrics_dir: metrics_dir)
+          end
         end
 
-        described_class.spawn('sidekiq', metrics_dir: metrics_dir)
+        context 'when in child process' do
+          before do
+            # This signals the process that it's "inside" the fork
+            expect(Process).to receive(:fork).and_return(nil)
+            expect(Process).not_to receive(:detach)
+          end
+
+          it 'starts the metrics server with the given arguments' do
+            expect_next_instance_of(MetricsServer) do |server|
+              expect(server).to receive(:start)
+            end
+
+            described_class.spawn(target, metrics_dir: metrics_dir)
+          end
+
+          it 'resets signal handlers from parent process' do
+            expect(Gitlab::ProcessManagement).to receive(:modify_signals).with(%i[A B], 'DEFAULT')
+
+            described_class.spawn(target, metrics_dir: metrics_dir, trapped_signals: %i[A B])
+          end
+        end
       end
+    end
+  end
 
-      it 'resets signal handlers from parent process' do
-        expect(Gitlab::ProcessManagement).to receive(:modify_signals).with(%i[A B], 'DEFAULT')
-
-        described_class.spawn('sidekiq', metrics_dir: metrics_dir, trapped_signals: %i[A B])
+  context 'when targeting invalid target' do
+    describe '.spawn' do
+      it 'raises an error' do
+        expect { described_class.spawn('unsupported', metrics_dir: metrics_dir) }.to(
+          raise_error('Target must be one of [puma,sidekiq]')
+        )
       end
     end
   end
@@ -64,7 +85,6 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     let(:exporter_class) { Class.new(Gitlab::Metrics::Exporter::BaseExporter) }
     let(:exporter_double) { double('fake_exporter', start: true) }
     let(:settings) { { "fake_exporter" => { "enabled" => true } } }
-    let(:ruby_sampler_double) { double(Gitlab::Metrics::Samplers::RubySampler) }
 
     subject(:metrics_server) { described_class.new('fake', metrics_dir, true)}
 
@@ -74,9 +94,6 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
         settings['fake_exporter'], gc_requests: true, synchronous: true
       ).and_return(exporter_double)
       expect(Settings).to receive(:monitoring).and_return(settings)
-
-      allow(Gitlab::Metrics::Samplers::RubySampler).to receive(:initialize_instance).and_return(ruby_sampler_double)
-      allow(ruby_sampler_double).to receive(:start)
     end
 
     it 'configures ::Prometheus::Client' do

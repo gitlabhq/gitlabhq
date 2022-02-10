@@ -23,3 +23,6 @@ export const I18N_NEW_BRANCH_SUCCESS_TITLE = s__(
 export const I18N_NEW_BRANCH_SUCCESS_MESSAGE = s__(
   'JiraConnect|You can now close this window and return to Jira.',
 );
+export const I18N_NEW_BRANCH_PERMISSION_ALERT = s__(
+  "JiraConnect|You don't have permission to create branches for this project. Select a different project or contact the project owner for access. %{linkStart}Learn more.%{linkEnd}",
+);

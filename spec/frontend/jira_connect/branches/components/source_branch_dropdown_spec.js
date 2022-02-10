@@ -7,15 +7,16 @@ import waitForPromises from 'helpers/wait_for_promises';
 import SourceBranchDropdown from '~/jira_connect/branches/components/source_branch_dropdown.vue';
 import { BRANCHES_PER_PAGE } from '~/jira_connect/branches/constants';
 import getProjectQuery from '~/jira_connect/branches/graphql/queries/get_project.query.graphql';
+import { mockProjects } from '../mock_data';
 
 const mockProject = {
   id: 'test',
-  fullPath: 'test-path',
   repository: {
     branchNames: ['main', 'f-test', 'release'],
     rootRef: 'main',
   },
 };
+const mockSelectedProject = mockProjects[0];
 
 const mockProjectQueryResponse = {
   data: {
@@ -76,7 +77,7 @@ describe('SourceBranchDropdown', () => {
     describe('when `selectedProject` becomes specified', () => {
       beforeEach(async () => {
         wrapper.setProps({
-          selectedProject: mockProject,
+          selectedProject: mockSelectedProject,
         });
 
         await waitForPromises();
@@ -101,7 +102,7 @@ describe('SourceBranchDropdown', () => {
       it('renders loading icon in dropdown', () => {
         createComponent({
           mockApollo: createMockApolloProvider({ getProjectQueryLoading: true }),
-          props: { selectedProject: mockProject },
+          props: { selectedProject: mockSelectedProject },
         });
 
         expect(findLoadingIcon().isVisible()).toBe(true);
@@ -111,7 +112,7 @@ describe('SourceBranchDropdown', () => {
     describe('when branches have loaded', () => {
       describe('when searching branches', () => {
         it('triggers a refetch', async () => {
-          createComponent({ mountFn: mount, props: { selectedProject: mockProject } });
+          createComponent({ mountFn: mount, props: { selectedProject: mockSelectedProject } });
           await waitForPromises();
           jest.clearAllMocks();
 
@@ -129,7 +130,7 @@ describe('SourceBranchDropdown', () => {
 
       describe('template', () => {
         beforeEach(async () => {
-          createComponent({ props: { selectedProject: mockProject } });
+          createComponent({ props: { selectedProject: mockSelectedProject } });
           await waitForPromises();
         });
 

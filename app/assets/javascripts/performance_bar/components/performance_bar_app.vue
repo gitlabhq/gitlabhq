@@ -124,6 +124,9 @@ export default {
       const fileName = this.requests[0].truncatedUrl;
       return `${fileName}_perf_bar_${Date.now()}.json`;
     },
+    memoryReportPath() {
+      return mergeUrlParams({ performance_bar: 'memory' }, window.location.href);
+    },
   },
   mounted() {
     this.currentRequest = this.requestId;
@@ -180,6 +183,15 @@ export default {
       <div v-if="currentRequest.details" id="peek-download" class="view">
         <a class="gl-text-blue-200" :download="downloadName" :href="downloadPath">{{
           s__('PerformanceBar|Download')
+        }}</a>
+      </div>
+      <div
+        v-if="currentRequest.details && env === 'development'"
+        id="peek-memory-report"
+        class="view"
+      >
+        <a class="gl-text-blue-200" :href="memoryReportPath">{{
+          s__('PerformanceBar|Memory report')
         }}</a>
       </div>
       <div v-if="currentRequest.details" id="peek-flamegraph" class="view">

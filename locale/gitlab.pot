@@ -20515,6 +20515,9 @@ msgstr ""
 msgid "JiraConnect|You can now close this window and return to Jira."
 msgstr ""
 
+msgid "JiraConnect|You don't have permission to create branches for this project. Select a different project or contact the project owner for access. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "JiraRequest|A connection error occurred while connecting to Jira. Try your request again."
 msgstr ""
 
@@ -26197,6 +26200,9 @@ msgid "PerformanceBar|Gitaly calls"
 msgstr ""
 
 msgid "PerformanceBar|Memory"
+msgstr ""
+
+msgid "PerformanceBar|Memory report"
 msgstr ""
 
 msgid "PerformanceBar|Redis calls"
@@ -40167,6 +40173,9 @@ msgstr ""
 msgid "VulnerabilityManagement|An unverified non-confirmed finding"
 msgstr ""
 
+msgid "VulnerabilityManagement|At least one identifier is required"
+msgstr ""
+
 msgid "VulnerabilityManagement|Change status"
 msgstr ""
 
@@ -40182,6 +40191,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Manually add a vulnerability entry into the vulnerability report."
 msgstr ""
 
+msgid "VulnerabilityManagement|Name is a required field"
+msgstr ""
+
 msgid "VulnerabilityManagement|Needs triage"
 msgstr ""
 
@@ -40195,6 +40207,12 @@ msgid "VulnerabilityManagement|Requires assessment"
 msgstr ""
 
 msgid "VulnerabilityManagement|Select a method"
+msgstr ""
+
+msgid "VulnerabilityManagement|Severity is a required field"
+msgstr ""
+
+msgid "VulnerabilityManagement|Something went wrong while creating vulnerability"
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong while trying to delete the comment. Please try again later."
@@ -40219,6 +40237,12 @@ msgid "VulnerabilityManagement|Something went wrong, could not get user."
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong, could not update vulnerability state."
+msgstr ""
+
+msgid "VulnerabilityManagement|Status is a required field"
+msgstr ""
+
+msgid "VulnerabilityManagement|Submit vulnerability"
 msgstr ""
 
 msgid "VulnerabilityManagement|Summary, detailed description, steps to reproduce, etc."

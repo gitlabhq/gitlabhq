@@ -9,6 +9,10 @@ module Gitlab
       class BaseExporter < Daemon
         attr_reader :server
 
+        # @param settings [Hash] SettingsLogic hash containing the `*_exporter` config
+        # @param log_enabled [Boolean] whether to log HTTP requests
+        # @param log_file [String] path to where the server log should be located
+        # @param gc_requests [Boolean] whether to run a major GC after each scraper request
         def initialize(settings, log_enabled:, log_file:, gc_requests: false, **options)
           super(**options)
 

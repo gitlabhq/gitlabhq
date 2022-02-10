@@ -137,6 +137,7 @@ than the [webhook integration](#configure-a-webhook).
    - Merge request
    - Tag push
 1. Enter the **Jenkins server URL**.
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/overview.md#ssl-verification).
 1. Enter the **Project name**.
 
    The project name should be URL-friendly, where spaces are replaced with underscores. To ensure

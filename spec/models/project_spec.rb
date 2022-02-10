@@ -6240,6 +6240,21 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '.for_group_and_its_ancestor_groups' do
+    it 'returns projects for group and its ancestors' do
+      group_1 = create(:group)
+      project_1 = create(:project, namespace: group_1)
+      group_2 = create(:group, parent: group_1)
+      project_2 = create(:project, namespace: group_2)
+      group_3 = create(:group, parent: group_2)
+      project_3 = create(:project, namespace: group_2)
+      group_4 = create(:group, parent: group_3)
+      create(:project, namespace: group_4)
+
+      expect(described_class.for_group_and_its_ancestor_groups(group_3)).to match_array([project_1, project_2, project_3])
+    end
+  end
+
   describe '.deployments' do
     subject { project.deployments }
 

@@ -544,7 +544,6 @@ export default {
         .put(joinPaths(issueToMove.webPath, 'reorder'), {
           move_before_id: isMovingToBeginning ? null : getIdFromGraphQLId(moveBeforeId),
           move_after_id: isMovingToEnd ? null : getIdFromGraphQLId(moveAfterId),
-          group_full_path: this.isProject ? undefined : this.fullPath,
         })
         .then(() => {
           const serializedVariables = JSON.stringify(this.queryVariables);

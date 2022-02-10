@@ -9,13 +9,29 @@ RSpec.describe GroupProjectsFinder do
 
   describe 'with a group member current user' do
     before do
-      group.add_maintainer(current_user)
+      root_group.add_maintainer(current_user)
     end
 
     context "only shared" do
       let(:options) { { only_shared: true } }
 
       it { is_expected.to match_array([shared_project_3, shared_project_2, shared_project_1]) }
+
+      context 'with ancestor groups projects' do
+        before do
+          options[:include_ancestor_groups] = true
+        end
+
+        it { is_expected.to match_array([shared_project_3, shared_project_2, shared_project_1]) }
+      end
+
+      context 'with subgroups projects' do
+        before do
+          options[:include_subgroups] = true
+        end
+
+        it { is_expected.to match_array([shared_project_3, shared_project_2, shared_project_1]) }
+      end
     end
 
     context "only owned" do
@@ -29,8 +45,45 @@ RSpec.describe GroupProjectsFinder do
         it { is_expected.to match_array([private_project, public_project, subgroup_project, subgroup_private_project]) }
       end
 
-      context 'without subgroups projects' do
+      context 'with ancestor group projects' do
+        before do
+          options[:include_ancestor_groups] = true
+        end
+
+        it { is_expected.to match_array([private_project, public_project, root_group_public_project, root_group_private_project, root_group_private_project_2]) }
+      end
+
+      context 'with ancestor groups and subgroups projects' do
+        before do
+          options[:include_ancestor_groups] = true
+          options[:include_subgroups] = true
+        end
+
+        it { is_expected.to match_array([private_project, public_project, root_group_public_project, root_group_private_project, root_group_private_project_2, subgroup_private_project, subgroup_project]) }
+      end
+
+      context 'without subgroups and ancestor group projects' do
         it { is_expected.to match_array([private_project, public_project]) }
+      end
+
+      context 'when user is member only of a subgroup' do
+        let(:subgroup_member) { create(:user) }
+
+        context 'with ancestor groups and subgroups projects' do
+          before do
+            group.add_maintainer(subgroup_member)
+            options[:include_ancestor_groups] = true
+            options[:include_subgroups] = true
+          end
+
+          it 'does not return parent group projects' do
+            finder = described_class.new(group: group, current_user: subgroup_member, params: params, options: options)
+
+            projects = finder.execute
+
+            expect(projects).to match_array([private_project, public_project, subgroup_project, subgroup_private_project, root_group_public_project])
+          end
+        end
       end
     end
 
@@ -90,6 +143,7 @@ RSpec.describe GroupProjectsFinder do
         before do
           private_project.add_maintainer(current_user)
           subgroup_private_project.add_maintainer(current_user)
+          root_group_private_project.add_maintainer(current_user)
         end
 
         context 'with subgroups projects' do
@@ -98,6 +152,23 @@ RSpec.describe GroupProjectsFinder do
           end
 
           it { is_expected.to match_array([private_project, public_project, subgroup_project, subgroup_private_project]) }
+        end
+
+        context 'with ancestor groups projects' do
+          before do
+            options[:include_ancestor_groups] = true
+          end
+
+          it { is_expected.to match_array([private_project, public_project, root_group_public_project, root_group_private_project]) }
+        end
+
+        context 'with ancestor groups and subgroups projects' do
+          before do
+            options[:include_ancestor_groups] = true
+            options[:include_subgroups] = true
+          end
+
+          it { is_expected.to match_array([private_project, public_project, root_group_private_project, root_group_public_project, subgroup_private_project, subgroup_project]) }
         end
 
         context 'without subgroups projects' do
@@ -116,6 +187,23 @@ RSpec.describe GroupProjectsFinder do
           end
 
           it { is_expected.to match_array([public_project, subgroup_project]) }
+        end
+
+        context 'with ancestor groups projects' do
+          before do
+            options[:include_ancestor_groups] = true
+          end
+
+          it { is_expected.to match_array([public_project, root_group_public_project]) }
+        end
+
+        context 'with ancestor groups and subgroups projects' do
+          before do
+            options[:include_subgroups] = true
+            options[:include_ancestor_groups] = true
+          end
+
+          it { is_expected.to match_array([public_project, root_group_public_project, subgroup_project]) }
         end
 
         context 'without subgroups projects' do

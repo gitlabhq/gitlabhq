@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Pipelines', :js do
   include ProjectForksHelper
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:project) { create(:project) }
 
@@ -436,7 +437,9 @@ RSpec.describe 'Pipelines', :js do
         context 'when user played a delayed job immediately' do
           before do
             find('[data-testid="pipelines-manual-actions-dropdown"]').click
-            page.accept_confirm { click_button('delayed job 1') }
+            accept_gl_confirm do
+              click_button 'delayed job 1'
+            end
             wait_for_requests
           end
 
