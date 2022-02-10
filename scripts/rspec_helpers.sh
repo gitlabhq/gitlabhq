@@ -268,10 +268,6 @@ function rspec_paralellized_job() {
 
   debug_rspec_variables
 
-  mkdir -p tmp/memory_test
-
-  export MEMORY_TEST_PATH="tmp/memory_test/${report_name}_memory.csv"
-
   if [[ -n $RSPEC_TESTS_MAPPING_ENABLED ]]; then
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "tmp/matching_tests.txt" || rspec_run_status=$?
   else

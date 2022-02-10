@@ -41,7 +41,6 @@ import {
   i18n,
   MAX_LIST_SIZE,
   PAGE_SIZE,
-  PARAM_DUE_DATE,
   PARAM_STATE,
   RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
@@ -65,7 +64,6 @@ import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
-  getDueDateValue,
   getFilterTokens,
   getInitialPageParams,
   getSortKey,
@@ -161,7 +159,6 @@ export default {
     }
 
     return {
-      dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
       filterTokens: isSearchDisabled ? [] : getFilterTokens(window.location.search),
       issues: [],
@@ -391,7 +388,6 @@ export default {
     },
     urlParams() {
       return {
-        due_date: this.dueDateFilter,
         search: this.searchQuery,
         sort: urlSortParams[this.sortKey],
         state: this.state,

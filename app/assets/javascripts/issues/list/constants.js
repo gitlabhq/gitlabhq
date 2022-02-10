@@ -55,8 +55,6 @@ export const i18n = {
 export const MAX_LIST_SIZE = 10;
 export const PAGE_SIZE = 20;
 export const PAGE_SIZE_MANUAL = 100;
-export const PARAM_DUE_DATE = 'due_date';
-export const PARAM_SORT = 'sort';
 export const PARAM_STATE = 'state';
 export const RELATIVE_POSITION = 'relative_position';
 
@@ -67,21 +65,6 @@ export const defaultPageSizeParams = {
 export const largePageSizeParams = {
   firstPageSize: PAGE_SIZE_MANUAL,
 };
-
-export const DUE_DATE_NONE = '0';
-export const DUE_DATE_ANY = '';
-export const DUE_DATE_OVERDUE = 'overdue';
-export const DUE_DATE_WEEK = 'week';
-export const DUE_DATE_MONTH = 'month';
-export const DUE_DATE_NEXT_MONTH_AND_PREVIOUS_TWO_WEEKS = 'next_month_and_previous_two_weeks';
-export const DUE_DATE_VALUES = [
-  DUE_DATE_NONE,
-  DUE_DATE_ANY,
-  DUE_DATE_OVERDUE,
-  DUE_DATE_WEEK,
-  DUE_DATE_MONTH,
-  DUE_DATE_NEXT_MONTH_AND_PREVIOUS_TWO_WEEKS,
-];
 
 export const BLOCKING_ISSUES_ASC = 'BLOCKING_ISSUES_ASC';
 export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';

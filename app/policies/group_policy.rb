@@ -100,6 +100,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group
     enable :upload_file
     enable :guest_access
+    enable :read_release
   end
 
   rule { admin }.policy do

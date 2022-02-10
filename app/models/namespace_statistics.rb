@@ -29,6 +29,10 @@ class NamespaceStatistics < ApplicationRecord # rubocop:disable Gitlab/Namespace
   end
 
   def update_storage_size
+    # This prevents failures with older database schemas, such as those
+    # in migration specs.
+    return unless self.class.database.cached_column_exists?(:dependency_proxy_size)
+
     self.storage_size = dependency_proxy_size
   end
 

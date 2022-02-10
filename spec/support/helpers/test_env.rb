@@ -371,17 +371,6 @@ module TestEnv
     FileUtils.rm_rf(path)
   end
 
-  def current_example_group
-    Thread.current[:current_example_group]
-  end
-
-  # looking for a top-level `describe`
-  def topmost_example_group
-    example_group = current_example_group
-    example_group = example_group[:parent_example_group] until example_group[:parent_example_group].nil?
-    example_group
-  end
-
   def seed_db
     Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.import
   end

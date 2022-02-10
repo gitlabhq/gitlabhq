@@ -4,15 +4,45 @@ module CrossDatabaseModification
   extend ActiveSupport::Concern
 
   class TransactionStackTrackRecord
+    DEBUG_STACK = Rails.env.test? && ENV['DEBUG_GITLAB_TRANSACTION_STACK']
+    LOG_FILENAME = Rails.root.join("log", "gitlab_transaction_stack.log")
+
+    def self.logger
+      @logger ||= Logger.new(LOG_FILENAME, formatter: ->(_, _, _, msg) { Gitlab::Json.dump(msg) + "\n" })
+    end
+
+    def self.log_gitlab_transactions_stack(action: nil, example: nil)
+      return unless DEBUG_STACK
+
+      message = "gitlab_transactions_stack performing #{action}"
+      message += " in example #{example}" if example
+
+      cleaned_backtrace = Gitlab::BacktraceCleaner.clean_backtrace(caller)
+        .reject { |line| line.include?('lib/gitlab/database/query_analyzer') }
+        .first(5)
+
+      logger.warn({
+        message: message,
+        action: action,
+        gitlab_transactions_stack: ::ApplicationRecord.gitlab_transactions_stack,
+        caller: cleaned_backtrace,
+        thread: Thread.current.object_id
+      })
+    end
+
     def initialize(subject, gitlab_schema)
       @subject = subject
       @gitlab_schema = gitlab_schema
       @subject.gitlab_transactions_stack.push(gitlab_schema)
+
+      self.class.log_gitlab_transactions_stack(action: :after_push)
     end
 
     def done!
       unless @done
         @done = true
+
+        self.class.log_gitlab_transactions_stack(action: :before_pop)
         @subject.gitlab_transactions_stack.pop
       end
 

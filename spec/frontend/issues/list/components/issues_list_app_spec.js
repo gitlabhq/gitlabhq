@@ -30,8 +30,6 @@ import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
 import {
   CREATED_DESC,
-  DUE_DATE_OVERDUE,
-  PARAM_DUE_DATE,
   RELATIVE_POSITION,
   RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
@@ -296,16 +294,6 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('initial url params', () => {
-    describe('due_date', () => {
-      it('is set from the url params', () => {
-        setWindowLocation(`?${PARAM_DUE_DATE}=${DUE_DATE_OVERDUE}`);
-
-        wrapper = mountComponent();
-
-        expect(findIssuableList().props('urlParams')).toMatchObject({ due_date: DUE_DATE_OVERDUE });
-      });
-    });
-
     describe('search', () => {
       it('is set from the url params', () => {
         setWindowLocation(locationSearch);

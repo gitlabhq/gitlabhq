@@ -54,7 +54,6 @@
       - knapsack/
       - rspec/
       - tmp/capybara/
-      - tmp/memory_test/
       - log/*.log
     reports:
       junit: ${JUNIT_RESULT_FILE}
@@ -312,6 +311,8 @@ rspec system pg12:
     - .rspec-base-pg12
     - .rails:rules:ee-and-foss-system
     - .rspec-system-parallel
+  variables:
+    DEBUG_GITLAB_TRANSACTION_STACK: "true"
 
 rspec system pg12 minimal:
   extends:
@@ -571,7 +572,6 @@ rspec:coverage:
     - rspec system pg12-as-if-foss decomposed
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
-    - run_timed_command "bundle exec scripts/gather-test-memory-data"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage
@@ -580,7 +580,6 @@ rspec:coverage:
       - coverage/index.html
       - coverage/assets/
       - coverage/lcov/
-      - tmp/memory_test/
     reports:
       cobertura: coverage/coverage.xml
 

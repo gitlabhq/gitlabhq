@@ -38,19 +38,17 @@ class ReleasesFinder
       if parent.is_a?(Project)
         Ability.allowed?(current_user, :read_release, parent) ? [parent] : []
       elsif parent.is_a?(Group)
-        accessible_projects
+        Ability.allowed?(current_user, :read_release, parent) ? accessible_projects : []
       end
     end
   end
 
   def accessible_projects
-    projects = if include_subgroups?
-                 Project.for_group_and_its_subgroups(parent)
-               else
-                 parent.projects
-               end
-
-    projects.select { |project| Ability.allowed?(current_user, :read_release, project) }
+    if include_subgroups?
+      Project.for_group_and_its_subgroups(parent)
+    else
+      parent.projects
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

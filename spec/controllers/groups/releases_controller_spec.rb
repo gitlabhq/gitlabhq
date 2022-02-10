@@ -6,14 +6,14 @@ RSpec.describe Groups::ReleasesController do
   let(:group) { create(:group) }
   let!(:project)         { create(:project, :repository, :public, namespace: group) }
   let!(:private_project) { create(:project, :repository, :private, namespace: group) }
-  let(:developer)        { create(:user) }
+  let(:guest) { create(:user) }
   let!(:release_1)       { create(:release, project: project, tag: 'v1', released_at: Time.zone.parse('2020-02-15')) }
   let!(:release_2)       { create(:release, project: project, tag: 'v2', released_at: Time.zone.parse('2020-02-20')) }
   let!(:private_release_1)       { create(:release, project: private_project, tag: 'p1', released_at: Time.zone.parse('2020-03-01')) }
   let!(:private_release_2)       { create(:release, project: private_project, tag: 'p2', released_at: Time.zone.parse('2020-03-05')) }
 
   before do
-    private_project.add_developer(developer)
+    group.add_guest(guest)
   end
 
   describe 'GET #index' do
@@ -42,7 +42,7 @@ RSpec.describe Groups::ReleasesController do
         end
 
         it 'does not return any releases' do
-          expect(json_response.map {|r| r['tag'] } ).to match_array(%w(v2 v1))
+          expect(json_response.map {|r| r['tag'] } ).to be_empty
         end
 
         it 'returns OK' do
@@ -52,7 +52,7 @@ RSpec.describe Groups::ReleasesController do
 
       context 'the user is authorized' do
         it "returns all group's public and private project's releases as JSON, ordered by released_at" do
-          sign_in(developer)
+          sign_in(guest)
 
           subject
 

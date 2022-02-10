@@ -23,6 +23,16 @@ RSpec.describe ReleasesFinder do
     end
   end
 
+  shared_examples_for 'when the user is not part of the group' do
+    before do
+      allow(Ability).to receive(:allowed?).with(user, :read_release, group).and_return(false)
+    end
+
+    it 'returns no releases' do
+      is_expected.to be_empty
+    end
+  end
+
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27716
   shared_examples_for 'when tag is nil' do
     before do
@@ -66,9 +76,9 @@ RSpec.describe ReleasesFinder do
 
     it_behaves_like 'when the user is not part of the project'
 
-    context 'when the user is a project developer' do
+    context 'when the user is a project guest' do
       before do
-        project.add_developer(user)
+        project.add_guest(user)
       end
 
       it 'sorts by release date' do
@@ -118,25 +128,24 @@ RSpec.describe ReleasesFinder do
 
       subject { described_class.new(group, user, params).execute(**args) }
 
-      it_behaves_like 'when the user is not part of the project'
+      it_behaves_like 'when the user is not part of the group'
 
-      context 'when the user is a project developer on one sibling project' do
+      context 'when the user is a project guest on one sibling project' do
         before do
-          project.add_developer(user)
+          project.add_guest(user)
           v1_0_0.update_attribute(:released_at, 3.days.ago)
           v1_1_0.update_attribute(:released_at, 1.day.ago)
         end
 
-        it 'sorts by release date' do
-          expect(subject.size).to eq(2)
-          expect(subject).to eq([v1_1_0, v1_0_0])
+        it 'does not return any releases' do
+          expect(subject.size).to eq(0)
+          expect(subject).to eq([])
         end
       end
 
-      context 'when the user is a project developer on all projects' do
+      context 'when the user is a guest on the group' do
         before do
-          project.add_developer(user)
-          project2.add_developer(user)
+          group.add_guest(user)
           v1_0_0.update_attribute(:released_at, 3.days.ago)
           v6.update_attribute(:released_at, 2.days.ago)
           v1_1_0.update_attribute(:released_at, 1.day.ago)
@@ -161,22 +170,21 @@ RSpec.describe ReleasesFinder do
         let(:project2) { create(:project, :repository, namespace: subgroup) }
         let!(:v6)      { create(:release, project: project2, tag: 'v6') }
 
-        it_behaves_like 'when the user is not part of the project'
+        it_behaves_like 'when the user is not part of the group'
 
-        context 'when the user a project developer in the subgroup project' do
+        context 'when the user a project guest in the subgroup project' do
           before do
-            project2.add_developer(user)
+            project2.add_guest(user)
           end
 
-          it 'returns only the subgroup releases' do
-            expect(subject).to match_array([v6])
+          it 'does not return any releases' do
+            expect(subject).to match_array([])
           end
         end
 
-        context 'when the user a project developer in both projects' do
+        context 'when the user is a guest on the group' do
           before do
-            project.add_developer(user)
-            project2.add_developer(user)
+            group.add_guest(user)
             v6.update_attribute(:released_at, 2.days.ago)
           end
 
@@ -201,34 +209,32 @@ RSpec.describe ReleasesFinder do
           p3.update_attribute(:released_at, 3.days.ago)
         end
 
-        it_behaves_like 'when the user is not part of the project'
+        it_behaves_like 'when the user is not part of the group'
 
-        context 'when the user a project developer in the subgroup and subsubgroup project' do
+        context 'when the user a project guest in the subgroup and subsubgroup project' do
           before do
-            project2.add_developer(user)
-            project3.add_developer(user)
+            project2.add_guest(user)
+            project3.add_guest(user)
           end
 
-          it 'returns only the subgroup and subsubgroup releases' do
-            expect(subject).to match_array([v6, p3])
+          it 'does not return any releases' do
+            expect(subject).to match_array([])
           end
         end
 
-        context 'when the user a project developer in the subsubgroup project' do
+        context 'when the user a project guest in the subsubgroup project' do
           before do
-            project3.add_developer(user)
+            project3.add_guest(user)
           end
 
-          it 'returns only the subsubgroup releases' do
-            expect(subject).to match_array([p3])
+          it 'does not return any releases' do
+            expect(subject).to match_array([])
           end
         end
 
-        context 'when the user a project developer in all projects' do
+        context 'when the user a guest on the group' do
           before do
-            project.add_developer(user)
-            project2.add_developer(user)
-            project3.add_developer(user)
+            group.add_guest(user)
           end
 
           it 'returns all releases' do

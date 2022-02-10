@@ -570,6 +570,32 @@ The following variables are used for configuring specific analyzers (used for a 
 | `RETIREJS_NODE_ADVISORY_DB`          | `retire.js`        | `https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/npmrepository.json` | Path or URL to `retire.js` node vulnerability data file. Note that if the URL hosting the data file uses a custom SSL certificate, for example in an offline installation, you can pass the certificate in the `ADDITIONAL_CA_CERT_BUNDLE` variable. |
 | `RETIREJS_ADVISORY_DB_INSECURE`      | `retire.js`        | `false`                      | Enable fetching remote JS and Node vulnerability data files (defined by the `RETIREJS_JS_ADVISORY_DB` and `RETIREJS_NODE_ADVISORY_DB` variables) from hosts using an insecure or self-signed SSL (TLS) certificate. |
 
+#### Other variables
+
+The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they will work. This is a large list, many of which we may be unaware of, and as such is not documented.
+
+For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all Dependency Scanning jobs,
+set it as a [custom CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
+file like this:
+
+```yaml
+variables:
+  HTTPS_PROXY: "https://squid-proxy:3128"
+```
+
+Alternatively we may use it in specific jobs, like Dependency Scanning:
+
+```yaml
+dependency_scanning:
+  variables:
+    HTTPS_PROXY: $HTTPS_PROXY
+```
+
+As we have not tested all variables you may find some will work and others will not.
+If one does not work and you need it we suggest
+[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
+or [contributing to the code](../../../development/index.md) to enable it to be used.
+
 ### Using a custom SSL CA certificate authority
 
 You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
