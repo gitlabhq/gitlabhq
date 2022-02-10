@@ -82,21 +82,11 @@ module QA
       end
 
       context 'when at the project level' do
-        it 'publishes and installs a pypi package and deletes it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348015' do
+        it 'publishes and installs a pypi package', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348015' do
           Page::Project::Menu.perform(&:click_packages_link)
 
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package.name)
-            index.click_package(package.name)
-          end
-
-          Page::Project::Packages::Show.perform(&:click_delete)
-
-          Page::Project::Packages::Index.perform do |index|
-            aggregate_failures do
-              expect(index).to have_content("Package deleted successfully")
-              expect(index).not_to have_package(package.name)
-            end
           end
         end
       end

@@ -81,21 +81,11 @@ module QA
         package.remove_via_api!
       end
 
-      it 'uploads a generic package, downloads and deletes it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
+      it 'uploads a generic package and downloads it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
         Page::Project::Menu.perform(&:click_packages_link)
 
         Page::Project::Packages::Index.perform do |index|
           expect(index).to have_package(package.name)
-          index.click_package(package.name)
-        end
-
-        Page::Project::Packages::Show.perform(&:click_delete)
-
-        Page::Project::Packages::Index.perform do |index|
-          aggregate_failures 'package deletion' do
-            expect(index).to have_content("Package deleted successfully")
-            expect(index).to have_no_package(package.name)
-          end
         end
       end
     end

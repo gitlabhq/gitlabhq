@@ -92,7 +92,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package at the project level, installs and deletes it at the group level', testcase: params[:testcase] do
+        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', testcase: params[:testcase] do
           Flow::Login.sign_in
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
@@ -174,14 +174,6 @@ module QA
 
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package.name)
-            index.click_package(package.name)
-          end
-
-          Page::Project::Packages::Show.perform(&:click_delete)
-
-          Page::Project::Packages::Index.perform do |index|
-            expect(index).to have_content('Package deleted successfully')
-            expect(index).not_to have_package(package.name)
           end
         end
       end

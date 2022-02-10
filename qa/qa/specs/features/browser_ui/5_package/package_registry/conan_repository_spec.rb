@@ -78,8 +78,10 @@ module QA
         Page::Project::Packages::Show.perform(&:click_delete)
 
         Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_content("Package deleted successfully")
-          expect(index).not_to have_package(package.name)
+          aggregate_failures 'package deletion' do
+            expect(index).to have_content("Package deleted successfully")
+            expect(index).not_to have_package(package.name)
+          end
         end
       end
     end

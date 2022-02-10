@@ -43,7 +43,7 @@ module QA
         project.remove_via_api!
       end
 
-      it 'publishes and deletes a Ruby gem', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347649' do
+      it 'publishes a Ruby gem', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347649' do
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
@@ -94,14 +94,6 @@ module QA
 
         Page::Project::Packages::Index.perform do |index|
           expect(index).to have_package(package.name)
-          index.click_package(package.name)
-        end
-
-        Page::Project::Packages::Show.perform(&:click_delete)
-
-        Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_content("Package deleted successfully")
-          expect(index).not_to have_package(package.name)
         end
       end
     end
