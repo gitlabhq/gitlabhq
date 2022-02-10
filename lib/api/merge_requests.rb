@@ -117,6 +117,9 @@ module API
 
         forbidden!('Cannot push to source branch') unless
           user_access.can_push_to_branch?(merge_request.source_branch)
+
+        forbidden!('Source branch is protected from force push') unless
+          merge_request.permits_force_push?
       end
 
       params :merge_requests_params do

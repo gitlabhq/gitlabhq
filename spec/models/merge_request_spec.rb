@@ -1538,6 +1538,42 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '#permits_force_push?' do
+    let_it_be(:merge_request) { build_stubbed(:merge_request) }
+
+    subject { merge_request.permits_force_push? }
+
+    context 'when source branch is not protected' do
+      before do
+        allow(ProtectedBranch).to receive(:protected?).and_return(false)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when source branch is protected' do
+      before do
+        allow(ProtectedBranch).to receive(:protected?).and_return(true)
+      end
+
+      context 'when force push is not allowed' do
+        before do
+          allow(ProtectedBranch).to receive(:allow_force_push?) { false }
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when force push is allowed' do
+        before do
+          allow(ProtectedBranch).to receive(:allow_force_push?) { true }
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
   describe '#can_remove_source_branch?' do
     let_it_be(:user) { create(:user) }
     let_it_be(:merge_request, reload: true) { create(:merge_request, :simple) }

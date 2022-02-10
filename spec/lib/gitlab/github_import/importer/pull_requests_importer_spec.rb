@@ -164,7 +164,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter do
 
       expect(project.repository)
         .to receive(:fetch_remote)
-        .with(url, forced: false, refmap: Gitlab::GithubImport.refmap)
+        .with(url, forced: true, refmap: Gitlab::GithubImport.refmap)
 
       freeze_time do
         importer.update_repository

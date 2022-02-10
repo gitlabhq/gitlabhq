@@ -990,7 +990,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 | `approval_password` | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-user-password-to-approve) is enabled in the project settings. |
 
 The `sha` parameter works in the same way as
-when [accepting a merge request](merge_requests.md#accept-mr): if it is passed, then it must
+when [accepting a merge request](merge_requests.md#merge-a-merge-request): if it is passed, then it must
 match the current HEAD of the merge request for the approval to be added. If it
 does not match, the response code is `409`.
 

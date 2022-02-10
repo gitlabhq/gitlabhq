@@ -123,7 +123,7 @@ export const COVERAGE_FUZZING_CONFIG_HELP_PATH = helpPagePath(
 
 export const CORPUS_MANAGEMENT_NAME = __('Corpus Management');
 export const CORPUS_MANAGEMENT_DESCRIPTION = s__(
-  'SecurityConfiguration|Manage corpus files used as mutation sources in coverage fuzzing.',
+  'SecurityConfiguration|Manage corpus files used as seed inputs with coverage-guided fuzzing.',
 );
 export const CORPUS_MANAGEMENT_CONFIG_TEXT = s__('SecurityConfiguration|Manage corpus');
 

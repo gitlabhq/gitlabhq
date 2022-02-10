@@ -295,3 +295,11 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
+- name: i_quickactions_attention
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
+- name: i_quickactions_remove_attention
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly

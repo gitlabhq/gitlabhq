@@ -7418,6 +7418,67 @@ RSpec.describe Project, factory_default: :keep do
         expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
       end
     end
+
+    context 'public topics counter' do
+      let_it_be(:topic_1) { create(:topic, name: 't1') }
+      let_it_be(:topic_2) { create(:topic, name: 't2') }
+      let_it_be(:topic_3) { create(:topic, name: 't3') }
+
+      let(:private) { Gitlab::VisibilityLevel::PRIVATE }
+      let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
+      let(:public) { Gitlab::VisibilityLevel::PUBLIC }
+
+      subject do
+        project_updates = {
+          visibility_level: new_visibility,
+          topic_list: new_topic_list
+        }.compact
+
+        project.update!(project_updates)
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+      where(:initial_visibility, :new_visibility, :new_topic_list, :expected_count_changes) do
+        ref(:private)  | nil            | 't2, t3' | [0, 0, 0]
+        ref(:internal) | nil            | 't2, t3' | [-1, 0, 1]
+        ref(:public)   | nil            | 't2, t3' | [-1, 0, 1]
+        ref(:private)  | ref(:public)   | nil      | [1, 1, 0]
+        ref(:private)  | ref(:internal) | nil      | [1, 1, 0]
+        ref(:private)  | ref(:private)  | nil      | [0, 0, 0]
+        ref(:internal) | ref(:public)   | nil      | [0, 0, 0]
+        ref(:internal) | ref(:internal) | nil      | [0, 0, 0]
+        ref(:internal) | ref(:private)  | nil      | [-1, -1, 0]
+        ref(:public)   | ref(:public)   | nil      | [0, 0, 0]
+        ref(:public)   | ref(:internal) | nil      | [0, 0, 0]
+        ref(:public)   | ref(:private)  | nil      | [-1, -1, 0]
+        ref(:private)  | ref(:public)   | 't2, t3' | [0, 1, 1]
+        ref(:private)  | ref(:internal) | 't2, t3' | [0, 1, 1]
+        ref(:private)  | ref(:private)  | 't2, t3' | [0, 0, 0]
+        ref(:internal) | ref(:public)   | 't2, t3' | [-1, 0, 1]
+        ref(:internal) | ref(:internal) | 't2, t3' | [-1, 0, 1]
+        ref(:internal) | ref(:private)  | 't2, t3' | [-1, -1, 0]
+        ref(:public)   | ref(:public)   | 't2, t3' | [-1, 0, 1]
+        ref(:public)   | ref(:internal) | 't2, t3' | [-1, 0, 1]
+        ref(:public)   | ref(:private)  | 't2, t3' | [-1, -1, 0]
+      end
+      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
+
+      with_them do
+        it 'increments or decrements counters of topics' do
+          project.reload.update!(
+            visibility_level: initial_visibility,
+            topic_list: [topic_1.name, topic_2.name]
+          )
+
+          expect { subject }
+            .to change { topic_1.reload.non_private_projects_count }.by(expected_count_changes[0])
+            .and change { topic_2.reload.non_private_projects_count }.by(expected_count_changes[1])
+            .and change { topic_3.reload.non_private_projects_count }.by(expected_count_changes[2])
+        end
+      end
+    end
   end
 
   shared_examples 'all_runners' do

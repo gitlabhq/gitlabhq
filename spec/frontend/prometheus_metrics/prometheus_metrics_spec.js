@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
@@ -132,7 +133,7 @@ describe('PrometheusMetrics', () => {
       mock.restore();
     });
 
-    it('should show loader animation while response is being loaded and hide it when request is complete', (done) => {
+    it('should show loader animation while response is being loaded and hide it when request is complete', async () => {
       mockSuccess();
 
       prometheusMetrics.loadActiveMetrics();
@@ -140,34 +141,31 @@ describe('PrometheusMetrics', () => {
       expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeFalsy();
       expect(axios.get).toHaveBeenCalledWith(prometheusMetrics.activeMetricsEndpoint);
 
-      setImmediate(() => {
-        expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
-        done();
-      });
+      await waitForPromises();
+
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
     });
 
-    it('should show empty state if response failed to load', (done) => {
+    it('should show empty state if response failed to load', async () => {
       mockError();
 
       prometheusMetrics.loadActiveMetrics();
 
-      setImmediate(() => {
-        expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
-        expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeFalsy();
-        done();
-      });
+      await waitForPromises();
+
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeFalsy();
     });
 
-    it('should populate metrics list once response is loaded', (done) => {
+    it('should populate metrics list once response is loaded', async () => {
       jest.spyOn(prometheusMetrics, 'populateActiveMetrics').mockImplementation();
       mockSuccess();
 
       prometheusMetrics.loadActiveMetrics();
 
-      setImmediate(() => {
-        expect(prometheusMetrics.populateActiveMetrics).toHaveBeenCalledWith(metrics);
-        done();
-      });
+      await waitForPromises();
+
+      expect(prometheusMetrics.populateActiveMetrics).toHaveBeenCalledWith(metrics);
     });
   });
 });

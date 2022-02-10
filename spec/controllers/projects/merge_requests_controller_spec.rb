@@ -2078,6 +2078,20 @@ RSpec.describe Projects::MergeRequestsController do
       end
     end
 
+    context 'when source branch is protected from force push' do
+      before do
+        create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false)
+      end
+
+      it 'returns 404' do
+        expect_rebase_worker_for(user).never
+
+        post_rebase
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'with a forked project' do
       let(:forked_project) { fork_project(project, fork_owner, repository: true) }
       let(:fork_owner) { create(:user) }

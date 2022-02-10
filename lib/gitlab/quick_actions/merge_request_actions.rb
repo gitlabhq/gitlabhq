@@ -57,6 +57,11 @@ module Gitlab
           access_check.can_push_to_branch?(merge_request.source_branch)
         end
         command :rebase do
+          unless quick_action_target.permits_force_push?
+            @execution_message[:rebase] = _('This merge request branch is protected from force push.')
+            next
+          end
+
           if quick_action_target.cannot_be_merged?
             @execution_message[:rebase] = _('This merge request cannot be rebased while there are conflicts.')
             next
@@ -248,6 +253,76 @@ module Gitlab
           else
             @updates[:reviewer_ids] = []
           end
+        end
+
+        desc do
+          if quick_action_target.allows_multiple_reviewers?
+            _('Request attention from assignee(s) or reviewer(s)')
+          else
+            _('Request attention from assignee or reviewer')
+          end
+        end
+        explanation do |users|
+          _('Request attention from %{users_sentence}.') % { users_sentence: reviewer_users_sentence(users) }
+        end
+        execution_message do |users = nil|
+          if users.blank?
+            _("Failed to request attention because no user was found.")
+          else
+            _('Requested attention from %{users_sentence}.') % { users_sentence: reviewer_users_sentence(users) }
+          end
+        end
+        params do
+          quick_action_target.allows_multiple_reviewers? ? '@user1 @user2' : '@user'
+        end
+        types MergeRequest
+        condition do
+          Feature.enabled?(:mr_attention_requests, project, default_enabled: :yaml) &&
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+        end
+        parse_params do |attention_param|
+          extract_users(attention_param)
+        end
+        command :attention do |users|
+          next if users.empty?
+
+          users.each do |user|
+            ::MergeRequests::ToggleAttentionRequestedService.new(project: quick_action_target.project, merge_request: quick_action_target, current_user: current_user, user: user).execute
+          end
+        end
+
+        desc do
+          if quick_action_target.allows_multiple_reviewers?
+            _('Remove attention request(s)')
+          else
+            _('Remove attention request')
+          end
+        end
+        explanation do |users|
+          _('Removes attention from %{users_sentence}.') % { users_sentence: reviewer_users_sentence(users) }
+        end
+        execution_message do |users = nil|
+          if users.blank?
+            _("Failed to remove attention because no user was found.")
+          else
+            _('Removed attention from %{users_sentence}.') % { users_sentence: reviewer_users_sentence(users) }
+          end
+        end
+        params do
+          quick_action_target.allows_multiple_reviewers? ? '@user1 @user2' : '@user'
+        end
+        types MergeRequest
+        condition do
+          Feature.enabled?(:mr_attention_requests, project, default_enabled: :yaml) &&
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+        end
+        parse_params do |attention_param|
+          extract_users(attention_param)
+        end
+        command :remove_attention do |users|
+          next if users.empty?
+
+          ::MergeRequests::BulkRemoveAttentionRequestedService.new(project: quick_action_target.project, merge_request: quick_action_target, current_user: current_user, users: users).execute
         end
       end
 

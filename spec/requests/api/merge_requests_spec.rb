@@ -3344,6 +3344,18 @@ RSpec.describe API::MergeRequests do
       end
     end
 
+    context 'when merge request branch does not allow force push' do
+      before do
+        create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false)
+      end
+
+      it 'returns 403' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     it 'returns 403 if the user cannot push to the branch' do
       guest = create(:user)
       project.add_guest(guest)

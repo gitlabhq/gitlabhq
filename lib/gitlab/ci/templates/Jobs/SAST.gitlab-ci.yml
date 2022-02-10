@@ -221,6 +221,7 @@ security-code-scan-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
+    SAST_ANALYZER_IMAGE_TAG: '2'
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -230,8 +231,6 @@ security-code-scan-sast:
     # This rule shim will be removed in %15.0,
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/350935
     - if: $CI_COMMIT_BRANCH && $CI_SERVER_VERSION_MAJOR == '14'
-      variables:
-        SAST_ANALYZER_IMAGE_TAG: '2'
       exists:
         - '**/*.csproj'
         - '**/*.vbproj'

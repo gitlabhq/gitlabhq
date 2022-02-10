@@ -701,6 +701,27 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'attention command' do
+      it 'updates reviewers attention status' do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to eq("Requested attention from #{developer.to_reference}.")
+
+        reviewer.reload
+
+        expect(reviewer).to be_attention_requested
+      end
+    end
+
+    shared_examples 'remove attention command' do
+      it 'updates reviewers attention status' do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to eq("Removed attention from #{developer.to_reference}.")
+        expect(reviewer).not_to be_attention_requested
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -2281,6 +2302,82 @@ RSpec.describe QuickActions::InterpretService do
 
         expect(updates).to eq(remove_contacts: [existing_contact.email])
         expect(message).to eq('One or more contacts were successfully removed.')
+      end
+    end
+
+    describe 'attention command' do
+      let(:issuable) { create(:merge_request, reviewers: [developer], source_project: project) }
+      let(:reviewer) { issuable.merge_request_reviewers.find_by(user_id: developer.id) }
+      let(:content) { "/attention @#{developer.username}" }
+
+      context 'with one user' do
+        before do
+          reviewer.update!(state: :reviewed)
+        end
+
+        it_behaves_like 'attention command'
+      end
+
+      context 'with no user' do
+        let(:content) { "/attention" }
+
+        it_behaves_like 'failed command', 'Failed to request attention because no user was found.'
+      end
+
+      context 'with incorrect permissions' do
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'failed command', 'Could not apply attention command.'
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(mr_attention_requests: false)
+        end
+
+        it_behaves_like 'failed command', 'Could not apply attention command.'
+      end
+
+      context 'with an issue instead of a merge request' do
+        let(:issuable) { issue }
+
+        it_behaves_like 'failed command', 'Could not apply attention command.'
+      end
+    end
+
+    describe 'remove attention command' do
+      let(:issuable) { create(:merge_request, reviewers: [developer], source_project: project) }
+      let(:reviewer) { issuable.merge_request_reviewers.find_by(user_id: developer.id) }
+      let(:content) { "/remove_attention @#{developer.username}" }
+
+      context 'with one user' do
+        it_behaves_like 'remove attention command'
+      end
+
+      context 'with no user' do
+        let(:content) { "/remove_attention" }
+
+        it_behaves_like 'failed command', 'Failed to remove attention because no user was found.'
+      end
+
+      context 'with incorrect permissions' do
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'failed command', 'Could not apply remove_attention command.'
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(mr_attention_requests: false)
+        end
+
+        it_behaves_like 'failed command', 'Could not apply remove_attention command.'
+      end
+
+      context 'with an issue instead of a merge request' do
+        let(:issuable) { issue }
+
+        it_behaves_like 'failed command', 'Could not apply remove_attention command.'
       end
     end
   end

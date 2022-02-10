@@ -40,7 +40,7 @@ module Gitlab
           # updating the timestamp.
           project.touch(:last_repository_updated_at) # rubocop: disable Rails/SkipsModelValidations
 
-          project.repository.fetch_remote(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: false)
+          project.repository.fetch_remote(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true)
 
           pname = project.path_with_namespace
 

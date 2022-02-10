@@ -7405,6 +7405,9 @@ msgstr ""
 msgid "Clear recent searches"
 msgstr ""
 
+msgid "Clear repository checks"
+msgstr ""
+
 msgid "Clear search"
 msgstr ""
 
@@ -9896,10 +9899,10 @@ msgstr ""
 msgid "CorpusManagement|Actions"
 msgstr ""
 
-msgid "CorpusManagement|Corpus are used in fuzz testing as mutation source to Improve future testing."
+msgid "CorpusManagement|Corpus file"
 msgstr ""
 
-msgid "CorpusManagement|Corpus file"
+msgid "CorpusManagement|Corpus files are used in coverage-guided fuzz testing as seed inputs to improve testing."
 msgstr ""
 
 msgid "CorpusManagement|Corpus files must be in *.zip format. Maximum 5 GB"
@@ -15023,6 +15026,9 @@ msgstr ""
 msgid "Failed to remove a to-do item for the design."
 msgstr ""
 
+msgid "Failed to remove attention because no user was found."
+msgstr ""
+
 msgid "Failed to remove mirror."
 msgstr ""
 
@@ -15033,6 +15039,9 @@ msgid "Failed to remove user identity."
 msgstr ""
 
 msgid "Failed to remove user key."
+msgstr ""
+
+msgid "Failed to request attention because no user was found."
 msgstr ""
 
 msgid "Failed to reset key. Please try again."
@@ -30016,6 +30025,9 @@ msgstr ""
 msgid "Remove attention request"
 msgstr ""
 
+msgid "Remove attention request(s)"
+msgstr ""
+
 msgid "Remove avatar"
 msgstr ""
 
@@ -30154,6 +30166,9 @@ msgstr ""
 msgid "Removed an issue from an epic."
 msgstr ""
 
+msgid "Removed attention from %{users_sentence}."
+msgstr ""
+
 msgid "Removed attention request from @%{username}"
 msgstr ""
 
@@ -30203,6 +30218,9 @@ msgid "Removes all labels."
 msgstr ""
 
 msgid "Removes an issue from an epic."
+msgstr ""
+
+msgid "Removes attention from %{users_sentence}."
 msgstr ""
 
 msgid "Removes parent epic %{epic_ref}."
@@ -30605,6 +30623,15 @@ msgstr ""
 msgid "Request attention"
 msgstr ""
 
+msgid "Request attention from %{users_sentence}."
+msgstr ""
+
+msgid "Request attention from assignee or reviewer"
+msgstr ""
+
+msgid "Request attention from assignee(s) or reviewer(s)"
+msgstr ""
+
 msgid "Request attention to review"
 msgstr ""
 
@@ -30627,6 +30654,9 @@ msgid "Requested"
 msgstr ""
 
 msgid "Requested %{time_ago}"
+msgstr ""
+
+msgid "Requested attention from %{users_sentence}."
 msgstr ""
 
 msgid "Requested attention from @%{username}"
@@ -31973,7 +32003,7 @@ msgstr ""
 msgid "SecurityConfiguration|Manage corpus"
 msgstr ""
 
-msgid "SecurityConfiguration|Manage corpus files used as mutation sources in coverage fuzzing."
+msgid "SecurityConfiguration|Manage corpus files used as seed inputs with coverage-guided fuzzing."
 msgstr ""
 
 msgid "SecurityConfiguration|Manage profiles for use by DAST scans."
@@ -37132,6 +37162,9 @@ msgid "This may expose confidential information as the selected fork is in anoth
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
+msgstr ""
+
+msgid "This merge request branch is protected from force push."
 msgstr ""
 
 msgid "This merge request cannot be rebased while there are conflicts."

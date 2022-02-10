@@ -282,6 +282,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:container_registry_migration_observer
+  :worker_name: ContainerRegistry::Migration::ObserverWorker
+  :feature_category: :container_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:database_batched_background_migration
   :worker_name: Database::BatchedBackgroundMigrationWorker
   :feature_category: :database

@@ -350,7 +350,7 @@ module Ci
     #
     # ref - The name (or names) of the branch(es)/tag(s) to limit the list of
     #       pipelines to.
-    # sha - The commit SHA (or mutliple SHAs) to limit the list of pipelines to.
+    # sha - The commit SHA (or multiple SHAs) to limit the list of pipelines to.
     # limit - This limits a backlog search, default to 100.
     def self.newest_first(ref: nil, sha: nil, limit: 100)
       relation = order(id: :desc)

@@ -116,87 +116,106 @@ your website could enable the covert redirect attack.
 
 1. Select the icon. Sign in to GitHub and authorize the GitLab application.
 
-## GitHub Enterprise with self-signed Certificate
-
-If you are attempting to import projects from GitHub Enterprise with a self-signed
-certificate and the imports are failing, you must disable SSL verification.
-It should be disabled by adding `verify_ssl` to `false` in the provider configuration
-and changing the global Git `sslVerify` option to `false` in the GitLab server.
-
-For Omnibus package:
-
-```ruby
-gitlab_rails['omniauth_providers'] = [
-  {
-    name: "github",
-    # label: "Provider name", # optional label for login button, defaults to "GitHub"
-    app_id: "YOUR_APP_ID",
-    app_secret: "YOUR_APP_SECRET",
-    url: "https://github.example.com/",
-    verify_ssl: false,
-    args: { scope: "user:email" }
-  }
-]
-```
-
-You must also disable Git SSL verification on the server hosting GitLab.
-
-```ruby
-omnibus_gitconfig['system'] = { "http" => ["sslVerify = false"] }
-```
-
-For installation from source:
-
-```yaml
-- { name: 'github',
-    # label: 'Provider name', # optional label for login button, defaults to "GitHub"
-    app_id: 'YOUR_APP_ID',
-    app_secret: 'YOUR_APP_SECRET',
-    url: "https://github.example.com/",
-    verify_ssl: false,
-    args: { scope: 'user:email' } }
-```
-
-You must also disable Git SSL verification on the server hosting GitLab.
-
-```shell
-git config --global http.sslVerify false
-```
-
-For the changes to take effect, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) if you installed
-via Omnibus, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) if you installed from source.
-
 ## Troubleshooting
 
-### Error 500 when trying to sign in to GitLab via GitHub Enterprise
+### Imports from GitHub Enterprise with a self-signed certificate fail
 
-Check the [`production.log`](../administration/logs.md#productionlog)
-on your GitLab server to obtain further details. If you are getting the error like
-`Faraday::ConnectionFailed (execution expired)` in the log, there may be a connectivity issue
-between your GitLab instance and GitHub Enterprise. To verify it, [start the rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
-and run the commands below replacing `<github_url>` with the URL of your GitHub Enterprise instance:
+When you import projects from GitHub Enterprise using a self-signed
+certificate, the imports fail.
 
-```ruby
-uri = URI.parse("https://<github_url>") # replace `GitHub-URL` with the real one here
-http = Net::HTTP.new(uri.host, uri.port)
-http.use_ssl = true
-http.verify_mode = 1
-response = http.request(Net::HTTP::Get.new(uri.request_uri))
-```
+To fix this issue, you must disable SSL verification:
 
-If you are getting a similar `execution expired` error, it confirms the theory about the
-network connectivity. In that case, make sure that the GitLab server is able to reach your
-GitHub enterprise instance.
+1. Set `verify_ssl` to `false` in the configuration file.
+
+   - **For Omnibus installations**
+
+     ```ruby
+     gitlab_rails['omniauth_providers'] = [
+       {
+         name: "github",
+         # label: "Provider name", # optional label for login button, defaults to "GitHub"
+         app_id: "YOUR_APP_ID",
+         app_secret: "YOUR_APP_SECRET",
+         url: "https://github.example.com/",
+         verify_ssl: false,
+         args: { scope: "user:email" }
+       }
+     ]
+     ```
+
+   - **For installations from source**
+
+     ```yaml
+     - { name: 'github',
+         # label: 'Provider name', # optional label for login button, defaults to "GitHub"
+         app_id: 'YOUR_APP_ID',
+         app_secret: 'YOUR_APP_SECRET',
+         url: "https://github.example.com/",
+         verify_ssl: false,
+         args: { scope: 'user:email' } }
+     ```
+
+1. Change the global Git `sslVerify` option to `false` on the GitLab server.
+
+   - **For Omnibus installations**
+
+     ```ruby
+     omnibus_gitconfig['system'] = { "http" => ["sslVerify = false"] }
+     ```
+
+   - **For installations from source**
+
+     ```shell
+     git config --global http.sslVerify false
+     ```
+
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+   if you installed using Omnibus, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source)
+   if you installed from source.
+
+### Signing in using GitHub Enterprise returns a 500 error
+
+This error can occur because of a network connectivity issue between your
+GitLab instance and GitHub Enterprise.
+
+To check for a connectivity issue:
+
+1. Go to the [`production.log`](../administration/logs.md#productionlog)
+   on your GitLab server and look for the following error:
+
+   ``` plaintext
+   Faraday::ConnectionFailed (execution expired)
+   ```
+
+1. [Start the rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
+   and run the following commands. Replace `<github_url>` with the URL of your
+   GitHub Enterprise instance:
+
+   ```ruby
+   uri = URI.parse("https://<github_url>") # replace `GitHub-URL` with the real one here
+   http = Net::HTTP.new(uri.host, uri.port)
+   http.use_ssl = true
+   http.verify_mode = 1
+   response = http.request(Net::HTTP::Get.new(uri.request_uri))
+   ```
+
+1. If a similar `execution expired` error is returned, this confirms the error is
+   caused by a connectivity issue. Make sure the GitLab server can reach
+   your GitHub Enterprise instance.
 
 ### Signing in using your GitHub account without a pre-existing GitLab account is not allowed
 
-If you're getting the message `Signing in using your GitHub account without a pre-existing
-GitLab account is not allowed. Create a GitLab account first, and then connect it to your
-GitHub account` when signing in, in GitLab:
+When you sign in to GitLab, you get the following error:
 
-1. In the top-right corner, select your avatar.
+```plaintext
+Signing in using your GitHub account without a pre-existing
+GitLab account is not allowed. Create a GitLab account first,
+and then connect it to your GitHub account
+```
+
+To fix this issue, you must activate GitHub sign-in in GitLab:
+
+1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Social sign-in** section, select **Connect to GitHub**.
-
-After that, you should be able to sign in via GitHub successfully.

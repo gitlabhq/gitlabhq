@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import waitForPromises from 'helpers/wait_for_promises';
 import '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';
@@ -71,7 +72,7 @@ describe('Todos', () => {
     describe('on done todo click', () => {
       let onToggleSpy;
 
-      beforeEach((done) => {
+      beforeEach(() => {
         const el = document.querySelector('.js-done-todo');
         const path = el.dataset.href;
 
@@ -86,7 +87,7 @@ describe('Todos', () => {
         el.click();
 
         // Wait for axios and HTML to udpate
-        setImmediate(done);
+        return waitForPromises();
       });
 
       it('dispatches todo:toggle', () => {

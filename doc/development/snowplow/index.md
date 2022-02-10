@@ -72,6 +72,7 @@ sequenceDiagram
       GitLab.com Snowplow Collector ->> GitLab.com Snowplow Collector: Write to disk
     end
     GitLab.com Snowplow Collector ->> S3 Bucket: Kinesis Firehose
+    Note over GitLab.com Snowplow Collector, S3 Bucket: Pseudonymization
     S3 Bucket->>Snowflake DW: Import data
     Snowflake DW->>Snowflake DW: Transform data using dbt
     Snowflake DW->>Sisense Dashboards: Data available for querying

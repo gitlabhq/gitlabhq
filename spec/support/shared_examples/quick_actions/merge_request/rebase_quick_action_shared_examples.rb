@@ -73,6 +73,16 @@ RSpec.shared_examples 'rebase quick action' do
           expect(page).to have_content 'This merge request cannot be rebased while there are conflicts.'
         end
       end
+
+      context 'when the merge request branch is protected from force push' do
+        let!(:protected_branch) { create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false) }
+
+        it 'does not rebase the MR' do
+          add_note("/rebase")
+
+          expect(page).to have_content 'This merge request branch is protected from force push.'
+        end
+      end
     end
 
     context 'when the current user cannot rebase the MR' do

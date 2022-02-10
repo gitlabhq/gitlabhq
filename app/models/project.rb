@@ -2779,6 +2779,12 @@ class Project < ApplicationRecord
   end
 
   def save_topics
+    topic_ids_before = self.topic_ids
+    update_topics
+    Projects::Topic.update_non_private_projects_counter(topic_ids_before, self.topic_ids, visibility_level_previously_was, visibility_level)
+  end
+
+  def update_topics
     return if @topic_list.nil?
 
     @topic_list = @topic_list.split(',') if @topic_list.instance_of?(String)

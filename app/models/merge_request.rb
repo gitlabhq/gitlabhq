@@ -471,6 +471,12 @@ class MergeRequest < ApplicationRecord
     rebase_jid.present? && Gitlab::SidekiqStatus.running?(rebase_jid)
   end
 
+  def permits_force_push?
+    return true unless ProtectedBranch.protected?(source_project, source_branch)
+
+    ProtectedBranch.allow_force_push?(source_project, source_branch)
+  end
+
   # Use this method whenever you need to make sure the head_pipeline is synced with the
   # branch head commit, for example checking if a merge request can be merged.
   # For more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/40004

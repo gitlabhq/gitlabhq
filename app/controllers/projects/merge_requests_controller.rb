@@ -501,6 +501,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .can_push_to_branch?(@merge_request.source_branch)
 
     access_denied! unless access_check
+
+    access_denied! unless merge_request.permits_force_push?
   end
 
   def merge_access_check

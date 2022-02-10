@@ -38,11 +38,10 @@ const SUPPORTED_BROWSERS_HASH = crypto
 const VENDOR_DLL = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_DLL !== 'false';
 const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const IS_DEV_SERVER = process.env.WEBPACK_DEV_SERVER === 'true';
+const IS_DEV_SERVER = process.env.WEBPACK_SERVE === 'true';
 
-const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
-const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
-const { DEV_SERVER_PUBLIC_ADDR } = process.env;
+const { DEV_SERVER_HOST, DEV_SERVER_PUBLIC_ADDR } = process.env;
+const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10);
 const DEV_SERVER_ALLOWED_HOSTS =
   process.env.DEV_SERVER_ALLOWED_HOSTS && process.env.DEV_SERVER_ALLOWED_HOSTS.split(',');
 const DEV_SERVER_HTTPS = process.env.DEV_SERVER_HTTPS && process.env.DEV_SERVER_HTTPS !== 'false';
@@ -654,9 +653,6 @@ module.exports = {
       },
     },
 
-    // enable HMR only in webpack-dev-server
-    DEV_SERVER_LIVERELOAD && new webpack.HotModuleReplacementPlugin(),
-
     // optionally generate webpack bundle analysis
     WEBPACK_REPORT &&
       new BundleAnalyzerPlugin({
@@ -689,19 +685,38 @@ module.exports = {
     */
     new webpack.IgnorePlugin(/moment/, /pikaday/),
   ].filter(Boolean),
+
   devServer: {
-    before(app, server) {
-      incrementalCompiler.setupMiddleware(app, server);
+    setupMiddlewares: (middlewares, devServer) => {
+      if (!devServer) {
+        throw new Error('webpack-dev-server is not defined');
+      }
+
+      const incrementalCompilerMiddleware = incrementalCompiler.createMiddleware(devServer);
+
+      if (incrementalCompilerMiddleware) {
+        middlewares.unshift(incrementalCompilerMiddleware);
+      }
+
+      return middlewares;
     },
-    host: DEV_SERVER_HOST,
-    port: DEV_SERVER_PORT,
-    public: DEV_SERVER_PUBLIC_ADDR,
-    allowedHosts: DEV_SERVER_ALLOWED_HOSTS,
+    // Only print errors to CLI
+    devMiddleware: {
+      stats: 'errors-only',
+    },
+    host: DEV_SERVER_HOST || 'localhost',
+    port: DEV_SERVER_PORT || 3808,
     https: DEV_SERVER_HTTPS,
-    contentBase: false,
-    stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,
-    inline: DEV_SERVER_LIVERELOAD,
+    // The following settings are mainly needed for HMR support in gitpod.
+    // Per default only local hosts are allowed, but here we could
+    // allow different hosts (e.g. ['.gitpod'], all of gitpod),
+    // as the webpack server will run on a different subdomain than
+    // the rails application
+    ...(DEV_SERVER_ALLOWED_HOSTS ? { allowedHosts: DEV_SERVER_ALLOWED_HOSTS } : {}),
+    client: {
+      ...(DEV_SERVER_PUBLIC_ADDR ? { webSocketURL: DEV_SERVER_PUBLIC_ADDR } : {}),
+    },
   },
 
   devtool: NO_SOURCEMAPS ? false : devtool,

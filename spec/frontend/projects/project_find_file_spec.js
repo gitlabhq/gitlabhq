@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { TEST_HOST } from 'helpers/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
 import ProjectFindFile from '~/projects/project_find_file';
@@ -53,7 +54,7 @@ describe('ProjectFindFile', () => {
     { path: 'folde?rC/fil#F.txt', escaped: 'folde%3FrC/fil%23F.txt' },
   ];
 
-  beforeEach((done) => {
+  beforeEach(() => {
     // Create a mock adapter for stubbing axios API requests
     mock = new MockAdapter(axios);
 
@@ -64,7 +65,7 @@ describe('ProjectFindFile', () => {
     );
     getProjectFindFileInstance(); // This triggers a load / axios call + subsequent render in the constructor
 
-    setImmediate(done);
+    return waitForPromises();
   });
 
   afterEach(() => {

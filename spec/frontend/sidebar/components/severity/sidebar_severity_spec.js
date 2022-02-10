@@ -97,14 +97,14 @@ describe('SidebarSeverity', () => {
       });
     });
 
-    it('shows error alert when severity update fails ', () => {
+    it('shows error alert when severity update fails ', async () => {
       const errorMsg = 'Something went wrong';
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValueOnce(errorMsg);
       findCriticalSeverityDropdownItem().vm.$emit('click');
 
-      setImmediate(() => {
-        expect(createFlash).toHaveBeenCalled();
-      });
+      await waitForPromises();
+
+      expect(createFlash).toHaveBeenCalled();
     });
 
     it('shows loading icon while updating', async () => {

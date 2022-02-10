@@ -1454,9 +1454,9 @@ DELETE /projects/:id/merge_requests/:merge_request_iid
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/merge_requests/85"
 ```
 
-## Accept MR
+## Merge a merge request
 
-Merge changes submitted with MR using this API.
+Accept and merge changes submitted with MR using this API.
 
 If a merge request is unable to be accepted (such as Draft, Closed, Pipeline Pending Completion, or Failed while requiring Success) - you receive a `405` and the error message 'Method Not Allowed'
 
