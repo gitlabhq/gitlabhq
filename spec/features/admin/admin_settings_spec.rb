@@ -814,6 +814,16 @@ RSpec.describe 'Admin updates settings' do
         expect(page).to have_button 'Hide payload'
         expect(page).to have_content expected_payload_content
       end
+
+      it 'generates usage ping payload on button click', :js do
+        expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
+          expect(instance).to receive(:usage_data).and_call_original
+        end
+
+        click_button('Download payload')
+
+        wait_for_requests
+      end
     end
   end
 

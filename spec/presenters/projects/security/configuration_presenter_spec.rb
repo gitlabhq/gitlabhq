@@ -86,8 +86,9 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
 
         expect(feature['type']).to eq('sast')
         expect(feature['configured']).to eq(true)
-        expect(feature['configuration_path']).to eq(project_security_configuration_sast_path(project))
+        expect(feature['configuration_path']).to be_nil
         expect(feature['available']).to eq(true)
+        expect(feature['can_enable_in_merge_request']).to eq(true)
       end
 
       context 'when checking features configured status' do

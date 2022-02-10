@@ -12935,6 +12935,9 @@ msgstr ""
 msgid "Download image"
 msgstr ""
 
+msgid "Download payload"
+msgstr ""
+
 msgid "Download raw data (.csv)"
 msgstr ""
 

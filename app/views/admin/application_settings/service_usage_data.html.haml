@@ -10,4 +10,7 @@
 %button.gl-button.btn.btn-default.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
   .gl-spinner.js-spinner.gl-display-none.gl-mr-2
   .js-text.gl-display-inline= _('Preview payload')
+%button.gl-button.btn.btn-default.js-payload-download-trigger{ type: 'button', data: { endpoint: usage_data_admin_application_settings_path(format: :json) } }
+  .gl-spinner.js-spinner.gl-display-none.gl-mr-2
+  .js-text.d-inline= _('Download payload')
 %pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }

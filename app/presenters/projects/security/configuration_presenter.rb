@@ -80,7 +80,8 @@ module Projects
           type: scan.type,
           configured: scan.configured?,
           configuration_path: scan.configuration_path,
-          available: scan.available?
+          available: scan.available?,
+          can_enable_in_merge_request: scan.can_enable_in_merge_request?
         }
       end
 

@@ -754,6 +754,31 @@ In GitLab 13.0, we introduced new project and design replication details routes 
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Deprecate custom Geo:db:* Rake tasks
+
+In GitLab 14.8, we are [replacing the `geo:db:*` Rake tasks with built-in tasks](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77269/diffs) that are now possible after [switching the Geo tracking database to use Rails' 6 support of multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6458).
+The following `geo:db:*` tasks will be replaced with their corresponding `db:*:geo` tasks:
+
+- `geo:db:drop` -> `db:drop:geo`
+- `geo:db:create` -> `db:create:geo`
+- `geo:db:setup` -> `db:setup:geo`
+- `geo:db:migrate` -> `db:migrate:geo`
+- `geo:db:rollback` -> `db:rollback:geo`
+- `geo:db:version` -> `db:version:geo`
+- `geo:db:reset` -> `db:reset:geo`
+- `geo:db:seed` -> `db:seed:geo`
+- `geo:schema:load:geo` -> `db:schema:load:geo`
+- `geo:db:schema:dump` -> `db:schema:dump:geo`
+- `geo:db:migrate:up` -> `db:migrate:up:geo`
+- `geo:db:migrate:down` -> `db:migrate:down:geo`
+- `geo:db:migrate:redo` -> `db:migrate:redo:geo`
+- `geo:db:migrate:status` -> `db:migrate:status:geo`
+- `geo:db:test:prepare` -> `db:test:prepare:geo`
+- `geo:db:test:load` -> `db:test:load:geo`
+- `geo:db:test:purge` -> `db:test:purge:geo`
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### External status check API breaking changes
 
 WARNING:

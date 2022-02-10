@@ -309,6 +309,11 @@ The **License Usage** CSV includes the following details:
   - Date the count was recorded
   - Active user count
 
+NOTES:
+
+- All timestamps are displayed in UTC.
+- A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
+
 ## Renew your subscription
 
 To renew your subscription,

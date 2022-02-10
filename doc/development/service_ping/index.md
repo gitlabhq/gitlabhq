@@ -576,6 +576,24 @@ skip_db_write:
 ServicePing::SubmitService.new(skip_db_write: true).execute
 ```
 
+## Manually upload Service Ping payload 
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7388) in GitLab 14.8 with a flag named `admin_application_settings_service_usage_data_center`. Disabled by default.
+
+Service Ping payload can be uploaded to GitLab even if your application instance doesn't have access to the internet,
+or you don't have Service Ping [cron job](#how-service-ping-works) enabled.
+
+To upload payload manually:
+
+1. Sign in as a user with administrator access.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Service** usage data.
+1. Select **Download payload**.
+1. Save the JSON file.
+1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).
+1. Select **Choose file** and choose the file from p5.
+1. Select **Upload**.
+
 ## Monitoring
 
 Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health). 

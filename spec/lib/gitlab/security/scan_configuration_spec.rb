@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ::Gitlab::Security::ScanConfiguration do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project) { create(:project, :repository) }
 
   let(:scan) { described_class.new(project: project, type: type, configured: configured) }
@@ -13,9 +15,11 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
     let(:configured) { true }
 
     context 'with a core scanner' do
-      let(:type) { :sast }
+      where(type: %i(sast sast_iac secret_detection))
 
-      it { is_expected.to be_truthy }
+      with_them do
+        it { is_expected.to be_truthy }
+      end
     end
 
     context 'with custom scanner' do
@@ -38,27 +42,28 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
     subject { scan.configuration_path }
 
     let(:configured) { true }
+    let(:type) { :sast }
 
-    context 'with a non configurable scanner' do
-      let(:type) { :secret_detection }
+    it { is_expected.to be_nil }
+  end
 
-      it { is_expected.to be_nil }
-    end
+  describe '#can_enable_in_merge_request?' do
+    subject { scan.can_enable_in_merge_request? }
 
-    context 'with licensed scanner for FOSS environment' do
-      let(:type) { :dast }
+    let(:configured) { true }
 
-      before do
-        stub_env('FOSS_ONLY', '1')
+    context 'with a core scanner' do
+      where(type: %i(sast sast_iac secret_detection))
+
+      with_them do
+        it { is_expected.to be_truthy }
       end
-
-      it { is_expected.to be_nil }
     end
 
-    context 'with custom scanner' do
+    context 'with a custom scanner' do
       let(:type) { :my_scanner }
 
-      it { is_expected.to be_nil }
+      it { is_expected.to be_falsey }
     end
   end
 end

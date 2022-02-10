@@ -18,27 +18,25 @@ module Gitlab
         # SAST and Secret Detection are always available, but this isn't
         # reflected by our license model yet.
         # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/333113
-        %i[sast secret_detection].include?(type)
+        %i[sast sast_iac secret_detection].include?(type)
+      end
+
+      def can_enable_in_merge_request?
+        scans_configurable_in_merge_request.include?(type)
       end
 
       def configured?
         configured
       end
 
-      def configuration_path
-        configurable_scans[type]
-      end
+      def configuration_path; end
 
       private
 
       attr_reader :project, :configured
 
-      def configurable_scans
-        strong_memoize(:configurable_scans) do
-          {
-            sast: project_security_configuration_sast_path(project)
-          }
-        end
+      def scans_configurable_in_merge_request
+        %i[sast sast_iac secret_detection]
       end
     end
   end

@@ -128,6 +128,8 @@ the current date range is the active license.
 When you upload a future-dated license, it doesn't take effect until its applicable date.
 You can view all active subscriptions in the **Subscription history** table.
 
+You can also [export](../../subscriptions/self_managed/index.md) your license usage information to a CSV file.
+
 NOTE:
 In GitLab 13.6 and earlier, a banner about an expiring license may continue to display
 when you upload a new license. This happens when the start date of the new license
