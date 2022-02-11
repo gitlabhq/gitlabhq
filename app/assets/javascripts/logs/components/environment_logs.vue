@@ -2,6 +2,7 @@
 import {
   GlSprintf,
   GlAlert,
+  GlLink,
   GlDropdown,
   GlDropdownSectionHeader,
   GlDropdownItem,
@@ -20,6 +21,7 @@ import LogSimpleFilters from './log_simple_filters.vue';
 export default {
   components: {
     GlSprintf,
+    GlLink,
     GlAlert,
     GlDropdown,
     GlDropdownSectionHeader,
@@ -58,6 +60,7 @@ export default {
     return {
       isElasticStackCalloutDismissed: false,
       scrollDownButtonDisabled: true,
+      isDeprecationNoticeDismissed: false,
     };
   },
   computed: {
@@ -149,6 +152,41 @@ export default {
       @dismiss="dismissInvalidTimeRangeWarning"
     >
       {{ s__('Metrics|Invalid time range, please verify.') }}
+    </gl-alert>
+    <gl-alert
+      v-if="!isDeprecationNoticeDismissed"
+      :title="s__('Deprecations|Feature deprecation and removal')"
+      class="mb-3"
+      variant="danger"
+      @dismiss="isDeprecationNoticeDismissed = true"
+    >
+      <gl-sprintf
+        :message="
+          s__(
+            'Deprecations|The metrics, logs and tracing features were deprecated in GitLab 14.7 and are %{epicStart} scheduled for removal %{epicEnd} in GitLab 15.0.',
+          )
+        "
+      >
+        <template #epic="{ content }">
+          <gl-link href="https://gitlab.com/groups/gitlab-org/-/epics/7188" target="_blank">{{
+            content
+          }}</gl-link>
+        </template>
+      </gl-sprintf>
+
+      <gl-sprintf
+        :message="
+          s__(
+            'Deprecations|For information on a possible replacement %{epicStart} learn more about Opstrace %{epicEnd}.',
+          )
+        "
+      >
+        <template #epic="{ content }">
+          <gl-link href="https://gitlab.com/groups/gitlab-org/-/epics/6976" target="_blank">{{
+            content
+          }}</gl-link>
+        </template>
+      </gl-sprintf>
     </gl-alert>
     <gl-alert
       v-if="logs.fetchError"

@@ -15,17 +15,16 @@ module Taskable
   INCOMPLETE_PATTERN = /(\[\s\])/.freeze
   ITEM_PATTERN       = %r{
     ^
-    (?:(?:>\s{0,4})*)          # optional blockquote characters
-    (?:\s*(?:[-+*]|(?:\d+\.)))+  # list prefix (one or more) required - task item has to be always in a list
-    \s+                        # whitespace prefix has to be always presented for a list item
-    (\[\s\]|\[[xX]\])          # checkbox
-    (\s.+)                     # followed by whitespace and some text.
+    (?:(?:>\s{0,4})*)             # optional blockquote characters
+    ((?:\s*(?:[-+*]|(?:\d+\.)))+) # list prefix (one or more) required - task item has to be always in a list
+    \s+                           # whitespace prefix has to be always presented for a list item
+    (\[\s\]|\[[xX]\])             # checkbox
+    (\s.+)                        # followed by whitespace and some text.
   }x.freeze
 
   def self.get_tasks(content)
-    content.to_s.scan(ITEM_PATTERN).map do |checkbox, label|
-      # ITEM_PATTERN strips out the hyphen, but Item requires it. Rabble rabble.
-      TaskList::Item.new("- #{checkbox}", label.strip)
+    content.to_s.scan(ITEM_PATTERN).map do |prefix, checkbox, label|
+      TaskList::Item.new("#{prefix} #{checkbox}", label.strip)
     end
   end
 

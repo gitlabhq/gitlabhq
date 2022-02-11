@@ -12238,6 +12238,18 @@ msgstr ""
 msgid "Deprecated API rate limits"
 msgstr ""
 
+msgid "Deprecations|Feature deprecation and removal"
+msgstr ""
+
+msgid "Deprecations|For information on a possible replacement %{epicStart} learn more about Opstrace %{epicEnd}."
+msgstr ""
+
+msgid "Deprecations|The metrics, logs and tracing features were deprecated in GitLab 14.7 and are %{epicStart} scheduled for removal %{epicEnd} in GitLab 15.0."
+msgstr ""
+
+msgid "Deprecations|The metrics, logs and tracing features were deprecated in GitLab 14.7, and are %{removal_link_start} scheduled for removal %{link_end} in GitLab 15.0. For information on a possible replacement, %{opstrace_link_start} learn more about Opstrace %{link_end}."
+msgstr ""
+
 msgid "Deprioritize label"
 msgstr ""
 
@@ -12831,6 +12843,9 @@ msgid "Dismissed on pipeline %{pipelineLink} at %{projectLink}"
 msgstr ""
 
 msgid "Display alerts from all configured monitoring tools."
+msgstr ""
+
+msgid "Display milestones"
 msgstr ""
 
 msgid "Display name"
@@ -15123,6 +15138,9 @@ msgid "Favicon will be removed. Are you sure?"
 msgstr ""
 
 msgid "Feature Flags"
+msgstr ""
+
+msgid "Feature deprecation and removal"
 msgstr ""
 
 msgid "Feature flag status"
@@ -33406,6 +33424,9 @@ msgstr ""
 msgid "Show all issues."
 msgstr ""
 
+msgid "Show all milestones"
+msgstr ""
+
 msgid "Show all test cases."
 msgstr ""
 
@@ -33442,6 +33463,9 @@ msgstr ""
 msgid "Show file contents"
 msgstr ""
 
+msgid "Show group milestones"
+msgstr ""
+
 msgid "Show labels"
 msgstr ""
 
@@ -33455,6 +33479,12 @@ msgid "Show one file at a time"
 msgstr ""
 
 msgid "Show open epics"
+msgstr ""
+
+msgid "Show project milestones"
+msgstr ""
+
+msgid "Show sub-group milestones"
 msgstr ""
 
 msgid "Show the Closed list"

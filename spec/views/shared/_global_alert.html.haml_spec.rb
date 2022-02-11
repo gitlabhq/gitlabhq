@@ -49,12 +49,6 @@ RSpec.describe 'shared/_global_alert.html.haml' do
       allow(view).to receive(:fluid_layout).and_return(false)
     end
 
-    it 'does not add layout limited class' do
-      render
-
-      expect(rendered).not_to have_selector('.gl-alert-layout-limited')
-    end
-
     it 'adds container classes' do
       render
 
@@ -72,10 +66,6 @@ RSpec.describe 'shared/_global_alert.html.haml' do
     before do
       allow(view).to receive(:fluid_layout).and_return(true)
       render
-    end
-
-    it 'adds layout limited class' do
-      expect(rendered).to have_selector('.gl-alert-layout-limited')
     end
 
     it 'does not add container classes' do

@@ -21,9 +21,7 @@ export default {
   },
   mixins: [timeagoMixin],
   AGENT_STATUSES,
-  troubleshootingLink: helpPagePath('user/clusters/agent/index', {
-    anchor: 'troubleshooting',
-  }),
+  troubleshootingLink: helpPagePath('user/clusters/agent/troubleshooting'),
   versionUpdateLink: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'update-the-agent-version',
   }),
