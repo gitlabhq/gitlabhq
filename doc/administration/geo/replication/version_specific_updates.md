@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Review this page for update instructions for your version. These steps
 accompany the [general steps](updating_the_geo_sites.md#general-update-steps)
-for updating Geo nodes.
+for updating Geo sites.
 
 ## Updating to 14.2 through 14.7
 
@@ -33,7 +33,7 @@ There is [an issue in GitLab 14.4.0 through 14.4.2](../../../update/index.md#144
 
 ### Multi-arch images
 
-We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture (for example `amd64`) would be replicated to the secondary node. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
+We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture (for example `amd64`) would be replicated to the secondary site. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
 
 You can check if you are affected by running:
 
@@ -41,12 +41,12 @@ You can check if you are affected by running:
 docker manifest inspect <SECONDARY_IMAGE_LOCATION> | jq '.mediaType'
 ```
 
-Where `<SECONDARY_IMAGE_LOCATION>` is a container image on your secondary node.
+Where `<SECONDARY_IMAGE_LOCATION>` is a container image on your secondary site.
 If the output matches `application/vnd.docker.distribution.manifest.list.v2+json`
 (there can be a `mediaType` entry at several levels, we only care about the top level entry),
 then you don't need to do anything.
 
-Otherwise, on all your **secondary** nodes, in a [Rails console](../../operations/rails_console.md), run the following:
+Otherwise, for each **secondary** site, on a Rails application node, open a [Rails console](../../operations/rails_console.md), and run the following:
 
  ```ruby
  list_type = 'application/vnd.docker.distribution.manifest.list.v2+json'
@@ -78,7 +78,7 @@ We found an issue where [Primary sites can not be removed from the UI](https://g
 
 This bug only exists in the UI and does not block the removal of Primary sites using any other method.
 
-If you are running an affected version and need to remove your Primary site, you can manually remove the Primary site by using the [Geo Nodes API](../../../api/geo_nodes.md#delete-a-geo-node).
+If you are running an affected version and need to remove your Primary site, you can manually remove the Primary site by using the [Geo Sites API](../../../api/geo_nodes.md#delete-a-geo-node).
 
 ### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
 
@@ -86,9 +86,9 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab 
 
 ## Updating to GitLab 13.12
 
-### Secondary nodes re-download all LFS files upon update
+### Secondary sites re-download all LFS files upon update
 
-We found an issue where [secondary nodes re-download all LFS files](https://gitlab.com/gitlab-org/gitlab/-/issues/334550) upon update. This bug:
+We found an issue where [secondary sites re-download all LFS files](https://gitlab.com/gitlab-org/gitlab/-/issues/334550) upon update. This bug:
 
 - Only applies to Geo secondary sites that have replicated LFS objects.
 - Is _not_ a data loss risk.
@@ -187,7 +187,7 @@ In GitLab 13.3, Geo removed the PostgreSQL [Foreign Data Wrapper](https://www.po
 dependency for the tracking database.
 
 The FDW server, user, and the extension is removed during the upgrade
-process on each secondary node. The GitLab settings related to the FDW in the
+process on each secondary site. The GitLab settings related to the FDW in the
 `/etc/gitlab/gitlab.rb`  have been deprecated and can be safely removed.
 
 There are some scenarios like using an external PostgreSQL instance for the
@@ -200,9 +200,9 @@ DROP EXTENSION IF EXISTS postgres_fdw;
 ```
 
 WARNING:
-In GitLab 13.3, promoting a secondary node to a primary while the secondary is
+In GitLab 13.3, promoting a secondary site to a primary while the secondary is
 paused fails. Do not pause replication before promoting a secondary. If the
-node is paused, be sure to resume before promoting. To avoid this issue,
+site is paused, be sure to resume before promoting. To avoid this issue,
 upgrade to GitLab 13.4 or later.
 
 WARNING:
@@ -213,9 +213,9 @@ contain a workaround if you run into errors during the failover.
 
 ## Updating to GitLab 13.2
 
-In GitLab 13.2, promoting a secondary node to a primary while the secondary is
+In GitLab 13.2, promoting a secondary site to a primary while the secondary is
 paused fails. Do not pause replication before promoting a secondary. If the
-node is paused, be sure to resume before promoting. To avoid this issue,
+site is paused, be sure to resume before promoting. To avoid this issue,
 upgrade to GitLab 13.4 or later.
 
 ## Updating to GitLab 13.0
@@ -390,5 +390,5 @@ For the recommended procedure, see the
 
 WARNING:
 This version is affected by a [bug that results in new LFS objects not being
-replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
+replicated to Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
 The issue is fixed in GitLab 12.1. Be sure to upgrade to GitLab 12.1 or later.

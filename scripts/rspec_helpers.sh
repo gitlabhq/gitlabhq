@@ -296,7 +296,7 @@ function retry_failed_rspec_examples() {
   echo "${CI_JOB_URL}" > "${RETRIED_TESTS_REPORT_PATH}"
   echo $failed_examples >> "${RETRIED_TESTS_REPORT_PATH}"
 
-  echoinfo "Retrying the failing examples in a new RSpec proces..."
+  echoinfo "Retrying the failing examples in a new RSpec process..."
 
   install_junit_merge_gem
 

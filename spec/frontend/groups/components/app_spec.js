@@ -280,6 +280,7 @@ describe('AppComponent', () => {
         expect(vm.targetParentGroup).toBe(null);
         vm.showLeaveGroupModal(group, mockParentGroupItem);
 
+        expect(vm.isModalVisible).toBe(true);
         expect(vm.targetGroup).not.toBe(null);
         expect(vm.targetParentGroup).not.toBe(null);
       });
@@ -290,6 +291,7 @@ describe('AppComponent', () => {
         expect(vm.groupLeaveConfirmationMessage).toBe('');
         vm.showLeaveGroupModal(group, mockParentGroupItem);
 
+        expect(vm.isModalVisible).toBe(true);
         expect(vm.groupLeaveConfirmationMessage).toBe(
           `Are you sure you want to leave the "${group.fullName}" group?`,
         );

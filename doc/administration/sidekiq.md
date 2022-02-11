@@ -105,7 +105,7 @@ To configure Sidekiq:
    gitlab_rails['db_encoding'] = 'unicode'
    gitlab_rails['auto_migrate'] = false
 
-   # Add the Sidekiq node(s) to PostgreSQL's trusted addresses.
+   # Add the Sidekiq nodes to PostgreSQL's trusted addresses.
    # In the following example, 10.10.1.30/32 is the private IP
    # of the Sidekiq server.
    postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.1/32 10.10.1.30/32)

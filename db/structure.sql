@@ -26066,6 +26066,10 @@ CREATE INDEX index_composer_cache_files_where_namespace_id_is_null ON packages_c
 
 CREATE INDEX index_container_expiration_policies_on_next_run_at_and_enabled ON container_expiration_policies USING btree (next_run_at, enabled);
 
+CREATE INDEX index_container_repositories_on_greatest_done_at ON container_repositories USING btree (GREATEST(migration_pre_import_done_at, migration_import_done_at, migration_aborted_at)) WHERE (migration_state = ANY (ARRAY['import_done'::text, 'pre_import_done'::text, 'import_aborted'::text]));
+
+CREATE INDEX index_container_repositories_on_migration_state_import_done_at ON container_repositories USING btree (migration_state, migration_import_done_at);
+
 CREATE INDEX index_container_repositories_on_project_id ON container_repositories USING btree (project_id);
 
 CREATE INDEX index_container_repositories_on_project_id_and_id ON container_repositories USING btree (project_id, id);

@@ -394,8 +394,7 @@ describe('common_utils', () => {
 
   describe('backOff', () => {
     beforeEach(() => {
-      // shortcut our timeouts otherwise these tests will take a long time to finish
-      jest.spyOn(window, 'setTimeout').mockImplementation((cb) => setImmediate(cb, 0));
+      jest.spyOn(window, 'setTimeout');
     });
 
     it('solves the promise from the callback', (done) => {
@@ -446,6 +445,7 @@ describe('common_utils', () => {
               if (numberOfCalls < 3) {
                 numberOfCalls += 1;
                 next();
+                jest.runOnlyPendingTimers();
               } else {
                 stop(resp);
               }
@@ -464,7 +464,10 @@ describe('common_utils', () => {
 
     it('rejects the backOff promise after timing out', (done) => {
       commonUtils
-        .backOff((next) => next(), 64000)
+        .backOff((next) => {
+          next();
+          jest.runOnlyPendingTimers();
+        }, 64000)
         .catch((errBackoffResp) => {
           const timeouts = window.setTimeout.mock.calls.map(([, timeout]) => timeout);
 

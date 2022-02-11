@@ -422,10 +422,22 @@ for the group's projects to meet your group's needs.
 
 To remove a group and its contents:
 
-1. Go to your group's **Settings > General** page.
-1. Expand the **Path, transfer, remove** section.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Advanced** section.
+1. In the **Remove group** section, select **Remove group**.
+1. Type the group name.
+1. Select **Confirm**.
+
+A group can also be removed from the groups dashboard:
+
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
+1. Select (**{ellipsis_v}**) for the group you want to delete.
+1. Select **Delete**.
 1. In the Remove group section, select **Remove group**.
-1. Confirm the action.
+1. Type the group name.
+1. Select **Confirm**.
 
 This action removes the group. It also adds a background job to delete all projects in the group.
 

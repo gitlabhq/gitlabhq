@@ -7,11 +7,12 @@ require 'google/apis/container_v1beta1'
 require 'google/apis/cloudbilling_v1'
 require 'google/apis/cloudresourcemanager_v1'
 require 'google/apis/iam_v1'
+require 'google/apis/serviceusage_v1'
 
 module GoogleApi
   module CloudPlatform
     class Client < GoogleApi::Auth
-      SCOPE = 'https://www.googleapis.com/auth/cloud-platform'
+      SCOPE = 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/service.management'
       LEAST_TOKEN_LIFE_TIME = 10.minutes
       CLUSTER_MASTER_AUTH_USERNAME = 'admin'
       CLUSTER_IPV4_CIDR_BLOCK = '/16'
@@ -133,7 +134,26 @@ module GoogleApi
         cloud_resource_manager_service.set_project_iam_policy(gcp_project_id, body)
       end
 
+      def enable_cloud_run(gcp_project_id)
+        enable_service(gcp_project_id, 'run.googleapis.com')
+      end
+
+      def enable_artifacts_registry(gcp_project_id)
+        enable_service(gcp_project_id, 'artifactregistry.googleapis.com')
+      end
+
+      def enable_cloud_build(gcp_project_id)
+        enable_service(gcp_project_id, 'cloudbuild.googleapis.com')
+      end
+
       private
+
+      def enable_service(gcp_project_id, service_name)
+        name = "projects/#{gcp_project_id}/services/#{service_name}"
+        service = Google::Apis::ServiceusageV1::ServiceUsageService.new
+        service.authorization = access_token
+        service.enable_service(name)
+      end
 
       def make_cluster_options(cluster_name, cluster_size, machine_type, legacy_abac, enable_addons)
         {

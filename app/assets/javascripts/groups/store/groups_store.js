@@ -83,6 +83,7 @@ export default class GroupsStore {
       leavePath: rawGroupItem.leave_path,
       canEdit: rawGroupItem.can_edit,
       canLeave: rawGroupItem.can_leave,
+      canRemove: rawGroupItem.can_remove,
       type: rawGroupItem.type,
       permission: rawGroupItem.permission,
       children: groupChildren,

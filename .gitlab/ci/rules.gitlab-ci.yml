@@ -127,6 +127,7 @@
 .ci-patterns: &ci-patterns
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
+  - "scripts/rspec_helpers.sh"
 
 .ci-build-images-patterns: &ci-build-images-patterns
   - ".gitlab-ci.yml"
@@ -245,6 +246,7 @@
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
   - "*_VERSION"
+  - "scripts/rspec_helpers.sh"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns

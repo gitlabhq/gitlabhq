@@ -278,11 +278,11 @@ for details.
 
 ### Load balancer terminates SSL with backend SSL
 
-Configure your load balancer(s) to use the 'HTTP(S)' protocol rather than 'TCP'.
-The load balancer(s) will be responsible for managing SSL certificates that
+Configure your load balancers to use the 'HTTP(S)' protocol rather than 'TCP'.
+The load balancers will be responsible for managing SSL certificates that
 end users will see.
 
-Traffic will also be secure between the load balancer(s) and NGINX in this
+Traffic will also be secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
 connection will be secure all the way. However, configuration will need to be
 added to GitLab to configure SSL certificates. See

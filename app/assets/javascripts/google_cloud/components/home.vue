@@ -23,11 +23,11 @@ export default {
       type: String,
       required: true,
     },
-    deploymentsCloudRunUrl: {
+    enableCloudRunUrl: {
       type: String,
       required: true,
     },
-    deploymentsCloudStorageUrl: {
+    enableCloudStorageUrl: {
       type: String,
       required: true,
     },
@@ -47,8 +47,8 @@ export default {
     </gl-tab>
     <gl-tab :title="__('Deployments')">
       <deployments-service-table
-        :cloud-run-url="deploymentsCloudRunUrl"
-        :cloud-storage-url="deploymentsCloudStorageUrl"
+        :cloud-run-url="enableCloudRunUrl"
+        :cloud-storage-url="enableCloudStorageUrl"
       />
     </gl-tab>
     <gl-tab :title="__('Services')" disabled />

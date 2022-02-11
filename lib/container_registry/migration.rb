@@ -22,6 +22,10 @@ module ContainerRegistry
       Feature.enabled?(:container_registry_migration_phase2_enabled)
     end
 
+    def self.limit_gitlab_org?
+      Feature.enabled?(:container_registry_migration_limit_gitlab_org)
+    end
+
     def self.enqueue_waiting_time
       return 0 if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_fast)
       return 6.hours if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_slow)
@@ -35,6 +39,10 @@ module ContainerRegistry
       return 1 if Feature.enabled?(:container_registry_migration_phase2_capacity_1)
 
       0
+    end
+
+    def self.target_plan
+      Plan.find_by_name(target_plan_name)
     end
   end
 end

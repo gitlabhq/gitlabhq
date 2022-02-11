@@ -17701,13 +17701,16 @@ msgstr ""
 msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
 msgstr ""
 
-msgid "GroupsTree|Edit group"
+msgid "GroupsTree|Delete"
+msgstr ""
+
+msgid "GroupsTree|Edit"
 msgstr ""
 
 msgid "GroupsTree|Failed to leave the group. Please make sure you are not the only owner."
 msgstr ""
 
-msgid "GroupsTree|Leave this group"
+msgid "GroupsTree|Leave group"
 msgstr ""
 
 msgid "GroupsTree|Loading groups"
@@ -17717,6 +17720,9 @@ msgid "GroupsTree|No groups matched your search"
 msgstr ""
 
 msgid "GroupsTree|No groups or projects matched your search"
+msgstr ""
+
+msgid "GroupsTree|Options"
 msgstr ""
 
 msgid "GroupsTree|Search by name"

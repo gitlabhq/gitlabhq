@@ -361,6 +361,19 @@ describe('Blob content viewer component', () => {
   });
 
   describe('blob info query', () => {
+    it.each`
+      highlightJs | shouldFetchRawText
+      ${true}     | ${true}
+      ${false}    | ${false}
+    `(
+      'calls blob info query with shouldFetchRawText: $shouldFetchRawText when highlightJs (feature flag): $highlightJs',
+      async ({ highlightJs, shouldFetchRawText }) => {
+        await createComponent({ highlightJs });
+
+        expect(mockResolver).toHaveBeenCalledWith(expect.objectContaining({ shouldFetchRawText }));
+      },
+    );
+
     it('is called with originalBranch value if the prop has a value', async () => {
       await createComponent({ inject: { originalBranch: 'some-branch' } });
 

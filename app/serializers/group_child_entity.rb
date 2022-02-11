@@ -58,6 +58,10 @@ class GroupChildEntity < Grape::Entity
     end
   end
 
+  expose :can_remove, unless: lambda { |_instance, _options| project? } do |group|
+    can?(request.current_user, :admin_group, group)
+  end
+
   expose :number_users_with_delimiter, unless: lambda { |_instance, _options| project? } do |instance|
     number_with_delimiter(instance.member_count)
   end

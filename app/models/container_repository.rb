@@ -5,13 +5,16 @@ class ContainerRepository < ApplicationRecord
   include Gitlab::SQL::Pattern
   include EachBatch
   include Sortable
+  include AfterCommitQueue
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
   IDLE_MIGRATION_STATES = %w[default pre_import_done import_done import_aborted import_skipped].freeze
   ACTIVE_MIGRATION_STATES = %w[pre_importing importing].freeze
-  ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + ['pre_import_done']).freeze
+  ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
   MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
+
+  TooManyImportsError = Class.new(StandardError)
 
   belongs_to :project
 
@@ -48,6 +51,32 @@ class ContainerRepository < ApplicationRecord
   scope :with_migration_pre_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_started_at, '01-01-1970') < ?", timestamp) }
   scope :with_migration_pre_import_done_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_done_at, '01-01-1970') < ?", timestamp) }
   scope :with_stale_ongoing_cleanup, ->(threshold) { cleanup_ongoing.where('expiration_policy_started_at < ?', threshold) }
+  scope :import_in_process, -> { where(migration_state: %w[pre_importing pre_import_done importing]) }
+
+  scope :recently_done_migration_step, -> do
+    where(migration_state: %w[import_done pre_import_done import_aborted])
+      .order(Arel.sql('GREATEST(migration_pre_import_done_at, migration_import_done_at, migration_aborted_at) DESC'))
+  end
+
+  scope :ready_for_import, -> do
+    # There is no yaml file for the container_registry_phase_2_deny_list
+    # feature flag since it is only accessed in this query.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/350543 tracks the rollout and
+    # removal of this feature flag.
+    joins(:project).where(
+      migration_state: [:default],
+      created_at: ...ContainerRegistry::Migration.created_before
+    ).with_target_import_tier
+    .where(
+      "NOT EXISTS (
+        SELECT 1
+        FROM feature_gates
+        WHERE feature_gates.feature_key = 'container_registry_phase_2_deny_list'
+        AND feature_gates.key = 'actors'
+        AND feature_gates.value = concat('Group:', projects.namespace_id)
+      )"
+    )
+  end
 
   state_machine :migration_state, initial: :default do
     state :pre_importing do
@@ -104,7 +133,7 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :skip_import do
-      transition %i[default pre_importing importing] => :import_skipped
+      transition ABORTABLE_MIGRATION_STATES.map(&:to_sym) => :import_skipped
     end
 
     event :retry_pre_import do
@@ -121,7 +150,9 @@ class ContainerRepository < ApplicationRecord
     end
 
     after_transition any => :pre_importing do |container_repository|
-      container_repository.abort_import unless container_repository.migration_pre_import == :ok
+      container_repository.try_import do
+        container_repository.migration_pre_import
+      end
     end
 
     before_transition pre_importing: :pre_import_done do |container_repository|
@@ -134,7 +165,9 @@ class ContainerRepository < ApplicationRecord
     end
 
     after_transition any => :importing do |container_repository|
-      container_repository.abort_import unless container_repository.migration_import == :ok
+      container_repository.try_import do
+        container_repository.migration_import
+      end
     end
 
     before_transition importing: :import_done do |container_repository|
@@ -156,9 +189,10 @@ class ContainerRepository < ApplicationRecord
       container_repository.migration_skipped_at = Time.zone.now
     end
 
-    before_transition any => %i[import_done import_aborted] do
-      # EnqueuerJob.enqueue perform_async or perform_in depending on the speed FF
-      # To be implemented in https://gitlab.com/gitlab-org/gitlab/-/issues/349744
+    before_transition any => %i[import_done import_aborted] do |container_repository|
+      container_repository.run_after_commit do
+        ::ContainerRegistry::Migration::EnqueuerWorker.perform_async
+      end
     end
   end
 
@@ -201,6 +235,14 @@ class ContainerRepository < ApplicationRecord
     from("(#{union.to_sql}) #{ContainerRepository.table_name}")
   end
 
+  def self.with_target_import_tier
+    # overridden in ee
+    #
+    # Repositories are being migrated by tier on Saas, so we need to
+    # filter by plan/subscription which is not available in FOSS
+    all
+  end
+
   def skip_import(reason:)
     self.migration_skipped_reason = reason
 
@@ -228,6 +270,41 @@ class ContainerRepository < ApplicationRecord
   def finish_pre_import_and_start_import
     # nothing to do between those two transitions for now.
     finish_pre_import && start_import
+  end
+
+  def retry_migration
+    return if migration_import_done_at
+
+    if migration_pre_import_done_at
+      retry_import
+    else
+      retry_pre_import
+    end
+  end
+
+  def try_import
+    raise ArgumentError, 'block not given' unless block_given?
+
+    try_count = 0
+    begin
+      try_count += 1
+      return true if yield == :ok
+
+      abort_import
+      false
+    rescue TooManyImportsError
+      if try_count <= ::ContainerRegistry::Migration.start_max_retries
+        sleep 0.1 * try_count
+        retry
+      else
+        abort_import
+        false
+      end
+    end
+  end
+
+  def last_import_step_done_at
+    [migration_pre_import_done_at, migration_import_done_at, migration_aborted_at].compact.max
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -327,13 +404,19 @@ class ContainerRepository < ApplicationRecord
   def migration_pre_import
     return :error unless gitlab_api_client.supports_gitlab_api?
 
-    gitlab_api_client.pre_import_repository(self.path)
+    response = gitlab_api_client.pre_import_repository(self.path)
+    raise TooManyImportsError if response == :too_many_imports
+
+    response
   end
 
   def migration_import
     return :error unless gitlab_api_client.supports_gitlab_api?
 
-    gitlab_api_client.import_repository(self.path)
+    response = gitlab_api_client.import_repository(self.path)
+    raise TooManyImportsError if response == :too_many_imports
+
+    response
   end
 
   def self.build_from_path(path)

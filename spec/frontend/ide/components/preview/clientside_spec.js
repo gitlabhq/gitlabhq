@@ -4,6 +4,7 @@ import Vue, { nextTick } from 'vue';
 import { dispatch } from 'codesandbox-api';
 import smooshpack from 'smooshpack';
 import Vuex from 'vuex';
+import waitForPromises from 'helpers/wait_for_promises';
 import Clientside from '~/ide/components/preview/clientside.vue';
 import { PING_USAGE_PREVIEW_KEY, PING_USAGE_PREVIEW_SUCCESS_KEY } from '~/ide/constants';
 import eventHub from '~/ide/eventhub';
@@ -42,8 +43,6 @@ describe('IDE clientside preview', () => {
     pingUsage: jest.fn().mockReturnValue(Promise.resolve({})),
   };
   const dispatchCodesandboxReady = () => dispatch({ type: 'done' });
-
-  const waitForCalls = () => new Promise(setImmediate);
 
   const createComponent = ({ state, getters } = {}) => {
     store = new Vuex.Store({
@@ -100,7 +99,7 @@ describe('IDE clientside preview', () => {
     beforeEach(() => {
       createComponent({ getters: { packageJson: dummyPackageJson } });
 
-      return waitForCalls();
+      return waitForPromises();
     });
 
     it('creates sandpack manager', () => {
@@ -139,7 +138,7 @@ describe('IDE clientside preview', () => {
         state: { codesandboxBundlerUrl: TEST_BUNDLER_URL },
       });
 
-      return waitForCalls();
+      return waitForPromises();
     });
 
     it('creates sandpack manager with bundlerURL', () => {
@@ -154,7 +153,7 @@ describe('IDE clientside preview', () => {
     beforeEach(() => {
       createComponent({ getters: { packageJson: dummyPackageJson } });
 
-      return waitForCalls();
+      return waitForPromises();
     });
 
     it('creates sandpack manager', () => {
@@ -340,7 +339,7 @@ describe('IDE clientside preview', () => {
         wrapper.setData({ sandpackReady: true });
         wrapper.vm.update();
 
-        return waitForCalls().then(() => {
+        return waitForPromises().then(() => {
           expect(smooshpack.Manager).toHaveBeenCalled();
         });
       });

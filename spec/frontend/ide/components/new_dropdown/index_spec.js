@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import newDropdown from '~/ide/components/new_dropdown/index.vue';
 import { createStore } from '~/ide/stores';
@@ -57,17 +57,15 @@ describe('new dropdown component', () => {
   });
 
   describe('isOpen', () => {
-    it('scrolls dropdown into view', (done) => {
+    it('scrolls dropdown into view', async () => {
       jest.spyOn(vm.$refs.dropdownMenu, 'scrollIntoView').mockImplementation(() => {});
 
       vm.isOpen = true;
 
-      setImmediate(() => {
-        expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalledWith({
-          block: 'nearest',
-        });
+      await nextTick();
 
-        done();
+      expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalledWith({
+        block: 'nearest',
       });
     });
   });

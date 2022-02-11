@@ -6,6 +6,8 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
   let(:token) { 'token' }
   let(:client) { described_class.new(token, nil) }
   let(:user_agent_options) { client.instance_eval { user_agent_header } }
+  let(:gcp_project_id) { String('gcp_proj_id') }
+  let(:operation) { true }
 
   describe '.session_key_for_redirect_uri' do
     let(:state) { 'random_string' }
@@ -294,6 +296,42 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
       end
 
       client.grant_service_account_roles(mock_gcp_id, mock_email)
+    end
+  end
+
+  describe '#enable_cloud_run' do
+    subject { client.enable_cloud_run(gcp_project_id) }
+
+    it 'calls Google Api IamService#create_service_account_key' do
+      expect_any_instance_of(Google::Apis::ServiceusageV1::ServiceUsageService)
+        .to receive(:enable_service)
+              .with("projects/#{gcp_project_id}/services/run.googleapis.com")
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
+
+  describe '#enable_artifacts_registry' do
+    subject { client.enable_artifacts_registry(gcp_project_id) }
+
+    it 'calls Google Api IamService#create_service_account_key' do
+      expect_any_instance_of(Google::Apis::ServiceusageV1::ServiceUsageService)
+        .to receive(:enable_service)
+              .with("projects/#{gcp_project_id}/services/artifactregistry.googleapis.com")
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
+
+  describe '#enable_cloud_build' do
+    subject { client.enable_cloud_build(gcp_project_id) }
+
+    it 'calls Google Api IamService#create_service_account_key' do
+      expect_any_instance_of(Google::Apis::ServiceusageV1::ServiceUsageService)
+        .to receive(:enable_service)
+              .with("projects/#{gcp_project_id}/services/cloudbuild.googleapis.com")
+              .and_return(operation)
+      is_expected.to eq(operation)
     end
   end
 end

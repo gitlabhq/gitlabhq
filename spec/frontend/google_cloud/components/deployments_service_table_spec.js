@@ -12,8 +12,8 @@ describe('google_cloud DeploymentsServiceTable component', () => {
 
   beforeEach(() => {
     const propsData = {
-      cloudRunUrl: '#url-deployments-cloud-run',
-      cloudStorageUrl: '#url-deployments-cloud-storage',
+      cloudRunUrl: '#url-enable-cloud-run',
+      cloudStorageUrl: '#url-enable-cloud-storage',
     };
     wrapper = mount(DeploymentsServiceTable, { propsData });
   });
@@ -29,12 +29,13 @@ describe('google_cloud DeploymentsServiceTable component', () => {
   it('should contain configure cloud run button', () => {
     const cloudRunButton = findCloudRunButton();
     expect(cloudRunButton.exists()).toBe(true);
-    expect(cloudRunButton.props().disabled).toBe(true);
+    expect(cloudRunButton.attributes('href')).toBe('#url-enable-cloud-run');
   });
 
   it('should contain configure cloud storage button', () => {
     const cloudStorageButton = findCloudStorageButton();
     expect(cloudStorageButton.exists()).toBe(true);
     expect(cloudStorageButton.props().disabled).toBe(true);
+    expect(cloudStorageButton.attributes('href')).toBe('#url-enable-cloud-storage');
   });
 });

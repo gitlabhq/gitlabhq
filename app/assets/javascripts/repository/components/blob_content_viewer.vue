@@ -45,6 +45,7 @@ export default {
           projectPath: this.projectPath,
           filePath: this.path,
           ref: this.originalBranch || this.ref,
+          shouldFetchRawText: Boolean(this.glFeatures.highlightJs),
         };
       },
       result() {
@@ -203,7 +204,7 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="isLoading" size="sm" />
-    <div v-if="blobInfo && !isLoading" class="file-holder gl-overflow-hidden">
+    <div v-if="blobInfo && !isLoading" class="file-holder">
       <blob-header
         :blob="blobInfo"
         :hide-viewer-switcher="!hasRichViewer || isBinaryFileType || isUsingLfs"

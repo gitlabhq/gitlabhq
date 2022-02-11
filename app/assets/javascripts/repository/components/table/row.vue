@@ -195,6 +195,7 @@ export default {
         projectPath: this.projectPath,
         filePath: this.path,
         ref: this.ref,
+        shouldFetchRawText: Boolean(this.glFeatures.highlightJs),
       });
     },
     apolloQuery(query, variables) {

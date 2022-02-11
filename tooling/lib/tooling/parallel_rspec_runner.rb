@@ -38,14 +38,12 @@ module Tooling
       Knapsack.logger.info tests_to_run
       Knapsack.logger.info
 
-      # Without this guard clause, we're run all the specs instead of none!
       if tests_to_run.empty?
         Knapsack.logger.info 'No tests to run on this node, exiting.'
-        return 0
+        return
       end
 
-      Process.wait Process.spawn(*rspec_command)
-      Process.last_status.exitstatus
+      exec(*rspec_command)
     end
 
     private

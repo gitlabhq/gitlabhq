@@ -12,7 +12,7 @@ describe('RelatedMergeRequests', () => {
   let wrapper;
   let mock;
 
-  beforeEach((done) => {
+  beforeEach(() => {
     // put the fixture in DOM as the component expects
     document.body.innerHTML = `<div id="js-issuable-app"></div>`;
     document.getElementById('js-issuable-app').dataset.initial = JSON.stringify(mockData);
@@ -29,7 +29,7 @@ describe('RelatedMergeRequests', () => {
       },
     });
 
-    setImmediate(done);
+    return axios.waitForAll();
   });
 
   afterEach(() => {

@@ -34,8 +34,8 @@ export default {
       ),
     itemCaret,
     itemTypeIcon,
-    itemStats,
     itemActions,
+    itemStats,
   },
   props: {
     parentGroup: {
@@ -91,6 +91,9 @@ export default {
     },
     complianceFramework() {
       return this.group.complianceFramework;
+    },
+    showActionsMenu() {
+      return this.isGroup && (this.group.canEdit || this.group.canRemove || this.group.canLeave);
     },
   },
   methods: {
@@ -197,16 +200,18 @@ export default {
         <div v-if="isGroupPendingRemoval">
           <gl-badge variant="warning">{{ __('pending deletion') }}</gl-badge>
         </div>
-        <div class="metadata d-flex flex-grow-1 flex-shrink-0 flex-wrap justify-content-md-between">
+        <div
+          class="metadata gl-display-flex gl-flex-grow-1 gl-flex-shrink-0 gl-flex-wrap justify-content-md-between"
+        >
+          <item-stats
+            :item="group"
+            class="group-stats gl-mt-2 gl-display-none gl-md-display-flex gl-align-items-center"
+          />
           <item-actions
-            v-if="isGroup"
+            v-if="showActionsMenu"
             :group="group"
             :parent-group="parentGroup"
             :action="action"
-          />
-          <item-stats
-            :item="group"
-            class="group-stats gl-mt-2 d-none d-md-flex gl-align-items-center"
           />
         </div>
       </div>

@@ -19,6 +19,20 @@ RSpec.describe ContainerRegistry::Migration do
     end
   end
 
+  describe '.limit_gitlab_org?' do
+    subject { described_class.limit_gitlab_org? }
+
+    it { is_expected.to eq(true) }
+
+    context 'feature flag disabled' do
+      before do
+        stub_feature_flags(container_registry_migration_limit_gitlab_org: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe '.enqueue_waiting_time' do
     subject { described_class.enqueue_waiting_time }
 
@@ -137,6 +151,18 @@ RSpec.describe ContainerRegistry::Migration do
 
     it 'returns the matching application_setting' do
       expect(described_class.created_before).to eq(value)
+    end
+  end
+
+  describe '.target_plan' do
+    let_it_be(:plan) { create(:plan) }
+
+    before do
+      stub_application_setting(container_registry_import_target_plan: plan.name)
+    end
+
+    it 'returns the matching application_setting' do
+      expect(described_class.target_plan).to eq(plan)
     end
   end
 end

@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { TEST_HOST } from 'spec/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequest from '~/merge_request';
 
@@ -27,31 +28,31 @@ describe('MergeRequest', () => {
       mock.restore();
     });
 
-    it('modifies the Markdown field', (done) => {
+    it('modifies the Markdown field', async () => {
       jest.spyOn($, 'ajax').mockImplementation();
       const changeEvent = document.createEvent('HTMLEvents');
       changeEvent.initEvent('change', true, true);
       $('input[type=checkbox]').first().attr('checked', true)[0].dispatchEvent(changeEvent);
-      setImmediate(() => {
-        expect($('.js-task-list-field').val()).toBe(
-          '- [x] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
-        );
-        done();
-      });
+
+      await waitForPromises();
+
+      expect($('.js-task-list-field').val()).toBe(
+        '- [x] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
+      );
     });
 
-    it('ensure that task with only spaces does not get checked incorrectly', (done) => {
+    it('ensure that task with only spaces does not get checked incorrectly', async () => {
       // fixed in 'deckar01-task_list', '2.2.1' gem
       jest.spyOn($, 'ajax').mockImplementation();
       const changeEvent = document.createEvent('HTMLEvents');
       changeEvent.initEvent('change', true, true);
       $('input[type=checkbox]').last().attr('checked', true)[0].dispatchEvent(changeEvent);
-      setImmediate(() => {
-        expect($('.js-task-list-field').val()).toBe(
-          '- [ ] Task List Item\n- [ ]\n- [x] Task List Item 2\n',
-        );
-        done();
-      });
+
+      await waitForPromises();
+
+      expect($('.js-task-list-field').val()).toBe(
+        '- [ ] Task List Item\n- [ ]\n- [x] Task List Item 2\n',
+      );
     });
 
     describe('tasklist', () => {
@@ -60,29 +61,27 @@ describe('MergeRequest', () => {
       const index = 3;
       const checked = true;
 
-      it('submits an ajax request on tasklist:changed', (done) => {
+      it('submits an ajax request on tasklist:changed', async () => {
         $('.js-task-list-field').trigger({
           type: 'tasklist:changed',
           detail: { lineNumber, lineSource, index, checked },
         });
 
-        setImmediate(() => {
-          expect(axios.patch).toHaveBeenCalledWith(
-            `${TEST_HOST}/frontend-fixtures/merge-requests-project/-/merge_requests/1.json`,
-            {
-              merge_request: {
-                description: '- [ ] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
-                lock_version: 0,
-                update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
-              },
-            },
-          );
+        await waitForPromises();
 
-          done();
-        });
+        expect(axios.patch).toHaveBeenCalledWith(
+          `${TEST_HOST}/frontend-fixtures/merge-requests-project/-/merge_requests/1.json`,
+          {
+            merge_request: {
+              description: '- [ ] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
+              lock_version: 0,
+              update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
+            },
+          },
+        );
       });
 
-      it('shows an error notification when tasklist update failed', (done) => {
+      it('shows an error notification when tasklist update failed', async () => {
         mock
           .onPatch(`${TEST_HOST}/frontend-fixtures/merge-requests-project/-/merge_requests/1.json`)
           .reply(409, {});
@@ -92,13 +91,11 @@ describe('MergeRequest', () => {
           detail: { lineNumber, lineSource, index, checked },
         });
 
-        setImmediate(() => {
-          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-            'Someone edited this merge request at the same time you did. Please refresh the page to see changes.',
-          );
+        await waitForPromises();
 
-          done();
-        });
+        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+          'Someone edited this merge request at the same time you did. Please refresh the page to see changes.',
+        );
       });
     });
   });

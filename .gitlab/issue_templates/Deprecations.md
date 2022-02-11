@@ -39,10 +39,10 @@ Which tier is this feature available in?
 - [ ] @mention your stage's stable counterparts on this issue. For example, Customer Support, Customer Success (Technical Account Manager), Product Marketing Manager.
   - To see who the stable counterparts are for a product team visit [product categories](https://about.gitlab.com/handbook/product/categories/)
        - If there is no stable counterpart listed for Sales/CS please mention `@timtams`
-       - If there is no stable counterpart listed for Support please @mention `@gitlab-com/support/managers`
+       - If there is no stable counterpart listed for Support please mention `@gitlab-com/support/managers`
        - If there is no stable counterpart listed for Marketing please mention `@cfoster3`
 
-- [ ] @mention your GPM so that they are aware of planned deprecations. The goal is to have reviews happen at least two releases before the final removal of the feature or introduction of a breaking change.
+- [ ] `@mention` your GPM so that they are aware of planned deprecations. The goal is to have reviews happen at least two releases before the final removal of the feature or introduction of a breaking change.
 
 ### Deprecation Milestone
 

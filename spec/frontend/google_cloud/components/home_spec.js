@@ -20,8 +20,8 @@ describe('google_cloud Home component', () => {
     serviceAccounts: [{}, {}],
     createServiceAccountUrl: '#url-create-service-account',
     emptyIllustrationUrl: '#url-empty-illustration',
-    deploymentsCloudRunUrl: '#url-deployments-cloud-run',
-    deploymentsCloudStorageUrl: '#deploymentsCloudStorageUrl',
+    enableCloudRunUrl: '#url-enable-cloud-run',
+    enableCloudStorageUrl: '#enableCloudStorageUrl',
   };
 
   beforeEach(() => {

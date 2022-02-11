@@ -15,8 +15,10 @@ export const COMMON_STR = {
   LEAVE_FORBIDDEN: s__(
     'GroupsTree|Failed to leave the group. Please make sure you are not the only owner.',
   ),
-  LEAVE_BTN_TITLE: s__('GroupsTree|Leave this group'),
-  EDIT_BTN_TITLE: s__('GroupsTree|Edit group'),
+  LEAVE_BTN_TITLE: s__('GroupsTree|Leave group'),
+  EDIT_BTN_TITLE: s__('GroupsTree|Edit'),
+  REMOVE_BTN_TITLE: s__('GroupsTree|Delete'),
+  OPTIONS_DROPDOWN_TITLE: s__('GroupsTree|Options'),
   GROUP_SEARCH_EMPTY: s__('GroupsTree|No groups matched your search'),
   GROUP_PROJECT_SEARCH_EMPTY: s__('GroupsTree|No groups or projects matched your search'),
 };

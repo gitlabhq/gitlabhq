@@ -958,6 +958,24 @@ Gitaly Cluster offers tremendous benefits for our customers such as:
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Request profiling
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+[Request profiling](https://docs.gitlab.com/ee/administration/monitoring/performance/request_profiling.html) is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
+
+We're working on [consolidating our profiling tools](https://gitlab.com/groups/gitlab-org/-/epics/7327) and making them more easily accessible.
+We [evaluated](https://gitlab.com/gitlab-org/gitlab/-/issues/350152) the use of this feature and we found that it is not widely used.
+It also depends on a few third-party gems that are not actively maintained anymore, have not been updated for the latest version of Ruby, or crash frequently when profiling heavy page loads.
+
+For more information, check the [summary section of the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352488#deprecation-summary).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Test coverage project CI/CD setting
 
 WARNING:
