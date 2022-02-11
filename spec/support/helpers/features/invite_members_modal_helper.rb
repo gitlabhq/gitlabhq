@@ -8,7 +8,7 @@ module Spec
           def invite_member(name, role: 'Guest', expires_at: nil)
             click_on 'Invite members'
 
-            page.within '[data-testid="invite-members-modal"]' do
+            page.within '[data-testid="invite-modal"]' do
               find('[data-testid="members-token-select-input"]').set(name)
 
               wait_for_requests

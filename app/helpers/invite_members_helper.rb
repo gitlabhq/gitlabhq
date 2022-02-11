@@ -33,12 +33,23 @@ module InviteMembersHelper
     end
   end
 
+  def common_invite_group_modal_data(source, member_class, is_project)
+    {
+      id: source.id,
+      name: source.name,
+      default_access_level: Gitlab::Access::GUEST,
+      invalid_groups: source.related_group_ids,
+      help_link: help_page_url('user/permissions'),
+      is_project: is_project,
+      access_levels: member_class.access_level_roles.to_json
+    }
+  end
+
   def common_invite_modal_dataset(source)
     dataset = {
       id: source.id,
       name: source.name,
-      default_access_level: Gitlab::Access::GUEST,
-      invalid_groups: source.related_group_ids
+      default_access_level: Gitlab::Access::GUEST
     }
 
     if show_invite_members_for_task?(source)

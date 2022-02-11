@@ -18,6 +18,26 @@ RSpec.describe WorkItems::UpdateService do
       stub_spam_services
     end
 
+    context 'when title is changed' do
+      let(:opts) { { title: 'changed' } }
+
+      it 'triggers issuable_title_updated graphql subscription' do
+        expect(GraphqlTriggers).to receive(:issuable_title_updated).with(work_item).and_call_original
+
+        update_work_item
+      end
+    end
+
+    context 'when title is not changed' do
+      let(:opts) { { description: 'changed' } }
+
+      it 'does not trigger issuable_title_updated graphql subscription' do
+        expect(GraphqlTriggers).not_to receive(:issuable_title_updated)
+
+        update_work_item
+      end
+    end
+
     context 'when updating state_event' do
       context 'when state_event is close' do
         let(:opts) { { state_event: 'close' } }

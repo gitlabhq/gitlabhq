@@ -809,6 +809,22 @@ The following `geo:db:*` tasks will be replaced with their corresponding `db:*:g
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Elasticsearch 6.8
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Elasticsearch 6.8 is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
+Customers using Elasticsearch 6.8 need to upgrade their Elasticsearch version to 7.x prior to upgrading to GitLab 15.0.
+We recommend using the latest version of Elasticsearch 7 to benefit from all Elasticsearch improvements.
+
+Elasticsearch 6.8 is also incompatible with Amazon OpenSearch, which we [plan to support in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/327560).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### External status check API breaking changes
 
 WARNING:

@@ -72,67 +72,52 @@ export const INVITE_BUTTON_TEXT = s__('InviteMembersModal|Invite');
 export const CANCEL_BUTTON_TEXT = s__('InviteMembersModal|Cancel');
 export const HEADER_CLOSE_LABEL = s__('InviteMembersModal|Close invite team members');
 
-export const MODAL_LABELS = {
-  members: {
-    modal: {
-      default: {
-        title: MEMBERS_MODAL_DEFAULT_TITLE,
-      },
-      celebrate: {
-        title: MEMBERS_MODAL_CELEBRATE_TITLE,
-        intro: MEMBERS_MODAL_CELEBRATE_INTRO,
-      },
+export const MEMBER_MODAL_LABELS = {
+  modal: {
+    default: {
+      title: MEMBERS_MODAL_DEFAULT_TITLE,
     },
-    toGroup: {
-      default: {
-        introText: MEMBERS_TO_GROUP_DEFAULT_INTRO_TEXT,
-      },
-    },
-    toProject: {
-      default: {
-        introText: MEMBERS_TO_PROJECT_DEFAULT_INTRO_TEXT,
-      },
-      celebrate: {
-        introText: MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
-      },
-    },
-    searchField: MEMBERS_SEARCH_FIELD,
-    placeHolder: MEMBERS_PLACEHOLDER,
-    tasksToBeDone: {
-      title: MEMBERS_TASKS_TO_BE_DONE_TITLE,
-      noProjects: MEMBERS_TASKS_TO_BE_DONE_NO_PROJECTS,
-    },
-    tasksProject: {
-      title: MEMBERS_TASKS_PROJECTS_TITLE,
+    celebrate: {
+      title: MEMBERS_MODAL_CELEBRATE_TITLE,
+      intro: MEMBERS_MODAL_CELEBRATE_INTRO,
     },
   },
-  group: {
-    modal: {
-      default: {
-        title: GROUP_MODAL_DEFAULT_TITLE,
-      },
+  toGroup: {
+    default: {
+      introText: MEMBERS_TO_GROUP_DEFAULT_INTRO_TEXT,
     },
-    toGroup: {
-      default: {
-        introText: GROUP_MODAL_TO_GROUP_DEFAULT_INTRO_TEXT,
-      },
-    },
-    toProject: {
-      default: {
-        introText: GROUP_MODAL_TO_PROJECT_DEFAULT_INTRO_TEXT,
-      },
-    },
-    searchField: GROUP_SEARCH_FIELD,
-    placeHolder: GROUP_PLACEHOLDER,
   },
-  accessLevel: ACCESS_LEVEL,
-  accessExpireDate: ACCESS_EXPIRE_DATE,
+  toProject: {
+    default: {
+      introText: MEMBERS_TO_PROJECT_DEFAULT_INTRO_TEXT,
+    },
+    celebrate: {
+      introText: MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
+    },
+  },
+  searchField: MEMBERS_SEARCH_FIELD,
+  placeHolder: MEMBERS_PLACEHOLDER,
+  tasksToBeDone: {
+    title: MEMBERS_TASKS_TO_BE_DONE_TITLE,
+    noProjects: MEMBERS_TASKS_TO_BE_DONE_NO_PROJECTS,
+  },
+  tasksProject: {
+    title: MEMBERS_TASKS_PROJECTS_TITLE,
+  },
   toastMessageSuccessful: TOAST_MESSAGE_SUCCESSFUL,
-  invalidFeedbackMessageDefault: INVALID_FEEDBACK_MESSAGE_DEFAULT,
-  readMoreText: READ_MORE_TEXT,
-  inviteButtonText: INVITE_BUTTON_TEXT,
-  cancelButtonText: CANCEL_BUTTON_TEXT,
-  headerCloseLabel: HEADER_CLOSE_LABEL,
+};
+
+export const GROUP_MODAL_LABELS = {
+  title: GROUP_MODAL_DEFAULT_TITLE,
+  toGroup: {
+    introText: GROUP_MODAL_TO_GROUP_DEFAULT_INTRO_TEXT,
+  },
+  toProject: {
+    introText: GROUP_MODAL_TO_PROJECT_DEFAULT_INTRO_TEXT,
+  },
+  searchField: GROUP_SEARCH_FIELD,
+  placeHolder: GROUP_PLACEHOLDER,
+  toastMessageSuccessful: TOAST_MESSAGE_SUCCESSFUL,
 };
 
 export const LEARN_GITLAB = 'learn_gitlab';

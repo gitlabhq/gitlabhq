@@ -53,9 +53,16 @@ Example:
 ### Require approvals for a protected environment
 
 NOTE:
-At this time, only API-based configuration is available. UI-based configuration is planned for the near future. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/344675).
+At this time, it is not possible to require approvals for an existing protected environment. The workaround is to unprotect the environment and configure approvals when re-protecting the environment.
 
-Use the [Protected Environments API](../../api/protected_environments.md#protect-repository-environments) to create an environment with `required_approval_count` > 0. After this is set, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running.
+There are two ways to configure approvals for a protected environment:
+
+1. Using the [UI](protected_environments.md#protecting-environments)
+   1. Set the **Required approvals** field to 1 or more.
+1. Using the [REST API](../../api/protected_environments.md#protect-repository-environments)
+   2. Set the `required_approval_count` field to 1 or more.
+
+After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy.
 
 Example:
 
@@ -66,6 +73,7 @@ curl --header 'Content-Type: application/json' --request POST \
      "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
 ```
 
+NOTE:
 To protect, update, or unprotect an environment, you must have at least the
 Maintainer role.
 

@@ -1,14 +1,14 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
-import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
+import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 Vue.use(GlToast);
 
-let initedInviteMembersModal;
+let initedInviteGroupsModal;
 
-export default function initInviteMembersModal() {
-  if (initedInviteMembersModal) {
+export default function initInviteGroupsModal() {
+  if (initedInviteGroupsModal) {
     // if we already loaded this in another part of the dom, we don't want to do it again
     // else we will stack the modals
     return false;
@@ -18,30 +18,26 @@ export default function initInviteMembersModal() {
   // bug lying in wait here for someone to put group and project invite in same screen
   // once that happens we'll need to mount these differently, perhaps split
   // group/project to each mount one, with many ways to open it.
-  const el = document.querySelector('.js-invite-members-modal');
+  const el = document.querySelector('.js-invite-groups-modal');
 
   if (!el) {
     return false;
   }
 
-  initedInviteMembersModal = true;
+  initedInviteGroupsModal = true;
 
   return new Vue({
     el,
-    provide: {
-      newProjectPath: el.dataset.newProjectPath,
-    },
     render: (createElement) =>
-      createElement(InviteMembersModal, {
+      createElement(InviteGroupsModal, {
         props: {
           ...el.dataset,
           isProject: parseBoolean(el.dataset.isProject),
           accessLevels: JSON.parse(el.dataset.accessLevels),
           defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
-          tasksToBeDoneOptions: JSON.parse(el.dataset.tasksToBeDoneOptions || '[]'),
-          projects: JSON.parse(el.dataset.projects || '[]'),
-          usersFilter: el.dataset.usersFilter,
-          filterId: parseInt(el.dataset.filterId, 10),
+          groupSelectFilter: el.dataset.groupsFilter,
+          groupSelectParentId: parseInt(el.dataset.parentId, 10),
+          invalidGroups: JSON.parse(el.dataset.invalidGroups || '[]'),
         },
       }),
   });

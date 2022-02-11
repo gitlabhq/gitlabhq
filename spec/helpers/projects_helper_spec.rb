@@ -964,7 +964,6 @@ RSpec.describe ProjectsHelper do
         metricsDashboardAccessLevel: project.project_feature.metrics_dashboard_access_level,
         operationsAccessLevel: project.project_feature.operations_access_level,
         showDefaultAwardEmojis: project.show_default_award_emojis?,
-        showDiffPreviewInEmail: project.show_diff_preview_in_email?,
         securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
         containerRegistryAccessLevel: project.project_feature.container_registry_access_level
       )

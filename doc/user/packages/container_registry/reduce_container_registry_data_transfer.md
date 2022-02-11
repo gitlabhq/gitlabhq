@@ -99,10 +99,26 @@ base, and each begins a new build stage. You can selectively copy artifacts from
 another, leaving behind everything you don't want in the final image. This is especially useful when
 you need to install build dependencies, but you don't need them to be present in your final image.
 
-## Move to GitLab Ultimate
+## Use an image pull policy
+
+When using the `docker` or `docker+machine` executors, you can set a [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+parameter in your runner `config.toml` that defines how the runner works when pulling Docker images.
+To avoid transferring data when using large and rarely updated images, consider using the
+`if-not-present` pull policy when pulling images from remote registries.
+
+## Use Docker layer caching
+
+When running `docker build`, each command in `Dockerfile` results in a layer. These layers are kept
+as a cache and can be reused if there haven't been any changes. You can specify a tagged image to be
+used as a cache source for the `docker build` command by using the `--cache-from` argument. Multiple
+images can be specified as a cache source by using multiple `--cache-from` arguments. This can speed
+up your builds and reduce the amount of data transferred. For more information, see the
+[documentation on Docker layer caching](../../../ci/docker/using_docker_build.md#make-docker-in-docker-builds-faster-with-docker-layer-caching).
+
+## Move to GitLab Premium or Ultimate
 
 GitLab data transfer limits are set at the tier level. If you need a higher limit, consider
-upgrading to GitLab Ultimate.
+upgrading to [GitLab Premium or Ultimate](https://about.gitlab.com/upgrade/).
 
 ## Purchase additional data transfer
 

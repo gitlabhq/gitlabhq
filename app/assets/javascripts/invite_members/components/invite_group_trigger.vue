@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     openModal() {
-      eventHub.$emit('openModal', { inviteeType: 'group' });
+      eventHub.$emit('openGroupModal');
     },
   },
 };

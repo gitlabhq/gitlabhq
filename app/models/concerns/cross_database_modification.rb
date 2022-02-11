@@ -7,6 +7,11 @@ module CrossDatabaseModification
     DEBUG_STACK = Rails.env.test? && ENV['DEBUG_GITLAB_TRANSACTION_STACK']
     LOG_FILENAME = Rails.root.join("log", "gitlab_transaction_stack.log")
 
+    EXCLUDE_DEBUG_TRACE = %w[
+      lib/gitlab/database/query_analyzer
+      app/models/concerns/cross_database_modification.rb
+    ].freeze
+
     def self.logger
       @logger ||= Logger.new(LOG_FILENAME, formatter: ->(_, _, _, msg) { Gitlab::Json.dump(msg) + "\n" })
     end
@@ -18,7 +23,7 @@ module CrossDatabaseModification
       message += " in example #{example}" if example
 
       cleaned_backtrace = Gitlab::BacktraceCleaner.clean_backtrace(caller)
-        .reject { |line| line.include?('lib/gitlab/database/query_analyzer') }
+        .reject { |line| EXCLUDE_DEBUG_TRACE.any? { |exclusion| line.include?(exclusion) } }
         .first(5)
 
       logger.warn({

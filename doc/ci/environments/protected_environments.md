@@ -38,6 +38,9 @@ To protect an environment:
    - You can select groups that are already associated with the project only.
    - Users must have at least the Developer role to appear in
      the **Allowed to deploy** list.
+1. In the **Required approvals** list, select the number of approvals required to deploy to this environment.
+   - Ensure that this number is less than the number of users allowed to deploy.
+   - See [Deployment Approvals](deployment_approvals.md) for more information about this feature.
 1. Select **Protect**.
 
 The protected environment now appears in the list of protected environments.
@@ -94,7 +97,7 @@ Alternatively, you can use the API to protect an environment:
 1. Use the API to add the group with protected environment access:
 
    ```shell
-   curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' \
+   curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}], "required_approval_count": 0}' \
         --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/projects/22034114/protected_environments"
    ```
 

@@ -19,6 +19,7 @@
                 classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3',
                 trigger_source: 'group-members-page',
                 display_text: _('Invite members') } }
+          = render 'groups/invite_groups_modal', group: @group
           = render 'groups/invite_members_modal', group: @group
     - if can_admin_group_member?(@group) && Feature.disabled?(:invite_members_group_modal, @group, default_enabled: :yaml)
       %hr.gl-mt-4

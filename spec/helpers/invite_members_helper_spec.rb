@@ -15,13 +15,28 @@ RSpec.describe InviteMembersHelper do
     helper.extend(Gitlab::Experimentation::ControllerConcern)
   end
 
-  describe '#common_invite_modal_dataset' do
+  describe '#common_invite_group_modal_data' do
     it 'has expected common attributes' do
       attributes = {
         id: project.id,
         name: project.name,
         default_access_level: Gitlab::Access::GUEST,
-        invalid_groups: project.related_group_ids
+        invalid_groups: project.related_group_ids,
+        help_link: help_page_url('user/permissions'),
+        is_project: 'true',
+        access_levels: ProjectMember.access_level_roles.to_json
+      }
+
+      expect(helper.common_invite_group_modal_data(project, ProjectMember, 'true')).to include(attributes)
+    end
+  end
+
+  describe '#common_invite_modal_dataset' do
+    it 'has expected common attributes' do
+      attributes = {
+        id: project.id,
+        name: project.name,
+        default_access_level: Gitlab::Access::GUEST
       }
 
       expect(helper.common_invite_modal_dataset(project)).to include(attributes)

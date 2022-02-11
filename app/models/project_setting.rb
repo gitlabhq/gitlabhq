@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ProjectSetting < ApplicationRecord
+  include IgnorableColumns
+
+  ignore_column :show_diff_preview_in_email, remove_with: '14.10', remove_after: '2022-03-22'
+
   belongs_to :project, inverse_of: :project_setting
 
   enum squash_option: {

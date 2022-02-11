@@ -9,5 +9,8 @@ module Types
 
     field :issue_crm_contacts_updated, subscription: Subscriptions::IssuableUpdated, null: true,
           description: 'Triggered when the crm contacts of an issuable are updated.'
+
+    field :issuable_title_updated, subscription: Subscriptions::IssuableUpdated, null: true,
+          description: 'Triggered when the title of an issuable is updated.'
   end
 end

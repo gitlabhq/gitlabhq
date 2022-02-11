@@ -9,7 +9,7 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/assets/javascripts/invite_members/components/invite_members_modal.vue' do
+          base.view 'app/assets/javascripts/invite_members/components/invite_modal_base.vue' do
             element :invite_button
             element :access_level_dropdown
             element :invite_members_modal_content

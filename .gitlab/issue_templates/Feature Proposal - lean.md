@@ -38,7 +38,7 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 
 -->
 
-### Metrics
+### Feature Usage Metrics
 
 <!-- How are you going to track usage of this feature? Think about user behavior and their interaction with the product. What indicates someone is getting value from it?
 

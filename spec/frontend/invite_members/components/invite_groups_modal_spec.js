@@ -1,0 +1,143 @@
+import { GlModal, GlSprintf } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import Api from '~/api';
+import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.vue';
+import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
+import GroupSelect from '~/invite_members/components/group_select.vue';
+import { stubComponent } from 'helpers/stub_component';
+import { propsData, sharedGroup } from '../mock_data/group_modal';
+
+describe('InviteGroupsModal', () => {
+  let wrapper;
+
+  const createComponent = (props = {}) => {
+    wrapper = shallowMountExtended(InviteGroupsModal, {
+      propsData: {
+        ...propsData,
+        ...props,
+      },
+      stubs: {
+        InviteModalBase,
+        GlSprintf,
+        GlModal: stubComponent(GlModal, {
+          template: '<div><slot></slot><slot name="modal-footer"></slot></div>',
+        }),
+      },
+    });
+  };
+
+  const createInviteGroupToProjectWrapper = () => {
+    createComponent({ isProject: true });
+  };
+
+  const createInviteGroupToGroupWrapper = () => {
+    createComponent({ isProject: false });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
+
+  const findGroupSelect = () => wrapper.findComponent(GroupSelect);
+  const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
+  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findInviteButton = () => wrapper.findByTestId('invite-button');
+  const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
+  const membersFormGroupInvalidFeedback = () =>
+    findMembersFormGroup().attributes('invalid-feedback');
+  const clickInviteButton = () => findInviteButton().vm.$emit('click');
+  const clickCancelButton = () => findCancelButton().vm.$emit('click');
+  const triggerGroupSelect = (val) => findGroupSelect().vm.$emit('input', val);
+
+  describe('displaying the correct introText and form group description', () => {
+    describe('when inviting to a project', () => {
+      it('includes the correct type, and formatted intro text', () => {
+        createInviteGroupToProjectWrapper();
+
+        expect(findIntroText()).toBe("You're inviting a group to the test name project.");
+      });
+    });
+
+    describe('when inviting to a group', () => {
+      it('includes the correct type, and formatted intro text', () => {
+        createInviteGroupToGroupWrapper();
+
+        expect(findIntroText()).toBe("You're inviting a group to the test name group.");
+      });
+    });
+  });
+
+  describe('submitting the invite form', () => {
+    describe('when sharing the group is successful', () => {
+      const groupPostData = {
+        group_id: sharedGroup.id,
+        group_access: propsData.defaultAccessLevel,
+        expires_at: undefined,
+        format: 'json',
+      };
+
+      beforeEach(() => {
+        createComponent();
+        triggerGroupSelect(sharedGroup);
+
+        wrapper.vm.$toast = { show: jest.fn() };
+        jest.spyOn(Api, 'groupShareWithGroup').mockResolvedValue({ data: groupPostData });
+
+        clickInviteButton();
+      });
+
+      it('calls Api groupShareWithGroup with the correct params', () => {
+        expect(Api.groupShareWithGroup).toHaveBeenCalledWith(propsData.id, groupPostData);
+      });
+
+      it('displays the successful toastMessage', () => {
+        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added', {
+          onComplete: expect.any(Function),
+        });
+      });
+    });
+
+    describe('when sharing the group fails', () => {
+      beforeEach(() => {
+        createInviteGroupToGroupWrapper();
+        triggerGroupSelect(sharedGroup);
+
+        wrapper.vm.$toast = { show: jest.fn() };
+
+        jest
+          .spyOn(Api, 'groupShareWithGroup')
+          .mockRejectedValue({ response: { data: { success: false } } });
+
+        clickInviteButton();
+      });
+
+      it('does not show the toast message on failure', () => {
+        expect(wrapper.vm.$toast.show).not.toHaveBeenCalled();
+      });
+
+      it('displays the generic error for http server error', () => {
+        expect(membersFormGroupInvalidFeedback()).toBe('Something went wrong');
+      });
+
+      describe('clearing the invalid state and message', () => {
+        it('clears the error when the cancel button is clicked', async () => {
+          clickCancelButton();
+
+          await nextTick();
+
+          expect(membersFormGroupInvalidFeedback()).toBe('');
+        });
+
+        it('clears the error when the modal is hidden', async () => {
+          wrapper.findComponent(GlModal).vm.$emit('hide');
+
+          await nextTick();
+
+          expect(membersFormGroupInvalidFeedback()).toBe('');
+        });
+      });
+    });
+  });
+});

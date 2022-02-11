@@ -4,7 +4,13 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Request Profiling **(FREE SELF)**
+# Request profiling (DEPRECATED) **(FREE SELF)**
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352488) in GitLab 14.8, and planned for removal in GitLab 15.0.
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352488)
+for use in GitLab 14.8, and is planned for removal in GitLab 15.0.
 
 To profile a request:
 

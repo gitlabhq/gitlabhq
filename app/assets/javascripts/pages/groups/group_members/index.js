@@ -1,6 +1,7 @@
 import { groupMemberRequestFormatter } from '~/groups/members/utils';
 import groupsSelect from '~/groups_select';
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
+import initInviteGroupsModal from '~/invite_members/init_invite_groups_modal';
 import initInviteMembersForm from '~/invite_members/init_invite_members_form';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
@@ -56,6 +57,7 @@ groupsSelect();
 memberExpirationDate();
 memberExpirationDate('.js-access-expiration-date-groups');
 initInviteMembersModal();
+initInviteGroupsModal();
 initInviteMembersTrigger();
 initInviteGroupTrigger();
 

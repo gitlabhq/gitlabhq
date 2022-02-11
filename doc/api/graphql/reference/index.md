@@ -18790,6 +18790,7 @@ One of:
 - [`Epic`](#epic)
 - [`Issue`](#issue)
 - [`MergeRequest`](#mergerequest)
+- [`WorkItem`](#workitem)
 
 #### `JobNeedUnion`
 

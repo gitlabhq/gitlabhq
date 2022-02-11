@@ -44,7 +44,7 @@ describe('InviteGroupTrigger', () => {
     });
 
     it('emits event that triggers opening the modal', () => {
-      expect(eventHub.$emit).toHaveBeenLastCalledWith('openModal', { inviteeType: 'group' });
+      expect(eventHub.$emit).toHaveBeenLastCalledWith('openGroupModal');
     });
   });
 });

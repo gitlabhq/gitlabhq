@@ -6351,6 +6351,9 @@ msgstr ""
 msgid "CICDAnalytics|Shared Runners Usage"
 msgstr ""
 
+msgid "CICDAnalytics|Shared runner pipeline minute duration by month"
+msgstr ""
+
 msgid "CICDAnalytics|Shared runner usage"
 msgstr ""
 
@@ -28437,12 +28440,6 @@ msgstr ""
 msgid "ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts."
 msgstr ""
 
-msgid "ProjectSettings|Include diff preview in merge request notification emails"
-msgstr ""
-
-msgid "ProjectSettings|Include the code diff preview on comment threads in merge request notification emails."
-msgstr ""
-
 msgid "ProjectSettings|Internal"
 msgstr ""
 
@@ -29341,6 +29338,9 @@ msgid "ProtectedEnvironment|Protect an environment"
 msgstr ""
 
 msgid "ProtectedEnvironment|Protected Environment (%{protected_environments_count})"
+msgstr ""
+
+msgid "ProtectedEnvironment|Required approvals"
 msgstr ""
 
 msgid "ProtectedEnvironment|Select an environment"
