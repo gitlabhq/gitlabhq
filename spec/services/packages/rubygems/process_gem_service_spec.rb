@@ -85,6 +85,28 @@ RSpec.describe Packages::Rubygems::ProcessGemService do
       end
     end
 
+    context 'when the package already exists marked as pending_destruction' do
+      let_it_be_with_reload(:existing_package) { create(:rubygems_package, name: 'package', version: '0.0.1', project: package.project) }
+
+      let(:sub_service) { double }
+
+      before do
+        expect(Packages::Rubygems::MetadataExtractionService).to receive(:new).with(package, gemspec).and_return(sub_service)
+        expect(Packages::Rubygems::CreateGemspecService).to receive(:new).with(package, gemspec).and_return(sub_service)
+        expect(Packages::Rubygems::CreateDependenciesService).to receive(:new).with(package, gemspec).and_return(sub_service)
+
+        expect(sub_service).to receive(:execute).exactly(3).times.and_return(true)
+
+        existing_package.pending_destruction!
+      end
+
+      it 'reuses the processing package' do
+        expect { subject }
+          .to not_change { package.project.packages.count }
+          .and not_change { existing_package.package_files.count }
+      end
+    end
+
     context 'sub-service failure' do
       before do
         expect(Packages::Rubygems::MetadataExtractionService).to receive(:new).with(package, gemspec).and_raise(::Packages::Rubygems::ProcessGemService::ExtractionError.new('failure'))

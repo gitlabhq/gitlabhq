@@ -32,8 +32,6 @@ RSpec.describe Packages::Debian::FindOrCreatePackageService do
     end
 
     context 'run twice' do
-      let(:subject2) { service.execute }
-
       let(:package2) { service.execute.payload[:package] }
 
       it 'returns the same object' do
@@ -41,6 +39,16 @@ RSpec.describe Packages::Debian::FindOrCreatePackageService do
         expect { package2 }.not_to change { ::Packages::Package.count }
 
         expect(package2.id).to eq(package.id)
+      end
+
+      context 'with package marked as pending_destruction' do
+        it 'creates a new package' do
+          expect { subject }.to change { ::Packages::Package.count }.by(1)
+          package.pending_destruction!
+          expect { package2 }.to change { ::Packages::Package.count }.by(1)
+
+          expect(package2.id).not_to eq(package.id)
+        end
       end
     end
 

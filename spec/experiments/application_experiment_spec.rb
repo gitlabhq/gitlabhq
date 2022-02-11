@@ -391,4 +391,29 @@ RSpec.describe ApplicationExperiment, :experiment do
       end
     end
   end
+
+  context "with deprecation warnings" do
+    before do
+      Gitlab::Experiment::Configuration.instance_variable_set(:@__dep_versions, nil) # clear the internal memoization
+
+      allow(ActiveSupport::Deprecation).to receive(:new).and_call_original
+    end
+
+    it "doesn't warn on non dev/test environments" do
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+
+      expect { experiment(:example) { |e| e.use { } } }.not_to raise_error
+      expect(ActiveSupport::Deprecation).not_to have_received(:new).with(anything, 'Gitlab::Experiment')
+    end
+
+    it "warns on dev and test environments" do
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(true)
+
+      # This will eventually raise an ActiveSupport::Deprecation exception,
+      # it's ok to change it when that happens.
+      expect { experiment(:example) { |e| e.use { } } }.not_to raise_error
+
+      expect(ActiveSupport::Deprecation).to have_received(:new).with(anything, 'Gitlab::Experiment')
+    end
+  end
 end

@@ -7159,7 +7159,7 @@ RSpec.describe Project, factory_default: :keep do
   describe '#package_already_taken?' do
     let_it_be(:namespace) { create(:namespace, path: 'test') }
     let_it_be(:project) { create(:project, :public, namespace: namespace) }
-    let_it_be(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo", version: '1.2.3') }
+    let_it_be_with_reload(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo", version: '1.2.3') }
 
     subject { project.package_already_taken?(package_name, package_version, package_type: :npm) }
 
@@ -7196,6 +7196,23 @@ RSpec.describe Project, factory_default: :keep do
         it 'returns false' do
           result = alt_project.package_already_taken?(package.name, package.version, package_type: :nuget)
           expect(result).to be false
+        end
+      end
+
+      context 'with a pending_destruction package' do
+        before do
+          package.pending_destruction!
+        end
+
+        where(:package_name, :package_version, :expected_result) do
+          '@test/bar' | '1.2.3' | false
+          '@test/bar' | '5.5.5' | false
+          '@test/foo' | '1.2.3' | false
+          '@test/foo' | '5.5.5' | false
+        end
+
+        with_them do
+          it { is_expected.to eq expected_result}
         end
       end
     end

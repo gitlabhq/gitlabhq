@@ -63,12 +63,17 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: -> { conan? || generic? || debian? }
 
   validates :name,
-    uniqueness: { scope: %i[project_id version package_type] }, unless: -> { conan? || debian_package? }
-  validate :unique_debian_package_name, if: :debian_package?
+            uniqueness: {
+              scope: %i[project_id version package_type],
+              conditions: -> { not_pending_destruction}
+            },
+            unless: -> { pending_destruction? || conan? || debian_package? }
 
+  validate :unique_debian_package_name, if: :debian_package?
   validate :valid_conan_package_recipe, if: :conan?
   validate :valid_composer_global_name, if: :composer?
   validate :npm_package_already_taken, if: :npm?
+
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
   validates :name, format: { with: Gitlab::Regex.helm_package_regex }, if: :helm?
@@ -320,6 +325,7 @@ class Packages::Package < ApplicationRecord
     recipe_exists = project.packages
                            .conan
                            .includes(:conan_metadatum)
+                           .not_pending_destruction
                            .with_name(name)
                            .with_version(version)
                            .with_conan_channel(conan_metadatum.package_channel)
@@ -334,9 +340,14 @@ class Packages::Package < ApplicationRecord
     # .default_scoped is required here due to a bug in rails that leaks
     # the scope and adds `self` to the query incorrectly
     # See https://github.com/rails/rails/pull/35186
-    if Packages::Package.default_scoped.composer.with_name(name).where.not(project_id: project_id).exists?
-      errors.add(:name, 'is already taken by another project')
-    end
+    package_exists = Packages::Package.default_scoped
+                                      .composer
+                                      .not_pending_destruction
+                                      .with_name(name)
+                                      .where.not(project_id: project_id)
+                                      .exists?
+
+    errors.add(:name, 'is already taken by another project') if package_exists
   end
 
   def npm_package_already_taken
@@ -361,6 +372,7 @@ class Packages::Package < ApplicationRecord
     package_exists = debian_publication.distribution.packages
                             .with_name(name)
                             .with_version(version)
+                            .not_pending_destruction
                             .id_not_in(id)
                             .exists?
 

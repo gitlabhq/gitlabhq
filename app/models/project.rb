@@ -2641,6 +2641,7 @@ class Project < ApplicationRecord
     Packages::Package.with_name(package_name)
       .with_version(package_version)
       .with_package_type(package_type)
+      .not_pending_destruction
       .for_projects(
         root_ancestor.all_projects
           .id_not_in(id)

@@ -777,6 +777,32 @@ RSpec.shared_examples 'uploads a package file' do
 
         subject
       end
+
+      context 'with existing package' do
+        let!(:existing_package) { create(:conan_package, name: 'foo', version: 'bar', project: project) }
+
+        before do
+          existing_package.conan_metadatum.update!(package_username: project.full_path.tr('/', '+'), package_channel: 'baz')
+        end
+
+        it 'does not create a new package' do
+          expect { subject }
+            .to not_change { project.packages.count }
+            .and not_change { Packages::Conan::Metadatum.count }
+            .and change { Packages::PackageFile.count }.by(1)
+        end
+
+        context 'marked as pending_destruction' do
+          it 'does not create a new package' do
+            existing_package.pending_destruction!
+
+            expect { subject }
+              .to change { project.packages.count }.by(1)
+              .and change { Packages::Conan::Metadatum.count }.by(1)
+              .and change { Packages::PackageFile.count }.by(1)
+          end
+        end
+      end
     end
   end
 

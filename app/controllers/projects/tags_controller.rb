@@ -16,7 +16,9 @@ class Projects::TagsController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     begin
-      tags_params[:sort] = tags_params[:sort].presence || sort_value_recently_updated
+      tags_params = params
+        .permit(:search, :sort, :per_page, :page_token, :page)
+        .with_defaults(sort: sort_value_recently_updated)
 
       @sort = tags_params[:sort]
       @search = tags_params[:search]
@@ -100,10 +102,6 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   private
-
-  def tags_params
-    params.permit(:search, :sort, :per_page, :page_token, :page)
-  end
 
   # TODO: remove this with the release creation moved to it's own form https://gitlab.com/gitlab-org/gitlab/-/issues/214245
   def find_evidence_pipeline

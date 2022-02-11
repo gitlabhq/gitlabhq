@@ -25322,6 +25322,12 @@ CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON pac
 
 CREATE INDEX idx_packages_debian_project_component_files_on_architecture_id ON packages_debian_project_component_files USING btree (architecture_id);
 
+CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_generic ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 7) AND (status <> 4));
+
+CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_golang ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 8) AND (status <> 4));
+
+CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_helm ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 11) AND (status <> 4));
+
 CREATE INDEX idx_packages_packages_on_project_id_name_version_package_type ON packages_packages USING btree (project_id, name, version, package_type);
 
 CREATE INDEX idx_pkgs_debian_group_distribution_keys_on_distribution_id ON packages_debian_group_distribution_keys USING btree (distribution_id);
@@ -27189,12 +27195,6 @@ CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_ma
 CREATE INDEX index_packages_maven_metadata_on_path ON packages_maven_metadata USING btree (path);
 
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
-
-CREATE UNIQUE INDEX index_packages_on_project_id_name_version_unique_when_generic ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 7);
-
-CREATE UNIQUE INDEX index_packages_on_project_id_name_version_unique_when_golang ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 8);
-
-CREATE UNIQUE INDEX index_packages_on_project_id_name_version_unique_when_helm ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 11);
 
 CREATE INDEX index_packages_package_file_build_infos_on_package_file_id ON packages_package_file_build_infos USING btree (package_file_id);
 

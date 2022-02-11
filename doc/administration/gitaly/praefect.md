@@ -39,10 +39,26 @@ NOTE:
 If not set in GitLab, feature flags are read as false from the console and Praefect uses their
 default value. The default value depends on the GitLab version.
 
-### Network connectivity
+### Network latency and connectivity
 
-Gitaly Cluster [components](index.md#components) need to communicate with each other over many
-routes. Your firewall rules must allow the following for Gitaly Cluster to function properly:
+Network latency for Gitaly Cluster should ideally be measurable in single-digit milliseconds. Latency is particularly
+important for:
+
+- Gitaly node health checks. Nodes must be able to respond within 1 second.
+- Reference transactions that enforce [strong consistency](index.md#strong-consistency). Lower latencies mean Gitaly
+  nodes can agree on changes faster.
+
+Achieving acceptable latency between Gitaly nodes:
+
+- On physical networks generally means high bandwidth, single location connections.
+- On the cloud generally means within the same region, including allowing cross availability zone replication. These links
+  are designed for this type of synchronization. Latency of less than 2ms should be sufficient for Gitaly Cluster.
+
+If you can't provide low network latencies for replication (for example, between distant locations), consider Geo. For
+more information, see [How does Gitaly Cluster compare to Geo](faq.md#how-does-gitaly-cluster-compare-to-geo).
+
+Gitaly Cluster [components](index.md#components) communicate with each other over many routes. Your firewall rules must
+allow the following for Gitaly Cluster to function properly:
 
 | From                   | To                     | Default port | TLS port |
 |:-----------------------|:-----------------------|:-------------|:---------|

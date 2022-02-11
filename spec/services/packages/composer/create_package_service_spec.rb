@@ -88,12 +88,22 @@ RSpec.describe Packages::Composer::CreatePackageService do
       end
 
       context 'belonging to another project' do
-        let(:other_project) { create(:project) }
+        let(:other_project) { create(:project)}
         let!(:other_package) { create(:composer_package, name: package_name, version: 'dev-master', project: other_project) }
 
         it 'fails with an error' do
           expect { subject }
             .to raise_error(/is already taken/)
+        end
+
+        context 'with pending_destruction package' do
+          let!(:other_package) { create(:composer_package, :pending_destruction, name: package_name, version: 'dev-master', project: other_project) }
+
+          it 'creates the package' do
+            expect { subject }
+              .to change { Packages::Package.composer.count }.by(1)
+              .and change { Packages::Composer::Metadatum.count }.by(1)
+          end
         end
       end
 

@@ -14921,7 +14921,7 @@ msgstr ""
 msgid "Failed to find import label for Jira import."
 msgstr ""
 
-msgid "Failed to find users for '%{params}'"
+msgid "Failed to find users for %{missing}"
 msgstr ""
 
 msgid "Failed to generate export, please try again later."

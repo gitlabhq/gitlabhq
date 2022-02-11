@@ -11,6 +11,7 @@ module Packages
                          .with_name(params[:name])
                          .with_version(params[:version])
                          .with_debian_codename(params[:distribution_name])
+                         .not_pending_destruction
                          .first
 
         package ||= create_package!(

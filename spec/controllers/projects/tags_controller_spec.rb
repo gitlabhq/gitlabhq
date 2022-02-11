@@ -17,6 +17,14 @@ RSpec.describe Projects::TagsController do
       expect(assigns(:tags).map(&:name)).to include('v1.1.0', 'v1.0.0')
     end
 
+    context 'default sort for tags' do
+      it 'sorts tags by recently updated' do
+        subject
+
+        expect(assigns(:sort)).to eq('updated_desc')
+      end
+    end
+
     context 'when Gitaly is unavailable' do
       where(:format) do
         [:html, :atom]

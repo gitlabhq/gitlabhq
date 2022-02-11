@@ -26,7 +26,3 @@ RSpec.configure do |config|
     stub_snowplow
   end
 end
-
-# Once you've resolved a given deprecation, you can disallow it here, which
-# will raise an exception if it's used anywhere.
-ActiveSupport::Deprecation.disallowed_warnings << "`experiment_group?` is deprecated"

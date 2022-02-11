@@ -81,6 +81,14 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
           let!(:existing_package) { create(:maven_package, name: path, version: version, project: project) }
 
           it_behaves_like 'reuse existing package'
+
+          context 'marked as pending_destruction' do
+            before do
+              existing_package.pending_destruction!
+            end
+
+            it_behaves_like 'create package'
+          end
         end
 
         context 'without existing package' do

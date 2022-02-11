@@ -25,6 +25,30 @@ RSpec.describe Packages::Debian::ProcessChangesService do
         expect(created_package.version).to eq '1.2.3~alpha2'
         expect(created_package.creator).to eq user
       end
+
+      context 'with existing package' do
+        let_it_be_with_reload(:existing_package) { create(:debian_package, name: 'sample', version: '1.2.3~alpha2', project: distribution.project) }
+
+        before do
+          existing_package.update!(debian_distribution: distribution)
+        end
+
+        it 'does not create a package' do
+          expect { subject.execute }
+            .to not_change { Packages::Package.count }
+            .and not_change { Packages::PackageFile.count }
+        end
+
+        context 'marked as pending_destruction' do
+          it 'creates a package' do
+            existing_package.pending_destruction!
+
+            expect { subject.execute }
+              .to change { Packages::Package.count }.by(1)
+              .and not_change { Packages::PackageFile.count }
+          end
+        end
+      end
     end
 
     context 'with invalid package file' do

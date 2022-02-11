@@ -11,13 +11,14 @@ RSpec.describe QuickActions::InterpretService do
   let_it_be(:developer2) { create(:user) }
   let_it_be(:developer3) { create(:user) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
-  let(:milestone) { create(:milestone, project: project, title: '9.10') }
-  let(:commit) { create(:commit, project: project) }
   let_it_be(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let_it_be(:helmchart) { create(:label, project: project, title: 'Helm Chart Registry') }
   let_it_be(:bug) { create(:label, project: project, title: 'Bug') }
 
-  let(:service) { described_class.new(project, developer) }
+  let(:milestone) { create(:milestone, project: project, title: '9.10') }
+  let(:commit) { create(:commit, project: project) }
+
+  subject(:service) { described_class.new(project, developer) }
 
   before_all do
     public_project.add_developer(developer)
@@ -970,6 +971,32 @@ RSpec.describe QuickActions::InterpretService do
         it_behaves_like 'assign_reviewer command'
       end
 
+      context 'with a private user' do
+        let(:ref) { create(:user, :unconfirmed).to_reference }
+        let(:content) { "/assign_reviewer #{ref}" }
+
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '#{ref}'." }
+        end
+      end
+
+      context 'with a private user, bare username' do
+        let(:ref) { create(:user, :unconfirmed).username }
+        let(:content) { "/assign_reviewer #{ref}" }
+
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '#{ref}'." }
+        end
+      end
+
+      context 'with @all' do
+        let(:content) { "/assign_reviewer @all" }
+
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '@all'." }
+        end
+      end
+
       context 'with an incorrect user' do
         let(:content) { '/assign_reviewer @abcd1234' }
 
@@ -997,11 +1024,10 @@ RSpec.describe QuickActions::InterpretService do
       end
 
       context 'with extra text' do
-        let(:arg) { "@#{developer.username} do it!" }
-        let(:content) { "/assign_reviewer #{arg}" }
+        let(:content) { "/assign_reviewer #{developer.to_reference} do it!" }
 
         it_behaves_like 'failed command', 'a parse error' do
-          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '#{arg}'." }
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for 'do' and 'it!'." }
         end
       end
     end
@@ -2451,7 +2477,8 @@ RSpec.describe QuickActions::InterpretService do
         it 'tells us why we cannot do that' do
           _, explanations = service.explain(content, merge_request)
 
-          expect(explanations).to eq ["Problem with assign command: Failed to find users for '#{arg}'."]
+          expect(explanations)
+            .to contain_exactly "Problem with assign command: Failed to find users for 'to', 'this', and 'issue'."
         end
       end
     end

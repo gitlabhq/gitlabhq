@@ -145,6 +145,7 @@ module API
                 .with_conan_username(params[:package_username])
                 .with_conan_channel(params[:package_channel])
                 .order_created
+                .not_pending_destruction
                 .last
             end
           end

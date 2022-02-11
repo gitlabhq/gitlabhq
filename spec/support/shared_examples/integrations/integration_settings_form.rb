@@ -1,24 +1,14 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe 'Integrations settings form', :js do
+RSpec.shared_examples 'integration settings form' do
   include IntegrationsHelper
-  include_context 'project integration activation'
-
-  # Github integration is EE, so let's remove it here.
-  integration_names = Integration.available_integration_names - %w[github]
-  integrations = integration_names.map do |name|
-    Integration.integration_name_to_model(name).new
-  end
-
   # Note: these specs don't validate channel fields
   # which are present on a few integrations
-  integrations.each do |integration|
-    it "shows on #{integration.title}" do
-      visit_project_integration(integration.title)
+  it 'displays all the integrations' do
+    aggregate_failures do
+      integrations.each do |integration|
+        navigate_to_integration(integration)
 
-      aggregate_failures do
         page.within('form.integration-settings-form') do
           expect(page).to have_field('Active', type: 'checkbox', wait: 0),
                           "#{integration.title} active field not present"
@@ -42,6 +32,8 @@ RSpec.describe 'Integrations settings form', :js do
       end
     end
   end
+
+  private
 
   def normalize_title(title, integration)
     return 'Merge request' if integration.is_a?(Integrations::Jira) && title == 'merge_request'

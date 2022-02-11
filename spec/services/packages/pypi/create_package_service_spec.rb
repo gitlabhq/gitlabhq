@@ -72,6 +72,27 @@ RSpec.describe Packages::Pypi::CreatePackageService do
             .and change { Packages::PackageFile.count }.by(0)
             .and raise_error(/File name has already been taken/)
         end
+
+        context 'with a pending_destruction package', :aggregate_failures do
+          before do
+            Packages::Package.pypi.last.pending_destruction!
+          end
+
+          it 'creates a new package' do
+            expect { subject }
+              .to change { Packages::Package.pypi.count }.by(1)
+              .and change { Packages::PackageFile.count }.by(1)
+
+            expect(created_package.name).to eq 'foo'
+            expect(created_package.version).to eq '1.0'
+
+            expect(created_package.pypi_metadatum.required_python).to eq '>=2.7'
+            expect(created_package.package_files.size).to eq 1
+            expect(created_package.package_files.first.file_name).to eq 'foo.tgz'
+            expect(created_package.package_files.first.file_sha256).to eq 'abc'
+            expect(created_package.package_files.first.file_md5).to eq 'def'
+          end
+        end
       end
 
       context 'without an existing file' do

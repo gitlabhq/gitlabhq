@@ -98,6 +98,7 @@ module Packages
                                .nuget
                                .with_name(package_name)
                                .with_version(package_version)
+                               .not_pending_destruction
                                .first
         end
       end

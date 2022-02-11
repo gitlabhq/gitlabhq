@@ -401,6 +401,28 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
               .and change { Packages::PackageFile.count }.by(0)
           expect(response).to have_gitlab_http_status(:error)
         end
+
+        context 'with an existing package' do
+          let_it_be_with_reload(:existing_package) { create(:terraform_module_package, name: 'mymodule/mysystem', version: '1.0.0', project: project) }
+
+          it 'does not create a new package' do
+            expect { subject }
+              .to change { project.packages.count }.by(0)
+              .and change { Packages::PackageFile.count }.by(0)
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+
+          context 'marked as pending_destruction' do
+            it 'does create a new package' do
+              existing_package.pending_destruction!
+
+              expect { subject }
+                .to change { project.packages.count }.by(1)
+                .and change { Packages::PackageFile.count }.by(1)
+              expect(response).to have_gitlab_http_status(:created)
+            end
+          end
+        end
       end
     end
   end

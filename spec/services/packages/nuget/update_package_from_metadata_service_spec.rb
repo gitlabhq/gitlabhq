@@ -106,6 +106,20 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       it_behaves_like 'taking the lease'
 
       it_behaves_like 'not updating the package if the lease is taken'
+
+      context 'marked as pending_destruction' do
+        before do
+          existing_package.pending_destruction!
+        end
+
+        it 'reuses the processing package', :aggregate_failures do
+          expect { subject }
+            .to not_change { ::Packages::Package.count }
+            .and change { Packages::Dependency.count }.by(1)
+            .and change { Packages::DependencyLink.count }.by(1)
+            .and change { ::Packages::Nuget::Metadatum.count }.by(0)
+        end
+      end
     end
 
     context 'with a nuspec file with metadata' do
