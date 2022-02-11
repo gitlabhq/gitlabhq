@@ -15,7 +15,7 @@ module Gitlab
         return if @startup_time
 
         runtime = Gitlab::Runtime.safe_identify
-        return unless SUPPORTED_RUNTIMES.include?(runtime) && Feature.enabled?(:track_application_boot_time, default_enabled: :yaml)
+        return unless SUPPORTED_RUNTIMES.include?(runtime)
 
         @startup_time = Gitlab::Metrics::System.process_runtime_elapsed_seconds
 

@@ -606,6 +606,7 @@ project:
 - ci_project_mirror
 - sync_events
 - secure_files
+- security_trainings
 award_emoji:
 - awardable
 - user

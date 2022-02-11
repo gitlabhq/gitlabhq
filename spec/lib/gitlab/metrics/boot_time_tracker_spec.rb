@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Metrics::BootTimeTracker do
   let(:logger) { double('logger') }
@@ -66,20 +66,6 @@ RSpec.describe Gitlab::Metrics::BootTimeTracker do
     context 'when called on other runtimes' do
       it 'does nothing' do
         tracker.track_boot_time!(logger: logger)
-
-        expect(Gitlab::Metrics::System).not_to receive(:process_runtime_elapsed_seconds)
-        expect(logger).not_to receive(:info)
-        expect(gauge).not_to receive(:set)
-
-        tracker.track_boot_time!(logger: logger)
-      end
-    end
-
-    # TODO: When https://gitlab.com/gitlab-org/gitlab/-/issues/351769 is closed,
-    #       revert to using fast_spec_helper again.
-    context 'when feature flag is off' do
-      it 'does nothing' do
-        stub_feature_flags(track_application_boot_time: false)
 
         expect(Gitlab::Metrics::System).not_to receive(:process_runtime_elapsed_seconds)
         expect(logger).not_to receive(:info)

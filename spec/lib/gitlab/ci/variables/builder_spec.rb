@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
   let_it_be(:project) { create(:project, :repository, namespace: group) }
   let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:job) do
+  let_it_be_with_reload(:job) do
     create(:ci_build,
       pipeline: pipeline,
       user: user,
@@ -276,27 +276,30 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
           create(:protected_branch, :developers_can_merge, name: job.ref, project: project)
         end
 
-        it { is_expected.to include(variable) }
+        it { is_expected.to contain_exactly(protected_variable_item, unprotected_variable_item) }
       end
 
       context 'when ref is not protected' do
-        it { is_expected.not_to include(variable) }
+        it { is_expected.to contain_exactly(unprotected_variable_item) }
       end
     end
 
     context 'when ref is tag' do
-      let_it_be(:job) { create(:ci_build, ref: 'v1.1.0', tag: true, pipeline: pipeline) }
+      before do
+        job.update!(ref: 'v1.1.0', tag: true)
+        pipeline.update!(ref: 'v1.1.0', tag: true)
+      end
 
       context 'when ref is protected' do
         before do
           create(:protected_tag, project: project, name: 'v*')
         end
 
-        it { is_expected.to include(variable) }
+        it { is_expected.to contain_exactly(protected_variable_item, unprotected_variable_item) }
       end
 
       context 'when ref is not protected' do
-        it { is_expected.not_to include(variable) }
+        it { is_expected.to contain_exactly(unprotected_variable_item) }
       end
     end
 
@@ -311,20 +314,24 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
         end
 
         it 'does not return protected variables as it is not supported for merge request pipelines' do
-          is_expected.not_to include(variable)
+          is_expected.to contain_exactly(unprotected_variable_item)
         end
       end
 
       context 'when ref is not protected' do
-        it { is_expected.not_to include(variable) }
+        it { is_expected.to contain_exactly(unprotected_variable_item) }
       end
     end
   end
 
   describe '#secret_instance_variables' do
-    subject { builder.secret_instance_variables(ref: job.git_ref) }
+    subject { builder.secret_instance_variables }
 
-    let_it_be(:variable) { create(:ci_instance_variable, protected: true) }
+    let_it_be(:protected_variable) { create(:ci_instance_variable, protected: true) }
+    let_it_be(:unprotected_variable) { create(:ci_instance_variable, protected: false) }
+
+    let(:protected_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(protected_variable) }
+    let(:unprotected_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(unprotected_variable) }
 
     include_examples "secret CI variables"
   end
@@ -332,7 +339,11 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
   describe '#secret_group_variables' do
     subject { builder.secret_group_variables(ref: job.git_ref, environment: job.expanded_environment_name) }
 
-    let_it_be(:variable) { create(:ci_group_variable, protected: true, group: group) }
+    let_it_be(:protected_variable) { create(:ci_group_variable, protected: true, group: group) }
+    let_it_be(:unprotected_variable) { create(:ci_group_variable, protected: false, group: group) }
+
+    let(:protected_variable_item) { protected_variable }
+    let(:unprotected_variable_item) { unprotected_variable }
 
     include_examples "secret CI variables"
   end
@@ -340,7 +351,11 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
   describe '#secret_project_variables' do
     subject { builder.secret_project_variables(ref: job.git_ref, environment: job.expanded_environment_name) }
 
-    let_it_be(:variable) { create(:ci_variable, protected: true, project: project) }
+    let_it_be(:protected_variable) { create(:ci_variable, protected: true, project: project) }
+    let_it_be(:unprotected_variable) { create(:ci_variable, protected: false, project: project) }
+
+    let(:protected_variable_item) { protected_variable }
+    let(:unprotected_variable_item) { unprotected_variable }
 
     include_examples "secret CI variables"
   end

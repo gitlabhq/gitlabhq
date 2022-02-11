@@ -16,6 +16,9 @@ module Issues
       determine_changes if params[:replace_ids].present?
       return error_too_many if too_many?
 
+      @added_count = 0
+      @removed_count = 0
+
       add if params[:add_ids].present?
       remove if params[:remove_ids].present?
 
@@ -25,6 +28,7 @@ module Issues
       if issue.valid?
         GraphqlTriggers.issue_crm_contacts_updated(issue)
         issue.touch
+        create_system_note
         ServiceResponse.success(payload: issue)
       else
         # The default error isn't very helpful: "Issue customer relations contacts is invalid"
@@ -36,7 +40,7 @@ module Issues
 
     private
 
-    attr_accessor :issue, :errors, :existing_ids
+    attr_accessor :issue, :errors, :existing_ids, :added_count, :removed_count
 
     def determine_changes
       params[:add_ids] = params[:replace_ids] - existing_ids
@@ -63,7 +67,9 @@ module Issues
       contact_ids.uniq.each do |contact_id|
         issue_contact = issue.issue_customer_relations_contacts.create(contact_id: contact_id)
 
-        unless issue_contact.persisted?
+        if issue_contact.persisted?
+          @added_count += 1
+        else
           # The validation ensures that the id exists and the user has permission
           errors << "#{contact_id}: The resource that you are attempting to access does not exist or you don't have permission to perform this action"
         end
@@ -81,7 +87,7 @@ module Issues
 
     def remove_by_id(contact_ids)
       contact_ids &= existing_ids
-      issue.issue_customer_relations_contacts
+      @removed_count += issue.issue_customer_relations_contacts
         .where(contact_id: contact_ids) # rubocop: disable CodeReuse/ActiveRecord
         .delete_all
     end
@@ -127,6 +133,11 @@ module Issues
 
     def too_many_emails?
       params[:add_emails] && params[:add_emails].length > MAX_ADDITIONAL_CONTACTS
+    end
+
+    def create_system_note
+      SystemNoteService.change_issuable_contacts(
+        issue, issue.project, current_user, added_count, removed_count)
     end
 
     def error_no_permissions

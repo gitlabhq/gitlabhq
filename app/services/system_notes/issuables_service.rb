@@ -111,6 +111,35 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewer'))
     end
 
+    # Called when the contacts of an issuable are changed or removed
+    # We intend to reference the contacts but for security we are just
+    # going to state how many were added/removed for now. See discussion:
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77816#note_806114273
+    #
+    # added_count - number of contacts added, or 0
+    # removed_count - number of contacts  removed, or 0
+    #
+    # Example Note text:
+    #
+    #   "added 2 contacts"
+    #
+    #   "added 3 contacts and removed one contact"
+    #
+    # Returns the created Note object
+    def change_issuable_contacts(added_count, removed_count)
+      text_parts = []
+
+      Gitlab::I18n.with_default_locale do
+        text_parts << "added #{added_count} #{'contact'.pluralize(added_count)}" if added_count > 0
+        text_parts << "removed #{removed_count} #{'contact'.pluralize(removed_count)}" if removed_count > 0
+      end
+
+      return if text_parts.empty?
+
+      body = text_parts.join(' and ')
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'contact'))
+    end
+
     # Called when the title of a Noteable is changed
     #
     # old_title - Previous String title

@@ -32,6 +32,16 @@ RSpec.describe Issues::SetCrmContactsService do
       end
     end
 
+    shared_examples 'adds system note' do |added_count, removed_count|
+      it 'calls SystemNoteService.change_issuable_contacts with correct counts' do
+        expect(SystemNoteService)
+          .to receive(:change_issuable_contacts)
+          .with(issue, project, user, added_count, removed_count)
+
+        set_crm_contacts
+      end
+    end
+
     context 'when the user has no permission' do
       let(:params) { { replace_ids: [contacts[1].id, contacts[2].id] } }
 
@@ -81,6 +91,7 @@ RSpec.describe Issues::SetCrmContactsService do
         let(:expected_contacts) { [contacts[1], contacts[2]] }
 
         it_behaves_like 'setting contacts'
+        it_behaves_like 'adds system note', 1, 1
       end
 
       context 'add' do
@@ -89,6 +100,7 @@ RSpec.describe Issues::SetCrmContactsService do
         let(:expected_contacts) { [issue_contact_1, issue_contact_2, added_contact] }
 
         it_behaves_like 'setting contacts'
+        it_behaves_like 'adds system note', 1, 0
       end
 
       context 'add by email' do
@@ -99,12 +111,14 @@ RSpec.describe Issues::SetCrmContactsService do
           let(:params) { { add_emails: [contacts[3].email] } }
 
           it_behaves_like 'setting contacts'
+          it_behaves_like 'adds system note', 1, 0
         end
 
         context 'with autocomplete prefix emails in params' do
           let(:params) { { add_emails: ["[\"contact:\"#{contacts[3].email}\"]"] } }
 
           it_behaves_like 'setting contacts'
+          it_behaves_like 'adds system note', 1, 0
         end
       end
 
@@ -113,6 +127,7 @@ RSpec.describe Issues::SetCrmContactsService do
         let(:expected_contacts) { [contacts[1]] }
 
         it_behaves_like 'setting contacts'
+        it_behaves_like 'adds system note', 0, 1
       end
 
       context 'remove by email' do
@@ -122,12 +137,14 @@ RSpec.describe Issues::SetCrmContactsService do
           let(:params) { { remove_emails: [contacts[0].email] } }
 
           it_behaves_like 'setting contacts'
+          it_behaves_like 'adds system note', 0, 1
         end
 
         context 'with autocomplete prefix and suffix email in params' do
           let(:params) { { remove_emails: ["[contact:#{contacts[0].email}]"] } }
 
           it_behaves_like 'setting contacts'
+          it_behaves_like 'adds system note', 0, 1
         end
       end
 

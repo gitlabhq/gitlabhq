@@ -4738,4 +4738,41 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let!(:model) { create(:ci_pipeline, project: parent) }
     end
   end
+
+  describe '#jobs_git_ref' do
+    subject { pipeline.jobs_git_ref }
+
+    context 'when tag is true' do
+      let(:pipeline) { build(:ci_pipeline, tag: true) }
+
+      it 'returns a tag ref' do
+        is_expected.to start_with(Gitlab::Git::TAG_REF_PREFIX)
+      end
+    end
+
+    context 'when tag is false' do
+      let(:pipeline) { build(:ci_pipeline, tag: false) }
+
+      it 'returns a branch ref' do
+        is_expected.to start_with(Gitlab::Git::BRANCH_REF_PREFIX)
+      end
+    end
+
+    context 'when tag is nil' do
+      let(:pipeline) { build(:ci_pipeline, tag: nil) }
+
+      it 'returns a branch ref' do
+        is_expected.to start_with(Gitlab::Git::BRANCH_REF_PREFIX)
+      end
+    end
+
+    context 'when it is triggered by a merge request' do
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
+      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
 end

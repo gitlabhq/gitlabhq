@@ -2187,14 +2187,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def ci_instance_variables_for(ref:)
-    if protected_for?(ref)
-      Ci::InstanceVariable.all_cached
-    else
-      Ci::InstanceVariable.unprotected_cached
-    end
-  end
-
   def protected_for?(ref)
     raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
 

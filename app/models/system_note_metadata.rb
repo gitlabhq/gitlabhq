@@ -24,7 +24,7 @@ class SystemNoteMetadata < ApplicationRecord
     opened closed merged duplicate locked unlocked outdated reviewer
     tag due_date pinned_embed cherry_pick health_status approved unapproved
     status alert_issue_added relate unrelate new_alert_added severity
-    attention_requested attention_request_removed
+    attention_requested attention_request_removed contact
   ].freeze
 
   validates :note, presence: true, unless: :importing?

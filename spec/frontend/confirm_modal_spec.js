@@ -1,4 +1,3 @@
-import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import initConfirmModal from '~/confirm_modal';
 
@@ -50,7 +49,6 @@ describe('ConfirmModal', () => {
   const findModal = () => document.querySelector('.gl-modal');
   const findModalOkButton = (modal, variant) =>
     modal.querySelector(`.modal-footer .btn-${variant}`);
-  const findModalCancelButton = (modal) => modal.querySelector('.modal-footer .btn-secondary');
   const modalIsHidden = () => findModal() === null;
 
   const serializeModal = (modal, buttonIndex) => {
@@ -89,19 +87,6 @@ describe('ConfirmModal', () => {
       it('is rendered', () => {
         expect(findModal()).not.toBe(null);
         expect(modalIsHidden()).toBe(false);
-      });
-
-      describe('Cancel Button', () => {
-        beforeEach(async () => {
-          findModalCancelButton(findModal()).click();
-          await nextTick();
-        });
-
-        it('closes the modal', () => {
-          setImmediate(() => {
-            expect(modalIsHidden()).toBe(true);
-          });
-        });
       });
     });
   });

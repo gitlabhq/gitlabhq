@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Anti-patterns may seem like good approaches at first, but it has been shown that they bring more ills than benefits. These should
 generally be avoided.
 
-Throughout the GitLab codebase, there may be historic uses of these anti-patterns. Please [use discretion](https://about.gitlab.com/handbook/engineering/#balance-refactoring-and-velocity)
+Throughout the GitLab codebase, there may be historic uses of these anti-patterns. Please [use discretion](https://about.gitlab.com/handbook/engineering/principles/#balance-refactoring-and-velocity)
 when figuring out whether or not to refactor, when touching code that uses one of these legacy patterns.
 
 NOTE:

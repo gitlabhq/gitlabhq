@@ -215,9 +215,6 @@ On self-managed GitLab, by default this feature is available.
 To hide the feature, ask an administrator to [disable the feature flag](#enable-or-disable-modal-window).
 On GitLab.com, this feature is available.
 
-In GitLab 13.11, you can optionally replace the form to add a member with a modal window.
-To add a member after enabling this feature:
-
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. Select **Invite members**.

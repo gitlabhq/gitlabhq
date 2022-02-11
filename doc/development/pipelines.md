@@ -12,7 +12,7 @@ which itself includes files under
 [`.gitlab/ci/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab/ci)
 for easier maintenance.
 
-We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/#dogfooding)
+We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/principles/#dogfooding)
 GitLab [CI/CD features and best-practices](../ci/yaml/index.md)
 as much as possible.
 

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
+import waitForPromises from 'helpers/wait_for_promises';
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
@@ -13,15 +14,11 @@ describe('ShortcutsIssuable', () => {
   const snippetShowFixtureName = 'snippets/show.html';
   const mrShowFixtureName = 'merge_requests/merge_request_of_current_user.html';
 
-  beforeAll((done) => {
+  beforeAll(() => {
     initCopyAsGFM();
 
     // Fake call to nodeToGfm so the import of lazy bundle happened
-    CopyAsGFM.nodeToGFM(document.createElement('div'))
-      .then(() => {
-        done();
-      })
-      .catch(done.fail);
+    return CopyAsGFM.nodeToGFM(document.createElement('div'));
   });
 
   describe('replyWithSelectedText', () => {
@@ -79,22 +76,18 @@ describe('ShortcutsIssuable', () => {
         stubSelection('<p>Selected text.</p>');
       });
 
-      it('leaves existing input intact', (done) => {
+      it('leaves existing input intact', async () => {
         $(FORM_SELECTOR).val('This text was already here.');
 
         expect($(FORM_SELECTOR).val()).toBe('This text was already here.');
 
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect($(FORM_SELECTOR).val()).toBe(
-            'This text was already here.\n\n> Selected text.\n\n',
-          );
-          done();
-        });
+        await waitForPromises();
+        expect($(FORM_SELECTOR).val()).toBe('This text was already here.\n\n> Selected text.\n\n');
       });
 
-      it('triggers `input`', (done) => {
+      it('triggers `input`', async () => {
         let triggered = false;
         $(FORM_SELECTOR).on('input', () => {
           triggered = true;
@@ -102,48 +95,40 @@ describe('ShortcutsIssuable', () => {
 
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect(triggered).toBe(true);
-          done();
-        });
+        await waitForPromises();
+        expect(triggered).toBe(true);
       });
 
-      it('triggers `focus`', (done) => {
+      it('triggers `focus`', async () => {
         const spy = jest.spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect(spy).toHaveBeenCalled();
-          done();
-        });
+        await waitForPromises();
+        expect(spy).toHaveBeenCalled();
       });
     });
 
     describe('with a one-line selection', () => {
-      it('quotes the selection', (done) => {
+      it('quotes the selection', async () => {
         stubSelection('<p>This text has been selected.</p>');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect($(FORM_SELECTOR).val()).toBe('> This text has been selected.\n\n');
-          done();
-        });
+        await waitForPromises();
+        expect($(FORM_SELECTOR).val()).toBe('> This text has been selected.\n\n');
       });
     });
 
     describe('with a multi-line selection', () => {
-      it('quotes the selected lines as a group', (done) => {
+      it('quotes the selected lines as a group', async () => {
         stubSelection(
           '<p>Selected line one.</p>\n<p>Selected line two.</p>\n<p>Selected line three.</p>',
         );
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect($(FORM_SELECTOR).val()).toBe(
-            '> Selected line one.\n>\n> Selected line two.\n>\n> Selected line three.\n\n',
-          );
-          done();
-        });
+        await waitForPromises();
+        expect($(FORM_SELECTOR).val()).toBe(
+          '> Selected line one.\n>\n> Selected line two.\n>\n> Selected line three.\n\n',
+        );
       });
     });
 
@@ -152,23 +137,19 @@ describe('ShortcutsIssuable', () => {
         stubSelection('<p>Selected text.</p>', true);
       });
 
-      it('does not add anything to the input', (done) => {
+      it('does not add anything to the input', async () => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect($(FORM_SELECTOR).val()).toBe('');
-          done();
-        });
+        await waitForPromises();
+        expect($(FORM_SELECTOR).val()).toBe('');
       });
 
-      it('triggers `focus`', (done) => {
+      it('triggers `focus`', async () => {
         const spy = jest.spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect(spy).toHaveBeenCalled();
-          done();
-        });
+        await waitForPromises();
+        expect(spy).toHaveBeenCalled();
       });
     });
 
@@ -177,26 +158,22 @@ describe('ShortcutsIssuable', () => {
         stubSelection('<div class="md">Selected text.</div><p>Invalid selected text.</p>', true);
       });
 
-      it('only adds the valid part to the input', (done) => {
+      it('only adds the valid part to the input', async () => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect($(FORM_SELECTOR).val()).toBe('> Selected text.\n\n');
-          done();
-        });
+        await waitForPromises();
+        expect($(FORM_SELECTOR).val()).toBe('> Selected text.\n\n');
       });
 
-      it('triggers `focus`', (done) => {
+      it('triggers `focus`', async () => {
         const spy = jest.spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect(spy).toHaveBeenCalled();
-          done();
-        });
+        await waitForPromises();
+        expect(spy).toHaveBeenCalled();
       });
 
-      it('triggers `input`', (done) => {
+      it('triggers `input`', async () => {
         let triggered = false;
         $(FORM_SELECTOR).on('input', () => {
           triggered = true;
@@ -204,10 +181,8 @@ describe('ShortcutsIssuable', () => {
 
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect(triggered).toBe(true);
-          done();
-        });
+        await waitForPromises();
+        expect(triggered).toBe(true);
       });
     });
 
@@ -231,26 +206,22 @@ describe('ShortcutsIssuable', () => {
         });
       });
 
-      it('adds the quoted selection to the input', (done) => {
+      it('adds the quoted selection to the input', async () => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect($(FORM_SELECTOR).val()).toBe('> *Selected text.*\n\n');
-          done();
-        });
+        await waitForPromises();
+        expect($(FORM_SELECTOR).val()).toBe('> *Selected text.*\n\n');
       });
 
-      it('triggers `focus`', (done) => {
+      it('triggers `focus`', async () => {
         const spy = jest.spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect(spy).toHaveBeenCalled();
-          done();
-        });
+        await waitForPromises();
+        expect(spy).toHaveBeenCalled();
       });
 
-      it('triggers `input`', (done) => {
+      it('triggers `input`', async () => {
         let triggered = false;
         $(FORM_SELECTOR).on('input', () => {
           triggered = true;
@@ -258,10 +229,8 @@ describe('ShortcutsIssuable', () => {
 
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect(triggered).toBe(true);
-          done();
-        });
+        await waitForPromises();
+        expect(triggered).toBe(true);
       });
     });
 
@@ -285,36 +254,29 @@ describe('ShortcutsIssuable', () => {
         });
       });
 
-      it('does not add anything to the input', (done) => {
+      it('does not add anything to the input', async () => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect($(FORM_SELECTOR).val()).toBe('');
-          done();
-        });
+        await waitForPromises();
+        expect($(FORM_SELECTOR).val()).toBe('');
       });
 
-      it('triggers `focus`', (done) => {
+      it('triggers `focus`', async () => {
         const spy = jest.spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect(spy).toHaveBeenCalled();
-          done();
-        });
+        await waitForPromises();
+        expect(spy).toHaveBeenCalled();
       });
     });
 
     describe('with a valid selection with no text content', () => {
-      it('returns the proper markdown', (done) => {
+      it('returns the proper markdown', async () => {
         stubSelection('<img src="https://gitlab.com/logo.png" alt="logo" />');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        setImmediate(() => {
-          expect($(FORM_SELECTOR).val()).toBe('> ![logo](https://gitlab.com/logo.png)\n\n');
-
-          done();
-        });
+        await waitForPromises();
+        expect($(FORM_SELECTOR).val()).toBe('> ![logo](https://gitlab.com/logo.png)\n\n');
       });
     });
   });

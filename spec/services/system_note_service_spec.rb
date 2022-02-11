@@ -77,6 +77,19 @@ RSpec.describe SystemNoteService do
     end
   end
 
+  describe '.change_issuable_contacts' do
+    let(:added_count) { 5 }
+    let(:removed_count) { 3 }
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:change_issuable_contacts).with(added_count, removed_count)
+      end
+
+      described_class.change_issuable_contacts(noteable, project, author, added_count, removed_count)
+    end
+  end
+
   describe '.close_after_error_tracking_resolve' do
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|

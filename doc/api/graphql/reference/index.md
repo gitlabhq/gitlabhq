@@ -4310,6 +4310,28 @@ Input type: `SecurityPolicyProjectUnassignInput`
 | <a id="mutationsecuritypolicyprojectunassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritypolicyprojectunassignerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.securityTrainingUpdate`
+
+Input type: `SecurityTrainingUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritytrainingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritytrainingupdateisenabled"></a>`isEnabled` | [`Boolean!`](#boolean) | Sets the training provider as enabled for the project. |
+| <a id="mutationsecuritytrainingupdateisprimary"></a>`isPrimary` | [`Boolean`](#boolean) | Sets the training provider as primary for the project. |
+| <a id="mutationsecuritytrainingupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationsecuritytrainingupdateproviderid"></a>`providerId` | [`SecurityTrainingProviderID!`](#securitytrainingproviderid) | ID of the provider. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritytrainingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritytrainingupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsecuritytrainingupdatetraining"></a>`training` | [`ProjectSecurityTraining`](#projectsecuritytraining) | Represents the training entity subject to mutation. |
+
 ### `Mutation.terraformStateDelete`
 
 Input type: `TerraformStateDeleteInput`
@@ -18643,6 +18665,12 @@ An example `ProjectID` is: `"gid://gitlab/Project/1"`.
 A `ReleasesLinkID` is a global ID. It is encoded as a string.
 
 An example `ReleasesLinkID` is: `"gid://gitlab/Releases::Link/1"`.
+
+### `SecurityTrainingProviderID`
+
+A `SecurityTrainingProviderID` is a global ID. It is encoded as a string.
+
+An example `SecurityTrainingProviderID` is: `"gid://gitlab/Security::TrainingProvider/1"`.
 
 ### `SnippetID`
 

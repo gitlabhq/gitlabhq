@@ -295,6 +295,14 @@ module QA
         ENV['JIRA_HOSTNAME']
       end
 
+      # this is set by the integrations job
+      # which will allow bidirectional communication
+      # between the app and the specs container
+      # should the specs container spin up a server
+      def qa_hostname
+        ENV['QA_HOSTNAME']
+      end
+
       def cache_namespace_name?
         enabled?(ENV['CACHE_NAMESPACE_NAME'], default: true)
       end

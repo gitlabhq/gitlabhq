@@ -1458,14 +1458,6 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Accept and merge changes submitted with MR using this API.
 
-If a merge request is unable to be accepted (such as Draft, Closed, Pipeline Pending Completion, or Failed while requiring Success) - you receive a `405` and the error message 'Method Not Allowed'
-
-If it has some conflicts and can not be merged - you receive a `406` and the error message 'Branch cannot be merged'
-
-If the `sha` parameter is passed and does not match the HEAD of the source - you receive a `409` and the error message 'SHA does not match HEAD of source branch'
-
-If you don't have permissions to accept this merge request - you receive a `401`
-
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/merge
 ```
@@ -1631,7 +1623,16 @@ the `approvals_before_merge` parameter:
 }
 ```
 
-For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
+This API returns specific HTTP status codes on failure:
+
+| HTTP Status | Message | Reason |
+| :---: | ------- | ------ |
+| `401` | `Unauthorized` | This user does not have permission to accept this merge request. |
+| `405` | `Method Not Allowed` | The merge request cannot be accepted because it is `Draft`, `Closed`, `Pipeline Pending Completion`, or `Failed`. `Success` is required. |
+| `406` | `Branch cannot be merged` | The branch has conflicts and cannot be merged. |
+| `409` | `SHA does not match HEAD of source branch` | The provided `sha` parameter does not match the HEAD of the source. |
+
+For additional important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
 
 ## Merge to default merge ref path
 

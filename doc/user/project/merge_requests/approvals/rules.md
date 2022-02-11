@@ -127,8 +127,8 @@ users were not explicitly listed in the approval rules.
 ### Group approvers
 
 You can add a group of users as approvers, but those users count as approvers only if
-they have direct membership to the group. In the future, group approvers may be
-restricted to only groups [with share access to the project](https://gitlab.com/gitlab-org/gitlab/-/issues/2048).
+they have direct membership to the group. Group approvers are
+restricted to only groups [with share access to the project](../../members/share_project_with_groups.md).
 
 A user's membership in an approvers group affects their individual ability to
 approve in these ways:

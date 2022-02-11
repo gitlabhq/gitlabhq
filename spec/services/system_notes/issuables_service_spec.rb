@@ -188,6 +188,54 @@ RSpec.describe ::SystemNotes::IssuablesService do
     end
   end
 
+  describe '#change_issuable_contacts' do
+    subject { service.change_issuable_contacts(1, 1) }
+
+    let_it_be(:noteable) { create(:issue, project: project) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'contact' }
+    end
+
+    def build_note(added_count, removed_count)
+      service.change_issuable_contacts(added_count, removed_count).note
+    end
+
+    it 'builds a correct phrase when one contact is added' do
+      expect(build_note(1, 0)).to eq "added 1 contact"
+    end
+
+    it 'builds a correct phrase when one contact is removed' do
+      expect(build_note(0, 1)).to eq "removed 1 contact"
+    end
+
+    it 'builds a correct phrase when one contact is added and one contact is removed' do
+      expect(build_note(1, 1)).to(
+        eq("added 1 contact and removed 1 contact")
+      )
+    end
+
+    it 'builds a correct phrase when three contacts are added and one removed' do
+      expect(build_note(3, 1)).to(
+        eq("added 3 contacts and removed 1 contact")
+      )
+    end
+
+    it 'builds a correct phrase when three contacts are removed and one added' do
+      expect(build_note(1, 3)).to(
+        eq("added 1 contact and removed 3 contacts")
+      )
+    end
+
+    it 'builds a correct phrase when the locale is different' do
+      Gitlab::I18n.with_locale('pt-BR') do
+        expect(build_note(1, 3)).to(
+          eq("added 1 contact and removed 3 contacts")
+        )
+      end
+    end
+  end
+
   describe '#change_status' do
     subject { service.change_status(status, source) }
 

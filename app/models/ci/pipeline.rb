@@ -40,6 +40,10 @@ module Ci
     # https://gitlab.com/gitlab-org/gitlab/-/issues/259010
     attr_accessor :merged_yaml
 
+    # This is used to retain access to the method defined by `Ci::HasRef`
+    # before being overridden in this class.
+    alias_method :jobs_git_ref, :git_ref
+
     belongs_to :project, inverse_of: :all_pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'

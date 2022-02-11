@@ -1,0 +1,8 @@
+---
+name: elastic_migration_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80310
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352424
+milestone: '14.8'
+type: ops
+group: group::global search
+default_enabled: true

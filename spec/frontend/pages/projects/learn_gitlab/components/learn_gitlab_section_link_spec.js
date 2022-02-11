@@ -33,6 +33,8 @@ describe('Learn GitLab Section Link', () => {
   const openInviteMembesrModalLink = () =>
     wrapper.find('[data-testid="invite-for-help-continuous-onboarding-experiment-link"]');
 
+  const findUncompletedLink = () => wrapper.find('[data-testid="uncompleted-learn-gitlab-link"]');
+
   it('renders no icon when not completed', () => {
     createWrapper(undefined, { completed: false });
 
@@ -57,12 +59,30 @@ describe('Learn GitLab Section Link', () => {
     expect(wrapper.find('[data-testid="trial-only"]').exists()).toBe(true);
   });
 
-  it('renders doc links with blank target', () => {
-    createWrapper('securityScanEnabled', docLinkProps);
-    const linkElement = wrapper.find('[data-testid="uncompleted-learn-gitlab-link"]');
+  describe('doc links', () => {
+    beforeEach(() => {
+      createWrapper('securityScanEnabled', docLinkProps);
+    });
 
-    expect(linkElement.exists()).toBe(true);
-    expect(linkElement.attributes('target')).toEqual('_blank');
+    it('renders links with blank target', () => {
+      const linkElement = findUncompletedLink();
+
+      expect(linkElement.exists()).toBe(true);
+      expect(linkElement.attributes('target')).toEqual('_blank');
+    });
+
+    it('tracks the click', () => {
+      const trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
+
+      findUncompletedLink().trigger('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_link', {
+        label: 'Run a Security scan using CI/CD',
+        property: 'Growth::Conversion::Experiment::LearnGitLab',
+      });
+
+      unmockTracking();
+    });
   });
 
   describe('rendering a link to open the invite_members modal instead of a regular link', () => {

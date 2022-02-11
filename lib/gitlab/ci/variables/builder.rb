@@ -8,6 +8,7 @@ module Gitlab
 
         def initialize(pipeline)
           @pipeline = pipeline
+          @instance_variables_builder = Builder::Instance.new
         end
 
         def scoped_variables(job, environment:, dependencies:)
@@ -21,7 +22,7 @@ module Gitlab
             variables.concat(job.yaml_variables)
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
-            variables.concat(secret_instance_variables(ref: job.git_ref))
+            variables.concat(secret_instance_variables)
             variables.concat(secret_group_variables(environment: environment, ref: job.git_ref))
             variables.concat(secret_project_variables(environment: environment, ref: job.git_ref))
             variables.concat(job.trigger_request.user_variables) if job.trigger_request
@@ -62,8 +63,11 @@ module Gitlab
           end
         end
 
-        def secret_instance_variables(ref:)
-          project.ci_instance_variables_for(ref: ref)
+        def secret_instance_variables
+          strong_memoize(:secret_instance_variables) do
+            instance_variables_builder
+              .secret_variables(protected_ref: protected_ref?)
+          end
         end
 
         def secret_group_variables(environment:, ref:)
@@ -79,6 +83,7 @@ module Gitlab
         private
 
         attr_reader :pipeline
+        attr_reader :instance_variables_builder
         delegate :project, to: :pipeline
 
         def predefined_variables(job)
@@ -103,6 +108,12 @@ module Gitlab
           parallel = job.options&.dig(:parallel)
           parallel = parallel.dig(:total) if parallel.is_a?(Hash)
           parallel || 1
+        end
+
+        def protected_ref?
+          strong_memoize(:protected_ref) do
+            project.protected_for?(pipeline.jobs_git_ref)
+          end
         end
       end
     end
