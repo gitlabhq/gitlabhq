@@ -97,7 +97,7 @@ A personal access token can perform actions based on the assigned scopes.
 | `read_user`        | Read-only for endpoints under `/users`. Essentially, access to any of the `GET` requests in the [Users API](../../api/users.md). |
 | `read_api`         | Read-only for the complete API, including all groups and projects, the Container Registry, and the Package Registry. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28944) in GitLab 12.10.) |
 | `read_repository`  | Read-only (pull) for the repository through `git clone`. |
-| `write_repository` | Read-write (pull, push) for the repository through `git clone`. Required for accessing Git repositories over HTTP when 2FA is enabled. |
+| `write_repository` | Read-write (pull, push) for the repository through `git clone`. |
 | `read_registry`    | Read-only (pull) for [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. |
 | `write_registry`   | Read-write (push) for [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28958) in GitLab 12.10.) |
 | `sudo`             | API actions as any user in the system (if the authenticated user is an administrator). |
