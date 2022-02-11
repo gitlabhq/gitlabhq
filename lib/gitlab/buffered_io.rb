@@ -23,11 +23,10 @@ module Gitlab
     override :readuntil
     def readuntil(terminator, ignore_eof = false)
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      check_timeout = Feature.enabled?(:header_read_timeout_buffered_io)
 
       begin
         until idx = @rbuf.index(terminator)
-          if check_timeout && (elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) > HEADER_READ_TIMEOUT
+          if (elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) > HEADER_READ_TIMEOUT
             raise Gitlab::HTTP::HeaderReadTimeout, "Request timed out after reading headers for #{elapsed} seconds"
           end
 

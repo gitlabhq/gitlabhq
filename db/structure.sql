@@ -9917,6 +9917,29 @@ CREATE SEQUENCE alert_management_alert_assignees_id_seq
 
 ALTER SEQUENCE alert_management_alert_assignees_id_seq OWNED BY alert_management_alert_assignees.id;
 
+CREATE TABLE alert_management_alert_metric_images (
+    id bigint NOT NULL,
+    alert_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store smallint,
+    file text NOT NULL,
+    url text,
+    url_text text,
+    CONSTRAINT check_2587666252 CHECK ((char_length(url_text) <= 128)),
+    CONSTRAINT check_4d811d9007 CHECK ((char_length(url) <= 255)),
+    CONSTRAINT check_70fafae519 CHECK ((char_length(file) <= 255))
+);
+
+CREATE SEQUENCE alert_management_alert_metric_images_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE alert_management_alert_metric_images_id_seq OWNED BY alert_management_alert_metric_images.id;
+
 CREATE TABLE alert_management_alert_user_mentions (
     id bigint NOT NULL,
     alert_management_alert_id bigint NOT NULL,
@@ -21495,6 +21518,8 @@ ALTER TABLE ONLY agent_project_authorizations ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_assignees_id_seq'::regclass);
 
+ALTER TABLE ONLY alert_management_alert_metric_images ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_metric_images_id_seq'::regclass);
+
 ALTER TABLE ONLY alert_management_alert_user_mentions ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY alert_management_alerts ALTER COLUMN id SET DEFAULT nextval('alert_management_alerts_id_seq'::regclass);
@@ -22864,6 +22889,9 @@ ALTER TABLE ONLY agent_project_authorizations
 
 ALTER TABLE ONLY alert_management_alert_assignees
     ADD CONSTRAINT alert_management_alert_assignees_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY alert_management_alert_metric_images
+    ADD CONSTRAINT alert_management_alert_metric_images_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY alert_management_alert_user_mentions
     ADD CONSTRAINT alert_management_alert_user_mentions_pkey PRIMARY KEY (id);
@@ -25407,6 +25435,8 @@ CREATE INDEX index_agent_project_authorizations_on_project_id ON agent_project_a
 CREATE INDEX index_alert_assignees_on_alert_id ON alert_management_alert_assignees USING btree (alert_id);
 
 CREATE UNIQUE INDEX index_alert_assignees_on_user_id_and_alert_id ON alert_management_alert_assignees USING btree (user_id, alert_id);
+
+CREATE INDEX index_alert_management_alert_metric_images_on_alert_id ON alert_management_alert_metric_images USING btree (alert_id);
 
 CREATE INDEX index_alert_management_alerts_on_domain ON alert_management_alerts USING btree (domain);
 
@@ -30469,6 +30499,9 @@ ALTER TABLE ONLY container_repositories
 
 ALTER TABLE ONLY clusters_applications_jupyter
     ADD CONSTRAINT fk_rails_331f0aff78 FOREIGN KEY (oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY alert_management_alert_metric_images
+    ADD CONSTRAINT fk_rails_338e55b408 FOREIGN KEY (alert_id) REFERENCES alert_management_alerts(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY suggestions
     ADD CONSTRAINT fk_rails_33b03a535c FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;

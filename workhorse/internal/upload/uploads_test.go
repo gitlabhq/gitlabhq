@@ -581,15 +581,9 @@ func newProxy(url string) *proxy.Proxy {
 
 func waitUntilDeleted(t *testing.T, path string) {
 	var err error
-
-	// Poll because the file removal is async
-	for i := 0; i < 100; i++ {
+	require.Eventually(t, func() bool {
 		_, err = os.Stat(path)
-		if err != nil {
-			break
-		}
-		time.Sleep(100 * time.Millisecond)
-	}
-
+		return err != nil
+	}, 10*time.Second, 10*time.Millisecond)
 	require.True(t, os.IsNotExist(err), "expected the file to be deleted")
 }

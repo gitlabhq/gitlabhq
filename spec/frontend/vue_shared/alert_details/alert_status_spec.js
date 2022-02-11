@@ -176,17 +176,18 @@ describe('AlertManagementStatus', () => {
       jest.spyOn(Tracking, 'event');
     });
 
-    it('should not track alert status updates when the tracking options do not exist', () => {
+    it('should not track alert status updates when the tracking options do not exist', async () => {
       mountComponent({});
       Tracking.event.mockClear();
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({});
       findFirstStatusOption().vm.$emit('click');
-      setImmediate(() => {
-        expect(Tracking.event).not.toHaveBeenCalled();
-      });
+
+      await nextTick();
+
+      expect(Tracking.event).not.toHaveBeenCalled();
     });
 
-    it('should track alert status updates when the tracking options exist', () => {
+    it('should track alert status updates when the tracking options exist', async () => {
       const trackAlertStatusUpdateOptions = {
         category: 'Alert Management',
         action: 'update_alert_status',
@@ -196,11 +197,12 @@ describe('AlertManagementStatus', () => {
       Tracking.event.mockClear();
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({});
       findFirstStatusOption().vm.$emit('click');
+
+      await nextTick();
+
       const status = findFirstStatusOption().text();
-      setImmediate(() => {
-        const { category, action, label } = trackAlertStatusUpdateOptions;
-        expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property: status });
-      });
+      const { category, action, label } = trackAlertStatusUpdateOptions;
+      expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property: status });
     });
   });
 });

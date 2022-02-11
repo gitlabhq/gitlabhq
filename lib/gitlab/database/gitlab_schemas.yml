@@ -4,6 +4,7 @@ agent_group_authorizations: :gitlab_main
 agent_project_authorizations: :gitlab_main
 alert_management_alert_assignees: :gitlab_main
 alert_management_alerts: :gitlab_main
+alert_management_alert_metric_images: :gitlab_main
 alert_management_alert_user_mentions: :gitlab_main
 alert_management_http_integrations: :gitlab_main
 allowed_email_domains: :gitlab_main

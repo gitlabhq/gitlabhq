@@ -75,33 +75,29 @@ describe('ImageDiffViewer', () => {
     expect(metaInfoElements[1]).toHaveText('1.00 KiB');
   });
 
-  it('renders image diff for new', (done) => {
+  it('renders image diff for new', async () => {
     createComponent({ ...allProps, diffMode: 'new', oldPath: '' });
 
-    setImmediate(() => {
-      const metaInfoElement = vm.$el.querySelector('.image-info');
+    await nextTick();
 
-      expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
-      expect(metaInfoElement).toHaveText('1.00 KiB');
+    const metaInfoElement = vm.$el.querySelector('.image-info');
 
-      done();
-    });
+    expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
+    expect(metaInfoElement).toHaveText('1.00 KiB');
   });
 
-  it('renders image diff for deleted', (done) => {
+  it('renders image diff for deleted', async () => {
     createComponent({ ...allProps, diffMode: 'deleted', newPath: '' });
 
-    setImmediate(() => {
-      const metaInfoElement = vm.$el.querySelector('.image-info');
+    await nextTick();
 
-      expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(RED_BOX_IMAGE_URL);
-      expect(metaInfoElement).toHaveText('2.00 KiB');
+    const metaInfoElement = vm.$el.querySelector('.image-info');
 
-      done();
-    });
+    expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(RED_BOX_IMAGE_URL);
+    expect(metaInfoElement).toHaveText('2.00 KiB');
   });
 
-  it('renders image diff for renamed', (done) => {
+  it('renders image diff for renamed', async () => {
     vm = new Vue({
       components: {
         imageDiffViewer,
@@ -127,25 +123,21 @@ describe('ImageDiffViewer', () => {
       `),
     }).$mount();
 
-    setImmediate(() => {
-      const metaInfoElement = vm.$el.querySelector('.image-info');
+    await nextTick();
 
-      expect(vm.$el.querySelector('img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
-      expect(vm.$el.querySelector('.overlay')).not.toBe(null);
+    const metaInfoElement = vm.$el.querySelector('.image-info');
 
-      expect(metaInfoElement).toHaveText('2.00 KiB');
+    expect(vm.$el.querySelector('img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
+    expect(vm.$el.querySelector('.overlay')).not.toBe(null);
 
-      done();
-    });
+    expect(metaInfoElement).toHaveText('2.00 KiB');
   });
 
   describe('swipeMode', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       createComponent({ ...requiredProps });
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('switches to Swipe Mode', async () => {
@@ -157,12 +149,10 @@ describe('ImageDiffViewer', () => {
   });
 
   describe('onionSkin', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       createComponent({ ...requiredProps });
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('switches to Onion Skin Mode', async () => {

@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import WorkInProgress from '~/vue_merge_request_widget/components/states/work_in_progress.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -47,7 +48,7 @@ describe('Wip', () => {
     };
 
     describe('handleRemoveDraft', () => {
-      it('should make a request to service and handle response', (done) => {
+      it('should make a request to service and handle response', async () => {
         const vm = createComponent();
 
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
@@ -60,12 +61,12 @@ describe('Wip', () => {
         );
 
         vm.handleRemoveDraft();
-        setImmediate(() => {
-          expect(vm.isMakingRequest).toBeTruthy();
-          expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
-          expect(toast).toHaveBeenCalledWith('Marked as ready. Merging is now allowed.');
-          done();
-        });
+
+        await waitForPromises();
+
+        expect(vm.isMakingRequest).toBeTruthy();
+        expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
+        expect(toast).toHaveBeenCalledWith('Marked as ready. Merging is now allowed.');
       });
     });
   });
@@ -91,13 +92,12 @@ describe('Wip', () => {
       );
     });
 
-    it('should not show removeWIP button is user cannot update MR', (done) => {
+    it('should not show removeWIP button is user cannot update MR', async () => {
       vm.mr.removeWIPPath = '';
 
-      nextTick(() => {
-        expect(el.querySelector('.js-remove-draft')).toEqual(null);
-        done();
-      });
+      await nextTick();
+
+      expect(el.querySelector('.js-remove-draft')).toEqual(null);
     });
   });
 });

@@ -28,29 +28,15 @@ func testDeadline() time.Time {
 
 func requireFileGetsRemovedAsync(t *testing.T, filePath string) {
 	var err error
-
-	// Poll because the file removal is async
-	for i := 0; i < 100; i++ {
+	require.Eventually(t, func() bool {
 		_, err = os.Stat(filePath)
-		if err != nil {
-			break
-		}
-		time.Sleep(100 * time.Millisecond)
-	}
-
+		return err != nil
+	}, 10*time.Second, 10*time.Millisecond)
 	require.True(t, os.IsNotExist(err), "File hasn't been deleted during cleanup")
 }
 
 func requireObjectStoreDeletedAsync(t *testing.T, expectedDeletes int, osStub *test.ObjectstoreStub) {
-	// Poll because the object removal is async
-	for i := 0; i < 100; i++ {
-		if osStub.DeletesCnt() == expectedDeletes {
-			break
-		}
-		time.Sleep(10 * time.Millisecond)
-	}
-
-	require.Equal(t, expectedDeletes, osStub.DeletesCnt(), "Object not deleted")
+	require.Eventually(t, func() bool { return osStub.DeletesCnt() == expectedDeletes }, time.Second, time.Millisecond, "Object not deleted")
 }
 
 func TestSaveFileWrongSize(t *testing.T) {

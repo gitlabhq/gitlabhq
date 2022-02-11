@@ -27,11 +27,21 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
       end
     end
 
+    context 'with header_read_timeout_buffered_io feature disabled' do
+      before do
+        stub_feature_flags(header_read_timeout_buffered_io: false)
+      end
+
+      it 'uses the regular Net::HTTP class' do
+        expect(connection).to be_a(Net::HTTP)
+      end
+    end
+
     context 'when local requests are allowed' do
       let(:options) { { allow_local_requests: true } }
 
       it 'sets up the connection' do
-        expect(connection).to be_a(Net::HTTP)
+        expect(connection).to be_a(Gitlab::NetHttpAdapter)
         expect(connection.address).to eq('93.184.216.34')
         expect(connection.hostname_override).to eq('example.org')
         expect(connection.addr_port).to eq('example.org')
@@ -43,7 +53,7 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
       let(:options) { { allow_local_requests: false } }
 
       it 'sets up the connection' do
-        expect(connection).to be_a(Net::HTTP)
+        expect(connection).to be_a(Gitlab::NetHttpAdapter)
         expect(connection.address).to eq('93.184.216.34')
         expect(connection.hostname_override).to eq('example.org')
         expect(connection.addr_port).to eq('example.org')
@@ -64,7 +74,7 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
           let(:options) { { allow_local_requests: true } }
 
           it 'sets up the connection' do
-            expect(connection).to be_a(Net::HTTP)
+            expect(connection).to be_a(Gitlab::NetHttpAdapter)
             expect(connection.address).to eq('172.16.0.0')
             expect(connection.hostname_override).to be(nil)
             expect(connection.addr_port).to eq('172.16.0.0')
@@ -87,7 +97,7 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
           let(:options) { { allow_local_requests: true } }
 
           it 'sets up the connection' do
-            expect(connection).to be_a(Net::HTTP)
+            expect(connection).to be_a(Gitlab::NetHttpAdapter)
             expect(connection.address).to eq('127.0.0.1')
             expect(connection.hostname_override).to be(nil)
             expect(connection.addr_port).to eq('127.0.0.1')
@@ -100,7 +110,7 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
         let(:uri) { URI('https://example.org:8080') }
 
         it 'sets up the addr_port accordingly' do
-          expect(connection).to be_a(Net::HTTP)
+          expect(connection).to be_a(Gitlab::NetHttpAdapter)
           expect(connection.address).to eq('93.184.216.34')
           expect(connection.hostname_override).to eq('example.org')
           expect(connection.addr_port).to eq('example.org:8080')
@@ -115,7 +125,7 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
       end
 
       it 'sets up the connection' do
-        expect(connection).to be_a(Net::HTTP)
+        expect(connection).to be_a(Gitlab::NetHttpAdapter)
         expect(connection.address).to eq('example.org')
         expect(connection.hostname_override).to eq(nil)
         expect(connection.addr_port).to eq('example.org')
@@ -129,7 +139,7 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
       end
 
       it 'sets up the connection' do
-        expect(connection).to be_a(Net::HTTP)
+        expect(connection).to be_a(Gitlab::NetHttpAdapter)
         expect(connection.address).to eq('example.org')
         expect(connection.hostname_override).to eq(nil)
         expect(connection.addr_port).to eq('example.org')

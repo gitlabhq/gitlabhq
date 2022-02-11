@@ -1,6 +1,7 @@
 import { getByRole } from '@testing-library/dom';
 import Vue, { nextTick } from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import modalEventHub from '~/projects/commit/event_hub';
 import mergedComponent from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
@@ -127,7 +128,7 @@ describe('MRWidgetMerged', () => {
 
   describe('methods', () => {
     describe('removeSourceBranch', () => {
-      it('should set flag and call service then request main component to update the widget', (done) => {
+      it('should set flag and call service then request main component to update the widget', async () => {
         jest.spyOn(vm.service, 'removeSourceBranch').mockReturnValue(
           new Promise((resolve) => {
             resolve({
@@ -139,14 +140,14 @@ describe('MRWidgetMerged', () => {
         );
 
         vm.removeSourceBranch();
-        setImmediate(() => {
-          const args = eventHub.$emit.mock.calls[0];
 
-          expect(vm.isMakingRequest).toEqual(true);
-          expect(args[0]).toEqual('MRWidgetUpdateRequested');
-          expect(args[1]).not.toThrow();
-          done();
-        });
+        await waitForPromises();
+
+        const args = eventHub.$emit.mock.calls[0];
+
+        expect(vm.isMakingRequest).toEqual(true);
+        expect(args[0]).toEqual('MRWidgetUpdateRequested');
+        expect(args[1]).not.toThrow();
       });
     });
   });

@@ -9,9 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78364) in GitLab 14.8.
 
-You can configure the per-user rate limit for requests to the users API endpoint to get a user by ID.
+You can configure the per user rate limit for requests to [Users API](../../../api/users.md).
 
-To change getting a single user rate limit:
+To change the rate limit:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.

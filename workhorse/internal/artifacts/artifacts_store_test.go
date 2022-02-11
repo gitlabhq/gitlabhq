@@ -284,12 +284,9 @@ func TestUploadHandlerMultipartUploadSizeLimit(t *testing.T) {
 	contentBuffer, contentType := createTestMultipartForm(t, make([]byte, uploadSize))
 	response := testUploadArtifacts(t, contentType, ts.URL+Path, &contentBuffer)
 	require.Equal(t, http.StatusRequestEntityTooLarge, response.Code)
-
-	// Poll because AbortMultipartUpload is async
-	for i := 0; os.IsMultipartUpload(test.ObjectPath) && i < 100; i++ {
-		time.Sleep(10 * time.Millisecond)
-	}
-	require.False(t, os.IsMultipartUpload(test.ObjectPath), "MultipartUpload should not be in progress anymore")
+	require.Eventually(t, func() bool {
+		return !os.IsMultipartUpload(test.ObjectPath)
+	}, time.Second, time.Millisecond, "MultipartUpload should not be in progress anymore")
 	require.Empty(t, os.GetObjectMD5(test.ObjectPath), "upload should have failed, so the object should not exists")
 }
 

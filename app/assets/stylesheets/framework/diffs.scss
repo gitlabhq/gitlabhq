@@ -1190,7 +1190,7 @@ table.code {
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, md)-1) {
+@media (max-width: map-get($grid-breakpoints, lg)-1) {
   .diffs .files {
     @include fixed-width-container;
     flex-direction: column;

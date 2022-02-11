@@ -49,16 +49,6 @@ RSpec.describe Gitlab::BufferedIo do
     it 'raises a timeout error' do
       expect { readuntil }.to raise_error(Gitlab::HTTP::HeaderReadTimeout, /Request timed out after reading headers for 0\.[0-9]+ seconds/)
     end
-
-    context 'when the header_read_timeout feature is disabled' do
-      before do
-        stub_feature_flags(header_read_timeout_buffered_io: false)
-      end
-
-      it 'does not raise a timeout error' do
-        expect { readuntil }.to raise_error(RuntimeError, 'Test did not raise HeaderReadTimeout')
-      end
-    end
   end
 end
 # rubocop:enable Style/FrozenStringLiteralComment

@@ -29301,6 +29301,9 @@ msgstr ""
 msgid "ProtectedBranch|Unprotect"
 msgstr ""
 
+msgid "ProtectedBranch|Unprotect branch"
+msgstr ""
+
 msgid "ProtectedBranch|What are protected branches?"
 msgstr ""
 
@@ -29347,6 +29350,9 @@ msgid "ProtectedEnvironment|Your environment has been protected."
 msgstr ""
 
 msgid "ProtectedEnvironment|Your environment has been unprotected"
+msgstr ""
+
+msgid "ProtectedTags|Unprotect tag"
 msgstr ""
 
 msgid "ProtectedTags|default"

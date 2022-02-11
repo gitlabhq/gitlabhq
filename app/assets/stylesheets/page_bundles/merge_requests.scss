@@ -97,7 +97,7 @@ $tabs-holder-z-index: 250;
   line-height: 0;
 }
 
-@media (max-width: map-get($grid-breakpoints, md)-1) {
+@media (max-width: map-get($grid-breakpoints, lg)-1) {
   .diffs .files {
     .diff-tree-list {
       position: relative;

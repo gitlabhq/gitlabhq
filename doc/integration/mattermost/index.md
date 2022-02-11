@@ -372,18 +372,10 @@ For a complete list of upgrade notices and special considerations for older vers
 
 ## Upgrading GitLab Mattermost to 14.6
 
-GitLab 14.6 includes Mattermost 6.1, and also includes the migrations for Mattermost 6.0. For information about upgrading and for ways to reduce the downtime of those migrations, read the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) for both versions.
+GitLab 14.6 ships with Mattermost 6.1 including potentially long running database migrations for Mattermost 6.0. For information about upgrading and for ways to reduce the downtime caused by those migrations, read the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) for both versions. If you need to perform any manual migrations, [connect to the bundled PostgreSQL database](#connecting-to-the-bundled-postgresql-database).
 
 NOTE:
 The Mattermost upgrade notes refer to different impacts when used with a PostgreSQL versus a MySQL database. The GitLab Mattermost included with the GitLab Linux packages uses a PostgreSQL database.
-
-If you need to connect in the database to perform any manual migrations, run the following:
-
-```console
-sudo gitlab-psql -d mattermost_production
-```
-
-You can then run the necessary queries that are described in the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html).
 
 ## Upgrading GitLab Mattermost from versions prior to 11.0
 
