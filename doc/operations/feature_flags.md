@@ -168,7 +168,7 @@ target users. See the [Ruby example](#ruby-application-example) below.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
 
 Search your project and find any references of a feature flag in your
-code so that you and clean it up when it's time to remove the feature flag.
+code so that you can clean it up when it's time to remove the feature flag.
 
 To search for code references of a feature flag:
 

@@ -706,7 +706,7 @@ Here is an example of a release evidence object:
 
 ### Collect release evidence **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
 
 When a release is created, release evidence is automatically collected. To initiate evidence collection any other time, use an [API call](../../../api/releases/index.md#collect-release-evidence). You can collect release evidence multiple times for one release.
 
@@ -714,7 +714,7 @@ Evidence collection snapshots are visible on the Releases page, along with the t
 
 ### Include report artifacts as release evidence **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in GitLab 13.2.
 
 When you create a release, if [job artifacts](../../../ci/yaml/index.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
 

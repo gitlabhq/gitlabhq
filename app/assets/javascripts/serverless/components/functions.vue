@@ -1,8 +1,14 @@
 <script>
-import { GlLink, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import {
+  GlLink,
+  GlAlert,
+  GlSprintf,
+  GlLoadingIcon,
+  GlSafeHtmlDirective as SafeHtml,
+} from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { sprintf, s__ } from '~/locale';
-import { CHECKING_INSTALLED } from '../constants';
+import { CHECKING_INSTALLED, DEPRECATION_POST_LINK } from '../constants';
 import EmptyState from './empty_state.vue';
 import EnvironmentRow from './environment_row.vue';
 
@@ -11,11 +17,14 @@ export default {
     EnvironmentRow,
     EmptyState,
     GlLink,
+    GlAlert,
+    GlSprintf,
     GlLoadingIcon,
   },
   directives: {
     SafeHtml,
   },
+  deprecationPostLink: DEPRECATION_POST_LINK,
   computed: {
     ...mapState(['installed', 'isLoading', 'hasFunctionData', 'helpPath', 'statusPath']),
     ...mapGetters(['getFunctions']),
@@ -65,6 +74,17 @@ export default {
 
 <template>
   <section id="serverless-functions" class="flex-grow">
+    <gl-alert class="gl-mt-6" variant="warning" :dismissible="false">
+      <gl-sprintf
+        :message="s__('Serverless|Serverless was %{linkStart}deprecated%{linkEnd} in GitLab 14.3.')"
+        ><template #link="{ content }"
+          ><gl-link :href="$options.deprecationPostLink" target="_blank">{{
+            content
+          }}</gl-link></template
+        ></gl-sprintf
+      >
+    </gl-alert>
+
     <gl-loading-icon v-if="checkingInstalled" size="lg" class="gl-mt-3 gl-mb-3" />
 
     <div v-else-if="isInstalled">

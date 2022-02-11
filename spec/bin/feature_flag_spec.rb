@@ -25,7 +25,7 @@ RSpec.describe 'bin/feature-flag' do
       allow(File).to receive(:write).and_return(true)
 
       # ignore stdin
-      allow($stdin).to receive(:gets).and_raise('EOF')
+      allow(Readline).to receive(:readline).and_raise('EOF')
     end
 
     subject { creator.execute }
@@ -135,8 +135,8 @@ RSpec.describe 'bin/feature-flag' do
           let(:type) { 'deprecated' }
 
           it 'shows error message and retries' do
-            expect($stdin).to receive(:gets).and_return(type)
-            expect($stdin).to receive(:gets).and_raise('EOF')
+            expect(Readline).to receive(:readline).and_return(type)
+            expect(Readline).to receive(:readline).and_raise('EOF')
 
             expect do
               expect { described_class.read_type }.to raise_error(/EOF/)
@@ -154,8 +154,8 @@ RSpec.describe 'bin/feature-flag' do
           )
         end
 
-        it 'reads type from $stdin' do
-          expect($stdin).to receive(:gets).and_return(type)
+        it 'reads type from stdin' do
+          expect(Readline).to receive(:readline).and_return(type)
           expect do
             expect(described_class.read_type).to eq(:development)
           end.to output(/Specify the feature flag type/).to_stdout
@@ -165,8 +165,8 @@ RSpec.describe 'bin/feature-flag' do
           let(:type) { 'invalid' }
 
           it 'shows error message and retries' do
-            expect($stdin).to receive(:gets).and_return(type)
-            expect($stdin).to receive(:gets).and_raise('EOF')
+            expect(Readline).to receive(:readline).and_return(type)
+            expect(Readline).to receive(:readline).and_raise('EOF')
 
             expect do
               expect { described_class.read_type }.to raise_error(/EOF/)
@@ -180,8 +180,8 @@ RSpec.describe 'bin/feature-flag' do
     describe '.read_group' do
       let(:group) { 'group::memory' }
 
-      it 'reads type from $stdin' do
-        expect($stdin).to receive(:gets).and_return(group)
+      it 'reads type from stdin' do
+        expect(Readline).to receive(:readline).and_return(group)
         expect do
           expect(described_class.read_group).to eq('group::memory')
         end.to output(/Specify the group introducing the feature flag/).to_stdout
@@ -191,8 +191,8 @@ RSpec.describe 'bin/feature-flag' do
         let(:type) { 'invalid' }
 
         it 'shows error message and retries' do
-          expect($stdin).to receive(:gets).and_return(type)
-          expect($stdin).to receive(:gets).and_raise('EOF')
+          expect(Readline).to receive(:readline).and_return(type)
+          expect(Readline).to receive(:readline).and_raise('EOF')
 
           expect do
             expect { described_class.read_group }.to raise_error(/EOF/)
@@ -205,8 +205,8 @@ RSpec.describe 'bin/feature-flag' do
     describe '.read_introduced_by_url' do
       let(:url) { 'https://merge-request' }
 
-      it 'reads type from $stdin' do
-        expect($stdin).to receive(:gets).and_return(url)
+      it 'reads type from stdin' do
+        expect(Readline).to receive(:readline).and_return(url)
         expect do
           expect(described_class.read_introduced_by_url).to eq('https://merge-request')
         end.to output(/URL of the MR introducing the feature flag/).to_stdout
@@ -216,7 +216,7 @@ RSpec.describe 'bin/feature-flag' do
         let(:url) { '' }
 
         it 'skips entry' do
-          expect($stdin).to receive(:gets).and_return(url)
+          expect(Readline).to receive(:readline).and_return(url)
           expect do
             expect(described_class.read_introduced_by_url).to be_nil
           end.to output(/URL of the MR introducing the feature flag/).to_stdout
@@ -227,8 +227,8 @@ RSpec.describe 'bin/feature-flag' do
         let(:url) { 'invalid' }
 
         it 'shows error message and retries' do
-          expect($stdin).to receive(:gets).and_return(url)
-          expect($stdin).to receive(:gets).and_raise('EOF')
+          expect(Readline).to receive(:readline).and_return(url)
+          expect(Readline).to receive(:readline).and_raise('EOF')
 
           expect do
             expect { described_class.read_introduced_by_url }.to raise_error(/EOF/)
@@ -242,8 +242,8 @@ RSpec.describe 'bin/feature-flag' do
       let(:options) { double('options', name: 'foo', type: :development) }
       let(:url) { 'https://issue' }
 
-      it 'reads type from $stdin' do
-        expect($stdin).to receive(:gets).and_return(url)
+      it 'reads type from stdin' do
+        expect(Readline).to receive(:readline).and_return(url)
         expect do
           expect(described_class.read_rollout_issue_url(options)).to eq('https://issue')
         end.to output(/URL of the rollout issue/).to_stdout
@@ -253,8 +253,8 @@ RSpec.describe 'bin/feature-flag' do
         let(:type) { 'invalid' }
 
         it 'shows error message and retries' do
-          expect($stdin).to receive(:gets).and_return(type)
-          expect($stdin).to receive(:gets).and_raise('EOF')
+          expect(Readline).to receive(:readline).and_return(type)
+          expect(Readline).to receive(:readline).and_raise('EOF')
 
           expect do
             expect { described_class.read_rollout_issue_url(options) }.to raise_error(/EOF/)

@@ -725,11 +725,14 @@ svg {
   margin-top: 40px;
 }
 .devise-layout-html body .navless-container {
-  padding: 65px 15px;
+  padding: 0 15px 65px;
+}
+.devise-layout-html body .flash-container {
+  padding-bottom: 65px;
 }
 @media (max-width: 575.98px) {
-  .devise-layout-html body .navless-container {
-    padding: 0 15px 65px;
+  .devise-layout-html body .flash-container {
+    padding-bottom: 0;
   }
 }
 

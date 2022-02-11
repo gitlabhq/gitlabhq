@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner do
+  RSpec.describe 'Verify', :runner, quarantine: {
+    type: :flaky,
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/351994'
+  } do
     describe 'Run pipeline with manual jobs' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

@@ -46,6 +46,7 @@ gemnasium-dependency_scanning:
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
     DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium:$DS_MAJOR_VERSION"
+    GEMNASIUM_LIBRARY_SCAN_ENABLED: "true"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never

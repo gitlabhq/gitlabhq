@@ -15985,6 +15985,9 @@ msgstr ""
 msgid "Geo|Failed"
 msgstr ""
 
+msgid "Geo|Filter Geo sites"
+msgstr ""
+
 msgid "Geo|Filter by name"
 msgstr ""
 
@@ -32966,13 +32969,7 @@ msgstr ""
 msgid "Serverless|Getting started with serverless"
 msgstr ""
 
-msgid "Serverless|Help shape the future of Serverless at GitLab"
-msgstr ""
-
 msgid "Serverless|If you believe none of these apply, please check back later as the function data may be in the process of becoming available."
-msgstr ""
-
-msgid "Serverless|In order to start using functions as a service, you must first install Knative on your Kubernetes cluster. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "Serverless|Learn more about Serverless"
@@ -32981,7 +32978,10 @@ msgstr ""
 msgid "Serverless|No functions available"
 msgstr ""
 
-msgid "Serverless|Sign up for First Look"
+msgid "Serverless|Serverless was %{linkStart}deprecated%{linkEnd} in GitLab 14.3."
+msgstr ""
+
+msgid "Serverless|Serverless was %{postLinkStart}deprecated%{postLinkEnd}. But if you opt to use it, you must install Knative in your Kubernetes cluster first. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "Serverless|The deploy job has not finished."
@@ -32991,9 +32991,6 @@ msgid "Serverless|The functions listed in the %{startTag}serverless.yml%{endTag}
 msgstr ""
 
 msgid "Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:"
-msgstr ""
-
-msgid "Serverless|We are continually striving to improve our Serverless functionality. As a Knative user, we would love to hear how we can make this experience better for you. Sign up for GitLab First Look today and we will be in touch shortly."
 msgstr ""
 
 msgid "Serverless|Your %{startTag}.gitlab-ci.yml%{endTag} file is not properly configured."

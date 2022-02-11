@@ -49,8 +49,10 @@ Before updating GitLab, review the details carefully to determine if you need to
 changes to your code, settings, or workflow.
 
 <%= deprecation["body"] -%><% else %>
-<%= deprecation["body"] -%><% end %>
+<%= deprecation["body"] -%><% end %><%- if deprecation["removal_milestone"] -%>
+
 **Planned removal milestone: <%= deprecation["removal_milestone"]%> (<%= deprecation["removal_date"]%>)**
+      <%- end -%>
     <%- end -%>
   <%- end -%>
 <%- else -%>

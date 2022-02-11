@@ -418,6 +418,9 @@ The following analyzers are executed, each of which have different behavior when
    Does not support multiple lockfiles. When multiple lockfiles exist, `Retire.js`
    analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
 
+From GitLab 14.8 the `Gemnasium` analyzer scans supported JavaScript projects for vendored libraries
+(that is, those checked into the project but not managed by the package manager).
+
 We execute both analyzers because they use different sources of vulnerability data. The result is more comprehensive analysis than if only one was executed.
 
 #### PHP, Go, C, C++, .NET, C&#35;
@@ -547,7 +550,7 @@ The following variables allow configuration of global dependency scanning settin
 The following variables are used for configuring specific analyzers (used for a specific language/framework).
 
 | CI/CD variable                       | Analyzer           | Default                      | Description |
-| ------------------------------------ | ------------------ | ---------------------------- |------------ |
+|--------------------------------------| ------------------ | ---------------------------- |------------ |
 | `BUNDLER_AUDIT_UPDATE_DISABLED`      | `bundler-audit`    | `"false"`                    | Disable automatic updates for the `bundler-audit` analyzer. Use if you're running dependency scanning in an offline, air-gapped environment.|
 | `BUNDLER_AUDIT_ADVISORY_DB_URL`      | `bundler-audit`    | `https://github.com/rubysec/ruby-advisory-db` | URL of the advisory database used by bundler-audit. |
 | `BUNDLER_AUDIT_ADVISORY_DB_REF_NAME` | `bundler-audit`    | `master`                     | Git ref for the advisory database specified by `BUNDLER_AUDIT_ADVISORY_DB_URL`. |
@@ -556,6 +559,7 @@ The following variables are used for configuring specific analyzers (used for a 
 | `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the Gemnasium database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`                     | Enable automatic remediation of vulnerable dependencies. |
+| `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries. For now, `gemnasium` leverages [`Retire.js`](https://github.com/RetireJS/retire.js) to do this job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350512) in GitLab 14.8. |
 | `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`, `15`, `16`. |
 | `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
 | `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |

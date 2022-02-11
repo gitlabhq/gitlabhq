@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -25,6 +25,7 @@ describe('functionsComponent', () => {
     Vue.use(Vuex);
 
     store = createStore({});
+    component = shallowMount(functionsComponent, { store, stubs: { GlSprintf } });
   });
 
   afterEach(() => {
@@ -32,23 +33,26 @@ describe('functionsComponent', () => {
     axiosMock.restore();
   });
 
-  it('should render empty state when Knative is not installed', () => {
-    store.dispatch('receiveFunctionsSuccess', { knative_installed: false });
-    component = shallowMount(functionsComponent, { store });
-
-    expect(component.find(EmptyState).exists()).toBe(true);
+  it('should render deprecation notice', () => {
+    expect(component.findComponent(GlAlert).text()).toBe(
+      'Serverless was deprecated in GitLab 14.3.',
+    );
   });
 
-  it('should render a loading component', () => {
-    store.dispatch('requestFunctionsLoading');
-    component = shallowMount(functionsComponent, { store });
+  it('should render empty state when Knative is not installed', async () => {
+    await store.dispatch('receiveFunctionsSuccess', { knative_installed: false });
 
-    expect(component.find(GlLoadingIcon).exists()).toBe(true);
+    expect(component.findComponent(EmptyState).exists()).toBe(true);
   });
 
-  it('should render empty state when there is no function data', () => {
-    store.dispatch('receiveFunctionsNoDataSuccess', { knative_installed: true });
-    component = shallowMount(functionsComponent, { store });
+  it('should render a loading component', async () => {
+    await store.dispatch('requestFunctionsLoading');
+
+    expect(component.findComponent(GlLoadingIcon).exists()).toBe(true);
+  });
+
+  it('should render empty state when there is no function data', async () => {
+    await store.dispatch('receiveFunctionsNoDataSuccess', { knative_installed: true });
 
     expect(
       component.vm.$el
@@ -61,13 +65,11 @@ describe('functionsComponent', () => {
     );
   });
 
-  it('should render functions and a loader when functions are partially fetched', () => {
-    store.dispatch('receiveFunctionsPartial', {
+  it('should render functions and a loader when functions are partially fetched', async () => {
+    await store.dispatch('receiveFunctionsPartial', {
       ...mockServerlessFunctions,
       knative_installed: 'checking',
     });
-
-    component = shallowMount(functionsComponent, { store });
 
     expect(component.find('.js-functions-wrapper').exists()).toBe(true);
     expect(component.find('.js-functions-loader').exists()).toBe(true);
@@ -76,11 +78,9 @@ describe('functionsComponent', () => {
   it('should render the functions list', async () => {
     store = createStore({ clustersPath: 'clustersPath', helpPath: 'helpPath', statusPath });
 
-    component = shallowMount(functionsComponent, { store });
-
     await component.vm.$store.dispatch('receiveFunctionsSuccess', mockServerlessFunctions);
 
     await nextTick();
-    expect(component.find(EnvironmentRow).exists()).toBe(true);
+    expect(component.findComponent(EnvironmentRow).exists()).toBe(true);
   });
 });

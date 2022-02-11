@@ -69,8 +69,8 @@ starting in GitLab 14.0, GitLab will not check your repository's root for config
 
 ### OpenAPI Specification
 
-> Support for OpenAPI Specification using YAML format was
-> [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
+> - Support for OpenAPI Specification using YAML format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
+> - Support to generate media type `application/xml` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.8.
 
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an API description format for REST APIs.
 This section shows you how to configure API fuzzing using an OpenAPI Specification to provide information about the target API to test.
@@ -82,6 +82,7 @@ the body generation is limited to these body types:
 - `application/x-www-form-urlencoded`
 - `multipart/form-data`
 - `application/json`
+- `application/xml`
 
 Follow these steps to configure DAST API in GitLab with an OpenAPI specification:
 

@@ -530,18 +530,6 @@ RSpec.describe Gitlab::PathRegex do
       it { is_expected.not_to match('snippets/1.wiki.git') }
     end
 
-    describe '.git_reference_regex' do
-      subject { %r{\A#{described_class.git_reference_regex}\z} }
-
-      it { is_expected.to match('main') }
-      it { is_expected.to match('v1.2.3') }
-      it { is_expected.to match('refs/heads/main') }
-      it { is_expected.to match('1-2-3') }
-      it { is_expected.to match('1-----') }
-      it { is_expected.not_to match('-main') }
-      it { is_expected.not_to match('') }
-    end
-
     describe '.full_snippets_repository_path_regex' do
       subject { described_class.full_snippets_repository_path_regex }
 
