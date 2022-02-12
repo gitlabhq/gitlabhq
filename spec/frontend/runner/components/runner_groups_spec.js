@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-import RunnerDetailGroups from '~/runner/components/runner_detail_groups.vue';
+import RunnerGroups from '~/runner/components/runner_groups.vue';
 import RunnerAssignedItem from '~/runner/components/runner_assigned_item.vue';
 
 import { runnerData, runnerWithGroupData } from '../mock_data';
@@ -9,14 +9,14 @@ const mockInstanceRunner = runnerData.data.runner;
 const mockGroupRunner = runnerWithGroupData.data.runner;
 const mockGroup = mockGroupRunner.groups.nodes[0];
 
-describe('RunnerDetailGroups', () => {
+describe('RunnerGroups', () => {
   let wrapper;
 
   const findHeading = () => wrapper.find('h3');
   const findRunnerAssignedItems = () => wrapper.findAllComponents(RunnerAssignedItem);
 
   const createComponent = ({ runner = mockGroupRunner, mountFn = shallowMountExtended } = {}) => {
-    wrapper = mountFn(RunnerDetailGroups, {
+    wrapper = mountFn(RunnerGroups, {
       propsData: {
         runner,
       },

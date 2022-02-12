@@ -34,8 +34,6 @@ export default {
       <gl-avatar shape="rect" :entity-name="name" :alt="name" :src="avatarUrl" :size="48" />
     </gl-link>
 
-    <gl-link :href="href" class="gl-font-lg gl-font-weight-bold gl-text-gray-900!">{{
-      fullName
-    }}</gl-link>
+    <gl-link :href="href" class="gl-font-weight-bold gl-text-gray-900!">{{ fullName }}</gl-link>
   </div>
 </template>

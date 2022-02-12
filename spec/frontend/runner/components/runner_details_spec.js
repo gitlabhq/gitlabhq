@@ -7,7 +7,7 @@ import { ACCESS_LEVEL_REF_PROTECTED, ACCESS_LEVEL_NOT_PROTECTED } from '~/runner
 
 import RunnerDetails from '~/runner/components/runner_details.vue';
 import RunnerDetail from '~/runner/components/runner_detail.vue';
-import RunnerDetailGroups from '~/runner/components/runner_detail_groups.vue';
+import RunnerGroups from '~/runner/components/runner_groups.vue';
 
 import { runnerData, runnerWithGroupData } from '../mock_data';
 
@@ -35,7 +35,7 @@ describe('RunnerDetails', () => {
     return ErrorWrapper(dtLabel);
   };
 
-  const findDetailGroups = () => wrapper.findComponent(RunnerDetailGroups);
+  const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerDetails, {

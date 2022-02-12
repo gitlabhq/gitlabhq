@@ -3,6 +3,8 @@ import { __, s__ } from '~/locale';
 export const RUNNER_PAGE_SIZE = 20;
 export const RUNNER_JOB_COUNT_LIMIT = 1000;
 
+export const RUNNER_DETAILS_PROJECTS_PAGE_SIZE = 5;
+
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
@@ -38,6 +40,13 @@ export const I18N_RESUME = __('Resume');
 
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
 export const I18N_PAUSED_RUNNER_DESCRIPTION = s__('Runners|Not available to run jobs');
+
+// Runner details
+
+export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
+export const I18N_NONE = __('None');
+
+// Styles
 
 export const RUNNER_TAG_BADGE_VARIANT = 'neutral';
 export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';

@@ -1,0 +1,26 @@
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+
+query getRunnerProjects(
+  $id: CiRunnerID!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+) {
+  runner(id: $id) {
+    id
+    projectCount
+    projects(first: $first, last: $last, before: $before, after: $after) {
+      nodes {
+        id
+        avatarUrl
+        name
+        nameWithNamespace
+        webUrl
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

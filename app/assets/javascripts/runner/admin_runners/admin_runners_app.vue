@@ -279,7 +279,11 @@ export default {
           </gl-link>
         </template>
       </runner-list>
-      <runner-pagination v-model="search.pagination" :page-info="runners.pageInfo" />
+      <runner-pagination
+        v-model="search.pagination"
+        class="gl-mt-3"
+        :page-info="runners.pageInfo"
+      />
     </template>
   </div>
 </template>

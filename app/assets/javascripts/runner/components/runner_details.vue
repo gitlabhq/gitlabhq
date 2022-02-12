@@ -3,9 +3,10 @@ import { GlTabs, GlTab, GlIntersperse } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
-import { ACCESS_LEVEL_REF_PROTECTED, GROUP_TYPE } from '../constants';
+import { ACCESS_LEVEL_REF_PROTECTED, GROUP_TYPE, PROJECT_TYPE } from '../constants';
 import RunnerDetail from './runner_detail.vue';
-import RunnerDetailGroups from './runner_detail_groups.vue';
+import RunnerGroups from './runner_groups.vue';
+import RunnerProjects from './runner_projects.vue';
 import RunnerTags from './runner_tags.vue';
 
 export default {
@@ -14,7 +15,8 @@ export default {
     GlTab,
     GlIntersperse,
     RunnerDetail,
-    RunnerDetailGroups,
+    RunnerGroups,
+    RunnerProjects,
     RunnerTags,
     TimeAgo,
   },
@@ -47,6 +49,9 @@ export default {
     },
     isGroupRunner() {
       return this.runner?.runnerType === GROUP_TYPE;
+    },
+    isProjectRunner() {
+      return this.runner?.runnerType === PROJECT_TYPE;
     },
   },
   ACCESS_LEVEL_REF_PROTECTED,
@@ -94,7 +99,8 @@ export default {
           </dl>
         </div>
 
-        <runner-detail-groups v-if="isGroupRunner" :runner="runner" />
+        <runner-groups v-if="isGroupRunner" :runner="runner" />
+        <runner-projects v-if="isProjectRunner" :runner="runner" />
       </template>
     </gl-tab>
   </gl-tabs>
