@@ -4,7 +4,7 @@ import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dro
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 
 describe('Dropdown Utils', () => {
-  const issueListFixture = 'issues/issue_list.html';
+  const issuableListFixture = 'merge_requests/merge_request_list.html';
 
   describe('getEscapedText', () => {
     it('should return same word when it has no space', () => {
@@ -350,7 +350,7 @@ describe('Dropdown Utils', () => {
     let authorToken;
 
     beforeEach(() => {
-      loadFixtures(issueListFixture);
+      loadFixtures(issuableListFixture);
 
       authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '=', '@user');
       const searchTermToken = FilteredSearchSpecHelper.createSearchVisualToken('search term');

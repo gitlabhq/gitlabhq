@@ -63,7 +63,7 @@ module IssuesHelper
   end
 
   def issue_hidden?(issue)
-    Feature.enabled?(:ban_user_feature_flag) && issue.hidden?
+    Feature.enabled?(:ban_user_feature_flag, default_enabled: :yaml) && issue.hidden?
   end
 
   def hidden_issue_icon(issue)

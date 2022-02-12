@@ -1,5 +1,5 @@
 <script>
-import { pickBy, isEmpty } from 'lodash';
+import { pickBy, isEmpty, mapValues } from 'lodash';
 import { mapActions } from 'vuex';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
@@ -251,22 +251,36 @@ export default {
         );
       }
 
-      return {
-        ...notParams,
-        author_username: authorUsername,
-        'label_name[]': labelName,
-        assignee_username: assigneeUsername,
-        assignee_id: assigneeId,
-        milestone_title: milestoneTitle,
-        iteration_id: iterationId,
-        search,
-        types,
-        weight,
-        epic_id: isGid(epicId) ? getIdFromGraphQLId(epicId) : epicId,
-        my_reaction_emoji: myReactionEmoji,
-        release_tag: releaseTag,
-        confidential,
-      };
+      return mapValues(
+        {
+          ...notParams,
+          author_username: authorUsername,
+          'label_name[]': labelName,
+          assignee_username: assigneeUsername,
+          assignee_id: assigneeId,
+          milestone_title: milestoneTitle,
+          iteration_id: iterationId,
+          search,
+          types,
+          weight,
+          epic_id: isGid(epicId) ? getIdFromGraphQLId(epicId) : epicId,
+          my_reaction_emoji: myReactionEmoji,
+          release_tag: releaseTag,
+          confidential,
+        },
+        (value) => {
+          if (value || value === false) {
+            // note: need to check array for labels.
+            if (Array.isArray(value)) {
+              return value.map((valueItem) => encodeURIComponent(valueItem));
+            }
+
+            return encodeURIComponent(value);
+          }
+
+          return value;
+        },
+      );
     },
   },
   created() {

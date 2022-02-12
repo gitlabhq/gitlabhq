@@ -25,14 +25,20 @@ export default {
     workItemTypes() {
       return this.workItemHierarchy.reduce(
         (itemTypes, item) => {
+          const skipItem = workItemTypes[item.type].isWorkItem && !window.gon?.features?.workItems;
+
+          if (skipItem) {
+            return itemTypes;
+          }
           const key = item.available ? 'available' : 'unavailable';
+          const nestedTypes = item.nestedTypes?.map((type) => workItemTypes[type]);
+
           itemTypes[key].push({
             ...item,
             ...workItemTypes[item.type],
-            nestedTypes: item.nestedTypes
-              ? item.nestedTypes.map((type) => workItemTypes[type])
-              : null,
+            nestedTypes,
           });
+
           return itemTypes;
         },
         { available: [], unavailable: [] },

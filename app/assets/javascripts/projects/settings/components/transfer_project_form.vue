@@ -11,8 +11,12 @@ export default {
     ConfirmDanger,
   },
   props: {
-    namespaces: {
-      type: Object,
+    groupNamespaces: {
+      type: Array,
+      required: true,
+    },
+    userNamespaces: {
+      type: Array,
       required: true,
     },
     confirmationPhrase: {
@@ -46,7 +50,8 @@ export default {
       <namespace-select
         data-testid="transfer-project-namespace"
         :full-width="true"
-        :data="namespaces"
+        :group-namespaces="groupNamespaces"
+        :user-namespaces="userNamespaces"
         :selected-namespace="selectedNamespace"
         @select="handleSelect"
       />

@@ -3,10 +3,14 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import TransferProjectForm from './components/transfer_project_form.vue';
 
 const prepareNamespaces = (rawNamespaces = '') => {
+  if (!rawNamespaces) {
+    return { groupNamespaces: [], userNamespaces: [] };
+  }
+
   const data = JSON.parse(rawNamespaces);
   return {
-    group: data?.group.map(convertObjectPropsToCamelCase),
-    user: data?.user.map(convertObjectPropsToCamelCase),
+    groupNamespaces: data?.group?.map(convertObjectPropsToCamelCase) || [],
+    userNamespaces: data?.user?.map(convertObjectPropsToCamelCase) || [],
   };
 };
 
@@ -35,7 +39,7 @@ export default () => {
         props: {
           confirmButtonText,
           confirmationPhrase,
-          namespaces: prepareNamespaces(namespaces),
+          ...prepareNamespaces(namespaces),
         },
         on: {
           selectNamespace: (id) => {

@@ -31,6 +31,7 @@ export const workItemTypes = {
     icon: 'task-done',
     color: '#217645',
     backgroundColor: '#C3E6CD',
+    isWorkItem: true,
   },
   INCIDENT: {
     title: __('Incident'),

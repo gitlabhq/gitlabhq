@@ -42,6 +42,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:new_dir_modal, @project, default_enabled: :yaml)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:consolidated_edit_button, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:work_items, @project, default_enabled: :yaml)
   end
 
   layout :determine_layout

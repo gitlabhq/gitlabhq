@@ -20,8 +20,8 @@ export default {
     NamespaceSelect,
   },
   props: {
-    parentGroups: {
-      type: Object,
+    groupNamespaces: {
+      type: Array,
       required: true,
     },
     isPaidGroup: {
@@ -60,7 +60,7 @@ export default {
     <gl-form-group v-if="!isPaidGroup">
       <namespace-select
         :default-text="$options.i18n.dropdownTitle"
-        :data="parentGroups"
+        :group-namespaces="groupNamespaces"
         :empty-namespace-title="$options.i18n.emptyNamespaceTitle"
         :include-headers="false"
         include-empty-namespace

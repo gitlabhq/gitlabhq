@@ -5,22 +5,7 @@ require 'spec_helper'
 RSpec.describe Sidebars::Concerns::WorkItemHierarchy do
   shared_examples 'hierarchy menu' do
     let(:item_id) { :hierarchy }
-
-    context 'when the feature is disabled does not render' do
-      before do
-        stub_feature_flags(work_items_hierarchy: false)
-      end
-
-      specify { is_expected.to be_nil }
-    end
-
-    context 'when the feature is enabled does render' do
-      before do
-        stub_feature_flags(work_items_hierarchy: true)
-      end
-
-      specify { is_expected.not_to be_nil }
-    end
+    specify { is_expected.not_to be_nil }
   end
 
   describe 'Project hierarchy menu item' do

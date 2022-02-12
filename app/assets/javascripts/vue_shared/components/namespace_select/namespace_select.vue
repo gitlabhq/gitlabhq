@@ -34,9 +34,15 @@ export default {
     GlSearchBoxByType,
   },
   props: {
-    data: {
-      type: Object,
-      required: true,
+    groupNamespaces: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    userNamespaces: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     fullWidth: {
       type: Boolean,
@@ -72,18 +78,18 @@ export default {
   },
   computed: {
     hasUserNamespaces() {
-      return this.data.user?.length;
+      return this.userNamespaces.length;
     },
     hasGroupNamespaces() {
-      return this.data.group?.length;
+      return this.groupNamespaces.length;
     },
     filteredGroupNamespaces() {
       if (!this.hasGroupNamespaces) return [];
-      return filterByName(this.data.group, this.searchTerm);
+      return filterByName(this.groupNamespaces, this.searchTerm);
     },
     filteredUserNamespaces() {
       if (!this.hasUserNamespaces) return [];
-      return filterByName(this.data.user, this.searchTerm);
+      return filterByName(this.userNamespaces, this.searchTerm);
     },
     selectedNamespaceText() {
       return this.selectedNamespace?.humanName || this.defaultText;

@@ -125,7 +125,7 @@ module UsersHelper
   end
 
   def ban_feature_available?
-    Feature.enabled?(:ban_user_feature_flag)
+    Feature.enabled?(:ban_user_feature_flag, default_enabled: :yaml)
   end
 
   def confirm_user_data(user)

@@ -5,9 +5,9 @@ import NamespaceSelect, {
   i18n,
   EMPTY_NAMESPACE_ID,
 } from '~/vue_shared/components/namespace_select/namespace_select.vue';
-import { user, group, namespaces } from './mock_data';
+import { userNamespaces, groupNamespaces } from './mock_data';
 
-const FLAT_NAMESPACES = [...group, ...user];
+const FLAT_NAMESPACES = [...groupNamespaces, ...userNamespaces];
 const EMPTY_NAMESPACE_TITLE = 'Empty namespace TEST';
 const EMPTY_NAMESPACE_ITEM = { id: EMPTY_NAMESPACE_ID, humanName: EMPTY_NAMESPACE_TITLE };
 
@@ -17,7 +17,8 @@ describe('Namespace Select', () => {
   const createComponent = (props = {}) =>
     shallowMountExtended(NamespaceSelect, {
       propsData: {
-        data: namespaces,
+        userNamespaces,
+        groupNamespaces,
         ...props,
       },
       stubs: {
@@ -89,11 +90,11 @@ describe('Namespace Select', () => {
   describe('with search', () => {
     it.each`
       term           | includeEmptyNamespace | expectedItems
-      ${''}          | ${false}              | ${[...namespaces.group, ...namespaces.user]}
-      ${'sub'}       | ${false}              | ${[namespaces.group[1]]}
-      ${'User'}      | ${false}              | ${[...namespaces.user]}
-      ${'User'}      | ${true}               | ${[...namespaces.user]}
-      ${'namespace'} | ${true}               | ${[EMPTY_NAMESPACE_ITEM, ...namespaces.user]}
+      ${''}          | ${false}              | ${[...groupNamespaces, ...userNamespaces]}
+      ${'sub'}       | ${false}              | ${[groupNamespaces[1]]}
+      ${'User'}      | ${false}              | ${[...userNamespaces]}
+      ${'User'}      | ${true}               | ${[...userNamespaces]}
+      ${'namespace'} | ${true}               | ${[EMPTY_NAMESPACE_ITEM, ...userNamespaces]}
     `(
       'with term=$term and includeEmptyNamespace=$includeEmptyNamespace, should show $expectedItems.length',
       async ({ term, includeEmptyNamespace, expectedItems }) => {
@@ -115,7 +116,7 @@ describe('Namespace Select', () => {
 
   describe('with a selected namespace', () => {
     const selectedGroupIndex = 1;
-    const selectedItem = group[selectedGroupIndex];
+    const selectedItem = groupNamespaces[selectedGroupIndex];
 
     beforeEach(() => {
       wrapper = createComponent();

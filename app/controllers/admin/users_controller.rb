@@ -370,7 +370,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def check_ban_user_feature_flag
-    access_denied! unless Feature.enabled?(:ban_user_feature_flag)
+    access_denied! unless Feature.enabled?(:ban_user_feature_flag, default_enabled: :yaml)
   end
 
   def log_impersonation_event

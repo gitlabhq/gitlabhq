@@ -208,7 +208,13 @@ Users can also be activated using the [GitLab API](../../api/users.md#activate-u
 
 ## Ban and unban users
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327353) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327353) in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ban_user_feature_flag`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/330667) in GitLab 14.8.
+
+FLAG:
+On self-managed GitLab, by default this feature is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `ban_user_feature_flag`.
+On GitLab.com, this feature is available to GitLab.com administrators only.
 
 GitLab administrators can ban and unban users. Banned users are blocked, and their issues are hidden.
 The banned user's comments are still displayed. Hiding a banned user's comments is [tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327356).

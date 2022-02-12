@@ -19,8 +19,7 @@ module Sidebars
       end
 
       def show_hierarachy_menu_item?(container)
-        Feature.enabled?(:work_items_hierarchy, container, default_enabled: :yaml) &&
-          can?(context.current_user, :read_planning_hierarchy, container)
+        can?(context.current_user, :read_planning_hierarchy, container)
       end
     end
   end

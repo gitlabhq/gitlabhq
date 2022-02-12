@@ -57,7 +57,7 @@ Example request using a personal access token:
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --upload-file path/to/file.txt \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?status=hidden"
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 ```
 
 Example response without attribute `select`:

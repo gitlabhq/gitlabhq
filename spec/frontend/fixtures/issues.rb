@@ -37,17 +37,6 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', type: :contr
     render_issue(create(:closed_issue, project: project))
   end
 
-  it 'issues/issue_list.html' do
-    create(:issue, project: project)
-
-    get :index, params: {
-      namespace_id: project.namespace.to_param,
-      project_id: project
-    }
-
-    expect(response).to be_successful
-  end
-
   private
 
   def render_issue(issue)

@@ -5,15 +5,13 @@ import TransferGroupForm, { i18n } from './components/transfer_group_form.vue';
 
 const prepareGroups = (rawGroups) => {
   if (!rawGroups) {
-    return { group: [] };
+    return [];
   }
 
-  const group = JSON.parse(rawGroups).map(({ id, text: humanName }) => ({
+  return JSON.parse(rawGroups).map(({ id, text: humanName }) => ({
     id,
     humanName,
   }));
-
-  return { group };
 };
 
 export default () => {
@@ -38,7 +36,7 @@ export default () => {
     render(createElement) {
       return createElement(TransferGroupForm, {
         props: {
-          parentGroups: prepareGroups(parentGroups),
+          groupNamespaces: prepareGroups(parentGroups),
           isPaidGroup: parseBoolean(isPaidGroup),
           confirmButtonText,
           confirmationPhrase: groupName,

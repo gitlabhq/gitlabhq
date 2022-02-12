@@ -10,7 +10,7 @@ describe('Transfer group form', () => {
   const confirmButtonText = 'confirm';
   const confirmationPhrase = 'confirmation-phrase';
   const paidGroupHelpLink = 'some/fake/link';
-  const groups = [
+  const groupNamespaces = [
     {
       id: 1,
       humanName: 'Group 1',
@@ -22,7 +22,7 @@ describe('Transfer group form', () => {
   ];
 
   const defaultProps = {
-    parentGroups: { groups },
+    groupNamespaces,
     paidGroupHelpLink,
     isPaidGroup: false,
     confirmationPhrase,
@@ -63,7 +63,7 @@ describe('Transfer group form', () => {
         includeHeaders: false,
         emptyNamespaceTitle: 'No parent group',
         includeEmptyNamespace: true,
-        data: { groups },
+        groupNamespaces,
       });
     });
 
@@ -91,7 +91,7 @@ describe('Transfer group form', () => {
   });
 
   describe('with a selected project', () => {
-    const [firstGroup] = groups;
+    const [firstGroup] = groupNamespaces;
     beforeEach(() => {
       wrapper = createComponent();
       findNamespaceSelect().vm.$emit('select', firstGroup);

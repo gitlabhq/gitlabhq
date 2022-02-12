@@ -119,6 +119,17 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
     end
   end
 
+  it 'merge_requests/merge_request_list.html' do
+    create(:merge_request, source_project: project, target_project: project)
+
+    get :index, params: {
+      namespace_id: project.namespace.to_param,
+      project_id: project
+    }
+
+    expect(response).to be_successful
+  end
+
   private
 
   def render_discussions_json(merge_request)

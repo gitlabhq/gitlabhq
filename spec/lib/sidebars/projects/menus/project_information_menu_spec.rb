@@ -63,21 +63,7 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
     describe 'Hierarchy' do
       let(:item_id) { :hierarchy }
 
-      context 'when the feature is disabled' do
-        before do
-          stub_feature_flags(work_items_hierarchy: false)
-        end
-
-        specify { is_expected.to be_nil }
-      end
-
-      context 'when the feature is enabled' do
-        before do
-          stub_feature_flags(work_items_hierarchy: true)
-        end
-
-        specify { is_expected.not_to be_nil }
-      end
+      specify { is_expected.not_to be_nil }
     end
   end
 end
