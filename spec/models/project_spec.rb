@@ -870,6 +870,85 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#merge_commit_template_or_default' do
+    let_it_be(:project) { create(:project) }
+
+    it 'returns default merge commit template' do
+      expect(project.merge_commit_template_or_default).to eq(Project::DEFAULT_MERGE_COMMIT_TEMPLATE)
+    end
+
+    context 'when merge commit template is set and not nil' do
+      before do
+        project.merge_commit_template = '%{description}'
+      end
+
+      it 'returns current value' do
+        expect(project.merge_commit_template_or_default).to eq('%{description}')
+      end
+    end
+  end
+
+  describe '#merge_commit_template_or_default=' do
+    let_it_be(:project) { create(:project) }
+
+    it 'sets template to nil when set to default value' do
+      project.merge_commit_template_or_default = Project::DEFAULT_MERGE_COMMIT_TEMPLATE
+      expect(project.merge_commit_template).to be_nil
+    end
+
+    it 'sets template to nil when set to default value but with CRLF line endings' do
+      project.merge_commit_template_or_default = "Merge branch '%{source_branch}' into '%{target_branch}'\r\n\r\n%{title}\r\n\r\n%{issues}\r\n\r\nSee merge request %{reference}"
+      expect(project.merge_commit_template).to be_nil
+    end
+
+    it 'allows changing template' do
+      project.merge_commit_template_or_default = '%{description}'
+      expect(project.merge_commit_template).to eq('%{description}')
+    end
+
+    it 'allows setting template to nil' do
+      project.merge_commit_template_or_default = nil
+      expect(project.merge_commit_template).to be_nil
+    end
+  end
+
+  describe '#squash_commit_template_or_default' do
+    let_it_be(:project) { create(:project) }
+
+    it 'returns default squash commit template' do
+      expect(project.squash_commit_template_or_default).to eq(Project::DEFAULT_SQUASH_COMMIT_TEMPLATE)
+    end
+
+    context 'when squash commit template is set and not nil' do
+      before do
+        project.squash_commit_template = '%{description}'
+      end
+
+      it 'returns current value' do
+        expect(project.squash_commit_template_or_default).to eq('%{description}')
+      end
+    end
+  end
+
+  describe '#squash_commit_template_or_default=' do
+    let_it_be(:project) { create(:project) }
+
+    it 'sets template to nil when set to default value' do
+      project.squash_commit_template_or_default = Project::DEFAULT_SQUASH_COMMIT_TEMPLATE
+      expect(project.squash_commit_template).to be_nil
+    end
+
+    it 'allows changing template' do
+      project.squash_commit_template_or_default = '%{description}'
+      expect(project.squash_commit_template).to eq('%{description}')
+    end
+
+    it 'allows setting template to nil' do
+      project.squash_commit_template_or_default = nil
+      expect(project.squash_commit_template).to be_nil
+    end
+  end
+
   describe 'reference methods' do
     # TODO update when we have multiple owners of a project
     # https://gitlab.com/gitlab-org/gitlab/-/issues/350605

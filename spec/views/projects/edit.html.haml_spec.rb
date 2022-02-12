@@ -45,10 +45,10 @@ RSpec.describe 'projects/edit' do
   end
 
   context 'merge commit template' do
-    it 'displays a placeholder if none is set' do
+    it 'displays default template if none is set' do
       render
 
-      expect(rendered).to have_field('project[merge_commit_template]', placeholder: <<~MSG.rstrip)
+      expect(rendered).to have_field('project[merge_commit_template_or_default]', with: <<~MSG.rstrip)
         Merge branch '%{source_branch}' into '%{target_branch}'
 
         %{title}
@@ -64,15 +64,15 @@ RSpec.describe 'projects/edit' do
 
       render
 
-      expect(rendered).to have_field('project[merge_commit_template]', with: '%{title}')
+      expect(rendered).to have_field('project[merge_commit_template_or_default]', with: '%{title}')
     end
   end
 
   context 'squash template' do
-    it 'displays a placeholder if none is set' do
+    it 'displays default template if none is set' do
       render
 
-      expect(rendered).to have_field('project[squash_commit_template]', placeholder: '%{title}')
+      expect(rendered).to have_field('project[squash_commit_template_or_default]', with: '%{title}')
     end
 
     it 'displays the user entered value' do
@@ -80,7 +80,7 @@ RSpec.describe 'projects/edit' do
 
       render
 
-      expect(rendered).to have_field('project[squash_commit_template]', with: '%{first_multiline_commit}')
+      expect(rendered).to have_field('project[squash_commit_template_or_default]', with: '%{first_multiline_commit}')
     end
   end
 

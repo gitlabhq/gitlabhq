@@ -28455,13 +28455,16 @@ msgstr ""
 msgid "ProjectSettings|Learn about commit history."
 msgstr ""
 
+msgid "ProjectSettings|Leave empty to use default template."
+msgstr ""
+
 msgid "ProjectSettings|Manage who can see the project in the public access directory."
 msgstr ""
 
 msgid "ProjectSettings|Manages large files such as audio, video, and graphics files."
 msgstr ""
 
-msgid "ProjectSettings|Maximum 500 characters."
+msgid "ProjectSettings|Maximum %{maxLength} characters."
 msgstr ""
 
 msgid "ProjectSettings|Merge checks"
@@ -28600,6 +28603,9 @@ msgid "ProjectSettings|The commit message used when squashing commits."
 msgstr ""
 
 msgid "ProjectSettings|The default target project for merge requests created in this fork project."
+msgstr ""
+
+msgid "ProjectSettings|The default template will be applied on save."
 msgstr ""
 
 msgid "ProjectSettings|These checks must pass before merge requests can be merged."

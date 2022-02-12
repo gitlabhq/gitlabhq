@@ -74,6 +74,21 @@ class Project < ApplicationRecord
 
   GL_REPOSITORY_TYPES = [Gitlab::GlRepository::PROJECT, Gitlab::GlRepository::WIKI, Gitlab::GlRepository::DESIGN].freeze
 
+  MAX_SUGGESTIONS_TEMPLATE_LENGTH = 255
+  MAX_COMMIT_TEMPLATE_LENGTH = 500
+
+  DEFAULT_MERGE_COMMIT_TEMPLATE = <<~MSG.rstrip.freeze
+    Merge branch '%{source_branch}' into '%{target_branch}'
+
+    %{title}
+
+    %{issues}
+
+    See merge request %{reference}
+  MSG
+
+  DEFAULT_SQUASH_COMMIT_TEMPLATE = '%{title}'
+
   cache_markdown_field :description, pipeline: :description
 
   default_value_for :packages_enabled, true
@@ -506,7 +521,7 @@ class Project < ApplicationRecord
   validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
   validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
-  validates :suggestion_commit_message, length: { maximum: 255 }
+  validates :suggestion_commit_message, length: { maximum: MAX_SUGGESTIONS_TEMPLATE_LENGTH }
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
@@ -2762,6 +2777,32 @@ class Project < ApplicationRecord
       Gitlab::CurrentSettings.project_runner_token_expiration_interval&.seconds,
       group_interval
     ].compact.min
+  end
+
+  def merge_commit_template_or_default
+    merge_commit_template.presence || DEFAULT_MERGE_COMMIT_TEMPLATE
+  end
+
+  def merge_commit_template_or_default=(value)
+    project_setting.merge_commit_template =
+      if value.blank? || value.delete("\r") == DEFAULT_MERGE_COMMIT_TEMPLATE
+        nil
+      else
+        value
+      end
+  end
+
+  def squash_commit_template_or_default
+    squash_commit_template.presence || DEFAULT_SQUASH_COMMIT_TEMPLATE
+  end
+
+  def squash_commit_template_or_default=(value)
+    project_setting.squash_commit_template =
+      if value.blank? || value.delete("\r") == DEFAULT_SQUASH_COMMIT_TEMPLATE
+        nil
+      else
+        value
+      end
   end
 
   private
