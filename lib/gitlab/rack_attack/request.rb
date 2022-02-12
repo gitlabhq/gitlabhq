@@ -198,8 +198,6 @@ module Gitlab
       end
 
       def frontend_request?
-        return false unless Feature.enabled?(:rate_limit_frontend_requests, default_enabled: :yaml)
-
         strong_memoize(:frontend_request) do
           next false unless env.include?('HTTP_X_CSRF_TOKEN') && session.include?(:_csrf_token)
 

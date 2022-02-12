@@ -267,23 +267,6 @@ RSpec.describe Gitlab::RackAttack::Request do
     with_them do
       it { is_expected.to eq(expected) }
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_frontend_requests: false)
-      end
-
-      where(:session, :env) do
-        {}                           | {} # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
-        {}                           | { 'HTTP_X_CSRF_TOKEN' => valid_token }
-        { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => other_token }
-        { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => valid_token }
-      end
-
-      with_them do
-        it { is_expected.to be(false) }
-      end
-    end
   end
 
   describe '#deprecated_api_request?' do

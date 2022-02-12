@@ -23,7 +23,8 @@ By default, all Git operations are first tried unauthenticated. Because of this,
 may trigger the rate limits configured for unauthenticated requests.
 
 NOTE:
-The rate limits for API requests don't affect requests made by the frontend, as these are always
+[In GitLab 14.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/344807),
+the rate limits for API requests don't affect requests made by the frontend, as these are always
 counted as web traffic.
 
 ## Enable unauthenticated API request rate limit
