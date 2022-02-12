@@ -73,6 +73,8 @@ module DbCleaner
       end
     end
 
+    Gitlab::Database::Partitioning.sync_partitions_ignore_db_error
+
     puts "Databases re-creation done in #{Gitlab::Metrics::System.monotonic_time - start}"
   end
 
