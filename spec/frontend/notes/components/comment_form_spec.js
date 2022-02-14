@@ -20,7 +20,6 @@ import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } 
 jest.mock('autosize');
 jest.mock('~/commons/nav/user_merge_requests');
 jest.mock('~/flash');
-jest.mock('~/gl_form');
 
 Vue.use(Vuex);
 

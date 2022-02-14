@@ -4,6 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import UsersChart from '~/analytics/usage_trends/components/users_chart.vue';
 import usersQuery from '~/analytics/usage_trends/graphql/queries/users.query.graphql';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
@@ -86,7 +87,7 @@ describe('UsersChart', () => {
   describe('with data', () => {
     beforeEach(async () => {
       wrapper = createComponent({ users: mockCountsData2 });
-      await nextTick();
+      await waitForPromises();
     });
 
     it('hides the skeleton loader', () => {
@@ -156,7 +157,7 @@ describe('UsersChart', () => {
         jest
           .spyOn(wrapper.vm.$apollo.queries.users, 'fetchMore')
           .mockImplementation(jest.fn().mockRejectedValue());
-        await nextTick();
+        await waitForPromises();
       });
 
       it('calls fetchMore', () => {

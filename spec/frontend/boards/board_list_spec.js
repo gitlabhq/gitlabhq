@@ -106,10 +106,6 @@ describe('Board list component', () => {
       fetchItemsForList: jest.fn(),
     };
 
-    beforeEach(() => {
-      wrapper = createComponent();
-    });
-
     it('does not load issues if already loading', () => {
       wrapper = createComponent({
         actions,
@@ -142,6 +138,7 @@ describe('Board list component', () => {
 
       await nextTick();
       await waitForPromises();
+      await nextTick();
       await nextTick();
 
       expect(wrapper.find('.board-list-count').text()).toBe('Showing 1 of 20 issues');

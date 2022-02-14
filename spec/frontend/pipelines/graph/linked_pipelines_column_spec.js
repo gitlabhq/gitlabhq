@@ -90,11 +90,6 @@ describe('Linked Pipelines Column', () => {
       await waitForPromises();
     };
 
-    const clickExpandButtonAndAwaitTimers = async () => {
-      await clickExpandButton();
-      jest.runOnlyPendingTimers();
-    };
-
     describe('layer type rendering', () => {
       let layersFn;
 
@@ -105,7 +100,7 @@ describe('Linked Pipelines Column', () => {
 
       it('calls listByLayers only once no matter how many times view is switched', async () => {
         expect(layersFn).not.toHaveBeenCalled();
-        await clickExpandButtonAndAwaitTimers();
+        await clickExpandButton();
         await wrapper.setProps({ viewType: LAYER_VIEW });
         await nextTick();
         expect(layersFn).toHaveBeenCalledTimes(1);
@@ -131,7 +126,7 @@ describe('Linked Pipelines Column', () => {
       });
 
       it('shows the stage view, even when the main graph view type is layers', async () => {
-        await clickExpandButtonAndAwaitTimers();
+        await clickExpandButton();
         expect(findPipelineGraph().props('viewType')).toBe(STAGE_VIEW);
       });
     });
@@ -144,7 +139,7 @@ describe('Linked Pipelines Column', () => {
 
         it('toggles the pipeline visibility', async () => {
           expect(findPipelineGraph().exists()).toBe(false);
-          await clickExpandButtonAndAwaitTimers();
+          await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(true);
           await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(false);
@@ -161,15 +156,12 @@ describe('Linked Pipelines Column', () => {
 
         it('emits the error', async () => {
           await clickExpandButton();
-          expect(wrapper.emitted().error).toEqual([
-            [{ type: LOAD_FAILURE, skipSentry: true }],
-            [{ type: LOAD_FAILURE, skipSentry: true }],
-          ]);
+          expect(wrapper.emitted().error).toEqual([[{ type: LOAD_FAILURE, skipSentry: true }]]);
         });
 
         it('does not show the pipeline', async () => {
           expect(findPipelineGraph().exists()).toBe(false);
-          await clickExpandButtonAndAwaitTimers();
+          await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(false);
         });
       });
@@ -197,7 +189,7 @@ describe('Linked Pipelines Column', () => {
 
         it('toggles the pipeline visibility', async () => {
           expect(findPipelineGraph().exists()).toBe(false);
-          await clickExpandButtonAndAwaitTimers();
+          await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(true);
           await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(false);
@@ -215,15 +207,12 @@ describe('Linked Pipelines Column', () => {
 
         it('emits the error', async () => {
           await clickExpandButton();
-          expect(wrapper.emitted().error).toEqual([
-            [{ type: LOAD_FAILURE, skipSentry: true }],
-            [{ type: LOAD_FAILURE, skipSentry: true }],
-          ]);
+          expect(wrapper.emitted().error).toEqual([[{ type: LOAD_FAILURE, skipSentry: true }]]);
         });
 
         it('does not show the pipeline', async () => {
           expect(findPipelineGraph().exists()).toBe(false);
-          await clickExpandButtonAndAwaitTimers();
+          await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(false);
         });
       });

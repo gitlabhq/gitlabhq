@@ -32,13 +32,13 @@ module Mutations
         params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-        work_item = ::WorkItems::CreateService.new(project: project, current_user: current_user, params: params, spam_params: spam_params).execute
+        create_result = ::WorkItems::CreateService.new(project: project, current_user: current_user, params: params, spam_params: spam_params).execute
 
-        check_spam_action_response!(work_item)
+        check_spam_action_response!(create_result[:work_item]) if create_result[:work_item]
 
         {
-          work_item: work_item.valid? ? work_item : nil,
-          errors: errors_on_object(work_item)
+          work_item: create_result.success? ? create_result[:work_item] : nil,
+          errors: create_result.errors
         }
       end
 

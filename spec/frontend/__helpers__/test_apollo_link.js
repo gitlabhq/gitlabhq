@@ -1,7 +1,4 @@
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloClient } from 'apollo-client';
-import { ApolloLink } from 'apollo-link';
-import gql from 'graphql-tag';
+import { InMemoryCache, ApolloClient, ApolloLink, gql } from '@apollo/client/core';
 
 const FOO_QUERY = gql`
   query {

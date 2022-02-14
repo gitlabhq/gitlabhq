@@ -23,7 +23,11 @@ describe('Work items root component', () => {
   const findTitle = () => wrapper.findComponent(ItemTitle);
 
   const createComponent = ({ queryResponse = workItemQueryResponse } = {}) => {
-    fakeApollo = createMockApollo([], resolvers);
+    fakeApollo = createMockApollo([], resolvers, {
+      possibleTypes: {
+        LocalWorkItemWidget: ['LocalTitleWidget'],
+      },
+    });
     fakeApollo.clients.defaultClient.cache.writeQuery({
       query: workItemQuery,
       variables: {

@@ -5,6 +5,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RegistrationTokenResetDropdownItem from '~/runner/components/registration/registration_token_reset_dropdown_item.vue';
@@ -96,6 +97,7 @@ describe('RegistrationDropdown', () => {
         );
 
         await findRegistrationInstructionsDropdownItem().trigger('click');
+        await waitForPromises();
       });
 
       afterEach(() => {

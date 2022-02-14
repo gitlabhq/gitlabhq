@@ -1,7 +1,7 @@
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
@@ -68,10 +68,7 @@ describe('AlertsSettingsWrapper', () => {
   const findAlertsSettingsForm = () => wrapper.findComponent(AlertsSettingsForm);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
-  async function destroyHttpIntegration(localWrapper) {
-    await jest.runOnlyPendingTimers();
-    await nextTick();
-
+  function destroyHttpIntegration(localWrapper) {
     localWrapper
       .find(IntegrationsList)
       .vm.$emit('delete-integration', { id: integrationToDestroy.id });
@@ -474,11 +471,11 @@ describe('AlertsSettingsWrapper', () => {
 
     it('calls a mutation with correct parameters and destroys a integration', async () => {
       createComponentWithApollo();
+      await waitForPromises();
 
-      await destroyHttpIntegration(wrapper);
+      destroyHttpIntegration(wrapper);
 
       expect(destroyIntegrationHandler).toHaveBeenCalled();
-
       await waitForPromises();
 
       expect(findIntegrations()).toHaveLength(3);

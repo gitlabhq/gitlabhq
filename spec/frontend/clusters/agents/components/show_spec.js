@@ -137,7 +137,8 @@ describe('ClusterAgentShow', () => {
       await waitForPromises();
     });
 
-    it('displays agent create information with unknown user', () => {
+    it('displays agent create information with unknown user', async () => {
+      await waitForPromises();
       expect(findCreatedText()).toMatchInterpolatedText('Created by Unknown user 2 days ago');
     });
   });
@@ -153,17 +154,23 @@ describe('ClusterAgentShow', () => {
       await waitForPromises();
     });
 
-    it('displays token header with no count', () => {
+    it('displays token header with no count', async () => {
+      await waitForPromises();
       expect(findTokenCount()).toMatchInterpolatedText(`${ClusterAgentShow.i18n.tokens}`);
     });
   });
 
   describe('when the token list has additional pages', () => {
-    const pageInfo = {
+    const pageInfoResponse = {
       hasNextPage: true,
       hasPreviousPage: false,
       startCursor: 'prev',
       endCursor: 'next',
+    };
+
+    const pageInfo = {
+      ...pageInfoResponse,
+      __typename: 'PageInfo',
     };
 
     const tokenPagination = {
@@ -184,7 +191,7 @@ describe('ClusterAgentShow', () => {
     });
 
     it('should pass pageInfo to the pagination component', () => {
-      expect(findPaginationButtons().props()).toMatchObject(pageInfo);
+      expect(findPaginationButtons().props()).toMatchObject(pageInfoResponse);
     });
   });
 

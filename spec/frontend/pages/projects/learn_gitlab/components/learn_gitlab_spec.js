@@ -1,13 +1,15 @@
 import { GlProgressBar, GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import Cookies from 'js-cookie';
 import LearnGitlab from '~/pages/projects/learn_gitlab/components/learn_gitlab.vue';
 import eventHub from '~/invite_members/event_hub';
+import { INVITE_MODAL_OPEN_COOKIE } from '~/pages/projects/learn_gitlab/constants';
 import { testActions, testSections, testProject } from './mock_data';
 
 describe('Learn GitLab', () => {
   let wrapper;
   let sidebar;
-  let inviteMembersOpen = false;
+  let inviteMembers = false;
 
   const createWrapper = () => {
     wrapper = mount(LearnGitlab, {
@@ -15,7 +17,7 @@ describe('Learn GitLab', () => {
         actions: testActions,
         sections: testSections,
         project: testProject,
-        inviteMembersOpen,
+        inviteMembers,
       },
     });
   };
@@ -36,7 +38,7 @@ describe('Learn GitLab', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    inviteMembersOpen = false;
+    inviteMembers = false;
     sidebar.remove();
   });
 
@@ -59,13 +61,20 @@ describe('Learn GitLab', () => {
 
   describe('Invite Members Modal', () => {
     let spy;
+    let cookieSpy;
 
     beforeEach(() => {
       spy = jest.spyOn(eventHub, '$emit');
+      cookieSpy = jest.spyOn(Cookies, 'remove');
+    });
+
+    afterEach(() => {
+      Cookies.remove(INVITE_MODAL_OPEN_COOKIE);
     });
 
     it('emits openModal', () => {
-      inviteMembersOpen = true;
+      inviteMembers = true;
+      Cookies.set(INVITE_MODAL_OPEN_COOKIE, true);
 
       createWrapper();
 
@@ -74,9 +83,19 @@ describe('Learn GitLab', () => {
         inviteeType: 'members',
         source: 'learn-gitlab',
       });
+      expect(cookieSpy).toHaveBeenCalledWith(INVITE_MODAL_OPEN_COOKIE);
     });
 
-    it('does not emit openModal', () => {
+    it('does not emit openModal when cookie is not set', () => {
+      inviteMembers = true;
+
+      createWrapper();
+
+      expect(spy).not.toHaveBeenCalled();
+      expect(cookieSpy).toHaveBeenCalledWith(INVITE_MODAL_OPEN_COOKIE);
+    });
+
+    it('does not emit openModal when inviteMembers is false', () => {
       createWrapper();
 
       expect(spy).not.toHaveBeenCalled();

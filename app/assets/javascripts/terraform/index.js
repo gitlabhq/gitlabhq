@@ -1,5 +1,5 @@
+import { defaultDataIdFromObject } from '@apollo/client/core';
 import { GlToast } from '@gitlab/ui';
-import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';

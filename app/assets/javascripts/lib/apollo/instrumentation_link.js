@@ -1,4 +1,4 @@
-import { ApolloLink } from 'apollo-link';
+import { ApolloLink } from '@apollo/client/core';
 import { memoize } from 'lodash';
 
 export const FEATURE_CATEGORY_HEADER = 'x-gitlab-feature-category';

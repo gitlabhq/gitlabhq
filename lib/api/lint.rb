@@ -42,6 +42,7 @@ module API
       params do
         optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
         optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
+        optional :ref, type: String, desc: 'Branch or tag used to execute a dry run. Defaults to the default branch of the project. Only used when dry_run is true'
       end
       get ':id/ci/lint', urgency: :low do
         authorize! :download_code, user_project
@@ -52,7 +53,7 @@ module API
 
         result = Gitlab::Ci::Lint
           .new(project: user_project, current_user: current_user)
-          .validate(content, dry_run: params[:dry_run])
+          .validate(content, dry_run: params[:dry_run], ref: params[:ref] || user_project.default_branch)
 
         present result, with: Entities::Ci::Lint::Result, current_user: current_user, include_jobs: params[:include_jobs]
       end
@@ -66,13 +67,14 @@ module API
         requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
         optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
         optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
+        optional :ref, type: String, desc: 'Branch or tag used to execute a dry run. Defaults to the default branch of the project. Only used when dry_run is true'
       end
       post ':id/ci/lint', urgency: :low do
         authorize! :create_pipeline, user_project
 
         result = Gitlab::Ci::Lint
           .new(project: user_project, current_user: current_user)
-          .validate(params[:content], dry_run: params[:dry_run])
+          .validate(params[:content], dry_run: params[:dry_run], ref: params[:ref] || user_project.default_branch)
 
         status 200
         present result, with: Entities::Ci::Lint::Result, current_user: current_user, include_jobs: params[:include_jobs]

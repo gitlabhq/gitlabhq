@@ -206,7 +206,8 @@ describe('RunnerTypeCell', () => {
         expect(getTooltip(findDeleteBtn())).toBe('');
       });
 
-      it('The toast notification is shown', () => {
+      it('The toast notification is shown', async () => {
+        await waitForPromises();
         expect(mockToastShow).toHaveBeenCalledTimes(1);
         expect(mockToastShow).toHaveBeenCalledWith(
           expect.stringContaining(`#${getIdFromGraphQLId(mockRunner.id)} (${mockRunner.shortSha})`),
@@ -227,7 +228,7 @@ describe('RunnerTypeCell', () => {
 
         it('error is reported to sentry', () => {
           expect(captureException).toHaveBeenCalledWith({
-            error: new Error(`Network error: ${mockErrorMsg}`),
+            error: new Error(mockErrorMsg),
             component: 'RunnerActionsCell',
           });
         });

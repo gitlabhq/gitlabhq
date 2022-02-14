@@ -133,11 +133,6 @@ export default {
       required: false,
       default: 2,
     },
-    enableLabelPermalinks: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     labelFilterParam: {
       type: String,
       required: false,
@@ -321,7 +316,6 @@ export default {
           :data-qa-issuable-title="issuable.title"
           :issuable-symbol="issuableSymbol"
           :issuable="issuable"
-          :enable-label-permalinks="enableLabelPermalinks"
           :label-filter-param="labelFilterParam"
           :show-checkbox="showBulkEditSidebar"
           :checked="issuableChecked(issuable)"

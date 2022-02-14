@@ -329,6 +329,7 @@ describe('Snippet Edit app', () => {
           mutateSpy.mockRejectedValue(TEST_API_ERROR);
 
           await createComponentAndSubmit();
+          await nextTick();
         });
 
         it('should not redirect', () => {
@@ -338,7 +339,7 @@ describe('Snippet Edit app', () => {
         it('should flash', () => {
           // Apollo automatically wraps the resolver's error in a NetworkError
           expect(createFlash).toHaveBeenCalledWith({
-            message: `Can't update snippet: Network error: ${TEST_API_ERROR.message}`,
+            message: `Can't update snippet: ${TEST_API_ERROR.message}`,
           });
         });
 
@@ -348,7 +349,7 @@ describe('Snippet Edit app', () => {
           // eslint-disable-next-line no-console
           expect(console.error).toHaveBeenCalledWith(
             '[gitlab] unexpected error while updating snippet',
-            expect.objectContaining({ message: `Network error: ${TEST_API_ERROR.message}` }),
+            expect.objectContaining({ message: `${TEST_API_ERROR.message}` }),
           );
         });
       });

@@ -1,6 +1,7 @@
 export const getIssueCrmContactsQueryResponse = {
   data: {
     issue: {
+      __typename: 'Issue',
       id: 'gid://gitlab/Issue/123',
       customerRelationsContacts: {
         nodes: [
@@ -37,6 +38,7 @@ export const issueCrmContactsUpdateNullResponse = {
 export const issueCrmContactsUpdateResponse = {
   data: {
     issueCrmContactsUpdated: {
+      __typename: 'Issue',
       id: 'gid://gitlab/Issue/123',
       customerRelationsContacts: {
         nodes: [

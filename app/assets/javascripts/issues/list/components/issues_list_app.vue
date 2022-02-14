@@ -181,6 +181,9 @@ export default {
         return data[this.namespace]?.issues.nodes ?? [];
       },
       result({ data }) {
+        if (!data) {
+          return;
+        }
         this.pageInfo = data[this.namespace]?.issues.pageInfo ?? {};
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },

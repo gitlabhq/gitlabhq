@@ -1,4 +1,4 @@
-import { ApolloLink, Observable } from 'apollo-link';
+import { ApolloLink, Observable } from '@apollo/client/core';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getSuppressNetworkErrorsDuringNavigationLink } from '~/lib/apollo/suppress_network_errors_during_navigation_link';
 import { isNavigatingAway } from '~/lib/utils/is_navigating_away';

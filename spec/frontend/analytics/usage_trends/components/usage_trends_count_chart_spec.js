@@ -129,7 +129,7 @@ describe('UsageTrendsCountChart', () => {
     const recordedAt = '2020-08-01';
     describe('when the fetchMore query returns data', () => {
       beforeEach(async () => {
-        const newData = [{ recordedAt, count: 5 }];
+        const newData = [{ __typename: 'UsageTrendsMeasurement', recordedAt, count: 5 }];
         queryHandler = mockQueryResponse({
           key: queryResponseDataKey,
           data: mockCountsData1,

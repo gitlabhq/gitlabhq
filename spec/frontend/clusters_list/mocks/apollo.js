@@ -70,6 +70,7 @@ export const createAgentTokenErrorResponse = {
 export const getAgentResponse = {
   data: {
     project: {
+      __typename: 'Project',
       id: 'project-1',
       clusterAgents: { nodes: [{ ...agent, connections, tokens }], pageInfo, count },
       repository: {

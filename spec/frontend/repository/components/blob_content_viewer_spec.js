@@ -79,6 +79,8 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
       propsData: propsMock,
       mixins: [{ data: () => ({ ref: refMock }) }],
       provide: {
+        targetBranch: 'test',
+        originalBranch: 'default-ref',
         ...inject,
         glFeatures: {
           highlightJs,

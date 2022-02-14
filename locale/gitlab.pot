@@ -2091,6 +2091,9 @@ msgstr ""
 msgid "Add a numbered list"
 msgstr ""
 
+msgid "Add a related epic"
+msgstr ""
+
 msgid "Add a related issue"
 msgstr ""
 
@@ -5156,6 +5159,12 @@ msgid "Authorized At"
 msgstr ""
 
 msgid "Authorized applications (%{size})"
+msgstr ""
+
+msgid "AuthorizedApplication|Are you sure you want to revoke this application?"
+msgstr ""
+
+msgid "AuthorizedApplication|Revoke application"
 msgstr ""
 
 msgid "Authors: %{authors}"
@@ -21755,6 +21764,9 @@ msgstr ""
 msgid "Linked emails (%{email_count})"
 msgstr ""
 
+msgid "Linked epics"
+msgstr ""
+
 msgid "Linked issues"
 msgstr ""
 
@@ -29685,6 +29697,9 @@ msgstr ""
 msgid "Read more about project permissions %{help_link_open}here%{help_link_close}"
 msgstr ""
 
+msgid "Read more about related epics"
+msgstr ""
+
 msgid "Read more about related issues"
 msgstr ""
 
@@ -36089,6 +36104,9 @@ msgid "The content of this page is not encoded in UTF-8. Edits can only be made 
 msgstr ""
 
 msgid "The contents of this group, its subgroups and projects will be permanently removed after %{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered."
+msgstr ""
+
+msgid "The current epic"
 msgstr ""
 
 msgid "The current issue"
@@ -44004,6 +44022,9 @@ msgid "the correct format."
 msgstr ""
 
 msgid "the file"
+msgstr ""
+
+msgid "the following epic(s)"
 msgstr ""
 
 msgid "the following issue(s)"

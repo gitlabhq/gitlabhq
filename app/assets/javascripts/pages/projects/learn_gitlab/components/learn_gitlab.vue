@@ -2,7 +2,8 @@
 import { GlProgressBar, GlSprintf, GlAlert } from '@gitlab/ui';
 import eventHub from '~/invite_members/event_hub';
 import { s__ } from '~/locale';
-import { ACTION_LABELS, ACTION_SECTIONS } from '../constants';
+import { getCookie, removeCookie, parseBoolean } from '~/lib/utils/common_utils';
+import { ACTION_LABELS, ACTION_SECTIONS, INVITE_MODAL_OPEN_COOKIE } from '../constants';
 import LearnGitlabSectionCard from './learn_gitlab_section_card.vue';
 
 export default {
@@ -26,7 +27,7 @@ export default {
       required: true,
       type: Object,
     },
-    inviteMembersOpen: {
+    inviteMembers: {
       type: Boolean,
       required: false,
       default: false,
@@ -53,7 +54,7 @@ export default {
     },
   },
   mounted() {
-    if (this.inviteMembersOpen) {
+    if (this.inviteMembers && this.getCookieForInviteMembers()) {
       this.openInviteMembersModal('celebrate');
     }
 
@@ -63,6 +64,13 @@ export default {
     eventHub.$off('showSuccessfulInvitationsAlert', this.handleShowSuccessfulInvitationsAlert);
   },
   methods: {
+    getCookieForInviteMembers() {
+      const value = parseBoolean(getCookie(INVITE_MODAL_OPEN_COOKIE));
+
+      removeCookie(INVITE_MODAL_OPEN_COOKIE);
+
+      return value;
+    },
     openInviteMembersModal(mode) {
       eventHub.$emit('openModal', { mode, inviteeType: 'members', source: 'learn-gitlab' });
     },

@@ -23,7 +23,7 @@ class Projects::RunnersController < Projects::ApplicationController
 
   def destroy
     if @runner.only_for?(project)
-      @runner.destroy
+      Ci::UnregisterRunnerService.new(@runner).execute
     end
 
     redirect_to project_runners_path(@project), status: :found

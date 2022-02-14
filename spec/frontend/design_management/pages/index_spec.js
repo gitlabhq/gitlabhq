@@ -757,14 +757,13 @@ describe('Design management index page', () => {
 
       expect(moveDesignHandler).toHaveBeenCalled();
 
-      await nextTick();
+      await waitForPromises();
 
       expect(findDesigns().at(0).props('id')).toBe('2');
     });
 
     it('prevents reordering when reorderDesigns mutation is in progress', async () => {
       createComponentWithApollo({});
-
       await moveDesigns(wrapper);
 
       expect(draggableAttributes().disabled).toBe(true);
@@ -780,7 +779,6 @@ describe('Design management index page', () => {
       });
 
       await moveDesigns(wrapper);
-
       await waitForPromises();
 
       expect(createFlash).toHaveBeenCalledWith({ message: 'Houston, we have a problem' });
@@ -792,7 +790,6 @@ describe('Design management index page', () => {
       });
 
       await moveDesigns(wrapper);
-
       await waitForPromises();
 
       expect(createFlash).toHaveBeenCalledWith({

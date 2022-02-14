@@ -1,11 +1,9 @@
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloClient } from 'apollo-client';
-import { ApolloLink } from 'apollo-link';
-import { BatchHttpLink } from 'apollo-link-batch-http';
-import { HttpLink } from 'apollo-link-http';
+import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client/core';
+import { BatchHttpLink } from '@apollo/client/link/batch-http';
 import { createUploadLink } from 'apollo-upload-client';
 import ActionCableLink from '~/actioncable_link';
 import { apolloCaptchaLink } from '~/captcha/apollo_captcha_link';
+import possibleTypes from '~/graphql_shared/possibleTypes.json';
 import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
 import { objectToQuery, queryToObject } from '~/lib/utils/url_utility';
@@ -19,6 +17,33 @@ export const fetchPolicies = {
   NETWORK_ONLY: 'network-only',
   NO_CACHE: 'no-cache',
   CACHE_ONLY: 'cache-only',
+};
+
+export const typePolicies = {
+  Repository: {
+    merge: true,
+  },
+  UserPermissions: {
+    merge: true,
+  },
+  MergeRequestPermissions: {
+    merge: true,
+  },
+  ContainerRepositoryConnection: {
+    merge: true,
+  },
+  TimelogConnection: {
+    merge: true,
+  },
+  BranchList: {
+    merge: true,
+  },
+  InstanceSecurityDashboard: {
+    merge: true,
+  },
+  PipelinePermissions: {
+    merge: true,
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {
@@ -46,6 +71,30 @@ export const stripWhitespaceFromQuery = (url, path) => {
   return `${path}?${reassembled}`;
 };
 
+const acs = [];
+
+let pendingApolloMutations = 0;
+
+// ### Why track pendingApolloMutations, but calculate pendingApolloRequests?
+//
+// In Apollo 2, we had a single link for counting operations.
+//
+// With Apollo 3, the `forward().map(...)` of deduped queries is never called.
+// So, we resorted to calculating the sum of `inFlightLinkObservables?.size`.
+// However! Mutations don't use `inFLightLinkObservables`, but since they are likely
+// not deduped we can count them...
+//
+// https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55062#note_838943715
+// https://www.apollographql.com/docs/react/v2/networking/network-layer/#query-deduplication
+Object.defineProperty(window, 'pendingApolloRequests', {
+  get() {
+    return acs.reduce(
+      (sum, ac) => sum + (ac?.queryManager?.inFlightLinkObservables?.size || 0),
+      pendingApolloMutations,
+    );
+  },
+});
+
 export default (resolvers = {}, config = {}) => {
   const {
     baseUrl,
@@ -56,6 +105,7 @@ export default (resolvers = {}, config = {}) => {
     path = '/api/graphql',
     useGet = false,
   } = config;
+  let ac = null;
   let uri = `${gon.relative_url_root || ''}${path}`;
 
   if (baseUrl) {
@@ -74,16 +124,6 @@ export default (resolvers = {}, config = {}) => {
     credentials: 'same-origin',
     batchMax,
   };
-
-  const requestCounterLink = new ApolloLink((operation, forward) => {
-    window.pendingApolloRequests = window.pendingApolloRequests || 0;
-    window.pendingApolloRequests += 1;
-
-    return forward(operation).map((response) => {
-      window.pendingApolloRequests -= 1;
-      return response;
-    });
-  });
 
   /*
     This custom fetcher intervention is to deal with an issue where we are using GET to access
@@ -138,6 +178,22 @@ export default (resolvers = {}, config = {}) => {
     );
   };
 
+  const hasMutation = (operation) =>
+    (operation?.query?.definitions || []).some((x) => x.operation === 'mutation');
+
+  const requestCounterLink = new ApolloLink((operation, forward) => {
+    if (hasMutation(operation)) {
+      pendingApolloMutations += 1;
+    }
+
+    return forward(operation).map((response) => {
+      if (hasMutation(operation)) {
+        pendingApolloMutations -= 1;
+      }
+      return response;
+    });
+  });
+
   const appLink = ApolloLink.split(
     hasSubscriptionOperation,
     new ActionCableLink(),
@@ -155,19 +211,23 @@ export default (resolvers = {}, config = {}) => {
     ),
   );
 
-  return new ApolloClient({
+  ac = new ApolloClient({
     typeDefs,
     link: appLink,
     cache: new InMemoryCache({
+      typePolicies,
+      possibleTypes,
       ...cacheConfig,
-      freezeResults: true,
     }),
     resolvers,
-    assumeImmutableResults: true,
     defaultOptions: {
       query: {
         fetchPolicy,
       },
     },
   });
+
+  acs.push(ac);
+
+  return ac;
 };

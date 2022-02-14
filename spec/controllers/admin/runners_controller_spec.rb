@@ -4,9 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Admin::RunnersController do
   let_it_be(:runner) { create(:ci_runner) }
+  let_it_be(:user) { create(:admin) }
 
   before do
-    sign_in(create(:admin))
+    sign_in(user)
   end
 
   describe '#index' do
@@ -104,6 +105,10 @@ RSpec.describe Admin::RunnersController do
 
   describe '#destroy' do
     it 'destroys the runner' do
+      expect_next_instance_of(Ci::UnregisterRunnerService, runner) do |service|
+        expect(service).to receive(:execute).once.and_call_original
+      end
+
       delete :destroy, params: { id: runner.id }
 
       expect(response).to have_gitlab_http_status(:found)

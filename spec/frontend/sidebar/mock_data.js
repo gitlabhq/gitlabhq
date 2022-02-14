@@ -276,6 +276,7 @@ export const epicParticipantsResponse = () => ({
         participants: {
           nodes: [
             {
+              __typename: 'UserCore',
               id: 'gid://gitlab/User/2',
               avatarUrl:
                 'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
@@ -332,6 +333,7 @@ export const issuableQueryResponse = {
         assignees: {
           nodes: [
             {
+              __typename: 'UserCore',
               id: 'gid://gitlab/User/2',
               avatarUrl:
                 'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
@@ -389,7 +391,7 @@ export const updateIssueAssigneesMutationResponse = {
         assignees: {
           nodes: [
             {
-              __typename: 'User',
+              __typename: 'UserCore',
               id: 'gid://gitlab/User/1',
               avatarUrl:
                 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
@@ -414,6 +416,7 @@ export const subscriptionNullResponse = {
 };
 
 const mockUser1 = {
+  __typename: 'UserCore',
   id: 'gid://gitlab/User/1',
   avatarUrl:
     'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
@@ -424,6 +427,7 @@ const mockUser1 = {
 };
 
 export const mockUser2 = {
+  __typename: 'UserCore',
   id: 'gid://gitlab/User/4',
   avatarUrl: '/avatar2',
   name: 'rookie',
@@ -470,6 +474,7 @@ export const projectMembersResponse = {
           {
             id: 'user-4',
             user: {
+              __typename: 'UserCore',
               id: 'gid://gitlab/User/2',
               avatarUrl:
                 'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
@@ -503,6 +508,7 @@ export const groupMembersResponse = {
           {
             id: 'user-3',
             user: {
+              __typename: 'UserCore',
               id: 'gid://gitlab/User/2',
               avatarUrl:
                 'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
@@ -535,6 +541,7 @@ export const participantsQueryResponse = {
             mockUser1,
             mockUser1,
             {
+              __typename: 'UserCore',
               id: 'gid://gitlab/User/2',
               avatarUrl:
                 'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
@@ -546,6 +553,7 @@ export const participantsQueryResponse = {
               },
             },
             {
+              __typename: 'UserCore',
               id: 'gid://gitlab/User/3',
               avatarUrl: '/avatar',
               name: 'John Doe',

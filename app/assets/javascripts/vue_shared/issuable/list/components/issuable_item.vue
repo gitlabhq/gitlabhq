@@ -31,10 +31,6 @@ export default {
       type: Object,
       required: true,
     },
-    enableLabelPermalinks: {
-      type: Boolean,
-      required: true,
-    },
     labelFilterParam: {
       type: String,
       required: false,
@@ -142,11 +138,8 @@ export default {
       return label.title || label.name;
     },
     labelTarget(label) {
-      if (this.enableLabelPermalinks) {
-        const value = encodeURIComponent(this.labelTitle(label));
-        return `?${this.labelFilterParam}[]=${value}`;
-      }
-      return '#';
+      const value = encodeURIComponent(this.labelTitle(label));
+      return `?${this.labelFilterParam}[]=${value}`;
     },
     /**
      * This is needed as an independent method since

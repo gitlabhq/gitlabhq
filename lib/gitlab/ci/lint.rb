@@ -24,9 +24,9 @@ module Gitlab
         @sha = sha || project&.repository&.commit&.sha
       end
 
-      def validate(content, dry_run: false)
+      def validate(content, dry_run: false, ref: @project&.default_branch)
         if dry_run
-          simulate_pipeline_creation(content)
+          simulate_pipeline_creation(content, ref)
         else
           static_validation(content)
         end
@@ -34,9 +34,9 @@ module Gitlab
 
       private
 
-      def simulate_pipeline_creation(content)
+      def simulate_pipeline_creation(content, ref)
         pipeline = ::Ci::CreatePipelineService
-          .new(@project, @current_user, ref: @project.default_branch)
+          .new(@project, @current_user, ref: ref)
           .execute(:push, dry_run: true, content: content)
           .payload
 

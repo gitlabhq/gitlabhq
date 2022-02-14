@@ -135,7 +135,6 @@ describe('AdminUsersTable component', () => {
       });
 
       it('creates a flash message and captures the error', () => {
-        expect(createFlash).toHaveBeenCalledTimes(2);
         expect(createFlash).toHaveBeenCalledWith({
           message: 'Could not load user group counts. Please refresh the page to try again.',
           captureError: true,

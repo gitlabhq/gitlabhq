@@ -262,6 +262,7 @@ describe('GroupRunnersApp', () => {
       mockGroupRunnersQuery = jest.fn().mockResolvedValue({
         data: {
           group: {
+            id: '1',
             runners: { nodes: [] },
           },
         },
@@ -288,17 +289,18 @@ describe('GroupRunnersApp', () => {
 
     it('error is reported to sentry', async () => {
       expect(captureException).toHaveBeenCalledWith({
-        error: new Error('Network error: Error!'),
+        error: new Error('Error!'),
         component: 'GroupRunnersApp',
       });
     });
   });
 
   describe('Pagination', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockGroupRunnersQuery = jest.fn().mockResolvedValue(groupRunnersDataPaginated);
 
       createComponent({ mountFn: mountExtended });
+      await waitForPromises();
     });
 
     it('more pages can be selected', () => {

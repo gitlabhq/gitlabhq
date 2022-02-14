@@ -132,6 +132,7 @@ describe('RunnerUpdateForm', () => {
       userPermissions,
       version,
       groups,
+      __typename,
       ...submitted
     } = mockRunner;
 
@@ -245,11 +246,11 @@ describe('RunnerUpdateForm', () => {
       await submitFormAndWait();
 
       expect(createAlert).toHaveBeenLastCalledWith({
-        message: `Network error: ${mockErrorMsg}`,
+        message: mockErrorMsg,
       });
       expect(captureException).toHaveBeenCalledWith({
         component: 'RunnerUpdateForm',
-        error: new Error(`Network error: ${mockErrorMsg}`),
+        error: new Error(mockErrorMsg),
       });
       expect(findSubmitDisabledAttr()).toBeUndefined();
     });

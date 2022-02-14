@@ -1,15 +1,14 @@
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache } from '@apollo/client/core';
 import { createMockClient as createMockApolloClient } from 'mock-apollo-client';
 import VueApollo from 'vue-apollo';
-
-const defaultCacheOptions = {
-  fragmentMatcher: { match: () => true },
-  addTypename: false,
-};
+import possibleTypes from '~/graphql_shared/possibleTypes.json';
+import { typePolicies } from '~/lib/graphql';
 
 export function createMockClient(handlers = [], resolvers = {}, cacheOptions = {}) {
   const cache = new InMemoryCache({
-    ...defaultCacheOptions,
+    possibleTypes,
+    typePolicies,
+    addTypename: false,
     ...cacheOptions,
   });
 

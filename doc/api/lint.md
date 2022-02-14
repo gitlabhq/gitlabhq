@@ -171,6 +171,7 @@ POST /projects/:id/ci/lint
 | `content`  | string  | yes      | The CI/CD configuration content. |
 | `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#simulate-a-pipeline), or only do static check. This is false by default. |
 | `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
+| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
 
 Example request:
 
@@ -220,6 +221,7 @@ GET /projects/:id/ci/lint
 | ---------- | ------- | -------- | -------- |
 | `dry_run`  | boolean | no       | Run pipeline creation simulation, or only do static check. |
 | `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
+| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
 
 Example request:
 

@@ -99,6 +99,7 @@ describe('TerraformList', () => {
             nodes: states,
             count: states.length,
             pageInfo: {
+              __typename: 'PageInfo',
               hasNextPage: true,
               hasPreviousPage: false,
               startCursor: 'prev',

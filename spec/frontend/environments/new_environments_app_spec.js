@@ -28,6 +28,8 @@ describe('~/environments/components/new_environments_app.vue', () => {
         folder: environmentFolderMock,
         pageInfo: paginationMock,
         environmentToStop: environmentToStopMock,
+        environmentToDelete: jest.fn().mockResolvedValue(resolvedEnvironment),
+        environmentToRollback: jest.fn().mockResolvedValue(resolvedEnvironment),
       },
     };
 
@@ -80,7 +82,7 @@ describe('~/environments/components/new_environments_app.vue', () => {
   });
 
   afterEach(() => {
-    wrapper?.destroy();
+    wrapper.destroy();
   });
 
   it('should show all the folders that are fetched', async () => {
@@ -150,8 +152,6 @@ describe('~/environments/components/new_environments_app.vue', () => {
       },
       folder: resolvedFolder,
     });
-    await waitForPromises();
-    await nextTick();
 
     const button = wrapper.findByRole('button', { name: s__('Environments|Enable review app') });
     expect(button.exists()).toBe(false);

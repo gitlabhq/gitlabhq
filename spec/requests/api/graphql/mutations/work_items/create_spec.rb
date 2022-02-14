@@ -47,6 +47,18 @@ RSpec.describe 'Create a work item' do
       )
     end
 
+    context 'when input is invalid' do
+      let(:input) { { 'title' => '', 'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_global_id.to_s } }
+
+      it 'does not create and returns validation errors' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to not_change(WorkItem, :count)
+
+        expect(graphql_mutation_response(:work_item_create)['errors']).to contain_exactly("Title can't be blank")
+      end
+    end
+
     it_behaves_like 'has spam protection' do
       let(:mutation_class) { ::Mutations::WorkItems::Create }
     end

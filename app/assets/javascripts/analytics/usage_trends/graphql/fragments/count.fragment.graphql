@@ -1,4 +1,5 @@
 fragment Count on UsageTrendsMeasurement {
+  __typename
   count
   recordedAt
 }

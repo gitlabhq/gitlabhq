@@ -137,7 +137,7 @@ describe('AdminRunnerShowApp', () => {
 
     it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
-        error: new Error('Network error: Error!'),
+        error: new Error('Error!'),
         component: 'AdminRunnerShowApp',
       });
     });

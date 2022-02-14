@@ -196,7 +196,7 @@ export default {
     currentBranch: {
       query: getCurrentBranch,
       update(data) {
-        return data.workBranches.current.name;
+        return data.workBranches?.current?.name;
       },
     },
     starterTemplate: {
@@ -214,7 +214,7 @@ export default {
         return data.project?.ciTemplate?.content || '';
       },
       result({ data }) {
-        this.updateCiConfig(data.project?.ciTemplate?.content || '');
+        this.updateCiConfig(data?.project?.ciTemplate?.content || '');
       },
       error() {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);

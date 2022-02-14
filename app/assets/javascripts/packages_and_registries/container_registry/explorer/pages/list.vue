@@ -96,6 +96,9 @@ export default {
         return data[this.graphqlResource]?.containerRepositories.nodes;
       },
       result({ data }) {
+        if (!data) {
+          return;
+        }
         this.pageInfo = data[this.graphqlResource]?.containerRepositories?.pageInfo;
         this.containerRepositoriesCount = data[this.graphqlResource]?.containerRepositoriesCount;
       },

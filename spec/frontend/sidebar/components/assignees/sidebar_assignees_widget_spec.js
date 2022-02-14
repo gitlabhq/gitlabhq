@@ -137,9 +137,17 @@ describe('Sidebar assignees widget', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findAssignees().props('users')).toEqual(
-        issuableQueryResponse.data.workspace.issuable.assignees.nodes,
-      );
+      expect(findAssignees().props('users')).toEqual([
+        {
+          id: 'gid://gitlab/User/2',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+          name: 'Jacki Kub',
+          username: 'francina.skiles',
+          webUrl: '/franc',
+          status: null,
+        },
+      ]);
     });
 
     it('renders an error when issuable query is rejected', async () => {
@@ -195,7 +203,7 @@ describe('Sidebar assignees widget', () => {
           {
             assignees: [
               {
-                __typename: 'User',
+                __typename: 'UserCore',
                 avatarUrl:
                   'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
                 id: 'gid://gitlab/User/1',
@@ -353,6 +361,7 @@ describe('Sidebar assignees widget', () => {
   describe('when making changes to participants list', () => {
     beforeEach(async () => {
       createComponent();
+      await waitForPromises();
     });
 
     it('passes falsy `isDirty` prop to editable item if no changes to selected users were made', () => {

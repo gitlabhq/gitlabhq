@@ -305,15 +305,8 @@ describe('List Page', () => {
           await selectImageForDeletion();
 
           findDeleteModal().vm.$emit('primary');
-          await waitForApolloRequestRender();
 
-          expect(wrapper.vm.itemToDelete).toEqual(deletedContainerRepository);
-
-          const updatedImage = findImageList()
-            .props('images')
-            .find((i) => i.id === deletedContainerRepository.id);
-
-          expect(updatedImage.status).toBe(deletedContainerRepository.status);
+          expect(mutationResolver).toHaveBeenCalledWith({ id: deletedContainerRepository.id });
         });
 
         it('should show a success alert when delete request is successful', async () => {

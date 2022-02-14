@@ -77,6 +77,7 @@ describe('RunnerInstructionsModal component', () => {
     runnerSetupInstructionsHandler = jest.fn().mockResolvedValue(mockGraphqlInstructions);
 
     createComponent();
+    await waitForPromises();
   });
 
   afterEach(() => {
@@ -199,7 +200,8 @@ describe('RunnerInstructionsModal component', () => {
       expect(findGlLoadingIcon().exists()).toBe(false);
 
       await nextTick();
-      await jest.runOnlyPendingTimers();
+      jest.runOnlyPendingTimers();
+      await nextTick();
       await nextTick();
 
       expect(findGlLoadingIcon().exists()).toBe(true);

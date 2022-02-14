@@ -7,8 +7,10 @@ export const getIssuesQueryResponse = {
   data: {
     project: {
       id: '1',
+      __typename: 'Project',
       issues: {
         pageInfo: {
+          __typename: 'PageInfo',
           hasNextPage: true,
           hasPreviousPage: false,
           startCursor: 'startcursor',
@@ -16,6 +18,7 @@ export const getIssuesQueryResponse = {
         },
         nodes: [
           {
+            __typename: 'Issue',
             id: 'gid://gitlab/Issue/123456',
             iid: '789',
             closedAt: null,
@@ -36,6 +39,7 @@ export const getIssuesQueryResponse = {
             assignees: {
               nodes: [
                 {
+                  __typename: 'UserCore',
                   id: 'gid://gitlab/User/234',
                   avatarUrl: 'avatar/url',
                   name: 'Marge Simpson',
@@ -45,6 +49,7 @@ export const getIssuesQueryResponse = {
               ],
             },
             author: {
+              __typename: 'UserCore',
               id: 'gid://gitlab/User/456',
               avatarUrl: 'avatar/url',
               name: 'Homer Simpson',

@@ -302,17 +302,18 @@ describe('AdminRunnersApp', () => {
 
     it('error is reported to sentry', async () => {
       expect(captureException).toHaveBeenCalledWith({
-        error: new Error('Network error: Error!'),
+        error: new Error('Error!'),
         component: 'AdminRunnersApp',
       });
     });
   });
 
   describe('Pagination', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockRunnersQuery = jest.fn().mockResolvedValue(runnersDataPaginated);
 
       createComponent({ mountFn: mountExtended });
+      await waitForPromises();
     });
 
     it('more pages can be selected', () => {

@@ -92,6 +92,7 @@ describe('Agents', () => {
     let testDate = new Date();
     const agents = [
       {
+        __typename: 'ClusterAgent',
         id: '1',
         name: 'agent-1',
         webPath: '/agent-1',
@@ -99,6 +100,7 @@ describe('Agents', () => {
         tokens: null,
       },
       {
+        __typename: 'ClusterAgent',
         id: '2',
         name: 'agent-2',
         webPath: '/agent-2',
@@ -254,7 +256,10 @@ describe('Agents', () => {
       beforeEach(() => {
         return createWrapper({
           agents,
-          pageInfo,
+          pageInfo: {
+            ...pageInfo,
+            __typename: 'PageInfo',
+          },
         });
       });
 

@@ -59,6 +59,10 @@ export default {
         return data.workspace?.issuable?.currentUserTodos.nodes[0]?.id;
       },
       result({ data }) {
+        if (!data) {
+          return;
+        }
+
         const currentUserTodos = data.workspace?.issuable?.currentUserTodos?.nodes ?? [];
         this.todoId = currentUserTodos[0]?.id;
         this.$emit('todoUpdated', currentUserTodos.length > 0);

@@ -57,7 +57,7 @@ module API
         delete '/', feature_category: :runner do
           authenticate_runner!
 
-          destroy_conditionally!(current_runner)
+          destroy_conditionally!(current_runner) { ::Ci::UnregisterRunnerService.new(current_runner).execute }
         end
 
         desc 'Validates authentication credentials' do

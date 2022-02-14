@@ -50,6 +50,7 @@ export const userPermissionsMock = {
 };
 
 export const projectMock = {
+  __typename: 'Project',
   id: '1234',
   userPermissions: userPermissionsMock,
   pathLocks: {

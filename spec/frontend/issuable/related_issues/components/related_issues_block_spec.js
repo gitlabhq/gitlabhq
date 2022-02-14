@@ -7,6 +7,7 @@ import {
 } from 'jest/issuable/components/related_issuable_mock_data';
 import RelatedIssuesBlock from '~/related_issues/components/related_issues_block.vue';
 import {
+  issuableTypesMap,
   linkedIssueTypesMap,
   linkedIssueTypesTextMap,
   PathIdSeparator,
@@ -29,14 +30,34 @@ describe('RelatedIssuesBlock', () => {
       wrapper = mount(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: 'issue',
+          issuableType: issuableTypesMap.ISSUE,
         },
       });
     });
 
-    it('displays "Linked issues" in the header', () => {
-      expect(wrapper.find('.card-title').text()).toContain('Linked issues');
-    });
+    it.each`
+      issuableType | pathIdSeparator          | titleText          | helpLinkText                        | addButtonText
+      ${'issue'}   | ${PathIdSeparator.Issue} | ${'Linked issues'} | ${'Read more about related issues'} | ${'Add a related issue'}
+      ${'epic'}    | ${PathIdSeparator.Epic}  | ${'Linked epics'}  | ${'Read more about related epics'}  | ${'Add a related epic'}
+    `(
+      'displays "$titleText" in the header, "$helpLinkText" aria-label for help link, and "$addButtonText" aria-label for add button when issuableType is set to "$issuableType"',
+      ({ issuableType, pathIdSeparator, titleText, helpLinkText, addButtonText }) => {
+        wrapper = mount(RelatedIssuesBlock, {
+          propsData: {
+            pathIdSeparator,
+            issuableType,
+            canAdmin: true,
+            helpPath: '/help/user/project/issues/related_issues',
+          },
+        });
+
+        expect(wrapper.find('.card-title').text()).toContain(titleText);
+        expect(wrapper.find('[data-testid="help-link"]').attributes('aria-label')).toBe(
+          helpLinkText,
+        );
+        expect(findIssueCountBadgeAddButton().attributes('aria-label')).toBe(addButtonText);
+      },
+    );
 
     it('unable to add new related issues', () => {
       expect(findIssueCountBadgeAddButton().exists()).toBe(false);

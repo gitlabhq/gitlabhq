@@ -1,4 +1,5 @@
 fragment RunnerNode on CiRunner {
+  __typename
   id
   description
   runnerType

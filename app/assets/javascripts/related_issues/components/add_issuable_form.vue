@@ -9,6 +9,8 @@ import {
   linkedIssueTypesMap,
   addRelatedIssueErrorMap,
   addRelatedItemErrorMap,
+  issuablesFormCategoryHeaderTextMap,
+  issuablesFormInputTextMap,
 } from '../constants';
 import RelatedIssuableInput from './related_issuable_input.vue';
 
@@ -134,6 +136,12 @@ export default {
         epics: mergeUrlParams({ confidential_only: true }, this.autoCompleteSources.epics),
       };
     },
+    issuableCategoryHeaderText() {
+      return issuablesFormCategoryHeaderTextMap[this.issuableType];
+    },
+    issuableInputText() {
+      return issuablesFormInputTextMap[this.issuableType];
+    },
   },
   methods: {
     onPendingIssuableRemoveRequest(params) {
@@ -162,7 +170,7 @@ export default {
   <form @submit.prevent="onFormSubmit">
     <template v-if="showCategorizedIssues">
       <gl-form-group
-        :label="__('The current issue')"
+        :label="issuableCategoryHeaderText"
         label-for="linked-issue-type-radio"
         label-class="label-bold"
         class="mb-2"
@@ -175,7 +183,7 @@ export default {
         />
       </gl-form-group>
       <p class="bold">
-        {{ __('the following issue(s)') }}
+        {{ issuableInputText }}
       </p>
     </template>
     <related-issuable-input

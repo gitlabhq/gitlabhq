@@ -1,4 +1,5 @@
 fragment IssueFragment on Issue {
+  __typename
   id
   iid
   closedAt
@@ -18,6 +19,7 @@ fragment IssueFragment on Issue {
   webUrl
   assignees {
     nodes {
+      __typename
       id
       avatarUrl
       name
@@ -26,6 +28,7 @@ fragment IssueFragment on Issue {
     }
   }
   author {
+    __typename
     id
     avatarUrl
     name

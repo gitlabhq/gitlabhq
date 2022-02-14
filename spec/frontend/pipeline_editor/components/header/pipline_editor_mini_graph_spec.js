@@ -96,7 +96,7 @@ describe('Pipeline Status', () => {
       });
 
       it('should emit an error event when query fails', async () => {
-        expect(wrapper.emitted('showError')).toHaveLength(2);
+        expect(wrapper.emitted('showError')).toHaveLength(1);
         expect(wrapper.emitted('showError')[0]).toEqual([
           {
             type: PIPELINE_FAILURE,

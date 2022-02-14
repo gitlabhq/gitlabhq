@@ -12,7 +12,9 @@ import {
   COMMIT_SUCCESS,
   COMMIT_SUCCESS_WITH_REDIRECT,
 } from '~/pipeline_editor/constants';
+import { resolvers } from '~/pipeline_editor/graphql/resolvers';
 import commitCreate from '~/pipeline_editor/graphql/mutations/commit_ci_file.mutation.graphql';
+import getCurrentBranch from '~/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
 import updatePipelineEtag from '~/pipeline_editor/graphql/mutations/client/update_pipeline_etag.mutation.graphql';
 
 import {
@@ -70,7 +72,20 @@ describe('Pipeline Editor | Commit section', () => {
   const createComponentWithApollo = (options) => {
     const handlers = [[commitCreate, mockMutateCommitData]];
     Vue.use(VueApollo);
-    mockApollo = createMockApollo(handlers);
+    mockApollo = createMockApollo(handlers, resolvers);
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getCurrentBranch,
+      data: {
+        workBranches: {
+          __typename: 'BranchList',
+          current: {
+            __typename: 'WorkBranch',
+            name: mockDefaultBranch,
+          },
+        },
+      },
+    });
 
     const apolloConfig = {
       apolloProvider: mockApollo,
@@ -198,6 +213,7 @@ describe('Pipeline Editor | Commit section', () => {
     const newBranch = 'new-branch';
 
     beforeEach(async () => {
+      mockMutateCommitData.mockResolvedValue(mockCommitCreateResponse);
       createComponentWithApollo();
       mockMutateCommitData.mockResolvedValue(mockCommitCreateResponse);
       await submitCommit({

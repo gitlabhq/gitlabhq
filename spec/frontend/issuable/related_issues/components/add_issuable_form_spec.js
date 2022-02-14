@@ -1,3 +1,4 @@
+import { GlFormGroup } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import AddIssuableForm from '~/related_issues/components/add_issuable_form.vue';
@@ -151,6 +152,30 @@ describe('AddIssuableForm', () => {
       it('does not show radio inputs', () => {
         expect(findRadioInputs(wrapper).length).toBe(0);
       });
+    });
+
+    describe('categorized issuables', () => {
+      it.each`
+        issuableType              | pathIdSeparator          | contextHeader          | contextFooter
+        ${issuableTypesMap.ISSUE} | ${PathIdSeparator.Issue} | ${'The current issue'} | ${'the following issue(s)'}
+        ${issuableTypesMap.EPIC}  | ${PathIdSeparator.Epic}  | ${'The current epic'}  | ${'the following epic(s)'}
+      `(
+        'show header text as "$contextHeader" and footer text as "$contextFooter" issuableType is set to $issuableType',
+        ({ issuableType, contextHeader, contextFooter }) => {
+          wrapper = shallowMount(AddIssuableForm, {
+            propsData: {
+              issuableType,
+              inputValue: '',
+              showCategorizedIssues: true,
+              pathIdSeparator,
+              pendingReferences: [],
+            },
+          });
+
+          expect(wrapper.findComponent(GlFormGroup).attributes('label')).toBe(contextHeader);
+          expect(wrapper.find('p.bold').text()).toContain(contextFooter);
+        },
+      );
     });
 
     describe('when it is a Linked Issues form', () => {

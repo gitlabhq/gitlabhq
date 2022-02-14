@@ -624,7 +624,7 @@ describe('CE IssuesListApp component', () => {
 
       it('shows an error message', () => {
         expect(findIssuableList().props('error')).toBe(message);
-        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Network error: ERROR'));
+        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('ERROR'));
       });
     });
 
@@ -717,12 +717,13 @@ describe('CE IssuesListApp component', () => {
           `(
             'when moving issue $description',
             ({ issueToMove, oldIndex, newIndex, moveBeforeId, moveAfterId }) => {
-              beforeEach(() => {
+              beforeEach(async () => {
                 wrapper = mountComponent({
                   provide: { isProject },
                   issuesQueryResponse: jest.fn().mockResolvedValue(response(isProject)),
                 });
                 jest.runOnlyPendingTimers();
+                await waitForPromises();
               });
 
               it('makes API call to reorder the issue', async () => {
@@ -744,11 +745,12 @@ describe('CE IssuesListApp component', () => {
       });
 
       describe('when unsuccessful', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           wrapper = mountComponent({
             issuesQueryResponse: jest.fn().mockResolvedValue(response()),
           });
           jest.runOnlyPendingTimers();
+          await waitForPromises();
         });
 
         it('displays an error message', async () => {

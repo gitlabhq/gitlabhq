@@ -117,9 +117,15 @@ describe('LabelsSelectRoot', () => {
 
       it('renders dropdown value component when query labels is resolved', () => {
         expect(findDropdownValue().exists()).toBe(true);
-        expect(findDropdownValue().props('selectedLabels')).toEqual(
-          issuableLabelsQueryResponse.data.workspace.issuable.labels.nodes,
-        );
+        expect(findDropdownValue().props('selectedLabels')).toEqual([
+          {
+            color: '#330066',
+            description: null,
+            id: 'gid://gitlab/ProjectLabel/1',
+            title: 'Label1',
+            textColor: '#000000',
+          },
+        ]);
       });
 
       it('emits `onLabelRemove` event on dropdown value label remove event', () => {

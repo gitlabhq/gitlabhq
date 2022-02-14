@@ -10,7 +10,6 @@ import { mockIssuable, mockRegularLabel, mockScopedLabel } from '../mock_data';
 const createComponent = ({
   issuableSymbol = '#',
   issuable = mockIssuable,
-  enableLabelPermalinks = true,
   showCheckbox = true,
   slots = {},
 } = {}) =>
@@ -18,7 +17,6 @@ const createComponent = ({
     propsData: {
       issuableSymbol,
       issuable,
-      enableLabelPermalinks,
       showDiscussions: true,
       showCheckbox,
     },
@@ -212,22 +210,12 @@ describe('IssuableItem', () => {
     });
 
     describe('labelTarget', () => {
-      it('returns target string for a provided label param when `enableLabelPermalinks` is true', () => {
+      it('returns target string for a provided label param', () => {
         wrapper = createComponent();
 
         expect(wrapper.vm.labelTarget(mockRegularLabel)).toBe(
           '?label_name[]=Documentation%20Update',
         );
-      });
-
-      it('returns string "#" for a provided label param when `enableLabelPermalinks` is false', async () => {
-        wrapper = createComponent({
-          enableLabelPermalinks: false,
-        });
-
-        await nextTick();
-
-        expect(wrapper.vm.labelTarget(mockRegularLabel)).toBe('#');
       });
     });
   });

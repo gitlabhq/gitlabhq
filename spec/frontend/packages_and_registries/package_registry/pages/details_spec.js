@@ -57,6 +57,8 @@ describe('PackagesApp', () => {
     breadCrumbState,
   };
 
+  const { __typename, ...packageWithoutTypename } = packageData();
+
   function createComponent({
     resolver = jest.fn().mockResolvedValue(packageDetailsQuery()),
     fileDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFileMutation()),
@@ -130,7 +132,7 @@ describe('PackagesApp', () => {
 
     expect(findPackageTitle().exists()).toBe(true);
     expect(findPackageTitle().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageData()),
+      packageEntity: expect.objectContaining(packageWithoutTypename),
     });
   });
 
@@ -153,7 +155,7 @@ describe('PackagesApp', () => {
 
     expect(findPackageHistory().exists()).toBe(true);
     expect(findPackageHistory().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageData()),
+      packageEntity: expect.objectContaining(packageWithoutTypename),
       projectName: packageDetailsQuery().data.package.project.name,
     });
   });
@@ -165,7 +167,7 @@ describe('PackagesApp', () => {
 
     expect(findAdditionalMetadata().exists()).toBe(true);
     expect(findAdditionalMetadata().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageData()),
+      packageEntity: expect.objectContaining(packageWithoutTypename),
     });
   });
 
@@ -176,7 +178,7 @@ describe('PackagesApp', () => {
 
     expect(findInstallationCommands().exists()).toBe(true);
     expect(findInstallationCommands().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageData()),
+      packageEntity: expect.objectContaining(packageWithoutTypename),
     });
   });
 

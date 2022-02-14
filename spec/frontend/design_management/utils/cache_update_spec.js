@@ -1,4 +1,4 @@
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache } from '@apollo/client/core';
 import {
   updateStoreAfterDesignsDelete,
   updateStoreAfterAddImageDiffNote,

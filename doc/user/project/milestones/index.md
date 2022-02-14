@@ -151,10 +151,10 @@ There are also tabs below these that show the following:
 
 ### Burndown Charts
 
-The milestone view contains a [burndown chart](burndown_and_burnup_charts.md),
+The milestone view contains a [burndown and burnup chart](burndown_and_burnup_charts.md),
 showing the progress of completing a milestone.
 
-![burndown chart](img/burndown_chart_v13_6.png)
+![burndown chart](img/burndown_and_burnup_charts_v13_6.png)
 
 ### Milestone sidebar
 

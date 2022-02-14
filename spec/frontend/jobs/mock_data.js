@@ -1579,6 +1579,44 @@ export const mockJobsQueryResponse = {
   },
 };
 
+export const mockJobsQueryResponseLastPage = {
+  data: {
+    project: {
+      id: '1',
+      jobs: {
+        ...mockJobsQueryResponse.data.project.jobs,
+        pageInfo: {
+          endCursor: 'eyJpZCI6IjIzMTcifQ',
+          hasNextPage: false,
+          hasPreviousPage: true,
+          startCursor: 'eyJpZCI6IjIzMzYifQ',
+          __typename: 'PageInfo',
+        },
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const mockJobsQueryResponseFirstPage = {
+  data: {
+    project: {
+      id: '1',
+      jobs: {
+        ...mockJobsQueryResponse.data.project.jobs,
+        pageInfo: {
+          endCursor: 'eyJpZCI6IjIzMTcifQ',
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'eyJpZCI6IjIzMzYifQ',
+          __typename: 'PageInfo',
+        },
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
 export const mockJobsQueryEmptyResponse = {
   data: {
     project: {

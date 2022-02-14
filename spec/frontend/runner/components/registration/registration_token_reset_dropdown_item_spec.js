@@ -162,10 +162,10 @@ describe('RegistrationTokenResetDropdownItem', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenLastCalledWith({
-        message: `Network error: ${mockErrorMsg}`,
+        message: mockErrorMsg,
       });
       expect(captureException).toHaveBeenCalledWith({
-        error: new Error(`Network error: ${mockErrorMsg}`),
+        error: new Error(mockErrorMsg),
         component: 'RunnerRegistrationTokenReset',
       });
     });

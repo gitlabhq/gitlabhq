@@ -150,7 +150,7 @@ describe('RunnerPauseButton', () => {
 
           it('error is reported to sentry', () => {
             expect(captureException).toHaveBeenCalledWith({
-              error: new Error(`Network error: ${mockErrorMsg}`),
+              error: new Error(mockErrorMsg),
               component: 'RunnerPauseButton',
             });
           });

@@ -29,6 +29,9 @@ class CustomEnvironment extends JSDOMEnvironment {
       },
 
       warn(...args) {
+        if (args[0].includes('The updateQuery callback for fetchMore is deprecated')) {
+          return;
+        }
         throw new ErrorWithStack(
           `Unexpected call of console.warn() with:\n\n${args.join(', ')}`,
           this.warn,

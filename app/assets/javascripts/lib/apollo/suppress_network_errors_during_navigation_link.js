@@ -1,5 +1,5 @@
-import { Observable } from 'apollo-link';
-import { onError } from 'apollo-link-error';
+import { Observable } from '@apollo/client/core';
+import { onError } from '@apollo/client/link/error';
 import { isNavigatingAway } from '~/lib/utils/is_navigating_away';
 
 /**

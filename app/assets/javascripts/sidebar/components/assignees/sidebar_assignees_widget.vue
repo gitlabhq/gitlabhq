@@ -96,6 +96,9 @@ export default {
         return data.workspace?.issuable;
       },
       result({ data }) {
+        if (!data) {
+          return;
+        }
         const issuable = data.workspace?.issuable;
         if (issuable) {
           this.selected = cloneDeep(issuable.assignees.nodes);

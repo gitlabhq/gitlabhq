@@ -150,6 +150,8 @@ function generateEntries() {
 }
 
 const alias = {
+  // Map Apollo client to apollo/client/core to prevent react related imports from being loaded
+  '@apollo/client$': '@apollo/client/core',
   '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
   emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
   empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
