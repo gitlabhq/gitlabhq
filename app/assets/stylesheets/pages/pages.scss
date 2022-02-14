@@ -42,8 +42,6 @@
   }
 
   :first-child {
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
     line-height: $gl-line-height;
   }
 
@@ -52,7 +50,6 @@
   }
 
   :last-child {
-    border-bottom-right-radius: $border-radius-default;
-    border-top-right-radius: $border-radius-default;
+    border-radius: $border-radius-default;
   }
 }

@@ -11,6 +11,7 @@ kaniko-build:
     # Additional options for Kaniko executor.
     # For more details see https://github.com/GoogleContainerTools/kaniko/blob/master/README.md#additional-flags
     KANIKO_ARGS: ""
+    KANIKO_BUILD_CONTEXT: $CI_PROJECT_DIR
   stage: build
   image:
     # For latest releases see https://github.com/GoogleContainerTools/kaniko/releases
@@ -40,8 +41,13 @@ kaniko-build:
     # Write credentials to access Gitlab Container Registry within the runner/ci
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
     # Build and push the container. To disable push add --no-push
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$VERSION $KANIKO_ARGS
+    - DOCKERFILE_PATH=${DOCKERFILE_PATH:-"$KANIKO_BUILD_CONTEXT/Dockerfile"}
+    - /kaniko/executor --context $KANIKO_BUILD_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE:$VERSION $KANIKO_ARGS
   # Run this job in a branch/tag where a Dockerfile exists
   rules:
     - exists:
         - Dockerfile
+    # custom Dockerfile path
+    - if: $DOCKERFILE_PATH
+    # custom build context without an explicit Dockerfile path
+    - if: $KANIKO_BUILD_CONTEXT != $CI_PROJECT_DIR

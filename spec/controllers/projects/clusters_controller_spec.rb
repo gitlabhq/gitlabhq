@@ -315,7 +315,8 @@ RSpec.describe Projects::ClustersController do
           .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
         allow_any_instance_of(GoogleApi::CloudPlatform::Client)
           .to receive(:projects_zones_clusters_create) do
-          OpenStruct.new(
+          double(
+            'secure',
             self_link: 'projects/gcp-project-12345/zones/us-central1-a/operations/ope-123',
             status: 'RUNNING'
           )

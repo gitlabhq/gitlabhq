@@ -18,7 +18,11 @@ module GitlabEdition
   end
 
   def self.ee?
-    @is_ee ||=
+    # To reduce dependencies in QA image we are not using
+    # `Gitlab::Utils::StrongMemoize` but reimplementing its functionality.
+    return @is_ee if defined?(@is_ee)
+
+    @is_ee =
       # We use this method when the Rails environment is not loaded. This
       # means that checking the presence of the License class could result in
       # this method returning `false`, even for an EE installation.
@@ -34,7 +38,9 @@ module GitlabEdition
   end
 
   def self.jh?
-    @is_jh ||=
+    return @is_jh if defined?(@is_jh)
+
+    @is_jh =
       ee? &&
         root.join('jh').exist? &&
         !%w[true 1].include?(ENV['EE_ONLY'].to_s)

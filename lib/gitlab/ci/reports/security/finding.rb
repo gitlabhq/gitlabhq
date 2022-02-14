@@ -126,7 +126,7 @@ module Gitlab
               location_fingerprints.map do |location_fingerprint|
                 FindingKey.new(location_fingerprint: location_fingerprint, identifier_fingerprint: identifier.fingerprint)
               end
-            end
+            end.push(uuid)
           end
 
           def primary_identifier_fingerprint

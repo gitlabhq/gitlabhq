@@ -1008,11 +1008,6 @@ RSpec.describe Gitlab::GitAccess do
         end
       end
 
-      it 'cleans up the files' do
-        expect(project.repository).to receive(:clean_stale_repository_files).and_call_original
-        expect { push_access_check }.not_to raise_error
-      end
-
       it 'avoids N+1 queries', :request_store do
         # Run this once to establish a baseline. Cached queries should get
         # cached, so that when we introduce another change we shouldn't see

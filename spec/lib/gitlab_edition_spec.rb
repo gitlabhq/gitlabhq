@@ -3,18 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe GitlabEdition do
+  def remove_instance_variable(ivar)
+    described_class.remove_instance_variable(ivar) if described_class.instance_variable_defined?(ivar)
+  end
+
   before do
     # Make sure the ENV is clean
     stub_env('FOSS_ONLY', nil)
     stub_env('EE_ONLY', nil)
 
-    described_class.instance_variable_set(:@is_ee, nil)
-    described_class.instance_variable_set(:@is_jh, nil)
+    remove_instance_variable(:@is_ee)
+    remove_instance_variable(:@is_jh)
   end
 
   after do
-    described_class.instance_variable_set(:@is_ee, nil)
-    described_class.instance_variable_set(:@is_jh, nil)
+    remove_instance_variable(:@is_ee)
+    remove_instance_variable(:@is_jh)
   end
 
   describe '.root' do
@@ -51,7 +55,7 @@ RSpec.describe GitlabEdition do
         allow(described_class).to receive(:ee?).and_return(false)
       end
 
-      it 'returns the exyensions according to the current edition' do
+      it 'returns the extensions according to the current edition' do
         expect(described_class.extensions).to be_empty
       end
     end
@@ -77,7 +81,7 @@ RSpec.describe GitlabEdition do
     end
 
     describe '.ee?' do
-      context 'for EE' do
+      context 'when EE' do
         before do
           stub_path('ee/app/models/license.rb', exist?: true)
         end
@@ -109,7 +113,7 @@ RSpec.describe GitlabEdition do
         end
       end
 
-      context 'for CE' do
+      context 'when CE' do
         before do
           stub_path('ee/app/models/license.rb', exist?: false)
         end
@@ -121,12 +125,9 @@ RSpec.describe GitlabEdition do
     end
 
     describe '.jh?' do
-      context 'for JH' do
+      context 'when JH' do
         before do
-          stub_path(
-            'ee/app/models/license.rb',
-            'jh',
-            exist?: true)
+          stub_path('ee/app/models/license.rb', 'jh', exist?: true)
         end
 
         context 'when using default FOSS_ONLY and EE_ONLY' do

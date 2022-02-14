@@ -972,18 +972,6 @@ module Gitlab
         @praefect_info_client ||= Gitlab::GitalyClient::PraefectInfoService.new(self)
       end
 
-      def clean_stale_repository_files
-        wrapped_gitaly_errors do
-          gitaly_repository_client.cleanup if exists?
-        end
-      rescue Gitlab::Git::CommandError => e # Don't fail if we can't cleanup
-        Gitlab::AppLogger.error("Unable to clean repository on storage #{storage} with relative path #{relative_path}: #{e.message}")
-        Gitlab::Metrics.counter(
-          :failed_repository_cleanup_total,
-          'Number of failed repository cleanup events'
-        ).increment
-      end
-
       def branch_names_contains_sha(sha)
         gitaly_ref_client.branch_names_contains_sha(sha)
       end

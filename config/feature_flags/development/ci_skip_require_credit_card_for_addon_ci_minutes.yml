@@ -1,8 +1,0 @@
----
-name: ci_skip_require_credit_card_for_addon_ci_minutes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77829
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349841
-milestone: '14.7'
-type: development
-group: group::fulfillment
-default_enabled: true

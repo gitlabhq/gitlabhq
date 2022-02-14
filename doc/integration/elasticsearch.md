@@ -16,17 +16,13 @@ Advanced Search provides faster search response times and [improved search featu
 
 > Support for Elasticsearch 6.8 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 14.8 and is scheduled for removal in GitLab 15.0.
 
-<!-- Remember to update ee/lib/system_check/app/elasticsearch_check.rb if this changes -->
-
-| GitLab version                                 | Elasticsearch version          |
-|------------------------------------------------|--------------------------------|
-| GitLab Enterprise Edition 14.8 or later        | Elasticsearch 7.x through 7.17 |
-| GitLab Enterprise Edition 13.9 through 14.7    | Elasticsearch 6.8 through 7.17 |
-| GitLab Enterprise Edition 13.3 through 13.8    | Elasticsearch 6.4 through 7.x  |
-| GitLab Enterprise Edition 12.7 through 13.2    | Elasticsearch 6.x through 7.x  |
-| GitLab Enterprise Edition 11.5 through 12.6    | Elasticsearch 5.6 through 6.x  |
-| GitLab Enterprise Edition 9.0 through 11.4     | Elasticsearch 5.1 through 5.5  |
-| GitLab Enterprise Edition 8.4 through 8.17     | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
+| GitLab version       | Elasticsearch version    |
+|----------------------|--------------------------|
+| GitLab 14.8 or later | Elasticsearch 7.x - 7.17 |
+| GitLab 13.9 - 14.7   | Elasticsearch 6.8 - 7.x  |
+| GitLab 13.3 - 13.8   | Elasticsearch 6.4 - 7.x  |
+| GitLab 12.7 - 13.2   | Elasticsearch 6.x - 7.x  |
+| GitLab 11.5 - 12.6   | Elasticsearch 5.6 - 6.x  |
 
 The Elasticsearch Integration works with supported versions of
 Elasticsearch and follows Elasticsearch's [End of Life Policy](https://www.elastic.co/support/eol).

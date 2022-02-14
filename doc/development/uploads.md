@@ -387,6 +387,7 @@ Therefore, document new uploads here by slotting them into the following tables:
 | Container image cache (?)                | `direct upload`     | `workhorse`             | `/dependency-proxy/<group_id_hash>/dependency_proxy/<group_id>/files/<proxy_id>/<blob_id or manifest_id>` |
 | Terraform state files                    | `carrierwave`       | `rails controller`      | `/terraform/<proj_id_hash>/<terraform_state_id>`                                                          |
 | Pages content archives                   | `carrierwave`       | `sidekiq`               | `/gitlab-gprd-pages/<proj_id_hash>/pages_deployments/<deployment_id>/`                                    |
+| Secure Files                             | `carrierwave`       | `sidekiq`               | `/ci-secure-files/<proj_id_hash>/secure_files/<secure_file_id>/`                                    |
 
 #### CarrierWave integration
 
@@ -426,3 +427,4 @@ Therefore, document new uploads here by slotting them into the following tables:
 | `app/models/concerns/packages/debian/distribution.rb`   | `mount_uploader :signed_file, Packages::Debian::DistributionReleaseFileUploader` | :white_check_mark:  |
 | `app/models/bulk_imports/export_upload.rb`              | `mount_uploader :export_file, ExportUploader`                                    | :white_check_mark:  |
 | `ee/app/models/user_permission_export_upload.rb`        | `mount_uploader :file, AttachmentUploader`                                       |                     |
+| `app/models/ci/secure_file.rb`                          | `include FileStoreMounter`                                       |                     |

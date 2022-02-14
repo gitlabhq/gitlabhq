@@ -77,6 +77,7 @@ export default class IssuableForm {
     this.initAutosave();
     this.form.on('submit', this.handleSubmit);
     this.form.on('click', '.btn-cancel', this.resetAutosave);
+    this.form.find('.js-unwrap-on-load').unwrap();
     this.initWip();
 
     const $issuableDueDate = $('#issuable-due-date');

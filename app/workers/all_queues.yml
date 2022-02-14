@@ -2335,6 +2335,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: groups_update_statistics
+  :worker_name: Groups::UpdateStatisticsWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: import_issues_csv
   :worker_name: ImportIssuesCsvWorker
   :feature_category: :team_planning
