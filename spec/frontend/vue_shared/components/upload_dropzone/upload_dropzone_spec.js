@@ -16,6 +16,7 @@ describe('Upload dropzone component', () => {
   const findDropzoneArea = () => wrapper.find('[data-testid="dropzone-area"]');
   const findIcon = () => wrapper.find(GlIcon);
   const findUploadText = () => wrapper.find('[data-testid="upload-text"]').text();
+  const findFileInput = () => wrapper.find('input[type="file"]');
 
   function createComponent({ slots = {}, data = {}, props = {} } = {}) {
     wrapper = shallowMount(UploadDropzone, {
@@ -196,5 +197,61 @@ describe('Upload dropzone component', () => {
     });
 
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  describe('file input form name', () => {
+    it('applies inputFieldName as file input name', () => {
+      createComponent({ props: { inputFieldName: 'test_field_name' } });
+      expect(findFileInput().attributes('name')).toBe('test_field_name');
+    });
+
+    it('uses default file input name if no inputFieldName provided', () => {
+      createComponent();
+      expect(findFileInput().attributes('name')).toBe('upload_file');
+    });
+  });
+
+  describe('updates file input files value', () => {
+    // NOTE: the component assigns dropped files from the drop event to the
+    // input.files property. There's a restriction that nothing but a FileList
+    // can be assigned to this property. While FileList can't be created
+    // manually: it has no constructor. And currently there's no good workaround
+    // for jsdom. So we have to stub the file input in vm.$refs to ensure that
+    // the files property is updated. This enforces following tests to know a
+    // bit too much about the SUT internals See this thread for more details on
+    // FileList in jsdom: https://github.com/jsdom/jsdom/issues/1272
+    function stubFileInputOnWrapper() {
+      const fakeFileInput = { files: [] };
+      wrapper.vm.$refs.fileUpload = fakeFileInput;
+    }
+
+    it('assigns dragged files to the input files property', async () => {
+      const mockFile = { name: 'test', type: 'image/jpg' };
+      const mockEvent = mockDragEvent({ files: [mockFile] });
+      createComponent({ props: { shouldUpdateInputOnFileDrop: true } });
+      stubFileInputOnWrapper();
+
+      wrapper.trigger('dragenter', mockEvent);
+      await nextTick();
+      wrapper.trigger('drop', mockEvent);
+      await nextTick();
+
+      expect(wrapper.vm.$refs.fileUpload.files).toEqual([mockFile]);
+    });
+
+    it('throws an error when multiple files are dropped on a single file input dropzone', async () => {
+      const mockFile = { name: 'test', type: 'image/jpg' };
+      const mockEvent = mockDragEvent({ files: [mockFile, mockFile] });
+      createComponent({ props: { shouldUpdateInputOnFileDrop: true, singleFileSelection: true } });
+      stubFileInputOnWrapper();
+
+      wrapper.trigger('dragenter', mockEvent);
+      await nextTick();
+      wrapper.trigger('drop', mockEvent);
+      await nextTick();
+
+      expect(wrapper.vm.$refs.fileUpload.files).toEqual([]);
+      expect(wrapper.emitted('error')).toHaveLength(1);
+    });
   });
 });

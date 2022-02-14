@@ -15,7 +15,7 @@ Server hooks run custom logic on the GitLab server. Users can use them to run Gi
 - Enforcing specific commit policies.
 - Performing tasks based on the state of the repository.
 
-Server hooks use `pre-receive`, `post-receive`, and `update` 
+Server hooks use `pre-receive`, `post-receive`, and `update`
 [Git server-side hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#_server_side_hooks).
 
 GitLab administrators configure server hooks on the file system of the GitLab server. If you don't have file system access,
@@ -124,8 +124,8 @@ The following Git environment variables are supported for `pre-receive` and `pos
 |:-----------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `GIT_ALTERNATE_OBJECT_DIRECTORIES` | Alternate object directories in the quarantine environment. See [Git `receive-pack` documentation](https://git-scm.com/docs/git-receive-pack#_quarantine_environment). |
 | `GIT_OBJECT_DIRECTORY`             | GitLab project path in the quarantine environment. See [Git `receive-pack` documentation](https://git-scm.com/docs/git-receive-pack#_quarantine_environment).          |
-| `GIT_PUSH_OPTION_COUNT`            | Number of push options. See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).                                                          |
-| `GIT_PUSH_OPTION_<i>`              | Value of push options where `i` is from `0` to `GIT_PUSH_OPTION_COUNT - 1`. See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).      |
+| `GIT_PUSH_OPTION_COUNT`            | Number of [push options](../user/project/push_options.md). See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).                                                          |
+| `GIT_PUSH_OPTION_<i>`              | Value of [push options](../user/project/push_options.md) where `i` is from `0` to `GIT_PUSH_OPTION_COUNT - 1`. See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).      |
 
 ## Custom error messages
 

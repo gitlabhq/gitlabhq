@@ -41,6 +41,16 @@ export default {
       required: false,
       default: false,
     },
+    inputFieldName: {
+      type: String,
+      required: false,
+      default: 'upload_file',
+    },
+    shouldUpdateInputOnFileDrop: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -84,6 +94,30 @@ export default {
         return;
       }
 
+      // NOTE: This is a temporary solution to integrate dropzone into a Rails
+      // form. On file drop if `shouldUpdateInputOnFileDrop` is true, the file
+      // input value is updated. So that when the form is submitted — the file
+      // value would be send together with the form data. This solution should
+      // be removed when License file upload page is fully migrated:
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/352501
+      // NOTE: as per https://caniuse.com/mdn-api_htmlinputelement_files, IE11
+      // is not able to set input.files property, thought the user would still
+      // be able to use the file picker dialogue option, by clicking the
+      // "openFileUpload" button
+      if (this.shouldUpdateInputOnFileDrop) {
+        // Since FileList cannot be easily manipulated, to match requirement of
+        // singleFileSelection, we're throwing an error if multiple files were
+        // dropped on the dropzone
+        // NOTE: we can drop this logic together with
+        // `shouldUpdateInputOnFileDrop` flag
+        if (this.singleFileSelection && files.length > 1) {
+          this.$emit('error');
+          return;
+        }
+
+        this.$refs.fileUpload.files = files;
+      }
+
       this.$emit('change', this.singleFileSelection ? files[0] : files);
     },
     ondragenter(e) {
@@ -116,6 +150,7 @@ export default {
     <slot>
       <button
         class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+        type="button"
         @click="openFileUpload"
       >
         <div
@@ -147,7 +182,7 @@ export default {
       <input
         ref="fileUpload"
         type="file"
-        name="upload_file"
+        :name="inputFieldName"
         :accept="validFileMimetypes"
         class="hide"
         :multiple="!singleFileSelection"

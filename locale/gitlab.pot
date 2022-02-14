@@ -21660,7 +21660,16 @@ msgstr ""
 msgid "Licenses|Displays licenses detected in the project, based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr ""
 
+msgid "Licenses|Drag your license file here or %{linkStart}click to upload%{linkEnd}."
+msgstr ""
+
+msgid "Licenses|Drop your license file to start the upload."
+msgstr ""
+
 msgid "Licenses|Error fetching the license list. Please check your network connection and try again."
+msgstr ""
+
+msgid "Licenses|Error: You are trying to upload something other than a file"
 msgstr ""
 
 msgid "Licenses|License Compliance"
@@ -21679,6 +21688,9 @@ msgid "Licenses|Policy violation: denied"
 msgstr ""
 
 msgid "Licenses|Specified policies in this project"
+msgstr ""
+
+msgid "Licenses|The file could not be uploaded."
 msgstr ""
 
 msgid "Licenses|The license list details information about the licenses used within your project."
@@ -40729,6 +40741,9 @@ msgid "Webhooks|A wiki page is created or updated."
 msgstr ""
 
 msgid "Webhooks|An issue is created, updated, closed, or reopened."
+msgstr ""
+
+msgid "Webhooks|Are you sure you want to delete this group hook?"
 msgstr ""
 
 msgid "Webhooks|Are you sure you want to delete this project hook?"

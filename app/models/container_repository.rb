@@ -15,6 +15,7 @@ class ContainerRepository < ApplicationRecord
   MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
 
   TooManyImportsError = Class.new(StandardError)
+  NativeImportError = Class.new(StandardError)
 
   belongs_to :project
 
@@ -85,9 +86,7 @@ class ContainerRepository < ApplicationRecord
     end
 
     state :pre_import_done do
-      validates :migration_pre_import_started_at,
-                :migration_pre_import_done_at,
-                presence: true
+      validates :migration_pre_import_done_at, presence: true
     end
 
     state :importing do
@@ -113,7 +112,7 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :finish_pre_import do
-      transition pre_importing: :pre_import_done
+      transition %i[pre_importing import_aborted] => :pre_import_done
     end
 
     event :start_import do
@@ -121,7 +120,7 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :finish_import do
-      transition importing: :import_done
+      transition %i[importing import_aborted] => :import_done
     end
 
     event :already_migrated do
@@ -155,7 +154,7 @@ class ContainerRepository < ApplicationRecord
       end
     end
 
-    before_transition pre_importing: :pre_import_done do |container_repository|
+    before_transition %i[pre_importing import_aborted] => :pre_import_done do |container_repository|
       container_repository.migration_pre_import_done_at = Time.zone.now
     end
 
@@ -170,7 +169,7 @@ class ContainerRepository < ApplicationRecord
       end
     end
 
-    before_transition importing: :import_done do |container_repository|
+    before_transition %i[importing import_aborted] => :import_done do |container_repository|
       container_repository.migration_import_done_at = Time.zone.now
     end
 
@@ -272,13 +271,29 @@ class ContainerRepository < ApplicationRecord
     finish_pre_import && start_import
   end
 
-  def retry_migration
-    return if migration_import_done_at
+  def retry_aborted_migration
+    return unless migration_state == 'import_aborted'
 
-    if migration_pre_import_done_at
+    import_status = gitlab_api_client.import_status(self.path)
+
+    case import_status
+    when 'native'
+      raise NativeImportError
+    when 'import_in_progress'
+      nil
+    when 'import_complete'
+      finish_import
+    when 'import_failed'
       retry_import
-    else
+    when 'pre_import_in_progress'
+      nil
+    when 'pre_import_complete'
+      finish_pre_import_and_start_import
+    when 'pre_import_failed'
       retry_pre_import
+    else
+      # If the import_status request fails, use the timestamp to guess current state
+      migration_pre_import_done_at ? retry_import : retry_pre_import
     end
   end
 

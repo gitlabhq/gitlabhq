@@ -62,8 +62,8 @@ can reserve your catch-all mailbox for other purposes.
 
 ### Dedicated email address
 
-This solution is relatively simple to set up: you just need to create an email
-address dedicated to receive your users' replies to GitLab notifications. However,
+To set up this solution, you must create a dedicated email
+address to receive your users' replies to GitLab notifications. However,
 this method only supports replies, and not the other features of [incoming email](#incoming-email).
 
 ## Accepted headers
@@ -75,7 +75,7 @@ Email is processed correctly when a configured email address is present in one o
 - `Envelope-To` or `X-Envelope-To`
 
 In GitLab 14.6 and later, [Service Desk](../user/project/service_desk.md)
-also checks these additional headers.
+also checks accepted headers.
 
 Usually, the "To" field contains the email address of the primary receiver.
 However, it might not include the configured GitLab email address if:
@@ -83,6 +83,14 @@ However, it might not include the configured GitLab email address if:
 - The address is in the "CC" field.
 - The address was included when using "Reply all".
 - The email was forwarded.
+
+## Rejected headers
+
+To prevent unwanted issue creation from automatic email systems, GitLab ignores all incoming email
+containing the following headers:
+
+- `Auto-Submitted` with a value other than `no`
+- `X-Autoreply` with a value of `yes`
 
 ## Set it up
 

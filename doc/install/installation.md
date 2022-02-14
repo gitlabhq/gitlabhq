@@ -567,6 +567,7 @@ sudo -u git -H git config --global gc.auto 0
 sudo -u git -H git config --global repack.writeBitmaps true
 
 # Enable push options
+# Refer to https://docs.gitlab.com/ee/user/project/push_options.html for more information.
 sudo -u git -H git config --global receive.advertisePushOptions true
 
 # Enable fsyncObjectFiles to reduce risk of repository corruption if the server crashes
@@ -1143,7 +1144,7 @@ You can configure the Prometheus server in `config/gitlab.yml`:
 # example
 prometheus:
   enabled: true
-  server_address: '10.1.2.3:9090' 
+  server_address: '10.1.2.3:9090'
 ```
 
 ## Troubleshooting

@@ -57,8 +57,8 @@ GitLab administrators can configure a new default branch name at the
 
 ### Instance-level custom initial branch name **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221013) in GitLab 13.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/325163) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221013) in GitLab 13.2 [with a flag](../../../../administration/feature_flags.md) named `global_default_branch_name`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/325163) in GitLab 13.12. Feature flag `global_default_branch_name` removed.
 
 GitLab [administrators](../../../permissions.md) of self-managed instances can
 customize the initial branch for projects hosted on that instance. Individual

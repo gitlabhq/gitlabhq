@@ -113,6 +113,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         allow(worker).to receive(:next_aborted_repository) do
           next_aborted_repository = method.call
           allow(next_aborted_repository).to receive(:migration_import).and_return(:ok)
+          allow(next_aborted_repository.gitlab_api_client).to receive(:import_status).and_return('import_failed')
           next_aborted_repository
         end
 

@@ -59,8 +59,10 @@ Otherwise, to upload your license:
 1. On the left sidebar, select **Settings**.
 1. In the **License file** area, select **Upload a license**.
 1. Upload a license:
-   - For a file, select **Upload `.gitlab-license` file**, **Choose file**, and
-     select the license file from your local machine.
+   - For a file, either:
+     - Select **Upload `.gitlab-license` file**, then **Choose File** and
+       select the license file from your local machine.
+     - Drag and drop the license file to the **Drag your license file here** area.
    - For plain text, select **Enter license key** and paste the contents in
      **License key**.
 1. Select the **Terms of Service** checkbox.

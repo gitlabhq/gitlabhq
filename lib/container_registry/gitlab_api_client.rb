@@ -45,6 +45,11 @@ module ContainerRegistry
       IMPORT_RESPONSES.fetch(response.status, :error)
     end
 
+    def import_status(path)
+      body_hash = response_body(faraday.get(import_url_for(path)))
+      body_hash['status'] || 'error'
+    end
+
     private
 
     def start_import_for(path, pre:)

@@ -9,11 +9,10 @@
     %a{ href: help_page_path('user/usage_quotas.md'), target: '_blank', rel: 'noopener noreferrer' }
       = s_('UsageQuota|Learn more about usage quotas') + '.'
 
-.top-area.scrolling-tabs-container.inner-page-scroll-tabs
-  %ul.nav.nav-tabs.nav-links.scrolling-tabs.separator.js-usage-quota-tabs{ role: 'tablist' }
-    %li.nav-item
-      %a.nav-link#storage-quota{ data: { toggle: "tab", action: '#storage-quota-tab' }, href: '#storage-quota-tab', 'aria-controls': '#storage-quota-tab', 'aria-selected': 'true' }
-        = s_('UsageQuota|Storage')
+= gl_tabs_nav do
+  = gl_tab_link_to '#storage-quota-tab', item_active: true do
+    = s_('UsageQuota|Storage')
+
 .tab-content
-  .tab-pane#storage-quota-tab
+  .tab-pane.active#storage-quota-tab
     #js-project-storage-count-app{ data: { project_path: @project.full_path } }

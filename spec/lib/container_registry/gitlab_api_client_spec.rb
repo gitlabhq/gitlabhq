@@ -77,7 +77,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
     end
   end
 
-  describe '#pre_import_repository' do
+  describe '#import_repository' do
     subject { client.import_repository(path) }
 
     where(:status_code, :expected_result) do
@@ -98,6 +98,26 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
       end
 
       it { is_expected.to eq(expected_result) }
+    end
+  end
+
+  describe '#import_status' do
+    subject { client.import_status(path) }
+
+    before do
+      stub_import_status(path, status)
+    end
+
+    context 'with a status' do
+      let(:status) { 'this_is_a_test' }
+
+      it { is_expected.to eq(status) }
+    end
+
+    context 'with no status' do
+      let(:status) { nil }
+
+      it { is_expected.to eq('error') }
     end
   end
 
@@ -170,5 +190,15 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
     stub_request(:get, "#{registry_api_url}/gitlab/v1/")
       .with(headers: { 'Accept' => described_class::JSON_TYPE })
       .to_return(status: status_code, body: '')
+  end
+
+  def stub_import_status(path, status)
+    stub_request(:get, "#{registry_api_url}/gitlab/v1/import/#{path}/")
+      .with(headers: { 'Accept' => described_class::JSON_TYPE })
+      .to_return(
+        status: 200,
+        body: { status: status }.to_json,
+        headers: { content_type: 'application/json' }
+      )
   end
 end

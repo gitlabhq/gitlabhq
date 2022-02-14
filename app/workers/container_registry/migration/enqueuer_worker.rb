@@ -32,7 +32,7 @@ module ContainerRegistry
       private
 
       def handle_aborted_migration
-        return unless next_aborted_repository&.retry_migration
+        return unless next_aborted_repository&.retry_aborted_migration
 
         log_extra_metadata_on_done(:container_repository_id, next_aborted_repository.id)
         log_extra_metadata_on_done(:import_type, 'retry')

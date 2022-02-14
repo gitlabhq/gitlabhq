@@ -683,6 +683,10 @@ Do not use profanity. Doing so may negatively affect other users and contributor
 
 Use lowercase for **push rules**.
 
+## register
+
+Use **register** instead of **sign up** when talking about creating an account.
+
 ## Reporter
 
 When writing about the Reporter role:
@@ -779,6 +783,10 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 Use **sign in** instead of **sign on** or **log on** or **log in**. If the user interface has different words, use those.
 
 You can use **single sign-on**.
+
+## sign up
+
+Use **register** instead of **sign up** when talking about creating an account.
 
 ## simply, simple
 

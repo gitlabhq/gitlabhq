@@ -333,3 +333,10 @@ Note that:
 
 Behind the scenes, Service Desk works by the special Support Bot user creating issues. This user
 does not count toward the license limit count.
+
+## Troubleshooting Service Desk
+
+### Emails to Service Desk do not create issues
+
+Your emails might be ignored because they contain one of the
+[email headers that GitLab ignores](../../administration/incoming_email.md#rejected-headers).

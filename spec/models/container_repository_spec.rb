@@ -218,7 +218,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
       subject { repository.finish_pre_import }
 
-      it_behaves_like 'transitioning from allowed states', %w[pre_importing]
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing import_aborted]
 
       it 'sets migration_pre_import_done_at' do
         expect { subject }.to change { repository.reload.migration_pre_import_done_at }
@@ -263,7 +263,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
       subject { repository.finish_import }
 
-      it_behaves_like 'transitioning from allowed states', %w[importing]
+      it_behaves_like 'transitioning from allowed states', %w[importing import_aborted]
       it_behaves_like 'queueing the next import'
 
       it 'sets migration_import_done_at and queues the next import' do
@@ -334,44 +334,118 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         end
       end
 
-      it_behaves_like 'transitioning from allowed states', %w[pre_importing]
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing import_aborted]
       it_behaves_like 'transitioning to importing'
     end
   end
 
-  describe '#retry_migration' do
-    subject { repository.retry_migration }
+  describe '#retry_aborted_migration' do
+    subject { repository.retry_aborted_migration }
 
-    it 'retries the pre_import' do
-      expect(repository).to receive(:retry_pre_import).and_return(true)
-      expect(repository).not_to receive(:retry_import)
-
-      expect(subject).to eq(true)
-    end
-
-    context 'when migration is done pre-importing' do
-      before do
-        repository.update_columns(migration_pre_import_done_at: Time.zone.now)
-      end
-
-      it 'returns' do
-        expect(repository).to receive(:retry_import).and_return(true)
-        expect(repository).not_to receive(:retry_pre_import)
-
-        expect(subject).to eq(true)
-      end
-    end
-
-    context 'when migration is already complete' do
-      before do
-        repository.update_columns(migration_import_done_at: Time.zone.now)
-      end
-
-      it 'returns' do
-        expect(repository).not_to receive(:retry_pre_import)
-        expect(repository).not_to receive(:retry_import)
+    shared_examples 'no action' do
+      it 'does nothing' do
+        expect { subject }.not_to change { repository.reload.migration_state }
 
         expect(subject).to eq(nil)
+      end
+    end
+
+    shared_examples 'retrying the pre_import' do
+      it 'retries the pre_import' do
+        expect(repository).to receive(:migration_pre_import).and_return(:ok)
+
+        expect { subject }.to change { repository.reload.migration_state }.to('pre_importing')
+      end
+    end
+
+    shared_examples 'retrying the import' do
+      it 'retries the import' do
+        expect(repository).to receive(:migration_import).and_return(:ok)
+
+        expect { subject }.to change { repository.reload.migration_state }.to('importing')
+      end
+    end
+
+    context 'when migration_state is not aborted' do
+      it_behaves_like 'no action'
+    end
+
+    context 'when migration_state is aborted' do
+      before do
+        repository.abort_import
+
+        allow(repository.gitlab_api_client)
+            .to receive(:import_status).with(repository.path).and_return(client_response)
+      end
+
+      context 'native response' do
+        let(:client_response) { 'native' }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(described_class::NativeImportError)
+        end
+      end
+
+      context 'import_in_progress response' do
+        let(:client_response) { 'import_in_progress' }
+
+        it_behaves_like 'no action'
+      end
+
+      context 'import_complete response' do
+        let(:client_response) { 'import_complete' }
+
+        it 'finishes the import' do
+          expect { subject }.to change { repository.reload.migration_state }.to('import_done')
+        end
+      end
+
+      context 'import_failed response' do
+        let(:client_response) { 'import_failed' }
+
+        it_behaves_like 'retrying the import'
+      end
+
+      context 'pre_import_in_progress response' do
+        let(:client_response) { 'pre_import_in_progress' }
+
+        it_behaves_like 'no action'
+      end
+
+      context 'pre_import_complete response' do
+        let(:client_response) { 'pre_import_complete' }
+
+        it 'finishes the pre_import and starts the import' do
+          expect(repository).to receive(:finish_pre_import).and_call_original
+          expect(repository).to receive(:migration_import).and_return(:ok)
+
+          expect { subject }.to change { repository.reload.migration_state }.to('importing')
+        end
+      end
+
+      context 'pre_import_failed response' do
+        let(:client_response) { 'pre_import_failed' }
+
+        it_behaves_like 'retrying the pre_import'
+      end
+
+      context 'error response' do
+        let(:client_response) { 'error' }
+
+        context 'migration_pre_import_done_at is NULL' do
+          it_behaves_like 'retrying the pre_import'
+        end
+
+        context 'migration_pre_import_done_at is not NULL' do
+          before do
+            repository.update_columns(
+              migration_pre_import_started_at: 5.minutes.ago,
+              migration_pre_import_done_at: Time.zone.now
+            )
+          end
+
+          it_behaves_like 'retrying the import'
+        end
       end
     end
   end

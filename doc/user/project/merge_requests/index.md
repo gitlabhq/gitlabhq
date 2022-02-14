@@ -137,3 +137,4 @@ For a web developer writing a webpage for your company's website:
 - [Suggest code changes](reviews/suggestions.md)
 - [Commits](commits.md)
 - [CI/CD pipelines](../../../ci/index.md)
+- [Push options](../push_options.md) for merge requests

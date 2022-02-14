@@ -291,6 +291,12 @@ Gitlab/AvoidUploadedFileFromParams:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Gitlab/EventStoreSubscriber:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:
