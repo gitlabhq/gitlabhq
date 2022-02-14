@@ -15,6 +15,7 @@ const VueDraggable = () => import('vuedraggable');
 export default {
   vueDraggableAttributes: {
     animation: 200,
+    forceFallback: true,
     ghostClass: 'gl-visibility-hidden',
     tag: 'ul',
   },

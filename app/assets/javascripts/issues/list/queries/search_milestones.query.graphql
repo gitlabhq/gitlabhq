@@ -8,6 +8,7 @@ query searchMilestones($fullPath: ID!, $search: String, $isProject: Boolean = fa
       includeAncestors: true
       includeDescendants: true
       sort: EXPIRED_LAST_DUE_DATE_ASC
+      state: active
     ) {
       nodes {
         ...Milestone
@@ -16,7 +17,12 @@ query searchMilestones($fullPath: ID!, $search: String, $isProject: Boolean = fa
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     id
-    milestones(searchTitle: $search, includeAncestors: true, sort: EXPIRED_LAST_DUE_DATE_ASC) {
+    milestones(
+      searchTitle: $search
+      includeAncestors: true
+      sort: EXPIRED_LAST_DUE_DATE_ASC
+      state: active
+    ) {
       nodes {
         ...Milestone
       }

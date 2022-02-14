@@ -1255,7 +1255,7 @@ POST /projects
 | `repository_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(administrator only)_ |
 | `request_access_enabled`                                    | boolean | **{dotted-circle}** No | Allow users to request member access. |
-| `requirements_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled` or `public` |
+| `requirements_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |

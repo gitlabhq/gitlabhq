@@ -49,6 +49,10 @@ class DeploymentsFinder
 
   private
 
+  def raise_for_inefficient_updated_at_query?
+    params.fetch(:raise_for_inefficient_updated_at_query, Rails.env.development? || Rails.env.test?)
+  end
+
   def validate!
     if filter_by_updated_at? && filter_by_finished_at?
       raise InefficientQueryError, 'Both `updated_at` filter and `finished_at` filter can not be specified'
@@ -57,9 +61,11 @@ class DeploymentsFinder
     # Currently, the inefficient parameters are allowed in order to avoid breaking changes in Deployment API.
     # We'll switch to a hard error in https://gitlab.com/gitlab-org/gitlab/-/issues/328500.
     if (filter_by_updated_at? && !order_by_updated_at?) || (!filter_by_updated_at? && order_by_updated_at?)
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
-        InefficientQueryError.new('`updated_at` filter and `updated_at` sorting must be paired')
-      )
+      error = InefficientQueryError.new('`updated_at` filter and `updated_at` sorting must be paired')
+
+      Gitlab::ErrorTracking.log_exception(error)
+
+      raise error if raise_for_inefficient_updated_at_query?
     end
 
     if (filter_by_finished_at? && !order_by_finished_at?) || (!filter_by_finished_at? && order_by_finished_at?)

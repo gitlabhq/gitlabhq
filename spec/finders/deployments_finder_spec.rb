@@ -222,11 +222,7 @@ RSpec.describe DeploymentsFinder do
       end
 
       describe 'enforce sorting to `updated_at` sorting' do
-        let(:params) { { **base_params, updated_before: 1.day.ago, order_by: 'id', sort: 'asc' } }
-
-        before do
-          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-        end
+        let(:params) { { **base_params, updated_before: 1.day.ago, order_by: 'id', sort: 'asc', raise_for_inefficient_updated_at_query: false } }
 
         it 'sorts by only one column' do
           expect(subject.order_values.size).to eq(2)

@@ -11,7 +11,6 @@ Database/MultipleDatabases:
   - ee/spec/services/ee/merge_requests/update_service_spec.rb
   - lib/backup/database.rb
   - lib/backup/manager.rb
-  - lib/gitlab/current_settings.rb
   - lib/gitlab/database/load_balancing/load_balancer.rb
   - lib/gitlab/database/load_balancing.rb
   - lib/gitlab/database/load_balancing/sticking.rb
@@ -29,7 +28,6 @@ Database/MultipleDatabases:
   - spec/db/schema_spec.rb
   - spec/initializers/database_config_spec.rb
   - spec/lib/backup/manager_spec.rb
-  - spec/lib/gitlab/current_settings_spec.rb
   - spec/lib/gitlab/database_spec.rb
   - spec/lib/gitlab/metrics/subscribers/active_record_spec.rb
   - spec/lib/gitlab/profiler_spec.rb

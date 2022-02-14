@@ -78,7 +78,7 @@ func TestUploadHandlerForwardingRawData(t *testing.T) {
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, handler, apiResponse, nil, opts)
+	InterceptMultipartFiles(response, httpRequest, handler, apiResponse, nil, opts)
 
 	require.Equal(t, 202, response.Code)
 	require.Equal(t, "RESPONSE", response.Body.String(), "response body")
@@ -149,7 +149,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
+	InterceptMultipartFiles(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
 	require.Equal(t, 202, response.Code)
 
 	cancel() // this will trigger an async cleanup
@@ -218,7 +218,7 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 			opts, _, err := preparer.Prepare(apiResponse)
 			require.NoError(t, err)
 
-			HandleFileUploads(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
+			InterceptMultipartFiles(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
 			require.Equal(t, test.response, response.Code)
 
 			cancel() // this will trigger an async cleanup
@@ -248,7 +248,7 @@ func TestUploadProcessingField(t *testing.T) {
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
+	InterceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
 
 	require.Equal(t, 500, response.Code)
 }
@@ -279,7 +279,7 @@ func TestUploadingMultipleFiles(t *testing.T) {
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
+	InterceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
 
 	require.Equal(t, 400, response.Code)
 	require.Equal(t, "upload request contains more than 10 files\n", response.Body.String())
@@ -335,7 +335,7 @@ func TestUploadProcessingFile(t *testing.T) {
 			opts, _, err := preparer.Prepare(apiResponse)
 			require.NoError(t, err)
 
-			HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
+			InterceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
 
 			require.Equal(t, 200, response.Code)
 		})
@@ -381,7 +381,7 @@ func TestInvalidFileNames(t *testing.T) {
 		opts, _, err := preparer.Prepare(apiResponse)
 		require.NoError(t, err)
 
-		HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
+		InterceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
 		require.Equal(t, testCase.code, response.Code)
 		require.Equal(t, testCase.expectedPrefix, opts.TempFilePrefix)
 	}
@@ -447,7 +447,7 @@ func TestContentDispositionRewrite(t *testing.T) {
 			opts, _, err := preparer.Prepare(apiResponse)
 			require.NoError(t, err)
 
-			HandleFileUploads(response, httpRequest, customHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
+			InterceptMultipartFiles(response, httpRequest, customHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
 
 			upstreamRequest, err := http.ReadRequest(bufio.NewReader(&upstreamRequestBuffer))
 			require.NoError(t, err)
@@ -570,7 +570,7 @@ func runUploadTest(t *testing.T, image []byte, filename string, httpCode int, ts
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
+	InterceptMultipartFiles(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
 	require.Equal(t, httpCode, response.Code)
 }
 

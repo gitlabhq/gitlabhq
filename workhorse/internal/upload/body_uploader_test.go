@@ -24,7 +24,7 @@ const (
 	fileLen     = len(fileContent)
 )
 
-func TestBodyUploader(t *testing.T) {
+func TestRequestBody(t *testing.T) {
 	testhelper.ConfigureSecret()
 
 	body := strings.NewReader(fileContent)
@@ -38,7 +38,7 @@ func TestBodyUploader(t *testing.T) {
 	require.Equal(t, fileContent, string(uploadEcho))
 }
 
-func TestBodyUploaderCustomPreparer(t *testing.T) {
+func TestRequestBodyCustomPreparer(t *testing.T) {
 	body := strings.NewReader(fileContent)
 
 	resp := testUpload(&rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body)
@@ -49,7 +49,7 @@ func TestBodyUploaderCustomPreparer(t *testing.T) {
 	require.Equal(t, fileContent, string(uploadEcho))
 }
 
-func TestBodyUploaderCustomVerifier(t *testing.T) {
+func TestRequestBodyCustomVerifier(t *testing.T) {
 	body := strings.NewReader(fileContent)
 	verifier := &mockVerifier{}
 
@@ -62,11 +62,11 @@ func TestBodyUploaderCustomVerifier(t *testing.T) {
 	require.True(t, verifier.invoked, "Verifier.Verify not invoked")
 }
 
-func TestBodyUploaderAuthorizationFailure(t *testing.T) {
+func TestRequestBodyAuthorizationFailure(t *testing.T) {
 	testNoProxyInvocation(t, http.StatusUnauthorized, &rails{unauthorized: true}, &alwaysLocalPreparer{})
 }
 
-func TestBodyUploaderErrors(t *testing.T) {
+func TestRequestBodyErrors(t *testing.T) {
 	tests := []struct {
 		name     string
 		preparer *alwaysLocalPreparer
@@ -95,7 +95,7 @@ func testUpload(auth PreAuthorizer, preparer Preparer, proxy http.Handler, body 
 	req := httptest.NewRequest("POST", "http://example.com/upload", body)
 	w := httptest.NewRecorder()
 
-	BodyUploader(auth, proxy, preparer).ServeHTTP(w, req)
+	RequestBody(auth, proxy, preparer).ServeHTTP(w, req)
 
 	return w.Result()
 }

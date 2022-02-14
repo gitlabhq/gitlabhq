@@ -228,17 +228,17 @@ func configureRoutes(u *upstream) {
 
 	preparers := createUploadPreparers(u.Config)
 	uploadPath := path.Join(u.DocumentRoot, "uploads/tmp")
-	uploadAccelerateProxy := upload.Accelerate(&upload.SkipRailsAuthorizer{TempPath: uploadPath}, proxy, preparers.uploads)
-	ciAPIProxyQueue := queueing.QueueRequests("ci_api_job_requests", uploadAccelerateProxy, u.APILimit, u.APIQueueLimit, u.APIQueueTimeout)
+	tempfileMultipartProxy := upload.Multipart(&upload.SkipRailsAuthorizer{TempPath: uploadPath}, proxy, preparers.uploads)
+	ciAPIProxyQueue := queueing.QueueRequests("ci_api_job_requests", tempfileMultipartProxy, u.APILimit, u.APIQueueLimit, u.APIQueueTimeout)
 	ciAPILongPolling := builds.RegisterHandler(ciAPIProxyQueue, redis.WatchKey, u.APICILongPollingDuration)
 
-	dependencyProxyInjector.SetUploadHandler(upload.BodyUploader(api, signingProxy, preparers.packages))
+	dependencyProxyInjector.SetUploadHandler(upload.RequestBody(api, signingProxy, preparers.packages))
 
 	// Serve static files or forward the requests
 	defaultUpstream := static.ServeExisting(
 		u.URLPrefix,
 		staticpages.CacheDisabled,
-		static.DeployPage(static.ErrorPagesUnless(u.DevelopmentMode, staticpages.ErrorFormatHTML, uploadAccelerateProxy)),
+		static.DeployPage(static.ErrorPagesUnless(u.DevelopmentMode, staticpages.ErrorFormatHTML, tempfileMultipartProxy)),
 	)
 	probeUpstream := static.ErrorPagesUnless(u.DevelopmentMode, staticpages.ErrorFormatJSON, proxy)
 	healthUpstream := static.ErrorPagesUnless(u.DevelopmentMode, staticpages.ErrorFormatText, proxy)
@@ -248,7 +248,7 @@ func configureRoutes(u *upstream) {
 		u.route("GET", gitProjectPattern+`info/refs\z`, git.GetInfoRefsHandler(api)),
 		u.route("POST", gitProjectPattern+`git-upload-pack\z`, contentEncodingHandler(git.UploadPack(api)), withMatcher(isContentType("application/x-git-upload-pack-request"))),
 		u.route("POST", gitProjectPattern+`git-receive-pack\z`, contentEncodingHandler(git.ReceivePack(api)), withMatcher(isContentType("application/x-git-receive-pack-request"))),
-		u.route("PUT", gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, lfs.PutStore(api, signingProxy, preparers.lfs), withMatcher(isContentType("application/octet-stream"))),
+		u.route("PUT", gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, upload.RequestBody(api, signingProxy, preparers.lfs), withMatcher(isContentType("application/octet-stream"))),
 
 		// CI Artifacts
 		u.route("POST", apiPattern+`v4/jobs/[0-9]+/artifacts\z`, contentEncodingHandler(artifacts.UploadArtifacts(api, signingProxy, preparers.artifacts))),
@@ -276,56 +276,56 @@ func configureRoutes(u *upstream) {
 		// https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56731.
 
 		// Maven Artifact Repository
-		u.route("PUT", apiProjectPattern+`packages/maven/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/maven/`, upload.RequestBody(api, signingProxy, preparers.packages)),
 
 		// Conan Artifact Repository
-		u.route("PUT", apiPattern+`v4/packages/conan/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
-		u.route("PUT", apiProjectPattern+`packages/conan/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiPattern+`v4/packages/conan/`, upload.RequestBody(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/conan/`, upload.RequestBody(api, signingProxy, preparers.packages)),
 
 		// Generic Packages Repository
-		u.route("PUT", apiProjectPattern+`packages/generic/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/generic/`, upload.RequestBody(api, signingProxy, preparers.packages)),
 
 		// NuGet Artifact Repository
-		u.route("PUT", apiProjectPattern+`packages/nuget/`, upload.Accelerate(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/nuget/`, upload.Multipart(api, signingProxy, preparers.packages)),
 
 		// PyPI Artifact Repository
-		u.route("POST", apiProjectPattern+`packages/pypi`, upload.Accelerate(api, signingProxy, preparers.packages)),
+		u.route("POST", apiProjectPattern+`packages/pypi`, upload.Multipart(api, signingProxy, preparers.packages)),
 
 		// Debian Artifact Repository
-		u.route("PUT", apiProjectPattern+`packages/debian/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/debian/`, upload.RequestBody(api, signingProxy, preparers.packages)),
 
 		// Gem Artifact Repository
-		u.route("POST", apiProjectPattern+`packages/rubygems/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("POST", apiProjectPattern+`packages/rubygems/`, upload.RequestBody(api, signingProxy, preparers.packages)),
 
 		// Terraform Module Package Repository
-		u.route("PUT", apiProjectPattern+`packages/terraform/modules/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/terraform/modules/`, upload.RequestBody(api, signingProxy, preparers.packages)),
 
 		// Helm Artifact Repository
-		u.route("POST", apiProjectPattern+`packages/helm/api/[^/]+/charts\z`, upload.Accelerate(api, signingProxy, preparers.packages)),
+		u.route("POST", apiProjectPattern+`packages/helm/api/[^/]+/charts\z`, upload.Multipart(api, signingProxy, preparers.packages)),
 
 		// We are porting API to disk acceleration
 		// we need to declare each routes until we have fixed all the routes on the rails codebase.
 		// Overall status can be seen at https://gitlab.com/groups/gitlab-org/-/epics/1802#current-status
-		u.route("POST", apiProjectPattern+`wikis/attachments\z`, uploadAccelerateProxy),
-		u.route("POST", apiPattern+`graphql\z`, uploadAccelerateProxy),
-		u.route("POST", apiTopicPattern, uploadAccelerateProxy),
-		u.route("PUT", apiTopicPattern, uploadAccelerateProxy),
-		u.route("POST", apiPattern+`v4/groups/import`, upload.Accelerate(api, signingProxy, preparers.uploads)),
-		u.route("POST", apiPattern+`v4/projects/import`, upload.Accelerate(api, signingProxy, preparers.uploads)),
+		u.route("POST", apiProjectPattern+`wikis/attachments\z`, tempfileMultipartProxy),
+		u.route("POST", apiPattern+`graphql\z`, tempfileMultipartProxy),
+		u.route("POST", apiTopicPattern, tempfileMultipartProxy),
+		u.route("PUT", apiTopicPattern, tempfileMultipartProxy),
+		u.route("POST", apiPattern+`v4/groups/import`, upload.Multipart(api, signingProxy, preparers.uploads)),
+		u.route("POST", apiPattern+`v4/projects/import`, upload.Multipart(api, signingProxy, preparers.uploads)),
 
 		// Project Import via UI upload acceleration
-		u.route("POST", importPattern+`gitlab_project`, upload.Accelerate(api, signingProxy, preparers.uploads)),
+		u.route("POST", importPattern+`gitlab_project`, upload.Multipart(api, signingProxy, preparers.uploads)),
 		// Group Import via UI upload acceleration
-		u.route("POST", importPattern+`gitlab_group`, upload.Accelerate(api, signingProxy, preparers.uploads)),
+		u.route("POST", importPattern+`gitlab_group`, upload.Multipart(api, signingProxy, preparers.uploads)),
 
 		// Metric image upload
-		u.route("POST", apiProjectPattern+`issues/[0-9]+/metric_images\z`, upload.Accelerate(api, signingProxy, preparers.uploads)),
+		u.route("POST", apiProjectPattern+`issues/[0-9]+/metric_images\z`, upload.Multipart(api, signingProxy, preparers.uploads)),
 
 		// Requirements Import via UI upload acceleration
-		u.route("POST", projectPattern+`requirements_management/requirements/import_csv`, upload.Accelerate(api, signingProxy, preparers.uploads)),
+		u.route("POST", projectPattern+`requirements_management/requirements/import_csv`, upload.Multipart(api, signingProxy, preparers.uploads)),
 
 		// Uploads via API
-		u.route("POST", apiProjectPattern+`uploads\z`, upload.Accelerate(api, signingProxy, preparers.uploads)),
+		u.route("POST", apiProjectPattern+`uploads\z`, upload.Multipart(api, signingProxy, preparers.uploads)),
 
 		// Explicitly proxy API requests
 		u.route("", apiPattern, proxy),
@@ -343,9 +343,9 @@ func configureRoutes(u *upstream) {
 		),
 
 		// Uploads
-		u.route("POST", projectPattern+`uploads\z`, upload.Accelerate(api, signingProxy, preparers.uploads)),
-		u.route("POST", snippetUploadPattern, upload.Accelerate(api, signingProxy, preparers.uploads)),
-		u.route("POST", userUploadPattern, upload.Accelerate(api, signingProxy, preparers.uploads)),
+		u.route("POST", projectPattern+`uploads\z`, upload.Multipart(api, signingProxy, preparers.uploads)),
+		u.route("POST", snippetUploadPattern, upload.Multipart(api, signingProxy, preparers.uploads)),
+		u.route("POST", userUploadPattern, upload.Multipart(api, signingProxy, preparers.uploads)),
 
 		// health checks don't intercept errors and go straight to rails
 		// TODO: We should probably not return a HTML deploy page?

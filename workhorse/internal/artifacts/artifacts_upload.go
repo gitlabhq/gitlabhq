@@ -162,6 +162,6 @@ func UploadArtifacts(myAPI *api.API, h http.Handler, p upload.Preparer) http.Han
 		format := r.URL.Query().Get(ArtifactFormatKey)
 
 		mg := &artifactsUploadProcessor{opts: opts, format: format, SavedFileTracker: upload.SavedFileTracker{Request: r}}
-		upload.HandleFileUploads(w, r, h, a, mg, opts)
+		upload.InterceptMultipartFiles(w, r, h, a, mg, opts)
 	}, "/authorize")
 }

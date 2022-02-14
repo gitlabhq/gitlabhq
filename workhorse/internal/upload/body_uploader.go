@@ -16,16 +16,23 @@ type PreAuthorizer interface {
 	PreAuthorizeHandler(next api.HandleFunc, suffix string) http.Handler
 }
 
-// Verifier allows to check an upload before sending it to rails
+// Verifier is an optional pluggable behavior for upload paths. If
+// Verify() returns an error, Workhorse will return an error response to
+// the client instead of propagating the request to Rails. The motivating
+// use case is Git LFS, where Workhorse checks the size and SHA256
+// checksum of the uploaded file.
 type Verifier interface {
-	// Verify can abort the upload returning an error
+	// Verify can abort the upload by returning an error
 	Verify(handler *filestore.FileHandler) error
 }
 
-// Preparer allows to customize BodyUploader configuration
+// Preparer is a pluggable behavior that interprets a Rails API response
+// and either tells Workhorse how to handle the upload, via the
+// SaveFileOpts and Verifier, or it rejects the request by returning a
+// non-nil error. Its intended use is to make sure the upload gets stored
+// in the right location: either a local directory, or one of several
+// supported object storage backends.
 type Preparer interface {
-	// Prepare converts api.Response into a *SaveFileOpts, it can optionally return an Verifier that will be
-	// invoked after the real upload, before the finalization with rails
 	Prepare(a *api.Response) (*filestore.SaveFileOpts, Verifier, error)
 }
 
@@ -36,26 +43,26 @@ func (s *DefaultPreparer) Prepare(a *api.Response) (*filestore.SaveFileOpts, Ver
 	return opts, nil, err
 }
 
-// BodyUploader is an http.Handler that perform a pre authorization call to rails before hijacking the request body and
-// uploading it.
-// Providing an Preparer allows to customize the upload process
-func BodyUploader(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
+// RequestBody is a request middleware. It will store the request body to
+// a location by determined an api.Response value. It then forwards the
+// request to gitlab-rails without the original request body.
+func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 	return rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		opts, verifier, err := p.Prepare(a)
 		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("BodyUploader: preparation failed: %v", err))
+			helper.Fail500(w, r, fmt.Errorf("RequestBody: preparation failed: %v", err))
 			return
 		}
 
 		fh, err := filestore.SaveFileFromReader(r.Context(), r.Body, r.ContentLength, opts)
 		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("BodyUploader: upload failed: %v", err))
+			helper.Fail500(w, r, fmt.Errorf("RequestBody: upload failed: %v", err))
 			return
 		}
 
 		if verifier != nil {
 			if err := verifier.Verify(fh); err != nil {
-				helper.Fail500(w, r, fmt.Errorf("BodyUploader: verification failed: %v", err))
+				helper.Fail500(w, r, fmt.Errorf("RequestBody: verification failed: %v", err))
 				return
 			}
 		}
@@ -63,7 +70,7 @@ func BodyUploader(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler 
 		data := url.Values{}
 		fields, err := fh.GitLabFinalizeFields("file")
 		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("BodyUploader: finalize fields failed: %v", err))
+			helper.Fail500(w, r, fmt.Errorf("RequestBody: finalize fields failed: %v", err))
 			return
 		}
 
@@ -80,7 +87,7 @@ func BodyUploader(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler 
 		sft := SavedFileTracker{Request: r}
 		sft.Track("file", fh.LocalPath)
 		if err := sft.Finalize(r.Context()); err != nil {
-			helper.Fail500(w, r, fmt.Errorf("BodyUploader: finalize failed: %v", err))
+			helper.Fail500(w, r, fmt.Errorf("RequestBody: finalize failed: %v", err))
 			return
 		}
 

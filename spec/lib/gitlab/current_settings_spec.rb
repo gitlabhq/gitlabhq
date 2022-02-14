@@ -118,7 +118,7 @@ RSpec.describe Gitlab::CurrentSettings do
         allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
         # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(false)` causes issues
         # during the initialization phase of the test suite, so instead let's mock the internals of it
-        allow(ActiveRecord::Base.connection).to receive(:active?).and_return(false)
+        allow(ApplicationSetting.connection).to receive(:active?).and_return(false)
       end
 
       context 'and no settings in cache' do
@@ -150,8 +150,8 @@ RSpec.describe Gitlab::CurrentSettings do
         it 'fetches the settings from cache' do
           # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(true)` causes issues
           # during the initialization phase of the test suite, so instead let's mock the internals of it
-          expect(ActiveRecord::Base.connection).not_to receive(:active?)
-          expect(ActiveRecord::Base.connection).not_to receive(:cached_table_exists?)
+          expect(ApplicationSetting.connection).not_to receive(:active?)
+          expect(ApplicationSetting.connection).not_to receive(:cached_table_exists?)
           expect_any_instance_of(ActiveRecord::MigrationContext).not_to receive(:needs_migration?)
           expect(ActiveRecord::QueryRecorder.new { described_class.current_application_settings }.count).to eq(0)
         end
@@ -159,8 +159,8 @@ RSpec.describe Gitlab::CurrentSettings do
 
       context 'and no settings in cache' do
         before do
-          allow(ActiveRecord::Base.connection).to receive(:active?).and_return(true)
-          allow(ActiveRecord::Base.connection).to receive(:cached_table_exists?).with('application_settings').and_return(true)
+          allow(ApplicationSetting.connection).to receive(:active?).and_return(true)
+          allow(ApplicationSetting.connection).to receive(:cached_table_exists?).with('application_settings').and_return(true)
         end
 
         context 'with RequestStore enabled', :request_store do
@@ -181,7 +181,7 @@ RSpec.describe Gitlab::CurrentSettings do
 
         context 'when ApplicationSettings does not have a primary key' do
           before do
-            allow(ActiveRecord::Base.connection).to receive(:primary_key).with('application_settings').and_return(nil)
+            allow(ApplicationSetting.connection).to receive(:primary_key).with('application_settings').and_return(nil)
           end
 
           it 'raises an exception if ApplicationSettings does not have a primary key' do

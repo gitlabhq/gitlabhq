@@ -6,7 +6,6 @@ package lfs
 
 import (
 	"fmt"
-	"net/http"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -48,8 +47,4 @@ func (l *uploadPreparer) Prepare(a *api.Response) (*filestore.SaveFileOpts, uplo
 	opts.TempFilePrefix = a.LfsOid
 
 	return opts, &object{oid: a.LfsOid, size: a.LfsSize}, nil
-}
-
-func PutStore(a *api.API, h http.Handler, p upload.Preparer) http.Handler {
-	return upload.BodyUploader(a, h, p)
 }
