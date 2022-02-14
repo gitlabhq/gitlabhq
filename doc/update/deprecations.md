@@ -992,6 +992,28 @@ For more information, check the [summary section of the deprecation issue](https
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Support for gRPC-aware proxy deployed between Gitaly and rest of GitLab
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Although not recommended or documented, it was possible to deploy a gRPC-aware proxy between Gitaly and
+the rest of GitLab. For example, NGINX and Envoy. The ability to deploy a gRPC-aware proxy is
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352517). If you currently use a gRPC-aware proxy for
+Gitaly connections, you should change your proxy configuration to use TCP or TLS proxying (OSI layer 4) instead.
+
+Gitaly Cluster became incompatible with gRPC-aware proxies in GitLab 13.12. Now all GitLab installations will be incompatible with
+gRPC-aware proxies, even without Gitaly Cluster.
+
+By sending some of our internal RPC traffic through a custom protocol (instead of gRPC) we
+increase throughput and reduce Go garbage collection latency. For more information, see
+the [relevant epic](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/463).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Test coverage project CI/CD setting
 
 WARNING:
