@@ -25,12 +25,10 @@ describe('Code component', () => {
   };
 
   describe('without output', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       vm = setupComponent(json.cells[0]);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('does not render output prompt', () => {
@@ -39,12 +37,10 @@ describe('Code component', () => {
   });
 
   describe('with output', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       vm = setupComponent(json.cells[2]);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('does not render output prompt', () => {

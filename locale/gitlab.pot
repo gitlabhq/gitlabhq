@@ -17479,7 +17479,7 @@ msgstr ""
 msgid "GroupSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
 msgstr ""
 
-msgid "GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
+msgid "GroupSettings|If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
 msgstr ""
 
 msgid "GroupSettings|New runners registration token has been generated!"
@@ -26575,6 +26575,12 @@ msgid "PipelineStatusTooltip|Pipeline: %{ciStatus}"
 msgstr ""
 
 msgid "PipelineStatusTooltip|Pipeline: %{ci_status}"
+msgstr ""
+
+msgid "PipelineWizardInputValidation|This field is required"
+msgstr ""
+
+msgid "PipelineWizardInputValidation|This value is not valid"
 msgstr ""
 
 msgid "Pipelines"
@@ -43483,6 +43489,9 @@ msgstr ""
 msgid "mrWidget|Merge blocked: pipeline must succeed. It's waiting for a manual action to continue."
 msgstr ""
 
+msgid "mrWidget|Merge blocked: pipeline must succeed. Push a commit that fixes the failure, or %{linkStart}learn about other solutions.%{linkEnd}"
+msgstr ""
+
 msgid "mrWidget|Merge blocked: this merge request must be approved."
 msgstr ""
 
@@ -43598,9 +43607,6 @@ msgid "mrWidget|The changes were merged into"
 msgstr ""
 
 msgid "mrWidget|The changes were not merged into"
-msgstr ""
-
-msgid "mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure, or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
 msgstr ""
 
 msgid "mrWidget|The source branch has been deleted"

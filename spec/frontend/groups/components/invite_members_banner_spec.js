@@ -76,7 +76,6 @@ describe('InviteMembersBanner', () => {
 
       it('calls openModal through the eventHub', () => {
         expect(eventHub.$emit).toHaveBeenCalledWith('openModal', {
-          inviteeType: 'members',
           source: 'invite_members_banner',
         });
       });

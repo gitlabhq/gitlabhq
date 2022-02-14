@@ -7,13 +7,14 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
   let(:test_table) { table(table_name) }
   let(:sub_batch_size) { 1000 }
   let(:pause_ms) { 0 }
+  let(:connection) { ApplicationRecord.connection }
 
   let(:helpers) do
     ActiveRecord::Migration.new.extend(Gitlab::Database::MigrationHelpers)
   end
 
   before do
-    ActiveRecord::Base.connection.execute(<<~SQL)
+    connection.execute(<<~SQL)
       CREATE TABLE #{table_name}
       (
        id integer NOT NULL,
@@ -34,12 +35,14 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
 
   after do
     # Make sure that the temp table we created is dropped (it is not removed by the database_cleaner)
-    ActiveRecord::Base.connection.execute(<<~SQL)
+    connection.execute(<<~SQL)
       DROP TABLE IF EXISTS #{table_name};
     SQL
   end
 
-  subject(:copy_columns) { described_class.new }
+  subject(:copy_columns) { described_class.new(connection: connection) }
+
+  it { expect(described_class).to be < Gitlab::BackgroundMigration::BaseJob }
 
   describe '#perform' do
     let(:migration_class) { described_class.name }

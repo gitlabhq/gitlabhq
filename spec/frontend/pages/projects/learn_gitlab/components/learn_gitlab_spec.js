@@ -80,7 +80,6 @@ describe('Learn GitLab', () => {
 
       expect(spy).toHaveBeenCalledWith('openModal', {
         mode: 'celebrate',
-        inviteeType: 'members',
         source: 'learn-gitlab',
       });
       expect(cookieSpy).toHaveBeenCalledWith(INVITE_MODAL_OPEN_COOKIE);

@@ -114,11 +114,7 @@ describe('Learn GitLab Section Link', () => {
     it('calls the eventHub', () => {
       openInviteMembesrModalLink().vm.$emit('click');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('openModal', {
-        inviteeType: 'members',
-        source: 'learn_gitlab',
-        tasksToBeDoneEnabled: true,
-      });
+      expect(eventHub.$emit).toHaveBeenCalledWith('openModal', { source: 'learn_gitlab' });
     });
 
     it('tracks the click', async () => {

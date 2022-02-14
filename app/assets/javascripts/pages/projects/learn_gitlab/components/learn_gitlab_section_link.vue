@@ -37,11 +37,7 @@ export default {
   },
   methods: {
     openModal() {
-      eventHub.$emit('openModal', {
-        inviteeType: 'members',
-        source: 'learn_gitlab',
-        tasksToBeDoneEnabled: true,
-      });
+      eventHub.$emit('openModal', { source: 'learn_gitlab' });
     },
   },
 };

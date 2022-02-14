@@ -19,30 +19,35 @@ kaniko-build:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
+    # if the user provide IMAGE_TAG then use it, else build the image tag using the default logic.
+    # Default logic
     # Compose docker tag name
     # Git Branch/Tag to Docker Image Tag Mapping
     #   * Default Branch: main -> latest
     #   * Branch: feature/my-feature -> branch-feature-my-feature
     #   * Tag: v1.0.0/beta2 -> v1.0.0-beta2
     - |
-      if [ "$CI_COMMIT_REF_NAME" = $CI_DEFAULT_BRANCH ]; then
-        VERSION="latest"
-      elif [ -n "$CI_COMMIT_TAG" ];then
-        NOSLASH=$(echo "$CI_COMMIT_TAG" | tr -s / - )
-        SANITIZED="${NOSLASH//[^a-zA-Z0-9\-\.]/}"
-        VERSION="$SANITIZED"
-      else \
-        NOSLASH=$(echo "$CI_COMMIT_REF_NAME" | tr -s / - )
-        SANITIZED="${NOSLASH//[^a-zA-Z0-9\-]/}"
-        VERSION="branch-$SANITIZED"
+      if [ -z ${IMAGE_TAG+x} ]; then
+        if [ "$CI_COMMIT_REF_NAME" = $CI_DEFAULT_BRANCH ]; then
+            VERSION="latest"
+          elif [ -n "$CI_COMMIT_TAG" ];then
+            NOSLASH=$(echo "$CI_COMMIT_TAG" | tr -s / - )
+            SANITIZED="${NOSLASH//[^a-zA-Z0-9\-\.]/}"
+            VERSION="$SANITIZED"
+          else \
+            NOSLASH=$(echo "$CI_COMMIT_REF_NAME" | tr -s / - )
+            SANITIZED="${NOSLASH//[^a-zA-Z0-9\-]/}"
+            VERSION="branch-$SANITIZED"
+          fi
+        export IMAGE_TAG=$CI_REGISTRY_IMAGE:$VERSION
       fi
-    - echo $VERSION
+    - echo $IMAGE_TAG
     - mkdir -p /kaniko/.docker
     # Write credentials to access Gitlab Container Registry within the runner/ci
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
     # Build and push the container. To disable push add --no-push
     - DOCKERFILE_PATH=${DOCKERFILE_PATH:-"$KANIKO_BUILD_CONTEXT/Dockerfile"}
-    - /kaniko/executor --context $KANIKO_BUILD_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE:$VERSION $KANIKO_ARGS
+    - /kaniko/executor --context $KANIKO_BUILD_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $IMAGE_TAG $KANIKO_ARGS
   # Run this job in a branch/tag where a Dockerfile exists
   rules:
     - exists:

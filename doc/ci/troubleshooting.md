@@ -241,7 +241,7 @@ This also applies if the pipeline has not been created yet, or if you are waitin
 for an external CI service. If you don't use pipelines for your project, then you
 should disable **Pipelines must succeed** so you can accept merge requests.
 
-### "The pipeline for this merge request did not complete. Push a new commit to fix the failure or check the troubleshooting documentation to see other possible actions." message
+#### "Merge blocked: pipeline must succeed. Push a new commit that fixes the failure" message
 
 This message is shown if the [merge request pipeline](pipelines/merge_request_pipelines.md),
 [merged results pipeline](pipelines/merged_results_pipelines.md),

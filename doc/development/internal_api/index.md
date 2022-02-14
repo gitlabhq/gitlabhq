@@ -561,6 +561,29 @@ Example response:
 }
 ```
 
+### Resolve Starboard vulnerabilities
+
+Called from the GitLab Agent Server (`kas`) to resolve Starboard security vulnerabilities.
+Accepts a list of finding UUIDs and marks all Starboard vulnerabilities not identified by
+the list as resolved.
+
+| Attribute | Type         | Required | Description                                                                                                                       |
+|:----------|:-------------|:---------|:----------------------------------------------------------------------------------------------------------------------------------|
+| `uuids`   | string array | yes      | UUIDs of detected vulnerabilities, as collected from [Create Starboard vulnerability](#create-starboard-vulnerability) responses. |
+
+```plaintext
+POST internal/kubernetes/modules/starboard_vulnerability/scan_result
+```
+
+Example Request:
+
+```shell
+curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" \
+     --header "Authorization: Bearer <agent token>" --header "Content-Type: application/json" \
+     --url "http://localhost:3000/api/v4/internal/kubernetes/modules/starboard_vulnerability/scan_result" \
+     --data '{ "uuids": ["102e8a0a-fe29-59bd-b46c-57c3e9bc6411", "5eb12985-0ed5-51f4-b545-fd8871dc2870"] }'
+```
+
 ## Subscriptions
 
 The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)

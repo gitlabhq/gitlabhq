@@ -5,6 +5,7 @@ import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { createSpyObj } from 'helpers/jest_helpers';
 import { TEST_HOST } from 'helpers/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import { setTestTimeoutOnce } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
@@ -549,15 +550,14 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       expect($notesContainer.find('.note.being-posted').length).toBeGreaterThan(0);
     });
 
-    it('should remove placeholder note when new comment is done posting', (done) => {
+    it('should remove placeholder note when new comment is done posting', async () => {
       mockNotesPost();
 
       $('.js-comment-button').click();
 
-      setImmediate(() => {
-        expect($notesContainer.find('.note.being-posted').length).toEqual(0);
-        done();
-      });
+      await waitForPromises();
+
+      expect($notesContainer.find('.note.being-posted').length).toEqual(0);
     });
 
     describe('postComment', () => {
@@ -584,40 +584,37 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       });
     });
 
-    it('should show actual note element when new comment is done posting', (done) => {
+    it('should show actual note element when new comment is done posting', async () => {
       mockNotesPost();
 
       $('.js-comment-button').click();
 
-      setImmediate(() => {
-        expect($notesContainer.find(`#note_${note.id}`).length).toBeGreaterThan(0);
-        done();
-      });
+      await waitForPromises();
+
+      expect($notesContainer.find(`#note_${note.id}`).length).toBeGreaterThan(0);
     });
 
-    it('should reset Form when new comment is done posting', (done) => {
+    it('should reset Form when new comment is done posting', async () => {
       mockNotesPost();
 
       $('.js-comment-button').click();
 
-      setImmediate(() => {
-        expect($form.find('textarea.js-note-text').val()).toEqual('');
-        done();
-      });
+      await waitForPromises();
+
+      expect($form.find('textarea.js-note-text').val()).toEqual('');
     });
 
-    it('should show flash error message when new comment failed to be posted', (done) => {
+    it('should show flash error message when new comment failed to be posted', async () => {
       mockNotesPostError();
       jest.spyOn(notes, 'addFlash');
 
       $('.js-comment-button').click();
 
-      setImmediate(() => {
-        expect(notes.addFlash).toHaveBeenCalled();
-        // JSDom doesn't support the :visible selector yet
-        expect(notes.flashContainer.style.display).not.toBe('none');
-        done();
-      });
+      await waitForPromises();
+
+      expect(notes.addFlash).toHaveBeenCalled();
+      // JSDom doesn't support the :visible selector yet
+      expect(notes.flashContainer.style.display).not.toBe('none');
     });
   });
 
@@ -657,16 +654,15 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       $form.find('textarea.js-note-text').val(sampleComment);
     });
 
-    it('should remove quick action placeholder when comment with quick actions is done posting', (done) => {
+    it('should remove quick action placeholder when comment with quick actions is done posting', async () => {
       jest.spyOn(gl.awardsHandler, 'addAwardToEmojiBar');
       $('.js-comment-button').click();
 
       expect($notesContainer.find('.note.being-posted').length).toEqual(1); // Placeholder shown
 
-      setImmediate(() => {
-        expect($notesContainer.find('.note.being-posted').length).toEqual(0); // Placeholder removed
-        done();
-      });
+      await waitForPromises();
+
+      expect($notesContainer.find('.note.being-posted').length).toEqual(0); // Placeholder removed
     });
   });
 
@@ -692,16 +688,15 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       $form.find('textarea.js-note-text').val(sampleComment);
     });
 
-    it('should show message placeholder including lines starting with slash', (done) => {
+    it('should show message placeholder including lines starting with slash', async () => {
       $('.js-comment-button').click();
 
       expect($notesContainer.find('.note.being-posted').length).toEqual(1); // Placeholder shown
       expect($notesContainer.find('.note-body p').text()).toEqual(sampleComment); // No quick action processing
 
-      setImmediate(() => {
-        expect($notesContainer.find('.note.being-posted').length).toEqual(0); // Placeholder removed
-        done();
-      });
+      await waitForPromises();
+
+      expect($notesContainer.find('.note.being-posted').length).toEqual(0); // Placeholder removed
     });
   });
 
@@ -730,23 +725,21 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       $form.find('textarea.js-note-text').html(sampleComment);
     });
 
-    it('should not render a script tag', (done) => {
+    it('should not render a script tag', async () => {
       $('.js-comment-button').click();
 
-      setImmediate(() => {
-        const $noteEl = $notesContainer.find(`#note_${note.id}`);
-        $noteEl.find('.js-note-edit').click();
-        $noteEl.find('textarea.js-note-text').html(updatedComment);
-        $noteEl.find('.js-comment-save-button').click();
+      await waitForPromises();
 
-        const $updatedNoteEl = $notesContainer
-          .find(`#note_${note.id}`)
-          .find('.js-task-list-container');
+      const $noteEl = $notesContainer.find(`#note_${note.id}`);
+      $noteEl.find('.js-note-edit').click();
+      $noteEl.find('textarea.js-note-text').html(updatedComment);
+      $noteEl.find('.js-comment-save-button').click();
 
-        expect($updatedNoteEl.find('.note-text').text().trim()).toEqual('');
+      const $updatedNoteEl = $notesContainer
+        .find(`#note_${note.id}`)
+        .find('.js-task-list-container');
 
-        done();
-      });
+      expect($updatedNoteEl.find('.note-text').text().trim()).toEqual('');
     });
   });
 

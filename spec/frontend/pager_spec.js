@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { TEST_HOST } from 'helpers/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { removeParams } from '~/lib/utils/url_utility';
 import Pager from '~/pager';
@@ -64,67 +65,59 @@ describe('pager', () => {
       Pager.init();
     });
 
-    it('shows loader while loading next page', (done) => {
+    it('shows loader while loading next page', async () => {
       mockSuccess();
 
       jest.spyOn(Pager.loading, 'show').mockImplementation(() => {});
       Pager.getOld();
 
-      setImmediate(() => {
-        expect(Pager.loading.show).toHaveBeenCalled();
+      await waitForPromises();
 
-        done();
-      });
+      expect(Pager.loading.show).toHaveBeenCalled();
     });
 
-    it('hides loader on success', (done) => {
+    it('hides loader on success', async () => {
       mockSuccess();
 
       jest.spyOn(Pager.loading, 'hide').mockImplementation(() => {});
       Pager.getOld();
 
-      setImmediate(() => {
-        expect(Pager.loading.hide).toHaveBeenCalled();
+      await waitForPromises();
 
-        done();
-      });
+      expect(Pager.loading.hide).toHaveBeenCalled();
     });
 
-    it('hides loader on error', (done) => {
+    it('hides loader on error', async () => {
       mockError();
 
       jest.spyOn(Pager.loading, 'hide').mockImplementation(() => {});
       Pager.getOld();
 
-      setImmediate(() => {
-        expect(Pager.loading.hide).toHaveBeenCalled();
+      await waitForPromises();
 
-        done();
-      });
+      expect(Pager.loading.hide).toHaveBeenCalled();
     });
 
-    it('sends request to url with offset and limit params', (done) => {
+    it('sends request to url with offset and limit params', async () => {
       Pager.offset = 100;
       Pager.limit = 20;
       Pager.getOld();
 
-      setImmediate(() => {
-        const [url, params] = axios.get.mock.calls[0];
+      await waitForPromises();
 
-        expect(params).toEqual({
-          params: {
-            limit: 20,
-            offset: 100,
-          },
-        });
+      const [url, params] = axios.get.mock.calls[0];
 
-        expect(url).toBe('/some_list');
-
-        done();
+      expect(params).toEqual({
+        params: {
+          limit: 20,
+          offset: 100,
+        },
       });
+
+      expect(url).toBe('/some_list');
     });
 
-    it('disables if return count is less than limit', (done) => {
+    it('disables if return count is less than limit', async () => {
       Pager.offset = 0;
       Pager.limit = 20;
 
@@ -132,12 +125,10 @@ describe('pager', () => {
       jest.spyOn(Pager.loading, 'hide').mockImplementation(() => {});
       Pager.getOld();
 
-      setImmediate(() => {
-        expect(Pager.loading.hide).toHaveBeenCalled();
-        expect(Pager.disable).toBe(true);
+      await waitForPromises();
 
-        done();
-      });
+      expect(Pager.loading.hide).toHaveBeenCalled();
+      expect(Pager.disable).toBe(true);
     });
 
     describe('has data-href attribute from list element', () => {

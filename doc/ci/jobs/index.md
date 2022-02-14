@@ -95,6 +95,9 @@ You can't use these keywords as job names:
 - `variables`
 - `cache`
 - `include`
+- `true`
+- `false`
+- `nil`
 
 Job names must be 255 characters or less. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342800)
 in GitLab 14.5, [with a feature flag](../../administration/feature_flags.md) named `ci_validate_job_length`.

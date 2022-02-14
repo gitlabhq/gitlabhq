@@ -108,6 +108,8 @@ class Member < ApplicationRecord
       .reorder(nil)
   end
 
+  scope :active_state, -> { where(state: STATE_ACTIVE) }
+
   scope :connected_to_user, -> { where.not(user_id: nil) }
 
   # This scope is exclusively used to get the members
@@ -128,7 +130,8 @@ class Member < ApplicationRecord
   end
 
   scope :without_invites_and_requests, -> do
-    non_request
+    active_state
+      .non_request
       .non_invite
       .non_minimal_access
   end

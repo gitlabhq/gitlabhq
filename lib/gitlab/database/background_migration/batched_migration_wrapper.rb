@@ -6,6 +6,10 @@ module Gitlab
       class BatchedMigrationWrapper
         extend Gitlab::Utils::StrongMemoize
 
+        def initialize(connection: ApplicationRecord.connection)
+          @connection = connection
+        end
+
         # Wraps the execution of a batched_background_migration.
         #
         # Updates the job's tracking records with the status of the migration
@@ -29,12 +33,14 @@ module Gitlab
 
         private
 
+        attr_reader :connection
+
         def start_tracking_execution(tracking_record)
           tracking_record.run!
         end
 
         def execute_batch(tracking_record)
-          job_instance = tracking_record.migration_job_class.new
+          job_instance = migration_instance_for(tracking_record.migration_job_class)
 
           job_instance.perform(
             tracking_record.min_value,
@@ -47,6 +53,14 @@ module Gitlab
 
           if job_instance.respond_to?(:batch_metrics)
             tracking_record.metrics = job_instance.batch_metrics
+          end
+        end
+
+        def migration_instance_for(job_class)
+          if job_class < Gitlab::BackgroundMigration::BaseJob
+            job_class.new(connection: connection)
+          else
+            job_class.new
           end
         end
 

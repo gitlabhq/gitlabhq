@@ -71,7 +71,7 @@ export default {
       return this.triggerElement === targetTriggerElement;
     },
     openModal() {
-      eventHub.$emit('openModal', { inviteeType: 'members', source: this.triggerSource });
+      eventHub.$emit('openModal', { source: this.triggerSource });
     },
   },
   TRIGGER_ELEMENT_BUTTON,

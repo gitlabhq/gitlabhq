@@ -72,7 +72,7 @@ export default {
       return value;
     },
     openInviteMembersModal(mode) {
-      eventHub.$emit('openModal', { mode, inviteeType: 'members', source: 'learn-gitlab' });
+      eventHub.$emit('openModal', { mode, source: 'learn-gitlab' });
     },
     handleShowSuccessfulInvitationsAlert() {
       this.showSuccessfulInvitationsAlert = true;

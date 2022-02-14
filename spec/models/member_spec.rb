@@ -173,6 +173,8 @@ RSpec.describe Member do
     let_it_be(:group) { create(:group) }
     let_it_be(:blocked_pending_approval_user) { create(:user, :blocked_pending_approval ) }
     let_it_be(:blocked_pending_approval_project_member) { create(:project_member, :invited, :developer, project: project, invite_email: blocked_pending_approval_user.email) }
+    let_it_be(:awaiting_group_member) { create(:group_member, :awaiting, group: group) }
+    let_it_be(:awaiting_project_member) { create(:project_member, :awaiting, project: project) }
 
     before_all do
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
@@ -471,6 +473,8 @@ RSpec.describe Member do
       it { is_expected.to include @blocked_maintainer }
       it { is_expected.to include @blocked_developer }
       it { is_expected.not_to include @member_with_minimal_access }
+      it { is_expected.not_to include awaiting_group_member }
+      it { is_expected.not_to include awaiting_project_member }
     end
 
     describe '.connected_to_user' do
@@ -559,6 +563,21 @@ RSpec.describe Member do
           expect(invited_pending_members.count).to eq 1
           expect(invited_pending_members).to include blocked_pending_approval_project_member
         end
+      end
+    end
+
+    describe '.active_state' do
+      let_it_be(:active_group_member) { create(:group_member, group: group) }
+      let_it_be(:active_project_member) { create(:project_member, project: project) }
+
+      it 'includes members with an active state' do
+        expect(group.members.active_state).to include active_group_member
+        expect(project.members.active_state).to include active_project_member
+      end
+
+      it 'does not include members with an awaiting state' do
+        expect(group.members.active_state).not_to include awaiting_group_member
+        expect(project.members.active_state).not_to include awaiting_project_member
       end
     end
   end

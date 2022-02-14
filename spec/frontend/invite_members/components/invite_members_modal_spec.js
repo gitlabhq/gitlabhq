@@ -694,7 +694,7 @@ describe('InviteMembersModal', () => {
       });
 
       it('tracks the view for learn_gitlab source', () => {
-        eventHub.$emit('openModal', { inviteeType: 'members', source: LEARN_GITLAB });
+        eventHub.$emit('openModal', { source: LEARN_GITLAB });
 
         expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_FOR_TASK.name);
         expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(LEARN_GITLAB);

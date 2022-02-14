@@ -70,6 +70,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Jobs do
           it 'reports error' do
             expect(entry.errors).to include 'jobs rspec config should implement a script: or a trigger: keyword'
           end
+
+          context 'when the job name cannot be cast directly to a symbol' do
+            let(:config) { { true => nil } }
+
+            it 'properly parses the job name without raising a NoMethodError' do
+              expect(entry.errors).to include 'jobs true config should implement a script: or a trigger: keyword'
+            end
+          end
         end
 
         context 'when no visible jobs present' do

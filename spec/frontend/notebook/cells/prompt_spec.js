@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import PromptComponent from '~/notebook/cells/prompt.vue';
 
 const Component = Vue.extend(PromptComponent);
@@ -7,7 +7,7 @@ describe('Prompt component', () => {
   let vm;
 
   describe('input', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       vm = new Component({
         propsData: {
           type: 'In',
@@ -16,9 +16,7 @@ describe('Prompt component', () => {
       });
       vm.$mount();
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('renders in label', () => {
@@ -31,7 +29,7 @@ describe('Prompt component', () => {
   });
 
   describe('output', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       vm = new Component({
         propsData: {
           type: 'Out',
@@ -40,9 +38,7 @@ describe('Prompt component', () => {
       });
       vm.$mount();
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('renders in label', () => {

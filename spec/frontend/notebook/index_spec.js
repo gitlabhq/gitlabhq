@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import json from 'test_fixtures/blob/notebook/basic.json';
 import jsonWithWorksheet from 'test_fixtures/blob/notebook/worksheets.json';
 import Notebook from '~/notebook/index.vue';
@@ -17,12 +17,10 @@ describe('Notebook component', () => {
   }
 
   describe('without JSON', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       vm = buildComponent({});
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('does not render', () => {
@@ -31,12 +29,10 @@ describe('Notebook component', () => {
   });
 
   describe('with JSON', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       vm = buildComponent(json);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('renders cells', () => {
@@ -57,12 +53,10 @@ describe('Notebook component', () => {
   });
 
   describe('with worksheets', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       vm = buildComponent(jsonWithWorksheet);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('renders cells', () => {
