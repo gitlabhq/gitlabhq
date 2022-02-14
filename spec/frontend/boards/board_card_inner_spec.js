@@ -2,15 +2,12 @@ import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vuex from 'vuex';
 import { nextTick } from 'vue';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { issuableTypes } from '~/boards/constants';
-import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
-import { updateHistory } from '~/lib/utils/url_utility';
 import { mockLabelList, mockIssue, mockIssueFullPath } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -54,6 +51,7 @@ describe('Board card component', () => {
       state: {
         ...defaultStore.state,
         issuableType: issuableTypes.issue,
+        isShowingLabels: true,
       },
       getters: {
         isGroupBoard: () => true,
@@ -405,53 +403,12 @@ describe('Board card component', () => {
       expect(wrapper.findAll(GlLabel).length).toBe(1);
       expect(wrapper.text()).not.toContain('closed');
     });
-  });
 
-  describe('filterByLabel method', () => {
-    beforeEach(() => {
-      wrapper.setProps({
-        updateFilters: true,
-      });
-    });
-
-    describe('when selected label is not in the filter', () => {
-      beforeEach(() => {
-        jest.spyOn(wrapper.vm, 'performSearch').mockImplementation(() => {});
-        setWindowLocation('?');
-        wrapper.vm.filterByLabel(label1);
-      });
-
-      it('calls updateHistory', () => {
-        expect(updateHistory).toHaveBeenCalledTimes(1);
-      });
-
-      it('dispatches performSearch vuex action', () => {
-        expect(wrapper.vm.performSearch).toHaveBeenCalledTimes(1);
-      });
-
-      it('emits updateTokens event', () => {
-        expect(eventHub.$emit).toHaveBeenCalledTimes(1);
-        expect(eventHub.$emit).toHaveBeenCalledWith('updateTokens');
-      });
-    });
-
-    describe('when selected label is already in the filter', () => {
-      beforeEach(() => {
-        jest.spyOn(wrapper.vm, 'performSearch').mockImplementation(() => {});
-        setWindowLocation('?label_name[]=testing%20123');
-        wrapper.vm.filterByLabel(label1);
-      });
-
-      it('does not call updateHistory', () => {
-        expect(updateHistory).not.toHaveBeenCalled();
-      });
-
-      it('does not dispatch performSearch vuex action', () => {
-        expect(wrapper.vm.performSearch).not.toHaveBeenCalled();
-      });
-
-      it('does not emit updateTokens event', () => {
-        expect(eventHub.$emit).not.toHaveBeenCalled();
+    describe('when label params arent set', () => {
+      it('passes the right target to GlLabel', () => {
+        expect(wrapper.findAll(GlLabel).at(0).props('target')).toEqual(
+          '?label_name[]=testing%20123',
+        );
       });
     });
   });
