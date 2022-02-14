@@ -529,6 +529,10 @@ To monitor [strong consistency](#strong-consistency), you can use the following 
 - `gitaly_hook_transaction_voting_delay_seconds`, the client-side delay introduced by waiting for
   the transaction to be committed.
 
+To monitor the number of repositories that have no healthy, up-to-date replicas:
+
+- `gitaly_praefect_unavailable_repositories`
+
 You can also monitor the [Praefect logs](../logs.md#praefect-logs).
 
 #### Database metrics `/db_metrics` endpoint

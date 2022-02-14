@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def self.loose_foreign_keys_yaml_path
-        @loose_foreign_keys_yaml_path ||= Rails.root.join('lib/gitlab/database/gitlab_loose_foreign_keys.yml')
+        @loose_foreign_keys_yaml_path ||= Rails.root.join('config/gitlab_loose_foreign_keys.yml')
       end
 
       private_class_method :build_definition

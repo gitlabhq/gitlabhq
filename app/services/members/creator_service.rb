@@ -67,6 +67,7 @@ module Members
     def create_member_task
       return unless member.persisted?
       return if member_task_attributes.value?(nil)
+      return if member.member_task.present?
 
       member.create_member_task(member_task_attributes)
     end

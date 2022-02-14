@@ -291,6 +291,25 @@ RSpec.describe API::Members do
               user: maintainer
             )
           end
+
+          context 'with an already existing member' do
+            before do
+              source.add_developer(stranger)
+            end
+
+            it 'tracks the invite source from params' do
+              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                   params: params.merge(invite_source: '_invite_source_')
+
+              expect_snowplow_event(
+                category: 'Members::CreateService',
+                action: 'create_member',
+                label: '_invite_source_',
+                property: 'existing_user',
+                user: maintainer
+              )
+            end
+          end
         end
 
         context 'when executing the Members::CreateService for multiple user_ids' do
@@ -399,6 +418,49 @@ RSpec.describe API::Members do
             expect(member.tasks_to_be_done).to match_array([:code, :ci])
             expect(member.member_task.project_id).to eq(project_id)
           end
+
+          context 'with already existing member' do
+            before do
+              source.add_developer(stranger)
+            end
+
+            it 'does not update tasks to be done if tasks already exist', :aggregate_failures do
+              member = source.members.find_by(user_id: stranger.id)
+              create(:member_task, member: member, project_id: project_id, tasks_to_be_done: %w(code ci))
+
+              expect do
+                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                     params: {
+                       user_id: stranger.id,
+                       access_level: Member::DEVELOPER,
+                       tasks_to_be_done: %w(issues),
+                       tasks_project_id: project_id
+                     }
+              end.not_to change(MemberTask, :count)
+
+              member.reset
+              expect(response).to have_gitlab_http_status(:created)
+              expect(member.tasks_to_be_done).to match_array([:code, :ci])
+              expect(member.member_task.project_id).to eq(project_id)
+            end
+
+            it 'adds tasks to be done if they do not exist', :aggregate_failures do
+              expect do
+                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                     params: {
+                       user_id: stranger.id,
+                       access_level: Member::DEVELOPER,
+                       tasks_to_be_done: %w(issues),
+                       tasks_project_id: project_id
+                     }
+              end.to change(MemberTask, :count).by(1)
+
+              member = source.members.find_by(user_id: stranger.id)
+              expect(response).to have_gitlab_http_status(:created)
+              expect(member.tasks_to_be_done).to match_array([:issues])
+              expect(member.member_task.project_id).to eq(project_id)
+            end
+          end
         end
 
         context 'when there are multiple users to add' do
@@ -412,14 +474,68 @@ RSpec.describe API::Members do
               expect(member.member_task.project_id).to eq(project_id)
             end
           end
+
+          context 'with already existing members' do
+            before do
+              source.add_developer(stranger)
+              source.add_developer(developer)
+            end
+
+            it 'does not update tasks to be done if tasks already exist', :aggregate_failures do
+              members = source.members.where(user_id: [developer.id, stranger.id])
+              members.each do |member|
+                create(:member_task, member: member, project_id: project_id, tasks_to_be_done: %w(code ci))
+              end
+
+              expect do
+                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                     params: {
+                       user_id: [developer.id, stranger.id].join(','),
+                       access_level: Member::DEVELOPER,
+                       tasks_to_be_done: %w(issues),
+                       tasks_project_id: project_id
+                     }
+              end.not_to change(MemberTask, :count)
+
+              expect(response).to have_gitlab_http_status(:created)
+              members.each do |member|
+                member.reset
+                expect(member.tasks_to_be_done).to match_array([:code, :ci])
+                expect(member.member_task.project_id).to eq(project_id)
+              end
+            end
+
+            it 'adds tasks to be done if they do not exist', :aggregate_failures do
+              expect do
+                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                     params: {
+                       user_id: [developer.id, stranger.id].join(','),
+                       access_level: Member::DEVELOPER,
+                       tasks_to_be_done: %w(issues),
+                       tasks_project_id: project_id
+                     }
+              end.to change(MemberTask, :count).by(2)
+
+              expect(response).to have_gitlab_http_status(:created)
+              members = source.members.where(user_id: [developer.id, stranger.id])
+              members.each do |member|
+                expect(member.tasks_to_be_done).to match_array([:issues])
+                expect(member.member_task.project_id).to eq(project_id)
+              end
+            end
+          end
         end
       end
 
-      it "returns 409 if member already exists" do
-        post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-             params: { user_id: maintainer.id, access_level: Member::MAINTAINER }
+      it "updates a current member" do
+        source.add_guest(stranger)
 
-        expect(response).to have_gitlab_http_status(:conflict)
+        post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+             params: { user_id: stranger.id, access_level: Member::MAINTAINER }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['id']).to eq(stranger.id)
+        expect(json_response['access_level']).to eq(Member::MAINTAINER)
       end
 
       it 'returns 404 when the user_id is not valid' do

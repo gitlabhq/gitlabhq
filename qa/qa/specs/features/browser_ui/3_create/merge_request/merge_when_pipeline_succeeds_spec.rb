@@ -42,7 +42,7 @@ module QA
                   content: <<~EOF
                     test:
                       tags: ["runner-for-#{project.name}"]
-                      script: sleep 20
+                      script: sleep 30
                       only:
                         - merge_requests
                   EOF
@@ -91,7 +91,7 @@ module QA
             end
 
             Page::MergeRequest::Show.perform do |mr|
-              refresh
+              mr.refresh
 
               # Part of the challenge with this test is that the MR widget has many components that could be displayed
               # and many errors states that those components could encounter. Most of the time few of those
@@ -104,15 +104,14 @@ module QA
               mr.retry_until(reload: true, message: 'Wait until ready to click MWPS') do
                 merge_request.reload!
 
-                # Don't try to click MWPS if the MR is merged or the pipeline is complete
-                break if merge_request.state == 'merged' || mr.wait_until { project.pipelines.last }[:status] == 'success'
+                # Click the MWPS button if we can
+                break mr.merge_when_pipeline_succeeds! if mr.has_element?(:merge_button, text: 'Merge when pipeline succeeds')
 
-                # Try to click MWPS if this is a transient test, or if the MWPS button is visible,
-                # otherwise reload the page and retry
-                next false unless transient_test || mr.has_element?(:merge_button, text: 'Merge when pipeline succeeds')
+                # But fail if the button is missing because the pipeline is complete
+                raise "The pipeline already finished before we could click MWPS" if mr.wait_until { project.pipelines.first }[:status] == 'success'
 
-                # No need to keep retrying if we can click MWPS
-                break mr.merge_when_pipeline_succeeds!
+                # Otherwise, if this is not a transient test reload the page and retry
+                next false unless transient_test
               end
 
               aggregate_failures do

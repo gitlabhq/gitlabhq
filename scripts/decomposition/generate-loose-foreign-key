@@ -107,7 +107,7 @@ def columns(*args)
 end
 
 def add_definition_to_yaml(definition)
-  content = YAML.load_file(Rails.root.join('lib/gitlab/database/gitlab_loose_foreign_keys.yml'))
+  content = YAML.load_file(Rails.root.join('config/gitlab_loose_foreign_keys.yml'))
   table_definitions = content[definition.from_table]
 
   # insert new entry at random place to avoid conflicts
@@ -148,11 +148,11 @@ def add_definition_to_yaml(definition)
 
   # emulate existing formatting
   File.write(
-    Rails.root.join('lib/gitlab/database/gitlab_loose_foreign_keys.yml'),
+    Rails.root.join('config/gitlab_loose_foreign_keys.yml'),
     content.to_yaml.gsub(/^([- ] )/, '  \1')
   )
 
-  exec_cmd("git", "add", "lib/gitlab/database/gitlab_loose_foreign_keys.yml")
+  exec_cmd("git", "add", "config/gitlab_loose_foreign_keys.yml")
 end
 
 def generate_migration(definition)

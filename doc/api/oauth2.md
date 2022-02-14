@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated   with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # OAuth 2.0 identity provider API **(FREE)**
@@ -41,7 +41,9 @@ Both **authorization code** (with or without PKCE) and **implicit grant** flows 
 registered first via the `/profile/applications` page in your user's account.
 During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you obtain the
-`application` credentials: _Application ID_ and _Client Secret_ - **keep them secure**.
+`application` credentials: _Application ID_ and _Client Secret_. The _Client Secret_
+**must be kept secure**. It is also advantageous to keep the _Application ID_
+secret when your application architecture allows.
 
 For a list of scopes in GitLab, see [the provider documentation](../integration/oauth_provider.md#authorized-applications).
 
@@ -74,7 +76,10 @@ detailed flow description, from authorization request through access token.
 The following steps describe our implementation of the flow.
 
 The Authorization code with PKCE flow, PKCE for short, makes it possible to securely perform
-the OAuth exchange of client credentials for access tokens on public clients.
+the OAuth exchange of client credentials for access tokens on public clients without
+requiring access to the _Client Secret_ at all. This makes the PKCE flow advantageous
+for single page JavaScript applications or other client side apps where keeping secrets
+from the user is a technical impossibility. 
 
 Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `CODE_CHALLENGE`.
 
@@ -113,7 +118,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    any HTTP client. The following example uses Ruby's `rest-client`:
 
    ```ruby
-   parameters = 'client_id=APP_ID&client_secret=APP_SECRET&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
+   parameters = 'client_id=APP_ID&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
    RestClient.post 'https://gitlab.example.com/oauth/token', parameters
    ```
 
@@ -135,7 +140,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    - Sends new tokens in the response.
 
    ```ruby
-     parameters = 'client_id=APP_ID&client_secret=APP_SECRET&refresh_token=REFRESH_TOKEN&grant_type=refresh_token&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
+     parameters = 'client_id=APP_ID&refresh_token=REFRESH_TOKEN&grant_type=refresh_token&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
      RestClient.post 'https://gitlab.example.com/oauth/token', parameters
    ```
 

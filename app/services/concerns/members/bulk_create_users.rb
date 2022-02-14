@@ -48,6 +48,7 @@ module Members
           end
 
           if user_ids.present?
+            # we should handle the idea of existing members where users are passed as users - https://gitlab.com/gitlab-org/gitlab/-/issues/352617
             # the below will automatically discard invalid user_ids
             users.concat(User.id_in(user_ids))
             # helps not have to perform another query per user id to see if the member exists later on when fetching

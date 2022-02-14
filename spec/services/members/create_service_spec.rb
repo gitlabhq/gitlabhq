@@ -117,6 +117,24 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
           user: user
         )
       end
+
+      context 'with an already existing member' do
+        before do
+          source.add_developer(member)
+        end
+
+        it 'tracks the invite source from params' do
+          execute_service
+
+          expect_snowplow_event(
+            category: described_class.name,
+            action: 'create_member',
+            label: '_invite_source_',
+            property: 'existing_user',
+            user: user
+          )
+        end
+      end
     end
 
     context 'when it is a net_new_user' do
