@@ -679,6 +679,14 @@ Use **press** when talking about keyboard keys. For example:
 
 Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
 
+## provision
+
+Use the term **provision** when referring to provisioning cloud infrastructure. You provision the infrastructure, and then deploy applications to it.
+
+For example, you might write something like:
+
+- Provision an AWS EKS cluster and deploy your application to it.
+
 ## push rules
 
 Use lowercase for **push rules**.

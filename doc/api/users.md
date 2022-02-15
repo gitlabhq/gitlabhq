@@ -697,6 +697,38 @@ Example response:
 }
 ```
 
+## Set user status
+
+Set the status of the current user.
+
+```plaintext
+PUT /user/status
+```
+
+| Attribute            | Type   | Required | Description                                                                                                                                                                                                             |
+| -------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `emoji`              | string | no       | The name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
+| `message`            | string | no       | The message to set as a status. It can also contain emoji codes.                                                                                                                                                        |
+| `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days`
+
+When both parameters `emoji` and `message` are empty, the status is cleared. When the `clear_status_after` parameter is missing from the request, the previously set value for `"clear_status_after` is cleared.
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" \
+     --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
+```
+
+Example responses
+
+```json
+{
+  "emoji":"coffee",
+  "message":"I crave coffee",
+  "message_html": "I crave coffee",
+  "clear_status_at":"2021-02-15T10:49:01.311Z"
+}
+```
+
 ## Get user preferences
 
 Get a list of currently authenticated user's preferences.
@@ -743,38 +775,6 @@ Parameters:
 | :--------------------------- | :------- | :---------------------------------------------------------- |
 | `view_diffs_file_by_file`    | Yes      | Flag indicating the user sees only one file diff per page.  |
 | `show_whitespace_in_diffs`   | Yes      | Flag indicating the user sees whitespace changes in diffs.  |
-
-## Set user status
-
-Set the status of the current user.
-
-```plaintext
-PUT /user/status
-```
-
-| Attribute            | Type   | Required | Description                                                                                                                                                                                                             |
-| -------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `emoji`              | string | no       | The name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
-| `message`            | string | no       | The message to set as a status. It can also contain emoji codes.                                                                                                                                                        |
-| `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days`
-
-When both parameters `emoji` and `message` are empty, the status is cleared. When the `clear_status_after` parameter is missing from the request, the previously set value for `"clear_status_after` is cleared.
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" \
-     --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
-```
-
-Example responses
-
-```json
-{
-  "emoji":"coffee",
-  "message":"I crave coffee",
-  "message_html": "I crave coffee",
-  "clear_status_at":"2021-02-15T10:49:01.311Z"
-}
-```
 
 ## User Follow
 

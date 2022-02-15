@@ -33,11 +33,7 @@ module API
 
         paginated_tags = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(tags_finder)
 
-        if Feature.enabled?(:api_caching_tags, user_project, type: :development)
-          present_cached paginated_tags, with: Entities::Tag, project: user_project, cache_context: -> (_tag) { user_project.cache_key }
-        else
-          present paginated_tags, with: Entities::Tag, project: user_project
-        end
+        present_cached paginated_tags, with: Entities::Tag, project: user_project, cache_context: -> (_tag) { user_project.cache_key }
 
       rescue Gitlab::Git::InvalidPageToken => e
         unprocessable_entity!(e.message)

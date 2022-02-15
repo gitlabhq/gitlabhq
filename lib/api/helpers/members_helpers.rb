@@ -62,10 +62,13 @@ module API
       end
 
       def add_single_member_by_user_id(create_service_params)
+        source = create_service_params[:source]
         user_id = create_service_params[:user_ids]
         user = User.find_by(id: user_id) # rubocop: disable CodeReuse/ActiveRecord
 
         if user
+          conflict!('Member already exists') if member_already_exists?(source, user_id)
+
           instance = ::Members::CreateService.new(current_user, create_service_params)
           instance.execute
 
@@ -86,6 +89,12 @@ module API
 
       def add_single_member?(user_id)
         user_id.present?
+      end
+
+      private
+
+      def member_already_exists?(source, user_id)
+        source.members.exists?(user_id: user_id) # rubocop: disable CodeReuse/ActiveRecord
       end
     end
   end

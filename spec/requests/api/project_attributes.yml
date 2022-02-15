@@ -121,6 +121,7 @@ project_feature:
     - created_at
     - metrics_dashboard_access_level
     - project_id
+    - requirements_access_level
     - security_and_compliance_access_level
     - updated_at
   computed_attributes:

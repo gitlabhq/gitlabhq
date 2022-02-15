@@ -154,7 +154,7 @@ To change the namespace linked to a subscription:
    for that group.
 1. Select **Proceed to checkout**.
 
-Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, your account is charged for the additional users.
+Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the [total number of users](gitlab_com/index.md#view-seat-usage) exceeds the number of seats in your subscription, your account is charged for the additional users and you need to pay for the overage before you can change the linked namespace. 
 
 Only one namespace can be linked to a subscription.
 

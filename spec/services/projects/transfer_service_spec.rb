@@ -5,13 +5,14 @@ require 'spec_helper'
 RSpec.describe Projects::TransferService do
   include GitHelpers
 
-  let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:group_integration) { create(:integrations_slack, :group, group: group, webhook: 'http://group.slack.com') }
 
   let(:project) { create(:project, :repository, :legacy_storage, namespace: user.namespace) }
+  let(:target) { group }
 
-  subject(:execute_transfer) { described_class.new(project, user).execute(group).tap { project.reload } }
+  subject(:execute_transfer) { described_class.new(project, user).execute(target).tap { project.reload } }
 
   context 'with npm packages' do
     before do
@@ -687,6 +688,32 @@ RSpec.describe Projects::TransferService do
       expect(PagesTransferWorker).not_to receive(:perform_async)
 
       execute_transfer
+    end
+  end
+
+  context 'handling issue contacts' do
+    let_it_be(:root_group) { create(:group) }
+
+    let(:project) { create(:project, group: root_group) }
+
+    before do
+      root_group.add_owner(user)
+      target.add_owner(user)
+      create_list(:issue_customer_relations_contact, 2, :for_issue, issue: create(:issue, project: project))
+    end
+
+    context 'with the same root_ancestor' do
+      let(:target) { create(:group, parent: root_group) }
+
+      it 'retains issue contacts' do
+        expect { execute_transfer }.not_to change { CustomerRelations::IssueContact.count }
+      end
+    end
+
+    context 'with a different root_ancestor' do
+      it 'deletes issue contacts' do
+        expect { execute_transfer }.to change { CustomerRelations::IssueContact.count }.by(-2)
+      end
     end
   end
 
