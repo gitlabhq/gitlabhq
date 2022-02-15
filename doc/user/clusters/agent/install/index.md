@@ -196,7 +196,7 @@ see the [related epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).
 
 ### View vulnerabilities in cluster images **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8 [with a flag](../../../../administration/feature_flags.md) named `cluster_vulnerabilities`. Disabled by default.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8 [with a flag](../../../../administration/feature_flags.md) named `cluster_vulnerabilities`. Enabled by default.
 
 Users with at least the [Developer role](../../../permissions.md)
 can view cluster vulnerabilities. You can access them through the [vulnerability report](../../../application_security/vulnerabilities/index.md)

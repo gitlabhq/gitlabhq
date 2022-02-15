@@ -9,8 +9,8 @@ RSpec.describe Members::Projects::CreatorService do
   end
 
   describe '.access_levels' do
-    it 'returns Gitlab::Access.sym_options' do
-      expect(described_class.access_levels).to eq(Gitlab::Access.sym_options)
+    it 'returns Gitlab::Access.sym_options_with_owner' do
+      expect(described_class.access_levels).to eq(Gitlab::Access.sym_options_with_owner)
     end
   end
 end

@@ -12,6 +12,15 @@ Each member gets a role, which determines what they can do in the project.
 
 ## Add users to a project
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
+> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
+
+FLAG:
+On self-managed GitLab, by default the modal window feature is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md)
+named `invite_members_group_modal`.
+On GitLab.com, this feature is available.
+
 Add users to a project so they become members and have permission
 to perform actions.
 
@@ -21,11 +30,12 @@ Prerequisite:
 
 To add a user to a project:
 
-1. Go to your project and select **Project information > Members**.
-1. On the **Invite member** tab, under **GitLab member or Email address**, type the username or email address.
-   In GitLab 13.11 and later, you can [replace this form with a modal window](#add-a-member-modal-window).
-1. Select a [role](../../permissions.md).
-1. Optional. Choose an expiration date. On that date, the user can no longer access the project.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Project information > Members**.
+1. Select **Invite members**.
+1. Enter an email address and select a [role](../../permissions.md).
+1. Optional. Select an **Access expiration date**.
+   On that date, the user can no longer access the project.
 1. Select **Invite**.
 
 If the user has a GitLab account, they are added to the members list.
@@ -39,6 +49,15 @@ If the user does not have a GitLab account, they are prompted to create an accou
 using the email address the invitation was sent to.
 
 ## Add groups to a project
+
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
+> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
+
+FLAG:
+On self-managed GitLab, by default the modal window feature is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md)
+named `invite_members_group_modal`.
+On GitLab.com, this feature is available.
 
 When you add a group to a project, each user in the group gets access to the project.
 Each user's access is based on:
@@ -54,9 +73,10 @@ To add groups to a project:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
-1. On the **Invite group** tab, under **Select a group to invite**, choose a group.
-1. Select the highest max [role](../../permissions.md) for users in the group.
-1. Optional. Choose an expiration date. On that date, the user can no longer access the project.
+1. Select **Invite a group**.
+1. Select a group.
+1. Select the highest [role](../../permissions.md) for users in the group.
+1. Optional. Select an **Access expiration date**. On that date, the group can no longer access the project.
 1. Select **Invite**.
 
 The members of the group are not displayed on the **Members** tab.
@@ -203,40 +223,3 @@ Prerequisite:
 ## Share a project with a group
 
 Instead of adding users one by one, you can [share a project with an entire group](share_project_with_groups.md).
-
-### Add a member modal window
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 [with a flag](../../feature_flags.md). Disabled by default.
-> - Replaces the existing form with buttons to open a modal window.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](#enable-or-disable-modal-window).
-On GitLab.com, this feature is available.
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Members**.
-1. Select **Invite members**.
-1. Enter an email address and select a role.
-1. Optional. Select an **Access expiration date**.
-1. Select **Invite**.
-
-### Enable or disable modal window **(FREE SELF)**
-
-The modal window for adding a member is under development and is ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:invite_members_group_modal)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:invite_members_group_modal)
-```

@@ -38,13 +38,7 @@ RSpec.describe 'bin/metrics-server', :aggregate_failures do
         config_file.write(YAML.dump(config))
         config_file.close
 
-        env = {
-          'GITLAB_CONFIG' => config_file.path,
-          'METRICS_SERVER_TARGET' => target,
-          'WIPE_METRICS_DIR' => '1',
-          'prometheus_multiproc_dir' => metrics_dir
-        }
-        @pid = Process.spawn(env, 'bin/metrics-server', pgroup: true)
+        @pid = MetricsServer.spawn(target, metrics_dir: metrics_dir, gitlab_config: config_file.path, wipe_metrics_dir: true)
       end
 
       after do

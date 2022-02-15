@@ -102,7 +102,7 @@ export default {
           </div>
         </div>
         <span>
-          {{ __('Opened') }}
+          {{ __('Created') }}
           <time-ago-tooltip data-testid="startTimeItem" :time="createdAt" />
           {{ __('by') }}
         </span>

@@ -6,8 +6,23 @@ require_relative 'dependencies'
 
 class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   class << self
-    def spawn(target, metrics_dir:, wipe_metrics_dir: false, trapped_signals: [])
-      raise "Target must be one of [puma,sidekiq]" unless %w(puma sidekiq).include?(target)
+    def spawn(target, metrics_dir:, gitlab_config: nil, wipe_metrics_dir: false)
+      ensure_valid_target!(target)
+
+      cmd = "#{Rails.root}/bin/metrics-server"
+      env = {
+        'METRICS_SERVER_TARGET' => target,
+        'WIPE_METRICS_DIR' => wipe_metrics_dir ? '1' : '0'
+      }
+      env['GITLAB_CONFIG'] = gitlab_config if gitlab_config
+
+      Process.spawn(env, cmd, err: $stderr, out: $stdout, pgroup: true).tap do |pid|
+        Process.detach(pid)
+      end
+    end
+
+    def fork(target, metrics_dir:, wipe_metrics_dir: false, reset_signals: [])
+      ensure_valid_target!(target)
 
       pid = Process.fork
 
@@ -15,7 +30,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
         # Remove any custom signal handlers the parent process had registered, since we do
         # not want to inherit them, and Ruby forks with a `clone` that has the `CLONE_SIGHAND`
         # flag set.
-        Gitlab::ProcessManagement.modify_signals(trapped_signals, 'DEFAULT')
+        Gitlab::ProcessManagement.modify_signals(reset_signals, 'DEFAULT')
 
         server = MetricsServer.new(target, metrics_dir, wipe_metrics_dir)
         # This rewrites /proc/cmdline, since otherwise tools like `top` will show the
@@ -29,6 +44,12 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
 
       pid
     end
+
+    private
+
+    def ensure_valid_target!(target)
+      raise "Target must be one of [puma,sidekiq]" unless %w(puma sidekiq).include?(target)
+    end
   end
 
   def initialize(target, metrics_dir, wipe_metrics_dir)
@@ -40,7 +61,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   def start
     ::Prometheus::Client.configure do |config|
       config.multiprocess_files_dir = @metrics_dir
-      config.pid_provider = proc { "#{@target}_exporter" }
+      config.pid_provider = proc { name }
     end
 
     FileUtils.mkdir_p(@metrics_dir, mode: 0700)
@@ -57,16 +78,18 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
       case @target
       when 'puma'
         Gitlab::Metrics::Exporter::WebExporter.instance(**default_opts)
-      else
-        exporter_class = "Gitlab::Metrics::Exporter::#{@target.camelize}Exporter".constantize
+      when 'sidekiq'
         settings = Settings.new(Settings.monitoring[name])
-        exporter_class.instance(settings, **default_opts)
+        Gitlab::Metrics::Exporter::SidekiqExporter.instance(settings, **default_opts)
       end
 
     exporter.start
   end
 
   def name
-    "#{@target}_exporter"
+    case @target
+    when 'puma' then 'web_exporter'
+    when 'sidekiq' then 'sidekiq_exporter'
+    end
   end
 end

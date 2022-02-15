@@ -40,15 +40,6 @@ RSpec.describe Gitlab::Checks::BranchCheck do
           expect { subject.validate! }.not_to raise_error
         end
       end
-
-      context "the feature flag is disabled" do
-        it "doesn't prohibit a 40-character hexadecimal branch name" do
-          stub_feature_flags(prohibit_hexadecimal_branch_names: false)
-          allow(subject).to receive(:branch_name).and_return("267208abfe40e546f5e847444276f7d43a39503e")
-
-          expect { subject.validate! }.not_to raise_error
-        end
-      end
     end
 
     context 'protected branches check' do

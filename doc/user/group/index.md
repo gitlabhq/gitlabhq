@@ -280,10 +280,15 @@ To view the activity feed in Atom format, select the
 
 ## Share a group with another group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../feature_flags.md). Disabled by default.
+> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
 
-NOTE:
-In GitLab 13.11, you can [replace this form with a modal window](#share-a-group-modal-window).
+FLAG:
+On self-managed GitLab, by default the modal window feature is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md)
+named `invite_members_group_modal`.
+On GitLab.com, this feature is available.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group. Members get direct access
@@ -293,34 +298,13 @@ To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:
 
 1. Go to the `Frontend` group.
-1. From the left menu, select **Group information > Members**.
-1. Select the **Invite group** tab.
+1. On the left sidebar, select **Group information > Members**.
+1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select `Engineering`.
-1. For the **Max role**, select a [role](../permissions.md).
+1. Select a [role](../permissions.md).
 1. Select **Invite**.
 
 All the members of the `Engineering` group are added to the `Frontend` group.
-
-### Share a group modal window
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11.
-> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - Replaces the existing form with buttons to open a modal window.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](../project/members/index.md#enable-or-disable-modal-window).
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-In GitLab 13.11, you can optionally replace the sharing form with a modal window.
-To share a group after enabling this feature:
-
-1. Go to your group's page.
-1. On the left sidebar, go to **Group information > Members**, and then select **Invite a group**.
-1. Select a group, and select a **Max role**.
-1. Optional. Select an **Access expiration date**.
-1. Select **Invite**.
 
 ## Manage group memberships via LDAP **(PREMIUM SELF)**
 

@@ -398,3 +398,14 @@ end
 
 1. Be sure to update the [GitLab CE/EE documentation](../administration/logs.md) and the [GitLab.com
    runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/docs/logging/README.md).
+
+## Control logging visibility
+
+An increase in the logs can cause a growing backlog of unacknowledged messages. When adding new log messages, make sure they don't increase the overall volume of logging by more than 10%.
+
+### Deprecation notices
+
+If the expected volume of deprecation notices is large:
+
+- Only log them in the development environment.
+- If needed, log them in the testing environment.

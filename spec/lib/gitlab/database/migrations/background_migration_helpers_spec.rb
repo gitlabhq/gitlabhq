@@ -439,6 +439,12 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
   end
 
   context 'when the migration is running against the ci database', if: Gitlab::Database.has_config?(:ci) do
+    around do |example|
+      Gitlab::Database::SharedModel.using_connection(::Ci::ApplicationRecord.connection) do
+        example.run
+      end
+    end
+
     it_behaves_like 'helpers that enqueue background migrations', BackgroundMigration::CiDatabaseWorker, 'ci'
   end
 

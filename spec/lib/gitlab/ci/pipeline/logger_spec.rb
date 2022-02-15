@@ -47,13 +47,15 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
     end
 
     def loggable_data(count:, db_count: nil)
-      keys = %w[
+      database_name = Ci::ApplicationRecord.connection.pool.db_config.name
+
+      keys = %W[
         expensive_operation_duration_s
         expensive_operation_db_count
         expensive_operation_db_primary_count
         expensive_operation_db_primary_duration_s
-        expensive_operation_db_main_count
-        expensive_operation_db_main_duration_s
+        expensive_operation_db_#{database_name}_count
+        expensive_operation_db_#{database_name}_duration_s
       ]
 
       data = keys.each.with_object({}) do |key, accumulator|
@@ -75,7 +77,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
     end
 
     context 'with a single query' do
-      let(:operation) { -> { Project.count } }
+      let(:operation) { -> { Ci::Pipeline.count } }
 
       it { is_expected.to eq(operation.call) }
 

@@ -22,8 +22,14 @@ The fuzz testing process:
 1. Compiles the target application.
 1. Runs the instrumented application, using the `gitlab-cov-fuzz` tool.
 1. Parses and analyzes the exception information output by the fuzzer.
-1. Downloads the [corpus](../terminology/index.md#corpus) and crash events from previous pipelines.
+1. Downloads the [corpus](../terminology/index.md#corpus) from either:
+   - The previous pipelines.
+   - If `COVFUZZ_USE_REGISTRY` is set to `true`, the [corpus registry](#corpus-registry).
+1. Downloads crash events from previous pipeline.
 1. Outputs the parsed crash events and data to the `gl-coverage-fuzzing-report.json` file.
+1. Updates the corpus, either:
+   - In the job's pipeline.
+   - If `COVFUZZ_USE_REGISTRY` is set to `true`, in the corpus registry.
 
 The results of the coverage-guided fuzz testing are available in the CI/CD pipeline.
 
@@ -43,9 +49,20 @@ You can use the following fuzzing engines to test the specified languages.
 | Python                                      | [`pythonfuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/pythonfuzz)         | [pythonfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/pythonfuzz-fuzzing-example) |
 | AFL (any language that works on top of AFL) | [AFL](https://lcamtuf.coredump.cx/afl/)                                                              | [afl-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/afl-fuzzing-example)               |
 
-## Configuration
+## Confirm status of coverage-guided fuzz testing
 
-To enable coverage-guided fuzz testing, edit the `.gitlab-ci.yml` file:
+To confirm the status of coverage-guided fuzz testing:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. In the **Coverage Fuzzing** section the status is:
+   - **Not configured**
+   - **Enabled**
+   - A prompt to upgrade to GitLab Ultimate.
+
+## Enable coverage-guided fuzz testing
+
+To enable coverage-guided fuzz testing, edit `.gitlab-ci.yml`:
 
 1. Add the `fuzz` stage to the list of stages.
 
@@ -98,10 +115,13 @@ Use the following variables to configure coverage-guided fuzz testing in your CI
 
 | CI/CD variable            | Description                                                                     |
 |---------------------------|---------------------------------------------------------------------------------|
-| `COVFUZZ_ADDITIONAL_ARGS` | Arguments passed to `gitlab-cov-fuzz`. Used to customize the behavior of the underlying fuzzing engine. Read the fuzzing engine's documentation for a complete list of arguments.                       |
+| `COVFUZZ_ADDITIONAL_ARGS` | Arguments passed to `gitlab-cov-fuzz`. Used to customize the behavior of the underlying fuzzing engine. Read the fuzzing engine's documentation for a complete list of arguments. |
 | `COVFUZZ_BRANCH`          | The branch on which long-running fuzzing jobs are to be run. On all other branches, only fuzzing regression tests are run. Default: Repository's default branch. |
 | `COVFUZZ_SEED_CORPUS`     | Path to a seed corpus directory. Default: empty. |
 | `COVFUZZ_URL_PREFIX`      | Path to the `gitlab-cov-fuzz` repository cloned for use with an offline environment. You should only change this value when using an offline environment. Default: `https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw`. |
+| `COVFUZZ_USE_REGISTRY`    | Set to `true` to have the corpus stored in the GitLab corpus registry. The variables `COVFUZZ_CORPUS_NAME` and `COVFUZZ_GITLAB_TOKEN` are required if this variable is set to `true`. Default: `false`. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8. |
+| `COVFUZZ_CORPUS_NAME`     | Name of the corpus to be used in the job.  [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8. |
+| `COVFUZZ_GITLAB_TOKEN`    | Environment variable configured with [Personal Access Token](../../../user/profile/personal_access_tokens.md#create-a-personal-access-token) with API read/write access. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8. |
 
 #### Seed corpus
 
@@ -122,7 +142,91 @@ Each fuzzing step outputs these artifacts:
 You can download the JSON report file from the CI/CD pipelines page. For more information, see
 [Downloading artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
 
-### Coverage-guided fuzz testing report
+## Corpus registry
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an
+administrator to [disable the feature flags](../../../administration/feature_flags.md) named
+`corpus_management` and `corpus_management_ui`. On GitLab.com, this feature is available.
+
+The corpus registry is a library of corpuses. Corpuses in a project's registry are available to
+all jobs in that project. A project-wide registry is a more efficient way to manage corpuses than
+the default option of one corpus per job.
+
+The corpus registry uses the package registry to store the project's corpuses. Corpuses stored in
+the registry are hidden to ensure data integrity.
+
+In the GitLab UI, with corpus management you can:
+
+- View details of the corpus registry.
+- Download a corpus.
+- Delete a corpus.
+- Create a new corpus.
+
+When you download a corpus, the file is named `artifacts.zip`, regardless of the filename used when
+the corpus was initially uploaded. This file contains only the corpus, which is different to the
+artifacts files you can download from the CI/CD pipeline.
+
+### View details of the corpus registry
+
+To view details of the corpus registry:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. In the **Coverage Fuzzing** section, select **Manage corpus**.
+
+### Create a corpus in the corpus registry
+
+To create a corpus in the corpus registry, either:
+
+- Create a corpus in a pipeline
+- Upload an existing corpus file
+
+#### Create a corpus in a pipeline
+
+To create a corpus in a pipeline:
+
+1. In the `.gitlab-ci.yml` file, edit the `my_fuzz_target` job.
+1. Set the following variables:
+   - Set `COVFUZZ_USE_REGISTRY` to `true`.
+   - Set `COVFUZZ_CORPUS_NAME` to name the corpus.
+   - Set `COVFUZZ_GITLAB_TOKEN` to the value of the personal access token.
+
+After the `my_fuzz_target` job runs, the corpus is stored in the corpus registry, with the name
+provided by the `COVFUZZ_CORPUS_NAME` variable. The corpus is updated on every pipeline run.
+
+#### Upload a corpus file
+
+To upload an existing corpus file:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. In the **Coverage Fuzzing** section, select **Manage corpus**.
+1. Select **New corpus**.
+1. Complete the fields.
+1. Select **Upload file**.
+1. Select **Add**.
+
+You can now reference the corpus in the `.gitlab-ci.yml` file. Ensure the value used in the
+`COVFUZZ_CORPUS_NAME` variable matches exactly the name given to the uploaded corpus file.
+
+### Use a corpus stored in the corpus registry
+
+To use a corpus stored in the corpus registry, you must reference it by its name. To confirm the
+name of the relevant corpus, view details of the corpus registry.
+
+Prerequisites:
+
+- [Enable coverage-guide fuzz testing](#enable-coverage-guided-fuzz-testing) in the project.
+
+1. Set the following variables in the `.gitlab-ci.yml` file:
+   - Set `COVFUZZ_USE_REGISTRY` to `true`.
+   - Set `COVFUZZ_CORPUS_NAME` to the name of the corpus.
+   - Set `COVFUZZ_GITLAB_TOKEN` to the value of the personal access token.
+
+## Coverage-guided fuzz testing report
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Alpha feature](../../../policy/alpha-beta-support.md#alpha-features).
 
@@ -255,3 +359,16 @@ vulnerability:
   engines listed in [Supported fuzzing engines and languages](#supported-fuzzing-engines-and-languages).
 
 <!-- vale gitlab.Acronyms = YES -->
+
+## Troubleshooting
+
+### Error "Unable to extract corpus folder from artifacts zip file"
+
+If you see this error message, and `COVFUZZ_USE_REGISTRY` is set to `true`, ensure that the uploaded
+corpus file extracts into a folder named `corpus`.
+
+### Error "400 Bad request - Duplicate package is not allowed"
+
+If you see this error message when running the fuzzing job with `COVFUZZ_USE_REGISTRY` set to `true`,
+ensure that duplicates are allowed. For more details, see
+[duplicate Generic packages](../../packages/generic_packages/#do-not-allow-duplicate-generic-packages).

@@ -12510,10 +12510,10 @@ msgstr ""
 msgid "DevopsAdoption|At least one deploy"
 msgstr ""
 
-msgid "DevopsAdoption|At least one issue opened"
+msgid "DevopsAdoption|At least one issue created"
 msgstr ""
 
-msgid "DevopsAdoption|At least one merge request opened"
+msgid "DevopsAdoption|At least one merge request created"
 msgstr ""
 
 msgid "DevopsAdoption|At least one pipeline successfully run"
@@ -17143,7 +17143,7 @@ msgstr ""
 msgid "Group: %{name}"
 msgstr ""
 
-msgid "GroupActivityMetrics|Issues opened"
+msgid "GroupActivityMetrics|Issues created"
 msgstr ""
 
 msgid "GroupActivityMetrics|Last 90 days"
@@ -17152,7 +17152,7 @@ msgstr ""
 msgid "GroupActivityMetrics|Members added"
 msgstr ""
 
-msgid "GroupActivityMetrics|Merge Requests opened"
+msgid "GroupActivityMetrics|Merge Requests created"
 msgstr ""
 
 msgid "GroupActivityMetrics|Recent activity"
@@ -20164,6 +20164,9 @@ msgstr ""
 msgid "IssueAnalytics|Assignees"
 msgstr ""
 
+msgid "IssueAnalytics|Created by"
+msgstr ""
+
 msgid "IssueAnalytics|Due date"
 msgstr ""
 
@@ -20174,9 +20177,6 @@ msgid "IssueAnalytics|Issue"
 msgstr ""
 
 msgid "IssueAnalytics|Milestone"
-msgstr ""
-
-msgid "IssueAnalytics|Opened by"
 msgstr ""
 
 msgid "IssueAnalytics|Status"
@@ -20302,10 +20302,10 @@ msgstr ""
 msgid "IssuesAnalytics|Avg/Month:"
 msgstr ""
 
-msgid "IssuesAnalytics|Issues opened"
+msgid "IssuesAnalytics|Issues created"
 msgstr ""
 
-msgid "IssuesAnalytics|Issues opened per month"
+msgid "IssuesAnalytics|Issues created per month"
 msgstr ""
 
 msgid "IssuesAnalytics|Last 12 months"
@@ -25429,7 +25429,7 @@ msgstr ""
 msgid "Opened issues"
 msgstr ""
 
-msgid "OpenedNDaysAgo|Opened"
+msgid "OpenedNDaysAgo|Created"
 msgstr ""
 
 msgid "Opens in a new window"
@@ -43754,9 +43754,6 @@ msgid "only available on top-level groups."
 msgstr ""
 
 msgid "open issue"
-msgstr ""
-
-msgid "opened %{timeAgo}"
 msgstr ""
 
 msgid "or"

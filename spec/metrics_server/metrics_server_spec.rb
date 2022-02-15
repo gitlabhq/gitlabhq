@@ -36,13 +36,13 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
 
   %w(puma sidekiq).each do |target|
     context "when targeting #{target}" do
-      describe '.spawn' do
+      describe '.fork' do
         context 'when in parent process' do
           it 'forks into a new process and detaches it' do
             expect(Process).to receive(:fork).and_return(99)
             expect(Process).to receive(:detach).with(99)
 
-            described_class.spawn(target, metrics_dir: metrics_dir)
+            described_class.fork(target, metrics_dir: metrics_dir)
           end
         end
 
@@ -58,13 +58,47 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
               expect(server).to receive(:start)
             end
 
-            described_class.spawn(target, metrics_dir: metrics_dir)
+            described_class.fork(target, metrics_dir: metrics_dir)
           end
 
           it 'resets signal handlers from parent process' do
             expect(Gitlab::ProcessManagement).to receive(:modify_signals).with(%i[A B], 'DEFAULT')
 
-            described_class.spawn(target, metrics_dir: metrics_dir, trapped_signals: %i[A B])
+            described_class.fork(target, metrics_dir: metrics_dir, reset_signals: %i[A B])
+          end
+        end
+      end
+
+      describe '.spawn' do
+        let(:expected_env) do
+          {
+            'METRICS_SERVER_TARGET' => target,
+            'WIPE_METRICS_DIR' => '0'
+          }
+        end
+
+        it 'spawns a new server process and returns its PID' do
+          expect(Process).to receive(:spawn).with(
+            expected_env,
+            end_with('bin/metrics-server'),
+            hash_including(pgroup: true)
+          ).and_return(99)
+          expect(Process).to receive(:detach).with(99)
+
+          pid = described_class.spawn(target, metrics_dir: metrics_dir)
+
+          expect(pid).to eq(99)
+        end
+
+        context 'when path to gitlab.yml is passed' do
+          it 'sets the GITLAB_CONFIG environment variable' do
+            expect(Process).to receive(:spawn).with(
+              expected_env.merge('GITLAB_CONFIG' => 'path/to/config/gitlab.yml'),
+              end_with('bin/metrics-server'),
+              hash_including(pgroup: true)
+            ).and_return(99)
+
+            described_class.spawn(target, metrics_dir: metrics_dir, gitlab_config: 'path/to/config/gitlab.yml')
           end
         end
       end
@@ -72,6 +106,14 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
   end
 
   context 'when targeting invalid target' do
+    describe '.fork' do
+      it 'raises an error' do
+        expect { described_class.fork('unsupported', metrics_dir: metrics_dir) }.to(
+          raise_error('Target must be one of [puma,sidekiq]')
+        )
+      end
+    end
+
     describe '.spawn' do
       it 'raises an error' do
         expect { described_class.spawn('unsupported', metrics_dir: metrics_dir) }.to(
@@ -81,64 +123,86 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     end
   end
 
-  describe '#start' do
-    let(:exporter_class) { Class.new(Gitlab::Metrics::Exporter::BaseExporter) }
-    let(:exporter_double) { double('fake_exporter', start: true) }
-    let(:settings) { { "fake_exporter" => { "enabled" => true } } }
+  shared_examples 'a metrics exporter' do |target, expected_name|
+    describe '#start' do
+      let(:exporter_double) { double('exporter', start: true) }
+      let(:wipe_metrics_dir) { true }
 
-    subject(:metrics_server) { described_class.new('fake', metrics_dir, true)}
+      subject(:metrics_server) { described_class.new(target, metrics_dir, wipe_metrics_dir) }
+
+      it 'configures ::Prometheus::Client' do
+        metrics_server.start
+
+        expect(prometheus_config.multiprocess_files_dir).to eq metrics_dir
+        expect(::Prometheus::Client.configuration.pid_provider.call).to eq expected_name
+      end
+
+      it 'ensures that metrics directory exists in correct mode (0700)' do
+        expect(FileUtils).to receive(:mkdir_p).with(metrics_dir, mode: 0700)
+
+        metrics_server.start
+      end
+
+      context 'when wipe_metrics_dir is true' do
+        it 'removes any old metrics files' do
+          FileUtils.touch("#{metrics_dir}/remove_this.db")
+
+          expect { metrics_server.start }.to change { Dir.empty?(metrics_dir) }.from(false).to(true)
+        end
+      end
+
+      context 'when wipe_metrics_dir is false' do
+        let(:wipe_metrics_dir) { false }
+
+        it 'does not remove any old metrics files' do
+          FileUtils.touch("#{metrics_dir}/remove_this.db")
+
+          expect { metrics_server.start }.not_to change { Dir.empty?(metrics_dir) }.from(false)
+        end
+      end
+
+      it 'starts a metrics server' do
+        expect(exporter_double).to receive(:start)
+
+        metrics_server.start
+      end
+
+      it 'starts a RubySampler instance' do
+        expect(ruby_sampler_double).to receive(:start)
+
+        subject.start
+      end
+    end
+
+    describe '#name' do
+      let(:exporter_double) { double('exporter', start: true) }
+
+      subject(:name) { described_class.new(target, metrics_dir, true).name }
+
+      it { is_expected.to eq(expected_name) }
+    end
+  end
+
+  context 'for puma' do
+    before do
+      allow(Gitlab::Metrics::Exporter::WebExporter).to receive(:instance).with(
+        gc_requests: true, synchronous: true
+      ).and_return(exporter_double)
+    end
+
+    it_behaves_like 'a metrics exporter', 'puma', 'web_exporter'
+  end
+
+  context 'for sidekiq' do
+    let(:settings) { { "sidekiq_exporter" => { "enabled" => true } } }
 
     before do
-      stub_const('Gitlab::Metrics::Exporter::FakeExporter', exporter_class)
-      expect(exporter_class).to receive(:instance).with(
-        settings['fake_exporter'], gc_requests: true, synchronous: true
+      allow(::Settings).to receive(:monitoring).and_return(settings)
+      allow(Gitlab::Metrics::Exporter::SidekiqExporter).to receive(:instance).with(
+        settings['sidekiq_exporter'], gc_requests: true, synchronous: true
       ).and_return(exporter_double)
-      expect(Settings).to receive(:monitoring).and_return(settings)
     end
 
-    it 'configures ::Prometheus::Client' do
-      metrics_server.start
-
-      expect(prometheus_config.multiprocess_files_dir).to eq metrics_dir
-      expect(::Prometheus::Client.configuration.pid_provider.call).to eq 'fake_exporter'
-    end
-
-    it 'ensures that metrics directory exists in correct mode (0700)' do
-      expect(FileUtils).to receive(:mkdir_p).with(metrics_dir, mode: 0700)
-
-      metrics_server.start
-    end
-
-    context 'when wipe_metrics_dir is true' do
-      subject(:metrics_server) { described_class.new('fake', metrics_dir, true)}
-
-      it 'removes any old metrics files' do
-        FileUtils.touch("#{metrics_dir}/remove_this.db")
-
-        expect { metrics_server.start }.to change { Dir.empty?(metrics_dir) }.from(false).to(true)
-      end
-    end
-
-    context 'when wipe_metrics_dir is false' do
-      subject(:metrics_server) { described_class.new('fake', metrics_dir, false)}
-
-      it 'does not remove any old metrics files' do
-        FileUtils.touch("#{metrics_dir}/remove_this.db")
-
-        expect { metrics_server.start }.not_to change { Dir.empty?(metrics_dir) }.from(false)
-      end
-    end
-
-    it 'starts a metrics server' do
-      expect(exporter_double).to receive(:start)
-
-      metrics_server.start
-    end
-
-    it 'starts a RubySampler instance' do
-      expect(ruby_sampler_double).to receive(:start)
-
-      subject.start
-    end
+    it_behaves_like 'a metrics exporter', 'sidekiq', 'sidekiq_exporter'
   end
 end
