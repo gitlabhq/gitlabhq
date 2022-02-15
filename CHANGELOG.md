@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.7.3 (2022-02-15)
+
+### Fixed (2 changes)
+
+- [Update GitHub PRs Importer to force update repository](gitlab-org/gitlab@33f12736b070362cb89e9bbb4b3aa7d86fc373c3) ([merge request](gitlab-org/gitlab!80595))
+- [Fix Geo checksummable check failing when file is nil](gitlab-org/gitlab@f49e3ea3e4d4ca7a64607687f9aaa974801b6bf9) ([merge request](gitlab-org/gitlab!80595)) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Properly exclude pending_destruction packages when creating one](gitlab-org/gitlab@9fb9f1ca8a2342225b7017c211f85175a4ef56dd) ([merge request](gitlab-org/gitlab!80595))
+
 ## 14.7.2 (2022-02-08)
 
 ### Added (1 change)
