@@ -2166,6 +2166,7 @@ RSpec.describe API::Projects do
             approvals_before_merge
             compliance_frameworks
             mirror
+            requirements_access_level
             requirements_enabled
             security_and_compliance_enabled
             issues_template

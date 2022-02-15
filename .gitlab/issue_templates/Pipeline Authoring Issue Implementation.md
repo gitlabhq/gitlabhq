@@ -1,0 +1,38 @@
+<!--
+## Implementation Issue To-Do list 
+(_NOTE: This section can be removed when the issue is ready for creation_)
+- [ ] Ensure that issue title is concise yet descriptive
+- [ ] Add `Frontend :` or `Backend: ` per group [naming conventions](https://about.gitlab.com/handbook/engineering/development/ops/verify/pipeline-authoring/#splitting-issues)
+- [ ] Ensure the issue containing the feature or change proposal and related discussions is linked as related to this implementation issue.
+- [ ] Aside from default labeling, please make sure to include relevant labels for `type::`, `workflow::`, and `~frontend`/`~backend` labeling.
+- [ ] Issues with user-facing changes should include the `~UX` label.
+-->
+
+## Summary
+
+## Proposal
+
+## Implementation Table
+
+<!--
+_NOTE: If the issue is not part of an epic, the implementation table can be removed. If it is part of an epic, make sure that the implementation table below mirrors the corresponding epic's implementation table content._
+-->
+
+
+| Group | Issue Link |
+| ------ | ------ |
+| ~backend | :point_left: You are here |
+| ~frontend | [#123123](url) |
+
+<!--
+## Documentation 
+
+_NOTE: This section is optional, but can be used for easy access to any relevant documentation URLs._
+-->
+
+## Links/References
+
+
+
+
+/label ~"group::pipeline authoring" ~"Category:Pipeline Authoring" ~"section::ops" ~"devops::verify" ~"workflow::planning breakdown"

@@ -121,7 +121,6 @@ project_feature:
     - created_at
     - metrics_dashboard_access_level
     - project_id
-    - requirements_access_level
     - security_and_compliance_access_level
     - updated_at
   computed_attributes:
@@ -139,6 +138,7 @@ project_setting:
     - has_confluence
     - has_shimo
     - has_vulnerabilities
+    - legacy_open_source_license_available
     - prevent_merge_without_jira_issue
     - warn_about_potentially_unwanted_characters
     - previous_default_branch

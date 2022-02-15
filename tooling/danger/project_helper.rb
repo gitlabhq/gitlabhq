@@ -45,6 +45,8 @@ module Tooling
         %r{\Adoc/.*(\.(md|png|gif|jpg|yml))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
+        %r{\Adata/deprecations/} => :none,
+        %r{\Adata/removals/} => :none,
 
         %r{\A((ee|jh)/)?app/finders/(.+/)?integrations/} => [:integrations_be, :database, :backend],
         [%r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/}, %r{(:integrations|:\w+_tracker_data)\b}] => [:integrations_be, :database, :migration],
