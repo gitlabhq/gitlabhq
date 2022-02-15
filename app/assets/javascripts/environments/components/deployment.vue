@@ -6,10 +6,10 @@ import {
   GlIcon,
   GlLink,
   GlTooltipDirective as GlTooltip,
+  GlTruncate,
 } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { __, s__ } from '~/locale';
-import { truncate } from '~/lib/utils/text_utility';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeploymentStatusBadge from './deployment_status_badge.vue';
@@ -25,6 +25,7 @@ export default {
     GlCollapse,
     GlIcon,
     GlLink,
+    GlTruncate,
     TimeAgoTooltip,
   },
   directives: {
@@ -75,7 +76,7 @@ export default {
       return this.deployment?.user;
     },
     username() {
-      return truncate(this.user?.username, 25);
+      return `@${this.user.username}`;
     },
     userPath() {
       return this.user?.path;
@@ -84,10 +85,22 @@ export default {
       return this.deployment?.deployable;
     },
     jobName() {
-      return truncate(this.deployable?.name ?? '', 25);
+      return this.deployable?.name;
     },
     jobPath() {
       return this.deployable?.buildPath;
+    },
+    refLabel() {
+      return this.deployment?.tag ? this.$options.i18n.tag : this.$options.i18n.branch;
+    },
+    ref() {
+      return this.deployment?.ref;
+    },
+    refName() {
+      return this.ref?.name;
+    },
+    refPath() {
+      return this.ref?.refPath;
     },
   },
   methods: {
@@ -105,6 +118,8 @@ export default {
     triggerer: s__('Deployment|Triggerer'),
     job: __('Job'),
     api: __('API'),
+    branch: __('Branch'),
+    tag: __('Tag'),
   },
   headerClasses: [
     'gl-display-flex',
@@ -144,10 +159,12 @@ export default {
           <div
             v-if="iid"
             v-gl-tooltip
+            class="gl-display-flex"
             :title="$options.i18n.deploymentId"
             :aria-label="$options.i18n.deploymentId"
           >
-            <gl-icon ref="deployment-iid-icon" name="deployments" /> #{{ iid }}
+            <gl-icon ref="deployment-iid-icon" name="deployments" />
+            <span class="gl-ml-2">#{{ iid }}</span>
           </div>
           <div
             v-if="shortSha"
@@ -163,8 +180,11 @@ export default {
               size="small"
             />
           </div>
-          <time-ago-tooltip v-if="createdAt" :time="createdAt">
-            <template #default="{ timeAgo }"> <gl-icon name="calendar" /> {{ timeAgo }} </template>
+          <time-ago-tooltip v-if="createdAt" :time="createdAt" class="gl-display-flex">
+            <template #default="{ timeAgo }">
+              <gl-icon name="calendar" />
+              <span class="gl-mr-2 gl-white-space-nowrap">{{ timeAgo }}</span>
+            </template>
           </time-ago-tooltip>
         </div>
       </div>
@@ -180,24 +200,39 @@ export default {
     </div>
     <commit v-if="commit" :commit="commit" class="gl-mt-3" />
     <gl-collapse :visible="visible">
-      <div class="gl-display-flex gl-align-items-center gl-mt-5">
-        <div v-if="user" class="gl-display-flex gl-flex-direction-column">
-          <span class="gl-text-gray-500 gl-font-weight-bold">{{ $options.i18n.triggerer }}</span>
-          <gl-link :href="userPath" class="gl-font-monospace gl-mt-3"> @{{ username }} </gl-link>
+      <div
+        class="gl-display-flex gl-md-align-items-center gl-mt-5 gl-flex-direction-column gl-md-flex-direction-row gl-pr-4 gl-md-pr-0"
+      >
+        <div v-if="user" class="gl-display-flex gl-flex-direction-column gl-md-max-w-15p">
+          <span class="gl-text-gray-500">{{ $options.i18n.triggerer }}</span>
+          <gl-link :href="userPath" class="gl-font-monospace gl-mt-3">
+            <gl-truncate :text="username" with-tooltip />
+          </gl-link>
         </div>
-        <div class="gl-display-flex gl-flex-direction-column gl-ml-5">
-          <span class="gl-text-gray-500 gl-font-weight-bold" :class="{ 'gl-ml-3': !deployable }">
+        <div
+          class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
+        >
+          <span class="gl-text-gray-500" :class="{ 'gl-ml-3': !deployable }">
             {{ $options.i18n.job }}
           </span>
           <gl-link v-if="jobPath" :href="jobPath" class="gl-font-monospace gl-mt-3">
-            {{ jobName }}
+            <gl-truncate :text="jobName" with-tooltip position="middle" />
           </gl-link>
           <span v-else-if="jobName" class="gl-font-monospace gl-mt-3">
-            {{ jobName }}
+            <gl-truncate :text="jobName" with-tooltip position="middle" />
           </span>
           <gl-badge v-else class="gl-font-monospace gl-mt-3" variant="info">
             {{ $options.i18n.api }}
           </gl-badge>
+        </div>
+        <div
+          v-if="ref"
+          class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
+        >
+          <span class="gl-text-gray-500">{{ refLabel }}</span>
+          <gl-link :href="refPath" class="gl-font-monospace gl-mt-3">
+            <gl-truncate :text="refName" with-tooltip />
+          </gl-link>
         </div>
       </div>
     </gl-collapse>

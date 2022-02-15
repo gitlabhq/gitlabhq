@@ -20374,6 +20374,9 @@ msgstr ""
 msgid "It looks like you have some draft commits in this branch."
 msgstr ""
 
+msgid "It looks like you're attempting to activate your subscription. Use %{a_start}the Subscription page%{a_end} instead."
+msgstr ""
+
 msgid "It may be several days before you see feature usage data."
 msgstr ""
 
@@ -20878,6 +20881,9 @@ msgstr ""
 msgid "Job|Erase job log and artifacts"
 msgstr ""
 
+msgid "Job|Finished at"
+msgstr ""
+
 msgid "Job|Job artifacts"
 msgstr ""
 
@@ -20900,6 +20906,9 @@ msgid "Job|Scroll to top"
 msgstr ""
 
 msgid "Job|Show complete raw"
+msgstr ""
+
+msgid "Job|Status"
 msgstr ""
 
 msgid "Job|The artifacts were removed"
@@ -27138,9 +27147,6 @@ msgstr ""
 msgid "Please enter a valid time interval"
 msgstr ""
 
-msgid "Please enter or upload a valid license."
-msgstr ""
-
 msgid "Please enter your current password."
 msgstr ""
 
@@ -31321,6 +31327,9 @@ msgstr ""
 msgid "Runners|Instance"
 msgstr ""
 
+msgid "Runners|Jobs"
+msgstr ""
+
 msgid "Runners|Last contact"
 msgstr ""
 
@@ -31559,6 +31568,9 @@ msgid "Runners|specific"
 msgstr ""
 
 msgid "Runners|stale"
+msgstr ""
+
+msgid "Runner|This runner has not run any jobs."
 msgstr ""
 
 msgid "Running"
@@ -36336,6 +36348,9 @@ msgstr ""
 msgid "The latest pipeline for this merge request has failed."
 msgstr ""
 
+msgid "The license key is invalid."
+msgstr ""
+
 msgid "The license key is invalid. Make sure it is exactly as you received it from GitLab Inc."
 msgstr ""
 
@@ -36349,6 +36364,9 @@ msgid "The license was successfully uploaded and is now active. You can see the 
 msgstr ""
 
 msgid "The license was successfully uploaded and will be active from %{starts_at}. You can see the details below."
+msgstr ""
+
+msgid "The license you uploaded is invalid. If the issue persists, contact support at %{link}."
 msgstr ""
 
 msgid "The list creation wizard is already open"

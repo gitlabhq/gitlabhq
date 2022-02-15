@@ -203,6 +203,35 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
           expect(commit).to be_truthy
         end
       end
+
+      context 'when project is not passed and pipeline is not persisted' do
+        let(:project) {}
+        let(:pipeline) { build(:ci_pipeline) }
+
+        let(:loggable_data) do
+          {
+            'class' => described_class.name.to_s,
+            'pipeline_persisted' => false,
+            'pipeline_creation_service_duration_s' => a_kind_of(Numeric),
+            'pipeline_creation_caller' => 'source',
+            'pipeline_save_duration_s' => {
+              'avg' => 60, 'count' => 1, 'max' => 60, 'min' => 60
+            },
+            'pipeline_creation_duration_s' => {
+              'avg' => 20, 'count' => 2, 'max' => 30, 'min' => 10
+            }
+          }
+        end
+
+        it 'logs to application.json' do
+          expect(Gitlab::AppJsonLogger)
+            .to receive(:info)
+            .with(a_hash_including(loggable_data))
+            .and_call_original
+
+          expect(commit).to be_truthy
+        end
+      end
     end
 
     context 'when the feature flag is disabled' do

@@ -123,6 +123,7 @@ describe('RunnerUpdateForm', () => {
 
     // Some read-only fields are not submitted
     const {
+      __typename,
       ipAddress,
       runnerType,
       createdAt,
@@ -132,7 +133,7 @@ describe('RunnerUpdateForm', () => {
       userPermissions,
       version,
       groups,
-      __typename,
+      jobCount,
       ...submitted
     } = mockRunner;
 

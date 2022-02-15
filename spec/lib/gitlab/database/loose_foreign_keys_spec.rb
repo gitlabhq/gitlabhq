@@ -18,6 +18,15 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
                          ))
     end
 
+    context 'ensure keys are sorted' do
+      it 'does not have any keys that are out of order' do
+        parsed = YAML.parse_file(described_class.loose_foreign_keys_yaml_path)
+        mapping = parsed.children.first
+        table_names = mapping.children.select(&:scalar?).map(&:value)
+        expect(table_names).to eq(table_names.sort), "expected sorted table names in the YAML file"
+      end
+    end
+
     context 'ensure no duplicates are found' do
       it 'does not have duplicate tables defined' do
         # since we use hash to detect duplicate hash keys we need to parse YAML document

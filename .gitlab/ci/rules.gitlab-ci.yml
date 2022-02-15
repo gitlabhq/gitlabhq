@@ -230,6 +230,9 @@
 .controllers-patterns: &controllers-patterns
   - "{,ee/,jh/}{app/controllers}/**/*"
 
+.models-patterns: &models-patterns
+  - "{,ee/,jh/}{app/models}/**/*"
+
 .startup-css-patterns: &startup-css-patterns
   - "{,ee/,jh/}app/assets/stylesheets/startup/**/*"
 
@@ -1429,6 +1432,8 @@
       changes: *frontend-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *models-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
     - <<: *if-dot-com-gitlab-org-merge-request

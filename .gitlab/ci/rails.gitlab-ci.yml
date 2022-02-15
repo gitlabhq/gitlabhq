@@ -429,6 +429,13 @@ db:check-migrations-decomposed:
     - .decomposed-database
     - .rails:rules:decomposed-databases
 
+db:migrate-non-superuser:
+  extends:
+    - .db-job-base
+    - .rails:rules:ee-and-foss-mr-with-migration
+  script:
+    - bundle exec rake gitlab:db:reset_as_non_superuser
+
 db:gitlabcom-database-testing:
   extends: .rails:rules:db:gitlabcom-database-testing
   stage: test

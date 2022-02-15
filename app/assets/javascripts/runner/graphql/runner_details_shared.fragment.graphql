@@ -8,6 +8,7 @@ fragment RunnerDetailsShared on CiRunner {
   ipAddress
   description
   maximumTimeout
+  jobCount
   tagList
   createdAt
   status(legacyMode: null)

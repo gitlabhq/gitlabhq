@@ -17,6 +17,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
   let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], active: false, version: '2.0.0', revision: '456', description: 'Group runner', ip_address: '127.0.0.1') }
   let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group], active: false, version: '2.0.0', revision: '456', description: 'Group runner 2', ip_address: '127.0.0.1') }
   let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project, project_2], active: false, version: '2.0.0', revision: '456', description: 'Project runner', ip_address: '127.0.0.1') }
+  let_it_be(:build) { create(:ci_build, runner: instance_runner) }
 
   query_path = 'runner/graphql/'
   fixtures_path = 'graphql/runner/'
@@ -99,6 +100,22 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
       it "#{fixtures_path}#{get_runner_projects_query_name}.json" do
         post_graphql(query, current_user: admin, variables: {
           id: project_runner.to_global_id.to_s
+        })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    describe GraphQL::Query, type: :request do
+      get_runner_jobs_query_name = 'get_runner_jobs.query.graphql'
+
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{get_runner_jobs_query_name}")
+      end
+
+      it "#{fixtures_path}#{get_runner_jobs_query_name}.json" do
+        post_graphql(query, current_user: admin, variables: {
+          id: instance_runner.to_global_id.to_s
         })
 
         expect_graphql_errors_to_be_empty

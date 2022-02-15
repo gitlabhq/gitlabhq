@@ -213,8 +213,28 @@ describe('~/environments/components/deployment.vue', () => {
       expect(job.attributes('href')).toBe(deployment.deployable.buildPath);
       const apiBadge = wrapper.findByText(__('API'));
       expect(apiBadge.exists()).toBe(false);
+
+      const branchLabel = wrapper.findByText(__('Branch'));
+      expect(branchLabel.exists()).toBe(true);
+      const tagLabel = wrapper.findByText(__('Tag'));
+      expect(tagLabel.exists()).toBe(false);
+      const ref = wrapper.findByRole('link', { name: deployment.ref.name });
+      expect(ref.attributes('href')).toBe(deployment.ref.refPath);
     });
   });
+
+  describe('with tagged deployment', () => {
+    beforeEach(async () => {
+      wrapper = createWrapper({ propsData: { deployment: { ...deployment, tag: true } } });
+      await wrapper.findComponent({ ref: 'details-toggle' }).trigger('click');
+    });
+
+    it('shows tag instead of branch', () => {
+      const refLabel = wrapper.findByText(__('Tag'));
+      expect(refLabel.exists()).toBe(true);
+    });
+  });
+
   describe('with API deployment', () => {
     beforeEach(async () => {
       wrapper = createWrapper({ propsData: { deployment: { ...deployment, deployable: null } } });
@@ -237,7 +257,7 @@ describe('~/environments/components/deployment.vue', () => {
     });
 
     it('shows a span instead of a link', () => {
-      const job = wrapper.findByText(deployment.deployable.name);
+      const job = wrapper.findByTitle(deployment.deployable.name);
       expect(job.attributes('href')).toBeUndefined();
     });
   });

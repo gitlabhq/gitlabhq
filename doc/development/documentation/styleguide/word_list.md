@@ -561,6 +561,8 @@ Do not use **navigate**. Use **go** instead. For example:
 - Go to this webpage.
 - Open a terminal and go to the `runner` directory.
 
+([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
 ## need to, should
 
 Try to avoid **needs to**, because it's wordy. Avoid **should** when you can be more specific. If something is required, use **must**.

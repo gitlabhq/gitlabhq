@@ -102,20 +102,36 @@ user profiles are only visible to signed-in users.
 
 ## Add details to your profile with a README
 
-### *Add personal README to profile*
-
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
 
-If you want to add more information to your profile page, you can create a README file. When you populate the README file with information, it's included on your profile page.
+You can add more information to your profile page with a README file. When you populate
+the README file with information, it's included on your profile page.
 
-To add a README to your profile:
+### From a new project
 
-1. Create a new public project with the same project path as your GitLab username.
+To create a new project and add its README to your profile:
+
+1. On the top bar, select **Menu > Project**.
+1. Select **Create new project**.
+1. Select **Create blank project**.
+1. Enter the project details:
+   - In the **Project name** field, enter the name for your new project.
+   - In the **Project URL** field, select your GitLab username.
+   - In the **Project slug** field, enter your GitLab username.
+1. For **Visibility Level**, select **Public**.
+   ![Proper project path for an individual on the hosted product](img/personal_readme_setup_v14_5.png)
+1. For **Project Configuration**, ensure **Initialize repository with a README** is selected.
+1. Select **Create project**.
 1. Create a README file inside this project. The file can be any valid [README or index file](../project/repository/index.md#readme-and-index-files).
 1. Populate the README file with [Markdown](../markdown.md).
 
-To use an existing project, [update the path](../project/settings/index.md#renaming-a-repository) of the project to match
-your username.
+GitLab displays the contents of your README below your contribution graph.
+
+### From an existing project
+
+To add the README from an existing project to your profile,
+[update the path](../project/settings/index.md#renaming-a-repository) of the project
+to match your username.
 
 ## Add external accounts to your user profile page
 

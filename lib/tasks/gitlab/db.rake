@@ -270,6 +270,19 @@ namespace :gitlab do
       end
     end
 
+    desc 'Run migration as gitlab non-superuser'
+    task :reset_as_non_superuser, [:username] => :environment do |_, args|
+      username = args.fetch(:username, 'gitlab')
+      puts "Migrate using username #{username}"
+      Rake::Task['db:drop'].invoke
+      Rake::Task['db:create'].invoke
+      ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
+        ActiveRecord::Base.establish_connection(db_config.configuration_hash.merge(username: username)) # rubocop: disable Database/EstablishConnection
+        Gitlab::Database.check_for_non_superuser
+        Rake::Task['db:migrate'].invoke
+      end
+    end
+
     # Only for development environments,
     # we execute pending data migrations inline for convenience.
     Rake::Task['db:migrate'].enhance do
