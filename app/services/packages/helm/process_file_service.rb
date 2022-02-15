@@ -68,6 +68,7 @@ module Packages
           package = project_packages.with_package_type(:helm)
                                     .with_name(metadata['name'])
                                     .with_version(metadata['version'])
+                                    .not_pending_destruction
                                     .last
           package || temp_package
         end

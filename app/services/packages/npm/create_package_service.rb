@@ -33,6 +33,7 @@ module Packages
                .npm
                .with_name(name)
                .with_version(version)
+               .not_pending_destruction
                .exists?
       end
 

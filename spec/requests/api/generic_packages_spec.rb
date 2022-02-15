@@ -426,6 +426,33 @@ RSpec.describe API::GenericPackages do
         it_behaves_like 'a package tracking event', described_class.name, 'push_package'
       end
 
+      context 'with existing package' do
+        let_it_be(:package_name) { 'mypackage' }
+        let_it_be(:package_version) { '1.2.3' }
+        let_it_be_with_reload(:existing_package) { create(:generic_package, name: package_name, version: package_version, project: project) }
+
+        let(:headers) { workhorse_headers.merge(personal_access_token_header) }
+
+        it 'does not create a new package' do
+          expect { upload_file(params, headers, package_name: package_name, package_version: package_version) }
+            .to change { project.packages.generic.count }.by(0)
+            .and change { Packages::PackageFile.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        context 'marked as pending_destruction' do
+          it 'does create a new package' do
+            existing_package.pending_destruction!
+            expect { upload_file(params, headers, package_name: package_name, package_version: package_version) }
+              .to change { project.packages.generic.count }.by(1)
+              .and change { Packages::PackageFile.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:created)
+          end
+        end
+      end
+
       it 'rejects request without a file from workhorse' do
         headers = workhorse_headers.merge(personal_access_token_header)
         upload_file({}, headers)

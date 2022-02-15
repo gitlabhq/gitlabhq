@@ -230,6 +230,35 @@ RSpec.describe API::PypiPackages do
 
       it_behaves_like 'returning response status', :bad_request
     end
+
+    context 'with existing package' do
+      let_it_be_with_reload(:existing_package) { create(:pypi_package, name: 'sample-project', version: '1.0.0', project: project) }
+
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token).merge(workhorse_headers) }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'does not create a new package', :aggregate_failures do
+        expect { subject }
+          .to change { project.packages.pypi.count }.by(0)
+          .and change { Packages::PackageFile.count }.by(1)
+          .and change { Packages::Pypi::Metadatum.count }.by(0)
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      context 'marked as pending_destruction' do
+        it 'does create a new package', :aggregate_failures do
+          existing_package.pending_destruction!
+          expect { subject }
+            .to change { project.packages.pypi.count }.by(1)
+            .and change { Packages::PackageFile.count }.by(1)
+            .and change { Packages::Pypi::Metadatum.count }.by(1)
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
   end
 
   context 'file download endpoint' do

@@ -83,6 +83,23 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService do
           expect(package.reload.original_build_info.pipeline).to eq(pipeline)
         end
       end
+
+      context 'when a pending_destruction package exists', :aggregate_failures do
+        let!(:package) { project.packages.generic.create!(params.merge(status: :pending_destruction)) }
+
+        it 'creates a new package' do
+          service = described_class.new(project, user, params)
+
+          expect { service.execute }.to change { project.packages.generic.count }.by(1)
+
+          package = project.packages.generic.last
+
+          expect(package.creator).to eq(user)
+          expect(package.name).to eq('mypackage')
+          expect(package.version).to eq('0.0.1')
+          expect(package.original_build_info).to be_nil
+        end
+      end
     end
   end
 end

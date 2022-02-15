@@ -53,6 +53,19 @@ RSpec.describe Packages::Helm::ProcessFileService do
         expect(package_file.helm_file_metadatum.channel).to eq(channel)
         expect(package_file.helm_file_metadatum.metadata).to eq(expected)
       end
+
+      context 'marked as pending_destruction' do
+        before do
+          existing_package.pending_destruction!
+        end
+
+        it 'reuses the processing package' do
+          expect { execute }
+            .to not_change { Packages::Package.count }
+            .and not_change { Packages::PackageFile.count }
+            .and change { Packages::Helm::FileMetadatum.count }.by(1)
+        end
+      end
     end
 
     context 'with a valid file' do

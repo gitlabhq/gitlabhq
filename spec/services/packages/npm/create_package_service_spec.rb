@@ -112,6 +112,20 @@ RSpec.describe Packages::Npm::CreatePackageService do
 
       it { expect(subject[:http_status]).to eq 403 }
       it { expect(subject[:message]).to be 'Package already exists.' }
+
+      context 'marked as pending_destruction' do
+        before do
+          existing_package.pending_destruction!
+        end
+
+        it 'creates a new package' do
+          expect { subject }
+            .to change { Packages::Package.count }.by(1)
+            .and change { Packages::Package.npm.count }.by(1)
+            .and change { Packages::Tag.count }.by(1)
+            .and change { Packages::Npm::Metadatum.count }.by(1)
+        end
+      end
     end
 
     describe 'max file size validation' do

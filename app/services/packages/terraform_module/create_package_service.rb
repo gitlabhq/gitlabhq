@@ -29,6 +29,7 @@ module Packages
           .for_projects(project.root_namespace.all_projects.id_not_in(project.id))
           .with_package_type(:terraform_module)
           .with_name(name)
+          .not_pending_destruction
           .exists?
       end
 
@@ -37,6 +38,7 @@ module Packages
           .with_package_type(:terraform_module)
           .with_name(name)
           .with_version(params[:module_version])
+          .not_pending_destruction
           .exists?
       end
 

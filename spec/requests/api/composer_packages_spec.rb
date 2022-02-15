@@ -327,6 +327,35 @@ RSpec.describe API::ComposerPackages do
       it_behaves_like 'rejects Composer access with unknown project id'
     end
 
+    context 'with existing package' do
+      include_context 'Composer api project access', 'PRIVATE', :developer, true, true
+
+      let_it_be_with_reload(:existing_package) { create(:composer_package, name: package_name, version: '1.2.99', project: project) }
+
+      let(:params) { { tag: 'v1.2.99' } }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'does not create a new package' do
+        expect { subject }
+          .to change { project.packages.composer.count }.by(0)
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      context 'marked as pending_destruction' do
+        it 'does create a new package' do
+          existing_package.pending_destruction!
+          expect { subject }
+            .to change { project.packages.composer.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
     context 'with no tag or branch params' do
       let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
 

@@ -57,6 +57,18 @@ RSpec.describe Packages::Go::SyncPackagesWorker, type: :worker do
       it_behaves_like 'it creates a package', '', 'v1.0.3'
       it_behaves_like 'it creates a package', 'mod', 'v1.0.3'
       it_behaves_like 'it creates a package', 'v2', 'v2.0.0'
+
+      context 'marked as pending_destruction' do
+        before do
+          project.packages.each(&:pending_destruction!)
+        end
+
+        it_behaves_like 'it creates a package', '', 'v1.0.1'
+        it_behaves_like 'it creates a package', '', 'v1.0.2'
+        it_behaves_like 'it creates a package', '', 'v1.0.3'
+        it_behaves_like 'it creates a package', 'mod', 'v1.0.3'
+        it_behaves_like 'it creates a package', 'v2', 'v2.0.0'
+      end
     end
 
     context 'with a package that exceeds project limits' do

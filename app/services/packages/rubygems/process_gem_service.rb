@@ -91,6 +91,7 @@ module Packages
                                 .rubygems
                                 .with_name(gemspec.name)
                                 .with_version(gemspec.version.to_s)
+                                .not_pending_destruction
                                 .last
           package || temp_package
         end

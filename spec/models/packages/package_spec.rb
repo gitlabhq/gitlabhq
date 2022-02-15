@@ -475,6 +475,15 @@ RSpec.describe Packages::Package, type: :model do
           end
         end
 
+        shared_examples 'validating both if the first package is pending destruction' do
+          before do
+            package.status = :pending_destruction
+          end
+
+          it_behaves_like 'validating the first package'
+          it_behaves_like 'validating the second package'
+        end
+
         context 'following the naming convention' do
           let(:name) { "@#{group.path}/test" }
 
@@ -503,6 +512,7 @@ RSpec.describe Packages::Package, type: :model do
 
               it_behaves_like 'validating the first package'
               it_behaves_like 'not validating the second package', field_with_error: :name
+              it_behaves_like 'validating both if the first package is pending destruction'
             end
           end
 
@@ -531,6 +541,7 @@ RSpec.describe Packages::Package, type: :model do
 
               it_behaves_like 'validating the first package'
               it_behaves_like 'not validating the second package', field_with_error: :base
+              it_behaves_like 'validating both if the first package is pending destruction'
             end
           end
         end
@@ -563,6 +574,7 @@ RSpec.describe Packages::Package, type: :model do
 
               it_behaves_like 'validating the first package'
               it_behaves_like 'not validating the second package', field_with_error: :name
+              it_behaves_like 'validating both if the first package is pending destruction'
             end
           end
 
@@ -591,6 +603,7 @@ RSpec.describe Packages::Package, type: :model do
 
               it_behaves_like 'validating the first package'
               it_behaves_like 'validating the second package'
+              it_behaves_like 'validating both if the first package is pending destruction'
             end
           end
         end
@@ -598,18 +611,52 @@ RSpec.describe Packages::Package, type: :model do
     end
 
     context "recipe uniqueness for conan packages" do
-      let!(:package) { create('conan_package') }
+      let_it_be(:package) { create(:conan_package) }
 
       it "will allow a conan package with same project, name, version and package_type" do
-        new_package = build('conan_package', project: package.project, name: package.name, version: package.version)
+        new_package = build(:conan_package, project: package.project, name: package.name, version: package.version)
         new_package.conan_metadatum.package_channel = 'beta'
         expect(new_package).to be_valid
       end
 
       it "will not allow a conan package with same recipe (name, version, metadatum.package_channel, metadatum.package_username, and package_type)" do
-        new_package = build('conan_package', project: package.project, name: package.name, version: package.version)
+        new_package = build(:conan_package, project: package.project, name: package.name, version: package.version)
         expect(new_package).not_to be_valid
         expect(new_package.errors.to_a).to include("Package recipe already exists")
+      end
+
+      context 'with pending destruction package' do
+        let_it_be(:package) { create(:conan_package, :pending_destruction) }
+
+        it 'will allow a conan package with same recipe (name, version, metadatum.package_channel, metadatum.package_username, and package_type)' do
+          new_package = build(:conan_package, project: package.project, name: package.name, version: package.version)
+          expect(new_package).to be_valid
+        end
+      end
+    end
+
+    describe '#valid_composer_global_name' do
+      let_it_be(:package) { create(:composer_package) }
+
+      context 'with different name and different project' do
+        let(:new_package) { build(:composer_package, name: 'different_name') }
+
+        it { expect(new_package).to be_valid }
+      end
+
+      context 'with same name and different project' do
+        let(:new_package) { build(:composer_package, name: package.name) }
+
+        it 'will not validate second package' do
+          expect(new_package).not_to be_valid
+          expect(new_package.errors.to_a).to include('Name is already taken by another project')
+        end
+
+        context 'with pending destruction package' do
+          let_it_be(:package) { create(:composer_package, :pending_destruction) }
+
+          it { expect(new_package).to be_valid }
+        end
       end
     end
 
@@ -631,6 +678,16 @@ RSpec.describe Packages::Package, type: :model do
       it "will allow a Debian package with same project, name, version, but no distribution" do
         new_package = build(:debian_package, project: package.project, name: package.name, version: package.version, published_in: nil)
         expect(new_package).to be_valid
+      end
+
+      context 'with pending_destruction package' do
+        let!(:package) { create(:debian_package, :pending_destruction) }
+
+        it "will allow a Debian package with same project, name, version and distribution" do
+          new_package = build(:debian_package, project: package.project, name: package.name, version: package.version)
+          new_package.debian_publication.distribution = package.debian_publication.distribution
+          expect(new_package).to be_valid
+        end
       end
     end
 
@@ -1264,6 +1321,18 @@ RSpec.describe Packages::Package, type: :model do
 
       it 'does not create a build info' do
         expect { subject }.not_to change { ::Packages::BuildInfo.count }
+      end
+    end
+  end
+
+  context 'with identical pending destruction package' do
+    described_class.package_types.keys.each do |package_format|
+      context "for package format #{package_format}" do
+        let_it_be(:package_pending_destruction) { create("#{package_format}_package", :pending_destruction) }
+
+        let(:new_package) { build("#{package_format}_package", name: package_pending_destruction.name, version: package_pending_destruction.version, project: package_pending_destruction.project) }
+
+        it { expect(new_package).to be_valid }
       end
     end
   end

@@ -11,6 +11,7 @@ module Packages
       project
         .packages
         .with_package_type(package_type)
+        .not_pending_destruction
         .find_or_create_by!(name: name, version: version) do |package|
           package.status = params[:status] if params[:status]
           package.creator = package_creator
