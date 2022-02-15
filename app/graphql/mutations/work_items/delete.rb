@@ -3,10 +3,9 @@
 module Mutations
   module WorkItems
     class Delete < BaseMutation
+      graphql_name 'WorkItemDelete'
       description "Deletes a work item." \
                   " Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice."
-
-      graphql_name 'WorkItemDelete'
 
       authorize :delete_work_item
 

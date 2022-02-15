@@ -3,9 +3,9 @@
 module Mutations
   module Ci
     class CiCdSettingsUpdate < BaseMutation
-      include FindsProject
-
       graphql_name 'CiCdSettingsUpdate'
+
+      include FindsProject
 
       authorize :admin_project
 

@@ -44,6 +44,9 @@ export const typePolicies = {
   PipelinePermissions: {
     merge: true,
   },
+  DesignCollection: {
+    merge: true,
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {

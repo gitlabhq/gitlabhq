@@ -3,9 +3,9 @@
 module Mutations
   module ContainerExpirationPolicies
     class Update < Mutations::BaseMutation
-      include FindsProject
-
       graphql_name 'UpdateContainerExpirationPolicy'
+
+      include FindsProject
 
       authorize :destroy_container_image
 

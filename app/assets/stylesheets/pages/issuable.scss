@@ -742,6 +742,26 @@
   }
 }
 
+.sidebar-help-wrap {
+  .sidebar-help-state {
+    margin: 16px -20px -20px;
+    padding: 16px 20px;
+  }
+
+  .help-state-toggle-enter-active {
+    transition: all 0.8s ease;
+  }
+
+  .help-state-toggle-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  .help-state-toggle-enter,
+  .help-state-toggle-leave-active {
+    opacity: 0;
+  }
+}
+
 .time-tracker {
   .sidebar-collapsed-icon {
     > .stopwatch-svg {
@@ -759,11 +779,6 @@
     }
   }
 
-  .help-button,
-  .close-help-button {
-    cursor: pointer;
-  }
-
   .compare-meter {
     &.over_estimate {
       .time-remaining,
@@ -775,31 +790,6 @@
 
   .compare-display-container {
     font-size: 13px;
-  }
-
-  .time-tracking-help-state {
-    background: $white;
-    margin: 16px -20px -20px;
-    padding: 16px 20px;
-    border-top: 1px solid $border-gray-light;
-    border-bottom: 1px solid $border-gray-light;
-
-    a:hover {
-      color: $btn-white-active;
-    }
-  }
-
-  .help-state-toggle-enter-active {
-    transition: all 0.8s ease;
-  }
-
-  .help-state-toggle-leave-active {
-    transition: all 0.5s ease;
-  }
-
-  .help-state-toggle-enter,
-  .help-state-toggle-leave-active {
-    opacity: 0;
   }
 }
 

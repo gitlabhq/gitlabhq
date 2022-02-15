@@ -12,6 +12,8 @@ module Ci
       initial_branch = params[:branch_name]
       latest_commit = project.repository.commit(initial_branch) || project.commit
       commit_sha = latest_commit ? latest_commit.sha : ''
+      total_branches = project.repository_exists? ? project.repository.branch_count : 0
+
       {
         "ci-config-path": project.ci_config_path_or_default,
         "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
@@ -29,7 +31,7 @@ module Ci
         "project-full-path" => project.full_path,
         "project-namespace" => project.namespace.full_path,
         "runner-help-page-path" => help_page_path('ci/runners/index'),
-        "total-branches" => project.repository.branches.length,
+        "total-branches" => total_branches,
         "yml-help-page-path" => help_page_path('ci/yaml/index')
       }
     end

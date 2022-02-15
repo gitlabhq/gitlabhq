@@ -3,12 +3,6 @@
 module Mutations
   module MergeRequests
     class Accept < Base
-      NOT_MERGEABLE = 'This branch cannot be merged'
-      HOOKS_VALIDATION_ERROR = 'Pre-merge hooks failed'
-      SHA_MISMATCH = 'The merge-head is not at the anticipated SHA'
-      MERGE_FAILED = 'The merge failed'
-      ALREADY_SCHEDULED = 'The merge request is already scheduled to be merged'
-
       graphql_name 'MergeRequestAccept'
       authorize :accept_merge_request
       description <<~DESC
@@ -16,6 +10,12 @@ module Mutations
         When accepted, the source branch will be merged into the target branch, either
         immediately if possible, or using one of the automatic merge strategies.
       DESC
+
+      NOT_MERGEABLE = 'This branch cannot be merged'
+      HOOKS_VALIDATION_ERROR = 'Pre-merge hooks failed'
+      SHA_MISMATCH = 'The merge-head is not at the anticipated SHA'
+      MERGE_FAILED = 'The merge failed'
+      ALREADY_SCHEDULED = 'The merge request is already scheduled to be merged'
 
       argument :strategy,
                ::Types::MergeStrategyEnum,

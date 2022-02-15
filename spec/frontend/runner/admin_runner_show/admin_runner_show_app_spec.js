@@ -7,7 +7,6 @@ import { createAlert } from '~/flash';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
-import RunnerDetails from '~/runner/components/runner_details.vue';
 import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
 import getRunnerQuery from '~/runner/graphql/get_runner.query.graphql';
@@ -30,7 +29,6 @@ describe('AdminRunnerShowApp', () => {
   let mockRunnerQuery;
 
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
-  const findRunnerDetails = () => wrapper.findComponent(RunnerDetails);
   const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
   const findRunnerPauseButton = () => wrapper.findComponent(RunnerPauseButton);
 
@@ -80,8 +78,7 @@ describe('AdminRunnerShowApp', () => {
     });
 
     it('shows basic runner details', async () => {
-      const expected = `Details
-                        Description Instance runner
+      const expected = `Description Instance runner
                         Last contact Never contacted
                         Version 1.0.0
                         IP Address 127.0.0.1
@@ -89,7 +86,7 @@ describe('AdminRunnerShowApp', () => {
                         Maximum job timeout None
                         Tags None`.replace(/\s+/g, ' ');
 
-      expect(findRunnerDetails().text()).toMatchInterpolatedText(expected);
+      expect(wrapper.text().replace(/\s+/g, ' ')).toContain(expected);
     });
 
     describe('when runner cannot be updated', () => {

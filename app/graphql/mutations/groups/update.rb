@@ -3,9 +3,9 @@
 module Mutations
   module Groups
     class Update < Mutations::BaseMutation
-      include Mutations::ResolvesGroup
-
       graphql_name 'GroupUpdate'
+
+      include Mutations::ResolvesGroup
 
       authorize :admin_group
 

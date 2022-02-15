@@ -3,9 +3,9 @@
 module Mutations
   module DesignManagement
     class Delete < Base
-      Errors = ::Gitlab::Graphql::Errors
-
       graphql_name "DesignManagementDelete"
+
+      Errors = ::Gitlab::Graphql::Errors
 
       argument :filenames, [GraphQL::Types::String],
                required: true,

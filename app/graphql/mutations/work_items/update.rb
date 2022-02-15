@@ -3,12 +3,11 @@
 module Mutations
   module WorkItems
     class Update < BaseMutation
-      include Mutations::SpamProtection
-
+      graphql_name 'WorkItemUpdate'
       description "Updates a work item by Global ID." \
                   " Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice."
 
-      graphql_name 'WorkItemUpdate'
+      include Mutations::SpamProtection
 
       authorize :update_work_item
 

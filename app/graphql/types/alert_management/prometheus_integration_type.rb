@@ -3,10 +3,10 @@
 module Types
   module AlertManagement
     class PrometheusIntegrationType < ::Types::BaseObject
-      include ::Gitlab::Routing
-
       graphql_name 'AlertManagementPrometheusIntegration'
       description 'An endpoint and credentials used to accept Prometheus alerts for a project'
+
+      include ::Gitlab::Routing
 
       implements(Types::AlertManagement::IntegrationType)
 

@@ -2,13 +2,13 @@
 
 module Types
   class GroupMemberType < BaseObject
+    graphql_name 'GroupMember'
+    description 'Represents a Group Membership'
+
     expose_permissions Types::PermissionTypes::Group
     authorize :read_group
 
     implements MemberInterface
-
-    graphql_name 'GroupMember'
-    description 'Represents a Group Membership'
 
     field :group, Types::GroupType, null: true,
           description: 'Group that a User is a member of.'

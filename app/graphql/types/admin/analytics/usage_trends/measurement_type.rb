@@ -5,9 +5,10 @@ module Types
     module Analytics
       module UsageTrends
         class MeasurementType < BaseObject
-          include Gitlab::Graphql::Authorize::AuthorizeResource
           graphql_name 'UsageTrendsMeasurement'
           description 'Represents a recorded measurement (object count) for the Admins'
+
+          include Gitlab::Graphql::Authorize::AuthorizeResource
 
           authorize :read_usage_trends_measurement
 

@@ -1,10 +1,51 @@
+cloud-native-image-env:
+  extends:
+    - .default-retry
+    - .cng:rules
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine3.13
+  stage: post-test
+  before_script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > build.env'
+    - cat build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+    paths:
+      - build.env
+    expire_in: 7 days
+    when: always
+
 cloud-native-image:
   extends: .cng:rules
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
-  dependencies: []
   stage: post-test
+  needs: ["cloud-native-image-env"]
+  inherit:
+    variables: false
   variables:
-    GIT_DEPTH: "1"
-  script:
-    - install_gitlab_gem
-    - ./scripts/trigger-build cng
+    TOP_UPSTREAM_SOURCE_PROJECT: "${TOP_UPSTREAM_SOURCE_PROJECT}"
+    TOP_UPSTREAM_SOURCE_REF: "${TOP_UPSTREAM_SOURCE_REF}"
+    TOP_UPSTREAM_SOURCE_JOB: "${TOP_UPSTREAM_SOURCE_JOB}"
+    TOP_UPSTREAM_SOURCE_SHA: "${TOP_UPSTREAM_SOURCE_SHA}"
+    TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID: "${TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID}"
+    TOP_UPSTREAM_MERGE_REQUEST_IID: "${TOP_UPSTREAM_MERGE_REQUEST_IID}"
+    GITLAB_REF_SLUG: "${GITLAB_REF_SLUG}"
+    # CNG pipeline specific variables
+    GITLAB_VERSION: "${GITLAB_VERSION}"
+    GITLAB_TAG: "${GITLAB_TAG}"
+    GITLAB_ASSETS_TAG: "${GITLAB_ASSETS_TAG}"
+    FORCE_RAILS_IMAGE_BUILDS: "${FORCE_RAILS_IMAGE_BUILDS}"
+    CE_PIPELINE: "${CE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$CE_PIPELINE'` will evaluate to `false` when this variable is empty
+    EE_PIPELINE: "${EE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$EE_PIPELINE'` will evaluate to `false` when this variable is empty
+    GITLAB_SHELL_VERSION: "${GITLAB_SHELL_VERSION}"
+    GITLAB_ELASTICSEARCH_INDEXER_VERSION: "${GITLAB_ELASTICSEARCH_INDEXER_VERSION}"
+    GITLAB_KAS_VERSION: "${GITLAB_KAS_VERSION}"
+    GITLAB_WORKHORSE_VERSION: "${GITLAB_WORKHORSE_VERSION}"
+    GITLAB_PAGES_VERSION: "${GITLAB_PAGES_VERSION}"
+    GITALY_SERVER_VERSION: "${GITALY_SERVER_VERSION}"
+  trigger:
+    project: gitlab-org/build/CNG
+    branch: $TRIGGER_BRANCH
+    strategy: depend

@@ -2,9 +2,9 @@
 
 module Types
   class MutationType < BaseObject
-    include Gitlab::Graphql::MountMutation
-
     graphql_name 'Mutation'
+
+    include Gitlab::Graphql::MountMutation
 
     mount_mutation Mutations::Admin::SidekiqQueues::DeleteJobs
     mount_mutation Mutations::AlertManagement::CreateAlertIssue

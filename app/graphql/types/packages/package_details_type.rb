@@ -3,10 +3,11 @@
 module Types
   module Packages
     class PackageDetailsType < PackageType
-      include ::PackagesHelper
-
       graphql_name 'PackageDetailsType'
       description 'Represents a package details in the Package Registry. Note that this type is in beta and susceptible to changes'
+
+      include ::PackagesHelper
+
       authorize :read_package
 
       field :versions, ::Types::Packages::PackageType.connection_type, null: true,

@@ -3,9 +3,9 @@
 module Mutations
   module Labels
     class Create < BaseMutation
-      include Mutations::ResolvesResourceParent
-
       graphql_name 'LabelCreate'
+
+      include Mutations::ResolvesResourceParent
 
       field :label,
             Types::LabelType,

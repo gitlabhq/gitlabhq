@@ -14377,6 +14377,9 @@ msgstr ""
 msgid "Escalation policies must have at least one rule"
 msgstr ""
 
+msgid "Escalation policy"
+msgstr ""
+
 msgid "Escalation policy:"
 msgstr ""
 
@@ -19112,6 +19115,12 @@ msgstr ""
 msgid "IncidentManagement|Open"
 msgstr ""
 
+msgid "IncidentManagement|Page your team with escalation policies"
+msgstr ""
+
+msgid "IncidentManagement|Paged"
+msgstr ""
+
 msgid "IncidentManagement|Published"
 msgstr ""
 
@@ -19137,6 +19146,9 @@ msgid "IncidentManagement|Unknown"
 msgstr ""
 
 msgid "IncidentManagement|Unpublished"
+msgstr ""
+
+msgid "IncidentManagement|Use escalation policies to automatically page your team when incidents are created."
 msgstr ""
 
 msgid "IncidentSettings|Activate \"time to SLA\" countdown timer"
@@ -19184,7 +19196,10 @@ msgstr ""
 msgid "Incidents"
 msgstr ""
 
-msgid "Incidents|Add a URL"
+msgid "Incidents|Add image details"
+msgstr ""
+
+msgid "Incidents|Add text or a link to display with your image. If you don't add either, the file name displays instead."
 msgstr ""
 
 msgid "Incidents|Drop or %{linkStart}upload%{linkEnd} a metric screenshot to attach it to the incident"
@@ -19199,10 +19214,10 @@ msgstr ""
 msgid "Incidents|There was an issue loading metric images."
 msgstr ""
 
-msgid "Incidents|There was an issue uploading your image."
+msgid "Incidents|There was an issue updating your image."
 msgstr ""
 
-msgid "Incidents|You can optionally add a URL to link users to the original graph."
+msgid "Incidents|There was an issue uploading your image."
 msgstr ""
 
 msgid "Incident|Alert details"
@@ -19211,7 +19226,16 @@ msgstr ""
 msgid "Incident|Are you sure you wish to delete this image?"
 msgstr ""
 
+msgid "Incident|Delete image"
+msgstr ""
+
 msgid "Incident|Deleting %{filename}"
+msgstr ""
+
+msgid "Incident|Edit image text or link"
+msgstr ""
+
+msgid "Incident|Editing %{filename}"
 msgstr ""
 
 msgid "Incident|Metrics"
@@ -21738,6 +21762,9 @@ msgid "Line changes"
 msgstr ""
 
 msgid "Link"
+msgstr ""
+
+msgid "Link (optional)"
 msgstr ""
 
 msgid "Link Prometheus monitoring to GitLab."
@@ -35997,6 +36024,9 @@ msgid "TestReports|You can configure your job to use unit test reports, and GitL
 msgstr ""
 
 msgid "Tests"
+msgstr ""
+
+msgid "Text (optional)"
 msgstr ""
 
 msgid "Text added to the body of all email messages. %{character_limit} character limit"

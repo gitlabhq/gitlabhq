@@ -1389,7 +1389,7 @@ The JSON report artifacts are not a public API of DAST and their format is expec
 
 The DAST tool always emits a JSON report file called `gl-dast-report.json` and
 sample reports can be found in the
-[DAST repository](https://gitlab.com/gitlab-org/security-products/dast/-/tree/master/test/end-to-end/expect).
+[DAST repository](https://gitlab.com/gitlab-org/security-products/dast/-/tree/main/test/end-to-end/expect).
 
 ## Optimizing DAST
 

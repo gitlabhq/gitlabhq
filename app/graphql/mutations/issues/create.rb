@@ -3,11 +3,11 @@
 module Mutations
   module Issues
     class Create < BaseMutation
+      graphql_name 'CreateIssue'
+
       include Mutations::SpamProtection
       include FindsProject
       include CommonMutationArguments
-
-      graphql_name 'CreateIssue'
 
       authorize :create_issue
 

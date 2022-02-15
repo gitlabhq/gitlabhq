@@ -141,7 +141,7 @@
   - ".gitlab/ci/review-apps/**/*"
   - "scripts/review_apps/base-config.yaml"
   - "scripts/review_apps/review-apps.sh"
-  - "scripts/trigger-build"
+  - "scripts/trigger-build.rb"
   - "{,ee/,jh/}{bin,config}/**/*.rb"
 
 .ci-qa-patterns: &ci-qa-patterns

@@ -3,10 +3,10 @@
 module Mutations
   module WorkItems
     class Create < BaseMutation
+      graphql_name 'WorkItemCreate'
+
       include Mutations::SpamProtection
       include FindsProject
-
-      graphql_name 'WorkItemCreate'
 
       authorize :create_work_item
 

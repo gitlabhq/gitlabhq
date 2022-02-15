@@ -3,13 +3,12 @@
 module Mutations
   module ReleaseAssetLinks
     class Create < BaseMutation
-      include FindsProject
-
       graphql_name 'ReleaseAssetLinkCreate'
 
-      authorize :create_release
-
+      include FindsProject
       include Types::ReleaseAssetLinkSharedInputArguments
+
+      authorize :create_release
 
       argument :project_path, GraphQL::Types::ID,
                required: true,

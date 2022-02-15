@@ -2,30 +2,13 @@
 import { GlTable, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { formatNumber, __, s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import { RUNNER_JOB_COUNT_LIMIT } from '../constants';
+import { formatJobCount, tableField } from '../utils';
 import RunnerActionsCell from './cells/runner_actions_cell.vue';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerTags from './runner_tags.vue';
-
-const tableField = ({ key, label = '', thClasses = [] }) => {
-  return {
-    key,
-    label,
-    thClass: [
-      'gl-bg-transparent!',
-      'gl-border-b-solid!',
-      'gl-border-b-gray-100!',
-      'gl-border-b-1!',
-      ...thClasses,
-    ],
-    tdAttr: {
-      'data-testid': `td-${key}`,
-    },
-  };
-};
 
 export default {
   components: {
@@ -54,10 +37,7 @@ export default {
   },
   methods: {
     formatJobCount(jobCount) {
-      if (jobCount > RUNNER_JOB_COUNT_LIMIT) {
-        return `${formatNumber(RUNNER_JOB_COUNT_LIMIT)}+`;
-      }
-      return formatNumber(jobCount);
+      return formatJobCount(jobCount);
     },
     runnerTrAttr(runner) {
       if (runner) {

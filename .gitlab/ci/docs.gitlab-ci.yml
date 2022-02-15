@@ -28,7 +28,7 @@
 review-docs-deploy:
   extends: .review-docs
   script:
-    - ./scripts/trigger-build docs deploy
+    - ./scripts/trigger-build.rb docs deploy
 
 # Cleanup remote environment of gitlab-docs
 review-docs-cleanup:
@@ -37,7 +37,7 @@ review-docs-cleanup:
     name: review-docs/mr-${CI_MERGE_REQUEST_IID}
     action: stop
   script:
-    - ./scripts/trigger-build docs cleanup
+    - ./scripts/trigger-build.rb docs cleanup
 
 docs-lint markdown:
   extends:

@@ -21,6 +21,12 @@ module Trigger
     variable_value
   end
 
+  def self.variables_for_env_file(variables)
+    variables.map do |key, value|
+      %Q(#{key}=#{value})
+    end.join("\n")
+  end
+
   class Base
     # Can be overridden
     def self.access_token
@@ -55,6 +61,21 @@ module Trigger
       else
         Trigger::Pipeline.new(downstream_project_path, pipeline.id, gitlab_client(:downstream))
       end
+    end
+
+    def variables
+      simple_forwarded_variables.merge(base_variables, extra_variables, version_file_variables)
+    end
+
+    def simple_forwarded_variables
+      {
+        'TRIGGER_SOURCE' => ENV['CI_JOB_URL'],
+        'TOP_UPSTREAM_SOURCE_PROJECT' => ENV['CI_PROJECT_PATH'],
+        'TOP_UPSTREAM_SOURCE_REF' => ENV['CI_COMMIT_REF_NAME'],
+        'TOP_UPSTREAM_SOURCE_JOB' => ENV['CI_JOB_URL'],
+        'TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID' => ENV['CI_MERGE_REQUEST_PROJECT_ID'],
+        'TOP_UPSTREAM_MERGE_REQUEST_IID' => ENV['CI_MERGE_REQUEST_IID']
+      }
     end
 
     private
@@ -95,23 +116,13 @@ module Trigger
       ENV[version_file]&.strip || File.read(version_file).strip
     end
 
-    def variables
-      base_variables.merge(extra_variables).merge(version_file_variables)
-    end
-
     def base_variables
       # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results,
       # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
       {
         'GITLAB_REF_SLUG' => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_REF_SLUG'],
         'TRIGGERED_USER' => ENV['TRIGGERED_USER'] || ENV['GITLAB_USER_NAME'],
-        'TRIGGER_SOURCE' => ENV['CI_JOB_URL'],
-        'TOP_UPSTREAM_SOURCE_PROJECT' => ENV['CI_PROJECT_PATH'],
-        'TOP_UPSTREAM_SOURCE_JOB' => ENV['CI_JOB_URL'],
-        'TOP_UPSTREAM_SOURCE_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
-        'TOP_UPSTREAM_SOURCE_REF' => ENV['CI_COMMIT_REF_NAME'],
-        'TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID' => ENV['CI_MERGE_REQUEST_PROJECT_ID'],
-        'TOP_UPSTREAM_MERGE_REQUEST_IID' => ENV['CI_MERGE_REQUEST_IID']
+        'TOP_UPSTREAM_SOURCE_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
       }
     end
 
@@ -163,16 +174,15 @@ module Trigger
   end
 
   class CNG < Base
-    def self.access_token
-      # Default to "Multi-pipeline (from 'gitlab-org/gitlab' 'cloud-native-image' job)" at https://gitlab.com/gitlab-org/build/CNG/-/settings/access_tokens
-      ENV['CNG_PROJECT_ACCESS_TOKEN'] || super
+    def variables
+      # Delete variables that aren't useful when using native triggers.
+      super.tap do |hash|
+        hash.delete('TRIGGER_SOURCE')
+        hash.delete('TRIGGERED_USER')
+      end
     end
 
     private
-
-    def downstream_project_path
-      ENV.fetch('CNG_PROJECT_PATH', 'gitlab-org/build/CNG')
-    end
 
     def ref
       return ENV['CI_COMMIT_REF_NAME'] if ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee)?$/
@@ -181,17 +191,17 @@ module Trigger
     end
 
     def extra_variables
-      edition = Trigger.ee? ? 'EE' : 'CE'
       # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA (MR HEAD commit) so that the image is in sync with the assets and QA images.
       source_sha = Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
 
       {
-        "ee" => Trigger.ee? ? "true" : "false",
+        "TRIGGER_BRANCH" => ref,
         "GITLAB_VERSION" => source_sha,
-        "GITLAB_TAG" => ENV['CI_COMMIT_TAG'],
+        "GITLAB_TAG" => ENV['CI_COMMIT_TAG'], # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : source_sha,
         "FORCE_RAILS_IMAGE_BUILDS" => 'true',
-        "#{edition}_PIPELINE" => 'true'
+        "CE_PIPELINE" => Trigger.ee? ? nil : "true", # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
+        "EE_PIPELINE" => Trigger.ee? ? "true" : nil # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
       }
     end
 
@@ -445,28 +455,30 @@ module Trigger
   Job = Class.new(Pipeline)
 end
 
-case ARGV[0]
-when 'omnibus'
-  Trigger::Omnibus.new.invoke!(post_comment: true, downstream_job_name: 'Trigger:qa-test').wait!
-when 'cng'
-  Trigger::CNG.new.invoke!.wait!
-when 'gitlab-com-database-testing'
-  Trigger::DatabaseTesting.new.invoke!
-when 'docs'
-  docs_trigger = Trigger::Docs.new
+if $0 == __FILE__
+  case ARGV[0]
+  when 'omnibus'
+    Trigger::Omnibus.new.invoke!(post_comment: true, downstream_job_name: 'Trigger:qa-test').wait!
+  when 'cng'
+    Trigger::CNG.new.invoke!.wait!
+  when 'gitlab-com-database-testing'
+    Trigger::DatabaseTesting.new.invoke!
+  when 'docs'
+    docs_trigger = Trigger::Docs.new
 
-  case ARGV[1]
-  when 'deploy'
-    docs_trigger.deploy!
-  when 'cleanup'
-    docs_trigger.cleanup!
+    case ARGV[1]
+    when 'deploy'
+      docs_trigger.deploy!
+    when 'cleanup'
+      docs_trigger.cleanup!
+    else
+      puts 'usage: trigger-build docs <deploy|cleanup>'
+      exit 1
+    end
   else
-    puts 'usage: trigger-build docs <deploy|cleanup>'
-    exit 1
+    puts "Please provide a valid option:
+    omnibus - Triggers a pipeline that builds the omnibus-gitlab package
+    cng - Triggers a pipeline that builds images used by the GitLab helm chart
+    gitlab-com-database-testing - Triggers a pipeline that tests database changes on GitLab.com data"
   end
-else
-  puts "Please provide a valid option:
-  omnibus - Triggers a pipeline that builds the omnibus-gitlab package
-  cng - Triggers a pipeline that builds images used by the GitLab helm chart
-  gitlab-com-database-testing - Triggers a pipeline that tests database changes on GitLab.com data"
 end

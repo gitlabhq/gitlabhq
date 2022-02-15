@@ -438,7 +438,7 @@ db:gitlabcom-database-testing:
   script:
     - source scripts/utils.sh
     - install_gitlab_gem
-    - ./scripts/trigger-build gitlab-com-database-testing
+    - ./scripts/trigger-build.rb gitlab-com-database-testing
 
 gitlab:setup:
   extends: .db-job-base

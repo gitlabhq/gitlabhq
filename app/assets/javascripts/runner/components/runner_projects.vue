@@ -9,6 +9,7 @@ import {
   I18N_FETCH_ERROR,
   RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
 } from '../constants';
+import { getPaginationVariables } from '../utils';
 import { captureException } from '../sentry_utils';
 import RunnerAssignedItem from './runner_assigned_item.vue';
 import RunnerPagination from './runner_pagination.vue';
@@ -62,19 +63,9 @@ export default {
   computed: {
     variables() {
       const { id } = this.runner;
-      const { before, after } = this.pagination;
-
-      if (before) {
-        return {
-          id,
-          before,
-          last: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
-        };
-      }
       return {
         id,
-        after,
-        first: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
+        ...getPaginationVariables(this.pagination, RUNNER_DETAILS_PROJECTS_PAGE_SIZE),
       };
     },
     loading() {

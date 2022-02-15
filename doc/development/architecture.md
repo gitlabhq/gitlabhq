@@ -528,7 +528,7 @@ You can use it either for personal or business websites, such as portfolios, doc
 
 #### GitLab Runner
 
-- [Project page](https://gitlab.com/gitlab-org/gitlab-runner/blob/master/README.md)
+- [Project page](https://gitlab.com/gitlab-org/gitlab-runner/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/runner/)
   - [Charts](https://docs.gitlab.com/runner/install/kubernetes.html)

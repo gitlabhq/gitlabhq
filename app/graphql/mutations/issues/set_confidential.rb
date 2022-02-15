@@ -3,9 +3,9 @@
 module Mutations
   module Issues
     class SetConfidential < Base
-      include Mutations::SpamProtection
-
       graphql_name 'IssueSetConfidential'
+
+      include Mutations::SpamProtection
 
       argument :confidential,
                GraphQL::Types::Boolean,

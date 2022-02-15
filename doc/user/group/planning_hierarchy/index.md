@@ -5,7 +5,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Planning hierarchies **(PREMIUM)**
+# Planning hierarchies **(FREE)**
 
 Planning hierarchies are an integral part of breaking down your work in GitLab.
 To understand how you can use epics and issues together in hierarchies, remember the following:
@@ -22,7 +22,7 @@ portfolio management, see
 
 ## View planning hierarchies
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340844/) in GitLab 14.8 and is behind the feature flag `work_items_hierarchy`.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340844/) in GitLab 14.8.
 
 To view the planning hierarchy in a project:
 
@@ -34,7 +34,7 @@ The work items outside your subscription plan show up below **Unavailable struct
 
 ![Screenshot showing hierarchy page](img/view-project-work-item-hierarchy_v14_8.png)
 
-## Hierarchies with epics
+## Hierarchies with epics **(PREMIUM)**
 
 With epics, you can achieve the following hierarchy:
 
@@ -68,14 +68,14 @@ Epic "1"*-- "0..*" Issue
 
 ![Diagram showing possible relationships of multi-level epics](img/hierarchy_with_multi_level_epics.png)
 
-## View ancestry of an epic
-
-In an epic, you can view the ancestors as parents in the right sidebar under **Ancestors**.
-
-![epics state dropdown](img/epic-view-ancestors-in-sidebar_v14_6.png)
-
 ## View ancestry of an issue
 
 In an issue, you can view the parented epic above the issue in the right sidebar under **Epic**.
 
 ![epics state dropdown](img/issue-view-parent-epic-in-sidebar_v14_6.png)
+
+## View ancestry of an epic **(PREMIUM)**
+
+In an epic, you can view the ancestors as parents in the right sidebar under **Ancestors**.
+
+![epics state dropdown](img/epic-view-ancestors-in-sidebar_v14_6.png)

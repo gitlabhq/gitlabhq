@@ -3,12 +3,13 @@
 module Types
   module Ci
     class RunnerType < BaseObject
+      graphql_name 'CiRunner'
+
       edge_type_class(RunnerWebUrlEdge)
       connection_type_class(Types::CountableConnectionType)
-      graphql_name 'CiRunner'
+
       authorize :read_runner
       present_using ::Ci::RunnerPresenter
-
       expose_permissions Types::PermissionTypes::Ci::Runner
 
       JOB_COUNT_LIMIT = 1000

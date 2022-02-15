@@ -4,10 +4,10 @@ module Mutations
   module CustomerRelations
     module Contacts
       class Create < BaseMutation
+        graphql_name 'CustomerRelationsContactCreate'
+
         include ResolvesIds
         include Gitlab::Graphql::Authorize::AuthorizeResource
-
-        graphql_name 'CustomerRelationsContactCreate'
 
         field :contact,
               Types::CustomerRelations::ContactType,

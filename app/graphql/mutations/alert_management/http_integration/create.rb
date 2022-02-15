@@ -4,9 +4,9 @@ module Mutations
   module AlertManagement
     module HttpIntegration
       class Create < HttpIntegrationBase
-        include FindsProject
-
         graphql_name 'HttpIntegrationCreate'
+
+        include FindsProject
 
         argument :project_path, GraphQL::Types::ID,
                  required: true,

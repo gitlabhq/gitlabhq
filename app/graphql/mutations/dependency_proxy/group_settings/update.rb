@@ -4,9 +4,9 @@ module Mutations
   module DependencyProxy
     module GroupSettings
       class Update < Mutations::BaseMutation
-        include Mutations::ResolvesGroup
-
         graphql_name 'UpdateDependencyProxySettings'
+
+        include Mutations::ResolvesGroup
 
         authorize :admin_dependency_proxy
 

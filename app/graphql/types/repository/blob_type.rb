@@ -4,9 +4,9 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     # This is presented through `Repository` that has its own authorization
     class BlobType < BaseObject
-      present_using BlobPresenter
-
       graphql_name 'RepositoryBlob'
+
+      present_using BlobPresenter
 
       field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the blob.'

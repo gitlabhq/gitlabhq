@@ -4,8 +4,8 @@ module Types
   module Metrics
     module Dashboards
       class AnnotationType < ::Types::BaseObject
-        authorize :read_metrics_dashboard_annotation
         graphql_name 'MetricsDashboardAnnotation'
+        authorize :read_metrics_dashboard_annotation
 
         field :description, GraphQL::Types::String, null: true,
               description: 'Description of the annotation.'

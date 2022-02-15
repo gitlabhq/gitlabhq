@@ -1,6 +1,6 @@
 import { GlSprintf, GlIntersperse } from '@gitlab/ui';
 import { createWrapper, ErrorWrapper } from '@vue/test-utils';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { useFakeDate } from 'helpers/fake_date';
 import { ACCESS_LEVEL_REF_PROTECTED, ACCESS_LEVEL_NOT_PROTECTED } from '~/runner/constants';
@@ -8,6 +8,8 @@ import { ACCESS_LEVEL_REF_PROTECTED, ACCESS_LEVEL_NOT_PROTECTED } from '~/runner
 import RunnerDetails from '~/runner/components/runner_details.vue';
 import RunnerDetail from '~/runner/components/runner_detail.vue';
 import RunnerGroups from '~/runner/components/runner_groups.vue';
+import RunnerTags from '~/runner/components/runner_tags.vue';
+import RunnerTag from '~/runner/components/runner_tag.vue';
 
 import { runnerData, runnerWithGroupData } from '../mock_data';
 
@@ -37,16 +39,14 @@ describe('RunnerDetails', () => {
 
   const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended, stubs } = {}) => {
     wrapper = mountFn(RunnerDetails, {
       propsData: {
         ...props,
       },
       stubs: {
-        GlIntersperse,
-        GlSprintf,
-        TimeAgo,
         RunnerDetail,
+        ...stubs,
       },
     });
   };
@@ -65,76 +65,85 @@ describe('RunnerDetails', () => {
     expect(wrapper.text()).toBe('');
   });
 
-  describe.each`
-    field                    | runner                                                             | expectedValue
-    ${'Description'}         | ${{ description: 'My runner' }}                                    | ${'My runner'}
-    ${'Description'}         | ${{ description: null }}                                           | ${'None'}
-    ${'Last contact'}        | ${{ contactedAt: mockOneHourAgo }}                                 | ${'1 hour ago'}
-    ${'Last contact'}        | ${{ contactedAt: null }}                                           | ${'Never contacted'}
-    ${'Version'}             | ${{ version: '12.3' }}                                             | ${'12.3'}
-    ${'Version'}             | ${{ version: null }}                                               | ${'None'}
-    ${'IP Address'}          | ${{ ipAddress: '127.0.0.1' }}                                      | ${'127.0.0.1'}
-    ${'IP Address'}          | ${{ ipAddress: null }}                                             | ${'None'}
-    ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_REF_PROTECTED, runUntagged: true }}  | ${'Protected, Runs untagged jobs'}
-    ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_REF_PROTECTED, runUntagged: false }} | ${'Protected'}
-    ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_NOT_PROTECTED, runUntagged: true }}  | ${'Runs untagged jobs'}
-    ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_NOT_PROTECTED, runUntagged: false }} | ${'None'}
-    ${'Maximum job timeout'} | ${{ maximumTimeout: null }}                                        | ${'None'}
-    ${'Maximum job timeout'} | ${{ maximumTimeout: 0 }}                                           | ${'0 seconds'}
-    ${'Maximum job timeout'} | ${{ maximumTimeout: 59 }}                                          | ${'59 seconds'}
-    ${'Maximum job timeout'} | ${{ maximumTimeout: 10 * 60 + 5 }}                                 | ${'10 minutes 5 seconds'}
-  `('"$field" field', ({ field, runner, expectedValue }) => {
-    beforeEach(() => {
-      createComponent({
-        props: {
-          runner: {
-            ...mockRunner,
-            ...runner,
+  describe('Details tab', () => {
+    describe.each`
+      field                    | runner                                                             | expectedValue
+      ${'Description'}         | ${{ description: 'My runner' }}                                    | ${'My runner'}
+      ${'Description'}         | ${{ description: null }}                                           | ${'None'}
+      ${'Last contact'}        | ${{ contactedAt: mockOneHourAgo }}                                 | ${'1 hour ago'}
+      ${'Last contact'}        | ${{ contactedAt: null }}                                           | ${'Never contacted'}
+      ${'Version'}             | ${{ version: '12.3' }}                                             | ${'12.3'}
+      ${'Version'}             | ${{ version: null }}                                               | ${'None'}
+      ${'IP Address'}          | ${{ ipAddress: '127.0.0.1' }}                                      | ${'127.0.0.1'}
+      ${'IP Address'}          | ${{ ipAddress: null }}                                             | ${'None'}
+      ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_REF_PROTECTED, runUntagged: true }}  | ${'Protected, Runs untagged jobs'}
+      ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_REF_PROTECTED, runUntagged: false }} | ${'Protected'}
+      ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_NOT_PROTECTED, runUntagged: true }}  | ${'Runs untagged jobs'}
+      ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_NOT_PROTECTED, runUntagged: false }} | ${'None'}
+      ${'Maximum job timeout'} | ${{ maximumTimeout: null }}                                        | ${'None'}
+      ${'Maximum job timeout'} | ${{ maximumTimeout: 0 }}                                           | ${'0 seconds'}
+      ${'Maximum job timeout'} | ${{ maximumTimeout: 59 }}                                          | ${'59 seconds'}
+      ${'Maximum job timeout'} | ${{ maximumTimeout: 10 * 60 + 5 }}                                 | ${'10 minutes 5 seconds'}
+    `('"$field" field', ({ field, runner, expectedValue }) => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            runner: {
+              ...mockRunner,
+              ...runner,
+            },
           },
-        },
+          stubs: {
+            GlIntersperse,
+            GlSprintf,
+            TimeAgo,
+          },
+        });
+      });
+
+      it(`displays expected value "${expectedValue}"`, () => {
+        expect(findDd(field).text()).toBe(expectedValue);
       });
     });
 
-    it(`displays expected value "${expectedValue}"`, () => {
-      expect(findDd(field).text()).toBe(expectedValue);
-    });
-  });
+    describe('"Tags" field', () => {
+      const stubs = { RunnerTags, RunnerTag };
 
-  describe('"Tags" field', () => {
-    it('displays expected value "tag-1 tag-2"', () => {
-      createComponent({
-        props: {
-          runner: { ...mockRunner, tagList: ['tag-1', 'tag-2'] },
-        },
-        mountFn: mountExtended,
+      it('displays expected value "tag-1 tag-2"', () => {
+        createComponent({
+          props: {
+            runner: { ...mockRunner, tagList: ['tag-1', 'tag-2'] },
+          },
+          stubs,
+        });
+
+        expect(findDd('Tags').text().replace(/\s+/g, ' ')).toBe('tag-1 tag-2');
       });
 
-      expect(findDd('Tags').text().replace(/\s+/g, ' ')).toBe('tag-1 tag-2');
-    });
+      it('displays "None" when runner has no tags', () => {
+        createComponent({
+          props: {
+            runner: { ...mockRunner, tagList: [] },
+          },
+          stubs,
+        });
 
-    it('displays "None" when runner has no tags', () => {
-      createComponent({
-        props: {
-          runner: { ...mockRunner, tagList: [] },
-        },
-        mountFn: mountExtended,
-      });
-
-      expect(findDd('Tags').text().replace(/\s+/g, ' ')).toBe('None');
-    });
-  });
-
-  describe('Group runners', () => {
-    beforeEach(() => {
-      createComponent({
-        props: {
-          runner: mockGroupRunner,
-        },
+        expect(findDd('Tags').text().replace(/\s+/g, ' ')).toBe('None');
       });
     });
 
-    it('Shows a group runner details', () => {
-      expect(findDetailGroups().props('runner')).toEqual(mockGroupRunner);
+    describe('Group runners', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            runner: mockGroupRunner,
+          },
+        });
+      });
+
+      it('Shows a group runner details', () => {
+        expect(findDetailGroups().props('runner')).toEqual(mockGroupRunner);
+      });
     });
   });
 });

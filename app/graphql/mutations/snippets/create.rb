@@ -3,13 +3,13 @@
 module Mutations
   module Snippets
     class Create < BaseMutation
+      graphql_name 'CreateSnippet'
+
       include ServiceCompatibility
       include CanMutateSpammable
       include Mutations::SpamProtection
 
       authorize :create_snippet
-
-      graphql_name 'CreateSnippet'
 
       field :snippet,
             Types::SnippetType,

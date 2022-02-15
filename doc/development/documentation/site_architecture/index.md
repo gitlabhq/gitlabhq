@@ -99,7 +99,7 @@ The pipeline in the `gitlab-docs` project:
 
 Once a week on Mondays, a scheduled pipeline runs and rebuilds the Docker images
 used in various pipeline jobs, like `docs-lint`. The Docker image configuration files are
-located in the [Dockerfiles directory](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/dockerfiles).
+located in the [Dockerfiles directory](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/main/dockerfiles).
 
 If you need to rebuild the Docker images immediately (must have maintainer level permissions):
 

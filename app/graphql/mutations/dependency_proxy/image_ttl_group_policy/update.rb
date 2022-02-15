@@ -4,9 +4,9 @@ module Mutations
   module DependencyProxy
     module ImageTtlGroupPolicy
       class Update < Mutations::BaseMutation
-        include Mutations::ResolvesGroup
-
         graphql_name 'UpdateDependencyProxyImageTtlGroupPolicy'
+
+        include Mutations::ResolvesGroup
 
         authorize :admin_dependency_proxy
 

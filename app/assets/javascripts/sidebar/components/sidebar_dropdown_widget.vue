@@ -10,6 +10,7 @@ import {
   GlIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { kebabCase, snakeCase } from 'lodash';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { IssuableType } from '~/issues/constants';
@@ -221,6 +222,12 @@ export default {
       // MV to EE https://gitlab.com/gitlab-org/gitlab/-/issues/345311
       return this.issuableAttribute === IssuableType.Epic;
     },
+    formatIssuableAttribute() {
+      return {
+        kebab: kebabCase(this.issuableAttribute),
+        snake: snakeCase(this.issuableAttribute),
+      };
+    },
   },
   methods: {
     updateAttribute(attributeId) {
@@ -300,26 +307,28 @@ export default {
   <sidebar-editable-item
     ref="editable"
     :title="attributeTypeTitle"
-    :data-testid="`${issuableAttribute}-edit`"
+    :data-testid="`${formatIssuableAttribute.kebab}-edit`"
     :tracking="tracking"
     :loading="updating || loading"
     @open="handleOpen"
     @close="handleClose"
   >
     <template #collapsed>
+      <slot name="value-collapsed" :current-attribute="currentAttribute">
+        <div
+          v-if="isClassicSidebar"
+          v-gl-tooltip.left.viewport
+          :title="attributeTypeTitle"
+          class="sidebar-collapsed-icon"
+        >
+          <gl-icon :aria-label="attributeTypeTitle" :name="attributeTypeIcon" />
+          <span class="collapse-truncated-title">
+            {{ attributeTitle }}
+          </span>
+        </div>
+      </slot>
       <div
-        v-if="isClassicSidebar"
-        v-gl-tooltip.left.viewport
-        :title="attributeTypeTitle"
-        class="sidebar-collapsed-icon"
-      >
-        <gl-icon :size="16" :aria-label="attributeTypeTitle" :name="attributeTypeIcon" />
-        <span class="collapse-truncated-title">
-          {{ attributeTitle }}
-        </span>
-      </div>
-      <div
-        :data-testid="`select-${issuableAttribute}`"
+        :data-testid="`select-${formatIssuableAttribute.kebab}`"
         :class="isClassicSidebar ? 'hide-collapsed' : 'gl-mt-3'"
       >
         <span v-if="updating" class="gl-font-weight-bold">{{ selectedTitle }}</span>
@@ -337,7 +346,7 @@ export default {
             v-gl-tooltip="tooltipText"
             class="gl-text-gray-900! gl-font-weight-bold"
             :href="attributeUrl"
-            :data-qa-selector="`${issuableAttribute}_link`"
+            :data-qa-selector="`${formatIssuableAttribute.snake}_link`"
           >
             {{ attributeTitle }}
             <span v-if="isAttributeOverdue(currentAttribute)">{{ $options.i18n.expired }}</span>
@@ -359,7 +368,7 @@ export default {
       >
         <gl-search-box-by-type ref="search" v-model="searchTerm" />
         <gl-dropdown-item
-          :data-testid="`no-${issuableAttribute}-item`"
+          :data-testid="`no-${formatIssuableAttribute.kebab}-item`"
           :is-check-item="true"
           :is-checked="isAttributeChecked($options.noAttributeId)"
           @click="updateAttribute($options.noAttributeId)"
@@ -389,7 +398,7 @@ export default {
               :key="attrItem.id"
               :is-check-item="true"
               :is-checked="isAttributeChecked(attrItem.id)"
-              :data-testid="`${issuableAttribute}-items`"
+              :data-testid="`${formatIssuableAttribute.kebab}-items`"
               @click="updateAttribute(attrItem.id)"
             >
               {{ attrItem.title }}
