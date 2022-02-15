@@ -12,7 +12,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'user adds a design and annotates it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347822' do
+      it 'user adds a design and annotates it', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/352746', type: :investigating }, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347822' do
         issue.visit!
 
         Page::Project::Issue::Show.perform do |issue|

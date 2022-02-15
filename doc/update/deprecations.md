@@ -809,6 +809,22 @@ The following `geo:db:*` tasks will be replaced with their corresponding `db:*:g
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Deprecate legacy Gitaly configuration methods
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Using environment variables `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352609).
+These variables are being replaced with standard [`config.toml` Gitaly configuration](https://docs.gitlab.com/ee/administration/gitaly/reference.html).
+
+GitLab instances that use `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly should switch to configuring using
+`config.toml`.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Elasticsearch 6.8
 
 WARNING:
@@ -848,6 +864,26 @@ and set to `pass`. Requests that:
 
 To align with this change, API calls to list external status checks will also return the value of `pass` rather than
 `approved` for status checks that have passed.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### OAuth tokens without expiration
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+By default, all new applications expire access tokens after 2 hours. In GitLab 14.2 and earlier, OAuth access tokens
+had no expiration. In GitLab 15.0, an expiry will be automatically generated for any existing token that does not
+already have one.
+
+You should [opt in](https://docs.gitlab.com/ee/integration/oauth_provider.html#expiring-access-tokens) to expiring
+tokens before GitLab 15.0 is released:
+
+1. Edit the application.
+1. Select **Expire access tokens** to enable them. Tokens must be revoked or they don’t expire.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 

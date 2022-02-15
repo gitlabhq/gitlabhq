@@ -4194,6 +4194,8 @@ RSpec.describe User do
 
   context 'when FF ci_owned_runners_cross_joins_fix is disabled' do
     before do
+      skip_if_multiple_databases_are_setup
+
       stub_feature_flags(ci_owned_runners_cross_joins_fix: false)
     end
 

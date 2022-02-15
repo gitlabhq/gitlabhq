@@ -218,6 +218,10 @@ $tabs-holder-z-index: 250;
 .epic-tabs-holder {
   top: $header-height;
   z-index: $tabs-holder-z-index;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  padding-left: $gl-padding;
+  padding-right: $gl-padding;
   background-color: $body-bg;
   border-bottom: 1px solid $border-color;
 

@@ -6,23 +6,32 @@ namespace :gitlab do
   namespace :db do
     desc 'GitLab | DB | Manually insert schema migration version'
     task :mark_migration_complete, [:version] => :environment do |_, args|
-      unless args[:version]
-        puts "Must specify a migration version as an argument".color(:red)
+      mark_migration_complete(args[:version])
+    end
+
+    namespace :mark_migration_complete do
+      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+        desc "Gitlab | DB | Manually insert schema migration version on #{name} database"
+        task name, [:version] => :environment do |_, args|
+          mark_migration_complete(args[:version], database: name)
+        end
+      end
+    end
+
+    def mark_migration_complete(version, database: nil)
+      if version.to_i == 0
+        puts 'Must give a version argument that is a non-zero integer'.color(:red)
         exit 1
       end
 
-      version = args[:version].to_i
-      if version == 0
-        puts "Version '#{args[:version]}' must be a non-zero integer".color(:red)
-        exit 1
-      end
+      Gitlab::Database.database_base_models.each do |name, model|
+        next if database && database.to_s != name
 
-      sql = "INSERT INTO schema_migrations (version) VALUES (#{version})"
-      begin
-        ActiveRecord::Base.connection.execute(sql)
-        puts "Successfully marked '#{version}' as complete".color(:green)
+        model.connection.execute("INSERT INTO schema_migrations (version) VALUES (#{model.connection.quote(version)})")
+
+        puts "Successfully marked '#{version}' as complete on database #{name}".color(:green)
       rescue ActiveRecord::RecordNotUnique
-        puts "Migration version '#{version}' is already marked complete".color(:yellow)
+        puts "Migration version '#{version}' is already marked complete on database #{name}".color(:yellow)
       end
     end
 

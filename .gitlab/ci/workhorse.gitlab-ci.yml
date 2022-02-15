@@ -22,8 +22,8 @@ workhorse:verify:
 
 workhorse:test using go 1.16:
   extends: .workhorse:test
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-bullseye-ruby-2.7-golang-1.16-git-2.31
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7-golang-1.16-git-2.31
 
 workhorse:test using go 1.17:
   extends: .workhorse:test
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-bullseye-ruby-2.7-golang-1.17-git-2.31
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7-golang-1.17-git-2.31

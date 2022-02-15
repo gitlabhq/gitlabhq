@@ -750,6 +750,8 @@ module Ci
 
         context 'with ci_queuing_use_denormalized_data_strategy disabled' do
           before do
+            skip_if_multiple_databases_are_setup
+
             stub_feature_flags(ci_queuing_use_denormalized_data_strategy: false)
           end
 
@@ -773,6 +775,8 @@ module Ci
 
       context 'when not using pending builds table' do
         before do
+          skip_if_multiple_databases_are_setup
+
           stub_feature_flags(ci_pending_builds_queue_source: false)
         end
 

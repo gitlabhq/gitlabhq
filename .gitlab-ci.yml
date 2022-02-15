@@ -16,7 +16,7 @@ stages:
 # in cases where jobs require Docker-in-Docker, the job
 # definition must be extended with `.use-docker-in-docker`
 default:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-bullseye-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
   tags:
     - gitlab-org
   # All jobs are interruptible by default
@@ -67,6 +67,7 @@ variables:
   GIT_DEPTH: "20"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
+  DEBIAN_VERSION: "bullseye"
 
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json

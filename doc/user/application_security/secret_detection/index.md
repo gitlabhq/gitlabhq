@@ -182,14 +182,89 @@ Secret Detection can be customized by defining available CI/CD variables:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for
 >   passthrough chains. Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 
 You can customize the default secret detection rules provided with GitLab.
+Ruleset customization supports the following capabilities that can be used
+simultaneously:
+
+- [Disabling predefined rules](index.md#disable-predefined-analyzer-rules).
+- [Overriding predefined rules](index.md#override-predefined-analyzer-rules).
+- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration). Available for only `nodejs-scan`, `gosec`, and `semgrep`.
+
 Customization allows replacing the default secret detection rules with rules that you define.
 
 To create a custom ruleset:
 
 1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
 1. Create a custom ruleset file named `secret-detection-ruleset.toml` in the `.gitlab` directory.
+
+#### Disable predefined analyzer rules
+
+To disable analyzer rules:
+
+1. Set the `disabled` flag to `true` in the context of a `ruleset` section.
+
+1. In one or more `ruleset.identifier` subsections, list the rules that you want disabled. Every `ruleset.identifier` section has:
+
+   - a `type` field, to name the predefined rule identifier.
+   - a `value` field, to name the rule to be disabled.
+
+##### Example: Disable predefined rules of Secret Detection analyzer
+
+In the following example, the disabled rules is assigned to `secrets`
+by matching the `type` and `value` of identifiers:
+
+```toml
+[secrets]
+  [[secrets.ruleset]]
+    disable = true
+    [secrets.ruleset.identifier]
+      type = "gitleaks_rule_id"
+      value = "RSA private key"
+```
+
+#### Override predefined analyzer rules
+
+To override rules:
+
+1. In one or more `ruleset.identifier` subsections, list the rules that you want to override. Every `ruleset.identifier` section has:
+
+   - a `type` field, to name the predefined rule identifier that the Secret Detection analyzer uses.
+   - a `value` field, to name the rule to be overridden.
+
+1. In the `ruleset.override` context of a `ruleset` section,
+   provide the keys to override. Any combination of keys can be
+   overridden. Valid keys are:
+
+   - description
+   - message
+   - name
+   - severity (valid options are: Critical, High, Medium, Low, Unknown, Info)
+
+##### Example: Override predefined rules of Secret Detection analyzer
+
+In the following example, rules
+are matched by the `type` and `value` of identifiers and
+then overridden:
+
+```toml
+[secrets]
+  [[secrets.ruleset]]
+    [secrets.ruleset.identifier]
+      type = "gitleaks_rule_id"
+      value = "RSA private key"
+    [secrets.ruleset.override]
+      description = "OVERRIDDEN description"
+      message = "OVERRIDDEN message"
+      name = "OVERRIDDEN name"
+      severity = "Info"
+```
+
+#### Synthesize a custom configuration
+
+To create a custom configuration, you can use passthrough chains.
+
 1. In the `secret-detection-ruleset.toml` file, do one of the following:
 
    - Define a custom ruleset:

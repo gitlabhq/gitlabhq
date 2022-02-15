@@ -288,12 +288,14 @@ brakeman-sast:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235382) in GitLab 13.5.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for
 >   passthrough chains. Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 
 You can customize the default scanning rules provided by our SAST analyzers.
-Ruleset customization supports two capabilities that can be used
+Ruleset customization supports the following that can be used
 simultaneously:
 
 - [Disabling predefined rules](index.md#disable-predefined-analyzer-rules). Available for all analyzers.
+- [Overriding predefined rules](index.md#override-predefined-analyzer-rules). Available for all analyzers.
 - Modifying the default behavior of a given analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration). Available for only `nodejs-scan`, `gosec`, and `semgrep`.
 
 To customize the default scanning rules, create a file containing custom rules. These rules
@@ -341,6 +343,50 @@ and `sobelow` by matching the `type` and `value` of identifiers:
     [sobelow.ruleset.identifier]
       type = "sobelow_rule_id"
       value = "sql_injection"
+```
+
+#### Override predefined analyzer rules
+
+To override analyzer rules:
+
+1. In one or more `ruleset.identifier` subsections, list the rules that you want to override. Every `ruleset.identifier` section has:
+
+   - a `type` field, to name the predefined rule identifier that the targeted analyzer uses.
+   - a `value` field, to name the rule to be overridden.
+
+1. In the `ruleset.override` context of a `ruleset` section,
+   provide the keys to override. Any combination of keys can be
+   overridden. Valid keys are:
+
+   - description
+   - message
+   - name
+   - severity (valid options are: Critical, High, Medium, Low, Unknown, Info)
+
+##### Example: Override predefined rules of SAST analyzers
+
+In the following example, rules from `eslint`
+and `gosec` are matched by the `type` and `value` of identifiers and
+then overridden:
+
+```toml
+[eslint]
+  [[eslint.ruleset]]
+    [eslint.ruleset.identifier]
+      type = "eslint_rule_id"
+      value = "security/detect-object-injection"
+    [eslint.ruleset.override]
+      description = "OVERRIDDEN description"
+      message = "OVERRIDDEN message"
+      name = "OVERRIDDEN name"
+      severity = "Critical"
+[gosec]
+  [[gosec.ruleset]]
+    [gosec.ruleset.identifier]
+        type = "CWE"
+        value = "CWE-79"
+    [gosec.ruleset.override]
+      severity = "Critical"
 ```
 
 #### Synthesize a custom configuration

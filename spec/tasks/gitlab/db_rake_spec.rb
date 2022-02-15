@@ -20,6 +20,99 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     allow(Rake::Task['db:seed_fu']).to receive(:invoke).and_return(true)
   end
 
+  describe 'mark_migration_complete' do
+    context 'with a single database' do
+      let(:main_model) { ActiveRecord::Base }
+
+      before do
+        skip_if_multiple_databases_are_setup
+      end
+
+      it 'marks the migration complete on the given database' do
+        expect(main_model.connection).to receive(:quote).and_call_original
+        expect(main_model.connection).to receive(:execute)
+          .with("INSERT INTO schema_migrations (version) VALUES ('123')")
+
+        run_rake_task('gitlab:db:mark_migration_complete', '[123]')
+      end
+    end
+
+    context 'with multiple databases' do
+      let(:main_model) { double(:model, connection: double(:connection)) }
+      let(:ci_model) { double(:model, connection: double(:connection)) }
+      let(:base_models) { { 'main' => main_model, 'ci' => ci_model } }
+
+      before do
+        skip_if_multiple_databases_not_setup
+
+        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+      end
+
+      it 'marks the migration complete on each database' do
+        expect(main_model.connection).to receive(:quote).with('123').and_return("'123'")
+        expect(main_model.connection).to receive(:execute)
+          .with("INSERT INTO schema_migrations (version) VALUES ('123')")
+
+        expect(ci_model.connection).to receive(:quote).with('123').and_return("'123'")
+        expect(ci_model.connection).to receive(:execute)
+          .with("INSERT INTO schema_migrations (version) VALUES ('123')")
+
+        run_rake_task('gitlab:db:mark_migration_complete', '[123]')
+      end
+
+      context 'when the single database task is used' do
+        it 'marks the migration complete for the given database' do
+          expect(main_model.connection).to receive(:quote).with('123').and_return("'123'")
+          expect(main_model.connection).to receive(:execute)
+            .with("INSERT INTO schema_migrations (version) VALUES ('123')")
+
+          expect(ci_model.connection).not_to receive(:quote)
+          expect(ci_model.connection).not_to receive(:execute)
+
+          run_rake_task('gitlab:db:mark_migration_complete:main', '[123]')
+        end
+      end
+    end
+
+    context 'when the migration is already marked complete' do
+      let(:main_model) { double(:model, connection: double(:connection)) }
+      let(:base_models) { { 'main' => main_model } }
+
+      before do
+        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+      end
+
+      it 'prints a warning message' do
+        allow(main_model.connection).to receive(:quote).with('123').and_return("'123'")
+
+        expect(main_model.connection).to receive(:execute)
+          .with("INSERT INTO schema_migrations (version) VALUES ('123')")
+          .and_raise(ActiveRecord::RecordNotUnique)
+
+        expect { run_rake_task('gitlab:db:mark_migration_complete', '[123]') }
+          .to output(/Migration version '123' is already marked complete on database main/).to_stdout
+      end
+    end
+
+    context 'when an invalid version is given' do
+      let(:main_model) { double(:model, connection: double(:connection)) }
+      let(:base_models) { { 'main' => main_model } }
+
+      before do
+        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+      end
+
+      it 'prints an error and exits' do
+        expect(main_model).not_to receive(:quote)
+        expect(main_model.connection).not_to receive(:execute)
+
+        expect { run_rake_task('gitlab:db:mark_migration_complete', '[abc]') }
+          .to output(/Must give a version argument that is a non-zero integer/).to_stdout
+          .and raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+      end
+    end
+  end
+
   describe 'configure' do
     it 'invokes db:migrate when schema has already been loaded' do
       allow(ActiveRecord::Base.connection).to receive(:tables).and_return(%w[table1 table2])
