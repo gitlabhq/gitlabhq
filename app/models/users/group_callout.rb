@@ -10,7 +10,11 @@ module Users
 
     enum feature_name: {
       invite_members_banner: 1,
-      approaching_seat_count_threshold: 2 # EE-only
+      approaching_seat_count_threshold: 2, # EE-only
+      storage_enforcement_banner_first_enforcement_threshold: 43,
+      storage_enforcement_banner_second_enforcement_threshold: 44,
+      storage_enforcement_banner_third_enforcement_threshold: 45,
+      storage_enforcement_banner_fourth_enforcement_threshold: 46
     }
 
     validates :group, presence: true

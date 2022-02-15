@@ -67,6 +67,27 @@
       }
     }
   }
+
+  .gl-tabs-nav {
+    @include media-breakpoint-down(xs) {
+      .nav-item {
+        flex: 1;
+        border-bottom: 1px solid $border-color;
+      }
+
+      .gl-tab-nav-item {
+        padding-top: $gl-padding-4;
+        padding-bottom: $gl-padding-8;
+      }
+
+      .md-header-toolbar {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: $gl-padding-8;
+      }
+    }
+  }
 }
 
 .md-header-tab {

@@ -1,10 +1,10 @@
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 const markdownPreviewPath = `${TEST_HOST}/preview`;
 const markdownDocsPath = `${TEST_HOST}/docs`;
@@ -12,8 +12,8 @@ const textareaValue = 'testing\n123';
 const uploadsPath = 'test/uploads';
 
 function assertMarkdownTabs(isWrite, writeLink, previewLink, wrapper) {
-  expect(writeLink.element.parentNode.classList.contains('active')).toBe(isWrite);
-  expect(previewLink.element.parentNode.classList.contains('active')).toBe(!isWrite);
+  expect(writeLink.element.children[0].classList.contains('active')).toBe(isWrite);
+  expect(previewLink.element.children[0].classList.contains('active')).toBe(!isWrite);
   expect(wrapper.find('.md-preview-holder').element.style.display).toBe(isWrite ? 'none' : '');
 }
 
@@ -29,14 +29,13 @@ describe('Markdown field component', () => {
 
   afterEach(() => {
     subject.destroy();
-    subject = null;
     axiosMock.restore();
   });
 
   function createSubject(lines = []) {
     // We actually mount a wrapper component so that we can force Vue to rerender classes in order to test a regression
     // caused by mixing Vanilla JS and Vue.
-    subject = mount(
+    subject = mountExtended(
       {
         components: {
           MarkdownField,
@@ -72,8 +71,8 @@ describe('Markdown field component', () => {
     );
   }
 
-  const getPreviewLink = () => subject.find('.nav-links .js-preview-link');
-  const getWriteLink = () => subject.find('.nav-links .js-write-link');
+  const getPreviewLink = () => subject.findByTestId('preview-tab');
+  const getWriteLink = () => subject.findByTestId('write-tab');
   const getMarkdownButton = () => subject.find('.js-md');
   const getAllMarkdownButtons = () => subject.findAll('.js-md');
   const getVideo = () => subject.find('video');
@@ -107,15 +106,15 @@ describe('Markdown field component', () => {
 
       it('sets preview link as active', async () => {
         previewLink = getPreviewLink();
-        previewLink.trigger('click');
+        previewLink.vm.$emit('click', { target: {} });
 
         await nextTick();
-        expect(previewLink.element.parentNode.classList.contains('active')).toBeTruthy();
+        expect(previewLink.element.children[0].classList.contains('active')).toBe(true);
       });
 
       it('shows preview loading text', async () => {
         previewLink = getPreviewLink();
-        previewLink.trigger('click');
+        previewLink.vm.$emit('click', { target: {} });
 
         await nextTick();
         expect(subject.find('.md-preview-holder').element.textContent.trim()).toContain('Loading…');
@@ -126,7 +125,7 @@ describe('Markdown field component', () => {
 
         previewLink = getPreviewLink();
 
-        previewLink.trigger('click');
+        previewLink.vm.$emit('click', { target: {} });
 
         await axios.waitFor(markdownPreviewPath);
         expect(subject.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
@@ -135,7 +134,7 @@ describe('Markdown field component', () => {
 
       it('calls video.pause() on comment input when isSubmitting is changed to true', async () => {
         previewLink = getPreviewLink();
-        previewLink.trigger('click');
+        previewLink.vm.$emit('click', { target: {} });
 
         await axios.waitFor(markdownPreviewPath);
         const video = getVideo();
@@ -151,19 +150,19 @@ describe('Markdown field component', () => {
         writeLink = getWriteLink();
         previewLink = getPreviewLink();
 
-        writeLink.trigger('click');
+        writeLink.vm.$emit('click', { target: {} });
         await nextTick();
 
         assertMarkdownTabs(true, writeLink, previewLink, subject);
-        writeLink.trigger('click');
+        writeLink.vm.$emit('click', { target: {} });
         await nextTick();
 
         assertMarkdownTabs(true, writeLink, previewLink, subject);
-        previewLink.trigger('click');
+        previewLink.vm.$emit('click', { target: {} });
         await nextTick();
 
         assertMarkdownTabs(false, writeLink, previewLink, subject);
-        previewLink.trigger('click');
+        previewLink.vm.$emit('click', { target: {} });
         await nextTick();
 
         assertMarkdownTabs(false, writeLink, previewLink, subject);

@@ -2219,4 +2219,13 @@ RSpec.describe Namespace do
       end
     end
   end
+
+  describe 'storage_enforcement_date' do
+    let_it_be(:namespace) { create(:group) }
+
+    # Date TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
+    it 'returns false' do
+      expect(namespace.storage_enforcement_date).to be(nil)
+    end
+  end
 end

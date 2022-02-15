@@ -55,7 +55,7 @@ module QA
           # wait for the "Save comment" button to disappear
           saved = has_no_element?(:save_comment_button)
 
-          raise ExpectationNotMet, %q(There was a problem while adding the annotation) unless saved
+          raise RSpec::Expectations::ExpectationNotMetError, %q(There was a problem while adding the annotation) unless saved
         end
 
         def add_design(design_file_path)

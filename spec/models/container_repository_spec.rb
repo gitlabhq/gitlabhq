@@ -339,6 +339,55 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     end
   end
 
+  context 'when triggering registry API requests' do
+    let(:repository_state) { nil }
+    let(:repository) { create(:container_repository, repository_state) }
+
+    shared_examples 'a state machine configured with use_transactions: false' do
+      it 'executes the registry API request outside of a transaction', :delete do
+        expect(repository).to receive(:save).and_call_original do
+          expect(ApplicationRecord.connection.transaction_open?).to be true
+        end
+
+        expect(repository).to receive(:try_import) do
+          expect(ApplicationRecord.connection.transaction_open?).to be false
+        end
+
+        subject
+      end
+    end
+
+    context 'when responding to a start_pre_import event' do
+      subject { repository.start_pre_import }
+
+      it_behaves_like 'a state machine configured with use_transactions: false'
+    end
+
+    context 'when responding to a retry_pre_import event' do
+      let(:repository_state) { :import_aborted }
+
+      subject { repository.retry_pre_import }
+
+      it_behaves_like 'a state machine configured with use_transactions: false'
+    end
+
+    context 'when responding to a start_import event' do
+      let(:repository_state) { :pre_import_done }
+
+      subject { repository.start_import }
+
+      it_behaves_like 'a state machine configured with use_transactions: false'
+    end
+
+    context 'when responding to a retry_import event' do
+      let(:repository_state) { :import_aborted }
+
+      subject { repository.retry_import }
+
+      it_behaves_like 'a state machine configured with use_transactions: false'
+    end
+  end
+
   describe '#retry_aborted_migration' do
     subject { repository.retry_aborted_migration }
 

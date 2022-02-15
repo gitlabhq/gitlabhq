@@ -239,6 +239,17 @@ SPDY protocol.
 We [plan to add support for these features](https://gitlab.com/gitlab-org/gitlab/-/issues/346248)
 in a future version of GitLab.
 
+### `kubectl` requires TLS
+
+`kubectl` would never send credentials over an unencrypted connection. Self-managed users should ensure that their
+GitLab instance is configured with TLS for the CI/CD tunnel feature to work. Trying to use it without TLS
+would produce errors:
+
+```shell
+$ kubectl get pods
+error: You must be logged in to the server (the server has asked for the client to provide credentials)
+```
+
 ## Use impersonation to restrict project and group access **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.

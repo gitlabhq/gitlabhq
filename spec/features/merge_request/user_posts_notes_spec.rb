@@ -133,7 +133,7 @@ RSpec.describe 'Merge request > User posts notes', :js do
   describe 'when previewing a note' do
     it 'shows the toolbar buttons when editing a note' do
       page.within('.js-main-target-form') do
-        expect(page).to have_css('.md-header-toolbar.active')
+        expect(page).to have_css('.md-header-toolbar')
       end
     end
 
@@ -141,7 +141,7 @@ RSpec.describe 'Merge request > User posts notes', :js do
       wait_for_requests
       find('.js-md-preview-button').click
       page.within('.js-main-target-form') do
-        expect(page).not_to have_css('.md-header-toolbar.active')
+        expect(page).not_to have_css('.md-header-toolbar')
       end
     end
   end

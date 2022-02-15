@@ -372,7 +372,8 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 | `keep_n` | integer | no | The amount of latest tags of given name to keep. |
 | `older_than` | string | no | Tags to delete that are older than the given time, written in human readable form `1h`, `1d`, `1month`. |
 
-This API call performs the following operations:
+This API returns [HTTP response status code 202](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202)
+if successful, and performs the following operations:
 
 - It orders all tags by creation date. The creation date is the time of the
   manifest creation, not the time of tag push.

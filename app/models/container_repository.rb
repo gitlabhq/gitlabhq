@@ -79,7 +79,7 @@ class ContainerRepository < ApplicationRecord
     )
   end
 
-  state_machine :migration_state, initial: :default do
+  state_machine :migration_state, initial: :default, use_transactions: false do
     state :pre_importing do
       validates :migration_pre_import_started_at, presence: true
       validates :migration_pre_import_done_at, presence: false

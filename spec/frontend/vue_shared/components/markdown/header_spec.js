@@ -1,21 +1,25 @@
-import { shallowMount } from '@vue/test-utils';
 import $ from 'jquery';
 import { nextTick } from 'vue';
+import { GlTabs } from '@gitlab/ui';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('Markdown field header component', () => {
   let wrapper;
 
   const createWrapper = (props) => {
-    wrapper = shallowMount(HeaderComponent, {
+    wrapper = shallowMountExtended(HeaderComponent, {
       propsData: {
         previewMarkdown: false,
         ...props,
       },
+      stubs: { GlTabs },
     });
   };
 
+  const findWriteTab = () => wrapper.findByTestId('write-tab');
+  const findPreviewTab = () => wrapper.findByTestId('preview-tab');
   const findToolbarButtons = () => wrapper.findAll(ToolbarButton);
   const findToolbarButtonByProp = (prop, value) =>
     findToolbarButtons()
@@ -34,7 +38,6 @@ describe('Markdown field header component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('markdown header buttons', () => {
@@ -75,23 +78,26 @@ describe('Markdown field header component', () => {
     });
   });
 
-  it('renders `write` link as active when previewMarkdown is false', () => {
-    expect(wrapper.find('li:nth-child(1)').classes()).toContain('active');
+  it('activates `write` tab when previewMarkdown is false', () => {
+    expect(findWriteTab().attributes('active')).toBe('true');
+    expect(findPreviewTab().attributes('active')).toBeUndefined();
   });
 
-  it('renders `preview` link as active when previewMarkdown is true', () => {
+  it('activates `preview` tab when previewMarkdown is true', () => {
     createWrapper({ previewMarkdown: true });
 
-    expect(wrapper.find('li:nth-child(2)').classes()).toContain('active');
+    expect(findWriteTab().attributes('active')).toBeUndefined();
+    expect(findPreviewTab().attributes('active')).toBe('true');
   });
 
-  it('emits toggle markdown event when clicking preview', async () => {
-    wrapper.find('.js-preview-link').trigger('click');
+  it('emits toggle markdown event when clicking preview tab', async () => {
+    const eventData = { target: {} };
+    findPreviewTab().vm.$emit('click', eventData);
 
     await nextTick();
     expect(wrapper.emitted('preview-markdown').length).toEqual(1);
 
-    wrapper.find('.js-write-link').trigger('click');
+    findWriteTab().vm.$emit('click', eventData);
 
     await nextTick();
     expect(wrapper.emitted('write-markdown').length).toEqual(1);
@@ -109,12 +115,10 @@ describe('Markdown field header component', () => {
   });
 
   it('blurs preview link after click', () => {
-    const link = wrapper.find('li:nth-child(2) button');
-    jest.spyOn(HTMLElement.prototype, 'blur').mockImplementation();
+    const target = { blur: jest.fn() };
+    findPreviewTab().vm.$emit('click', { target });
 
-    link.trigger('click');
-
-    expect(link.element.blur).toHaveBeenCalled();
+    expect(target.blur).toHaveBeenCalled();
   });
 
   it('renders markdown table template', () => {

@@ -295,6 +295,36 @@ To use an external Prometheus server:
 
 1. Reload the Prometheus server.
 
+### Configure the storage retention size
+
+Prometheus has several custom flags to configure local storage:
+
+- `storage.tsdb.retention.time`: when to remove old data. Defaults to `15d`. Overrides
+  `storage.tsdb.retention` if this flag is set to anything other than the default.
+- `storage.tsdb.retention.size`: [EXPERIMENTAL] the maximum number of bytes of storage blocks to
+  retain. The oldest data is removed first. Defaults to `0` (disabled). This flag is experimental
+  and may change in future releases. Units supported: `B`, `KB`, `MB`, `GB`, `TB`, `PB`, `EB`. For
+  example, `512MB`.
+
+To configure the storage retention size:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   prometheus['flags'] = {
+     'storage.tsdb.path' => "/var/opt/gitlab/prometheus/data",
+     'storage.tsdb.retention.time' => "7d",
+     'storage.tsdb.retention.size' => "2GB",
+     'config.file' => "/var/opt/gitlab/prometheus/prometheus.yml"
+   }
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
 ## Viewing performance metrics
 
 You can visit `http://localhost:9090` for the dashboard that Prometheus offers by default.
@@ -402,3 +432,35 @@ To disable the monitoring of Kubernetes:
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect.
+
+### Troubleshooting
+
+## `/var/opt/gitlab/prometheus` consumes too much disk space
+
+If you are **not** using Prometheus monitoring:
+
+1. [Disable Prometheus](index.md#configuring-prometheus).
+1. Delete the data under `/var/opt/gitlab/prometheus`.
+
+If you are using Prometheus monitoring:
+
+1. Stop Prometheus (deleting data while it's running can cause data corruption):
+
+   ```shell
+   gitlab-ctl stop prometheus
+   ```
+
+1. Delete the data under `/var/opt/gitlab/prometheus/data`.
+1. Start the service again:
+
+   ```shell
+   gitlab-ctl start prometheus
+   ```
+
+1. Verify the service is up and running:
+
+   ```shell
+   gitlab-ctl status prometheus
+   ```
+
+1. Optional. [Configure the storage retention size](index.md#configure-the-storage-retention-size).
