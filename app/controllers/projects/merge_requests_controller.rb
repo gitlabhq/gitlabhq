@@ -30,6 +30,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
+  before_action only: [:index, :show] do
+    push_frontend_feature_flag(:mr_attention_requests, project, default_enabled: :yaml)
+  end
+
   before_action only: [:show] do
     push_frontend_feature_flag(:file_identifier_hash)
     push_frontend_feature_flag(:merge_request_widget_graphql, @project, default_enabled: :yaml)
@@ -38,9 +42,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:paginated_notes, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:diffs_virtual_scrolling, project, default_enabled: :yaml)
     push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:mr_attention_requests, project, default_enabled: :yaml)
     push_frontend_feature_flag(:refactor_mr_widgets_extensions, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:rebase_without_ci_ui, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:rearrange_pipelines_table, project, default_enabled: :yaml)
@@ -48,6 +50,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
     push_frontend_feature_flag(:usage_data_diff_searches, @project, default_enabled: :yaml)
+  end
+
+  before_action do
+    push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project, default_enabled: :yaml)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]

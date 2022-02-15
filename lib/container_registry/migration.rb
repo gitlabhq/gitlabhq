@@ -34,6 +34,11 @@ module ContainerRegistry
     end
 
     def self.capacity
+      # Increasing capacity numbers will increase the n+1 API calls we can have
+      # in ContainerRegistry::Migration::GuardWorker#external_migration_in_progress?
+      #
+      # TODO: See https://gitlab.com/gitlab-org/container-registry/-/issues/582
+      #
       return 25 if Feature.enabled?(:container_registry_migration_phase2_capacity_25)
       return 10 if Feature.enabled?(:container_registry_migration_phase2_capacity_10)
       return 1 if Feature.enabled?(:container_registry_migration_phase2_capacity_1)

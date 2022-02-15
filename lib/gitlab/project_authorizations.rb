@@ -22,7 +22,7 @@ module Gitlab
         user.projects_with_active_memberships.select_for_project_authorization,
 
         # The personal projects of the user.
-        user.personal_projects.select_project_owner_for_project_authorization,
+        user.personal_projects.select_as_maintainer_for_project_authorization,
 
         # Projects that belong directly to any of the groups the user has
         # access to.

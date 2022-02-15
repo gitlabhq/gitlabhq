@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'comment on merge request file' do
   it 'adds a comment' do
-    click_diff_line(find("[id='#{sample_commit.line_code}']"))
+    click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
 
     page.within('.js-discussion-note-form') do
       fill_in(:note_note, with: 'Line is wrong')

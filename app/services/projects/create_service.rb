@@ -147,11 +147,7 @@ module Projects
           priority: UserProjectAccessChangedService::LOW_PRIORITY
         )
       else
-        if ::Feature.enabled?(:personal_project_owner_with_owner_access, default_enabled: :yaml)
-          @project.add_owner(@project.namespace.owner, current_user: current_user)
-        else
-          @project.add_maintainer(@project.namespace.owner, current_user: current_user)
-        end
+        @project.add_maintainer(@project.namespace.owner, current_user: current_user)
       end
     end
 

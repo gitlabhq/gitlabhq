@@ -1,6 +1,5 @@
-import { getCookie } from '~/lib/utils/common_utils';
-import { getParameterValues } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -175,21 +174,11 @@ export function suggestionCommitMessage(state, _, rootState) {
 }
 
 export const isVirtualScrollingEnabled = (state) => {
-  const vSrollerCookie = getCookie('diffs_virtual_scrolling');
-
-  if (state.disableVirtualScroller) {
+  if (state.disableVirtualScroller || getParameterValues('virtual_scrolling')[0] === 'false') {
     return false;
   }
 
-  if (vSrollerCookie) {
-    return vSrollerCookie === 'true';
-  }
-
-  return (
-    !state.viewDiffsFileByFile &&
-    (window.gon?.features?.diffsVirtualScrolling ||
-      getParameterValues('virtual_scrolling')[0] === 'true')
-  );
+  return !state.viewDiffsFileByFile;
 };
 
 export const isBatchLoading = (state) => state.batchLoadingState === 'loading';

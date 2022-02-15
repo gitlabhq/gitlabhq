@@ -27129,6 +27129,10 @@ CREATE UNIQUE INDEX index_on_instance_statistics_recorded_at_and_identifier ON a
 
 CREATE INDEX index_on_label_links_all_columns ON label_links USING btree (target_id, label_id, target_type);
 
+CREATE INDEX index_on_merge_request_assignees_state ON merge_request_assignees USING btree (state) WHERE (state = 2);
+
+CREATE INDEX index_on_merge_request_reviewers_state ON merge_request_reviewers USING btree (state) WHERE (state = 2);
+
 CREATE INDEX index_on_merge_requests_for_latest_diffs ON merge_requests USING btree (target_project_id) INCLUDE (id, latest_merge_request_diff_id);
 
 COMMENT ON INDEX index_on_merge_requests_for_latest_diffs IS 'Index used to efficiently obtain the oldest merge request for a commit SHA';

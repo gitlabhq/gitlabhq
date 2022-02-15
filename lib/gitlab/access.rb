@@ -33,13 +33,7 @@ module Gitlab
     MAINTAINER_SUBGROUP_ACCESS = 1
 
     class << self
-      def values
-        if ::Feature.enabled?(:personal_project_owner_with_owner_access, default_enabled: :yaml)
-          options_with_owner.values
-        else
-          options.values
-        end
-      end
+      delegate :values, to: :options
 
       def all_values
         options_with_owner.values

@@ -225,7 +225,7 @@ RSpec.describe ProjectTeam do
     let_it_be(:maintainer) { create(:user) }
     let_it_be(:developer) { create(:user) }
     let_it_be(:guest) { create(:user) }
-    let_it_be(:project) { create(:project, group: create(:group)) }
+    let_it_be(:project) { create(:project, namespace: maintainer.namespace) }
     let_it_be(:access_levels) { [Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER] }
 
     subject(:members_with_access_levels) { project.team.members_with_access_levels(access_levels) }

@@ -25,14 +25,15 @@ RSpec.describe 'User comments on a diff', :js do
     context 'when toggling inline comments' do
       context 'in a single file' do
         it 'hides a comment' do
-          click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
+          line_element = find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']").find(:xpath, "..")
+          click_diff_line(line_element)
 
           page.within('.js-discussion-note-form') do
             fill_in('note_note', with: 'Line is wrong')
             click_button('Add comment now')
           end
 
-          page.within('.diff-files-holder > div:nth-child(6)') do
+          page.within(line_element.ancestor('[data-path]')) do
             expect(page).to have_content('Line is wrong')
 
             find('.js-diff-more-actions').click
@@ -45,7 +46,9 @@ RSpec.describe 'User comments on a diff', :js do
 
       context 'in multiple files' do
         it 'toggles comments' do
-          click_diff_line(find("[id='#{sample_compare.changes[0][:line_code]}']"))
+          first_line_element = find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
+          first_root_element = first_line_element.ancestor('[data-path]')
+          click_diff_line(first_line_element)
 
           page.within('.js-discussion-note-form') do
             fill_in('note_note', with: 'Line is correct')
@@ -54,11 +57,14 @@ RSpec.describe 'User comments on a diff', :js do
 
           wait_for_requests
 
-          page.within('.diff-files-holder > div:nth-child(5) .note-body > .note-text') do
+          page.within(first_root_element) do
             expect(page).to have_content('Line is correct')
           end
 
-          click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
+          second_line_element = find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
+          second_root_element = second_line_element.ancestor('[data-path]')
+
+          click_diff_line(second_line_element)
 
           page.within('.js-discussion-note-form') do
             fill_in('note_note', with: 'Line is wrong')
@@ -68,7 +74,7 @@ RSpec.describe 'User comments on a diff', :js do
           wait_for_requests
 
           # Hide the comment.
-          page.within('.diff-files-holder > div:nth-child(6)') do
+          page.within(second_root_element) do
             find('.js-diff-more-actions').click
             click_button 'Hide comments on this file'
 
@@ -77,37 +83,36 @@ RSpec.describe 'User comments on a diff', :js do
 
           # At this moment a user should see only one comment.
           # The other one should be hidden.
-          page.within('.diff-files-holder > div:nth-child(5) .note-body > .note-text') do
+          page.within(first_root_element) do
             expect(page).to have_content('Line is correct')
           end
 
           # Show the comment.
-          page.within('.diff-files-holder > div:nth-child(6)') do
+          page.within(second_root_element) do
             find('.js-diff-more-actions').click
             click_button 'Show comments on this file'
           end
 
           # Now both the comments should be shown.
-          page.within('.diff-files-holder > div:nth-child(6) .note-body > .note-text') do
+          page.within(second_root_element) do
             expect(page).to have_content('Line is wrong')
           end
 
-          page.within('.diff-files-holder > div:nth-child(5) .note-body > .note-text') do
+          page.within(first_root_element) do
             expect(page).to have_content('Line is correct')
           end
 
           # Check the same comments in the side-by-side view.
-          execute_script("window.scrollTo(0,0);")
           find('.js-show-diff-settings').click
           click_button 'Side-by-side'
 
           wait_for_requests
 
-          page.within('.diff-files-holder > div:nth-child(6) .parallel .note-body > .note-text') do
+          page.within(second_root_element) do
             expect(page).to have_content('Line is wrong')
           end
 
-          page.within('.diff-files-holder > div:nth-child(5) .parallel .note-body > .note-text') do
+          page.within(first_root_element) do
             expect(page).to have_content('Line is correct')
           end
         end
@@ -121,7 +126,7 @@ RSpec.describe 'User comments on a diff', :js do
 
   context 'when adding multiline comments' do
     it 'saves a multiline comment' do
-      click_diff_line(find("[id='#{sample_commit.line_code}']"))
+      click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']").find(:xpath, '..'))
       add_comment('-13', '+14')
     end
 
@@ -133,13 +138,13 @@ RSpec.describe 'User comments on a diff', :js do
       # In `files/ruby/popen.rb`
       it 'allows comments for changes involving both sides' do
         # click +15, select -13 add and verify comment
-        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .right-side a[data-linenumber="15"]').find(:xpath, '../../..'), 'right')
+        click_diff_line(find_by_scrolling('div[data-path="files/ruby/popen.rb"] .right-side a[data-linenumber="15"]').find(:xpath, '../../..'), 'right')
         add_comment('-13', '+15')
       end
 
       it 'allows comments on previously hidden lines at the top of a file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/285294' do
         # Click -9, expand up, select 1 add and verify comment
-        page.within('[data-path="files/ruby/popen.rb"]') do
+        page.within find_by_scrolling('[data-path="files/ruby/popen.rb"]') do
           all('.js-unfold-all')[0].click
         end
         click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="9"]').find(:xpath, '../..'), 'left')
@@ -148,7 +153,7 @@ RSpec.describe 'User comments on a diff', :js do
 
       it 'allows comments on previously hidden lines the middle of a file' do
         # Click 27, expand up, select 18, add and verify comment
-        page.within('[data-path="files/ruby/popen.rb"]') do
+        page.within find_by_scrolling('[data-path="files/ruby/popen.rb"]') do
           all('.js-unfold-all')[1].click
         end
         click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="21"]').find(:xpath, '../..'), 'left')
@@ -157,7 +162,7 @@ RSpec.describe 'User comments on a diff', :js do
 
       it 'allows comments on previously hidden lines at the bottom of a file' do
         # Click +28, expand down, select 37 add and verify comment
-        page.within('[data-path="files/ruby/popen.rb"]') do
+        page.within find_by_scrolling('[data-path="files/ruby/popen.rb"]') do
           all('.js-unfold-down:not([disabled])')[1].click
         end
         click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="30"]').find(:xpath, '../..'), 'left')
@@ -198,7 +203,7 @@ RSpec.describe 'User comments on a diff', :js do
 
   context 'when editing comments' do
     it 'edits a comment' do
-      click_diff_line(find("[id='#{sample_commit.line_code}']"))
+      click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in(:note_note, with: 'Line is wrong')
@@ -224,7 +229,7 @@ RSpec.describe 'User comments on a diff', :js do
 
   context 'when deleting comments' do
     it 'deletes a comment' do
-      click_diff_line(find("[id='#{sample_commit.line_code}']"))
+      click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in(:note_note, with: 'Line is wrong')

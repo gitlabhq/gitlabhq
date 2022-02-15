@@ -143,7 +143,7 @@ describe('Discussion navigation mixin', () => {
         it('scrolls to element', () => {
           expect(utils.scrollToElement).toHaveBeenCalledWith(
             findDiscussion('div.discussion', expected),
-            { behavior: 'smooth' },
+            { behavior: 'auto' },
           );
         });
       });
@@ -171,7 +171,7 @@ describe('Discussion navigation mixin', () => {
 
           expect(utils.scrollToElementWithContext).toHaveBeenCalledWith(
             findDiscussion('ul.notes', expected),
-            { behavior: 'smooth' },
+            { behavior: 'auto' },
           );
         });
       });
@@ -212,21 +212,15 @@ describe('Discussion navigation mixin', () => {
           it('scrolls to discussion', () => {
             expect(utils.scrollToElement).toHaveBeenCalledWith(
               findDiscussion('div.discussion', expected),
-              { behavior: 'smooth' },
+              { behavior: 'auto' },
             );
           });
         });
       });
     });
 
-    describe.each`
-      diffsVirtualScrolling
-      ${false}
-      ${true}
-    `('virtual scrolling feature is $diffsVirtualScrolling', ({ diffsVirtualScrolling }) => {
+    describe('virtual scrolling feature', () => {
       beforeEach(() => {
-        window.gon = { features: { diffsVirtualScrolling } };
-
         jest.spyOn(store, 'dispatch');
 
         store.state.notes.currentDiscussionId = 'a';
@@ -238,22 +232,22 @@ describe('Discussion navigation mixin', () => {
         window.location.hash = '';
       });
 
-      it('resets location hash if diffsVirtualScrolling flag is true', async () => {
+      it('resets location hash', async () => {
         wrapper.vm.jumpToNextDiscussion();
 
         await nextTick();
 
-        expect(window.location.hash).toBe(diffsVirtualScrolling ? '' : '#test');
+        expect(window.location.hash).toBe('');
       });
 
       it.each`
-        tabValue   | hashValue
-        ${'diffs'} | ${false}
-        ${'show'}  | ${!diffsVirtualScrolling}
-        ${'other'} | ${!diffsVirtualScrolling}
+        tabValue
+        ${'diffs'}
+        ${'show'}
+        ${'other'}
       `(
         'calls scrollToFile with setHash as $hashValue when the tab is $tabValue',
-        async ({ hashValue, tabValue }) => {
+        async ({ tabValue }) => {
           window.mrTabs.currentAction = tabValue;
 
           wrapper.vm.jumpToNextDiscussion();
@@ -262,7 +256,6 @@ describe('Discussion navigation mixin', () => {
 
           expect(store.dispatch).toHaveBeenCalledWith('diffs/scrollToFile', {
             path: 'test.js',
-            setHash: hashValue,
           });
         },
       );

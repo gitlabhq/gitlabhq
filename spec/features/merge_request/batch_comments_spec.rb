@@ -32,7 +32,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
       expect(page).to have_selector('[data-testid="review_bar_component"]')
 
-      expect(find('.review-bar-content .btn-confirm')).to have_content('1')
+      expect(find('[data-testid="review_bar_component"] .btn-confirm')).to have_content('1')
     end
 
     it 'publishes review' do
@@ -150,10 +150,6 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
       it 'adds draft comments to both sides' do
         write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9')
-
-        # make sure line 9 is in the view
-        execute_script("window.scrollBy(0, -200)")
-
         write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9', button_text: 'Add to review', text: 'Another wrong line')
 
         expect(find('.new .draft-note-component')).to have_content('Line is wrong')
@@ -255,13 +251,15 @@ RSpec.describe 'Merge request > Batch comments', :js do
   end
 
   def write_diff_comment(**params)
-    click_diff_line(find("[id='#{sample_compare.changes[0][:line_code]}']"))
+    click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']"))
 
     write_comment(**params)
   end
 
   def write_parallel_comment(line, **params)
-    find("div[id='#{line}']").hover
+    line_element = find_by_scrolling("[id='#{line}']")
+    scroll_to_elements_bottom(line_element)
+    line_element.hover
     find(".js-add-diff-note-button").click
 
     write_comment(selector: "form[data-line-code='#{line}']", **params)

@@ -209,7 +209,7 @@ export default {
       handler(val) {
         const el = this.$el.closest('.vue-recycle-scroller__item-view');
 
-        if (this.glFeatures.diffsVirtualScrolling && el) {
+        if (el) {
           // We can't add a style with Vue because of the way the virtual
           // scroller library renders the diff files
           el.style.zIndex = val ? '1' : null;

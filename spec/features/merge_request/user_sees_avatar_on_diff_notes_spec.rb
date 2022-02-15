@@ -6,6 +6,7 @@ include Spec::Support::Helpers::ModalHelpers # rubocop:disable  Style/MixinUsage
 RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
   include NoteInteractionHelpers
   include Spec::Support::Helpers::ModalHelpers
+  include MergeRequestDiffHelpers
 
   let(:project)       { create(:project, :public, :repository) }
   let(:user)          { project.creator }
@@ -135,6 +136,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
       end
 
       it 'adds avatar when commenting' do
+        find_by_scrolling('[data-discussion-id]', match: :first)
         find_field('Reply…', match: :first).click
 
         page.within '.js-discussion-note-form' do
@@ -154,6 +156,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
 
       it 'adds multiple comments' do
         3.times do
+          find_by_scrolling('[data-discussion-id]', match: :first)
           find_field('Reply…', match: :first).click
 
           page.within '.js-discussion-note-form' do
@@ -192,7 +195,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
   end
 
   def find_line(line_code)
-    line = find("[id='#{line_code}']")
+    line = find_by_scrolling("[id='#{line_code}']")
     line = line.find(:xpath, 'preceding-sibling::*[1][self::td]/preceding-sibling::*[1][self::td]') if line.tag_name == 'td'
     line
   end

@@ -107,7 +107,7 @@
                 -# We'll eventually migrate to .gl-display-none: https://gitlab.com/gitlab-org/gitlab/-/issues/351792.
                 = gl_badge_tag({ size: :sm, variant: :info }, { class: "js-todos-count gl-ml-n2#{(' hidden' if todos_pending_count == 0)}", "aria-label": _("Todos count") }) do
                   = todos_count_format(todos_pending_count)
-          %li.nav-item.header-help.dropdown.d-none.d-md-block{ **tracking_attrs('main_navigation', 'click_question_mark_link', 'navigation') }
+          %li.nav-item.header-help.dropdown.d-none.d-md-block{ data: { track_action: 'click_question_mark_link', track_label: 'main_navigation', track_property: 'navigation', track_experiment: 'cross_stage_fdm' } }
             = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown" } do
               %span.gl-sr-only
                 = s_('Nav|Help')

@@ -665,7 +665,7 @@ RSpec.describe Projects::ProjectMembersController do
         sign_in(user)
       end
 
-      it 'creates a member' do
+      it 'does not create a member' do
         expect do
           post :create, params: {
                           user_ids: stranger.id,
@@ -673,9 +673,7 @@ RSpec.describe Projects::ProjectMembersController do
                           access_level: Member::OWNER,
                           project_id: project
                         }
-        end.to change { project.members.count }.by(1)
-
-        expect(project.team_members).to include(user)
+        end.to change { project.members.count }.by(0)
       end
     end
 

@@ -24,7 +24,6 @@ export default (params = {}) => {
     provide: {
       fullPath: params.fullPath,
       rootPath: params.rootPath,
-      recentBoardsEndpoint: params.recentBoardsEndpoint,
       allowScopedLabels: params.allowScopedLabels,
       labelsManagePath: params.labelsManagePath,
       allowLabelCreate: parseBoolean(dataset.canAdminBoard),

@@ -3,8 +3,6 @@ import { scrollToElementWithContext, scrollToElement } from '~/lib/utils/common_
 import { updateHistory } from '../../lib/utils/url_utility';
 import eventHub from '../event_hub';
 
-const isDiffsVirtualScrollingEnabled = () => window.gon?.features?.diffsVirtualScrolling;
-
 /**
  * @param {string} selector
  * @returns {boolean}
@@ -15,7 +13,7 @@ function scrollTo(selector, { withoutContext = false } = {}) {
 
   if (el) {
     scrollFunction(el, {
-      behavior: isDiffsVirtualScrollingEnabled() ? 'auto' : 'smooth',
+      behavior: 'auto',
     });
     return true;
   }
@@ -31,7 +29,7 @@ function updateUrlWithNoteId(noteId) {
     replace: true,
   };
 
-  if (noteId && isDiffsVirtualScrollingEnabled()) {
+  if (noteId) {
     // Temporarily mask the ID to avoid the browser default
     //    scrolling taking over which is broken with virtual
     //    scrolling enabled.
@@ -115,17 +113,13 @@ function handleDiscussionJump(self, fn, discussionId = self.currentDiscussionId)
   const isDiffView = window.mrTabs.currentAction === 'diffs';
   const targetId = fn(discussionId, isDiffView);
   const discussion = self.getDiscussion(targetId);
-  const setHash = !isDiffView && !isDiffsVirtualScrollingEnabled();
   const discussionFilePath = discussion?.diff_file?.file_path;
 
-  if (isDiffsVirtualScrollingEnabled()) {
-    window.location.hash = '';
-  }
+  window.location.hash = '';
 
   if (discussionFilePath) {
     self.scrollToFile({
       path: discussionFilePath,
-      setHash,
     });
   }
 

@@ -53,6 +53,7 @@ import DiffFile from './diff_file.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
 import TreeList from './tree_list.vue';
+import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 
 export default {
   name: 'DiffsApp',
@@ -62,8 +63,7 @@ export default {
     DynamicScrollerItem: () =>
       import('vendor/vue-virtual-scroller').then(({ DynamicScrollerItem }) => DynamicScrollerItem),
     PreRenderer: () => import('./pre_renderer.vue').then((PreRenderer) => PreRenderer),
-    VirtualScrollerScrollSync: () =>
-      import('./virtual_scroller_scroll_sync').then((VSSSync) => VSSSync),
+    VirtualScrollerScrollSync,
     CompareVersions,
     DiffFile,
     NoChanges,
@@ -406,10 +406,8 @@ export default {
     this.unsubscribeFromEvents();
     this.removeEventListeners();
 
-    if (window.gon?.features?.diffsVirtualScrolling) {
-      diffsEventHub.$off('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
-      diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);
-    }
+    diffsEventHub.$off('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
+    diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);
   },
   methods: {
     ...mapActions(['startTaskList']),
@@ -522,32 +520,27 @@ export default {
         );
       }
 
-      if (
-        window.gon?.features?.diffsVirtualScrolling ||
-        window.gon?.features?.usageDataDiffSearches
-      ) {
-        let keydownTime;
-        Mousetrap.bind(['mod+f', 'mod+g'], () => {
-          keydownTime = new Date().getTime();
-        });
+      let keydownTime;
+      Mousetrap.bind(['mod+f', 'mod+g'], () => {
+        keydownTime = new Date().getTime();
+      });
 
-        window.addEventListener('blur', () => {
-          if (keydownTime) {
-            const delta = new Date().getTime() - keydownTime;
+      window.addEventListener('blur', () => {
+        if (keydownTime) {
+          const delta = new Date().getTime() - keydownTime;
 
-            // To make sure the user is using the find function we need to wait for blur
-            // and max 1000ms to be sure it the search box is filtered
-            if (delta >= 0 && delta < 1000) {
-              this.disableVirtualScroller();
+          // To make sure the user is using the find function we need to wait for blur
+          // and max 1000ms to be sure it the search box is filtered
+          if (delta >= 0 && delta < 1000) {
+            this.disableVirtualScroller();
 
-              if (window.gon?.features?.usageDataDiffSearches) {
-                api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
-                api.trackRedisCounterEvent('diff_searches');
-              }
+            if (window.gon?.features?.usageDataDiffSearches) {
+              api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
+              api.trackRedisCounterEvent('diff_searches');
             }
           }
-        });
-      }
+        }
+      });
     },
     removeEventListeners() {
       Mousetrap.unbind(keysFor(MR_PREVIOUS_FILE_IN_DIFF));
@@ -589,8 +582,6 @@ export default {
       this.virtualScrollCurrentIndex = -1;
     },
     scrollVirtualScrollerToDiffNote() {
-      if (!window.gon?.features?.diffsVirtualScrolling) return;
-
       const id = window?.location?.hash;
 
       if (id.startsWith('#note_')) {
@@ -605,11 +596,7 @@ export default {
       }
     },
     subscribeToVirtualScrollingEvents() {
-      if (
-        window.gon?.features?.diffsVirtualScrolling &&
-        this.shouldShow &&
-        !this.subscribedToVirtualScrollingEvents
-      ) {
+      if (this.shouldShow && !this.subscribedToVirtualScrollingEvents) {
         diffsEventHub.$on('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
         diffsEventHub.$on('scrollToIndex', this.scrollVirtualScrollerToIndex);
 

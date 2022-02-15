@@ -52,7 +52,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
         it 'is called' do
           ProjectAuthorization.delete_all
 
-          expect(callback).to receive(:call).with(project.id, Gitlab::Access::OWNER).once
+          expect(callback).to receive(:call).with(project.id, Gitlab::Access::MAINTAINER).once
 
           service.execute
         end
@@ -73,7 +73,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
       to_be_removed = [project_authorization.project_id]
 
       to_be_added = [
-        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::OWNER }
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
       ]
 
       expect(service).to receive(:update_authorizations)
@@ -83,14 +83,14 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
     end
 
     it 'removes duplicate entries' do
-      [Gitlab::Access::OWNER, Gitlab::Access::REPORTER].each do |access_level|
+      [Gitlab::Access::MAINTAINER, Gitlab::Access::REPORTER].each do |access_level|
         user.project_authorizations.create!(project: project, access_level: access_level)
       end
 
       to_be_removed = [project.id]
 
       to_be_added = [
-        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::OWNER }
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
       ]
       expect(service).to(
         receive(:update_authorizations)
@@ -103,7 +103,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
       project_authorization = ProjectAuthorization.where(
         project_id: project.id,
         user_id: user.id,
-        access_level: Gitlab::Access::OWNER)
+        access_level: Gitlab::Access::MAINTAINER)
       expect(project_authorization).to exist
     end
 
@@ -116,7 +116,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
       to_be_removed = [project_authorization.project_id]
 
       to_be_added = [
-        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::OWNER }
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
       ]
 
       expect(service).to receive(:update_authorizations)

@@ -351,7 +351,8 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   In 14.5 we introduce a set of migrations that wrap up this process by making sure
   that all remaining jobs over the `merge_request_diff_commits` table are completed.
   These jobs will have already been processed in most cases so that no extra time is necessary during an upgrade to 14.5.
-  But if there are remaining jobs, the deployment may take a few extra minutes to complete.
+  However, if there are remaining jobs or you haven't already upgraded to 14.1,
+  the deployment may take multiple hours to complete.
 
   All merge request diff commits will automatically incorporate these changes, and there are no
   additional requirements to perform the upgrade.
@@ -438,6 +439,11 @@ for how to proceed.
   14.1 is included on the upgrade path for the broadest compatibility
   with self-managed installations, and ensure 14.0.0-14.0.4 installations do not
   encounter issues with [batched background migrations](#batched-background-migrations).
+
+- Upgrading to GitLab [14.5](#1450) (or later) may take a lot longer if you do not upgrade to at least 14.1
+  first. The 14.1 merge request diff commits database migration can take hours to run, but runs in the
+  background while GitLab is in use. GitLab instances upgraded directly from 14.0 to 14.5 or later must
+  run the migration in the foreground and therefore take a lot longer to complete.
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 

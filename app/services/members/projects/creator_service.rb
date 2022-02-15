@@ -4,7 +4,7 @@ module Members
   module Projects
     class CreatorService < Members::CreatorService
       def self.access_levels
-        Gitlab::Access.sym_options_with_owner
+        Gitlab::Access.sym_options
       end
 
       private

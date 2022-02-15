@@ -14,7 +14,6 @@ module NotificationRecipients
         return [] unless project
 
         add_recipients(project.team.maintainers, :mention, nil)
-        add_recipients(project.team.owners, :mention, nil)
       end
 
       def acting_user

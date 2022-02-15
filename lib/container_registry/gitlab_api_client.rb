@@ -25,6 +25,7 @@ module ContainerRegistry
       end
     end
 
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#compliance-check
     def supports_gitlab_api?
       strong_memoize(:supports_gitlab_api) do
         registry_features = Gitlab::CurrentSettings.container_registry_features || []
@@ -35,16 +36,19 @@ module ContainerRegistry
       end
     end
 
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#import-repository
     def pre_import_repository(path)
       response = start_import_for(path, pre: true)
       IMPORT_RESPONSES.fetch(response.status, :error)
     end
 
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#import-repository
     def import_repository(path)
       response = start_import_for(path, pre: false)
       IMPORT_RESPONSES.fetch(response.status, :error)
     end
 
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#get-repository-import-status
     def import_status(path)
       body_hash = response_body(faraday.get(import_url_for(path)))
       body_hash['status'] || 'error'

@@ -202,7 +202,7 @@ describe('DiffsStoreActions', () => {
       testAction(
         fetchDiffFilesBatch,
         {},
-        { endpointBatch, diffViewType: 'inline' },
+        { endpointBatch, diffViewType: 'inline', diffFiles: [] },
         [
           { type: types.SET_BATCH_LOADING_STATE, payload: 'loading' },
           { type: types.SET_RETRIEVING_BATCHES, payload: true },

@@ -44,7 +44,8 @@ class MergeRequestsFinder < IssuableFinder
       :reviewer_id,
       :reviewer_username,
       :target_branch,
-      :wip
+      :wip,
+      :attention
     ]
   end
 
@@ -69,6 +70,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_approvals(items)
     items = by_deployments(items)
     items = by_reviewer(items)
+    items = by_attention(items)
 
     by_source_project_id(items)
   end
@@ -216,6 +218,12 @@ class MergeRequestsFinder < IssuableFinder
     else # reviewer not found
       items.none
     end
+  end
+
+  def by_attention(items)
+    return items unless params.attention?
+
+    items.attention(params.attention)
   end
 
   def parse_datetime(input)

@@ -34,7 +34,7 @@ RSpec.describe 'User comments on a diff', :js do
 
   context 'single suggestion note' do
     it 'hides suggestion popover' do
-      click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
+      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
 
       expect(page).to have_selector('.diff-suggest-popover')
 
@@ -46,7 +46,7 @@ RSpec.describe 'User comments on a diff', :js do
     end
 
     it 'suggestion is presented' do
-      click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
+      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
@@ -74,7 +74,7 @@ RSpec.describe 'User comments on a diff', :js do
     end
 
     it 'allows suggestions in replies' do
-      click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
+      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
@@ -91,7 +91,7 @@ RSpec.describe 'User comments on a diff', :js do
     end
 
     it 'suggestion is appliable' do
-      click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
+      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
@@ -273,7 +273,7 @@ RSpec.describe 'User comments on a diff', :js do
 
   context 'multiple suggestions in a single note' do
     it 'suggestions are presented', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/258989' do
-      click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
+      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```\n```suggestion:-2\n# or that\n# heh\n```")
@@ -316,7 +316,7 @@ RSpec.describe 'User comments on a diff', :js do
 
   context 'multi-line suggestions' do
     before do
-      click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
+      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion:-3+5\n# change to a\n# comment\n# with\n# broken\n# lines\n```")

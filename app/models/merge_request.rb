@@ -406,6 +406,17 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  scope :attention, ->(user) do
+    # rubocop: disable Gitlab/Union
+    union = Gitlab::SQL::Union.new([
+      MergeRequestReviewer.select(:merge_request_id).where(user_id: user.id, state: MergeRequestReviewer.states[:attention_requested]),
+      MergeRequestAssignee.select(:merge_request_id).where(user_id: user.id, state: MergeRequestAssignee.states[:attention_requested])
+    ])
+    # rubocop: enable Gitlab/Union
+
+    with(Gitlab::SQL::CTE.new(:reviewers_and_assignees, union).to_arel).where('merge_requests.id in (select merge_request_id from reviewers_and_assignees)')
+  end
+
   def self.total_time_to_merge
     join_metrics
       .merge(MergeRequest::Metrics.with_valid_time_to_merge)

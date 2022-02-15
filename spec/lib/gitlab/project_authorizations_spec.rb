@@ -34,28 +34,12 @@ RSpec.describe Gitlab::ProjectAuthorizations do
         .to include(owned_project.id, other_project.id, group_project.id)
     end
 
-    context 'when personal_project_owner_with_owner_access feature flag is enabled' do
-      it 'includes the correct access levels' do
-        mapping = map_access_levels(authorizations)
+    it 'includes the correct access levels' do
+      mapping = map_access_levels(authorizations)
 
-        expect(mapping[owned_project.id]).to eq(Gitlab::Access::OWNER)
-        expect(mapping[other_project.id]).to eq(Gitlab::Access::REPORTER)
-        expect(mapping[group_project.id]).to eq(Gitlab::Access::DEVELOPER)
-      end
-    end
-
-    context 'when personal_project_owner_with_owner_access feature flag is disabled' do
-      before do
-        stub_feature_flags(personal_project_owner_with_owner_access: false)
-      end
-
-      it 'includes the correct access levels' do
-        mapping = map_access_levels(authorizations)
-
-        expect(mapping[owned_project.id]).to eq(Gitlab::Access::MAINTAINER)
-        expect(mapping[other_project.id]).to eq(Gitlab::Access::REPORTER)
-        expect(mapping[group_project.id]).to eq(Gitlab::Access::DEVELOPER)
-      end
+      expect(mapping[owned_project.id]).to eq(Gitlab::Access::MAINTAINER)
+      expect(mapping[other_project.id]).to eq(Gitlab::Access::REPORTER)
+      expect(mapping[group_project.id]).to eq(Gitlab::Access::DEVELOPER)
     end
   end
 

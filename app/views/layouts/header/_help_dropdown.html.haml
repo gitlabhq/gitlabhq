@@ -1,6 +1,7 @@
 %ul
   - if current_user_menu?(:help)
     = render 'layouts/header/gitlab_version'
+    = render_if_exists 'layouts/header/help_dropdown/cross_stage_fdm'
     = render 'layouts/header/whats_new_dropdown_item'
     %li
       = link_to _("Help"), help_path

@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { getCookie, setCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
+import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
 
-import { getParameterValues } from '~/lib/utils/url_utility';
 import eventHub from '../notes/event_hub';
 import diffsApp from './components/app.vue';
 
@@ -73,11 +72,6 @@ export default function initDiffsApp(store) {
           updateDatabase: false,
           trackClick: false,
         });
-      }
-
-      const vScrollingParam = getParameterValues('virtual_scrolling')[0];
-      if (vScrollingParam === 'false' || vScrollingParam === 'true') {
-        setCookie('diffs_virtual_scrolling', vScrollingParam);
       }
     },
     methods: {

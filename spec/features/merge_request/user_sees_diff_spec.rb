@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Merge request > User sees diff', :js do
   include ProjectForksHelper
   include RepoHelpers
+  include MergeRequestDiffHelpers
 
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
@@ -58,12 +59,12 @@ RSpec.describe 'Merge request > User sees diff', :js do
     let(:changelog_id) { Digest::SHA1.hexdigest("CHANGELOG") }
 
     context 'as author' do
-      it 'shows direct edit link', :sidekiq_might_not_need_inline do
+      it 'contains direct edit link', :sidekiq_might_not_need_inline do
         sign_in(author_user)
         visit diffs_project_merge_request_path(project, merge_request)
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
-        expect(page).to have_selector("[id=\"#{changelog_id}\"] .js-edit-blob", visible: false)
+        expect(page).to have_selector(".js-edit-blob", visible: false)
       end
     end
 
@@ -71,6 +72,8 @@ RSpec.describe 'Merge request > User sees diff', :js do
       it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline do
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
+
+        find_by_scrolling("[id=\"#{changelog_id}\"]")
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
         find("[id=\"#{changelog_id}\"] .js-diff-more-actions").click
@@ -107,6 +110,7 @@ RSpec.describe 'Merge request > User sees diff', :js do
           CONTENT
 
         file_name = 'xss_file.rs'
+        file_hash = Digest::SHA1.hexdigest(file_name)
 
         create_file('master', file_name, file_content)
         merge_request = create(:merge_request, source_project: project)
@@ -115,6 +119,8 @@ RSpec.describe 'Merge request > User sees diff', :js do
         project.commit(merge_request.source_branch)
 
         visit diffs_project_merge_request_path(project, merge_request)
+
+        find_by_scrolling("[id='#{file_hash}']")
 
         expect(page).to have_text("function foo<input> {")
         expect(page).to have_css(".line[lang='rust'] .k")
@@ -136,7 +142,7 @@ RSpec.describe 'Merge request > User sees diff', :js do
         end
 
         context 'when file is an image', :js do
-          let(:file_name) { 'files/lfs/image.png' }
+          let(:file_name) { 'a/image.png' }
 
           it 'shows an error message' do
             expect(page).not_to have_content('could not be displayed because it is stored in LFS')
@@ -144,7 +150,7 @@ RSpec.describe 'Merge request > User sees diff', :js do
         end
 
         context 'when file is not an image' do
-          let(:file_name) { 'files/lfs/ruby.rb' }
+          let(:file_name) { 'a/ruby.rb' }
 
           it 'shows an error message' do
             expect(page).to have_content('This source diff could not be displayed because it is stored in LFS')
@@ -153,7 +159,14 @@ RSpec.describe 'Merge request > User sees diff', :js do
       end
 
       context 'when LFS is not enabled' do
+        let(:file_name) { 'a/lfs_object.iso' }
+
         before do
+          allow(Gitlab.config.lfs).to receive(:disabled).and_return(true)
+          project.update_attribute(:lfs_enabled, false)
+
+          create_file('master', file_name, project.repository.blob_at('master', 'files/lfs/lfs_object.iso').data)
+
           visit diffs_project_merge_request_path(project, merge_request)
         end
 

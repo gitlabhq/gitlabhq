@@ -20,6 +20,10 @@ class DashboardController < Dashboard::ApplicationController
 
   urgency :low, [:merge_requests]
 
+  before_action only: [:merge_requests] do
+    push_frontend_feature_flag(:mr_attention_requests, default_enabled: :yaml)
+  end
+
   def activity
     respond_to do |format|
       format.html

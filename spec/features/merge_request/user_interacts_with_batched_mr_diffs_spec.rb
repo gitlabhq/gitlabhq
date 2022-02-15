@@ -15,16 +15,14 @@ RSpec.describe 'Batch diffs', :js do
     visit diffs_project_merge_request_path(merge_request.project, merge_request)
     wait_for_requests
 
-    # Add discussion to first line of first file
-    click_diff_line(find('.diff-file.file-holder:first-of-type .line_holder .left-side:first-of-type'))
-    page.within('.js-discussion-note-form') do
+    click_diff_line(get_first_diff.find('[data-testid="left-side"]', match: :first))
+    page.within get_first_diff.find('.js-discussion-note-form') do
       fill_in('note_note', with: 'First Line Comment')
       click_button('Add comment now')
     end
 
-    # Add discussion to first line of last file
-    click_diff_line(find('.diff-file.file-holder:last-of-type .line_holder .left-side:first-of-type'))
-    page.within('.js-discussion-note-form') do
+    click_diff_line(get_second_diff.find('[data-testid="left-side"]', match: :first))
+    page.within get_second_diff.find('.js-discussion-note-form') do
       fill_in('note_note', with: 'Last Line Comment')
       click_button('Add comment now')
     end
@@ -36,17 +34,14 @@ RSpec.describe 'Batch diffs', :js do
     # Reload so we know the discussions are persisting across batch loads
     visit page.current_url
 
-    # Wait for JS to settle
     wait_for_requests
 
-    expect(page).to have_selector('.diff-files-holder .file-holder', count: 39)
-
     # Confirm discussions are applied to appropriate files (should be contained in multiple diff pages)
-    page.within('.diff-file.file-holder:first-of-type .notes .timeline-entry .note .note-text') do
+    page.within get_first_diff.find('.notes .timeline-entry .note .note-text') do
       expect(page).to have_content('First Line Comment')
     end
 
-    page.within('.diff-file.file-holder:last-of-type .notes .timeline-entry .note .note-text') do
+    page.within get_second_diff.find('.notes .timeline-entry .note .note-text') do
       expect(page).to have_content('Last Line Comment')
     end
   end
@@ -54,7 +49,7 @@ RSpec.describe 'Batch diffs', :js do
   context 'when user visits a URL with a link directly to to a discussion' do
     context 'which is in the first batched page of diffs' do
       it 'scrolls to the correct discussion' do
-        page.within('.diff-file.file-holder:first-of-type') do
+        page.within get_first_diff do
           click_link('just now')
         end
 
@@ -63,15 +58,15 @@ RSpec.describe 'Batch diffs', :js do
         wait_for_requests
 
         # Confirm scrolled to correct UI element
-        expect(page.find('.diff-file.file-holder:first-of-type .discussion-notes .timeline-entry li.note[id]').obscured?).to be_falsey
-        expect(page.find('.diff-file.file-holder:last-of-type .discussion-notes .timeline-entry li.note[id]').obscured?).to be_truthy
+        expect(get_first_diff.find('.discussion-notes .timeline-entry li.note[id]').obscured?).to be_falsey
+        expect(get_second_diff.find('.discussion-notes .timeline-entry li.note[id]').obscured?).to be_truthy
       end
     end
 
     context 'which is in at least page 2 of the batched pages of diffs' do
       it 'scrolls to the correct discussion',
          quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/293814' } do
-        page.within('.diff-file.file-holder:last-of-type') do
+        page.within get_first_diff do
           click_link('just now')
         end
 
@@ -80,8 +75,8 @@ RSpec.describe 'Batch diffs', :js do
         wait_for_requests
 
         # Confirm scrolled to correct UI element
-        expect(page.find('.diff-file.file-holder:first-of-type .discussion-notes .timeline-entry li.note[id]').obscured?).to be_truthy
-        expect(page.find('.diff-file.file-holder:last-of-type .discussion-notes .timeline-entry li.note[id]').obscured?).to be_falsey
+        expect(get_first_diff.find('.discussion-notes .timeline-entry li.note[id]').obscured?).to be_truthy
+        expect(get_second_diff.find('.discussion-notes .timeline-entry li.note[id]').obscured?).to be_falsey
       end
     end
   end
@@ -95,15 +90,21 @@ RSpec.describe 'Batch diffs', :js do
     end
 
     it 'has the correct discussions applied to files across batched pages' do
-      expect(page).to have_selector('.diff-files-holder .file-holder', count: 39)
-
-      page.within('.diff-file.file-holder:first-of-type .notes .timeline-entry .note .note-text') do
+      page.within get_first_diff.find('.notes .timeline-entry .note .note-text') do
         expect(page).to have_content('First Line Comment')
       end
 
-      page.within('.diff-file.file-holder:last-of-type .notes .timeline-entry .note .note-text') do
+      page.within get_second_diff.find('.notes .timeline-entry .note .note-text') do
         expect(page).to have_content('Last Line Comment')
       end
     end
+  end
+
+  def get_first_diff
+    find('#a9b6f940524f646951cc28d954aa41f814f95d4f')
+  end
+
+  def get_second_diff
+    find('#b285a86891571c7fdbf1f82e840816079de1cc8b')
   end
 end

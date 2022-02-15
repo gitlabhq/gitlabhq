@@ -69,6 +69,12 @@ describe('diffs/components/app', () => {
       },
       provide,
       store,
+      stubs: {
+        DynamicScroller: {
+          template: `<div><slot :item="$store.state.diffs.diffFiles[0]"></slot></div>`,
+        },
+        DynamicScrollerItem: true,
+      },
     });
   }
 

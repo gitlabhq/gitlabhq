@@ -274,9 +274,7 @@ class ContainerRepository < ApplicationRecord
   def retry_aborted_migration
     return unless migration_state == 'import_aborted'
 
-    import_status = gitlab_api_client.import_status(self.path)
-
-    case import_status
+    case external_import_status
     when 'native'
       raise NativeImportError
     when 'import_in_progress'
@@ -320,6 +318,12 @@ class ContainerRepository < ApplicationRecord
 
   def last_import_step_done_at
     [migration_pre_import_done_at, migration_import_done_at, migration_aborted_at].compact.max
+  end
+
+  def external_import_status
+    strong_memoize(:import_status) do
+      gitlab_api_client.import_status(self.path)
+    end
   end
 
   # rubocop: disable CodeReuse/ServiceClass

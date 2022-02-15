@@ -125,7 +125,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
         commit(types.SET_BATCH_LOADING_STATE, 'loaded');
 
-        if (window.gon?.features?.diffsVirtualScrolling && !scrolledVirtualScroller) {
+        if (!scrolledVirtualScroller) {
           const index = state.diffFiles.findIndex(
             (f) =>
               f.file_hash === hash || f[INLINE_DIFF_LINES_KEY].find((l) => l.line_code === hash),
@@ -195,9 +195,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         commit(types.SET_BATCH_LOADING_STATE, 'error');
       });
 
-  return getBatch().then(
-    () => !window.gon?.features?.diffsVirtualScrolling && handleLocationHash(),
-  );
+  return getBatch();
 };
 
 export const fetchDiffFilesMeta = ({ commit, state }) => {
@@ -529,7 +527,7 @@ export const setCurrentFileHash = ({ commit }, hash) => {
   commit(types.SET_CURRENT_DIFF_FILE, hash);
 };
 
-export const scrollToFile = ({ state, commit, getters }, { path, setHash = true }) => {
+export const scrollToFile = ({ state, commit, getters }, { path }) => {
   if (!state.treeEntries[path]) return;
 
   const { fileHash } = state.treeEntries[path];
@@ -539,11 +537,9 @@ export const scrollToFile = ({ state, commit, getters }, { path, setHash = true 
   if (getters.isVirtualScrollingEnabled) {
     eventHub.$emit('scrollToFileHash', fileHash);
 
-    if (setHash) {
-      setTimeout(() => {
-        window.history.replaceState(null, null, `#${fileHash}`);
-      });
-    }
+    setTimeout(() => {
+      window.history.replaceState(null, null, `#${fileHash}`);
+    });
   } else {
     document.location.hash = fileHash;
 

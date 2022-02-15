@@ -1179,6 +1179,16 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     end
   end
 
+  describe '#external_import_status' do
+    subject { repository.external_import_status }
+
+    it 'returns the response from the client' do
+      expect(repository.gitlab_api_client).to receive(:import_status).with(repository.path).and_return('test')
+
+      expect(subject).to eq('test')
+    end
+  end
+
   describe '.with_stale_migration' do
     let_it_be(:repository) { create(:container_repository) }
     let_it_be(:stale_pre_importing_old_timestamp) { create(:container_repository, :pre_importing, migration_pre_import_started_at: 10.minutes.ago) }

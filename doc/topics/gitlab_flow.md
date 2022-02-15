@@ -71,7 +71,7 @@ For example, many projects do releases but don't need to do hotfixes.
 ## GitHub flow as a simpler alternative
 
 In reaction to Git flow, GitHub created a simpler alternative.
-[GitHub flow](https://guides.github.com/introduction/flow/index.html) has only feature branches and a `main` branch:
+[GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow) has only feature branches and a `main` branch:
 
 ```mermaid
 graph TD
@@ -341,7 +341,7 @@ However, as discussed in [the section about rebasing](#squashing-commits-with-re
 
 Rebasing could create more work, as every time you rebase, you may need to resolve the same conflicts.
 Sometimes you can reuse recorded resolutions (`rerere`), but merging is better, because you only have to resolve conflicts once.
-Atlassian has a more thorough explanation of the tradeoffs between merging and rebasing [on their blog](https://www.atlassian.com/blog/git/git-team-workflows-merge-or-rebase).
+Atlassian has [a more thorough explanation of the tradeoffs between merging and rebasing](https://www.atlassian.com/blog/git/git-team-workflows-merge-or-rebase) on their blog.
 
 A good way to prevent creating many merge commits is to not frequently merge `main` into the feature branch.
 There are three reasons to merge in `main`: utilizing new code, resolving merge conflicts, and updating long-running branches.
@@ -403,7 +403,7 @@ git commit -m 'Properly escape special characters in XML generation'
 
 An example of a good commit message is: "Combine templates to reduce duplicate code in the user views."
 The words "change," "improve," "fix," and "refactor" don't add much information to a commit message.
-For more information about formatting commit messages, please see this excellent [blog post by Tim Pope](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
+For more information, please see Tim Pope's excellent [note about formatting commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 To add more context to a commit message, consider adding information regarding the
 origin of the change. For example, the URL of a GitLab issue, or a Jira issue number,
