@@ -2491,7 +2491,7 @@ POST /projects/:id/housekeeping
 
 ### Get project push rules
 
-Get the [push rules](../push_rules/push_rules.md#enabling-push-rules) of a
+Get the [push rules](../user/project/repository/push_rules.md#enabling-push-rules) of a
 project.
 
 ```plaintext

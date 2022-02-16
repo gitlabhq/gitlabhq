@@ -171,7 +171,6 @@ module API
         optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
       end
       get ':id/repository/compare', urgency: :low do
-        ff_enabled = Feature.enabled?(:api_caching_rate_limit_repository_compare, user_project, default_enabled: :yaml)
         target_project = fetch_target_project(current_user, user_project, params)
 
         if target_project.blank?
@@ -180,7 +179,7 @@ module API
 
         cache_key = compare_cache_key(current_user, user_project, target_project, declared_params)
 
-        cache_action_if(ff_enabled, cache_key, expires_in: 1.minute) do
+        cache_action(cache_key, expires_in: 1.minute) do
           compare = CompareService.new(user_project, params[:to]).execute(target_project, params[:from], straight: params[:straight])
 
           if compare

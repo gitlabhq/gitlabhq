@@ -15,7 +15,6 @@ options:
   events:
   - p_ci_templates_implicit_security_sast
 distribution:
-distribution:
 - ce
 - ee
 tier:

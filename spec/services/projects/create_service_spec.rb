@@ -190,15 +190,31 @@ RSpec.describe Projects::CreateService, '#execute' do
       user.refresh_authorized_projects # Ensure cache is warm
     end
 
-    it do
-      project = create_project(user, opts.merge!(namespace_id: group.id))
+    subject(:project) { create_project(user, opts.merge!(namespace_id: group.id)) }
 
+    shared_examples 'has sync-ed traversal_ids' do
+      specify { expect(project.reload.project_namespace.traversal_ids).to eq([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact) }
+    end
+
+    it 'creates the project' do
       expect(project).to be_valid
       expect(project.owner).to eq(group)
       expect(project.namespace).to eq(group)
       expect(project.team.owners).to include(user)
       expect(user.authorized_projects).to include(project)
       expect(project.project_namespace).to be_in_sync_with_project(project)
+    end
+
+    context 'with before_commit callback' do
+      it_behaves_like 'has sync-ed traversal_ids'
+    end
+
+    context 'with after_create callback' do
+      before do
+        stub_feature_flags(sync_traversal_ids_before_commit: false)
+      end
+
+      it_behaves_like 'has sync-ed traversal_ids'
     end
   end
 

@@ -20,6 +20,7 @@ import Monitoring from './environment_monitoring.vue';
 import Terminal from './environment_terminal_button.vue';
 import Delete from './environment_delete.vue';
 import Deployment from './deployment.vue';
+import DeployBoardWrapper from './deploy_board_wrapper.vue';
 
 export default {
   components: {
@@ -30,6 +31,7 @@ export default {
     GlSprintf,
     Actions,
     Deployment,
+    DeployBoardWrapper,
     ExternalUrl,
     StopComponent,
     Rollback,
@@ -145,6 +147,9 @@ export default {
     displayName() {
       return truncate(this.name, 80);
     },
+    rolloutStatus() {
+      return this.environment?.rolloutStatus;
+    },
   },
   methods: {
     toggleCollapse() {
@@ -156,6 +161,14 @@ export default {
     'gl-border-t-solid',
     'gl-border-1',
     'gl-py-5',
+    'gl-md-pl-7',
+    'gl-bg-gray-10',
+  ],
+  deployBoardClasses: [
+    'gl-border-gray-100',
+    'gl-border-t-solid',
+    'gl-border-1',
+    'gl-py-4',
     'gl-md-pl-7',
     'gl-bg-gray-10',
   ],
@@ -297,6 +310,14 @@ export default {
             <gl-link :href="helpPagePath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
+      </div>
+      <div v-if="rolloutStatus" :class="$options.deployBoardClasses">
+        <deploy-board-wrapper
+          :rollout-status="rolloutStatus"
+          :environment="environment"
+          :class="{ 'gl-ml-7': inFolder }"
+          class="gl-pl-4"
+        />
       </div>
     </gl-collapse>
   </div>

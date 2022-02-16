@@ -74,9 +74,7 @@ module Issues
     def issuable_for_positioning(id, positioning_scope)
       return unless id
 
-      issue = positioning_scope.find(id)
-
-      issue if can?(current_user, :update_issue, issue)
+      positioning_scope.find(id)
     end
 
     def create_assignee_note(issue, old_assignees)

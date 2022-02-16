@@ -6,7 +6,7 @@ import BoardNewItem from '~/boards/components/board_new_item.vue';
 import ProjectSelect from '~/boards/components/project_select.vue';
 import eventHub from '~/boards/eventhub';
 
-import { mockList, mockGroupProjects } from '../mock_data';
+import { mockList, mockGroupProjects, mockIssue, mockIssue2 } from '../mock_data';
 
 Vue.use(Vuex);
 
@@ -16,7 +16,7 @@ const mockActions = { addListNewIssue: addListNewIssuesSpy };
 const createComponent = ({
   state = { selectedProject: mockGroupProjects[0], fullPath: mockGroupProjects[0].fullPath },
   actions = mockActions,
-  getters = { isGroupBoard: () => true, isProjectBoard: () => false },
+  getters = { isGroupBoard: () => true, getBoardItemsByList: () => () => [] },
 } = {}) =>
   shallowMount(BoardNewIssue, {
     store: new Vuex.Store({
@@ -75,7 +75,36 @@ describe('Issue boards new issue form', () => {
         assigneeIds: [],
         milestoneId: undefined,
         projectPath: mockGroupProjects[0].fullPath,
+        moveAfterId: undefined,
       },
+    });
+  });
+
+  describe('when list has an existing issues', () => {
+    beforeEach(() => {
+      wrapper = createComponent({
+        getters: {
+          isGroupBoard: () => true,
+          getBoardItemsByList: () => () => [mockIssue, mockIssue2],
+        },
+      });
+    });
+
+    it('it uses the first issue ID as moveAfterId', async () => {
+      findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
+
+      await nextTick();
+      expect(addListNewIssuesSpy).toHaveBeenCalledWith(expect.any(Object), {
+        list: mockList,
+        issueInput: {
+          title: 'Foo',
+          labelIds: [],
+          assigneeIds: [],
+          milestoneId: undefined,
+          projectPath: mockGroupProjects[0].fullPath,
+          moveAfterId: mockIssue.id,
+        },
+      });
     });
   });
 
@@ -99,7 +128,7 @@ describe('Issue boards new issue form', () => {
   describe('when in project issue board', () => {
     beforeEach(() => {
       wrapper = createComponent({
-        getters: { isGroupBoard: () => false, isProjectBoard: () => true },
+        getters: { isGroupBoard: () => false },
       });
     });
 

@@ -6,6 +6,7 @@ export default () => {
 
   return new Vue({
     el: '#js-toggle-focus-btn',
+    name: 'ToggleFocusRoot',
     render(h) {
       return h(ToggleFocus, {
         props: {

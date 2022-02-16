@@ -425,7 +425,7 @@ RSpec.describe Namespace do
   end
 
   context 'traversal_ids on create' do
-    context 'default traversal_ids' do
+    shared_examples 'default traversal_ids' do
       let(:namespace) { build(:namespace) }
 
       before do
@@ -434,6 +434,18 @@ RSpec.describe Namespace do
       end
 
       it { expect(namespace.traversal_ids).to eq [namespace.id] }
+    end
+
+    context 'with before_commit callback' do
+      it_behaves_like 'default traversal_ids'
+    end
+
+    context 'with after_create callback' do
+      before do
+        stub_feature_flags(sync_traversal_ids_before_commit: false)
+      end
+
+      it_behaves_like 'default traversal_ids'
     end
   end
 

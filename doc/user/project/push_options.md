@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Push Options **(FREE)**
 
 GitLab supports using client-side [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt)
-to perform various actions at the same time as pushing changes. Additionally, [Push Rules](../../push_rules/push_rules.md) offer server-side control and enforcement options.
+to perform various actions at the same time as pushing changes. Additionally, [Push Rules](repository/push_rules.md) offer server-side control and enforcement options.
 
 Currently, there are push options available for:
 

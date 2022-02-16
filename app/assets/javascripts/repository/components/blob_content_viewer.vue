@@ -49,9 +49,7 @@ export default {
         };
       },
       result() {
-        this.switchViewer(
-          this.hasRichViewer && !window.location.hash ? RICH_BLOB_VIEWER : SIMPLE_BLOB_VIEWER,
-        );
+        this.switchViewer(this.hasRichViewer ? RICH_BLOB_VIEWER : SIMPLE_BLOB_VIEWER);
       },
       error() {
         this.displayError();

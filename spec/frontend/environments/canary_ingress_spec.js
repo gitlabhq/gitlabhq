@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
 import { CANARY_UPDATE_MODAL } from '~/environments/constants';
+import { rolloutStatus } from './graphql/mock_data';
 
 describe('/environments/components/canary_ingress.vue', () => {
   let wrapper;
@@ -13,16 +14,18 @@ describe('/environments/components/canary_ingress.vue', () => {
       .at(x / 5)
       .vm.$emit('click');
 
-  const createComponent = () => {
+  const createComponent = (props = {}, options = {}) => {
     wrapper = mount(CanaryIngress, {
       propsData: {
         canaryIngress: {
           canary_weight: 60,
         },
+        ...props,
       },
       directives: {
         GlModal: createMockDirective(),
       },
+      ...options,
     });
   };
 
@@ -94,9 +97,25 @@ describe('/environments/components/canary_ingress.vue', () => {
     });
 
     it('is set to open the change modal', () => {
-      const options = canaryWeightDropdown.findAll(GlDropdownItem);
-      expect(options).toHaveLength(21);
-      options.wrappers.forEach((w, i) => expect(w.text()).toBe((i * 5).toString()));
+      canaryWeightDropdown
+        .findAll(GlDropdownItem)
+        .wrappers.forEach((w) =>
+          expect(getBinding(w.element, 'gl-modal')).toMatchObject({ value: CANARY_UPDATE_MODAL }),
+        );
+    });
+  });
+
+  describe('graphql', () => {
+    beforeEach(() => {
+      createComponent({
+        graphql: true,
+        canaryIngress: rolloutStatus.canaryIngress,
+      });
+    });
+
+    it('shows the correct weight', () => {
+      const canaryWeightDropdown = wrapper.find('[data-testid="canary-weight"]');
+      expect(canaryWeightDropdown.props('text')).toBe('50');
     });
   });
 });

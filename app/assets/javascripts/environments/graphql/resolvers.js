@@ -10,6 +10,7 @@ import pollIntervalQuery from './queries/poll_interval.query.graphql';
 import environmentToRollbackQuery from './queries/environment_to_rollback.query.graphql';
 import environmentToStopQuery from './queries/environment_to_stop.query.graphql';
 import environmentToDeleteQuery from './queries/environment_to_delete.query.graphql';
+import environmentToChangeCanaryQuery from './queries/environment_to_change_canary.query.graphql';
 import pageInfoQuery from './queries/page_info.query.graphql';
 
 const buildErrors = (errors = []) => ({
@@ -132,6 +133,12 @@ export const resolvers = (endpoint) => ({
       client.writeQuery({
         query: environmentToRollbackQuery,
         data: { environmentToRollback: environment },
+      });
+    },
+    setEnvironmentToChangeCanary(_, { environment, weight }, { client }) {
+      client.writeQuery({
+        query: environmentToChangeCanaryQuery,
+        data: { environmentToChangeCanary: environment, weight },
       });
     },
     cancelAutoStop(_, { autoStopUrl }) {

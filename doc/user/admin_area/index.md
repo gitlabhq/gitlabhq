@@ -32,7 +32,7 @@ The Admin Area is made up of the following sections:
 | **{slight-frown}** Abuse Reports               | Manage [abuse reports](review_abuse_reports.md) submitted by your users. |
 | **{license}** License                          | Upload, display, and remove [licenses](license.md). |
 | **{cloud-gear}** Kubernetes                    | Create and manage instance-level [Kubernetes clusters](../instance/clusters/index.md). |
-| **{push-rules}** Push rules | Configure pre-defined Git [push rules](../../push_rules/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). |
+| **{push-rules}** Push rules | Configure pre-defined Git [push rules](../project/repository/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). |
 | **{location-dot}** Geo                         | Configure and maintain [Geo nodes](geo_nodes.md). |
 | **{key}** Deploy keys                          | Create instance-wide [SSH deploy keys](../project/deploy_keys/index.md). |
 | **{lock}** Credentials                         | View [credentials](credentials_inventory.md) that can be used to access your instance. |

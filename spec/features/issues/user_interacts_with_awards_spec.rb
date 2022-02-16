@@ -49,7 +49,7 @@ RSpec.describe 'User interacts with awards' do
       end
     end
 
-    it 'toggles a custom award emoji', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/351878' do
+    it 'toggles a custom award emoji' do
       page.within('.awards') do
         page.find('.add-reaction-button').click
       end
@@ -65,9 +65,10 @@ RSpec.describe 'User interacts with awards' do
         expect(page.find('[data-testid="award-button"].selected .js-counter')).to have_content('1')
         expect(page).to have_css('[data-testid="award-button"].selected[title="You reacted with :8ball:"]')
 
+        wait_for_requests
+
         expect do
           page.find('[data-testid="award-button"].selected').click
-          wait_for_requests
         end.to change { page.all('[data-testid="award-button"]').size }.from(3).to(2)
       end
     end

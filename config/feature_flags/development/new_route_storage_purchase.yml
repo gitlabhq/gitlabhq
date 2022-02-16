@@ -1,8 +1,0 @@
----
-name: new_route_storage_purchase
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68834
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327896
-milestone: '14.3'
-type: development
-group: group::purchase
-default_enabled: true

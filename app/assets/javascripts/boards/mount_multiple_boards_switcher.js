@@ -16,6 +16,7 @@ export default (params = {}) => {
   const { dataset } = boardsSwitcherElement;
   return new Vue({
     el: boardsSwitcherElement,
+    name: 'BoardsSelectorRoot',
     components: {
       BoardsSelector,
     },

@@ -64,6 +64,7 @@ function mountBoardApp(el) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'BoardAppRoot',
     store,
     apolloProvider,
     provide: {
@@ -121,6 +122,7 @@ export default () => {
     // eslint-disable-next-line no-new
     new Vue({
       el: createColumnTriggerEl,
+      name: 'BoardAddNewColumnTriggerRoot',
       components: {
         BoardAddNewColumnTrigger,
       },

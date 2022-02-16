@@ -9,7 +9,7 @@ product_category: kubernetes_management
 value_type: number
 status: active
 milestone: '13.12'
-introduced_by_url: 
+introduced_by_url:
 time_frame: all
 data_source: redis
 distribution:

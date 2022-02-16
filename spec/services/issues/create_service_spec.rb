@@ -97,8 +97,6 @@ RSpec.describe Issues::CreateService do
         let(:issue_after) { create(:issue, project: project, relative_position: 50) }
 
         before do
-          project.add_reporter(user)
-
           opts.merge!(move_between_ids: [issue_before.id, issue_after.id])
         end
 

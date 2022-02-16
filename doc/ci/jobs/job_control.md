@@ -950,3 +950,19 @@ and can cause unexpected behavior, including:
 Additionally, rules with `changes` always evaluate as true in [scheduled pipelines](../pipelines/schedules.md).
 All files are considered to have changed when a scheduled pipeline runs, so jobs
 might always be added to scheduled pipelines that use `changes`.
+
+### `You are not allowed to download code from this project.` error message
+
+You might see pipelines fail when a GitLab administrator runs a protected manual job
+in a private project.
+
+CI/CD jobs usually clone the project when the job starts, and this uses [the permissions](../../user/permissions.md#job-permissions)
+of the user that runs the job. All users, including administrators, must be direct members
+of a private project to clone the source of that project. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/23130)
+to change this behavior.
+
+To run protected manual jobs:
+
+- Add the administrator as a direct member of the private project (any role)
+- [Impersonate a user](../../user/admin_area/index.md#user-impersonation) who is a
+  direct member of the project.

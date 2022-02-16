@@ -4,6 +4,7 @@ import Vue, { nextTick } from 'vue';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
 import DeployBoard from '~/environments/components/deploy_board.vue';
 import { deployBoardMockData, environment } from './mock_data';
+import { rolloutStatus } from './graphql/mock_data';
 
 const logsPath = `gitlab-org/gitlab-test/-/logs?environment_name=${environment.name}`;
 
@@ -28,7 +29,7 @@ describe('Deploy Board', () => {
     });
 
     it('should render percentage with completion value provided', () => {
-      expect(wrapper.vm.$refs.percentage.innerText).toEqual(`${deployBoardMockData.completion}%`);
+      expect(wrapper.find({ ref: 'percentage' }).text()).toBe(`${deployBoardMockData.completion}%`);
     });
 
     it('should render total instance count', () => {
@@ -57,17 +58,71 @@ describe('Deploy Board', () => {
 
     it('sets up a tooltip for the legend', () => {
       const iconSpan = wrapper.find('[data-testid="legend-tooltip-target"]');
-      const tooltip = wrapper.find(GlTooltip);
-      const icon = iconSpan.find(GlIcon);
+      const tooltip = wrapper.findComponent(GlTooltip);
+      const icon = iconSpan.findComponent(GlIcon);
 
       expect(tooltip.props('target')()).toBe(iconSpan.element);
       expect(icon.props('name')).toBe('question');
     });
 
     it('renders the canary weight selector', () => {
-      const canary = wrapper.find(CanaryIngress);
+      const canary = wrapper.findComponent(CanaryIngress);
       expect(canary.exists()).toBe(true);
       expect(canary.props('canaryIngress')).toEqual({ canary_weight: 50 });
+    });
+  });
+
+  describe('with new valid data', () => {
+    beforeEach(async () => {
+      wrapper = createComponent({
+        graphql: true,
+        deployBoardData: rolloutStatus,
+      });
+      await nextTick();
+    });
+
+    it('should render percentage with completion value provided', () => {
+      expect(wrapper.find({ ref: 'percentage' }).text()).toBe(`${rolloutStatus.completion}%`);
+    });
+
+    it('should render total instance count', () => {
+      const renderedTotal = wrapper.find('.deploy-board-instances-text');
+      const actualTotal = rolloutStatus.instances.length;
+      const output = `${actualTotal > 1 ? 'Instances' : 'Instance'} (${actualTotal})`;
+
+      expect(renderedTotal.text()).toEqual(output);
+    });
+
+    it('should render all instances', () => {
+      const instances = wrapper.findAll('.deploy-board-instances-container a');
+
+      expect(instances).toHaveLength(rolloutStatus.instances.length);
+      expect(
+        instances.at(1).classes(`deployment-instance-${rolloutStatus.instances[2].status}`),
+      ).toBe(true);
+    });
+
+    it('should render an abort and a rollback button with the provided url', () => {
+      const buttons = wrapper.findAll('.deploy-board-actions a');
+
+      expect(buttons.at(0).attributes('href')).toEqual(rolloutStatus.rollbackUrl);
+      expect(buttons.at(1).attributes('href')).toEqual(rolloutStatus.abortUrl);
+    });
+
+    it('sets up a tooltip for the legend', () => {
+      const iconSpan = wrapper.find('[data-testid="legend-tooltip-target"]');
+      const tooltip = wrapper.findComponent(GlTooltip);
+      const icon = iconSpan.findComponent(GlIcon);
+
+      expect(tooltip.props('target')()).toBe(iconSpan.element);
+      expect(icon.props('name')).toBe('question');
+    });
+
+    it('renders the canary weight selector', () => {
+      const canary = wrapper.findComponent(CanaryIngress);
+      expect(canary.exists()).toBe(true);
+      expect(canary.props('canaryIngress')).toEqual({ canaryWeight: 50 });
+      expect(canary.props('graphql')).toBe(true);
     });
   });
 
@@ -102,7 +157,7 @@ describe('Deploy Board', () => {
     });
 
     it('should render loading spinner', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
   });
 

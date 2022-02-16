@@ -236,27 +236,42 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       context 'with project namespaces' do
-        it 'automatically creates a project namespace' do
-          project = build(:project, path: 'hopefully-valid-path1')
-          project.save!
-
-          expect(project).to be_persisted
-          expect(project.project_namespace).to be_persisted
-          expect(project.project_namespace).to be_in_sync_with_project(project)
-        end
-
-        context 'with FF disabled' do
-          before do
-            stub_feature_flags(create_project_namespace_on_project_create: false)
-          end
-
-          it 'does not create a project namespace' do
-            project = build(:project, path: 'hopefully-valid-path2')
+        shared_examples 'creates project namespace' do
+          it 'automatically creates a project namespace' do
+            project = build(:project, path: 'hopefully-valid-path1')
             project.save!
 
             expect(project).to be_persisted
-            expect(project.project_namespace).to be_nil
+            expect(project.project_namespace).to be_persisted
+            expect(project.project_namespace).to be_in_sync_with_project(project)
+            expect(project.reload.project_namespace.traversal_ids).to eq([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact)
           end
+
+          context 'with FF disabled' do
+            before do
+              stub_feature_flags(create_project_namespace_on_project_create: false)
+            end
+
+            it 'does not create a project namespace' do
+              project = build(:project, path: 'hopefully-valid-path2')
+              project.save!
+
+              expect(project).to be_persisted
+              expect(project.project_namespace).to be_nil
+            end
+          end
+        end
+
+        context 'sync-ing traversal_ids in before_commit callback' do
+          it_behaves_like 'creates project namespace'
+        end
+
+        context 'sync-ing traversal_ids in after_create callback' do
+          before do
+            stub_feature_flags(sync_traversal_ids_before_commit: false)
+          end
+
+          it_behaves_like 'creates project namespace'
         end
       end
     end

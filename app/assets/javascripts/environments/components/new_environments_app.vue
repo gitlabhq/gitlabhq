@@ -8,16 +8,19 @@ import pageInfoQuery from '../graphql/queries/page_info.query.graphql';
 import environmentToDeleteQuery from '../graphql/queries/environment_to_delete.query.graphql';
 import environmentToRollbackQuery from '../graphql/queries/environment_to_rollback.query.graphql';
 import environmentToStopQuery from '../graphql/queries/environment_to_stop.query.graphql';
+import environmentToChangeCanaryQuery from '../graphql/queries/environment_to_change_canary.query.graphql';
 import EnvironmentFolder from './new_environment_folder.vue';
 import EnableReviewAppModal from './enable_review_app_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
 import EnvironmentItem from './new_environment_item.vue';
 import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
+import CanaryUpdateModal from './canary_update_modal.vue';
 
 export default {
   components: {
     DeleteEnvironmentModal,
+    CanaryUpdateModal,
     ConfirmRollbackModal,
     EnvironmentFolder,
     EnableReviewAppModal,
@@ -56,6 +59,12 @@ export default {
     environmentToStop: {
       query: environmentToStopQuery,
     },
+    environmentToChangeCanary: {
+      query: environmentToChangeCanaryQuery,
+    },
+    weight: {
+      query: environmentToChangeCanaryQuery,
+    },
   },
   inject: ['newEnvironmentPath', 'canCreateEnvironment'],
   i18n: {
@@ -80,6 +89,8 @@ export default {
       environmentToDelete: {},
       environmentToRollback: {},
       environmentToStop: {},
+      environmentToChangeCanary: {},
+      weight: 0,
     };
   },
   computed: {
@@ -186,6 +197,7 @@ export default {
     <delete-environment-modal :environment="environmentToDelete" graphql />
     <stop-environment-modal :environment="environmentToStop" graphql />
     <confirm-rollback-modal :environment="environmentToRollback" graphql />
+    <canary-update-modal :environment="environmentToChangeCanary" :weight="weight" />
     <gl-tabs
       :action-secondary="addEnvironment"
       :action-primary="openReviewAppModal"

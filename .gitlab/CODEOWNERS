@@ -619,7 +619,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/operations/product_analytics.md @fneill
 /doc/policy/ @axil
 /doc/public_access/public_access.md @fneill
-/doc/push_rules/push_rules.md @aqualls
 /doc/raketasks/ @axil
 /doc/raketasks/generate_sample_prometheus_data.md @ngaskill
 /doc/raketasks/migrate_snippets.md @aqualls

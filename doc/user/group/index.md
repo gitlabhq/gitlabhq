@@ -789,7 +789,7 @@ Existing forks are not removed.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
 
 Group push rules allow group maintainers to set
-[push rules](../../push_rules/push_rules.md) for newly created projects in the specific group.
+[push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
 
 To configure push rules for a group:
 

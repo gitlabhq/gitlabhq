@@ -91,6 +91,8 @@ options:
   - p_ci_templates_jobs_secret_detection
   - p_ci_templates_jobs_code_intelligence
   - p_ci_templates_jobs_code_quality
+  - p_ci_templates_jobs_dependency_scanning
+  - p_ci_templates_jobs_license_scanning
   - p_ci_templates_jobs_deploy_ecs
   - p_ci_templates_jobs_deploy_ec2
   - p_ci_templates_jobs_deploy
@@ -135,6 +137,8 @@ options:
   - p_ci_templates_implicit_jobs_secret_detection
   - p_ci_templates_implicit_jobs_code_intelligence
   - p_ci_templates_implicit_jobs_code_quality
+  - p_ci_templates_implicit_jobs_dependency_scanning
+  - p_ci_templates_implicit_jobs_license_scanning
   - p_ci_templates_implicit_jobs_deploy_ecs
   - p_ci_templates_implicit_jobs_deploy_ec2
   - p_ci_templates_implicit_auto_devops_deploy

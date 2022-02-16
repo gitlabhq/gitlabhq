@@ -16,7 +16,7 @@ relevant compliance standards.
 ## Policy management
 
 Organizations have unique policy requirements, either due to organizational
-standards or mandates from regulatory bodies. The following features help you 
+standards or mandates from regulatory bodies. The following features help you
 define rules and policies to adhere to workflow requirements, separation of duties,
 and secure supply chain best practices:
 
@@ -31,7 +31,7 @@ and secure supply chain best practices:
 - [**Merge request approvals**](../user/project/merge_requests/approvals/index.md)
   (for instances, groups, and projects): Configure approvals required for
   merge requests.
-- [**Push rules**](../push_rules/push_rules.md) (for instances, groups, and
+- [**Push rules**](../user/project/repository/push_rules.md) (for instances, groups, and
   projects): Control pushes to your repositories.
 - Separation of duties using [**protected branches**](../user/project/protected_branches.md#require-code-owner-approval-on-a-protected-branch)
   and [**custom CI/CD configuration paths**](../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file) (for projects): Users can leverage the GitLab cross-project YAML configurations

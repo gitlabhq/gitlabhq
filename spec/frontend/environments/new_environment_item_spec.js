@@ -8,7 +8,8 @@ import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
 import Deployment from '~/environments/components/deployment.vue';
-import { resolvedEnvironment } from './graphql/mock_data';
+import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
+import { resolvedEnvironment, rolloutStatus } from './graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -453,6 +454,37 @@ describe('~/environments/components/new_environment_item.vue', () => {
       const emptyState = wrapper.findByText((_content, element) => element.textContent === text);
 
       expect(emptyState.exists()).toBe(false);
+    });
+  });
+
+  describe('deploy boards', () => {
+    it('should show a deploy board if the environment has a rollout status', async () => {
+      const environment = {
+        ...resolvedEnvironment,
+        rolloutStatus,
+      };
+
+      wrapper = createWrapper({
+        propsData: { environment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      await expandCollapsedSection();
+
+      const deployBoard = wrapper.findComponent(DeployBoardWrapper);
+      expect(deployBoard.exists()).toBe(true);
+      expect(deployBoard.props('rolloutStatus')).toBe(rolloutStatus);
+    });
+
+    it('should not show a deploy board if the environment has no rollout status', async () => {
+      wrapper = createWrapper({
+        apolloProvider: createApolloProvider(),
+      });
+
+      await expandCollapsedSection();
+
+      const deployBoard = wrapper.findComponent(DeployBoardWrapper);
+      expect(deployBoard.exists()).toBe(false);
     });
   });
 });
