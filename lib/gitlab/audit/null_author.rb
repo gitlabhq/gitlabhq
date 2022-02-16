@@ -18,12 +18,8 @@ module Gitlab
       def self.for(id, audit_event)
         name = audit_event[:author_name] || audit_event.details[:author_name]
 
-        if audit_event.details.include?(:runner_registration_token)
-          ::Gitlab::Audit::CiRunnerTokenAuthor.new(
-            token: audit_event.details[:runner_registration_token],
-            entity_type: audit_event.entity_type || audit_event.details[:entity_type],
-            entity_path: audit_event.entity_path || audit_event.details[:entity_path]
-          )
+        if audit_event.target_type == ::Ci::Runner.name
+          Gitlab::Audit::CiRunnerTokenAuthor.new(audit_event)
         elsif id == -1
           Gitlab::Audit::UnauthenticatedAuthor.new(name: name)
         else

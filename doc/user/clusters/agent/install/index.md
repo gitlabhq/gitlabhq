@@ -158,6 +158,7 @@ information to the cluster automatically without downtime.
 
 ## View your Agents
 
+> The version of installed `agentk` shown on the Agent tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8.
 If you have at least the Developer role, you can access the Agent's
 configuration repository and view the Agent's list:
 
@@ -168,6 +169,7 @@ On this page, you can view:
 
 - All the registered Agents for the current project.
 - The connection status.
+- The version of `agentk` installed on your cluster.
 - The path to each Agent's configuration file.
 
 Furthermore, if you select one of the Agents on your list, you can view its

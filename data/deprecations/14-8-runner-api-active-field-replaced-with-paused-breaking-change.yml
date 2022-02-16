@@ -1,13 +1,13 @@
 - name: "REST and GraphQL API Runner usage of `active` replaced by `paused`"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
-  removal_milestone: "15.0"
-  removal_date: "2022-05-22"
+  removal_milestone: "16.0"
+  removal_date: "2023-04-22"
   breaking_change: true
   reporter: pedropombeiro
   body: |
     Occurrences of the `active` identifier in the GitLab Runner REST and GraphQL API endpoints will be
-    renamed to `paused` in GitLab 15.0, namely:
+    renamed to `paused` in GitLab 16.0, namely:
 
     - GraphQL API:
       - the `CiRunner` property;
@@ -22,8 +22,8 @@
         - `GET /projects/:id/runners` / `POST /projects/:id/runners`
         - `GET /groups/:id/runners`
 
-    The 15.0 release of the GitLab Runner will start using the `paused` property when registering runners, and therefore
-    will only be compatible with GitLab 15.0 and later. Until 15.0, GitLab will accept the deprecated `active` flag from
+    The 16.0 release of the GitLab Runner will start using the `paused` property when registering runners, and therefore
+    will only be compatible with GitLab 16.0 and later. Until 16.0, GitLab will accept the deprecated `active` flag from
     existing runners.
   stage: Verify
   tiers: [Core, Premium, Ultimate]

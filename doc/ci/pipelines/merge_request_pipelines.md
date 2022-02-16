@@ -142,8 +142,14 @@ parent project when the pipeline runs, even before merge. As a reviewer, careful
 check the changes in the merge request before triggering the pipeline. GitLab shows
 a warning that you must accept before you can trigger the pipeline.
 
-Parent project members with at least the Developer role
-can create pipelines in the parent project for merge requests from a forked project:
+Prerequisites:
+
+- You must be a member of the parent project and have at least the [Developer role](../../user/permissions.md).
+- The fork project must be [visible](../../public_access/public_access.md) to the
+  user running the pipeline. Otherwise, the **Pipelines** tab does not display
+  in the merge request.
+
+To run a pipeline in the parent project for a merge request from a fork project:
 
 1. In the merge request, go to the **Pipelines** tab.
 1. Select **Run pipeline**. You must accept the warning, or the pipeline does not run.

@@ -664,7 +664,7 @@ RSpec.describe API::Ci::Runners do
           post api("/runners/#{shared_runner.id}/reset_authentication_token", admin)
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => shared_runner.reload.token })
+          expect(json_response).to eq({ 'token' => shared_runner.reload.token, 'token_expires_at' => nil })
         end.to change { shared_runner.reload.token }
       end
 
@@ -688,7 +688,7 @@ RSpec.describe API::Ci::Runners do
           post api("/runners/#{project_runner.id}/reset_authentication_token", user)
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => project_runner.reload.token })
+          expect(json_response).to eq({ 'token' => project_runner.reload.token, 'token_expires_at' => nil })
         end.to change { project_runner.reload.token }
       end
 
@@ -729,7 +729,22 @@ RSpec.describe API::Ci::Runners do
           post api("/runners/#{group_runner_a.id}/reset_authentication_token", user)
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => group_runner_a.reload.token })
+          expect(json_response).to eq({ 'token' => group_runner_a.reload.token, 'token_expires_at' => nil })
+        end.to change { group_runner_a.reload.token }
+      end
+
+      it 'resets group runner authentication token with owner access with expiration time', :freeze_time do
+        expect(group_runner_a.reload.token_expires_at).to be_nil
+
+        group.update!(runner_token_expiration_interval: 5.days)
+
+        expect do
+          post api("/runners/#{group_runner_a.id}/reset_authentication_token", user)
+          group_runner_a.reload
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response).to eq({ 'token' => group_runner_a.token, 'token_expires_at' => group_runner_a.token_expires_at.iso8601(3) })
+          expect(group_runner_a.token_expires_at).to eq(5.days.from_now)
         end.to change { group_runner_a.reload.token }
       end
     end

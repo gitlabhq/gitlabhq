@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     # rubocop: disable Style/Documentation
     class FixIncorrectMaxSeatsUsed
-      def perform
+      def perform(batch = nil)
       end
     end
   end

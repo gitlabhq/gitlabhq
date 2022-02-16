@@ -130,6 +130,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
           env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
           request_store_active: false,
           ff_use_model_load_balancing: nil,
+          ff_force_no_sharing_primary_model: false,
           expectations: {
             main: { read: 'main_replica', write: 'main' },
             ci: { read: 'ci_replica', write: 'ci' }
@@ -140,6 +141,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
           env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
           request_store_active: false,
           ff_use_model_load_balancing: nil,
+          ff_force_no_sharing_primary_model: false,
           expectations: {
             main: { read: 'main_replica', write: 'main' },
             ci: { read: 'ci_replica', write: 'main' }
@@ -150,6 +152,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
           env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
           request_store_active: false,
           ff_use_model_load_balancing: nil,
+          ff_force_no_sharing_primary_model: false,
           expectations: {
             main: { read: 'main_replica', write: 'main' },
             ci: { read: 'main_replica', write: 'main' }
@@ -160,59 +163,76 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
           env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
           request_store_active: false,
           ff_use_model_load_balancing: nil,
+          ff_force_no_sharing_primary_model: false,
           expectations: {
             main: { read: 'main_replica', write: 'main' },
             ci: { read: 'main_replica', write: 'main' }
           }
         },
-        "with FF disabled without RequestStore it uses main" => {
+        "with FF use_model_load_balancing disabled without RequestStore it uses main" => {
           env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
           env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
           request_store_active: false,
           ff_use_model_load_balancing: false,
+          ff_force_no_sharing_primary_model: false,
           expectations: {
             main: { read: 'main_replica', write: 'main' },
             ci: { read: 'main_replica', write: 'main' }
           }
         },
-        "with FF enabled without RequestStore sticking of FF does not work, so it fallbacks to use main" => {
+        "with FF use_model_load_balancing enabled without RequestStore sticking of FF does not work, so it fallbacks to use main" => {
           env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
           env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
           request_store_active: false,
           ff_use_model_load_balancing: true,
+          ff_force_no_sharing_primary_model: false,
           expectations: {
             main: { read: 'main_replica', write: 'main' },
             ci: { read: 'main_replica', write: 'main' }
           }
         },
-        "with FF disabled with RequestStore it uses main" => {
+        "with FF use_model_load_balancing disabled with RequestStore it uses main" => {
           env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
           env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
           request_store_active: true,
           ff_use_model_load_balancing: false,
+          ff_force_no_sharing_primary_model: false,
           expectations: {
             main: { read: 'main_replica', write: 'main' },
             ci: { read: 'main_replica', write: 'main' }
           }
         },
-        "with FF enabled with RequestStore it sticks FF and uses CI connection" => {
+        "with FF use_model_load_balancing enabled with RequestStore it sticks FF and uses CI connection" => {
           env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
           env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
           request_store_active: true,
           ff_use_model_load_balancing: true,
+          ff_force_no_sharing_primary_model: false,
           expectations: {
             main: { read: 'main_replica', write: 'main' },
             ci: { read: 'ci_replica', write: 'ci' }
           }
         },
-        "with re-use and FF enabled with RequestStore it sticks FF and uses CI connection for reads" => {
+        "with re-use and ff_use_model_load_balancing enabled and FF force_no_sharing_primary_model disabled with RequestStore it sticks FF and uses CI connection for reads" => {
           env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
           env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
           request_store_active: true,
           ff_use_model_load_balancing: true,
+          ff_force_no_sharing_primary_model: false,
           expectations: {
             main: { read: 'main_replica', write: 'main' },
             ci: { read: 'ci_replica', write: 'main' }
+          }
+        },
+        "with re-use and ff_use_model_load_balancing enabled and FF force_no_sharing_primary_model enabled with RequestStore it sticks FF and uses CI connection for reads" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
+          request_store_active: true,
+          ff_use_model_load_balancing: true,
+          ff_force_no_sharing_primary_model: true,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'ci_replica', write: 'ci' }
           }
         }
       }
@@ -243,6 +263,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
       around do |example|
         if request_store_active
           Gitlab::WithRequestStore.with_request_store do
+            stub_feature_flags(force_no_sharing_primary_model: ff_force_no_sharing_primary_model)
             RequestStore.clear!
 
             example.run

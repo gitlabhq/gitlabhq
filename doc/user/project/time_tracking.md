@@ -120,10 +120,6 @@ To remove all the time spent at once, use the `/remove_time_spent` [quick action
 
 You can view a breakdown of time spent on an issue or merge request.
 
-Prerequisites:
-
-- You must have at least the Reporter role for a project.
-
 To view a time tracking report:
 
 1. Go to an issue or a merge request.

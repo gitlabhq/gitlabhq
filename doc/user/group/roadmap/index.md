@@ -72,6 +72,24 @@ You can also filter epics in the Roadmap view by the epics':
 
 Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-epics).
 
+### Roadmap settings
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345158) in GitLab 14.8 [with a flag](../../../administration/feature_flags.md) named `roadmap_settings`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `roadmap_settings`.
+On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+
+When you enable the roadmap settings sidebar, you can use it to refine epics shown in the roadmap.
+
+You can configure the following:
+
+- Select date range.
+- Show all, open, or closed epics.
+- Turn progress tracking on or off and select whether it uses issue weights or counts.
+
+  The progress tracking setting is not saved in user preferences but is saved or shared using URL parameters.
+
 ## Timeline duration
 
 > - Introduced in GitLab 11.0.

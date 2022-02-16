@@ -4243,12 +4243,15 @@ msgstr ""
 msgid "ApplicationSettings|Approve users in the pending approval status?"
 msgstr ""
 
-msgid "ApplicationSettings|By making this change, you will automatically approve %d user with the pending approval status."
-msgid_plural "ApplicationSettings|By making this change, you will automatically approve %d users with the pending approval status."
+msgid "ApplicationSettings|Approve users who are pending approval?"
+msgstr ""
+
+msgid "ApplicationSettings|By making this change, you will automatically approve %d user who is pending approval."
+msgid_plural "ApplicationSettings|By making this change, you will automatically approve %d users who are pending approval."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ApplicationSettings|By making this change, you will automatically approve all users in pending approval status."
+msgid "ApplicationSettings|By making this change, you will automatically approve all users who are pending approval."
 msgstr ""
 
 msgid "ApplicationSettings|Denied domains for sign-ups"
@@ -30149,9 +30152,6 @@ msgid "Remove all or specific label(s)"
 msgstr ""
 
 msgid "Remove all or specific reviewer(s)"
-msgstr ""
-
-msgid "Remove approver"
 msgstr ""
 
 msgid "Remove approvers"

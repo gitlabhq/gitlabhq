@@ -1,12 +1,12 @@
 - name: "REST API endpoint to list group runners no longer accepts `project_type` value for `type` argument"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
-  removal_milestone: "15.0"
-  removal_date: "2022-05-22"
+  removal_milestone: "16.0"
+  removal_date: "2023-04-22"
   breaking_change: true
   reporter: pedropombeiro
   body: |
-    The `GET /groups/:id/runners?type=project_type` endpoint will be removed in GitLab 15.0. The endpoint always returned an empty collection.
+    The `GET /groups/:id/runners?type=project_type` endpoint will be removed in GitLab 16.0. The endpoint always returned an empty collection.
   stage: Verify
   tiers: [Core, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351466

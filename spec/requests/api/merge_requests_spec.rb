@@ -1005,14 +1005,6 @@ RSpec.describe API::MergeRequests do
 
     it_behaves_like 'merge requests list'
 
-    context 'when :api_caching_merge_requests is disabled' do
-      before do
-        stub_feature_flags(api_caching_merge_requests: false)
-      end
-
-      it_behaves_like 'merge requests list'
-    end
-
     it "returns 404 for non public projects" do
       project = create(:project, :private)
 

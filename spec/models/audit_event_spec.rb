@@ -97,8 +97,8 @@ RSpec.describe AuditEvent do
   describe '#author' do
     subject { audit_event.author }
 
-    context "when a runner_registration_token's present" do
-      let(:audit_event) { build(:project_audit_event, details: { target_id: 678 }) }
+    context "when the target type is not Ci::Runner" do
+      let(:audit_event) { build(:project_audit_event, target_id: 678) }
 
       it 'returns a NullAuthor' do
         expect(::Gitlab::Audit::NullAuthor).to receive(:for)
@@ -109,12 +109,12 @@ RSpec.describe AuditEvent do
       end
     end
 
-    context "when a runner_registration_token's present" do
-      let(:audit_event) { build(:project_audit_event, details: { target_id: 678, runner_registration_token: 'abc123' }) }
+    context 'when the target type is Ci::Runner and details contain runner_registration_token' do
+      let(:audit_event) { build(:project_audit_event, target_type: ::Ci::Runner.name, target_id: 678, details: { runner_registration_token: 'abc123' }) }
 
       it 'returns a CiRunnerTokenAuthor' do
         expect(::Gitlab::Audit::CiRunnerTokenAuthor).to receive(:new)
-          .with({ token: 'abc123', entity_type: 'Project', entity_path: audit_event.entity_path })
+          .with(audit_event)
           .and_call_original
           .once
 

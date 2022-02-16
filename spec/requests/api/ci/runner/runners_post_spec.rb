@@ -62,12 +62,26 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
-        it 'creates runner' do
-          request
+        context 'when token_expires_at is nil' do
+          it 'creates runner' do
+            request
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['id']).to eq(new_runner.id)
-          expect(json_response['token']).to eq(new_runner.token)
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to eq({ 'id' => new_runner.id, 'token' => new_runner.token, 'token_expires_at' => nil })
+          end
+        end
+
+        context 'when token_expires_at is a valid date' do
+          before do
+            new_runner.token_expires_at = DateTime.new(2022, 1, 11, 14, 39, 24)
+          end
+
+          it 'creates runner' do
+            request
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to eq({ 'id' => new_runner.id, 'token' => new_runner.token, 'token_expires_at' => '2022-01-11T14:39:24.000Z' })
+          end
         end
 
         it_behaves_like 'storing arguments in the application context for the API' do

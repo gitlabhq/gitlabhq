@@ -51,6 +51,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['whats_new_variant']).to eq('all_tiers')
       expect(json_response['user_deactivation_emails_enabled']).to be(true)
       expect(json_response['suggest_pipeline_enabled']).to be(true)
+      expect(json_response['runner_token_expiration_interval']).to be_nil
+      expect(json_response['group_runner_token_expiration_interval']).to be_nil
+      expect(json_response['project_runner_token_expiration_interval']).to be_nil
     end
   end
 
@@ -650,6 +653,38 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
           message = json_response['message']
           expect(message["sentry_dsn"]).to include(a_string_matching("can't be blank"))
         end
+      end
+    end
+
+    context 'runner token expiration_intervals' do
+      it 'updates the settings' do
+        put api("/application/settings", admin), params: {
+          runner_token_expiration_interval: 3600,
+          group_runner_token_expiration_interval: 3600 * 2,
+          project_runner_token_expiration_interval: 3600 * 3
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'runner_token_expiration_interval' => 3600,
+          'group_runner_token_expiration_interval' => 3600 * 2,
+          'project_runner_token_expiration_interval' => 3600 * 3
+        )
+      end
+
+      it 'updates the settings with empty values' do
+        put api("/application/settings", admin), params: {
+          runner_token_expiration_interval: nil,
+          group_runner_token_expiration_interval: nil,
+          project_runner_token_expiration_interval: nil
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'runner_token_expiration_interval' => nil,
+          'group_runner_token_expiration_interval' => nil,
+          'project_runner_token_expiration_interval' => nil
+        )
       end
     end
   end

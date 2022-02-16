@@ -679,7 +679,8 @@ Example response:
 ```json
 {
     "id": 12345,
-    "token": "6337ff461c94fd3fa32ba3b1ff4125"
+    "token": "6337ff461c94fd3fa32ba3b1ff4125",
+    "token_expires_at": "2021-09-27T21:05:03.203Z"
 }
 ```
 
@@ -819,6 +820,7 @@ Example response:
 
 ```json
 {
-    "token": "6337ff461c94fd3fa32ba3b1ff4125"
+    "token": "6337ff461c94fd3fa32ba3b1ff4125",
+    "token_expires_at": "2021-09-27T21:05:03.203Z"
 }
 ```

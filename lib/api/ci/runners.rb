@@ -143,7 +143,7 @@ module API
           authenticate_update_runner!(runner)
 
           runner.reset_token!
-          present runner.token, with: Entities::Ci::ResetTokenResult
+          present runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -249,7 +249,7 @@ module API
           authorize! :update_runners_registration_token
 
           ApplicationSetting.current.reset_runners_registration_token!
-          present ApplicationSetting.current_without_cache.runners_registration_token, with: Entities::Ci::ResetTokenResult
+          present ApplicationSetting.current_without_cache.runners_registration_token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -267,7 +267,7 @@ module API
           authorize! :update_runners_registration_token, project
 
           project.reset_runners_token!
-          present project.runners_token, with: Entities::Ci::ResetTokenResult
+          present project.runners_token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -285,7 +285,7 @@ module API
           authorize! :update_runners_registration_token, group
 
           group.reset_runners_token!
-          present group.runners_token, with: Entities::Ci::ResetTokenResult
+          present group.runners_token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
 

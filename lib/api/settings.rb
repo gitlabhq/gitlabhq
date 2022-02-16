@@ -178,6 +178,9 @@ module API
       optional :user_deactivation_emails_enabled, type: Boolean, desc: 'Send emails to users upon account deactivation'
       optional :suggest_pipeline_enabled, type: Boolean, desc: 'Enable pipeline suggestion banner'
       optional :users_get_by_id_limit, type: Integer, desc: "Maximum number of calls to the /users/:id API per 10 minutes per user. Set to 0 for unlimited requests."
+      optional :runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for shared runners, in seconds'
+      optional :group_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for group runners, in seconds'
+      optional :project_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for project runners, in seconds'
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",

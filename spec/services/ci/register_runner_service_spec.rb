@@ -85,6 +85,17 @@ RSpec.describe ::Ci::RegisterRunnerService, '#execute' do
           expect(subject.ip_address).to eq args[:ip_address]
         end
       end
+
+      context 'with runner token expiration interval', :freeze_time do
+        before do
+          stub_application_setting(runner_token_expiration_interval: 5.days)
+        end
+
+        it 'creates runner with token expiration' do
+          is_expected.to be_an_instance_of(::Ci::Runner)
+          expect(subject.token_expires_at).to eq(5.days.from_now)
+        end
+      end
     end
 
     context 'when project token is used' do

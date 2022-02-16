@@ -1024,12 +1024,12 @@ The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTren
 ### REST API Runner will not accept `status` filter values of `active` or `paused`
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 16.0
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-The GitLab Runner REST endpoints will stop accepting `paused` or `active` as a status value in GitLab 15.0.
+The GitLab Runner REST endpoints will stop accepting `paused` or `active` as a status value in GitLab 16.0.
 
 A runner's status will only relate to runner contact status, such as: `online`, `offline`.
 Status values `paused` or `active` will no longer be accepted and will be replaced by the `paused` query parameter.
@@ -1037,30 +1037,30 @@ Status values `paused` or `active` will no longer be accepted and will be replac
 When checking for paused runners, API users are advised to specify `paused=true` as the query parameter.
 When checking for active runners, specify `paused=false`.
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+**Planned removal milestone: 16.0 (2023-04-22)**
 
 ### REST API endpoint to list group runners no longer accepts `project_type` value for `type` argument
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 16.0
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-The `GET /groups/:id/runners?type=project_type` endpoint will be removed in GitLab 15.0. The endpoint always returned an empty collection.
+The `GET /groups/:id/runners?type=project_type` endpoint will be removed in GitLab 16.0. The endpoint always returned an empty collection.
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+**Planned removal milestone: 16.0 (2023-04-22)**
 
 ### REST and GraphQL API Runner usage of `active` replaced by `paused`
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 16.0
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
 Occurrences of the `active` identifier in the GitLab Runner REST and GraphQL API endpoints will be
-renamed to `paused` in GitLab 15.0, namely:
+renamed to `paused` in GitLab 16.0, namely:
 
 - GraphQL API:
   - the `CiRunner` property;
@@ -1075,11 +1075,11 @@ renamed to `paused` in GitLab 15.0, namely:
     - `GET /projects/:id/runners` / `POST /projects/:id/runners`
     - `GET /groups/:id/runners`
 
-The 15.0 release of the GitLab Runner will start using the `paused` property when registering runners, and therefore
-will only be compatible with GitLab 15.0 and later. Until 15.0, GitLab will accept the deprecated `active` flag from
+The 16.0 release of the GitLab Runner will start using the `paused` property when registering runners, and therefore
+will only be compatible with GitLab 16.0 and later. Until 16.0, GitLab will accept the deprecated `active` flag from
 existing runners.
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+**Planned removal milestone: 16.0 (2023-04-22)**
 
 ### Reminder: support for NFS repository storage
 
