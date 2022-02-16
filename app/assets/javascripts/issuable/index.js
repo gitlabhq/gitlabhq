@@ -97,6 +97,7 @@ export function initIssuableHeaderWarnings(store) {
 
   return new Vue({
     el,
+    name: 'IssuableHeaderWarningsRoot',
     store,
     provide: { hidden: parseBoolean(hidden) },
     render: (createElement) => createElement(IssuableHeaderWarnings),

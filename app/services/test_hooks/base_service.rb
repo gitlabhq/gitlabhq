@@ -18,7 +18,7 @@ module TestHooks
       return error('Testing not available for this hook') if trigger_key.nil? || data.blank?
       return error(data[:error]) if data[:error].present?
 
-      hook.execute(data, trigger_key)
+      hook.execute(data, trigger_key, force: true)
     end
   end
 end

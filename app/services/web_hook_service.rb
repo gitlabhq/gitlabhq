@@ -34,11 +34,12 @@ class WebHookService
     hook_name.to_s.singularize.titleize
   end
 
-  def initialize(hook, data, hook_name, uniqueness_token = nil)
+  def initialize(hook, data, hook_name, uniqueness_token = nil, force: false)
     @hook = hook
     @data = data
     @hook_name = hook_name.to_s
     @uniqueness_token = uniqueness_token
+    @force = force
     @request_options = {
       timeout: Gitlab.config.gitlab.webhook_timeout,
       use_read_total_timeout: true,
@@ -46,8 +47,12 @@ class WebHookService
     }
   end
 
+  def disabled?
+    !@force && !hook.executable?
+  end
+
   def execute
-    return { status: :error, message: 'Hook disabled' } unless hook.executable?
+    return { status: :error, message: 'Hook disabled' } if disabled?
 
     if recursion_blocked?
       log_recursion_blocked
@@ -148,8 +153,12 @@ class WebHookService
       internal_error_message: error_message
     }
 
-    ::WebHooks::LogExecutionWorker
-      .perform_async(hook.id, log_data, category, uniqueness_token)
+    if @force # executed as part of test - run log-execution inline.
+      ::WebHooks::LogExecutionService.new(hook: hook, log_data: log_data, response_category: category).execute
+    else
+      ::WebHooks::LogExecutionWorker
+        .perform_async(hook.id, log_data, category, uniqueness_token)
+    end
   end
 
   def response_category(response)

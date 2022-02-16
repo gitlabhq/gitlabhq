@@ -1026,4 +1026,26 @@ RSpec.describe ProjectsHelper do
       end
     end
   end
+
+  describe '#import_from_bitbucket_message' do
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'as a user' do
+      it 'returns a link to contact an administrator' do
+        allow(user).to receive(:admin?).and_return(false)
+
+        expect(helper.import_from_bitbucket_message).to have_text('To enable importing projects from Bitbucket, ask your GitLab administrator to configure OAuth integration')
+      end
+    end
+
+    context 'as an administrator' do
+      it 'returns a link to configure bitbucket' do
+        allow(user).to receive(:admin?).and_return(true)
+
+        expect(helper.import_from_bitbucket_message).to have_text('To enable importing projects from Bitbucket, as administrator you need to configure OAuth integration')
+      end
+    end
+  end
 end

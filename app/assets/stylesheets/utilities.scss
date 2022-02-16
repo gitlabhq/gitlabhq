@@ -200,6 +200,12 @@
   }
 }
 
+.gl-xl-ml-3 {
+  @include media-breakpoint-up(lg) {
+    margin-left: $gl-spacing-scale-3;
+  }
+}
+
 .gl-mb-n3 {
   margin-bottom: -$gl-spacing-scale-3;
 }

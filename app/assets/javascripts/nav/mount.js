@@ -12,6 +12,7 @@ const mount = (el, Component) => {
 
   return new Vue({
     el,
+    name: 'TopNavRoot',
     store,
     render(h) {
       return h(Component, {

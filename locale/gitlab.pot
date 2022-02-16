@@ -12869,6 +12869,9 @@ msgstr ""
 msgid "Display name"
 msgstr ""
 
+msgid "Display progress of child issues"
+msgstr ""
+
 msgid "Display rendered file"
 msgstr ""
 

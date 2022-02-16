@@ -36,20 +36,21 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show] do
     push_frontend_feature_flag(:file_identifier_hash)
-    push_frontend_feature_flag(:merge_request_widget_graphql, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:default_merge_ref_for_diffs, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:core_security_mr_widget_counts, @project)
-    push_frontend_feature_flag(:paginated_notes, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:merge_request_widget_graphql, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:default_merge_ref_for_diffs, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:core_security_mr_widget_counts, project)
+    push_frontend_feature_flag(:paginated_notes, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:confidential_notes, project, default_enabled: :yaml)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:refactor_mr_widgets_extensions, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:rebase_without_ci_ui, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:refactor_mr_widgets_extensions, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:rebase_without_ci_ui, project, default_enabled: :yaml)
     push_frontend_feature_flag(:rearrange_pipelines_table, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:markdown_continue_lists, project, default_enabled: :yaml)
     # Usage data feature flags
-    push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:users_expanding_widgets_usage_data, project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
-    push_frontend_feature_flag(:usage_data_diff_searches, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:usage_data_diff_searches, project, default_enabled: :yaml)
   end
 
   before_action do

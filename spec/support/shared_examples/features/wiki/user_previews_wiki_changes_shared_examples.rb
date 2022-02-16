@@ -85,7 +85,9 @@ RSpec.shared_examples 'User previews wiki changes' do
     end
 
     it 'renders content with CommonMark' do
-      fill_in :wiki_content, with: "1. one\n  - sublist\n"
+      # using two `\n` ensures we're sublist to it's own line due
+      # to list auto-continue
+      fill_in :wiki_content, with: "1. one\n\n  - sublist\n"
       click_on "Preview"
 
       # the above generates two separate lists (not embedded) in CommonMark

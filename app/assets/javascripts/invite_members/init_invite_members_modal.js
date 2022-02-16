@@ -28,6 +28,7 @@ export default function initInviteMembersModal() {
 
   return new Vue({
     el,
+    name: 'InviteMembersModalRoot',
     provide: {
       newProjectPath: el.dataset.newProjectPath,
     },

@@ -22,13 +22,11 @@
 
       - if bitbucket_import_enabled?
         %div
-          = link_to status_import_bitbucket_path, class: "gl-button btn-default btn import_bitbucket js-import-project-btn #{'how_to_import_link' unless bitbucket_import_configured?}",
-          data: { platform: 'bitbucket_cloud', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_cloud') } do
+          = link_to status_import_bitbucket_path, class: "gl-button btn-default btn import_bitbucket js-import-project-btn #{'js-how-to-import-link' unless bitbucket_import_configured?}",
+          data: { modal_title: _("Import projects from Bitbucket"), modal_message: import_from_bitbucket_message, platform: 'bitbucket_cloud', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_cloud') } do
             .gl-button-icon
               = sprite_icon('bitbucket')
             Bitbucket Cloud
-          - unless bitbucket_import_configured?
-            = render 'projects/bitbucket_import_modal'
       - if bitbucket_server_import_enabled?
         %div
           = link_to status_import_bitbucket_server_path, class: "gl-button btn-default btn import_bitbucket js-import-project-btn", data: { platform: 'bitbucket_server', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_server') } do

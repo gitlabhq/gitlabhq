@@ -32,7 +32,7 @@ RSpec.describe TestHooks::SystemService do
       it 'executes hook' do
         expect(Gitlab::DataBuilder::Push).to receive(:sample_data).and_call_original
 
-        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Push::SAMPLE_DATA, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Push::SAMPLE_DATA, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -45,7 +45,7 @@ RSpec.describe TestHooks::SystemService do
         allow(project.repository).to receive(:tags).and_return(['tag'])
         expect(Gitlab::DataBuilder::Push).to receive(:sample_data).and_call_original
 
-        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Push::SAMPLE_DATA, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Push::SAMPLE_DATA, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe TestHooks::SystemService do
       it 'executes hook' do
         expect(Gitlab::DataBuilder::Repository).to receive(:sample_data).and_call_original
 
-        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Repository::SAMPLE_DATA, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Repository::SAMPLE_DATA, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -76,7 +76,7 @@ RSpec.describe TestHooks::SystemService do
       it 'executes hook' do
         expect(MergeRequest).to receive(:of_projects).and_return([merge_request])
         expect(merge_request).to receive(:to_hook_data).and_return(sample_data)
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end

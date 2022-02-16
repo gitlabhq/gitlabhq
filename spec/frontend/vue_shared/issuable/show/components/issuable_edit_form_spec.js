@@ -36,6 +36,7 @@ describe('IssuableEditForm', () => {
 
   beforeEach(() => {
     wrapper = createComponent();
+    gon.features = { markdownContinueLists: true };
   });
 
   afterEach(() => {

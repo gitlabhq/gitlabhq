@@ -24,6 +24,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'DesignRoot',
     router,
     apolloProvider,
     provide: {

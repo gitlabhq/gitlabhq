@@ -8,6 +8,7 @@ export default (store) => {
 
   return new Vue({
     el,
+    name: 'SortDiscussionRoot',
     store,
     render(createElement) {
       return createElement(SortDiscussion);

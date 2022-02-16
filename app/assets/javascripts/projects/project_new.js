@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import { debounce } from 'lodash';
 import DEFAULT_PROJECT_TEMPLATES from 'ee_else_ce/projects/default_project_templates';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '../lib/utils/constants';
 import axios from '../lib/utils/axios_utils';
 import {
@@ -105,6 +106,21 @@ const deriveProjectPathFromUrl = ($projectImportUrl) => {
 };
 
 const bindHowToImport = () => {
+  const importLinks = document.querySelectorAll('.js-how-to-import-link');
+
+  importLinks.forEach((link) => {
+    const { modalTitle: title, modalMessage: modalHtmlMessage } = link.dataset;
+
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      confirmAction('', {
+        modalHtmlMessage,
+        title,
+        hideCancel: true,
+      });
+    });
+  });
+
   $('.how_to_import_link').on('click', (e) => {
     e.preventDefault();
     $(e.currentTarget).next('.modal').show();

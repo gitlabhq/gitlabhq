@@ -44,6 +44,7 @@ export function initIncidentApp(issueData = {}) {
 
   return new Vue({
     el,
+    name: 'DescriptionRoot',
     apolloProvider,
     provide: {
       issueType: INCIDENT_TYPE,
@@ -86,6 +87,7 @@ export function initIssueApp(issueData, store) {
 
   return new Vue({
     el,
+    name: 'DescriptionRoot',
     apolloProvider,
     store,
     provide: {
@@ -123,6 +125,7 @@ export function initHeaderActions(store, type = '') {
 
   return new Vue({
     el,
+    name: 'HeaderActionsRoot',
     apolloProvider,
     store,
     provide: {

@@ -404,4 +404,47 @@ RSpec.describe 'New project', :js do
       end
     end
   end
+
+  context 'from Bitbucket', :js do
+    shared_examples 'has a link to bitbucket cloud' do
+      context 'when bitbucket is not configured' do
+        before do
+          allow(Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(Gitlab::Auth::OAuth::Provider)
+            .to receive(:enabled?).with(:bitbucket)
+            .and_return(false)
+
+          visit new_project_path
+          click_link 'Import project'
+          click_link 'Bitbucket Cloud'
+        end
+
+        it 'shows import instructions' do
+          expect(find('.modal-body')).to have_content(bitbucket_link_content)
+        end
+      end
+    end
+
+    context 'as a user' do
+      let(:user) { create(:user) }
+      let(:bitbucket_link_content) { 'To enable importing projects from Bitbucket, ask your GitLab administrator to configure OAuth integration' }
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'has a link to bitbucket cloud'
+    end
+
+    context 'as an admin' do
+      let(:user) { create(:admin) }
+      let(:bitbucket_link_content) { 'To enable importing projects from Bitbucket, as administrator you need to configure OAuth integration' }
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'has a link to bitbucket cloud'
+    end
+  end
 end

@@ -5,6 +5,12 @@ import { insertText } from '~/lib/utils/common_utils';
 
 const LINK_TAG_PATTERN = '[{text}](url)';
 
+// at the start of a line, find any amount of whitespace followed by
+// a bullet point character (*+-) and an optional checkbox ([ ] [x])
+// OR a number with a . after it and an optional checkbox ([ ] [x])
+// followed by one or more whitespace characters
+const LIST_LINE_HEAD_PATTERN = /^(?<indent>\s*)(?<leader>((?<isOl>[*+-])|(?<isUl>\d+\.))( \[([x ])\])?\s)(?<content>.)?/;
+
 function selectedText(text, textarea) {
   return text.substring(textarea.selectionStart, textarea.selectionEnd);
 }
@@ -13,8 +19,15 @@ function addBlockTags(blockTag, selected) {
   return `${blockTag}\n${selected}\n${blockTag}`;
 }
 
-function lineBefore(text, textarea) {
-  const split = text.substring(0, textarea.selectionStart).trim().split('\n');
+function lineBefore(text, textarea, trimNewlines = true) {
+  let split = text.substring(0, textarea.selectionStart);
+
+  if (trimNewlines) {
+    split = split.trim();
+  }
+
+  split = split.split('\n');
+
   return split[split.length - 1];
 }
 
@@ -284,9 +297,9 @@ function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagCo
 }
 
 /* eslint-disable @gitlab/require-i18n-strings */
-export function keypressNoteText(e) {
+function handleSurroundSelectedText(e, textArea) {
   if (!gon.markdown_surround_selection) return;
-  if (this.selectionStart === this.selectionEnd) return;
+  if (textArea.selectionStart === textArea.selectionEnd) return;
 
   const keys = {
     '*': '**{text}**', // wraps with bold character
@@ -306,7 +319,7 @@ export function keypressNoteText(e) {
 
     updateText({
       tag,
-      textArea: this,
+      textArea,
       blockTag: '',
       wrap: true,
       select: '',
@@ -315,6 +328,48 @@ export function keypressNoteText(e) {
   }
 }
 /* eslint-enable @gitlab/require-i18n-strings */
+
+function handleContinueList(e, textArea) {
+  if (!gon.features?.markdownContinueLists) return;
+  if (!(e.key === 'Enter')) return;
+  if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+  if (textArea.selectionStart !== textArea.selectionEnd) return;
+
+  const currentLine = lineBefore(textArea.value, textArea, false);
+  const result = currentLine.match(LIST_LINE_HEAD_PATTERN);
+
+  if (result) {
+    const { indent, content, leader } = result.groups;
+    const prevLineEmpty = !content;
+
+    if (prevLineEmpty) {
+      // erase previous empty list item - select the text and allow the
+      // natural line feed erase the text
+      textArea.selectionStart = textArea.selectionStart - result[0].length;
+      return;
+    }
+
+    const itemInsert = `${indent}${leader}`;
+
+    e.preventDefault();
+
+    updateText({
+      tag: itemInsert,
+      textArea,
+      blockTag: '',
+      wrap: false,
+      select: '',
+      tagContent: '',
+    });
+  }
+}
+
+export function keypressNoteText(e) {
+  const textArea = this;
+
+  handleContinueList(e, textArea);
+  handleSurroundSelectedText(e, textArea);
+}
 
 export function updateTextForToolbarBtn($toolbarBtn) {
   return updateText({

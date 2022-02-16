@@ -165,6 +165,80 @@ describe('init markdown', () => {
         // cursor placement should be between tags
         expect(textArea.selectionStart).toBe(start.length + tag.length);
       });
+
+      describe('Continuing markdown lists', () => {
+        const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+
+        beforeEach(() => {
+          gon.features = { markdownContinueLists: true };
+        });
+
+        it.each`
+          text                           | expected
+          ${'- item'}                    | ${'- item\n- '}
+          ${'- [ ] item'}                | ${'- [ ] item\n- [ ] '}
+          ${'- [x] item'}                | ${'- [x] item\n- [x] '}
+          ${'- item\n  - second'}        | ${'- item\n  - second\n  - '}
+          ${'1. item'}                   | ${'1. item\n1. '}
+          ${'1. [ ] item'}               | ${'1. [ ] item\n1. [ ] '}
+          ${'1. [x] item'}               | ${'1. [x] item\n1. [x] '}
+          ${'108. item'}                 | ${'108. item\n108. '}
+          ${'108. item\n     - second'}  | ${'108. item\n     - second\n     - '}
+          ${'108. item\n     1. second'} | ${'108. item\n     1. second\n     1. '}
+        `('adds correct list continuation characters', ({ text, expected }) => {
+          textArea.value = text;
+          textArea.setSelectionRange(text.length, text.length);
+
+          textArea.addEventListener('keydown', keypressNoteText);
+          textArea.dispatchEvent(enterEvent);
+
+          expect(textArea.value).toEqual(expected);
+          expect(textArea.selectionStart).toBe(expected.length);
+        });
+
+        // test that when pressing Enter on an empty list item, the empty
+        // list item text is selected, so that when the Enter propagates,
+        // it's removed
+        it.each`
+          text                                     | expected
+          ${'- item\n- '}                          | ${'- item\n'}
+          ${'- [ ] item\n- [ ] '}                  | ${'- [ ] item\n'}
+          ${'- [x] item\n- [x] '}                  | ${'- [x] item\n'}
+          ${'- item\n  - second\n  - '}            | ${'- item\n  - second\n'}
+          ${'1. item\n1. '}                        | ${'1. item\n'}
+          ${'1. [ ] item\n1. [ ] '}                | ${'1. [ ] item\n'}
+          ${'1. [x] item\n1. [x] '}                | ${'1. [x] item\n'}
+          ${'108. item\n108. '}                    | ${'108. item\n'}
+          ${'108. item\n     - second\n     - '}   | ${'108. item\n     - second\n'}
+          ${'108. item\n     1. second\n     1. '} | ${'108. item\n     1. second\n'}
+        `('adds correct list continuation characters', ({ text, expected }) => {
+          textArea.value = text;
+          textArea.setSelectionRange(text.length, text.length);
+
+          textArea.addEventListener('keydown', keypressNoteText);
+          textArea.dispatchEvent(enterEvent);
+
+          expect(textArea.value.substr(0, textArea.selectionStart)).toEqual(expected);
+          expect(textArea.selectionStart).toBe(expected.length);
+          expect(textArea.selectionEnd).toBe(text.length);
+        });
+
+        it('does nothing if feature flag disabled', () => {
+          gon.features = { markdownContinueLists: false };
+
+          const text = '- item';
+          const expected = '- item';
+
+          textArea.value = text;
+          textArea.setSelectionRange(text.length, text.length);
+
+          textArea.addEventListener('keydown', keypressNoteText);
+          textArea.dispatchEvent(enterEvent);
+
+          expect(textArea.value).toEqual(expected);
+          expect(textArea.selectionStart).toBe(expected.length);
+        });
+      });
     });
 
     describe('with selection', () => {

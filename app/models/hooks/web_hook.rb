@@ -50,8 +50,9 @@ class WebHook < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def execute(data, hook_name)
-    WebHookService.new(self, data, hook_name).execute if executable?
+  def execute(data, hook_name, force: false)
+    # hook.executable? is checked in WebHookService#execute
+    WebHookService.new(self, data, hook_name, force: force).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
 

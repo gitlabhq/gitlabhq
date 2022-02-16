@@ -25,6 +25,7 @@ describe('Description field component', () => {
 
   beforeEach(() => {
     jest.spyOn(eventHub, '$emit');
+    gon.features = { markdownContinueLists: true };
   });
 
   afterEach(() => {

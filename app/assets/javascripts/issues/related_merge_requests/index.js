@@ -13,6 +13,7 @@ export function initRelatedMergeRequests() {
 
   return new Vue({
     el,
+    name: 'RelatedMergeRequestsRoot',
     store: createStore(),
     render: (createElement) =>
       createElement(RelatedMergeRequests, {

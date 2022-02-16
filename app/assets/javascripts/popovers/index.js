@@ -13,7 +13,7 @@ const getPopoversApp = () => {
     document.body.appendChild(container);
 
     const Popovers = Vue.extend(PopoversComponent);
-    app = new Popovers();
+    app = new Popovers({ name: 'PopoversRoot' });
     app.$mount(`#${APP_ELEMENT_ID}`);
   }
 

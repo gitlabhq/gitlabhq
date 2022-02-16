@@ -31,6 +31,10 @@ describe('Design reply form component', () => {
     });
   }
 
+  beforeEach(() => {
+    gon.features = { markdownContinueLists: true };
+  });
+
   afterEach(() => {
     wrapper.destroy();
   });

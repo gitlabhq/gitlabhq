@@ -57,6 +57,7 @@ function mountSidebarToDoWidget() {
 
   return new Vue({
     el,
+    name: 'SidebarTodoRoot',
     apolloProvider,
     components: {
       SidebarTodoWidget,
@@ -103,6 +104,7 @@ function mountAssigneesComponentDeprecated(mediator) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarAssigneesRoot',
     apolloProvider,
     components: {
       SidebarAssignees,
@@ -135,6 +137,7 @@ function mountAssigneesComponent() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarAssigneesRoot',
     apolloProvider,
     components: {
       SidebarAssigneesWidget,
@@ -185,6 +188,7 @@ function mountReviewersComponent(mediator) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarReviewersRoot',
     apolloProvider,
     components: {
       SidebarReviewers,
@@ -218,6 +222,7 @@ function mountCrmContactsComponent() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarCrmContactsRoot',
     apolloProvider,
     components: {
       CrmContacts,
@@ -242,6 +247,7 @@ function mountMilestoneSelect() {
 
   return new Vue({
     el,
+    name: 'SidebarMilestoneRoot',
     apolloProvider,
     components: {
       SidebarDropdownWidget,
@@ -274,6 +280,7 @@ export function mountSidebarLabels() {
 
   return new Vue({
     el,
+    name: 'SidebarLabelsRoot',
     apolloProvider,
 
     components: {
@@ -328,6 +335,7 @@ function mountConfidentialComponent() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarConfidentialRoot',
     apolloProvider,
     components: {
       SidebarConfidentialityWidget,
@@ -362,6 +370,7 @@ function mountDueDateComponent() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarDueDateRoot',
     apolloProvider,
     components: {
       SidebarDueDateWidget,
@@ -392,6 +401,7 @@ function mountReferenceComponent() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarReferenceRoot',
     apolloProvider,
     components: {
       SidebarReferenceWidget,
@@ -428,6 +438,7 @@ function mountLockComponent(store) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarLockRoot',
     store,
     provide: {
       fullPath,
@@ -451,6 +462,7 @@ function mountParticipantsComponent() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarParticipantsRoot',
     apolloProvider,
     components: {
       SidebarParticipantsWidget,
@@ -479,6 +491,7 @@ function mountSubscriptionsComponent() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarSubscriptionsRoot',
     apolloProvider,
     components: {
       SidebarSubscriptionsWidget,
@@ -509,6 +522,7 @@ function mountTimeTrackingComponent() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarTimeTrackingRoot',
     apolloProvider,
     provide: { issuableType },
     render: (createElement) =>
@@ -534,6 +548,7 @@ function mountSeverityComponent() {
 
   return new Vue({
     el: severityContainerEl,
+    name: 'SidebarSeverityRoot',
     apolloProvider,
     components: {
       SidebarSeverity,
@@ -562,6 +577,7 @@ function mountCopyEmailComponent() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SidebarCopyEmailRoot',
     render: (createElement) =>
       createElement(CopyEmailToClipboard, { props: { issueEmailAddress: createNoteEmail } }),
   });

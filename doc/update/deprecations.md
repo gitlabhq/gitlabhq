@@ -867,6 +867,68 @@ To align with this change, API calls to list external status checks will also re
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### GraphQL ID and GlobalID compatibility
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+We are removing a non-standard extension to our GraphQL processor, which we added for backwards compatibility. This extension modifies the validation of GraphQL queries, allowing the use of the `ID` type for arguments where it would normally be rejected.
+Some arguments originally had the type `ID`. These were changed to specific
+kinds of `ID`. This change may be a breaking change if you:
+
+- Use GraphQL.
+- Use the `ID` type for any argument in your query signatures.
+
+Some field arguments still have the `ID` type. These are typically for
+IID values, or namespace paths. An example is `Query.project(fullPath: ID!)`.
+
+For a list of affected and unaffected field arguments,
+see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352832).
+
+You can test if this change affects you by validating
+your queries locally, using schema data fetched from a GitLab server.
+You can do this by using the GraphQL explorer tool for the relevant GitLab
+instance. For example: `https://gitlab.com/-/graphql-explorer`.
+
+For example, the following query illustrates the breaking change:
+
+```graphql
+# a query using the deprecated type of Query.issue(id:)
+# WARNING: This will not work after GitLab 15.0
+query($id: ID!) {
+  deprecated: issue(id: $id) {
+    title, description
+  }
+}
+```
+
+The query above will not work after GitLab 15.0 is released, because the type
+of `Query.issue(id:)` is actually `IssueID!`.
+
+Instead, you should use one of the following two forms:
+
+```graphql
+# This will continue to work
+query($id: IssueID!) {
+  a: issue(id: $id) {
+    title, description
+  }
+  b: issue(id: "gid://gitlab/Issue/12345") {
+    title, description
+  }
+}
+```
+
+This query works now, and will continue to work after GitLab 15.0.
+You should convert any queries in the first form (using `ID` as a named type in the signature)
+to one of the other two forms (using the correct appropriate type in the signature, or using
+an inline argument expression).
+
+**Planned removal milestone: 15.0 (2022-04-22)**
+
 ### OAuth tokens without expiration
 
 WARNING:
@@ -1079,6 +1141,88 @@ changes to your code, settings, or workflow.
 As of 14.8 the retire.js job is being deprecated from Dependency Scanning. It will continue to be included in our CI/CD template while deprecated. We are removing retire.js from Dependency Scanning on May 22, 2022 in GitLab 15.0. JavaScript scanning functionality will not be affected as it is still being covered by Gemnasium.
 
 If you have explicitly excluded retire.js using DS_EXCLUDED_ANALYZERS you will need to clean up (remove the reference) in 15.0. If you have customized your pipeline's Dependency Scanning configuration related to the `retire-js-dependency_scanning` job you will want to switch to gemnasium-dependency_scanning before the removal in 15.0, to prevent your pipeline from failing. If you have not used the DS_EXCLUDED_ANALYZERS to reference retire.js, or customized your template specifically for retire.js, you will not need to take action.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### SAST analyzer consolidation and CI/CD template changes
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
+
+We are reducing the number of analyzers used in GitLab SAST as part of our long-term strategy to deliver a better and more consistent user experience.
+Streamlining the set of analyzers will also enable faster [iteration](https://about.gitlab.com/handbook/values/#iteration), better [results](https://about.gitlab.com/handbook/values/#results), and greater [efficiency](https://about.gitlab.com/handbook/values/#results) (including a reduction in CI runner usage in most cases).
+
+In GitLab 15.0, GitLab SAST will no longer use the following analyzers:
+
+- [ESLint](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (JavaScript, TypeScript, React)
+- [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Go)
+- [Bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Python)
+
+These analyzers will be removed from the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replaced with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+They will no longer receive routine updates, except for security issues.
+We will not delete container images previously published for these analyzers; any such change would be announced as a [deprecation, removal, or breaking change announcement](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+
+We will also remove Java from the scope of the [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) analyzer and replace it with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+This change will make it simpler to scan Java code; compilation will no longer be required.
+This change will be reflected in the automatic language detection portion of the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml).
+
+If you applied customizations to any of the affected analyzers, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352554#breaking-change).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### SAST support for .NET 2.1
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The GitLab SAST Security Code Scan analyzer scans .NET code for security vulnerabilities.
+For technical reasons, the analyzer must first build the code to scan it.
+
+In GitLab versions prior to 15.0, the default analyzer image (version 2) includes support for:
+
+- .NET 2.1
+- .NET 3.0 and .NET Core 3.0
+- .NET Core 3.1
+- .NET 5.0
+
+In GitLab 15.0, we will change the default major version for this analyzer from version 2 to version 3. This change:
+
+- Adds [severity values for vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/issues/350408) along with [other new features and improvements](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/blob/master/CHANGELOG.md).
+- Removes .NET 2.1 support.
+- Adds support for .NET 6.0, Visual Studio 2019, and Visual Studio 2022.
+
+Version 3 was [announced in GitLab 14.6](https://about.gitlab.com/releases/2021/12/22/gitlab-14-6-released/#sast-support-for-net-6) and made available as an optional upgrade.
+
+If you rely on .NET 2.1 support being present in the analyzer image by default, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352553#breaking-change).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Secret Detection configuration variables deprecated
+
+To make it simpler and more reliable to [customize GitLab Secret Detection](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings), we're deprecating some of the variables that you could previously set in your CI/CD configuration.
+
+The following variables currently allow you to customize the options for historical scanning, but interact poorly with the [GitLab-managed CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml) and are now deprecated:
+
+- `SECRET_DETECTION_COMMIT_FROM`
+- `SECRET_DETECTION_COMMIT_TO`
+- `SECRET_DETECTION_COMMITS`
+- `SECRET_DETECTION_COMMITS_FILE`
+
+The `SECRET_DETECTION_ENTROPY_LEVEL` previously allowed you to configure rules that only considered the entropy level of strings in your codebase, and is now deprecated.
+This type of entropy-only rule created an unacceptable number of incorrect results (false positives) and is no longer supported.
+
+In GitLab 15.0, we'll update the Secret Detection [analyzer](https://docs.gitlab.com/ee/user/application_security/terminology/#analyzer) to ignore these deprecated options.
+You'll still be able to configure historical scanning of your commit history by setting the [`SECRET_DETECTION_HISTORIC_SCAN` CI/CD variable](https://docs.gitlab.com/ee/user/application_security/secret_detection/#available-cicd-variables).
+
+For further details, see [the deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352565).
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 

@@ -12,6 +12,7 @@ export default (el) => {
 
   return new Vue({
     el,
+    name: 'AwardsListRoot',
     store: createstore(),
     computed: {
       ...mapState(['currentUserId', 'canAwardEmoji', 'awards']),

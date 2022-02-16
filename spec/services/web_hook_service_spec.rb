@@ -52,6 +52,25 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
     end
   end
 
+  describe '#disabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.new(hook, data, :push_hooks, force: forced) }
+
+    let(:hook) { double(executable?: executable, allow_local_requests?: false) }
+
+    where(:forced, :executable, :disabled) do
+      false | true | false
+      false | false | true
+      true | true | false
+      true | false | false
+    end
+
+    with_them do
+      it { is_expected.to have_attributes(disabled?: disabled) }
+    end
+  end
+
   describe '#execute' do
     let!(:uuid) { SecureRandom.uuid }
     let(:headers) do
@@ -129,7 +148,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
     end
 
     it 'does not execute disabled hooks' do
-      project_hook.update!(recent_failures: 4)
+      allow(service_instance).to receive(:disabled?).and_return(true)
 
       expect(service_instance.execute).to eq({ status: :error, message: 'Hook disabled' })
     end
@@ -249,6 +268,20 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
       context 'with success' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
+        end
+
+        context 'when forced' do
+          let(:service_instance) { described_class.new(project_hook, data, :push_hooks, force: true) }
+
+          it 'logs execution inline' do
+            expect(::WebHooks::LogExecutionWorker).not_to receive(:perform_async)
+            expect(::WebHooks::LogExecutionService)
+              .to receive(:new)
+              .with(hook: project_hook, log_data: Hash, response_category: :ok)
+              .and_return(double(execute: nil))
+
+            run_service
+          end
         end
 
         it 'log successful execution' do

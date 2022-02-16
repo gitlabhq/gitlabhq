@@ -8,7 +8,7 @@ export default function initRelatedIssues() {
     // eslint-disable-next-line no-new
     new Vue({
       el: relatedIssuesRootElement,
-      name: 'RelatedIssuesApp',
+      name: 'RelatedIssuesRoot',
       components: {
         relatedIssuesRoot: RelatedIssuesRoot,
       },
