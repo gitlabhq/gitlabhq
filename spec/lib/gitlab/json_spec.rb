@@ -440,15 +440,5 @@ RSpec.describe Gitlab::Json do
         expect(subject.size).to eq(10001)
       end
     end
-
-    context 'when json_limited_encoder is disabled' do
-      let(:obj) { [{ test: true }] * 1000 }
-
-      it 'does not raise an error' do
-        stub_feature_flags(json_limited_encoder: false)
-
-        expect { subject }.not_to raise_error
-      end
-    end
   end
 end

@@ -248,8 +248,6 @@ module Gitlab
       # @return [String]
       # @raise [LimitExceeded] if the resulting json string is bigger than the specified limit
       def self.encode(object, limit: 25.megabytes)
-        return ::Gitlab::Json.dump(object) unless Feature.enabled?(:json_limited_encoder, default_enabled: :yaml)
-
         buffer = StringIO.new
         buffer_size = 0
 

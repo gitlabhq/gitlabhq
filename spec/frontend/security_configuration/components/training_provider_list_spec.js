@@ -4,6 +4,11 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import {
+  TRACK_TOGGLE_TRAINING_PROVIDER_ACTION,
+  TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
+} from '~/security_configuration/constants';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
 import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
 import configureSecurityTrainingProvidersMutation from '~/security_configuration/graphql/configure_security_training_providers.mutation.graphql';
@@ -195,6 +200,36 @@ describe('TrainingProviderList component', () => {
             mutation: configureSecurityTrainingProvidersMutation,
           }),
         );
+      });
+    });
+
+    describe('metrics', () => {
+      let trackingSpy;
+
+      beforeEach(() => {
+        trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+      });
+
+      afterEach(() => {
+        unmockTracking();
+      });
+
+      it('tracks when a provider gets toggled', () => {
+        expect(trackingSpy).not.toHaveBeenCalled();
+
+        toggleFirstProvider();
+
+        // Note: Ideally we also want to test that the tracking event is called correctly when a
+        // provider gets disabled, but that's a bit tricky to do with the current implementation
+        // Once https://gitlab.com/gitlab-org/gitlab/-/issues/348985 and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79492
+        // are merged this will be much easer to do and should be tackled then.
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, TRACK_TOGGLE_TRAINING_PROVIDER_ACTION, {
+          property: securityTrainingProviders[0].id,
+          label: TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
+          extra: {
+            providerIsEnabled: true,
+          },
+        });
       });
     });
   });

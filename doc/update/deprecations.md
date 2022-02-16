@@ -727,6 +727,15 @@ The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/
 
 ## 14.8
 
+### Configurable Gitaly `per_repository` election strategy
+
+Configuring the `per_repository` Gitaly election strategy is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352612).
+`per_repository` has been the only option since GitLab 14.0.
+
+This change is part of regular maintenance to keep our codebase clean.
+
+**Planned removal milestone: 14.9 (2022-03-22)**
+
 ### Container Network and Host Security
 
 WARNING:

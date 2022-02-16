@@ -637,7 +637,7 @@ To restrict group access by IP address:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. In the **Allow access to the following IP addresses** field, enter IP address ranges in CIDR notation.
+1. In the **Allow access to the following IP addresses** field, enter IPv4 or IPv6 address ranges in CIDR notation.
 1. Select **Save changes**.
 
    ![Domain restriction by IP address](img/restrict-by-ip.gif)

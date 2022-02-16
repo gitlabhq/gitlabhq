@@ -1,7 +1,12 @@
 <script>
 import { GlAlert, GlCard, GlToggle, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+import Tracking from '~/tracking';
 import { __ } from '~/locale';
+import {
+  TRACK_TOGGLE_TRAINING_PROVIDER_ACTION,
+  TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
+} from '~/security_configuration/constants';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import securityTrainingProvidersQuery from '../graphql/security_training_providers.query.graphql';
 import configureSecurityTrainingProvidersMutation from '../graphql/configure_security_training_providers.mutation.graphql';
@@ -23,6 +28,7 @@ export default {
     GlLink,
     GlSkeletonLoader,
   },
+  mixins: [Tracking.mixin()],
   inject: ['projectFullPath'],
   apollo: {
     securityTrainingProviders: {
@@ -93,9 +99,14 @@ export default {
         .filter(({ isEnabled }) => isEnabled)
         .map(({ id }) => id);
 
-      this.storeEnabledProviders(toggledProviders, enabledProviderIds);
+      const { isEnabled: selectedProviderIsEnabled } = toggledProviders.find(
+        (provider) => provider.id === selectedProviderId,
+      );
+
+      this.trackProviderToggle(selectedProviderId, selectedProviderIsEnabled);
+      this.storeEnabledProviders(enabledProviderIds);
     },
-    async storeEnabledProviders(toggledProviders, enabledProviderIds) {
+    async storeEnabledProviders(enabledProviderIds) {
       this.toggleLoading = true;
 
       try {
@@ -124,6 +135,15 @@ export default {
       } finally {
         this.toggleLoading = false;
       }
+    },
+    trackProviderToggle(providerId, providerIsEnabled) {
+      this.track(TRACK_TOGGLE_TRAINING_PROVIDER_ACTION, {
+        label: TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
+        property: providerId,
+        extra: {
+          providerIsEnabled,
+        },
+      });
     },
   },
   i18n,

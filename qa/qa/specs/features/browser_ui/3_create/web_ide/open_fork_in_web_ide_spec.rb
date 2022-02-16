@@ -11,7 +11,7 @@ module QA
       end
 
       context 'when a user does not have permissions to commit to the project' do
-        let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
+        let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_6, Runtime::Env.gitlab_qa_password_6) }
 
         context 'when no fork is present' do
           it 'suggests to create a fork when a user clicks Web IDE in the main project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347823' do
@@ -44,6 +44,10 @@ module QA
             end
 
             submit_merge_request_upstream
+          end
+
+          after do
+            fork_project.project.remove_via_api!
           end
         end
 
