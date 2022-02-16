@@ -317,36 +317,14 @@ RSpec.describe Gitlab::Json do
     let(:env) { {} }
     let(:result) { "{\"test\":true}" }
 
-    context "grape_gitlab_json flag is enabled" do
-      before do
-        stub_feature_flags(grape_gitlab_json: true)
-      end
-
-      it "generates JSON" do
-        expect(subject).to eq(result)
-      end
-
-      it "uses Gitlab::Json" do
-        expect(Gitlab::Json).to receive(:dump).with(obj)
-
-        subject
-      end
+    it "generates JSON" do
+      expect(subject).to eq(result)
     end
 
-    context "grape_gitlab_json flag is disabled" do
-      before do
-        stub_feature_flags(grape_gitlab_json: false)
-      end
+    it "uses Gitlab::Json" do
+      expect(Gitlab::Json).to receive(:dump).with(obj)
 
-      it "generates JSON" do
-        expect(subject).to eq(result)
-      end
-
-      it "uses Grape::Formatter::Json" do
-        expect(Grape::Formatter::Json).to receive(:call).with(obj, env)
-
-        subject
-      end
+      subject
     end
 
     context "precompiled JSON" do

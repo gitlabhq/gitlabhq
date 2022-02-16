@@ -433,9 +433,9 @@ To disable the monitoring of Kubernetes:
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect.
 
-### Troubleshooting
+## Troubleshooting
 
-## `/var/opt/gitlab/prometheus` consumes too much disk space
+### `/var/opt/gitlab/prometheus` consumes too much disk space
 
 If you are **not** using Prometheus monitoring:
 

@@ -818,6 +818,18 @@ The following `geo:db:*` tasks will be replaced with their corresponding `db:*:g
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Deprecate feature flag PUSH_RULES_SUPERSEDE_CODE_OWNERS
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` is being removed in GitLab 15.0. Upon its removal, push rules will supersede CODEOWNERS. The CODEOWNERS feature will no longer be available for access control.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Deprecate legacy Gitaly configuration methods
 
 WARNING:

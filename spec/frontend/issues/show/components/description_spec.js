@@ -209,57 +209,79 @@ describe('Description component', () => {
   });
 
   describe('with work items feature flag is enabled', () => {
-    beforeEach(async () => {
-      createComponent({
-        props: {
-          descriptionHtml: descriptionHtmlWithCheckboxes,
-        },
-        provide: {
-          glFeatures: {
-            workItems: true,
+    describe('empty description', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: {
+            descriptionHtml: '',
           },
-        },
+          provide: {
+            glFeatures: {
+              workItems: true,
+            },
+          },
+        });
+        await nextTick();
       });
-      await nextTick();
+
+      it('renders without error', () => {
+        expect(findTaskActionButtons()).toHaveLength(0);
+      });
     });
 
-    it('renders a list of hidden buttons corresponding to checkboxes in description HTML', () => {
-      expect(findTaskActionButtons()).toHaveLength(3);
-    });
+    describe('description with checkboxes', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: {
+            descriptionHtml: descriptionHtmlWithCheckboxes,
+          },
+          provide: {
+            glFeatures: {
+              workItems: true,
+            },
+          },
+        });
+        await nextTick();
+      });
 
-    it('renders a list of popovers corresponding to checkboxes in description HTML', () => {
-      expect(findPopovers()).toHaveLength(3);
-      expect(findPopovers().at(0).props('target')).toBe(
-        findTaskActionButtons().at(0).attributes('id'),
-      );
-    });
+      it('renders a list of hidden buttons corresponding to checkboxes in description HTML', () => {
+        expect(findTaskActionButtons()).toHaveLength(3);
+      });
 
-    it('does not show a modal by default', () => {
-      expect(findModal().props('visible')).toBe(false);
-    });
+      it('renders a list of popovers corresponding to checkboxes in description HTML', () => {
+        expect(findPopovers()).toHaveLength(3);
+        expect(findPopovers().at(0).props('target')).toBe(
+          findTaskActionButtons().at(0).attributes('id'),
+        );
+      });
 
-    it('opens a modal when a button on popover is clicked and displays correct title', async () => {
-      findConvertToTaskButton().vm.$emit('click');
-      expect(showModal).toHaveBeenCalled();
-      await nextTick();
-      expect(findCreateWorkItem().props('initialTitle').trim()).toBe('todo 1');
-    });
+      it('does not show a modal by default', () => {
+        expect(findModal().props('visible')).toBe(false);
+      });
 
-    it('closes the modal on `closeCreateTaskModal` event', () => {
-      findConvertToTaskButton().vm.$emit('click');
-      findCreateWorkItem().vm.$emit('closeModal');
-      expect(hideModal).toHaveBeenCalled();
-    });
+      it('opens a modal when a button on popover is clicked and displays correct title', async () => {
+        findConvertToTaskButton().vm.$emit('click');
+        expect(showModal).toHaveBeenCalled();
+        await nextTick();
+        expect(findCreateWorkItem().props('initialTitle').trim()).toBe('todo 1');
+      });
 
-    it('updates description HTML on `onCreate` event', async () => {
-      const newTitle = 'New title';
-      findConvertToTaskButton().vm.$emit('click');
-      findCreateWorkItem().vm.$emit('onCreate', newTitle);
-      expect(hideModal).toHaveBeenCalled();
-      await nextTick();
+      it('closes the modal on `closeCreateTaskModal` event', () => {
+        findConvertToTaskButton().vm.$emit('click');
+        findCreateWorkItem().vm.$emit('closeModal');
+        expect(hideModal).toHaveBeenCalled();
+      });
 
-      expect(findTaskSvg().exists()).toBe(true);
-      expect(wrapper.text()).toContain(newTitle);
+      it('updates description HTML on `onCreate` event', async () => {
+        const newTitle = 'New title';
+        findConvertToTaskButton().vm.$emit('click');
+        findCreateWorkItem().vm.$emit('onCreate', newTitle);
+        expect(hideModal).toHaveBeenCalled();
+        await nextTick();
+
+        expect(findTaskSvg().exists()).toBe(true);
+        expect(wrapper.text()).toContain(newTitle);
+      });
     });
   });
 });

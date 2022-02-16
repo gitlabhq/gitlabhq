@@ -136,8 +136,8 @@ export default {
           return __('Branch');
       }
     },
-    commitTitle() {
-      return this.pipeline?.commit?.title;
+    commitTitleText() {
+      return this.pipeline?.commit?.title || __("Can't find HEAD commit for this branch");
     },
     hasAuthor() {
       return (
@@ -159,27 +159,22 @@ export default {
   <div class="pipeline-tags" data-testid="pipeline-url-table-cell">
     <template v-if="rearrangePipelinesTable">
       <div class="commit-title gl-mb-2" data-testid="commit-title-container">
-        <span v-if="commitTitle" class="gl-display-flex">
-          <tooltip-on-truncate :title="commitTitle" class="flex-truncate-child gl-flex-grow-1">
+        <span class="gl-display-flex">
+          <tooltip-on-truncate :title="commitTitleText" class="flex-truncate-child gl-flex-grow-1">
             <gl-link
-              :href="commitUrl"
-              class="commit-row-message gl-text-gray-900"
+              :href="pipeline.path"
+              class="commit-row-message gl-text-blue-600!"
               data-testid="commit-title"
-              >{{ commitTitle }}</gl-link
+              data-qa-selector="pipeline_url_link"
+              >{{ commitTitleText }}</gl-link
             >
           </tooltip-on-truncate>
         </span>
-        <span v-else>{{ __("Can't find HEAD commit for this branch") }}</span>
       </div>
       <div class="gl-mb-2">
-        <gl-link
-          :href="pipeline.path"
-          class="gl-text-decoration-underline gl-text-blue-600!"
-          data-testid="pipeline-url-link"
-          data-qa-selector="pipeline_url_link"
-        >
+        <span class="gl-font-weight-bold gl-text-gray-500" data-testid="pipeline-identifier">
           #{{ pipeline[pipelineKey] }}
-        </gl-link>
+        </span>
         <!--Commit row-->
         <div class="icon-container gl-display-inline-block">
           <gl-icon

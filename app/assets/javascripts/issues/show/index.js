@@ -160,6 +160,7 @@ export function initSentryErrorStackTrace() {
 
   return new Vue({
     el,
+    name: 'SentryErrorStackTraceRoot',
     store: errorTrackingStore,
     render: (createElement) =>
       createElement(SentryErrorStackTrace, { props: { issueStackTracePath } }),

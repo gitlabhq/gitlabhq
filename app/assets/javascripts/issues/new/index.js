@@ -20,6 +20,7 @@ export function initTitleSuggestions() {
 
   return new Vue({
     el,
+    name: 'TitleSuggestionsRoot',
     apolloProvider,
     data() {
       return {
@@ -51,6 +52,7 @@ export function initTypePopover() {
 
   return new Vue({
     el,
+    name: 'TypePopoverRoot',
     render: (createElement) => createElement(TypePopover),
   });
 }

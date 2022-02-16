@@ -23,6 +23,7 @@ export function initIssueStatusSelect() {
 
   return new Vue({
     el,
+    name: 'StatusSelectRoot',
     render: (createElement) => createElement(StatusSelect),
   });
 }

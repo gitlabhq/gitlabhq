@@ -93,7 +93,7 @@ executed in place of the local project's `gitlab-ci.yml` file. As part of this p
 files are merged together any time the pipeline runs. Jobs and variables defined in the compliance
 pipeline can't be changed by variables in the local project's `gitlab-ci.yml` file.
 
-When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/#scan-execution-policies),
+When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/scan-execution-policies.md),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../../application_security/#enforce-scan-execution).

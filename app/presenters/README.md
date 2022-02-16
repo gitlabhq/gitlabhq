@@ -223,13 +223,9 @@ To add methods of a module to an allowlist, use `delegator_override_with`. For e
 ```ruby
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
-    include Gitlab::Utils::StrongMemoize
-    include ActionView::Helpers::UrlHelper
+    include ActionView::Helpers::TagHelper
 
-    delegator_override_with Gitlab::Utils::StrongMemoize # TODO: Remove `Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
-    delegator_override_with ActionView::Helpers::TagHelper # TODO: Remove `ActionView::Helpers::UrlHelper` inclusion as it overrides `Ci::Pipeline#tag`
+    delegator_override_with ActionView::Helpers::TagHelper # TODO: Remove `ActionView::Helpers::TagHelper` inclusion as it overrides `Ci::Pipeline#tag`
 ```
 
-Keep in mind that if you use `delegator_override_with`,
-there is a high chance that you're doing **something wrong**.
 Read the [Validate Accidental Overrides](#validate-accidental-overrides) for more information.

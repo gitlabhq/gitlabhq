@@ -456,28 +456,24 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
 - [Compliance framework pipelines](../project/settings/#compliance-pipeline-configuration)
   are recommended when:
 
-  - Scan execution enforcement is required for SAST IaC, Container Scanning, Dependency Scanning,
+  - Scan execution enforcement is required for SAST IaC, Dependency Scanning,
     License Compliance, API Fuzzing, or Coverage-guided Fuzzing.
-  - Scan execution enforcement of SAST or Secret Detection when customization of the default scan
-    variables is required.
   - Scan execution enforcement is required for scanners external to GitLab.
   - Enforced execution is required for custom jobs other than security scans.
 
-- [Scan execution policies](policies/#scan-execution-policies)
+- [Scan execution policies](policies/scan-execution-policies.md)
   are recommended when:
 
-  - Scan execution enforcement is required for DAST.
-  - Scan execution enforcement is required for SAST or Secret Detection with the default scan
-    variables.
+  - Scan execution enforcement is required for DAST, SAST, Secret Detection, or Container Scanning.
   - Scans are required to run on a regular, scheduled cadence.
 
 Additional details about the differences between the two solutions are outlined below:
 
 | | Compliance Framework Pipelines | Scan Execution Policies |
 | ------ | ------ | ------ |
-| **Flexibility** | Supports anything that can be done in a CI file. | Limited to only the items for which GitLab has explicitly added support. DAST, SAST, and Secret Detection scans are supported. |
+| **Flexibility** | Supports anything that can be done in a CI file. | Limited to only the items for which GitLab has explicitly added support. DAST, SAST, Secret Detection, and Container Scanning scans are supported. |
 | **Usability** | Requires knowledge of CI YAML. | Follows a `rules` and `actions`-based YAML structure. |
-| **Inclusion in CI pipeline** | The compliance pipeline is executed instead of the project's `gitlab-ci.yml` file. To include the project's `gitlab-ci.yml` file, use an `include` statement. Defined variables aren't allowed to be overwritten by the included project's YAML file. | Forced inclusion of a new job into the CI pipeline. DAST jobs that must be customized on a per-project basis can have project-level Site Profiles and Scan Profiles defined. To ensure separation of duties, these profiles are immutable when referenced in a scan execution policy. |
+| **Inclusion in CI pipeline** | The compliance pipeline is executed instead of the project's `gitlab-ci.yml` file. To include the project's `gitlab-ci.yml` file, use an `include` statement. Defined variables aren't allowed to be overwritten by the included project's YAML file. | Forced inclusion of a new job into the CI pipeline. DAST jobs that must be customized on a per-project basis can have project-level Site Profiles and Scan Profiles defined. To ensure separation of duties, these profiles are immutable when referenced in a scan execution policy. All jobs can be customized as part of the security policy itself with the same variables that are normally available to the CI job. |
 | **Schedulable** | Can be scheduled through a scheduled pipeline on the group. | Can be scheduled natively through the policy configuration itself. |
 | **Separation of Duties** | Only group owners can create compliance framework labels. Only project owners can apply compliance framework labels to projects. The ability to make or approve changes to the compliance pipeline definition is limited to individuals who are explicitly given access to the project that contains the compliance pipeline. | Only project owners can define a linked security policy project. The ability to make or approve changes to security policies is limited to individuals who are explicitly given access to the security policy project. |
 | **Ability to apply one standard to multiple projects** | The same compliance framework label can be applied to multiple projects inside a group. | The same security policy project can be used for multiple projects across GitLab with no requirement of being located in the same group. |

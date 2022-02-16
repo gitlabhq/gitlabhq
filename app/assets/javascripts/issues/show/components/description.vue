@@ -95,7 +95,7 @@ export default {
     this.renderGFM();
     this.updateTaskStatusText();
 
-    if (this.workItemsEnabled && this.$el) {
+    if (this.workItemsEnabled) {
       this.renderTaskActions();
     }
   },
@@ -157,7 +157,12 @@ export default {
       }
     },
     renderTaskActions() {
+      if (!this.$el?.querySelectorAll) {
+        return;
+      }
+
       const taskListFields = this.$el.querySelectorAll('.task-list-item');
+
       taskListFields.forEach((item, index) => {
         const button = document.createElement('button');
         button.classList.add(

@@ -711,7 +711,7 @@ RSpec.describe 'Pipelines', :js do
           end
 
           expect(page.find('[data-testid="pipeline-th"]')).to have_content 'Pipeline'
-          expect(page.find('[data-testid="pipeline-url-link"]')).to have_content "##{pipeline.iid}"
+          expect(page.find('[data-testid="pipeline-identifier"]')).to have_content "##{pipeline.iid}"
         end
       end
     end

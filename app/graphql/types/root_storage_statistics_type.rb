@@ -15,5 +15,6 @@ module Types
     field :snippets_size, GraphQL::Types::Float, null: false, description: 'Snippets size in bytes.'
     field :pipeline_artifacts_size, GraphQL::Types::Float, null: false, description: 'CI pipeline artifacts size in bytes.'
     field :uploads_size, GraphQL::Types::Float, null: false, description: 'Uploads size in bytes.'
+    field :dependency_proxy_size, GraphQL::Types::Float, null: false, description: 'Dependency Proxy sizes in bytes.'
   end
 end

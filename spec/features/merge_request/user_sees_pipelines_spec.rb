@@ -134,7 +134,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
         create_merge_request_pipeline
         act_on_security_warning(action: 'Run pipeline')
 
-        check_pipeline(expected_project: parent_project)
+        check_pipeline(expected_project: parent_project, link_selector: 'pipeline-url-link')
         check_head_pipeline(expected_project: parent_project)
       end
 
@@ -179,13 +179,13 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
       click_button('Run pipeline')
     end
 
-    def check_pipeline(expected_project:)
+    def check_pipeline(expected_project:, link_selector: 'commit-title')
       page.within('.ci-table') do
         expect(page).to have_selector('.commit', count: 2)
 
         page.within(first('.commit')) do
           page.within('.pipeline-tags') do
-            expect(page.find('[data-testid="pipeline-url-link"]')[:href]).to include(expected_project.full_path)
+            expect(page.find("[data-testid=#{link_selector}]")[:href]).to include(expected_project.full_path)
             expect(page).to have_content('detached')
           end
           page.within('.pipeline-triggerer') do

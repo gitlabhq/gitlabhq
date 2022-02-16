@@ -25,6 +25,9 @@ module Types
       field :contacted_at, Types::TimeType, null: true,
             description: 'Timestamp of last contact from this runner.',
             method: :contacted_at
+      field :token_expires_at, Types::TimeType, null: true,
+            description: 'Runner token expiration time.',
+            method: :token_expires_at
       field :maximum_timeout, GraphQL::Types::Int, null: true,
             description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
       field :access_level, ::Types::Ci::RunnerAccessLevelEnum, null: false,

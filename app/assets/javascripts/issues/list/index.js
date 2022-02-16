@@ -30,6 +30,7 @@ export function mountJiraIssuesListApp() {
 
   return new Vue({
     el,
+    name: 'JiraIssuesImportStatusRoot',
     apolloProvider,
     render(createComponent) {
       return createComponent(JiraIssuesImportStatusRoot, {
@@ -119,6 +120,7 @@ export function mountIssuesListApp() {
 
   return new Vue({
     el,
+    name: 'IssuesListRoot',
     apolloProvider,
     provide: {
       autocompleteAwardEmojisPath,

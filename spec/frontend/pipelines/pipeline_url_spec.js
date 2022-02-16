@@ -1,7 +1,12 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import PipelineUrlComponent from '~/pipelines/components/pipelines_list/pipeline_url.vue';
-import { mockPipeline, mockPipelineBranch, mockPipelineTag } from './mock_data';
+import {
+  mockPipeline,
+  mockPipelineBranch,
+  mockPipelineTag,
+  mockPipelineNoCommit,
+} from './mock_data';
 
 const projectPath = 'test/test';
 
@@ -26,7 +31,7 @@ describe('Pipeline Url Component', () => {
   const findCommitIconType = () => wrapper.findByTestId('commit-icon-type');
 
   const findCommitTitleContainer = () => wrapper.findByTestId('commit-title-container');
-  const findCommitTitle = (commitWrapper) => commitWrapper.find('[data-testid="commit-title"]');
+  const findCommitTitle = () => wrapper.findByTestId('commit-title');
 
   const defaultProps = mockPipeline(projectPath);
 
@@ -232,5 +237,33 @@ describe('Pipeline Url Component', () => {
         expect(findCommitIconType().attributes('title')).toBe(expectedTitle);
       },
     );
+
+    describe('with commit', () => {
+      beforeEach(() => {
+        createComponent({}, true);
+      });
+
+      it('displays commit title with link to pipeline', () => {
+        expect(findCommitTitle().attributes('href')).toBe(defaultProps.pipeline.path);
+      });
+
+      it('displays commit title text', () => {
+        expect(findCommitTitle().text()).toBe(defaultProps.pipeline.commit.title);
+      });
+    });
+
+    describe('without commit', () => {
+      beforeEach(() => {
+        createComponent(mockPipelineNoCommit(), true);
+      });
+
+      it('displays cant find head commit text', () => {
+        expect(findCommitTitle().text()).toBe("Can't find HEAD commit for this branch");
+      });
+
+      it('displays link to pipeline', () => {
+        expect(findCommitTitle().attributes('href')).toBe(mockPipelineNoCommit().pipeline.path);
+      });
+    });
   });
 });

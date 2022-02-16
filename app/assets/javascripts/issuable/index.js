@@ -32,6 +32,7 @@ export function initCsvImportExportButtons() {
 
   return new Vue({
     el,
+    name: 'CsvImportExportButtonsRoot',
     provide: {
       showExportButton: parseBoolean(showExportButton),
       showImportButton: parseBoolean(showImportButton),
@@ -74,6 +75,7 @@ export function initIssuableByEmail() {
 
   return new Vue({
     el,
+    name: 'IssuableByEmailRoot',
     provide: {
       initialEmail,
       issuableType,

@@ -46,6 +46,7 @@ export function initPromoteMilestoneModal() {
 
   return new Vue({
     el: promoteMilestoneModal,
+    name: 'PromoteMilestoneModalRoot',
     render(createElement) {
       return createElement(PromoteMilestoneModal);
     },
@@ -80,6 +81,7 @@ export function initDeleteMilestoneModal() {
 
   return new Vue({
     el: '#js-delete-milestone-modal',
+    name: 'DeleteMilestoneModalRoot',
     data() {
       return {
         modalProps: {

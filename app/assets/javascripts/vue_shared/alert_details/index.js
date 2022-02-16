@@ -70,6 +70,7 @@ export default (selector) => {
   // eslint-disable-next-line no-new
   new Vue({
     el: selector,
+    name: 'AlertDetailsRoot',
     components: {
       AlertDetails,
     },

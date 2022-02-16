@@ -1115,8 +1115,6 @@ than GitLab to prevent XSS attacks.
 
 ### Rate limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
-
 You can enforce rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
 uses a [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket) to enforce rate limiting. By default,
 requests that exceed the specified limits are reported but not rejected.
@@ -1136,6 +1134,8 @@ Rate limits are enforced using the following:
 
 #### Enable source-IP rate limits
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
+
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
@@ -1153,6 +1153,8 @@ Rate limits are enforced using the following:
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 #### Enable domain rate limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/630) in GitLab 14.7.
 
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 

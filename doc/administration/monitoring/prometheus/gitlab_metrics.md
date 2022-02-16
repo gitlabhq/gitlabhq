@@ -270,6 +270,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_pages_deployments_verification_total`     | Gauge   | 14.6  | Number of pages deployments verifications tried on secondary | `url` |
 | `geo_pages_deployments_verified`               | Gauge   | 14.6  | Number of pages deployments verified on secondary | `url` |
 | `geo_pages_deployments_verification_failed`    | Gauge   | 14.6  | Number of pages deployments verifications failed on secondary | `url` |
+| `geo_job_artifacts`                            | Gauge   | 14.8  | Number of job artifacts on primary | `url` |
+| `geo_job_artifacts_checksum_total`             | Gauge   | 14.8  | Number of job artifacts tried to checksum on primary | `url` |
+| `geo_job_artifacts_checksummed`                | Gauge   | 14.8  | Number of job artifacts successfully checksummed on primary | `url` |
+| `geo_job_artifacts_checksum_failed`            | Gauge   | 14.8  | Number of job artifacts failed to calculate the checksum on primary | `url` |
+| `geo_job_artifacts_synced`                     | Gauge   | 14.8  | Number of syncable job artifacts synced on secondary | `url` |
+| `geo_job_artifacts_failed`                     | Gauge   | 14.8  | Number of syncable job artifacts failed to sync on secondary | `url` |
+| `geo_job_artifacts_registry`                   | Gauge   | 14.8  | Number of job artifacts in the registry | `url` |
+| `geo_job_artifacts_verification_total`         | Gauge   | 14.8  | Number of job artifacts verifications tried on secondary | `url` |
+| `geo_job_artifacts_verified`                   | Gauge   | 14.8  | Number of job artifacts verified on secondary | `url` |
+| `geo_job_artifacts_verification_failed`        | Gauge   | 14.8  | Number of job artifacts verifications failed on secondary | `url` |
 | `limited_capacity_worker_running_jobs`         | Gauge   | 13.5  | Number of running jobs | `worker` |
 | `limited_capacity_worker_max_running_jobs`     | Gauge   | 13.5  | Maximum number of running jobs | `worker` |
 | `limited_capacity_worker_remaining_work_count` | Gauge   | 13.5  | Number of jobs waiting to be enqueued | `worker` |
