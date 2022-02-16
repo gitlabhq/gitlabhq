@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Create
+group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/shortcuts.html'
@@ -148,6 +148,57 @@ This shortcut is available when viewing a [wiki page](project/wiki/index.md):
 | Keyboard shortcut | Description |
 |-------------------|-------------|
 | <kbd>e</kbd>      | Edit wiki page. |
+
+### Content editor
+
+These shortcuts are available when editing a file with the [Content Editor](https://about.gitlab.com/direction/create/editor/content_editor/):
+
+| Keyboard shortcut | Description |
+|-------------------|-------------|
+| <kbd>⌘</kbd> + <kbd>C</kbd> (Mac) / <kbd>Control</kbd> + <kbd>C</kbd> | Copy |
+| <kbd>⌘</kbd> + <kbd>X</kbd> (Mac) / <kbd>Control</kbd> + <kbd>X</kbd> | Cut |
+| <kbd>⌘</kbd> + <kbd>V</kbd> (Mac) / <kbd>Control</kbd> + <kbd>V</kbd> | Paste |
+| <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (Mac) / <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Paste without formatting |
+| <kbd>⌘</kbd> + <kbd>Z</kbd> (Mac) / <kbd>Control</kbd> + <kbd>Z</kbd> | Undo |
+| <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (Mac) / <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Redo |
+| <kbd>Shift</kbd> + <kbd>Enter</kbd> | Add a line break |
+
+#### Formatting
+
+| Mac | Windows/Linux | Description |
+|-----|---------------|-------------|
+| <kbd>⌘</kbd> + <kbd>b</kbd> | <kbd>Control</kbd> + <kbd>b</kbd>  | Bold |
+| <kbd>⌘</kbd> + <kbd>i</kbd> | <kbd>Control</kbd> + <kbd>i</kbd>   | Italic |
+| <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>s</kbd>  | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>s</kbd>   | Strikethrough |
+| <kbd>⌘</kbd> + <kbd>e</kbd> | <kbd>Control</kbd> + <kbd>e</kbd>   | Code |
+| <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>0</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>0</kbd> | Apply normal text style |
+| <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>1</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>1</kbd> | Apply heading style 1 |
+| <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>2</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>2</kbd> | Apply heading style 2 |
+| <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>3</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>3</kbd> | Apply heading style 3 |
+| <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>4</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>4</kbd> | Apply heading style 4 |
+| <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>5</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>5</kbd> | Apply heading style 5 |
+| <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>6</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>6</kbd> | Apply heading style 6 |
+| <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>7</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>7</kbd> | Ordered list |
+| <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>8</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>7</kbd> | Bullet list |
+| <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>9</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>7</kbd> | Task list |
+| <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>b</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>b</kbd> | Blockquote |
+| <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>c</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>c</kbd> | Code block |
+| <kbd>⌘</kbd> + <kbd>,</kbd> | <kbd>Control</kbd> + <kbd>,</kbd> | Subscript |
+| <kbd>⌘</kbd> + <kbd>.</kbd> | <kbd>Control</kbd> + <kbd>,</kbd> | Superscript |
+| <kbd>Tab</kbd> | | Indent list |
+| <kbd>Shift</kbd> + <kbd>Tab</kbd> | | Outdent list |
+
+#### Text selection
+
+| Keyboard shortcut | Description |
+|-------------------|-------------|
+| <kbd>⌘</kbd> + <kbd>a</kbd> (Mac) / <kbd>Control</kbd> + <kbd>a</kbd> | Select all |
+| <kbd>Shift</kbd> + <kbd>←</kbd> | Extend selection one character to left |
+| <kbd>Shift</kbd> + <kbd>→</kbd> | Extend selection one character to right |
+| <kbd>Shift</kbd> + <kbd>↑</kbd> | Extend selection one line up |
+| <kbd>Shift</kbd> + <kbd>↓</kbd> | Extend selection one line down |
+| <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> (Mac) / <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> | Extend selection to the beginning of the document |
+| <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> (Mac) / <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd>  | Extend selection to the end of the document |
 
 ### Filtered search
 

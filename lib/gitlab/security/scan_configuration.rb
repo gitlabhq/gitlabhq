@@ -21,7 +21,7 @@ module Gitlab
         %i[sast sast_iac secret_detection].include?(type)
       end
 
-      def can_enable_in_merge_request?
+      def can_enable_by_merge_request?
         scans_configurable_in_merge_request.include?(type)
       end
 

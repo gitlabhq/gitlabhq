@@ -24,9 +24,6 @@ export default {
     enabled() {
       return this.available && this.feature.configured;
     },
-    hasStatus() {
-      return !this.available || typeof this.feature.configured === 'boolean';
-    },
     shortName() {
       return this.feature.shortName ?? this.feature.name;
     },
@@ -93,19 +90,17 @@ export default {
         data-testid="feature-status"
         :data-qa-selector="`${feature.type}_status`"
       >
-        <template v-if="hasStatus">
-          <template v-if="enabled">
-            <gl-icon name="check-circle-filled" />
-            <span class="gl-text-green-700">{{ $options.i18n.enabled }}</span>
-          </template>
+        <template v-if="enabled">
+          <gl-icon name="check-circle-filled" />
+          <span class="gl-text-green-700">{{ $options.i18n.enabled }}</span>
+        </template>
 
-          <template v-else-if="available">
-            {{ $options.i18n.notEnabled }}
-          </template>
+        <template v-else-if="available">
+          {{ $options.i18n.notEnabled }}
+        </template>
 
-          <template v-else>
-            {{ $options.i18n.availableWith }}
-          </template>
+        <template v-else>
+          {{ $options.i18n.availableWith }}
         </template>
       </div>
     </div>

@@ -35,6 +35,9 @@ maintained by GitLab, but users can also integrate their own **custom images**.
 WARNING:
 The `bundler-audit` analyzer is deprecated and will be removed in GitLab 15.0 since it duplicates the functionality of the `gemnasium` analyzer. For more information, read the [deprecation announcement](../../../update/deprecations.md#bundler-audit-dependency-scanning-tool).
 
+WARNING:
+The `retire.js` analyzer is deprecated and will be removed in GitLab 15.0 since it duplicates the functionality of the `gemnasium` analyzer. For more information, read the [deprecation announcement](../../../update/deprecations.md#retire-js-dependency-scanning-tool).
+
 ## Official default analyzers
 
 Any custom change to the official analyzers can be achieved by using a

@@ -81,7 +81,7 @@ module Projects
           configured: scan.configured?,
           configuration_path: scan.configuration_path,
           available: scan.available?,
-          can_enable_in_merge_request: scan.can_enable_in_merge_request?
+          can_enable_by_merge_request: scan.can_enable_by_merge_request?
         }
       end
 

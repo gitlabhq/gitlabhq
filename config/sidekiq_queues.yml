@@ -413,6 +413,8 @@
   - 1
 - - security_auto_fix
   - 1
+- - security_findings_delete_by_job_id
+  - 1
 - - security_scans
   - 2
 - - self_monitoring_project_create

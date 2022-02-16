@@ -15,6 +15,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
+    allow(Gitlab::EventStore).to receive(:publish)
   end
 
   shared_examples 'deleting the project' do
@@ -42,7 +43,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       end
 
       it 'does not publish an event' do
-        expect(Gitlab::EventStore).not_to receive(:publish)
+        expect(Gitlab::EventStore).not_to receive(:publish).with(event_type(Projects::ProjectDeletedEvent))
 
         destroy_project(project, user, {})
       end

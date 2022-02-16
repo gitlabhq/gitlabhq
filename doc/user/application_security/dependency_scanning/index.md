@@ -389,7 +389,8 @@ The following analyzers are executed, each of which have different behavior when
    Does not support multiple lockfiles. When multiple lockfiles exist, `bundler-audit`
    analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
 
-We execute both analyzers because they use different sources of vulnerability data. The result is more comprehensive analysis than if only one was executed.
+WARNING:
+The `bundler-audit` analyzer is deprecated and will be removed in GitLab 15.0 since it duplicates the functionality of the `gemnasium` analyzer. For more information, read the [deprecation announcement](../../../update/deprecations.md#bundler-audit-dependency-scanning-tool).
 
 #### Python
 
@@ -421,6 +422,8 @@ The following analyzers are executed, each of which have different behavior when
 From GitLab 14.8 the `Gemnasium` analyzer scans supported JavaScript projects for vendored libraries
 (that is, those checked into the project but not managed by the package manager).
 
+WARNING:
+The `retire.js` analyzer is deprecated and will be removed in GitLab 15.0 since it duplicates the functionality of the `gemnasium` analyzer. For more information, read the [deprecation announcement](../../../update/deprecations.md#retire-js-dependency-scanning-tool).
 We execute both analyzers because they use different sources of vulnerability data. The result is more comprehensive analysis than if only one was executed.
 
 #### PHP, Go, C, C++, .NET, C&#35;

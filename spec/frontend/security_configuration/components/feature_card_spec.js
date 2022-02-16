@@ -113,7 +113,6 @@ describe('FeatureCard component', () => {
       context                                         | available | configured   | expectedStatus
       ${'a configured feature'}                       | ${true}   | ${true}      | ${'Enabled'}
       ${'an unconfigured feature'}                    | ${true}   | ${false}     | ${'Not enabled'}
-      ${'an available feature with unknown status'}   | ${true}   | ${undefined} | ${''}
       ${'an unavailable feature'}                     | ${false}  | ${false}     | ${'Available with Ultimate'}
       ${'an unavailable feature with unknown status'} | ${false}  | ${undefined} | ${'Available with Ultimate'}
     `('given $context', ({ available, configured, expectedStatus }) => {
