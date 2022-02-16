@@ -23,16 +23,16 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
 1. Create a new project based on the [Cluster Management Project template](management_project_template.md#create-a-new-project-based-on-the-cluster-management-template).
 1. [Associate your new Cluster Management Project with your cluster](management_project.md#associate-the-cluster-management-project-with-the-cluster).
 1. Detect apps deployed through Helm v2 releases by using the pre-configured [`.gitlab-ci.yml`](management_project_template.md#the-gitlab-ciyml-file) file:
-    - In case you had overwritten the default GitLab Managed Apps namespace, edit `.gitlab-ci.yml`,
-      and make sure the script is receiving the correct namespace as an argument:
+   - In case you had overwritten the default GitLab Managed Apps namespace, edit `.gitlab-ci.yml`,
+     and make sure the script is receiving the correct namespace as an argument:
 
-      ```yaml
-      script:
-        - gl-fail-if-helm2-releases-exist <your_custom_namespace>
-      ```
+     ```yaml
+     script:
+       - gl-fail-if-helm2-releases-exist <your_custom_namespace>
+     ```
 
-    - If you kept the default name (`gitlab-managed-apps`), then the script is already
-      set up.
+   - If you kept the default name (`gitlab-managed-apps`), then the script is already
+     set up.
 
    Either way, [run a pipeline manually](../../ci/pipelines/index.md#run-a-pipeline-manually) and read the logs of the
    `detect-helm2-releases` job to know if you have any Helm v2 releases and which are they.
@@ -53,7 +53,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
 
    ```shell
    helm ls -n gitlab-managed-apps
-   
+
    NAME NAMESPACE REVISION UPDATED STATUS CHART APP VERSION
    runner gitlab-managed-apps 1 2021-06-09 19:36:55.739141644 +0000 UTC deployed gitlab-runner-0.28.0 13.11.0
    ```
@@ -67,42 +67,42 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
 1. Edit the `applications/{app}/values.yaml` associated with your app to match the currently
    deployed values. For example, for GitLab Runner:
 
-    1. Copy the output of the following command (it might be big):
+   1. Copy the output of the following command (it might be big):
 
-        ```shell
-        helm get values runner -n gitlab-managed-apps -a --output yaml
-        ```
+      ```shell
+      helm get values runner -n gitlab-managed-apps -a --output yaml
+      ```
 
-    1. Overwrite `applications/gitlab-runner/values.yaml` with the output of the previous command.
+   1. Overwrite `applications/gitlab-runner/values.yaml` with the output of the previous command.
 
    This safe step will guarantee that no unexpected default values overwrite your currently deployed values.
    For instance, your GitLab Runner could have its `gitlabUrl` or `runnerRegistrationToken` overwritten by mistake.
 
 1. Some apps require special attention:
 
-    - Ingress: Due to an existing [chart issue](https://github.com/helm/charts/pull/13646), you might see
-      `spec.clusterIP: Invalid value` when trying to run the [`./gl-helmfile`](management_project_template.md#the-gitlab-ciyml-file)
-      command. To work around this, after overwriting the release values in `applications/ingress/values.yaml`,
-      you might need to overwrite all the occurrences of `omitClusterIP: false`, setting it to `omitClusterIP: true`.
-      Another approach,could be to collect these IPs by running `kubectl get services -n gitlab-managed-apps`
-      and then overwriting each `ClusterIP` that it complains about with the value you got from that command.
+   - Ingress: Due to an existing [chart issue](https://github.com/helm/charts/pull/13646), you might see
+     `spec.clusterIP: Invalid value` when trying to run the [`./gl-helmfile`](management_project_template.md#the-gitlab-ciyml-file)
+     command. To work around this, after overwriting the release values in `applications/ingress/values.yaml`,
+     you might need to overwrite all the occurrences of `omitClusterIP: false`, setting it to `omitClusterIP: true`.
+     Another approach,could be to collect these IPs by running `kubectl get services -n gitlab-managed-apps`
+     and then overwriting each `ClusterIP` that it complains about with the value you got from that command.
 
-    - Vault: This application introduces a breaking change from the chart we used in Helm v2 to the chart
-      used in Helm v3. So, the only way to integrate it with this Cluster Management Project is to actually uninstall this app and accept the
-      chart version proposed in `applications/vault/values.yaml`.
+   - Vault: This application introduces a breaking change from the chart we used in Helm v2 to the chart
+     used in Helm v3. So, the only way to integrate it with this Cluster Management Project is to actually uninstall this app and accept the
+     chart version proposed in `applications/vault/values.yaml`.
 
-    - Cert-manager:
-      - For users on Kubernetes version 1.20 or above, the deprecated cert-manager v0.10 is no longer valid
-        and the upgrade includes a breaking change. So we suggest that you [backup and uninstall cert-manager v0.10](#backup-and-uninstall-cert-manager-v010),
-        and install the latest cert-manager instead. To install this version, uncomment `applications/cert-manager/helmfile.yaml`
-        from [`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file).
-        This triggers a pipeline to install the new version.
-      - For users on Kubernetes versions lower than 1.20, you can stick to v0.10 by uncommenting
-        `applications/cert-manager-legacy/helmfile.yaml`
-        in your project's main Helmfile ([`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file)).
+   - Cert-manager:
+     - For users on Kubernetes version 1.20 or above, the deprecated cert-manager v0.10 is no longer valid
+       and the upgrade includes a breaking change. So we suggest that you [backup and uninstall cert-manager v0.10](#backup-and-uninstall-cert-manager-v010),
+       and install the latest cert-manager instead. To install this version, uncomment `applications/cert-manager/helmfile.yaml`
+       from [`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file).
+       This triggers a pipeline to install the new version.
+     - For users on Kubernetes versions lower than 1.20, you can stick to v0.10 by uncommenting
+       `applications/cert-manager-legacy/helmfile.yaml`
+       in your project's main Helmfile ([`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file)).
 
-        WARNING:
-        Cert-manager v0.10 breaks when Kubernetes is upgraded to version 1.20 or later.
+       WARNING:
+       Cert-manager v0.10 breaks when Kubernetes is upgraded to version 1.20 or later.
 
 1. After following all the previous steps, [run a pipeline manually](../../ci/pipelines/index.md#run-a-pipeline-manually)
    and watch the `apply` job logs to see if any of your applications were successfully detected, installed, and whether they got any
@@ -121,7 +121,7 @@ you want to manage with the Cluster Management Project.
 ## Backup and uninstall cert-manager v0.10
 
 1. Follow the [official docs](https://docs.cert-manager.io/en/release-0.10/tasks/backup-restore-crds.html) on how to
-  backup your cert-manager v0.10 data.
+   backup your cert-manager v0.10 data.
 1. Uninstall cert-manager by editing the setting all the occurrences of `installed: true` to `installed: false` in the
    `applications/cert-manager/helmfile.yaml` file.
 1. Search for any left-over resources by executing the following command `kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges,Secrets,ConfigMaps -n gitlab-managed-apps | grep certmanager`.

@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       errorMessage: '',
-      toggleLoading: false,
+      providerLoadingId: null,
       securityTrainingProviders: [],
       hasTouchedConfiguration: false,
     };
@@ -89,37 +89,29 @@ export default {
         Sentry.captureException(e);
       }
     },
-    toggleProvider(selectedProviderId) {
-      const toggledProviders = this.securityTrainingProviders.map((provider) => ({
-        ...provider,
-        ...(provider.id === selectedProviderId && { isEnabled: !provider.isEnabled }),
-      }));
+    toggleProvider(provider) {
+      const { isEnabled } = provider;
+      const toggledIsEnabled = !isEnabled;
 
-      const enabledProviderIds = toggledProviders
-        .filter(({ isEnabled }) => isEnabled)
-        .map(({ id }) => id);
-
-      const { isEnabled: selectedProviderIsEnabled } = toggledProviders.find(
-        (provider) => provider.id === selectedProviderId,
-      );
-
-      this.trackProviderToggle(selectedProviderId, selectedProviderIsEnabled);
-      this.storeEnabledProviders(enabledProviderIds);
+      this.trackProviderToggle(provider.id, toggledIsEnabled);
+      this.storeProvider({ ...provider, isEnabled: toggledIsEnabled });
     },
-    async storeEnabledProviders(enabledProviderIds) {
-      this.toggleLoading = true;
+    async storeProvider({ id, isEnabled, isPrimary }) {
+      this.providerLoadingId = id;
 
       try {
         const {
           data: {
-            configureSecurityTrainingProviders: { errors = [] },
+            securityTrainingUpdate: { errors = [] },
           },
         } = await this.$apollo.mutate({
           mutation: configureSecurityTrainingProvidersMutation,
           variables: {
             input: {
-              enabledProviders: enabledProviderIds,
-              fullPath: this.projectFullPath,
+              projectPath: this.projectFullPath,
+              providerId: id,
+              isEnabled,
+              isPrimary,
             },
           },
         });
@@ -133,7 +125,7 @@ export default {
       } catch {
         this.errorMessage = this.$options.i18n.configMutationErrorMessage;
       } finally {
-        this.toggleLoading = false;
+        this.providerLoadingId = null;
       }
     },
     trackProviderToggle(providerId, providerIsEnabled) {
@@ -166,25 +158,21 @@ export default {
       </gl-skeleton-loader>
     </div>
     <ul v-else class="gl-list-style-none gl-m-0 gl-p-0">
-      <li
-        v-for="{ id, isEnabled, name, description, url } in securityTrainingProviders"
-        :key="id"
-        class="gl-mb-6"
-      >
+      <li v-for="provider in securityTrainingProviders" :key="provider.id" class="gl-mb-6">
         <gl-card>
           <div class="gl-display-flex">
             <gl-toggle
-              :value="isEnabled"
+              :value="provider.isEnabled"
               :label="__('Training mode')"
               label-position="hidden"
-              :is-loading="toggleLoading"
-              @change="toggleProvider(id)"
+              :is-loading="providerLoadingId === provider.id"
+              @change="toggleProvider(provider)"
             />
             <div class="gl-ml-5">
-              <h3 class="gl-font-lg gl-m-0 gl-mb-2">{{ name }}</h3>
+              <h3 class="gl-font-lg gl-m-0 gl-mb-2">{{ provider.name }}</h3>
               <p>
-                {{ description }}
-                <gl-link :href="url" target="_blank">{{ __('Learn more.') }}</gl-link>
+                {{ provider.description }}
+                <gl-link :href="provider.url" target="_blank">{{ __('Learn more.') }}</gl-link>
               </p>
             </div>
           </div>

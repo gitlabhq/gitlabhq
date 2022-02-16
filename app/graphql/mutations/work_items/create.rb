@@ -8,6 +8,9 @@ module Mutations
       include Mutations::SpamProtection
       include FindsProject
 
+      description "Creates a work item." \
+                  " Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice."
+
       authorize :create_work_item
 
       argument :description, GraphQL::Types::String,
@@ -29,6 +32,11 @@ module Mutations
 
       def resolve(project_path:, **attributes)
         project = authorized_find!(project_path)
+
+        unless Feature.enabled?(:work_items, project)
+          return { errors: ['`work_items` feature flag disabled for this project'] }
+        end
+
         params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])

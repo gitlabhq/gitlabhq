@@ -5168,7 +5168,7 @@ Input type: `VulnerabilityRevertToDetectedInput`
 
 ### `Mutation.workItemCreate`
 
-Available only when feature flag `work_items` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+Creates a work item. Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice.
 
 Input type: `WorkItemCreateInput`
 

@@ -5,7 +5,6 @@ import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
 import SecurityConfigurationApp from './components/app.vue';
 import { securityFeatures, complianceFeatures } from './components/constants';
 import { augmentFeatures } from './utils';
-import tempResolvers from './resolver';
 
 export const initSecurityConfiguration = (el) => {
   if (!el) {
@@ -15,7 +14,7 @@ export const initSecurityConfiguration = (el) => {
   Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(tempResolvers),
+    defaultClient: createDefaultClient(),
   });
 
   const {

@@ -98,7 +98,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillCiQueuingTables, :migration,
           protected: true,
           instance_runners_enabled: true,
           minutes_exceeded: false,
-          tag_ids: [22, 23],
+          tag_ids: match_array([22, 23]),
           namespace_traversal_ids: [10]),
         an_object_having_attributes(
           build_id: 60,

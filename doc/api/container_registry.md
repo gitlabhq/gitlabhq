@@ -441,7 +441,7 @@ These are different from project or personal access tokens in the GitLab applica
 ### Listing all container repositories
 
 ```plaintext
-GET /v2/_catalogue
+GET /v2/_catalog
 ```
 
 To list all container repositories on your GitLab instance, admin credentials are required:

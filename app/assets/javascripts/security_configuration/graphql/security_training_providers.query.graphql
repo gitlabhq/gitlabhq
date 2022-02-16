@@ -5,6 +5,7 @@ query getSecurityTrainingProviders($fullPath: ID!) {
       name
       id
       description
+      isPrimary
       isEnabled
       url
     }

@@ -117,16 +117,15 @@ production environment for all merge requests deployed in the given time period.
 The "Recent Activity" metrics near the top of the page are measured as follows:
 
 - **New Issues:** the number of issues created in the date range.
-- **Deploys:** the number of deployments <sup>1</sup> to production <sup>2</sup> in the date range.
-- **Deployment Frequency:** the average number of deployments <sup>1</sup> to production <sup>2</sup>
+- **Deploys:** the number of deployments to production in the date range.
+- **Deployment Frequency:** the average number of deployments to production
    per day in the date range.
 
-1. To give a more accurate representation of deployments that actually completed successfully,
-   the calculation for these two metrics changed in GitLab 13.9 from using the time a deployment was
-   created to the time a deployment finished. If you were referencing this metric prior to 13.9, please
-   keep this slight change in mind.
-1. To see deployment metrics, you must have a
-   [production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
+To see deployment metrics, you must have a [production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
+
+NOTE:
+In GitLab 13.9 and later, deployment metrics are calculated based on when the deployment was finished.
+In GitLab 13.8 and earlier, deployment metrics are calculated based on when the deployment was created.
 
 You can learn more about these metrics in our [analytics definitions](../../analytics/index.md).
 

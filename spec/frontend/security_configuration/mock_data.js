@@ -9,6 +9,7 @@ export const securityTrainingProviders = [
     description: 'Interactive developer security education',
     url: 'https://www.example.org/security/training',
     isEnabled: false,
+    isPrimary: false,
   },
   {
     id: textProviderIds[1],
@@ -16,6 +17,7 @@ export const securityTrainingProviders = [
     description: 'Security training with guide and learning pathways.',
     url: 'https://www.vendornametwo.com/',
     isEnabled: true,
+    isPrimary: false,
   },
 ];
 
@@ -48,6 +50,29 @@ export const dismissUserCalloutErrorResponse = {
         dismissedAt: '',
         featureName: 'SECURITY_TRAINING_FEATURE_PROMOTION',
       },
+    },
+  },
+};
+
+export const updateSecurityTrainingProvidersResponse = {
+  data: {
+    securityTrainingUpdate: {
+      errors: [],
+      training: {
+        id: 101,
+        name: 'Acme',
+        isEnabled: true,
+        isPrimary: false,
+      },
+    },
+  },
+};
+
+export const updateSecurityTrainingProvidersErrorResponse = {
+  data: {
+    securityTrainingUpdate: {
+      errors: ['something went wrong!'],
+      training: null,
     },
   },
 };

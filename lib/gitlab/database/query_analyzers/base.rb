@@ -48,11 +48,15 @@ module Gitlab
         end
 
         def self.context_key
-          "#{self.class.name}_context"
+          @context_key ||= "analyzer_#{self.analyzer_key}_context".to_sym
         end
 
         def self.suppress_key
-          "#{self.class.name}_suppressed"
+          @suppress_key ||= "analyzer_#{self.analyzer_key}_suppressed".to_sym
+        end
+
+        def self.analyzer_key
+          @analyzer_key ||= self.name.demodulize.underscore.to_sym
         end
       end
     end

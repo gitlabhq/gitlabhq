@@ -68,8 +68,13 @@ RSpec.describe 'Create a work item' do
         stub_feature_flags(work_items: false)
       end
 
-      it_behaves_like 'a mutation that returns top-level errors',
-        errors: ["Field 'workItemCreate' doesn't exist on type 'Mutation'", "Variable $workItemCreateInput is declared by anonymous mutation but not used"]
+      it 'does not create the work item and returns an error' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to not_change(WorkItem, :count)
+
+        expect(mutation_response['errors']).to contain_exactly('`work_items` feature flag disabled for this project')
+      end
     end
   end
 end

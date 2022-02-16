@@ -85,8 +85,10 @@ When you enable the roadmap settings sidebar, you can use it to refine epics sho
 You can configure the following:
 
 - Select date range.
+- Turn milestones on or off and select whether to show all, group, sub-group, or project milestones.
 - Show all, open, or closed epics.
-- Turn progress tracking on or off and select whether it uses issue weights or counts.
+- Turn progress tracking for child issues on or off and select whether
+  to use issue weights or counts.
 
   The progress tracking setting is not saved in user preferences but is saved or shared using URL parameters.
 

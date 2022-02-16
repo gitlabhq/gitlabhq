@@ -19,6 +19,8 @@ import {
   dismissUserCalloutErrorResponse,
   securityTrainingProviders,
   securityTrainingProvidersResponse,
+  updateSecurityTrainingProvidersResponse,
+  updateSecurityTrainingProvidersErrorResponse,
   testProjectPath,
   textProviderIds,
 } from '../mock_data';
@@ -29,18 +31,22 @@ describe('TrainingProviderList component', () => {
   let wrapper;
   let apolloProvider;
 
-  const createApolloProvider = ({ resolvers, handlers = [] } = {}) => {
+  const createApolloProvider = ({ handlers = [] } = {}) => {
     const defaultHandlers = [
       [
         securityTrainingProvidersQuery,
         jest.fn().mockResolvedValue(securityTrainingProvidersResponse),
+      ],
+      [
+        configureSecurityTrainingProvidersMutation,
+        jest.fn().mockResolvedValue(updateSecurityTrainingProvidersResponse),
       ],
     ];
 
     // make sure we don't have any duplicate handlers to avoid 'Request handler already defined for query` errors
     const mergedHandlers = [...new Map([...defaultHandlers, ...handlers])];
 
-    apolloProvider = createMockApollo(mergedHandlers, resolvers);
+    apolloProvider = createMockApollo(mergedHandlers);
   };
 
   const createComponent = () => {
@@ -62,7 +68,7 @@ describe('TrainingProviderList component', () => {
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
 
-  const toggleFirstProvider = () => findFirstToggle().vm.$emit('change');
+  const toggleFirstProvider = () => findFirstToggle().vm.$emit('change', textProviderIds[0]);
 
   afterEach(() => {
     wrapper.destroy();
@@ -146,9 +152,9 @@ describe('TrainingProviderList component', () => {
       beforeEach(async () => {
         jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
-        await waitForMutationToBeLoaded();
+        await waitForQueryToBeLoaded();
 
-        toggleFirstProvider();
+        await toggleFirstProvider();
       });
 
       it.each`
@@ -166,7 +172,14 @@ describe('TrainingProviderList component', () => {
         expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
           expect.objectContaining({
             mutation: configureSecurityTrainingProvidersMutation,
-            variables: { input: { enabledProviders: textProviderIds, fullPath: testProjectPath } },
+            variables: {
+              input: {
+                providerId: textProviderIds[0],
+                isEnabled: true,
+                isPrimary: false,
+                projectPath: testProjectPath,
+              },
+            },
           }),
         );
       });
@@ -264,14 +277,12 @@ describe('TrainingProviderList component', () => {
     describe('when storing training provider configurations', () => {
       beforeEach(async () => {
         createApolloProvider({
-          resolvers: {
-            Mutation: {
-              configureSecurityTrainingProviders: () => ({
-                errors: ['something went wrong!'],
-                securityTrainingProviders: [],
-              }),
-            },
-          },
+          handlers: [
+            [
+              configureSecurityTrainingProvidersMutation,
+              jest.fn().mockReturnValue(updateSecurityTrainingProvidersErrorResponse),
+            ],
+          ],
         });
         createComponent();
 

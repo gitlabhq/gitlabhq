@@ -513,6 +513,8 @@ RSpec.describe Member do
       it { is_expected.not_to include @invited_member }
       it { is_expected.not_to include @requested_member }
       it { is_expected.not_to include @member_with_minimal_access }
+      it { is_expected.not_to include awaiting_group_member }
+      it { is_expected.not_to include awaiting_project_member }
     end
 
     describe '.distinct_on_user_with_max_access_level' do

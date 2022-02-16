@@ -859,6 +859,8 @@ table.code {
 }
 
 .diff-files-changed {
+  background-color: $body-bg;
+
   .inline-parallel-buttons {
     @include gl-relative;
     z-index: 1;

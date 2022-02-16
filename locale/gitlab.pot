@@ -426,8 +426,23 @@ msgid_plural "%d vulnerabilities dismissed"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d vulnerability updated"
-msgid_plural "%d vulnerabilities updated"
+msgid "%d vulnerability set to confirmed"
+msgid_plural "%d vulnerabilities set to confirmed"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d vulnerability set to dismissed"
+msgid_plural "%d vulnerabilities set to dismissed"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d vulnerability set to needs triage"
+msgid_plural "%d vulnerabilities set to needs triage"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d vulnerability set to resolved"
+msgid_plural "%d vulnerabilities set to resolved"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -17779,7 +17794,7 @@ msgstr ""
 msgid "Groups|Group avatar"
 msgstr ""
 
-msgid "Groups|Group description"
+msgid "Groups|Group description (optional)"
 msgstr ""
 
 msgid "Groups|Group name"
@@ -17795,9 +17810,6 @@ msgid "Groups|Learn more"
 msgstr ""
 
 msgid "Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
-msgstr ""
-
-msgid "Groups|Optional group description."
 msgstr ""
 
 msgid "Groups|Remove avatar"
@@ -19726,9 +19738,6 @@ msgstr ""
 msgid "Integrations|can't exceed %{recipients_limit}"
 msgstr ""
 
-msgid "Interactive developer security education."
-msgstr ""
-
 msgid "Interactive mode"
 msgstr ""
 
@@ -21065,9 +21074,6 @@ msgid "Keys"
 msgstr ""
 
 msgid "Ki"
-msgstr ""
-
-msgid "Kontra"
 msgstr ""
 
 msgid "Kroki"
@@ -26643,10 +26649,40 @@ msgstr ""
 msgid "PipelineStatusTooltip|Pipeline: %{ci_status}"
 msgstr ""
 
+msgid "PipelineWizardDefaultCommitMessage|Add %{filename}"
+msgstr ""
+
+msgid "PipelineWizardDefaultCommitMessage|Update %{filename}"
+msgstr ""
+
 msgid "PipelineWizardInputValidation|This field is required"
 msgstr ""
 
 msgid "PipelineWizardInputValidation|This value is not valid"
+msgstr ""
+
+msgid "PipelineWizard|Commit"
+msgstr ""
+
+msgid "PipelineWizard|Commit Message"
+msgstr ""
+
+msgid "PipelineWizard|Commit changes to your file"
+msgstr ""
+
+msgid "PipelineWizard|Commit file to Branch"
+msgstr ""
+
+msgid "PipelineWizard|Commit your new file"
+msgstr ""
+
+msgid "PipelineWizard|The file has been committed."
+msgstr ""
+
+msgid "PipelineWizard|There was a problem committing the changes."
+msgstr ""
+
+msgid "PipelineWizard|There was a problem while checking whether your file already exists in the specified branch."
 msgstr ""
 
 msgid "Pipelines"
@@ -32024,9 +32060,6 @@ msgstr ""
 msgid "Secure token that identifies an external storage request."
 msgstr ""
 
-msgid "SecureCodeWarrior"
-msgstr ""
-
 msgid "Security"
 msgstr ""
 
@@ -32049,9 +32082,6 @@ msgid "Security report is out of date. Please update your branch with the latest
 msgstr ""
 
 msgid "Security report is out of date. Run %{newPipelineLinkStart}a new pipeline%{newPipelineLinkEnd} for the target branch (%{targetBranchName})"
-msgstr ""
-
-msgid "Security training with guide and learning pathways."
 msgstr ""
 
 msgid "SecurityApprovals|A merge request approval is required when a security report contains a new vulnerability."

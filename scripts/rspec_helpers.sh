@@ -279,7 +279,8 @@ function rspec_paralellized_job() {
   # Experiment to retry failed examples in a new RSpec process: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148
   if [[ $rspec_run_status -ne 0 ]]; then
     if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" == "true" ]]; then
-      $rspec_run_status=$(retry_failed_rspec_examples)
+      retry_failed_rspec_examples
+      rspec_run_status=$?
     fi
   else
     echosuccess "No examples to retry, congrats!"
@@ -310,7 +311,7 @@ function retry_failed_rspec_examples() {
   # Merge the JUnit report from retry into the first-try report
   junit_merge "${JUNIT_RETRY_FILE}" "${JUNIT_RESULT_FILE}"
 
-  return $rspec_run_status
+  exit $rspec_run_status
 }
 
 function rspec_rerun_previous_failed_tests() {

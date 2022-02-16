@@ -71,10 +71,11 @@ RSpec.describe 'Update a work item' do
         stub_feature_flags(work_items: false)
       end
 
-      it 'does nothing and returns and error' do
+      it 'does not update the work item and returns and error' do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
-        end.to not_change(WorkItem, :count)
+          work_item.reload
+        end.to not_change(work_item, :title)
 
         expect(mutation_response['errors']).to contain_exactly('`work_items` feature flag disabled for this project')
       end

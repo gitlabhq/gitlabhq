@@ -748,6 +748,30 @@ RSpec.describe API::Internal::Base do
       end
     end
 
+    context 'with a pending membership' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      before_all do
+        create(:project_member, :awaiting, :developer, source: project, user: user)
+      end
+
+      it 'returns not found for git pull' do
+        pull(key, project)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response["status"]).to be_falsey
+        expect(user.reload.last_activity_on).to be_nil
+      end
+
+      it 'returns not found for git push' do
+        push(key, project)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response["status"]).to be_falsey
+        expect(user.reload.last_activity_on).to be_nil
+      end
+    end
+
     context "custom action" do
       let(:access_checker) { double(Gitlab::GitAccess) }
       let(:payload) do

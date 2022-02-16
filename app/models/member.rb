@@ -117,6 +117,7 @@ class Member < ApplicationRecord
   # to projects/groups.
   scope :authorizable, -> do
     connected_to_user
+      .active_state
       .non_request
       .non_minimal_access
   end
