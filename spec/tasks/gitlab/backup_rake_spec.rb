@@ -4,7 +4,8 @@ require 'rake_helper'
 
 RSpec.describe 'gitlab:app namespace rake task', :delete do
   let(:enable_registry) { true }
-  let(:backup_types) { %w{db repo uploads builds artifacts pages lfs terraform_state registry packages} }
+  let(:backup_tasks) { %w{db repo uploads builds artifacts pages lfs terraform_state registry packages} }
+  let(:backup_types) { %w{db repositories uploads builds artifacts pages lfs terraform_state registry packages} }
 
   def tars_glob
     Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
@@ -48,7 +49,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
   end
 
   def reenable_backup_sub_tasks
-    backup_types.each do |subtask|
+    backup_tasks.each do |subtask|
       Rake::Task["gitlab:backup:#{subtask}:create"].reenable
     end
   end
@@ -72,8 +73,11 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
           allow(YAML).to receive(:load_file)
             .and_return({ gitlab_version: gitlab_version })
           expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
-          backup_types.each do |subtask|
-            expect(Rake::Task["gitlab:backup:#{subtask}:restore"]).to receive(:invoke)
+          expect_next_instance_of(::Backup::Manager) do |instance|
+            backup_types.each do |subtask|
+              expect(instance).to receive(:run_restore_task).with(subtask).ordered
+            end
+            expect(instance).not_to receive(:run_restore_task)
           end
           expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
         end
@@ -128,16 +132,14 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
           .and_return({ gitlab_version: Gitlab::VERSION })
 
         expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:db:restore']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:repo:restore']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:builds:restore']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:uploads:restore']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:artifacts:restore']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:pages:restore']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:lfs:restore']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:terraform_state:restore']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:registry:restore']).to receive(:invoke)
-        expect(Rake::Task['gitlab:backup:packages:restore']).to receive(:invoke)
+
+        expect_next_instance_of(::Backup::Manager) do |instance|
+          backup_types.each do |subtask|
+            expect(instance).to receive(:run_restore_task).with(subtask).ordered
+          end
+          expect(instance).not_to receive(:run_restore_task)
+        end
+
         expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
       end
 
@@ -198,7 +200,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
 
       context 'specific backup tasks' do
         it 'prints a progress message to stdout' do
-          backup_types.each do |task|
+          backup_tasks.each do |task|
             expect { run_rake_task("gitlab:backup:#{task}:create") }.to output(/Dumping /).to_stdout_from_any_process
           end
         end
@@ -206,7 +208,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         it 'logs the progress to log file' do
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... ")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "[SKIPPED]")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ...")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... ")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... ")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... ")
@@ -217,7 +219,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... ")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "done").exactly(9).times
 
-          backup_types.each do |task|
+          backup_tasks.each do |task|
             run_rake_task("gitlab:backup:#{task}:create")
           end
         end
@@ -414,11 +416,9 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       end
 
       it 'has defaults' do
-        expect_next_instance_of(::Backup::Repositories) do |instance|
-          expect(instance).to receive(:dump)
-            .with(max_concurrency: 1, max_storage_concurrency: 1)
-            .and_call_original
-        end
+        expect(::Backup::Repositories).to receive(:new)
+          .with(anything, strategy: anything, max_concurrency: 1, max_storage_concurrency: 1)
+          .and_call_original
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
       end
@@ -432,11 +432,9 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         stub_env('GITLAB_BACKUP_MAX_CONCURRENCY', 5)
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
-        expect_next_instance_of(::Backup::Repositories) do |instance|
-          expect(instance).to receive(:dump)
-            .with(max_concurrency: 5, max_storage_concurrency: 2)
-            .and_call_original
-        end
+        expect(::Backup::Repositories).to receive(:new)
+          .with(anything, strategy: anything, max_concurrency: 5, max_storage_concurrency: 2)
+          .and_call_original
         expect(::Backup::GitalyBackup).to receive(:new).with(anything, max_parallelism: 5, storage_parallelism: 2).and_call_original
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
@@ -489,16 +487,12 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         .to receive(:invoke).and_return(true)
 
       expect(Rake::Task['gitlab:db:drop_tables']).to receive :invoke
-      expect(Rake::Task['gitlab:backup:db:restore']).to receive :invoke
-      expect(Rake::Task['gitlab:backup:repo:restore']).not_to receive :invoke
-      expect(Rake::Task['gitlab:backup:uploads:restore']).not_to receive :invoke
-      expect(Rake::Task['gitlab:backup:builds:restore']).to receive :invoke
-      expect(Rake::Task['gitlab:backup:artifacts:restore']).to receive :invoke
-      expect(Rake::Task['gitlab:backup:pages:restore']).to receive :invoke
-      expect(Rake::Task['gitlab:backup:lfs:restore']).to receive :invoke
-      expect(Rake::Task['gitlab:backup:terraform_state:restore']).to receive :invoke
-      expect(Rake::Task['gitlab:backup:registry:restore']).to receive :invoke
-      expect(Rake::Task['gitlab:backup:packages:restore']).to receive :invoke
+      expect_next_instance_of(::Backup::Manager) do |instance|
+        (backup_types - %w{repositories uploads}).each do |subtask|
+          expect(instance).to receive(:run_restore_task).with(subtask).ordered
+        end
+        expect(instance).not_to receive(:run_restore_task)
+      end
       expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
       expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout_from_any_process
     end
@@ -538,8 +532,11 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         .to receive(:invoke).and_return(true)
 
       expect(Rake::Task['gitlab:db:drop_tables']).to receive :invoke
-      backup_types.each do |subtask|
-        expect(Rake::Task["gitlab:backup:#{subtask}:restore"]).to receive :invoke
+      expect_next_instance_of(::Backup::Manager) do |instance|
+        backup_types.each do |subtask|
+          expect(instance).to receive(:run_restore_task).with(subtask).ordered
+        end
+        expect(instance).not_to receive(:run_restore_task)
       end
       expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
       expect { run_rake_task("gitlab:backup:restore") }.to output.to_stdout_from_any_process

@@ -9,5 +9,9 @@ module Backup
 
       super('packages', Settings.packages.storage_path, excludes: ['tmp'])
     end
+
+    def human_name
+      _('packages')
+    end
   end
 end

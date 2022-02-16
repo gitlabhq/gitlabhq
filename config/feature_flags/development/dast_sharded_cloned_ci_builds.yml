@@ -1,8 +1,0 @@
----
-name: dast_sharded_cloned_ci_builds
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78164
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351980
-milestone: '14.8'
-type: development
-group: group::dynamic analysis
-default_enabled: true

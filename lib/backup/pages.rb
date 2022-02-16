@@ -13,5 +13,9 @@ module Backup
 
       super('pages', Gitlab.config.pages.path, excludes: [LEGACY_PAGES_TMP_PATH])
     end
+
+    def human_name
+      _('pages')
+    end
   end
 end

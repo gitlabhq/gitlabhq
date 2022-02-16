@@ -9,5 +9,9 @@ module Backup
 
       super('builds', Settings.gitlab_ci.builds_path)
     end
+
+    def human_name
+      _('builds')
+    end
   end
 end

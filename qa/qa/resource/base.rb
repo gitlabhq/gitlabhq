@@ -81,8 +81,6 @@ module QA
           Support::FabricationTracker.start_fabrication
           result = yield.tap do
             fabrication_time = Time.now - start
-            identifier = resource_identifier(resource)
-
             fabrication_http_method = if resource.api_fabrication_http_method == :get
                                         if include?(Reusable)
                                           "Retrieved for reuse"
@@ -96,7 +94,7 @@ module QA
             Support::FabricationTracker.save_fabrication(:"#{fabrication_method}_fabrication", fabrication_time)
             Tools::TestResourceDataProcessor.collect(
               resource: resource,
-              info: identifier,
+              info: resource.identifier,
               fabrication_method: fabrication_method,
               fabrication_time: fabrication_time
             )
@@ -104,7 +102,7 @@ module QA
             Runtime::Logger.debug do
               msg = ["==#{'=' * parents.size}>"]
               msg << "#{fabrication_http_method} a #{Rainbow(name).black.bg(:white)}"
-              msg << identifier
+              msg << resource.identifier
               msg << "as a dependency of #{parents.last}" if parents.any?
               msg << "via #{fabrication_method}"
               msg << "in #{fabrication_time} seconds"
@@ -115,26 +113,6 @@ module QA
           Support::FabricationTracker.finish_fabrication
 
           result
-        end
-
-        # Unique resource identifier
-        #
-        # @param [QA::Resource::Base] resource
-        # @return [String]
-        def resource_identifier(resource)
-          if resource.respond_to?(:username) && resource.username
-            "with username '#{resource.username}'"
-          elsif resource.respond_to?(:full_path) && resource.full_path
-            "with full_path '#{resource.full_path}'"
-          elsif resource.respond_to?(:name) && resource.name
-            "with name '#{resource.name}'"
-          elsif resource.respond_to?(:id) && resource.id
-            "with id '#{resource.id}'"
-          elsif resource.respond_to?(:iid) && resource.iid
-            "with iid '#{resource.iid}'"
-          end
-        rescue QA::Resource::Base::NoValueError
-          nil
         end
 
         # Define custom attribute
@@ -218,6 +196,35 @@ module QA
       # @return [String]
       def inspect
         JSON.pretty_generate(comparable)
+      end
+
+      def diff(other)
+        return if self == other
+
+        diff_values = self.comparable.to_a - other.comparable.to_a
+        diff_values.to_h
+      end
+
+      def identifier
+        if respond_to?(:username) && username
+          "with username '#{username}'"
+        elsif respond_to?(:full_path) && full_path
+          "with full_path '#{full_path}'"
+        elsif respond_to?(:name) && name
+          "with name '#{name}'"
+        elsif respond_to?(:id) && id
+          "with id '#{id}'"
+        elsif respond_to?(:iid) && iid
+          "with iid '#{iid}'"
+        end
+      rescue QA::Resource::Base::NoValueError
+        nil
+      end
+
+      def remove_via_api!
+        super
+
+        Runtime::Logger.debug(["Removed a #{self.class.name}", identifier].compact.join(' '))
       end
 
       protected

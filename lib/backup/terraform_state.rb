@@ -9,5 +9,9 @@ module Backup
 
       super('terraform_state', Settings.terraform_state.storage_path, excludes: ['tmp'])
     end
+
+    def human_name
+      _('terraform states')
+    end
   end
 end

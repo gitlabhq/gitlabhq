@@ -10,6 +10,137 @@ module Backup
 
     def initialize(progress)
       @progress = progress
+
+      max_concurrency = ENV.fetch('GITLAB_BACKUP_MAX_CONCURRENCY', 1).to_i
+      max_storage_concurrency = ENV.fetch('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 1).to_i
+
+      @tasks = {
+        'db' => Database.new(progress),
+        'repositories' => Repositories.new(progress,
+                                           strategy: repository_backup_strategy,
+                                           max_concurrency: max_concurrency,
+                                           max_storage_concurrency: max_storage_concurrency),
+        'uploads' => Uploads.new(progress),
+        'builds' => Builds.new(progress),
+        'artifacts' => Artifacts.new(progress),
+        'pages' => Pages.new(progress),
+        'lfs' => Lfs.new(progress),
+        'terraform_state' => TerraformState.new(progress),
+        'registry' => Registry.new(progress),
+        'packages' => Packages.new(progress)
+      }.freeze
+    end
+
+    def create
+      @tasks.keys.each do |task_name|
+        run_create_task(task_name)
+      end
+
+      write_info
+
+      if ENV['SKIP'] && ENV['SKIP'].include?('tar')
+        upload
+      else
+        pack
+        upload
+        cleanup
+        remove_old
+      end
+
+      progress.puts "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
+           "and are not included in this backup. You will need these files to restore a backup.\n" \
+           "Please back them up manually.".color(:red)
+      progress.puts "Backup task is done."
+    end
+
+    def run_create_task(task_name)
+      task = @tasks[task_name]
+
+      puts_time "Dumping #{task.human_name} ... ".color(:blue)
+
+      unless task.enabled
+        puts_time "[DISABLED]".color(:cyan)
+        return
+      end
+
+      if ENV["SKIP"] && ENV["SKIP"].include?(task_name)
+        puts_time "[SKIPPED]".color(:cyan)
+        return
+      end
+
+      task.dump
+      puts_time "done".color(:green)
+
+    rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
+      progress.puts "#{e.message}"
+    end
+
+    def restore
+      cleanup_required = unpack
+      verify_backup_version
+
+      unless skipped?('db')
+        begin
+          unless ENV['force'] == 'yes'
+            warning = <<-MSG.strip_heredoc
+              Be sure to stop Puma, Sidekiq, and any other process that
+              connects to the database before proceeding. For Omnibus
+              installs, see the following link for more information:
+              https://docs.gitlab.com/ee/raketasks/backup_restore.html#restore-for-omnibus-gitlab-installations
+
+              Before restoring the database, we will remove all existing
+              tables to avoid future upgrade problems. Be aware that if you have
+              custom tables in the GitLab database these tables and all data will be
+              removed.
+            MSG
+            puts warning.color(:red)
+            Gitlab::TaskHelpers.ask_to_continue
+            puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
+            sleep(5)
+          end
+
+          # Drop all tables Load the schema to ensure we don't have any newer tables
+          # hanging out from a failed upgrade
+          puts_time 'Cleaning the database ... '.color(:blue)
+          Rake::Task['gitlab:db:drop_tables'].invoke
+          puts_time 'done'.color(:green)
+          run_restore_task('db')
+        rescue Gitlab::TaskAbortedByUserError
+          puts "Quitting...".color(:red)
+          exit 1
+        end
+      end
+
+      @tasks.except('db').keys.each do |task_name|
+        run_restore_task(task_name) unless skipped?(task_name)
+      end
+
+      Rake::Task['gitlab:shell:setup'].invoke
+      Rake::Task['cache:clear'].invoke
+
+      if cleanup_required
+        cleanup
+      end
+
+      remove_tmp
+
+      puts "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
+           "and are not included in this backup. You will need to restore these files manually.".color(:red)
+      puts "Restore task is done."
+    end
+
+    def run_restore_task(task_name)
+      task = @tasks[task_name]
+
+      puts_time "Restoring #{task.human_name} ... ".color(:blue)
+
+      unless task.enabled
+        puts_time "[DISABLED]".color(:cyan)
+        return
+      end
+
+      task.restore
+      puts_time "done".color(:green)
     end
 
     def write_info
@@ -188,10 +319,14 @@ module Backup
     end
 
     def skipped?(item)
-      settings[:skipped] && settings[:skipped].include?(item) || disabled_features.include?(item)
+      settings[:skipped] && settings[:skipped].include?(item) || !enabled_task?(item)
     end
 
     private
+
+    def enabled_task?(task_name)
+      @tasks[task_name].enabled
+    end
 
     def backup_file?(file)
       file.match(/^(\d{10})(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+((-|\.)(pre|rc\d))?(-ee)?)?)?_gitlab_backup\.tar$/)
@@ -256,12 +391,6 @@ module Backup
       FOLDERS_TO_BACKUP.select { |name| !skipped?(name) && Dir.exist?(File.join(backup_path, name)) }
     end
 
-    def disabled_features
-      features = []
-      features << 'registry' unless Gitlab.config.registry.enabled
-      features
-    end
-
     def settings
       @settings ||= YAML.load_file("backup_information.yml")
     end
@@ -316,6 +445,21 @@ module Backup
 
     def google_provider?
       Gitlab.config.backup.upload.connection&.provider&.downcase == 'google'
+    end
+
+    def repository_backup_strategy
+      if Feature.enabled?(:gitaly_backup, default_enabled: :yaml)
+        max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
+        max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
+        Backup::GitalyBackup.new(progress, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
+      else
+        Backup::GitalyRpcBackup.new(progress)
+      end
+    end
+
+    def puts_time(msg)
+      progress.puts "#{Time.now} -- #{msg}"
+      Gitlab::BackupLogger.info(message: "#{Rainbow.uncolor(msg)}")
     end
   end
 end

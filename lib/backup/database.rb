@@ -90,7 +90,26 @@ module Backup
       report_success(success)
       raise Backup::Error, 'Restore failed' unless success
 
-      errors
+      if errors.present?
+        warning = <<~MSG
+            There were errors in restoring the schema. This may cause
+            issues if this results in missing indexes, constraints, or
+            columns. Please record the errors above and contact GitLab
+            Support if you have questions:
+            https://about.gitlab.com/support/
+        MSG
+
+        warn warning.color(:red)
+        Gitlab::TaskHelpers.ask_to_continue
+      end
+    end
+
+    def enabled
+      true
+    end
+
+    def human_name
+      _('database')
     end
 
     protected

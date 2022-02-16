@@ -17,6 +17,7 @@ module QA
 
       attributes :id,
                  :name,
+                 :path,
                  :add_name_uuid,
                  :description,
                  :runners_token,

@@ -42490,6 +42490,9 @@ msgstr ""
 msgid "archived:"
 msgstr ""
 
+msgid "artifacts"
+msgstr ""
+
 msgid "assign yourself"
 msgstr ""
 
@@ -42517,6 +42520,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "branch name"
+msgstr ""
+
+msgid "builds"
 msgstr ""
 
 msgid "by"
@@ -42942,6 +42948,9 @@ msgstr ""
 msgid "contact with same email already exists in group hierarchy"
 msgstr ""
 
+msgid "container registry images"
+msgstr ""
+
 msgid "container_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"
 msgstr ""
 
@@ -42979,6 +42988,9 @@ msgid "created by"
 msgstr ""
 
 msgid "data"
+msgstr ""
+
+msgid "database"
 msgstr ""
 
 msgid "date must not be after 9999-12-31"
@@ -43352,6 +43364,9 @@ msgid "less than a minute"
 msgstr ""
 
 msgid "level: %{level}"
+msgstr ""
+
+msgid "lfs objects"
 msgstr ""
 
 msgid "limit of %{project_limit} reached"
@@ -43851,6 +43866,12 @@ msgid_plural "out of %d total tests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "packages"
+msgstr ""
+
+msgid "pages"
+msgstr ""
+
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] ""
@@ -44000,6 +44021,9 @@ msgid_plural "replies"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "repositories"
+msgstr ""
+
 msgid "repository:"
 msgstr ""
 
@@ -44118,6 +44142,9 @@ msgid "suggestPipeline|We’re adding a GitLab CI configuration file to add a pi
 msgstr ""
 
 msgid "tag name"
+msgstr ""
+
+msgid "terraform states"
 msgstr ""
 
 msgid "the correct format."

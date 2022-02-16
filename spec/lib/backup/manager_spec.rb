@@ -12,6 +12,11 @@ RSpec.describe Backup::Manager do
   before do
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)
+    FileUtils.mkdir_p('tmp/tests/public/uploads')
+  end
+
+  after do
+    FileUtils.rm_rf('tmp/tests/public/uploads', secure: true)
   end
 
   describe '#pack' do

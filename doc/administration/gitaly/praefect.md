@@ -270,11 +270,11 @@ reads distribution caching is enabled by configuration
 
 To reduce PostgreSQL resource consumption, we recommend setting up and configuring
 [PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. To do
-this, you must point Praefect to PgBouncer by setting Praefect database parameters:
+this, you must point Praefect to PgBouncer by setting database parameters on Praefect configuration:
 
 ```ruby
 praefect['database_host'] = PGBOUNCER_HOST
-praefect['database_port'] = 5432
+praefect['database_port'] = 6432
 praefect['database_user'] = 'praefect'
 praefect['database_password'] = PRAEFECT_SQL_PASSWORD
 praefect['database_dbname'] = 'praefect_production'
@@ -289,40 +289,21 @@ Praefect requires an additional connection to the PostgreSQL that supports the
 this feature is only available with `session` pool mode (`pool_mode = session`).
 It is not supported in `transaction` pool mode (`pool_mode = transaction`).
 
-For the additional connection, you must either:
+To configure the additional connection, you must either:
 
-- Connect Praefect directly to PostgreSQL and bypass PgBouncer.
 - Configure a new PgBouncer database that uses to the same PostgreSQL database endpoint,
   but with different pool mode. That is, `pool_mode = session`.
+- Connect Praefect directly to PostgreSQL and bypass PgBouncer.
 
-Praefect can be configured to use different connection parameters for direct access
-to PostgreSQL. This is the connection that supports the `LISTEN` feature.
+#### Configure a new PgBouncer database with `pool_mode = session`
 
-Here is an example of Praefect that bypasses PgBouncer and directly connects to PostgreSQL:
-
-```ruby
-praefect['database_direct_host'] = POSTGRESQL_HOST
-praefect['database_direct_port'] = 5432
-
-# Use the following to override parameters of direct database connection.
-# Comment out where the parameters are the same for both connections.
-
-praefect['database_direct_user'] = 'praefect'
-praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
-praefect['database_direct_dbname'] = 'praefect_production'
-#praefect['database_direct_sslmode'] = '...'
-#praefect['database_direct_sslcert'] = '...'
-#praefect['database_direct_sslkey'] = '...'
-#praefect['database_direct_sslrootcert'] = '...'
-```
-
-We recommend using PgBouncer with `session` pool mode instead. You can use the
+We recommend using PgBouncer with `session` pool mode. You can use the
 [bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and [configure it
 manually](https://www.pgbouncer.org/config.html).
 
-The following example uses the bundled PgBouncer and sets up two separate connection pools,
+The following example uses the bundled PgBouncer and sets up two separate connection pools on PostgreSQL host,
 one in `session` pool mode and the other in `transaction` pool mode. For this example to work,
-you need to prepare PostgreSQL server with [setup instruction](#manual-database-setup):
+you need to prepare PostgreSQL server as documented in [in the setup instructions](#manual-database-setup):
 
 ```ruby
 pgbouncer['databases'] = {
@@ -388,6 +369,29 @@ Omnibus GitLab handles the authentication requirements (using `auth_query`), but
 your databases manually and configuring an external PgBouncer, you must include `praefect` user and
 its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
 configuration option is set. For more details, consult the PgBouncer documentation.
+
+#### Configure Praefect to connect directly to PostgreSQL
+
+As an alternative to configuring PgBouncer with `session` pool mode, Praefect can be configured to use different connection parameters for direct access
+to PostgreSQL. This is the connection that supports the `LISTEN` feature.
+
+An example of Praefect configuration that bypasses PgBouncer and directly connects to PostgreSQL:
+
+```ruby
+praefect['database_direct_host'] = POSTGRESQL_HOST
+praefect['database_direct_port'] = 5432
+
+# Use the following to override parameters of direct database connection.
+# Comment out where the parameters are the same for both connections.
+
+praefect['database_direct_user'] = 'praefect'
+praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
+praefect['database_direct_dbname'] = 'praefect_production'
+#praefect['database_direct_sslmode'] = '...'
+#praefect['database_direct_sslcert'] = '...'
+#praefect['database_direct_sslkey'] = '...'
+#praefect['database_direct_sslrootcert'] = '...'
+```
 
 ### Praefect
 

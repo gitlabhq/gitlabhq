@@ -3,10 +3,14 @@
 module QA
   module Resource
     class Group < GroupBase
-      attributes :require_two_factor_authentication, :description
+      attributes :require_two_factor_authentication, :description, :path
 
       attribute :full_path do
         determine_full_path
+      end
+
+      attribute :name do
+        @name || path
       end
 
       attribute :sandbox do
@@ -60,7 +64,7 @@ module QA
         {
           parent_id: sandbox.id,
           path: path,
-          name: path,
+          name: name || path,
           visibility: 'public',
           require_two_factor_authentication: @require_two_factor_authentication,
           avatar: avatar

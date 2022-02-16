@@ -915,6 +915,29 @@ Unexpected behavior in a security feature is inherently dangerous, so we have de
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Out-of-the-box SAST support for Java 8
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The [GitLab SAST SpotBugs analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) scans [Java, Scala, Groovy, and Kotlin code](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks) for security vulnerabilities.
+For technical reasons, the analyzer must first compile the code before scanning.
+Unless you use the [pre-compilation strategy](https://docs.gitlab.com/ee/user/application_security/sast/#pre-compilation), the analyzer attempts to automatically compile your project's code.
+
+In GitLab versions prior to 15.0, the analyzer image includes Java 8 and Java 11 runtimes to facilitate compilation.
+
+In GitLab 15.0, we will:
+
+- Remove Java 8 from the analyzer image to reduce the size of the image.
+- Add Java 17 to the analyzer image to make it easier to compile with Java 17.
+
+If you rely on Java 8 being present in the analyzer environment, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352549#breaking-change).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Querying Usage Trends via the `instanceStatisticsMeasurements` GraphQL node
 
 WARNING:
@@ -1025,6 +1048,23 @@ We [evaluated](https://gitlab.com/gitlab-org/gitlab/-/issues/350152) the use of 
 It also depends on a few third-party gems that are not actively maintained anymore, have not been updated for the latest version of Ruby, or crash frequently when profiling heavy page loads.
 
 For more information, check the [summary section of the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352488#deprecation-summary).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Required pipeline configurations in Premium tier
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The [required pipeline configuration](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#required-pipeline-configuration) feature is deprecated in GitLab 14.8 for Premium customers and is scheduled for removal in GitLab 15.0. This feature is not deprecated for GitLab Ultimate customers.
+
+This change to move the feature to GitLab's Ultimate tier is intended to help our features better align with our [pricing philosophy](https://about.gitlab.com/company/pricing/#three-tiers) as we see demand for this feature originating primarily from executives.
+
+This change will also help GitLab remain consistent in its tiering strategy with the other related Ultimate-tier features of:
+[Security policies](https://docs.gitlab.com/ee/user/application_security/policies/) and [compliance framework pipelines](https://docs.gitlab.com/ee/user/project/settings/index.html#compliance-pipeline-configuration).
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 

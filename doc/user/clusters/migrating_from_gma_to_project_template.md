@@ -69,9 +69,9 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
 
     1. Copy the output of the following command (it might be big):
 
-   ```shell
-   helm get values runner -n gitlab-managed-apps -a --output yaml
-   ```
+        ```shell
+        helm get values runner -n gitlab-managed-apps -a --output yaml
+        ```
 
     1. Overwrite `applications/gitlab-runner/values.yaml` with the output of the previous command.
 
@@ -92,14 +92,17 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
       chart version proposed in `applications/vault/values.yaml`.
 
     - Cert-manager:
-      - For users on Kubernetes version 1.20 or above, the deprecated cert-manager v0.10 is no longer valid and
-        and the upgrade includes a breaking change. So we suggest that you [backup and uninstall cert-manager v0.10](#backup-and-uninstall-cert-manager-v010)
-        , and install cert-manager v1.4 instead. To install this version, uncomment the `applications/cert-manager-1-4/helmfile.yaml`
-        from the [`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file).
+      - For users on Kubernetes version 1.20 or above, the deprecated cert-manager v0.10 is no longer valid
+        and the upgrade includes a breaking change. So we suggest that you [backup and uninstall cert-manager v0.10](#backup-and-uninstall-cert-manager-v010),
+        and install the latest cert-manager instead. To install this version, uncomment `applications/cert-manager/helmfile.yaml`
+        from [`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file).
         This triggers a pipeline to install the new version.
       - For users on Kubernetes versions lower than 1.20, you can stick to v0.10 by uncommenting
-        `applications/cert-manager/helmfile.yaml`
+        `applications/cert-manager-legacy/helmfile.yaml`
         in your project's main Helmfile ([`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file)).
+
+        WARNING:
+        Cert-manager v0.10 breaks when Kubernetes is upgraded to version 1.20 or later.
 
 1. After following all the previous steps, [run a pipeline manually](../../ci/pipelines/index.md#run-a-pipeline-manually)
    and watch the `apply` job logs to see if any of your applications were successfully detected, installed, and whether they got any

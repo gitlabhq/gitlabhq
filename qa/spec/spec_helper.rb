@@ -28,8 +28,16 @@ RSpec.configure do |config|
   config.add_formatter QA::Support::Formatters::QuarantineFormatter
   config.add_formatter QA::Support::Formatters::TestStatsFormatter if QA::Runtime::Env.export_metrics?
 
+  config.before(:suite) do |suite|
+    QA::Resource::ReusableCollection.register_resource_classes do |collection|
+      QA::Resource::ReusableProject.register(collection)
+      QA::Resource::ReusableGroup.register(collection)
+    end
+  end
+
   config.prepend_before do |example|
     QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n")
+    QA::Runtime::Example.current = example
 
     # Reset fabrication counters tracked in resource base
     Thread.current[:api_fabrication] = 0
@@ -66,11 +74,15 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do |suite|
-    # If any tests failed, leave the resources behind to help troubleshoot
-    QA::Resource::ReusableProject.remove_all_via_api! unless suite.reporter.failed_examples.present?
-
     # Write all test created resources to JSON file
     QA::Tools::TestResourceDataProcessor.write_to_file
+
+    # If requested, confirm that resources were used appropriately (e.g., not left with changes that interfere with
+    # further reuse)
+    QA::Resource::ReusableCollection.validate_resource_reuse if QA::Runtime::Env.validate_resource_reuse?
+
+    # If any tests failed, leave the resources behind to help troubleshoot, otherwise remove them.
+    QA::Resource::ReusableCollection.remove_all_via_api! unless suite.reporter.failed_examples.present?
   end
 
   config.append_after(:suite) do

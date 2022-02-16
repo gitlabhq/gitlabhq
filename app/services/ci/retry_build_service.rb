@@ -40,6 +40,8 @@ module Ci
       new_build = clone_build(build)
 
       new_build.run_after_commit do
+        ::Ci::CopyCrossDatabaseAssociationsService.new.execute(build, new_build)
+
         ::Deployments::CreateForBuildService.new.execute(new_build)
 
         ::MergeRequests::AddTodoWhenBuildFailsService
@@ -70,9 +72,7 @@ module Ci
     def check_assignable_runners!(build); end
 
     def clone_build(build)
-      project.builds.new(build_attributes(build)).tap do |new_build|
-        yield(new_build) if block_given?
-      end
+      project.builds.new(build_attributes(build))
     end
 
     def build_attributes(build)
