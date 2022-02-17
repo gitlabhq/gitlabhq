@@ -64,7 +64,7 @@ module QA
         transformed_values = resources.transform_values! do |v|
           v.reject do |attributes|
             attributes['info'] == "with full_path 'gitlab-qa-sandbox-group'" ||
-              attributes['http_method'] == 'get' && !attributes['info'].include?("with username 'qa-") ||
+              attributes['http_method'] == 'get' && !attributes['info']&.include?("with username 'qa-") ||
               attributes['api_path'] == 'Cannot find resource API path'
           end
         end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest'
+
 module QA
   module Service
     class PraefectManager
@@ -68,7 +70,7 @@ module QA
 
       def stop_secondary_node
         stop_node(@secondary_node)
-        wait_until_node_is_removed_from_healthy_storages(@stop_secondary_node)
+        wait_until_node_is_removed_from_healthy_storages(@secondary_node)
       end
 
       def start_secondary_node
@@ -106,6 +108,8 @@ module QA
       end
 
       def stop_node(name)
+        return if node_state(name) == 'paused'
+
         shell "docker pause #{name}"
       end
 
@@ -200,7 +204,7 @@ module QA
         start_node(@primary_node)
         start_node(@secondary_node)
         start_node(@tertiary_node)
-        start_node(@praefect)
+        start_praefect
 
         wait_for_health_check_all_nodes
       end
@@ -278,6 +282,48 @@ module QA
             QA::Runtime::Logger.debug(line.chomp)
             break true if line.include?('the following nodes are not healthy') && line.include?(node)
           end
+        end
+      end
+
+      def praefect_dataloss_information(project_id)
+        dataloss_info = []
+        cmd = "docker exec #{@praefect} praefect -config /var/opt/gitlab/praefect/config.toml dataloss --partially-unavailable=true"
+        shell(cmd) { |line| dataloss_info << line.strip }
+
+        # Expected will have a record for each repository in the storage, in the following format
+        #   @hashed/bc/52/bc52dd634277c4a34a2d6210994a9a5e2ab6d33bb4a3a8963410e00ca6c15a02.git:
+        #     Primary: gitaly1
+        #       In-Sync Storages:
+        #         gitaly1, assigned host
+        #         gitaly3, assigned host
+        #       Outdated Storages:
+        #         gitaly2 is behind by 1 change or less, assigned host
+        #
+        # Alternatively, if all repositories are in sync, a concise message is returned
+        #   Virtual storage: default
+        #     All repositories are fully available on all assigned storages!
+
+        # extract the relevant project under test info if it is identified
+        start_index = dataloss_info.index { |line| line.include?("#{Digest::SHA256.hexdigest(project_id.to_s)}.git") }
+        unless start_index.nil?
+          dataloss_info = dataloss_info[start_index, 7]
+        end
+
+        dataloss_info&.each { |info| QA::Runtime::Logger.debug(info) }
+        dataloss_info
+      end
+
+      def praefect_dataloss_info_for_project(project_id)
+        dataloss_info = []
+        Support::Retrier.retry_until(max_duration: 60) do
+          dataloss_info = praefect_dataloss_information(project_id)
+          dataloss_info.include?("#{Digest::SHA256.hexdigest(project_id.to_s)}.git")
+        end
+      end
+
+      def wait_for_project_synced_across_all_storages(project_id)
+        Support::Retrier.retry_until(max_duration: 60) do
+          praefect_dataloss_information(project_id).include?('All repositories are fully available on all assigned storages!')
         end
       end
 

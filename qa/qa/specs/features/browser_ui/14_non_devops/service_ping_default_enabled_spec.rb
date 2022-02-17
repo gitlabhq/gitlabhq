@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Service ping default enabled' do
-    context 'When using default enabled from gitlab.yml config', :requires_admin do
+    context 'When using default enabled from gitlab.yml config', :requires_admin, except: { job: 'review-qa-*' } do
       before do
         Flow::Login.sign_in_as_admin
 

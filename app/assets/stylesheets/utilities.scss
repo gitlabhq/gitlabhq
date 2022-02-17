@@ -285,10 +285,25 @@ $gl-line-height-42: px-to-rem(42px);
   padding-right: $gl-spacing-scale-10;
 }
 
-/* Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709 */
+/*
+All of the following (up until the "End gitlab-ui#1709" comment) will be moved
+to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
+*/
+.gl-sm-grid-template-columns-2 {
+  @include media-breakpoint-up(sm) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .gl-md-grid-template-columns-2 {
   @include media-breakpoint-up(md) {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+.gl-md-grid-template-columns-3 {
+  @include media-breakpoint-up(md) {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -296,13 +311,9 @@ $gl-line-height-42: px-to-rem(42px);
   gap: $gl-spacing-scale-6;
 }
 
-$gl-spacing-scale-48: 48 * $grid-size;
-
 .gl-max-w-48 {
   max-width: $gl-spacing-scale-48;
 }
-
-$gl-spacing-scale-75: 75 * $grid-size;
 
 .gl-max-w-75 {
   max-width: $gl-spacing-scale-75;
@@ -311,6 +322,18 @@ $gl-spacing-scale-75: 75 * $grid-size;
 .gl-md-pt-11 {
   @include media-breakpoint-up(md) {
     padding-top: $gl-spacing-scale-11 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
+  }
+}
+
+.gl-md-mb-6 {
+  @include media-breakpoint-up(md) {
+    margin-bottom: $gl-spacing-scale-6 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
+  }
+}
+
+.gl-md-mb-12 {
+  @include media-breakpoint-up(md) {
+    margin-bottom: $gl-spacing-scale-12 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
   }
 }
 /* End gitlab-ui#1709 */

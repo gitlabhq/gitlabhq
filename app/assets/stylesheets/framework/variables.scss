@@ -52,6 +52,11 @@ $spacing-scale: (
   5: #{4 * $grid-size}
 );
 
+/* Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709 */
+$gl-spacing-scale-48: 48 * $grid-size;
+$gl-spacing-scale-75: 75 * $grid-size;
+/* End gitlab-ui#1709 */
+
 /*
  * Why another sizing scale???
  * Great question, friend!

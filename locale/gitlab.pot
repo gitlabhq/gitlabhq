@@ -18623,6 +18623,9 @@ msgstr ""
 msgid "InProductMarketing|3 ways to dive into GitLab CI/CD"
 msgstr ""
 
+msgid "InProductMarketing|A single application eliminates complex integrations, data chokepoints, and toolchain maintenance, resulting in greater productivity and lower cost."
+msgstr ""
+
 msgid "InProductMarketing|Access advanced features, build more efficiently, strengthen security and compliance."
 msgstr ""
 
@@ -18650,6 +18653,9 @@ msgstr ""
 msgid "InProductMarketing|Blog"
 msgstr ""
 
+msgid "InProductMarketing|Break down silos to coordinate seamlessly across development, operations, and security with a consistent experience across the development lifecycle."
+msgstr ""
+
 msgid "InProductMarketing|By enabling code owners and required merge approvals the right person will review the right MR. This is a win-win: cleaner code and a more efficient review process."
 msgstr ""
 
@@ -18660,6 +18666,9 @@ msgid "InProductMarketing|Code owners and required merge approvals are part of t
 msgstr ""
 
 msgid "InProductMarketing|Collaboration across stages in GitLab"
+msgstr ""
+
+msgid "InProductMarketing|Collaboration made easy"
 msgstr ""
 
 msgid "InProductMarketing|Create a custom CI runner with just a few clicks"
@@ -18761,6 +18770,9 @@ msgstr ""
 msgid "InProductMarketing|GitLab is better with teammates to help out!"
 msgstr ""
 
+msgid "InProductMarketing|GitLab is infrastructure agnostic (supporting GCP, AWS, Azure, OpenShift, VMWare, On Prem, Bare Metal, and more), offering a consistent workflow experience – irrespective of the environment."
+msgstr ""
+
 msgid "InProductMarketing|GitLab provides static application security testing (SAST), dynamic application security testing (DAST), container scanning, and dependency scanning to help you deliver secure applications along with license compliance."
 msgstr ""
 
@@ -18854,6 +18866,9 @@ msgstr ""
 msgid "InProductMarketing|Launch GitLab CI/CD in 20 minutes or less"
 msgstr ""
 
+msgid "InProductMarketing|Lower cost of development"
+msgstr ""
+
 msgid "InProductMarketing|Making the switch? It's easier than you think to import your projects into GitLab. Move %{github_link}, or import something %{bitbucket_link}."
 msgstr ""
 
@@ -18888,6 +18903,9 @@ msgid "InProductMarketing|Security that's integrated into your development lifec
 msgstr ""
 
 msgid "InProductMarketing|Sometimes you're not ready to make a full transition to a new tool. If you're not ready to fully commit, %{mirroring_link} gives you a safe way to try out GitLab in parallel with your current tool."
+msgstr ""
+
+msgid "InProductMarketing|Speed. Efficiency. Trust."
 msgstr ""
 
 msgid "InProductMarketing|Spin up an autoscaling runner in GitLab"
@@ -19023,6 +19041,9 @@ msgid "InProductMarketing|Working in GitLab = more efficient"
 msgstr ""
 
 msgid "InProductMarketing|YouTube"
+msgstr ""
+
+msgid "InProductMarketing|Your software, deployed your way"
 msgstr ""
 
 msgid "InProductMarketing|Your teams can be more efficient"

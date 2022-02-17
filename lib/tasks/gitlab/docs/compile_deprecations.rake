@@ -2,15 +2,19 @@
 
 namespace :gitlab do
   namespace :docs do
+    COLOR_CODE_RESET = "\e[0m"
+    COLOR_CODE_RED = "\e[31m"
+    COLOR_CODE_GREEN = "\e[32m"
+
     desc "Generate deprecation list from individual files"
     task :compile_deprecations do
       require_relative '../../../../tooling/docs/deprecation_handling'
       path = Rails.root.join("doc/update/deprecations.md")
       File.write(path, Docs::DeprecationHandling.new('deprecation').render)
-      puts "Deprecations compiled to #{path}"
+      puts "#{COLOR_CODE_GREEN}INFO: Deprecations compiled to #{path}.#{COLOR_CODE_RESET}"
     end
 
-    desc "Check that the deprecation doc is up to date"
+    desc "Check that the deprecation documentation is up to date"
     task :check_deprecations do
       require_relative '../../../../tooling/docs/deprecation_handling'
       path = Rails.root.join("doc/update/deprecations.md")
@@ -19,9 +23,15 @@ namespace :gitlab do
       doc = File.read(path)
 
       if doc == contents
-        puts "Deprecations doc is up to date."
+        puts "#{COLOR_CODE_GREEN}INFO: Deprecations documentation is up to date.#{COLOR_CODE_RESET}"
       else
-        format_output('Deprecations doc is outdated! You (or your technical writer) can update it by running `bin/rake gitlab:docs:compile_deprecations`.')
+        warn <<~EOS
+        #{COLOR_CODE_RED}ERROR: Deprecations documentation is outdated!#{COLOR_CODE_RESET}
+        To update the deprecations documentation, either:
+
+        - Run `bin/rake gitlab:docs:compile_deprecations` and commit the changes to this branch.
+        - Have a technical writer resolve the issue.
+        EOS
         abort
       end
     end
@@ -31,10 +41,10 @@ namespace :gitlab do
       require_relative '../../../../tooling/docs/deprecation_handling'
       path = Rails.root.join("doc/update/removals.md")
       File.write(path, Docs::DeprecationHandling.new('removal').render)
-      puts "Removals compiled to #{path}"
+      puts "#{COLOR_CODE_GREEN}INFO: Removals compiled to #{path}.#{COLOR_CODE_RESET}"
     end
 
-    desc "Check that the removal doc is up to date"
+    desc "Check that the removal documentation is up to date"
     task :check_removals do
       require_relative '../../../../tooling/docs/deprecation_handling'
       path = Rails.root.join("doc/update/removals.md")
@@ -42,9 +52,15 @@ namespace :gitlab do
       doc = File.read(path)
 
       if doc == contents
-        puts "Removals doc is up to date."
+        puts "#{COLOR_CODE_GREEN}INFO: Removals documentation is up to date.#{COLOR_CODE_RESET}"
       else
-        format_output('Removals doc is outdated! You (or your technical writer) can update it by running `bin/rake gitlab:docs:compile_removals`.')
+        warn <<~EOS
+        #{COLOR_CODE_RED}ERROR: Removals documentation is outdated!#{COLOR_CODE_RESET}
+        To update the removals documentation, either:
+
+        - Run `bin/rake gitlab:docs:compile_removals` and commit the changes to this branch.
+        - Have a technical writer resolve the issue.
+        EOS
         abort
       end
     end
