@@ -1516,11 +1516,9 @@ Input type: `CreateSnippetInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatesnippetblobactions"></a>`blobActions` | [`[SnippetBlobActionInputType!]`](#snippetblobactioninputtype) | Actions to perform over the snippet repository and blobs. |
-| <a id="mutationcreatesnippetcaptcharesponse"></a>`captchaResponse` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatesnippetdescription"></a>`description` | [`String`](#string) | Description of the snippet. |
 | <a id="mutationcreatesnippetprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project the snippet is associated with. |
-| <a id="mutationcreatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippettitle"></a>`title` | [`String!`](#string) | Title of the snippet. |
 | <a id="mutationcreatesnippetuploadedfiles"></a>`uploadedFiles` | [`[String!]`](#string) | Paths to files uploaded in the snippet description. |
 | <a id="mutationcreatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum!`](#visibilitylevelsenum) | Visibility level of the snippet. |
@@ -1529,13 +1527,9 @@ Input type: `CreateSnippetInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreatesnippetcaptchasitekey"></a>`captchaSiteKey` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatesnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatesnippetneedscaptcharesponse"></a>`needsCaptchaResponse` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
-| <a id="mutationcreatesnippetspam"></a>`spam` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
-| <a id="mutationcreatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 
 ### `Mutation.createTestCase`
 
@@ -4938,11 +4932,9 @@ Input type: `UpdateSnippetInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatesnippetblobactions"></a>`blobActions` | [`[SnippetBlobActionInputType!]`](#snippetblobactioninputtype) | Actions to perform over the snippet repository and blobs. |
-| <a id="mutationupdatesnippetcaptcharesponse"></a>`captchaResponse` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatesnippetdescription"></a>`description` | [`String`](#string) | Description of the snippet. |
 | <a id="mutationupdatesnippetid"></a>`id` | [`SnippetID!`](#snippetid) | Global ID of the snippet to update. |
-| <a id="mutationupdatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippettitle"></a>`title` | [`String`](#string) | Title of the snippet. |
 | <a id="mutationupdatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Visibility level of the snippet. |
 
@@ -4950,13 +4942,9 @@ Input type: `UpdateSnippetInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdatesnippetcaptchasitekey"></a>`captchaSiteKey` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatesnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdatesnippetneedscaptcharesponse"></a>`needsCaptchaResponse` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
-| <a id="mutationupdatesnippetspam"></a>`spam` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
-| <a id="mutationupdatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 
 ### `Mutation.userCalloutCreate`
 

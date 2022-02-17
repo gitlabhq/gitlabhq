@@ -37,8 +37,15 @@ dependency_scanning:
   script:
     - /analyzer run
 
+.cyclone-dx-reports:
+  artifacts:
+    paths:
+      - "**/cyclonedx-*.json"
+
 gemnasium-dependency_scanning:
-  extends: .ds-analyzer
+  extends:
+    - .ds-analyzer
+    - .cyclone-dx-reports
   image:
     name: "$DS_ANALYZER_IMAGE"
   variables:
@@ -67,7 +74,9 @@ gemnasium-dependency_scanning:
         - '{conan.lock,*/conan.lock,*/*/conan.lock}'
 
 gemnasium-maven-dependency_scanning:
-  extends: .ds-analyzer
+  extends:
+    - .ds-analyzer
+    - .cyclone-dx-reports
   image:
     name: "$DS_ANALYZER_IMAGE"
   variables:
@@ -93,7 +102,9 @@ gemnasium-maven-dependency_scanning:
         - '{pom.xml,*/pom.xml,*/*/pom.xml}'
 
 gemnasium-python-dependency_scanning:
-  extends: .ds-analyzer
+  extends:
+    - .ds-analyzer
+    - .cyclone-dx-reports
   image:
     name: "$DS_ANALYZER_IMAGE"
   variables:

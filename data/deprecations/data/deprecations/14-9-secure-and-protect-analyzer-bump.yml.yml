@@ -1,0 +1,44 @@
+- name: "Secure and Protect analyzer major version update"  # The name of the feature to be deprecated
+  announcement_milestone: "14.8"  # The milestone when this feature was first announced as deprecated.
+  announcement_date: "2022-02-22"  # The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_milestone: "15.00"  # The milestone when this feature is planned to be removed
+  removal_date:  # The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  breaking_change: true  # If this deprecation is a breaking change, set this value to true
+  reporter: NicoleSchwartz  # GitLab username of the person reporting the deprecation
+  body: |  # Do not modify this line, instead modify the lines below.
+    The Secure and Protect stages will be bumping the major versions of their analyzers in tandem with the GitLab 15.0 release. This major bump will enable a clear delineation for analyzers, between:
+
+    - Those released prior to May 22, 2022, which generate reports that _are not_ subject to stringent schema validation.
+    - Those released after May 22, 2022, which generate reports that _are_ subject to stringent schema validation.
+
+    If you are not using the default inclusion templates, or have pinned your analyzer version(s) you will need to update your CI/CD job definition to either remove the pinned version or to update the latest major version.
+    Users of GitLab 12.0-14.10 will continue to experience analyzer updates as normal until the release of GitLab 15.0, following which all newly fixed bugs and newly released features in the new major versions of the analyzers will not be available in the deprecated versions because we do not backport bugs and new features as per our [maintenance policy](https://docs.gitlab.com/ee/policy/maintenance.html). As required security patches will be backported within the latest 3 minor releases.
+    Specifically, the following are being deprecated and will no longer be updated after 15.0 GitLab release:
+
+    - API Security: version 1
+    - Container Scanning: version 4
+    - Coverage-guided fuzz testing: version 2
+    - Dependency Scanning: version 2
+    - Dynamic Application Security Testing (DAST): version 2
+    - License Scanning: version 3
+    - Secret Detection: version 3
+    - Static Application Security Testing (SAST): version 2, except security-code-scan which is version 3
+      - `bandit`: version 2
+      - `brakeman`: version 2
+      - `eslint`: version 2
+      - `flawfinder`: version 2
+      - `gosec`: version 3
+      - `kubesec`: version 2
+      - `mobsf`: version 2
+      - `nodejs-scan`: version 2
+      - `phpcs-security-audit`: version 2
+      - `pmd-apex`: version 2
+      - `security-code-scan`: version 3
+      - `semgrep`: version 2
+      - `sobelow`: version 2
+      - `spotbugs`: version 2
+# The following items are not published on the docs page, but may be used in the future.
+  stage: secure, protect # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
+  tiers: Free, Silver, Gold, Core, Premium, Ultimate # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350936 # (optional) This is a link to the deprecation issue in GitLab
+  documentation_url:  # (optional) This is a link to the current documentation page

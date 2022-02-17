@@ -1332,6 +1332,9 @@ production: &base
     ## OneTrust
     # one_trust_id: '_your_one_trust_id'
 
+    ## Bizible.
+    # bizible: true
+
     ## Matomo analytics.
     # matomo_url: '_your_matomo_url'
     # matomo_site_id: '_your_matomo_site_id'

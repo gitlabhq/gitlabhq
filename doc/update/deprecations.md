@@ -1285,6 +1285,48 @@ See the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352564
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Secure and Protect analyzer major version update
+
+WARNING:
+This feature will be changed or removed in 15.00
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The Secure and Protect stages will be bumping the major versions of their analyzers in tandem with the GitLab 15.0 release. This major bump will enable a clear delineation for analyzers, between:
+
+- Those released prior to May 22, 2022, which generate reports that _are not_ subject to stringent schema validation.
+- Those released after May 22, 2022, which generate reports that _are_ subject to stringent schema validation.
+
+If you are not using the default inclusion templates, or have pinned your analyzer version(s) you will need to update your CI/CD job definition to either remove the pinned version or to update the latest major version.
+Users of GitLab 12.0-14.10 will continue to experience analyzer updates as normal until the release of GitLab 15.0, following which all newly fixed bugs and newly released features in the new major versions of the analyzers will not be available in the deprecated versions because we do not backport bugs and new features as per our [maintenance policy](https://docs.gitlab.com/ee/policy/maintenance.html). As required security patches will be backported within the latest 3 minor releases.
+Specifically, the following are being deprecated and will no longer be updated after 15.0 GitLab release:
+
+- API Security: version 1
+- Container Scanning: version 4
+- Coverage-guided fuzz testing: version 2
+- Dependency Scanning: version 2
+- Dynamic Application Security Testing (DAST): version 2
+- License Scanning: version 3
+- Secret Detection: version 3
+- Static Application Security Testing (SAST): version 2, except security-code-scan which is version 3
+  - `bandit`: version 2
+  - `brakeman`: version 2
+  - `eslint`: version 2
+  - `flawfinder`: version 2
+  - `gosec`: version 3
+  - `kubesec`: version 2
+  - `mobsf`: version 2
+  - `nodejs-scan`: version 2
+  - `phpcs-security-audit`: version 2
+  - `pmd-apex`: version 2
+  - `security-code-scan`: version 3
+  - `semgrep`: version 2
+  - `sobelow`: version 2
+  - `spotbugs`: version 2
+
+**Planned removal milestone: 15.00 ()**
+
 ### Support for gRPC-aware proxy deployed between Gitaly and rest of GitLab
 
 WARNING:
@@ -1366,6 +1408,21 @@ Support for `fixup!` is now considered deprecated, and will be
 removed in GitLab 15.0.
 
 **Planned removal milestone: 15.0 (2022-06-22)**
+
+### `projectFingerprint` in `PipelineSecurityReportFinding` GraphQL
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `projectFingerprint` field in the [PipelineSecurityReportFinding](https://docs.gitlab.com/ee/api/graphql/reference/index.html#pipelinesecurityreportfinding)
+GraphQL object is being deprecated. This field contains a "fingerprint" of security findings used to determine uniqueness.
+The method for calculating fingerprints has changed, resulting in different values. Going forward, the new values will be
+exposed in the UUID field. Data previously available in the projectFingerprint field will eventually be removed entirely.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### `started` iterations API field
 

@@ -7,39 +7,100 @@ RSpec.describe Projects::BadgesController do
   let_it_be(:pipeline, reload: true) { create(:ci_empty_pipeline, project: project) }
   let_it_be(:user) { create(:user) }
 
-  shared_examples 'a badge resource' do |badge_type|
-    context 'when pipelines are public' do
+  shared_context 'renders badge irrespective of project access levels' do |badge_type|
+    context 'when project is public' do
       before do
-        project.update!(public_builds: true)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
       end
 
-      context 'when project is public' do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-        end
+      it "returns the #{badge_type} badge to unauthenticated users" do
+        get_badge(badge_type)
 
-        it "returns the #{badge_type} badge to unauthenticated users" do
-          get_badge(badge_type)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'when project is restricted' do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-          project.add_guest(user)
-          sign_in(user)
-        end
-
-        it "returns the #{badge_type} badge to guest users" do
-          get_badge(badge_type)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
+    context 'when project is restricted' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        project.add_guest(user)
+        sign_in(user)
+      end
+
+      it "returns the #{badge_type} badge to guest users" do
+        get_badge(badge_type)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
+  shared_context 'when pipelines are public' do |badge_type|
+    before do
+      project.update!(public_builds: true)
+    end
+
+    it_behaves_like 'renders badge irrespective of project access levels', badge_type
+  end
+
+  shared_context 'when pipelines are not public' do |badge_type|
+    before do
+      project.update!(public_builds: false)
+    end
+
+    context 'when project is public' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      it 'returns 404 to unauthenticated users' do
+        get_badge(badge_type)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when project is restricted to the user' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        project.add_guest(user)
+        sign_in(user)
+      end
+
+      it 'defaults to project permissions' do
+        get_badge(badge_type)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  shared_context 'customization' do |badge_type|
+    render_views
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+    end
+
+    context 'when key_text param is used' do
+      it 'sets custom key text' do
+        get_badge(badge_type, key_text: 'custom key text')
+
+        expect(response.body).to include('custom key text')
+      end
+    end
+
+    context 'when key_width param is used' do
+      it 'sets custom key width' do
+        get_badge(badge_type, key_width: '123')
+
+        expect(response.body).to include('123')
+      end
+    end
+  end
+
+  shared_examples 'a badge resource' do |badge_type|
     context 'format' do
       before do
         project.add_maintainer(user)
@@ -77,61 +138,11 @@ RSpec.describe Projects::BadgesController do
       end
     end
 
-    context 'when pipelines are not public' do
-      before do
-        project.update!(public_builds: false)
-      end
+    it_behaves_like 'customization', badge_type
 
-      context 'when project is public' do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-        end
-
-        it 'returns 404 to unauthenticated users' do
-          get_badge(badge_type)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      context 'when project is restricted to the user' do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-          project.add_guest(user)
-          sign_in(user)
-        end
-
-        it 'defaults to project permissions' do
-          get_badge(badge_type)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-    end
-
-    context 'customization' do
-      render_views
-
-      before do
-        project.add_maintainer(user)
-        sign_in(user)
-      end
-
-      context 'when key_text param is used' do
-        it 'sets custom key text' do
-          get_badge(badge_type, key_text: 'custom key text')
-
-          expect(response.body).to include('custom key text')
-        end
-      end
-
-      context 'when key_width param is used' do
-        it 'sets custom key width' do
-          get_badge(badge_type, key_width: '123')
-
-          expect(response.body).to include('123')
-        end
-      end
+    if [:pipeline, :coverage].include?(badge_type)
+      it_behaves_like 'when pipelines are public', badge_type
+      it_behaves_like 'when pipelines are not public', badge_type
     end
   end
 
@@ -161,6 +172,13 @@ RSpec.describe Projects::BadgesController do
 
   describe '#coverage' do
     it_behaves_like 'a badge resource', :coverage
+  end
+
+  describe '#release' do
+    action = :release
+
+    it_behaves_like 'a badge resource', action
+    it_behaves_like 'renders badge irrespective of project access levels', action
   end
 
   def get_badge(badge, args = {})

@@ -1,0 +1,14 @@
+- if bizible_enabled?
+  <!-- Bizible -->
+  = javascript_include_tag "https://cdn.bizible.com/scripts/bizible.js"
+  = javascript_tag nonce: content_security_policy_nonce do
+    :plain
+      const bizibleScript = document.createElement('script');
+      bizibleScript.src = 'https://cdn.bizible.com/scripts/bizible.js';
+      bizibleScript.nonce = '#{content_security_policy_nonce}'
+      bizibleScript.charset = 'UTF-8';
+      bizibleScript.defer = true;
+      document.head.appendChild(bizibleScript);
+
+      function OptanonWrapper() { }
+

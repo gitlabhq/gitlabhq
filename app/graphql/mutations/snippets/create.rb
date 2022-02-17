@@ -6,7 +6,6 @@ module Mutations
       graphql_name 'CreateSnippet'
 
       include ServiceCompatibility
-      include CanMutateSpammable
       include Mutations::SpamProtection
 
       authorize :create_snippet

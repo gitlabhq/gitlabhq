@@ -160,6 +160,8 @@ module Projects
         @badges.map! do |badge|
           badge.new(@project, @ref).metadata
         end
+
+        @badges.append(Gitlab::Ci::Badge::Release::LatestRelease.new(@project, current_user).metadata)
       end
 
       def define_auto_devops_variables

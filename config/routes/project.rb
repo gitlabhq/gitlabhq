@@ -467,6 +467,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         get :planning_hierarchy
+
+        resources :badges, only: [] do
+          collection do
+            constraints format: /svg/ do
+              get :release
+            end
+          end
+        end
       end
       # End of the /-/ scope.
 

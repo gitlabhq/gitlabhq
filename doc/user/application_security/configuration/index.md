@@ -65,4 +65,4 @@ You can configure the following security controls:
 You can configure the following security controls:
 
 - [License Compliance](../../../user/compliance/license_compliance/index.md)
-  - Can be configured with `.gitlab-ci.yml`. For more details, read [License Compliance](../../../user/compliance/license_compliance/index.md#configuration).
+  - Can be configured with `.gitlab-ci.yml`. For more details, read [License Compliance](../../../user/compliance/license_compliance/index.md#enable-license-compliance).
