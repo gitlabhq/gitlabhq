@@ -767,6 +767,87 @@ Here's an example dependency scanning report:
 }
 ```
 
+### CycloneDX reports
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/alpha-beta-support.md#beta-features).
+
+In addition to the [JSON report file](#reports-json-format), the [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
+Dependency Scanning tool outputs a [CycloneDX](https://cyclonedx.org/) report for
+each supported lock or build file it detects. These CycloneDX reports are named
+`cyclonedx-<package-type>-<package-manager>.json`, and are saved in the same directory
+as the detected lock or build files.
+
+For example, if your project has the following structure:
+
+```plaintext
+.
+├── ruby-project/
+│   └── Gemfile.lock
+├── ruby-project-2/
+│   └── Gemfile.lock
+├── php-project/
+│   └── composer.lock
+└── go-project/
+    └── go.sum
+```
+
+Then the Gemnasium scanner generates the following CycloneDX reports:
+
+```plaintext
+.
+├── ruby-project/
+│   ├── Gemfile.lock
+│   └── cyclonedx-gem-bundler.json
+├── ruby-project-2/
+│   ├── Gemfile.lock
+│   └── cyclonedx-gem-bundler.json
+├── php-project/
+│   ├── composer.lock
+│   └── cyclonedx-packagist-composer.json
+└── go-project/
+    ├── go.sum
+    └── cyclonedx-go-go.json
+```
+
+The CycloneDX reports can be downloaded [the same way as other job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+
+### Merging multiple CycloneDX Reports
+
+You can use a CI/CD job to merge multiple CycloneDX Reports into a single report.
+For example:
+
+```yaml
+stages:
+  - test
+  - merge-cyclonedx-reports
+
+include:
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+
+merge cyclonedx reports:
+  stage: merge-cyclonedx-reports
+  image: alpine:latest
+  script:
+    - wget https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.22.0/cyclonedx-linux-musl-x64 -O /usr/local/bin/cyclonedx-cli
+    - chmod 755 /usr/local/bin/cyclonedx-cli
+    - apk --update add --no-cache icu-dev libstdc++
+    - find * -name "cyclonedx-*.json" -exec cyclonedx-cli merge --input-files {} --output-file cyclonedx-all.json +
+  artifacts:
+    paths:
+      - cyclonedx-all.json
+```
+
+GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
+to store implementation-specific details in the metadata of each CycloneDX report,
+such as the location of build and lock files. If multiple CycloneDX reports are merged together,
+this information is removed from the resulting merged file.
+
+NOTE:
+CycloneDX reports are a [Beta](../../../policy/alpha-beta-support.md#beta-features) feature,
+and the reports are subject to change during the beta period. Do not build integrations
+that rely on the format of these reports staying consistent, as the format might change
+before the feature is made generally available.
+
 ## Versioning and release process
 
 Please check the [Release Process documentation](https://gitlab.com/gitlab-org/security-products/release/blob/master/docs/release_process.md).

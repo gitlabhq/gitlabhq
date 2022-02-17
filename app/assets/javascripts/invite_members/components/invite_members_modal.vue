@@ -8,6 +8,7 @@ import {
   GlFormCheckboxGroup,
 } from '@gitlab/ui';
 import { partition, isString, uniqueId } from 'lodash';
+import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
@@ -21,7 +22,6 @@ import {
 import eventHub from '../event_hub';
 import { responseMessageFromSuccess } from '../utils/response_message_parser';
 import ModalConfetti from './confetti.vue';
-import InviteModalBase from './invite_modal_base.vue';
 import MembersTokenSelect from './members_token_select.vue';
 
 export default {

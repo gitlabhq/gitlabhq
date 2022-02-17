@@ -73,6 +73,9 @@
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
+.if-fork-merge-request: &if-fork-merge-request
+  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
+
 .if-default-branch-schedule-2-hourly: &if-default-branch-schedule-2-hourly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
 
@@ -731,6 +734,8 @@
 
 .frontend:rules:jest:
   rules:
+    - <<: *if-fork-merge-request
+      when: never
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-default-refs
       changes: *core-frontend-patterns
@@ -747,11 +752,12 @@
 
 .frontend:rules:jest:minimal:
   rules:
+    - <<: *if-fork-merge-request
+      changes: *code-backstage-patterns
     - !reference [".rails:rules:minimal-default-rules", rules]
     - <<: *if-merge-request-labels-run-all-jest
       when: never
-    - <<: *if-default-refs
-      changes: *core-frontend-patterns
+    - changes: *core-frontend-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -882,11 +888,15 @@
 
 .rails:rules:ee-and-foss-migration:
   rules:
+    - <<: *if-fork-merge-request
+      when: never
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *core-backend-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
+    # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-automated-merge-request
@@ -899,8 +909,12 @@
 
 .rails:rules:ee-and-foss-migration:minimal:
   rules:
+    - <<: *if-fork-merge-request
+      changes: *db-patterns
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
+    # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
       changes: *db-patterns
       when: never
@@ -921,11 +935,15 @@
 
 .rails:rules:ee-and-foss-unit:
   rules:
+    - <<: *if-fork-merge-request
+      when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - changes: *backend-patterns
 
 .rails:rules:ee-and-foss-unit:minimal:
   rules:
+    - <<: *if-fork-merge-request
+      changes: *backend-patterns
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
     - <<: *if-merge-request
@@ -933,11 +951,15 @@
 
 .rails:rules:ee-and-foss-integration:
   rules:
+    - <<: *if-fork-merge-request
+      when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - changes: *backend-patterns
 
 .rails:rules:ee-and-foss-integration:minimal:
   rules:
+    - <<: *if-fork-merge-request
+      changes: *backend-patterns
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
     - <<: *if-merge-request
@@ -945,11 +967,15 @@
 
 .rails:rules:ee-and-foss-system:
   rules:
+    - <<: *if-fork-merge-request
+      when: never
     - !reference [".rails:rules:system-default-rules", rules]
     - changes: *code-backstage-patterns
 
 .rails:rules:ee-and-foss-system:minimal:
   rules:
+    - <<: *if-fork-merge-request
+      changes: *code-backstage-patterns
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:system:minimal-default-rules", rules]
 
@@ -976,6 +1002,8 @@
       changes: *core-backend-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
+    # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-automated-merge-request
@@ -992,6 +1020,8 @@
       when: never
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
+    # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
       changes: *db-patterns
       when: never
@@ -1000,6 +1030,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-fork-merge-request
+      when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - changes: *backend-patterns
 
@@ -1007,6 +1039,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-fork-merge-request
+      changes: *backend-patterns
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
     - <<: *if-merge-request
@@ -1016,6 +1050,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-fork-merge-request
+      when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - changes: *backend-patterns
 
@@ -1023,6 +1059,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-fork-merge-request
+      changes: *backend-patterns
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
     - <<: *if-merge-request
@@ -1032,6 +1070,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-fork-merge-request
+      when: never
     - !reference [".rails:rules:system-default-rules", rules]
     - changes: *code-backstage-patterns
 
@@ -1039,6 +1079,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-fork-merge-request
+      changes: *code-backstage-patterns
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:system:minimal-default-rules", rules]
 
@@ -1051,8 +1093,8 @@
       changes: *core-backend-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
-    - <<: *if-security-merge-request
-      changes: *db-patterns
+    # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request-labels-as-if-foss
       changes: *db-patterns
     - <<: *if-automated-merge-request
@@ -1068,6 +1110,8 @@
       when: never
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules", rules]
+    # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request-labels-as-if-foss
       changes: *db-patterns
       when: never
@@ -1076,6 +1120,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-fork-merge-request
+      when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
@@ -1083,6 +1129,8 @@
 .rails:rules:as-if-foss-unit:minimal:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-fork-merge-request
       when: never
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules", rules]
@@ -1093,6 +1141,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-fork-merge-request
+      when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
@@ -1100,6 +1150,8 @@
 .rails:rules:as-if-foss-integration:minimal:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-fork-merge-request
       when: never
     - !reference [".rails:rules:minimal-default-rules", rules]
     - !reference [".rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules", rules]
@@ -1110,6 +1162,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-fork-merge-request
+      when: never
     - !reference [".rails:rules:system-default-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
@@ -1117,6 +1171,8 @@
 .rails:rules:as-if-foss-system:minimal:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-fork-merge-request
       when: never
     - !reference [".rails:rules:minimal-default-rules", rules]
     - <<: *if-merge-request

@@ -16,6 +16,7 @@ RSpec.describe Integrations::Datadog do
   let(:api_key) { SecureRandom.hex(32) }
   let(:dd_env) { 'ci' }
   let(:dd_service) { 'awesome-gitlab' }
+  let(:dd_tags) { '' }
 
   let(:expected_hook_url) { default_url + "?dd-api-key=#{api_key}&env=#{dd_env}&service=#{dd_service}" }
 
@@ -27,7 +28,8 @@ RSpec.describe Integrations::Datadog do
       api_url: api_url,
       api_key: api_key,
       datadog_env: dd_env,
-      datadog_service: dd_service
+      datadog_service: dd_service,
+      datadog_tags: dd_tags
     )
   end
 
@@ -95,6 +97,20 @@ RSpec.describe Integrations::Datadog do
         it { is_expected.not_to allow_value('datadog hq.com').for(:datadog_site) }
         it { is_expected.not_to allow_value('example.com').for(:api_url) }
       end
+
+      context 'with custom tags' do
+        it { is_expected.to allow_value('').for(:datadog_tags) }
+        it { is_expected.to allow_value('key:value').for(:datadog_tags) }
+        it { is_expected.to allow_value("key:value\nkey2:value2").for(:datadog_tags) }
+        it { is_expected.to allow_value("key:value\nkey2:value with spaces and 123?&$").for(:datadog_tags) }
+        it { is_expected.to allow_value("key:value\n\n\n\nkey2:value2\n").for(:datadog_tags) }
+
+        it { is_expected.not_to allow_value('value').for(:datadog_tags) }
+        it { is_expected.not_to allow_value('key:').for(:datadog_tags) }
+        it { is_expected.not_to allow_value('key:   ').for(:datadog_tags) }
+        it { is_expected.not_to allow_value(':value').for(:datadog_tags) }
+        it { is_expected.not_to allow_value("key:value\nINVALID").for(:datadog_tags) }
+      end
     end
 
     context 'when integration is not active' do
@@ -134,8 +150,22 @@ RSpec.describe Integrations::Datadog do
     context 'without optional params' do
       let(:dd_service) { '' }
       let(:dd_env) { '' }
+      let(:dd_tags) { '' }
 
       it { is_expected.to eq(default_url + "?dd-api-key=#{api_key}") }
+    end
+
+    context 'with custom tags' do
+      let(:dd_tags) { "key:value\nkey2:value, 2" }
+      let(:escaped_tags) { CGI.escape("key:value,\"key2:value, 2\"") }
+
+      it { is_expected.to eq(expected_hook_url + "&tags=#{escaped_tags}") }
+
+      context 'and empty lines' do
+        let(:dd_tags) { "key:value\r\n\n\n\nkey2:value, 2\n" }
+
+        it { is_expected.to eq(expected_hook_url + "&tags=#{escaped_tags}") }
+      end
     end
   end
 

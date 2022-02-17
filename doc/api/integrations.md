@@ -322,6 +322,7 @@ Parameters:
 | `datadog_env`          | string  | false    | For self-managed deployments, set the env% tag for all the data sent to Datadog. |
 | `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Useful when managing several self-managed deployments |
 | `datadog_site`         | string  | false    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu` |
+| `datadog_tags`         | string  | false    | Custom tags in Datadog. Specify one tag per line in the format: `key:value\nkey2:value2` ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.) |
 <!-- | `archive_trace_events` | boolean | false    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 14.7) | -->
 <!-- TODO: uncomment the archive_trace_events field once :datadog_integration_logs_collection is rolled out. Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/346339 -->
 

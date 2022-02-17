@@ -41,7 +41,7 @@
             %li.nav-item.d-none.d-lg-block.m-auto
               - unless current_controller?(:search)
                 - if Feature.enabled?(:new_header_search)
-                  #js-header-search.header-search{ data: { 'search-context' => search_context.to_json,
+                  #js-header-search.header-search{ data: { 'search-context' => header_search_context.to_json,
                   'search-path' => search_path,
                   'issues-path' => issues_dashboard_path,
                   'mr-path' => merge_requests_dashboard_path,

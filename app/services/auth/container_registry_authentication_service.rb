@@ -140,8 +140,7 @@ module Auth
         type: type,
         name: path.to_s,
         actions: authorized_actions,
-        migration_eligible: self.class.migration_eligible(project: requested_project),
-        cdn_redirect: cdn_redirect
+        migration_eligible: self.class.migration_eligible(project: requested_project)
       }.compact
     end
 
@@ -174,13 +173,6 @@ module Auth
     rescue ContainerRegistry::Path::InvalidRegistryPathError => ex
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ex, **Gitlab::ApplicationContext.current)
       false
-    end
-
-    # This is used to determine whether blob download requests using a given JWT token should be redirected to Google
-    # Cloud CDN or not. The intent is to enable a percentage of time rollout for this new feature on the Container
-    # Registry side. See https://gitlab.com/gitlab-org/gitlab/-/issues/349417 for more details.
-    def cdn_redirect
-      Feature.enabled?(:container_registry_cdn_redirect) || nil
     end
 
     ##

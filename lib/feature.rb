@@ -245,11 +245,11 @@ class Feature
     end
 
     def gate_specified?
-      %i(user project group feature_group).any? { |key| params.key?(key) }
+      %i(user project group feature_group namespace).any? { |key| params.key?(key) }
     end
 
     def targets
-      [feature_group, user, project, group].compact
+      [feature_group, user, project, group, namespace].compact
     end
 
     private
@@ -278,6 +278,13 @@ class Feature
       return unless params.key?(:group)
 
       Group.find_by_full_path(params[:group])
+    end
+
+    def namespace
+      return unless params.key?(:namespace)
+
+      # We are interested in Group or UserNamespace
+      Namespace.without_project_namespaces.find_by_full_path(params[:namespace])
     end
   end
 end

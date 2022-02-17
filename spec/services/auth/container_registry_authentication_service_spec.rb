@@ -145,28 +145,4 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       it_behaves_like 'an unmodified token'
     end
   end
-
-  context 'CDN redirection' do
-    include_context 'container registry auth service context'
-
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:project) { create(:project) }
-    let_it_be(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
-
-    before do
-      project.add_developer(current_user)
-    end
-
-    it_behaves_like 'a valid token'
-    it { expect(payload['access']).to include(include('cdn_redirect' => true)) }
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(container_registry_cdn_redirect: false)
-      end
-
-      it_behaves_like 'a valid token'
-      it { expect(payload['access']).not_to include(have_key('cdn_redirect')) }
-    end
-  end
 end

@@ -167,76 +167,85 @@ RSpec.describe API::Features, stub_feature_flags: false do
         end
       end
 
+      shared_examples 'does not enable the flag' do |actor_type, actor_path|
+        it 'returns the current state of the flag without changes' do
+          post api("/features/#{feature_name}", admin), params: { value: 'true', actor_type => actor_path }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response).to match(
+            "name" => feature_name,
+            "state" => "off",
+            "gates" => [
+              { "key" => "boolean", "value" => false }
+            ],
+            'definition' => known_feature_flag_definition_hash
+          )
+        end
+      end
+
+      shared_examples 'enables the flag for the actor' do |actor_type|
+        it 'sets the feature gate' do
+          post api("/features/#{feature_name}", admin), params: { value: 'true', actor_type => actor.full_path }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response).to match(
+            'name' => feature_name,
+            'state' => 'conditional',
+            'gates' => [
+              { 'key' => 'boolean', 'value' => false },
+              { 'key' => 'actors', 'value' => ["#{actor.class}:#{actor.id}"] }
+            ],
+            'definition' => known_feature_flag_definition_hash
+          )
+        end
+      end
+
       context 'when enabling for a project by path' do
         context 'when the project exists' do
-          let!(:project) { create(:project) }
-
-          it 'sets the feature gate' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', project: project.full_path }
-
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to match(
-              'name' => feature_name,
-              'state' => 'conditional',
-              'gates' => [
-                { 'key' => 'boolean', 'value' => false },
-                { 'key' => 'actors', 'value' => ["Project:#{project.id}"] }
-              ],
-              'definition' => known_feature_flag_definition_hash
-            )
+          it_behaves_like 'enables the flag for the actor', :project do
+            let(:actor) { create(:project) }
           end
         end
 
         context 'when the project does not exist' do
-          it 'sets no new values' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', project: 'mep/to/the/mep/mep' }
-
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to match(
-              "name" => feature_name,
-              "state" => "off",
-              "gates" => [
-                { "key" => "boolean", "value" => false }
-              ],
-              'definition' => known_feature_flag_definition_hash
-            )
-          end
+          it_behaves_like 'does not enable the flag', :project, 'mep/to/the/mep/mep'
         end
       end
 
       context 'when enabling for a group by path' do
         context 'when the group exists' do
-          it 'sets the feature gate' do
-            group = create(:group)
-
-            post api("/features/#{feature_name}", admin), params: { value: 'true', group: group.full_path }
-
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to match(
-              'name' => feature_name,
-              'state' => 'conditional',
-              'gates' => [
-                { 'key' => 'boolean', 'value' => false },
-                { 'key' => 'actors', 'value' => ["Group:#{group.id}"] }
-              ],
-              'definition' => known_feature_flag_definition_hash
-            )
+          it_behaves_like 'enables the flag for the actor', :group do
+            let(:actor) { create(:group) }
           end
         end
 
         context 'when the group does not exist' do
-          it 'sets no new values and keeps the feature disabled' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', group: 'not/a/group' }
+          it_behaves_like 'does not enable the flag', :group, 'not/a/group'
+        end
+      end
 
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to match(
-              "name" => feature_name,
-              "state" => "off",
-              "gates" => [
-                { "key" => "boolean", "value" => false }
-              ],
-              'definition' => known_feature_flag_definition_hash
-            )
+      context 'when enabling for a namespace by path' do
+        context 'when the user namespace exists' do
+          it_behaves_like 'enables the flag for the actor', :namespace do
+            let(:actor) { create(:namespace) }
+          end
+        end
+
+        context 'when the group namespace exists' do
+          it_behaves_like 'enables the flag for the actor', :namespace do
+            let(:actor) { create(:group) }
+          end
+        end
+
+        context 'when the user namespace does not exist' do
+          it_behaves_like 'does not enable the flag', :namespace, 'not/a/group'
+        end
+
+        context 'when a project namespace exists' do
+          let(:project_namespace) { create(:project_namespace) }
+
+          it_behaves_like 'does not enable the flag', :namespace do
+            let(:actor_path) { project_namespace.full_path }
           end
         end
       end

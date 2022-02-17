@@ -86,3 +86,5 @@ module InviteMembersHelper
     projects.map { |project| { id: project.id, title: project.title } }
   end
 end
+
+InviteMembersHelper.prepend_mod_with('InviteMembersHelper')

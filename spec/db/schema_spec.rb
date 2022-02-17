@@ -26,7 +26,7 @@ RSpec.describe 'Database schema' do
     boards: %w[milestone_id iteration_id],
     chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
-    ci_builds: %w[erased_by_id runner_id trigger_request_id],
+    ci_builds: %w[erased_by_id trigger_request_id],
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_runner_projects: %w[runner_id],
     ci_trigger_requests: %w[commit_id],

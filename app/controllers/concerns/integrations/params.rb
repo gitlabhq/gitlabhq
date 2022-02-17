@@ -30,6 +30,7 @@ module Integrations
       :datadog_site,
       :datadog_env,
       :datadog_service,
+      :datadog_tags,
       :default_irc_uri,
       :device,
       :disable_diffs,

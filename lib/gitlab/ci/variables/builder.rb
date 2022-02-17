@@ -9,6 +9,7 @@ module Gitlab
         def initialize(pipeline)
           @pipeline = pipeline
           @instance_variables_builder = Builder::Instance.new
+          @project_variables_builder = Builder::Project.new(project)
         end
 
         def scoped_variables(job, environment:, dependencies:)
@@ -77,13 +78,18 @@ module Gitlab
         end
 
         def secret_project_variables(environment:, ref:)
-          project.ci_variables_for(ref: ref, environment: environment)
+          if memoize_secret_variables?
+            memoized_secret_project_variables(environment: environment)
+          else
+            project.ci_variables_for(ref: ref, environment: environment)
+          end
         end
 
         private
 
         attr_reader :pipeline
         attr_reader :instance_variables_builder
+        attr_reader :project_variables_builder
         delegate :project, to: :pipeline
 
         def predefined_variables(job)
@@ -104,6 +110,15 @@ module Gitlab
           end
         end
 
+        def memoized_secret_project_variables(environment:)
+          strong_memoize_with(:secret_project_variables, environment) do
+            project_variables_builder
+              .secret_variables(
+                environment: environment,
+                protected_ref: protected_ref?)
+          end
+        end
+
         def ci_node_total_value(job)
           parallel = job.options&.dig(:parallel)
           parallel = parallel.dig(:total) if parallel.is_a?(Hash)
@@ -113,6 +128,24 @@ module Gitlab
         def protected_ref?
           strong_memoize(:protected_ref) do
             project.protected_for?(pipeline.jobs_git_ref)
+          end
+        end
+
+        def memoize_secret_variables?
+          strong_memoize(:memoize_secret_variables) do
+            ::Feature.enabled?(:ci_variables_builder_memoize_secret_variables,
+              project,
+              default_enabled: :yaml)
+          end
+        end
+
+        def strong_memoize_with(name, *args)
+          container = strong_memoize(name) { {} }
+
+          if container.key?(args)
+            container[args]
+          else
+            container[args] = yield
           end
         end
       end

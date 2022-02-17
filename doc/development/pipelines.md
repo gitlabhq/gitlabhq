@@ -90,6 +90,13 @@ In addition, there are a few circumstances where we would always run the full Je
 - when any vendored JavaScript file is changed (i.e. `vendor/assets/javascripts/**/*`)
 - when any backend file is changed ([see the patterns list for details](https://gitlab.com/gitlab-org/gitlab/-/blob/3616946936c1adbd9e754c1bd06f86ba670796d8/.gitlab/ci/rules.gitlab-ci.yml#L205-216))
 
+### Fork pipelines
+
+We only run the minimal RSpec & Jest jobs for fork pipelines unless the `pipeline:run-all-rspec`
+label is set on the MR. The goal is to reduce the CI minutes consumed by fork pipelines.
+
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
+
 ## Fail-fast job in merge request pipelines
 
 To provide faster feedback when a merge request breaks existing tests, we are experimenting with a
@@ -176,12 +183,16 @@ Tests that are [known to be flaky](testing_guide/flaky_tests.md#automatic-retrie
 skipped unless the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `false` or if the `~"pipeline:run-flaky-tests"`
 label is set on the MR.
 
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1069).
+
 #### Automatic retry of failing tests in a separate process
 
 When the `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable is set to `true`, RSpec tests that failed are automatically retried once in a separate
 RSpec process. The goal is to get rid of most side-effects from previous tests that may lead to a subsequent test failure.
 
 We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
+
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
 
 ### Monitoring
 

@@ -307,6 +307,12 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
+.gl-lg-grid-template-columns-4 {
+  @include media-breakpoint-up(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 .gl-gap-6 {
   gap: $gl-spacing-scale-6;
 }
