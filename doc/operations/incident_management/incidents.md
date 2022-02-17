@@ -21,6 +21,7 @@ You can create an incident manually or automatically.
 
 > - [Moved](https://gitlab.com/gitlab-org/monitor/monitor/-/issues/24) to GitLab Free in 13.3.
 > - [Permission changed](https://gitlab.com/gitlab-org/gitlab/-/issues/336624) from Guest to Reporter in GitLab 14.5.
+> - Automatic application of the `incident` label [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290964) in GitLab 14.8.
 
 If you have at least Reporter [permissions](../../user/permissions.md),
 you can create an incident manually from the Incidents List or the Issues List.
@@ -47,7 +48,7 @@ To create an incident from the Issues List:
 ### Create incidents automatically **(ULTIMATE)**
 
 With at least the Maintainer role, you can enable
- GitLab to create incident automatically whenever an alert is triggered:
+GitLab to create incident automatically whenever an alert is triggered:
 
 1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
 1. Check the **Create an incident** checkbox.

@@ -597,8 +597,8 @@ On the **Praefect** node:
 Praefect supports TLS encryption. To communicate with a Praefect instance that listens
 for secure connections, you must:
 
-- Use a `tls://` URL scheme in the `gitaly_address` of the corresponding storage entry
-  in the GitLab configuration.
+- Ensure Gitaly is [configured for TLS](configure_gitaly.md#enable-tls-support) and use a `tls://` URL scheme in the `gitaly_address`
+  of the corresponding storage entry in the GitLab configuration.
 - Bring your own certificates because this isn't provided automatically. The certificate
   corresponding to each Praefect server must be installed on that Praefect server.
 
@@ -666,7 +666,7 @@ To configure Praefect with TLS:
    ```ruby
    git_data_dirs({
      "default" => {
-       "gitaly_address" => 'tls://PRAEFECT_LOADBALANCER_HOST:2305',
+       "gitaly_address" => 'tls://PRAEFECT_LOADBALANCER_HOST:3305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })
@@ -984,7 +984,10 @@ Particular attention should be shown to:
      balancer.
    - `PRAEFECT_EXTERNAL_TOKEN` with the real secret
 
-   If you are using TLS, the `gitaly_address` should begin with `tls://`.
+   If you are using TLS:
+
+   - The `gitaly_address` should begin with `tls://` instead.
+   - The port should be changed to `3305`.
 
    ```ruby
    git_data_dirs({

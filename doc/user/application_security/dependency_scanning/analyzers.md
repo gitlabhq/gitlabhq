@@ -29,6 +29,8 @@ Dependency Scanning supports the following official analyzers:
 The analyzers are published as Docker images, which Dependency Scanning uses
 to launch dedicated containers for each analysis.
 
+The Dependency Scanning analyzers' current major version number is 2.
+
 Dependency Scanning is pre-configured with a set of **default images** that are
 maintained by GitLab, but users can also integrate their own **custom images**.
 
