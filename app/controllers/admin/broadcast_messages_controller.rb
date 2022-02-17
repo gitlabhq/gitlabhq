@@ -65,6 +65,6 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
       target_path
       broadcast_type
       dismissable
-    ), target_access_levels: []).reverse_merge!(target_access_levels: [])
+    ))
   end
 end

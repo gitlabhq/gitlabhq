@@ -8656,6 +8656,18 @@ Describes a rule for who can approve merge requests.
 | <a id="approvalruletype"></a>`type` | [`ApprovalRuleType`](#approvalruletype) | Type of the rule. |
 | <a id="approvalruleusers"></a>`users` | [`UserCoreConnection`](#usercoreconnection) | List of users added as approvers for the rule. (see [Connections](#connections)) |
 
+### `AssetType`
+
+Represents a vulnerability asset type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="assettypename"></a>`name` | [`String!`](#string) | Name of the asset. |
+| <a id="assettypetype"></a>`type` | [`String!`](#string) | Type of the asset. |
+| <a id="assettypeurl"></a>`url` | [`String!`](#string) | URL of the asset. |
+
 ### `AwardEmoji`
 
 An emoji awarded by a user.
@@ -13475,10 +13487,13 @@ Represents vulnerability finding of a security report on the pipeline.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pipelinesecurityreportfindingassets"></a>`assets` | [`[AssetType!]`](#assettype) | List of assets associated with the vulnerability. |
 | <a id="pipelinesecurityreportfindingconfidence"></a>`confidence` | [`String`](#string) | Type of the security report that found the vulnerability. |
 | <a id="pipelinesecurityreportfindingdescription"></a>`description` | [`String`](#string) | Description of the vulnerability finding. |
+| <a id="pipelinesecurityreportfindingevidence"></a>`evidence` | [`VulnerabilityEvidence`](#vulnerabilityevidence) | Evidence for the vulnerability. |
 | <a id="pipelinesecurityreportfindingfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
-| <a id="pipelinesecurityreportfindingidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerabilit finding. |
+| <a id="pipelinesecurityreportfindingidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability finding. |
+| <a id="pipelinesecurityreportfindinglinks"></a>`links` | [`[VulnerabilityLink!]`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="pipelinesecurityreportfindinglocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="pipelinesecurityreportfindingname"></a>`name` | [`String`](#string) | Name of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability finding was found. |
@@ -13488,6 +13503,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingsolution"></a>`solution` | [`String`](#string) | URL to the vulnerability's details page. |
 | <a id="pipelinesecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
+| <a id="pipelinesecurityreportfindingtitle"></a>`title` | [`String`](#string) | Title of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | Name of the vulnerability finding. |
 
 ### `Project`
@@ -16348,6 +16364,44 @@ Represents the vulnerability details URL field.
 | <a id="vulnerabilitydetailurlname"></a>`name` | [`String`](#string) | Name of the field. |
 | <a id="vulnerabilitydetailurltext"></a>`text` | [`String`](#string) | Text of the URL. |
 
+### `VulnerabilityEvidence`
+
+Represents a Vulnerability Evidence.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityevidencerequest"></a>`request` | [`VulnerabilityRequest`](#vulnerabilityrequest) | HTTP request of the Vulnerability Evidence. |
+| <a id="vulnerabilityevidenceresponse"></a>`response` | [`VulnerabilityResponse`](#vulnerabilityresponse) | HTTP response of the Vulnerability Evidence. |
+| <a id="vulnerabilityevidencesource"></a>`source` | [`VulnerabilityEvidenceSource`](#vulnerabilityevidencesource) | Source of the Vulnerability Evidence. |
+| <a id="vulnerabilityevidencesummary"></a>`summary` | [`String`](#string) | Summary of the Vulnerability Evidence. |
+| <a id="vulnerabilityevidencesupportingmessages"></a>`supportingMessages` | [`[VulnerabilityEvidenceSupportingMessage!]`](#vulnerabilityevidencesupportingmessage) | Supporting messages of the Vulnerability Evidence. |
+
+### `VulnerabilityEvidenceSource`
+
+Represents a vulnerability evidence.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityevidencesourceidentifier"></a>`identifier` | [`String!`](#string) | ID of the Vulnerability Evidence Source. |
+| <a id="vulnerabilityevidencesourcename"></a>`name` | [`String!`](#string) | Name of the Vulnerability Evidence Source. |
+| <a id="vulnerabilityevidencesourceurl"></a>`url` | [`String`](#string) | URL of the Vulnerability Evidence Source. |
+
+### `VulnerabilityEvidenceSupportingMessage`
+
+Represents a vulnerability evidence supporting message.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityevidencesupportingmessagename"></a>`name` | [`String!`](#string) | Name of the vulnerability supporting message. |
+| <a id="vulnerabilityevidencesupportingmessagerequest"></a>`request` | [`VulnerabilityRequest`](#vulnerabilityrequest) | HTTP request of the vulnerability evidence supporting message. |
+| <a id="vulnerabilityevidencesupportingmessageresponse"></a>`response` | [`VulnerabilityResponse`](#vulnerabilityresponse) | HTTP response of the vulnerability evidence supporting message. |
+
 ### `VulnerabilityExternalIssueLink`
 
 Represents an external issue link of a vulnerability.
@@ -16430,8 +16484,11 @@ Represents the location of a vulnerability found by a Coverage Fuzzing scan.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerabilitylocationcoveragefuzzingblobpath"></a>`blobPath` | [`String`](#string) | Blob path to the vulnerable file. |
+| <a id="vulnerabilitylocationcoveragefuzzingcrashaddress"></a>`crashAddress` | [`String`](#string) | Relative address in memory were the crash occurred. |
+| <a id="vulnerabilitylocationcoveragefuzzingcrashtype"></a>`crashType` | [`String`](#string) | Type of the crash. |
 | <a id="vulnerabilitylocationcoveragefuzzingendline"></a>`endLine` | [`String`](#string) | Number of the last relevant line in the vulnerable file. |
 | <a id="vulnerabilitylocationcoveragefuzzingfile"></a>`file` | [`String`](#string) | Path to the vulnerable file. |
+| <a id="vulnerabilitylocationcoveragefuzzingstacktracesnippet"></a>`stacktraceSnippet` | [`String`](#string) | Stack trace recorded during fuzzing resulting the crash. |
 | <a id="vulnerabilitylocationcoveragefuzzingstartline"></a>`startLine` | [`String`](#string) | Number of the first relevant line in the vulnerable file. |
 | <a id="vulnerabilitylocationcoveragefuzzingvulnerableclass"></a>`vulnerableClass` | [`String`](#string) | Class containing the vulnerability. |
 | <a id="vulnerabilitylocationcoveragefuzzingvulnerablemethod"></a>`vulnerableMethod` | [`String`](#string) | Method containing the vulnerability. |
@@ -16518,6 +16575,43 @@ Check permissions for the current user on a vulnerability.
 | <a id="vulnerabilitypermissionsdestroyvulnerabilityfeedback"></a>`destroyVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_vulnerability_feedback` on this resource. |
 | <a id="vulnerabilitypermissionsreadvulnerabilityfeedback"></a>`readVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `read_vulnerability_feedback` on this resource. |
 | <a id="vulnerabilitypermissionsupdatevulnerabilityfeedback"></a>`updateVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `update_vulnerability_feedback` on this resource. |
+
+### `VulnerabilityRequest`
+
+Represents a Vulnerability Request.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityrequestbody"></a>`body` | [`String`](#string) | Body of the Vulnerability Request. |
+| <a id="vulnerabilityrequestheaders"></a>`headers` | [`[VulnerabilityRequestResponseHeader!]!`](#vulnerabilityrequestresponseheader) | HTTP headers of the Vulnerability Request. |
+| <a id="vulnerabilityrequestmethod"></a>`method` | [`String`](#string) | Method of the Vulnerability Request. |
+| <a id="vulnerabilityrequesturl"></a>`url` | [`String`](#string) | URL of the Vulnerability Request. |
+
+### `VulnerabilityRequestResponseHeader`
+
+Represents a Vulnerability Request/Response Header.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityrequestresponseheadername"></a>`name` | [`String`](#string) | Name of the Vulnerability Request/Response Header. |
+| <a id="vulnerabilityrequestresponseheadervalue"></a>`value` | [`String`](#string) | Value of the Vulnerability Request/Response Header. |
+
+### `VulnerabilityResponse`
+
+Represents a Vulnerability Response.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityresponsebody"></a>`body` | [`String`](#string) | Body of the Vulnerability Response. |
+| <a id="vulnerabilityresponseheaders"></a>`headers` | [`[VulnerabilityRequestResponseHeader!]!`](#vulnerabilityrequestresponseheader) | HTTP headers of the Vulnerability Response. |
+| <a id="vulnerabilityresponsereasonphrase"></a>`reasonPhrase` | [`String`](#string) | Reason Phrase of the Vulnerability Response. |
+| <a id="vulnerabilityresponsestatuscode"></a>`statusCode` | [`Int`](#int) | Status Code of the Vulnerability Response. |
 
 ### `VulnerabilityScanner`
 

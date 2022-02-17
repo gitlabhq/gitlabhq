@@ -324,7 +324,15 @@ lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
 Pipeline badges indicate the pipeline status and a test coverage value
 for your project. These badges are determined by the latest successful pipeline.
 
-### View the code for the pipeline status and coverage reports badges
+## Latest release badge
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33368) in GitLab 14.8.
+
+A latest release badge indicates the latest release tag name for your project.
+By default, the badge fetches the release sorted using the [`released_at`](../../api/releases/index.md#create-a-release) time.
+Support for [`semver`](https://semver.org/) sorting is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
+
+### View the code for the pipeline status, coverage reports, and latest release badges
 
 You can view the exact link for your badges. Then you can embed the badge in your HTML
 or Markdown pages.
@@ -332,7 +340,7 @@ or Markdown pages.
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
-1. In the **Pipeline status** or **Coverage report** sections, view the URLs for the images.
+1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.
 
 ![Pipelines badges](img/pipelines_settings_badges.png)
 
@@ -405,6 +413,25 @@ You can overwrite the limits by using the following additional parameters ([Intr
 If an invalid boundary is set, GitLab automatically adjusts it to be valid. For example,
 if `min_good` is set `80`, and `min_acceptable` is set to `85` (too high), GitLab automatically
 sets `min_acceptable` to `79` (`min_good` - `1`).
+
+### Latest release badge
+
+When a release exists in your project, it shows the latest release tag name. If there is no release,
+it shows `none`.
+
+You can access a latest release badge image by using the following link:
+
+```plaintext
+https://gitlab.example.com/<namespace>/<project>/-/badges/release.svg
+```
+
+#### Sorting preferences
+
+By default, the latest release badge fetches the release using `release_at` time. The use of the query parameter `?order_by=release_at` is optional, and support for `?order_by=semver` is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352945):
+
+```plaintext
+https://gitlab.example.com/<namespace>/<project>/-/badges/release.svg?order_by=release_at
+```
 
 ### Badge styles
 

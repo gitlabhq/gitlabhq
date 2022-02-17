@@ -399,7 +399,7 @@ migrations:
 1. Change the index pattern to `pubsub-sidekiq-inf-gprd*`.
 1. Add filter for `json.queue: cronjob:database_batched_background_migration`.
 
-#### PostgerSQL slow queries log
+#### PostgreSQL slow queries log
 
 Slow queries log keeps track of low queries that took above 1 second to execute. To see them
 for batched background migration:

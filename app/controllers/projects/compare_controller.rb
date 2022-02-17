@@ -28,6 +28,7 @@ class Projects::CompareController < Projects::ApplicationController
   COMMIT_DIFFS_PER_PAGE = 20
 
   def index
+    compare_params
   end
 
   def show
@@ -44,9 +45,9 @@ class Projects::CompareController < Projects::ApplicationController
 
   def create
     from_to_vars = {
-      from: params[:from].presence,
-      to: params[:to].presence,
-      from_project_id: params[:from_project_id].presence
+      from: compare_params[:from].presence,
+      to: compare_params[:to].presence,
+      from_project_id: compare_params[:from_project_id].presence
     }
 
     if from_to_vars[:from].blank? || from_to_vars[:to].blank?
@@ -87,10 +88,10 @@ class Projects::CompareController < Projects::ApplicationController
   # target == start_ref == from
   def target_project
     strong_memoize(:target_project) do
-      next source_project unless params.key?(:from_project_id)
-      next source_project if params[:from_project_id].to_i == source_project.id
+      next source_project unless compare_params.key?(:from_project_id)
+      next source_project if compare_params[:from_project_id].to_i == source_project.id
 
-      target_project = target_projects(source_project).find_by_id(params[:from_project_id])
+      target_project = target_projects(source_project).find_by_id(compare_params[:from_project_id])
 
       # Just ignore the field if it points at a non-existent or hidden project
       next source_project unless target_project && can?(current_user, :download_code, target_project)
@@ -111,13 +112,13 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def start_ref
-    @start_ref ||= Addressable::URI.unescape(params[:from])
+    @start_ref ||= Addressable::URI.unescape(compare_params[:from])
   end
 
   def head_ref
     return @ref if defined?(@ref)
 
-    @ref = @head_ref = Addressable::URI.unescape(params[:to])
+    @ref = @head_ref = Addressable::URI.unescape(compare_params[:to])
   end
 
   def define_commits
@@ -146,4 +147,8 @@ class Projects::CompareController < Projects::ApplicationController
       .find_by(source_project: source_project, source_branch: head_ref, target_branch: start_ref)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def compare_params
+    @compare_params ||= params.permit(:from, :to, :from_project_id)
+  end
 end

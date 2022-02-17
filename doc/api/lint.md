@@ -89,7 +89,7 @@ Example responses:
 
 The CI lint returns an expanded version of the configuration. The expansion does not
 work for CI configuration added with [`include: local`](../ci/yaml/index.md#includelocal),
-or with [`extends:`](../ci/yaml/index.md#extends).
+and the [`extends:`](../ci/yaml/index.md#extends) keyword is [not fully supported](https://gitlab.com/gitlab-org/gitlab/-/issues/258843).
 
 Example contents of a `.gitlab-ci.yml` passed to the CI Lint API with
 `include_merged_yaml` and `include_jobs` set as true:

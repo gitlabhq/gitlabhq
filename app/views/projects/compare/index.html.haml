@@ -13,4 +13,4 @@
   = html_escape(_("Changes are shown as if the %{b_open}source%{b_close} revision was being merged into the %{b_open}target%{b_close} revision.")) % { b_open: '<b>'.html_safe, b_close: '</b>'.html_safe }
 
 .prepend-top-20
-  #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
+  #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, @compare_params) }

@@ -1327,10 +1327,14 @@ RSpec.describe Group do
     let!(:group) { create(:group, :nested) }
     let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
     let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+    let!(:pending_maintainer) { create(:group_member, :awaiting, :maintainer, group: group.parent) }
+    let!(:pending_developer) { create(:group_member, :awaiting, :developer, group: group) }
 
-    it 'returns parents members' do
+    it 'returns parents active members' do
       expect(group.members_with_parents).to include(developer)
       expect(group.members_with_parents).to include(maintainer)
+      expect(group.members_with_parents).not_to include(pending_developer)
+      expect(group.members_with_parents).not_to include(pending_maintainer)
     end
 
     context 'group sharing' do
@@ -1340,9 +1344,11 @@ RSpec.describe Group do
         create(:group_group_link, shared_group: shared_group, shared_with_group: group)
       end
 
-      it 'returns shared with group members' do
+      it 'returns shared with group active members' do
         expect(shared_group.members_with_parents).to(
           include(developer))
+        expect(shared_group.members_with_parents).not_to(
+          include(pending_developer))
       end
     end
   end

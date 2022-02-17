@@ -6,6 +6,9 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include MarkupHelper
   include TreeHelper
   include ChecksCollaboration
+  include Gitlab::Utils::StrongMemoize
+
+  delegator_override_with Gitlab::Utils::StrongMemoize # This module inclusion is expected. See https://gitlab.com/gitlab-org/gitlab/-/issues/352884.
 
   APPROVALS_WIDGET_BASE_TYPE = 'base'
 
