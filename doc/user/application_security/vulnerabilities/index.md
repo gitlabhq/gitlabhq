@@ -1,5 +1,4 @@
 ---
-type: reference, howto
 stage: Secure
 group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
@@ -160,23 +159,3 @@ To manually apply the patch that GitLab generated for a vulnerability:
 1. Ensure your local project has the same commit checked out that was used to generate the patch.
 1. Run `git apply remediation.patch`.
 1. Verify and commit the changes to your branch.
-
-## Vulnerability scanner maintenance
-
-The following vulnerability scanners and their databases are regularly updated:
-
-| Secure scanning tool                                            | Vulnerabilities database updates |
-|:----------------------------------------------------------------|----------------------------------|
-| [Container Scanning](../container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. For more details, see [Vulnerabilities database update](../container_scanning/index.md#vulnerabilities-database-update). |
-| [Dependency Scanning](../dependency_scanning/index.md)          | Relies on `bundler-audit` (for Ruby gems), `retire.js` (for npm packages), and `gemnasium` (the GitLab tool for all libraries). Both `bundler-audit` and `retire.js` fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Security Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
-| [Dynamic Application Security Testing (DAST)](../dast/index.md) | The scanning engine is updated on a periodic basis. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L1). The scanning rules are downloaded at scan runtime. |
-| [Static Application Security Testing (SAST)](../sast/index.md)  | Relies exclusively on [the tools GitLab wraps](../sast/index.md#supported-languages-and-frameworks). The underlying analyzers are updated at least once per month if a relevant update is available. The vulnerabilities database is updated by the upstream tools. |
-
-You do not have to update GitLab to benefit from the latest vulnerabilities definitions.
-The security tools are released as Docker images. The vendored job definitions that enable them use
-major release tags according to [semantic versioning](https://semver.org/). Each new release of the
-tools overrides these tags.
-The Docker images are updated to match the previous GitLab releases. Although
-you automatically get the latest versions of the scanning tools,
-there are some [known issues](https://gitlab.com/gitlab-org/gitlab/-/issues/9725)
-with this approach.

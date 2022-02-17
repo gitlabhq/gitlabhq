@@ -86,7 +86,7 @@ class PostReceiveService
     banner = nil
 
     if project
-      scoped_messages = BroadcastMessage.current_banner_messages(project.full_path).select do |message|
+      scoped_messages = BroadcastMessage.current_banner_messages(current_path: project.full_path).select do |message|
         message.target_path.present? && message.matches_current_path(project.full_path)
       end
 

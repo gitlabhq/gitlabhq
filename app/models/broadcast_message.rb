@@ -4,12 +4,21 @@ class BroadcastMessage < ApplicationRecord
   include CacheMarkdownField
   include Sortable
 
+  ALLOWED_TARGET_ACCESS_LEVELS = [
+    Gitlab::Access::GUEST,
+    Gitlab::Access::REPORTER,
+    Gitlab::Access::DEVELOPER,
+    Gitlab::Access::MAINTAINER,
+    Gitlab::Access::OWNER
+  ].freeze
+
   cache_markdown_field :message, pipeline: :broadcast_message, whitelisted: true
 
   validates :message,   presence: true
   validates :starts_at, presence: true
   validates :ends_at,   presence: true
   validates :broadcast_type, presence: true
+  validates :target_access_levels, inclusion: { in: ALLOWED_TARGET_ACCESS_LEVELS }
 
   validates :color, allow_blank: true, color: true
   validates :font,  allow_blank: true, color: true
@@ -29,20 +38,20 @@ class BroadcastMessage < ApplicationRecord
   }
 
   class << self
-    def current_banner_messages(current_path = nil)
-      fetch_messages BANNER_CACHE_KEY, current_path do
+    def current_banner_messages(current_path: nil, user_access_level: nil)
+      fetch_messages BANNER_CACHE_KEY, current_path, user_access_level do
         current_and_future_messages.banner
       end
     end
 
-    def current_notification_messages(current_path = nil)
-      fetch_messages NOTIFICATION_CACHE_KEY, current_path do
+    def current_notification_messages(current_path: nil, user_access_level: nil)
+      fetch_messages NOTIFICATION_CACHE_KEY, current_path, user_access_level do
         current_and_future_messages.notification
       end
     end
 
-    def current(current_path = nil)
-      fetch_messages CACHE_KEY, current_path do
+    def current(current_path: nil, user_access_level: nil)
+      fetch_messages CACHE_KEY, current_path, user_access_level do
         current_and_future_messages
       end
     end
@@ -63,7 +72,7 @@ class BroadcastMessage < ApplicationRecord
 
     private
 
-    def fetch_messages(cache_key, current_path)
+    def fetch_messages(cache_key, current_path, user_access_level)
       messages = cache.fetch(cache_key, as: BroadcastMessage, expires_in: cache_expires_in) do
         yield
       end
@@ -74,7 +83,13 @@ class BroadcastMessage < ApplicationRecord
       # displaying we'll refresh the cache so we don't need to keep filtering.
       cache.expire(cache_key) if now_or_future != messages
 
-      now_or_future.select(&:now?).select { |message| message.matches_current_path(current_path) }
+      messages = now_or_future.select(&:now?)
+      messages = messages.select do |message|
+        message.matches_current_user_access_level?(user_access_level)
+      end
+      messages.select do |message|
+        message.matches_current_path(current_path)
+      end
     end
   end
 
@@ -100,6 +115,12 @@ class BroadcastMessage < ApplicationRecord
 
   def now_or_future?
     now? || future?
+  end
+
+  def matches_current_user_access_level?(user_access_level)
+    return true if target_access_levels.empty?
+
+    target_access_levels.include? user_access_level
   end
 
   def matches_current_path(current_path)

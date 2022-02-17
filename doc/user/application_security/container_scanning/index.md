@@ -514,7 +514,7 @@ registry.gitlab.com/security-products/container-scanning/trivy:4
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Please consult your IT staff to find an accepted and approved
 process by which you can import or temporarily access external resources. These scanners
-are [periodically updated](../vulnerabilities/index.md#vulnerability-scanner-maintenance),
+are [periodically updated](../index.md#vulnerability-scanner-maintenance),
 and you may be able to make occasional updates on your own.
 
 For more information, see [the specific steps on how to update an image with a pipeline](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
@@ -738,7 +738,7 @@ scanner includes data from multiple sources:
 - [Trivy](https://aquasecurity.github.io/trivy/latest/vulnerability/detection/data-source/).
 
 Database update information for other analyzers is available in the
-[maintenance table](../vulnerabilities/index.md#vulnerability-scanner-maintenance).
+[maintenance table](../index.md#vulnerability-scanner-maintenance).
 
 ## Interacting with the vulnerabilities
 

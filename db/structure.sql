@@ -11364,7 +11364,8 @@ CREATE TABLE broadcast_messages (
     cached_markdown_version integer,
     target_path character varying(255),
     broadcast_type smallint DEFAULT 1 NOT NULL,
-    dismissable boolean
+    dismissable boolean,
+    target_access_levels integer[] DEFAULT '{}'::integer[] NOT NULL
 );
 
 CREATE SEQUENCE broadcast_messages_id_seq
@@ -26665,7 +26666,11 @@ CREATE INDEX index_insights_on_project_id ON insights USING btree (project_id);
 
 CREATE INDEX index_integrations_on_inherit_from_id ON integrations USING btree (inherit_from_id);
 
+CREATE INDEX index_integrations_on_project_and_type_new_where_inherit_null ON integrations USING btree (project_id, type_new) WHERE (inherit_from_id IS NULL);
+
 CREATE INDEX index_integrations_on_project_and_type_where_inherit_null ON integrations USING btree (project_id, type) WHERE (inherit_from_id IS NULL);
+
+CREATE UNIQUE INDEX index_integrations_on_project_id_and_type_new_unique ON integrations USING btree (project_id, type_new);
 
 CREATE UNIQUE INDEX index_integrations_on_project_id_and_type_unique ON integrations USING btree (project_id, type);
 
@@ -26679,7 +26684,17 @@ CREATE UNIQUE INDEX index_integrations_on_type_and_template_partial ON integrati
 
 CREATE INDEX index_integrations_on_type_id_when_active_and_project_id_not_nu ON integrations USING btree (type, id) WHERE ((active = true) AND (project_id IS NOT NULL));
 
+CREATE INDEX index_integrations_on_type_new ON integrations USING btree (type_new);
+
+CREATE INDEX index_integrations_on_type_new_and_instance_partial ON integrations USING btree (type_new, instance) WHERE (instance = true);
+
+CREATE INDEX index_integrations_on_type_new_and_template_partial ON integrations USING btree (type_new, template) WHERE (template = true);
+
+CREATE INDEX index_integrations_on_type_new_id_when_active_and_has_project ON integrations USING btree (type_new, id) WHERE ((active = true) AND (project_id IS NOT NULL));
+
 CREATE UNIQUE INDEX index_integrations_on_unique_group_id_and_type ON integrations USING btree (group_id, type);
+
+CREATE INDEX index_integrations_on_unique_group_id_and_type_new ON integrations USING btree (group_id, type_new);
 
 CREATE INDEX index_internal_ids_on_namespace_id ON internal_ids USING btree (namespace_id);
 

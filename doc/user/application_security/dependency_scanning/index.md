@@ -645,7 +645,7 @@ vulnerabilities in your groups, projects and pipelines. Read more about the
 ## Vulnerabilities database update
 
 For more information about the vulnerabilities database update, see the
-[maintenance table](../vulnerabilities/index.md#vulnerability-scanner-maintenance).
+[maintenance table](../index.md#vulnerability-scanner-maintenance).
 
 ## Dependency List
 
@@ -821,7 +821,7 @@ registry.gitlab.com/gitlab-org/security-products/analyzers/bundler-audit:2
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Please consult your IT staff to find an accepted and approved
 process by which external resources can be imported or temporarily accessed.
-These scanners are [periodically updated](../vulnerabilities/index.md#vulnerability-scanner-maintenance)
+These scanners are [periodically updated](../index.md#vulnerability-scanner-maintenance)
 with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see Docker's documentation on

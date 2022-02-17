@@ -9,7 +9,7 @@
 #
 # Please delete this line and above before submitting your merge request.
 
-- name: "Announcement headline"  # The headline announcing the removal. i.e. "`CI_PROJECT_CONFIG_PATH` removed in Gitlab 14.0"
+- name: "Feature name"  # the name of the feature being removed. Avoid the words `deprecation`, `deprecate`, `removal`, and `remove` in this field because these are implied.
   announcement_milestone: "XX.YY"  # The milestone when this feature was deprecated.
   announcement_date: "YYYY-MM-DD"  # The date of the milestone release when this feature was deprecated. This should almost always be the 22nd of a month (YYYY-MM-DD), unless you did an out of band blog post.
   removal_milestone: "XX.YY"  # The milestone when this feature is being removed.

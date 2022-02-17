@@ -22,6 +22,8 @@ You can take advantage of License Compliance by either:
   [Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance),
   provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
+The current major version of the License Scanning analyzer is 3.
+
 To detect the licenses in use, License Compliance uses the [License Finder](https://github.com/pivotal/LicenseFinder) scan tool that runs as part of the CI/CD pipeline.
 For the job to activate, License Finder needs to find a compatible package definition in the project directory. For details, see the [Activation on License Finder documentation](https://github.com/pivotal/LicenseFinder#activation).
 GitLab checks the License Compliance report, compares the
@@ -674,7 +676,7 @@ registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:latest
 
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Please consult your IT staff to find an accepted and approved
-process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../../application_security/vulnerabilities/index.md#vulnerability-scanner-maintenance)
+process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../../application_security/index.md#vulnerability-scanner-maintenance)
 with new definitions, so consider if you are able to make periodic updates yourself.
 
 For details on saving and transporting Docker images as a file, see Docker's documentation on

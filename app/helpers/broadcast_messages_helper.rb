@@ -1,14 +1,22 @@
 # frozen_string_literal: true
 
 module BroadcastMessagesHelper
+  include Gitlab::Utils::StrongMemoize
+
   def current_broadcast_banner_messages
-    BroadcastMessage.current_banner_messages(request.path).select do |message|
+    BroadcastMessage.current_banner_messages(
+      current_path: request.path,
+      user_access_level: current_user_access_level_for_project_or_group
+    ).select do |message|
       cookies["hide_broadcast_message_#{message.id}"].blank?
     end
   end
 
   def current_broadcast_notification_message
-    not_hidden_messages = BroadcastMessage.current_notification_messages(request.path).select do |message|
+    not_hidden_messages = BroadcastMessage.current_notification_messages(
+      current_path: request.path,
+      user_access_level: current_user_access_level_for_project_or_group
+    ).select do |message|
       cookies["hide_broadcast_message_#{message.id}"].blank?
     end
     not_hidden_messages.last
@@ -60,5 +68,32 @@ module BroadcastMessagesHelper
 
   def broadcast_type_options
     BroadcastMessage.broadcast_types.keys.map { |w| [w.humanize, w] }
+  end
+
+  def target_access_level_options
+    BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS.map do |access_level|
+      [Gitlab::Access.human_access(access_level), access_level]
+    end
+  end
+
+  def target_access_levels_display(access_levels)
+    access_levels.map do |access_level|
+      Gitlab::Access.human_access(access_level)
+    end.join(', ')
+  end
+
+  private
+
+  def current_user_access_level_for_project_or_group
+    return if Feature.disabled?(:role_targeted_broadcast_messages, default_enabled: :yaml)
+    return unless current_user.present?
+
+    strong_memoize(:current_user_access_level_for_project_or_group) do
+      if controller.is_a? Projects::ApplicationController
+        @project&.team&.max_member_access(current_user.id)
+      elsif controller.is_a? Groups::ApplicationController
+        @group&.max_member_access_for_user(current_user)
+      end
+    end
   end
 end

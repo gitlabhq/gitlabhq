@@ -138,10 +138,10 @@ hr {
   margin-right: -15px;
   margin-left: -15px;
 }
-.col,
-.col-sm-5,
+.col-sm-12,
 .col-sm-7,
-.col-sm-12 {
+.col-sm-5,
+.col {
   position: relative;
   width: 100%;
   padding-right: 15px;
@@ -160,12 +160,12 @@ hr {
 }
 @media (min-width: 576px) {
   .col-sm-5 {
-    flex: 0 0 41.66667%;
-    max-width: 41.66667%;
+    flex: 0 0 41.6666666667%;
+    max-width: 41.6666666667%;
   }
   .col-sm-7 {
-    flex: 0 0 58.33333%;
-    max-width: 58.33333%;
+    flex: 0 0 58.3333333333%;
+    max-width: 58.3333333333%;
   }
   .col-sm-12 {
     flex: 0 0 100%;

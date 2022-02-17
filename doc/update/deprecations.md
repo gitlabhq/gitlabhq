@@ -727,6 +727,18 @@ The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/
 
 ## 14.8
 
+### Changes to the `CI_JOB_JWT`
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `CI_JOB_JWT` will be updated to support a wider variety of cloud providers. It will be changed to match [`CI_JOB_JWT_V2`](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html), but this change may not be backwards compatible for all users, including Hashicorp Vault users. To maintain the current behavior, users can switch to using `CI_JOB_JWT_V1`, or update their configuration in GitLab 15.0 to use the improved `CI_JOB_JWT`.
+
+**Planned removal milestone: 15.0 ()**
+
 ### Configurable Gitaly `per_repository` election strategy
 
 Configuring the `per_repository` Gitaly election strategy is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352612).
@@ -1247,6 +1259,32 @@ For further details, see [the deprecation issue for this change](https://gitlab.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Secure and Protect analyzer images published in new location
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+GitLab uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/terminology/#analyzer) to [scan for security vulnerabilities](https://docs.gitlab.com/ee/user/application_security/).
+Each analyzer is distributed as a container image.
+
+Starting in GitLab 14.8, new versions of GitLab Secure and Protect analyzers are published to a new registry location under `registry.gitlab.com/security-products`.
+
+We will update the default value of [GitLab-managed CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Security) to reflect this change:
+  
+- For all analyzers except Container Scanning, we will update the variable `SECURE_ANALYZERS_PREFIX` to the new image registry location.
+- For Container Scanning, the default image address is already updated. There is no `SECURE_ANALYZERS_PREFIX` variable for Container Scanning.
+
+In a future release, we will stop publishing images to `registry.gitlab.com/gitlab-org/security-products/analyzers`.
+Once this happens, you must take action if you manually pull images and push them into a separate registry. This is commonly the case for [offline deployments](https://docs.gitlab.com/ee/user/application_security/offline_deployments/index.html).
+Otherwise, you won't receive further updates.
+
+See the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352564) for more details.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Support for gRPC-aware proxy deployed between Gitaly and rest of GitLab
 
 WARNING:
@@ -1302,6 +1340,18 @@ The new security approvals feature is similar to vulnerability check. For exampl
 - Multiple rules can be created and chained together to allow for filtering on different severity thresholds for each scanner type.
 - A two-step approval process can be enforced for any desired changes to security approval rules.
 - A single set of security policies can be applied to multiple development projects to allow for ease in maintaining a single, centralized ruleset.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### `CI_BUILD_*` predefined variables
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in GitLab 9.0, and will be removed in GitLab 15.0. If you still use these variables, be sure to change to the current [`CI_JOB_*` predefined variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html) which are identical (except for the updated name).
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
