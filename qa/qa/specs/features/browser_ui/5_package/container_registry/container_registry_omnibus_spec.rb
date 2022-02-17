@@ -49,10 +49,63 @@ module QA
       end
 
       context "when tls is disabled" do
-        where(:authentication_token_type, :token_name) do
-          :personal_access_token | 'Personal Access Token'
-          :project_deploy_token  | 'Deploy Token'
-          :ci_job_token          | 'Job Token'
+        where do
+          {
+            'using docker:18.09.9 and a personal access token' => {
+              docker_client_version: 'docker:18.09.9',
+              authentication_token_type: :personal_access_token,
+              token_name: 'Personal Access Token',
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348499'
+            },
+            'using docker:18.09.9 and a project deploy token' => {
+              docker_client_version: 'docker:18.09.9',
+              authentication_token_type: :project_deploy_token,
+              token_name: 'Deploy Token',
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348852'
+            },
+            'using docker:18.09.9 and a ci job token' => {
+              docker_client_version: 'docker:18.09.9',
+              authentication_token_type: :ci_job_token,
+              token_name: 'Job Token',
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348765'
+            },
+            'using docker:19.03.12 and a personal access token' => {
+              docker_client_version: 'docker:19.03.12',
+              authentication_token_type: :personal_access_token,
+              token_name: 'Personal Access Token',
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348507'
+            },
+            'using docker:19.03.12 and a project deploy token' => {
+              docker_client_version: 'docker:19.03.12',
+              authentication_token_type: :project_deploy_token,
+              token_name: 'Deploy Token',
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348859'
+            },
+            'using docker:19.03.12 and a ci job token' => {
+              docker_client_version: 'docker:19.03.12',
+              authentication_token_type: :ci_job_token,
+              token_name: 'Job Token',
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348654'
+            },
+            'using docker:20.10 and a personal access token' => {
+              docker_client_version: 'docker:20.10',
+              authentication_token_type: :personal_access_token,
+              token_name: 'Personal Access Token',
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348754'
+            },
+            'using docker:20.10 and a project deploy token' => {
+              docker_client_version: 'docker:20.10',
+              authentication_token_type: :project_deploy_token,
+              token_name: 'Deploy Token',
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348856'
+            },
+            'using docker:20.10 and a ci job token' => {
+              docker_client_version: 'docker:20.10',
+              authentication_token_type: :ci_job_token,
+              token_name: 'Job Token',
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348766'
+            }
+          }
         end
 
         with_them do
@@ -78,57 +131,51 @@ module QA
             end
           end
 
-          where(:docker_client_version) do
-            %w[docker:18.09.9 docker:19.03.12 docker:20.10]
-          end
-
-          with_them do
-            it "pushes image and deletes tag", :registry do
-              Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-                Resource::Repository::Commit.fabricate_via_api! do |commit|
-                  commit.project = project
-                  commit.commit_message = 'Add .gitlab-ci.yml'
-                  commit.add_files([{
-                                      file_path: '.gitlab-ci.yml',
-                                      content:
-                                          <<~YAML
-                                            build:
-                                              image: "#{docker_client_version}"
-                                              stage: build
-                                              services:
-                                              - name: "#{docker_client_version}-dind"
-                                                command: ["--insecure-registry=gitlab.test:5050"]                                
-                                              variables:
-                                                IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-                                              script:
-                                                - docker login -u #{auth_user} -p #{auth_token} gitlab.test:5050
-                                                - docker build -t $IMAGE_TAG .
-                                                - docker push $IMAGE_TAG
-                                              tags:
-                                                - "runner-for-#{project.name}"
-                                          YAML
-                                  }])
-                end
+          it "pushes image and deletes tag", :registry, testcase: params[:testcase] do
+            Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+              Resource::Repository::Commit.fabricate_via_api! do |commit|
+                commit.project = project
+                commit.commit_message = 'Add .gitlab-ci.yml'
+                commit.add_files([{
+                                    file_path: '.gitlab-ci.yml',
+                                    content:
+                                        <<~YAML
+                                          build:
+                                            image: "#{docker_client_version}"
+                                            stage: build
+                                            services:
+                                            - name: "#{docker_client_version}-dind"
+                                              command: ["--insecure-registry=gitlab.test:5050"]
+                                            variables:
+                                              IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+                                            script:
+                                              - docker login -u #{auth_user} -p #{auth_token} gitlab.test:5050
+                                              - docker build -t $IMAGE_TAG .
+                                              - docker push $IMAGE_TAG
+                                            tags:
+                                              - "runner-for-#{project.name}"
+                                        YAML
+                                }])
               end
+            end
 
-              Flow::Pipeline.visit_latest_pipeline
+            Flow::Pipeline.visit_latest_pipeline
 
-              Page::Project::Pipeline::Show.perform do |pipeline|
-                pipeline.click_job('build')
-              end
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.click_job('build')
+            end
 
-              Page::Project::Job::Show.perform do |job|
-                expect(job).to be_successful(timeout: 800)
-              end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_successful(timeout: 800)
+            end
 
-              Page::Project::Menu.perform(&:go_to_container_registry)
+            Page::Project::Menu.perform(&:go_to_container_registry)
 
-              Page::Project::Registry::Show.perform do |registry|
-                expect(registry).to have_registry_repository(project.path_with_namespace)
+            Page::Project::Registry::Show.perform do |registry|
+              expect(registry).to have_registry_repository(project.path_with_namespace)
 
-                registry.click_on_image(project.path_with_namespace)
-                expect(registry).to have_tag('master')
-              end
+              registry.click_on_image(project.path_with_namespace)
+              expect(registry).to have_tag('master')
             end
           end
         end
@@ -156,7 +203,7 @@ module QA
                                               apk add --no-cache openssl
                                               true | openssl s_client -showcerts -connect gitlab.test:5050 > /usr/local/share/ca-certificates/gitlab.test.crt
                                               update-ca-certificates
-                                              dockerd-entrypoint.sh || exit                                
+                                              dockerd-entrypoint.sh || exit
                                           variables:
                                             IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
                                           script:

@@ -22,7 +22,6 @@ RSpec.shared_context 'project navbar structure' do
         nav_sub_items: [
           _('Activity'),
           _('Labels'),
-          _('Planning hierarchy'),
           _('Members')
         ]
       },

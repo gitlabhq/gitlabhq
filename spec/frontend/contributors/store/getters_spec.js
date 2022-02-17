@@ -35,7 +35,7 @@ describe('Contributors Store Getters', () => {
           { author_name: 'Carlson', author_email: 'carlson123@gmail.com', date: '2019-05-05' },
           { author_name: 'John', author_email: 'jawnnypoo@gmail.com', date: '2019-04-04' },
           { author_name: 'Johan', author_email: 'jawnnypoo@gmail.com', date: '2019-04-04' },
-          { author_name: 'John', author_email: 'jawnnypoo@gmail.com', date: '2019-03-03' },
+          { author_name: 'John', author_email: 'JAWNNYPOO@gmail.com', date: '2019-03-03' },
         ];
         parsed = getters.parsedData(state);
       });

@@ -59,11 +59,5 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
         specify { is_expected.to be_nil }
       end
     end
-
-    describe 'Hierarchy' do
-      let(:item_id) { :hierarchy }
-
-      specify { is_expected.not_to be_nil }
-    end
   end
 end

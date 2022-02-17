@@ -442,9 +442,9 @@ booleans:
 
 ```ruby
 class MergeRequestPermissionsType < BasePermissionType
-  present_using MergeRequestPresenter
-
   graphql_name 'MergeRequestPermissions'
+
+  present_using MergeRequestPresenter
 
   abilities :admin_merge_request, :update_merge_request, :create_note
 
@@ -1329,6 +1329,10 @@ class UserUpdateMutation < BaseMutation
 end
 ```
 
+Due to changes in the `1.13` version of the `graphql-ruby` gem, `graphql_name` should be the first
+line of the class to ensure that type names are generated correctly. The `Graphql::GraphqlNamePosition` cop enforces this.
+See [issue #27536](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27536#note_840245581) for further context.
+
 Our GraphQL mutation names are historically inconsistent, but new mutation names should follow the
 convention `'{Resource}{Action}'` or `'{Resource}{Action}{Attribute}'`.
 
@@ -1511,9 +1515,9 @@ GraphQL-name of the mutation:
 ```ruby
 module Types
   class MutationType < BaseObject
-    include Gitlab::Graphql::MountMutation
+    graphql_name 'Mutation'
 
-    graphql_name "Mutation"
+    include Gitlab::Graphql::MountMutation
 
     mount_mutation Mutations::MergeRequests::SetDraft
   end

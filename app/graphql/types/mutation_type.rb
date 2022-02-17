@@ -126,6 +126,7 @@ module Types
     mount_mutation Mutations::Packages::DestroyFile
     mount_mutation Mutations::Echo
     mount_mutation Mutations::WorkItems::Create
+    mount_mutation Mutations::WorkItems::CreateFromTask
     mount_mutation Mutations::WorkItems::Delete
     mount_mutation Mutations::WorkItems::Update
   end

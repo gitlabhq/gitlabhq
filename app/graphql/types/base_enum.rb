@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Graphql/GraphqlNamePosition
 module Types
   class BaseEnum < GraphQL::Schema::Enum
     class CustomValue < GraphQL::Schema::EnumValue

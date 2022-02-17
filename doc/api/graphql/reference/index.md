@@ -5178,6 +5178,29 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemcreateworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Created work item. |
 
+### `Mutation.workItemCreateFromTask`
+
+Creates a work item from a task in another work item's description. Available only when feature flag `work_items` is enabled. This feature is experimental and is subject to change without notice.
+
+Input type: `WorkItemCreateFromTaskInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemcreatefromtaskclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemcreatefromtaskid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+| <a id="mutationworkitemcreatefromtaskworkitemdata"></a>`workItemData` | [`WorkItemConvertTaskInput!`](#workitemconverttaskinput) | Arguments necessary to convert a task into a work item. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemcreatefromtaskclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemcreatefromtaskerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemcreatefromtasknewworkitem"></a>`newWorkItem` | [`WorkItem`](#workitem) | New work item created from task. |
+| <a id="mutationworkitemcreatefromtaskworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
+
 ### `Mutation.workItemDelete`
 
 Deletes a work item. Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice.
@@ -19901,3 +19924,15 @@ A time-frame defined as a closed inclusive range of two dates.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityscannervendorinputname"></a>`name` | [`String!`](#string) | Name of the vendor/maintainer. |
+
+### `WorkItemConvertTaskInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemconverttaskinputlinenumberend"></a>`lineNumberEnd` | [`Int!`](#int) | Last line in the Markdown source that defines the list item task. |
+| <a id="workitemconverttaskinputlinenumberstart"></a>`lineNumberStart` | [`Int!`](#int) | First line in the Markdown source that defines the list item task. |
+| <a id="workitemconverttaskinputlockversion"></a>`lockVersion` | [`Int!`](#int) | Current lock version of the work item containing the task in the description. |
+| <a id="workitemconverttaskinputtitle"></a>`title` | [`String!`](#string) | Full string of the task to be replaced. New title for the created work item. |
+| <a id="workitemconverttaskinputworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type used to create the new work item. |

@@ -1704,3 +1704,38 @@ What does this mean? This strongly suggests that the S3 user does not have the r
 [permissions to perform a HEAD request](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html).
 The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
 Once the right permissions were set, the error goes away.
+
+### Missing `gitlab-registry.key` prevents container repository deletion
+
+If you disable your GitLab instance's Container Registry and try to remove a project that has
+container repositories, the following error occurs:
+
+```plaintext
+Errno::ENOENT: No such file or directory @ rb_sysopen - /var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key
+```
+
+In this case, follow these steps:
+
+1. Temporarily enable the instance-wide setting for the Container Registry in your `gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['registry_enabled'] = true
+   ```
+  
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
+1. Try the removal again.
+
+If you still can't remove the repository using the common methods, you can use the
+[GitLab Rails console](../troubleshooting/navigating_gitlab_via_rails_console.md)
+to remove the project by force:
+
+```ruby
+# Path to the project you'd like to remove
+prj = Project.find_by_full_path(<project_path>)
+
+# The following will delete the project's container registry, so be sure to double-check the path beforehand!
+if prj.has_container_registry_tags?
+  prj.container_repositories.each { |p| p.destroy }
+end
+```

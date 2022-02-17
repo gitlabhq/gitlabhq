@@ -7,10 +7,11 @@ export const parsedData = (state) => {
   state.chartData.forEach(({ date, author_name, author_email }) => {
     total[date] = total[date] ? total[date] + 1 : 1;
 
-    const authorData = byAuthorEmail[author_email];
+    const normalizedEmail = author_email.toLowerCase();
+    const authorData = byAuthorEmail[normalizedEmail];
 
     if (!authorData) {
-      byAuthorEmail[author_email] = {
+      byAuthorEmail[normalizedEmail] = {
         name: author_name,
         commits: 1,
         dates: {
