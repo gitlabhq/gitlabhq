@@ -69,7 +69,7 @@ We assume that you already have a cluster connected through the Agent and
 
 1. [Create a new project from the Cluster Management Project Template](#create-a-new-project-based-on-the-cluster-management-template).
 This new project is "project B".
-1. In your "project A", [grant the Agent access to the new project (B) through the CI/CD Tunnel](agent/repository.md#authorize-projects-to-use-an-agent).
+1. In your "project A", [grant the Agent access to the new project (B) through the CI/CD Tunnel](agent/ci_cd_tunnel.md#authorize-the-agent).
 1. From the "project's B" settings, add a [new environment variable](../../ci/variables/index.md#add-a-cicd-variable-to-a-project) `$KUBE_CONTEXT` and set it to `path/to/agent-configuration-project:your-agent-name`.
 1. In "project B", [configure the components](#configure-the-available-components) inherited from the template.
 

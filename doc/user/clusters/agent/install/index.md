@@ -4,92 +4,85 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Install the GitLab Agent **(FREE)**
+# Installing the agent for Kubernetes **(FREE)**
 
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 > - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/594) multi-arch images in GitLab 14.8. The first multi-arch release is `v14.8.1`. It supports AMD64 and ARM64 architectures.
 
-To connect a cluster to GitLab, you need to install the GitLab Agent
-onto your cluster.
+To connect a Kubernetes cluster to GitLab, you must install an agent in your cluster.
 
 ## Prerequisites
 
-- An existing Kubernetes cluster. If you don't have a cluster yet, you can create a new cluster on cloud providers, such as:
+Before you can install the agent in your cluster, you need:
+
+- An existing Kubernetes cluster. If you don't have a cluster, you can create one on a cloud provider, like:
   - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/quickstart)
   - [Amazon Elastic Kubernetes Service (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/quickstart/)
-- On self-managed GitLab instances, a GitLab administrator needs to set up the [GitLab Agent Server (KAS)](../../../../administration/clusters/kas.md).
+- On self-managed GitLab instances, a GitLab administrator must set up the [agent server](../../../../administration/clusters/kas.md).
 
 ## Installation steps
 
-To install the GitLab Agent on your cluster:
+To install the agent in your cluster:
 
-1. [Define a configuration repository](#define-a-configuration-repository).
-1. [Register the Agent with GitLab](#register-the-agent-with-gitlab).
-1. [Install the Agent onto the cluster](#install-the-agent-onto-the-cluster).
+1. [Create an agent configuration file called `config.yaml`](#create-an-agent-configuration-file).
+1. [Register the agent with GitLab](#register-the-agent-with-gitlab).
+1. [Install the agent in your cluster](#install-the-agent-in-the-cluster).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walking-through video](https://www.youtube.com/watch?v=XuBpKtsgGkE) with this process.
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walk-through of this process](https://www.youtube.com/watch?v=XuBpKtsgGkE).
 
-When you complete the installation process, you can
-[view your Agent's status and activity information](#view-your-agents).
-You can also [configure](#configure-the-agent) it to your needs.
+### Create an agent configuration file
 
-### Define a configuration repository
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the Agent manifest configuration can be added to multiple directories (or subdirectories) of its repository.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the agent configuration file can be added to multiple directories (or subdirectories) of the repository.
 > - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
-To create an Agent, you need a GitLab repository to hold its
-configuration file. If you already have a repository holding your
-cluster's manifest files, you can use it to store your
-Agent's configuration file and sync them with no further steps.
-
-#### Create the Agent's configuration file
-
-To create an Agent, go to the repository where you want to store
-it and add the Agent's configuration file under:
+In a GitLab project, in the repository, create a file called `config.yaml` at this path:
 
 ```plaintext
 .gitlab/agents/<agent-name>/config.yaml
 ```
 
-You **don't have to add any content** to this file at the moment you
-create it. The fact that the file exists tells GitLab that this is
-an Agent. You can edit it later to [configure the Agent](#configure-the-agent).
+- Ensure the agent name follows the [naming convention](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/identity_and_auth.md#agent-identity-and-name).
+- Ensure the filename has the `.yaml` file extension (`config.yaml`). The `.yml` extension is not accepted.
+- Add content to the `config.yaml` file:
+  - For a GitOps workflow, view [the configuration reference](../gitops.md#gitops-configuration-reference) for details.
+  - For a GitLab CI/CD workflow, you can leave the file blank for now.
 
-When creating this file, pay special attention to:
+The agent bootstraps with the GitLab installation URL and an authentication token,
+and you provide the rest of the configuration in your repository, following
+Infrastructure as Code (IaaC) best practices.
 
-- The [Agent's naming format](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/identity_and_auth.md#agent-identity-and-name).
-- The file extension: use the `.yaml` extension (`config.yaml`). The `.yml` extension is **not** recognized.
+### Register the agent with GitLab
 
-### Register the Agent with GitLab
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5786) in GitLab 14.1, you can create a new agent record directly from the GitLab UI.
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5786) in GitLab 14.1, you can create a new Agent record directly from the GitLab UI.
-
-Now that you've created your Agent's configuration file, register it
+Now that you've created your agent configuration file, register it
 with GitLab.
-When you register the Agent, GitLab generates a token that you need for
-installing the Agent onto your cluster.
+When you register the agent, GitLab generates a token that you need to
+install the agent in your cluster.
 
-In GitLab, go to the project where you added your Agent's configuration
-file and:
+Prerequisite when using a [GitLab CI/CD workflow](../ci_cd_tunnel.md):
 
-1. Ensure that [GitLab CI/CD is enabled in your project](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
-1. From your project's sidebar, select **Infrastructure > Kubernetes clusters**.
+- In the project that has the agent configuration file, ensure that [GitLab CI/CD is enabled](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
+
+To register the agent with GitLab:
+
+1. On the top bar, select **Menu > Projects** and find the project that has your agent configuration file.
+1. From the left sidebar, select **Infrastructure > Kubernetes clusters**.
 1. Select **Actions**.
-1. From the **Select an Agent** dropdown list, select the Agent you want to register and select **Register an Agent**.
-1. GitLab generates a registration token for this Agent. Securely store this secret token, as you need it to install the Agent onto your cluster and to [update the Agent](#update-the-agent-version) to another version.
-1. Copy the command under **Recommended installation method**. You need it to install the Agent onto your cluster through the one-liner installation method.
+1. From the **Select an agent** dropdown list, select the agent you want to register and select **Register an agent**.
+1. GitLab generates a registration token for this agent. Securely store this secret token. You need it to install the agent in your cluster and to [update the agent](#update-the-agent-version) to another version.
+1. Copy the command under **Recommended installation method**. You need it when you use the one-liner installation method to install the agent in your cluster.
 
-### Install the Agent onto the cluster
+### Install the agent in the cluster
 
-To connect your cluster to GitLab, install the registered Agent
-onto your cluster. To install it, you can use either:
+To connect your cluster to GitLab, install the registered agent
+in your cluster. To install it, you can use either:
 
 - [The one-liner installation method](#one-liner-installation).
 - [The advanced installation method](#advanced-installation).
 
-You can use the one-liner installation for trying to use the Agent for the first time, to do internal setups with
+You can use the one-liner installation for trying to use the agent for the first time, to do internal setups with
 high trust, and to quickly get started. For long-term production usage, you may want to use the advanced installation
 method to benefit from more configuration options.
 
@@ -99,35 +92,33 @@ The one-liner installation is the simplest process, but you need
 Docker installed locally. If you don't have it, you can either install
 it or opt to the [advanced installation method](#advanced-installation).
 
-To install the Agent on your cluster using the one-liner installation:
+To install the agent on your cluster using the one-liner installation:
 
-1. In your computer, open the terminal and connect to your cluster.
+1. In your computer, open a terminal and [connect to your cluster](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/).
 1. Run the command you copied when registering your cluster in the previous step.
 
 Optionally, you can [customize the one-liner installation command](#customize-the-one-liner-installation).
 
 ##### Customize the one-liner installation
 
-The one-liner command generated by GitLab:
+By default, the one-liner command generated by GitLab:
 
 - Creates a namespace for the deployment (`gitlab-kubernetes-agent`).
 - Sets up a service account with `cluster-admin` rights (see [how to restrict this service account](#customize-the-permissions-for-the-agentk-service-account)).
-- Creates a `Secret` resource for the Agent's registration token.
+- Creates a `Secret` resource for the agent's registration token.
 - Creates a `Deployment` resource for the `agentk` pod.
 
-You can edit these parameters according to your needs to customize the
-one-liner installation command at the command line. To find all available
-options, run in your terminal:
+You can edit these parameters to customize the one-liner installation command.
+To view all available options, open a terminal and run this command:
 
 ```shell
 docker run --pull=always --rm registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:stable generate --help
 ```
 
 WARNING:
-`--agent-version stable` can be used to refer to the latest stable
-release at the time when the command runs. It's fine for testing
-purposes but for production please make sure to specify a matching
-version explicitly.
+Use `--agent-version stable` to refer to the latest stable
+release at the time when the command runs. For production, however,
+you should explicitly specify a matching version.
 
 #### Advanced installation
 
@@ -135,105 +126,76 @@ For advanced installation options, use [the `kpt` installation method](https://g
 
 ##### Customize the permissions for the `agentk` service account
 
-The GitLab Agent allows you to fully own your cluster and grant GitLab
-the permissions you want. Still, to facilitate the process, by default the
-generated manifests provide `cluster-admin` rights to the Agent.
+You own your cluster and can grant GitLab the permissions you want.
+By default, however, the generated manifests provide `cluster-admin` rights to the agent.
 
-You can restrict the Agent's access rights using Kustomize overlays. [An example is commented out](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/build/deployment/gitlab-agent/cluster/kustomization.yaml) in the `kpt` package you retrieved as part of the installation.
+You can restrict the agent's access rights by using Kustomize overlays. [An example is commented out](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/build/deployment/gitlab-agent/cluster/kustomization.yaml) in the `kpt` package you retrieved as part of the installation.
 
-To create restricted permissions:
+To restrict permissions:
 
 1. Copy the `cluster` directory.
 1. Edit the `kustomization.yaml` and `components/*` files based on your requirements.
 1. Run `kustomize build <your copied directory> | kubectl apply -f -` to apply your configuration.
 
-The above setup allows you to regularly update from the upstream package using `kpt pkg update gitlab-agent --strategy resource-merge` and maintain your customizations at the same time.
+#### Update the advanced installation base layer
 
-## Configure the Agent
+Now you can update from the upstream package by using `kpt pkg update gitlab-agent --strategy resource-merge`.
+When the advanced installation setup changes, you will not need to change your custom overlays.
 
-When successfully installed, you can [configure the Agent](../repository.md)
-by editing its configuration file.
-When you update the configuration file, GitLab transmits the
-information to the cluster automatically without downtime.
+## Install multiple agents in your cluster
 
-## View your Agents
+For total separation between teams, you might need to run multiple `agentk` instances in your cluster.
+You might want multiple agents so you can restrict RBAC for every `agentk` deployment.
 
-> The version of installed `agentk` shown on the Agent tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8.
-If you have at least the Developer role, you can access the Agent's
-configuration repository and view the Agent's list:
+To install multiple agents, follow the
+[advanced installation steps](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/build/deployment/gitlab-agent)
+a second time and:
 
-1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
-1. Select **Agent** tab to view clusters connected to GitLab through the Agent.
+1. Change the agent name and create a new configuration file.
+1. Register the new agent. You receive a new token. Each token should be used only with one agent.
+1. Change the namespace or prefix you use for the installation.
 
-On this page, you can view:
+You should also change the RBAC for the installed `agentk`.
 
-- All the registered Agents for the current project.
-- The connection status.
-- The version of `agentk` installed on your cluster.
-- The path to each Agent's configuration file.
+## Example projects
 
-Furthermore, if you select one of the Agents on your list, you can view its
-[activity information](#view-the-agents-activity-information).
+The following example projects can help you get started with the agent.
 
-### View the Agent's activity information
+- [Configuration repository with minimal manifests](https://gitlab.com/gitlab-examples/ops/gitops-demo/k8s-agents)
+- [Distinct application and manifest repository example](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service-gitops)
+- [Auto DevOps setup that uses the CI/CD workflow](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service)
+- [Cluster management project template example that uses the CI/CD workflow](https://gitlab.com/gitlab-examples/ops/gitops-demo/cluster-management)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/277323) in GitLab 14.6.
+## Upgrades and version compatibility
 
-The activity logs help you to identify problems and get the information
-you need for troubleshooting. You can see events from a week before the
-current date. To access an Agent's activity:
+The agent has two major components: `agentk` and `kas`.
+GitLab provides `kas` installers built into the various GitLab installation methods.
+The required `kas` version corresponds to the GitLab `major.minor` (X.Y) versions.
 
-1. In your Agent's repository, go to the Agents list as described [above](#view-your-agents).
-1. Select the Agent you want to see the activity.
+At the same time, `agentk` and `kas` can differ by 1 minor version in either direction. For example,
+`agentk` 14.4 supports `kas` 14.3, 14.4, and 14.5 (regardless of the patch).
 
-The activity list includes:
+A feature introduced in a given GitLab minor version might work with other `agentk` or `kas` versions.
+To ensure it works, use at least the same `agentk` and `kas` minor version. For example,
+if your GitLab version is 14.2, use at least `agentk` 14.2 and `kas` 14.2.
 
-- Agent registration events: when a new token is **created**.
-- Connection events: when an Agent is successfully **connected** to a cluster.
+We recommend upgrading your `kas` installations together with GitLab instances' upgrades, and to
+[upgrade the `agentk` installations](#update-the-agent-version) after upgrading GitLab.
 
-Note that the connection status is logged when you connect an Agent for
-the first time or after more than an hour of inactivity.
+The available `agentk` and `kas` versions are available in
+[the Container Registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/).
 
-To check what else is planned for the Agent's UI and provide feedback,
-see the [related epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).
+### Update the agent version
 
-### View vulnerabilities in cluster images **(ULTIMATE)**
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, GitLab warns you on the agent's list page to update the agent version installed on your cluster.
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8 [with a flag](../../../../administration/feature_flags.md) named `cluster_vulnerabilities`. Enabled by default.
-
-Users with at least the [Developer role](../../../permissions.md)
-can view cluster vulnerabilities. You can access them through the [vulnerability report](../../../application_security/vulnerabilities/index.md)
-or in your cluster's image through the following process:
-
-1. Configure [cluster image scanning](../../../application_security/cluster_image_scanning/index.md)
-   to your build process.
-1. Go to your Agent's configuration repository.
-1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
-1. Select the **Agent** tab.
-1. Select the Agent you want to see the vulnerabilities for.
-
-![Cluster Agent security tab UI](../../img/cluster_agent_security_tab_v14_8.png)
-
-## Create multiple Agents
-
-You can create and install multiple Agents using the same process
-documented above. Give each Agent's configuration file a unique name
-and you're good to go. You can create multiple Agents, for example:
-
-- To reach your cluster from different projects.
-- To connect multiple clusters to GitLab.
-
-## Update the Agent version
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, GitLab warns you on the Agent's list page to update the Agent version installed on your cluster.
-
-To update the Agent's version on your cluster, you need to re-run the [installation command](#install-the-agent-onto-the-cluster)
+To update the agent's version, re-run the [installation command](#install-the-agent-in-the-cluster)
 with a newer `--agent-version`. Make sure to specify the other required parameters: `--kas-address`, `--namespace`, and `--agent-token`.
-You can find the available `agentk` versions in [the container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/1223205?sort=desc).
+The available `agentk` versions are in [the Container Registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/1223205?sort=desc).
 
-If you don't have access to your Agent's token, you can retrieve it from your cluster:
+If you don't have access to your agent's token, you can retrieve it from your cluster:
 
-1. On your computer, open the terminal and connect to your cluster.
+1. Open a terminal and connect to your cluster.
 1. To retrieve the namespace, run:
 
     ```shell
@@ -251,28 +213,3 @@ If you don't have access to your Agent's token, you can retrieve it from your cl
     ```shell
     kubectl -n <namespace> get secret <secret-name> --template={{.data.token}} | base64 --decode
     ```
-
-## Example projects
-
-The following example projects can help you get started with the Agent.
-
-- [Configuration repository](https://gitlab.com/gitlab-org/configure/examples/kubernetes-agent)
-- This basic GitOps example deploys NGINX: [Manifest repository](https://gitlab.com/gitlab-org/configure/examples/gitops-project)
-
-## Upgrades and version compatibility
-
-The Agent is comprised of two major components: `agentk` and `kas`.
-As we provide `kas` installers built into the various GitLab installation methods, the required `kas` version corresponds to the GitLab `major.minor` (X.Y) versions.
-
-At the same time, `agentk` and `kas` can differ by 1 minor version in either direction. For example,
-`agentk` 14.4 supports `kas` 14.3, 14.4, and 14.5 (regardless of the patch).
-
-A feature introduced in a given GitLab minor version might work with other `agentk` or `kas` versions.
-To make sure that it works, use at least the same `agentk` and `kas` minor version. For example,
-if your GitLab version is 14.2, use at least `agentk` 14.2 and `kas` 14.2.
-
-We recommend upgrading your `kas` installations together with GitLab instances' upgrades, and to
-[upgrade the `agentk` installations](#update-the-agent-version) after upgrading GitLab.
-
-The available `agentk` and `kas` versions can be found in
-[the container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/).

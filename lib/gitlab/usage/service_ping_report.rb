@@ -7,15 +7,28 @@ module Gitlab
         def for(output:, cached: false)
           case output.to_sym
           when :all_metrics_values
-            all_metrics_values(cached)
+            with_instrumentation_classes(all_metrics_values(cached), :with_value)
           when :metrics_queries
-            metrics_queries
+            with_instrumentation_classes(metrics_queries, :with_instrumentation)
           when :non_sql_metrics_values
-            non_sql_metrics_values
+            with_instrumentation_classes(non_sql_metrics_values, :with_instrumentation)
           end
         end
 
         private
+
+        def with_instrumentation_classes(old_payload, output_method)
+          if Feature.enabled?(:merge_service_ping_instrumented_metrics, default_enabled: :yaml)
+
+            instrumented_metrics_key_paths = Gitlab::Usage::ServicePing::PayloadKeysProcessor.new(old_payload).missing_instrumented_metrics_key_paths
+
+            instrumented_payload = Gitlab::Usage::ServicePing::InstrumentedPayload.new(instrumented_metrics_key_paths, output_method).build
+
+            old_payload.deep_merge(instrumented_payload)
+          else
+            old_payload
+          end
+        end
 
         def all_metrics_values(cached)
           Rails.cache.fetch('usage_data', force: !cached, expires_in: 2.weeks) do

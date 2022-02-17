@@ -40,6 +40,7 @@ export default {
     Terminal,
     TimeAgoTooltip,
     Delete,
+    EnvironmentAlert: () => import('ee_component/environments/components/environment_alert.vue'),
   },
   directives: {
     GlTooltip,
@@ -96,6 +97,9 @@ export default {
     },
     hasDeployment() {
       return Boolean(this.environment?.upcomingDeployment || this.environment?.lastDeployment);
+    },
+    hasOpenedAlert() {
+      return this.environment?.hasOpenedAlert;
     },
     actions() {
       if (!this.lastDeployment) {
@@ -318,6 +322,9 @@ export default {
           :class="{ 'gl-ml-7': inFolder }"
           class="gl-pl-4"
         />
+      </div>
+      <div v-if="hasOpenedAlert" class="gl-bg-gray-10 gl-md-px-7">
+        <environment-alert :environment="environment" class="gl-pl-4 gl-py-5" />
       </div>
     </gl-collapse>
   </div>

@@ -292,7 +292,7 @@ scan images from within your Kubernetes cluster and record the vulnerabilities i
 ### Configuration
 
 The Agent runs the cluster image scanning once the `cluster_image_scanning`
-directive is added to your [Agent's configuration repository](../../clusters/agent/repository.md#scan-your-container-images-for-vulnerabilities).
+directive is added to your [Agent's configuration repository](../../clusters/agent/vulnerabilities.md).
 
 ## Security Dashboard
 
@@ -302,7 +302,7 @@ the security vulnerabilities in your groups, projects, and pipelines.
 ## Interacting with the vulnerabilities
 
 After you find a vulnerability, you can address it in the [vulnerability report](../vulnerabilities/index.md)
-or the [GitLab Agent's](../../clusters/agent/install/index.md#view-vulnerabilities-in-cluster-images)
+or the [GitLab Agent's](../../clusters/agent/vulnerabilities.md)
 details section.
 
 ## Troubleshooting

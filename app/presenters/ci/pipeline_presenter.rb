@@ -5,7 +5,6 @@ module Ci
     include Gitlab::Utils::StrongMemoize
 
     delegator_override_with Gitlab::Utils::StrongMemoize # This module inclusion is expected. See https://gitlab.com/gitlab-org/gitlab/-/issues/352884.
-    delegator_override_with ActionView::Helpers::TagHelper # TODO: Remove `ActionView::Helpers::UrlHelper` inclusion as it overrides `Ci::Pipeline#tag`
 
     # We use a class method here instead of a constant, allowing EE to redefine
     # the returned `Hash` more easily.

@@ -4,6 +4,10 @@ require 'spec_helper'
 
 RSpec.describe ServicePing::BuildPayloadService do
   describe '#execute', :without_license do
+    before do
+      stub_feature_flags(merge_service_ping_instrumented_metrics: false)
+    end
+
     subject(:service_ping_payload) { described_class.new.execute }
 
     include_context 'stubbed service ping metrics definitions' do

@@ -13,7 +13,7 @@ job is fully executed.
 
 ## Scan result policy editor
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8 with a flag named `scan_result_policy`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.
 
 NOTE:
 Only project Owners have the [permissions](../../permissions.md#project-members-permissions)

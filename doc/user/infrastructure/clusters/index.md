@@ -68,5 +68,5 @@ The concept of [project-level](../../project/clusters/index.md),
 extinct in the new model, although the functionality remains to some extent.
 
 The Agent is always configured in a single GitLab project, but you can use the CI/CD Tunnel to
-[authorize other projects and groups to use the same Agent](../../clusters/agent/repository.md#authorize-projects-and-groups-to-use-an-agent).
+authorize other projects and groups to use the same Agent.
 By doing so, you are granting these projects and groups access to the same cluster, which is similar to group-level clusters' use case.

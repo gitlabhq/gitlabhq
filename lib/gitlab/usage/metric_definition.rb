@@ -80,6 +80,10 @@ module Gitlab
           @all ||= definitions.map { |_key_path, definition| definition }
         end
 
+        def not_removed
+          all.select { |definition| definition.attributes[:status] != 'removed' }.index_by(&:key_path)
+        end
+
         def with_instrumentation_class
           all.select { |definition| definition.attributes[:instrumentation_class].present? && definition.available? }
         end
