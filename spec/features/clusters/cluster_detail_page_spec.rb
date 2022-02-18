@@ -36,6 +36,20 @@ RSpec.describe 'Clusterable > Show page' do
 
       expect(page).not_to have_selector('[data-testid="cluster-environments-tab"]')
     end
+
+    context 'content-security policy' do
+      it 'has AWS domains in the CSP' do
+        visit cluster_path
+
+        expect(response_headers['Content-Security-Policy']).to include(::Clusters::ClustersController::AWS_CSP_DOMAINS.join(' '))
+      end
+
+      it 'keeps existing connect-src in the CSP' do
+        visit cluster_path
+
+        expect(response_headers['Content-Security-Policy']).to include("connect-src #{Gitlab::ContentSecurityPolicy::Directives.connect_src}")
+      end
+    end
   end
 
   shared_examples 'editing a GCP cluster' do

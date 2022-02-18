@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ReleasePresenter < Gitlab::View::Presenter::Delegated
-  include ActionView::Helpers::UrlHelper
-
   presents ::Release, as: :release
 
   # TODO: Remove `delegate` as it's redundant due to SimpleDelegator.

@@ -15700,7 +15700,7 @@ msgstr ""
 msgid "For each job, re-use the project workspace. If the workspace doesn't exist, use %{code_open}git clone%{code_close}."
 msgstr ""
 
-msgid "For example, the application using the token or the purpose of the token."
+msgid "For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
 msgstr ""
 
 msgid "For files larger than this limit, only index the file name. The file content is neither indexed nor searchable."

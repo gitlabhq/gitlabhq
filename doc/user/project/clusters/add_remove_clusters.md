@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
-To create a new cluster use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac-deprecated).
+To create a new cluster use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
 
 NOTE:
 Every new Google Cloud Platform (GCP) account receives
@@ -29,7 +29,7 @@ in a few clicks.
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 
-As of GitLab 14.0, use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac-deprecated)
+As of GitLab 14.0, use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac)
 to **safely create new clusters from GitLab**.
 
 Creating clusters from GitLab using cluster certificates is still available on the

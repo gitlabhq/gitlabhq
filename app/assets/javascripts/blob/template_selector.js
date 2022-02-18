@@ -78,7 +78,12 @@ export default class TemplateSelector {
   setEditorContent(file, { skipFocus } = {}) {
     if (!file) return;
 
-    const newValue = file.content;
+    let newValue = file.content;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('issue[description]')) {
+      newValue += `\n${urlParams.get('issue[description]')}`;
+    }
 
     this.editor.setValue(newValue, 1);
 

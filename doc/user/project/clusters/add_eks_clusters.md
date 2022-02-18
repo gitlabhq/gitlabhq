@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
-This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac-deprecated)
+This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac)
 to create new clusters.
 
 Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
@@ -23,7 +23,7 @@ use the [GitLab Agent](../../clusters/agent/index.md).
 
 ## Create a new EKS cluster
 
-To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac-deprecated).
+To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
 
 ### How to create a new cluster on EKS through cluster certificates (DEPRECATED)
 

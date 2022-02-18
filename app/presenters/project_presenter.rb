@@ -2,7 +2,6 @@
 
 class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::NumberHelper
-  include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
   include StorageHelper
   include TreeHelper
@@ -472,6 +471,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     strong_memoize(:project_topic_list) do
       project.topics.map(&:name)
     end
+  end
+
+  # Avoid including ActionView::Helpers::UrlHelper
+  def content_tag(*args)
+    ActionController::Base.helpers.content_tag(*args)
   end
 end
 

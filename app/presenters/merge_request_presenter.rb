@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
-  include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
   include MarkupHelper
   include TreeHelper
@@ -289,6 +288,11 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def user_can_fork_project?
     can?(current_user, :fork_project, project)
+  end
+
+  # Avoid including ActionView::Helpers::UrlHelper
+  def link_to(*args)
+    ApplicationController.helpers.link_to(*args)
   end
 end
 

@@ -18,6 +18,15 @@ class Clusters::ClustersController < Clusters::BaseController
   helper_method :token_in_session
 
   STATUS_POLLING_INTERVAL = 10_000
+  AWS_CSP_DOMAINS = %w[https://ec2.ap-east-1.amazonaws.com https://ec2.ap-northeast-1.amazonaws.com https://ec2.ap-northeast-2.amazonaws.com https://ec2.ap-northeast-3.amazonaws.com https://ec2.ap-south-1.amazonaws.com https://ec2.ap-southeast-1.amazonaws.com https://ec2.ap-southeast-2.amazonaws.com https://ec2.ca-central-1.amazonaws.com https://ec2.eu-central-1.amazonaws.com https://ec2.eu-north-1.amazonaws.com https://ec2.eu-west-1.amazonaws.com https://ec2.eu-west-2.amazonaws.com https://ec2.eu-west-3.amazonaws.com https://ec2.me-south-1.amazonaws.com https://ec2.sa-east-1.amazonaws.com https://ec2.us-east-1.amazonaws.com https://ec2.us-east-2.amazonaws.com https://ec2.us-west-1.amazonaws.com https://ec2.us-west-2.amazonaws.com https://ec2.af-south-1.amazonaws.com https://iam.amazonaws.com].freeze
+
+  content_security_policy do |p|
+    next if p.directives.blank?
+
+    default_connect_src = p.directives['connect-src'] || p.directives['default-src']
+    connect_src_values = Array.wrap(default_connect_src) | AWS_CSP_DOMAINS
+    p.connect_src(*connect_src_values)
+  end
 
   def index
     @clusters = cluster_list

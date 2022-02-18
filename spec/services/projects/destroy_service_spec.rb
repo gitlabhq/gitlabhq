@@ -36,18 +36,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
 
       destroy_project(project, user, {})
     end
-
-    context 'when feature flag publish_project_deleted_event is disabled' do
-      before do
-        stub_feature_flags(publish_project_deleted_event: false)
-      end
-
-      it 'does not publish an event' do
-        expect(Gitlab::EventStore).not_to receive(:publish).with(event_type(Projects::ProjectDeletedEvent))
-
-        destroy_project(project, user, {})
-      end
-    end
   end
 
   shared_examples 'deleting the project with pipeline and build' do

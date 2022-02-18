@@ -37,7 +37,7 @@ module Projects
       system_hook_service.execute_hooks_for(project, :destroy)
       log_info("Project \"#{project.full_path}\" was deleted")
 
-      publish_project_deleted_event_for(project) if Feature.enabled?(:publish_project_deleted_event, default_enabled: :yaml)
+      publish_project_deleted_event_for(project)
 
       current_user.invalidate_personal_projects_count
 

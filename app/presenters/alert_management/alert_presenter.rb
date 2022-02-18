@@ -3,7 +3,6 @@
 module AlertManagement
   class AlertPresenter < Gitlab::View::Presenter::Delegated
     include IncidentManagement::Settings
-    include ActionView::Helpers::UrlHelper
 
     presents ::AlertManagement::Alert
     delegator_override_with Gitlab::Utils::StrongMemoize # This module inclusion is expected. See https://gitlab.com/gitlab-org/gitlab/-/issues/352884.

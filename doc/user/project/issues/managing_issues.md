@@ -160,6 +160,8 @@ To regenerate the email address:
 
 ### Using a URL with prefilled values
 
+> Ability to use both `issuable_template` and `issue[description]` in the same URL [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340529) in GitLab 14.8.
+
 To link directly to the new issue page with prefilled fields, use query
 string parameters in a URL. You can embed a URL in an external
 HTML page to create issues with certain fields prefilled.
@@ -168,8 +170,8 @@ HTML page to create issues with certain fields prefilled.
 | -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | Title                | `issue[title]`        | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).                                                          |
 | Issue type           | `issue[issue_type]`   | Either `incident` or `issue`.                                                                                                   |
-| Description template | `issuable_template`   | Cannot be used at the same time as `issue[description]`. Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding). |
-| Description          | `issue[description]`  | Cannot be used at the same time as `issuable_template`. Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).  |
+| Description template | `issuable_template`   | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).                                                          |
+| Description          | `issue[description]`  | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value is appended to the template. |
 | Confidential         | `issue[confidential]` | If `true`, the issue is marked as confidential.                                                                                 |
 
 Adapt these examples to form your new issue URL with prefilled fields.

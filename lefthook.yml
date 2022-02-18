@@ -42,7 +42,7 @@ pre-push:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'
-      run: if command -v vale 2> /dev/null; then vale --config .vale.ini --minAlertLevel error {files}; else echo "Vale not found. Install Vale"; fi
+      run: 'if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel error {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; fi; else echo "ERROR: Vale not found. For more information, see https://docs.errata.ai/vale/install."; fi'
     gettext:
       skip: true  # This is disabled by default. You can enable this check by adding skip: false in lefhook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md#skipping-commands
       tags: backend frontend view haml

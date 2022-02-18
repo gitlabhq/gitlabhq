@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'New/edit issue', :js do
   include ActionView::Helpers::JavaScriptHelper
 
-  let_it_be(:project)   { create(:project) }
+  let_it_be(:project)   { create(:project, :repository) }
   let_it_be(:user)      { create(:user) }
   let_it_be(:user2)     { create(:user) }
   let_it_be(:milestone) { create(:milestone, project: project) }
@@ -307,6 +307,53 @@ RSpec.describe 'New/edit issue', :js do
           expect(page).not_to have_selector 'img'
         end
       end
+    end
+  end
+
+  describe 'new issue with query parameters' do
+    before do
+      project.repository.create_file(
+        current_user,
+        '.gitlab/issue_templates/test_template.md',
+        'description from template',
+        message: 'Add test_template.md',
+        branch_name: project.default_branch_or_main
+      )
+    end
+
+    after do
+      project.repository.delete_file(
+        current_user,
+        '.gitlab/issue_templates/test_template.md',
+        message: 'Remove test_template.md',
+        branch_name: project.default_branch_or_main
+      )
+    end
+
+    it 'leaves the description blank if no query parameters are specified' do
+      visit new_project_issue_path(project)
+
+      expect(find('#issue_description').value).to be_empty
+    end
+
+    it 'fills the description from the issue[description] query parameter' do
+      visit new_project_issue_path(project, issue: { description: 'description from query parameter' })
+
+      expect(find('#issue_description').value).to match('description from query parameter')
+    end
+
+    it 'fills the description from the issuable_template query parameter' do
+      visit new_project_issue_path(project, issuable_template: 'test_template')
+      wait_for_requests
+
+      expect(find('#issue_description').value).to match('description from template')
+    end
+
+    it 'fills the description from the issuable_template and issue[description] query parameters' do
+      visit new_project_issue_path(project, issuable_template: 'test_template', issue: { description: 'description from query parameter' })
+      wait_for_requests
+
+      expect(find('#issue_description').value).to match('description from template\ndescription from query parameter')
     end
   end
 

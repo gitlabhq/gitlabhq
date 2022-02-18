@@ -1292,7 +1292,7 @@ See the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352564
 ### Secure and Protect analyzer major version update
 
 WARNING:
-This feature will be changed or removed in 15.00
+This feature will be changed or removed in 15.0
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
@@ -1311,9 +1311,10 @@ Specifically, the following are being deprecated and will no longer be updated a
 - Coverage-guided fuzz testing: version 2
 - Dependency Scanning: version 2
 - Dynamic Application Security Testing (DAST): version 2
+- Infrastructure as Code (IaC) Scanning: version 1
 - License Scanning: version 3
 - Secret Detection: version 3
-- Static Application Security Testing (SAST): version 2, except security-code-scan which is version 3
+- Static Application Security Testing (SAST): version 2 of [all analyzers](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks), except `gosec` which is currently at version 3
   - `bandit`: version 2
   - `brakeman`: version 2
   - `eslint`: version 2
@@ -1324,12 +1325,12 @@ Specifically, the following are being deprecated and will no longer be updated a
   - `nodejs-scan`: version 2
   - `phpcs-security-audit`: version 2
   - `pmd-apex`: version 2
-  - `security-code-scan`: version 3
+  - `security-code-scan`: version 2
   - `semgrep`: version 2
   - `sobelow`: version 2
   - `spotbugs`: version 2
 
-**Planned removal milestone: 15.00 ()**
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### Support for gRPC-aware proxy deployed between Gitaly and rest of GitLab
 

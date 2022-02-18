@@ -35,7 +35,7 @@ To view a list of environments and deployments:
 1. On the left sidebar, select **Deployments > Environments**.
    The environments are displayed.
 
-   ![Environments list](img/environments_list_v14_3.png)
+   ![Environments list](img/environments_list_v14_8.png)
 
 1. To view a list of deployments for an environment, select the environment name,
    for example, `staging`.

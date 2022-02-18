@@ -327,6 +327,22 @@ module QA
         end
       end
 
+      def accept_dataloss_for_project(project_id, authoritative_storage)
+        repository_hash = "#{Digest::SHA256.hexdigest(project_id.to_s)}"
+        repository = "@hashed/#{repository_hash[0, 2]}/#{repository_hash[2, 2]}/#{repository_hash}.git"
+
+        cmd = %{
+          docker exec #{@praefect} \
+          praefect \
+            -config /var/opt/gitlab/praefect/config.toml \
+            accept-dataloss \
+            --virtual-storage=default \
+            --repository=#{repository} \
+            --authoritative-storage=#{authoritative_storage}
+        }
+        shell(cmd)
+      end
+
       def wait_for_health_check_all_nodes
         wait_for_gitaly_health_check(@primary_node)
         wait_for_gitaly_health_check(@secondary_node)
@@ -413,6 +429,27 @@ module QA
 
       def wait_for_replication(project_id)
         Support::Waiter.wait_until(sleep_interval: 1) { replication_queue_incomplete_count == 0 && replicated?(project_id) }
+      end
+
+      def wait_for_replication_to_node(project_id, node)
+        Support::Waiter.wait_until(sleep_interval: 1) do
+          result = []
+          shell sql_to_docker_exec_cmd(%{
+            select * from replication_queue
+            where state = 'ready'
+              and job ->> 'change' = 'update'
+              and job ->> 'target_node_storage' = '#{node}'
+              and job ->> 'relative_path' = '#{Digest::SHA256.hexdigest(project_id.to_s)}.git';
+          }) do |line|
+            result << line.strip
+            QA::Runtime::Logger.debug(line.strip)
+          end
+          # The result should look like this when all items are replicated
+          #    id | state | created_at | updated_at | attempt | lock_id | job | meta
+          #   ----+-------+------------+------------+---------+---------+-----+------
+          #   (0 rows)
+          result[2] == '(0 rows)'
+        end
       end
 
       def replication_pending?
