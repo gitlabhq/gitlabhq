@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     ...mapState(['selectedProject', 'fullPath']),
-    ...mapGetters(['isGroupBoard']),
+    ...mapGetters(['isGroupBoard', 'getBoardItemsByList']),
     formEventPrefix() {
       return toggleFormEventPrefix.issue;
     },
@@ -42,6 +42,7 @@ export default {
       const labels = this.list.label ? [this.list.label] : [];
       const assignees = this.list.assignee ? [this.list.assignee] : [];
       const milestone = getMilestone(this.list);
+      const firstItemId = this.getBoardItemsByList(this.list.id)[0]?.id;
 
       return this.addListNewIssue({
         list: this.list,
@@ -51,6 +52,7 @@ export default {
           assigneeIds: assignees?.map((a) => a?.id),
           milestoneId: milestone?.id,
           projectPath: this.projectPath,
+          moveAfterId: firstItemId,
         },
       }).then(() => {
         this.cancel();

@@ -8,15 +8,16 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
   let_it_be_with_reload(:package) { create(:package) }
   let_it_be(:pipelines) { create_list(:ci_pipeline, 3, project: package.project) }
 
-  let(:user) { package.project.owner }
+  let(:user) { package.project.first_owner }
   let(:args) { {} }
 
   describe '#resolve' do
     subject { resolve(described_class, obj: package, args: args, ctx: { current_user: user }) }
 
     before do
-      package.pipelines = pipelines
-      package.save!
+      pipelines.each do |pipeline|
+        create(:package_build_info, package: package, pipeline: pipeline)
+      end
     end
 
     it { is_expected.to contain_exactly(*pipelines) }

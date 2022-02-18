@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Boards::ListsController do
   describe '#index' do
     let(:board) { create(:board) }
-    let(:user) { board.project.owner }
+    let(:user) { board.project.first_owner }
 
     it 'does not have N+1 queries' do
       login_as(user)

@@ -16,7 +16,7 @@ In GitLab versions [13.10 and later](https://gitlab.com/groups/gitlab-org/-/epic
 GitLab displays a search box to help you find the settings you want to view.
 
 NOTE:
-Only users who have the [Maintainer role](../../permissions.md) for the project and administrators can
+Only users who have the Maintainer role for the project and administrators can
 access project settings.
 
 ## General settings
@@ -93,7 +93,7 @@ executed in place of the local project's `gitlab-ci.yml` file. As part of this p
 files are merged together any time the pipeline runs. Jobs and variables defined in the compliance
 pipeline can't be changed by variables in the local project's `gitlab-ci.yml` file.
 
-When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/#scan-execution-policies),
+When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/scan-execution-policies.md),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../../application_security/#enforce-scan-execution).
@@ -249,7 +249,7 @@ Use the switches to enable or disable the following features:
 |:---------------------------------|:--------------------------|:--------------|
 | **Issues**                       | ✓                         | Activates the GitLab issues tracker. |
 | **Repository**                   | ✓                         | Enables [repository](../repository/) functionality |
-| **Merge Requests**               | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#merge-request-settings). |
+| **Merge requests**               | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#merge-request-settings). |
 | **Forks**                        | ✓                         | Enables [forking](../repository/forking_workflow.md) functionality. |
 | **Git Large File Storage (LFS)** |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs). |
 | **Packages**                     |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality. |
@@ -281,7 +281,7 @@ Some features depend on others:
 
 - If you disable **Repository** functionality, GitLab also disables the following
   features for your project:
-  - **Merge Requests**
+  - **Merge requests**
   - **CI/CD**
   - **Container Registry**
   - **Git Large File Storage**
@@ -360,7 +360,7 @@ available in project listings. Only project owners and administrators have the
 
 To find an archived project:
 
-1. Sign in to GitLab as the project owner or a user with the Administrator role.
+1. Sign in to GitLab as the project owner or a user with administrator access.
 1. If you:
    - Have the project's URL, open the project's page in your browser.
    - Don't have the project's URL:
@@ -404,11 +404,17 @@ NOTE:
 Only project owners and administrators have the [permissions](../../permissions.md#project-members-permissions)
 to transfer a project.
 
-You can transfer an existing project into a [group](../../group/index.md) if:
+You can transfer an existing project into a [group](../../group/index.md).
 
-- You have at least **Maintainer** [role](../../permissions.md#project-members-permissions) in that group.
-- You're at least an **Owner** of the project to be transferred.
+Prerequisites:
+
+- You must have at least the Maintainer role in that group.
+- You must be the Owner of that project.
 - The group to which the project is being transferred to must allow creation of new projects.
+- The project must not contain any [container images](../../packages/container_registry/index.md#limitations).
+  - If you transfer a project to a different root namespace,
+    the project must not contain any
+    [NPM packages](../../packages/npm_registry/index.md#limitations).
 
 To transfer a project:
 
@@ -423,8 +429,8 @@ read what happens with the
 [redirects from the old project to the new one](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 NOTE:
-GitLab administrators can use the administration interface to move any project to any
-namespace if needed.
+GitLab administrators can use the [administration interface](../../admin_area/index.md#administering-projects)
+to move any project to any namespace if needed.
 
 ##### Transferring a GitLab.com project to a different subscription tier
 

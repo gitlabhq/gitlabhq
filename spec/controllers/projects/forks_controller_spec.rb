@@ -67,6 +67,18 @@ RSpec.describe Projects::ForksController do
           expect(assigns[:private_forks_count]).to eq(0)
         end
       end
+
+      context 'when unsupported keys are provided' do
+        it 'ignores them' do
+          get :index, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            user: 'unsupported'
+          }
+
+          expect(assigns[:forks]).to be_present
+        end
+      end
     end
 
     context 'when fork is internal' do

@@ -14,7 +14,7 @@ module QA
 
       attribute :group do
         Group.fabricate_via_api! do |resource|
-          resource.name = 'group-with-milestone'
+          resource.name = "group-with-milestone-#{SecureRandom.hex(4)}"
         end
       end
 

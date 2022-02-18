@@ -3,10 +3,9 @@
 module Mutations
   module Boards
     class Create < ::Mutations::BaseMutation
-      include Mutations::ResolvesResourceParent
-
       graphql_name 'CreateBoard'
 
+      include Mutations::ResolvesResourceParent
       include Mutations::Boards::CommonMutationArguments
 
       field :board,

@@ -40,60 +40,142 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
           allow(validator_class).to receive(:new).and_call_original
         end
 
-        context 'when the validate flag is set as `false`' do
-          let(:validate) { false }
+        context 'when enforce_security_report_validation is enabled' do
+          before do
+            stub_feature_flags(enforce_security_report_validation: true)
+          end
 
-          it 'does not run the validation logic' do
-            parse_report
+          context 'when the validate flag is set as `true`' do
+            let(:validate) { true }
 
-            expect(validator_class).not_to have_received(:new)
+            it 'instantiates the validator with correct params' do
+              parse_report
+
+              expect(validator_class).to have_received(:new).with(report.type, {})
+            end
+
+            context 'when the report data is valid according to the schema' do
+              let(:valid?) { true }
+
+              before do
+                allow_next_instance_of(validator_class) do |instance|
+                  allow(instance).to receive(:valid?).and_return(valid?)
+                  allow(instance).to receive(:errors).and_return([])
+                end
+
+                allow(parser).to receive_messages(create_scanner: true, create_scan: true)
+              end
+
+              it 'does not add errors to the report' do
+                expect { parse_report }.not_to change { report.errors }.from([])
+              end
+
+              it 'adds the schema validation status to the report' do
+                parse_report
+
+                expect(report.schema_validation_status).to eq(:valid_schema)
+              end
+
+              it 'keeps the execution flow as normal' do
+                parse_report
+
+                expect(parser).to have_received(:create_scanner)
+                expect(parser).to have_received(:create_scan)
+              end
+            end
+
+            context 'when the report data is not valid according to the schema' do
+              let(:valid?) { false }
+
+              before do
+                allow_next_instance_of(validator_class) do |instance|
+                  allow(instance).to receive(:valid?).and_return(valid?)
+                  allow(instance).to receive(:errors).and_return(['foo'])
+                end
+
+                allow(parser).to receive_messages(create_scanner: true, create_scan: true)
+              end
+
+              it 'adds errors to the report' do
+                expect { parse_report }.to change { report.errors }.from([]).to([{ message: 'foo', type: 'Schema' }])
+              end
+
+              it 'adds the schema validation status to the report' do
+                parse_report
+
+                expect(report.schema_validation_status).to eq(:invalid_schema)
+              end
+
+              it 'does not try to create report entities' do
+                parse_report
+
+                expect(parser).not_to have_received(:create_scanner)
+                expect(parser).not_to have_received(:create_scan)
+              end
+            end
           end
         end
 
-        context 'when the validate flag is set as `true`' do
-          let(:validate) { true }
-          let(:valid?) { false }
-
+        context 'when enforce_security_report_validation is disabled' do
           before do
-            allow_next_instance_of(validator_class) do |instance|
-              allow(instance).to receive(:valid?).and_return(valid?)
-              allow(instance).to receive(:errors).and_return(['foo'])
-            end
-
-            allow(parser).to receive_messages(create_scanner: true, create_scan: true)
+            stub_feature_flags(enforce_security_report_validation: false)
           end
 
-          it 'instantiates the validator with correct params' do
-            parse_report
+          context 'when the validate flag is set as `false`' do
+            let(:validate) { false }
 
-            expect(validator_class).to have_received(:new).with(report.type, {})
-          end
-
-          context 'when the report data is not valid according to the schema' do
-            it 'adds errors to the report' do
-              expect { parse_report }.to change { report.errors }.from([]).to([{ message: 'foo', type: 'Schema' }])
-            end
-
-            it 'does not try to create report entities' do
+            it 'does not run the validation logic' do
               parse_report
 
-              expect(parser).not_to have_received(:create_scanner)
-              expect(parser).not_to have_received(:create_scan)
+              expect(validator_class).not_to have_received(:new)
             end
           end
 
-          context 'when the report data is valid according to the schema' do
-            let(:valid?) { true }
+          context 'when the validate flag is set as `true`' do
+            let(:validate) { true }
+            let(:valid?) { false }
 
-            it 'does not add errors to the report' do
-              expect { parse_report }.not_to change { report.errors }.from([])
+            before do
+              allow_next_instance_of(validator_class) do |instance|
+                allow(instance).to receive(:valid?).and_return(valid?)
+                allow(instance).to receive(:errors).and_return(['foo'])
+              end
+
+              allow(parser).to receive_messages(create_scanner: true, create_scan: true)
             end
 
-            it 'keeps the execution flow as normal' do
+            it 'instantiates the validator with correct params' do
               parse_report
 
-              expect(parser).to have_received(:create_scanner)
-              expect(parser).to have_received(:create_scan)
+              expect(validator_class).to have_received(:new).with(report.type, {})
+            end
+
+            context 'when the report data is not valid according to the schema' do
+              it 'adds errors to the report' do
+                expect { parse_report }.to change { report.errors }.from([]).to([{ message: 'foo', type: 'Schema' }])
+              end
+
+              it 'does not try to create report entities' do
+                parse_report
+
+                expect(parser).not_to have_received(:create_scanner)
+                expect(parser).not_to have_received(:create_scan)
+              end
+            end
+
+            context 'when the report data is valid according to the schema' do
+              let(:valid?) { true }
+
+              it 'does not add errors to the report' do
+                expect { parse_report }.not_to change { report.errors }.from([])
+              end
+
+              it 'keeps the execution flow as normal' do
+                parse_report
+
+                expect(parser).to have_received(:create_scanner)
+                expect(parser).to have_received(:create_scan)
+              end
             end
           end
         end

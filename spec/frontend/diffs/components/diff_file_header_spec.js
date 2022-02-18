@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import { cloneDeep } from 'lodash';
 import Vuex from 'vuex';
 
@@ -37,8 +38,7 @@ const diffFile = Object.freeze(
   }),
 );
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('DiffFileHeader component', () => {
   let wrapper;
@@ -82,7 +82,7 @@ describe('DiffFileHeader component', () => {
   const findExpandButton = () => wrapper.find({ ref: 'expandDiffToFullFileButton' });
   const findFileActions = () => wrapper.find('.file-actions');
   const findModeChangedLine = () => wrapper.find({ ref: 'fileMode' });
-  const findLfsLabel = () => wrapper.find('.label-lfs');
+  const findLfsLabel = () => wrapper.find('[data-testid="label-lfs"]');
   const findToggleDiscussionsButton = () => wrapper.find({ ref: 'toggleDiscussionsButton' });
   const findExternalLink = () => wrapper.find({ ref: 'externalLink' });
   const findReplacedFileButton = () => wrapper.find({ ref: 'replacedFileButton' });
@@ -103,7 +103,6 @@ describe('DiffFileHeader component', () => {
         ...props,
       },
       ...options,
-      localVue,
       store,
     });
   };
@@ -126,30 +125,27 @@ describe('DiffFileHeader component', () => {
     expect(findCollapseIcon().props('name')).toBe(icon);
   });
 
-  it('when header is clicked emits toggleFile', () => {
+  it('when header is clicked emits toggleFile', async () => {
     createComponent();
     findHeader().trigger('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().toggleFile).toBeDefined();
-    });
+    await nextTick();
+    expect(wrapper.emitted().toggleFile).toBeDefined();
   });
 
-  it('when collapseIcon is clicked emits toggleFile', () => {
+  it('when collapseIcon is clicked emits toggleFile', async () => {
     createComponent({ props: { collapsible: true } });
     findCollapseIcon().vm.$emit('click', new Event('click'));
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().toggleFile).toBeDefined();
-    });
+    await nextTick();
+    expect(wrapper.emitted().toggleFile).toBeDefined();
   });
 
-  it('when other element in header is clicked does not emits toggleFile', () => {
+  it('when other element in header is clicked does not emits toggleFile', async () => {
     createComponent({ props: { collapsible: true } });
     findTitleLink().trigger('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().toggleFile).not.toBeDefined();
-    });
+    await nextTick();
+    expect(wrapper.emitted().toggleFile).not.toBeDefined();
   });
 
   describe('copy to clipboard', () => {

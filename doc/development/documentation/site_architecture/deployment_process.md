@@ -82,7 +82,7 @@ for the stable branch of the image to rebuild. You might do this:
 
 ## Latest documentation
 
-A Docker image (tagged `latest`) is built that contains:
+We build a Docker image (tagged `latest`) that contains:
 
 - The latest online version of the documentation.
 - The documentation from the stable branches of upstream projects.

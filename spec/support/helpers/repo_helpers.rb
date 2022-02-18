@@ -129,7 +129,7 @@ eos
         commit_message: 'Add new content')
     Files::CreateService.new(
       project,
-      project.owner,
+      project.first_owner,
       commit_message: commit_message,
       start_branch: start_branch,
       branch_name: branch_name,

@@ -62,7 +62,11 @@ module Gitlab
         attr_reader :stage, :params
 
         def query
-          BaseQueryBuilder.new(stage: stage, params: params).build
+          query_builder.build
+        end
+
+        def query_builder
+          @query_builder ||= BaseQueryBuilder.new(stage: stage, params: params)
         end
 
         # Limiting the maximum number of records so the COUNT(*) query stays efficient for large groups.

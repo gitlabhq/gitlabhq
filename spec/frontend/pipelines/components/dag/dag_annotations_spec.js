@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DagAnnotations from '~/pipelines/components/dag/dag_annotations.vue';
 import { singleNote, multiNote } from './mock_data';
 
@@ -82,26 +83,24 @@ describe('The DAG annotations', () => {
     });
 
     describe('clicking hide', () => {
-      it('hides listed items and changes text to show', () => {
+      it('hides listed items and changes text to show', async () => {
         expect(getAllTextBlocks().length).toBe(Object.keys(multiNote).length);
         expect(getToggleButton().text()).toBe('Hide list');
         getToggleButton().trigger('click');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(getAllTextBlocks().length).toBe(0);
-          expect(getToggleButton().text()).toBe('Show list');
-        });
+        await nextTick();
+        expect(getAllTextBlocks().length).toBe(0);
+        expect(getToggleButton().text()).toBe('Show list');
       });
     });
 
     describe('clicking show', () => {
-      it('shows listed items and changes text to hide', () => {
+      it('shows listed items and changes text to hide', async () => {
         getToggleButton().trigger('click');
         getToggleButton().trigger('click');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(getAllTextBlocks().length).toBe(Object.keys(multiNote).length);
-          expect(getToggleButton().text()).toBe('Hide list');
-        });
+        await nextTick();
+        expect(getAllTextBlocks().length).toBe(Object.keys(multiNote).length);
+        expect(getToggleButton().text()).toBe('Hide list');
       });
     });
   });

@@ -1,0 +1,66 @@
+- name: "GraphQL ID and GlobalID compatibility"
+  announcement_milestone: "14.8"
+  announcement_date: "2022-02-22"
+  removal_milestone: "15.0"
+  removal_date:  "2022-04-22"
+  breaking_change: true
+  reporter: alexkalderimis
+  body: |  # Do not modify this line, instead modify the lines below.
+    We are removing a non-standard extension to our GraphQL processor, which we added for backwards compatibility. This extension modifies the validation of GraphQL queries, allowing the use of the `ID` type for arguments where it would normally be rejected.
+    Some arguments originally had the type `ID`. These were changed to specific
+    kinds of `ID`. This change may be a breaking change if you:
+
+    - Use GraphQL.
+    - Use the `ID` type for any argument in your query signatures.
+
+    Some field arguments still have the `ID` type. These are typically for
+    IID values, or namespace paths. An example is `Query.project(fullPath: ID!)`.
+
+    For a list of affected and unaffected field arguments,
+    see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352832).
+
+    You can test if this change affects you by validating
+    your queries locally, using schema data fetched from a GitLab server.
+    You can do this by using the GraphQL explorer tool for the relevant GitLab
+    instance. For example: `https://gitlab.com/-/graphql-explorer`.
+
+    For example, the following query illustrates the breaking change:
+
+    ```graphql
+    # a query using the deprecated type of Query.issue(id:)
+    # WARNING: This will not work after GitLab 15.0
+    query($id: ID!) {
+      deprecated: issue(id: $id) {
+        title, description
+      }
+    }
+    ```
+
+    The query above will not work after GitLab 15.0 is released, because the type
+    of `Query.issue(id:)` is actually `IssueID!`.
+
+    Instead, you should use one of the following two forms:
+
+    ```graphql
+    # This will continue to work
+    query($id: IssueID!) {
+      a: issue(id: $id) {
+        title, description
+      }
+      b: issue(id: "gid://gitlab/Issue/12345") {
+        title, description
+      }
+    }
+    ```
+    
+    This query works now, and will continue to work after GitLab 15.0.
+    You should convert any queries in the first form (using `ID` as a named type in the signature)
+    to one of the other two forms (using the correct appropriate type in the signature, or using
+    an inline argument expression).
+# The following items are not published on the docs page, but may be used in the future.
+  stage:  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url:  'https://gitlab.com/gitlab-org/gitlab/-/issues/257883'
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

@@ -26,7 +26,7 @@ The following aspects of a project are imported:
 - Regular issue and pull request comments
 - [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md)
 - Pull request comments replies in discussions ([GitLab.com & 14.5+](https://gitlab.com/gitlab-org/gitlab/-/issues/336596))
-- Diff Notes suggestions ([GitLab.com & 14.7+](https://gitlab.com/gitlab-org/gitlab/-/issues/340624)) [with a flag](../../../administration/feature_flags.md) named `github_importer_use_diff_note_with_suggestions`. Enabled by default.
+- Diff Notes suggestions ([GitLab.com & 14.7+](https://gitlab.com/gitlab-org/gitlab/-/issues/340624))
 
 References to pull requests and issues are preserved (GitLab.com & 8.7+), and
 each imported repository maintains visibility level unless that [visibility
@@ -181,8 +181,7 @@ Mirroring does not sync any new or updated pull requests from your GitHub projec
 
 ## Improve the speed of imports on self-managed instances
 
-NOTE:
-An administrator role on the GitLab server is required for this process.
+Administrator access on the GitLab server is required for this process.
 
 For large projects it may take a while to import all data. To reduce the time necessary, you can increase the number of
 Sidekiq workers that process the following queues:

@@ -52,19 +52,20 @@ product, and all together are pulled to generate the docs website:
 - [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs)
 - [GitLab Chart](https://gitlab.com/charts/gitlab/tree/master/doc)
 
+Learn more about [the docs folder structure](folder_structure.md).
+
 ## Assets
 
 To provide an optimized site structure, design, and a search-engine friendly
 website, along with a discoverable documentation, we use a few assets for
 the GitLab Documentation website.
 
-### Libraries
+### External libraries
 
-- [Bootstrap 4.3.1 components](https://getbootstrap.com/docs/4.3/components/)
-- [Bootstrap 4.3.1 JS](https://getbootstrap.com/docs/4.3/getting-started/javascript/)
-- [jQuery](https://jquery.com/) 3.3.1
-- [Clipboard JS](https://clipboardjs.com/)
-- [Font Awesome 4.7.0](https://fontawesome.com/v4.7.0/icons/)
+GitLab Docs is built with a combination of external:
+
+- [JavaScript libraries](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/package.json).
+- [Ruby libraries](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/Gemfile).
 
 ### SEO
 
@@ -98,7 +99,7 @@ The pipeline in the `gitlab-docs` project:
 
 Once a week on Mondays, a scheduled pipeline runs and rebuilds the Docker images
 used in various pipeline jobs, like `docs-lint`. The Docker image configuration files are
-located in the [Dockerfiles directory](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/dockerfiles).
+located in the [Dockerfiles directory](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/main/dockerfiles).
 
 If you need to rebuild the Docker images immediately (must have maintainer level permissions):
 

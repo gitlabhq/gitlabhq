@@ -1,6 +1,7 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import axios from '~/lib/utils/axios_utils';
 import EditMetaControls from '~/static_site_editor/components/edit_meta_controls.vue';
@@ -50,14 +51,14 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
   const findEditMetaControls = () => wrapper.find(EditMetaControls);
   const findLocalStorageSync = () => wrapper.find(LocalStorageSync);
 
-  beforeEach(() => {
+  beforeEach(async () => {
     localStorage.setItem(MR_META_LOCAL_STORAGE_KEY);
 
     buildMockAxios();
     buildWrapper();
     buildMockRefs();
 
-    return wrapper.vm.$nextTick();
+    await nextTick();
   });
 
   afterEach(() => {
@@ -77,7 +78,7 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
 
     findLocalStorageSync().vm.$emit('input', localStorageMeta);
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findEditMetaControls().props()).toEqual(localStorageMeta);
   });
@@ -134,13 +135,13 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
     it('sets the currentTemplate on the changeTemplate event', async () => {
       findEditMetaControls().vm.$emit('changeTemplate', template1);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findEditMetaControls().props().currentTemplate).toBe(template1);
 
       findEditMetaControls().vm.$emit('changeTemplate', null);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findEditMetaControls().props().currentTemplate).toBe(null);
     });
@@ -148,7 +149,7 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
     it('updates the description on the changeTemplate event', async () => {
       findEditMetaControls().vm.$emit('changeTemplate', template1);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findEditMetaControls().props().description).toEqual(template1.content);
     });
@@ -164,7 +165,7 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
 
     findEditMetaControls().vm.$emit('updateSettings', newMeta);
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findLocalStorageSync().props('value')).toEqual(newMeta);
   });

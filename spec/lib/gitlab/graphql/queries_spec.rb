@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'fast_spec_helper'
-require "test_prof/recipes/rspec/let_it_be"
 
 RSpec.describe Gitlab::Graphql::Queries do
   shared_examples 'a valid GraphQL query for the blog schema' do

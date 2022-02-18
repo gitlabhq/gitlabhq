@@ -49,18 +49,6 @@ RSpec.describe ::Packages::Conan::PackageFileFinder do
 
       expect(subject).to eq(package_file)
     end
-
-    context 'with packages_installable_package_files disabled' do
-      before do
-        stub_feature_flags(packages_installable_package_files: false)
-      end
-
-      it 'returns the correct package file' do
-        expect(package.package_files.last).to eq(recent_package_file_pending_destruction)
-
-        expect(subject).to eq(recent_package_file_pending_destruction)
-      end
-    end
   end
 
   describe '#execute' do

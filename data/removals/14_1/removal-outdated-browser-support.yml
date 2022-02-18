@@ -2,6 +2,7 @@
   removal_date: July 22, 2021
   removal_milestone: "14.1"
   reporter: leipert
+  breaking_change: false
   body: |
     In GitLab 14.1, we are cleaning up and [removing old code](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63994) that was specific for browsers that we no longer support. This has no impact on users when one of our [supported web browsers](https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers) is used.
 

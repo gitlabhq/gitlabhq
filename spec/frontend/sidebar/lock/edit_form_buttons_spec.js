@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import createFlash from '~/flash';
 import { createStore as createMrStore } from '~/mr_notes/stores';
 import createStore from '~/notes/stores';
@@ -118,15 +119,13 @@ describe('EditFormButtons', () => {
           });
 
           it('resets loading', async () => {
-            await wrapper.vm.$nextTick().then(() => {
-              expect(findLockToggle().props('loading')).toBe(false);
-            });
+            await nextTick();
+            expect(findLockToggle().props('loading')).toBe(false);
           });
 
-          it('emits close form', () => {
-            return wrapper.vm.$nextTick().then(() => {
-              expect(eventHub.$emit).toHaveBeenCalledWith('closeLockForm');
-            });
+          it('emits close form', async () => {
+            await nextTick();
+            expect(eventHub.$emit).toHaveBeenCalledWith('closeLockForm');
           });
 
           it('does not flash an error message', () => {
@@ -153,15 +152,13 @@ describe('EditFormButtons', () => {
           });
 
           it('resets loading', async () => {
-            await wrapper.vm.$nextTick().then(() => {
-              expect(findLockToggle().props('loading')).toBe(false);
-            });
+            await nextTick();
+            expect(findLockToggle().props('loading')).toBe(false);
           });
 
-          it('emits close form', () => {
-            return wrapper.vm.$nextTick().then(() => {
-              expect(eventHub.$emit).toHaveBeenCalledWith('closeLockForm');
-            });
+          it('emits close form', async () => {
+            await nextTick();
+            expect(eventHub.$emit).toHaveBeenCalledWith('closeLockForm');
           });
 
           it('calls flash with the correct message', () => {

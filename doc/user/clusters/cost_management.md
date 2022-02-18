@@ -22,7 +22,7 @@ insights within GitLab:
 
 ## Configure cluster cost management
 
-To get started with cluster cost management, you need the [Maintainer role](../permissions.md) in a project or group.
+To get started with cluster cost management, you need the Maintainer role for a project or group.
 
 1. Clone the [`kubecost-cost-model`](https://gitlab.com/gitlab-examples/kubecost-cost-model/)
    example repository, which contains minor modifications to the upstream Kubecost

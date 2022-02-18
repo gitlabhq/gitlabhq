@@ -10,10 +10,19 @@ module Gitlab
     Result = Struct.new(:cmd, :stdout, :stderr, :status, :duration)
 
     # Returns [stdout + stderr, status]
+    # status is either the exit code or the signal that killed the process
     def popen(cmd, path = nil, vars = {}, &block)
       result = popen_with_detail(cmd, path, vars, &block)
 
-      ["#{result.stdout}#{result.stderr}", result.status&.exitstatus]
+      # Process#waitpid returns Process::Status, which holds a 16-bit value.
+      # The higher-order 8 bits hold the exit() code (`exitstatus`).
+      # The lower-order bits holds whether the process was terminated.
+      # If the process didn't exit normally, `exitstatus` will be `nil`,
+      # but we still want a non-zero code, even if the value is
+      # platform-dependent.
+      status = result.status&.exitstatus || result.status.to_i
+
+      ["#{result.stdout}#{result.stderr}", status]
     end
 
     # Returns Result

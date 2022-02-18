@@ -32,10 +32,6 @@ module BackgroundMigration
       def tracking_database
         raise NotImplementedError, "#{self.name} does not implement #{__method__}"
       end
-
-      def unhealthy_metric_name
-        raise NotImplementedError, "#{self.name} does not implement #{__method__}"
-      end
     end
 
     # Performs the background migration.
@@ -55,8 +51,12 @@ module BackgroundMigration
 
     private
 
+    def tracking_database
+      self.class.tracking_database
+    end
+
     def job_coordinator
-      @job_coordinator ||= Gitlab::BackgroundMigration.coordinator_for_database(self.class.tracking_database)
+      @job_coordinator ||= Gitlab::BackgroundMigration.coordinator_for_database(tracking_database)
     end
 
     def perform_with_connection(class_name, arguments, lease_attempts)
@@ -91,7 +91,7 @@ module BackgroundMigration
       healthy_db = healthy_database?
       perform = lease_obtained && healthy_db
 
-      database_unhealthy_counter.increment if lease_obtained && !healthy_db
+      database_unhealthy_counter.increment(db_config_name: tracking_database) if lease_obtained && !healthy_db
 
       # When the DB is unhealthy or the lease can't be obtained after several tries,
       # then give up on the job and log a warning. Otherwise we could end up in
@@ -140,7 +140,7 @@ module BackgroundMigration
 
     def database_unhealthy_counter
       Gitlab::Metrics.counter(
-        self.class.unhealthy_metric_name,
+        :background_migration_database_health_reschedules,
         'The number of times a background migration is rescheduled because the database is unhealthy.'
       )
     end

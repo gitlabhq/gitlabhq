@@ -1,4 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -8,8 +9,7 @@ import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
 import { createStore } from '~/mr_notes/stores';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const NEXT_COMMIT_URL = `${TEST_HOST}/?commit_id=next`;
 const PREV_COMMIT_URL = `${TEST_HOST}/?commit_id=prev`;
@@ -30,7 +30,6 @@ describe('CompareVersions', () => {
     }
 
     wrapper = mount(CompareVersionsComponent, {
-      localVue,
       store,
       propsData: {
         mergeRequestDiffs: diffsMockData,
@@ -39,7 +38,6 @@ describe('CompareVersions', () => {
       },
     });
   };
-  const findLimitedContainer = () => wrapper.find('.container-limited.limit-container-width');
   const findCompareSourceDropdown = () => wrapper.find('.mr-version-dropdown');
   const findCompareTargetDropdown = () => wrapper.find('.mr-version-compare-dropdown');
   const getCommitNavButtonsElement = () => wrapper.find('.commit-nav-buttons');
@@ -98,18 +96,6 @@ describe('CompareVersions', () => {
       expect(parallelBtn.attributes('data-view-type')).toEqual('parallel');
       expect(inlineBtn.html()).toContain('Inline');
       expect(parallelBtn.html()).toContain('Side-by-side');
-    });
-
-    it('adds container-limiting classes when showFileTree is false with inline diffs', () => {
-      createWrapper({ isLimitedContainer: true });
-
-      expect(findLimitedContainer().exists()).toBe(true);
-    });
-
-    it('does not add container-limiting classes when showFileTree is false with inline diffs', () => {
-      createWrapper({ isLimitedContainer: false });
-
-      expect(findLimitedContainer().exists()).toBe(false);
     });
   });
 
@@ -233,14 +219,13 @@ describe('CompareVersions', () => {
         expect(link.element.getAttribute('href')).toEqual(PREV_COMMIT_URL);
       });
 
-      it('triggers the correct Vuex action on click', () => {
+      it('triggers the correct Vuex action on click', async () => {
         const link = getPrevCommitNavElement();
 
         link.trigger('click');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({
-            direction: 'previous',
-          });
+        await nextTick();
+        expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({
+          direction: 'previous',
         });
       });
 
@@ -268,13 +253,12 @@ describe('CompareVersions', () => {
         expect(link.element.getAttribute('href')).toEqual(NEXT_COMMIT_URL);
       });
 
-      it('triggers the correct Vuex action on click', () => {
+      it('triggers the correct Vuex action on click', async () => {
         const link = getNextCommitNavElement();
 
         link.trigger('click');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({ direction: 'next' });
-        });
+        await nextTick();
+        expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({ direction: 'next' });
       });
 
       it('renders a disabled button when there is no next commit', () => {

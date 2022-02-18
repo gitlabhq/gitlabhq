@@ -7,15 +7,19 @@ module RspecFlaky
     end
 
     def self.suite_flaky_examples_report_path
-      ENV['SUITE_FLAKY_RSPEC_REPORT_PATH'] || rails_path("rspec_flaky/suite-report.json")
+      ENV['FLAKY_RSPEC_SUITE_REPORT_PATH'] || rails_path("rspec/flaky/suite-report.json")
     end
 
     def self.flaky_examples_report_path
-      ENV['FLAKY_RSPEC_REPORT_PATH'] || rails_path("rspec_flaky/report.json")
+      ENV['FLAKY_RSPEC_REPORT_PATH'] || rails_path("rspec/flaky/report.json")
     end
 
     def self.new_flaky_examples_report_path
-      ENV['NEW_FLAKY_RSPEC_REPORT_PATH'] || rails_path("rspec_flaky/new-report.json")
+      ENV['NEW_FLAKY_RSPEC_REPORT_PATH'] || rails_path("rspec/flaky/new-report.json")
+    end
+
+    def self.skipped_flaky_tests_report_path
+      ENV['SKIPPED_FLAKY_TESTS_REPORT_PATH'] || rails_path("rspec/flaky/skipped_flaky_tests_report.txt")
     end
 
     def self.rails_path(path)

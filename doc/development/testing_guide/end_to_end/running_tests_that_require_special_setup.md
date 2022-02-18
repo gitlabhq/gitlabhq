@@ -141,6 +141,34 @@ docker stop gitlab-gitaly-cluster praefect postgres gitaly3 gitaly2 gitaly1
 docker rm gitlab-gitaly-cluster praefect postgres gitaly3 gitaly2 gitaly1
 ```
 
+## Tests that require a runner
+
+To execute tests that use a runner without errors, while creating the GitLab Docker instance the `--hostname` parameter in the Docker `run` command should be given a specific interface IP address or a non-loopback hostname accessible from the runner container. Having `localhost` (or `127.0.0.1`) as the GitLab hostname won't work (unless the GitLab Runner is created with the Docker network as `host`)
+
+Examples of tests which require a runner:
+
+- `qa/qa/specs/features/ee/browser_ui/13_secure/create_merge_request_with_secure_spec.rb`
+- `qa/qa/specs/features/browser_ui/4_verify/runner/register_runner_spec.rb`
+
+Example:
+
+```shell
+docker run \ 
+  --detach \
+  --hostname interface_ip_address \
+  --publish 80:80 \
+  --name gitlab \
+  --restart always \
+  --volume ~/ee_volume/config:/etc/gitlab \
+  --volume ~/ee_volume/logs:/var/log/gitlab \
+  --volume ~/ee_volume/data:/var/opt/gitlab \
+  --shm-size 256m \
+  gitlab/gitlab-ee:latest
+```
+
+Where `interface_ip_address` is your local network's interface IP, which you can find with the `ifconfig` command.
+The same would apply to GDK running with the instance address as `localhost` too.
+
 ## Guide to run and debug Monitor tests
 
 ### How to set up

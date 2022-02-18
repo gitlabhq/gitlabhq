@@ -1,8 +1,0 @@
----
-name: custom_preloader_for_deployments
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75767
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348289
-milestone: '14.7'
-type: development
-group: group::release
-default_enabled: false

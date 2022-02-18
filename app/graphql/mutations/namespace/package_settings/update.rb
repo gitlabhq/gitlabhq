@@ -4,9 +4,9 @@ module Mutations
   module Namespace
     module PackageSettings
       class Update < Mutations::BaseMutation
-        include Mutations::ResolvesNamespace
-
         graphql_name 'UpdateNamespacePackageSettings'
+
+        include Mutations::ResolvesNamespace
 
         authorize :create_package_settings
 

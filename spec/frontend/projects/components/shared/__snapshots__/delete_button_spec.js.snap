@@ -34,13 +34,63 @@ exports[`Project remove modal intialized matches the snapshot 1`] = `
     ok-variant="danger"
     title-class="gl-text-red-500"
   >
-    Delete project. Are you ABSOLUTELY SURE?  
+    Are you absolutely sure?  
     <div>
+      <gl-alert-stub
+        class="gl-mb-5"
+        dismisslabel="Dismiss"
+        primarybuttonlink=""
+        primarybuttontext=""
+        secondarybuttonlink=""
+        secondarybuttontext=""
+        title=""
+        variant="danger"
+      >
+        <h4
+          class="gl-alert-title"
+          data-testid="delete-alert-title"
+        >
+          
+          You are about to delete this project containing:
+        
+        </h4>
+         
+        <ul>
+          <li>
+            <gl-sprintf-stub
+              message="1 issue"
+            />
+          </li>
+           
+          <li>
+            <gl-sprintf-stub
+              message="2 merge requests"
+            />
+          </li>
+           
+          <li>
+            <gl-sprintf-stub
+              message="3 forks"
+            />
+          </li>
+           
+          <li>
+            <gl-sprintf-stub
+              message="4 stars"
+            />
+          </li>
+        </ul>
+         
+        <gl-sprintf-stub
+          data-testid="delete-alert-body"
+          message="This project is %{strongStart}NOT%{strongEnd} a fork. This process deletes the project repository and all related resources."
+        />
+      </gl-alert-stub>
        
       <p
         class="gl-mb-1"
       >
-        Please type the following to confirm:
+        Enter the following to confirm:
       </p>
        
       <p>

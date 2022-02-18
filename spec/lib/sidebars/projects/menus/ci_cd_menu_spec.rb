@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::CiCdMenu do
   let(:project) { build(:project) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:can_view_pipeline_editor) { true }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project, current_ref: 'master', can_view_pipeline_editor: can_view_pipeline_editor) }
 

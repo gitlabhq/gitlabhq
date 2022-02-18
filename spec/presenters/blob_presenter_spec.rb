@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BlobPresenter do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
 
   let(:repository) { project.repository }
   let(:blob) { repository.blob_at('HEAD', 'files/ruby/regex.rb') }
@@ -87,6 +87,33 @@ RSpec.describe BlobPresenter do
     it { expect(presenter.permalink_path).to eq("/#{project.full_path}/-/blob/#{project.repository.commit.sha}/files/ruby/regex.rb") }
   end
 
+  context 'environment has been deployed' do
+    let(:external_url) { "https://some.environment" }
+    let(:environment) { create(:environment, project: project, external_url: external_url) }
+    let!(:deployment) { create(:deployment, :success, environment: environment, project: project, sha: blob.commit_id) }
+
+    before do
+      allow(project).to receive(:public_path_for_source_path).with(blob.path, blob.commit_id).and_return(blob.path)
+    end
+
+    describe '#environment_formatted_external_url' do
+      it { expect(presenter.environment_formatted_external_url).to eq("some.environment") }
+    end
+
+    describe '#environment_external_url_for_route_map' do
+      it { expect(presenter.environment_external_url_for_route_map).to eq("#{external_url}/#{blob.path}") }
+    end
+
+    describe 'chooses the latest deployed environment for #environment_formatted_external_url and #environment_external_url_for_route_map' do
+      let(:another_external_url) { "https://another.environment" }
+      let(:another_environment) { create(:environment, project: project, external_url: another_external_url) }
+      let!(:another_deployment) { create(:deployment, :success, environment: another_environment, project: project, sha: blob.commit_id) }
+
+      it { expect(presenter.environment_formatted_external_url).to eq("another.environment") }
+      it { expect(presenter.environment_external_url_for_route_map).to eq("#{another_external_url}/#{blob.path}") }
+    end
+  end
+
   describe '#code_owners' do
     it { expect(presenter.code_owners).to match_array([]) }
   end
@@ -143,13 +170,13 @@ RSpec.describe BlobPresenter do
     let(:git_blob) { blob.__getobj__ }
 
     it 'returns highlighted content' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: nil)
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
 
       presenter.highlight
     end
 
     it 'returns plain content when :plain is true' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: nil)
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: 'ruby')
 
       presenter.highlight(plain: true)
     end
@@ -162,7 +189,7 @@ RSpec.describe BlobPresenter do
       end
 
       it 'returns limited highlighted content' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: nil)
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: 'ruby')
 
         presenter.highlight(to: 1)
       end
@@ -217,6 +244,36 @@ RSpec.describe BlobPresenter do
 
         presenter.highlight
       end
+    end
+  end
+
+  describe '#blob_language' do
+    subject { presenter.blob_language }
+
+    it { is_expected.to eq('ruby') }
+
+    context 'gitlab-language contains a match' do
+      before do
+        allow(blob).to receive(:language_from_gitattributes).and_return('cpp')
+      end
+
+      it { is_expected.to eq('cpp') }
+    end
+
+    context 'when blob is ipynb' do
+      let(:blob) { repository.blob_at('f6b7a707', 'files/ipython/markdown-table.ipynb') }
+
+      before do
+        allow(Gitlab::Diff::CustomDiff).to receive(:transformed_for_diff?).and_return(true)
+      end
+
+      it { is_expected.to eq('md') }
+    end
+
+    context 'when blob is binary' do
+      let(:blob) { repository.blob_at('HEAD', 'Gemfile.zip') }
+
+      it { is_expected.to be_nil }
     end
   end
 

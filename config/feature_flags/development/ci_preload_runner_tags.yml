@@ -1,8 +1,0 @@
----
-name: ci_preload_runner_tags
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55543
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323243
-milestone: '13.10'
-type: development
-group: group::memory
-default_enabled: true

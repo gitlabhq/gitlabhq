@@ -36,3 +36,4 @@ export const EVENT_DETAILS = {
 };
 
 export const DEFAULT_ICON = 'token';
+export const TOKEN_STATUS_ACTIVE = 'ACTIVE';

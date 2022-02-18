@@ -489,11 +489,13 @@ Container Registry.
 ## Limitations
 
 - Moving or renaming existing Container Registry repositories is not supported
-once you have pushed images, because the images are stored in a path that matches
-the repository path. To move or rename a repository with a
-Container Registry, you must delete all existing images.
+  once you have pushed images, because the images are stored in a path that matches
+  the repository path. To move or rename a repository with a
+  Container Registry, you must delete all existing images.
+  Community suggestions to work around this limitation have been shared in
+  [issue 18383](https://gitlab.com/gitlab-org/gitlab/-/issues/18383#possible-workaround).
 - Prior to GitLab 12.10, any tags that use the same image ID as the `latest` tag
-are not deleted by the cleanup policy.
+  are not deleted by the cleanup policy.
 
 ## Disable the Container Registry for a project
 
@@ -581,103 +583,27 @@ For information on how to update your images, see the [Docker help](https://docs
 
 ### `Blob unknown to registry` error when pushing a manifest list
 
-When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list) to the GitLab Container Registry, you may receive the error `manifest blob unknown: blob unknown to registry`. [This issue](https://gitlab.com/gitlab-org/gitlab/-/issues/209008) occurs when the individual child manifests referenced in the manifest list were not pushed to the same repository.
+When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list)
+to the GitLab Container Registry, you may receive the error
+`manifest blob unknown: blob unknown to registry`. This is likely caused by having multiple images
+with different architectures, spread out over several repositories instead of the same repository.
 
-For example, you may have two individual images, one for `amd64` and another for `arm64v8`, and you want to build a multi-arch image with them. The `amd64` and `arm64v8` images must be pushed to the same repository where you want to push the multi-arch image.
+For example, you may have two images, each representing an architecture:
 
-As a workaround, you should include the architecture in the tag name of individual images. For example, use `mygroup/myapp:1.0.0-amd64` instead of using sub repositories, like `mygroup/myapp/amd64:1.0.0`. You can then tag the manifest list with `mygroup/myapp:1.0.0`.
+- The `amd64` platform
+- The `arm64v8` platform
 
-### The cleanup policy doesn't delete any tags
+To build a multi-arch image with these images, you must push them to the same repository as the
+multi-arch image.
 
-There can be different reasons behind this:
-
-- In GitLab 13.6 and earlier, when you run the cleanup policy you may expect it to delete tags and
-  it does not. This occurs when the cleanup policy is saved without editing the value in the
-  **Remove tags matching** field. This field has a grayed out `.*` value as a placeholder. Unless
-  `.*` (or another regex pattern) is entered explicitly into the field, a `nil` value is submitted.
-  This value prevents the saved cleanup policy from matching any tags. As a workaround, edit the
-  cleanup policy. In the **Remove tags matching** field, enter `.*` and save. This value indicates
-  that all tags should be removed.
-
-- If you are on GitLab self-managed instances and you have 1000+ tags in a container repository, you
-  might run into a [Container Registry token expiration issue](https://gitlab.com/gitlab-org/gitlab/-/issues/288814),
-  with `error authorizing context: invalid token` in the logs.
-
-  To fix this, there are two workarounds:
-
-  - If you are on GitLab 13.9 or later, you can [set limits for the cleanup policy](reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
-    This limits the cleanup execution in time, and avoids the expired token error.
-
-  - Extend the expiration delay of the Container Registry authentication tokens. This defaults to 5
-    minutes. You can set a custom value by running
-    `ApplicationSetting.last.update(container_registry_token_expire_delay: <integer>)` in the Rails
-    console, where `<integer>` is the desired number of minutes. For reference, 15 minutes is the
-    value currently in use for GitLab.com. Be aware that by extending this value you increase the
-    time required to revoke permissions.
-
-If the previous fixes didn't work or you are on earlier versions of GitLab, you can generate a list
-of the tags that you want to delete, and then use that list to delete the tags. To do this, follow
-these steps:
-
-1. Run the following shell script. The command just before the `for` loop ensures that
-   `list_o_tags.out` is always reinitialized when starting the loop. After running this command, all
-   the tags' names will be in the `list_o_tags.out` file:
-
-   ```shell
-   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/index.md#pagination)
-   echo -n "" > list_o_tags.out; for i in {1..N}; do curl --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
-   ```
-
-   If you have Rails console access, you can enter the following commands to retrieve a list of tags limited by date:
-
-   ```shell
-   output = File.open( "/tmp/list_o_tags.out","w" )
-   Project.find(<Project_id>).container_repositories.find(<container_repo_id>).tags.each do |tag|
-     output << tag.name + "\n" if tag.created_at < 1.month.ago
-   end;nil
-   output.close
-   ```
-
-   This set of commands creates a `/tmp/list_o_tags.out` file listing all tags with a `created_at` date of older than one month.
-
-1. Remove from the `list_o_tags.out` file any tags that you want to keep. Here are some example
-   `sed` commands for this. Note that these commands are simply examples. You may change them to
-   best suit your needs:
-
-   ```shell
-   # Remove the `latest` tag from the file
-   sed -i '/latest/d' list_o_tags.out
-
-   # Remove the first N tags from the file
-   sed -i '1,Nd' list_o_tags.out
-
-   # Remove the tags starting with `Av` from the file
-   sed -i '/^Av/d' list_o_tags.out
-
-   # Remove the tags ending with `_v3` from the file
-   sed -i '/_v3$/d' list_o_tags.out
-   ```
-
-   If you are running macOS, you must add `.bak` to the commands. For example:
-
-   ```shell
-   sed -i .bak '/latest/d' list_o_tags.out
-   ```
-
-1. Double-check the `list_o_tags.out` file to make sure it contains only the tags that you want to
-   delete.
-
-1. Run this shell script to delete the tags in the `list_o_tags.out` file:
-
-   ```shell
-   # loop over list_o_tags.out to delete a single tag at a time
-   while read -r LINE || [[ -n $LINE ]]; do echo ${LINE}; curl --request DELETE --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags/${LINE}"; sleep 0.1; echo; done < list_o_tags.out > delete.logs
-   ```
+To address the `Blob unknown to registry` error, include the architecture in the tag name of
+individual images. For example, use `mygroup/myapp:1.0.0-amd64` and `mygroup/myapp:1.0.0-arm64v8`.
+You can then tag the manifest list with `mygroup/myapp:1.0.0`.
 
 ### Troubleshoot as a GitLab server administrator
 
 Troubleshooting the GitLab Container Registry, most of the times, requires
-you to log in to GitLab server with the Administrator role.
+you to log in to GitLab server with administrator access.
 
 [Read how to troubleshoot the Container Registry](../../../administration/packages/container_registry.md#troubleshooting).
 

@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie';
+import { setCookie } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -51,7 +51,7 @@ export const setFailedRequest = ({ commit }, message) => {
 
 export const setViewType = ({ commit }, viewType) => {
   commit(types.SET_VIEW_TYPE, viewType);
-  Cookies.set('diff_view', viewType);
+  setCookie('diff_view', viewType);
 };
 
 export const setSubmitState = ({ commit }, isSubmitting) => {

@@ -53,6 +53,11 @@ module Namespaces
           self_and_descendants(include_self: include_self).as_ids
         end
         alias_method :recursive_self_and_descendant_ids, :self_and_descendant_ids
+
+        def self_and_hierarchy
+          Gitlab::ObjectHierarchy.new(all).all_objects
+        end
+        alias_method :recursive_self_and_hierarchy, :self_and_hierarchy
       end
     end
   end

@@ -703,4 +703,11 @@ RSpec.describe Ci::JobArtifact do
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :ci_job_artifact }
   end
+
+  context 'loose foreign key on ci_job_artifacts.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_job_artifact, project: parent) }
+    end
+  end
 end

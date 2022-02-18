@@ -7,6 +7,12 @@ type: howto
 
 # Location-aware Git remote URL with AWS Route53 **(PREMIUM SELF)**
 
+NOTE:
+Since GitLab 14.6,
+[GitLab Geo supports a location-aware URL including web UI and API traffic.](../secondary_proxy/location_aware_external_url.md)
+This configuration is recommended over the location-aware Git remote URL
+described in this document.
+
 You can provide GitLab users with a single remote URL that automatically uses
 the Geo site closest to them. This means users don't need to update their Git
 configuration to take advantage of closer Geo sites as they move.
@@ -17,12 +23,6 @@ This is possible because, Git push requests can be automatically redirected
 Though these instructions use [AWS Route53](https://aws.amazon.com/route53/),
 other services such as [Cloudflare](https://www.cloudflare.com/) could be used
 as well.
-
-NOTE:
-You can also use a load balancer to distribute web UI or API traffic to
-[multiple Geo **secondary** sites](../../../user/admin_area/geo_nodes.md#multiple-secondary-sites-behind-a-load-balancer).
-Importantly, the **primary** site cannot yet be included. See the feature request
-[Support putting the **primary** behind a Geo node load balancer](https://gitlab.com/gitlab-org/gitlab/-/issues/10888).
 
 ## Prerequisites
 

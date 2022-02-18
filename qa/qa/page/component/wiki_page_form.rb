@@ -38,7 +38,7 @@ module QA
         def click_submit
           click_element(:wiki_submit_button)
 
-          wait_until(reload: false) do
+          QA::Support::Retrier.retry_on_exception do
             has_no_element?(:wiki_title_textbox)
           end
         end
@@ -48,15 +48,8 @@ module QA
           Page::Modal::DeleteWiki.perform(&:confirm_deletion)
         end
 
-        def use_new_editor(toggle)
-          # Update once the feature is released, see https://gitlab.com/gitlab-org/gitlab/-/issues/345398
-          if toggle
-            click_element(:editing_mode_button, mode: 'Edit rich text')
-          else
-            within_element(:try_new_editor_container) do
-              click_button('Use the new editor')
-            end
-          end
+        def use_new_editor
+          click_element(:editing_mode_button, mode: 'Edit rich text')
 
           wait_until(reload: false) do
             has_element?(:content_editor_container)

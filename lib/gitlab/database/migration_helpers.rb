@@ -9,6 +9,18 @@ module Gitlab
       include RenameTableHelpers
       include AsyncIndexes::MigrationHelpers
 
+      def define_batchable_model(table_name, connection: self.connection)
+        super(table_name, connection: connection)
+      end
+
+      def each_batch(table_name, connection: self.connection, **kwargs)
+        super(table_name, connection: connection, **kwargs)
+      end
+
+      def each_batch_range(table_name, connection: self.connection, **kwargs)
+        super(table_name, connection: connection, **kwargs)
+      end
+
       # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
       MAX_IDENTIFIER_NAME_LENGTH = 63
       DEFAULT_TIMESTAMP_COLUMNS = %i[created_at updated_at].freeze
@@ -429,6 +441,7 @@ module Gitlab
       def with_lock_retries(*args, **kwargs, &block)
         raise_on_exhaustion = !!kwargs.delete(:raise_on_exhaustion)
         merged_args = {
+          connection: connection,
           klass: self.class,
           logger: Gitlab::BackgroundMigration::Logger,
           allow_savepoints: true
@@ -1054,9 +1067,18 @@ module Gitlab
         Arel::Nodes::SqlLiteral.new(replace.to_sql)
       end
 
-      def remove_foreign_key_if_exists(...)
-        if foreign_key_exists?(...)
-          remove_foreign_key(...)
+      def remove_foreign_key_if_exists(source, target = nil, **kwargs)
+        reverse_lock_order = kwargs.delete(:reverse_lock_order)
+        return unless foreign_key_exists?(source, target, **kwargs)
+
+        if target && reverse_lock_order && transaction_open?
+          execute("LOCK TABLE #{target}, #{source} IN ACCESS EXCLUSIVE MODE")
+        end
+
+        if target
+          remove_foreign_key(source, target, **kwargs)
+        else
+          remove_foreign_key(source, **kwargs)
         end
       end
 

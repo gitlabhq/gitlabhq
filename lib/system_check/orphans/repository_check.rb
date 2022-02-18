@@ -57,8 +57,8 @@ module SystemCheck
           WHERE (p.repository_storage LIKE ?)
         "
 
-        query = ActiveRecord::Base.send(:sanitize_sql_array, [sql, storage_name]) # rubocop:disable GitlabSecurity/PublicSend
-        ActiveRecord::Base.connection.select_all(query).rows.try(:flatten!) || []
+        query = ::Project.sanitize_sql_array([sql, storage_name])
+        ::Project.connection.select_all(query).rows.try(:flatten!) || []
       end
 
       def fetch_disk_namespaces(storage_path)

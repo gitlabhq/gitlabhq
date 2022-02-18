@@ -47,6 +47,23 @@ RSpec.describe Projects::RefsController do
       expect(response).to be_not_found
     end
 
+    context 'when ref is incorrect' do
+      it 'returns 404 page' do
+        xhr_get(:json, id: '.')
+
+        expect(response).to be_not_found
+      end
+    end
+
+    context 'when offset has an invalid format' do
+      it 'renders JSON' do
+        xhr_get(:json, offset: { wrong: :format })
+
+        expect(response).to be_successful
+        expect(json_response).to be_kind_of(Array)
+      end
+    end
+
     context 'when json is requested' do
       it 'renders JSON' do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original

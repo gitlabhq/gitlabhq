@@ -140,8 +140,8 @@ export default {
       return {
         id: 'signup-settings-modal',
         text: n__(
-          'ApplicationSettings|By making this change, you will automatically approve %d user with the pending approval status.',
-          'ApplicationSettings|By making this change, you will automatically approve %d users with the pending approval status.',
+          'ApplicationSettings|By making this change, you will automatically approve %d user who is pending approval.',
+          'ApplicationSettings|By making this change, you will automatically approve %d users who are pending approval.',
           pendingUserCount,
         ),
         actionPrimary: {
@@ -157,7 +157,7 @@ export default {
         actionCancel: {
           text: __('Cancel'),
         },
-        title: s__('ApplicationSettings|Approve users in the pending approval status?'),
+        title: s__('ApplicationSettings|Approve users who are pending approval?'),
       };
     },
   },

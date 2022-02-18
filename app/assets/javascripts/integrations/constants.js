@@ -1,7 +1,5 @@
 import { s__, __ } from '~/locale';
 
-export const VALIDATE_INTEGRATION_FORM_EVENT = 'validateIntegrationForm';
-
 export const integrationLevels = {
   GROUP: 'group',
   INSTANCE: 'instance',
@@ -26,5 +24,3 @@ export const I18N_SUCCESSFUL_CONNECTION_MESSAGE = s__('Integrations|Connection s
 
 export const settingsTabTitle = __('Settings');
 export const overridesTabTitle = s__('Integrations|Projects using custom settings');
-
-export const INTEGRATION_FORM_SELECTOR = '.js-integration-settings-form';

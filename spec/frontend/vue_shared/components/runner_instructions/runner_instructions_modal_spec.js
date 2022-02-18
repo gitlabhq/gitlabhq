@@ -77,8 +77,7 @@ describe('RunnerInstructionsModal component', () => {
     runnerSetupInstructionsHandler = jest.fn().mockResolvedValue(mockGraphqlInstructions);
 
     createComponent();
-
-    await nextTick();
+    await waitForPromises();
   });
 
   afterEach(() => {
@@ -113,13 +112,15 @@ describe('RunnerInstructionsModal component', () => {
       });
     });
 
-    it('binary instructions are shown', () => {
+    it('binary instructions are shown', async () => {
+      await waitForPromises();
       const instructions = findBinaryInstructions().text();
 
       expect(instructions).toBe(installInstructions);
     });
 
-    it('register command is shown with a replaced token', () => {
+    it('register command is shown with a replaced token', async () => {
+      await waitForPromises();
       const instructions = findRegisterCommand().text();
 
       expect(instructions).toBe(
@@ -130,7 +131,7 @@ describe('RunnerInstructionsModal component', () => {
     describe('when a register token is not shown', () => {
       beforeEach(async () => {
         createComponent({ props: { registrationToken: undefined } });
-        await nextTick();
+        await waitForPromises();
       });
 
       it('register command is shown without a defined registration token', () => {
@@ -198,16 +199,17 @@ describe('RunnerInstructionsModal component', () => {
       expect(findSkeletonLoader().exists()).toBe(true);
       expect(findGlLoadingIcon().exists()).toBe(false);
 
-      await nextTick(); // wait for platforms
+      await nextTick();
+      jest.runOnlyPendingTimers();
+      await nextTick();
+      await nextTick();
 
       expect(findGlLoadingIcon().exists()).toBe(true);
     });
 
     it('once loaded, should not show a loading state', async () => {
       createComponent();
-
-      await nextTick(); // wait for platforms
-      await nextTick(); // wait for architectures
+      await waitForPromises();
 
       expect(findSkeletonLoader().exists()).toBe(false);
       expect(findGlLoadingIcon().exists()).toBe(false);

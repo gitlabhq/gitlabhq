@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Monitor
+group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -53,7 +53,7 @@ The following requirements must be met for the metric to unfurl:
 - The `<environment_id>` must correspond to a real environment.
 - Prometheus must be monitoring the environment.
 - The GitLab instance must be configured to receive data from the environment.
-- The user must be allowed access to the monitoring dashboard for the environment ([Reporter or higher](../../user/permissions.md)).
+- The user must have at least the Reporter role for the monitoring dashboard for the environment.
 - The dashboard must have data within the last 8 hours.
 
  If all of the above are true, then the metric unfurls as seen below:

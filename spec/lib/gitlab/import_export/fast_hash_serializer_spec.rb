@@ -240,7 +240,7 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer do
     merge_request = create(:merge_request, source_project: project, milestone: milestone)
 
     ci_build = create(:ci_build, project: project, when: nil)
-    ci_build.pipeline.update(project: project)
+    ci_build.pipeline.update!(project: project)
     create(:commit_status, project: project, pipeline: ci_build.pipeline)
 
     create_list(:ci_pipeline, 5, :success, project: project)

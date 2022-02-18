@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-require_relative '../support/helpers/key_generator_helper'
-
 FactoryBot.define do
   factory :key do
     title
-    key { Spec::Support::Helpers::KeyGeneratorHelper.new(1024).generate + ' dummy@gitlab.com' }
+    key { SSHData::PrivateKey::RSA.generate(1024, unsafe_allow_small_key: true).public_key.openssh(comment: 'dummy@gitlab.com') }
 
     factory :key_without_comment do
-      key { Spec::Support::Helpers::KeyGeneratorHelper.new(1024).generate }
+      key { SSHData::PrivateKey::RSA.generate(1024, unsafe_allow_small_key: true).public_key.openssh }
     end
 
     factory :deploy_key, class: 'DeployKey'
@@ -145,6 +143,25 @@ FactoryBot.define do
         <<~KEY.delete("\n")
           ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIETnVTgzqC1gatgSlC4zH6aYt2CAQzgJ
           OhDRvf59ohL6 dummy@gitlab.com
+        KEY
+      end
+    end
+
+    factory :ecdsa_sk_key_256 do
+      key do
+        <<~KEY.delete("\n")
+          sk-ecdsa-sha2-nistp256@openssh.com AAAAInNrLWVjZHNhLXNoYTItbmlzdHAyN
+          TZAb3BlbnNzaC5jb20AAAAIbmlzdHAyNTYAAABBBDZ+f5tSRhlB7EN39f93SscTN5PUv
+          bD3UQsNrlE1ZdbwPMMRul2zlPiUvwAvnJitW0jlD/vwZOW2YN+q+iZ5c0MAAAAEc3NoOg== dummy@gitlab.com
+        KEY
+      end
+    end
+
+    factory :ed25519_sk_key_256 do
+      key do
+        <<~KEY.delete("\n")
+          sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tA
+          AAAIEX/dQ0v4127bEo8eeG1EV0ApO2lWbSnN6RWusn/NjqIAAAABHNzaDo= dummy@gitlab.com
         KEY
       end
     end

@@ -1,9 +1,10 @@
 import { GlAlert } from '@gitlab/ui';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import UsageTrendsCountChart from '~/analytics/usage_trends/components/usage_trends_count_chart.vue';
 import statsQuery from '~/analytics/usage_trends/graphql/queries/usage_count.query.graphql';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
@@ -77,9 +78,10 @@ describe('UsageTrendsCountChart', () => {
   });
 
   describe('without data', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       queryHandler = mockQueryResponse({ key: queryResponseDataKey, data: [] });
       wrapper = createComponent({ responseHandler: queryHandler });
+      await waitForPromises();
     });
 
     it('renders an no data message', () => {
@@ -96,9 +98,10 @@ describe('UsageTrendsCountChart', () => {
   });
 
   describe('with data', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       queryHandler = mockQueryResponse({ key: queryResponseDataKey, data: mockCountsData1 });
       wrapper = createComponent({ responseHandler: queryHandler });
+      await waitForPromises();
     });
 
     it('requests data', () => {
@@ -126,7 +129,7 @@ describe('UsageTrendsCountChart', () => {
     const recordedAt = '2020-08-01';
     describe('when the fetchMore query returns data', () => {
       beforeEach(async () => {
-        const newData = [{ recordedAt, count: 5 }];
+        const newData = [{ __typename: 'UsageTrendsMeasurement', recordedAt, count: 5 }];
         queryHandler = mockQueryResponse({
           key: queryResponseDataKey,
           data: mockCountsData1,
@@ -134,7 +137,7 @@ describe('UsageTrendsCountChart', () => {
         });
 
         wrapper = createComponent({ responseHandler: queryHandler });
-        await wrapper.vm.$nextTick();
+        await waitForPromises();
       });
 
       it('requests data twice', () => {
@@ -161,7 +164,7 @@ describe('UsageTrendsCountChart', () => {
           .spyOn(wrapper.vm.$apollo.queries[identifier], 'fetchMore')
           .mockImplementation(jest.fn().mockRejectedValue());
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('calls fetchMore', () => {

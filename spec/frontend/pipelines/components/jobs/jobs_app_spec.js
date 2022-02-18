@@ -1,5 +1,6 @@
 import { GlIntersectionObserver, GlSkeletonLoader } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,8 +10,7 @@ import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import getPipelineJobsQuery from '~/pipelines/graphql/queries/get_pipeline_jobs.query.graphql';
 import { mockPipelineJobsQueryResponse } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 jest.mock('~/flash');
 
@@ -36,7 +36,6 @@ describe('Jobs app', () => {
         fullPath: 'root/ci-project',
         pipelineIid: 1,
       },
-      localVue,
       apolloProvider: createMockApolloProvider(resolver),
     });
   };
@@ -74,16 +73,16 @@ describe('Jobs app', () => {
     await waitForPromises();
 
     expect(createFlash).toHaveBeenCalledWith({
-      message: 'An error occured while fetching the pipelines jobs.',
+      message: 'An error occurred while fetching the pipelines jobs.',
     });
   });
 
   it('handles infinite scrolling by calling fetchMore', async () => {
     createComponent(resolverSpy);
-
     await waitForPromises();
 
     triggerInfiniteScroll();
+    await waitForPromises();
 
     expect(resolverSpy).toHaveBeenCalledWith({
       after: 'eyJpZCI6Ijg0NyJ9',
@@ -96,10 +95,10 @@ describe('Jobs app', () => {
     createComponent(resolverSpy);
 
     expect(findSkeletonLoader().exists()).toBe(true);
-
     await waitForPromises();
 
     triggerInfiniteScroll();
+    await waitForPromises();
 
     expect(findSkeletonLoader().exists()).toBe(false);
   });

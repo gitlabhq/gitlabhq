@@ -1,4 +1,7 @@
-import { namespaces } from 'jest/vue_shared/components/namespace_select/mock_data';
+import {
+  groupNamespaces,
+  userNamespaces,
+} from 'jest/vue_shared/components/namespace_select/mock_data';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TransferProjectForm from '~/projects/settings/components/transfer_project_form.vue';
 import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select.vue';
@@ -13,7 +16,8 @@ describe('Transfer project form', () => {
   const createComponent = () =>
     shallowMountExtended(TransferProjectForm, {
       propsData: {
-        namespaces,
+        userNamespaces,
+        groupNamespaces,
         confirmButtonText,
         confirmationPhrase,
       },
@@ -43,7 +47,7 @@ describe('Transfer project form', () => {
   });
 
   describe('with a selected namespace', () => {
-    const [selectedItem] = namespaces.group;
+    const [selectedItem] = groupNamespaces;
 
     beforeEach(() => {
       findNamespaceSelect().vm.$emit('select', selectedItem);

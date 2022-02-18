@@ -10,7 +10,6 @@ import {
 } from 'jest/issues/list/mock_data';
 import {
   defaultPageSizeParams,
-  DUE_DATE_VALUES,
   largePageSizeParams,
   RELATIVE_POSITION_ASC,
   urlSortParams,
@@ -19,11 +18,11 @@ import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
-  getDueDateValue,
   getFilterTokens,
   getInitialPageParams,
   getSortKey,
   getSortOptions,
+  isSortKey,
 } from '~/issues/list/utils';
 
 describe('getInitialPageParams', () => {
@@ -45,13 +44,13 @@ describe('getSortKey', () => {
   });
 });
 
-describe('getDueDateValue', () => {
-  it.each(DUE_DATE_VALUES)('returns the argument when it is `%s`', (value) => {
-    expect(getDueDateValue(value)).toBe(value);
+describe('isSortKey', () => {
+  it.each(Object.keys(urlSortParams))('returns true given %s', (sort) => {
+    expect(isSortKey(sort)).toBe(true);
   });
 
-  it('returns undefined when the argument is invalid', () => {
-    expect(getDueDateValue('invalid value')).toBeUndefined();
+  it.each(['', 'asdf', null, undefined])('returns false given %s', (sort) => {
+    expect(isSortKey(sort)).toBe(false);
   });
 });
 

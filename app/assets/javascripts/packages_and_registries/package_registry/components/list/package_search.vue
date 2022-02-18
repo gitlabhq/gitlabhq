@@ -9,6 +9,8 @@ import {
   FILTERED_SEARCH_TERM,
   FILTERED_SEARCH_TYPE,
 } from '~/packages_and_registries/shared/constants';
+import { LIST_KEY_CREATED_AT } from '~/packages_and_registries/package_registry/constants';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PackageTypeToken from './tokens/package_type_token.vue';
 
 export default {
@@ -22,13 +24,13 @@ export default {
       operators: OPERATOR_IS_ONLY,
     },
   ],
-  components: { RegistrySearch, UrlSync },
+  components: { RegistrySearch, UrlSync, LocalStorageSync },
   inject: ['isGroupPage'],
   data() {
     return {
       filters: [],
       sorting: {
-        orderBy: 'name',
+        orderBy: LIST_KEY_CREATED_AT,
         sort: 'desc',
       },
       mountRegistrySearch: false,
@@ -94,19 +96,26 @@ export default {
 </script>
 
 <template>
-  <url-sync>
-    <template #default="{ updateQuery }">
-      <registry-search
-        v-if="mountRegistrySearch"
-        :filter="filters"
-        :sorting="sorting"
-        :tokens="$options.tokens"
-        :sortable-fields="sortableFields"
-        @sorting:changed="updateSortingAndEmitUpdate"
-        @filter:changed="updateFilters"
-        @filter:submit="emitUpdate"
-        @query:changed="updateQuery"
-      />
-    </template>
-  </url-sync>
+  <local-storage-sync
+    storage-key="package_registry_list_sorting"
+    :value="sorting"
+    as-json
+    @input="updateSorting"
+  >
+    <url-sync>
+      <template #default="{ updateQuery }">
+        <registry-search
+          v-if="mountRegistrySearch"
+          :filter="filters"
+          :sorting="sorting"
+          :tokens="$options.tokens"
+          :sortable-fields="sortableFields"
+          @sorting:changed="updateSortingAndEmitUpdate"
+          @filter:changed="updateFilters"
+          @filter:submit="emitUpdate"
+          @query:changed="updateQuery"
+        />
+      </template>
+    </url-sync>
+  </local-storage-sync>
 </template>

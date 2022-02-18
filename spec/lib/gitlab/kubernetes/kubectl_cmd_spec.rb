@@ -2,6 +2,8 @@
 
 require 'fast_spec_helper'
 
+require_relative '../../../../lib/gitlab/kubernetes/pod_cmd'
+
 RSpec.describe Gitlab::Kubernetes::KubectlCmd do
   describe '.delete' do
     it 'constructs string properly' do

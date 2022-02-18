@@ -456,6 +456,28 @@ RSpec.describe RegistrationsController do
 
       subject
     end
+
+    describe 'logged_out_marketing_header experiment', :experiment do
+      before do
+        stub_experiments(logged_out_marketing_header: :candidate)
+      end
+
+      it 'tracks signed_up event' do
+        expect(experiment(:logged_out_marketing_header)).to track(:signed_up).on_next_instance
+
+        subject
+      end
+
+      context 'when registration fails' do
+        let_it_be(:user_params) { { user: base_user_params.merge({ username: '' }) } }
+
+        it 'does not track signed_up event' do
+          expect(experiment(:logged_out_marketing_header)).not_to track(:signed_up)
+
+          subject
+        end
+      end
+    end
   end
 
   describe '#destroy' do

@@ -7,12 +7,11 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 
-const updateIssue = (url, issueList, { move_before_id, move_after_id }) =>
+const updateIssue = (url, { move_before_id, move_after_id }) =>
   axios
     .put(`${url}/reorder`, {
       move_before_id,
       move_after_id,
-      group_full_path: issueList.dataset.groupFullPath,
     })
     .catch(() => {
       createFlash({
@@ -52,7 +51,7 @@ const initManualOrdering = () => {
         const beforeId = prev && parseInt(prev.dataset.id, 10);
         const afterId = next && parseInt(next.dataset.id, 10);
 
-        updateIssue(url, issueList, { move_after_id: afterId, move_before_id: beforeId });
+        updateIssue(url, { move_after_id: afterId, move_before_id: beforeId });
       },
     }),
   );

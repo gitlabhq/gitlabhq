@@ -2,12 +2,8 @@
 
 module QA
   module Resource
-    class GroupBadge < Base
-      attributes :id,
-                 :name,
-                 :link_url,
-                 :image_url,
-                 :group
+    class GroupBadge < BadgeBase
+      attribute :group
 
       # API get path
       #

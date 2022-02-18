@@ -34,7 +34,7 @@ module Projects
       def wrap_download_errors(&block)
         yield
       rescue SizeError, OidError, ResponseError, StandardError => e
-        error("LFS file with oid #{lfs_oid} could't be downloaded from #{lfs_sanitized_url}: #{e.message}")
+        error("LFS file with oid #{lfs_oid} couldn't be downloaded from #{lfs_sanitized_url}: #{e.message}")
       end
 
       def download_lfs_file!
@@ -104,7 +104,7 @@ module Projects
         rescue StandardError => e
           # If the lfs file is successfully downloaded it will be removed
           # when it is added to the project's lfs files.
-          # Nevertheless if any excetion raises the file would remain
+          # Nevertheless if any exception raises the file would remain
           # in the file system. Here we ensure to remove it
           File.unlink(file) if File.exist?(file)
 

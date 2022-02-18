@@ -72,12 +72,14 @@ exports[`VersionRow renders 1`] = `
         <div
           class="gl-display-flex gl-align-items-center gl-min-h-6"
         >
-          Created 
-          <time-ago-tooltip-stub
-            cssclass=""
-            time="2021-08-10T09:33:54Z"
-            tooltipplacement="top"
-          />
+          <span>
+            Created 
+            <time-ago-tooltip-stub
+              cssclass=""
+              time="2021-08-10T09:33:54Z"
+              tooltipplacement="top"
+            />
+          </span>
         </div>
       </div>
     </div>

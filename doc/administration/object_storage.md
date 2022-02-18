@@ -526,7 +526,7 @@ To migrate existing local data to object storage see the following guides:
 - [Uploads](raketasks/uploads/migrate.md#migrate-to-object-storage)
 - [Merge request diffs](merge_request_diffs.md#using-object-storage)
 - [Packages](packages/index.md#migrating-local-packages-to-object-storage) (optional feature)
-- Dependency Proxy - [migration not yet supported](https://gitlab.com/gitlab-org/gitlab/-/issues/343064)
+- [Dependency Proxy](packages/dependency_proxy.md#migrate-local-dependency-proxy-blobs-and-manifests-to-object-storage)
 - [Terraform state files](terraform_state.md#migrate-to-object-storage)
 - [Pages content](pages/index.md#migrate-pages-deployments-to-object-storage)
 

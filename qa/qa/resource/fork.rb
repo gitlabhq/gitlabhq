@@ -31,6 +31,8 @@ module QA
         end
       end
 
+      delegate :path_with_namespace, to: :project
+
       def fabricate!
         populate(:upstream, :user)
 

@@ -98,7 +98,7 @@ that can process jobs in the `background_migration` queue.
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
 ```
 
 **For installations from source:**
@@ -106,7 +106,7 @@ sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrati
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
 ```
 
 ### Batched background migrations
@@ -269,9 +269,9 @@ Additional steps between the mentioned versions are possible. We list the minima
 
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `14.2.6`       | `13.10.2`    | `13.10.2` -> `13.12.12` -> `14.0.11` -> `14.1.8` -> `14.2.6`                                         | Three intermediate versions are required: `13.12`, `14.0`, and `14.1`, then `14.2.6`.                                             |
-| `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.12` -> `14.0.11` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
-| `13.12.10`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.10`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.10`.                                   |
+| `14.2.6`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.11` -> `14.1.8` -> `14.2.6`                                         | Three intermediate versions are required: `13.12`, `14.0`, and `14.1`, then `14.2.6`.                                             |
+| `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.15` -> `14.0.11` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
+| `13.12.15`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.15`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.15`.                                   |
 | `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
 | `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                        | Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`.                                            |
 | `12.9.5`       | `10.4.5`     | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`                              | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`.                                       |
@@ -351,7 +351,8 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   In 14.5 we introduce a set of migrations that wrap up this process by making sure
   that all remaining jobs over the `merge_request_diff_commits` table are completed.
   These jobs will have already been processed in most cases so that no extra time is necessary during an upgrade to 14.5.
-  But if there are remaining jobs, the deployment may take a few extra minutes to complete.
+  However, if there are remaining jobs or you haven't already upgraded to 14.1,
+  the deployment may take multiple hours to complete.
 
   All merge request diff commits will automatically incorporate these changes, and there are no
   additional requirements to perform the upgrade.
@@ -438,6 +439,11 @@ for how to proceed.
   14.1 is included on the upgrade path for the broadest compatibility
   with self-managed installations, and ensure 14.0.0-14.0.4 installations do not
   encounter issues with [batched background migrations](#batched-background-migrations).
+
+- Upgrading to GitLab [14.5](#1450) (or later) may take a lot longer if you do not upgrade to at least 14.1
+  first. The 14.1 merge request diff commits database migration can take hours to run, but runs in the
+  background while GitLab is in use. GitLab instances upgraded directly from 14.0 to 14.5 or later must
+  run the migration in the foreground and therefore take a lot longer to complete.
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
@@ -676,7 +682,7 @@ When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled,
 
 Users who were signed in before Maintenance mode was enabled will continue to be signed in. If the admin who enabled Maintenance mode loses their session, then they will not be able to disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
 
-[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0, and is expected to be backported to GitLab 14.3 and 14.4.
+[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 
 ## Miscellaneous
 

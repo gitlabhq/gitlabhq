@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'support/helpers/stub_feature_flags'
-require_dependency 'active_model'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Policy do
   let(:entry) { described_class.new(config) }
@@ -47,6 +45,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Policy do
         end
 
         context 'when using unsafe regexp' do
+          # When removed we could use `require 'fast_spec_helper'` again.
           include StubFeatureFlags
 
           let(:config) { ['/^(?!master).+/'] }
@@ -89,7 +88,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Policy do
         describe '#errors' do
           it 'saves errors' do
             expect(entry.errors)
-              .to include /policy config should be an array of strings or regexps/
+              .to include /policy config should be an array of strings or regular expressions/
           end
         end
       end
@@ -107,6 +106,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Policy do
     end
 
     context 'when using unsafe regexp' do
+      # When removed we could use `require 'fast_spec_helper'` again.
       include StubFeatureFlags
 
       let(:config) { { refs: ['/^(?!master).+/'] } }

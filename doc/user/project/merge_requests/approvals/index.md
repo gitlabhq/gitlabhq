@@ -8,7 +8,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/appro
 
 # Merge request approvals **(FREE)**
 
-> Redesign [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/10685) in 12.0.
+> Redesign [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in GitLab 11.8 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/10685) in 12.0.
 
 You can configure your merge requests so that they must be approved before
 they can be merged. While [GitLab Free](https://about.gitlab.com/pricing/) allows
@@ -89,7 +89,7 @@ a merge request from merging without approval.
 
 ## Required approvals **(PREMIUM)**
 
-> Moved to [GitLab Premium](https://about.gitlab.com/pricing/) in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 Required approvals enforce code reviews by the number and type of users you specify.
 Without the approvals, the work cannot merge. Required approvals enable multiple use cases:
@@ -103,7 +103,7 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
   to determine who should review the work.
 - Require an [approval before merging code that causes test coverage to decline](../../../../ci/pipelines/settings.md#coverage-check-approval-rule)
 - [Require approval from a security team](../../../application_security/index.md#security-approvals-in-merge-requests)
-  before merging code that could introduce a vulnerability. **(ULTIMATE)**
+  before merging code that could introduce a vulnerability.
 
 ## Related topics
 

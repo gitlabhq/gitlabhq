@@ -39,10 +39,26 @@ NOTE:
 If not set in GitLab, feature flags are read as false from the console and Praefect uses their
 default value. The default value depends on the GitLab version.
 
-### Network connectivity
+### Network latency and connectivity
 
-Gitaly Cluster [components](index.md#components) need to communicate with each other over many
-routes. Your firewall rules must allow the following for Gitaly Cluster to function properly:
+Network latency for Gitaly Cluster should ideally be measurable in single-digit milliseconds. Latency is particularly
+important for:
+
+- Gitaly node health checks. Nodes must be able to respond within 1 second.
+- Reference transactions that enforce [strong consistency](index.md#strong-consistency). Lower latencies mean Gitaly
+  nodes can agree on changes faster.
+
+Achieving acceptable latency between Gitaly nodes:
+
+- On physical networks generally means high bandwidth, single location connections.
+- On the cloud generally means within the same region, including allowing cross availability zone replication. These links
+  are designed for this type of synchronization. Latency of less than 2ms should be sufficient for Gitaly Cluster.
+
+If you can't provide low network latencies for replication (for example, between distant locations), consider Geo. For
+more information, see [How does Gitaly Cluster compare to Geo](faq.md#how-does-gitaly-cluster-compare-to-geo).
+
+Gitaly Cluster [components](index.md#components) communicate with each other over many routes. Your firewall rules must
+allow the following for Gitaly Cluster to function properly:
 
 | From                   | To                     | Default port | TLS port |
 |:-----------------------|:-----------------------|:-------------|:---------|
@@ -254,11 +270,11 @@ reads distribution caching is enabled by configuration
 
 To reduce PostgreSQL resource consumption, we recommend setting up and configuring
 [PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. To do
-this, you must point Praefect to PgBouncer by setting Praefect database parameters:
+this, you must point Praefect to PgBouncer by setting database parameters on Praefect configuration:
 
 ```ruby
 praefect['database_host'] = PGBOUNCER_HOST
-praefect['database_port'] = 5432
+praefect['database_port'] = 6432
 praefect['database_user'] = 'praefect'
 praefect['database_password'] = PRAEFECT_SQL_PASSWORD
 praefect['database_dbname'] = 'praefect_production'
@@ -273,40 +289,21 @@ Praefect requires an additional connection to the PostgreSQL that supports the
 this feature is only available with `session` pool mode (`pool_mode = session`).
 It is not supported in `transaction` pool mode (`pool_mode = transaction`).
 
-For the additional connection, you must either:
+To configure the additional connection, you must either:
 
-- Connect Praefect directly to PostgreSQL and bypass PgBouncer.
 - Configure a new PgBouncer database that uses to the same PostgreSQL database endpoint,
   but with different pool mode. That is, `pool_mode = session`.
+- Connect Praefect directly to PostgreSQL and bypass PgBouncer.
 
-Praefect can be configured to use different connection parameters for direct access
-to PostgreSQL. This is the connection that supports the `LISTEN` feature.
+#### Configure a new PgBouncer database with `pool_mode = session`
 
-Here is an example of Praefect that bypasses PgBouncer and directly connects to PostgreSQL:
-
-```ruby
-praefect['database_direct_host'] = POSTGRESQL_HOST
-praefect['database_direct_port'] = 5432
-
-# Use the following to override parameters of direct database connection.
-# Comment out where the parameters are the same for both connections.
-
-praefect['database_direct_user'] = 'praefect'
-praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
-praefect['database_direct_dbname'] = 'praefect_production'
-#praefect['database_direct_sslmode'] = '...'
-#praefect['database_direct_sslcert'] = '...'
-#praefect['database_direct_sslkey'] = '...'
-#praefect['database_direct_sslrootcert'] = '...'
-```
-
-We recommend using PgBouncer with `session` pool mode instead. You can use the
+We recommend using PgBouncer with `session` pool mode. You can use the
 [bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and [configure it
 manually](https://www.pgbouncer.org/config.html).
 
-The following example uses the bundled PgBouncer and sets up two separate connection pools,
+The following example uses the bundled PgBouncer and sets up two separate connection pools on PostgreSQL host,
 one in `session` pool mode and the other in `transaction` pool mode. For this example to work,
-you need to prepare PostgreSQL server with [setup instruction](#manual-database-setup):
+you need to prepare PostgreSQL server as documented in [in the setup instructions](#manual-database-setup):
 
 ```ruby
 pgbouncer['databases'] = {
@@ -372,6 +369,29 @@ Omnibus GitLab handles the authentication requirements (using `auth_query`), but
 your databases manually and configuring an external PgBouncer, you must include `praefect` user and
 its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
 configuration option is set. For more details, consult the PgBouncer documentation.
+
+#### Configure Praefect to connect directly to PostgreSQL
+
+As an alternative to configuring PgBouncer with `session` pool mode, Praefect can be configured to use different connection parameters for direct access
+to PostgreSQL. This is the connection that supports the `LISTEN` feature.
+
+An example of Praefect configuration that bypasses PgBouncer and directly connects to PostgreSQL:
+
+```ruby
+praefect['database_direct_host'] = POSTGRESQL_HOST
+praefect['database_direct_port'] = 5432
+
+# Use the following to override parameters of direct database connection.
+# Comment out where the parameters are the same for both connections.
+
+praefect['database_direct_user'] = 'praefect'
+praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
+praefect['database_direct_dbname'] = 'praefect_production'
+#praefect['database_direct_sslmode'] = '...'
+#praefect['database_direct_sslcert'] = '...'
+#praefect['database_direct_sslkey'] = '...'
+#praefect['database_direct_sslrootcert'] = '...'
+```
 
 ### Praefect
 
@@ -570,15 +590,15 @@ On the **Praefect** node:
    edit `/etc/gitlab/gitlab.rb`, remember to run `sudo gitlab-ctl reconfigure`
    again before trying the `sql-ping` command.
 
-#### Enabling TLS support
+#### Enable TLS support
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1698) in GitLab 13.2.
 
 Praefect supports TLS encryption. To communicate with a Praefect instance that listens
 for secure connections, you must:
 
-- Use a `tls://` URL scheme in the `gitaly_address` of the corresponding storage entry
-  in the GitLab configuration.
+- Ensure Gitaly is [configured for TLS](configure_gitaly.md#enable-tls-support) and use a `tls://` URL scheme in the `gitaly_address`
+  of the corresponding storage entry in the GitLab configuration.
 - Bring your own certificates because this isn't provided automatically. The certificate
   corresponding to each Praefect server must be installed on that Praefect server.
 
@@ -594,6 +614,13 @@ Note the following:
   - Hostname, you can either use the Common Name field for this, or add it as a Subject
     Alternative Name.
   - IP address, you must add it as a Subject Alternative Name to the certificate.
+- When running Praefect sub-commands such as `dial-nodes` and `list-untracked-repositories` from the command line with
+  [Gitaly TLS enabled](configure_gitaly.md#enable-tls-support), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
+  environment variable so that the Gitaly certificate is trusted. For example: 
+
+   ```shell
+   sudo SSL_CERT_DIR=/etc/gitlab/trusted_certs /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
+   ```
 
 - You can configure Praefect servers with both an unencrypted listening address
   `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.
@@ -639,7 +666,7 @@ To configure Praefect with TLS:
    ```ruby
    git_data_dirs({
      "default" => {
-       "gitaly_address" => 'tls://PRAEFECT_LOADBALANCER_HOST:2305',
+       "gitaly_address" => 'tls://PRAEFECT_LOADBALANCER_HOST:3305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })
@@ -957,7 +984,10 @@ Particular attention should be shown to:
      balancer.
    - `PRAEFECT_EXTERNAL_TOKEN` with the real secret
 
-   If you are using TLS, the `gitaly_address` should begin with `tls://`.
+   If you are using TLS:
+
+   - The `gitaly_address` should begin with `tls://` instead.
+   - The port should be changed to `3305`.
 
    ```ruby
    git_data_dirs({

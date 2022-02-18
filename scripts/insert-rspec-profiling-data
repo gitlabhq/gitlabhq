@@ -43,4 +43,4 @@ def insert_data(path)
   end
 end
 
-insert_data('rspec_profiling') if ENV['RSPEC_PROFILING_POSTGRES_URL'].present?
+insert_data(ENV['RSPEC_PROFILING_FOLDER_PATH']) if ENV['RSPEC_PROFILING_POSTGRES_URL'].present?

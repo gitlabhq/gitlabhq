@@ -16,6 +16,7 @@ export const generateFakeEntry = ({ id, status, message, ...rest }) => ({
     status === STATUSES.NONE || status === STATUSES.PENDING
       ? null
       : {
+          __typename: clientTypenames.BulkImportProgress,
           id,
           status,
           message: message || '',

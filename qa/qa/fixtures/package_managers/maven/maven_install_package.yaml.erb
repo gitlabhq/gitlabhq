@@ -1,0 +1,8 @@
+install:
+  image: maven:3.6-jdk-11
+  script:
+    - "mvn install -s settings.xml"
+  only:
+    - "<%= client_project.default_branch %>"
+  tags:
+    - "runner-for-<%= client_project.group.name %>"

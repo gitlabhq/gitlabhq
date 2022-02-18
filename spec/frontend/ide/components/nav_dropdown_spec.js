@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import $ from 'jquery';
+import { nextTick } from 'vue';
 import NavDropdown from '~/ide/components/nav_dropdown.vue';
 import { PERMISSION_READ_MR } from '~/ide/constants';
 import { createStore } from '~/ide/stores';
@@ -58,29 +59,19 @@ describe('IDE NavDropdown', () => {
       expect(findNavForm().exists()).toBe(false);
     });
 
-    it('renders nav form when show.bs.dropdown', (done) => {
+    it('renders nav form when show.bs.dropdown', async () => {
       showDropdown();
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(findNavForm().exists()).toBe(true);
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(findNavForm().exists()).toBe(true);
     });
 
-    it('destroys nav form when closed', (done) => {
+    it('destroys nav form when closed', async () => {
       showDropdown();
       hideDropdown();
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(findNavForm().exists()).toBe(false);
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(findNavForm().exists()).toBe(false);
     });
 
     it('renders merge request icon', () => {

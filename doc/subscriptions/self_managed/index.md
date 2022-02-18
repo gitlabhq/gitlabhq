@@ -65,10 +65,12 @@ billable user, with the following exceptions:
 - Users who are [pending approval](../../user/admin_area/moderate_users.md#users-pending-approval).
 - Members with the Guest role on an Ultimate subscription.
 - Users without project or group memberships on an Ultimate subscription.
-- GitLab-created service accounts: `Ghost User` and bots
-  ([`Support Bot`](../../user/project/service_desk.md#support-bot-user),
-  [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and
-  so on.)
+- GitLab-created service accounts:
+  - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
+  - Bots such as:
+    - [Support Bot](../../user/project/service_desk.md#support-bot-user).
+    - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
+    - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
 
 **Billable users** as reported in the `/admin` section is updated once per day.
 
@@ -306,6 +308,11 @@ The **License Usage** CSV includes the following details:
 - Table of historical user counts for each day in the period:
   - Date the count was recorded
   - Active user count
+
+NOTES:
+
+- All timestamps are displayed in UTC.
+- A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
 
 ## Renew your subscription
 

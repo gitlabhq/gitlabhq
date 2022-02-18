@@ -4,13 +4,14 @@ module FakeBlobHelpers
   class FakeBlob
     include BlobLike
 
-    attr_reader :path, :size, :data, :lfs_oid, :lfs_size
+    attr_reader :path, :size, :data, :lfs_oid, :lfs_size, :mode
 
-    def initialize(path: 'file.txt', size: 1.kilobyte, data: 'foo', binary: false, lfs: nil)
+    def initialize(path: 'file.txt', size: 1.kilobyte, data: 'foo', binary: false, lfs: nil, mode: nil)
       @path = path
       @size = size
       @data = data
       @binary = binary
+      @mode = mode
 
       @lfs_pointer = lfs.present?
       if @lfs_pointer

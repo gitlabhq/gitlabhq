@@ -11,9 +11,6 @@ module HashedStorage
     queue_namespace :hashed_storage
     loggable_arguments 1
 
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/340629
-    tags :needs_own_queue
-
     attr_reader :project_id
 
     def perform(project_id, old_disk_path = nil)

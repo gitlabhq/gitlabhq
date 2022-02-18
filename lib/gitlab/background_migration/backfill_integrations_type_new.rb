@@ -9,7 +9,7 @@ module Gitlab
       include Gitlab::Database::DynamicModelHelpers
 
       def perform(start_id, stop_id, batch_table, batch_column, sub_batch_size, pause_ms)
-        parent_batch_relation = define_batchable_model(batch_table)
+        parent_batch_relation = define_batchable_model(batch_table, connection: connection)
           .where(batch_column => start_id..stop_id)
 
         parent_batch_relation.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|

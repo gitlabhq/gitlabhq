@@ -26,8 +26,16 @@ RSpec.describe Gitlab::Runtime do
   end
 
   context "when unknown" do
-    it "raises an exception when trying to identify" do
-      expect { subject.identify }.to raise_error(subject::UnknownProcessError)
+    describe '.identify' do
+      it "raises an exception when trying to identify" do
+        expect { subject.identify }.to raise_error(subject::UnknownProcessError)
+      end
+    end
+
+    describe '.safe_identify' do
+      it "returns nil" do
+        expect(subject.safe_identify).to be_nil
+      end
     end
   end
 
@@ -37,8 +45,16 @@ RSpec.describe Gitlab::Runtime do
       stub_const('::Rails::Console', double)
     end
 
-    it "raises an exception when trying to identify" do
-      expect { subject.identify }.to raise_error(subject::AmbiguousProcessError)
+    describe '.identify' do
+      it "raises an exception when trying to identify" do
+        expect { subject.identify }.to raise_error(subject::AmbiguousProcessError)
+      end
+    end
+
+    describe '.safe_identify' do
+      it "returns nil" do
+        expect(subject.safe_identify).to be_nil
+      end
     end
   end
 

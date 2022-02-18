@@ -8,7 +8,7 @@ RSpec.describe Import::GitlabProjectsController do
   include_context 'workhorse headers'
 
   let_it_be(:namespace) { create(:namespace) }
-  let_it_be(:user) { namespace.owner }
+  let_it_be(:user) { namespace.first_owner }
 
   before do
     login_as(user)

@@ -363,11 +363,11 @@ after(:all) do
 end
 ```
 
-## Tag tests that require the Administrator role
+## Tag tests that require administrator access
 
-We don't run tests that require the Administrator role against our Production environments.
+We don't run tests that require administrator access against our Production environments.
 
-When you add a new test that requires the Administrator role, apply the RSpec metadata `:requires_admin` so that the test will not be included in the test suites executed against Production and other environments on which we don't want to run those tests.
+When you add a new test that requires administrator access, apply the RSpec metadata `:requires_admin` so that the test will not be included in the test suites executed against Production and other environments on which we don't want to run those tests.
 
 When running tests locally or configuring a pipeline, the environment variable `QA_CAN_TEST_ADMIN_FEATURES` can be set to `false` to skip tests that have the `:requires_admin` tag.
 

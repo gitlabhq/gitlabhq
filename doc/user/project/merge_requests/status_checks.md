@@ -28,6 +28,32 @@ You can configure merge request status checks for each individual project. These
 To learn more about use cases, feature discovery, and development timelines,
 see the [external status checks epic](https://gitlab.com/groups/gitlab-org/-/epics/3869).
 
+## Lifecycle
+
+External status checks have an **asynchronous** workflow. Merge requests emit a merge request webhook payload to an external service whenever:
+
+- The merge request is changed. For example, title or description.
+- Code is pushed to the source branch of the merge request.
+- A comment is made in the merge request discussion.
+
+```mermaid
+sequenceDiagram
+    Merge request->>+External service: Merge request payload
+    External service-->>-Merge request: Status check response
+    Note over External service,Merge request: Response includes SHA at HEAD
+```
+
+When the payload is received, the external service can then run any required processes before posting its response back to the merge request [using the REST API](../../../api/status_checks.md#set-status-of-an-external-status-check).
+
+Merge requests return a `409 Conflict` error to any responses that do not refer to the current `HEAD` of the source branch. As a result, it's safe for the external service to process and respond to out-of-date commits.
+
+External status checks have the following states:
+
+- `pending` - The default state. No response can been received by the merge request from the external service.
+- `response received` - A response from the external service has been received and approved by it.
+
+Support for adding a `failed` state is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338827).
+
 ## View the status checks on a project
 
 Within each project's settings, you can see a list of status checks added to the project:

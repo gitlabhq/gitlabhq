@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # How to restart GitLab **(FREE SELF)**
 
 Depending on how you installed GitLab, there are different methods to restart
-its service(s).
+its services.
 
 ## Omnibus installations
 

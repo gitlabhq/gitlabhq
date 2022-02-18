@@ -11,6 +11,7 @@ export default function initInviteMembersTrigger() {
   return triggers.forEach((el) => {
     return new Vue({
       el,
+      name: 'InviteMembersTriggerRoot',
       render: (createElement) =>
         createElement(InviteMembersTrigger, {
           props: {

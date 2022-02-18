@@ -13,7 +13,7 @@ export default {
   },
   modalId: 'runner-instructions-modal',
   i18n: {
-    buttonText: s__('Runners|Show Runner installation instructions'),
+    buttonText: s__('Runners|Show runner installation instructions'),
   },
   data() {
     return {

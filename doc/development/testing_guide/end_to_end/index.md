@@ -101,19 +101,19 @@ This is due to technical limitations in the GitLab permission model: the ability
 against a protected branch is controlled by the ability to push/merge to this branch.
 This means that for developers to be able to trigger a pipeline for the default branch in
 `gitlab-org/omnibus-gitlab`/`gitlab-org/gitlab-qa`, they would need to have the
-[Maintainer role](../../../user/permissions.md) for those projects.
+Maintainer role for those projects.
 For security reasons and implications, we couldn't open up the default branch to all the Developers.
 Hence we created these mirrors where Developers and Maintainers are allowed to push/merge to the default branch.
 This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues/63#note_107175160> and the "mirror"
 work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4717>.
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
 
-#### With Pipeline for Merged Results
+#### With merged results pipelines
 
-In a Pipeline for Merged Results, the pipeline runs on a new ref that contains the merge result of the source and target branch.
+In a merged results pipeline, the pipeline runs on a new ref that contains the merge result of the source and target branch.
 However, this ref is not available to the `gitlab-qa-mirror` pipeline.
 
-For this reason, the end-to-end tests on a Pipeline for Merged Results would use the head of the merge request source branch.
+For this reason, the end-to-end tests on a merged results pipeline would use the head of the merge request source branch.
 
 ```mermaid
 graph LR
@@ -126,7 +126,7 @@ A --> C
 B --> C
 
 A --> E["E2E tests"]
-C --> D["Pipeline for merged results"]
+C --> D["Merged results pipeline"]
  ```
 
 ##### Running custom tests

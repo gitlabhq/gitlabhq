@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Linked issues **(FREE)**
 
-> The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to [GitLab Free](https://about.gitlab.com/pricing/) in 13.4.
+> The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) from GitLab Premium to GitLab Free in 13.4.
 
 Linked issues are a bi-directional relationship between any two issues and appear in a block below
-the issue description. Issues can be across groups and projects.
+the issue description. You can link issues in different projects.
 
 The relationship only shows up in the UI if the user can see both issues. When you try to close an
 issue that has open blockers, a warning is displayed.
@@ -23,13 +23,18 @@ To manage linked issues through our API, visit the [issue links API documentatio
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/34239) to warn when attempting to close an issue that is blocked by others in GitLab 13.0.
 >   When you try to close an issue with open blockers, you see a warning that you can dismiss.
 
-1. Link one issue to another by selecting the add linked issue button (**{plus}**) in the
-   **Linked issues** section of an issue.
+Prerequisites:
 
+- You must have at least the Reporter role for both projects.
+
+To link one issue to another:
+
+1. In the **Linked issues** section of an issue,
+   select the add linked issue button (**{plus}**).
 1. Select the relationship between the two issues. Either:
    - **relates to**
-   - **blocks** **(PREMIUM)**
-   - **is blocked by** **(PREMIUM)**
+   - **[blocks](#blocking-issues)**
+   - **[is blocked by](#blocking-issues)**
 1. Input the issue number or paste in the full URL of the issue.
 
    ![Adding a related issue](img/related_issues_add_v12_8.png)
@@ -64,3 +69,10 @@ Due to the bi-directional relationship, the relationship no longer appears in ei
 ![Removing a related issue](img/related_issues_remove_v12_8.png)
 
 Access our [permissions](../../permissions.md) page for more information.
+
+## Blocking issues **(PREMIUM)**
+
+When you [add a linked issue](#add-a-linked-issue), you can show that it **blocks** or
+**is blocked by** another issue.
+
+Issues that block other issues have an icon (**{issue-block}**) shown in the issue lists and [boards](../issue_board.md).

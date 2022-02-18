@@ -38,6 +38,8 @@ class GroupsController < Groups::ApplicationController
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]
 
+  before_action :track_experiment_event, only: [:new]
+
   helper_method :captcha_required?
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update,
@@ -204,6 +206,20 @@ class GroupsController < Groups::ApplicationController
       format.json do
         render json: Environments::EnvironmentNamesFinder.new(@group, current_user).execute
       end
+    end
+  end
+
+  def issues
+    return super if !html_request? || Feature.disabled?(:vue_issues_list, group, default_enabled: :yaml)
+
+    @has_issues = IssuesFinder.new(current_user, group_id: group.id).execute
+      .non_archived
+      .exists?
+
+    @has_projects = group_projects.exists?
+
+    respond_to do |format|
+      format.html
     end
   end
 
@@ -377,6 +393,12 @@ class GroupsController < Groups::ApplicationController
 
   def captcha_required?
     captcha_enabled? && !params[:parent_id]
+  end
+
+  def track_experiment_event
+    return if params[:parent_id]
+
+    experiment(:require_verification_for_namespace_creation, user: current_user).track(:start_create_group)
   end
 end
 

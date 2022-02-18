@@ -1,5 +1,6 @@
 import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -13,8 +14,7 @@ import axios from '~/lib/utils/axios_utils';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { getRequestData } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Feature flags', () => {
   const mockData = {
@@ -45,7 +45,6 @@ describe('Feature flags', () => {
   const factory = (provide = mockData, fn = mount) => {
     store = createStore(mockState);
     wrapper = fn(FeatureFlagsComponent, {
-      localVue,
       store,
       provide,
       stubs: {
@@ -72,12 +71,12 @@ describe('Feature flags', () => {
   describe('when limit exceeded', () => {
     const provideData = { ...mockData, featureFlagsLimitExceeded: true };
 
-    beforeEach((done) => {
+    beforeEach(() => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { page: '1' } })
         .reply(200, getRequestData, {});
       factory(provideData);
-      setImmediate(done);
+      return waitForPromises();
     });
 
     it('makes the new feature flag button do nothing if clicked', () => {
@@ -117,12 +116,12 @@ describe('Feature flags', () => {
       userListPath: null,
     };
 
-    beforeEach((done) => {
+    beforeEach(() => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { page: '1' } })
         .reply(200, getRequestData, {});
       factory(provideData);
-      setImmediate(done);
+      return waitForPromises();
     });
 
     it('does not render configure button', () => {
@@ -173,7 +172,7 @@ describe('Feature flags', () => {
 
         factory();
         await waitForPromises();
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         emptyState = wrapper.findComponent(GlEmptyState);
       });
@@ -203,7 +202,7 @@ describe('Feature flags', () => {
     });
 
     describe('with paginated feature flags', () => {
-      beforeEach((done) => {
+      beforeEach(() => {
         mock.onGet(mockState.endpoint, { params: { page: '1' } }).replyOnce(200, getRequestData, {
           'x-next-page': '2',
           'x-page': '1',
@@ -215,7 +214,7 @@ describe('Feature flags', () => {
 
         factory();
         jest.spyOn(store, 'dispatch');
-        setImmediate(done);
+        return waitForPromises();
       });
 
       it('should render a table with feature flags', () => {
@@ -271,11 +270,11 @@ describe('Feature flags', () => {
   });
 
   describe('unsuccessful request', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       mock.onGet(mockState.endpoint, { params: { page: '1' } }).replyOnce(500, {});
 
       factory();
-      setImmediate(done);
+      return waitForPromises();
     });
 
     it('should render error state', () => {
@@ -301,12 +300,12 @@ describe('Feature flags', () => {
   });
 
   describe('rotate instance id', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { page: '1' } })
         .reply(200, getRequestData, {});
       factory();
-      setImmediate(done);
+      return waitForPromises();
     });
 
     it('should fire the rotate action when a `token` event is received', () => {

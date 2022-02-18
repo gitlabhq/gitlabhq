@@ -49,7 +49,7 @@ export default {
     pipelineEtag: {
       query: getPipelineEtag,
       update(data) {
-        return data.etags.pipeline;
+        return data.etags?.pipeline;
       },
     },
     pipeline: {

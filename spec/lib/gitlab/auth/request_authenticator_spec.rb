@@ -21,8 +21,10 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
     let_it_be(:session_user) { build(:user) }
 
     it 'returns sessionless user first' do
-      allow_any_instance_of(described_class).to receive(:find_sessionless_user).and_return(sessionless_user)
-      allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_return(session_user)
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:find_sessionless_user).and_return(sessionless_user)
+        allow(instance).to receive(:find_user_from_warden).and_return(session_user)
+      end
 
       expect(subject.user([:api])).to eq sessionless_user
     end

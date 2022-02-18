@@ -2,7 +2,7 @@
 
 module MergeRequests
   class RebaseService < MergeRequests::BaseService
-    REBASE_ERROR = 'Rebase failed. Please rebase locally'
+    REBASE_ERROR = 'Rebase failed: Rebase locally, resolve all conflicts, then push the branch.'
 
     attr_reader :merge_request, :rebase_error
 
@@ -35,7 +35,7 @@ module MergeRequests
     def set_rebase_error(exception)
       @rebase_error =
         if exception.is_a?(Gitlab::Git::PreReceiveError)
-          "Something went wrong during the rebase pre-receive hook: #{exception.message}."
+          "The rebase pre-receive hook failed: #{exception.message}."
         else
           REBASE_ERROR
         end

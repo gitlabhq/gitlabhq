@@ -86,14 +86,24 @@ RSpec.describe API::Ci::Runners do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'filters runners by status' do
-        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+      context 'with an inactive runner' do
+        let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
 
-        get api('/runners?status=paused', user)
+        it 'filters runners by paused state' do
+          get api('/runners?paused=true', user)
 
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Inactive project runner')
-        ]
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
+
+        it 'filters runners by status' do
+          get api('/runners?status=paused', user)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
       end
 
       it 'does not filter by invalid status' do
@@ -109,7 +119,7 @@ RSpec.describe API::Ci::Runners do
         get api('/runners?tag_list=tag1,tag2', user)
 
         expect(json_response).to match_array [
-          a_hash_including('description' => 'Runner tagged with tag1 and tag2')
+          a_hash_including('description' => 'Runner tagged with tag1 and tag2', 'active' => true, 'paused' => false)
         ]
       end
     end
@@ -137,7 +147,7 @@ RSpec.describe API::Ci::Runners do
           get api('/runners/all', admin)
 
           expect(json_response).to match_array [
-            a_hash_including('description' => 'Project runner', 'is_shared' => false, 'runner_type' => 'project_type'),
+            a_hash_including('description' => 'Project runner', 'is_shared' => false, 'active' => true, 'paused' => false, 'runner_type' => 'project_type'),
             a_hash_including('description' => 'Two projects runner', 'is_shared' => false, 'runner_type' => 'project_type'),
             a_hash_including('description' => 'Group runner A', 'is_shared' => false, 'runner_type' => 'group_type'),
             a_hash_including('description' => 'Group runner B', 'is_shared' => false, 'runner_type' => 'group_type'),
@@ -199,14 +209,24 @@ RSpec.describe API::Ci::Runners do
           expect(response).to have_gitlab_http_status(:bad_request)
         end
 
-        it 'filters runners by status' do
-          create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+        context 'with an inactive runner' do
+          let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
 
-          get api('/runners/all?status=paused', admin)
+          it 'filters runners by status' do
+            get api('/runners/all?paused=true', admin)
 
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Inactive project runner')
-          ]
+            expect(json_response).to match_array [
+              a_hash_including('description' => 'Inactive project runner')
+            ]
+          end
+
+          it 'filters runners by status' do
+            get api('/runners/all?status=paused', admin)
+
+            expect(json_response).to match_array [
+              a_hash_including('description' => 'Inactive project runner')
+            ]
+          end
         end
 
         it 'does not filter by invalid status' do
@@ -255,6 +275,8 @@ RSpec.describe API::Ci::Runners do
           expect(json_response['description']).to eq(shared_runner.description)
           expect(json_response['maximum_timeout']).to be_nil
           expect(json_response['status']).to eq("not_connected")
+          expect(json_response['active']).to eq(true)
+          expect(json_response['paused']).to eq(false)
         end
       end
 
@@ -354,6 +376,14 @@ RSpec.describe API::Ci::Runners do
         it 'runner active state' do
           active = shared_runner.active
           update_runner(shared_runner.id, admin, active: !active)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(shared_runner.reload.active).to eq(!active)
+        end
+
+        it 'runner paused state' do
+          active = shared_runner.active
+          update_runner(shared_runner.id, admin, paused: active)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(shared_runner.reload.active).to eq(!active)
@@ -500,6 +530,10 @@ RSpec.describe API::Ci::Runners do
     context 'admin user' do
       context 'when runner is shared' do
         it 'deletes runner' do
+          expect_next_instance_of(Ci::UnregisterRunnerService, shared_runner) do |service|
+            expect(service).to receive(:execute).once.and_call_original
+          end
+
           expect do
             delete api("/runners/#{shared_runner.id}", admin)
 
@@ -514,6 +548,10 @@ RSpec.describe API::Ci::Runners do
 
       context 'when runner is not shared' do
         it 'deletes used project runner' do
+          expect_next_instance_of(Ci::UnregisterRunnerService, project_runner) do |service|
+            expect(service).to receive(:execute).once.and_call_original
+          end
+
           expect do
             delete api("/runners/#{project_runner.id}", admin)
 
@@ -523,6 +561,10 @@ RSpec.describe API::Ci::Runners do
       end
 
       it 'returns 404 if runner does not exist' do
+        allow_next_instance_of(Ci::UnregisterRunnerService) do |service|
+          expect(service).not_to receive(:execute)
+        end
+
         delete api('/runners/0', admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -604,6 +646,10 @@ RSpec.describe API::Ci::Runners do
 
     context 'unauthorized user' do
       it 'does not delete project runner' do
+        allow_next_instance_of(Ci::UnregisterRunnerService) do |service|
+          expect(service).not_to receive(:execute)
+        end
+
         delete api("/runners/#{project_runner.id}")
 
         expect(response).to have_gitlab_http_status(:unauthorized)
@@ -618,7 +664,7 @@ RSpec.describe API::Ci::Runners do
           post api("/runners/#{shared_runner.id}/reset_authentication_token", admin)
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => shared_runner.reload.token })
+          expect(json_response).to eq({ 'token' => shared_runner.reload.token, 'token_expires_at' => nil })
         end.to change { shared_runner.reload.token }
       end
 
@@ -642,7 +688,7 @@ RSpec.describe API::Ci::Runners do
           post api("/runners/#{project_runner.id}/reset_authentication_token", user)
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => project_runner.reload.token })
+          expect(json_response).to eq({ 'token' => project_runner.reload.token, 'token_expires_at' => nil })
         end.to change { project_runner.reload.token }
       end
 
@@ -683,7 +729,22 @@ RSpec.describe API::Ci::Runners do
           post api("/runners/#{group_runner_a.id}/reset_authentication_token", user)
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => group_runner_a.reload.token })
+          expect(json_response).to eq({ 'token' => group_runner_a.reload.token, 'token_expires_at' => nil })
+        end.to change { group_runner_a.reload.token }
+      end
+
+      it 'resets group runner authentication token with owner access with expiration time', :freeze_time do
+        expect(group_runner_a.reload.token_expires_at).to be_nil
+
+        group.update!(runner_token_expiration_interval: 5.days)
+
+        expect do
+          post api("/runners/#{group_runner_a.id}/reset_authentication_token", user)
+          group_runner_a.reload
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response).to eq({ 'token' => group_runner_a.token, 'token_expires_at' => group_runner_a.token_expires_at.iso8601(3) })
+          expect(group_runner_a.token_expires_at).to eq(5.days.from_now)
         end.to change { group_runner_a.reload.token }
       end
     end
@@ -908,9 +969,9 @@ RSpec.describe API::Ci::Runners do
         get api("/projects/#{project.id}/runners", user)
 
         expect(json_response).to match_array [
-          a_hash_including('description' => 'Project runner'),
-          a_hash_including('description' => 'Two projects runner'),
-          a_hash_including('description' => 'Shared runner')
+          a_hash_including('description' => 'Project runner', 'active' => true, 'paused' => false),
+          a_hash_including('description' => 'Two projects runner', 'active' => true, 'paused' => false),
+          a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
         ]
       end
 
@@ -946,14 +1007,24 @@ RSpec.describe API::Ci::Runners do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'filters runners by status' do
-        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+      context 'with an inactive runner' do
+        let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
 
-        get api("/projects/#{project.id}/runners?status=paused", user)
+        it 'filters runners by status' do
+          get api("/projects/#{project.id}/runners?paused=true", user)
 
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Inactive project runner')
-        ]
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
+
+        it 'filters runners by status' do
+          get api("/projects/#{project.id}/runners?status=paused", user)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
       end
 
       it 'does not filter by invalid status' do
@@ -980,13 +1051,14 @@ RSpec.describe API::Ci::Runners do
     end
   end
 
-  shared_context 'GET /groups/:id/runners' do
+  describe 'GET /groups/:id/runners' do
     context 'authorized user with maintainer privileges' do
       it 'returns all runners' do
         get api("/groups/#{group.id}/runners", user)
 
         expect(json_response).to match_array([
-          a_hash_including('description' => 'Group runner A')
+          a_hash_including('description' => 'Group runner A', 'active' => true, 'paused' => false),
+          a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
         ])
       end
 
@@ -999,6 +1071,15 @@ RSpec.describe API::Ci::Runners do
           ])
         end
 
+        it 'returns instance runners when instance_type is specified' do
+          get api("/groups/#{group.id}/runners?type=instance_type", user)
+
+          expect(json_response).to match_array([
+            a_hash_including('description' => 'Shared runner')
+          ])
+        end
+
+        # TODO: Remove in %15.0 (https://gitlab.com/gitlab-org/gitlab/-/issues/351466)
         it 'returns empty result when type does not match' do
           get api("/groups/#{group.id}/runners?type=project_type", user)
 
@@ -1012,21 +1093,31 @@ RSpec.describe API::Ci::Runners do
         end
       end
 
-      context 'filter runners by status' do
-        it 'returns runners by valid status' do
-          create(:ci_runner, :group, :inactive, description: 'Inactive group runner', groups: [group])
+      context 'with an inactive runner' do
+        let_it_be(:runner) { create(:ci_runner, :group, :inactive, description: 'Inactive group runner', groups: [group]) }
 
-          get api("/groups/#{group.id}/runners?status=paused", user)
+        it 'returns runners by paused state' do
+          get api("/groups/#{group.id}/runners?paused=true", user)
 
           expect(json_response).to match_array([
             a_hash_including('description' => 'Inactive group runner')
           ])
         end
 
-        it 'does not filter by invalid status' do
-          get api("/groups/#{group.id}/runners?status=bogus", user)
+        context 'filter runners by status' do
+          it 'returns runners by valid status' do
+            get api("/groups/#{group.id}/runners?status=paused", user)
 
-          expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response).to match_array([
+              a_hash_including('description' => 'Inactive group runner')
+            ])
+          end
+
+          it 'does not filter by invalid status' do
+            get api("/groups/#{group.id}/runners?status=bogus", user)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
         end
       end
 
@@ -1046,16 +1137,6 @@ RSpec.describe API::Ci::Runners do
       let(:entity_type) { 'groups' }
       let(:entity) { group }
     end
-  end
-
-  it_behaves_like 'GET /groups/:id/runners'
-
-  context 'when the FF ci_find_runners_by_ci_mirrors is disabled' do
-    before do
-      stub_feature_flags(ci_find_runners_by_ci_mirrors: false)
-    end
-
-    it_behaves_like 'GET /groups/:id/runners'
   end
 
   describe 'POST /projects/:id/runners' do

@@ -6,11 +6,11 @@ RSpec.describe API::GroupClusters do
   include KubernetesHelpers
 
   let(:current_user) { create(:user) }
-  let(:developer_user) { create(:user) }
+  let(:unauthorized_user) { create(:user) }
   let(:group) { create(:group, :private) }
 
   before do
-    group.add_developer(developer_user)
+    group.add_reporter(unauthorized_user)
     group.add_maintainer(current_user)
   end
 
@@ -24,7 +24,7 @@ RSpec.describe API::GroupClusters do
 
     context 'non-authorized user' do
       it 'responds with 403' do
-        get api("/groups/#{group.id}/clusters", developer_user)
+        get api("/groups/#{group.id}/clusters", unauthorized_user)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -68,7 +68,7 @@ RSpec.describe API::GroupClusters do
 
     context 'non-authorized user' do
       it 'responds with 403' do
-        get api("/groups/#{group.id}/clusters/#{cluster_id}", developer_user)
+        get api("/groups/#{group.id}/clusters/#{cluster_id}", unauthorized_user)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -183,7 +183,7 @@ RSpec.describe API::GroupClusters do
 
     context 'non-authorized user' do
       it 'responds with 403' do
-        post api("/groups/#{group.id}/clusters/user", developer_user), params: cluster_params
+        post api("/groups/#{group.id}/clusters/user", unauthorized_user), params: cluster_params
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -290,7 +290,7 @@ RSpec.describe API::GroupClusters do
 
     context 'non-authorized user' do
       before do
-        post api("/groups/#{group.id}/clusters/user", developer_user), params: cluster_params
+        post api("/groups/#{group.id}/clusters/user", unauthorized_user), params: cluster_params
       end
 
       it 'responds with 403' do
@@ -364,7 +364,7 @@ RSpec.describe API::GroupClusters do
 
     context 'non-authorized user' do
       it 'responds with 403' do
-        put api("/groups/#{group.id}/clusters/#{cluster.id}", developer_user), params: update_params
+        put api("/groups/#{group.id}/clusters/#{cluster.id}", unauthorized_user), params: update_params
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -505,7 +505,7 @@ RSpec.describe API::GroupClusters do
 
     context 'non-authorized user' do
       it 'responds with 403' do
-        delete api("/groups/#{group.id}/clusters/#{cluster.id}", developer_user), params: cluster_params
+        delete api("/groups/#{group.id}/clusters/#{cluster.id}", unauthorized_user), params: cluster_params
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end

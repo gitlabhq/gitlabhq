@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import resolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 
 const buttonTitle = 'Resolve discussion';
@@ -26,15 +27,14 @@ describe('resolveDiscussionButton', () => {
     wrapper.destroy();
   });
 
-  it('should emit a onClick event on button click', () => {
+  it('should emit a onClick event on button click', async () => {
     const button = wrapper.find(GlButton);
 
     button.vm.$emit('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted()).toEqual({
-        onClick: [[]],
-      });
+    await nextTick();
+    expect(wrapper.emitted()).toEqual({
+      onClick: [[]],
     });
   });
 
@@ -57,7 +57,7 @@ describe('resolveDiscussionButton', () => {
     expect(button.props('loading')).toEqual(true);
   });
 
-  it('should only show a loading spinner while resolving', () => {
+  it('should only show a loading spinner while resolving', async () => {
     factory({
       propsData: {
         isResolving: false,
@@ -67,8 +67,7 @@ describe('resolveDiscussionButton', () => {
 
     const button = wrapper.find(GlButton);
 
-    wrapper.vm.$nextTick(() => {
-      expect(button.props('loading')).toEqual(false);
-    });
+    await nextTick();
+    expect(button.props('loading')).toEqual(false);
   });
 });

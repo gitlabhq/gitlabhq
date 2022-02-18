@@ -8,6 +8,10 @@ RSpec.describe Groups::CreateService, '#execute' do
 
   subject { service.execute }
 
+  shared_examples 'has sync-ed traversal_ids' do
+    specify { expect(subject.reload.traversal_ids).to eq([subject.parent&.traversal_ids, subject.id].flatten.compact) }
+  end
+
   describe 'visibility level restrictions' do
     let!(:service) { described_class.new(user, group_params) }
 
@@ -77,6 +81,18 @@ RSpec.describe Groups::CreateService, '#execute' do
       it 'adds an onboarding progress record' do
         expect { subject }.to change(OnboardingProgress, :count).from(0).to(1)
       end
+
+      context 'with before_commit callback' do
+        it_behaves_like 'has sync-ed traversal_ids'
+      end
+
+      context 'with after_create callback' do
+        before do
+          stub_feature_flags(sync_traversal_ids_before_commit: false)
+        end
+
+        it_behaves_like 'has sync-ed traversal_ids'
+      end
     end
 
     context 'when user can not create a group' do
@@ -101,6 +117,18 @@ RSpec.describe Groups::CreateService, '#execute' do
 
       it 'does not add an onboarding progress record' do
         expect { subject }.not_to change(OnboardingProgress, :count).from(0)
+      end
+
+      context 'with before_commit callback' do
+        it_behaves_like 'has sync-ed traversal_ids'
+      end
+
+      context 'with after_create callback' do
+        before do
+          stub_feature_flags(sync_traversal_ids_before_commit: false)
+        end
+
+        it_behaves_like 'has sync-ed traversal_ids'
       end
     end
 
@@ -286,6 +314,35 @@ RSpec.describe Groups::CreateService, '#execute' do
       it 'not sent' do
         expect(Namespaces::InviteTeamEmailWorker).not_to receive(:perform_in)
         service.execute
+      end
+    end
+  end
+
+  describe 'logged_out_marketing_header experiment', :experiment do
+    let(:service) { described_class.new(user, group_params) }
+
+    subject { service.execute }
+
+    before do
+      stub_experiments(logged_out_marketing_header: :candidate)
+    end
+
+    it 'tracks signed_up event' do
+      expect(experiment(:logged_out_marketing_header)).to track(
+        :namespace_created,
+        namespace: an_instance_of(Group)
+      ).on_next_instance.with_context(actor: user)
+
+      subject
+    end
+
+    context 'when group has not been persisted' do
+      let(:service) { described_class.new(user, group_params.merge(name: '<script>alert("Attack!")</script>')) }
+
+      it 'does not track signed_up event' do
+        expect(experiment(:logged_out_marketing_header)).not_to track(:namespace_created)
+
+        subject
       end
     end
   end

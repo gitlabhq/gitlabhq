@@ -155,9 +155,11 @@ export default {
 
             <gl-button
               v-if="commit.description_html && collapsible"
+              v-gl-tooltip
               class="js-toggle-button"
               size="small"
               icon="ellipsis_h"
+              :title="__('Toggle commit description')"
               :aria-label="__('Toggle commit description')"
             />
 

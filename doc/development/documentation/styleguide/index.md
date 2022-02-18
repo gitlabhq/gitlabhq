@@ -181,115 +181,6 @@ included in backticks. For example:
   - `git clone` is a command, so it must be lowercase, while Git is the product,
     so it must have a capital G.
 
-## Structure
-
-We include concept and task topic types in the same larger topic.
-
-In general, we have one topic that's a landing page.
-Below that topic in the left nav are individual topics. Each of these include a concept
-and multiple related tasks, reference, and troubleshooting topics.
-
-### Folder structure overview
-
-The documentation is separated by top-level audience folders [`user`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/user),
-[`administration`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/administration),
-and [`development`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/development)
-(contributing) folders.
-
-Beyond that, we primarily follow the structure of the GitLab user interface or
-API.
-
-Our goal is to have a clear hierarchical structure with meaningful URLs like
-`docs.gitlab.com/user/project/merge_requests/`. With this pattern, you can
-immediately tell that you are navigating to user-related documentation about
-Project features; specifically about Merge Requests. Our site's paths match
-those of our repository, so the clear structure also makes documentation easier
-to update.
-
-Put files for a specific product area into the related folder:
-
-| Directory             | Contents |
-|:----------------------|:------------------|
-| `doc/user/`           | Documentation for users. Anything that can be done in the GitLab user interface goes here, including usage of the `/admin` interface. |
-| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. Administrator settings in the GitLab user interface are under `doc/user/admin_area/`. |
-| `doc/api/`            | Documentation for the API. |
-| `doc/development/`    | Documentation related to the development of GitLab, whether contributing code or documentation. Related process and style guides should go here. |
-| `doc/legal/`          | Legal documents about contributing to GitLab. |
-| `doc/install/`        | Instructions for installing GitLab. |
-| `doc/update/`         | Instructions for updating GitLab. |
-| `doc/topics/`         | Indexes per topic (`doc/topics/topic_name/index.md`): all resources for that topic. |
-
-### Work with directories and files
-
-When working with directories and files:
-
-1. When you create a new directory, always start with an `index.md` file.
-   Don't use another filename and do not create `README.md` files.
-1. Do not use special characters and spaces, or capital letters in file
-   names, directory names, branch names, and anything that generates a path.
-1. When creating or renaming a file or directory and it has more than one word
-   in its name, use underscores (`_`) instead of spaces or dashes. For example,
-   proper naming would be `import_project/import_from_github.md`. This applies
-   to both image files and Markdown files.
-1. For image files, do not exceed 100KB.
-1. Do not upload video files to the product repositories.
-   [Link or embed videos](#videos) instead.
-1. There are four main directories: `user`, `administration`, `api`, and
-   `development`.
-1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
-   `profile/`, `dashboard/` and `admin_area/`.
-   - `doc/user/project/` should contain all project related documentation.
-   - `doc/user/group/` should contain all group related documentation.
-   - `doc/user/profile/` should contain all profile related documentation.
-     Every page you would navigate under `/profile` should have its own document,
-     for example, `account.md`, `applications.md`, or `emails.md`.
-   - `doc/user/dashboard/` should contain all dashboard related documentation.
-   - `doc/user/admin_area/` should contain all administrator-related
-     documentation describing what can be achieved by accessing the GitLab
-     administrator interface (not to be confused with `doc/administration` where
-     server access is required).
-     - Every category under `/admin/application_settings/` should have its
-      own document located at `doc/user/admin_area/settings/`. For example,
-      the **Visibility and Access Controls** category should have a document
-      located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
-1. The `doc/topics/` directory holds topic-related technical content. Create
-   `doc/topics/topic_name/subtopic_name/index.md` when subtopics become necessary.
-   General user and administrator documentation should be placed accordingly.
-1. The `/university/` directory is *deprecated* and the majority of its documentation
-   has been moved.
-
-If you're unsure where to place a document or a content addition, this shouldn't
-stop you from authoring and contributing. Use your best judgment, and then ask
-the reviewer of your MR to confirm your decision. You can also ask a technical writer at
-any stage in the process. The technical writing team reviews all
-documentation changes, regardless, and can move content if there is a better
-place for it.
-
-### Avoid duplication
-
-Do not include the same information in multiple places.
-[Link to a single source of truth instead.](#link-instead-of-repeating-text)
-
-### References across documents
-
-- Give each folder an `index.md` page that introduces the topic, and both introduces
-  and links to the child pages, including to the index pages of
-  any next-level sub-paths.
-- To ensure discoverability, ensure each new or renamed doc is linked from its
-  higher-level index page and other related pages.
-- When making reference to other GitLab products and features, link to their
-  respective documentation, at least on first mention.
-- When making reference to third-party products or technologies, link out to
-  their external sites, documentation, and resources.
-
-### Structure in documents
-
-- Include any and all applicable subsections as described on the
-  [structure and template](../structure.md) page.
-- Structure content in alphabetical order in tables, lists, and so on, unless
-  there's a logical reason not to (for example, when mirroring the user
-  interface or an otherwise ordered sequence).
-
 ## Language
 
 GitLab documentation should be clear and easy to understand.
@@ -320,10 +211,11 @@ create an issue or an MR to propose a change to the user interface text.
 #### Feature names
 
 - Feature names are typically lowercase.
-- Some features are capitalized, typically nouns that name GitLab-specific
-  capabilities or tools.
-
-See the [word list](word_list.md) for details.
+- Some features require title case, typically nouns that name GitLab-specific capabilities or tools. Features requiring
+  title case should be:
+  - Added as a proper name to markdownlint [configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.yml),
+    so that it can be consistently applied across all documentation.
+  - Added to the [word list](word_list.md).
 
 If the term is not in the word list, ask a GitLab Technical Writer for advice.
 
@@ -1151,7 +1043,8 @@ When you take screenshots:
 - **Review how the image renders on the page.** Preview the image locally or use the
 review app in the merge request. Make sure the image isn't blurry or overwhelming.
 - **Be consistent.** Coordinate screenshots with the other screenshots already on
-  a documentation page for a consistent reading experience.
+  a documentation page for a consistent reading experience. Ensure your navigation theme
+  is **Indigo** and the syntax highlighting theme is **Light**. These are the default preferences.
 
 ### Add callouts
 
@@ -1745,11 +1638,12 @@ If the content in a topic is not ready, use the disclaimer in the topic.
 
 ### Removing versions after each major release
 
-Whenever a major GitLab release occurs, we remove all version references
-to now-unsupported versions of GitLab. Note that this includes the removal of
-specific instructions for users of non-supported GitLab versions. For example,
-if GitLab versions 11.x and later are supported, special
-instructions for users of GitLab 10 should be removed.
+When a major GitLab release occurs, we remove all references
+to now-unsupported versions. This removal includes version-specific instructions. For example,
+if GitLab version 12.1 and later are supported,
+instructions for users of GitLab 11 should be removed.
+
+[View the list of supported versions](https://about.gitlab.com/support/statement-of-support.html#version-support).
 
 To view historical information about a feature, review GitLab
 [release posts](https://about.gitlab.com/releases/), or search for the issue or

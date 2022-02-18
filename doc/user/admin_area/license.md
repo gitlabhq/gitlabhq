@@ -27,9 +27,8 @@ If you have questions or need assistance upgrading from GitLab CE to EE,
 ## Activate GitLab EE with an activation code
 
 In GitLab Enterprise Edition 14.1 and later, you need an activation code to activate
-your instance. To get an activation code, [purchase a license](https://about.gitlab.com/pricing/)
-or sign up for a [free trial](https://about.gitlab.com/free-trial/). The activation
-code is a 24-character alphanumeric string you receive in a confirmation email.
+your instance. To get an activation code you have to [purchase a license](https://about.gitlab.com/pricing/).
+The activation code is a 24-character alphanumeric string you receive in a confirmation email.
 You can also sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in)
 to copy the activation code to your clipboard.
 
@@ -60,8 +59,10 @@ Otherwise, to upload your license:
 1. On the left sidebar, select **Settings**.
 1. In the **License file** area, select **Upload a license**.
 1. Upload a license:
-   - For a file, select **Upload `.gitlab-license` file**, **Choose file**, and
-     select the license file from your local machine.
+   - For a file, either:
+     - Select **Upload `.gitlab-license` file**, then **Choose File** and
+       select the license file from your local machine.
+     - Drag and drop the license file to the **Drag your license file here** area.
    - For plain text, select **Enter license key** and paste the contents in
      **License key**.
 1. Select the **Terms of Service** checkbox.
@@ -128,6 +129,8 @@ the current date range is the active license.
 
 When you upload a future-dated license, it doesn't take effect until its applicable date.
 You can view all active subscriptions in the **Subscription history** table.
+
+You can also [export](../../subscriptions/self_managed/index.md) your license usage information to a CSV file.
 
 NOTE:
 In GitLab 13.6 and earlier, a banner about an expiring license may continue to display

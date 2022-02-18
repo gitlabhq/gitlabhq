@@ -1,4 +1,4 @@
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -16,8 +16,6 @@ import {
 
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-
 describe('DeletePackage', () => {
   let wrapper;
   let apolloProvider;
@@ -27,7 +25,7 @@ describe('DeletePackage', () => {
   const eventPayload = { id: '1' };
 
   function createComponent(propsData = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [
       [getPackagesQuery, resolver],
@@ -37,7 +35,6 @@ describe('DeletePackage', () => {
 
     wrapper = shallowMountExtended(DeletePackage, {
       propsData,
-      localVue,
       apolloProvider,
       scopedSlots: {
         default(props) {

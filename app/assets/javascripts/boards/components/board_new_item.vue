@@ -43,6 +43,12 @@ export default {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `${this.list.id}-title`;
     },
+    isIssueTitleEmpty() {
+      return this.title.trim() === '';
+    },
+    isCreatingIssueDisabled() {
+      return this.isIssueTitleEmpty || this.disableSubmit;
+    },
   },
   methods: {
     handleFormCancel() {
@@ -54,7 +60,7 @@ export default {
 
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.$emit('form-submit', {
-        title,
+        title: title.trim(),
         list,
       });
     },
@@ -69,7 +75,7 @@ export default {
         <label :for="inputFieldId" class="gl-font-weight-bold">{{ __('Title') }}</label>
         <gl-form-input
           :id="inputFieldId"
-          v-model.trim="title"
+          v-model="title"
           :autofocus="true"
           autocomplete="off"
           type="text"
@@ -78,7 +84,8 @@ export default {
         <slot></slot>
         <div class="gl-clearfix gl-mt-4">
           <gl-button
-            :disabled="!title || disableSubmit"
+            data-testid="create-button"
+            :disabled="isCreatingIssueDisabled"
             class="gl-float-left js-no-auto-disable"
             variant="confirm"
             type="submit"

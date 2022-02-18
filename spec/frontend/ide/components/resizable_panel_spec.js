@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import ResizablePanel from '~/ide/components/resizable_panel.vue';
 import { SIDE_LEFT, SIDE_RIGHT } from '~/ide/constants';
@@ -8,8 +9,7 @@ const TEST_WIDTH = 500;
 const TEST_MIN_WIDTH = 400;
 
 describe('~/ide/components/resizable_panel', () => {
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   let wrapper;
   let store;
@@ -33,7 +33,6 @@ describe('~/ide/components/resizable_panel', () => {
         ...props,
       },
       store,
-      localVue,
     });
   };
   const findResizer = () => wrapper.find(PanelResizer);
@@ -100,15 +99,14 @@ describe('~/ide/components/resizable_panel', () => {
       });
     });
 
-    it('when resizer emits update:size, changes inline width', () => {
+    it('when resizer emits update:size, changes inline width', async () => {
       const newSize = TEST_WIDTH - 100;
       const resizer = findResizer();
 
       resizer.vm.$emit('update:size', newSize);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findInlineStyle()).toBe(createInlineStyle(newSize));
-      });
+      await nextTick();
+      expect(findInlineStyle()).toBe(createInlineStyle(newSize));
     });
   });
 });

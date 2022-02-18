@@ -13,7 +13,7 @@ module Gitlab
     # - We skip the NULL checks as they may result in not using an index scan
     # - The table that is migrated does _not_ need `id` as the primary key
     #   We use the provided primary_key column to perform the update.
-    class CopyColumnUsingBackgroundMigrationJob
+    class CopyColumnUsingBackgroundMigrationJob < BaseJob
       include Gitlab::Database::DynamicModelHelpers
 
       # start_id - The start ID of the range of rows to update.
@@ -52,12 +52,8 @@ module Gitlab
 
       private
 
-      def connection
-        ActiveRecord::Base.connection
-      end
-
       def relation_scoped_to_range(source_table, source_key_column, start_id, stop_id)
-        define_batchable_model(source_table).where(source_key_column => start_id..stop_id)
+        define_batchable_model(source_table, connection: connection).where(source_key_column => start_id..stop_id)
       end
 
       def column_assignment_clauses(copy_from, copy_to)

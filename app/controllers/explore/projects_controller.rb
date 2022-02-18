@@ -92,7 +92,12 @@ class Explore::ProjectsController < Explore::ApplicationController
   def load_projects
     load_project_counts
 
-    projects = ProjectsFinder.new(current_user: current_user, params: params.merge(minimum_search_length: MIN_SEARCH_LENGTH)).execute
+    finder_params = {
+      minimum_search_length: MIN_SEARCH_LENGTH,
+      not_aimed_for_deletion: true
+    }
+
+    projects = ProjectsFinder.new(current_user: current_user, params: params.merge(finder_params)).execute
 
     projects = preload_associations(projects)
     projects = projects.page(params[:page]).without_count

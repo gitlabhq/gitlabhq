@@ -3,9 +3,9 @@
 module Types
   module Notes
     class DiscussionType < BaseObject
-      DiscussionID = ::Types::GlobalIDType[::Discussion]
-
       graphql_name 'Discussion'
+
+      DiscussionID = ::Types::GlobalIDType[::Discussion]
 
       authorize :read_note
 

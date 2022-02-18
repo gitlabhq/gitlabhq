@@ -1,6 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 
 import { mockMilestone } from 'jest/boards/mock_data';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
@@ -19,12 +19,12 @@ describe('IssueMilestoneComponent', () => {
   let wrapper;
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(async () => {
     wrapper = createComponent();
 
     ({ vm } = wrapper);
 
-    Vue.nextTick(done);
+    await nextTick();
   });
 
   afterEach(() => {
@@ -37,7 +37,7 @@ describe('IssueMilestoneComponent', () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '' },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.isMilestoneStarted).toBe(false);
       });
@@ -46,7 +46,7 @@ describe('IssueMilestoneComponent', () => {
         await wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '1990-07-22' },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.isMilestoneStarted).toBe(true);
       });
@@ -57,7 +57,7 @@ describe('IssueMilestoneComponent', () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, due_date: '' },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.isMilestonePastDue).toBe(false);
       });
@@ -80,7 +80,7 @@ describe('IssueMilestoneComponent', () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, due_date: '' },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.milestoneDatesAbsolute).toBe('(January 1, 2018)');
       });
@@ -89,7 +89,7 @@ describe('IssueMilestoneComponent', () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '', due_date: '' },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.milestoneDatesAbsolute).toBe('');
       });
@@ -100,7 +100,7 @@ describe('IssueMilestoneComponent', () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, due_date: `${new Date().getFullYear() + 10}-01-01` },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.milestoneDatesHuman).toContain('years remaining');
       });
@@ -109,7 +109,7 @@ describe('IssueMilestoneComponent', () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '1990-07-22', due_date: '' },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.milestoneDatesHuman).toContain('Started');
       });
@@ -122,7 +122,7 @@ describe('IssueMilestoneComponent', () => {
             due_date: '',
           },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.milestoneDatesHuman).toContain('Starts');
       });
@@ -131,7 +131,7 @@ describe('IssueMilestoneComponent', () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '', due_date: '' },
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.milestoneDatesHuman).toBe('');
       });

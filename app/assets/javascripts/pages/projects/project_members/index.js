@@ -3,6 +3,7 @@ import initImportAProjectModal from '~/invite_members/init_import_a_project_moda
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
 import initInviteMembersForm from '~/invite_members/init_invite_members_form';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
+import initInviteGroupsModal from '~/invite_members/init_invite_groups_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { s__ } from '~/locale';
 import memberExpirationDate from '~/member_expiration_date';
@@ -17,6 +18,7 @@ memberExpirationDate();
 memberExpirationDate('.js-access-expiration-date-groups');
 initImportAProjectModal();
 initInviteMembersModal();
+initInviteGroupsModal();
 initInviteMembersTrigger();
 initInviteGroupTrigger();
 

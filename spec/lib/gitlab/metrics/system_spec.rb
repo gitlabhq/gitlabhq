@@ -4,6 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Metrics::System do
   context 'when /proc files exist' do
+    # Modified column 22 to be 1000 (starttime ticks)
+    let(:proc_stat) do
+      <<~SNIP
+      2095 (ruby) R 0 2095 2095 34818 2095 4194560 211267 7897 2 0 287 51 10 1 20 0 5 0 1000 566210560 80885 18446744073709551615 94736211292160 94736211292813 140720919612064 0 0 0 0 0 1107394127 0 0 0 17 3 0 0 0 0 0 94736211303768 94736211304544 94736226689024 140720919619473 140720919619513 140720919619513 140720919621604 0
+      SNIP
+    end
+
     # Fixtures pulled from:
     # Linux carbon 5.3.0-7648-generic #41~1586789791~19.10~9593806-Ubuntu SMP Mon Apr 13 17:50:40 UTC  x86_64 x86_64 x86_64 GNU/Linux
     let(:proc_status) do
@@ -94,6 +101,29 @@ RSpec.describe Gitlab::Metrics::System do
 
         # (Private_Clean (152 kB) + Private_Dirty (312 kB) + Private_Hugetlb (0 kB)) * 1024
         expect(described_class.memory_usage_uss_pss).to eq(uss: 475136, pss: 515072)
+      end
+    end
+
+    describe '.process_runtime_elapsed_seconds' do
+      it 'returns the seconds elapsed since the process was started' do
+        # sets process starttime ticks to 1000
+        mock_existing_proc_file('/proc/self/stat', proc_stat)
+        # system clock ticks/sec
+        expect(Etc).to receive(:sysconf).with(Etc::SC_CLK_TCK).and_return(100)
+        # system uptime in seconds
+        expect(::Process).to receive(:clock_gettime).and_return(15)
+
+        # uptime - (starttime_ticks / ticks_per_sec)
+        expect(described_class.process_runtime_elapsed_seconds).to eq(5)
+      end
+
+      context 'when inputs are not available' do
+        it 'returns 0' do
+          mock_missing_proc_file
+          expect(::Process).to receive(:clock_gettime).and_raise(NameError)
+
+          expect(described_class.process_runtime_elapsed_seconds).to eq(0)
+        end
       end
     end
 
@@ -223,10 +253,10 @@ RSpec.describe Gitlab::Metrics::System do
   end
 
   def mock_existing_proc_file(path, content)
-    allow(File).to receive(:foreach).with(path) { |_path, &block| content.each_line(&block) }
+    allow(File).to receive(:open).with(path) { |_path, &block| block.call(StringIO.new(content)) }
   end
 
   def mock_missing_proc_file
-    allow(File).to receive(:foreach).and_raise(Errno::ENOENT)
+    allow(File).to receive(:open).and_raise(Errno::ENOENT)
   end
 end

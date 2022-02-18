@@ -4,9 +4,9 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Terraform integration in Merge Requests **(FREE)**
+# Terraform integration in merge requests **(FREE)**
 
-Collaborating around Infrastructure as Code (IaC) changes requires both code changes and expected infrastructure changes to be checked and approved. GitLab provides a solution to help collaboration around Terraform code changes and their expected effects using the Merge Request pages. This way users don't have to build custom tools or rely on 3rd party solutions to streamline their IaC workflows.
+Collaborating around Infrastructure as Code (IaC) changes requires both code changes and expected infrastructure changes to be checked and approved. GitLab provides a solution to help collaboration around Terraform code changes and their expected effects using the merge request pages. This way users don't have to build custom tools or rely on 3rd party solutions to streamline their IaC workflows.
 
 ## Output Terraform Plan information into a merge request
 
@@ -16,14 +16,14 @@ enabling you to see statistics about the resources that Terraform creates,
 modifies, or destroys.
 
 WARNING:
-Like any other job artifact, Terraform Plan data is viewable by anyone with the Guest [role](../../permissions.md) on the repository.
+Like any other job artifact, Terraform Plan data is viewable by anyone with the Guest role for the repository.
 Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform Plan
 includes sensitive data such as passwords, access tokens, or certificates, we strongly
 recommend encrypting plan output or modifying the project visibility settings.
 
 ## Configure Terraform report artifacts
 
-GitLab ships with a [pre-built CI template](index.md#quick-start) that uses GitLab Managed Terraform state and integrates Terraform changes into merge requests. We recommend customizing the pre-built image and relying on the `gitlab-terraform` helper provided within for a quick setup.
+GitLab ships with a [pre-built CI template](index.md#integrate-your-project-with-terraform) that uses GitLab Managed Terraform state and integrates Terraform changes into merge requests. We recommend customizing the pre-built image and relying on the `gitlab-terraform` helper provided within for a quick setup.
 
 To manually configure a GitLab Terraform Report artifact:
 
@@ -83,7 +83,7 @@ To manually configure a GitLab Terraform Report artifact:
 
 1. Running the pipeline displays the widget in the merge request, like this:
 
-   ![Merge Request Terraform widget](img/terraform_plan_widget_v13_2.png)
+   ![merge request Terraform widget](img/terraform_plan_widget_v13_2.png)
 
 1. Clicking the **View Full Log** button in the widget takes you directly to the
    plan output present in the pipeline logs:
@@ -151,8 +151,8 @@ apply:
 
 ### Multiple Terraform Plan reports
 
-Starting with GitLab version 13.2, you can display multiple reports on the Merge Request
-page. The reports also display the `artifacts: name:`. See example below for a suggested setup.
+Starting with GitLab version 13.2, you can display multiple reports on a merge request.
+The reports also display the `artifacts: name:`. See example below for a suggested setup.
 
 ```yaml
 default:

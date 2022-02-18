@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees versions', :js do
+  include MergeRequestDiffHelpers
+
   let(:merge_request) do
     create(:merge_request).tap do |mr|
       mr.merge_request_diff.destroy!
@@ -27,8 +29,12 @@ RSpec.describe 'Merge request > User sees versions', :js do
       diff_file_selector = ".diff-file[id='#{file_id}']"
       line_code = "#{file_id}_#{line_code}"
 
-      page.within(diff_file_selector) do
-        first("[id='#{line_code}']").hover
+      page.within find_by_scrolling(diff_file_selector) do
+        line_code_element = first("[id='#{line_code}']")
+        # scrolling to element's bottom is required in order for .hover action to work
+        # otherwise, the element could be hidden underneath a sticky header
+        scroll_to_elements_bottom(line_code_element)
+        line_code_element.hover
         first("[id='#{line_code}'] [role='button']").click
 
         page.within("form[data-line-code='#{line_code}']") do

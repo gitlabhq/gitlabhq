@@ -1,10 +1,10 @@
 import { GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Ci environments dropdown', () => {
   let wrapper;
@@ -22,7 +22,6 @@ describe('Ci environments dropdown', () => {
 
     wrapper = mount(CiEnvironmentsDropdown, {
       store,
-      localVue,
       propsData: {
         value: term,
       },
@@ -74,7 +73,7 @@ describe('Ci environments dropdown', () => {
   describe('Environments found', () => {
     beforeEach(async () => {
       createComponent('prod');
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders only the environment searched for', () => {
@@ -111,7 +110,7 @@ describe('Ci environments dropdown', () => {
       it('should emit createClicked if an environment is clicked', async () => {
         createComponent('newscope');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         findDropdownItemByIndex(1).vm.$emit('click');
         expect(wrapper.emitted('createClicked')).toEqual([['newscope']]);
       });

@@ -1,6 +1,5 @@
 import { GlFilteredSearch, GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import { statusTokenConfig } from '~/runner/components/search_tokens/status_token_config';
 import TagToken from '~/runner/components/search_tokens/tag_token.vue';
@@ -29,27 +28,25 @@ describe('RunnerList', () => {
   };
 
   const createComponent = ({ props = {}, options = {} } = {}) => {
-    wrapper = extendedWrapper(
-      shallowMount(RunnerFilteredSearchBar, {
-        propsData: {
-          namespace: 'runners',
-          tokens: [],
-          value: {
-            runnerType: null,
-            filters: [],
-            sort: mockDefaultSort,
-          },
-          ...props,
+    wrapper = shallowMountExtended(RunnerFilteredSearchBar, {
+      propsData: {
+        namespace: 'runners',
+        tokens: [],
+        value: {
+          runnerType: null,
+          filters: [],
+          sort: mockDefaultSort,
         },
-        stubs: {
-          FilteredSearch,
-          GlFilteredSearch,
-          GlDropdown,
-          GlDropdownItem,
-        },
-        ...options,
-      }),
-    );
+        ...props,
+      },
+      stubs: {
+        FilteredSearch,
+        GlFilteredSearch,
+        GlDropdown,
+        GlDropdownItem,
+      },
+      ...options,
+    });
   };
 
   beforeEach(() => {

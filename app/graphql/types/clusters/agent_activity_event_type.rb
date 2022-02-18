@@ -5,7 +5,7 @@ module Types
     class AgentActivityEventType < BaseObject
       graphql_name 'ClusterAgentActivityEvent'
 
-      authorize :admin_cluster
+      authorize :read_cluster
 
       connection_type_class(Types::CountableConnectionType)
 

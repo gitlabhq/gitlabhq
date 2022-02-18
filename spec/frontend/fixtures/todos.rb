@@ -7,7 +7,7 @@ RSpec.describe 'Todos (JavaScript fixtures)' do
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project_empty_repo, namespace: namespace, path: 'todos-project') }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:issue_1) { create(:issue, title: 'issue_1', project: project) }
   let!(:todo_1) { create(:todo, user: user, project: project, target: issue_1, created_at: 5.hours.ago) }
   let(:issue_2) { create(:issue, title: 'issue_2', project: project) }

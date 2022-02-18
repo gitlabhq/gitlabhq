@@ -7,7 +7,7 @@ RSpec.describe Projects::MirrorsController do
 
   shared_examples 'only admin is allowed when mirroring is disabled' do
     let(:subject_action) { raise 'subject_action is required' }
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
     let(:project_settings_path) { project_settings_repository_path(project, anchor: 'js-push-remote-settings') }
 
     context 'when project mirroring is enabled' do
@@ -88,7 +88,7 @@ RSpec.describe Projects::MirrorsController do
 
     context 'when the current project is not a mirror' do
       it 'allows to create a remote mirror' do
-        sign_in(project.owner)
+        sign_in(project.first_owner)
 
         expect do
           do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => 'http://foo.com' } })
@@ -106,7 +106,7 @@ RSpec.describe Projects::MirrorsController do
       end
 
       it 'processes a successful update' do
-        sign_in(project.owner)
+        sign_in(project.first_owner)
         do_put(project, remote_mirrors_attributes: { '0' => ssh_mirror_attributes })
 
         expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
@@ -126,7 +126,7 @@ RSpec.describe Projects::MirrorsController do
     let(:project) { create(:project, :repository, :remote_mirror) }
 
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
     end
 
     context 'With valid URL for a push' do
@@ -169,7 +169,7 @@ RSpec.describe Projects::MirrorsController do
     let(:cache) { SshHostKey.new(project: project, url: "ssh://example.com:22") }
 
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
     end
 
     context 'invalid URLs' do

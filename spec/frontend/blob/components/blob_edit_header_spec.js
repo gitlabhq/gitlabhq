@@ -1,5 +1,6 @@
 import { GlFormInput, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import BlobEditHeader from '~/blob/components/blob_edit_header.vue';
 
 describe('Blob Header Editing', () => {
@@ -40,7 +41,7 @@ describe('Blob Header Editing', () => {
   });
 
   describe('functionality', () => {
-    it('emits input event when the blob name is changed', () => {
+    it('emits input event when the blob name is changed', async () => {
       const inputComponent = wrapper.find(GlFormInput);
       const newValue = 'bar.txt';
 
@@ -51,9 +52,8 @@ describe('Blob Header Editing', () => {
       });
       inputComponent.vm.$emit('change');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().input[0]).toEqual([newValue]);
-      });
+      await nextTick();
+      expect(wrapper.emitted().input[0]).toEqual([newValue]);
     });
   });
 

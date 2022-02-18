@@ -296,7 +296,7 @@ Instead of a queue, a queue namespace can also be provided, to have the process
 automatically listen on all queues in that namespace without needing to
 explicitly list all the queue names. For more information about queue namespaces,
 see the relevant section in the
-[Sidekiq style guide](../../development/sidekiq_style_guide.md#queue-namespaces).
+[Sidekiq development documentation](../../development/sidekiq/index.md#queue-namespaces).
 
 For example, say you want to start 2 extra processes: one to process the
 `process_commit` queue, and one to process the `post_receive` queue. This can be

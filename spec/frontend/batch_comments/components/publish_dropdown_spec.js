@@ -1,13 +1,13 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import PreviewDropdown from '~/batch_comments/components/preview_dropdown.vue';
 import { createStore } from '~/mr_notes/stores';
 import '~/behaviors/markdown/render_gfm';
 import { createDraft } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Batch comments publish dropdown component', () => {
   let wrapper;

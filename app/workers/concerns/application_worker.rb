@@ -13,7 +13,6 @@ module ApplicationWorker
   include Gitlab::SidekiqVersioning::Worker
 
   LOGGING_EXTRA_KEY = 'extra'
-  DEFAULT_DELAY_INTERVAL = 1
   SAFE_PUSH_BULK_LIMIT = 1000
 
   included do
@@ -90,18 +89,6 @@ module ApplicationWorker
       super
 
       validate_worker_attributes!
-    end
-
-    def perform_async(*args)
-      return super if Gitlab::Database::LoadBalancing.primary_only?
-
-      # Worker execution for workers with data_consistency set to :delayed or :sticky
-      # will be delayed to give replication enough time to complete
-      if utilizes_load_balancing_capabilities? && Feature.disabled?(:skip_scheduling_workers_for_replicas, default_enabled: :yaml)
-        perform_in(delay_interval, *args)
-      else
-        super
-      end
     end
 
     def set_queue
@@ -192,12 +179,6 @@ module ApplicationWorker
       in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
         Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch)
       end
-    end
-
-    protected
-
-    def delay_interval
-      DEFAULT_DELAY_INTERVAL.seconds
     end
 
     private

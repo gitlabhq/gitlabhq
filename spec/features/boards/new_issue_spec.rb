@@ -3,12 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'Issue Boards new issue', :js do
-  let_it_be(:project)      { create(:project, :public) }
-  let_it_be(:board)        { create(:board, project: project) }
-  let_it_be(:backlog_list) { create(:backlog_list, board: board) }
-  let_it_be(:label)        { create(:label, project: project, name: 'Label 1') }
-  let_it_be(:list)         { create(:list, board: board, label: label, position: 0) }
-  let_it_be(:user)         { create(:user) }
+  let_it_be(:project)        { create(:project, :public) }
+  let_it_be(:board)          { create(:board, project: project) }
+  let_it_be(:backlog_list)   { create(:backlog_list, board: board) }
+  let_it_be(:label)          { create(:label, project: project, name: 'Label 1') }
+  let_it_be(:list)           { create(:list, board: board, label: label, position: 0) }
+  let_it_be(:user)           { create(:user) }
+  let_it_be(:existing_issue) { create(:issue, project: project, title: 'other issue', relative_position: 50) }
 
   let(:board_list_header) { first('[data-testid="board-list-header"]') }
   let(:project_select_dropdown) { find('[data-testid="project-select-dropdown"]') }
@@ -56,7 +57,7 @@ RSpec.describe 'Issue Boards new issue', :js do
       end
     end
 
-    it 'creates new issue and opens sidebar' do
+    it 'creates new issue, places it on top of the list, and opens sidebar' do
       page.within(first('.board')) do
         click_button 'New issue'
       end
@@ -69,11 +70,13 @@ RSpec.describe 'Issue Boards new issue', :js do
       wait_for_requests
 
       page.within(first('.board [data-testid="issue-count-badge"]')) do
-        expect(page).to have_content('1')
+        expect(page).to have_content('2')
       end
 
       page.within(first('.board-card')) do
         issue = project.issues.find_by_title('bug')
+
+        expect(issue.relative_position).to be < existing_issue.relative_position
 
         expect(page).to have_content(issue.to_reference)
         expect(page).to have_link(issue.title, href: /#{issue_path(issue)}/)

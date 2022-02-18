@@ -59,7 +59,11 @@ export default {
 </script>
 <template>
   <!-- eslint-disable @gitlab/vue-no-data-toggle -->
-  <div :id="computedJobId" class="ci-job-dropdown-container dropdown dropright">
+  <div
+    :id="computedJobId"
+    class="ci-job-dropdown-container dropdown dropright"
+    data-qa-selector="job_dropdown_container"
+  >
     <button
       type="button"
       data-toggle="dropdown"
@@ -79,7 +83,10 @@ export default {
       </div>
     </button>
 
-    <ul class="dropdown-menu big-pipeline-graph-dropdown-menu js-grouped-pipeline-dropdown">
+    <ul
+      class="dropdown-menu big-pipeline-graph-dropdown-menu js-grouped-pipeline-dropdown"
+      data-qa-selector="jobs_dropdown_menu"
+    >
       <li class="scrollable-menu">
         <ul>
           <li v-for="job in group.jobs" :key="job.id">

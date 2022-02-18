@@ -1,0 +1,4 @@
+query environmentToChangeCanary {
+  environmentToChangeCanary @client
+  weight @client
+}

@@ -57,7 +57,12 @@ export default {
         .fetchMilestones(searchTerm)
         .then((response) => {
           const data = Array.isArray(response) ? response : response.data;
-          this.milestones = data.slice().sort(sortMilestonesByDueDate);
+
+          if (this.config.shouldSkipSort) {
+            this.milestones = data;
+          } else {
+            this.milestones = data.slice().sort(sortMilestonesByDueDate);
+          }
         })
         .catch(() => {
           createFlash({ message: __('There was a problem fetching milestones.') });

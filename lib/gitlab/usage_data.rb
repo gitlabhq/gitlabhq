@@ -41,22 +41,12 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include Gitlab::Usage::TimeFrame
 
-      def data(force_refresh: false)
-        Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) do
-          uncached_data
-        end
-      end
-
-      def uncached_data
+      def data
         clear_memoized
 
         with_finished_at(:recording_ce_finished_at) do
           usage_data_metrics
         end
-      end
-
-      def to_json(force_refresh: false)
-        data(force_refresh: force_refresh).to_json
       end
 
       def license_usage_data
@@ -131,7 +121,6 @@ module Gitlab
             issues_created_manually_from_alerts: issues_created_manually_from_alerts,
             incident_issues: count(::Issue.incident, start: minimum_id(Issue), finish: maximum_id(Issue)),
             alert_bot_incident_issues: count(::Issue.authored(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue)),
-            incident_labeled_issues: count(::Issue.with_label_attributes(::IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES), start: minimum_id(Issue), finish: maximum_id(Issue)),
             keys: count(Key),
             label_lists: count(List.label),
             lfs_objects: count(LfsObject),

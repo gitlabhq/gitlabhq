@@ -7,7 +7,7 @@ RSpec.describe Projects::JobsController, '(JavaScript fixtures)', type: :control
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'builds-project') }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id) }
   let!(:build_with_artifacts) { create(:ci_build, :success, :artifacts, :trace_artifact, pipeline: pipeline, stage: 'test', artifacts_expire_at: Time.now + 18.months) }
   let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline, stage: 'build') }

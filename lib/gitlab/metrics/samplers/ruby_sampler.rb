@@ -7,20 +7,18 @@ module Gitlab
         DEFAULT_SAMPLING_INTERVAL_SECONDS = 60
         GC_REPORT_BUCKETS = [0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 1].freeze
 
-        def initialize(...)
+        def initialize(prefix: nil, **options)
+          @prefix = prefix
+
           GC::Profiler.clear
 
           metrics[:process_start_time_seconds].set(labels, Time.now.to_i)
 
-          super(...)
+          super(**options)
         end
 
         def metrics
           @metrics ||= init_metrics
-        end
-
-        def with_prefix(prefix, name)
-          "ruby_#{prefix}_#{name}".to_sym
         end
 
         def to_doc_string(name)
@@ -33,19 +31,19 @@ module Gitlab
 
         def init_metrics
           metrics = {
-            file_descriptors:                  ::Gitlab::Metrics.gauge(with_prefix(:file, :descriptors), 'File descriptors used', labels),
-            process_cpu_seconds_total:         ::Gitlab::Metrics.gauge(with_prefix(:process, :cpu_seconds_total), 'Process CPU seconds total'),
-            process_max_fds:                   ::Gitlab::Metrics.gauge(with_prefix(:process, :max_fds), 'Process max fds'),
-            process_resident_memory_bytes:     ::Gitlab::Metrics.gauge(with_prefix(:process, :resident_memory_bytes), 'Memory used (RSS)', labels),
-            process_unique_memory_bytes:       ::Gitlab::Metrics.gauge(with_prefix(:process, :unique_memory_bytes), 'Memory used (USS)', labels),
-            process_proportional_memory_bytes: ::Gitlab::Metrics.gauge(with_prefix(:process, :proportional_memory_bytes), 'Memory used (PSS)', labels),
-            process_start_time_seconds:        ::Gitlab::Metrics.gauge(with_prefix(:process, :start_time_seconds), 'Process start time seconds'),
-            sampler_duration:                  ::Gitlab::Metrics.counter(with_prefix(:sampler, :duration_seconds_total), 'Sampler time', labels),
-            gc_duration_seconds:               ::Gitlab::Metrics.histogram(with_prefix(:gc, :duration_seconds), 'GC time', labels, GC_REPORT_BUCKETS)
+            file_descriptors:                  ::Gitlab::Metrics.gauge(metric_name(:file, :descriptors), 'File descriptors used', labels),
+            process_cpu_seconds_total:         ::Gitlab::Metrics.gauge(metric_name(:process, :cpu_seconds_total), 'Process CPU seconds total'),
+            process_max_fds:                   ::Gitlab::Metrics.gauge(metric_name(:process, :max_fds), 'Process max fds'),
+            process_resident_memory_bytes:     ::Gitlab::Metrics.gauge(metric_name(:process, :resident_memory_bytes), 'Memory used (RSS)', labels),
+            process_unique_memory_bytes:       ::Gitlab::Metrics.gauge(metric_name(:process, :unique_memory_bytes), 'Memory used (USS)', labels),
+            process_proportional_memory_bytes: ::Gitlab::Metrics.gauge(metric_name(:process, :proportional_memory_bytes), 'Memory used (PSS)', labels),
+            process_start_time_seconds:        ::Gitlab::Metrics.gauge(metric_name(:process, :start_time_seconds), 'Process start time seconds'),
+            sampler_duration:                  ::Gitlab::Metrics.counter(metric_name(:sampler, :duration_seconds_total), 'Sampler time', labels),
+            gc_duration_seconds:               ::Gitlab::Metrics.histogram(metric_name(:gc, :duration_seconds), 'GC time', labels, GC_REPORT_BUCKETS)
           }
 
           GC.stat.keys.each do |key|
-            metrics[key] = ::Gitlab::Metrics.gauge(with_prefix(:gc_stat, key), to_doc_string(key), labels)
+            metrics[key] = ::Gitlab::Metrics.gauge(metric_name(:gc_stat, key), to_doc_string(key), labels)
           end
 
           metrics
@@ -64,6 +62,12 @@ module Gitlab
         end
 
         private
+
+        def metric_name(group, metric)
+          name = "ruby_#{group}_#{metric}"
+          name = "#{@prefix}_#{name}" if @prefix.present?
+          name.to_sym
+        end
 
         def sample_gc
           # Observe all GC samples

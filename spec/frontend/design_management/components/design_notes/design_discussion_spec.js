@@ -1,6 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
+import { nextTick } from 'vue';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import DesignNote from '~/design_management/components/design_notes/design_note.vue';
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
@@ -119,12 +120,11 @@ describe('Design discussions component', () => {
       expect(findResolveIcon().exists()).toBe(false);
     });
 
-    it('does not render a checkbox in reply form', () => {
+    it('does not render a checkbox in reply form', async () => {
       findReplyPlaceholder().vm.$emit('focus');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findResolveCheckbox().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findResolveCheckbox().exists()).toBe(false);
     });
   });
 
@@ -150,13 +150,12 @@ describe('Design discussions component', () => {
       expect(findResolveIcon().props('name')).toBe('check-circle');
     });
 
-    it('renders a checkbox with Resolve thread text in reply form', () => {
+    it('renders a checkbox with Resolve thread text in reply form', async () => {
       findReplyPlaceholder().vm.$emit('focus');
       wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findResolveCheckbox().text()).toBe('Resolve thread');
-      });
+      await nextTick();
+      expect(findResolveCheckbox().text()).toBe('Resolve thread');
     });
 
     it('does not render resolved message', () => {
@@ -216,7 +215,7 @@ describe('Design discussions component', () => {
       findReplyForm().vm.$emit('submitForm');
 
       await mutate();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
 
@@ -226,9 +225,9 @@ describe('Design discussions component', () => {
     });
 
     describe('when replies are expanded', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         findRepliesWidget().vm.$emit('toggle');
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('renders replies widget with collapsed prop equal to false', () => {
@@ -243,26 +242,24 @@ describe('Design discussions component', () => {
         expect(findReplyPlaceholder().isVisible()).toBe(true);
       });
 
-      it('renders a checkbox with Unresolve thread text in reply form', () => {
+      it('renders a checkbox with Unresolve thread text in reply form', async () => {
         findReplyPlaceholder().vm.$emit('focus');
         wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findResolveCheckbox().text()).toBe('Unresolve thread');
-        });
+        await nextTick();
+        expect(findResolveCheckbox().text()).toBe('Unresolve thread');
       });
     });
   });
 
-  it('hides reply placeholder and opens form on placeholder click', () => {
+  it('hides reply placeholder and opens form on placeholder click', async () => {
     createComponent();
     findReplyPlaceholder().vm.$emit('focus');
     wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findReplyPlaceholder().exists()).toBe(false);
-      expect(findReplyForm().exists()).toBe(true);
-    });
+    await nextTick();
+    expect(findReplyPlaceholder().exists()).toBe(false);
+    expect(findReplyForm().exists()).toBe(true);
   });
 
   it('calls mutation on submitting form and closes the form', async () => {
@@ -275,28 +272,24 @@ describe('Design discussions component', () => {
     expect(mutate).toHaveBeenCalledWith(mutationVariables);
 
     await mutate();
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findReplyForm().exists()).toBe(false);
   });
 
-  it('clears the discussion comment on closing comment form', () => {
+  it('clears the discussion comment on closing comment form', async () => {
     createComponent(
       { discussionWithOpenForm: defaultMockDiscussion.id },
       { discussionComment: 'test', isFormRendered: true },
     );
 
-    return wrapper.vm
-      .$nextTick()
-      .then(() => {
-        findReplyForm().vm.$emit('cancel-form');
+    await nextTick();
+    findReplyForm().vm.$emit('cancel-form');
 
-        expect(wrapper.vm.discussionComment).toBe('');
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(findReplyForm().exists()).toBe(false);
-      });
+    expect(wrapper.vm.discussionComment).toBe('');
+
+    await nextTick();
+    expect(findReplyForm().exists()).toBe(false);
   });
 
   describe('when any note from a discussion is active', () => {
@@ -322,7 +315,7 @@ describe('Design discussions component', () => {
     );
   });
 
-  it('calls toggleResolveDiscussion mutation on resolve thread button click', () => {
+  it('calls toggleResolveDiscussion mutation on resolve thread button click', async () => {
     createComponent();
     findResolveButton().trigger('click');
     expect(mutate).toHaveBeenCalledWith({
@@ -332,9 +325,8 @@ describe('Design discussions component', () => {
         resolve: true,
       },
     });
-    return wrapper.vm.$nextTick(() => {
-      expect(findResolveLoadingIcon().exists()).toBe(true);
-    });
+    await nextTick();
+    expect(findResolveLoadingIcon().exists()).toBe(true);
   });
 
   it('calls toggleResolveDiscussion mutation after adding a note if checkbox was checked', () => {

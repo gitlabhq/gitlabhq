@@ -26,7 +26,7 @@ If you are using a continuous deployment workflow and want to ensure that concur
 ## Restrict write access to a critical environment
 
 By default, environments can be modified by any team member that has at least the
-[Developer role](../../user/permissions.md#project-members-permissions).
+Developer role.
 If you want to restrict write access to a critical environment (for example a `production` environment),
 you can set up [protected environments](protected_environments.md).
 
@@ -93,7 +93,7 @@ If you want to prevent deployments for a particular period, for example during a
 vacation period when most employees are out, you can set up a [Deploy Freeze](../../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 During a deploy freeze period, no deployment can be executed. This is helpful to
 ensure that deployments do not happen unexpectedly.
-  
+
 ## Setting appropriate roles to your project
 
 GitLab supports several different roles that can be assigned to your project members. See
@@ -119,7 +119,7 @@ The other pipelines don't get the protected variable. You can also
 We recommend that you use protected variables on protected environments to make sure that the
 secrets aren't exposed unintentionally. You can also define production secrets on the
 [runner side](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
-This prevents other users with the [Maintainer role](../../user/permissions.md) from reading the secrets and makes sure
+This prevents other users with the Maintainer role from reading the secrets and makes sure
 that the runner only runs on protected branches.
 
 For more information, see [pipeline security](../pipelines/index.md#pipeline-security-on-protected-branches).

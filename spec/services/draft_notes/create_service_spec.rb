@@ -92,7 +92,7 @@ RSpec.describe DraftNotes::CreateService do
 
         expect(merge_request).to receive_message_chain(:diffs, :clear_cache)
 
-        create_draft(note: 'This is a test')
+        create_draft(note: 'This is a test', line_code: '123')
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe DraftNotes::CreateService do
 
         expect(merge_request).not_to receive(:diffs)
 
-        create_draft(note: 'This is a test')
+        create_draft(note: 'This is a test', line_code: '123')
       end
     end
   end

@@ -8,7 +8,7 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu do
     create(:user).tap { |u| project.add_guest(u) }
   end
 
-  let(:owner) { project.owner }
+  let(:owner) { project.first_owner }
   let(:current_user) { owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: current_user, container: project, current_ref: project.repository.root_ref) }
 

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Cookies from 'js-cookie';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
 
 export default class UserCallout {
   constructor(options = {}) {
@@ -9,7 +9,7 @@ export default class UserCallout {
 
     this.userCalloutBody = $(`.${className}`);
     this.cookieName = this.userCalloutBody.data('uid');
-    this.isCalloutDismissed = Cookies.get(this.cookieName);
+    this.isCalloutDismissed = getCookie(this.cookieName);
     this.init();
   }
 
@@ -30,7 +30,7 @@ export default class UserCallout {
       cookieOptions.path = this.userCalloutBody.data('projectPath');
     }
 
-    Cookies.set(this.cookieName, 'true', cookieOptions);
+    setCookie(this.cookieName, 'true', cookieOptions);
 
     if ($currentTarget.hasClass('close') || $currentTarget.hasClass('js-close')) {
       this.userCalloutBody.remove();

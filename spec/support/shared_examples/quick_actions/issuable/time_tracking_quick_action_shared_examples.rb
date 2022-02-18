@@ -66,7 +66,7 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
 
   it 'shows the help state when icon is clicked' do
     page.within '.time-tracking-component-wrap' do
-      find('.help-button').click
+      find('[data-testid="helpButton"]').click
       expect(page).to have_content 'Track time with quick actions'
       expect(page).to have_content 'Learn more'
     end
@@ -92,8 +92,8 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
 
   it 'hides the help state when close icon is clicked' do
     page.within '.time-tracking-component-wrap' do
-      find('.help-button').click
-      find('.close-help-button').click
+      find('[data-testid="helpButton"]').click
+      find('[data-testid="closeHelpButton"]').click
 
       expect(page).not_to have_content 'Track time with quick actions'
       expect(page).not_to have_content 'Learn more'
@@ -102,7 +102,7 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
 
   it 'displays the correct help url' do
     page.within '.time-tracking-component-wrap' do
-      find('.help-button').click
+      find('[data-testid="helpButton"]').click
 
       expect(find_link('Learn more')[:href]).to have_content('/help/user/project/time_tracking.md')
     end

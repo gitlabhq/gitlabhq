@@ -7,6 +7,7 @@ module QA
   module Specs
     class Runner < Scenario::Template
       attr_accessor :tty, :tags, :options
+      RegexMismatchError = Class.new(StandardError)
 
       DEFAULT_TEST_PATH_ARGS = ['--', File.expand_path('./features', __dir__)].freeze
       DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
@@ -72,15 +73,47 @@ module QA
         elsif Runtime::Scenario.attributes[:count_examples_only]
           args.unshift('--dry-run')
           out = StringIO.new
+
           RSpec::Core::Runner.run(args.flatten, $stderr, out).tap do |status|
             abort if status.nonzero?
           end
-          $stdout.puts out.string.match(/(\d+) examples,/)[1]
+
+          begin
+            total_examples = out.string.match(/(\d+) examples?,/)[1]
+          rescue StandardError
+            raise RegexMismatchError, 'Rspec output did not match regex'
+          end
+
+          filename = build_filename
+
+          File.open(filename, 'w') { |f| f.write(total_examples) } if total_examples.to_i > 0
+
+          $stdout.puts "Total examples in #{Runtime::Scenario.klass}: #{total_examples}#{total_examples.to_i > 0 ? ". Saved to file: #{filename}" : ''}"
         else
           RSpec::Core::Runner.run(args.flatten, *DEFAULT_STD_ARGS).tap do |status|
             abort if status.nonzero?
           end
         end
+      end
+
+      private
+
+      def build_filename
+        filename = Runtime::Scenario.klass.split('::').last(3).join('_').downcase
+
+        tags = []
+        options.reduce do |before, after|
+          tags << after if %w[--tag -t].include?(before)
+          after
+        end
+        tags = tags.compact.join('_')
+
+        filename.concat("_#{tags}") unless tags.empty?
+
+        filename.concat('.txt')
+
+        FileUtils.mkdir_p('no_of_examples')
+        File.join('no_of_examples', filename)
       end
     end
   end

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import SuggestionsComponent from '~/vue_shared/components/markdown/suggestions.vue';
 
 const MOCK_DATA = {
@@ -51,7 +51,7 @@ describe('Suggestion component', () => {
   let vm;
   let diffTable;
 
-  beforeEach((done) => {
+  beforeEach(async () => {
     const Component = Vue.extend(SuggestionsComponent);
 
     vm = new Component({
@@ -62,7 +62,7 @@ describe('Suggestion component', () => {
 
     jest.spyOn(vm, 'renderSuggestions').mockImplementation(() => {});
     vm.renderSuggestions();
-    Vue.nextTick(done);
+    await nextTick();
   });
 
   describe('mounted', () => {

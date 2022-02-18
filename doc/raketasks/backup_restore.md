@@ -828,6 +828,7 @@ For installations from source:
 
 The `CRON=1` environment setting directs the backup script to hide all progress
 output if there aren't any errors. This is recommended to reduce cron spam.
+When troubleshooting backup problems, however, replace `CRON=1` with `--trace` to log verbosely.
 
 ### Limit backup lifetime for local files (prune old backups)
 
@@ -943,7 +944,7 @@ First ensure your backup tar file is in the backup directory described in the
 
 ```shell
 sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/
-sudo chown git.git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
+sudo chown git:git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
 ```
 
 Stop the processes that are connected to the database. Leave the rest of GitLab
@@ -965,6 +966,7 @@ sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 ```
 
 Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:backup:restore` instead.
+Some [known non-blocking error messages may appear](#restoring-database-backup-using-omnibus-packages-outputs-warnings).
 
 WARNING:
 `gitlab-rake gitlab:backup:restore` doesn't set the correct file system

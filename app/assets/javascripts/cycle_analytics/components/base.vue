@@ -1,12 +1,12 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import Cookies from 'js-cookie';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
+import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
 import { toYmd } from '~/analytics/shared/utils';
 import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/cycle_analytics/components/stage_table.vue';
 import ValueStreamFilters from '~/cycle_analytics/components/value_stream_filters.vue';
-import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 import { __ } from '~/locale';
 import { SUMMARY_METRICS_REQUEST, METRICS_REQUESTS } from '../constants';
@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
+      isOverviewDialogDismissed: getCookie(OVERVIEW_DIALOG_COOKIE),
     };
   },
   computed: {
@@ -134,7 +134,7 @@ export default {
     },
     dismissOverviewDialog() {
       this.isOverviewDialogDismissed = true;
-      Cookies.set(OVERVIEW_DIALOG_COOKIE, '1', { expires: 365 });
+      setCookie(OVERVIEW_DIALOG_COOKIE, '1');
     },
     isUserAllowed(id) {
       const { permissions } = this;

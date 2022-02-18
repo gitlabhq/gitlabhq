@@ -1,5 +1,4 @@
-import Cookies from 'js-cookie';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
 
 class Landing {
   constructor(landingElement, dismissButton, cookieName) {
@@ -27,11 +26,11 @@ class Landing {
 
   dismissLanding() {
     this.landingElement.classList.add('hidden');
-    Cookies.set(this.cookieName, 'true', { expires: 365 });
+    setCookie(this.cookieName, 'true');
   }
 
   isDismissed() {
-    return parseBoolean(Cookies.get(this.cookieName));
+    return parseBoolean(getCookie(this.cookieName));
   }
 }
 

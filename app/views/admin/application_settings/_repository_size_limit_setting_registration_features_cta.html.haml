@@ -1,0 +1,8 @@
+- return unless registration_features_can_be_prompted?
+
+.form-group
+  = form.label :disabled_repository_size_limit, class: 'label-bold' do
+    = _('Size limit per repository (MB)')
+  = form.number_field :disabled_repository_size_limit, value: '', class: 'form-control gl-form-input', disabled: true
+  %span.form-text.text-muted
+    = render 'shared/registration_features_discovery_message'

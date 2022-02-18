@@ -1,5 +1,6 @@
 import { GlSprintf, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { scrollDown } from '~/lib/utils/scroll_utils';
 import EnvironmentLogs from '~/logs/components/environment_logs.vue';
 
@@ -338,35 +339,32 @@ describe('EnvironmentLogs', () => {
       expect(store.dispatch).not.toHaveBeenCalledWith(`${module}/fetchMoreLogsPrepend`, undefined);
     });
 
-    it('`scroll` on a scrollable target results in enabled scroll buttons', () => {
+    it('`scroll` on a scrollable target results in enabled scroll buttons', async () => {
       const target = { scrollTop: 10, clientHeight: 10, scrollHeight: 21 };
 
       state.logs.isLoading = true;
       findInfiniteScroll().vm.$emit('scroll', { target });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findLogControlButtons().props('scrollDownButtonDisabled')).toEqual(false);
-      });
+      await nextTick();
+      expect(findLogControlButtons().props('scrollDownButtonDisabled')).toEqual(false);
     });
 
-    it('`scroll` on a non-scrollable target in disabled scroll buttons', () => {
+    it('`scroll` on a non-scrollable target in disabled scroll buttons', async () => {
       const target = { scrollTop: 10, clientHeight: 10, scrollHeight: 20 };
 
       state.logs.isLoading = true;
       findInfiniteScroll().vm.$emit('scroll', { target });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findLogControlButtons().props('scrollDownButtonDisabled')).toEqual(true);
-      });
+      await nextTick();
+      expect(findLogControlButtons().props('scrollDownButtonDisabled')).toEqual(true);
     });
 
-    it('`scroll` on no target results in disabled scroll buttons', () => {
+    it('`scroll` on no target results in disabled scroll buttons', async () => {
       state.logs.isLoading = true;
       findInfiniteScroll().vm.$emit('scroll', { target: undefined });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findLogControlButtons().props('scrollDownButtonDisabled')).toEqual(true);
-      });
+      await nextTick();
+      expect(findLogControlButtons().props('scrollDownButtonDisabled')).toEqual(true);
     });
   });
 });

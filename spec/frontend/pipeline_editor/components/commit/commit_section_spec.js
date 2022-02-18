@@ -1,17 +1,20 @@
 import VueApollo from 'vue-apollo';
 import { GlFormTextarea, GlFormInput, GlLoadingIcon } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
 import {
   COMMIT_ACTION_CREATE,
   COMMIT_ACTION_UPDATE,
   COMMIT_SUCCESS,
+  COMMIT_SUCCESS_WITH_REDIRECT,
 } from '~/pipeline_editor/constants';
+import { resolvers } from '~/pipeline_editor/graphql/resolvers';
 import commitCreate from '~/pipeline_editor/graphql/mutations/commit_ci_file.mutation.graphql';
+import getCurrentBranch from '~/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
 import updatePipelineEtag from '~/pipeline_editor/graphql/mutations/client/update_pipeline_etag.mutation.graphql';
 
 import {
@@ -23,17 +26,7 @@ import {
   mockCommitMessage,
   mockDefaultBranch,
   mockProjectFullPath,
-  mockNewMergeRequestPath,
 } from '../../mock_data';
-
-const localVue = createLocalVue();
-
-jest.mock('~/lib/utils/url_utility', () => ({
-  redirectTo: jest.fn(),
-  refreshCurrentPage: jest.fn(),
-  objectToQuery: jest.requireActual('~/lib/utils/url_utility').objectToQuery,
-  mergeUrlParams: jest.requireActual('~/lib/utils/url_utility').mergeUrlParams,
-}));
 
 const mockVariables = {
   action: COMMIT_ACTION_UPDATE,
@@ -48,7 +41,6 @@ const mockVariables = {
 const mockProvide = {
   ciConfigPath: mockCiConfigPath,
   projectFullPath: mockProjectFullPath,
-  newMergeRequestPath: mockNewMergeRequestPath,
 };
 
 describe('Pipeline Editor | Commit section', () => {
@@ -79,11 +71,23 @@ describe('Pipeline Editor | Commit section', () => {
 
   const createComponentWithApollo = (options) => {
     const handlers = [[commitCreate, mockMutateCommitData]];
-    localVue.use(VueApollo);
-    mockApollo = createMockApollo(handlers);
+    Vue.use(VueApollo);
+    mockApollo = createMockApollo(handlers, resolvers);
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getCurrentBranch,
+      data: {
+        workBranches: {
+          __typename: 'BranchList',
+          current: {
+            __typename: 'WorkBranch',
+            name: mockDefaultBranch,
+          },
+        },
+      },
+    });
 
     const apolloConfig = {
-      localVue,
       apolloProvider: mockApollo,
     };
 
@@ -209,20 +213,23 @@ describe('Pipeline Editor | Commit section', () => {
     const newBranch = 'new-branch';
 
     beforeEach(async () => {
+      mockMutateCommitData.mockResolvedValue(mockCommitCreateResponse);
       createComponentWithApollo();
+      mockMutateCommitData.mockResolvedValue(mockCommitCreateResponse);
       await submitCommit({
         branch: newBranch,
         openMergeRequest: true,
       });
     });
 
-    it('redirects to the merge request page with source and target branches', () => {
-      const branchesQuery = objectToQuery({
-        'merge_request[source_branch]': newBranch,
-        'merge_request[target_branch]': mockDefaultBranch,
-      });
-
-      expect(redirectTo).toHaveBeenCalledWith(`${mockNewMergeRequestPath}?${branchesQuery}`);
+    it('emits a commit event with the right type, sourceBranch and targetBranch', () => {
+      expect(wrapper.emitted('commit')).toBeTruthy();
+      expect(wrapper.emitted('commit')[0]).toMatchObject([
+        {
+          type: COMMIT_SUCCESS_WITH_REDIRECT,
+          params: { sourceBranch: newBranch, targetBranch: mockDefaultBranch },
+        },
+      ]);
     });
   });
 

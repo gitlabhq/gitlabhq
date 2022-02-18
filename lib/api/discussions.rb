@@ -252,7 +252,7 @@ module API
           .fresh
 
         # Without RendersActions#prepare_notes_for_rendering,
-        # Note#system_note_with_references_visible_for? will attempt to render
+        # Note#system_note_visible_for? will attempt to render
         # Markdown references mentioned in the note to see whether they
         # should be redacted. For notes that reference a commit, this
         # would also incur a Gitaly call to verify the commit exists.

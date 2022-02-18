@@ -31,11 +31,17 @@ module Gitlab
 
         def find
           find_with_cache do
-            find_object || klass.create(prepare_attributes)
+            find_object || create_object
           end
         end
 
         protected
+
+        def create_object
+          klass.transaction do
+            klass.create(prepare_attributes)
+          end
+        end
 
         def where_clauses
           raise NotImplementedError

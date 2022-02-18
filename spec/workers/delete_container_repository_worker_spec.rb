@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe DeleteContainerRepositoryWorker do
   let(:registry) { create(:container_repository) }
   let(:project) { registry.project }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   subject { described_class.new }
 

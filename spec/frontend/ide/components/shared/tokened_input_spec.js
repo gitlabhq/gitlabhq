@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import TokenedInput from '~/ide/components/shared/tokened_input.vue';
 
@@ -54,15 +54,11 @@ describe('IDE shared/TokenedInput', () => {
     expect(vm.$refs.input).toHaveValue(TEST_VALUE);
   });
 
-  it('renders placeholder, when tokens are empty', (done) => {
+  it('renders placeholder, when tokens are empty', async () => {
     vm.tokens = [];
 
-    vm.$nextTick()
-      .then(() => {
-        expect(vm.$refs.input).toHaveAttr('placeholder', TEST_PLACEHOLDER);
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+    expect(vm.$refs.input).toHaveAttr('placeholder', TEST_PLACEHOLDER);
   });
 
   it('triggers "removeToken" on token click', () => {

@@ -17,6 +17,7 @@ class DependencyProxy::Manifest < ApplicationRecord
   validates :digest, presence: true
 
   scope :order_id_desc, -> { reorder(id: :desc) }
+  scope :with_files_stored_locally, -> { where(file_store: ::DependencyProxy::FileUploader::Store::LOCAL) }
 
   mount_file_store_uploader DependencyProxy::FileUploader
 
@@ -24,3 +25,5 @@ class DependencyProxy::Manifest < ApplicationRecord
     find_by(file_name: file_name) || find_by(digest: digest)
   end
 end
+
+DependencyProxy::Manifest.prepend_mod_with('DependencyProxy::Manifest')

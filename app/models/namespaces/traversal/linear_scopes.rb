@@ -12,7 +12,7 @@ module Namespaces
         def as_ids
           return super unless use_traversal_ids?
 
-          select('namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)] AS id')
+          select(Arel.sql('namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)]').as('id'))
         end
 
         def roots
@@ -53,7 +53,7 @@ module Namespaces
         end
 
         def self_and_descendants(include_self: true)
-          return super unless use_traversal_ids?
+          return super unless use_traversal_ids_for_descendants_scopes?
 
           if Feature.enabled?(:traversal_ids_btree, default_enabled: :yaml)
             self_and_descendants_with_comparison_operators(include_self: include_self)
@@ -65,7 +65,7 @@ module Namespaces
         end
 
         def self_and_descendant_ids(include_self: true)
-          return super unless use_traversal_ids?
+          return super unless use_traversal_ids_for_descendants_scopes?
 
           if Feature.enabled?(:traversal_ids_btree, default_enabled: :yaml)
             self_and_descendants_with_comparison_operators(include_self: include_self).as_ids
@@ -73,6 +73,12 @@ module Namespaces
             self_and_descendants_with_duplicates_with_array_operator(include_self: include_self)
               .select('DISTINCT namespaces.id')
           end
+        end
+
+        def self_and_hierarchy
+          return super unless use_traversal_ids_for_self_and_hierarchy_scopes?
+
+          unscoped.from_union([all.self_and_ancestors, all.self_and_descendants(include_self: false)])
         end
 
         def order_by_depth(hierarchy_order)
@@ -107,6 +113,16 @@ module Namespaces
         def use_traversal_ids_for_ancestor_scopes?
           Feature.enabled?(:use_traversal_ids_for_ancestor_scopes, default_enabled: :yaml) &&
           use_traversal_ids?
+        end
+
+        def use_traversal_ids_for_descendants_scopes?
+          Feature.enabled?(:use_traversal_ids_for_descendants_scopes, default_enabled: :yaml) &&
+          use_traversal_ids?
+        end
+
+        def use_traversal_ids_for_self_and_hierarchy_scopes?
+          Feature.enabled?(:use_traversal_ids_for_self_and_hierarchy_scopes, default_enabled: :yaml) &&
+            use_traversal_ids?
         end
 
         def self_and_descendants_with_comparison_operators(include_self: true)

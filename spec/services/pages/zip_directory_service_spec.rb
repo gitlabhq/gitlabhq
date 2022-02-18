@@ -27,6 +27,10 @@ RSpec.describe Pages::ZipDirectoryService do
   let(:archive) { result[:archive_path] }
   let(:entries_count) { result[:entries_count] }
 
+  it 'returns true if ZIP64 is enabled' do
+    expect(::Zip.write_zip64_support).to be true
+  end
+
   shared_examples 'handles invalid public directory' do
     it 'returns success' do
       expect(status).to eq(:success)
@@ -35,7 +39,7 @@ RSpec.describe Pages::ZipDirectoryService do
     end
   end
 
-  context "when work direcotry doesn't exist" do
+  context "when work directory doesn't exist" do
     let(:service_directory) { "/tmp/not/existing/dir" }
 
     include_examples 'handles invalid public directory'

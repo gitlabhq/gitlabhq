@@ -24,11 +24,12 @@ module SystemNotes
     # Example Note text:
     #
     #   "changed the status to Acknowledged"
+    #   "changed the status to Acknowledged by changing the incident status of #540"
     #
     # Returns the created Note object
-    def change_alert_status(alert)
-      status = alert.state.to_s.titleize
-      body = "changed the status to **#{status}**"
+    def change_alert_status(reason)
+      status = noteable.state.to_s.titleize
+      body = "changed the status to **#{status}**#{reason}"
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'status'))
     end
@@ -39,28 +40,13 @@ module SystemNotes
     #
     # Example Note text:
     #
-    #   "created issue #17 for this alert"
+    #   "created incident #17 for this alert"
     #
     # Returns the created Note object
     def new_alert_issue(issue)
-      body = "created issue #{issue.to_reference(project)} for this alert"
+      body = "created incident #{issue.to_reference(project)} for this alert"
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'alert_issue_added'))
-    end
-
-    # Called when an AlertManagement::Alert is resolved due to the associated issue being closed
-    #
-    # issue - Issue object.
-    #
-    # Example Note text:
-    #
-    #   "changed the status to Resolved by closing issue #17"
-    #
-    # Returns the created Note object
-    def closed_alert_issue(issue)
-      body = "changed the status to **Resolved** by closing issue #{issue.to_reference(project)}"
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'status'))
     end
 
     # Called when an alert is resolved due to received resolving alert payload

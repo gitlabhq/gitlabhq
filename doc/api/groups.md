@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -808,7 +808,7 @@ Parameters:
 
 ### Options for `default_branch_protection`
 
-The `default_branch_protection` attribute determines whether users with the Developer or [Maintainer role](../user/permissions.md) can push to the applicable [default branch](../user/project/repository/branches/default.md), as described in the following table:
+The `default_branch_protection` attribute determines whether users with the Developer or Maintainer role can push to the applicable [default branch](../user/project/repository/branches/default.md), as described in the following table:
 
 | Value | Description |
 |-------|-------------------------------------------------------------------------------------------------------------|
@@ -832,7 +832,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Transfer project to group
 
-Transfer a project to the Group namespace. Available only to instance administrators, although an [alternative API endpoint](projects.md#transfer-a-project-to-a-new-namespace) is available which does not require instance administrator role. Transferring projects may fail when tagged packages exist in the project's repository.
+Transfer a project to the Group namespace. Available only to instance administrators, although an [alternative API endpoint](projects.md#transfer-a-project-to-a-new-namespace)
+is available which does not require administrator access on the instance. Transferring projects may fail when tagged packages exist in the project's repository.
 
 ```plaintext
 POST  /groups/:id/projects/:project_id
@@ -1086,6 +1087,79 @@ GET /groups?search=foobar
     "path": "foo-bar",
     "description": "An interesting group"
   }
+]
+```
+
+## List provisioned users **(PREMIUM)**
+
+> Introduced in GitLab 14.8.
+
+Get a list of users provisioned by a given group. Does not include users provisioned by subgroups.
+
+Requires at least the Maintainer role on the group.
+
+```plaintext
+GET /groups/:id/provisioned_users
+```
+
+Parameters:
+
+| Attribute        | Type           | Required | Description                                                              |
+|:-----------------|:---------------|:---------|:-------------------------------------------------------------------------|
+| `id`             | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `username`       | string         | no       | Return single user with a specific username                              |
+| `search`         | string         | no       | Search users by name, email, username                                    |
+| `active`         | boolean        | no       | Return only active users                                                 |
+| `blocked`        | boolean        | no       | Return only blocked users                                                |
+| `created_after`  | datetime       | no       | Return users created after the specified time                            |
+| `created_before` | datetime       | no       | Return users created before the specified time                           |
+
+Example response:
+
+```json
+[
+  {
+    id: 66,
+    username: "user22",
+    name: "John Doe22",
+    state: "active",
+    avatar_url: "https://www.gravatar.com/avatar/xxx?s=80&d=identicon",
+    web_url: "http://my.gitlab.com/user22",
+    created_at: "2021-09-10T12:48:22.381Z",
+    bio: "",
+    location: null,
+    public_email: "",
+    skype: "",
+    linkedin: "",
+    twitter: "",
+    website_url: "",
+    organization: null,
+    job_title: "",
+    pronouns: null,
+    bot: false,
+    work_information: null,
+    followers: 0,
+    following: 0,
+    local_time: null,
+    last_sign_in_at: null,
+    confirmed_at: "2021-09-10T12:48:22.330Z",
+    last_activity_on: null,
+    email: "user22@example.org",
+    theme_id: 1,
+    color_scheme_id: 1,
+    projects_limit: 100000,
+    current_sign_in_at: null,
+    identities: [ ],
+    can_create_group: true,
+    can_create_project: true,
+    two_factor_enabled: false,
+    external: false,
+    private_profile: false,
+    commit_email: "user22@example.org",
+    shared_runners_minutes_limit: null,
+    extra_shared_runners_minutes_limit: null
+  },
+  ...
 ]
 ```
 

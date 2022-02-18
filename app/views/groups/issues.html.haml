@@ -6,7 +6,7 @@
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@group.name} issues")
 
 - if Feature.enabled?(:vue_issues_list, @group, default_enabled: :yaml)
-  .js-issues-list{ data: group_issues_list_data(@group, current_user, @issues, @projects) }
+  .js-issues-list{ data: group_issues_list_data(@group, current_user) }
   - if @can_bulk_update
     = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues
 - else

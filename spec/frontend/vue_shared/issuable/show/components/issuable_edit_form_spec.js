@@ -1,6 +1,7 @@
 import { GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import IssuableEditForm from '~/vue_shared/issuable/show/components/issuable_edit_form.vue';
 import IssuableEventHub from '~/vue_shared/issuable/show/event_hub';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -35,6 +36,7 @@ describe('IssuableEditForm', () => {
 
   beforeEach(() => {
     wrapper = createComponent();
+    gon.features = { markdownContinueLists: true };
   });
 
   afterEach(() => {
@@ -52,7 +54,7 @@ describe('IssuableEditForm', () => {
           },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.title).toBe('Foo');
         expect(wrapper.vm.description).toBe('Foobar');
@@ -67,7 +69,7 @@ describe('IssuableEditForm', () => {
           },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.title).toBe('');
         expect(wrapper.vm.description).toBe('');

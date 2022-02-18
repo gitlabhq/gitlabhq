@@ -19,7 +19,6 @@ module Gitlab
 
           Error = Class.new(StandardError)
           AmbigiousSpecificationError = Class.new(Error)
-          DuplicateIncludesError = Class.new(Error)
           TooManyIncludesError = Class.new(Error)
 
           def initialize(values, context)
@@ -114,25 +113,22 @@ module Gitlab
 
           def verify_duplicates!(location)
             logger.instrument(:config_mapper_verify) do
-              verify_duplicates_without_instrumentation!(location)
+              verify_max_includes_and_add_location!(location)
             end
           end
 
-          def verify_duplicates_without_instrumentation!(location)
+          def verify_max_includes_and_add_location!(location)
             if expandset.count >= MAX_INCLUDES
               raise TooManyIncludesError, "Maximum of #{MAX_INCLUDES} nested includes are allowed!"
             end
 
-            # We scope location to context, as this allows us to properly support
-            # relative includes, and similarly looking relative in another project
-            # does not trigger duplicate error
+            # Scope location to context to allow support of
+            # relative includes
             scoped_location = location.merge(
               context_project: context.project,
               context_sha: context.sha)
 
-            unless expandset.add?(scoped_location)
-              raise DuplicateIncludesError, "Include `#{location.to_json}` was already included!"
-            end
+            expandset.add(scoped_location)
           end
 
           def select_first_matching(location)

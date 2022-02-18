@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import ScrollButton from '~/ide/components/jobs/detail/scroll_button.vue';
 import TerminalControls from '~/ide/components/terminal/terminal_controls.vue';
 
@@ -39,27 +40,25 @@ describe('IDE TerminalControls', () => {
     );
   });
 
-  it('emits "scroll-up" when click up button', () => {
+  it('emits "scroll-up" when click up button', async () => {
     factory({ propsData: { canScrollUp: true } });
 
     expect(wrapper.emitted()).toEqual({});
 
     buttons.at(0).vm.$emit('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted('scroll-up')).toEqual([[]]);
-    });
+    await nextTick();
+    expect(wrapper.emitted('scroll-up')).toEqual([[]]);
   });
 
-  it('emits "scroll-down" when click down button', () => {
+  it('emits "scroll-down" when click down button', async () => {
     factory({ propsData: { canScrollDown: true } });
 
     expect(wrapper.emitted()).toEqual({});
 
     buttons.at(1).vm.$emit('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted('scroll-down')).toEqual([[]]);
-    });
+    await nextTick();
+    expect(wrapper.emitted('scroll-down')).toEqual([[]]);
   });
 });

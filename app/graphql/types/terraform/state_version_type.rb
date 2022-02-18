@@ -3,9 +3,9 @@
 module Types
   module Terraform
     class StateVersionType < BaseObject
-      include ::API::Helpers::RelatedResourcesHelpers
-
       graphql_name 'TerraformStateVersion'
+
+      include ::API::Helpers::RelatedResourcesHelpers
 
       authorize :read_terraform_state
 

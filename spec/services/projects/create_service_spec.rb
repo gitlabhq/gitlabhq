@@ -7,9 +7,10 @@ RSpec.describe Projects::CreateService, '#execute' do
   include GitHelpers
 
   let(:user) { create :user }
+  let(:project_name) { 'GitLab' }
   let(:opts) do
     {
-      name: 'GitLab',
+      name: project_name,
       namespace_id: user.namespace.id
     }
   end
@@ -144,6 +145,12 @@ RSpec.describe Projects::CreateService, '#execute' do
 
       subject { create_project(user, opts) }
     end
+
+    it 'logs creation' do
+      expect(Gitlab::AppLogger).to receive(:info).with(/#{user.name} created a new project/)
+
+      create_project(user, opts)
+    end
   end
 
   context "admin creates project with other user's namespace_id" do
@@ -183,15 +190,31 @@ RSpec.describe Projects::CreateService, '#execute' do
       user.refresh_authorized_projects # Ensure cache is warm
     end
 
-    it do
-      project = create_project(user, opts.merge!(namespace_id: group.id))
+    subject(:project) { create_project(user, opts.merge!(namespace_id: group.id)) }
 
+    shared_examples 'has sync-ed traversal_ids' do
+      specify { expect(project.reload.project_namespace.traversal_ids).to eq([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact) }
+    end
+
+    it 'creates the project' do
       expect(project).to be_valid
       expect(project.owner).to eq(group)
       expect(project.namespace).to eq(group)
       expect(project.team.owners).to include(user)
       expect(user.authorized_projects).to include(project)
       expect(project.project_namespace).to be_in_sync_with_project(project)
+    end
+
+    context 'with before_commit callback' do
+      it_behaves_like 'has sync-ed traversal_ids'
+    end
+
+    context 'with after_create callback' do
+      before do
+        stub_feature_flags(sync_traversal_ids_before_commit: false)
+      end
+
+      it_behaves_like 'has sync-ed traversal_ids'
     end
   end
 
@@ -202,7 +225,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
     let(:opts) do
       {
-        name: 'GitLab',
+        name: project_name,
         namespace_id: shared_group.id
       }
     end
@@ -237,7 +260,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     let(:share_max_access_level) { Gitlab::Access::MAINTAINER }
     let(:opts) do
       {
-        name: 'GitLab',
+        name: project_name,
         namespace_id: subgroup_for_projects.id
       }
     end
@@ -583,56 +606,53 @@ RSpec.describe Projects::CreateService, '#execute' do
       opts[:initialize_with_readme] = '1'
     end
 
-    shared_examples 'creates README.md' do
+    shared_examples 'a repo with a README.md' do
       it { expect(project.repository.commit_count).to be(1) }
       it { expect(project.repository.readme.name).to eql('README.md') }
-      it { expect(project.repository.readme.data).to include('# GitLab') }
+      it { expect(project.repository.readme.data).to include(expected_content) }
     end
 
-    it_behaves_like 'creates README.md'
+    it_behaves_like 'a repo with a README.md' do
+      let(:expected_content) do
+        <<~MARKDOWN
+          cd existing_repo
+          git remote add origin #{project.http_url_to_repo}
+          git branch -M master
+          git push -uf origin master
+        MARKDOWN
+      end
+    end
+
+    context 'and a readme_template is specified' do
+      before do
+        opts[:readme_template] = "# GitLab\nThis is customized readme."
+      end
+
+      it_behaves_like 'a repo with a README.md' do
+        let(:expected_content) { "# GitLab\nThis is customized readme." }
+      end
+    end
 
     context 'and a default_branch_name is specified' do
       before do
-        allow(Gitlab::CurrentSettings)
-          .to receive(:default_branch_name)
-          .and_return('example_branch')
+        allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('example_branch')
       end
 
-      it_behaves_like 'creates README.md'
-
-      it 'creates README.md within the specified branch rather than master' do
+      it 'creates the correct branch' do
         branches = project.repository.branches
 
         expect(branches.size).to eq(1)
         expect(branches.collect(&:name)).to contain_exactly('example_branch')
       end
 
-      describe 'advanced readme content', experiment: :new_project_readme_content do
-        before do
-          stub_experiments(new_project_readme_content: :advanced)
-        end
-
-        it_behaves_like 'creates README.md'
-
-        it 'includes advanced content in the README.md' do
-          content = project.repository.readme.data
-          expect(content).to include <<~MARKDOWN
+      it_behaves_like 'a repo with a README.md' do
+        let(:expected_content) do
+          <<~MARKDOWN
+            cd existing_repo
             git remote add origin #{project.http_url_to_repo}
             git branch -M example_branch
             git push -uf origin example_branch
           MARKDOWN
-        end
-      end
-
-      context 'and readme_template is specified' do
-        before do
-          opts[:readme_template] = "# GitLab\nThis is customized template."
-        end
-
-        it_behaves_like 'creates README.md'
-
-        it 'creates README.md with specified template' do
-          expect(project.repository.readme.data).to include('This is customized template.')
         end
       end
     end
@@ -676,7 +696,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
         let(:opts) do
           {
-            name: 'GitLab',
+            name: project_name,
             namespace_id: group.id
           }
         end
@@ -697,7 +717,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
           let(:opts) do
             {
-              name: 'GitLab',
+              name: project_name,
               namespace_id: subgroup.id
             }
           end
@@ -808,7 +828,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
     let(:opts) do
       {
-        name: 'GitLab',
+        name: project_name,
         namespace_id: group.id
       }
     end

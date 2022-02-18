@@ -47,6 +47,10 @@
     margin-bottom: $gl-spacing-scale-2;
   }
 
+  img {
+    max-width: 100%;
+  }
+
   img:not(.emoji) {
     margin: 0 0 8px;
   }
@@ -62,15 +66,6 @@
     min-width: inherit;
     min-height: inherit;
     background-color: inherit;
-    max-width: 100%;
-  }
-
-  &:not(.md) img:not(.emoji) {
-    border: 1px solid $white-normal;
-    padding: 5px;
-    margin: 5px 0;
-    // Ensure that image does not exceed viewport
-    max-height: calc(100vh - 100px);
   }
 
   details {
@@ -375,7 +370,8 @@
     // Loose lists need bottom margin added back
     p ~ ol,
     p ~ ul {
-      margin-bottom: 16px;    }
+      margin-bottom: 16px;
+    }
   }
 
   ul:dir(rtl),
@@ -521,32 +517,26 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  .fa-2x,
   .admonitionblock td.icon [class^='fa icon-'] {
     font-size: 2em;
   }
 
-  .fa-exclamation-triangle::before,
   .admonitionblock td.icon .icon-warning::before {
     content: '⚠';
   }
 
-  .fa-exclamation-circle::before,
   .admonitionblock td.icon .icon-important::before {
     content: '❗';
   }
 
-  .fa-lightbulb-o::before,
   .admonitionblock td.icon .icon-tip::before {
     content: '💡';
   }
 
-  .fa-thumb-tack::before,
   .admonitionblock td.icon .icon-note::before {
     content: '📌';
   }
 
-  .fa-fire::before,
   .admonitionblock td.icon .icon-caution::before {
     content: '🔥';
   }

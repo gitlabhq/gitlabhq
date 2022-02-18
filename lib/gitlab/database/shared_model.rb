@@ -6,6 +6,10 @@ module Gitlab
     class SharedModel < ActiveRecord::Base
       self.abstract_class = true
 
+      # if shared model is used, this allows to limit connections
+      # on which this model is being shared
+      class_attribute :limit_connection_names, default: nil
+
       class << self
         def using_connection(connection)
           previous_connection = self.overriding_connection

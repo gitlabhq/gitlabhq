@@ -1,4 +1,4 @@
-import { ApolloLink, Observable } from 'apollo-link';
+import { ApolloLink, Observable } from '@apollo/client/core';
 
 export const apolloCaptchaLink = new ApolloLink((operation, forward) =>
   forward(operation).flatMap((result) => {

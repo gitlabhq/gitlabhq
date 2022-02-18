@@ -1018,6 +1018,8 @@ RSpec.describe IssuesFinder do
     end
 
     context 'filtering by due date' do
+      let_it_be(:issue_due_today) { create(:issue, project: project1, due_date: Date.current) }
+      let_it_be(:issue_due_tomorrow) { create(:issue, project: project1, due_date: 1.day.from_now) }
       let_it_be(:issue_overdue) { create(:issue, project: project1, due_date: 2.days.ago) }
       let_it_be(:issue_due_soon) { create(:issue, project: project1, due_date: 2.days.from_now) }
 
@@ -1032,6 +1034,30 @@ RSpec.describe IssuesFinder do
         end
       end
 
+      context 'with param set to any due date' do
+        let(:params) { base_params.merge(due_date: Issue::AnyDueDate.name) }
+
+        it 'returns issues with any due date' do
+          expect(issues).to contain_exactly(issue_due_today, issue_due_tomorrow, issue_overdue, issue_due_soon)
+        end
+      end
+
+      context 'with param set to due today' do
+        let(:params) { base_params.merge(due_date: Issue::DueToday.name) }
+
+        it 'returns issues due today' do
+          expect(issues).to contain_exactly(issue_due_today)
+        end
+      end
+
+      context 'with param set to due tomorrow' do
+        let(:params) { base_params.merge(due_date: Issue::DueTomorrow.name) }
+
+        it 'returns issues due today' do
+          expect(issues).to contain_exactly(issue_due_tomorrow)
+        end
+      end
+
       context 'with param set to overdue' do
         let(:params) { base_params.merge(due_date: Issue::Overdue.name) }
 
@@ -1043,8 +1069,8 @@ RSpec.describe IssuesFinder do
       context 'with param set to next month and previous two weeks' do
         let(:params) { base_params.merge(due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name) }
 
-        it 'returns issues from the previous two weeks and next month' do
-          expect(issues).to contain_exactly(issue_overdue, issue_due_soon)
+        it 'returns issues due in the previous two weeks and next month' do
+          expect(issues).to contain_exactly(issue_due_today, issue_due_tomorrow, issue_overdue, issue_due_soon)
         end
       end
 

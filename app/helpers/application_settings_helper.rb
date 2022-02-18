@@ -234,7 +234,9 @@ module ApplicationSettingsHelper
       :outbound_local_requests_allowlist_raw,
       :dsa_key_restriction,
       :ecdsa_key_restriction,
+      :ecdsa_sk_key_restriction,
       :ed25519_key_restriction,
+      :ed25519_sk_key_restriction,
       :eks_integration_enabled,
       :eks_account_id,
       :eks_access_key_id,
@@ -421,7 +423,12 @@ module ApplicationSettingsHelper
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
       :suggest_pipeline_enabled,
-      :user_email_lookup_limit
+      :user_email_lookup_limit,
+      :users_get_by_id_limit,
+      :users_get_by_id_limit_allowlist_raw,
+      :runner_token_expiration_interval,
+      :group_runner_token_expiration_interval,
+      :project_runner_token_expiration_interval
     ].tap do |settings|
       settings << :deactivate_dormant_users unless Gitlab.com?
     end

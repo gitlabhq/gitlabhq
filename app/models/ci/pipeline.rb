@@ -40,6 +40,10 @@ module Ci
     # https://gitlab.com/gitlab-org/gitlab/-/issues/259010
     attr_accessor :merged_yaml
 
+    # This is used to retain access to the method defined by `Ci::HasRef`
+    # before being overridden in this class.
+    alias_method :jobs_git_ref, :git_ref
+
     belongs_to :project, inverse_of: :all_pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
@@ -72,8 +76,6 @@ module Ci
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
-    has_many :deployments, through: :builds
-    has_many :environments, -> { distinct.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338658') }, through: :deployments
     has_many :latest_builds, -> { latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
     has_many :downloadable_artifacts, -> do
       not_expired.or(where_exists(::Ci::Pipeline.artifacts_locked.where('ci_pipelines.id = ci_builds.commit_id'))).downloadable.with_job
@@ -352,7 +354,7 @@ module Ci
     #
     # ref - The name (or names) of the branch(es)/tag(s) to limit the list of
     #       pipelines to.
-    # sha - The commit SHA (or mutliple SHAs) to limit the list of pipelines to.
+    # sha - The commit SHA (or multiple SHAs) to limit the list of pipelines to.
     # limit - This limits a backlog search, default to 100.
     def self.newest_first(ref: nil, sha: nil, limit: 100)
       relation = order(id: :desc)
@@ -1163,7 +1165,11 @@ module Ci
     end
 
     def merge_request?
-      merge_request_id.present?
+      if Feature.enabled?(:ci_pipeline_merge_request_presence_check, default_enabled: :yaml)
+        merge_request_id.present? && merge_request
+      else
+        merge_request_id.present?
+      end
     end
 
     def external_pull_request?
@@ -1281,18 +1287,6 @@ module Ci
     def authorized_cluster_agents
       strong_memoize(:authorized_cluster_agents) do
         ::Clusters::AgentAuthorizationsFinder.new(project).execute.map(&:agent)
-      end
-    end
-
-    def create_deployment_in_separate_transaction?
-      strong_memoize(:create_deployment_in_separate_transaction) do
-        ::Feature.enabled?(:create_deployment_in_separate_transaction, project, default_enabled: :yaml)
-      end
-    end
-
-    def use_variables_builder_definitions?
-      strong_memoize(:use_variables_builder_definitions) do
-        ::Feature.enabled?(:ci_use_variables_builder_definitions, project, default_enabled: :yaml)
       end
     end
 

@@ -50,7 +50,7 @@ export default {
     TrainingProviderList,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectPath'],
+  inject: ['projectFullPath'],
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -107,14 +107,14 @@ export default {
     shouldShowAutoDevopsEnabledAlert() {
       return (
         this.autoDevopsEnabled &&
-        !this.autoDevopsEnabledAlertDismissedProjects.includes(this.projectPath)
+        !this.autoDevopsEnabledAlertDismissedProjects.includes(this.projectFullPath)
       );
     },
   },
   methods: {
     dismissAutoDevopsEnabledAlert() {
       const dismissedProjects = new Set(this.autoDevopsEnabledAlertDismissedProjects);
-      dismissedProjects.add(this.projectPath);
+      dismissedProjects.add(this.projectFullPath);
       this.autoDevopsEnabledAlertDismissedProjects = Array.from(dismissedProjects);
     },
     onError(message) {

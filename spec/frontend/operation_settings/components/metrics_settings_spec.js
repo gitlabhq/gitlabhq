@@ -1,5 +1,6 @@
 import { GlButton, GlLink, GlFormGroup, GlFormInput, GlFormSelect } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -181,17 +182,18 @@ describe('operation settings external dashboard component', () => {
         expect(submit.text()).toBe('Save Changes');
       });
 
-      it('submits form on click', () => {
+      it('submits form on click', async () => {
         mountComponent(false);
         axios.patch.mockResolvedValue();
         findSubmitButton().trigger('click');
 
         expect(axios.patch).toHaveBeenCalledWith(...endpointRequest);
 
-        return wrapper.vm.$nextTick().then(() => expect(refreshCurrentPage).toHaveBeenCalled());
+        await nextTick();
+        expect(refreshCurrentPage).toHaveBeenCalled();
       });
 
-      it('creates flash banner on error', () => {
+      it('creates flash banner on error', async () => {
         mountComponent(false);
         const message = 'mockErrorMessage';
         axios.patch.mockRejectedValue({ response: { data: { message } } });
@@ -199,14 +201,11 @@ describe('operation settings external dashboard component', () => {
 
         expect(axios.patch).toHaveBeenCalledWith(...endpointRequest);
 
-        return wrapper.vm
-          .$nextTick()
-          .then(jest.runAllTicks)
-          .then(() =>
-            expect(createFlash).toHaveBeenCalledWith({
-              message: `There was an error saving your changes. ${message}`,
-            }),
-          );
+        await nextTick();
+        await jest.runAllTicks();
+        expect(createFlash).toHaveBeenCalledWith({
+          message: `There was an error saving your changes. ${message}`,
+        });
       });
     });
   });

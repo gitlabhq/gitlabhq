@@ -14,7 +14,15 @@ export function createImageBadge(noteId, { x, y }, classNames = []) {
 }
 
 export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
-  const buttonEl = createImageBadge(noteId, coordinate, ['badge', 'badge-pill']);
+  const buttonEl = createImageBadge(noteId, coordinate, [
+    'gl-display-flex',
+    'gl-align-items-center',
+    'gl-justify-content-center',
+    'gl-font-sm',
+    'design-note-pin',
+    'on-image',
+    'gl-absolute',
+  ]);
   buttonEl.textContent = badgeText;
 
   containerEl.appendChild(buttonEl);
@@ -30,8 +38,8 @@ export function addImageCommentBadge(containerEl, { coordinate, noteId }) {
 export function addAvatarBadge(el, event) {
   const { noteId, badgeNumber } = event.detail;
 
-  // Add badge to new comment
-  const avatarBadgeEl = el.querySelector(`#${noteId} .badge`);
+  // Add design pin to new comment
+  const avatarBadgeEl = el.querySelector(`#${noteId} .design-note-pin`);
   avatarBadgeEl.textContent = badgeNumber;
   avatarBadgeEl.classList.remove('hidden');
 }

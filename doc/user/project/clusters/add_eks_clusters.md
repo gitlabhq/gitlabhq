@@ -34,7 +34,7 @@ Prerequisites:
 - An [Amazon Web Services](https://aws.amazon.com/) account.
 - Permissions to manage IAM resources.
 
-For instance-level clusters, see [additional requirements for self-managed instances](#additional-requirements-for-self-managed-instances). **(FREE SELF)**
+For instance-level clusters, see [additional requirements for self-managed instances](#additional-requirements-for-self-managed-instances).
 
 To create new Kubernetes clusters for your project, group, or instance through the certificate-based method:
 
@@ -174,7 +174,7 @@ When you create a new cluster, you have the following settings:
 | Kubernetes cluster name | Your cluster's name. |
 | Environment scope       | The [associated environment](multiple_kubernetes_clusters.md#setting-the-environment-scope). |
 | Service role            | The **EKS IAM role** (**role A**). |
-| Kubernetes version      | The [Kubernetes version](../../infrastructure/clusters/connect/index.md#supported-cluster-versions) for your cluster. |
+| Kubernetes version      | The [Kubernetes version](../../clusters/agent/index.md#supported-cluster-versions) for your cluster. |
 | Key pair name           | The [key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) that you can use to connect to your worker nodes. |
 | VPC                     | The [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) to use for your EKS Cluster resources. |
 | Subnets                 | The [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html) in your VPC where your worker nodes run. Two are required. |
@@ -256,7 +256,7 @@ IAM user in the Amazon AWS console, and follow these steps:
 
 #### EKS access key and ID
 
-> Instance profiles were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291015) in GitLab 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291015) instance profiles in GitLab 13.7.
 
 If you're using GitLab 13.7 or later, you can use instance profiles to
 dynamically retrieve temporary credentials from AWS when needed.

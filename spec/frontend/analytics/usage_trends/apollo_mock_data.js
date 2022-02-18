@@ -1,4 +1,5 @@
 const defaultPageInfo = {
+  __typename: 'PageInfo',
   hasNextPage: false,
   hasPreviousPage: false,
   startCursor: null,

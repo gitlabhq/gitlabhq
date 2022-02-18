@@ -11,8 +11,8 @@ class Groups::BoardsController < Groups::ApplicationController
     push_frontend_feature_flag(:board_multi_select, group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, group, default_enabled: :yaml)
     experiment(:prominent_create_board_btn, subject: current_user) do |e|
-      e.use { }
-      e.try { }
+      e.control { }
+      e.candidate { }
     end.run
   end
 

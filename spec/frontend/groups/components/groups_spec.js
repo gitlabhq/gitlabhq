@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 
 import mountComponent from 'helpers/vue_mount_component_helper';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
@@ -21,13 +21,13 @@ const createComponent = (searchEmpty = false) => {
 describe('GroupsComponent', () => {
   let vm;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     Vue.component('GroupFolder', groupFolderComponent);
     Vue.component('GroupItem', groupItemComponent);
 
     vm = createComponent();
 
-    return vm.$nextTick();
+    await nextTick();
   });
 
   afterEach(() => {
@@ -52,20 +52,18 @@ describe('GroupsComponent', () => {
   });
 
   describe('template', () => {
-    it('should render component template correctly', () => {
-      return vm.$nextTick().then(() => {
-        expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
-        expect(vm.$el.querySelector('.group-list-tree')).toBeDefined();
-        expect(vm.$el.querySelector('.gl-pagination')).toBeDefined();
-        expect(vm.$el.querySelectorAll('.has-no-search-results').length).toBe(0);
-      });
+    it('should render component template correctly', async () => {
+      await nextTick();
+      expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
+      expect(vm.$el.querySelector('.group-list-tree')).toBeDefined();
+      expect(vm.$el.querySelector('.gl-pagination')).toBeDefined();
+      expect(vm.$el.querySelectorAll('.has-no-search-results').length).toBe(0);
     });
 
-    it('should render empty search message when `searchEmpty` is `true`', () => {
+    it('should render empty search message when `searchEmpty` is `true`', async () => {
       vm.searchEmpty = true;
-      return vm.$nextTick().then(() => {
-        expect(vm.$el.querySelector('.has-no-search-results')).toBeDefined();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.has-no-search-results')).toBeDefined();
     });
   });
 });

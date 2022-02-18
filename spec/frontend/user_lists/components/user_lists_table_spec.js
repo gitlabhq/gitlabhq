@@ -1,6 +1,7 @@
 import { GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import * as timeago from 'timeago.js';
+import { nextTick } from 'vue';
 import UserListsTable from '~/user_lists/components/user_lists_table.vue';
 import { userList } from '../../feature_flags/mock_data';
 
@@ -56,43 +57,40 @@ describe('User Lists Table', () => {
   });
 
   describe('delete button', () => {
-    it('should display the confirmation modal', () => {
+    it('should display the confirmation modal', async () => {
       const modal = wrapper.find(GlModal);
 
       wrapper.find('[data-testid="delete-user-list"]').trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(modal.text()).toContain(`Delete ${userList.name}?`);
-        expect(modal.text()).toContain(`User list ${userList.name} will be removed.`);
-      });
+      await nextTick();
+      expect(modal.text()).toContain(`Delete ${userList.name}?`);
+      expect(modal.text()).toContain(`User list ${userList.name} will be removed.`);
     });
   });
 
   describe('confirmation modal', () => {
     let modal;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       modal = wrapper.find(GlModal);
 
       wrapper.find('button').trigger('click');
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
-    it('should emit delete with list on confirmation', () => {
+    it('should emit delete with list on confirmation', async () => {
       modal.find('[data-testid="modal-confirm"]').trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('delete')).toEqual([[userLists[0]]]);
-      });
+      await nextTick();
+      expect(wrapper.emitted('delete')).toEqual([[userLists[0]]]);
     });
 
-    it('should not emit delete with list when not confirmed', () => {
+    it('should not emit delete with list when not confirmed', async () => {
       modal.find('button').trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('delete')).toBeUndefined();
-      });
+      await nextTick();
+      expect(wrapper.emitted('delete')).toBeUndefined();
     });
   });
 });

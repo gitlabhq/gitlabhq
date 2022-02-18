@@ -5,7 +5,7 @@ RSpec.describe 'getting blobs in a project repository' do
   include GraphqlHelpers
 
   let(:project) { create(:project, :repository) }
-  let(:current_user) { project.owner }
+  let(:current_user) { project.first_owner }
   let(:paths) { ["CONTRIBUTING.md", "README.md"] }
   let(:ref) { project.default_branch }
   let(:fields) do

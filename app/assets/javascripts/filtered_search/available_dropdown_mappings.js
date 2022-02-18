@@ -77,6 +77,11 @@ export default class AvailableDropdownMappings {
         gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-reviewer'),
       },
+      attention: {
+        reference: null,
+        gl: DropdownUser,
+        element: this.container.getElementById('js-dropdown-attention-requested'),
+      },
       'approved-by': {
         reference: null,
         gl: DropdownUser,

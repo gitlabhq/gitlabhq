@@ -5,15 +5,24 @@ class ContainerRepository < ApplicationRecord
   include Gitlab::SQL::Pattern
   include EachBatch
   include Sortable
+  include AfterCommitQueue
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
+  IDLE_MIGRATION_STATES = %w[default pre_import_done import_done import_aborted import_skipped].freeze
+  ACTIVE_MIGRATION_STATES = %w[pre_importing importing].freeze
+  ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
+  MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
+
+  TooManyImportsError = Class.new(StandardError)
+  NativeImportError = Class.new(StandardError)
 
   belongs_to :project
 
   validates :name, length: { minimum: 0, allow_nil: false }
   validates :name, uniqueness: { scope: :project_id }
-  validates :migration_state, presence: true
+  validates :migration_state, presence: true, inclusion: { in: MIGRATION_STATES }
+  validates :migration_aborted_in_state, inclusion: { in: ABORTABLE_MIGRATION_STATES }, allow_nil: true
 
   validates :migration_retries_count, presence: true,
                                       numericality: { greater_than_or_equal_to: 0 },
@@ -23,7 +32,7 @@ class ContainerRepository < ApplicationRecord
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
   enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3 }
 
-  delegate :client, to: :registry
+  delegate :client, :gitlab_api_client, to: :registry
 
   scope :ordered, -> { order(:name) }
   scope :with_api_entity_associations, -> { preload(project: [:route, { namespace: :route }]) }
@@ -39,7 +48,152 @@ class ContainerRepository < ApplicationRecord
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :waiting_for_cleanup, -> { where(expiration_policy_cleanup_status: WAITING_CLEANUP_STATUSES) }
   scope :expiration_policy_started_at_nil_or_before, ->(timestamp) { where('expiration_policy_started_at < ? OR expiration_policy_started_at IS NULL', timestamp) }
+  scope :with_migration_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_import_started_at, '01-01-1970') < ?", timestamp) }
+  scope :with_migration_pre_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_started_at, '01-01-1970') < ?", timestamp) }
+  scope :with_migration_pre_import_done_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_done_at, '01-01-1970') < ?", timestamp) }
   scope :with_stale_ongoing_cleanup, ->(threshold) { cleanup_ongoing.where('expiration_policy_started_at < ?', threshold) }
+  scope :import_in_process, -> { where(migration_state: %w[pre_importing pre_import_done importing]) }
+
+  scope :recently_done_migration_step, -> do
+    where(migration_state: %w[import_done pre_import_done import_aborted])
+      .order(Arel.sql('GREATEST(migration_pre_import_done_at, migration_import_done_at, migration_aborted_at) DESC'))
+  end
+
+  scope :ready_for_import, -> do
+    # There is no yaml file for the container_registry_phase_2_deny_list
+    # feature flag since it is only accessed in this query.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/350543 tracks the rollout and
+    # removal of this feature flag.
+    joins(:project).where(
+      migration_state: [:default],
+      created_at: ...ContainerRegistry::Migration.created_before
+    ).with_target_import_tier
+    .where(
+      "NOT EXISTS (
+        SELECT 1
+        FROM feature_gates
+        WHERE feature_gates.feature_key = 'container_registry_phase_2_deny_list'
+        AND feature_gates.key = 'actors'
+        AND feature_gates.value = concat('Group:', projects.namespace_id)
+      )"
+    )
+  end
+
+  state_machine :migration_state, initial: :default, use_transactions: false do
+    state :pre_importing do
+      validates :migration_pre_import_started_at, presence: true
+      validates :migration_pre_import_done_at, presence: false
+    end
+
+    state :pre_import_done do
+      validates :migration_pre_import_done_at, presence: true
+    end
+
+    state :importing do
+      validates :migration_import_started_at, presence: true
+      validates :migration_import_done_at, presence: false
+    end
+
+    state :import_done
+
+    state :import_skipped do
+      validates :migration_skipped_reason,
+                :migration_skipped_at,
+                presence: true
+    end
+
+    state :import_aborted do
+      validates :migration_aborted_at, presence: true
+      validates :migration_retries_count, presence: true, numericality: { greater_than_or_equal_to: 1 }
+    end
+
+    event :start_pre_import do
+      transition default: :pre_importing
+    end
+
+    event :finish_pre_import do
+      transition %i[pre_importing import_aborted] => :pre_import_done
+    end
+
+    event :start_import do
+      transition pre_import_done: :importing
+    end
+
+    event :finish_import do
+      transition %i[importing import_aborted] => :import_done
+    end
+
+    event :already_migrated do
+      transition default: :import_done
+    end
+
+    event :abort_import do
+      transition ABORTABLE_MIGRATION_STATES.map(&:to_sym) => :import_aborted
+    end
+
+    event :skip_import do
+      transition ABORTABLE_MIGRATION_STATES.map(&:to_sym) => :import_skipped
+    end
+
+    event :retry_pre_import do
+      transition import_aborted: :pre_importing
+    end
+
+    event :retry_import do
+      transition import_aborted: :importing
+    end
+
+    before_transition any => :pre_importing do |container_repository|
+      container_repository.migration_pre_import_started_at = Time.zone.now
+      container_repository.migration_pre_import_done_at = nil
+    end
+
+    after_transition any => :pre_importing do |container_repository|
+      container_repository.try_import do
+        container_repository.migration_pre_import
+      end
+    end
+
+    before_transition %i[pre_importing import_aborted] => :pre_import_done do |container_repository|
+      container_repository.migration_pre_import_done_at = Time.zone.now
+    end
+
+    before_transition any => :importing do |container_repository|
+      container_repository.migration_import_started_at = Time.zone.now
+      container_repository.migration_import_done_at = nil
+    end
+
+    after_transition any => :importing do |container_repository|
+      container_repository.try_import do
+        container_repository.migration_import
+      end
+    end
+
+    before_transition %i[importing import_aborted] => :import_done do |container_repository|
+      container_repository.migration_import_done_at = Time.zone.now
+    end
+
+    before_transition any => :import_aborted do |container_repository|
+      container_repository.migration_aborted_in_state = container_repository.migration_state
+      container_repository.migration_aborted_at = Time.zone.now
+      container_repository.migration_retries_count += 1
+    end
+
+    before_transition import_aborted: any do |container_repository|
+      container_repository.migration_aborted_at = nil
+      container_repository.migration_aborted_in_state = nil
+    end
+
+    before_transition any => :import_skipped do |container_repository|
+      container_repository.migration_skipped_at = Time.zone.now
+    end
+
+    before_transition any => %i[import_done import_aborted] do |container_repository|
+      container_repository.run_after_commit do
+        ::ContainerRegistry::Migration::EnqueuerWorker.perform_async
+      end
+    end
+  end
 
   def self.exists_by_path?(path)
     where(
@@ -62,6 +216,114 @@ class ContainerRepository < ApplicationRecord
 
   def self.with_unfinished_cleanup
     with_enabled_policy.cleanup_unfinished
+  end
+
+  def self.with_stale_migration(before_timestamp)
+    stale_pre_importing = with_migration_states(:pre_importing)
+                            .with_migration_pre_import_started_at_nil_or_before(before_timestamp)
+    stale_pre_import_done = with_migration_states(:pre_import_done)
+                              .with_migration_pre_import_done_at_nil_or_before(before_timestamp)
+    stale_importing = with_migration_states(:importing)
+                        .with_migration_import_started_at_nil_or_before(before_timestamp)
+
+    union = ::Gitlab::SQL::Union.new([
+          stale_pre_importing,
+          stale_pre_import_done,
+          stale_importing
+        ])
+    from("(#{union.to_sql}) #{ContainerRepository.table_name}")
+  end
+
+  def self.with_target_import_tier
+    # overridden in ee
+    #
+    # Repositories are being migrated by tier on Saas, so we need to
+    # filter by plan/subscription which is not available in FOSS
+    all
+  end
+
+  def skip_import(reason:)
+    self.migration_skipped_reason = reason
+
+    super
+  end
+
+  def start_pre_import
+    return false unless ContainerRegistry::Migration.enabled?
+
+    super
+  end
+
+  def retry_pre_import
+    return false unless ContainerRegistry::Migration.enabled?
+
+    super
+  end
+
+  def retry_import
+    return false unless ContainerRegistry::Migration.enabled?
+
+    super
+  end
+
+  def finish_pre_import_and_start_import
+    # nothing to do between those two transitions for now.
+    finish_pre_import && start_import
+  end
+
+  def retry_aborted_migration
+    return unless migration_state == 'import_aborted'
+
+    case external_import_status
+    when 'native'
+      raise NativeImportError
+    when 'import_in_progress'
+      nil
+    when 'import_complete'
+      finish_import
+    when 'import_failed'
+      retry_import
+    when 'pre_import_in_progress'
+      nil
+    when 'pre_import_complete'
+      finish_pre_import_and_start_import
+    when 'pre_import_failed'
+      retry_pre_import
+    else
+      # If the import_status request fails, use the timestamp to guess current state
+      migration_pre_import_done_at ? retry_import : retry_pre_import
+    end
+  end
+
+  def try_import
+    raise ArgumentError, 'block not given' unless block_given?
+
+    try_count = 0
+    begin
+      try_count += 1
+      return true if yield == :ok
+
+      abort_import
+      false
+    rescue TooManyImportsError
+      if try_count <= ::ContainerRegistry::Migration.start_max_retries
+        sleep 0.1 * try_count
+        retry
+      else
+        abort_import
+        false
+      end
+    end
+  end
+
+  def last_import_step_done_at
+    [migration_pre_import_done_at, migration_import_done_at, migration_aborted_at].compact.max
+  end
+
+  def external_import_status
+    strong_memoize(:import_status) do
+      gitlab_api_client.import_status(self.path)
+    end
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -146,6 +408,36 @@ class ContainerRepository < ApplicationRecord
     update!(expiration_policy_started_at: Time.zone.now)
   end
 
+  def migration_in_active_state?
+    migration_state.in?(ACTIVE_MIGRATION_STATES)
+  end
+
+  def migration_importing?
+    migration_state == 'importing'
+  end
+
+  def migration_pre_importing?
+    migration_state == 'pre_importing'
+  end
+
+  def migration_pre_import
+    return :error unless gitlab_api_client.supports_gitlab_api?
+
+    response = gitlab_api_client.pre_import_repository(self.path)
+    raise TooManyImportsError if response == :too_many_imports
+
+    response
+  end
+
+  def migration_import
+    return :error unless gitlab_api_client.supports_gitlab_api?
+
+    response = gitlab_api_client.import_repository(self.path)
+    raise TooManyImportsError if response == :too_many_imports
+
+    response
+  end
+
   def self.build_from_path(path)
     self.new(project: path.repository_project,
              name: path.repository_name)
@@ -167,6 +459,11 @@ class ContainerRepository < ApplicationRecord
 
   def self.find_by_path!(path)
     self.find_by!(project: path.repository_project,
+                  name: path.repository_name)
+  end
+
+  def self.find_by_path(path)
+    self.find_by(project: path.repository_project,
                   name: path.repository_name)
   end
 end

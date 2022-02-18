@@ -7,7 +7,8 @@ description: Require approvals prior to deploying to a Protected Environment
 
 # Deployment approvals **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8.
 
 WARNING:
 This feature is in an alpha stage and subject to change without prior notice.
@@ -49,12 +50,19 @@ Example:
        name: ${CI_JOB_NAME}
    ```
 
-### Require approvals for a protected environment 
+### Require approvals for a protected environment
 
 NOTE:
-At this time, only API-based configuration is available. UI-based configuration is planned for the near future. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/344675). 
+At this time, it is not possible to require approvals for an existing protected environment. The workaround is to unprotect the environment and configure approvals when re-protecting the environment.
 
-Use the [Protected Environments API](../../api/protected_environments.md#protect-repository-environments) to create an environment with `required_approval_count` > 0. After this is set, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running.
+There are two ways to configure approvals for a protected environment:
+
+1. Using the [UI](protected_environments.md#protecting-environments)
+   1. Set the **Required approvals** field to 1 or more.
+1. Using the [REST API](../../api/protected_environments.md#protect-repository-environments)
+   2. Set the `required_approval_count` field to 1 or more.
+
+After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy.
 
 Example:
 
@@ -65,8 +73,9 @@ curl --header 'Content-Type: application/json' --request POST \
      "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
 ```
 
+NOTE:
 To protect, update, or unprotect an environment, you must have at least the
-[Maintainer role](../../user/permissions.md).
+Maintainer role.
 
 ## Approve or reject a deployment
 
@@ -75,7 +84,7 @@ This functionality is currently only available through the API. UI is planned fo
 
 A blocked deployment is enqueued as soon as it receives the required number of approvals. A single rejection causes the deployment to fail. The creator of a deployment cannot approve it, even if they have permission to deploy.
 
-Using the [Deployments API](../../api/deployments.md#approve-or-reject-a-blocked-deployment), users who are allowed to deploy to the protected environment can approve or reject a blocked deployment. 
+Using the [Deployments API](../../api/deployments.md#approve-or-reject-a-blocked-deployment), users who are allowed to deploy to the protected environment can approve or reject a blocked deployment.
 
 Example:
 
@@ -95,7 +104,11 @@ curl --data "status=approved" \
 
 #### Using the API
 
-Use the [Deployments API](../../api/deployments.md) to see deployments. The `status` field indicates if a deployment is blocked. 
+Use the [Deployments API](../../api/deployments.md) to see deployments.
+
+- The `status` field indicates if a deployment is blocked.
+- The `pending_approval_count` field indicates how many approvals are remaining to run a deployment.
+- The `approvals` field contains the deployment's approvals.
 
 ## Related features
 

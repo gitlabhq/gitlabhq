@@ -1,5 +1,6 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import RepoDropdown from '~/projects/compare/components/repo_dropdown.vue';
 import { revisionCardDefaultProps as defaultProps } from './mock_data';
 
@@ -39,7 +40,7 @@ describe('RepoDropdown component', () => {
 
     it('does not emit `changeTargetProject` event', async () => {
       wrapper.vm.emitTargetProject('foo');
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.emitted('changeTargetProject')).toBeUndefined();
     });
   });
@@ -67,13 +68,13 @@ describe('RepoDropdown component', () => {
     it('updates the hidden input value when onClick method is triggered', async () => {
       const repoId = '1';
       wrapper.vm.onClick({ id: repoId });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findHiddenInput().attributes('value')).toBe(repoId);
     });
 
     it('emits `selectProject` event when another target project is selected', async () => {
       findGlDropdown().findAll(GlDropdownItem).at(0).vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.emitted('selectProject')[0][0]).toEqual({
         direction: 'from',

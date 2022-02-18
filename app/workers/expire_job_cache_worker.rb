@@ -10,8 +10,6 @@ class ExpireJobCacheWorker # rubocop:disable Scalability/IdempotentWorker
 
   queue_namespace :pipeline_cache
   urgency :high
-
-  deduplicate :until_executing, including_scheduled: true
   idempotent!
 
   def perform(job_id)

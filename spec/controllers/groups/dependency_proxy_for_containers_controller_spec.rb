@@ -47,6 +47,24 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     end
   end
 
+  shared_examples 'with invalid path' do
+    context 'with invalid image' do
+      let(:image) { '../path_traversal' }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+      end
+    end
+
+    context 'with invalid tag' do
+      let(:tag) { 'latest%2f..%2f..%2fpath_traversal' }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+      end
+    end
+  end
+
   shared_examples 'without permission' do
     context 'with invalid user' do
       before do
@@ -164,8 +182,10 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   end
 
   describe 'GET #manifest' do
+    let_it_be(:image) { 'alpine' }
     let_it_be(:tag) { 'latest' }
-    let_it_be(:manifest) { create(:dependency_proxy_manifest, file_name: "alpine:#{tag}.json", group: group) }
+    let_it_be(:file_name) { "#{image}:#{tag}.json" }
+    let_it_be(:manifest) { create(:dependency_proxy_manifest, file_name: file_name, group: group) }
 
     let(:pull_response) { { status: :success, manifest: manifest, from_cache: false } }
 
@@ -235,6 +255,8 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         context 'with workhorse response' do
           let(:pull_response) { { status: :success, manifest: nil, from_cache: false } }
 
+          it_behaves_like 'with invalid path'
+
           it 'returns Workhorse send-dependency instructions', :aggregate_failures do
             subject
 
@@ -246,7 +268,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
               "Authorization" => ["Bearer abcd1234"],
               "Accept" => ::ContainerRegistry::Client::ACCEPTED_TYPES
             )
-            expect(url).to eq(DependencyProxy::Registry.manifest_url('alpine', tag))
+            expect(url).to eq(DependencyProxy::Registry.manifest_url(image, tag))
             expect(response.headers['Content-Type']).to eq('application/gzip')
             expect(response.headers['Content-Disposition']).to eq(
               ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: manifest.file_name)
@@ -277,7 +299,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     it_behaves_like 'not found when disabled'
 
     def get_manifest(tag)
-      get :manifest, params: { group_id: group.to_param, image: 'alpine', tag: tag }
+      get :manifest, params: { group_id: group.to_param, image: image, tag: tag }
     end
   end
 
@@ -440,6 +462,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       end
 
       it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest'
+      it_behaves_like 'with invalid path'
 
       context 'with no existing manifest' do
         it 'creates a manifest' do

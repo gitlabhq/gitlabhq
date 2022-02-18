@@ -1,0 +1,24 @@
+- name: "OAuth tokens without expiration" # The name of the feature to be deprecated
+  announcement_milestone: "14.8" # The milestone when this feature was first announced as deprecated.
+  announcement_date: "2022-02-22" # The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_milestone: "15.0" # The milestone when this feature is planned to be removed
+  removal_date: 2022-05-22 # The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  breaking_change: true # If this deprecation is a breaking change, set this value to true
+  body: | # Do not modify this line, instead modify the lines below.
+    By default, all new applications expire access tokens after 2 hours. In GitLab 14.2 and earlier, OAuth access tokens
+    had no expiration. In GitLab 15.0, an expiry will be automatically generated for any existing token that does not
+    already have one.
+
+    You should [opt in](https://docs.gitlab.com/ee/integration/oauth_provider.html#expiring-access-tokens) to expiring
+    tokens before GitLab 15.0 is released:
+
+    1. Edit the application.
+    1. Select **Expire access tokens** to enable them. Tokens must be revoked or they don’t expire.
+
+# The following items are not published on the docs page, but may be used in the future.
+  stage: # Manage
+  tiers: # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url: # https://gitlab.com/gitlab-org/gitlab/-/issues/21745
+  documentation_url: # (optional) This is a link to the current documentation page
+  image_url: # (optional) This is a link to a thumbnail image depicting the feature
+  video_url: # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 
 import mountComponent from 'helpers/vue_mount_component_helper';
 import { GREEN_BOX_IMAGE_URL, RED_BOX_IMAGE_URL } from 'spec/test_constants';
@@ -26,27 +26,25 @@ describe('DiffViewer', () => {
     vm.$destroy();
   });
 
-  it('renders image diff', (done) => {
+  it('renders image diff', async () => {
     window.gon = {
       relative_url_root: '',
     };
 
     createComponent({ ...requiredProps, projectPath: '' });
 
-    setImmediate(() => {
-      expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(
-        `//-/raw/DEF/${RED_BOX_IMAGE_URL}`,
-      );
+    await nextTick();
 
-      expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(
-        `//-/raw/ABC/${GREEN_BOX_IMAGE_URL}`,
-      );
+    expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(
+      `//-/raw/DEF/${RED_BOX_IMAGE_URL}`,
+    );
 
-      done();
-    });
+    expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(
+      `//-/raw/ABC/${GREEN_BOX_IMAGE_URL}`,
+    );
   });
 
-  it('renders fallback download diff display', (done) => {
+  it('renders fallback download diff display', async () => {
     createComponent({
       ...requiredProps,
       diffViewerMode: 'added',
@@ -54,22 +52,18 @@ describe('DiffViewer', () => {
       oldPath: 'testold.abc',
     });
 
-    setImmediate(() => {
-      expect(vm.$el.querySelector('.deleted .file-info').textContent.trim()).toContain(
-        'testold.abc',
-      );
+    await nextTick();
 
-      expect(vm.$el.querySelector('.deleted .btn.btn-default').textContent.trim()).toContain(
-        'Download',
-      );
+    expect(vm.$el.querySelector('.deleted .file-info').textContent.trim()).toContain('testold.abc');
 
-      expect(vm.$el.querySelector('.added .file-info').textContent.trim()).toContain('test.abc');
-      expect(vm.$el.querySelector('.added .btn.btn-default').textContent.trim()).toContain(
-        'Download',
-      );
+    expect(vm.$el.querySelector('.deleted .btn.btn-default').textContent.trim()).toContain(
+      'Download',
+    );
 
-      done();
-    });
+    expect(vm.$el.querySelector('.added .file-info').textContent.trim()).toContain('test.abc');
+    expect(vm.$el.querySelector('.added .btn.btn-default').textContent.trim()).toContain(
+      'Download',
+    );
   });
 
   describe('renamed file', () => {

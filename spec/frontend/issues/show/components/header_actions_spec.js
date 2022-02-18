@@ -1,5 +1,5 @@
 import { GlButton, GlDropdown, GlDropdownItem, GlLink, GlModal } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -153,7 +153,7 @@ describe('HeaderActions component', () => {
         it('dispatches a custom event to update the issue page', async () => {
           findToggleIssueStateButton().vm.$emit('click');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
         });

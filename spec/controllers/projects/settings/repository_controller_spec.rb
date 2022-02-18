@@ -33,6 +33,20 @@ RSpec.describe Projects::Settings::RepositoryController do
 
       expect(response).to redirect_to project_settings_repository_path(project)
     end
+
+    context 'when project cleanup returns an error', :aggregate_failures do
+      it 'shows an error' do
+        expect(Projects::CleanupService)
+          .to receive(:enqueue)
+          .with(project, user, anything)
+          .and_return(status: :error, message: 'error message')
+
+        put :cleanup, params: { namespace_id: project.namespace, project_id: project, project: { bfg_object_map: object_map } }
+
+        expect(controller).to set_flash[:alert].to('error message')
+        expect(response).to redirect_to project_settings_repository_path(project)
+      end
+    end
   end
 
   describe 'POST create_deploy_token' do

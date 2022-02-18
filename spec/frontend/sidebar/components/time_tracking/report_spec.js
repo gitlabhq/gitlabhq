@@ -1,6 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { getAllByRole, getByRole } from '@testing-library/dom';
-import { shallowMount, createLocalVue, mount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -13,8 +14,7 @@ import { getIssueTimelogsQueryResponse, getMrTimelogsQueryResponse } from './moc
 jest.mock('~/flash');
 
 describe('Issuable Time Tracking Report', () => {
-  const localVue = createLocalVue();
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
   let wrapper;
   let fakeApollo;
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -37,7 +37,6 @@ describe('Issuable Time Tracking Report', () => {
         issuableType,
       },
       propsData: { limitToHours, issuableId: '1' },
-      localVue,
       apolloProvider: fakeApollo,
     });
   };

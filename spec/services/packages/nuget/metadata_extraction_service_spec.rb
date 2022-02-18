@@ -78,7 +78,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
     end
 
     context 'with invalid package file id' do
-      let(:package_file) { OpenStruct.new(id: 555) }
+      let(:package_file) { double('file', id: 555) }
 
       it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, 'invalid package file') }
     end
@@ -109,7 +109,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
 
     context 'with a too big nuspec file' do
       before do
-        allow_any_instance_of(Zip::File).to receive(:glob).and_return([OpenStruct.new(size: 6.megabytes)])
+        allow_any_instance_of(Zip::File).to receive(:glob).and_return([double('file', size: 6.megabytes)])
       end
 
       it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, 'nuspec file too big') }

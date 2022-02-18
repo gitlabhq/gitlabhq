@@ -63,6 +63,10 @@ module Backup
       end
     end
 
+    def enabled
+      true
+    end
+
     def tar
       if system(*%w[gtar --version], out: '/dev/null')
         # It looks like we can get GNU tar by running 'gtar'

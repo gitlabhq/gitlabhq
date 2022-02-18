@@ -1,10 +1,11 @@
 import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import axios from '~/lib/utils/axios_utils';
@@ -100,15 +101,6 @@ describe('Pipeline graph wrapper', () => {
     wrapper.destroy();
   });
 
-  beforeAll(() => {
-    jest.useFakeTimers();
-  });
-
-  afterAll(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
-  });
-
   describe('when data is loading', () => {
     it('displays the loading icon', () => {
       createComponentWithApollo();
@@ -134,8 +126,7 @@ describe('Pipeline graph wrapper', () => {
   describe('when data has loaded', () => {
     beforeEach(async () => {
       createComponentWithApollo();
-      jest.runOnlyPendingTimers();
-      await nextTick();
+      await waitForPromises();
     });
 
     it('does not display the loading icon', () => {
@@ -163,8 +154,7 @@ describe('Pipeline graph wrapper', () => {
       createComponentWithApollo({
         getPipelineDetailsHandler: jest.fn().mockRejectedValue(new Error('GraphQL error')),
       });
-      jest.runOnlyPendingTimers();
-      await nextTick();
+      await waitForPromises();
     });
 
     it('does not display the loading icon', () => {
@@ -187,8 +177,7 @@ describe('Pipeline graph wrapper', () => {
           pipelineIid: '',
         },
       });
-      jest.runOnlyPendingTimers();
-      await nextTick();
+      await waitForPromises();
     });
 
     it('does not display the loading icon', () => {
@@ -210,7 +199,7 @@ describe('Pipeline graph wrapper', () => {
       createComponentWithApollo();
       jest.spyOn(wrapper.vm.$apollo.queries.headerPipeline, 'refetch');
       jest.spyOn(wrapper.vm.$apollo.queries.pipeline, 'refetch');
-      await nextTick();
+      await waitForPromises();
       getGraph().vm.$emit('refreshPipelineGraph');
     });
 
@@ -224,8 +213,7 @@ describe('Pipeline graph wrapper', () => {
   describe('when query times out', () => {
     const advanceApolloTimers = async () => {
       jest.runOnlyPendingTimers();
-      await nextTick();
-      await nextTick();
+      await waitForPromises();
     };
 
     beforeEach(async () => {
@@ -245,7 +233,7 @@ describe('Pipeline graph wrapper', () => {
         .mockResolvedValueOnce(errorData);
 
       createComponentWithApollo({ getPipelineDetailsHandler: failSucceedFail });
-      await nextTick();
+      await waitForPromises();
     });
 
     it('shows correct errors and does not overwrite populated data when data is empty', async () => {
@@ -274,8 +262,7 @@ describe('Pipeline graph wrapper', () => {
           mountFn: mount,
         });
 
-        jest.runOnlyPendingTimers();
-        await nextTick();
+        await waitForPromises();
       });
 
       it('appears when pipeline uses needs', () => {
@@ -318,7 +305,7 @@ describe('Pipeline graph wrapper', () => {
         });
 
         jest.runOnlyPendingTimers();
-        await nextTick();
+        await waitForPromises();
       });
 
       it('sets showLinks to true', async () => {
@@ -327,8 +314,9 @@ describe('Pipeline graph wrapper', () => {
         expect(getLinksLayer().props('showLinks')).toBe(false);
         expect(getViewSelector().props('type')).toBe(LAYER_VIEW);
         await getDependenciesToggle().vm.$emit('change', true);
+
         jest.runOnlyPendingTimers();
-        await nextTick();
+        await waitForPromises();
         expect(wrapper.findComponent(LinksLayer).props('showLinks')).toBe(true);
       });
     });
@@ -343,8 +331,7 @@ describe('Pipeline graph wrapper', () => {
           mountFn: mount,
         });
 
-        jest.runOnlyPendingTimers();
-        await nextTick();
+        await waitForPromises();
       });
 
       it('shows the hover tip in the view selector', async () => {
@@ -365,7 +352,7 @@ describe('Pipeline graph wrapper', () => {
         });
 
         jest.runOnlyPendingTimers();
-        await nextTick();
+        await waitForPromises();
       });
 
       it('does not show the hover tip', async () => {
@@ -382,8 +369,7 @@ describe('Pipeline graph wrapper', () => {
           mountFn: mount,
         });
 
-        jest.runOnlyPendingTimers();
-        await nextTick();
+        await waitForPromises();
       });
 
       afterEach(() => {
@@ -411,8 +397,7 @@ describe('Pipeline graph wrapper', () => {
           getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
         });
 
-        jest.runOnlyPendingTimers();
-        await nextTick();
+        await waitForPromises();
       });
 
       afterEach(() => {
@@ -435,7 +420,7 @@ describe('Pipeline graph wrapper', () => {
         });
 
         jest.runOnlyPendingTimers();
-        await nextTick();
+        await waitForPromises();
       });
 
       it('does not appear when pipeline does not use needs', () => {
@@ -461,8 +446,7 @@ describe('Pipeline graph wrapper', () => {
     describe('with no metrics path', () => {
       beforeEach(async () => {
         createComponentWithApollo();
-        jest.runOnlyPendingTimers();
-        await nextTick();
+        await waitForPromises();
       });
 
       it('is not called', () => {
@@ -505,8 +489,7 @@ describe('Pipeline graph wrapper', () => {
             },
           });
 
-          jest.runOnlyPendingTimers();
-          await nextTick();
+          await waitForPromises();
         });
 
         it('attempts to collect metrics', () => {
@@ -517,7 +500,7 @@ describe('Pipeline graph wrapper', () => {
       });
 
       describe('with duration and no error', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           mock = new MockAdapter(axios);
           mock.onPost(metricsPath).reply(200, {});
 
@@ -536,6 +519,7 @@ describe('Pipeline graph wrapper', () => {
               currentViewType: LAYER_VIEW,
             },
           });
+          await waitForPromises();
         });
 
         afterEach(() => {

@@ -108,3 +108,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::RequestAuthenticator.prepend_mod

@@ -45,7 +45,7 @@ many groups or projects, and the access level (including guest, developer, or
 maintainer) to groups and projects determines what users can see and
 what they can access.
 
-Users with the administrator role can access all projects and even impersonate
+Users with administrator access can access all projects and even impersonate
 users.
 
 #### Sharding and partitioning

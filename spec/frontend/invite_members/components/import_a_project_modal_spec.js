@@ -1,5 +1,6 @@
 import { GlFormGroup, GlSprintf, GlModal } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -91,7 +92,7 @@ describe('ImportAProjectModal', () => {
     it('sets isLoading to true when the Invite button is clicked', async () => {
       clickImportButton();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findImportButton().props('loading')).toBe(true);
     });
@@ -157,7 +158,7 @@ describe('ImportAProjectModal', () => {
 
         clickCancelButton();
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(formGroupInvalidFeedback()).toBe('');
         expect(formGroupErrorState()).not.toBe(false);

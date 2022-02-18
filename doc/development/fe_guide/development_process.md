@@ -64,6 +64,30 @@ Please use your best judgment when to use it and please contribute new points th
 - [ ] Follow up on issues that came out of the review. Create issues for discovered edge cases that should be covered in future iterations.
 ```
 
+### Code deletion checklist
+
+When your merge request deletes code, it's important to also delete all
+related code that is no longer used.
+When deleting Haml and Vue code, check whether it contains the following types of
+code that is unused:
+
+- CSS.
+
+  For example, we've deleted a Vue component that contained the `.mr-card` class, which is now unused.
+  The `.mr-card` CSS rule set should then be deleted from `merge_requests.scss`.
+
+- Ruby variables.
+
+  Deleting unused Ruby variables is important so we don't continue instantiating them with
+  potentially expensive code.
+
+  For example, we've deleted a Haml template that used the `@total_count` Ruby variable.
+  The `@total_count` variable was no longer used in the remaining templates for the page.
+  The instantiation of `@total_count` in `issues_controller.rb` should then be deleted so that we
+  don't make unnecessary database calls to calculate the count of issues.
+
+- Ruby methods.
+
 ### Merge Request Review
 
 With the purpose of being [respectful of others' time](https://about.gitlab.com/handbook/values/#be-respectful-of-others-time) please follow these guidelines when asking for a review:

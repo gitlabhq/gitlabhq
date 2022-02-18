@@ -39,6 +39,7 @@ export default {
       <time
         v-gl-tooltip
         :title="tooltipTitle(finishedTime)"
+        :datetime="finishedTime"
         data-placement="top"
         data-container="body"
       >

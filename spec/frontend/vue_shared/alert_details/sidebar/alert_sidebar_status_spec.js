@@ -1,4 +1,5 @@
 import { GlDropdown, GlLoadingIcon } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
 import AlertSidebarStatus from '~/vue_shared/alert_details/components/sidebar/sidebar_status.vue';
@@ -75,7 +76,7 @@ describe('Alert Details Sidebar Status', () => {
           loading: false,
         });
         findAlertStatus().vm.$emit('handle-updating', true);
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findStatusLoadingIcon().exists()).toBe(true);
       });
 

@@ -118,7 +118,7 @@ describe('When the code_quality_walkthrough URL parameter is present', () => {
       expect(Cookies.set).toHaveBeenCalledWith(
         EXPERIMENT_NAME,
         { commit_ci_file: true, data: dummyContext },
-        { expires: 365 },
+        { expires: 365, secure: false },
       );
     });
 

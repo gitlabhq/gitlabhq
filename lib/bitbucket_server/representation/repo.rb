@@ -30,7 +30,7 @@ module BitbucketServer
       end
 
       def description
-        project['description']
+        raw['description']
       end
 
       def full_name

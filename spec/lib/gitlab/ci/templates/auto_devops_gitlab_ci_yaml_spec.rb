@@ -15,7 +15,7 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
     describe 'the created pipeline' do
       let(:pipeline_branch) { default_branch }
       let(:project) { create(:project, :auto_devops, :custom_repo, files: { 'README.md' => '' }) }
-      let(:user) { project.owner }
+      let(:user) { project.first_owner }
       let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
       let(:pipeline) { service.execute!(:push).payload }
       let(:build_names) { pipeline.builds.pluck(:name) }
@@ -276,7 +276,7 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
 
       with_them do
         let(:project) { create(:project, :custom_repo, files: files) }
-        let(:user) { project.owner }
+        let(:user) { project.first_owner }
         let(:service) { Ci::CreatePipelineService.new(project, user, ref: default_branch ) }
         let(:pipeline) { service.execute(:push).payload }
         let(:build_names) { pipeline.builds.pluck(:name) }

@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import BoardSidebarItem from '~/boards/components/sidebar/board_editable_item.vue';
 
 describe('boards sidebar remove issue', () => {
@@ -79,17 +80,16 @@ describe('boards sidebar remove issue', () => {
       createComponent({ canUpdate: true, slots });
       findEditButton().vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findCollapsed().isVisible()).toBe(false);
-        expect(findExpanded().isVisible()).toBe(true);
-      });
+      await nextTick();
+      expect(findCollapsed().isVisible()).toBe(false);
+      expect(findExpanded().isVisible()).toBe(true);
     });
 
     it('hides the header while editing if `toggleHeader` is true', async () => {
       createComponent({ canUpdate: true, props: { toggleHeader: true } });
       findEditButton().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findEditButton().isVisible()).toBe(false);
       expect(findTitle().isVisible()).toBe(false);
@@ -101,14 +101,14 @@ describe('boards sidebar remove issue', () => {
     beforeEach(async () => {
       createComponent({ canUpdate: true });
       findEditButton().vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('hides expanded section and displays collapsed section', async () => {
       expect(findExpanded().isVisible()).toBe(true);
       document.body.click();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findExpanded().isVisible()).toBe(false);
@@ -117,7 +117,7 @@ describe('boards sidebar remove issue', () => {
     it('emits events', async () => {
       document.body.click();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.emitted().close).toHaveLength(1);
       expect(wrapper.emitted()['off-click']).toHaveLength(1);
@@ -129,7 +129,7 @@ describe('boards sidebar remove issue', () => {
 
     findEditButton().vm.$emit('click');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.emitted().open.length).toBe(1);
   });
@@ -139,7 +139,7 @@ describe('boards sidebar remove issue', () => {
 
     findEditButton().vm.$emit('click');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     wrapper.vm.collapse({ emitEvent: false });
 

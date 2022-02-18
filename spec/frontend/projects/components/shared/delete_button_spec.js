@@ -12,15 +12,25 @@ describe('Project remove modal', () => {
   const findConfirmButton = () => wrapper.find('.js-modal-action-primary');
   const findAuthenticityTokenInput = () => findFormElement().find('input[name=authenticity_token]');
   const findModal = () => wrapper.find(GlModal);
+  const findTitle = () => wrapper.find('[data-testid="delete-alert-title"]');
+  const findAlertBody = () => wrapper.find('[data-testid="delete-alert-body"]');
 
   const defaultProps = {
     confirmPhrase: 'foo',
     formPath: 'some/path',
+    isFork: false,
+    issuesCount: 1,
+    mergeRequestsCount: 2,
+    forksCount: 3,
+    starsCount: 4,
   };
 
-  const createComponent = (data = {}, stubs = {}) => {
+  const createComponent = (data = {}, stubs = {}, props = {}) => {
     wrapper = shallowMount(SharedDeleteButton, {
-      propsData: defaultProps,
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
       data: () => data,
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -86,6 +96,22 @@ describe('Project remove modal', () => {
 
     it('submits the form element', () => {
       expect(findFormElement().element.submit).toHaveBeenCalled();
+    });
+  });
+
+  describe('when project is a fork', () => {
+    beforeEach(() => {
+      createComponent({}, {}, { isFork: true });
+    });
+
+    it('matches the fork title', () => {
+      expect(findTitle().text()).toEqual('You are about to delete this forked project containing:');
+    });
+
+    it('matches the fork body', () => {
+      expect(findAlertBody().attributes().message).toEqual(
+        'This process deletes the project repository and all related resources.',
+      );
     });
   });
 });

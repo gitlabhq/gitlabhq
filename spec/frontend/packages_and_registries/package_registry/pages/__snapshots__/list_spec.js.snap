@@ -38,8 +38,8 @@ exports[`PackagesListApp renders 1`] = `
             class="gl-font-size-h-display gl-line-height-36 h4"
           >
             
-        There are no packages yet
-      
+          There are no packages yet
+        
           </h1>
            
           <p

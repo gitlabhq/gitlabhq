@@ -1,5 +1,5 @@
 import { GlButton } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
@@ -49,7 +49,7 @@ describe('BoardAddNewColumnTrigger', () => {
     it('shows the tooltip', async () => {
       wrapper.find(GlButton).vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const tooltip = findTooltipText();
 

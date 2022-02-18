@@ -11,7 +11,7 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:ruby-2.7-git-2.33-lfs-2.9-node-14.15-yarn-1.22-graphicsmagick-1.3.36
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7-git-2.33-lfs-2.9-node-14.15-yarn-1.22-graphicsmagick-1.3.36
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -306,11 +306,6 @@ qa-frontend-node:latest:
     - .qa-frontend-node
     - .frontend:rules:qa-frontend-node-latest
   image: ${GITLAB_DEPENDENCY_PROXY}node:latest
-  # This is a workaround for https://github.com/webpack/webpack/issues/14532 until
-  # we can upgrade to Webpack 5 and switch to SHA256: https://gitlab.com/gitlab-org/gitlab/-/issues/350120
-  script:
-    - *yarn-install
-    - run_timed_command "retry yarn run webpack-prod-node-latest"
 
 webpack-dev-server:
   extends:

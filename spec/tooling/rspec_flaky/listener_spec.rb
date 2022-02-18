@@ -54,7 +54,7 @@ RSpec.describe RspecFlaky::Listener, :aggregate_failures do
   before do
     # Stub these env variables otherwise specs don't behave the same on the CI
     stub_env('CI_JOB_URL', nil)
-    stub_env('SUITE_FLAKY_RSPEC_REPORT_PATH', nil)
+    stub_env('FLAKY_RSPEC_SUITE_REPORT_PATH', nil)
   end
 
   describe '#initialize' do
@@ -73,11 +73,11 @@ RSpec.describe RspecFlaky::Listener, :aggregate_failures do
       it_behaves_like 'a valid Listener instance'
     end
 
-    context 'when SUITE_FLAKY_RSPEC_REPORT_PATH is set' do
+    context 'when FLAKY_RSPEC_SUITE_REPORT_PATH is set' do
       let(:report_file_path) { 'foo/report.json' }
 
       before do
-        stub_env('SUITE_FLAKY_RSPEC_REPORT_PATH', report_file_path)
+        stub_env('FLAKY_RSPEC_SUITE_REPORT_PATH', report_file_path)
       end
 
       context 'and report file exists' do

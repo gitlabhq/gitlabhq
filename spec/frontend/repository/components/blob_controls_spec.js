@@ -1,6 +1,6 @@
-import { createLocalVue } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { nextTick } from 'vue';
+
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import BlobControls from '~/repository/components/blob_controls.vue';
@@ -16,10 +16,8 @@ let router;
 let wrapper;
 let mockResolver;
 
-const localVue = createLocalVue();
-
 const createComponent = async () => {
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
 
   const project = { ...blobControlsDataMock };
   const projectPath = 'some/project';
@@ -31,7 +29,6 @@ const createComponent = async () => {
   mockResolver = jest.fn().mockResolvedValue({ data: { project } });
 
   wrapper = shallowMountExtended(BlobControls, {
-    localVue,
     router,
     apolloProvider: createMockApollo([[blobControlsQuery, mockResolver]]),
     propsData: { projectPath },

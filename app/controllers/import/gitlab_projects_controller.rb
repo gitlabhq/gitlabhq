@@ -38,7 +38,7 @@ class Import::GitlabProjectsController < Import::BaseController
 
   def project_params
     params.permit(
-      :path, :namespace_id, :file
+      :name, :path, :namespace_id, :file
     )
   end
 

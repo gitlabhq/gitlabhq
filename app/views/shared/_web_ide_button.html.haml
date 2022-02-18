@@ -1,8 +1,5 @@
 - type = blob ? 'blob' : 'tree'
+- button_data = web_ide_button_data({ blob: blob })
+- fork_options = fork_modal_options(@project, @ref, @path, blob)
 
-.d-inline-block{ data: { options: web_ide_button_data({ blob: blob }).to_json }, id: "js-#{type}-web-ide-link" }
-
-- if show_edit_button?({ blob: blob })
-  = render 'shared/confirm_fork_modal', fork_path: fork_and_edit_path(@project, @ref, @path), type: 'edit'
-- if show_web_ide_button?
-  = render 'shared/confirm_fork_modal', fork_path: ide_fork_and_edit_path(@project, @ref, @path), type: 'webide'
+.gl-display-inline-block{ data: { options: button_data.merge(fork_options).to_json }, id: "js-#{type}-web-ide-link" }

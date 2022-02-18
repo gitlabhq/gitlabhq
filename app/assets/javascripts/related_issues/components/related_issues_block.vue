@@ -5,6 +5,9 @@ import {
   issuableQaClassMap,
   linkedIssueTypesMap,
   linkedIssueTypesTextMap,
+  issuablesBlockHeaderTextMap,
+  issuablesBlockHelpTextMap,
+  issuablesBlockAddButtonTextMap,
 } from '../constants';
 import AddIssuableForm from './add_issuable_form.vue';
 import RelatedIssuesList from './related_issues_list.vue';
@@ -105,6 +108,15 @@ export default {
     hasBody() {
       return this.isFormVisible || this.shouldShowTokenBody;
     },
+    headerText() {
+      return issuablesBlockHeaderTextMap[this.issuableType];
+    },
+    helpLinkText() {
+      return issuablesBlockHelpTextMap[this.issuableType];
+    },
+    addIssuableButtonText() {
+      return issuablesBlockAddButtonTextMap[this.issuableType];
+    },
     badgeLabel() {
       return this.isFetching && this.relatedIssues.length === 0 ? '...' : this.relatedIssues.length;
     },
@@ -138,13 +150,14 @@ export default {
             href="#related-issues"
             aria-hidden="true"
           />
-          <slot name="header-text">{{ __('Linked issues') }}</slot>
+          <slot name="header-text">{{ headerText }}</slot>
           <gl-link
             v-if="hasHelpPath"
             :href="helpPath"
             target="_blank"
             class="gl-display-flex gl-align-items-center gl-ml-2 gl-text-gray-500"
-            :aria-label="__('Read more about related issues')"
+            data-testid="help-link"
+            :aria-label="helpLinkText"
           >
             <gl-icon name="question" :size="12" />
           </gl-link>
@@ -160,7 +173,7 @@ export default {
               v-if="canAdmin"
               data-qa-selector="related_issues_plus_button"
               icon="plus"
-              :aria-label="__('Add a related issue')"
+              :aria-label="addIssuableButtonText"
               :class="qaClass"
               @click="$emit('toggleAddRelatedIssuesForm', $event)"
             />

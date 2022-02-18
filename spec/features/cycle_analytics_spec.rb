@@ -11,7 +11,7 @@ RSpec.describe 'Value Stream Analytics', :js do
   let_it_be(:stage_table_event_title_selector) { '[data-testid="vsa-stage-event-title"]' }
   let_it_be(:stage_table_pagination_selector) { '[data-testid="vsa-stage-pagination"]' }
   let_it_be(:stage_table_duration_column_header_selector) { '[data-testid="vsa-stage-header-duration"]' }
-  let_it_be(:metrics_selector) { "[data-testid='vsa-time-metrics']" }
+  let_it_be(:metrics_selector) { "[data-testid='vsa-metrics']" }
   let_it_be(:metric_value_selector) { "[data-testid='displayValue']" }
 
   let(:stage_table) { find(stage_table_selector) }
@@ -134,7 +134,7 @@ RSpec.describe 'Value Stream Analytics', :js do
       end
 
       it 'can filter the metrics by date' do
-        expect(metrics_values).to match_array(["21.0", "2.0", "1.0", "0.0"])
+        expect(metrics_values).to match_array(%w[21 2 1 0])
 
         set_daterange(from, to)
 

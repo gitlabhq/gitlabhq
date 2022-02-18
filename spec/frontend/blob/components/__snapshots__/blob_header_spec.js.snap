@@ -13,6 +13,7 @@ exports[`Blob Header Default Actions rendering matches the snapshot 1`] = `
      
     <blob-filepath-stub
       blob="[object Object]"
+      showpath="true"
     />
   </div>
    

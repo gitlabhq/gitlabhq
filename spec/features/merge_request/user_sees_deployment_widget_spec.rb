@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees deployment widget', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   describe 'when merge request has associated environments' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
@@ -118,7 +120,9 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
       end
 
       it 'does start build when stop button clicked' do
-        accept_confirm { find('.js-stop-env').click }
+        accept_gl_confirm(button_text: 'Stop environment') do
+          find('.js-stop-env').click
+        end
 
         expect(page).to have_content('close_app')
       end

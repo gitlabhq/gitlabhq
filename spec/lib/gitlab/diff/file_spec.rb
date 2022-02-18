@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Diff::File do
   def create_file(file_name, content)
     Files::CreateService.new(
       project,
-      project.owner,
+      project.first_owner,
       commit_message: 'Update',
       start_branch: branch_name,
       branch_name: branch_name,
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Diff::File do
   def update_file(file_name, content)
     Files::UpdateService.new(
       project,
-      project.owner,
+      project.first_owner,
       commit_message: 'Update',
       start_branch: branch_name,
       branch_name: branch_name,
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Diff::File do
   def delete_file(file_name)
     Files::DeleteService.new(
       project,
-      project.owner,
+      project.first_owner,
       commit_message: 'Update',
       start_branch: branch_name,
       branch_name: branch_name,

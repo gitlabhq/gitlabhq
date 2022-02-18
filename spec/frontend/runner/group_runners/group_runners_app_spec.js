@@ -1,15 +1,19 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { GlLink } from '@gitlab/ui';
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import {
+  extendedWrapper,
+  shallowMountExtended,
+  mountExtended,
+} from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
+import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
@@ -22,6 +26,7 @@ import {
   DEFAULT_SORT,
   INSTANCE_TYPE,
   GROUP_TYPE,
+  PROJECT_TYPE,
   PARAM_KEY_STATUS,
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
@@ -33,8 +38,7 @@ import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { groupRunnersData, groupRunnersDataPaginated, groupRunnersCountData } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const mockGroupFullPath = 'group1';
 const mockRegistrationToken = 'AABBCC';
@@ -54,6 +58,7 @@ describe('GroupRunnersApp', () => {
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
+  const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationPrev = () =>
@@ -62,14 +67,18 @@ describe('GroupRunnersApp', () => {
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
-  const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
+  const mockCountQueryResult = (count) =>
+    Promise.resolve({
+      data: { group: { id: groupRunnersCountData.data.group.id, runners: { count } } },
+    });
+
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     const handlers = [
       [getGroupRunnersQuery, mockGroupRunnersQuery],
       [getGroupRunnersCountQuery, mockGroupRunnersCountQuery],
     ];
 
     wrapper = mountFn(GroupRunnersApp, {
-      localVue,
       apolloProvider: createMockApollo(handlers),
       propsData: {
         registrationToken: mockRegistrationToken,
@@ -91,7 +100,7 @@ describe('GroupRunnersApp', () => {
   });
 
   it('shows total runner counts', async () => {
-    createComponent({ mountFn: mount });
+    createComponent({ mountFn: mountExtended });
 
     await waitForPromises();
 
@@ -100,6 +109,44 @@ describe('GroupRunnersApp', () => {
     expect(stats).toMatch('Online runners 2');
     expect(stats).toMatch('Offline runners 2');
     expect(stats).toMatch('Stale runners 2');
+  });
+
+  it('shows the runner tabs with a runner count for each type', async () => {
+    mockGroupRunnersCountQuery.mockImplementation(({ type }) => {
+      switch (type) {
+        case GROUP_TYPE:
+          return mockCountQueryResult(2);
+        case PROJECT_TYPE:
+          return mockCountQueryResult(1);
+        default:
+          return mockCountQueryResult(4);
+      }
+    });
+
+    createComponent({ mountFn: mountExtended });
+    await waitForPromises();
+
+    expect(findRunnerTypeTabs().text()).toMatchInterpolatedText('All 4 Group 2 Project 1');
+  });
+
+  it('shows the runner tabs with a formatted runner count', async () => {
+    mockGroupRunnersCountQuery.mockImplementation(({ type }) => {
+      switch (type) {
+        case GROUP_TYPE:
+          return mockCountQueryResult(2000);
+        case PROJECT_TYPE:
+          return mockCountQueryResult(1000);
+        default:
+          return mockCountQueryResult(3000);
+      }
+    });
+
+    createComponent({ mountFn: mountExtended });
+    await waitForPromises();
+
+    expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
+      'All 3,000 Group 2,000 Project 1,000',
+    );
   });
 
   it('shows the runner setup instructions', () => {
@@ -116,7 +163,7 @@ describe('GroupRunnersApp', () => {
     const { webUrl, node } = groupRunnersData.data.group.runners.edges[0];
     const { id, shortSha } = node;
 
-    createComponent({ mountFn: mount });
+    createComponent({ mountFn: mountExtended });
 
     await waitForPromises();
 
@@ -136,7 +183,7 @@ describe('GroupRunnersApp', () => {
   });
 
   it('sets tokens in the filtered search', () => {
-    createComponent({ mountFn: mount });
+    createComponent({ mountFn: mountExtended });
 
     const tokens = findFilteredSearch().props('tokens');
 
@@ -215,11 +262,13 @@ describe('GroupRunnersApp', () => {
       mockGroupRunnersQuery = jest.fn().mockResolvedValue({
         data: {
           group: {
+            id: '1',
             runners: { nodes: [] },
           },
         },
       });
       createComponent();
+      await waitForPromises();
     });
 
     it('shows a message for no results', async () => {
@@ -228,9 +277,10 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('when runners query fails', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockGroupRunnersQuery = jest.fn().mockRejectedValue(new Error('Error!'));
       createComponent();
+      await waitForPromises();
     });
 
     it('error is shown to the user', async () => {
@@ -239,17 +289,18 @@ describe('GroupRunnersApp', () => {
 
     it('error is reported to sentry', async () => {
       expect(captureException).toHaveBeenCalledWith({
-        error: new Error('Network error: Error!'),
+        error: new Error('Error!'),
         component: 'GroupRunnersApp',
       });
     });
   });
 
   describe('Pagination', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockGroupRunnersQuery = jest.fn().mockResolvedValue(groupRunnersDataPaginated);
 
-      createComponent({ mountFn: mount });
+      createComponent({ mountFn: mountExtended });
+      await waitForPromises();
     });
 
     it('more pages can be selected', () => {

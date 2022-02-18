@@ -38,6 +38,12 @@ swap:
   can sign-in: can sign in
   x509: X.509
   yaml: YAML
+  admin user: administrator
+  admin users: administrators
+  administrator permission: administrator access
+  administrator permissions: administrator access
+  administrator role: administrator access
+  the administrator access level: administrator access
   developer access: the Developer role
   developer permission: the Developer role
   developer permissions: the Developer role

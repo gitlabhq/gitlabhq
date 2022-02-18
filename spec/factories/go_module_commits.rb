@@ -17,7 +17,7 @@ FactoryBot.define do
       service do
         Files::MultiService.new(
           project,
-          project.owner,
+          project.first_owner,
           commit_message: message,
           start_branch: project.repository.root_ref || 'master',
           branch_name: project.repository.root_ref || 'master',
@@ -38,7 +38,7 @@ FactoryBot.define do
         commit = project.repository.commit_by(oid: r[:result])
 
         if tag
-          r = Tags::CreateService.new(project, project.owner).execute(tag, commit.sha, tag_message)
+          r = Tags::CreateService.new(project, project.first_owner).execute(tag, commit.sha, tag_message)
 
           raise "operation failed: #{r}" unless r[:status] == :success
         end

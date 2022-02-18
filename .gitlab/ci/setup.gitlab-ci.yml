@@ -159,7 +159,7 @@ add-jh-folder:
   script:
     - JH_BRANCH=$(./scripts/setup/find-jh-branch.rb)
     - 'echo "JH_BRANCH: ${JH_BRANCH}"'
-    - curl --location -o "jh-folder.tar.gz" "https://gitlab.com/gitlab-jh/gitlab/-/archive/${JH_BRANCH}/gitlab-${JH_BRANCH}.tar.gz?path=jh"
+    - curl --location -o "jh-folder.tar.gz" "https://gitlab.com/gitlab-org/gitlab-jh/gitlab/-/archive/${JH_BRANCH}/gitlab-${JH_BRANCH}.tar.gz?path=jh"
     - tar -xf "jh-folder.tar.gz"
     - mv "gitlab-${JH_BRANCH}-jh/jh/" ./
     - cp Gemfile.lock jh/

@@ -73,6 +73,24 @@ RSpec.describe Explore::ProjectsController do
           expect(assigns(:projects)).to eq [project1, project2]
         end
       end
+
+      context 'projects aimed for deletion' do
+        let(:project1) { create(:project, :public, updated_at: 3.days.ago) }
+        let(:project2) { create(:project, :public, updated_at: 1.day.ago) }
+        let(:aimed_for_deletion_project) { create(:project, :public, :archived, updated_at: 2.days.ago, marked_for_deletion_at: 2.days.ago) }
+
+        before do
+          create(:trending_project, project: project1)
+          create(:trending_project, project: project2)
+          create(:trending_project, project: aimed_for_deletion_project)
+        end
+
+        it 'does not list projects aimed for deletion' do
+          get :trending
+
+          expect(assigns(:projects)).to eq [project2, project1]
+        end
+      end
     end
 
     describe 'GET #topic' do

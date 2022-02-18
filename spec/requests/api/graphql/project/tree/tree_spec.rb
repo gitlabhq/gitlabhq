@@ -5,7 +5,7 @@ RSpec.describe 'getting a tree in a project' do
   include GraphqlHelpers
 
   let(:project) { create(:project, :repository) }
-  let(:current_user) { project.owner }
+  let(:current_user) { project.first_owner }
   let(:path) { "" }
   let(:ref) { "master" }
   let(:fields) do

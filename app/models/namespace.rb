@@ -43,6 +43,7 @@ class Namespace < ApplicationRecord
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
+  has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
 
@@ -492,6 +493,10 @@ class Namespace < ApplicationRecord
     end
   end
 
+  def shared_runners
+    @shared_runners ||= shared_runners_enabled ? Ci::Runner.instance_type : Ci::Runner.none
+  end
+
   def root?
     !has_parent?
   end
@@ -506,6 +511,12 @@ class Namespace < ApplicationRecord
 
   def project_namespace_creation_enabled?
     Feature.enabled?(:create_project_namespace_on_project_create, self, default_enabled: :yaml)
+  end
+
+  def storage_enforcement_date
+    # should return something like Date.new(2022, 02, 03)
+    # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
+    nil
   end
 
   private

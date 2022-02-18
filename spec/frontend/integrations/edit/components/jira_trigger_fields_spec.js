@@ -1,4 +1,5 @@
 import { GlFormCheckbox } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
@@ -71,12 +72,11 @@ describe('JiraTriggerFields', () => {
       });
 
       describe('on enable comments', () => {
-        it('shows comment detail', () => {
+        it('shows comment detail', async () => {
           findCommentSettingsCheckbox().vm.$emit('input', true);
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(findCommentDetail().isVisible()).toBe(true);
-          });
+          await nextTick();
+          expect(findCommentDetail().isVisible()).toBe(true);
         });
       });
     });
@@ -107,7 +107,7 @@ describe('JiraTriggerFields', () => {
     });
 
     describe('initialJiraIssueTransitionAutomatic is false, initialJiraIssueTransitionId is not set', () => {
-      it('selects automatic transitions when enabling transitions', () => {
+      it('selects automatic transitions when enabling transitions', async () => {
         createComponent({
           initialTriggerCommit: true,
           initialEnableComments: true,
@@ -117,11 +117,10 @@ describe('JiraTriggerFields', () => {
         expect(checkbox.element.checked).toBe(false);
         checkbox.trigger('click');
 
-        return wrapper.vm.$nextTick().then(() => {
-          const [radio1, radio2] = findIssueTransitionModeRadios().wrappers;
-          expect(radio1.element.checked).toBe(true);
-          expect(radio2.element.checked).toBe(false);
-        });
+        await nextTick();
+        const [radio1, radio2] = findIssueTransitionModeRadios().wrappers;
+        expect(radio1.element.checked).toBe(true);
+        expect(radio2.element.checked).toBe(false);
       });
     });
 

@@ -34,7 +34,7 @@ RSpec.describe 'Triggers', :js do
         click_button 'Add trigger'
 
         aggregate_failures 'display creation notice and trigger is created' do
-          expect(page.find('.flash-notice')).to have_content 'Trigger was created successfully.'
+          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger was created successfully.'
           expect(page.find('.triggers-list')).to have_content 'trigger desc'
           expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
         end
@@ -63,7 +63,7 @@ RSpec.describe 'Triggers', :js do
         click_button 'Save trigger'
 
         aggregate_failures 'display update notice and trigger is updated' do
-          expect(page.find('.flash-notice')).to have_content 'Trigger was successfully updated.'
+          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger was successfully updated.'
           expect(page.find('.triggers-list')).to have_content new_trigger_title
           expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
         end
@@ -89,7 +89,7 @@ RSpec.describe 'Triggers', :js do
         end
 
         aggregate_failures 'trigger is removed' do
-          expect(page.find('.flash-notice')).to have_content 'Trigger removed'
+          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger removed'
           expect(page).to have_css('[data-testid="no_triggers_content"]')
         end
       end

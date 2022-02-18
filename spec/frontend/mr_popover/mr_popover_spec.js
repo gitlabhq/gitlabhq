@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import MRPopover from '~/mr_popover/components/mr_popover.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
@@ -25,16 +26,15 @@ describe('MR Popover', () => {
     });
   });
 
-  it('shows skeleton-loader while apollo is loading', () => {
+  it('shows skeleton-loader while apollo is loading', async () => {
     wrapper.vm.$apollo.queries.mergeRequest.loading = true;
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(wrapper.element).toMatchSnapshot();
   });
 
   describe('loaded state', () => {
-    it('matches the snapshot', () => {
+    it('matches the snapshot', async () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
@@ -51,12 +51,11 @@ describe('MR Popover', () => {
         },
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
-      });
+      await nextTick();
+      expect(wrapper.element).toMatchSnapshot();
     });
 
-    it('does not show CI Icon if there is no pipeline data', () => {
+    it('does not show CI Icon if there is no pipeline data', async () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
@@ -69,15 +68,13 @@ describe('MR Popover', () => {
         },
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(CiIcon).exists()).toBe(false);
-      });
+      await nextTick();
+      expect(wrapper.find(CiIcon).exists()).toBe(false);
     });
 
-    it('falls back to cached MR title when request fails', () => {
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.text()).toContain('MR Title');
-      });
+    it('falls back to cached MR title when request fails', async () => {
+      await nextTick();
+      expect(wrapper.text()).toContain('MR Title');
     });
   });
 });

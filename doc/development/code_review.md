@@ -285,7 +285,7 @@ Maintainers should check before merging if the merge request is approved by the
 required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
 
 Maintainers must check before merging if the merge request is introducing new
-vulnerabilities, by inspecting the list in the Merge Request
+vulnerabilities, by inspecting the list in the merge request
 [Security Widget](../user/application_security/index.md).
 When in doubt, a [Security Engineer](https://about.gitlab.com/company/team/) can be involved. The list of detected
 vulnerabilities must be either empty or containing:
@@ -296,8 +296,8 @@ vulnerabilities must be either empty or containing:
 Maintainers should **never** dismiss vulnerabilities to "empty" the list,
 without duly verifying them.
 
-Note that certain Merge Requests may target a stable branch. These are rare
-events. These types of Merge Requests cannot be merged by the Maintainer.
+Note that certain merge requests may target a stable branch. These are rare
+events. These types of merge requests cannot be merged by the Maintainer.
 Instead, these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
 
 After merging, a maintainer should stay as the reviewer listed on the merge request.
@@ -479,7 +479,7 @@ WARNING:
     [very specific cases](https://about.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).
     For other cases, follow these [handbook instructions](https://about.gitlab.com/handbook/engineering/workflow/#merging-during-broken-master).
   - If the latest pipeline was created before the merge request was approved, start a new pipeline to ensure that full RSpec suite has been run. You may skip this step only if the merge request does not contain any backend change.
-  - If the **latest [Pipeline for Merged Results](../ci/pipelines/pipelines_for_merged_results.md)** finished less than 2 hours ago, you
+  - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** finished less than 2 hours ago, you
     may merge without starting a new pipeline as the merge request is close
     enough to `main`.
 - When you set the MR to "Merge When Pipeline Succeeds", you should take over
@@ -489,7 +489,7 @@ WARNING:
   the squashed commit's default commit message is taken from the merge request title.
   You're encouraged to [select a commit with a more informative commit message](../user/project/merge_requests/squash_and_merge.md) before merging.
 
-Thanks to **Pipeline for Merged Results**, authors no longer have to rebase their
+Thanks to **merged results pipelines**, authors no longer have to rebase their
 branch as frequently anymore (only when there are conflicts) because the Merge
 Results Pipeline already incorporate the latest changes from `main`.
 This results in faster review/merge cycles because maintainers don't have to ask
@@ -501,7 +501,7 @@ Merge Results against the latest `main` at the time of the pipeline creation.
 
 WARNING:
 **Review all changes thoroughly for malicious code before starting a
-[Pipeline for Merged Results](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).**
+[merged results pipeline](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).**
 
 When reviewing merge requests added by wider community contributors:
 
@@ -510,6 +510,9 @@ When reviewing merge requests added by wider community contributors:
   fetching of malicious packages.
 - Review links and images, especially in documentation MRs.
 - When in doubt, ask someone from `@gitlab-com/gl-security/appsec` to review the merge request **before manually starting any merge request pipeline**.
+- Only set the milestone when the merge request is likely to be included in
+  the current milestone. This is to avoid confusion around when it'll be
+  merged and avoid moving milestone too often when it's not yet ready.
 
 If the MR source branch is more than 1,000 commits behind the target branch:
 
@@ -599,7 +602,7 @@ Enterprise Edition instance. This has some implications:
       - [Background migrations](background_migrations.md) run in Sidekiq, and
         should only be done for migrations that would take an extreme amount of
         time at GitLab.com scale.
-1. **Sidekiq workers** [cannot change in a backwards-incompatible way](sidekiq_style_guide.md#sidekiq-compatibility-across-updates):
+1. **Sidekiq workers** [cannot change in a backwards-incompatible way](sidekiq/compatibility_across_updates.md):
    1. Sidekiq queues are not drained before a deploy happens, so there are
       workers in the queue from the previous version of GitLab.
    1. If you need to change a method signature, try to do so across two releases,
@@ -670,7 +673,7 @@ Properties of customer critical merge requests:
 - It is required that the reviewer(s) and maintainer(s) involved with a customer critical merge request are engaged as soon as this decision is made.
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.
 - It is required to adhere to GitLab [values](https://about.gitlab.com/handbook/values/) and processes when working on customer critical merge requests, taking particular note of family and friends first/work second, definition of done, iteration, and release when it's ready.
-- Customer critical merge requests are required to not reduce security, introduce data-loss risk, reduce availability, nor break existing functionality per the process for [prioritizing technical decisions](https://about.gitlab.com/handbook/engineering/#prioritizing-technical-decisions.md).
+- Customer critical merge requests are required to not reduce security, introduce data-loss risk, reduce availability, nor break existing functionality per the process for [prioritizing technical decisions](https://about.gitlab.com/handbook/engineering/principles/#prioritizing-technical-decisions).
 - On customer critical requests, it is _recommended_ that those involved _consider_ coordinating synchronously (Zoom, Slack) in addition to asynchronously (merge requests comments) if they believe this may reduce the elapsed time to merge even though this _may_ sacrifice [efficiency](https://about.gitlab.com/company/culture/all-remote/asynchronous/#evaluating-efficiency.md).
 - After a customer critical merge request is merged, a retrospective must be completed with the intention of reducing the frequency of future customer critical merge requests.
 

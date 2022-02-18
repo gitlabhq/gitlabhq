@@ -31,19 +31,13 @@ module QA
       end
 
       # Require approval from code owners on the default branch
-      # The default branch is already protected, and we can't update a protected branch via the API (yet)
-      # so we unprotect it first and then protect it again with the desired parameters
-      Resource::ProtectedBranch.unprotect_via_api! do |protected_branch|
-        protected_branch.project = project
-        protected_branch.branch_name = project.default_branch
+      protected_branch = Resource::ProtectedBranch.fabricate_via_api! do |branch|
+        branch.project = project
+        branch.branch_name = project.default_branch
+        branch.new_branch = false
+        branch.require_code_owner_approval = true
       end
-
-      Resource::ProtectedBranch.fabricate_via_api! do |protected_branch|
-        protected_branch.project = project
-        protected_branch.branch_name = project.default_branch
-        protected_branch.new_branch = false
-        protected_branch.require_code_owner_approval = true
-      end
+      protected_branch.set_require_code_owner_approval
 
       # Push a change to the file with a CODEOWNERS rule
       Resource::Repository::Push.fabricate! do |push|

@@ -4,9 +4,9 @@ module Mutations
   module Ci
     module JobTokenScope
       class RemoveProject < BaseMutation
-        include FindsProject
-
         graphql_name 'CiJobTokenScopeRemoveProject'
+
+        include FindsProject
 
         authorize :admin_project
 

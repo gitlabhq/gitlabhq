@@ -52,6 +52,12 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
 
       expect { importer.execute }.to change { Release.count }.by(1)
     end
+
+    it 'is idempotent' do
+      allow(importer).to receive(:each_release).and_return([github_release])
+      expect { importer.execute }.to change { Release.count }.by(1)
+      expect { importer.execute }.to change { Release.count }.by(0) # Idempotency check
+    end
   end
 
   describe '#build_releases' do
@@ -78,6 +84,24 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
       release = importer.build_releases.first
 
       expect(release[:description]).to eq('Release for tag 1.0')
+    end
+
+    it 'does not create releases that have a NULL tag' do
+      null_tag_release = double(
+        name: 'NULL Test',
+        tag_name: nil
+      )
+
+      expect(importer).to receive(:each_release).and_return([null_tag_release])
+      expect(importer.build_releases).to be_empty
+    end
+
+    it 'does not create duplicate release tags' do
+      expect(importer).to receive(:each_release).and_return([github_release, github_release])
+
+      releases = importer.build_releases
+      expect(releases.length).to eq(1)
+      expect(releases[0][:description]).to eq('This is my release')
     end
   end
 

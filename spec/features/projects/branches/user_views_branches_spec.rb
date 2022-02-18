@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe "User views branches", :js do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
 
   before do
     sign_in(user)

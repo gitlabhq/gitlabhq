@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 import { UP_KEY_CODE, DOWN_KEY_CODE, TAB_KEY_CODE } from '~/lib/utils/keycodes';
 
@@ -53,7 +54,7 @@ describe('DropdownKeyboardNavigation', () => {
 
     it('should $emit @change with the default index when max changes', async () => {
       wrapper.setProps({ max: 20 });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       // The first @change`call happens on created() so we test for the second [1]
       expect(wrapper.emitted('change')[1]).toStrictEqual([MOCK_DEFAULT_INDEX]);
     });

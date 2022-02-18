@@ -76,6 +76,12 @@ RSpec.describe API::Helpers do
           expect(subject.find_project(non_existing_id)).to be_nil
         end
       end
+
+      context 'when project id is not provided' do
+        it 'returns nil' do
+          expect(subject.find_project(nil)).to be_nil
+        end
+      end
     end
 
     context 'when ID is used as an argument' do
@@ -160,7 +166,7 @@ RSpec.describe API::Helpers do
   describe '#find_project!' do
     let_it_be(:project) { create(:project) }
 
-    let(:user) { project.owner}
+    let(:user) { project.first_owner}
 
     before do
       allow(subject).to receive(:current_user).and_return(user)

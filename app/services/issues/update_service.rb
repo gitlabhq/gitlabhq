@@ -2,8 +2,6 @@
 
 module Issues
   class UpdateService < Issues::BaseService
-    extend ::Gitlab::Utils::Override
-
     # NOTE: For Issues::UpdateService, we default the spam_params to nil, because spam_checking is not
     # necessary in many cases, and we don't want to require every caller to explicitly pass it as nil
     # to disable spam checking.
@@ -90,18 +88,6 @@ module Issues
     def handle_task_changes(issuable)
       todo_service.resolve_todos_for_target(issuable, current_user)
       todo_service.update_issue(issuable, current_user)
-    end
-
-    def handle_move_between_ids(issue)
-      issue.check_repositioning_allowed! if params[:move_between_ids]
-
-      super
-
-      rebalance_if_needed(issue)
-    end
-
-    def positioning_scope_key
-      :board_group_id
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -214,23 +200,12 @@ module Issues
       return unless old_escalation_status.present?
       return if issue.escalation_status&.slice(:status, :policy_id) == old_escalation_status
 
-      ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(issue, current_user).execute
+      ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(
+        issue,
+        current_user,
+        status_change_reason: @escalation_status_change_reason # Defined in IssuableBaseService before save
+      ).execute
     end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def issuable_for_positioning(id, board_group_id = nil)
-      return unless id
-
-      issue =
-        if board_group_id
-          IssuesFinder.new(current_user, group_id: board_group_id, include_subgroups: true).find_by(id: id)
-        else
-          project.issues.find(id)
-        end
-
-      issue if can?(current_user, :update_issue, issue)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_confidentiality_note(issue)
       SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)

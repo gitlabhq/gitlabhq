@@ -87,7 +87,7 @@ To improve your project's security, we recommend the following:
   Unblocked email spam can result in many spam issues being created.
 
 The unique internal email address is visible to project members at least
-the Reporter [role](../permissions.md) in your GitLab instance.
+the Reporter role in your GitLab instance.
 An external user (issue creator) cannot see the internal email address
 displayed in the information note.
 
@@ -333,3 +333,10 @@ Note that:
 
 Behind the scenes, Service Desk works by the special Support Bot user creating issues. This user
 does not count toward the license limit count.
+
+## Troubleshooting Service Desk
+
+### Emails to Service Desk do not create issues
+
+Your emails might be ignored because they contain one of the
+[email headers that GitLab ignores](../../administration/incoming_email.md#rejected-headers).

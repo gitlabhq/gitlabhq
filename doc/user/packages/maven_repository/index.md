@@ -263,7 +263,7 @@ The `name` must be `Job-Token`.
         <httpHeaders>
           <property>
             <name>Job-Token</name>
-            <value>${env.CI_JOB_TOKEN}</value>
+            <value>${CI_JOB_TOKEN}</value>
           </property>
         </httpHeaders>
       </configuration>
@@ -725,7 +725,7 @@ You can create a new package each time the `main` branch is updated.
            <httpHeaders>
              <property>
                <name>Job-Token</name>
-               <value>${env.CI_JOB_TOKEN}</value>
+               <value>${CI_JOB_TOKEN}</value>
              </property>
            </httpHeaders>
          </configuration>
@@ -742,17 +742,17 @@ You can create a new package each time the `main` branch is updated.
    <repositories>
      <repository>
        <id>gitlab-maven</id>
-       <url>${env.CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+       <url>${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/maven</url>
      </repository>
    </repositories>
    <distributionManagement>
      <repository>
        <id>gitlab-maven</id>
-       <url>${CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+       <url>${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/maven</url>
      </repository>
      <snapshotRepository>
        <id>gitlab-maven</id>
-       <url>${CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+       <url>${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/maven</url>
      </snapshotRepository>
    </distributionManagement>
    ```

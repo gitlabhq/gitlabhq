@@ -21,8 +21,8 @@ RSpec.describe "Gitlab::Experiment", :js do
       allow_next_instance_of(Admin::AbuseReportsController) do |instance|
         allow(instance).to receive(:index).and_wrap_original do |original|
           instance.experiment(:null_hypothesis, user: instance.current_user) do |e|
-            e.use { original.call }
-            e.try { original.call }
+            e.control { original.call }
+            e.candidate { original.call }
           end
         end
       end

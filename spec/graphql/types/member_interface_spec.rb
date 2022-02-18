@@ -12,6 +12,7 @@ RSpec.describe Types::MemberInterface do
       updated_at
       expires_at
       user
+      merge_request_interaction
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
@@ -38,6 +39,18 @@ RSpec.describe Types::MemberInterface do
       it 'raises an error' do
         expect { subject }.to raise_error(Gitlab::Graphql::Errors::BaseError)
       end
+    end
+  end
+
+  describe '#merge_request_interaction' do
+    subject { described_class.fields['mergeRequestInteraction'] }
+
+    it 'returns the correct type' do
+      is_expected.to have_graphql_type(Types::UserMergeRequestInteractionType)
+    end
+
+    it 'has the correct arguments' do
+      expect(subject.arguments).to have_key('id')
     end
   end
 end

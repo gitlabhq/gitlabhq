@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
 import DeployBoard from '~/environments/components/deploy_board.vue';
 import EnvironmentTable from '~/environments/components/environments_table.vue';
@@ -181,7 +182,7 @@ describe('Environment table', () => {
     });
 
     wrapper.find(DeployBoard).vm.$emit('changeCanaryWeight', 40);
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.find(CanaryUpdateModal).props()).toMatchObject({
       weight: 40,

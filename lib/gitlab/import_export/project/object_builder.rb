@@ -13,12 +13,6 @@ module Gitlab
       #
       # It also adds some logic around Group Labels/Milestones for edge cases.
       class ObjectBuilder < Base::ObjectBuilder
-        def self.build(*args)
-          ::Project.transaction do
-            super
-          end
-        end
-
         def initialize(klass, attributes)
           super
 

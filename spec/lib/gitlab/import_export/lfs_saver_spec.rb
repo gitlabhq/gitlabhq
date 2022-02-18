@@ -34,13 +34,13 @@ RSpec.describe Gitlab::ImportExport::LfsSaver do
       end
 
       it 'does not cause errors' do
-        saver.save
+        saver.save # rubocop:disable Rails/SaveBang
 
         expect(shared.errors).to be_empty
       end
 
       it 'copies the file in the correct location when there is an lfs object' do
-        saver.save
+        saver.save # rubocop:disable Rails/SaveBang
 
         expect(File).to exist("#{shared.export_path}/lfs-objects/#{lfs_object.oid}")
       end
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::ImportExport::LfsSaver do
         end
 
         it 'saves a json file correctly' do
-          saver.save
+          saver.save # rubocop:disable Rails/SaveBang
 
           expect(File.exist?(lfs_json_file)).to eq(true)
           expect(lfs_json).to eq(
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::ImportExport::LfsSaver do
         expect(fake_uri).to receive(:open).and_return(StringIO.new('LFS file content'))
         expect(URI).to receive(:parse).with('http://my-object-storage.local').and_return(fake_uri)
 
-        saver.save
+        saver.save # rubocop:disable Rails/SaveBang
 
         expect(File.read(exported_file_path)).to eq('LFS file content')
       end

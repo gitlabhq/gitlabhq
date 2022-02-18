@@ -1,5 +1,8 @@
 # frozen_string_literal: true
+
 require 'fast_spec_helper'
+
+require_relative '../../config/initializers/net_http_patch'
 
 RSpec.describe 'Net::HTTP patch proxy user and password encoding' do
   let(:net_http) { Net::HTTP.new('hostname.example') }

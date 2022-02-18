@@ -42,7 +42,7 @@ After the author applies a suggestion:
 1. The suggestion is marked as **Applied**.
 1. The thread is resolved.
 1. GitLab creates a new commit with the changes.
-1. If the user has the [Developer role](../../../permissions.md), GitLab pushes
+1. If the user has the Developer role, GitLab pushes
    the suggested change directly into the codebase in the merge request's branch.
 
 ## Multi-line suggestions
@@ -114,7 +114,7 @@ introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 
 ## Batch suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) with a flag named `batch_suggestions`, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [alpha feature](../../../../policy/alpha-beta-support.md#alpha-features) with a flag named `batch_suggestions`, disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) in GitLab 13.2.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) in GitLab 13.11. [Feature flag `batch_suggestions`](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) removed.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.

@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ItemActions from '~/groups/components/item_actions.vue';
 import eventHub from '~/groups/event_hub';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
@@ -13,7 +13,7 @@ describe('ItemActions', () => {
   };
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(ItemActions, {
+    wrapper = shallowMountExtended(ItemActions, {
       propsData: { ...defaultProps, ...props },
     });
   };
@@ -23,8 +23,10 @@ describe('ItemActions', () => {
     wrapper = null;
   });
 
-  const findEditGroupBtn = () => wrapper.find('[data-testid="edit-group-btn"]');
-  const findLeaveGroupBtn = () => wrapper.find('[data-testid="leave-group-btn"]');
+  const findEditGroupBtn = () => wrapper.findByTestId(`edit-group-${mockParentGroupItem.id}-btn`);
+  const findLeaveGroupBtn = () => wrapper.findByTestId(`leave-group-${mockParentGroupItem.id}-btn`);
+  const findRemoveGroupBtn = () =>
+    wrapper.findByTestId(`remove-group-${mockParentGroupItem.id}-btn`);
 
   describe('template', () => {
     let group;
@@ -34,6 +36,7 @@ describe('ItemActions', () => {
         ...mockParentGroupItem,
         canEdit: true,
         canLeave: true,
+        canRemove: true,
       };
       createComponent({ group });
     });
@@ -41,21 +44,21 @@ describe('ItemActions', () => {
     it('renders component template correctly', () => {
       createComponent();
 
-      expect(wrapper.classes()).toContain('controls');
+      expect(wrapper.classes()).toContain('gl-display-flex', 'gl-justify-content-end', 'gl-ml-5');
     });
 
-    it('renders "Edit group" button with correct attribute values', () => {
+    it('renders "Edit" group button with correct attribute values', () => {
       const button = findEditGroupBtn();
       expect(button.exists()).toBe(true);
-      expect(button.props('icon')).toBe('pencil');
-      expect(button.attributes('aria-label')).toBe('Edit group');
+      expect(button.attributes('href')).toBe(mockParentGroupItem.editPath);
     });
 
-    it('renders "Leave this group" button with correct attribute values', () => {
-      const button = findLeaveGroupBtn();
+    it('renders "Delete" group button with correct attribute values', () => {
+      const button = findRemoveGroupBtn();
       expect(button.exists()).toBe(true);
-      expect(button.props('icon')).toBe('leave');
-      expect(button.attributes('aria-label')).toBe('Leave this group');
+      expect(button.attributes('href')).toBe(
+        `${mockParentGroupItem.editPath}#js-remove-group-form`,
+      );
     });
 
     it('emits `showLeaveGroupModal` event in the event hub', () => {
@@ -102,5 +105,16 @@ describe('ItemActions', () => {
     });
 
     expect(findEditGroupBtn().exists()).toBe(false);
+  });
+
+  it('does not render delete button if group can not be edited', () => {
+    createComponent({
+      group: {
+        ...mockParentGroupItem,
+        canRemove: false,
+      },
+    });
+
+    expect(findRemoveGroupBtn().exists()).toBe(false);
   });
 });

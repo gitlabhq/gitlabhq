@@ -6,7 +6,8 @@ RSpec.describe GroupChildEntity do
   include ExternalAuthorizationServiceHelpers
   include Gitlab::Routing.url_helpers
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+
   let(:request) { double('request') }
   let(:entity) { described_class.new(object, request: request) }
 
@@ -101,6 +102,22 @@ RSpec.describe GroupChildEntity do
       object.add_owner(create(:user))
 
       expect(json[:can_leave]).to be_truthy
+    end
+
+    it 'allows an owner to delete the group' do
+      expect(json[:can_remove]).to be_truthy
+    end
+
+    it 'allows admin to delete the group', :enable_admin_mode do
+      allow(request).to receive(:current_user).and_return(create(:admin))
+
+      expect(json[:can_remove]).to be_truthy
+    end
+
+    it 'disallows a maintainer to delete the group' do
+      object.add_maintainer(user)
+
+      expect(json[:can_remove]).to be_falsy
     end
 
     it 'has the correct edit path' do

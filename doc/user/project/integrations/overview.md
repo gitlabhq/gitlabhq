@@ -82,6 +82,15 @@ instance configuration or provide custom settings.
 
 Read more about [Project integration management](../../admin_area/settings/project_integration_management.md).
 
+## SSL verification
+
+By default, the SSL certificate for outgoing HTTP requests is verified based on
+an internal list of Certificate Authorities. This means the certificate cannot
+be self-signed.
+
+You can turn off SSL verification in the configuration settings for [webhooks](webhooks.md#configure-a-webhook)
+and some integrations.
+
 ## Troubleshooting integrations
 
 Some integrations use service hooks for integration with external applications. To confirm which ones use service hooks, see the [integrations listing](#integrations-listing) above. Learn more about [troubleshooting service hooks](webhooks.md#troubleshoot-webhooks).

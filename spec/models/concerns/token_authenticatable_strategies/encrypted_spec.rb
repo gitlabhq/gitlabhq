@@ -23,6 +23,8 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
       let(:options) { { encrypted: :required } }
 
       it 'finds the encrypted resource by cleartext' do
+        allow(model).to receive(:where)
+          .and_return(model)
         allow(model).to receive(:find_by)
           .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
           .and_return('encrypted resource')
@@ -36,6 +38,8 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
       let(:options) { { encrypted: :optional } }
 
       it 'finds the encrypted resource by cleartext' do
+        allow(model).to receive(:where)
+          .and_return(model)
         allow(model).to receive(:find_by)
           .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
           .and_return('encrypted resource')
@@ -49,6 +53,8 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
           .to receive(:find_token_authenticatable)
           .and_return('plaintext resource')
 
+        allow(model).to receive(:where)
+          .and_return(model)
         allow(model).to receive(:find_by)
           .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
           .and_return(nil)
@@ -62,6 +68,8 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
       let(:options) { { encrypted: :migrating } }
 
       it 'finds the cleartext resource by cleartext' do
+        allow(model).to receive(:where)
+          .and_return(model)
         allow(model).to receive(:find_by)
           .with('some_field' => 'my-value')
           .and_return('cleartext resource')
@@ -71,6 +79,8 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
       end
 
       it 'returns nil if resource cannot be found' do
+        allow(model).to receive(:where)
+          .and_return(model)
         allow(model).to receive(:find_by)
           .with('some_field' => 'my-value')
           .and_return(nil)

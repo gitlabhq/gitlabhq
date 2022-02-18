@@ -121,7 +121,7 @@ RSpec.describe Mutations::Issues::Create do
       end
 
       context 'when creating an issue as owner' do
-        let_it_be(:user) { project.owner }
+        let_it_be(:user) { project.first_owner }
 
         before do
           mutation_params.merge!(special_params)

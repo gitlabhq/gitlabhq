@@ -3,7 +3,7 @@
 module Gitlab
   module UsageDataCounters
     class WebIdeCounter < BaseCounter
-      KNOWN_EVENTS = %w[commits views merge_requests previews terminals pipelines].freeze
+      KNOWN_EVENTS = %w[commits views merge_requests previews previews_success terminals pipelines].freeze
       PREFIX = 'web_ide'
 
       class << self
@@ -31,6 +31,12 @@ module Gitlab
           return unless Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?
 
           count('previews')
+        end
+
+        def increment_previews_success_count
+          return unless Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?
+
+          count('previews_success')
         end
 
         private

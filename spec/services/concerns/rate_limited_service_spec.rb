@@ -6,11 +6,10 @@ RSpec.describe RateLimitedService do
   let(:key) { :issues_create }
   let(:scope) { [:project, :current_user] }
   let(:opts) { { scope: scope, users_allowlist: -> { [User.support_bot.username] } } }
-  let(:rate_limiter_klass) { ::Gitlab::ApplicationRateLimiter }
-  let(:rate_limiter_instance) { rate_limiter_klass.new(key, **opts) }
+  let(:rate_limiter) { ::Gitlab::ApplicationRateLimiter }
 
   describe 'RateLimitedError' do
-    subject { described_class::RateLimitedError.new(key: key, rate_limiter: rate_limiter_instance) }
+    subject { described_class::RateLimitedError.new(key: key, rate_limiter: rate_limiter) }
 
     describe '#headers' do
       it 'returns a Hash of HTTP headers' do
@@ -26,7 +25,7 @@ RSpec.describe RateLimitedService do
         request = instance_double(Grape::Request)
         user = instance_double(User)
 
-        expect(rate_limiter_klass).to receive(:log_request).with(request, "#{key}_request_limit".to_sym, user)
+        expect(rate_limiter).to receive(:log_request).with(request, "#{key}_request_limit".to_sym, user)
 
         subject.log_request(request, user)
       end
@@ -34,7 +33,7 @@ RSpec.describe RateLimitedService do
   end
 
   describe 'RateLimiterScopedAndKeyed' do
-    subject { described_class::RateLimiterScopedAndKeyed.new(key: key, opts: opts, rate_limiter_klass: rate_limiter_klass) }
+    subject { described_class::RateLimiterScopedAndKeyed.new(key: key, opts: opts, rate_limiter: rate_limiter) }
 
     describe '#rate_limit!' do
       let(:project_with_feature_enabled) { create(:project) }
@@ -49,13 +48,12 @@ RSpec.describe RateLimitedService do
       let(:rate_limited_service_issues_create_feature_enabled) { nil }
 
       before do
-        allow(rate_limiter_klass).to receive(:new).with(key, **evaluated_opts).and_return(rate_limiter_instance)
         stub_feature_flags(rate_limited_service_issues_create: rate_limited_service_issues_create_feature_enabled)
       end
 
       shared_examples 'a service that does not attempt to throttle' do
         it 'does not attempt to throttle' do
-          expect(rate_limiter_instance).not_to receive(:throttled?)
+          expect(rate_limiter).not_to receive(:throttled?)
 
           expect(subject.rate_limit!(service)).to be_nil
         end
@@ -63,7 +61,7 @@ RSpec.describe RateLimitedService do
 
       shared_examples 'a service that does attempt to throttle' do
         before do
-          allow(rate_limiter_instance).to receive(:throttled?).and_return(throttled)
+          allow(rate_limiter).to receive(:throttled?).and_return(throttled)
         end
 
         context 'when rate limiting is not in effect' do
@@ -134,7 +132,7 @@ RSpec.describe RateLimitedService do
     end
 
     before do
-      allow(RateLimitedService::RateLimiterScopedAndKeyed).to receive(:new).with(key: key, opts: opts, rate_limiter_klass: rate_limiter_klass).and_return(rate_limiter_scoped_and_keyed)
+      allow(RateLimitedService::RateLimiterScopedAndKeyed).to receive(:new).with(key: key, opts: opts, rate_limiter: rate_limiter).and_return(rate_limiter_scoped_and_keyed)
     end
 
     context 'bypasses rate limiting' do
@@ -173,12 +171,12 @@ RSpec.describe RateLimitedService do
       end
 
       before do
-        allow(RateLimitedService::RateLimiterScopedAndKeyed).to receive(:new).with(key: key, opts: opts, rate_limiter_klass: rate_limiter_klass).and_return(rate_limiter_scoped_and_keyed)
+        allow(RateLimitedService::RateLimiterScopedAndKeyed).to receive(:new).with(key: key, opts: opts, rate_limiter: rate_limiter).and_return(rate_limiter_scoped_and_keyed)
       end
 
       context 'and applies rate limiting' do
         it 'raises an RateLimitedService::RateLimitedError exception' do
-          expect(rate_limiter_scoped_and_keyed).to receive(:rate_limit!).with(subject).and_raise(RateLimitedService::RateLimitedError.new(key: key, rate_limiter: rate_limiter_instance))
+          expect(rate_limiter_scoped_and_keyed).to receive(:rate_limit!).with(subject).and_raise(RateLimitedService::RateLimitedError.new(key: key, rate_limiter: rate_limiter))
 
           expect { subject.execute }.to raise_error(RateLimitedService::RateLimitedError)
         end

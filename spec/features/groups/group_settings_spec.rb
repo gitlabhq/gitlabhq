@@ -138,6 +138,51 @@ RSpec.describe 'Edit group settings' do
     end
   end
 
+  describe 'transfer group', :js do
+    let(:namespace_select) { page.find('[data-testid="transfer-group-namespace-select"]') }
+    let(:confirm_modal) { page.find('[data-testid="confirm-danger-modal"]') }
+
+    shared_examples 'can transfer the group' do
+      before do
+        selected_group.add_owner(user)
+      end
+
+      it 'can successfully transfer the group' do
+        visit edit_group_path(selected_group)
+
+        page.within('.js-group-transfer-form') do
+          namespace_select.find('button').click
+          namespace_select.find('.dropdown-menu p', text: target_group_name, match: :first).click
+
+          click_button "Transfer group"
+        end
+
+        page.within(confirm_modal) do
+          expect(page).to have_text "You are going to transfer #{selected_group.name} to another namespace. Are you ABSOLUTELY sure? "
+
+          fill_in "confirm_name_input", with: selected_group.name
+          click_button "Confirm"
+        end
+
+        expect(page).to have_text "Group '#{selected_group.name}' was successfully transferred."
+      end
+    end
+
+    context 'with a sub group' do
+      let(:selected_group) { create(:group, path: 'foo-subgroup', parent: group) }
+      let(:target_group_name) { "No parent group" }
+
+      it_behaves_like 'can transfer the group'
+    end
+
+    context 'with a root group' do
+      let(:selected_group) { create(:group, path: 'foo-rootgroup') }
+      let(:target_group_name) { group.name }
+
+      it_behaves_like 'can transfer the group'
+    end
+  end
+
   context 'disable email notifications' do
     it 'is visible' do
       visit edit_group_path(group)

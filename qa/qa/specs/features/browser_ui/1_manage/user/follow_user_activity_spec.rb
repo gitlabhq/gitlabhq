@@ -5,21 +5,27 @@ module QA
     describe 'User', :requires_admin do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
-      let(:user) do
+      let(:followed_user_api_client) { Runtime::API::Client.new(:gitlab, user: followed_user) }
+
+      let(:followed_user) do
         Resource::User.fabricate_via_api! do |user|
+          user.name = "followed_user_#{SecureRandom.hex(8)}"
           user.api_client = admin_api_client
         end
       end
 
-      let(:user_api_client) do
-        Runtime::API::Client.new(:gitlab, user: user)
+      let(:following_user) do
+        Resource::User.fabricate_via_api! do |user|
+          user.name = "following_user_#{SecureRandom.hex(8)}"
+          user.api_client = admin_api_client
+        end
       end
 
       let(:group) do
         group = QA::Resource::Group.fabricate_via_api! do |group|
           group.path = "group_for_follow_user_activity_#{SecureRandom.hex(8)}"
         end
-        group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
+        group.add_member(followed_user, Resource::Members::AccessLevel::MAINTAINER)
         group
       end
 
@@ -27,7 +33,7 @@ module QA
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-for-tags'
           project.initialize_with_readme = true
-          project.api_client = user_api_client
+          project.api_client = followed_user_api_client
           project.group = group
         end
       end
@@ -35,14 +41,14 @@ module QA
       let(:merge_request) do
         Resource::MergeRequest.fabricate_via_api! do |mr|
           mr.project = project
-          mr.api_client = user_api_client
+          mr.api_client = followed_user_api_client
         end
       end
 
       let(:issue) do
         Resource::Issue.fabricate_via_api! do |issue|
           issue.project = project
-          issue.api_client = user_api_client
+          issue.api_client = followed_user_api_client
         end
       end
 
@@ -51,19 +57,19 @@ module QA
           project_issue_note.project = project
           project_issue_note.issue = issue
           project_issue_note.body = 'This is a comment'
-          project_issue_note.api_client = user_api_client
+          project_issue_note.api_client = followed_user_api_client
         end
       end
 
       before do
         # Create both tokens before logging in the first time so that we don't need to log out in the middle of the test
         admin_api_client.personal_access_token
-        user_api_client.personal_access_token
+        followed_user_api_client.personal_access_token
       end
 
       it 'can be followed and their activity seen', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347678' do
-        Flow::Login.sign_in
-        page.visit Runtime::Scenario.gitlab_address + "/#{user.username}"
+        Flow::Login.sign_in(as: following_user)
+        page.visit Runtime::Scenario.gitlab_address + "/#{followed_user.username}"
         Page::User::Show.perform(&:click_follow_user_link)
 
         expect(page).to have_text("No activities found")
@@ -76,7 +82,7 @@ module QA
         Page::Main::Menu.perform(&:click_user_profile_link)
         Page::User::Show.perform do |show|
           show.click_following_link
-          show.click_user_link(user.username)
+          show.click_user_link(followed_user.username)
 
           aggregate_failures do
             expect(show).to have_activity('created project')
@@ -88,9 +94,10 @@ module QA
       end
 
       after do
-        project.api_client = admin_api_client
-        project.remove_via_api!
-        user.remove_via_api!
+        project&.api_client = admin_api_client
+        project&.remove_via_api!
+        followed_user&.remove_via_api!
+        following_user&.remove_via_api!
       end
     end
   end

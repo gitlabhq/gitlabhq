@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::DynamicModelHelpers do
   let(:including_class) { Class.new.include(described_class) }
-  let(:table_name) { 'projects' }
+  let(:table_name) { Project.table_name }
+  let(:connection) { Project.connection }
 
   describe '#define_batchable_model' do
-    subject { including_class.new.define_batchable_model(table_name) }
+    subject { including_class.new.define_batchable_model(table_name, connection: connection) }
 
     it 'is an ActiveRecord model' do
       expect(subject.ancestors).to include(ActiveRecord::Base)
@@ -40,7 +41,7 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers do
 
       it 'iterates table in batches' do
         each_batch_size = ->(&block) do
-          subject.each_batch(table_name, of: 1) do |batch|
+          subject.each_batch(table_name, connection: connection, of: 1) do |batch|
             block.call(batch.size)
           end
         end
@@ -56,7 +57,7 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers do
       end
 
       it 'raises an error' do
-        expect { subject.each_batch(table_name, of: 1) { |batch| batch.size } }
+        expect { subject.each_batch(table_name, connection: connection, of: 1) { |batch| batch.size } }
           .to raise_error(RuntimeError, /each_batch should not run inside a transaction/)
       end
     end
@@ -74,7 +75,7 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers do
       end
 
       it 'iterates table in batch ranges' do
-        expect { |b| subject.each_batch_range(table_name, of: 1, &b) }
+        expect { |b| subject.each_batch_range(table_name, connection: connection, of: 1, &b) }
           .to yield_successive_args(
             [first_project.id, first_project.id],
             [second_project.id, second_project.id]
@@ -82,13 +83,13 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers do
       end
 
       it 'yields only one batch if bigger than the table size' do
-        expect { |b| subject.each_batch_range(table_name, of: 2, &b) }
+        expect { |b| subject.each_batch_range(table_name, connection: connection, of: 2, &b) }
           .to yield_successive_args([first_project.id, second_project.id])
       end
 
       it 'makes it possible to apply a scope' do
         each_batch_limited = ->(&b) do
-          subject.each_batch_range(table_name, scope: ->(table) { table.limit(1) }, of: 1, &b)
+          subject.each_batch_range(table_name, connection: connection, scope: ->(table) { table.limit(1) }, of: 1, &b)
         end
 
         expect { |b| each_batch_limited.call(&b) }
@@ -102,7 +103,7 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers do
       end
 
       it 'raises an error' do
-        expect { subject.each_batch_range(table_name, of: 1) { 1 } }
+        expect { subject.each_batch_range(table_name, connection: connection, of: 1) { 1 } }
           .to raise_error(RuntimeError, /each_batch should not run inside a transaction/)
       end
     end

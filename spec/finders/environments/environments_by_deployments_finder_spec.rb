@@ -64,6 +64,22 @@ RSpec.describe Environments::EnvironmentsByDeploymentsFinder do
       end
     end
 
+    context 'sha deployment' do
+      before do
+        create(:deployment, :success, environment: environment, sha: project.commit.id)
+      end
+
+      it 'returns environment' do
+        expect(described_class.new(project, user, sha: project.commit.id).execute)
+          .to contain_exactly(environment)
+      end
+
+      it 'does not return environment when sha is different' do
+        expect(described_class.new(project, user, sha: '1234').execute)
+          .to be_empty
+      end
+    end
+
     context 'commit deployment' do
       before do
         create(:deployment, :success, environment: environment, ref: 'master', sha: project.commit.id)

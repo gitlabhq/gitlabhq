@@ -30,24 +30,31 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
+  before_action only: [:index, :show] do
+    push_frontend_feature_flag(:mr_attention_requests, project, default_enabled: :yaml)
+  end
+
   before_action only: [:show] do
     push_frontend_feature_flag(:file_identifier_hash)
-    push_frontend_feature_flag(:merge_request_widget_graphql, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:default_merge_ref_for_diffs, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:core_security_mr_widget_counts, @project)
-    push_frontend_feature_flag(:paginated_notes, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:merge_request_widget_graphql, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:default_merge_ref_for_diffs, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:core_security_mr_widget_counts, project)
+    push_frontend_feature_flag(:paginated_notes, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:confidential_notes, project, default_enabled: :yaml)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:diffs_virtual_scrolling, project, default_enabled: :yaml)
     push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:mr_changes_fluid_layout, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:mr_attention_requests, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:refactor_mr_widgets_extensions, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:rebase_without_ci_ui, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:refactor_mr_widgets_extensions, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:rebase_without_ci_ui, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:rearrange_pipelines_table, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:markdown_continue_lists, project, default_enabled: :yaml)
     # Usage data feature flags
-    push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:users_expanding_widgets_usage_data, project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
-    push_frontend_feature_flag(:diff_searching_usage_data, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:usage_data_diff_searches, project, default_enabled: :yaml)
+  end
+
+  before_action do
+    push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project, default_enabled: :yaml)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
@@ -100,10 +107,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   # rubocop:disable Metrics/AbcSize
   def show
     close_merge_request_if_no_source_project
-
-    if Feature.disabled?(:check_mergeability_async_in_widget, @project, default_enabled: :yaml)
-      @merge_request.check_mergeability(async: true)
-    end
+    @merge_request.check_mergeability(async: true)
 
     respond_to do |format|
       format.html do
@@ -504,6 +508,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .can_push_to_branch?(@merge_request.source_branch)
 
     access_denied! unless access_check
+
+    access_denied! unless merge_request.permits_force_push?
   end
 
   def merge_access_check

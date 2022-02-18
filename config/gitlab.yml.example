@@ -404,6 +404,23 @@ production: &base
         # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## CI Secure Files
+  ci_secure_files:
+    enabled: true
+    # storage_path: shared/ci_secure_files
+    object_store:
+      enabled: false
+      remote_directory: ci-secure-files # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+        # host: 'localhost' # default: s3.amazonaws.com
+        # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+
   ## GitLab Pages
   pages:
     enabled: false
@@ -1315,6 +1332,9 @@ production: &base
     ## OneTrust
     # one_trust_id: '_your_one_trust_id'
 
+    ## Bizible.
+    # bizible: true
+
     ## Matomo analytics.
     # matomo_url: '_your_matomo_url'
     # matomo_site_id: '_your_matomo_site_id'
@@ -1432,7 +1452,7 @@ test:
     storage_path: tmp/tests/ci_secure_files
     object_store:
       enabled: false
-      remote_directory: ci_secure_files
+      remote_directory: ci-secure-files
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID

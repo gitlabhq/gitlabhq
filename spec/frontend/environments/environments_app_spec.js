@@ -1,6 +1,7 @@
 import { GlTabs } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Container from '~/environments/components/container.vue';
 import DeployBoard from '~/environments/components/deploy_board.vue';
@@ -186,14 +187,13 @@ describe('Environment', () => {
       expect(wrapper.find('.folder-icon[data-testid="chevron-right-icon"]').exists()).toBe(false);
     });
 
-    it('should close an opened folder', () => {
+    it('should close an opened folder', async () => {
       expect(wrapper.find('.folder-icon[data-testid="chevron-down-icon"]').exists()).toBe(true);
 
       // close folder
       wrapper.find('.folder-name').trigger('click');
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.folder-icon[data-testid="chevron-down-icon"]').exists()).toBe(false);
-      });
+      await nextTick();
+      expect(wrapper.find('.folder-icon[data-testid="chevron-down-icon"]').exists()).toBe(false);
     });
 
     it('should show children environments', () => {

@@ -47,7 +47,7 @@ RSpec.describe 'Projects > Show > Redirects' do
   it 'redirects to private project page after sign in' do
     visit project_path(private_project)
 
-    owner = private_project.owner
+    owner = private_project.first_owner
     fill_in 'user_login',    with: owner.email
     fill_in 'user_password', with: owner.password
     click_button 'Sign in'

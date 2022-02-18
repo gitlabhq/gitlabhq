@@ -582,6 +582,25 @@ table.code {
   }
 }
 
+.diff-expansion-cell {
+  flex: 1 1;
+  min-width: max-content;
+}
+
+.diff-expansion-cell-middle {
+  flex: 0 1 max-content;
+}
+
+@media only screen and (min-width: $breakpoint-xl) {
+  .diff-expansion-cell-start {
+    text-align: right;
+  }
+
+  .diff-expansion-cell-end {
+    text-align: left;
+  }
+}
+
 // Merge request diff grid layout
 .diff-grid {
   .diff-td {
@@ -601,6 +620,14 @@ table.code {
     // Zero width column is a placeholder for the EE inline code quality diff
     // see ee/.../diffs.scss for more details
     grid-template-columns: 50px 8px 0 1fr;
+  }
+
+  .diff-grid-3-col {
+    grid-template-columns: 50px 1fr !important;
+  }
+
+  &.inline-diff-view .diff-grid-3-col {
+    grid-template-columns: 50px 50px 1fr !important;
   }
 
   .diff-grid-comments {
@@ -832,6 +859,8 @@ table.code {
 }
 
 .diff-files-changed {
+  background-color: $body-bg;
+
   .inline-parallel-buttons {
     @include gl-relative;
     z-index: 1;
@@ -840,7 +869,6 @@ table.code {
   @include media-breakpoint-up(sm) {
     @include gl-sticky;
     top: calc(#{$header-height} + #{$mr-tabs-height});
-    @include gl-bg-white;
     z-index: 200;
 
     .with-performance-bar & {
@@ -1064,24 +1092,6 @@ table.code {
   }
 }
 
-.frame .badge.badge-pill,
-.image-diff-avatar-link .badge.badge-pill,
-.user-avatar-link .badge.badge-pill,
-.notes > .badge.badge-pill {
-  position: absolute;
-  background-color: $blue-400;
-  color: $white;
-  border: $white 1px solid;
-  min-height: $gl-padding;
-  padding: 5px 8px;
-  border-radius: 12px;
-
-  &:focus {
-    outline: none;
-  }
-}
-
-.frame .badge.badge-pill,
 .frame .image-comment-badge,
 .frame .comment-indicator {
   // Center align badges on the frame
@@ -1113,11 +1123,6 @@ table.code {
   }
 }
 
-.notes > .badge.badge-pill {
-  display: none;
-  left: -13px;
-}
-
 .discussion-notes {
   min-height: 35px;
 
@@ -1126,17 +1131,21 @@ table.code {
     min-height: 25px;
   }
 
+  .diff-notes-expand {
+    display: none;
+  }
+
   &.collapsed {
     background-color: $white;
+
+    .diff-notes-expand {
+      display: initial;
+    }
 
     .diff-notes-collapse,
     .note,
     .discussion-reply-holder {
       display: none;
-    }
-
-    .notes > .badge.badge-pill {
-      display: block;
     }
   }
 }
@@ -1183,7 +1192,7 @@ table.code {
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, md)-1) {
+@media (max-width: map-get($grid-breakpoints, lg)-1) {
   .diffs .files {
     @include fixed-width-container;
     flex-direction: column;

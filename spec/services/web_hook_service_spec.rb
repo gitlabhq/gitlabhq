@@ -52,6 +52,25 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
     end
   end
 
+  describe '#disabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.new(hook, data, :push_hooks, force: forced) }
+
+    let(:hook) { double(executable?: executable, allow_local_requests?: false) }
+
+    where(:forced, :executable, :disabled) do
+      false | true | false
+      false | false | true
+      true | true | false
+      true | false | false
+    end
+
+    with_them do
+      it { is_expected.to have_attributes(disabled?: disabled) }
+    end
+  end
+
   describe '#execute' do
     let!(:uuid) { SecureRandom.uuid }
     let(:headers) do
@@ -129,7 +148,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
     end
 
     it 'does not execute disabled hooks' do
-      project_hook.update!(recent_failures: 4)
+      allow(service_instance).to receive(:disabled?).and_return(true)
 
       expect(service_instance.execute).to eq({ status: :error, message: 'Hook disabled' })
     end
@@ -149,13 +168,13 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
         .once
     end
 
-    it 'executes and logs if a recursive web hook is detected', :aggregate_failures do
+    it 'blocks and logs if a recursive web hook is detected', :aggregate_failures do
       stub_full_request(project_hook.url, method: :post)
       Gitlab::WebHooks::RecursionDetection.register!(project_hook)
 
       expect(Gitlab::AuthLogger).to receive(:error).with(
         include(
-          message: 'Webhook recursion detected and will be blocked in future',
+          message: 'Recursive webhook blocked from executing',
           hook_id: project_hook.id,
           hook_type: 'ProjectHook',
           hook_name: 'push_hooks',
@@ -166,12 +185,10 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
 
       service_instance.execute
 
-      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
-        .with(headers: headers)
-        .once
+      expect(WebMock).not_to have_requested(:post, stubbed_hostname(project_hook.url))
     end
 
-    it 'executes and logs if the recursion count limit would be exceeded', :aggregate_failures do
+    it 'blocks and logs if the recursion count limit would be exceeded', :aggregate_failures do
       stub_full_request(project_hook.url, method: :post)
       stub_const("#{Gitlab::WebHooks::RecursionDetection.name}::COUNT_LIMIT", 3)
       previous_hooks = create_list(:project_hook, 3)
@@ -179,7 +196,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
 
       expect(Gitlab::AuthLogger).to receive(:error).with(
         include(
-          message: 'Webhook recursion detected and will be blocked in future',
+          message: 'Recursive webhook blocked from executing',
           hook_id: project_hook.id,
           hook_type: 'ProjectHook',
           hook_name: 'push_hooks',
@@ -190,9 +207,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
 
       service_instance.execute
 
-      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
-        .with(headers: headers)
-        .once
+      expect(WebMock).not_to have_requested(:post, stubbed_hostname(project_hook.url))
     end
 
     it 'handles exceptions' do
@@ -253,6 +268,20 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
       context 'with success' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
+        end
+
+        context 'when forced' do
+          let(:service_instance) { described_class.new(project_hook, data, :push_hooks, force: true) }
+
+          it 'logs execution inline' do
+            expect(::WebHooks::LogExecutionWorker).not_to receive(:perform_async)
+            expect(::WebHooks::LogExecutionService)
+              .to receive(:new)
+              .with(hook: project_hook, log_data: Hash, response_category: :ok)
+              .and_return(double(execute: nil))
+
+            run_service
+          end
         end
 
         it 'log successful execution' do
@@ -408,7 +437,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
 
   describe '#async_execute' do
     def expect_to_perform_worker(hook)
-      expect(WebHookWorker).to receive(:perform_async).with(hook.id, data, 'push_hooks')
+      expect(WebHookWorker).to receive(:perform_async).with(hook.id, data, 'push_hooks', an_instance_of(Hash))
     end
 
     def expect_to_rate_limit(hook, threshold:, throttled: false)
@@ -496,15 +525,15 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
         Gitlab::WebHooks::RecursionDetection.set_request_uuid(SecureRandom.uuid)
       end
 
-      it 'queues a worker and logs an error if the call chain limit would be exceeded' do
+      it 'does not queue a worker and logs an error if the call chain limit would be exceeded' do
         stub_const("#{Gitlab::WebHooks::RecursionDetection.name}::COUNT_LIMIT", 3)
         previous_hooks = create_list(:project_hook, 3)
         previous_hooks.each { Gitlab::WebHooks::RecursionDetection.register!(_1) }
 
-        expect(WebHookWorker).to receive(:perform_async)
+        expect(WebHookWorker).not_to receive(:perform_async)
         expect(Gitlab::AuthLogger).to receive(:error).with(
           include(
-            message: 'Webhook recursion detected and will be blocked in future',
+            message: 'Recursive webhook blocked from executing',
             hook_id: project_hook.id,
             hook_type: 'ProjectHook',
             hook_name: 'push_hooks',
@@ -519,13 +548,13 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
         service_instance.async_execute
       end
 
-      it 'queues a worker and logs an error if a recursive call chain is detected' do
+      it 'does not queue a worker and logs an error if a recursive call chain is detected' do
         Gitlab::WebHooks::RecursionDetection.register!(project_hook)
 
-        expect(WebHookWorker).to receive(:perform_async)
+        expect(WebHookWorker).not_to receive(:perform_async)
         expect(Gitlab::AuthLogger).to receive(:error).with(
           include(
-            message: 'Webhook recursion detected and will be blocked in future',
+            message: 'Recursive webhook blocked from executing',
             hook_id: project_hook.id,
             hook_type: 'ProjectHook',
             hook_name: 'push_hooks',

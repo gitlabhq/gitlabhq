@@ -54,31 +54,37 @@ module ProjectsHelper
     default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
+    return "(deleted)" unless author
+
     data_attrs = {
       user_id: author.id,
       username: author.username,
       name: author.name
     }
 
-    return "(deleted)" unless author
+    inject_classes = ["author-link", opts[:extra_class]]
+
+    if opts[:name]
+      inject_classes.concat(["js-user-link", opts[:mobile_classes]])
+    else
+      inject_classes.append( "has-tooltip" )
+    end
+
+    inject_classes = inject_classes.compact.join(" ")
 
     author_html = []
-
     # Build avatar image tag
     author_html << link_to_member_avatar(author, opts) if opts[:avatar]
-
     # Build name span tag
     author_html << author_content_tag(author, opts) if opts[:name]
-
     author_html << capture(&block) if block
-
     author_html = author_html.join.html_safe
 
     if opts[:name]
-      link_to(author_html, user_path(author), class: "author-link js-user-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}", data: data_attrs).html_safe
+      link_to(author_html, user_path(author), class: inject_classes, data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body', qa_selector: 'assignee_link' }).html_safe
+      link_to(author_html, user_path(author), class: inject_classes, title: title, data: { container: 'body', qa_selector: 'assignee_link' }).html_safe
     end
   end
 
@@ -422,6 +428,18 @@ module ProjectsHelper
     elsif !current_user.can?(:create_fork)
       s_('ProjectOverview|You have reached your project limit')
     end
+  end
+
+  def import_from_bitbucket_message
+    link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path("integration/bitbucket") }
+
+    str = if current_user.admin?
+            'ImportProjects|To enable importing projects from Bitbucket, as administrator you need to configure %{link_start}OAuth integration%{link_end}'
+          else
+            'ImportProjects|To enable importing projects from Bitbucket, ask your GitLab administrator to configure %{link_start}OAuth integration%{link_end}'
+          end
+
+    s_(str).html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   end
 
   private

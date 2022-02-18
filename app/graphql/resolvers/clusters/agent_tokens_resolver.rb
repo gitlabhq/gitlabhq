@@ -25,7 +25,7 @@ module Resolvers
       private
 
       def can_read_agent_tokens?
-        current_user.can?(:admin_cluster, project)
+        current_user.can?(:read_cluster, project)
       end
     end
   end

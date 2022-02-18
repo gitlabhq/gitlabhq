@@ -1,10 +1,9 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import GkeSubmitButton from '~/create_cluster/gke_cluster/components/gke_submit_button.vue';
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('GkeSubmitButton', () => {
   let wrapper;
@@ -21,7 +20,6 @@ describe('GkeSubmitButton', () => {
   const buildWrapper = () =>
     shallowMount(GkeSubmitButton, {
       store,
-      localVue,
     });
 
   const bootstrap = () => {

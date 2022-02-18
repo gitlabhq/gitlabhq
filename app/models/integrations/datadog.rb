@@ -13,7 +13,11 @@ module Integrations
       pipeline job
     ].freeze
 
-    prop_accessor :datadog_site, :api_url, :api_key, :datadog_service, :datadog_env
+    TAG_KEY_VALUE_RE = %r{\A [\w-]+ : .*\S.* \z}x.freeze
+
+    prop_accessor :datadog_site, :api_url, :api_key, :datadog_service, :datadog_env, :datadog_tags
+
+    before_validation :strip_properties
 
     with_options if: :activated? do
       validates :api_key, presence: true, format: { with: /\A\w+\z/ }
@@ -21,6 +25,7 @@ module Integrations
       validates :api_url, public_url: { allow_blank: true }
       validates :datadog_site, presence: true, unless: -> (obj) { obj.api_url.present? }
       validates :api_url, presence: true, unless: -> (obj) { obj.datadog_site.present? }
+      validate :datadog_tags_are_valid
     end
 
     def initialize_properties
@@ -140,6 +145,20 @@ module Integrations
             linkOpen: '<a href="https://docs.datadoghq.com/getting_started/tagging/#using-tags" target="_blank" rel="noopener noreferrer">'.html_safe,
             linkClose: '</a>'.html_safe
           }
+        },
+        {
+          type: 'textarea',
+          name: 'datadog_tags',
+          title: s_('DatadogIntegration|Tags'),
+          placeholder: "tag:value\nanother_tag:value",
+          help: ERB::Util.html_escape(
+            s_('DatadogIntegration|Custom tags in Datadog. Enter one tag per line in the %{codeOpen}key:value%{codeClose} format. %{linkOpen}How do I use tags?%{linkClose}')
+          ) % {
+            codeOpen: '<code>'.html_safe,
+            codeClose: '</code>'.html_safe,
+            linkOpen: '<a href="https://docs.datadoghq.com/getting_started/tagging/#using-tags" target="_blank" rel="noopener noreferrer">'.html_safe,
+            linkClose: '</a>'.html_safe
+          }
         }
       ]
 
@@ -153,7 +172,8 @@ module Integrations
       query = {
         "dd-api-key" => api_key,
         service: datadog_service.presence,
-        env: datadog_env.presence
+        env: datadog_env.presence,
+        tags: datadog_tags_query_param.presence
       }.compact
       url.query = query.to_query
       url.to_s
@@ -192,6 +212,36 @@ module Integrations
       end
 
       data
+    end
+
+    def strip_properties
+      datadog_service.strip! if datadog_service && !datadog_service.frozen?
+      datadog_env.strip! if datadog_env && !datadog_env.frozen?
+      datadog_tags.strip! if datadog_tags && !datadog_tags.frozen?
+    end
+
+    def datadog_tags_are_valid
+      return unless datadog_tags
+
+      unless datadog_tags.split("\n").select(&:present?).all? { _1 =~ TAG_KEY_VALUE_RE }
+        errors.add(:datadog_tags, s_("DatadogIntegration|have an invalid format"))
+      end
+    end
+
+    def datadog_tags_query_param
+      return unless datadog_tags
+
+      datadog_tags.split("\n").filter_map do |tag|
+        tag.strip!
+
+        next if tag.blank?
+
+        if tag.include?(',')
+          "\"#{tag}\""
+        else
+          tag
+        end
+      end.join(',')
     end
   end
 end

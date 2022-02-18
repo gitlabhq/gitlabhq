@@ -1,6 +1,7 @@
 import { GlFilteredSearch } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesFilteredSearch from '~/pipelines/components/pipelines_list/pipelines_filtered_search.vue';
@@ -103,46 +104,42 @@ describe('Pipelines filtered search', () => {
     expect(wrapper.emitted('filterPipelines')[0]).toEqual([mockSearch]);
   });
 
-  it('disables tag name token when branch name token is active', () => {
+  it('disables tag name token when branch name token is active', async () => {
     findFilteredSearch().vm.$emit('input', [
       { type: 'ref', value: { data: 'branch-1', operator: '=' } },
       { type: 'filtered-search-term', value: { data: '' } },
     ]);
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findBranchToken().disabled).toBe(false);
-      expect(findTagToken().disabled).toBe(true);
-    });
+    await nextTick();
+    expect(findBranchToken().disabled).toBe(false);
+    expect(findTagToken().disabled).toBe(true);
   });
 
-  it('disables branch name token when tag name token is active', () => {
+  it('disables branch name token when tag name token is active', async () => {
     findFilteredSearch().vm.$emit('input', [
       { type: 'tag', value: { data: 'tag-1', operator: '=' } },
       { type: 'filtered-search-term', value: { data: '' } },
     ]);
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findBranchToken().disabled).toBe(true);
-      expect(findTagToken().disabled).toBe(false);
-    });
+    await nextTick();
+    expect(findBranchToken().disabled).toBe(true);
+    expect(findTagToken().disabled).toBe(false);
   });
 
-  it('resets tokens disabled state on clear', () => {
+  it('resets tokens disabled state on clear', async () => {
     findFilteredSearch().vm.$emit('clearInput');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findBranchToken().disabled).toBe(false);
-      expect(findTagToken().disabled).toBe(false);
-    });
+    await nextTick();
+    expect(findBranchToken().disabled).toBe(false);
+    expect(findTagToken().disabled).toBe(false);
   });
 
-  it('resets tokens disabled state when clearing tokens by backspace', () => {
+  it('resets tokens disabled state when clearing tokens by backspace', async () => {
     findFilteredSearch().vm.$emit('input', [{ type: 'filtered-search-term', value: { data: '' } }]);
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findBranchToken().disabled).toBe(false);
-      expect(findTagToken().disabled).toBe(false);
-    });
+    await nextTick();
+    expect(findBranchToken().disabled).toBe(false);
+    expect(findTagToken().disabled).toBe(false);
   });
 
   describe('Url query params', () => {

@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
-Users need at least the [Maintainer](../user/permissions.md) role to use these endpoints.
+Users need at least the Maintainer role to use these endpoints.
 
 ## List project clusters
 

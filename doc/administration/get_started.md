@@ -62,7 +62,7 @@ You may need to import projects from external sources like GitHub, Bitbucket, or
 
 ### Popular project imports
 
-- [GitHub Enterprise to self-managed GitLab](../integration/github.md#enabling-github-oauth): Enabling OAuth makes it easier for developers to find and import their projects.
+- [GitHub Enterprise to self-managed GitLab](../integration/github.md): Enabling OAuth makes it easier for developers to find and import their projects.
 - [Bitbucket Server](../user/project/import/bitbucket_server.md#limitations): There are certain data limitations.
   For assistance with these data types, contact your GitLab account manager or GitLab Support about our professional migration services.
 

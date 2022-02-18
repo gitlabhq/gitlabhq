@@ -25,7 +25,7 @@ RSpec.describe Backup::GitalyRpcBackup do
         create(:wiki_page, container: project)
         create(:design, :with_file, issue: create(:issue, project: project))
         project_snippet = create(:project_snippet, :repository, project: project)
-        personal_snippet = create(:personal_snippet, :repository, author: project.owner)
+        personal_snippet = create(:personal_snippet, :repository, author: project.first_owner)
 
         subject.start(:create)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
@@ -75,8 +75,8 @@ RSpec.describe Backup::GitalyRpcBackup do
 
   context 'restore' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:personal_snippet) { create(:personal_snippet, author: project.owner) }
-    let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.owner) }
+    let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
+    let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
 
     def copy_bundle_to_backup_path(bundle_name, destination)
       FileUtils.mkdir_p(File.join(Gitlab.config.backup.path, 'repositories', File.dirname(destination)))

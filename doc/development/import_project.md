@@ -125,6 +125,14 @@ it fails with this error as `/` is not a valid character in a project name.
 
 A project with that name already exists.
 
+##### `Exception: Error importing repository into (namespace) - No space left on device`
+
+The disk has insufficient space to complete the import. 
+
+During import, the tarball is cached in your configured `shared_path` directory. Verify the
+disk has enough free space to accommodate both the cached tarball and the unpacked
+project files on disk. 
+
 ### Importing via the Rails console
 
 The last option is to import a project using a Rails console:

@@ -53,12 +53,12 @@ RSpec.describe Gitlab::Auth::Ldap::User do
     it "finds the user if already existing" do
       create(:omniauth_user, extern_uid: 'uid=john smith,ou=people,dc=example,dc=com', provider: 'ldapmain')
 
-      expect { ldap_user.save }.not_to change { User.count }
+      expect { ldap_user.save }.not_to change { User.count } # rubocop:disable Rails/SaveBang
     end
 
     it "connects to existing non-ldap user if the email matches" do
       existing_user = create(:omniauth_user, email: 'john@example.com', provider: "twitter")
-      expect { ldap_user.save }.not_to change { User.count }
+      expect { ldap_user.save }.not_to change { User.count } # rubocop:disable Rails/SaveBang
 
       existing_user.reload
       expect(existing_user.ldap_identity.extern_uid).to eql 'uid=john smith,ou=people,dc=example,dc=com'
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
 
     it 'connects to existing ldap user if the extern_uid changes' do
       existing_user = create(:omniauth_user, email: 'john@example.com', extern_uid: 'old-uid', provider: 'ldapmain')
-      expect { ldap_user.save }.not_to change { User.count }
+      expect { ldap_user.save }.not_to change { User.count } # rubocop:disable Rails/SaveBang
 
       existing_user.reload
       expect(existing_user.ldap_identity.extern_uid).to eql 'uid=john smith,ou=people,dc=example,dc=com'
@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
 
     it 'connects to existing ldap user if the extern_uid changes and email address has upper case characters' do
       existing_user = create(:omniauth_user, email: 'john@example.com', extern_uid: 'old-uid', provider: 'ldapmain')
-      expect { ldap_user_upper_case.save }.not_to change { User.count }
+      expect { ldap_user_upper_case.save }.not_to change { User.count } # rubocop:disable Rails/SaveBang
 
       existing_user.reload
       expect(existing_user.ldap_identity.extern_uid).to eql 'uid=john smith,ou=people,dc=example,dc=com'
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
       existing_user = create(:omniauth_user, email: 'john@example.com', provider: 'twitter')
       expect(existing_user.identities.count).to be(1)
 
-      ldap_user.save
+      ldap_user.save # rubocop:disable Rails/SaveBang
       expect(ldap_user.gl_user.identities.count).to be(2)
 
       # Expect that find_by provider only returns a single instance of an identity and not an Enumerable
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
     end
 
     it "creates a new user if not found" do
-      expect { ldap_user.save }.to change { User.count }.by(1)
+      expect { ldap_user.save }.to change { User.count }.by(1) # rubocop:disable Rails/SaveBang
     end
 
     context 'when signup is disabled' do
@@ -107,7 +107,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
       end
 
       it 'creates the user' do
-        ldap_user.save
+        ldap_user.save # rubocop:disable Rails/SaveBang
 
         expect(gl_user).to be_persisted
       end
@@ -119,7 +119,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
       end
 
       it 'creates and confirms the user anyway' do
-        ldap_user.save
+        ldap_user.save # rubocop:disable Rails/SaveBang
 
         expect(gl_user).to be_persisted
         expect(gl_user).to be_confirmed
@@ -132,7 +132,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
       end
 
       it 'creates the user' do
-        ldap_user.save
+        ldap_user.save # rubocop:disable Rails/SaveBang
 
         expect(gl_user).to be_persisted
       end
@@ -189,7 +189,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
         end
 
         it do
-          ldap_user.save
+          ldap_user.save # rubocop:disable Rails/SaveBang
           expect(gl_user).to be_valid
           expect(gl_user).not_to be_blocked
         end
@@ -201,7 +201,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
         end
 
         it do
-          ldap_user.save
+          ldap_user.save # rubocop:disable Rails/SaveBang
           expect(gl_user).to be_valid
           expect(gl_user).to be_blocked
         end
@@ -210,7 +210,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
 
     context 'sign-in' do
       before do
-        ldap_user.save
+        ldap_user.save # rubocop:disable Rails/SaveBang
         ldap_user.gl_user.activate
       end
 
@@ -220,7 +220,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
         end
 
         it do
-          ldap_user.save
+          ldap_user.save # rubocop:disable Rails/SaveBang
           expect(gl_user).to be_valid
           expect(gl_user).not_to be_blocked
         end
@@ -232,7 +232,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
         end
 
         it do
-          ldap_user.save
+          ldap_user.save # rubocop:disable Rails/SaveBang
           expect(gl_user).to be_valid
           expect(gl_user).not_to be_blocked
         end

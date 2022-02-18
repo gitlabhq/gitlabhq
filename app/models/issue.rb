@@ -29,8 +29,10 @@ class Issue < ApplicationRecord
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
-  AnyDueDate                      = DueDateStruct.new('Any Due Date', '').freeze
+  AnyDueDate                      = DueDateStruct.new('Any Due Date', 'any').freeze
   Overdue                         = DueDateStruct.new('Overdue', 'overdue').freeze
+  DueToday                        = DueDateStruct.new('Due Today', 'today').freeze
+  DueTomorrow                     = DueDateStruct.new('Due Tomorrow', 'tomorrow').freeze
   DueThisWeek                     = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
@@ -107,7 +109,9 @@ class Issue < ApplicationRecord
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
   scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
+  scope :due_today, -> { where(due_date: Date.current) }
   scope :due_tomorrow, -> { where(due_date: Date.tomorrow) }
+
   scope :not_authored_by, ->(user) { where.not(author_id: user) }
 
   scope :order_due_date_asc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
@@ -121,7 +125,6 @@ class Issue < ApplicationRecord
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> { preload(:author, project: [:project_feature, :route, namespace: :route]) }
   scope :preload_awardable, -> { preload(:award_emoji) }
-  scope :with_label_attributes, ->(label_attributes) { joins(:labels).where(labels: label_attributes) }
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
@@ -140,7 +143,7 @@ class Issue < ApplicationRecord
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :without_hidden, -> {
-    if Feature.enabled?(:ban_user_feature_flag)
+    if Feature.enabled?(:ban_user_feature_flag, default_enabled: :yaml)
       where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
     else
       all
@@ -584,7 +587,7 @@ class Issue < ApplicationRecord
   def readable_by?(user)
     if user.can_read_all_resources?
       true
-    elsif project.owner == user
+    elsif project.personal? && project.team.owner?(user)
       true
     elsif confidential? && !assignee_or_author?(user)
       project.team.member?(user, Gitlab::Access::REPORTER)

@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import LogControlButtons from '~/logs/components/log_control_buttons.vue';
 
 describe('LogControlButtons', () => {
@@ -33,7 +34,7 @@ describe('LogControlButtons', () => {
     expect(findRefreshBtn().is(GlButton)).toBe(true);
   });
 
-  it('emits a `refresh` event on click on `refresh` button', () => {
+  it('emits a `refresh` event on click on `refresh` button', async () => {
     initWrapper();
 
     // An `undefined` value means no event was emitted
@@ -41,16 +42,15 @@ describe('LogControlButtons', () => {
 
     findRefreshBtn().vm.$emit('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted('refresh')).toHaveLength(1);
-    });
+    await nextTick();
+    expect(wrapper.emitted('refresh')).toHaveLength(1);
   });
 
   describe('when scrolling actions are enabled', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       // mock scrolled to the middle of a long page
       initWrapper();
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('click on "scroll to top" scrolls up', () => {
@@ -71,19 +71,18 @@ describe('LogControlButtons', () => {
   });
 
   describe('when scrolling actions are disabled', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       initWrapper({ listeners: {} });
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
-    it('buttons are disabled', () => {
-      return wrapper.vm.$nextTick(() => {
-        expect(findScrollToTop().exists()).toBe(false);
-        expect(findScrollToBottom().exists()).toBe(false);
-        // This should be enabled when gitlab-ui contains:
-        // https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/1149
-        // expect(findScrollToBottom().is('[disabled]')).toBe(true);
-      });
+    it('buttons are disabled', async () => {
+      await nextTick();
+      expect(findScrollToTop().exists()).toBe(false);
+      expect(findScrollToBottom().exists()).toBe(false);
+      // This should be enabled when gitlab-ui contains:
+      // https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/1149
+      // expect(findScrollToBottom().is('[disabled]')).toBe(true);
     });
   });
 });

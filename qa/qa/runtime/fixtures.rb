@@ -33,6 +33,14 @@ module QA
         FileUtils.remove_entry(dir, true)
       end
 
+      def read_fixture(fixture_path, file_name)
+        file_path = Pathname
+        .new(__dir__)
+        .join("../fixtures/#{fixture_path}/#{file_name}")
+
+        File.read(file_path)
+      end
+
       private
 
       def api_client

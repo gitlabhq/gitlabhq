@@ -104,3 +104,28 @@ export const PathIdSeparator = {
   Epic: '&',
   Issue: '#',
 };
+
+export const issuablesBlockHeaderTextMap = {
+  [issuableTypesMap.ISSUE]: __('Linked issues'),
+  [issuableTypesMap.EPIC]: __('Linked epics'),
+};
+
+export const issuablesBlockHelpTextMap = {
+  [issuableTypesMap.ISSUE]: __('Read more about related issues'),
+  [issuableTypesMap.EPIC]: __('Read more about related epics'),
+};
+
+export const issuablesBlockAddButtonTextMap = {
+  [issuableTypesMap.ISSUE]: __('Add a related issue'),
+  [issuableTypesMap.EPIC]: __('Add a related epic'),
+};
+
+export const issuablesFormCategoryHeaderTextMap = {
+  [issuableTypesMap.ISSUE]: __('The current issue'),
+  [issuableTypesMap.EPIC]: __('The current epic'),
+};
+
+export const issuablesFormInputTextMap = {
+  [issuableTypesMap.ISSUE]: __('the following issue(s)'),
+  [issuableTypesMap.EPIC]: __('the following epic(s)'),
+};

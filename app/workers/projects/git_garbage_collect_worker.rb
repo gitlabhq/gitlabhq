@@ -16,7 +16,15 @@ module Projects
     def before_gitaly_call(task, resource)
       return unless gc?(task)
 
-      ::Projects::GitDeduplicationService.new(resource).execute
+      # Don't block garbage collection if we can't fetch into an object pool
+      # due to some gRPC error because we don't want to accumulate cruft.
+      # See https://gitlab.com/gitlab-org/gitaly/-/issues/4022.
+      begin
+        ::Projects::GitDeduplicationService.new(resource).execute
+      rescue Gitlab::Git::CommandTimedOut, GRPC::Internal => e
+        Gitlab::ErrorTracking.track_exception(e)
+      end
+
       cleanup_orphan_lfs_file_references(resource)
     end
 

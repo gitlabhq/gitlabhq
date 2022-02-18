@@ -7,6 +7,8 @@ module QA
     class GroupBase < Base
       include Members
 
+      MAX_NAME_LENGTH = 255
+
       attr_accessor :path, :avatar
 
       attributes :id,

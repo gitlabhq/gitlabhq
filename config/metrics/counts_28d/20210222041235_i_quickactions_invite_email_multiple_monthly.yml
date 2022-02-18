@@ -20,7 +20,5 @@ distribution:
 - ce
 tier:
 - free
-tier:
-- free
 - premium
 - ultimate

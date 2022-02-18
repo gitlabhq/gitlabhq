@@ -11,7 +11,7 @@ module RuboCop
           If there is no relevant metadata, please disable the cop with a comment
           explaining this.
 
-          Read more about it https://docs.gitlab.com/ee/development/sidekiq_style_guide.html#worker-context
+          Read more about it https://docs.gitlab.com/ee/development/sidekiq/logging.html#worker-context
         MSG
 
         def_node_matcher :includes_cronjob_queue?, <<~PATTERN

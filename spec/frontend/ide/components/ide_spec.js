@@ -1,4 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import CannotPushCodeAlert from '~/ide/components/cannot_push_code_alert.vue';
@@ -9,8 +10,7 @@ import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const TEST_FORK_IDE_PATH = '/test/ide/path';
 
@@ -34,7 +34,6 @@ describe('WebIDE', () => {
 
     wrapper = shallowMount(Ide, {
       store,
-      localVue,
     });
   };
 

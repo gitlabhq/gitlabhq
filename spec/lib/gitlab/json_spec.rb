@@ -317,36 +317,14 @@ RSpec.describe Gitlab::Json do
     let(:env) { {} }
     let(:result) { "{\"test\":true}" }
 
-    context "grape_gitlab_json flag is enabled" do
-      before do
-        stub_feature_flags(grape_gitlab_json: true)
-      end
-
-      it "generates JSON" do
-        expect(subject).to eq(result)
-      end
-
-      it "uses Gitlab::Json" do
-        expect(Gitlab::Json).to receive(:dump).with(obj)
-
-        subject
-      end
+    it "generates JSON" do
+      expect(subject).to eq(result)
     end
 
-    context "grape_gitlab_json flag is disabled" do
-      before do
-        stub_feature_flags(grape_gitlab_json: false)
-      end
+    it "uses Gitlab::Json" do
+      expect(Gitlab::Json).to receive(:dump).with(obj)
 
-      it "generates JSON" do
-        expect(subject).to eq(result)
-      end
-
-      it "uses Grape::Formatter::Json" do
-        expect(Grape::Formatter::Json).to receive(:call).with(obj, env)
-
-        subject
-      end
+      subject
     end
 
     context "precompiled JSON" do
@@ -438,16 +416,6 @@ RSpec.describe Gitlab::Json do
         expect { subject }.not_to raise_error
         expect(subject).to be_a(String)
         expect(subject.size).to eq(10001)
-      end
-    end
-
-    context 'when json_limited_encoder is disabled' do
-      let(:obj) { [{ test: true }] * 1000 }
-
-      it 'does not raise an error' do
-        stub_feature_flags(json_limited_encoder: false)
-
-        expect { subject }.not_to raise_error
       end
     end
   end

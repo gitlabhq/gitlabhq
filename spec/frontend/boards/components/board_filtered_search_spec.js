@@ -120,7 +120,7 @@ describe('BoardFilteredSearch', () => {
         { type: 'author', value: { data: 'root', operator: '=' } },
         { type: 'assignee', value: { data: 'root', operator: '=' } },
         { type: 'label', value: { data: 'label', operator: '=' } },
-        { type: 'label', value: { data: 'label2', operator: '=' } },
+        { type: 'label', value: { data: 'label&2', operator: '=' } },
         { type: 'milestone', value: { data: 'New Milestone', operator: '=' } },
         { type: 'type', value: { data: 'INCIDENT', operator: '=' } },
         { type: 'weight', value: { data: '2', operator: '=' } },
@@ -134,7 +134,7 @@ describe('BoardFilteredSearch', () => {
         title: '',
         replace: true,
         url:
-          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label2&assignee_username=root&milestone_title=New+Milestone&iteration_id=3341&types=INCIDENT&weight=2&release_tag=v1.0.0',
+          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label%262&assignee_username=root&milestone_title=New%20Milestone&iteration_id=3341&types=INCIDENT&weight=2&release_tag=v1.0.0',
       });
     });
 

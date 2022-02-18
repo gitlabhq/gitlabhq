@@ -6,6 +6,7 @@ RSpec.describe ::Packages::Conan::PackagePresenter do
   let_it_be(:user) { create(:user) }
   let_it_be(:package) { create(:conan_package) }
   let_it_be(:project) { package.project }
+  let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
   let_it_be(:conan_package_reference) { '123456789'}
 
   let(:params) { { package_scope: :instance } }
@@ -206,24 +207,6 @@ RSpec.describe ::Packages::Conan::PackagePresenter do
 
         it { is_expected.to eq({}) }
       end
-    end
-  end
-
-  # TODO when cleaning up packages_installable_package_files, consider removing this context and
-  # add a dummy package file pending destruction on L8
-  context 'with package files pending destruction' do
-    let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
-
-    subject { presenter.send(:package_files).to_a }
-
-    it { is_expected.not_to include(package_file_pending_destruction) }
-
-    context 'with packages_installable_package_files disabled' do
-      before do
-        stub_feature_flags(packages_installable_package_files: false)
-      end
-
-      it { is_expected.to include(package_file_pending_destruction) }
     end
   end
 end

@@ -24,11 +24,9 @@ file system performance, see
 
 Starting with GitLab version 14.0, support for NFS to store Git repository data is deprecated. Technical customer support and engineering support is available for the 14.x releases. Engineering is fixing bugs and security vulnerabilities consistent with our [release and maintenance policy](../policy/maintenance.md#security-releases).
 
-At the end of the 14.12 milestone (tentatively June 22nd, 2022) technical and engineering support for using NFS to store Git repository data will be officially at end-of-life. There will be no product changes or troubleshooting provided via Engineering, Security or Paid Support channels.
+Upon the release of GitLab 15.0 (tentatively May 22nd, 2022) technical and engineering support for using NFS to store Git repository data will be officially at end-of-life. There will be no product changes or troubleshooting provided via Engineering, Security or Paid Support channels after the release date of 15.0, regardless of your GitLab version.
 
-For those customers still running earlier versions of GitLab, [our support eligibility and maintenance policy applies](https://about.gitlab.com/support/statement-of-support.html#version-support).
-
-For the 14.x releases, we continue to help with Git related tickets from customers running one or more Gitaly servers with its data stored on NFS. Examples may include:
+Until the release of 15.0, for customers running 14.x releases, we continue to help with Git related tickets from customers running one or more Gitaly servers with its data stored on NFS. Examples may include:
 
 - Performance issues or timeouts accessing Git data
 - Commits or branches vanish

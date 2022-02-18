@@ -17,7 +17,8 @@ the **Merge** button until you remove the **Draft** flag:
 
 ## Mark merge requests as drafts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32692) in GitLab 13.2, Work-In-Progress (WIP) merge requests were renamed to **Draft**. Support for using **WIP** is scheduled for removal in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32692) in GitLab 13.2, Work-In-Progress (WIP) merge requests were renamed to **Draft**.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/228685) all support for using **WIP** in GitLab 14.8.
 > - **Mark as draft** and **Mark as ready** buttons [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227421) in GitLab 13.5.
 
 There are several ways to flag a merge request as a draft:
@@ -35,16 +36,12 @@ There are several ways to flag a merge request as a draft:
   is not a toggle, and adding this text again in a later commit doesn't mark the
   merge request as ready.
 
-WARNING:
-Adding `WIP:` to the start of the merge request's title still marks a merge request
-as a draft. This feature is scheduled for removal in GitLab 14.0. Use `Draft:` instead.
-
 ## Mark merge requests as ready
 
 When a merge request is ready to be merged, you can remove the `Draft` flag in several ways:
 
 - **Viewing a merge request**: In the top right corner of the merge request, click **Mark as ready**.
-  Users with [Developer or greater permissions](../../permissions.md)
+  Users with at least the Developer role
   can also scroll to the bottom of the merge request description and click **Mark as ready**:
 
   ![Mark as ready](img/draft_blocked_merge_button_v13_10.png)
@@ -79,11 +76,11 @@ draft merge requests:
 
 ## Pipelines for drafts
 
-When the [pipelines for merged results](../../../ci/pipelines/pipelines_for_merged_results.md)
+When the [merged results pipelines](../../../ci/pipelines/merged_results_pipelines.md)
 feature is enabled, draft merge requests run
 [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md) only.
 
-To run pipelines for merged results, you must
+To run merged results pipelines, you must
 [mark the merge request as ready](#mark-merge-requests-as-ready).
 
 <!-- ## Troubleshooting

@@ -4,6 +4,10 @@ module Gitlab
   module CycleAnalytics
     module Summary
       class Commit < Base
+        def identifier
+          :commits
+        end
+
         def title
           n_('Commit', 'Commits', value.to_i)
         end

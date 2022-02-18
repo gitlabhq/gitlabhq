@@ -1,9 +1,14 @@
-import Cookies from 'js-cookie';
 import Vue from 'vue';
+import {
+  setCookie,
+  handleLocationHash,
+  historyPushState,
+  scrollToElement,
+} from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
-import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
+
 import httpStatusCodes from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
@@ -120,7 +125,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
         commit(types.SET_BATCH_LOADING_STATE, 'loaded');
 
-        if (window.gon?.features?.diffsVirtualScrolling && !scrolledVirtualScroller) {
+        if (!scrolledVirtualScroller) {
           const index = state.diffFiles.findIndex(
             (f) =>
               f.file_hash === hash || f[INLINE_DIFF_LINES_KEY].find((l) => l.line_code === hash),
@@ -190,9 +195,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         commit(types.SET_BATCH_LOADING_STATE, 'error');
       });
 
-  return getBatch().then(
-    () => !window.gon?.features?.diffsVirtualScrolling && handleLocationHash(),
-  );
+  return getBatch();
 };
 
 export const fetchDiffFilesMeta = ({ commit, state }) => {
@@ -369,7 +372,7 @@ export const setRenderIt = ({ commit }, file) => commit(types.RENDER_FILE, file)
 export const setInlineDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
 
-  Cookies.set(DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE);
+  setCookie(DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE);
   const url = mergeUrlParams({ view: INLINE_DIFF_VIEW_TYPE }, window.location.href);
   historyPushState(url);
 
@@ -381,7 +384,7 @@ export const setInlineDiffViewType = ({ commit }) => {
 export const setParallelDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE);
 
-  Cookies.set(DIFF_VIEW_COOKIE_NAME, PARALLEL_DIFF_VIEW_TYPE);
+  setCookie(DIFF_VIEW_COOKIE_NAME, PARALLEL_DIFF_VIEW_TYPE);
   const url = mergeUrlParams({ view: PARALLEL_DIFF_VIEW_TYPE }, window.location.href);
   historyPushState(url);
 
@@ -524,7 +527,7 @@ export const setCurrentFileHash = ({ commit }, hash) => {
   commit(types.SET_CURRENT_DIFF_FILE, hash);
 };
 
-export const scrollToFile = ({ state, commit, getters }, { path, setHash = true }) => {
+export const scrollToFile = ({ state, commit, getters }, { path }) => {
   if (!state.treeEntries[path]) return;
 
   const { fileHash } = state.treeEntries[path];
@@ -534,11 +537,9 @@ export const scrollToFile = ({ state, commit, getters }, { path, setHash = true 
   if (getters.isVirtualScrollingEnabled) {
     eventHub.$emit('scrollToFileHash', fileHash);
 
-    if (setHash) {
-      setTimeout(() => {
-        window.history.replaceState(null, null, `#${fileHash}`);
-      });
-    }
+    setTimeout(() => {
+      window.history.replaceState(null, null, `#${fileHash}`);
+    });
   } else {
     document.location.hash = fileHash;
 

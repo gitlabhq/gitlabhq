@@ -158,11 +158,19 @@ module Gitlab
           # See more detail in the docs: https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
           variables.concat(project.predefined_variables)
           variables.concat(pipeline.predefined_variables) if pipeline
-          variables.concat(project.ci_instance_variables_for(ref: source_ref_path))
+          variables.concat(secret_variables(project: project, pipeline: pipeline))
           variables.concat(project.group.ci_variables_for(source_ref_path, project)) if project.group
           variables.concat(project.ci_variables_for(ref: source_ref_path))
           variables.concat(pipeline.variables) if pipeline
           variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline&.pipeline_schedule
+        end
+      end
+
+      def secret_variables(project:, pipeline:)
+        if pipeline
+          pipeline.variables_builder.secret_instance_variables
+        else
+          Gitlab::Ci::Variables::Builder::Instance.new.secret_variables
         end
       end
 

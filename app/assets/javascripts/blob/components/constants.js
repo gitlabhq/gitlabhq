@@ -42,7 +42,7 @@ export const BLOB_RENDER_ERRORS = {
       id: 'load',
       text: __('load it anyway'),
       conjunction: __('or'),
-      href: '#',
+      href: '?expanded=true&viewer=simple',
       target: '',
       event: BLOB_RENDER_EVENT_LOAD,
     },

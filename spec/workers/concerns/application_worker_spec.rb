@@ -247,45 +247,6 @@ RSpec.describe ApplicationWorker do
     end
   end
 
-  describe '.perform_async' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:primary_only?, :skip_scheduling_ff, :data_consistency, :schedules_job?) do
-      true  | false | :sticky  | false
-      true  | false | :delayed | false
-      true  | false | :always  | false
-      true  | true  | :sticky  | false
-      true  | true  | :delayed | false
-      true  | true  | :always  | false
-      false | false | :sticky  | true
-      false | false | :delayed | true
-      false | false | :always  | false
-      false | true  | :sticky  | false
-      false | true  | :delayed | false
-      false | true  | :always  | false
-    end
-
-    before do
-      stub_const(worker.name, worker)
-      worker.data_consistency(data_consistency)
-
-      allow(Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(primary_only?)
-      stub_feature_flags(skip_scheduling_workers_for_replicas: skip_scheduling_ff)
-    end
-
-    with_them do
-      it 'schedules or enqueues the job correctly' do
-        if schedules_job?
-          expect(worker).to receive(:perform_in).with(described_class::DEFAULT_DELAY_INTERVAL.seconds, 123)
-        else
-          expect(worker).not_to receive(:perform_in)
-        end
-
-        worker.perform_async(123)
-      end
-    end
-  end
-
   context 'different kinds of push_bulk' do
     shared_context 'set safe limit beyond the number of jobs to be enqueued' do
       before do

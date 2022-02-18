@@ -1,6 +1,6 @@
 import { GlBadge, GlButton, GlDropdown } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { STATUSES } from '~/import_entities//constants';
 import ImportGroupDropdown from '~/import_entities/components/group_dropdown.vue';
@@ -38,13 +38,11 @@ describe('ProviderRepoTableRow', () => {
   };
 
   function mountComponent(props) {
-    const localVue = createLocalVue();
-    localVue.use(Vuex);
+    Vue.use(Vuex);
 
     const store = initStore();
 
     wrapper = shallowMount(ProviderRepoTableRow, {
-      localVue,
       store,
       propsData: { availableNamespaces, userNamespace, ...props },
     });

@@ -42,11 +42,22 @@ module Gitlab
           attr_reader :json_data, :report, :validate
 
           def valid?
-            return true if !validate || schema_validator.valid?
+            if Feature.enabled?(:enforce_security_report_validation)
+              if !validate || schema_validator.valid?
+                report.schema_validation_status = :valid_schema
+                true
+              else
+                report.schema_validation_status = :invalid_schema
+                schema_validator.errors.each { |error| report.add_error('Schema', error) }
+                false
+              end
+            else
+              return true if !validate || schema_validator.valid?
 
-            schema_validator.errors.each { |error| report.add_error('Schema', error) }
+              schema_validator.errors.each { |error| report.add_error('Schema', error) }
 
-            false
+              false
+            end
           end
 
           def schema_validator

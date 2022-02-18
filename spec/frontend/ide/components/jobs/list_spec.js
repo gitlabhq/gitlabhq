@@ -1,11 +1,11 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import StageList from '~/ide/components/jobs/list.vue';
 import Stage from '~/ide/components/jobs/stage.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 const storeActions = {
   fetchJobs: jest.fn(),
   toggleStageCollapsed: jest.fn(),
@@ -42,7 +42,6 @@ describe('IDE stages list', () => {
         ...defaultProps,
         ...props,
       },
-      localVue,
       store,
     });
   };
@@ -92,7 +91,6 @@ describe('IDE stages list', () => {
       wrapper = mount(StageList, {
         propsData: { ...defaultProps, stages },
         store,
-        localVue,
       });
     });
 

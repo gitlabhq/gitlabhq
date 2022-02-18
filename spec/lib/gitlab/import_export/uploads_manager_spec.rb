@@ -31,13 +31,13 @@ RSpec.describe Gitlab::ImportExport::UploadsManager do
       let(:upload) { create(:upload, :issuable_upload, :with_file, model: project) }
 
       it 'does not cause errors' do
-        manager.save
+        manager.save # rubocop:disable Rails/SaveBang
 
         expect(shared.errors).to be_empty
       end
 
       it 'copies the file in the correct location when there is an upload' do
-        manager.save
+        manager.save # rubocop:disable Rails/SaveBang
 
         expect(File).to exist(exported_file_path)
       end
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::ImportExport::UploadsManager do
         end
 
         it 'excludes orphaned upload files' do
-          manager.save
+          manager.save # rubocop:disable Rails/SaveBang
 
           expect(File).not_to exist(exported_orphan_path)
         end
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::ImportExport::UploadsManager do
         end
 
         it 'does not cause errors' do
-          manager.save
+          manager.save # rubocop:disable Rails/SaveBang
 
           expect(shared.errors).to be_empty
         end
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::ImportExport::UploadsManager do
       it 'ignores problematic upload and logs exception' do
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(Errno::ENAMETOOLONG), project_id: project.id)
 
-        manager.save
+        manager.save # rubocop:disable Rails/SaveBang
 
         expect(shared.errors).to be_empty
         expect(File).not_to exist(exported_file_path)

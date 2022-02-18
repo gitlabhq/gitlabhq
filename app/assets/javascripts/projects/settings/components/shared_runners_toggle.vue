@@ -2,6 +2,7 @@
 import { GlAlert, GlToggle, GlTooltip } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
+import { CC_VALIDATION_REQUIRED_ERROR } from '../constants';
 
 const DEFAULT_ERROR_MESSAGE = __('An error occurred while updating the configuration.');
 const REQUIRES_VALIDATION_TEXT = s__(
@@ -47,11 +48,13 @@ export default {
     };
   },
   computed: {
-    showCreditCardValidation() {
+    ccRequiredError() {
+      return this.errorMessage === CC_VALIDATION_REQUIRED_ERROR && !this.ccAlertDismissed;
+    },
+    genericError() {
       return (
-        this.isCreditCardValidationRequired &&
-        !this.isSharedRunnerEnabled &&
-        !this.successfulValidation &&
+        this.errorMessage &&
+        this.errorMessage !== CC_VALIDATION_REQUIRED_ERROR &&
         !this.ccAlertDismissed
       );
     },
@@ -62,6 +65,7 @@ export default {
     },
     toggleSharedRunners() {
       this.isLoading = true;
+      this.ccAlertDismissed = false;
       this.errorMessage = null;
 
       axios
@@ -82,20 +86,19 @@ export default {
 <template>
   <div>
     <section class="gl-mt-5">
-      <gl-alert v-if="errorMessage" class="gl-mb-3" variant="danger" :dismissible="false">
-        {{ errorMessage }}
-      </gl-alert>
-
       <cc-validation-required-alert
-        v-if="showCreditCardValidation"
+        v-if="ccRequiredError"
         class="gl-pb-5"
         :custom-message="$options.i18n.REQUIRES_VALIDATION_TEXT"
         @verifiedCreditCard="creditCardValidated"
         @dismiss="ccAlertDismissed = true"
       />
 
+      <gl-alert v-if="genericError" class="gl-mb-3" variant="danger" :dismissible="false">
+        {{ errorMessage }}
+      </gl-alert>
+
       <gl-toggle
-        v-else
         ref="sharedRunnersToggle"
         :disabled="isDisabledAndUnoverridable"
         :is-loading="isLoading"

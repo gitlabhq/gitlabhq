@@ -1,6 +1,6 @@
-import { GlSegmentedControl } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { GlSegmentedControl } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CiCdAnalyticsAreaChart from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_area_chart.vue';
 import CiCdAnalyticsCharts from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue';
 import { transformedAreaChartData, chartOptions } from '../mock_data';
@@ -29,11 +29,14 @@ const DEFAULT_PROPS = {
 describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', () => {
   let wrapper;
 
-  const createWrapper = (props = {}) =>
-    shallowMount(CiCdAnalyticsCharts, {
+  const createWrapper = (props = {}, slots = {}) =>
+    shallowMountExtended(CiCdAnalyticsCharts, {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,
+      },
+      scopedSlots: {
+        ...slots,
       },
     });
 
@@ -44,20 +47,20 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
     }
   });
 
-  describe('segmented control', () => {
-    let segmentedControl;
+  const findMetricsSlot = () => wrapper.findByTestId('metrics-slot');
+  const findSegmentedControl = () => wrapper.findComponent(GlSegmentedControl);
 
+  describe('segmented control', () => {
     beforeEach(() => {
       wrapper = createWrapper();
-      segmentedControl = wrapper.find(GlSegmentedControl);
     });
 
     it('should default to the first chart', () => {
-      expect(segmentedControl.props('checked')).toBe(0);
+      expect(findSegmentedControl().props('checked')).toBe(0);
     });
 
     it('should use the title and index as values', () => {
-      const options = segmentedControl.props('options');
+      const options = findSegmentedControl().props('options');
       expect(options).toHaveLength(3);
       expect(options).toEqual([
         {
@@ -76,7 +79,7 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
     });
 
     it('should select a different chart on change', async () => {
-      segmentedControl.vm.$emit('input', 1);
+      findSegmentedControl().vm.$emit('input', 1);
 
       const chart = wrapper.find(CiCdAnalyticsAreaChart);
 
@@ -90,5 +93,25 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
   it('should not display charts if there are no charts', () => {
     wrapper = createWrapper({ charts: [] });
     expect(wrapper.find(CiCdAnalyticsAreaChart).exists()).toBe(false);
+  });
+
+  describe('slots', () => {
+    beforeEach(() => {
+      wrapper = createWrapper(
+        {},
+        {
+          metrics: '<div data-testid="metrics-slot">selected chart: {{props.selectedChart}}</div>',
+        },
+      );
+    });
+
+    it('renders a metrics slot', async () => {
+      const selectedChart = 1;
+      findSegmentedControl().vm.$emit('input', selectedChart);
+
+      await nextTick();
+
+      expect(findMetricsSlot().text()).toBe(`selected chart: ${selectedChart}`);
+    });
   });
 });

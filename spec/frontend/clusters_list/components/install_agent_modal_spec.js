@@ -1,6 +1,7 @@
-import { GlAlert, GlButton, GlFormInputGroup } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import { GlAlert, GlButton, GlFormInputGroup, GlSprintf } from '@gitlab/ui';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { sprintf } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
@@ -27,15 +28,14 @@ import {
   createAgentTokenResponse,
   createAgentTokenErrorResponse,
   getAgentResponse,
+  kasDisabledErrorResponse,
 } from '../mocks/apollo';
 import ModalStub from '../stubs';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const projectPath = 'path/to/project';
 const kasAddress = 'kas.example.com';
-const kasEnabled = true;
 const emptyStateImage = 'path/to/image';
 const defaultBranchName = 'default';
 const maxAgents = MAX_LIST_COUNT;
@@ -49,7 +49,8 @@ describe('InstallAgentModal', () => {
   const apolloQueryResponse = {
     data: {
       project: {
-        id: '1',
+        __typename: 'Project',
+        id: 'project-1',
         clusterAgents: { nodes: [] },
         agentConfigurations: { nodes: configurations },
       },
@@ -65,7 +66,7 @@ describe('InstallAgentModal', () => {
       .wrappers.find((button) => button.props('variant') === variant);
   const findActionButton = () => findButtonByVariant('confirm');
   const findCancelButton = () => findButtonByVariant('default');
-  const findSecondaryButton = () => wrapper.findByTestId('agent-secondary-button');
+  const findPrimaryButton = () => wrapper.findByTestId('agent-primary-button');
   const findImage = () => wrapper.findByRole('img', { alt: I18N_AGENT_MODAL.empty_state.altText });
 
   const expectDisabledAttribute = (element, disabled) => {
@@ -80,7 +81,6 @@ describe('InstallAgentModal', () => {
     const provide = {
       projectPath,
       kasAddress,
-      kasEnabled,
       emptyStateImage,
     };
 
@@ -92,9 +92,9 @@ describe('InstallAgentModal', () => {
     wrapper = shallowMountExtended(InstallAgentModal, {
       attachTo: document.body,
       stubs: {
+        GlSprintf,
         GlModal: ModalStub,
       },
-      localVue,
       apolloProvider,
       provide,
       propsData,
@@ -118,7 +118,7 @@ describe('InstallAgentModal', () => {
     createWrapper();
     writeQuery();
 
-    await wrapper.vm.$nextTick();
+    await waitForPromises();
 
     wrapper.vm.setAgentName('agent-name');
     findActionButton().vm.$emit('click');
@@ -126,11 +126,12 @@ describe('InstallAgentModal', () => {
     return waitForPromises();
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     apolloProvider = createMockApollo([
       [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
     ]);
     createWrapper();
+    await waitForPromises();
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   });
 
@@ -293,9 +294,9 @@ describe('InstallAgentModal', () => {
       expect(findImage().attributes('src')).toBe(emptyStateImage);
     });
 
-    it('renders a secondary button', () => {
-      expect(findSecondaryButton().isVisible()).toBe(true);
-      expect(findSecondaryButton().text()).toBe(i18n.secondaryButton);
+    it('renders a primary button', () => {
+      expect(findPrimaryButton().isVisible()).toBe(true);
+      expect(findPrimaryButton().text()).toBe(i18n.primaryButton);
     });
 
     it('sends the event with the modalType', () => {
@@ -304,6 +305,37 @@ describe('InstallAgentModal', () => {
         label: EVENT_LABEL_MODAL,
         property: MODAL_TYPE_EMPTY,
       });
+    });
+  });
+
+  describe('when KAS is disabled', () => {
+    const i18n = I18N_AGENT_MODAL.empty_state;
+    beforeEach(async () => {
+      apolloProvider = createMockApollo([
+        [getAgentConfigurations, jest.fn().mockResolvedValue(kasDisabledErrorResponse)],
+      ]);
+
+      createWrapper();
+      await waitForPromises();
+    });
+
+    it('renders empty state image', () => {
+      expect(findImage().attributes('src')).toBe(emptyStateImage);
+    });
+
+    it('renders an instruction to enable the KAS', () => {
+      expect(findModal().text()).toContain(
+        sprintf(i18n.enableKasText, { linkStart: '', linkEnd: '' }),
+      );
+    });
+
+    it('renders a cancel button', () => {
+      expect(findCancelButton().isVisible()).toBe(true);
+      expect(findCancelButton().text()).toBe(i18n.done);
+    });
+
+    it("doesn't render a secondary button", () => {
+      expect(findPrimaryButton().exists()).toBe(false);
     });
   });
 });

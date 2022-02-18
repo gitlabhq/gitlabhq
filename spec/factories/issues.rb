@@ -61,6 +61,15 @@ FactoryBot.define do
     factory :incident do
       issue_type { :incident }
       association :work_item_type, :default, :incident
+
+      # An escalation status record is created for all incidents
+      # in app code. This is a trait to avoid creating escalation
+      # status records in specs which do not need them.
+      trait :with_escalation_status do
+        after(:create) do |incident|
+          create(:incident_management_issuable_escalation_status, issue: incident)
+        end
+      end
     end
   end
 end

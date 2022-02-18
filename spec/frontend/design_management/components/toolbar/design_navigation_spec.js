@@ -1,6 +1,7 @@
 /* global Mousetrap */
 import 'mousetrap';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DesignNavigation from '~/design_management/components/toolbar/design_navigation.vue';
 import { DESIGN_ROUTE_NAME } from '~/design_management/router/constants';
 
@@ -41,16 +42,15 @@ describe('Design management pagination component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders navigation buttons', () => {
+  it('renders navigation buttons', async () => {
     // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
     // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({
       designCollection: { designs: [{ id: '1' }, { id: '2' }] },
     });
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(wrapper.element).toMatchSnapshot();
   });
 
   describe('keyboard buttons navigation', () => {

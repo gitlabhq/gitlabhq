@@ -36,7 +36,7 @@ file is correct. Paste in full `.gitlab-ci.yml` files or individual jobs configu
 to verify the basic syntax.
 
 When a `.gitlab-ci.yml` file is present in a project, you can also use the CI Lint
-tool to [simulate the creation of a full pipeline](lint.md#pipeline-simulation).
+tool to [simulate the creation of a full pipeline](lint.md#simulate-a-pipeline).
 It does deeper verification of the configuration syntax.
 
 ## Verify variables
@@ -69,12 +69,12 @@ if you are using that type:
   and run separate pipelines in the same project. You can also
   [dynamically generate the child pipeline's configuration](pipelines/parent_child_pipelines.md#dynamic-child-pipelines)
   at runtime.
-- [Pipelines for Merge Requests](pipelines/merge_request_pipelines.md): Run a pipeline
+- [Merge request pipelines](pipelines/merge_request_pipelines.md): Run a pipeline
   in the context of a merge request.
-  - [Pipelines for Merge Results](pipelines/pipelines_for_merged_results.md):
-    Pipelines for merge requests that run on the combined source and target branch
-  - [Merge Trains](pipelines/merge_trains.md):
-    Multiple pipelines for merged results that queue and run automatically before
+  - [Merged results pipelines](pipelines/merged_results_pipelines.md):
+    Merge request pipelines that run on the combined source and target branch
+  - [Merge trains](pipelines/merge_trains.md):
+    Multiple merged results pipelines that queue and run automatically before
     changes are merged.
 
 ### Troubleshooting Guides for CI/CD features
@@ -173,8 +173,8 @@ a branch to its remote repository. To illustrate the problem, suppose you've had
 
 This occurs because the previous pipeline cannot find a checkout-SHA (which is associated with the pipeline record)
 from the `example` branch that the commit history has already been overwritten by the force-push.
-Similarly, [Pipelines for merged results](pipelines/pipelines_for_merged_results.md)
-might have failed intermittently due to [the same reason](pipelines/pipelines_for_merged_results.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
+Similarly, [Merged results pipelines](pipelines/merged_results_pipelines.md)
+might have failed intermittently due to [the same reason](pipelines/merged_results_pipelines.md#pipelines-fail-intermittently-with-a-fatal-reference-is-not-a-tree-error).
 
 As of GitLab 12.4, we've improved this behavior by persisting pipeline refs exclusively.
 To illustrate its life cycle:
@@ -191,6 +191,21 @@ To illustrate its life cycle:
 
 The merge request pipeline widget shows information about the pipeline status in
 a merge request. It's displayed above the [ability to merge status widget](#merge-request-status-messages).
+
+#### "Checking ability to merge automatically" message
+
+There is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/229352)
+where a merge request can be stuck with the `Checking ability to merge automatically`
+message.
+
+If your merge request has this message and it does not disappear after a few minutes,
+you can try one of these workarounds:
+
+- Refresh the merge request page.
+- Close & Re-open the merge request.
+- Rebase the merge request with the `/rebase` [quick action](../user/project/quick_actions.md).
+- If you have already confirmed the merge request is ready to be merged, you can merge
+  it with the `/merge` quick action.
 
 #### "Checking pipeline status" message
 
@@ -226,10 +241,10 @@ This also applies if the pipeline has not been created yet, or if you are waitin
 for an external CI service. If you don't use pipelines for your project, then you
 should disable **Pipelines must succeed** so you can accept merge requests.
 
-### "The pipeline for this merge request did not complete. Push a new commit to fix the failure or check the troubleshooting documentation to see other possible actions." message
+#### "Merge blocked: pipeline must succeed. Push a new commit that fixes the failure" message
 
 This message is shown if the [merge request pipeline](pipelines/merge_request_pipelines.md),
-[merged results pipeline](pipelines/pipelines_for_merged_results.md),
+[merged results pipeline](pipelines/merged_results_pipelines.md),
 or [merge train pipeline](pipelines/merge_trains.md)
 has failed or been canceled.
 

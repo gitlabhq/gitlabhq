@@ -26,8 +26,19 @@ module SystemNotes
       end
     end
 
-    def resolve_incident_status
-      body = 'changed the status to **Resolved** by closing the incident'
+    # Called when the status of an IncidentManagement::IssuableEscalationStatus has changed
+    #
+    # reason - String.
+    #
+    # Example Note text:
+    #
+    #   "changed the incident status to Acknowledged"
+    #   "changed the incident status to Acknowledged by changing the status of ^alert#540"
+    #
+    # Returns the created Note object
+    def change_incident_status(reason)
+      status = noteable.escalation_status.status_name.to_s.titleize
+      body = "changed the incident status to **#{status}**#{reason}"
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'status'))
     end

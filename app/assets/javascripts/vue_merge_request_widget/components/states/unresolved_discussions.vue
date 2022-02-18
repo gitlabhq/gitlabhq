@@ -43,8 +43,8 @@ export default {
         class="gl-ml-3"
         size="small"
         :icon="glFeatures.restructuredMrWidget ? undefined : 'comment-next'"
-        :variant="glFeatures.restructuredMrWidget && 'confirm'"
-        :category="glFeatures.restructuredMrWidget && 'secondary'"
+        :variant="glFeatures.restructuredMrWidget ? 'confirm' : 'default'"
+        :category="glFeatures.restructuredMrWidget ? 'secondary' : 'primary'"
         @click="jumpToFirstUnresolvedDiscussion"
       >
         {{ s__('mrWidget|Jump to first unresolved thread') }}

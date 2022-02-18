@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ![burndown and burnup chart](img/burndown_and_burnup_charts_v13_6.png)
 
-## Burndown charts **(PREMIUM)**
+## Burndown charts
 
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6495) to GitLab 11.2 for group milestones.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) [fixed burndown charts](#fixed-burndown-charts) in GitLab 13.6.
@@ -73,10 +73,8 @@ The chart indicates the project's progress throughout that milestone (for issues
 In particular, it shows how many issues were or are still open for a given day in the
 milestone's corresponding period.
 
-The burndown chart can also be toggled to display the cumulative open issue
-weight for a given day. When using this feature, make sure issue weights have
-been properly assigned, since an open issue with no weight adds zero to the
-cumulative value.
+You can also toggle the burndown chart to display the
+[cumulative open issue weight](#switch-between-number-of-issues-and-issue-weight) for a given day.
 
 ### Fixed burndown charts
 
@@ -100,7 +98,7 @@ Therefore, when the milestone start date is changed, the number of opened issues
 change.
 Reopened issues are considered as having been opened on the day after they were last closed.
 
-## Burnup charts **(PREMIUM)**
+## Burnup charts
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268350) in GitLab 13.7.
@@ -123,12 +121,21 @@ To view a group's burnup chart:
 ### How burnup charts work
 
 Burnup charts have separate lines for total work and completed work. The total line
-shows when scope is reduced or added to a milestone. The completed work is a count
-of issues closed.
+shows changes to the scope of a milestone. When an open issue is moved to another
+milestone, the "total issues" goes down but the "completed issues" stays the same.
+The completed work is a count of issues closed. When an issue is closed, the "total
+issues" remains the same and "completed issues" goes up.
 
-Burnup charts can show either the total number of issues or total weight for each
-day of the milestone. Use the toggle above the charts to switch between total
-and weight.
+## Switch between number of issues and issue weight
+
+In both burndown or burnup charts you can view them
+either by the total number of issues
+or the total weight for each day of the milestone.
+
+To switch between the two settings, select either **Issues** or **Issue weight** above the charts.
+
+When sorting by weight, make sure all your issues
+have weight assigned, because issues with no weight don't show on the chart.
 
 <!-- ## Troubleshooting
 

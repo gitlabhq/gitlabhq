@@ -52,7 +52,7 @@ With iteration cadences enabled, you must first
 
 Prerequisites:
 
-- You must have at least the [Developer role](../../permissions.md) for a group.
+- You must have at least the Developer role for a group.
 
 To create an iteration cadence:
 
@@ -65,7 +65,7 @@ To create an iteration cadence:
 
 Prerequisites:
 
-- You must have at least the [Developer role](../../permissions.md) for a group.
+- You must have at least the Developer role for a group.
 
 Deleting an iteration cadence also deletes all iterations within that cadence.
 
@@ -86,7 +86,7 @@ From there you can create a new iteration or select an iteration to get a more d
 
 Prerequisites:
 
-- You must have at least the [Developer role](../../permissions.md) for a group.
+- You must have at least the Developer role for a group.
 
 For manually scheduled iteration cadences, you create and add iterations yourself.
 
@@ -104,7 +104,7 @@ To create an iteration:
 
 Prerequisites:
 
-- You must have at least the [Developer role](../../permissions.md) for a group.
+- You must have at least the Developer role for a group.
 
 To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit**.
 
@@ -114,7 +114,7 @@ To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit**.
 
 Prerequisites:
 
-- You must have at least the [Developer role](../../permissions.md) for a group.
+- You must have at least the Developer role for a group.
 
 To delete an iteration, select the three-dot menu (**{ellipsis_v}**) > **Delete**.
 

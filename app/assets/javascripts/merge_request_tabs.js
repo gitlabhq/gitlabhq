@@ -1,20 +1,21 @@
 /* eslint-disable no-new, class-methods-use-this */
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import Cookies from 'js-cookie';
 import Vue from 'vue';
+import {
+  getCookie,
+  parseUrlPathname,
+  isMetaClick,
+  parseBoolean,
+  scrollToElement,
+} from '~/lib/utils/common_utils';
 import createEventHub from '~/helpers/event_hub_factory';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
 import createFlash from './flash';
 import { initDiffStatsDropdown } from './init_diff_stats_dropdown';
 import axios from './lib/utils/axios_utils';
-import {
-  parseUrlPathname,
-  isMetaClick,
-  parseBoolean,
-  scrollToElement,
-} from './lib/utils/common_utils';
+
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { __ } from './locale';
@@ -514,7 +515,7 @@ export default class MergeRequestTabs {
 
   // Expand the issuable sidebar unless the user explicitly collapsed it
   expandView() {
-    if (parseBoolean(Cookies.get('collapsed_gutter'))) {
+    if (parseBoolean(getCookie('collapsed_gutter'))) {
       return;
     }
     const $gutterBtn = $('.js-sidebar-toggle');

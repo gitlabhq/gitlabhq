@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
 
       context 'and should bind with SAML' do
         it 'adds the SAML identity to the existing user' do
-          saml_user.save
+          saml_user.save # rubocop:disable Rails/SaveBang
           expect(gl_user).to be_valid
           expect(gl_user).to eq existing_user
           identity = gl_user.identities.first
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
         context 'are defined' do
           it 'marks the user as external' do
             stub_saml_group_config(%w(Freelancers))
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
           end
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
 
         context 'are defined but the user does not belong there' do
           it 'does not mark the user as external' do
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_falsey
           end
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
         context 'user was external, now should not be' do
           it 'makes user internal' do
             existing_user.update_attribute('external', true)
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_falsey
           end
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
           end
 
           it 'creates a user from SAML' do
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
 
             expect(gl_user).to be_valid
             identity = gl_user.identities.first
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
           end
 
           it 'does not throw an error' do
-            expect { saml_user.save }.not_to raise_error
+            expect { saml_user.save }.not_to raise_error # rubocop:disable Rails/SaveBang
           end
         end
 
@@ -111,7 +111,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
           end
 
           it 'throws an error' do
-            expect { saml_user.save }.to raise_error StandardError
+            expect { saml_user.save }.to raise_error StandardError # rubocop:disable Rails/SaveBang
           end
         end
       end
@@ -120,7 +120,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
         context 'are defined' do
           it 'marks the user as external' do
             stub_saml_group_config(%w(Freelancers))
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
           end
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
         context 'are defined but the user does not belong there' do
           it 'does not mark the user as external' do
             stub_saml_group_config(%w(Interns))
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_falsey
           end
@@ -170,7 +170,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
 
             context 'and no account for the LDAP user' do
               it 'creates a user with dual LDAP and SAML identities' do
-                saml_user.save
+                saml_user.save # rubocop:disable Rails/SaveBang
 
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql uid
@@ -230,7 +230,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
                     { provider: id.provider, extern_uid: id.extern_uid }
                   end
 
-                  saml_user.save
+                  saml_user.save # rubocop:disable Rails/SaveBang
 
                   expect(gl_user).to be_valid
                   expect(gl_user.username).to eql 'john'
@@ -259,7 +259,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
               end
 
               it 'adds the omniauth identity to the LDAP account' do
-                saml_user.save
+                saml_user.save # rubocop:disable Rails/SaveBang
 
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql 'john'
@@ -271,9 +271,9 @@ RSpec.describe Gitlab::Auth::Saml::User do
               end
 
               it 'saves successfully on subsequent tries, when both identities are present' do
-                saml_user.save
+                saml_user.save # rubocop:disable Rails/SaveBang
                 local_saml_user = described_class.new(auth_hash)
-                local_saml_user.save
+                local_saml_user.save # rubocop:disable Rails/SaveBang
 
                 expect(local_saml_user.gl_user).to be_valid
                 expect(local_saml_user.gl_user).to be_persisted
@@ -289,7 +289,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
                 local_hash = OmniAuth::AuthHash.new(uid: dn, provider: provider, info: info_hash)
                 local_saml_user = described_class.new(local_hash)
 
-                local_saml_user.save
+                local_saml_user.save # rubocop:disable Rails/SaveBang
                 local_gl_user = local_saml_user.gl_user
 
                 expect(local_gl_user).to be_valid
@@ -309,7 +309,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
         end
 
         it 'creates the user' do
-          saml_user.save
+          saml_user.save # rubocop:disable Rails/SaveBang
 
           expect(gl_user).to be_persisted
         end
@@ -321,7 +321,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
         end
 
         it 'creates and confirms the user anyway' do
-          saml_user.save
+          saml_user.save # rubocop:disable Rails/SaveBang
 
           expect(gl_user).to be_persisted
           expect(gl_user).to be_confirmed
@@ -334,7 +334,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
         end
 
         it 'creates the user' do
-          saml_user.save
+          saml_user.save # rubocop:disable Rails/SaveBang
 
           expect(gl_user).to be_persisted
         end
@@ -353,7 +353,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
           end
 
           it 'does not block the user' do
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user).not_to be_blocked
           end
@@ -365,7 +365,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
           end
 
           it 'blocks user' do
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user).to be_blocked
           end
@@ -374,7 +374,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
 
       context 'sign-in' do
         before do
-          saml_user.save
+          saml_user.save # rubocop:disable Rails/SaveBang
           saml_user.gl_user.activate
         end
 
@@ -384,7 +384,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
           end
 
           it do
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user).not_to be_blocked
           end
@@ -396,7 +396,7 @@ RSpec.describe Gitlab::Auth::Saml::User do
           end
 
           it do
-            saml_user.save
+            saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user).not_to be_blocked
           end

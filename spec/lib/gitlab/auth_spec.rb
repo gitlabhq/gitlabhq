@@ -10,29 +10,29 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do
-      expect(subject::API_SCOPES).to eq %i[api read_user read_api]
+      expect(subject::API_SCOPES).to match_array %i[api read_user read_api]
     end
 
     it 'ADMIN_SCOPES contains all scopes for ADMIN access' do
-      expect(subject::ADMIN_SCOPES).to eq %i[sudo]
+      expect(subject::ADMIN_SCOPES).to match_array %i[sudo]
     end
 
     it 'REPOSITORY_SCOPES contains all scopes for REPOSITORY access' do
-      expect(subject::REPOSITORY_SCOPES).to eq %i[read_repository write_repository]
+      expect(subject::REPOSITORY_SCOPES).to match_array %i[read_repository write_repository]
     end
 
     it 'OPENID_SCOPES contains all scopes for OpenID Connect' do
-      expect(subject::OPENID_SCOPES).to eq [:openid]
+      expect(subject::OPENID_SCOPES).to match_array [:openid]
     end
 
     it 'DEFAULT_SCOPES contains all default scopes' do
-      expect(subject::DEFAULT_SCOPES).to eq [:api]
+      expect(subject::DEFAULT_SCOPES).to match_array [:api]
     end
 
     it 'optional_scopes contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.optional_scopes).to eq %i[read_user read_api read_repository write_repository read_registry write_registry sudo openid profile email]
+      expect(subject.optional_scopes).to match_array %i[read_user read_api read_repository write_repository read_registry write_registry sudo openid profile email]
     end
   end
 
@@ -40,21 +40,21 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     it 'contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.all_available_scopes).to eq %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
+      expect(subject.all_available_scopes).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
     end
 
     it 'contains for non-admin user all non-default scopes without ADMIN access' do
       stub_container_registry_config(enabled: true)
       user = create(:user, admin: false)
 
-      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_api read_repository write_repository read_registry write_registry]
+      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry]
     end
 
     it 'contains for admin user all non-default scopes with ADMIN access' do
       stub_container_registry_config(enabled: true)
       user = create(:user, admin: true)
 
-      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
+      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
     end
 
     context 'registry_scopes' do
@@ -156,21 +156,36 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       let(:username) { 'gitlab-ci-token' }
 
       context 'for running build' do
-        let!(:build) { create(:ci_build, :running) }
-        let(:project) { build.project }
+        let!(:group) { create(:group) }
+        let!(:project) { create(:project, group: group) }
+        let!(:build) { create(:ci_build, :running, project: project) }
 
         it 'recognises user-less build' do
           expect(subject).to have_attributes(actor: nil, project: build.project, type: :ci, authentication_abilities: described_class.build_authentication_abilities)
         end
 
         it 'recognises user token' do
-          build.update(user: create(:user))
+          build.update!(user: create(:user))
+
+          expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
+        end
+
+        it 'recognises project level bot access token' do
+          build.update!(user: create(:user, :project_bot))
+          project.add_maintainer(build.user)
+
+          expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
+        end
+
+        it 'recognises group level bot access token' do
+          build.update!(user: create(:user, :project_bot))
+          group.add_maintainer(build.user)
 
           expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
         end
 
         it 'fails with blocked user token' do
-          build.update(user: create(:user, :blocked))
+          build.update!(user: create(:user, :blocked))
 
           expect(subject).to have_attributes(auth_failure)
         end
@@ -198,7 +213,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
     it 'recognizes other ci services' do
       project.create_drone_ci_integration(active: true)
-      project.drone_ci_integration.update(token: 'token')
+      project.drone_ci_integration.update!(token: 'token', drone_url: generate(:url))
 
       expect(gl_auth.find_for_git_client('drone-ci-token', 'token', project: project, ip: 'ip')).to have_attributes(actor: nil, project: project, type: :ci, authentication_abilities: described_class.build_authentication_abilities)
     end
@@ -311,7 +326,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
       context 'orphaned token' do
         before do
-          user.destroy
+          user.destroy!
         end
 
         it_behaves_like 'an oauth failure'
@@ -888,7 +903,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
       it 'resets failed_attempts when true and password is correct' do
         user.failed_attempts = 2
-        user.save
+        user.save!
 
         expect do
           gl_auth.find_with_user_password(username, password, increment_failed_attempts: true)
@@ -917,7 +932,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
         it 'does not reset failed_attempts when true and password is correct' do
           user.failed_attempts = 2
-          user.save
+          user.save!
 
           expect do
             gl_auth.find_with_user_password(username, password, increment_failed_attempts: true)

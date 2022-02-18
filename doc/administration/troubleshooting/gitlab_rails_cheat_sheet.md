@@ -78,6 +78,43 @@ Notify.test_email(e, "Test email for #{n}", 'Test email').deliver_now
 Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 ```
 
+## Limiting output
+
+Adding a semicolon(`;`) and a follow-up statement at the end of a statement prevents the default implicit return output. This is useful if you are already explicitly printing details and potentially have a lot of return output:
+
+```ruby
+puts ActiveRecord::Base.descendants; :ok 
+Project.select(&:pages_deployed?).each {|p| puts p.pages_url }; true
+```
+
+## Get or store the result of last operation
+
+Underscore(`_`) represents the implicit return of the previous statement. You can use this to quickly assign a variable from the output of the previous command:
+
+```ruby
+Project.last
+# => #<Project id:2537 root/discard>>
+project = _
+# => #<Project id:2537 root/discard>>
+project.id
+# => 2537
+```
+
+## Open object in irb
+
+Sometimes it is easier to navigate through a method if you are within the context of the object. You can shim into the namespace of `Object` to let you open `irb` within the context of any object:
+
+```ruby
+Object.define_method(:irb) { binding.irb }
+
+project = Project.last
+# => #<Project id:2537 root/discard>>
+project.irb
+# Notice new context
+irb(#<Project>)> web_url
+# => "https://gitlab-example/root/discard"
+```
+
 ## Query the database using an ActiveRecord Model
 
 ```ruby
@@ -818,7 +855,7 @@ conflicting_permanent_redirects = RedirectRoute.matching_path_and_descendants(pa
 conflicting_permanent_redirects.destroy_all
 ```
 
-## Merge Requests
+## Merge requests
 
 ### Close a merge request properly (if merged but still marked as open)
 
@@ -1287,7 +1324,7 @@ has more information about Service Ping.
 ### Generate or get the cached Service Ping
 
 ```ruby
-Gitlab::UsageData.to_json
+Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values, cached: true)
 ```
 
 ### Generate a fresh new Service Ping
@@ -1295,7 +1332,7 @@ Gitlab::UsageData.to_json
 This also refreshes the cached Service Ping displayed in the Admin Area
 
 ```ruby
-Gitlab::UsageData.to_json(force_refresh: true)
+Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
 ```
 
 ### Generate and print
@@ -1332,7 +1369,7 @@ cluster = Clusters::Cluster.find_by(name: 'cluster_name')
 Delete cluster without associated resources:
 
 ```ruby
-# Find users with the Administrator role
+# Find users with the administrator access
 user = User.find_by(username: 'admin_user')
 
 # Find the cluster with the ID
@@ -1376,4 +1413,19 @@ Gitlab::CurrentSettings.elasticsearch_url
 #or
 
 Gitlab::CurrentSettings.elasticsearch_indexing
+```
+
+#### Changing the Elasticsearch password
+
+```ruby
+es_url = Gitlab::CurrentSettings.current_application_settings
+
+# Confirm the current ElasticSearch URL
+es_url.elasticsearch_url
+
+# Set the ElasticSearch URL
+es_url.elasticsearch_url = "http://<username>:<password>@your.es.host:<port>"
+
+# Save the change
+es_url.save!
 ```

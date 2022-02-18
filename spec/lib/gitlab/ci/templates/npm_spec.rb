@@ -9,7 +9,7 @@ RSpec.describe 'npm.gitlab-ci.yml' do
     let(:repo_files) { { 'package.json' => '{}', 'README.md' => '' } }
     let(:modified_files) { %w[package.json] }
     let(:project) { create(:project, :custom_repo, files: repo_files) }
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
     let(:pipeline_branch) { project.default_branch }
     let(:pipeline_tag) { 'v1.2.1' }
     let(:pipeline_ref) { pipeline_branch }

@@ -1,5 +1,6 @@
 import { GlTable, GlPagination, GlModal } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import { last } from 'lodash';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
@@ -11,8 +12,7 @@ import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registr
 import Tracking from '~/tracking';
 import { packageList } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('packages_list', () => {
   let wrapper;
@@ -61,7 +61,6 @@ describe('packages_list', () => {
     createStore(isGroupPage, packages, isLoading);
 
     wrapper = mount(PackagesList, {
-      localVue,
       store,
       stubs: {
         ...stubChildren(PackagesList),
@@ -121,16 +120,15 @@ describe('packages_list', () => {
       mountComponent();
     });
 
-    it('setItemToBeDeleted sets itemToBeDeleted and open the modal', () => {
+    it('setItemToBeDeleted sets itemToBeDeleted and open the modal', async () => {
       const mockModalShow = jest.spyOn(wrapper.vm.$refs.packageListDeleteModal, 'show');
       const item = last(wrapper.vm.list);
 
       findPackagesListRow().vm.$emit('packageToDelete', item);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.itemToBeDeleted).toEqual(item);
-        expect(mockModalShow).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(wrapper.vm.itemToBeDeleted).toEqual(item);
+      expect(mockModalShow).toHaveBeenCalled();
     });
 
     it('deleteItemConfirmation resets itemToBeDeleted', () => {
@@ -141,15 +139,14 @@ describe('packages_list', () => {
       expect(wrapper.vm.itemToBeDeleted).toEqual(null);
     });
 
-    it('deleteItemConfirmation emit package:delete', () => {
+    it('deleteItemConfirmation emit package:delete', async () => {
       const itemToBeDeleted = { id: 2 };
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ itemToBeDeleted });
       wrapper.vm.deleteItemConfirmation();
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.emitted('package:delete')[0]).toEqual([itemToBeDeleted]);
-      });
+      await nextTick();
+      expect(wrapper.emitted('package:delete')[0]).toEqual([itemToBeDeleted]);
     });
 
     it('deleteItemCanceled resets itemToBeDeleted', () => {

@@ -4,10 +4,11 @@ module Ci
   class JobsFinder
     include Gitlab::Allowable
 
-    def initialize(current_user:, pipeline: nil, project: nil, params: {}, type: ::Ci::Build)
+    def initialize(current_user:, pipeline: nil, project: nil, runner: nil, params: {}, type: ::Ci::Build)
       @pipeline = pipeline
       @current_user = current_user
       @project = project
+      @runner = runner
       @params = params
       @type = type
       raise ArgumentError 'type must be a subclass of Ci::Processable' unless type < ::Ci::Processable
@@ -22,16 +23,23 @@ module Ci
 
     private
 
-    attr_reader :current_user, :pipeline, :project, :params, :type
+    attr_reader :current_user, :pipeline, :project, :runner, :params, :type
 
     def init_collection
-      pipeline_jobs || project_jobs || all_jobs
+      pipeline_jobs || project_jobs || runner_jobs || all_jobs
     end
 
     def all_jobs
       raise Gitlab::Access::AccessDeniedError unless current_user&.admin?
 
       type.all
+    end
+
+    def runner_jobs
+      return unless runner
+      raise Gitlab::Access::AccessDeniedError unless can?(current_user, :read_builds, runner)
+
+      jobs_by_type(runner, type).relevant
     end
 
     def project_jobs

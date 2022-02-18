@@ -10,6 +10,12 @@ export const SCHEDULE_ORIGIN = 'schedule';
 export const NEEDS_PROPERTY = 'needs';
 export const EXPLICIT_NEEDS_PROPERTY = 'previousStageJobsOrNeeds';
 
+export const ICONS = {
+  TAG: 'tag',
+  MR: 'git-merge',
+  BRANCH: 'branch',
+};
+
 export const TestStatus = {
   FAILED: 'failed',
   SKIPPED: 'skipped',
@@ -53,3 +59,6 @@ export const PipelineKeyOptions = [
 ];
 
 export const TOAST_MESSAGE = s__('Pipeline|Creating pipeline.');
+
+export const BUTTON_TOOLTIP_RETRY = __('Retry failed jobs');
+export const BUTTON_TOOLTIP_CANCEL = __('Cancel');

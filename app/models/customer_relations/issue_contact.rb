@@ -16,6 +16,12 @@ class CustomerRelations::IssueContact < ApplicationRecord
       .pluck(:contact_id)
   end
 
+  def self.delete_for_project(project_id)
+    joins(:issue)
+      .where(issues: { project_id: project_id })
+      .delete_all
+  end
+
   private
 
   def contact_belongs_to_issue_group_or_ancestor

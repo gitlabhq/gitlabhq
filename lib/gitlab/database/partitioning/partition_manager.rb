@@ -12,10 +12,15 @@ module Gitlab
 
         def initialize(model)
           @model = model
+          @connection_name = model.connection.pool.db_config.name
         end
 
         def sync_partitions
-          Gitlab::AppLogger.info(message: "Checking state of dynamic postgres partitions", table_name: model.table_name)
+          Gitlab::AppLogger.info(
+            message: "Checking state of dynamic postgres partitions",
+            table_name: model.table_name,
+            connection_name: @connection_name
+          )
 
           # Double-checking before getting the lease:
           # The prevailing situation is no missing partitions and no extra partitions
@@ -29,10 +34,13 @@ module Gitlab
             detach(partitions_to_detach) unless partitions_to_detach.empty?
           end
         rescue StandardError => e
-          Gitlab::AppLogger.error(message: "Failed to create / detach partition(s)",
-                                  table_name: model.table_name,
-                                  exception_class: e.class,
-                                  exception_message: e.message)
+          Gitlab::AppLogger.error(
+            message: "Failed to create / detach partition(s)",
+            table_name: model.table_name,
+            exception_class: e.class,
+            exception_message: e.message,
+            connection_name: @connection_name
+          )
         end
 
         private
@@ -98,9 +106,12 @@ module Gitlab
           Postgresql::DetachedPartition.create!(table_name: partition.partition_name,
                                                 drop_after: RETAIN_DETACHED_PARTITIONS_FOR.from_now)
 
-          Gitlab::AppLogger.info(message: "Detached Partition",
-                                 partition_name: partition.partition_name,
-                                 table_name: partition.table)
+          Gitlab::AppLogger.info(
+            message: "Detached Partition",
+            partition_name: partition.partition_name,
+            table_name: partition.table,
+            connection_name: @connection_name
+          )
         end
 
         def assert_partition_detachable!(partition)

@@ -79,9 +79,7 @@ module Gitlab
 
           def to_resource
             strong_memoize(:resource) do
-              processable = initialize_processable
-              assign_resource_group(processable) unless @pipeline.create_deployment_in_separate_transaction?
-              processable
+              initialize_processable
             end
           end
 
@@ -89,37 +87,8 @@ module Gitlab
             if bridge?
               ::Ci::Bridge.new(attributes)
             else
-              ::Ci::Build.new(attributes).tap do |build|
-                unless @pipeline.create_deployment_in_separate_transaction?
-                  build.assign_attributes(self.class.deployment_attributes_for(build))
-                end
-              end
+              ::Ci::Build.new(attributes)
             end
-          end
-
-          def assign_resource_group(processable)
-            processable.resource_group =
-              Seed::Processable::ResourceGroup.new(processable, @resource_group_key)
-                                              .to_resource
-          end
-
-          def self.deployment_attributes_for(build, environment = nil)
-            return {} unless build.has_environment?
-
-            environment = Seed::Environment.new(build).to_resource if environment.nil?
-
-            unless environment.persisted?
-              return { status: :failed, failure_reason: :environment_creation_failure }
-            end
-
-            build.persisted_environment = environment
-
-            {
-              deployment: Seed::Deployment.new(build, environment).to_resource,
-              metadata_attributes: {
-                expanded_environment_name: environment.name
-              }
-            }
           end
 
           private

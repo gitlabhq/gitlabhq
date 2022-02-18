@@ -1,5 +1,5 @@
-import { createLocalVue, mount } from '@vue/test-utils';
-import Vue from 'vue';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { keepAlive } from 'helpers/keep_alive_component_helper';
 import { trimText } from 'helpers/text_helper';
@@ -9,8 +9,7 @@ import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IDE review mode', () => {
   let wrapper;
@@ -28,7 +27,6 @@ describe('IDE review mode', () => {
 
     wrapper = mount(keepAlive(IdeReview), {
       store,
-      localVue,
     });
   });
 
@@ -76,14 +74,14 @@ describe('IDE review mode', () => {
   });
 
   describe('merge request', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       store.state.currentMergeRequestId = '1';
       store.state.projects.abcproject.mergeRequests['1'] = {
         iid: 123,
         web_url: 'testing123',
       };
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders edit dropdown', () => {
@@ -93,7 +91,7 @@ describe('IDE review mode', () => {
     it('renders merge request link & IID', async () => {
       store.state.viewer = 'mrdiff';
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(trimText(wrapper.text())).toContain('Merge request (!123)');
     });
@@ -101,7 +99,7 @@ describe('IDE review mode', () => {
     it('changes text to latest changes when viewer is not mrdiff', async () => {
       store.state.viewer = 'diff';
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.text()).toContain('Latest changes');
     });

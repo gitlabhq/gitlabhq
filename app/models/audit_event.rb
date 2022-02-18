@@ -69,8 +69,7 @@ class AuditEvent < ApplicationRecord
   end
 
   def author
-    lazy_author&.itself.presence ||
-      ::Gitlab::Audit::NullAuthor.for(author_id, (self[:author_name] || details[:author_name]))
+    lazy_author&.itself.presence || default_author_value
   end
 
   def lazy_author
@@ -98,7 +97,7 @@ class AuditEvent < ApplicationRecord
   end
 
   def default_author_value
-    ::Gitlab::Audit::NullAuthor.for(author_id, (self[:author_name] || details[:author_name]))
+    ::Gitlab::Audit::NullAuthor.for(author_id, self)
   end
 
   def parallel_persist

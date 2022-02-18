@@ -180,11 +180,7 @@ func TestShutdown(t *testing.T) {
 	}()
 
 	go func() {
-		for countWatchers(runnerKey) == 0 {
-			time.Sleep(time.Millisecond)
-		}
-
-		require.Equal(t, 1, countWatchers(runnerKey))
+		require.Eventually(t, func() bool { return countWatchers(runnerKey) == 1 }, 10*time.Second, time.Millisecond)
 
 		Shutdown()
 		wg.Done()
@@ -192,11 +188,7 @@ func TestShutdown(t *testing.T) {
 
 	wg.Wait()
 
-	for countWatchers(runnerKey) == 1 {
-		time.Sleep(time.Millisecond)
-	}
-
-	require.Equal(t, 0, countWatchers(runnerKey))
+	require.Eventually(t, func() bool { return countWatchers(runnerKey) == 0 }, 10*time.Second, time.Millisecond)
 
 	// Adding a key after the shutdown should result in an immediate response
 	var val WatchKeyStatus

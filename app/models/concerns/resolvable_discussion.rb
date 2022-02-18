@@ -99,6 +99,12 @@ module ResolvableDiscussion
     update { |notes| notes.unresolve! }
   end
 
+  def clear_memoized_values
+    self.class.memoized_values.each do |name|
+      clear_memoization(name)
+    end
+  end
+
   private
 
   def update
@@ -110,8 +116,6 @@ module ResolvableDiscussion
     # Set the notes array to the updated notes
     @notes = notes_relation.fresh.to_a # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-    self.class.memoized_values.each do |name|
-      clear_memoization(name)
-    end
+    clear_memoized_values
   end
 end

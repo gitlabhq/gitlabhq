@@ -7,12 +7,12 @@ type: reference
 
 # Control access and visibility **(FREE SELF)**
 
-GitLab enables users with the [Administrator role](../../permissions.md) to enforce
+GitLab enables users with administrator access to enforce
 specific controls on branches, projects, snippets, groups, and more.
 
 To access the visibility and access control options:
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -29,7 +29,7 @@ or configure [branch protection for groups](../../group/index.md#change-the-defa
 
 To change the default branch protection for the entire instance:
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -55,7 +55,7 @@ can be overridden on a per-group basis by the group's owner. In
 [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can
 disable this privilege for group owners, enforcing the instance-level protection rule:
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -71,7 +71,7 @@ Instance-level protections for project creation define which roles can
 [add projects to a group](../../group/index.md#specify-who-can-add-projects-to-a-group)
 on the instance. To alter which roles have permission to create projects:
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -84,9 +84,9 @@ on the instance. To alter which roles have permission to create projects:
 ## Restrict project deletion to Administrators **(PREMIUM SELF)**
 
 Anyone with the **Owner** role, either at the project or group level, can
-delete a project. To allow only users with the Administrator role to delete projects:
+delete a project. To allow only users with administrator access to delete projects:
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -137,7 +137,7 @@ Alternatively, projects that are marked for removal can be deleted immediately. 
 
 To set the default [visibility levels for new projects](../../../public_access/public_access.md):
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -152,7 +152,7 @@ To set the default [visibility levels for new projects](../../../public_access/p
 
 To set the default visibility levels for new [snippets](../../snippets.md):
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -166,7 +166,7 @@ For more details on snippet visibility, read
 
 To set the default visibility levels for new groups:
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -183,7 +183,7 @@ For more details on group visibility, see
 
 To restrict visibility levels for projects, snippets, and selected pages:
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -200,7 +200,7 @@ For more details on project visibility, see
 
 You can specify from which hosting sites users can [import their projects](../../project/import/index.md):
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -212,7 +212,7 @@ You can specify from which hosting sites users can [import their projects](../..
 To enable the export of
 [projects and their data](../../../user/project/settings/import_export.md#export-a-project-and-its-data):
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -228,7 +228,7 @@ The GitLab restrictions apply at the application level.
 
 To specify the enabled Git access protocols:
 
-1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -280,7 +280,7 @@ NOTE:
 SSH clone URLs can be customized in `gitlab.rb` by setting `gitlab_rails['gitlab_ssh_host']` and
 other related settings.
 
-## Configure defaults for RSA, DSA, ECDSA, ED25519 SSH keys
+## Configure defaults for RSA, DSA, ECDSA, ED25519, ECDSA_SK, ED25519_SK SSH keys
 
 These options specify the permitted types and lengths for SSH keys.
 

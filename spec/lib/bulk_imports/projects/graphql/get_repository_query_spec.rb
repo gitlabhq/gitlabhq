@@ -3,19 +3,29 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Graphql::GetRepositoryQuery do
-  describe 'query repository based on full_path' do
-    let(:entity)  { double(source_full_path: 'test', bulk_import: nil) }
-    let(:tracker) { double(entity: entity) }
-    let(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be(:tracker) { create(:bulk_import_tracker) }
+  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
-    it 'returns project repository url' do
-      expect(described_class.to_s).to include('httpUrlToRepo')
-    end
+  subject(:query) { described_class.new(context: context) }
 
-    it 'queries project based on source_full_path' do
-      expected = { full_path: entity.source_full_path }
+  it 'has a valid query' do
+    parsed_query = GraphQL::Query.new(
+      GitlabSchema,
+      query.to_s,
+      variables: query.variables
+    )
+    result = GitlabSchema.static_validator.validate(parsed_query)
 
-      expect(described_class.variables(context)).to eq(expected)
-    end
+    expect(result[:errors]).to be_empty
+  end
+
+  it 'returns project repository url' do
+    expect(subject.to_s).to include('httpUrlToRepo')
+  end
+
+  it 'queries project based on source_full_path' do
+    expected = { full_path: tracker.entity.source_full_path }
+
+    expect(subject.variables).to eq(expected)
   end
 end

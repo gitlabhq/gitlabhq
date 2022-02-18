@@ -16,7 +16,7 @@ jest.mock('~/lib/utils/url_utility');
 
 Vue.use(VueApollo);
 
-const projectPath = 'namespace/project';
+const projectFullPath = 'namespace/project';
 
 describe('ManageViaMr component', () => {
   let wrapper;
@@ -40,7 +40,7 @@ describe('ManageViaMr component', () => {
     wrapper = extendedWrapper(
       mount(ManageViaMr, {
         provide: {
-          projectPath,
+          projectFullPath,
         },
         propsData: {
           feature: {
@@ -65,7 +65,7 @@ describe('ManageViaMr component', () => {
   // the ones available in the current test context.
   const supportedReportTypes = Object.entries(featureToMutationMap).map(
     ([featureType, { getMutationPayload, mutationId }]) => {
-      const { mutation, variables: mutationVariables } = getMutationPayload(projectPath);
+      const { mutation, variables: mutationVariables } = getMutationPayload(projectFullPath);
       return [humanize(featureType), featureType, mutation, mutationId, mutationVariables];
     },
   );

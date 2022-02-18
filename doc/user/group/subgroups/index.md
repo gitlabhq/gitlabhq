@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto, concepts
 ---
@@ -158,7 +158,7 @@ added to), add the user to the new subgroup again with a higher set of permissio
 
 For example, if User 1 was first added to group `one/two` with Developer
 permissions, then they inherit those permissions in every other subgroup
-of `one/two`. To give them the [Maintainer role](../../permissions.md) for group `one/two/three/four`,
+of `one/two`. To give them the Maintainer role for group `one/two/three/four`,
 you would add them again in that group as Maintainer. Removing them from that group,
 the permissions fall back to those of the ancestor group.
 

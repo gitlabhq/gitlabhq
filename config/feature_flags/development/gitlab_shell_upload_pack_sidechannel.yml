@@ -1,0 +1,8 @@
+---
+name: gitlab_shell_upload_pack_sidechannel
+introduced_by_url: 
+rollout_issue_url:
+milestone: '14.8'
+type: development
+group: group::scalability
+default_enabled: false

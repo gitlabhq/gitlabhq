@@ -1,8 +1,0 @@
----
-name: vue_integration_form
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77934
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350444
-milestone: '14.7'
-type: development
-group: group::integrations
-default_enabled: false

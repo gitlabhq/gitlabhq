@@ -1,5 +1,6 @@
 import { GlDropdownItem, GlSearchBoxByType, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { redirectTo } from '~/lib/utils/url_utility';
 import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
@@ -110,9 +111,9 @@ describe('Dashboard header', () => {
     });
 
     describe('when environments data is not loaded', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         setupStoreWithDashboard(store);
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('there are no environments listed', () => {
@@ -124,13 +125,13 @@ describe('Dashboard header', () => {
       const currentDashboard = dashboardGitResponse[0].path;
       const currentEnvironmentName = environmentData[0].name;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         setupStoreWithData(store);
         store.state.monitoringDashboard.projectPath = mockProjectPath;
         store.state.monitoringDashboard.currentDashboard = currentDashboard;
         store.state.monitoringDashboard.currentEnvironmentName = currentEnvironmentName;
 
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('renders dropdown items with the environment name', () => {
@@ -159,51 +160,41 @@ describe('Dashboard header', () => {
         expect(selectedItems.at(0).text()).toBe(currentEnvironmentName);
       });
 
-      it('filters rendered dropdown items', () => {
+      it('filters rendered dropdown items', async () => {
         const searchTerm = 'production';
         const resultEnvs = environmentData.filter(({ name }) => name.indexOf(searchTerm) !== -1);
         setSearchTerm(searchTerm);
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findEnvsDropdownItems()).toHaveLength(resultEnvs.length);
-        });
+        await nextTick();
+        expect(findEnvsDropdownItems()).toHaveLength(resultEnvs.length);
       });
 
-      it('does not filter dropdown items if search term is empty string', () => {
+      it('does not filter dropdown items if search term is empty string', async () => {
         const searchTerm = '';
         setSearchTerm(searchTerm);
 
-        return wrapper.vm.$nextTick(() => {
-          expect(findEnvsDropdownItems()).toHaveLength(environmentData.length);
-        });
+        await nextTick();
+        expect(findEnvsDropdownItems()).toHaveLength(environmentData.length);
       });
 
-      it("shows error message if search term doesn't match", () => {
+      it("shows error message if search term doesn't match", async () => {
         const searchTerm = 'does-not-exist';
         setSearchTerm(searchTerm);
 
-        return wrapper.vm.$nextTick(() => {
-          expect(findEnvsDropdownSearchMsg().isVisible()).toBe(true);
-        });
+        await nextTick();
+        expect(findEnvsDropdownSearchMsg().isVisible()).toBe(true);
       });
 
-      it('shows loading element when environments fetch is still loading', () => {
+      it('shows loading element when environments fetch is still loading', async () => {
         store.commit(`monitoringDashboard/${types.REQUEST_ENVIRONMENTS_DATA}`);
 
-        return wrapper.vm
-          .$nextTick()
-          .then(() => {
-            expect(findEnvsDropdownLoadingIcon().exists()).toBe(true);
-          })
-          .then(() => {
-            store.commit(
-              `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
-              environmentData,
-            );
-          })
-          .then(() => {
-            expect(findEnvsDropdownLoadingIcon().exists()).toBe(false);
-          });
+        await nextTick();
+        expect(findEnvsDropdownLoadingIcon().exists()).toBe(true);
+        await store.commit(
+          `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
+          environmentData,
+        );
+        expect(findEnvsDropdownLoadingIcon().exists()).toBe(false);
       });
     });
   });
@@ -262,11 +253,11 @@ describe('Dashboard header', () => {
   });
 
   describe('external dashboard link', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       store.state.monitoringDashboard.externalDashboardUrl = '/mockUrl';
       createShallowWrapper();
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('shows the link', () => {
@@ -295,82 +286,78 @@ describe('Dashboard header', () => {
     });
 
     describe('adding metrics prop', () => {
-      it.each(ootbDashboards)('gets passed true if current dashboard is OOTB', (dashboardPath) => {
-        createShallowWrapper({ customMetricsAvailable: true });
-
-        store.state.monitoringDashboard.emptyState = false;
-        setupAllDashboards(store, dashboardPath);
-
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findActionsMenu().props('addingMetricsAvailable')).toBe(true);
-        });
-      });
-
-      it.each(customDashboards)(
-        'gets passed false if current dashboard is custom',
-        (dashboardPath) => {
+      it.each(ootbDashboards)(
+        'gets passed true if current dashboard is OOTB',
+        async (dashboardPath) => {
           createShallowWrapper({ customMetricsAvailable: true });
 
           store.state.monitoringDashboard.emptyState = false;
           setupAllDashboards(store, dashboardPath);
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(findActionsMenu().props('addingMetricsAvailable')).toBe(false);
-          });
+          await nextTick();
+          expect(findActionsMenu().props('addingMetricsAvailable')).toBe(true);
         },
       );
 
-      it('gets passed false if empty state is shown', () => {
+      it.each(customDashboards)(
+        'gets passed false if current dashboard is custom',
+        async (dashboardPath) => {
+          createShallowWrapper({ customMetricsAvailable: true });
+
+          store.state.monitoringDashboard.emptyState = false;
+          setupAllDashboards(store, dashboardPath);
+
+          await nextTick();
+          expect(findActionsMenu().props('addingMetricsAvailable')).toBe(false);
+        },
+      );
+
+      it('gets passed false if empty state is shown', async () => {
         createShallowWrapper({ customMetricsAvailable: true });
 
         store.state.monitoringDashboard.emptyState = true;
         setupAllDashboards(store, ootbDashboards[0]);
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findActionsMenu().props('addingMetricsAvailable')).toBe(false);
-        });
+        await nextTick();
+        expect(findActionsMenu().props('addingMetricsAvailable')).toBe(false);
       });
 
-      it('gets passed false if custom metrics are not available', () => {
+      it('gets passed false if custom metrics are not available', async () => {
         createShallowWrapper({ customMetricsAvailable: false });
 
         store.state.monitoringDashboard.emptyState = false;
         setupAllDashboards(store, ootbDashboards[0]);
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findActionsMenu().props('addingMetricsAvailable')).toBe(false);
-        });
+        await nextTick();
+        expect(findActionsMenu().props('addingMetricsAvailable')).toBe(false);
       });
     });
 
-    it('custom metrics path gets passed', () => {
+    it('custom metrics path gets passed', async () => {
       const path = 'https://path/to/customMetrics';
 
       createShallowWrapper({ customMetricsPath: path });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findActionsMenu().props('customMetricsPath')).toBe(path);
-      });
+      await nextTick();
+      expect(findActionsMenu().props('customMetricsPath')).toBe(path);
     });
 
-    it('validate query path gets passed', () => {
+    it('validate query path gets passed', async () => {
       const path = 'https://path/to/validateQuery';
 
       createShallowWrapper({ validateQueryPath: path });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findActionsMenu().props('validateQueryPath')).toBe(path);
-      });
+      await nextTick();
+      expect(findActionsMenu().props('validateQueryPath')).toBe(path);
     });
 
-    it('default branch gets passed', () => {
+    it('default branch gets passed', async () => {
       const branch = 'branchName';
 
       createShallowWrapper({ defaultBranch: branch });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findActionsMenu().props('defaultBranch')).toBe(branch);
-      });
+      await nextTick();
+      expect(findActionsMenu().props('defaultBranch')).toBe(branch);
     });
   });
 
@@ -385,40 +372,36 @@ describe('Dashboard header', () => {
       store.state.monitoringDashboard.operationsSettingsPath = '';
     });
 
-    it('is rendered when the user can access the project settings and path to settings is available', () => {
+    it('is rendered when the user can access the project settings and path to settings is available', async () => {
       store.state.monitoringDashboard.canAccessOperationsSettings = true;
       store.state.monitoringDashboard.operationsSettingsPath = url;
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findSettingsButton().exists()).toBe(true);
-      });
+      await nextTick();
+      expect(findSettingsButton().exists()).toBe(true);
     });
 
-    it('is not rendered when the user can not access the project settings', () => {
+    it('is not rendered when the user can not access the project settings', async () => {
       store.state.monitoringDashboard.canAccessOperationsSettings = false;
       store.state.monitoringDashboard.operationsSettingsPath = url;
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findSettingsButton().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findSettingsButton().exists()).toBe(false);
     });
 
-    it('is not rendered when the path to settings is unavailable', () => {
+    it('is not rendered when the path to settings is unavailable', async () => {
       store.state.monitoringDashboard.canAccessOperationsSettings = false;
       store.state.monitoringDashboard.operationsSettingsPath = '';
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findSettingsButton().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findSettingsButton().exists()).toBe(false);
     });
 
-    it('leads to the project settings page', () => {
+    it('leads to the project settings page', async () => {
       store.state.monitoringDashboard.canAccessOperationsSettings = true;
       store.state.monitoringDashboard.operationsSettingsPath = url;
 
-      return wrapper.vm.$nextTick(() => {
-        expect(findSettingsButton().attributes('href')).toBe(url);
-      });
+      await nextTick();
+      expect(findSettingsButton().attributes('href')).toBe(url);
     });
   });
 });

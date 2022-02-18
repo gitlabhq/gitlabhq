@@ -1,5 +1,6 @@
 import { GlFormGroup, GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -10,8 +11,7 @@ import {
   updateIssueStateQueryResponse,
 } from '../../mock_data/apollo_mock';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('Issue type field component', () => {
   let wrapper;
@@ -43,7 +43,6 @@ describe('Issue type field component', () => {
     fakeApollo = createMockApollo([], mockResolvers);
 
     wrapper = shallowMount(IssueTypeField, {
-      localVue,
       apolloProvider: fakeApollo,
       data() {
         return {
@@ -93,7 +92,7 @@ describe('Issue type field component', () => {
 
     it('updates the `issue_type` in the apollo cache when the value is changed', async () => {
       findTypeFromDropDownItems().at(1).vm.$emit('click', issuableTypes.incident);
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.incident);
     });
 

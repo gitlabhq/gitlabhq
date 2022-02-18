@@ -60,6 +60,15 @@ To make submodules work correctly in CI/CD jobs:
      GIT_SUBMODULE_STRATEGY: recursive
    ```
 
+1. You can provide additional flags to control advanced checkout behavior using
+   [`GIT_SUBMODULE_UPDATE_FLAGS`](runners/configure_runners.md#git-submodule-update-flags).
+
+   ```yaml
+   variables:
+     GIT_SUBMODULE_STRATEGY: recursive
+     GIT_SUBMODULE_UPDATE_FLAGS: --jobs 4
+   ```
+
 If you use the [`CI_JOB_TOKEN`](jobs/ci_job_token.md) to clone a submodule in a
 pipeline job, the user executing the job must be assigned to a role that has
 [permission](../user/permissions.md#gitlab-cicd-permissions) to trigger a pipeline

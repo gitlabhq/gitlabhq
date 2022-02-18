@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Git::Wiki do
   using RSpec::Parameterized::TableSyntax
 
   let(:project) { create(:project) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:project_wiki) { ProjectWiki.new(project, user) }
 
   subject(:wiki) { project_wiki.wiki }

@@ -7,6 +7,7 @@ import {
 } from '@gitlab/ui/dist/charts';
 import { mount, shallowMount } from '@vue/test-utils';
 import timezoneMock from 'timezone-mock';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { setTestTimeout } from 'helpers/timeout';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
@@ -70,12 +71,12 @@ describe('Time series component', () => {
     describe('general functions', () => {
       const findChart = () => wrapper.find({ ref: 'chart' });
 
-      beforeEach(() => {
+      beforeEach(async () => {
         createWrapper({}, mount);
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
-      it('allows user to override legend label texts using props', () => {
+      it('allows user to override legend label texts using props', async () => {
         const legendRelatedProps = {
           legendMinText: 'legendMinText',
           legendMaxText: 'legendMaxText',
@@ -86,9 +87,8 @@ describe('Time series component', () => {
           ...legendRelatedProps,
         });
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findChart().props()).toMatchObject(legendRelatedProps);
-        });
+        await nextTick();
+        expect(findChart().props()).toMatchObject(legendRelatedProps);
       });
 
       it('chart sets a default height', () => {
@@ -96,14 +96,13 @@ describe('Time series component', () => {
         expect(wrapper.props('height')).toBe(chartHeight);
       });
 
-      it('chart has a configurable height', () => {
+      it('chart has a configurable height', async () => {
         const mockHeight = 599;
         createWrapper();
 
         wrapper.setProps({ height: mockHeight });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.props('height')).toBe(mockHeight);
-        });
+        await nextTick();
+        expect(wrapper.props('height')).toBe(mockHeight);
       });
 
       describe('events', () => {
@@ -112,7 +111,7 @@ describe('Time series component', () => {
           let startValue;
           let endValue;
 
-          beforeEach(() => {
+          beforeEach(async () => {
             eChartMock = {
               handlers: {},
               getOption: () => ({
@@ -132,9 +131,8 @@ describe('Time series component', () => {
             };
 
             createWrapper({}, mount);
-            return wrapper.vm.$nextTick(() => {
-              findChart().vm.$emit('created', eChartMock);
-            });
+            await nextTick();
+            findChart().vm.$emit('created', eChartMock);
           });
 
           it('handles datazoom event from chart', () => {
@@ -203,10 +201,10 @@ describe('Time series component', () => {
           });
 
           describe('when series is of line type', () => {
-            beforeEach(() => {
+            beforeEach(async () => {
               createWrapper({}, mount);
               wrapper.vm.formatTooltipText(mockLineSeriesData());
-              return wrapper.vm.$nextTick();
+              await nextTick();
             });
 
             it('formats tooltip title', () => {
@@ -241,34 +239,31 @@ describe('Time series component', () => {
                 timezoneMock.unregister();
               });
 
-              it('formats tooltip title in local timezone by default', () => {
+              it('formats tooltip title in local timezone by default', async () => {
                 createWrapper();
                 wrapper.vm.formatTooltipText(mockLineSeriesData());
-                return wrapper.vm.$nextTick().then(() => {
-                  expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 3:14AM (GMT-0700)');
-                });
+                await nextTick();
+                expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 3:14AM (GMT-0700)');
               });
 
-              it('formats tooltip title in local timezone', () => {
+              it('formats tooltip title in local timezone', async () => {
                 createWrapper({ timezone: 'LOCAL' });
                 wrapper.vm.formatTooltipText(mockLineSeriesData());
-                return wrapper.vm.$nextTick().then(() => {
-                  expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 3:14AM (GMT-0700)');
-                });
+                await nextTick();
+                expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 3:14AM (GMT-0700)');
               });
 
-              it('formats tooltip title in UTC format', () => {
+              it('formats tooltip title in UTC format', async () => {
                 createWrapper({ timezone: 'UTC' });
                 wrapper.vm.formatTooltipText(mockLineSeriesData());
-                return wrapper.vm.$nextTick().then(() => {
-                  expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM (UTC)');
-                });
+                await nextTick();
+                expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM (UTC)');
               });
             });
           });
 
           describe('when series is of scatter type, for deployments', () => {
-            beforeEach(() => {
+            beforeEach(async () => {
               wrapper.vm.formatTooltipText({
                 ...mockAnnotationsSeriesData,
                 seriesData: mockAnnotationsSeriesData.seriesData.map((data) => ({
@@ -276,7 +271,7 @@ describe('Time series component', () => {
                   data: annotationsMetadata,
                 })),
               });
-              return wrapper.vm.$nextTick;
+              await nextTick();
             });
 
             it('set tooltip type to deployments', () => {
@@ -297,9 +292,9 @@ describe('Time series component', () => {
           });
 
           describe('when series is of scatter type and deployments data is missing', () => {
-            beforeEach(() => {
+            beforeEach(async () => {
               wrapper.vm.formatTooltipText(mockAnnotationsSeriesData);
-              return wrapper.vm.$nextTick;
+              await nextTick();
             });
 
             it('formats tooltip title', () => {
@@ -397,14 +392,13 @@ describe('Time series component', () => {
               });
             });
 
-            it('is not set if time range is not set or incorrectly set', () => {
+            it('is not set if time range is not set or incorrectly set', async () => {
               wrapper.setProps({
                 timeRange: {},
               });
-              return wrapper.vm.$nextTick(() => {
-                expect(getChartOptions().xAxis).not.toHaveProperty('min');
-                expect(getChartOptions().xAxis).not.toHaveProperty('max');
-              });
+              await nextTick();
+              expect(getChartOptions().xAxis).not.toHaveProperty('min');
+              expect(getChartOptions().xAxis).not.toHaveProperty('max');
             });
           });
 
@@ -430,17 +424,16 @@ describe('Time series component', () => {
               option2: 'option2',
             };
 
-            it('arbitrary options', () => {
+            it('arbitrary options', async () => {
               wrapper.setProps({
                 option: mockOption,
               });
 
-              return wrapper.vm.$nextTick().then(() => {
-                expect(getChartOptions()).toEqual(expect.objectContaining(mockOption));
-              });
+              await nextTick();
+              expect(getChartOptions()).toEqual(expect.objectContaining(mockOption));
             });
 
-            it('additional series', () => {
+            it('additional series', async () => {
               wrapper.setProps({
                 option: {
                   series: [
@@ -453,15 +446,14 @@ describe('Time series component', () => {
                 },
               });
 
-              return wrapper.vm.$nextTick().then(() => {
-                const optionSeries = getChartOptions().series;
+              await nextTick();
+              const optionSeries = getChartOptions().series;
 
-                expect(optionSeries.length).toEqual(2);
-                expect(optionSeries[0].name).toEqual(mockSeriesName);
-              });
+              expect(optionSeries.length).toEqual(2);
+              expect(optionSeries[0].name).toEqual(mockSeriesName);
             });
 
-            it('additional y-axis data', () => {
+            it('additional y-axis data', async () => {
               const mockCustomYAxisOption = {
                 name: 'Custom y-axis label',
                 axisLabel: {
@@ -475,14 +467,13 @@ describe('Time series component', () => {
                 },
               });
 
-              return wrapper.vm.$nextTick().then(() => {
-                const { yAxis } = getChartOptions();
+              await nextTick();
+              const { yAxis } = getChartOptions();
 
-                expect(yAxis[0]).toMatchObject(mockCustomYAxisOption);
-              });
+              expect(yAxis[0]).toMatchObject(mockCustomYAxisOption);
             });
 
-            it('additional x axis data', () => {
+            it('additional x axis data', async () => {
               const mockCustomXAxisOption = {
                 name: 'Custom x axis label',
               };
@@ -493,11 +484,10 @@ describe('Time series component', () => {
                 },
               });
 
-              return wrapper.vm.$nextTick().then(() => {
-                const { xAxis } = getChartOptions();
+              await nextTick();
+              const { xAxis } = getChartOptions();
 
-                expect(xAxis).toMatchObject(mockCustomXAxisOption);
-              });
+              expect(xAxis).toMatchObject(mockCustomXAxisOption);
             });
           });
 
@@ -625,12 +615,12 @@ describe('Time series component', () => {
         describe(`GitLab UI: ${dynamicComponent.chartType}`, () => {
           const findChartComponent = () => wrapper.find(dynamicComponent.component);
 
-          beforeEach(() => {
+          beforeEach(async () => {
             createWrapper(
               { graphData: timeSeriesGraphData({ type: dynamicComponent.chartType }) },
               mount,
             );
-            return wrapper.vm.$nextTick();
+            await nextTick();
           });
 
           it('exists', () => {
@@ -645,22 +635,21 @@ describe('Time series component', () => {
             expect(props.formatTooltipText).toBe(wrapper.vm.formatTooltipText);
           });
 
-          it('receives a tooltip title', () => {
+          it('receives a tooltip title', async () => {
             const mockTitle = 'mockTitle';
             wrapper.vm.tooltip.title = mockTitle;
 
-            return wrapper.vm.$nextTick(() => {
-              expect(
-                shallowWrapperContainsSlotText(findChartComponent(), 'tooltip-title', mockTitle),
-              ).toBe(true);
-            });
+            await nextTick();
+            expect(
+              shallowWrapperContainsSlotText(findChartComponent(), 'tooltip-title', mockTitle),
+            ).toBe(true);
           });
 
           describe('when tooltip is showing deployment data', () => {
             const mockSha = 'mockSha';
             const commitUrl = `${mockProjectDir}/-/commit/${mockSha}`;
 
-            beforeEach(() => {
+            beforeEach(async () => {
               // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
               // eslint-disable-next-line no-restricted-syntax
               wrapper.setData({
@@ -668,7 +657,7 @@ describe('Time series component', () => {
                   type: 'deployments',
                 },
               });
-              return wrapper.vm.$nextTick();
+              await nextTick();
             });
 
             it('uses deployment title', () => {
@@ -677,16 +666,15 @@ describe('Time series component', () => {
               ).toBe(true);
             });
 
-            it('renders clickable commit sha in tooltip content', () => {
+            it('renders clickable commit sha in tooltip content', async () => {
               wrapper.vm.tooltip.sha = mockSha;
               wrapper.vm.tooltip.commitUrl = commitUrl;
 
-              return wrapper.vm.$nextTick(() => {
-                const commitLink = wrapper.find(GlLink);
+              await nextTick();
+              const commitLink = wrapper.find(GlLink);
 
-                expect(shallowWrapperContainsSlotText(commitLink, 'default', mockSha)).toBe(true);
-                expect(commitLink.attributes('href')).toEqual(commitUrl);
-              });
+              expect(shallowWrapperContainsSlotText(commitLink, 'default', mockSha)).toBe(true);
+              expect(commitLink.attributes('href')).toEqual(commitUrl);
             });
           });
         });
@@ -696,11 +684,11 @@ describe('Time series component', () => {
 
   describe('with multiple time series', () => {
     describe('General functions', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         const graphData = timeSeriesGraphData({ type: panelTypes.AREA_CHART, multiMetric: true });
 
         createWrapper({ graphData }, mount);
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       describe('Color match', () => {
@@ -742,9 +730,9 @@ describe('Time series component', () => {
   describe('legend layout', () => {
     const findLegend = () => wrapper.find(GlChartLegend);
 
-    beforeEach(() => {
+    beforeEach(async () => {
       createWrapper({}, mount);
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('should render a tabular legend layout by default', () => {

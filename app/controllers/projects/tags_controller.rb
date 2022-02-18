@@ -16,13 +16,16 @@ class Projects::TagsController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     begin
-      params[:sort] = params[:sort].presence || sort_value_recently_updated
+      tags_params = params
+        .permit(:search, :sort, :per_page, :page_token, :page)
+        .with_defaults(sort: sort_value_recently_updated)
 
-      @sort = params[:sort]
+      @sort = tags_params[:sort]
+      @search = tags_params[:search]
 
-      @tags = TagsFinder.new(@repository, params).execute
+      @tags = TagsFinder.new(@repository, tags_params).execute
 
-      @tags = Kaminari.paginate_array(@tags).page(params[:page])
+      @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
       tag_names = @tags.map(&:name)
       @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
 
@@ -31,6 +34,7 @@ class Projects::TagsController < Projects::ApplicationController
 
     rescue Gitlab::Git::CommandError => e
       @tags = []
+      @releases = []
       @tags_loading_error = e
     end
 

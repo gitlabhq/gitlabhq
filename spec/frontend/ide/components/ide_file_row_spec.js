@@ -1,12 +1,12 @@
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';
 import IdeFileRow from '~/ide/components/ide_file_row.vue';
 import { createStore } from '~/ide/stores';
 import FileRow from '~/vue_shared/components/file_row.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const TEST_EXTRA_PROPS = {
   testattribute: 'abc',
@@ -30,7 +30,6 @@ describe('Ide File Row component', () => {
         ...props,
       },
       store: createStore(),
-      localVue,
       ...options,
     });
   };
@@ -44,7 +43,7 @@ describe('Ide File Row component', () => {
   const findFileRow = () => wrapper.find(FileRow);
   const hasDropdownOpen = () => findFileRowExtra().props('dropdownOpen');
 
-  it('fileRow component has listeners', () => {
+  it('fileRow component has listeners', async () => {
     const toggleTreeOpen = jest.fn();
     createComponent(
       {},
@@ -57,9 +56,8 @@ describe('Ide File Row component', () => {
 
     findFileRow().vm.$emit('toggleTreeOpen');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(toggleTreeOpen).toHaveBeenCalled();
-    });
+    await nextTick();
+    expect(toggleTreeOpen).toHaveBeenCalled();
   });
 
   describe('default', () => {
@@ -86,32 +84,30 @@ describe('Ide File Row component', () => {
   });
 
   describe('with open dropdown', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent();
 
       findFileRowExtra().vm.$emit('toggle', true);
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('shows open dropdown', () => {
       expect(hasDropdownOpen()).toBe(true);
     });
 
-    it('hides dropdown when mouseleave', () => {
+    it('hides dropdown when mouseleave', async () => {
       findFileRow().vm.$emit('mouseleave');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(hasDropdownOpen()).toEqual(false);
-      });
+      await nextTick();
+      expect(hasDropdownOpen()).toEqual(false);
     });
 
-    it('hides dropdown on toggle', () => {
+    it('hides dropdown on toggle', async () => {
       findFileRowExtra().vm.$emit('toggle', false);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(hasDropdownOpen()).toEqual(false);
-      });
+      await nextTick();
+      expect(hasDropdownOpen()).toEqual(false);
     });
   });
 });

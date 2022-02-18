@@ -3,6 +3,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { merge } from 'lodash';
 import Vuex from 'vuex';
+import { nextTick } from 'vue';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -71,7 +72,7 @@ describe('Release edit/new component', () => {
       },
     });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     wrapper.element.querySelectorAll('input').forEach((input) => jest.spyOn(input, 'focus'));
   };

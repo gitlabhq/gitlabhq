@@ -32,7 +32,7 @@ The Admin Area is made up of the following sections:
 | **{slight-frown}** Abuse Reports               | Manage [abuse reports](review_abuse_reports.md) submitted by your users. |
 | **{license}** License                          | Upload, display, and remove [licenses](license.md). |
 | **{cloud-gear}** Kubernetes                    | Create and manage instance-level [Kubernetes clusters](../instance/clusters/index.md). |
-| **{push-rules}** Push rules | Configure pre-defined Git [push rules](../../push_rules/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). |
+| **{push-rules}** Push rules | Configure pre-defined Git [push rules](../project/repository/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). |
 | **{location-dot}** Geo                         | Configure and maintain [Geo nodes](geo_nodes.md). |
 | **{key}** Deploy keys                          | Create instance-wide [SSH deploy keys](../project/deploy_keys/index.md). |
 | **{lock}** Credentials                         | View [credentials](credentials_inventory.md) that can be used to access your instance. |
@@ -106,23 +106,6 @@ You can combine the filter options. For example, to list only public projects wi
 
 1. Click the **Public** tab.
 1. Enter `score` in the **Filter by name...** input box.
-
-#### Projects pending deletion **(PREMIUM SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3.
-> - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
-
-When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
-projects within that group are not deleted immediately, but only after a delay. To access a list of all projects that are pending deletion:
-
-1. On the top bar, select **Menu > Projects > Explore projects**.
-1. Select the **Pending deletion** tab (in GitLab 14.6 and later) or the **Deleted projects** tab (GitLab 14.5 and earlier).
-
-Listed for each project is:
-
-- The time the project was marked for deletion.
-- The time the project is scheduled for final deletion.
-- A **Restore** link to stop the project being eventually deleted.
 
 ### Administering Users
 

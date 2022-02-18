@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -58,7 +58,7 @@ POST groups/:id/access_tokens
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `name` | String | yes | The name of the group access token  |
-| `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token) |
+| `scopes` | `Array[String]` | yes | [List of scopes](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token) |
 | `access_level` | Integer | no | A valid access level. Default value is 40 (Maintainer). Other allowed values are 10 (Guest), 20 (Reporter), and 30 (Developer). |
 | `expires_at` | Date | no | The token expires at midnight UTC on that date |
 

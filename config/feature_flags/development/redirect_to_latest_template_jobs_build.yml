@@ -1,8 +1,0 @@
----
-name: redirect_to_latest_template_jobs_build
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67782
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337990
-milestone: '14.2'
-type: development
-group: group::configure
-default_enabled: false

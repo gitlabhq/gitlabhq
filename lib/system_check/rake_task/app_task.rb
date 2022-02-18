@@ -12,7 +12,6 @@ module SystemCheck
 
       def self.checks
         [
-          SystemCheck::App::GitConfigCheck,
           SystemCheck::App::DatabaseConfigExistsCheck,
           SystemCheck::App::MigrationsAreUpCheck,
           SystemCheck::App::OrphanedGroupMembersCheck,
@@ -28,7 +27,6 @@ module SystemCheck
           SystemCheck::App::ProjectsHaveNamespaceCheck,
           SystemCheck::App::RedisVersionCheck,
           SystemCheck::App::RubyVersionCheck,
-          SystemCheck::App::GitVersionCheck,
           SystemCheck::App::GitUserDefaultSSHConfigCheck,
           SystemCheck::App::ActiveUsersCheck,
           SystemCheck::App::AuthorizedKeysPermissionCheck,

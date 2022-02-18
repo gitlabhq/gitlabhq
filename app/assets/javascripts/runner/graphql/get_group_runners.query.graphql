@@ -28,10 +28,12 @@ query getGroupRunners(
       edges {
         webUrl
         node {
+          __typename
           ...RunnerNode
         }
       }
       pageInfo {
+        __typename
         ...PageInfo
       }
     }

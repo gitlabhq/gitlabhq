@@ -10,13 +10,22 @@ RSpec.describe Clusters::AgentTokenPolicy do
   let(:project) { token.agent.project }
 
   describe 'rules' do
+    context 'when reporter' do
+      before do
+        project.add_reporter(user)
+      end
+
+      it { expect(policy).to be_disallowed :admin_cluster }
+      it { expect(policy).to be_disallowed :read_cluster }
+    end
+
     context 'when developer' do
       before do
         project.add_developer(user)
       end
 
       it { expect(policy).to be_disallowed :admin_cluster }
-      it { expect(policy).to be_disallowed :read_cluster }
+      it { expect(policy).to be_allowed :read_cluster }
     end
 
     context 'when maintainer' do

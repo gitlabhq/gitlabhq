@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import fixture from 'test_fixtures/blob/notebook/basic.json';
 import CodeComponent from '~/notebook/cells/code.vue';
 
@@ -25,12 +25,10 @@ describe('Code component', () => {
   };
 
   describe('without output', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       vm = setupComponent(json.cells[0]);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('does not render output prompt', () => {
@@ -39,12 +37,10 @@ describe('Code component', () => {
   });
 
   describe('with output', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       vm = setupComponent(json.cells[2]);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('does not render output prompt', () => {
@@ -58,12 +54,12 @@ describe('Code component', () => {
 
   describe('with string for output', () => {
     // NBFormat Version 4.1 allows outputs.text to be a string
-    beforeEach(() => {
+    beforeEach(async () => {
       const cell = json.cells[2];
       cell.outputs[0].text = cell.outputs[0].text.join('');
 
       vm = setupComponent(cell);
-      return vm.$nextTick();
+      await nextTick();
     });
 
     it('does not render output prompt', () => {
@@ -76,12 +72,12 @@ describe('Code component', () => {
   });
 
   describe('with string for cell.source', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const cell = json.cells[0];
       cell.source = cell.source.join('');
 
       vm = setupComponent(cell);
-      return vm.$nextTick();
+      await nextTick();
     });
 
     it('renders the same input as when cell.source is an array', () => {

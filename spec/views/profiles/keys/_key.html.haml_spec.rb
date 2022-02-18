@@ -90,8 +90,8 @@ RSpec.describe 'profiles/keys/_key.html.haml' do
       using RSpec::Parameterized::TableSyntax
 
       where(:valid, :expiry, :result) do
-        false | 2.days.from_now | 'Key type is forbidden. Must be DSA, ECDSA, or ED25519'
-        false | 2.days.ago      | 'Key type is forbidden. Must be DSA, ECDSA, or ED25519'
+        false | 2.days.from_now | 'Key type is forbidden. Must be DSA, ECDSA, ED25519, ECDSA_SK, or ED25519_SK'
+        false | 2.days.ago      | 'Key type is forbidden. Must be DSA, ECDSA, ED25519, ECDSA_SK, or ED25519_SK'
         true  | 2.days.ago      | 'Key usable beyond expiration date.'
         true  | 2.days.from_now | ''
       end

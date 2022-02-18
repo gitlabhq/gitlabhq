@@ -1,5 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Autosave from '~/autosave';
 import DescriptionTemplate from '~/issues/show/components/fields/description_template.vue';
 import IssueTypeField from '~/issues/show/components/fields/type.vue';
@@ -148,7 +149,7 @@ describe('Inline edit form component', () => {
           formState: { ...defaultProps.formState, lock_version: 'lock version from server' },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findAlert().exists()).toBe(true);
       });
     });

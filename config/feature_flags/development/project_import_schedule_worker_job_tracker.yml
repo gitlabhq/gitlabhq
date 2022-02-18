@@ -1,0 +1,8 @@
+---
+name: project_import_schedule_worker_job_tracker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79097
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351408
+milestone: '14.8'
+type: development
+group: group::scalability
+default_enabled: false

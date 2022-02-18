@@ -1,0 +1,12 @@
+query getPipelineWarnings($fullPath: ID!, $iid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $iid) {
+      id
+      warningMessages {
+        content
+        id
+      }
+    }
+  }
+}

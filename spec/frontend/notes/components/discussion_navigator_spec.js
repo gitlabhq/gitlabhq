@@ -1,6 +1,6 @@
 /* global Mousetrap */
 import 'mousetrap';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import {
   keysFor,
@@ -11,8 +11,6 @@ import DiscussionNavigator from '~/notes/components/discussion_navigator.vue';
 import eventHub from '~/notes/event_hub';
 
 describe('notes/components/discussion_navigator', () => {
-  const localVue = createLocalVue();
-
   let wrapper;
   let jumpToNextDiscussion;
   let jumpToPreviousDiscussion;
@@ -20,12 +18,12 @@ describe('notes/components/discussion_navigator', () => {
   const createComponent = () => {
     wrapper = shallowMount(DiscussionNavigator, {
       mixins: [
-        localVue.extend({
+        {
           methods: {
             jumpToNextDiscussion,
             jumpToPreviousDiscussion,
           },
-        }),
+        },
       ],
     });
   };
@@ -48,7 +46,7 @@ describe('notes/components/discussion_navigator', () => {
 
     beforeEach(() => {
       onSpy = jest.spyOn(eventHub, '$on');
-      vm = new (Vue.extend(DiscussionNavigator))();
+      vm = new Vue(DiscussionNavigator);
     });
 
     it('listens for jumpToFirstUnresolvedDiscussion events', () => {

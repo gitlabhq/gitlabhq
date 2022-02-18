@@ -1,11 +1,13 @@
 ---
 type: reference
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # User File Uploads **(FREE)**
+
+> - In GitLab 14.8 and later, [authorization checks are enforced](https://gitlab.com/gitlab-org/gitlab/-/issues/26781) on media uploads. This change is being [rolled out incrementally](https://gitlab.com/gitlab-org/gitlab/-/issues/352291) on GitLab.com in 14.9.
 
 Images that are attached to issues, merge requests, or comments
 do not require authentication to be viewed if they are accessed directly by URL.

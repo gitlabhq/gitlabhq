@@ -24,7 +24,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js do
     before do
       stub_const('Autocomplete::UsersFinder::LIMIT', users_find_limit)
 
-      sign_in(project.owner)
+      sign_in(project.first_owner)
 
       merge_request.assignees << assignee
 

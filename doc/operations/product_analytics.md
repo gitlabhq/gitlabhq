@@ -50,7 +50,7 @@ Feature.disable(:product_analytics, Project.find(<project ID>))
 After enabling the feature flag for Product Analytics, you can access the
 user interface:
 
-1. Sign in to GitLab as a user with at least the Reporter [role](../user/permissions.md).
+1. Sign in to GitLab as a user with at least the Reporter role.
 1. Navigate to **Monitor > Product Analytics**.
 
 The user interface contains:

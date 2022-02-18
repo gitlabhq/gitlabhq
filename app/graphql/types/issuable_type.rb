@@ -5,10 +5,12 @@ module Types
     graphql_name 'Issuable'
     description 'Represents an issuable.'
 
-    possible_types Types::IssueType, Types::MergeRequestType
+    possible_types Types::IssueType, Types::MergeRequestType, Types::WorkItemType
 
     def self.resolve_type(object, context)
       case object
+      when WorkItem
+        Types::WorkItemType
       when Issue
         Types::IssueType
       when MergeRequest

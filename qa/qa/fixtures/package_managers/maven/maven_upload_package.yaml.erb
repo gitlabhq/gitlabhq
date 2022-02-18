@@ -1,0 +1,8 @@
+ deploy:
+  image: maven:3.6-jdk-11
+  script:
+    - 'mvn deploy -s settings.xml'
+  only:
+    - "<%= package_project.default_branch %>"
+  tags:
+    - "runner-for-<%= package_project.group.name %>"

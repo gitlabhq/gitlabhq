@@ -1,9 +1,7 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
-import { VALIDATE_INTEGRATION_FORM_EVENT } from '~/integrations/constants';
 import { s__, __ } from '~/locale';
-import eventHub from '../event_hub';
 import JiraUpgradeCta from './jira_upgrade_cta.vue';
 
 export default {
@@ -64,29 +62,22 @@ export default {
       required: false,
       default: '',
     },
+    isValidated: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       enableJiraIssues: this.initialEnableJiraIssues,
       projectKey: this.initialProjectKey,
-      validated: false,
     };
   },
   computed: {
     ...mapGetters(['isInheriting']),
     validProjectKey() {
-      return !this.enableJiraIssues || Boolean(this.projectKey) || !this.validated;
-    },
-  },
-  created() {
-    eventHub.$on(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
-  },
-  beforeDestroy() {
-    eventHub.$off(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
-  },
-  methods: {
-    validateForm() {
-      this.validated = true;
+      return !this.enableJiraIssues || Boolean(this.projectKey) || !this.isValidated;
     },
   },
   i18n: {

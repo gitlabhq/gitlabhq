@@ -99,7 +99,7 @@ export default {
 <template>
   <div>
     <infrastructure-title :help-url="packageHelpUrl" :count="packagesCount" />
-    <infrastructure-search @update="requestPackagesList" />
+    <infrastructure-search v-if="packagesCount > 0" @update="requestPackagesList" />
 
     <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">
       <template #empty-state>

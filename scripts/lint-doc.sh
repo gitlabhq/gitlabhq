@@ -128,7 +128,7 @@ function run_locally_or_in_docker() {
     $cmd $args
   elif hash docker 2>/dev/null
   then
-    docker run -t -v ${PWD}:/gitlab -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.15-vale-2.14.0-markdownlint-0.30.0 ${cmd} ${args}
+    docker run -t -v ${PWD}:/gitlab -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.15-vale-2.15.0-markdownlint-0.31.0 ${cmd} ${args}
   else
     echo
     echo "  ✖ ERROR: '${cmd}' not found. Install '${cmd}' or Docker to proceed." >&2

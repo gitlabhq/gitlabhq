@@ -1,4 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import CodequalityIssueBody from '~/reports/codequality_report/components/codequality_issue_body.vue';
 import GroupedCodequalityReportsApp from '~/reports/codequality_report/grouped_codequality_reports_app.vue';
@@ -6,8 +7,7 @@ import { getStoreConfig } from '~/reports/codequality_report/store';
 import { STATUS_NOT_FOUND } from '~/reports/constants';
 import { parsedReportIssues } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Grouped code quality reports app', () => {
   let wrapper;
@@ -22,7 +22,6 @@ describe('Grouped code quality reports app', () => {
   const mountComponent = (props = {}) => {
     wrapper = mount(GroupedCodequalityReportsApp, {
       store: mockStore,
-      localVue,
       propsData: {
         ...PATHS,
         ...props,

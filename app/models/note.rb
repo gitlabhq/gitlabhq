@@ -27,8 +27,12 @@ class Note < ApplicationRecord
 
   redact_field :note
 
-  TYPES_RESTRICTED_BY_ABILITY = {
+  TYPES_RESTRICTED_BY_PROJECT_ABILITY = {
     branch: :download_code
+  }.freeze
+
+  TYPES_RESTRICTED_BY_GROUP_ABILITY = {
+    contact: :read_crm_contact
   }.freeze
 
   # Aliases to make application_helper#edited_time_ago_with_tooltip helper work properly with notes.
@@ -119,7 +123,7 @@ class Note < ApplicationRecord
   scope :inc_author, -> { includes(:author) }
   scope :with_api_entity_associations, -> { preload(:note_diff_file, :author) }
   scope :inc_relations_for_view, -> do
-    includes(:project, { author: :status }, :updated_by, :resolved_by, :award_emoji,
+    includes({ project: :group }, { author: :status }, :updated_by, :resolved_by, :award_emoji,
              { system_note_metadata: :description_version }, :note_diff_file, :diff_note_positions, :suggestions)
   end
 
@@ -565,10 +569,10 @@ class Note < ApplicationRecord
     noteable.user_mentions.where(note: self)
   end
 
-  def system_note_with_references_visible_for?(user)
+  def system_note_visible_for?(user)
     return true unless system?
 
-    (!system_note_with_references? || all_referenced_mentionables_allowed?(user)) && system_note_viewable_by?(user)
+    system_note_viewable_by?(user) && all_referenced_mentionables_allowed?(user)
   end
 
   def parent_user
@@ -617,10 +621,17 @@ class Note < ApplicationRecord
   def system_note_viewable_by?(user)
     return true unless system_note_metadata
 
-    restriction = TYPES_RESTRICTED_BY_ABILITY[system_note_metadata.action.to_sym]
-    return Ability.allowed?(user, restriction, project) if restriction
+    system_note_viewable_by_project_ability?(user) && system_note_viewable_by_group_ability?(user)
+  end
 
-    true
+  def system_note_viewable_by_project_ability?(user)
+    project_restriction = TYPES_RESTRICTED_BY_PROJECT_ABILITY[system_note_metadata.action.to_sym]
+    !project_restriction || Ability.allowed?(user, project_restriction, project)
+  end
+
+  def system_note_viewable_by_group_ability?(user)
+    group_restriction = TYPES_RESTRICTED_BY_GROUP_ABILITY[system_note_metadata.action.to_sym]
+    !group_restriction || Ability.allowed?(user, group_restriction, project&.group)
   end
 
   def keep_around_commit
@@ -646,6 +657,8 @@ class Note < ApplicationRecord
   end
 
   def all_referenced_mentionables_allowed?(user)
+    return true unless system_note_with_references?
+
     if user_visible_reference_count.present? && total_reference_count.present?
       # if they are not equal, then there are private/confidential references as well
       user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count

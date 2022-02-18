@@ -102,7 +102,7 @@ RSpec.describe API::API do
 
   describe 'logging', :aggregate_failures do
     let_it_be(:project) { create(:project, :public) }
-    let_it_be(:user) { project.owner }
+    let_it_be(:user) { project.first_owner }
 
     context 'when the endpoint is handled by the application' do
       context 'when the endpoint supports all possible fields' do

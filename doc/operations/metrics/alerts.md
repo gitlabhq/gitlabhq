@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Monitor
+group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -99,8 +99,7 @@ GitLab tags each incident issue with the `incident` label automatically. If the 
 does not yet exist, it is also created automatically.
 
 If the metric exceeds the threshold of the alert for over 5 minutes, GitLab sends
-an email to all [Maintainers and Owners](../../user/permissions.md#project-members-permissions)
-of the project.
+an email to all Maintainers and Owners of the project.
 
 ### Recovery alerts
 

@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @gitlab/require-i18n-strings */
 
-import { defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { Node } from 'tiptap';
+import { defaultMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 
 /**
  * Abstract base class for playable media, like video and audio.

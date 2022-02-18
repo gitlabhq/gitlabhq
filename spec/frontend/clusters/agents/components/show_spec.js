@@ -11,12 +11,14 @@ import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { MAX_LIST_COUNT, TOKEN_STATUS_ACTIVE } from '~/clusters/agents/constants';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
 describe('ClusterAgentShow', () => {
   let wrapper;
+  let agentQueryResponse;
   useFakeDate([2021, 2, 15]);
 
   const provide = {
@@ -40,7 +42,7 @@ describe('ClusterAgentShow', () => {
   };
 
   const createWrapper = ({ clusterAgent, queryResponse = null }) => {
-    const agentQueryResponse =
+    agentQueryResponse =
       queryResponse ||
       jest.fn().mockResolvedValue({ data: { project: { id: 'project-1', clusterAgent } } });
     const apolloProvider = createMockApollo([[getAgentQuery, agentQueryResponse]]);
@@ -80,8 +82,21 @@ describe('ClusterAgentShow', () => {
   });
 
   describe('default behaviour', () => {
-    beforeEach(() => {
-      return createWrapper({ clusterAgent: defaultClusterAgent });
+    beforeEach(async () => {
+      createWrapper({ clusterAgent: defaultClusterAgent });
+      await waitForPromises();
+    });
+
+    it('sends expected params', () => {
+      const variables = {
+        agentName: provide.agentName,
+        projectPath: provide.projectPath,
+        tokenStatus: TOKEN_STATUS_ACTIVE,
+        first: MAX_LIST_COUNT,
+        last: null,
+      };
+
+      expect(agentQueryResponse).toHaveBeenCalledWith(variables);
     });
 
     it('displays the agent name', () => {
@@ -117,11 +132,13 @@ describe('ClusterAgentShow', () => {
       createdByUser: null,
     };
 
-    beforeEach(() => {
-      return createWrapper({ clusterAgent: missingUser });
+    beforeEach(async () => {
+      createWrapper({ clusterAgent: missingUser });
+      await waitForPromises();
     });
 
-    it('displays agent create information with unknown user', () => {
+    it('displays agent create information with unknown user', async () => {
+      await waitForPromises();
       expect(findCreatedText()).toMatchInterpolatedText('Created by Unknown user 2 days ago');
     });
   });
@@ -132,21 +149,28 @@ describe('ClusterAgentShow', () => {
       tokens: null,
     };
 
-    beforeEach(() => {
-      return createWrapper({ clusterAgent: missingTokens });
+    beforeEach(async () => {
+      createWrapper({ clusterAgent: missingTokens });
+      await waitForPromises();
     });
 
-    it('displays token header with no count', () => {
+    it('displays token header with no count', async () => {
+      await waitForPromises();
       expect(findTokenCount()).toMatchInterpolatedText(`${ClusterAgentShow.i18n.tokens}`);
     });
   });
 
   describe('when the token list has additional pages', () => {
-    const pageInfo = {
+    const pageInfoResponse = {
       hasNextPage: true,
       hasPreviousPage: false,
       startCursor: 'prev',
       endCursor: 'next',
+    };
+
+    const pageInfo = {
+      ...pageInfoResponse,
+      __typename: 'PageInfo',
     };
 
     const tokenPagination = {
@@ -157,8 +181,9 @@ describe('ClusterAgentShow', () => {
       },
     };
 
-    beforeEach(() => {
-      return createWrapper({ clusterAgent: tokenPagination });
+    beforeEach(async () => {
+      createWrapper({ clusterAgent: tokenPagination });
+      await waitForPromises();
     });
 
     it('should render pagination buttons', () => {
@@ -166,7 +191,7 @@ describe('ClusterAgentShow', () => {
     });
 
     it('should pass pageInfo to the pagination component', () => {
-      expect(findPaginationButtons().props()).toMatchObject(pageInfo);
+      expect(findPaginationButtons().props()).toMatchObject(pageInfoResponse);
     });
   });
 

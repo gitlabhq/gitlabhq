@@ -47,7 +47,7 @@ module API
 
       desc 'Gets a specific deployment' do
         detail 'This feature was introduced in GitLab 8.11.'
-        success Entities::Deployment
+        success Entities::DeploymentExtended
       end
       params do
         requires :deployment_id, type: Integer, desc: 'The deployment ID'
@@ -57,12 +57,12 @@ module API
 
         deployment = user_project.deployments.find(params[:deployment_id])
 
-        present deployment, with: Entities::Deployment
+        present deployment, with: Entities::DeploymentExtended
       end
 
       desc 'Creates a new deployment' do
         detail 'This feature was introduced in GitLab 12.4'
-        success Entities::Deployment
+        success Entities::DeploymentExtended
       end
       params do
         requires :environment,
@@ -106,7 +106,7 @@ module API
         deployment = service.execute
 
         if deployment.persisted?
-          present(deployment, with: Entities::Deployment, current_user: current_user)
+          present(deployment, with: Entities::DeploymentExtended, current_user: current_user)
         else
           render_validation_error!(deployment)
         end
@@ -114,7 +114,7 @@ module API
 
       desc 'Updates an existing deployment' do
         detail 'This feature was introduced in GitLab 12.4'
-        success Entities::Deployment
+        success Entities::DeploymentExtended
       end
       params do
         requires :status,
@@ -136,7 +136,7 @@ module API
         service = ::Deployments::UpdateService.new(deployment, declared_params)
 
         if service.execute
-          present(deployment, with: Entities::Deployment, current_user: current_user)
+          present(deployment, with: Entities::DeploymentExtended, current_user: current_user)
         else
           render_validation_error!(deployment)
         end

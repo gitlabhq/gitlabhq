@@ -4,11 +4,11 @@ module Mutations
   module Clusters
     module Agents
       class Create < BaseMutation
+        graphql_name 'CreateClusterAgent'
+
         include FindsProject
 
         authorize :create_cluster
-
-        graphql_name 'CreateClusterAgent'
 
         argument :project_path, GraphQL::Types::ID,
                  required: true,

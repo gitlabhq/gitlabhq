@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import SidebarMoveIssue from '~/sidebar/lib/sidebar_move_issue';
@@ -77,15 +78,14 @@ describe('SidebarMoveIssue', () => {
       expect(test.sidebarMoveIssue.$dropdownToggle.data('deprecatedJQueryDropdown')).toBeTruthy();
     });
 
-    it('escapes html from project name', (done) => {
+    it('escapes html from project name', async () => {
       test.$toggleButton.dropdown('toggle');
 
-      setImmediate(() => {
-        expect(test.$content.find('.js-move-issue-dropdown-item')[1].innerHTML.trim()).toEqual(
-          '&lt;img src=x onerror=alert(document.domain)&gt; foo / bar',
-        );
-        done();
-      });
+      await waitForPromises();
+
+      expect(test.$content.find('.js-move-issue-dropdown-item')[1].innerHTML.trim()).toEqual(
+        '&lt;img src=x onerror=alert(document.domain)&gt; foo / bar',
+      );
     });
   });
 
@@ -101,20 +101,20 @@ describe('SidebarMoveIssue', () => {
       expect(test.$confirmButton.hasClass('is-loading')).toBe(true);
     });
 
-    it('should remove loading state from confirm button on failure', (done) => {
+    it('should remove loading state from confirm button on failure', async () => {
       jest.spyOn(test.mediator, 'moveIssue').mockReturnValue(Promise.reject());
       test.mediator.setMoveToProjectId(7);
 
       test.sidebarMoveIssue.onConfirmClicked();
 
       expect(test.mediator.moveIssue).toHaveBeenCalled();
+
       // Wait for the move issue request to fail
-      setImmediate(() => {
-        expect(createFlash).toHaveBeenCalled();
-        expect(test.$confirmButton.prop('disabled')).toBeFalsy();
-        expect(test.$confirmButton.hasClass('is-loading')).toBe(false);
-        done();
-      });
+      await waitForPromises();
+
+      expect(createFlash).toHaveBeenCalled();
+      expect(test.$confirmButton.prop('disabled')).toBeFalsy();
+      expect(test.$confirmButton.hasClass('is-loading')).toBe(false);
     });
 
     it('should not move the issue with id=0', () => {
@@ -127,35 +127,33 @@ describe('SidebarMoveIssue', () => {
     });
   });
 
-  it('should set moveToProjectId on dropdown item "No project" click', (done) => {
+  it('should set moveToProjectId on dropdown item "No project" click', async () => {
     jest.spyOn(test.mediator, 'setMoveToProjectId').mockImplementation(() => {});
 
     // Open the dropdown
     test.$toggleButton.dropdown('toggle');
 
     // Wait for the autocomplete request to finish
-    setImmediate(() => {
-      test.$content.find('.js-move-issue-dropdown-item').eq(0).trigger('click');
+    await waitForPromises();
 
-      expect(test.mediator.setMoveToProjectId).toHaveBeenCalledWith(0);
-      expect(test.$confirmButton.prop('disabled')).toBeTruthy();
-      done();
-    });
+    test.$content.find('.js-move-issue-dropdown-item').eq(0).trigger('click');
+
+    expect(test.mediator.setMoveToProjectId).toHaveBeenCalledWith(0);
+    expect(test.$confirmButton.prop('disabled')).toBeTruthy();
   });
 
-  it('should set moveToProjectId on dropdown item click', (done) => {
+  it('should set moveToProjectId on dropdown item click', async () => {
     jest.spyOn(test.mediator, 'setMoveToProjectId').mockImplementation(() => {});
 
     // Open the dropdown
     test.$toggleButton.dropdown('toggle');
 
     // Wait for the autocomplete request to finish
-    setImmediate(() => {
-      test.$content.find('.js-move-issue-dropdown-item').eq(1).trigger('click');
+    await waitForPromises();
 
-      expect(test.mediator.setMoveToProjectId).toHaveBeenCalledWith(20);
-      expect(test.$confirmButton.attr('disabled')).toBe(undefined);
-      done();
-    });
+    test.$content.find('.js-move-issue-dropdown-item').eq(1).trigger('click');
+
+    expect(test.mediator.setMoveToProjectId).toHaveBeenCalledWith(20);
+    expect(test.$confirmButton.attr('disabled')).toBe(undefined);
   });
 });

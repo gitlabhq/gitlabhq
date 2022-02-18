@@ -14,7 +14,7 @@ RSpec.describe ProjectDestroyWorker do
 
   describe '#perform' do
     it 'deletes the project' do
-      subject.perform(project.id, project.owner.id, {})
+      subject.perform(project.id, project.first_owner.id, {})
 
       expect(Project.all).not_to include(project)
       expect(Dir.exist?(path)).to be_falsey
@@ -22,7 +22,7 @@ RSpec.describe ProjectDestroyWorker do
 
     it 'does not raise error when project could not be found' do
       expect do
-        subject.perform(-1, project.owner.id, {})
+        subject.perform(-1, project.first_owner.id, {})
       end.not_to raise_error
     end
 

@@ -14,8 +14,6 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
 import { s__ } from '~/locale';
 
 import eventHub from '../eventhub';
@@ -23,6 +21,8 @@ import groupBoardsQuery from '../graphql/group_boards.query.graphql';
 import projectBoardsQuery from '../graphql/project_boards.query.graphql';
 import groupBoardQuery from '../graphql/group_board.query.graphql';
 import projectBoardQuery from '../graphql/project_board.query.graphql';
+import groupRecentBoardsQuery from '../graphql/group_recent_boards.query.graphql';
+import projectRecentBoardsQuery from '../graphql/project_recent_boards.query.graphql';
 
 const MIN_BOARDS_TO_VIEW_RECENT = 10;
 
@@ -40,7 +40,7 @@ export default {
   directives: {
     GlModalDirective,
   },
-  inject: ['fullPath', 'recentBoardsEndpoint'],
+  inject: ['fullPath'],
   props: {
     throttleDuration: {
       type: Number,
@@ -158,6 +158,10 @@ export default {
       this.scrollFadeInitialized = false;
       this.$nextTick(this.setScrollFade);
     },
+    recentBoards() {
+      this.scrollFadeInitialized = false;
+      this.$nextTick(this.setScrollFade);
+    },
   },
   created() {
     eventHub.$on('showBoardModal', this.showPage);
@@ -173,17 +177,20 @@ export default {
     cancel() {
       this.showPage('');
     },
-    boardUpdate(data) {
+    boardUpdate(data, boardType) {
       if (!data?.[this.parentType]) {
         return [];
       }
-      return data[this.parentType].boards.edges.map(({ node }) => ({
+      return data[this.parentType][boardType].edges.map(({ node }) => ({
         id: getIdFromGraphQLId(node.id),
         name: node.name,
       }));
     },
     boardQuery() {
       return this.isGroupBoard ? groupBoardsQuery : projectBoardsQuery;
+    },
+    recentBoardsQuery() {
+      return this.isGroupBoard ? groupRecentBoardsQuery : projectRecentBoardsQuery;
     },
     loadBoards(toggleDropdown = true) {
       if (toggleDropdown && this.boards.length > 0) {
@@ -196,39 +203,20 @@ export default {
         },
         query: this.boardQuery,
         loadingKey: 'loadingBoards',
-        update: this.boardUpdate,
+        update: (data) => this.boardUpdate(data, 'boards'),
       });
 
       this.loadRecentBoards();
     },
     loadRecentBoards() {
-      this.loadingRecentBoards = true;
-      // Follow up to fetch recent boards using GraphQL
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/300985
-      axios
-        .get(this.recentBoardsEndpoint)
-        .then((res) => {
-          this.recentBoards = res.data;
-        })
-        .catch((err) => {
-          /**
-           *  If user is unauthorized we'd still want to resolve the
-           *  request to display all boards.
-           */
-          if (err?.response?.status === httpStatusCodes.UNAUTHORIZED) {
-            this.recentBoards = []; // recent boards are empty
-            return;
-          }
-          throw err;
-        })
-        .then(() => this.$nextTick()) // Wait for boards list in DOM
-        .then(() => {
-          this.setScrollFade();
-        })
-        .catch(() => {})
-        .finally(() => {
-          this.loadingRecentBoards = false;
-        });
+      this.$apollo.addSmartQuery('recentBoards', {
+        variables() {
+          return { fullPath: this.fullPath };
+        },
+        query: this.recentBoardsQuery,
+        loadingKey: 'loadingRecentBoards',
+        update: (data) => this.boardUpdate(data, 'recentIssueBoards'),
+      });
     },
     isScrolledUp() {
       const { content } = this.$refs;

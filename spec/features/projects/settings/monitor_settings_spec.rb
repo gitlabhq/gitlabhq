@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects > Settings > For a forked project', :js do
   let_it_be(:project) { create(:project, :repository, create_templates: :issue) }
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     sign_in(user)

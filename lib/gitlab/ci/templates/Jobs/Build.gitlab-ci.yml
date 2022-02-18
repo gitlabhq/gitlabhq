@@ -1,5 +1,5 @@
 variables:
-  AUTO_BUILD_IMAGE_VERSION: 'v1.0.0'
+  AUTO_BUILD_IMAGE_VERSION: 'v1.5.0'
 
 build:
   stage: build
@@ -19,6 +19,9 @@ build:
         export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
       fi
     - /build/build.sh
+  artifacts:
+    reports:
+      dotenv: gl-auto-build-variables.env
   rules:
     - if: '$BUILD_DISABLED'
       when: never

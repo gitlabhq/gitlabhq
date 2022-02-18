@@ -37,7 +37,7 @@
               = sprite_icon('admin')
           .gl-display-flex.gl-align-items-start.gl-mr-3
             - if @notification_setting
-              .js-vue-notification-dropdown{ data: { button_size: "small", disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id } }
+              .js-vue-notification-dropdown{ data: { button_size: "small", disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id, no_flip: 'true' } }
 
         .count-buttons.gl-display-flex.gl-align-items-flex-start
           = render 'projects/buttons/star'
@@ -71,11 +71,13 @@
     = render_if_exists "projects/home_mirror"
 
   - if @project.badges.present?
-    .project-badges.mb-2
+    .project-badges.mb-2{ data: { qa_selector: 'project_badges_content' } }
       - @project.badges.each do |badge|
-        %a.gl-mr-3{ href: badge.rendered_link_url(@project),
+        - badge_link_url = badge.rendered_link_url(@project)
+        %a.gl-mr-3{ href: badge_link_url,
           target: '_blank',
-          rel: 'noopener noreferrer' }>
+          rel: 'noopener noreferrer',
+          data: { qa_selector: 'badge_image_link', qa_link_url: badge_link_url } }>
           %img.project-badge{ src: badge.rendered_image_url(@project),
             'aria-hidden': true,
             alt: 'Project badge' }>

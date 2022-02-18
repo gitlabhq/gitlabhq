@@ -748,6 +748,8 @@ Consult the [official Jest docs](https://jestjs.io/docs/jest-object#mock-modules
 
 ## Running Frontend Tests
 
+Before generating fixtures, make sure you have a running GDK instance.
+
 For running the frontend tests, you need the following commands:
 
 - `rake frontend:fixtures` (re-)generates [fixtures](#frontend-test-fixtures). Make sure that

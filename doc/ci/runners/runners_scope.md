@@ -55,7 +55,7 @@ To enable shared runners:
 ### Disable shared runners
 
 You can disable shared runners for individual projects or for groups.
-You must have the [Owner role](../../user/permissions.md#group-members-permissions) for the project
+You must have the Owner role for the project
 or group.
 
 To disable shared runners for a project:
@@ -144,7 +144,7 @@ Group runners process jobs by using a first in, first out ([FIFO](https://en.wik
 ### Create a group runner
 
 You can create a group runner for your self-managed GitLab instance or for GitLab.com.
-You must have the [Owner role](../../user/permissions.md#group-members-permissions) for the group.
+You must have the Owner role for the group.
 
 To create a group runner:
 
@@ -160,7 +160,7 @@ To create a group runner:
 
 You can view and manage all runners for a group, its subgroups, and projects.
 You can do this for your self-managed GitLab instance or for GitLab.com.
-You must have the [Owner role](../../user/permissions.md#group-members-permissions) for the group.
+You must have the Owner role for the group.
 
 1. Go to the group where you want to view the runners.
 1. Go to **Settings > CI/CD** and expand the **Runners** section.
@@ -183,7 +183,7 @@ From this page, you can edit, pause, and remove runners from the group, its subg
 ### Pause or remove a group runner
 
 You can pause or remove a group runner for your self-managed GitLab instance or for GitLab.com.
-You must have the [Owner role](../../user/permissions.md#group-members-permissions) for the group.
+You must have the Owner role for the group.
 
 1. Go to the group you want to remove or pause the runner for.
 1. Go to **Settings > CI/CD** and expand the **Runners** section.
@@ -213,7 +213,7 @@ A fork *does* copy the CI/CD settings of the cloned repository.
 ### Create a specific runner
 
 You can create a specific runner for your self-managed GitLab instance or for GitLab.com.
-You must have the [Owner role](../../user/permissions.md#project-members-permissions) for the project.
+You must have the Owner role for the project.
 
 To create a specific runner:
 
@@ -227,7 +227,7 @@ To create a specific runner:
 A specific runner is available in the project it was created for. An administrator can
 enable a specific runner to apply to additional projects.
 
-- You must have the [Owner role](../../user/permissions.md#group-members-permissions) for the
+- You must have the Owner role for the
   project.
 - The specific runner must not be [locked](#prevent-a-specific-runner-from-being-enabled-for-other-projects).
 

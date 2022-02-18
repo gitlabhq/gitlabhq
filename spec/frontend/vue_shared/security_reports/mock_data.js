@@ -324,7 +324,9 @@ export const secretDetectionDiffSuccessMock = {
 
 export const securityReportMergeRequestDownloadPathsQueryNoArtifactsResponse = {
   project: {
+    id: 'project-1',
     mergeRequest: {
+      id: 'mr-1',
       headPipeline: {
         id: 'gid://gitlab/Ci::Pipeline/176',
         jobs: {

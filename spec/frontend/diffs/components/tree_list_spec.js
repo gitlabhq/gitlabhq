@@ -1,4 +1,5 @@
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import TreeList from '~/diffs/components/tree_list.vue';
 import createStore from '~/diffs/store/modules';
@@ -8,13 +9,11 @@ describe('Diffs tree list component', () => {
   let wrapper;
   let store;
   const getFileRows = () => wrapper.findAll('.file-row');
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   const createComponent = (mountFn = mount) => {
     wrapper = mountFn(TreeList, {
       store,
-      localVue,
       propsData: { hideFileStats: false },
     });
   };
@@ -92,12 +91,11 @@ describe('Diffs tree list component', () => {
       expect(getFileRows().at(1).html()).toContain('app');
     });
 
-    it('hides file stats', () => {
+    it('hides file stats', async () => {
       wrapper.setProps({ hideFileStats: true });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find('.file-row-stats').exists()).toBe(false);
-      });
+      await nextTick();
+      expect(wrapper.find('.file-row-stats').exists()).toBe(false);
     });
 
     it('calls toggleTreeOpen when clicking folder', () => {
@@ -118,20 +116,18 @@ describe('Diffs tree list component', () => {
       });
     });
 
-    it('renders as file list when renderTreeList is false', () => {
+    it('renders as file list when renderTreeList is false', async () => {
       wrapper.vm.$store.state.diffs.renderTreeList = false;
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(getFileRows()).toHaveLength(1);
-      });
+      await nextTick();
+      expect(getFileRows()).toHaveLength(1);
     });
 
-    it('renders file paths when renderTreeList is false', () => {
+    it('renders file paths when renderTreeList is false', async () => {
       wrapper.vm.$store.state.diffs.renderTreeList = false;
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find('.file-row').html()).toContain('index.js');
-      });
+      await nextTick();
+      expect(wrapper.find('.file-row').html()).toContain('index.js');
     });
   });
 
@@ -143,14 +139,13 @@ describe('Diffs tree list component', () => {
       store.state.diffs.viewedDiffFileIds = viewedDiffFileIds;
     });
 
-    it('passes the viewedDiffFileIds to the FileTree', () => {
+    it('passes the viewedDiffFileIds to the FileTree', async () => {
       createComponent(shallowMount);
 
-      return wrapper.vm.$nextTick().then(() => {
-        // Have to use $attrs['viewed-files'] because we are passing down an object
-        // and attributes('') stringifies values (e.g. [object])...
-        expect(wrapper.find(FileTree).vm.$attrs['viewed-files']).toBe(viewedDiffFileIds);
-      });
+      await nextTick();
+      // Have to use $attrs['viewed-files'] because we are passing down an object
+      // and attributes('') stringifies values (e.g. [object])...
+      expect(wrapper.find(FileTree).vm.$attrs['viewed-files']).toBe(viewedDiffFileIds);
     });
   });
 });

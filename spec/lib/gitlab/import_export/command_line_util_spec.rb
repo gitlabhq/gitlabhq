@@ -97,7 +97,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
           include Gitlab::ImportExport::CommandLineUtil
         end.new
 
-        expect { klass.tar_cf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'System call failed')
+        expect { klass.tar_cf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'command exited with error code 1: Error')
       end
     end
   end
@@ -125,14 +125,31 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
     end
 
     context 'when something goes wrong' do
-      it 'raises an error' do
+      before do
         expect(Gitlab::Popen).to receive(:popen).and_return(['Error', 1])
+      end
 
+      it 'raises an error' do
         klass = Class.new do
           include Gitlab::ImportExport::CommandLineUtil
         end.new
 
-        expect { klass.untar_xf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'System call failed')
+        expect { klass.untar_xf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'command exited with error code 1: Error')
+      end
+
+      it 'returns false and includes error status' do
+        klass = Class.new do
+          include Gitlab::ImportExport::CommandLineUtil
+
+          attr_accessor :shared
+
+          def initialize
+            @shared = Gitlab::ImportExport::Shared.new(nil)
+          end
+        end.new
+
+        expect(klass.tar_czf(archive: 'test', dir: 'test')).to eq(false)
+        expect(klass.shared.errors).to eq(['command exited with error code 1: Error'])
       end
     end
   end

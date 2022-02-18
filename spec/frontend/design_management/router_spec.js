@@ -1,5 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueRouter from 'vue-router';
 import App from '~/design_management/components/app.vue';
 import DesignDetail from '~/design_management/pages/design/index.vue';
@@ -9,8 +9,7 @@ import { DESIGNS_ROUTE_NAME, DESIGN_ROUTE_NAME } from '~/design_management/route
 import '~/commons/bootstrap';
 
 function factory(routeArg) {
-  const localVue = createLocalVue();
-  localVue.use(VueRouter);
+  Vue.use(VueRouter);
 
   window.gon = { sprite_icons: '' };
 
@@ -20,7 +19,6 @@ function factory(routeArg) {
   }
 
   return mount(App, {
-    localVue,
     router,
     mocks: {
       $apollo: {

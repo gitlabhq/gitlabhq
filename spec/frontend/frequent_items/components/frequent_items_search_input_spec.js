@@ -1,12 +1,12 @@
 import { GlSearchBoxByType } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import searchComponent from '~/frequent_items/components/frequent_items_search_input.vue';
 import { createStore } from '~/frequent_items/store';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('FrequentItemsSearchInputComponent', () => {
   let wrapper;
@@ -18,7 +18,6 @@ describe('FrequentItemsSearchInputComponent', () => {
     shallowMount(searchComponent, {
       store,
       propsData: { namespace },
-      localVue,
       provide: {
         vuexModule: 'frequentProjects',
       },
@@ -62,7 +61,7 @@ describe('FrequentItemsSearchInputComponent', () => {
 
       findSearchBoxByType().vm.$emit('input', value);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'type_search_query', {
         label: 'projects_dropdown_frequent_items_search_input',

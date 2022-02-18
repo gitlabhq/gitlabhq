@@ -3,6 +3,7 @@ import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -143,7 +144,7 @@ describe('Code Coverage', () => {
     it('updates the selected dropdown option with an icon', async () => {
       findSecondDropdownItem().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findFirstDropdownItem().attributes('ischecked')).toBeFalsy();
       expect(findSecondDropdownItem().attributes('ischecked')).toBeTruthy();
@@ -155,7 +156,7 @@ describe('Code Coverage', () => {
 
       findSecondDropdownItem().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.vm.selectedDailyCoverage).not.toBe(originalSelectedData);
       expect(wrapper.vm.selectedDailyCoverage).toBe(expectedData);

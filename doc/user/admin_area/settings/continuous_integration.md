@@ -197,6 +197,12 @@ To enable or disable the banner:
 
 ## Required pipeline configuration **(PREMIUM SELF)**
 
+WARNING:
+Required pipeline configurations is in its end-of-life process for Premium users. It's
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) for use in GitLab 14.8,
+and planned to be unavailable for Premium users in GitLab 15.0. This feature is planned to continue
+to be available for Ultimate users. Ultimate users are not impacted by this deprecation and removal.
+
 NOTE:
 An alternative [compliance solution](../../project/settings/index.md#compliance-pipeline-configuration)
 is available. We recommend this alternative solution because it provides greater flexibility,

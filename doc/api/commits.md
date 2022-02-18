@@ -8,6 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This API operates on [repository commits](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository). Read more about [GitLab-specific information](../user/project/repository/index.md#commit-changes-to-a-repository) for commits.
 
+## Responses
+
+In commit responses, `created_at` and `committed_date` are identical.
+However, `committed_date` and `authored_date` are generated from different sources,
+and may not be identical.
+
 ## List repository commits
 
 Get a list of repository commits in a project.
@@ -740,9 +746,9 @@ Example response:
 }
 ```
 
-## List Merge Requests associated with a commit
+## List merge requests associated with a commit
 
-Get a list of Merge Requests related to the specified commit.
+Get a list of merge requests related to the specified commit.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/merge_requests

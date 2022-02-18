@@ -75,8 +75,6 @@
     - if can?(current_user, :"destroy_#{issuable.to_ability_name}", @project)
       = link_to 'Delete', polymorphic_path([@project, issuable], params: { destroy_confirm: true }), data: { confirm: _('%{issuableType} will be removed! Are you sure?') % { issuableType: issuable.human_class_name } }, method: :delete, class: 'btn gl-button btn-danger btn-danger-secondary gl-float-right'
 
-= render_if_exists 'shared/issuable/remove_approver'
-
 - if issuable.respond_to?(:issue_type)
   = form.hidden_field :issue_type
 

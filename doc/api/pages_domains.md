@@ -12,7 +12,7 @@ The GitLab Pages feature must be enabled to use these endpoints. Find out more a
 
 ## List all Pages domains
 
-Get a list of all Pages domains. The user must have the administrator role.
+Get a list of all Pages domains. The user must have administrator access.
 
 ```plaintext
 GET /pages/domains

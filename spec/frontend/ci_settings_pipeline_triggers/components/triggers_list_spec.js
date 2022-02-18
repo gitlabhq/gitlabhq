@@ -1,5 +1,6 @@
 import { GlTable, GlBadge } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import TriggersList from '~/ci_settings_pipeline_triggers/components/triggers_list.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -25,10 +26,10 @@ describe('TriggersList', () => {
   const findEditBtn = (i) => findRowAt(i).find('[data-testid="edit-btn"]');
   const findRevokeBtn = (i) => findRowAt(i).find('[data-testid="trigger_revoke_button"]');
 
-  beforeEach(() => {
+  beforeEach(async () => {
     createComponent();
 
-    return wrapper.vm.$nextTick();
+    await nextTick();
   });
 
   it('displays a table with expected headers', () => {

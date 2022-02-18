@@ -166,7 +166,7 @@ RSpec.shared_examples 'variable list' do
     wait_for_requests
 
     expect(find('.flash-container')).to be_present
-    expect(find('.flash-text').text).to have_content('Variables key (key) has already been taken')
+    expect(find('[data-testid="alert-danger"]').text).to have_content('Variables key (key) has already been taken')
   end
 
   it 'prevents a variable to be added if no values are provided when a variable is set to masked' do

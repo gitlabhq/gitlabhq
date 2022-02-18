@@ -439,6 +439,23 @@ RSpec.describe Gitlab::Utils do
     end
   end
 
+  describe '.add_url_parameters' do
+    subject { described_class.add_url_parameters(url, params) }
+
+    where(:url, :params, :expected_url) do
+      nil                          | nil                | ''
+      nil                          | { b: 3, a: 2 }     | '?a=2&b=3'
+      'https://gitlab.com'         | nil                | 'https://gitlab.com'
+      'https://gitlab.com'         | { b: 3, a: 2 }     | 'https://gitlab.com?a=2&b=3'
+      'https://gitlab.com?a=1#foo' | { b: 3, 'a': 2 }   | 'https://gitlab.com?a=2&b=3#foo'
+      'https://gitlab.com?a=1#foo' | [[:b, 3], [:a, 2]] | 'https://gitlab.com?a=2&b=3#foo'
+    end
+
+    with_them do
+      it { is_expected.to eq(expected_url) }
+    end
+  end
+
   describe '.removes_sensitive_data_from_url' do
     it 'returns string object' do
       expect(described_class.removes_sensitive_data_from_url('http://gitlab.com')).to be_instance_of(String)

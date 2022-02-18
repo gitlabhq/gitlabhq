@@ -2,10 +2,6 @@
 
 require 'spec_helper'
 
-# Mock Types
-MockGoogleOAuth2Credentials = Struct.new(:app_id, :app_secret)
-MockServiceAccount = Struct.new(:project_id, :unique_id)
-
 RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
   let_it_be(:project) { create(:project, :public) }
 
@@ -86,10 +82,12 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
       context 'and user has successfully completed the google oauth2 flow' do
         before do
           allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
+            mock_service_account = Struct.new(:project_id, :unique_id, :email).new(123, 456, 'em@ai.l')
             allow(client).to receive(:validate_token).and_return(true)
             allow(client).to receive(:list_projects).and_return([{}, {}, {}])
-            allow(client).to receive(:create_service_account).and_return(MockServiceAccount.new(123, 456))
+            allow(client).to receive(:create_service_account).and_return(mock_service_account)
             allow(client).to receive(:create_service_account_key).and_return({})
+            allow(client).to receive(:grant_service_account_roles)
           end
         end
 
@@ -147,7 +145,8 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
 
       context 'but gitlab instance is not configured for google oauth2' do
         before do
-          unconfigured_google_oauth2 = MockGoogleOAuth2Credentials.new('', '')
+          unconfigured_google_oauth2 = Struct.new(:app_id, :app_secret)
+                                             .new('', '')
           allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for)
                                                     .with('google_oauth2')
                                                     .and_return(unconfigured_google_oauth2)

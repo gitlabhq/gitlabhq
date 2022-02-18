@@ -44,7 +44,9 @@ module RuboCop
 
         DYNAMIC_FEATURE_FLAGS = [
           :usage_data_static_site_editor_commits, # https://gitlab.com/gitlab-org/gitlab/-/issues/284082
-          :usage_data_static_site_editor_merge_requests # https://gitlab.com/gitlab-org/gitlab/-/issues/284083
+          :usage_data_static_site_editor_merge_requests, # https://gitlab.com/gitlab-org/gitlab/-/issues/284083
+          :usage_data_users_clicking_license_testing_visiting_external_website, # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77866
+          :usage_data_users_visiting_testing_license_compliance_full_report # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77866
         ].freeze
 
         class << self

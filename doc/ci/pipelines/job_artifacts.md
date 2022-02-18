@@ -1,9 +1,8 @@
 ---
 stage: Verify
-group: Testing
+group: Pipeline Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/job_artifacts.html'
-type: reference, howto
 ---
 
 # Job artifacts **(FREE)**
@@ -194,7 +193,8 @@ artifacts:
 ### Add untracked files to artifacts
 
 Use [`artifacts:untracked`](../yaml/index.md#artifactsuntracked) to add all Git untracked
-files as artifacts (along with the paths defined in [`artifacts:paths`](../yaml/index.md#artifactspaths)).
+files as artifacts (along with the paths defined in [`artifacts:paths`](../yaml/index.md#artifactspaths)). Untracked
+files are those that haven't been added to the repository but exist in the repository checkout.
 
 Save all Git untracked files and files in `binaries`:
 
@@ -259,7 +259,7 @@ You can delete a single job, which also removes the job's
 artifacts and log. You must be:
 
 - The owner of the job.
-- A [maintainer](../../user/permissions.md#gitlab-cicd-permissions) of the project.
+- A user with at least the Maintainer role for the project.
 
 To delete a job:
 
@@ -381,7 +381,7 @@ to the `expire_in` specification.
 
 If a new pipeline for the same ref completes successfully, the previous pipeline's
 artifacts are deleted according to the `expire_in` configuration. The artifacts
-of the new pipeline are kept automatically.  
+of the new pipeline are kept automatically.
 
 Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in

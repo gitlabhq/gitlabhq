@@ -40,7 +40,7 @@ module QA
             end
 
             base.view 'app/assets/javascripts/sidebar/components/sidebar_dropdown_widget.vue' do
-              element :milestone_link, 'data-qa-selector="`${issuableAttribute}_link`"' # rubocop:disable QA/ElementWithPattern
+              element :milestone_link, 'data-qa-selector="`${formatIssuableAttribute.snake}_link`"' # rubocop:disable QA/ElementWithPattern
             end
 
             base.view 'app/assets/javascripts/sidebar/components/sidebar_editable_item.vue' do

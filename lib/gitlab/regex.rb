@@ -435,10 +435,6 @@ module Gitlab
       @utc_date_regex ||= /\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/.freeze
     end
 
-    def merge_request_wip
-      /(?i)(\[WIP\]\s*|WIP:\s*|\AWIP\z)/
-    end
-
     def merge_request_draft
       /\A(?i)(\[draft\]|\(draft\)|draft:)/
     end

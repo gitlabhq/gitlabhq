@@ -26,6 +26,18 @@ RSpec.describe CustomerRelations::Contact, type: :model do
     it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :email
   end
 
+  describe '.reference_prefix' do
+    it { expect(described_class.reference_prefix).to eq('[contact:') }
+  end
+
+  describe '.reference_prefix_quoted' do
+    it { expect(described_class.reference_prefix_quoted).to eq('["contact:') }
+  end
+
+  describe '.reference_postfix' do
+    it { expect(described_class.reference_postfix).to eq(']') }
+  end
+
   describe '#unique_email_for_group_hierarchy' do
     let_it_be(:parent) { create(:group) }
     let_it_be(:group) { create(:group, parent: parent) }
@@ -96,6 +108,33 @@ RSpec.describe CustomerRelations::Contact, type: :model do
     it 'raises ArgumentError when called with too many emails' do
       too_many_emails = described_class::MAX_PLUCK + 1
       expect { described_class.find_ids_by_emails(group, Array(0..too_many_emails)) }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '#self.exists_for_group?' do
+    let(:group) { create(:group) }
+    let(:subgroup) { create(:group, parent: group) }
+
+    context 'with no contacts in group or parent' do
+      it 'returns false' do
+        expect(described_class.exists_for_group?(subgroup)).to be_falsey
+      end
+    end
+
+    context 'with contacts in group' do
+      it 'returns true' do
+        create(:contact, group: subgroup)
+
+        expect(described_class.exists_for_group?(subgroup)).to be_truthy
+      end
+    end
+
+    context 'with contacts in parent' do
+      it 'returns true' do
+        create(:contact, group: group)
+
+        expect(described_class.exists_for_group?(subgroup)).to be_truthy
+      end
     end
   end
 end

@@ -103,4 +103,14 @@ RSpec.describe PipelineScheduleWorker do
       expect { subject }.not_to raise_error
     end
   end
+
+  context 'when the project is missing' do
+    before do
+      project.delete
+    end
+
+    it 'does not raise an exception' do
+      expect { subject }.not_to raise_error
+    end
+  end
 end

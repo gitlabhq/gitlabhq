@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Monitor
+group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -24,7 +24,7 @@ Set up an on-call schedule for your team to add rotations to.
 
 Prerequisite:
 
-- You must have at least the Maintainer [role](../../user/permissions.md).
+- You must have at least the Maintainer role.
 
 To create an on-call schedule:
 

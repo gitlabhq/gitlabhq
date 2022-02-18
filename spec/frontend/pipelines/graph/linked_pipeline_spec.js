@@ -9,6 +9,23 @@ import mockPipeline from './linked_pipelines_mock_data';
 describe('Linked pipeline', () => {
   let wrapper;
 
+  const downstreamProps = {
+    pipeline: {
+      ...mockPipeline,
+      multiproject: false,
+    },
+    columnTitle: 'Downstream',
+    type: DOWNSTREAM,
+    expanded: false,
+    isLoading: false,
+  };
+
+  const upstreamProps = {
+    ...downstreamProps,
+    columnTitle: 'Upstream',
+    type: UPSTREAM,
+  };
+
   const findButton = () => wrapper.find(GlButton);
   const findDownstreamPipelineTitle = () => wrapper.find('[data-testid="downstream-title"]');
   const findPipelineLabel = () => wrapper.find('[data-testid="downstream-pipeline-label"]');
@@ -86,91 +103,65 @@ describe('Linked pipeline', () => {
     });
   });
 
-  describe('parent/child', () => {
-    const downstreamProps = {
-      pipeline: {
-        ...mockPipeline,
-        multiproject: false,
-      },
-      columnTitle: 'Downstream',
-      type: DOWNSTREAM,
-      expanded: false,
-      isLoading: false,
-    };
+  describe('upstream pipelines', () => {
+    beforeEach(() => {
+      createWrapper(upstreamProps);
+    });
 
-    const upstreamProps = {
-      ...downstreamProps,
-      columnTitle: 'Upstream',
-      type: UPSTREAM,
-    };
+    it('should display parent label when pipeline project id is the same as triggered_by pipeline project id', () => {
+      expect(findPipelineLabel().exists()).toBe(true);
+    });
+
+    it('upstream pipeline should contain the correct link', () => {
+      expect(findPipelineLink().attributes('href')).toBe(upstreamProps.pipeline.path);
+    });
+
+    it('applies the reverse-row css class to the card', () => {
+      expect(findLinkedPipeline().classes()).toContain('gl-flex-direction-row-reverse');
+      expect(findLinkedPipeline().classes()).not.toContain('gl-flex-direction-row');
+    });
+  });
+
+  describe('downstream pipelines', () => {
+    beforeEach(() => {
+      createWrapper(downstreamProps);
+    });
 
     it('parent/child label container should exist', () => {
-      createWrapper(downstreamProps);
       expect(findPipelineLabel().exists()).toBe(true);
     });
 
     it('should display child label when pipeline project id is the same as triggered pipeline project id', () => {
-      createWrapper(downstreamProps);
       expect(findPipelineLabel().exists()).toBe(true);
     });
 
     it('should have the name of the trigger job on the card when it is a child pipeline', () => {
-      createWrapper(downstreamProps);
       expect(findDownstreamPipelineTitle().text()).toBe(mockPipeline.sourceJob.name);
     });
 
-    it('should display parent label when pipeline project id is the same as triggered_by pipeline project id', () => {
-      createWrapper(upstreamProps);
-      expect(findPipelineLabel().exists()).toBe(true);
-    });
-
     it('downstream pipeline should contain the correct link', () => {
-      createWrapper(downstreamProps);
       expect(findPipelineLink().attributes('href')).toBe(downstreamProps.pipeline.path);
     });
 
-    it('upstream pipeline should contain the correct link', () => {
-      createWrapper(upstreamProps);
-      expect(findPipelineLink().attributes('href')).toBe(upstreamProps.pipeline.path);
+    it('applies the flex-row css class to the card', () => {
+      expect(findLinkedPipeline().classes()).toContain('gl-flex-direction-row');
+      expect(findLinkedPipeline().classes()).not.toContain('gl-flex-direction-row-reverse');
     });
+  });
 
+  describe('expand button', () => {
     it.each`
-      presentClass        | missingClass
-      ${'gl-right-0'}     | ${'gl-left-0'}
-      ${'gl-border-l-1!'} | ${'gl-border-r-1!'}
+      pipelineType       | anglePosition    | borderClass         | expanded
+      ${downstreamProps} | ${'angle-right'} | ${'gl-border-l-1!'} | ${false}
+      ${downstreamProps} | ${'angle-left'}  | ${'gl-border-l-1!'} | ${true}
+      ${upstreamProps}   | ${'angle-left'}  | ${'gl-border-r-1!'} | ${false}
+      ${upstreamProps}   | ${'angle-right'} | ${'gl-border-r-1!'} | ${true}
     `(
-      'pipeline expand button should be postioned right when child pipeline',
-      ({ presentClass, missingClass }) => {
-        createWrapper(downstreamProps);
-        expect(findExpandButton().classes()).toContain(presentClass);
-        expect(findExpandButton().classes()).not.toContain(missingClass);
-      },
-    );
-
-    it.each`
-      presentClass        | missingClass
-      ${'gl-left-0'}      | ${'gl-right-0'}
-      ${'gl-border-r-1!'} | ${'gl-border-l-1!'}
-    `(
-      'pipeline expand button should be postioned left when parent pipeline',
-      ({ presentClass, missingClass }) => {
-        createWrapper(upstreamProps);
-        expect(findExpandButton().classes()).toContain(presentClass);
-        expect(findExpandButton().classes()).not.toContain(missingClass);
-      },
-    );
-
-    it.each`
-      pipelineType       | anglePosition    | expanded
-      ${downstreamProps} | ${'angle-right'} | ${false}
-      ${downstreamProps} | ${'angle-left'}  | ${true}
-      ${upstreamProps}   | ${'angle-left'}  | ${false}
-      ${upstreamProps}   | ${'angle-right'} | ${true}
-    `(
-      '$pipelineType.columnTitle pipeline button icon should be $anglePosition if expanded state is $expanded',
-      ({ pipelineType, anglePosition, expanded }) => {
+      '$pipelineType.columnTitle pipeline button icon should be $anglePosition with $borderClass if expanded state is $expanded',
+      ({ pipelineType, anglePosition, borderClass, expanded }) => {
         createWrapper({ ...pipelineType, expanded });
         expect(findExpandButton().props('icon')).toBe(anglePosition);
+        expect(findExpandButton().classes()).toContain(borderClass);
       },
     );
   });

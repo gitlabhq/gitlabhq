@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import mountComponent, { mountComponentWithSlots } from 'helpers/vue_mount_component_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import reportSection from '~/reports/components/report_section.vue';
@@ -71,16 +71,12 @@ describe('Report section', () => {
         const issues = hasIssues ? 'has issues' : 'has no issues';
         const open = alwaysOpen ? 'is always open' : 'is not always open';
 
-        it(`is ${isCollapsible}, if the report ${issues} and ${open}`, (done) => {
+        it(`is ${isCollapsible}, if the report ${issues} and ${open}`, async () => {
           vm.hasIssues = hasIssues;
           vm.alwaysOpen = alwaysOpen;
 
-          Vue.nextTick()
-            .then(() => {
-              expect(vm.isCollapsible).toBe(isCollapsible);
-            })
-            .then(done)
-            .catch(done.fail);
+          await nextTick();
+          expect(vm.isCollapsible).toBe(isCollapsible);
         });
       });
     });
@@ -97,16 +93,12 @@ describe('Report section', () => {
         const issues = isCollapsed ? 'is collapsed' : 'is not collapsed';
         const open = alwaysOpen ? 'is always open' : 'is not always open';
 
-        it(`is ${isExpanded}, if the report ${issues} and ${open}`, (done) => {
+        it(`is ${isExpanded}, if the report ${issues} and ${open}`, async () => {
           vm.isCollapsed = isCollapsed;
           vm.alwaysOpen = alwaysOpen;
 
-          Vue.nextTick()
-            .then(() => {
-              expect(vm.isExpanded).toBe(isExpanded);
-            })
-            .then(done)
-            .catch(done.fail);
+          await nextTick();
+          expect(vm.isExpanded).toBe(isExpanded);
         });
       });
     });
@@ -148,79 +140,55 @@ describe('Report section', () => {
     describe('toggleCollapsed', () => {
       const hiddenCss = { display: 'none' };
 
-      it('toggles issues', (done) => {
+      it('toggles issues', async () => {
         vm.$el.querySelector('button').click();
 
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.$el.querySelector('.js-report-section-container')).not.toHaveCss(hiddenCss);
-            expect(vm.$el.querySelector('button').textContent.trim()).toEqual('Collapse');
+        await nextTick();
+        expect(vm.$el.querySelector('.js-report-section-container')).not.toHaveCss(hiddenCss);
+        expect(vm.$el.querySelector('button').textContent.trim()).toEqual('Collapse');
 
-            vm.$el.querySelector('button').click();
-          })
-          .then(Vue.nextTick)
-          .then(() => {
-            expect(vm.$el.querySelector('.js-report-section-container')).toHaveCss(hiddenCss);
-            expect(vm.$el.querySelector('button').textContent.trim()).toEqual('Expand');
-          })
-          .then(done)
-          .catch(done.fail);
+        vm.$el.querySelector('button').click();
+
+        await nextTick();
+        expect(vm.$el.querySelector('.js-report-section-container')).toHaveCss(hiddenCss);
+        expect(vm.$el.querySelector('button').textContent.trim()).toEqual('Expand');
       });
 
-      it('is always expanded, if always-open is set to true', (done) => {
+      it('is always expanded, if always-open is set to true', async () => {
         vm.alwaysOpen = true;
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.$el.querySelector('.js-report-section-container')).not.toHaveCss(hiddenCss);
-            expect(vm.$el.querySelector('button')).toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
+        await nextTick();
+        expect(vm.$el.querySelector('.js-report-section-container')).not.toHaveCss(hiddenCss);
+        expect(vm.$el.querySelector('button')).toBeNull();
       });
     });
   });
 
   describe('snowplow events', () => {
-    it('does emit an event on issue toggle if the shouldEmitToggleEvent prop does exist', (done) => {
+    it('does emit an event on issue toggle if the shouldEmitToggleEvent prop does exist', async () => {
       createComponent({ hasIssues: true, shouldEmitToggleEvent: true });
 
       expect(wrapper.emitted().toggleEvent).toBeUndefined();
 
       findCollapseButton().trigger('click');
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.emitted().toggleEvent).toHaveLength(1);
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(wrapper.emitted().toggleEvent).toHaveLength(1);
     });
 
-    it('does not emit an event on issue toggle if the shouldEmitToggleEvent prop does not exist', (done) => {
+    it('does not emit an event on issue toggle if the shouldEmitToggleEvent prop does not exist', async () => {
       createComponent({ hasIssues: true });
 
       expect(wrapper.emitted().toggleEvent).toBeUndefined();
 
       findCollapseButton().trigger('click');
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.emitted().toggleEvent).toBeUndefined();
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(wrapper.emitted().toggleEvent).toBeUndefined();
     });
 
-    it('does not emit an event if always-open is set to true', (done) => {
+    it('does not emit an event if always-open is set to true', async () => {
       createComponent({ alwaysOpen: true, hasIssues: true, shouldEmitToggleEvent: true });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.emitted().toggleEvent).toBeUndefined();
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      expect(wrapper.emitted().toggleEvent).toBeUndefined();
     });
   });
 

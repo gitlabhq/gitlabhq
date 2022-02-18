@@ -123,7 +123,7 @@ export const COVERAGE_FUZZING_CONFIG_HELP_PATH = helpPagePath(
 
 export const CORPUS_MANAGEMENT_NAME = __('Corpus Management');
 export const CORPUS_MANAGEMENT_DESCRIPTION = s__(
-  'SecurityConfiguration|Manage corpus files used as mutation sources in coverage fuzzing.',
+  'SecurityConfiguration|Manage corpus files used as seed inputs with coverage-guided fuzzing.',
 );
 export const CORPUS_MANAGEMENT_CONFIG_TEXT = s__('SecurityConfiguration|Manage corpus');
 
@@ -159,15 +159,6 @@ export const securityFeatures = [
     helpPath: SAST_HELP_PATH,
     configurationHelpPath: SAST_CONFIG_HELP_PATH,
     type: REPORT_TYPE_SAST,
-    // This field is currently hardcoded because SAST is always available.
-    // It will eventually come from the Backend, the progress is tracked in
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/331622
-    available: true,
-
-    // This field is currently hardcoded because SAST can always be enabled via MR
-    // It will eventually come from the Backend, the progress is tracked in
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/331621
-    canEnableByMergeRequest: true,
   },
   {
     name: SAST_IAC_NAME,
@@ -176,15 +167,6 @@ export const securityFeatures = [
     helpPath: SAST_IAC_HELP_PATH,
     configurationHelpPath: SAST_IAC_CONFIG_HELP_PATH,
     type: REPORT_TYPE_SAST_IAC,
-
-    // This field is currently hardcoded because SAST IaC is always available.
-    // It will eventually come from the Backend, the progress is tracked in
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/331622
-    available: true,
-
-    // This field will eventually come from the backend, the progress is
-    // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
-    canEnableByMergeRequest: true,
   },
   {
     name: DAST_NAME,
@@ -206,10 +188,6 @@ export const securityFeatures = [
     helpPath: DEPENDENCY_SCANNING_HELP_PATH,
     configurationHelpPath: DEPENDENCY_SCANNING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_DEPENDENCY_SCANNING,
-
-    // This field will eventually come from the backend, the progress is
-    // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
-    canEnableByMergeRequest: true,
   },
   {
     name: CONTAINER_SCANNING_NAME,
@@ -231,16 +209,6 @@ export const securityFeatures = [
     helpPath: SECRET_DETECTION_HELP_PATH,
     configurationHelpPath: SECRET_DETECTION_CONFIG_HELP_PATH,
     type: REPORT_TYPE_SECRET_DETECTION,
-
-    // This field is currently hardcoded because Secret Detection is always
-    // available.  It will eventually come from the Backend, the progress is
-    // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/333113
-    available: true,
-
-    // This field is currently hardcoded because SAST can always be enabled via MR
-    // It will eventually come from the Backend, the progress is tracked in
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/331621
-    canEnableByMergeRequest: true,
   },
   {
     name: API_FUZZING_NAME,

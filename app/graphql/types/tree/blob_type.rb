@@ -4,11 +4,10 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     # This is presented through `Repository` that has its own authorization
     class BlobType < BaseObject
-      implements Types::Tree::EntryType
-
-      present_using BlobPresenter
-
       graphql_name 'Blob'
+
+      implements Types::Tree::EntryType
+      present_using BlobPresenter
 
       field :web_url, GraphQL::Types::String, null: true,
             description: 'Web URL of the blob.'

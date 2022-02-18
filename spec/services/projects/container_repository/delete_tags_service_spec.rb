@@ -14,7 +14,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
     ]
   end
 
-  RSpec.shared_examples 'logging a success response' do
+  shared_examples 'logging a success response' do
     it 'logs an info message' do
       expect(service).to receive(:log_info).with(
         service_class: 'Projects::ContainerRepository::DeleteTagsService',
@@ -28,7 +28,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
     end
   end
 
-  RSpec.shared_examples 'logging an error response' do |message: 'could not delete tags', extra_log: {}|
+  shared_examples 'logging an error response' do |message: 'could not delete tags', extra_log: {}|
     it 'logs an error message' do
       log_data = {
           service_class: 'Projects::ContainerRepository::DeleteTagsService',
@@ -45,7 +45,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
     end
   end
 
-  RSpec.shared_examples 'calling the correct delete tags service' do |expected_service_class|
+  shared_examples 'calling the correct delete tags service' do |expected_service_class|
     let(:service_response) { { status: :success, deleted: tags } }
     let(:excluded_service_class) { available_service_classes.excluding(expected_service_class).first }
 
@@ -69,7 +69,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
     end
   end
 
-  RSpec.shared_examples 'handling invalid params' do
+  shared_examples 'handling invalid params' do
     context 'with invalid params' do
       before do
         expect(::Projects::ContainerRepository::Gitlab::DeleteTagsService).not_to receive(:new)
@@ -91,7 +91,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
     end
   end
 
-  RSpec.shared_examples 'supporting fast delete' do
+  shared_examples 'supporting fast delete' do
     context 'when the registry supports fast delete' do
       before do
         allow(repository.client).to receive(:supports_tag_delete?).and_return(true)
@@ -154,6 +154,14 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
         it_behaves_like 'calling the correct delete tags service', ::Projects::ContainerRepository::ThirdParty::DeleteTagsService
 
         it_behaves_like 'handling invalid params'
+      end
+
+      context 'when the repository is importing' do
+        before do
+          repository.update_columns(migration_state: 'importing', migration_import_started_at: Time.zone.now)
+        end
+
+        it { is_expected.to include(status: :error, message: 'repository importing') }
       end
     end
 

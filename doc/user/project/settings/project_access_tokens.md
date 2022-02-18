@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, howto
 ---
@@ -42,7 +42,7 @@ To create a project access token:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Access Tokens**.
-1. Enter a name.
+1. Enter a name. The token name is visible to any user with permissions to view the project.
 1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-project-access-token).
@@ -84,16 +84,16 @@ To enable or disable project access token creation for all projects in a top-lev
 
 Even when creation is disabled, you can still use and revoke existing project access tokens.
 
-## Project bot users
+## Bot users for projects
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
 > - [Excluded from license seat use](https://gitlab.com/gitlab-org/gitlab/-/issues/223695) in GitLab 13.5.
 
-Project bot users are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
+Bot users for projects are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
 Each time you create a project access token, a bot user is created and added to the project.
 These bot users do not count as licensed seats.
 
-The bot users have [permissions](../../permissions.md#project-members-permissions) that correspond with the
+The bot users for projects have [permissions](../../permissions.md#project-members-permissions) that correspond with the
 selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
 
 - The name is set to the name of the token.
@@ -106,7 +106,7 @@ selected role and [scope](#scopes-for-a-project-access-token) of the project acc
 
 API calls made with a project access token are associated with the corresponding bot user.
 
-Bot users:
+Bot users for projects:
 
 - Are included in a project's member list but cannot be modified.
 - Cannot be added to any other project.
@@ -114,5 +114,6 @@ Bot users:
 When the project access token is [revoked](#revoke-a-project-access-token):
 
 - The bot user is deleted.
-- All records are moved to a system-wide user with the username `Ghost User`. For more information, see
-  [associated records](../../profile/account/delete_account.md#associated-records).
+- All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).
+
+See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).

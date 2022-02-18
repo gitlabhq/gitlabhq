@@ -10,6 +10,8 @@ module Projects
       def show
         render_403 unless can?(current_user, :read_security_configuration, project)
 
+        @configuration ||= configuration_presenter
+
         respond_to do |format|
           format.html
           format.json do

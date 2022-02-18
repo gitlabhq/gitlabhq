@@ -416,6 +416,8 @@ RSpec.describe API::Members do
       end
 
       it "returns 409 if member already exists" do
+        source.add_guest(stranger)
+
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              params: { user_id: maintainer.id, access_level: Member::MAINTAINER }
 

@@ -396,7 +396,8 @@ module ApplicationHelper
         labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         milestones: milestones_project_autocomplete_sources_path(object),
         commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
-        snippets: snippets_project_autocomplete_sources_path(object)
+        snippets: snippets_project_autocomplete_sources_path(object),
+        contacts: contacts_project_autocomplete_sources_path(object)
       }
     end
   end
@@ -428,7 +429,7 @@ module ApplicationHelper
     experiment(:logged_out_marketing_header, actor: nil) do |e|
       html_class = 'logged-out-marketing-header-candidate'
       e.candidate { html_class }
-      e.try(:trial_focused) { html_class }
+      e.variant(:trial_focused) { html_class }
       e.control {}
       e.run
     end

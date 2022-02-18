@@ -51,7 +51,9 @@ export default {
   },
   data() {
     return {
-      jobs: {},
+      jobs: {
+        list: [],
+      },
       hasError: false,
       isAlertDismissed: false,
       scope: null,

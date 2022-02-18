@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import createComponent from 'helpers/vue_mount_component_helper';
 import { file } from 'jest/ide/helpers';
 import ItemComponent from '~/vue_shared/components/file_finder/item.vue';
@@ -37,14 +37,11 @@ describe('File finder item spec', () => {
       expect(vm.$el.classList).toContain('is-focused');
     });
 
-    it('does not have is-focused class when not focused', (done) => {
+    it('does not have is-focused class when not focused', async () => {
       vm.focused = false;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.classList).not.toContain('is-focused');
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.classList).not.toContain('is-focused');
     });
   });
 
@@ -53,24 +50,18 @@ describe('File finder item spec', () => {
       expect(vm.$el.querySelector('.diff-changed-stats')).toBe(null);
     });
 
-    it('renders when a changed file', (done) => {
+    it('renders when a changed file', async () => {
       vm.file.changed = true;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.diff-changed-stats')).not.toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.diff-changed-stats')).not.toBe(null);
     });
 
-    it('renders when a temp file', (done) => {
+    it('renders when a temp file', async () => {
       vm.file.tempFile = true;
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.diff-changed-stats')).not.toBe(null);
-
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.diff-changed-stats')).not.toBe(null);
     });
   });
 
@@ -85,56 +76,52 @@ describe('File finder item spec', () => {
   describe('path', () => {
     let el;
 
-    beforeEach((done) => {
+    beforeEach(async () => {
       vm.searchText = 'file';
 
       el = vm.$el.querySelector('.diff-changed-file-path');
 
-      vm.$nextTick(done);
+      nextTick();
     });
 
     it('highlights text', () => {
       expect(el.querySelectorAll('.highlighted').length).toBe(4);
     });
 
-    it('adds ellipsis to long text', (done) => {
+    it('adds ellipsis to long text', async () => {
       vm.file.path = new Array(70)
         .fill()
         .map((_, i) => `${i}-`)
         .join('');
 
-      vm.$nextTick(() => {
-        expect(el.textContent).toBe(`...${vm.file.path.substr(vm.file.path.length - 60)}`);
-        done();
-      });
+      await nextTick();
+      expect(el.textContent).toBe(`...${vm.file.path.substr(vm.file.path.length - 60)}`);
     });
   });
 
   describe('name', () => {
     let el;
 
-    beforeEach((done) => {
+    beforeEach(async () => {
       vm.searchText = 'file';
 
       el = vm.$el.querySelector('.diff-changed-file-name');
 
-      vm.$nextTick(done);
+      await nextTick();
     });
 
     it('highlights text', () => {
       expect(el.querySelectorAll('.highlighted').length).toBe(4);
     });
 
-    it('does not add ellipsis to long text', (done) => {
+    it('does not add ellipsis to long text', async () => {
       vm.file.name = new Array(70)
         .fill()
         .map((_, i) => `${i}-`)
         .join('');
 
-      vm.$nextTick(() => {
-        expect(el.textContent).not.toBe(`...${vm.file.name.substr(vm.file.name.length - 60)}`);
-        done();
-      });
+      await nextTick();
+      expect(el.textContent).not.toBe(`...${vm.file.name.substr(vm.file.name.length - 60)}`);
     });
   });
 });

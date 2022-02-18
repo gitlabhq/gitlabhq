@@ -49,6 +49,30 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           let(:expected_params) { { client_id: "runner/#{runner.id}" } }
         end
       end
+
+      context 'when non-expired token is provided' do
+        subject { post api('/runners/verify'), params: { token: runner.token } }
+
+        it 'verifies Runner credentials' do
+          runner["token_expires_at"] = 10.days.from_now
+          runner.save!
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when expired token is provided' do
+        subject { post api('/runners/verify'), params: { token: runner.token } }
+
+        it 'does not verify Runner credentials' do
+          runner["token_expires_at"] = 10.days.ago
+          runner.save!
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
     end
   end
 end

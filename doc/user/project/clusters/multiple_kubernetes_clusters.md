@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Multiple clusters per project with cluster certificates (DEPRECATED) **(FREE)**
 
-> - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) to GitLab Free in 13.2.
+> - Introduced in GitLab 10.3
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) from GitLab Premium to GitLab Free in 13.2.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:

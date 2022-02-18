@@ -1,4 +1,5 @@
 $design-pin-diameter: 28px;
+$design-pin-diameter-sm: 24px;
 $t-gray-a-16-design-pin: rgba($black, 0.16);
 
 .layout-page.design-detail-layout {
@@ -12,24 +13,6 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     top: 35px;
   }
 
-  .design-note-pin {
-    display: flex;
-    height: $design-pin-diameter;
-    width: $design-pin-diameter;
-    box-sizing: content-box;
-    background-color: $purple-500;
-    color: $white;
-    font-weight: $gl-font-weight-bold;
-    border-radius: 50%;
-    z-index: 1;
-    padding: 0;
-    border: 0;
-
-    &.resolved {
-      background-color: $gray-500;
-    }
-  }
-
   .comment-indicator {
     border-radius: 50%;
   }
@@ -38,35 +21,6 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   .frame .design-note-pin {
     &:active {
       cursor: grabbing;
-    }
-  }
-
-  /**
-   * Design pin that overlays the design
-   */
-  .frame .design-note-pin {
-    box-shadow: 0 2px 4px $t-gray-a-08, 0 0 1px $t-gray-a-24;
-    border: $white 2px solid;
-    will-change: transform, box-shadow, opacity;
-    // NOTE: verbose transition property required for Safari
-    transition: transform $general-hover-transition-duration linear, box-shadow $general-hover-transition-duration linear, opacity $general-hover-transition-duration linear;
-    transform-origin: 0 0;
-    transform: translate(-50%, -50%);
-
-    &:hover {
-      transform: scale(1.2) translate(-50%, -50%);
-    }
-
-    &:active {
-      box-shadow: 0 0 4px $t-gray-a-16-design-pin, 0 4px 12px $t-gray-a-16-design-pin;
-    }
-
-    &.inactive {
-      @include gl-opacity-5;
-
-      &:hover {
-        @include gl-opacity-10;
-      }
     }
   }
 }
@@ -176,4 +130,64 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 
 .design-card-header {
   background: transparent;
+}
+
+.design-note-pin {
+  display: flex;
+  height: $design-pin-diameter;
+  width: $design-pin-diameter;
+  box-sizing: content-box;
+  background-color: $purple-500;
+  color: $white;
+  font-weight: $gl-font-weight-bold;
+  border-radius: 50%;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+
+  &.draft {
+    background-color: $orange-500;
+  }
+
+  &.resolved {
+    background-color: $gray-500;
+  }
+
+  &.on-image {
+    box-shadow: 0 2px 4px $t-gray-a-08, 0 0 1px $t-gray-a-24;
+    border: $white 2px solid;
+    will-change: transform, box-shadow, opacity;
+    // NOTE: verbose transition property required for Safari
+    transition: transform $general-hover-transition-duration linear, box-shadow $general-hover-transition-duration linear, opacity $general-hover-transition-duration linear;
+    transform-origin: 0 0;
+    transform: translate(-50%, -50%);
+
+    &:hover {
+      transform: scale(1.2) translate(-50%, -50%);
+    }
+
+    &:active {
+      box-shadow: 0 0 4px $t-gray-a-16-design-pin, 0 4px 12px $t-gray-a-16-design-pin;
+    }
+
+    &.inactive {
+      @include gl-opacity-5;
+
+      &:hover {
+        @include gl-opacity-10;
+      }
+    }
+  }
+
+  &.small {
+    position: absolute;
+    border: 1px solid $white;
+    height: $design-pin-diameter-sm;
+    width: $design-pin-diameter-sm;
+  }
+
+  &.user-avatar {
+    top: 25px;
+    right: 8px;
+  }
 }

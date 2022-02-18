@@ -1,5 +1,6 @@
 import { GlAlert, GlEmptyState } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { ADD_NOTE, REMOVE_NOTE, REPLACE_NOTES } from '~/pipelines/components/dag/constants';
 import Dag from '~/pipelines/components/dag/dag.vue';
 import DagAnnotations from '~/pipelines/components/dag/dag_annotations.vue';
@@ -153,11 +154,11 @@ describe('Pipeline DAG graph wrapper', () => {
       expect(getNotes().exists()).toBe(false);
 
       getGraph().vm.$emit('update-annotation', { type: ADD_NOTE, data: currentNote });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(getNotes().exists()).toBe(true);
 
       getGraph().vm.$emit('update-annotation', { type: REMOVE_NOTE, data: currentNote });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(getNotes().exists()).toBe(false);
     });
 
@@ -165,11 +166,11 @@ describe('Pipeline DAG graph wrapper', () => {
       expect(getNotes().exists()).toBe(false);
 
       getGraph().vm.$emit('update-annotation', { type: REPLACE_NOTES, data: multiNote });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(getNotes().exists()).toBe(true);
 
       getGraph().vm.$emit('update-annotation', { type: REPLACE_NOTES, data: {} });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(getNotes().exists()).toBe(false);
     });
   });

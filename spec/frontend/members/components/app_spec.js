@@ -1,6 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import * as commonUtils from '~/lib/utils/common_utils';
 import MembersApp from '~/members/components/app.vue';
@@ -11,8 +11,7 @@ import { RECEIVE_MEMBER_ROLE_ERROR, HIDE_ERROR } from '~/members/store/mutation_
 import mutations from '~/members/store/mutations';
 
 describe('MembersApp', () => {
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   let wrapper;
   let store;
@@ -33,7 +32,6 @@ describe('MembersApp', () => {
     });
 
     wrapper = shallowMount(MembersApp, {
-      localVue,
       propsData: {
         namespace: MEMBER_TYPES.group,
         tabQueryParamValue: TAB_QUERY_PARAM_VALUES.group,

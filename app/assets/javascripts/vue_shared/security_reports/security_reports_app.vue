@@ -102,8 +102,8 @@ export default {
       error(error) {
         this.showError(error);
       },
-      result({ loading }) {
-        if (loading) {
+      result({ loading, data }) {
+        if (loading || !data) {
           return;
         }
 

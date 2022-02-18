@@ -45,7 +45,7 @@ module Gitlab
             end
           end
 
-          entry :before_script, Entry::Script,
+          entry :before_script, Entry::Commands,
             description: 'Global before script overridden in this job.',
             inherit: true
 
@@ -55,9 +55,10 @@ module Gitlab
 
           entry :type, Entry::Stage,
             description: 'Deprecated: stage this job will be executed into.',
-            inherit: false
+            inherit: false,
+            deprecation: { deprecated: '9.0', warning: '14.8', removed: '15.0' }
 
-          entry :after_script, Entry::Script,
+          entry :after_script, Entry::Commands,
             description: 'Commands that will be executed when finishing job.',
             inherit: true
 
@@ -134,8 +135,11 @@ module Gitlab
 
           def compose!(deps = nil)
             super do
+              # The type keyword will be removed in 15.0:
+              # https://gitlab.com/gitlab-org/gitlab/-/issues/346823
               if type_defined? && !stage_defined?
                 @entries[:stage] = @entries[:type]
+                log_and_warn_deprecated_entry(@entries[:type])
               end
 
               @entries.delete(:type)

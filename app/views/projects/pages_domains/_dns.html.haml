@@ -20,10 +20,9 @@
         = _("Verification status")
       .col-sm-10
         .status-badge
-          - text, status = domain_presenter.unverified? ? [_('Unverified'), 'badge-danger'] : [_('Verified'), 'badge-success']
-          .badge{ class: status }
-            = text
-          = link_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: "gl-button btn btn-default has-tooltip", title: _("Retry verification")
+          - text, status = domain_presenter.unverified? ? [_('Unverified'), :danger] : [_('Verified'), :success]
+          = gl_badge_tag text, variant: status
+          = link_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: "gl-ml-2 gl-button btn btn-default has-tooltip", title: _("Retry verification")
         .input-group
           = text_field_tag :domain_verification, verification_record, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-append

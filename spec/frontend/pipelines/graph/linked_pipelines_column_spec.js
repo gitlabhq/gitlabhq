@@ -1,6 +1,8 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import {
   DOWNSTREAM,
@@ -40,13 +42,11 @@ describe('Linked Pipelines Column', () => {
   const findPipelineGraph = () => wrapper.find(PipelineGraph);
   const findExpandButton = () => wrapper.find('[data-testid="expand-pipeline-button"]');
 
-  const localVue = createLocalVue();
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
 
   const createComponent = ({ apolloProvider, mountFn = shallowMount, props = {} } = {}) => {
     wrapper = mountFn(LinkedPipelinesColumn, {
       apolloProvider,
-      localVue,
       propsData: {
         ...defaultProps,
         ...props,
@@ -87,13 +87,7 @@ describe('Linked Pipelines Column', () => {
   describe('click action', () => {
     const clickExpandButton = async () => {
       await findExpandButton().trigger('click');
-      await wrapper.vm.$nextTick();
-    };
-
-    const clickExpandButtonAndAwaitTimers = async () => {
-      await clickExpandButton();
-      jest.runOnlyPendingTimers();
-      await wrapper.vm.$nextTick();
+      await waitForPromises();
     };
 
     describe('layer type rendering', () => {
@@ -106,9 +100,9 @@ describe('Linked Pipelines Column', () => {
 
       it('calls listByLayers only once no matter how many times view is switched', async () => {
         expect(layersFn).not.toHaveBeenCalled();
-        await clickExpandButtonAndAwaitTimers();
+        await clickExpandButton();
         await wrapper.setProps({ viewType: LAYER_VIEW });
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(layersFn).toHaveBeenCalledTimes(1);
         await wrapper.setProps({ viewType: STAGE_VIEW });
         await wrapper.setProps({ viewType: LAYER_VIEW });
@@ -132,7 +126,7 @@ describe('Linked Pipelines Column', () => {
       });
 
       it('shows the stage view, even when the main graph view type is layers', async () => {
-        await clickExpandButtonAndAwaitTimers();
+        await clickExpandButton();
         expect(findPipelineGraph().props('viewType')).toBe(STAGE_VIEW);
       });
     });
@@ -145,7 +139,7 @@ describe('Linked Pipelines Column', () => {
 
         it('toggles the pipeline visibility', async () => {
           expect(findPipelineGraph().exists()).toBe(false);
-          await clickExpandButtonAndAwaitTimers();
+          await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(true);
           await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(false);
@@ -167,7 +161,7 @@ describe('Linked Pipelines Column', () => {
 
         it('does not show the pipeline', async () => {
           expect(findPipelineGraph().exists()).toBe(false);
-          await clickExpandButtonAndAwaitTimers();
+          await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(false);
         });
       });
@@ -195,7 +189,7 @@ describe('Linked Pipelines Column', () => {
 
         it('toggles the pipeline visibility', async () => {
           expect(findPipelineGraph().exists()).toBe(false);
-          await clickExpandButtonAndAwaitTimers();
+          await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(true);
           await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(false);
@@ -218,7 +212,7 @@ describe('Linked Pipelines Column', () => {
 
         it('does not show the pipeline', async () => {
           expect(findPipelineGraph().exists()).toBe(false);
-          await clickExpandButtonAndAwaitTimers();
+          await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(false);
         });
       });

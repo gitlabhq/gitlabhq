@@ -11,6 +11,20 @@ RSpec.describe UsersHelper do
     badges.reject { |badge| badge[:text] == 'Is using seat' }
   end
 
+  describe 'display_public_email?' do
+    let_it_be(:user) { create(:user, :public_email) }
+
+    subject { helper.display_public_email?(user) }
+
+    it { is_expected.to be true }
+
+    context 'when user public email is blank' do
+      let_it_be(:user) { create(:user, public_email: '') }
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe '#user_link' do
     subject { helper.user_link(user) }
 
@@ -122,7 +136,7 @@ RSpec.describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(blocked_user)
 
-        expect(filter_ee_badges(badges)).to eq([text: "Blocked", variant: "danger"])
+        expect(filter_ee_badges(badges)).to match_array([text: "Blocked", variant: "danger"])
       end
     end
 
@@ -132,7 +146,7 @@ RSpec.describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(blocked_pending_approval_user)
 
-        expect(filter_ee_badges(badges)).to eq([text: 'Pending approval', variant: 'info'])
+        expect(filter_ee_badges(badges)).to match_array([text: 'Pending approval', variant: 'info'])
       end
     end
 
@@ -142,7 +156,7 @@ RSpec.describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(banned_user)
 
-        expect(filter_ee_badges(badges)).to eq([text: 'Banned', variant: 'danger'])
+        expect(filter_ee_badges(badges)).to match_array([text: 'Banned', variant: 'danger'])
       end
     end
 
@@ -152,7 +166,7 @@ RSpec.describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(admin_user)
 
-        expect(filter_ee_badges(badges)).to eq([text: "Admin", variant: "success"])
+        expect(filter_ee_badges(badges)).to match_array([text: "Admin", variant: "success"])
       end
     end
 
@@ -162,7 +176,7 @@ RSpec.describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(external_user)
 
-        expect(filter_ee_badges(badges)).to eq([text: "External", variant: "secondary"])
+        expect(filter_ee_badges(badges)).to match_array([text: "External", variant: "secondary"])
       end
     end
 
@@ -170,7 +184,7 @@ RSpec.describe UsersHelper do
       it 'returns the "It\'s You" badge' do
         badges = helper.user_badges_in_admin_section(user)
 
-        expect(filter_ee_badges(badges)).to eq([text: "It's you!", variant: "muted"])
+        expect(filter_ee_badges(badges)).to match_array([text: "It's you!", variant: "muted"])
       end
     end
 
@@ -180,11 +194,21 @@ RSpec.describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(user)
 
-        expect(badges).to eq([
+        expect(badges).to match_array([
           { text: "Blocked", variant: "danger" },
           { text: "Admin", variant: "success" },
           { text: "External", variant: "secondary" }
         ])
+      end
+    end
+
+    context 'with a locked user', time_travel_to: '2020-02-25 10:30:45 -0700' do
+      it 'returns the "Locked" badge' do
+        locked_user = create(:user, locked_at: DateTime.parse('2020-02-25 10:30:00 -0700'))
+
+        badges = helper.user_badges_in_admin_section(locked_user)
+
+        expect(filter_ee_badges(badges)).to match_array([text: "Locked", variant: "warning"])
       end
     end
 

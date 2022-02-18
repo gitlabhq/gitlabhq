@@ -14,6 +14,10 @@ module Auth
       :build_destroy_container_image
     ].freeze
 
+    FORBIDDEN_IMPORTING_SCOPES = %w[push delete *].freeze
+
+    ActiveImportError = Class.new(StandardError)
+
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities
 
@@ -26,17 +30,27 @@ module Auth
       end
 
       { token: authorized_token(*scopes).encoded }
+    rescue ActiveImportError
+      error(
+        'DENIED',
+        status: 403,
+        message: 'Your repository is currently being migrated to a new platform and writes are temporarily disabled. Go to https://gitlab.com/groups/gitlab-org/-/epics/5523 to learn more.'
+      )
     end
 
     def self.full_access_token(*names)
       access_token(%w(*), names)
     end
 
+    def self.import_access_token
+      access_token(%w(*), ['import'], 'registry')
+    end
+
     def self.pull_access_token(*names)
       access_token(['pull'], names)
     end
 
-    def self.access_token(actions, names)
+    def self.access_token(actions, names, type = 'repository')
       names = names.flatten
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
@@ -46,10 +60,10 @@ module Auth
 
       token[:access] = names.map do |name|
         {
-          type: 'repository',
+          type: type,
           name: name,
           actions: actions,
-          migration_eligible: migration_eligible(repository_path: name)
+          migration_eligible: type == 'repository' ? migration_eligible(repository_path: name) : nil
         }.compact
       end
 
@@ -104,6 +118,8 @@ module Auth
     def process_repository_access(type, path, actions)
       return unless path.valid?
 
+      raise ActiveImportError if actively_importing?(actions, path)
+
       requested_project = path.repository_project
 
       return unless requested_project
@@ -124,9 +140,17 @@ module Auth
         type: type,
         name: path.to_s,
         actions: authorized_actions,
-        migration_eligible: self.class.migration_eligible(project: requested_project),
-        cdn_redirect: cdn_redirect
+        migration_eligible: self.class.migration_eligible(project: requested_project)
       }.compact
+    end
+
+    def actively_importing?(actions, path)
+      return false if FORBIDDEN_IMPORTING_SCOPES.intersection(actions).empty?
+
+      container_repository = ContainerRepository.find_by_path(path)
+      return false unless container_repository
+
+      container_repository.migration_importing?
     end
 
     def self.migration_eligible(project: nil, repository_path: nil)
@@ -149,13 +173,6 @@ module Auth
     rescue ContainerRegistry::Path::InvalidRegistryPathError => ex
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ex, **Gitlab::ApplicationContext.current)
       false
-    end
-
-    # This is used to determine whether blob download requests using a given JWT token should be redirected to Google
-    # Cloud CDN or not. The intent is to enable a percentage of time rollout for this new feature on the Container
-    # Registry side. See https://gitlab.com/gitlab-org/gitlab/-/issues/349417 for more details.
-    def cdn_redirect
-      Feature.enabled?(:container_registry_cdn_redirect) || nil
     end
 
     ##

@@ -4,6 +4,7 @@ import HeaderComponent from '~/pipelines/components/header_component.vue';
 import cancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '~/pipelines/graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
+import { BUTTON_TOOLTIP_RETRY } from '~/pipelines/constants';
 import {
   mockCancelledPipelineHeader,
   mockFailedPipelineHeader,
@@ -112,6 +113,10 @@ describe('Pipeline details header', () => {
           mutation: retryPipelineMutation,
           variables: { id: mockCancelledPipelineHeader.id },
         });
+      });
+
+      it('should render retry action tooltip', () => {
+        expect(findRetryButton().attributes('title')).toBe(BUTTON_TOOLTIP_RETRY);
       });
     });
 

@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import $ from 'jquery';
+import { nextTick } from 'vue';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import * as commonUtils from '~/lib/utils/common_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
@@ -13,7 +14,7 @@ describe('Release block', () => {
   let wrapper;
   let release;
 
-  const factory = (releaseProp, featureFlags = {}) => {
+  const factory = async (releaseProp, featureFlags = {}) => {
     wrapper = mount(ReleaseBlock, {
       propsData: {
         release: releaseProp,
@@ -25,7 +26,7 @@ describe('Release block', () => {
       },
     });
 
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const milestoneListLabel = () => wrapper.find('.js-milestone-list-label');

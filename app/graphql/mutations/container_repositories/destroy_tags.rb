@@ -3,11 +3,10 @@
 module Mutations
   module ContainerRepositories
     class DestroyTags < ::Mutations::ContainerRepositories::DestroyBase
-      LIMIT = 20
-
-      TOO_MANY_TAGS_ERROR_MESSAGE = "Number of tags is greater than #{LIMIT}"
-
       graphql_name 'DestroyContainerRepositoryTags'
+
+      LIMIT = 20
+      TOO_MANY_TAGS_ERROR_MESSAGE = "Number of tags is greater than #{LIMIT}"
 
       authorize :destroy_container_image
 

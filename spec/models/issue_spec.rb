@@ -887,6 +887,8 @@ RSpec.describe Issue do
         end
       end
 
+      # TODO update when we have multiple owners of a project
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/350605
       context 'with an owner' do
         before do
           project.add_maintainer(user)
@@ -1428,26 +1430,6 @@ RSpec.describe Issue do
       let!(:design_c) { create(:design, :with_file, issue: issue) }
 
       it { is_expected.to contain_exactly(design_a, design_c) }
-    end
-  end
-
-  describe '.with_label_attributes' do
-    subject { described_class.with_label_attributes(label_attributes) }
-
-    let(:label_attributes) { { title: 'hello world', description: 'hi' } }
-
-    it 'gets issues with given label attributes' do
-      label = create(:label, **label_attributes)
-      labeled_issue = create(:labeled_issue, project: label.project, labels: [label])
-
-      expect(subject).to include(labeled_issue)
-    end
-
-    it 'excludes issues without given label attributes' do
-      label = create(:label, title: 'GitLab', description: 'tanuki')
-      labeled_issue = create(:labeled_issue, project: label.project, labels: [label])
-
-      expect(subject).not_to include(labeled_issue)
     end
   end
 

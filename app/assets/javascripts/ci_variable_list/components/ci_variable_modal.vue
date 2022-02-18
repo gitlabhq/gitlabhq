@@ -14,8 +14,8 @@ import {
   GlModal,
   GlSprintf,
 } from '@gitlab/ui';
-import Cookies from 'js-cookie';
 import { mapActions, mapState } from 'vuex';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -59,7 +59,7 @@ export default {
   mixins: [glFeatureFlagsMixin(), trackingMixin],
   data() {
     return {
-      isTipDismissed: Cookies.get(AWS_TIP_DISMISSED_COOKIE_NAME) === 'true',
+      isTipDismissed: getCookie(AWS_TIP_DISMISSED_COOKIE_NAME) === 'true',
       validationErrorEventProperty: '',
     };
   },
@@ -176,7 +176,7 @@ export default {
       'setVariableProtected',
     ]),
     dismissTip() {
-      Cookies.set(AWS_TIP_DISMISSED_COOKIE_NAME, 'true', { expires: 90 });
+      setCookie(AWS_TIP_DISMISSED_COOKIE_NAME, 'true', { expires: 90 });
       this.isTipDismissed = true;
     },
     deleteVarAndClose() {

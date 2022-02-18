@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import CompareApp from '~/projects/compare/components/app.vue';
 import RevisionCard from '~/projects/compare/components/revision_card.vue';
 import { appDefaultProps as defaultProps } from './mock_data';
@@ -91,7 +92,7 @@ describe('CompareApp component', () => {
       project,
     });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findTargetRevisionCard().props('selectedProject')).toEqual(
       expect.objectContaining(project),
@@ -106,7 +107,7 @@ describe('CompareApp component', () => {
       revision,
     });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findSourceRevisionCard().props('paramsBranch')).toBe(revision);
   });
@@ -125,7 +126,7 @@ describe('CompareApp component', () => {
     it('swaps revisions when clicked', async () => {
       findSwapRevisionsButton().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findTargetRevisionCard().props('paramsBranch')).toBe(defaultProps.paramsTo);
       expect(findSourceRevisionCard().props('paramsBranch')).toBe(defaultProps.paramsFrom);

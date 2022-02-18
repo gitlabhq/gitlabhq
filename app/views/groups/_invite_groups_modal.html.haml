@@ -1,0 +1,3 @@
+- return unless can_admin_group_member?(group)
+
+.js-invite-groups-modal{ data: common_invite_group_modal_data(group, GroupMember, 'false').merge(group_select_data(group)) }

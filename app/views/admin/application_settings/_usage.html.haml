@@ -28,8 +28,8 @@
 
             %button.gl-button.btn.btn-default.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
               .gl-spinner.js-spinner.gl-display-none.gl-mr-2
-              .js-text.d-inline= _('Preview payload')
-            %pre.service-data-payload-container.js-syntax-highlight.code.highlight.mt-2.d-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
+              .js-text.gl-display-inline= _('Preview payload')
+            %pre.service-data-payload-container.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
           - else
             = _('Service ping is disabled in your configuration file, and cannot be enabled through this form.')
             - deactivating_service_ping_path = help_page_path('development/service_ping/index.md', anchor: 'disable-service-ping-using-the-configuration-file')

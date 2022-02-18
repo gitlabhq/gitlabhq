@@ -35,7 +35,7 @@ export default {
   <gl-button
     category="tertiary"
     :href="menuItem.href"
-    class="top-nav-menu-item gl-display-block"
+    class="top-nav-menu-item gl-display-block gl-pr-3!"
     :class="[menuItem.css_class, { [$options.ACTIVE_CLASS]: menuItem.active }]"
     :aria-label="menuItem.title"
     v-bind="dataAttrs"

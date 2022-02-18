@@ -22,6 +22,8 @@ no-emphasis-as-heading: false
 first-line-h1: false
 code-block-style:
   style: "fenced"
+emphasis-style: false
+strong-style: false
 proper-names:
   names: [
     "Akismet",
@@ -139,6 +141,8 @@ proper-names:
     "unicorn-worker-killer",
     "URL",
     "WebdriverIO",
+    "Workload Identity Pool",
+    "Workload Identity Provider",
     "YAML",
     "YouTrack"
   ]

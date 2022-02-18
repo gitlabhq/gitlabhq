@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import diffDiscussionHeader from '~/notes/components/diff_discussion_header.vue';
 import createStore from '~/notes/stores';
 
@@ -24,16 +25,15 @@ describe('diff_discussion_header component', () => {
     wrapper.destroy();
   });
 
-  it('should render user avatar', () => {
+  it('should render user avatar', async () => {
     const discussion = { ...discussionMock };
     discussion.diff_file = mockDiffFile;
     discussion.diff_discussion = true;
 
     wrapper.setProps({ discussion });
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
-    });
+    await nextTick();
+    expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
   });
 
   describe('action text', () => {
@@ -41,7 +41,7 @@ describe('diff_discussion_header component', () => {
     const truncatedCommitId = commitId.substr(0, 8);
     let commitElement;
 
-    beforeEach((done) => {
+    beforeEach(async () => {
       store.state.diffs = {
         projectPath: 'something',
       };
@@ -58,41 +58,30 @@ describe('diff_discussion_header component', () => {
         },
       });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          commitElement = wrapper.find('.commit-sha');
-        })
-        .then(done)
-        .catch(done.fail);
+      await nextTick();
+      commitElement = wrapper.find('.commit-sha');
     });
 
     describe('for diff threads without a commit id', () => {
-      it('should show started a thread on the diff text', (done) => {
+      it('should show started a thread on the diff text', async () => {
         Object.assign(wrapper.vm.discussion, {
           for_commit: false,
           commit_id: null,
         });
 
-        wrapper.vm.$nextTick(() => {
-          expect(wrapper.text()).toContain('started a thread on the diff');
-
-          done();
-        });
+        await nextTick();
+        expect(wrapper.text()).toContain('started a thread on the diff');
       });
 
-      it('should show thread on older version text', (done) => {
+      it('should show thread on older version text', async () => {
         Object.assign(wrapper.vm.discussion, {
           for_commit: false,
           commit_id: null,
           active: false,
         });
 
-        wrapper.vm.$nextTick(() => {
-          expect(wrapper.text()).toContain('started a thread on an old version of the diff');
-
-          done();
-        });
+        await nextTick();
+        expect(wrapper.text()).toContain('started a thread on an old version of the diff');
       });
     });
 
@@ -105,31 +94,25 @@ describe('diff_discussion_header component', () => {
     });
 
     describe('for diff thread with a commit id', () => {
-      it('should display started thread on commit header', (done) => {
+      it('should display started thread on commit header', async () => {
         wrapper.vm.discussion.for_commit = false;
 
-        wrapper.vm.$nextTick(() => {
-          expect(wrapper.text()).toContain(`started a thread on commit ${truncatedCommitId}`);
+        await nextTick();
+        expect(wrapper.text()).toContain(`started a thread on commit ${truncatedCommitId}`);
 
-          expect(commitElement).not.toBe(null);
-
-          done();
-        });
+        expect(commitElement).not.toBe(null);
       });
 
-      it('should display outdated change on commit header', (done) => {
+      it('should display outdated change on commit header', async () => {
         wrapper.vm.discussion.for_commit = false;
         wrapper.vm.discussion.active = false;
 
-        wrapper.vm.$nextTick(() => {
-          expect(wrapper.text()).toContain(
-            `started a thread on an outdated change in commit ${truncatedCommitId}`,
-          );
+        await nextTick();
+        expect(wrapper.text()).toContain(
+          `started a thread on an outdated change in commit ${truncatedCommitId}`,
+        );
 
-          expect(commitElement).not.toBe(null);
-
-          done();
-        });
+        expect(commitElement).not.toBe(null);
       });
     });
   });

@@ -21,6 +21,7 @@ const tooltipsApp = () => {
     document.body.appendChild(container);
 
     app = new Vue({
+      name: 'TooltipsRoot',
       render(h) {
         return h(Tooltips, {
           props: {

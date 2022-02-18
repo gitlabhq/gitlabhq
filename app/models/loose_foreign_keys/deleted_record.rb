@@ -46,17 +46,39 @@ class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
       .to_a
   end
 
-  def self.mark_records_processed(all_records)
-    # Run a query for each partition to optimize the row lookup by primary key (partition, id)
+  def self.mark_records_processed(records)
+    update_by_partition(records) do |partitioned_scope|
+      partitioned_scope.update_all(status: :processed)
+    end
+  end
+
+  def self.reschedule(records, consume_after)
+    update_by_partition(records) do |partitioned_scope|
+      partitioned_scope.update_all(consume_after: consume_after, cleanup_attempts: 0)
+    end
+  end
+
+  def self.increment_attempts(records)
+    update_by_partition(records) do |partitioned_scope|
+      # Naive incrementing of the cleanup_attempts is good enough for us.
+      partitioned_scope.update_all('cleanup_attempts = cleanup_attempts + 1')
+    end
+  end
+
+  def self.update_by_partition(records)
     update_count = 0
 
-    all_records.group_by(&:partition_number).each do |partition, records_within_partition|
-      update_count += status_pending
+    # Run a query for each partition to optimize the row lookup by primary key (partition, id)
+    records.group_by(&:partition_number).each do |partition, records_within_partition|
+      partitioned_scope = status_pending
         .for_partition(partition)
         .where(id: records_within_partition.pluck(:id))
-        .update_all(status: :processed)
+
+      update_count += yield(partitioned_scope)
     end
 
     update_count
   end
+
+  private_class_method :update_by_partition
 end

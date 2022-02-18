@@ -8,7 +8,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
-  let(:maintainer) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
 
   using RSpec::Parameterized::TableSyntax
 
@@ -190,55 +190,117 @@ RSpec.describe 'Project > Members > Invite group', :js do
   end
 
   describe 'the groups dropdown' do
-    context 'with multiple groups to choose from' do
-      let(:project) { create(:project) }
+    let_it_be(:parent_group) { create(:group, :public) }
+    let_it_be(:project_group) { create(:group, :public, parent: parent_group) }
+    let_it_be(:public_sub_subgroup) { create(:group, :public, parent: project_group) }
+    let_it_be(:public_sibbling_group) { create(:group, :public, parent: parent_group) }
+    let_it_be(:private_sibbling_group) { create(:group, :private, parent: parent_group) }
+    let_it_be(:private_membership_group) { create(:group, :private) }
+    let_it_be(:public_membership_group) { create(:group, :public) }
+    let_it_be(:project) { create(:project, group: project_group) }
 
-      it 'includes multiple groups' do
-        project.add_maintainer(maintainer)
-        sign_in(maintainer)
+    before do
+      private_membership_group.add_guest(maintainer)
+      public_membership_group.add_maintainer(maintainer)
 
-        group1 = create(:group)
-        group1.add_owner(maintainer)
-        group2 = create(:group)
-        group2.add_owner(maintainer)
-
-        visit project_project_members_path(project)
-
-        click_on 'Invite a group'
-        click_on 'Select a group'
-        wait_for_requests
-
-        expect(page).to have_button(group1.name)
-        expect(page).to have_button(group2.name)
-      end
+      sign_in(maintainer)
     end
 
     context 'for a project in a nested group' do
-      let(:group) { create(:group) }
-      let!(:nested_group) { create(:group, parent: group) }
-      let!(:group_to_share_with) { create(:group) }
-      let!(:project) { create(:project, namespace: nested_group) }
-
-      before do
+      it 'does not show the groups inherited from projects' do
         project.add_maintainer(maintainer)
-        sign_in(maintainer)
-        group.add_maintainer(maintainer)
-        group_to_share_with.add_maintainer(maintainer)
-      end
+        public_sibbling_group.add_maintainer(maintainer)
 
-      # This behavior should be changed to exclude the ancestor and project
-      # group from the options once issue is fixed for the modal:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/329835
-      it 'the groups dropdown does show ancestors and the project group' do
         visit project_project_members_path(project)
 
         click_on 'Invite a group'
         click_on 'Select a group'
         wait_for_requests
 
-        expect(page).to have_button(group_to_share_with.name)
-        expect(page).to have_button(group.name)
-        expect(page).to have_button(nested_group.name)
+        page.within('[data-testid="group-select-dropdown"]') do
+          expect_to_have_group(public_membership_group)
+          expect_to_have_group(public_sibbling_group)
+          expect_to_have_group(private_membership_group)
+
+          expect_not_to_have_group(public_sub_subgroup)
+          expect_not_to_have_group(private_sibbling_group)
+          expect_not_to_have_group(parent_group)
+          expect_not_to_have_group(project_group)
+        end
+      end
+
+      it 'does not show the ancestors or project group', :aggregate_failures do
+        parent_group.add_maintainer(maintainer)
+
+        visit project_project_members_path(project)
+
+        click_on 'Invite a group'
+        click_on 'Select a group'
+        wait_for_requests
+
+        page.within('[data-testid="group-select-dropdown"]') do
+          expect_to_have_group(public_membership_group)
+          expect_to_have_group(public_sibbling_group)
+          expect_to_have_group(private_membership_group)
+          expect_to_have_group(public_sub_subgroup)
+          expect_to_have_group(private_sibbling_group)
+
+          expect_not_to_have_group(parent_group)
+          expect_not_to_have_group(project_group)
+        end
+      end
+
+      context 'when invite_members_group_modal feature disabled' do
+        let(:group_invite_dropdown) { find('#select2-results-2') }
+
+        before do
+          stub_feature_flags(invite_members_group_modal: false)
+        end
+
+        it 'does not show the groups inherited from projects', :aggregate_failures do
+          project.add_maintainer(maintainer)
+          public_sibbling_group.add_maintainer(maintainer)
+
+          visit project_project_members_path(project)
+
+          click_on 'Invite group'
+          click_on 'Search for a group'
+          wait_for_requests
+
+          expect(group_invite_dropdown).to have_text(public_membership_group.full_path)
+          expect(group_invite_dropdown).to have_text(public_sibbling_group.full_path)
+          expect(group_invite_dropdown).to have_text(private_membership_group.full_path)
+          expect(group_invite_dropdown).not_to have_text(public_sub_subgroup.full_path)
+          expect(group_invite_dropdown).not_to have_text(private_sibbling_group.full_path)
+          expect(group_invite_dropdown).not_to have_text(parent_group.full_path, exact: true)
+          expect(group_invite_dropdown).not_to have_text(project_group.full_path, exact: true)
+        end
+
+        it 'does not show the ancestors or project group', :aggregate_failures do
+          parent_group.add_maintainer(maintainer)
+
+          visit project_project_members_path(project)
+
+          click_on 'Invite group'
+          click_on 'Search for a group'
+          wait_for_requests
+
+          expect(group_invite_dropdown).to have_text(public_membership_group.full_path)
+          expect(group_invite_dropdown).to have_text(public_sub_subgroup.full_path)
+          expect(group_invite_dropdown).to have_text(public_sibbling_group.full_path)
+          expect(group_invite_dropdown).to have_text(private_sibbling_group.full_path)
+          expect(group_invite_dropdown).to have_text(private_membership_group.full_path)
+          expect(group_invite_dropdown).not_to have_text(parent_group.full_path, exact: true)
+          expect(group_invite_dropdown).not_to have_text(project_group.full_path, exact: true)
+        end
+      end
+
+      def expect_to_have_group(group)
+        expect(page).to have_selector("[entity-id='#{group.id}']")
+      end
+
+      def expect_not_to_have_group(group)
+        expect(page).not_to have_selector("[entity-id='#{group.id}']")
       end
     end
   end

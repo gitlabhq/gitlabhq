@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_caching do
   include RackAttackSpecHelpers
+  include SessionHelpers
 
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
 
@@ -60,6 +61,22 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:throttle_setting_prefix) { 'throttle_unauthenticated' }
       let(:url_that_does_not_require_authentication) { '/users/sign_in' }
       let(:url_that_is_not_matched) { '/api/v4/projects' }
+    end
+  end
+
+  describe 'API requests from the frontend', :api, :clean_gitlab_redis_sessions do
+    context 'when unauthenticated' do
+      it_behaves_like 'rate-limited frontend API requests' do
+        let(:throttle_setting_prefix) { 'throttle_unauthenticated' }
+      end
+    end
+
+    context 'when authenticated' do
+      it_behaves_like 'rate-limited frontend API requests' do
+        let_it_be(:personal_access_token) { create(:personal_access_token) }
+
+        let(:throttle_setting_prefix) { 'throttle_authenticated' }
+      end
     end
   end
 
@@ -184,6 +201,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
     context 'unauthenticated requests' do
       let(:protected_path_that_does_not_require_authentication) do
+        # This is one of the default values for `application_settings.protected_paths`
         '/users/sign_in'
       end
 
@@ -225,6 +243,20 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
           end
 
           expect_rejection { post protected_path_that_does_not_require_authentication, params: post_params }
+        end
+
+        it 'allows non-POST requests to protected paths over the rate limit' do
+          (1 + requests_per_period).times do
+            get protected_path_that_does_not_require_authentication
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        it 'allows POST requests to unprotected paths over the rate limit' do
+          (1 + requests_per_period).times do
+            post '/api/graphql'
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
 
         it_behaves_like 'tracking when dry-run mode is set' do

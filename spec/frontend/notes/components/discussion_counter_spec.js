@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import notesModule from '~/notes/stores/modules';
@@ -10,9 +11,8 @@ describe('DiscussionCounter component', () => {
   let store;
   let wrapper;
   let setExpandDiscussionsFn;
-  const localVue = createLocalVue();
 
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   beforeEach(() => {
     window.mrTabs = {};
@@ -45,7 +45,7 @@ describe('DiscussionCounter component', () => {
 
   describe('has no discussions', () => {
     it('does not render', () => {
-      wrapper = shallowMount(DiscussionCounter, { store, localVue });
+      wrapper = shallowMount(DiscussionCounter, { store });
 
       expect(wrapper.find({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
@@ -55,7 +55,7 @@ describe('DiscussionCounter component', () => {
     it('does not render', () => {
       store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [{ ...discussionMock, resolvable: false }]);
       store.dispatch('updateResolvableDiscussionsCounts');
-      wrapper = shallowMount(DiscussionCounter, { store, localVue });
+      wrapper = shallowMount(DiscussionCounter, { store });
 
       expect(wrapper.find({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
@@ -75,7 +75,7 @@ describe('DiscussionCounter component', () => {
 
     it('renders', () => {
       updateStore();
-      wrapper = shallowMount(DiscussionCounter, { store, localVue });
+      wrapper = shallowMount(DiscussionCounter, { store });
 
       expect(wrapper.find({ ref: 'discussionCounter' }).exists()).toBe(true);
     });
@@ -86,7 +86,7 @@ describe('DiscussionCounter component', () => {
       ${'allResolved'}     | ${true}  | ${true}  | ${1}
     `('renders correctly if $title', ({ resolved, isActive, groupLength }) => {
       updateStore({ resolvable: true, resolved });
-      wrapper = shallowMount(DiscussionCounter, { store, localVue });
+      wrapper = shallowMount(DiscussionCounter, { store });
 
       expect(wrapper.find(`.is-active`).exists()).toBe(isActive);
       expect(wrapper.findAll(GlButton)).toHaveLength(groupLength);
@@ -99,7 +99,7 @@ describe('DiscussionCounter component', () => {
       const discussion = { ...discussionMock, expanded };
       store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [discussion]);
       store.dispatch('updateResolvableDiscussionsCounts');
-      wrapper = shallowMount(DiscussionCounter, { store, localVue });
+      wrapper = shallowMount(DiscussionCounter, { store });
       toggleAllButton = wrapper.find('.toggle-all-discussions-btn');
     };
 
@@ -113,7 +113,7 @@ describe('DiscussionCounter component', () => {
       expect(setExpandDiscussionsFn).toHaveBeenCalledTimes(1);
     });
 
-    it('collapses all discussions if expanded', () => {
+    it('collapses all discussions if expanded', async () => {
       updateStoreWithExpanded(true);
 
       expect(wrapper.vm.allExpanded).toBe(true);
@@ -121,13 +121,12 @@ describe('DiscussionCounter component', () => {
 
       toggleAllButton.vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.allExpanded).toBe(false);
-        expect(toggleAllButton.props('icon')).toBe('angle-down');
-      });
+      await nextTick();
+      expect(wrapper.vm.allExpanded).toBe(false);
+      expect(toggleAllButton.props('icon')).toBe('angle-down');
     });
 
-    it('expands all discussions if collapsed', () => {
+    it('expands all discussions if collapsed', async () => {
       updateStoreWithExpanded(false);
 
       expect(wrapper.vm.allExpanded).toBe(false);
@@ -135,10 +134,9 @@ describe('DiscussionCounter component', () => {
 
       toggleAllButton.vm.$emit('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.allExpanded).toBe(true);
-        expect(toggleAllButton.props('icon')).toBe('angle-up');
-      });
+      await nextTick();
+      expect(wrapper.vm.allExpanded).toBe(true);
+      expect(toggleAllButton.props('icon')).toBe('angle-up');
     });
   });
 });

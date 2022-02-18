@@ -1,11 +1,11 @@
 import { GlIcon, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueRouter from 'vue-router';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Item from '~/design_management/components/list/item.vue';
 
-const localVue = createLocalVue();
-localVue.use(VueRouter);
+Vue.use(VueRouter);
 const router = new VueRouter();
 
 // Referenced from: gitlab_schema.graphql:DesignVersionEvent
@@ -34,7 +34,6 @@ describe('Design management list item component', () => {
   } = {}) {
     wrapper = extendedWrapper(
       shallowMount(Item, {
-        localVue,
         router,
         propsData: {
           id: imgId,
@@ -72,13 +71,13 @@ describe('Design management list item component', () => {
     let image;
     let glIntersectionObserver;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent();
       image = wrapper.find('img');
       glIntersectionObserver = wrapper.find(GlIntersectionObserver);
 
       glIntersectionObserver.vm.$emit('appear');
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders a tooltip', () => {
@@ -92,9 +91,9 @@ describe('Design management list item component', () => {
     });
 
     describe('after image is loaded', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         image.trigger('load');
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('renders an image', () => {
@@ -102,29 +101,27 @@ describe('Design management list item component', () => {
         expect(image.isVisible()).toBe(true);
       });
 
-      it('renders media broken icon when image onerror triggered', () => {
+      it('renders media broken icon when image onerror triggered', async () => {
         image.trigger('error');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(image.isVisible()).toBe(false);
-          expect(wrapper.find(GlIcon).element).toMatchSnapshot();
-        });
+        await nextTick();
+        expect(image.isVisible()).toBe(false);
+        expect(wrapper.find(GlIcon).element).toMatchSnapshot();
       });
 
       describe('when imageV432x230 and image provided', () => {
-        it('renders imageV432x230 image', () => {
+        it('renders imageV432x230 image', async () => {
           const mockSrc = 'mock-imageV432x230-url';
           wrapper.setProps({ imageV432x230: mockSrc });
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(image.attributes('src')).toBe(mockSrc);
-          });
+          await nextTick();
+          expect(image.attributes('src')).toBe(mockSrc);
         });
       });
 
       describe('when image disappears from view and then reappears', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           glIntersectionObserver.vm.$emit('appear');
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('renders an image', () => {

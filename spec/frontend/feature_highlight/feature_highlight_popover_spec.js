@@ -1,5 +1,6 @@
 import { GlPopover, GlLink, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { POPOVER_TARGET_ID } from '~/feature_highlight/constants';
 import { dismiss } from '~/feature_highlight/feature_highlight_helper';
 import FeatureHighlightPopover from '~/feature_highlight/feature_highlight_popover.vue';
@@ -71,7 +72,7 @@ describe('feature_highlight/feature_highlight_popover', () => {
     it('hides the popover target', async () => {
       await findDismissButton().trigger('click');
       findPopover().vm.$emit('hidden');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findPopoverTarget().exists()).toBe(false);
     });

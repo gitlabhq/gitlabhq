@@ -4,11 +4,6 @@
 # implements support for persisting the necessary data in a `credentials`
 # serialized attribute. It also needs an `url` method to be defined
 module MirrorAuthentication
-  SSH_PRIVATE_KEY_OPTS = {
-    type: 'RSA',
-    bits: 4096
-  }.freeze
-
   extend ActiveSupport::Concern
 
   included do
@@ -84,10 +79,10 @@ module MirrorAuthentication
     return if ssh_private_key.blank?
 
     comment = "git@#{::Gitlab.config.gitlab.host}"
-    ::SSHKey.new(ssh_private_key, comment: comment).ssh_public_key
+    SSHData::PrivateKey.parse(ssh_private_key).first.public_key.openssh(comment: comment)
   end
 
   def generate_ssh_private_key!
-    self.ssh_private_key = ::SSHKey.generate(SSH_PRIVATE_KEY_OPTS).private_key
+    self.ssh_private_key = SSHData::PrivateKey::RSA.generate(4096).openssl.to_pem
   end
 end

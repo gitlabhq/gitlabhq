@@ -94,6 +94,12 @@ module Types
           max_page_size: 2000,
           resolver: Resolvers::BoardsResolver
 
+    field :recent_issue_boards,
+          Types::BoardType.connection_type,
+          null: true,
+          description: 'List of recently visited boards of the group. Maximum size is 4.',
+          resolver: Resolvers::RecentBoardsResolver
+
     field :board,
           Types::BoardType,
           null: true,
@@ -170,15 +176,6 @@ module Types
           null: true,
           description: 'Dependency proxy TTL policy for the group.'
 
-    def label(title:)
-      BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
-        LabelsFinder
-          .new(current_user, group: args[:key], title: titles)
-          .execute
-          .each { |label| loader.call(label.title, label) }
-      end
-    end
-
     field :labels,
           Types::LabelType.connection_type,
           null: true,
@@ -214,6 +211,15 @@ module Types
           resolver: Resolvers::WorkItems::TypesResolver,
           description: 'Work item types available to the group.',
           feature_flag: :work_items
+
+    def label(title:)
+      BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
+        LabelsFinder
+          .new(current_user, group: args[:key], title: titles)
+          .execute
+          .each { |label| loader.call(label.title, label) }
+      end
+    end
 
     def avatar_url
       object.avatar_url(only_path: false)

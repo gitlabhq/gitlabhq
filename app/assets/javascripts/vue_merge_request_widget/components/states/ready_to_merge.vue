@@ -14,7 +14,6 @@ import {
 import { isEmpty } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import createFlash from '~/flash';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
@@ -22,11 +21,8 @@ import { __, s__ } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import MergeRequest from '../../../merge_request';
 import {
   AUTO_MERGE_STRATEGIES,
-  DANGER,
-  CONFIRM,
   WARNING,
   MT_MERGE_STRATEGY,
   PIPELINE_FAILED_STATE,
@@ -42,6 +38,7 @@ import CommitEdit from './commit_edit.vue';
 import CommitMessageDropdown from './commit_message_dropdown.vue';
 import CommitsHeader from './commits_header.vue';
 import SquashBeforeMerge from './squash_before_merge.vue';
+import MergeFailedPipelineConfirmationDialog from './merge_failed_pipeline_confirmation_dialog.vue';
 
 const PIPELINE_RUNNING_STATE = 'running';
 const PIPELINE_PENDING_STATE = 'pending';
@@ -52,7 +49,7 @@ const MERGE_SUCCESS_STATUS = 'success';
 const MERGE_HOOK_VALIDATION_ERROR_STATUS = 'hook_validation_error';
 
 const { transitions } = STATE_MACHINE;
-const { MERGE, MERGED, MERGE_FAILURE, AUTO_MERGE } = transitions;
+const { MERGE, MERGE_FAILURE, AUTO_MERGE, MERGING } = transitions;
 
 export default {
   name: 'ReadyToMerge',
@@ -106,6 +103,7 @@ export default {
     GlDropdownItem,
     GlFormCheckbox,
     GlSkeletonLoader,
+    MergeFailedPipelineConfirmationDialog,
     MergeTrainHelperIcon: () =>
       import('ee_component/vue_merge_request_widget/components/merge_train_helper_icon.vue'),
     MergeImmediatelyConfirmationDialog: () =>
@@ -138,7 +136,8 @@ export default {
       squashBeforeMerge: this.mr.squashIsSelected,
       isSquashReadOnly: this.mr.squashIsReadonly,
       squashCommitMessage: this.mr.squashCommitMessage,
-      isPipelineFailedModalVisible: false,
+      isPipelineFailedModalVisibleMergeTrain: false,
+      isPipelineFailedModalVisibleNormalMerge: false,
       editCommitMessage: false,
     };
   },
@@ -165,6 +164,9 @@ export default {
       }
 
       return this.mr.isPipelineFailed;
+    },
+    showMergeFailedPipelineConfirmationDialog() {
+      return this.status === PIPELINE_FAILED_STATE && this.isPipelineFailed;
     },
     isMergeAllowed() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
@@ -248,13 +250,6 @@ export default {
 
       return PIPELINE_SUCCESS_STATE;
     },
-    mergeButtonVariant() {
-      if (this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) {
-        return DANGER;
-      }
-
-      return CONFIRM;
-    },
     iconClass() {
       if (this.shouldRenderMergeTrainHelperIcon && !this.mr.preventMerge) {
         return PIPELINE_RUNNING_STATE;
@@ -277,6 +272,10 @@ export default {
       }
       if (this.isAutoMergeAvailable) {
         return this.autoMergeText;
+      }
+
+      if (this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) {
+        return __('Merge...');
       }
 
       return __('Merge');
@@ -361,8 +360,13 @@ export default {
       return this.$apollo.queries.state.refetch();
     },
     handleMergeButtonClick(useAutoMerge, mergeImmediately = false, confirmationClicked = false) {
-      if (this.showFailedPipelineModal && !confirmationClicked) {
-        this.isPipelineFailedModalVisible = true;
+      if (this.showMergeFailedPipelineConfirmationDialog && !confirmationClicked) {
+        this.isPipelineFailedModalVisibleNormalMerge = true;
+        return;
+      }
+
+      if (this.showFailedPipelineModalMergeTrain && !confirmationClicked) {
+        this.isPipelineFailedModalVisibleMergeTrain = true;
         return;
       }
 
@@ -406,7 +410,7 @@ export default {
             eventHub.$emit('MRWidgetUpdateRequested');
             this.mr.transitionStateMachine({ transition: AUTO_MERGE });
           } else if (data.status === MERGE_SUCCESS_STATUS) {
-            this.initiateMergePolling();
+            this.mr.transitionStateMachine({ transition: MERGING });
           } else if (hasError) {
             eventHub.$emit('FailedToMerge', data.merge_error);
             this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
@@ -434,51 +438,8 @@ export default {
     onMergeImmediatelyConfirmation() {
       this.handleMergeButtonClick(false, true, true);
     },
-    initiateMergePolling() {
-      simplePoll(
-        (continuePolling, stopPolling) => {
-          this.handleMergePolling(continuePolling, stopPolling);
-        },
-        { timeout: 0 },
-      );
-    },
-    handleMergePolling(continuePolling, stopPolling) {
-      this.service
-        .poll()
-        .then((res) => res.data)
-        .then((data) => {
-          if (data.state === 'merged') {
-            // If state is merged we should update the widget and stop the polling
-            eventHub.$emit('MRWidgetUpdateRequested');
-            eventHub.$emit('FetchActionsContent');
-            MergeRequest.hideCloseButton();
-            MergeRequest.decreaseCounter();
-            this.mr.transitionStateMachine({ transition: MERGED });
-            stopPolling();
-
-            refreshUserMergeRequestCounts();
-
-            // If user checked remove source branch and we didn't remove the branch yet
-            // we should start another polling for source branch remove process
-            if (this.removeSourceBranch && data.source_branch_exists) {
-              this.initiateRemoveSourceBranchPolling();
-            }
-          } else if (data.merge_error) {
-            eventHub.$emit('FailedToMerge', data.merge_error);
-            this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
-            stopPolling();
-          } else {
-            // MR is not merged yet, continue polling until the state becomes 'merged'
-            continuePolling();
-          }
-        })
-        .catch(() => {
-          createFlash({
-            message: __('Something went wrong while merging this merge request. Please try again.'),
-          });
-          this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
-          stopPolling();
-        });
+    onMergeWithFailedPipelineConfirmation() {
+      this.handleMergeButtonClick(false, true, true);
     },
     initiateRemoveSourceBranchPolling() {
       // We need to show source branch is being removed spinner in another component
@@ -559,7 +520,7 @@ export default {
                 category="primary"
                 class="accept-merge-request"
                 data-testid="merge-button"
-                :variant="mergeButtonVariant"
+                variant="confirm"
                 :disabled="isMergeButtonDisabled"
                 :loading="isMakingRequest"
                 data-qa-selector="merge_button"
@@ -570,7 +531,7 @@ export default {
                 v-if="shouldShowMergeImmediatelyDropdown"
                 v-gl-tooltip.hover.focus="__('Select merge moment')"
                 :disabled="isMergeButtonDisabled"
-                :variant="mergeButtonVariant"
+                variant="confirm"
                 data-qa-selector="merge_moment_dropdown"
                 toggle-class="btn-icon js-merge-moment"
               >
@@ -593,18 +554,22 @@ export default {
                 />
               </gl-dropdown>
               <merge-train-failed-pipeline-confirmation-dialog
-                :visible="isPipelineFailedModalVisible"
+                :visible="isPipelineFailedModalVisibleMergeTrain"
                 @startMergeTrain="onStartMergeTrainConfirmation"
-                @cancel="isPipelineFailedModalVisible = false"
+                @cancel="isPipelineFailedModalVisibleMergeTrain = false"
+              />
+              <merge-failed-pipeline-confirmation-dialog
+                :visible="isPipelineFailedModalVisibleNormalMerge"
+                @mergeWithFailedPipeline="onMergeWithFailedPipelineConfirmation"
+                @cancel="isPipelineFailedModalVisibleNormalMerge = false"
               />
             </gl-button-group>
+            <merge-train-helper-icon v-if="shouldRenderMergeTrainHelperIcon" class="gl-mx-3" />
             <div
               v-if="shouldShowMergeControls"
               :class="{ 'gl-w-full gl-order-n1 gl-mb-5': glFeatures.restructuredMrWidget }"
               class="gl-display-flex gl-align-items-center gl-flex-wrap"
             >
-              <merge-train-helper-icon v-if="shouldRenderMergeTrainHelperIcon" class="gl-mx-3" />
-
               <gl-form-checkbox
                 v-if="canRemoveSourceBranch"
                 id="remove-source-branch-input"

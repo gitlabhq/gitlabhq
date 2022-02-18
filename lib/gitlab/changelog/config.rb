@@ -37,7 +37,7 @@ module Gitlab
       attr_accessor :date_format, :categories, :template, :tag_regex, :always_credit_user_ids
 
       def self.from_git(project, user = nil)
-        if (yaml = project.repository.changelog_config)
+        if (yaml = project.repository.changelog_config.presence)
           from_hash(project, YAML.safe_load(yaml), user)
         else
           new(project)

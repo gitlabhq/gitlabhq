@@ -3,9 +3,9 @@
 module Mutations
   module Branches
     class Create < BaseMutation
-      include FindsProject
-
       graphql_name 'CreateBranch'
+
+      include FindsProject
 
       argument :project_path, GraphQL::Types::ID,
                required: true,

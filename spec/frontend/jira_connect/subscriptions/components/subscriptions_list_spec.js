@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import * as JiraConnectApi from '~/jira_connect/subscriptions/api';
@@ -71,7 +72,7 @@ describe('SubscriptionsList', () => {
 
       clickUnlinkButton();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findUnlinkButton().props('loading')).toBe(true);
 

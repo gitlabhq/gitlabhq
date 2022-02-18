@@ -1,13 +1,16 @@
 package upload
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"net/textproto"
 	"os"
 	"regexp"
 	"strconv"
@@ -75,7 +78,7 @@ func TestUploadHandlerForwardingRawData(t *testing.T) {
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, handler, apiResponse, nil, opts)
+	InterceptMultipartFiles(response, httpRequest, handler, apiResponse, nil, opts)
 
 	require.Equal(t, 202, response.Code)
 	require.Equal(t, "RESPONSE", response.Body.String(), "response body")
@@ -146,7 +149,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
+	InterceptMultipartFiles(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
 	require.Equal(t, 202, response.Code)
 
 	cancel() // this will trigger an async cleanup
@@ -215,7 +218,7 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 			opts, _, err := preparer.Prepare(apiResponse)
 			require.NoError(t, err)
 
-			HandleFileUploads(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
+			InterceptMultipartFiles(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
 			require.Equal(t, test.response, response.Code)
 
 			cancel() // this will trigger an async cleanup
@@ -245,7 +248,7 @@ func TestUploadProcessingField(t *testing.T) {
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
+	InterceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
 
 	require.Equal(t, 500, response.Code)
 }
@@ -276,7 +279,7 @@ func TestUploadingMultipleFiles(t *testing.T) {
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
+	InterceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
 
 	require.Equal(t, 400, response.Code)
 	require.Equal(t, "upload request contains more than 10 files\n", response.Body.String())
@@ -332,7 +335,7 @@ func TestUploadProcessingFile(t *testing.T) {
 			opts, _, err := preparer.Prepare(apiResponse)
 			require.NoError(t, err)
 
-			HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
+			InterceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
 
 			require.Equal(t, 200, response.Code)
 		})
@@ -378,9 +381,92 @@ func TestInvalidFileNames(t *testing.T) {
 		opts, _, err := preparer.Prepare(apiResponse)
 		require.NoError(t, err)
 
-		HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
+		InterceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
 		require.Equal(t, testCase.code, response.Code)
 		require.Equal(t, testCase.expectedPrefix, opts.TempFilePrefix)
+	}
+}
+
+func TestContentDispositionRewrite(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	tempPath, err := ioutil.TempDir("", "uploads")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempPath)
+
+	tests := []struct {
+		desc            string
+		header          string
+		code            int
+		sanitizedHeader string
+	}{
+		{
+			desc:            "with name",
+			header:          `form-data; name="foo"`,
+			code:            200,
+			sanitizedHeader: `form-data; name=foo`,
+		},
+		{
+			desc:            "with name and name*",
+			header:          `form-data; name="foo"; name*=UTF-8''bar`,
+			code:            200,
+			sanitizedHeader: `form-data; name=bar`,
+		},
+		{
+			desc:            "with name and invalid name*",
+			header:          `form-data; name="foo"; name*=UTF-16''bar`,
+			code:            200,
+			sanitizedHeader: `form-data; name=foo`,
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.desc, func(t *testing.T) {
+			h := make(textproto.MIMEHeader)
+			h.Set("Content-Disposition", testCase.header)
+			h.Set("Content-Type", "application/octet-stream")
+
+			buffer := &bytes.Buffer{}
+			writer := multipart.NewWriter(buffer)
+			file, err := writer.CreatePart(h)
+			require.NoError(t, err)
+			fmt.Fprint(file, "test")
+			writer.Close()
+
+			httpRequest := httptest.NewRequest("POST", "/example", buffer)
+			httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
+
+			var upstreamRequestBuffer bytes.Buffer
+			customHandler := http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+				r.Write(&upstreamRequestBuffer)
+			})
+
+			response := httptest.NewRecorder()
+			apiResponse := &api.Response{TempPath: tempPath}
+			preparer := &DefaultPreparer{}
+			opts, _, err := preparer.Prepare(apiResponse)
+			require.NoError(t, err)
+
+			InterceptMultipartFiles(response, httpRequest, customHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
+
+			upstreamRequest, err := http.ReadRequest(bufio.NewReader(&upstreamRequestBuffer))
+			require.NoError(t, err)
+
+			reader, err := upstreamRequest.MultipartReader()
+			require.NoError(t, err)
+
+			for i := 0; ; i++ {
+				p, err := reader.NextPart()
+				if err == io.EOF {
+					require.Equal(t, i, 1)
+					break
+				}
+				require.NoError(t, err)
+				require.Equal(t, testCase.sanitizedHeader, p.Header.Get("Content-Disposition"))
+			}
+
+			require.Equal(t, testCase.code, response.Code)
+		})
 	}
 }
 
@@ -484,7 +570,7 @@ func runUploadTest(t *testing.T, image []byte, filename string, httpCode int, ts
 	opts, _, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
-	HandleFileUploads(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
+	InterceptMultipartFiles(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
 	require.Equal(t, httpCode, response.Code)
 }
 
@@ -495,15 +581,9 @@ func newProxy(url string) *proxy.Proxy {
 
 func waitUntilDeleted(t *testing.T, path string) {
 	var err error
-
-	// Poll because the file removal is async
-	for i := 0; i < 100; i++ {
+	require.Eventually(t, func() bool {
 		_, err = os.Stat(path)
-		if err != nil {
-			break
-		}
-		time.Sleep(100 * time.Millisecond)
-	}
-
+		return err != nil
+	}, 10*time.Second, 10*time.Millisecond)
 	require.True(t, os.IsNotExist(err), "expected the file to be deleted")
 }

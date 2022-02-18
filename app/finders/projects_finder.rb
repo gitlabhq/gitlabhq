@@ -27,6 +27,7 @@
 #     last_activity_before: datetime
 #     repository_storage: string
 #     without_deleted: boolean
+#     not_aimed_for_deletion: boolean
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
@@ -84,6 +85,7 @@ class ProjectsFinder < UnionFinder
     collection = by_archived(collection)
     collection = by_custom_attributes(collection)
     collection = by_deleted_status(collection)
+    collection = by_not_aimed_for_deletion(collection)
     collection = by_last_activity_after(collection)
     collection = by_last_activity_before(collection)
     by_repository_storage(collection)
@@ -201,6 +203,10 @@ class ProjectsFinder < UnionFinder
 
   def by_deleted_status(items)
     params[:without_deleted].present? ? items.without_deleted : items
+  end
+
+  def by_not_aimed_for_deletion(items)
+    params[:not_aimed_for_deletion].present? ? items.not_aimed_for_deletion : items
   end
 
   def by_last_activity_after(items)

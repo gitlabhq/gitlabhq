@@ -125,6 +125,17 @@ RSpec.describe Gitlab::ApplicationContext do
         .to include(project: project.full_path, root_namespace: project.full_path_components.first)
     end
 
+    it 'contains known keys' do
+      context = described_class.new(project: project)
+
+      # Make sure all possible keys would be included
+      allow(context).to receive_message_chain(:set_values, :include?).and_return(true)
+
+      # If a newly added key is added to the context hash, we need to list it in
+      # the known keys constant. This spec ensures that we do.
+      expect(context.to_lazy_hash.keys).to contain_exactly(*described_class.known_keys)
+    end
+
     describe 'setting the client' do
       let_it_be(:remote_ip) { '127.0.0.1' }
       let_it_be(:runner) { create(:ci_runner) }

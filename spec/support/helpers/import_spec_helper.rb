@@ -25,7 +25,7 @@ module ImportSpecHelper
   end
 
   def stub_omniauth_provider(name)
-    provider = OpenStruct.new(
+    provider = ActiveSupport::InheritableOptions.new(
       name: name,
       app_id: 'asd123',
       app_secret: 'asd123'

@@ -1,13 +1,13 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import Item from '~/ide/components/branches/item.vue';
 import List from '~/ide/components/branches/search_list.vue';
 import { __ } from '~/locale';
 import { branches } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IDE branches search list', () => {
   let wrapper;
@@ -31,7 +31,6 @@ describe('IDE branches search list', () => {
     });
 
     wrapper = shallowMount(List, {
-      localVue,
       store: fakeStore,
     });
   };
@@ -51,13 +50,12 @@ describe('IDE branches search list', () => {
     expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('renders branches not found when search is not empty and branches list is empty', () => {
+  it('renders branches not found when search is not empty and branches list is empty', async () => {
     createComponent({ branches: [] });
     wrapper.find('input[type="search"]').setValue('something');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.text()).toContain(__('No branches found'));
-    });
+    await nextTick();
+    expect(wrapper.text()).toContain(__('No branches found'));
   });
 
   describe('with branches', () => {

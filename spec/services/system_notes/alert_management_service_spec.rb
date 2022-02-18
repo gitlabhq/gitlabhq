@@ -21,14 +21,26 @@ RSpec.describe ::SystemNotes::AlertManagementService do
   end
 
   describe '#change_alert_status' do
-    subject { described_class.new(noteable: noteable, project: project, author: author).change_alert_status(noteable) }
+    subject { described_class.new(noteable: noteable, project: project, author: author).change_alert_status(reason) }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'status' }
+    context 'with no specified reason' do
+      let(:reason) { nil }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'status' }
+      end
+
+      it 'has the appropriate message' do
+        expect(subject.note).to eq("changed the status to **Acknowledged**")
+      end
     end
 
-    it 'has the appropriate message' do
-      expect(subject.note).to eq("changed the status to **Acknowledged**")
+    context 'with reason provided' do
+      let(:reason) { ' by changing incident status' }
+
+      it 'has the appropriate message' do
+        expect(subject.note).to eq("changed the status to **Acknowledged** by changing incident status")
+      end
     end
   end
 
@@ -42,21 +54,7 @@ RSpec.describe ::SystemNotes::AlertManagementService do
     end
 
     it 'has the appropriate message' do
-      expect(subject.note).to eq("created issue #{issue.to_reference(project)} for this alert")
-    end
-  end
-
-  describe '#closed_alert_issue' do
-    let_it_be(:issue) { noteable.issue }
-
-    subject { described_class.new(noteable: noteable, project: project, author: author).closed_alert_issue(issue) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'status' }
-    end
-
-    it 'has the appropriate message' do
-      expect(subject.note).to eq("changed the status to **Resolved** by closing issue #{issue.to_reference(project)}")
+      expect(subject.note).to eq("created incident #{issue.to_reference(project)} for this alert")
     end
   end
 

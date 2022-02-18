@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Artifacts::ExpireInParser do
-  describe '.validate_duration' do
+  describe '.validate_duration', :request_store do
     subject { described_class.validate_duration(value) }
 
     context 'with never' do
@@ -20,14 +20,33 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::ExpireInParser do
 
     context 'with a duration' do
       let(:value) { '1 Day' }
+      let(:other_value) { '30 seconds' }
 
       it { is_expected.to be_truthy }
+
+      it 'caches data' do
+        expect(ChronicDuration).to receive(:parse).with(value).once.and_call_original
+        expect(ChronicDuration).to receive(:parse).with(other_value).once.and_call_original
+
+        2.times do
+          expect(described_class.validate_duration(value)).to eq(86400)
+          expect(described_class.validate_duration(other_value)).to eq(30)
+        end
+      end
     end
 
     context 'without a duration' do
       let(:value) { 'something' }
 
       it { is_expected.to be_falsy }
+
+      it 'caches data' do
+        expect(ChronicDuration).to receive(:parse).with(value).once.and_call_original
+
+        2.times do
+          expect(described_class.validate_duration(value)).to be_falsey
+        end
+      end
     end
   end
 

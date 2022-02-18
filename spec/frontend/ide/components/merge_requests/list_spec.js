@@ -1,13 +1,13 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import Item from '~/ide/components/merge_requests/item.vue';
 import List from '~/ide/components/merge_requests/list.vue';
 import TokenedInput from '~/ide/components/shared/tokened_input.vue';
 import { mergeRequests as mergeRequestsMock } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IDE merge requests list', () => {
   let wrapper;
@@ -41,7 +41,6 @@ describe('IDE merge requests list', () => {
 
     wrapper = shallowMount(List, {
       store: fakeStore,
-      localVue,
     });
   };
 
@@ -67,33 +66,28 @@ describe('IDE merge requests list', () => {
     expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('renders no search results text when search is not empty', () => {
+  it('renders no search results text when search is not empty', async () => {
     createComponent();
     findTokenedInput().vm.$emit('input', 'something');
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.text()).toContain('No merge requests found');
-    });
+    await nextTick();
+    expect(wrapper.text()).toContain('No merge requests found');
   });
 
-  it('clicking on search type, sets currentSearchType and loads merge requests', () => {
+  it('clicking on search type, sets currentSearchType and loads merge requests', async () => {
     createComponent();
     findTokenedInput().vm.$emit('focus');
 
-    return wrapper.vm
-      .$nextTick()
-      .then(() => {
-        findSearchTypeButtons().at(0).trigger('click');
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        const searchType = wrapper.vm.$options.searchTypes[0];
+    await nextTick();
+    findSearchTypeButtons().at(0).trigger('click');
 
-        expect(findTokenedInput().props('tokens')).toEqual([searchType]);
-        expect(fetchMergeRequestsMock).toHaveBeenCalledWith(expect.any(Object), {
-          type: searchType.type,
-          search: '',
-        });
-      });
+    await nextTick();
+    const searchType = wrapper.vm.$options.searchTypes[0];
+
+    expect(findTokenedInput().props('tokens')).toEqual([searchType]);
+    expect(fetchMergeRequestsMock).toHaveBeenCalledWith(expect.any(Object), {
+      type: searchType.type,
+      search: '',
+    });
   });
 
   describe('with merge requests', () => {
@@ -120,16 +114,15 @@ describe('IDE merge requests list', () => {
     });
 
     describe('when searching merge requests', () => {
-      it('calls `loadMergeRequests` on input in search field', () => {
+      it('calls `loadMergeRequests` on input in search field', async () => {
         createComponent(defaultStateWithMergeRequests);
         const input = findTokenedInput();
         input.vm.$emit('input', 'something');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(fetchMergeRequestsMock).toHaveBeenCalledWith(expect.any(Object), {
-            search: 'something',
-            type: '',
-          });
+        await nextTick();
+        expect(fetchMergeRequestsMock).toHaveBeenCalledWith(expect.any(Object), {
+          search: 'something',
+          type: '',
         });
       });
     });
@@ -144,9 +137,9 @@ describe('IDE merge requests list', () => {
     });
 
     describe('without search value', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         input.vm.$emit('focus');
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('shows search types', () => {
@@ -156,22 +149,20 @@ describe('IDE merge requests list', () => {
         );
       });
 
-      it('hides search types when search changes', () => {
+      it('hides search types when search changes', async () => {
         input.vm.$emit('input', 'something');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findSearchTypeButtons().exists()).toBe(false);
-        });
+        await nextTick();
+        expect(findSearchTypeButtons().exists()).toBe(false);
       });
 
       describe('with search type', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           findSearchTypeButtons().at(0).trigger('click');
 
-          return wrapper.vm
-            .$nextTick()
-            .then(() => input.vm.$emit('focus'))
-            .then(() => wrapper.vm.$nextTick());
+          await nextTick();
+          await input.vm.$emit('focus');
+          await nextTick();
         });
 
         it('does not show search types', () => {
@@ -181,10 +172,10 @@ describe('IDE merge requests list', () => {
     });
 
     describe('with search value', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         input.vm.$emit('input', 'something');
         input.vm.$emit('focus');
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('does not show search types', () => {

@@ -1,5 +1,5 @@
 import { GlSprintf } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { GROUP_TYPE, STATUS_ONLINE } from '~/runner/constants';
 import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -18,9 +18,10 @@ describe('RunnerHeader', () => {
 
   const findRunnerTypeBadge = () => wrapper.findComponent(RunnerTypeBadge);
   const findRunnerStatusBadge = () => wrapper.findComponent(RunnerStatusBadge);
+  const findRunnerLockedIcon = () => wrapper.findByTestId('lock-icon');
   const findTimeAgo = () => wrapper.findComponent(TimeAgo);
 
-  const createComponent = ({ runner = {}, mountFn = shallowMount } = {}) => {
+  const createComponent = ({ runner = {}, options = {}, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerHeader, {
       propsData: {
         runner: {
@@ -32,6 +33,7 @@ describe('RunnerHeader', () => {
         GlSprintf,
         TimeAgo,
       },
+      ...options,
     });
   };
 
@@ -41,24 +43,24 @@ describe('RunnerHeader', () => {
 
   it('displays the runner status', () => {
     createComponent({
-      mountFn: mount,
+      mountFn: mountExtended,
       runner: {
         status: STATUS_ONLINE,
       },
     });
 
-    expect(findRunnerStatusBadge().text()).toContain(`online`);
+    expect(findRunnerStatusBadge().text()).toContain('online');
   });
 
   it('displays the runner type', () => {
     createComponent({
-      mountFn: mount,
+      mountFn: mountExtended,
       runner: {
         runnerType: GROUP_TYPE,
       },
     });
 
-    expect(findRunnerTypeBadge().text()).toContain(`group`);
+    expect(findRunnerTypeBadge().text()).toContain('group');
   });
 
   it('displays the runner id', () => {
@@ -68,7 +70,18 @@ describe('RunnerHeader', () => {
       },
     });
 
-    expect(wrapper.text()).toContain(`Runner #99`);
+    expect(wrapper.text()).toContain('Runner #99');
+  });
+
+  it('displays the runner locked icon', () => {
+    createComponent({
+      runner: {
+        locked: true,
+      },
+      mountFn: mountExtended,
+    });
+
+    expect(findRunnerLockedIcon().exists()).toBe(true);
   });
 
   it('displays the runner creation time', () => {
@@ -78,7 +91,7 @@ describe('RunnerHeader', () => {
     expect(findTimeAgo().props('time')).toBe(mockRunner.createdAt);
   });
 
-  it('does not display runner creation time if createdAt missing', () => {
+  it('does not display runner creation time if "createdAt" is missing', () => {
     createComponent({
       runner: {
         id: convertToGraphQLId(TYPE_CI_RUNNER, 99),
@@ -86,8 +99,21 @@ describe('RunnerHeader', () => {
       },
     });
 
-    expect(wrapper.text()).toContain(`Runner #99`);
+    expect(wrapper.text()).toContain('Runner #99');
     expect(wrapper.text()).not.toMatch(/created .+/);
     expect(findTimeAgo().exists()).toBe(false);
+  });
+
+  it('displays actions in a slot', () => {
+    createComponent({
+      options: {
+        slots: {
+          actions: '<div data-testid="actions-content">My Actions</div>',
+        },
+        mountFn: mountExtended,
+      },
+    });
+
+    expect(wrapper.findByTestId('actions-content').text()).toBe('My Actions');
   });
 });

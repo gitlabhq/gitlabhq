@@ -346,7 +346,13 @@ module API
               required: false,
               name: :datadog_env,
               type: String,
-              desc: 'For self-managed deployments, set the env tag for all the data sent to Datadog. How do I use tags?'
+              desc: 'For self-managed deployments, set the env tag for all the data sent to Datadog'
+            },
+            {
+              required: false,
+              name: :datadog_tags,
+              type: String,
+              desc: 'Custom tags in Datadog. Specify one tag per line in the format: "key:value\nkey2:value2"'
             }
           ],
           'discord' => [

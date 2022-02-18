@@ -37,6 +37,8 @@ module Projects
       system_hook_service.execute_hooks_for(project, :destroy)
       log_info("Project \"#{project.full_path}\" was deleted")
 
+      publish_project_deleted_event_for(project) if Feature.enabled?(:publish_project_deleted_event, default_enabled: :yaml)
+
       current_user.invalidate_personal_projects_count
 
       true
@@ -139,6 +141,7 @@ module Projects
       destroy_web_hooks!
       destroy_project_bots!
       destroy_ci_records!
+      destroy_mr_diff_commits!
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
@@ -153,6 +156,33 @@ module Projects
     def log_destroy_event
       log_info("Attempting to destroy #{project.full_path} (#{project.id})")
     end
+
+    # Projects will have at least one merge_request_diff_commit for every commit
+    #   contained in every MR, which deleting via `project.destroy!` and
+    #   cascading deletes may exceed statement timeouts, causing failures.
+    #   (see https://gitlab.com/gitlab-org/gitlab/-/issues/346166)
+    #
+    # rubocop: disable CodeReuse/ActiveRecord
+    def destroy_mr_diff_commits!
+      mr_batch_size = 100
+      delete_batch_size = 1000
+
+      project.merge_requests.each_batch(column: :iid, of: mr_batch_size) do |relation_ids|
+        loop do
+          inner_query = MergeRequestDiffCommit
+            .select(:merge_request_diff_id, :relative_order)
+            .where(merge_request_diff_id: MergeRequestDiff.where(merge_request_id: relation_ids).select(:id))
+            .limit(delete_batch_size)
+
+          deleted_rows = MergeRequestDiffCommit
+            .where('(merge_request_diff_commits.merge_request_diff_id, merge_request_diff_commits.relative_order) IN (?)', inner_query)
+            .delete_all
+
+          break if deleted_rows == 0
+        end
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def destroy_ci_records!
       project.all_pipelines.find_each(batch_size: BATCH_SIZE) do |pipeline| # rubocop: disable CodeReuse/ActiveRecord
@@ -231,6 +261,12 @@ module Projects
 
     def flush_caches(project)
       Projects::ForksCountService.new(project).delete_cache
+    end
+
+    def publish_project_deleted_event_for(project)
+      data = { project_id: project.id, namespace_id: project.namespace_id }
+      event = Projects::ProjectDeletedEvent.new(data: data)
+      Gitlab::EventStore.publish(event)
     end
   end
 end

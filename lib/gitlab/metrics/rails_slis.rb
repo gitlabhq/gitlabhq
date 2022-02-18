@@ -4,7 +4,7 @@ module Gitlab
   module Metrics
     module RailsSlis
       class << self
-        def initialize_request_slis_if_needed!
+        def initialize_request_slis!
           Gitlab::Metrics::Sli.initialize_sli(:rails_request_apdex, possible_request_labels) unless Gitlab::Metrics::Sli.initialized?(:rails_request_apdex)
           Gitlab::Metrics::Sli.initialize_sli(:graphql_query_apdex, possible_graphql_query_labels) unless Gitlab::Metrics::Sli.initialized?(:graphql_query_apdex)
         end

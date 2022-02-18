@@ -3,7 +3,7 @@
 RSpec.shared_context 'container repository delete tags service shared context' do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :private) }
-  let_it_be(:repository) { create(:container_repository, :root, project: project) }
+  let_it_be_with_reload(:repository) { create(:container_repository, :root, project: project) }
 
   let(:params) { { tags: tags } }
 

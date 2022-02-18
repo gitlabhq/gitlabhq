@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { setHTMLFixture } from 'helpers/fixtures';
 import createEventHub from '~/helpers/event_hub_factory';
@@ -27,8 +27,7 @@ const createComponent = () => ({
 });
 
 describe('Discussion navigation mixin', () => {
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   let wrapper;
   let store;
@@ -65,7 +64,7 @@ describe('Discussion navigation mixin', () => {
     });
     store.state.notes.discussions = createDiscussions();
 
-    wrapper = shallowMount(createComponent(), { store, localVue });
+    wrapper = shallowMount(createComponent(), { store });
   });
 
   afterEach(() => {
@@ -94,14 +93,13 @@ describe('Discussion navigation mixin', () => {
       expect(store.dispatch).toHaveBeenCalledWith('setCurrentDiscussionId', null);
     });
 
-    it('triggers the jumpToNextDiscussion action when the previous store action succeeds', () => {
+    it('triggers the jumpToNextDiscussion action when the previous store action succeeds', async () => {
       store.dispatch.mockResolvedValue();
 
       vm.jumpToFirstUnresolvedDiscussion();
 
-      return vm.$nextTick().then(() => {
-        expect(vm.jumpToNextDiscussion).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(vm.jumpToNextDiscussion).toHaveBeenCalled();
     });
   });
 
@@ -127,11 +125,11 @@ describe('Discussion navigation mixin', () => {
       });
 
       describe('on `show` active tab', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           window.mrTabs.currentAction = 'show';
           wrapper.vm[fn](...args);
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('sets current discussion', () => {
@@ -145,17 +143,17 @@ describe('Discussion navigation mixin', () => {
         it('scrolls to element', () => {
           expect(utils.scrollToElement).toHaveBeenCalledWith(
             findDiscussion('div.discussion', expected),
-            { behavior: 'smooth' },
+            { behavior: 'auto' },
           );
         });
       });
 
       describe('on `diffs` active tab', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           window.mrTabs.currentAction = 'diffs';
           wrapper.vm[fn](...args);
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('sets current discussion', () => {
@@ -173,17 +171,17 @@ describe('Discussion navigation mixin', () => {
 
           expect(utils.scrollToElementWithContext).toHaveBeenCalledWith(
             findDiscussion('ul.notes', expected),
-            { behavior: 'smooth' },
+            { behavior: 'auto' },
           );
         });
       });
 
       describe('on `other` active tab', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           window.mrTabs.currentAction = 'other';
           wrapper.vm[fn](...args);
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('sets current discussion', () => {
@@ -214,21 +212,15 @@ describe('Discussion navigation mixin', () => {
           it('scrolls to discussion', () => {
             expect(utils.scrollToElement).toHaveBeenCalledWith(
               findDiscussion('div.discussion', expected),
-              { behavior: 'smooth' },
+              { behavior: 'auto' },
             );
           });
         });
       });
     });
 
-    describe.each`
-      diffsVirtualScrolling
-      ${false}
-      ${true}
-    `('virtual scrolling feature is $diffsVirtualScrolling', ({ diffsVirtualScrolling }) => {
+    describe('virtual scrolling feature', () => {
       beforeEach(() => {
-        window.gon = { features: { diffsVirtualScrolling } };
-
         jest.spyOn(store, 'dispatch');
 
         store.state.notes.currentDiscussionId = 'a';
@@ -240,22 +232,22 @@ describe('Discussion navigation mixin', () => {
         window.location.hash = '';
       });
 
-      it('resets location hash if diffsVirtualScrolling flag is true', async () => {
+      it('resets location hash', async () => {
         wrapper.vm.jumpToNextDiscussion();
 
         await nextTick();
 
-        expect(window.location.hash).toBe(diffsVirtualScrolling ? '' : '#test');
+        expect(window.location.hash).toBe('');
       });
 
       it.each`
-        tabValue   | hashValue
-        ${'diffs'} | ${false}
-        ${'show'}  | ${!diffsVirtualScrolling}
-        ${'other'} | ${!diffsVirtualScrolling}
+        tabValue
+        ${'diffs'}
+        ${'show'}
+        ${'other'}
       `(
         'calls scrollToFile with setHash as $hashValue when the tab is $tabValue',
-        async ({ hashValue, tabValue }) => {
+        async ({ tabValue }) => {
           window.mrTabs.currentAction = tabValue;
 
           wrapper.vm.jumpToNextDiscussion();
@@ -264,7 +256,6 @@ describe('Discussion navigation mixin', () => {
 
           expect(store.dispatch).toHaveBeenCalledWith('diffs/scrollToFile', {
             path: 'test.js',
-            setHash: hashValue,
           });
         },
       );

@@ -139,7 +139,7 @@ module GroupsHelper
     {}
   end
 
-  def require_verification_for_group_creation_enabled?
+  def require_verification_for_namespace_creation_enabled?
     # overridden in EE
     false
   end
@@ -204,7 +204,7 @@ module GroupsHelper
   end
 
   def group_url_error_message
-    s_('GroupSettings|Please choose a group URL with no special characters or spaces.')
+    s_('GroupSettings|Choose a group path that does not start with a dash or end with a period. It can also contain alphanumeric characters and underscores.')
   end
 
   # Maps `jobs_to_be_done` values to option texts

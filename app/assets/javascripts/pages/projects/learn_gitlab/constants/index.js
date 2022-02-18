@@ -62,6 +62,7 @@ export const ACTION_LABELS = {
     description: s__('LearnGitLab|Scan your code to uncover vulnerabilities before deploying.'),
     section: 'deploy',
     position: 1,
+    openInNewTab: true,
   },
   issueCreated: {
     title: s__('LearnGitLab|Create an issue'),
@@ -94,3 +95,5 @@ export const ACTION_SECTIONS = {
     ),
   },
 };
+
+export const INVITE_MODAL_OPEN_COOKIE = 'confetti_post_signup';

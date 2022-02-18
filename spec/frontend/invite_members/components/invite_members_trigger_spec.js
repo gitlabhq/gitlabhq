@@ -71,7 +71,6 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
       findButton().vm.$emit('click');
 
       expect(spy).toHaveBeenCalledWith('openModal', {
-        inviteeType: 'members',
         source: triggerSource,
       });
     });

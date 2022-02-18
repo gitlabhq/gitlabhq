@@ -55,7 +55,7 @@ RSpec.describe StateNote do
         it 'contains the expected values' do
           expect(subject.author).to eq(author)
           expect(subject.created_at).to eq(event.created_at)
-          expect(subject.note).to eq('resolved the corresponding error and closed the issue.')
+          expect(subject.note).to eq('resolved the corresponding error and closed the issue')
         end
       end
 
@@ -65,7 +65,7 @@ RSpec.describe StateNote do
         it 'contains the expected values' do
           expect(subject.author).to eq(author)
           expect(subject.created_at).to eq(event.created_at)
-          expect(subject.note).to eq('automatically closed this issue because the alert resolved.')
+          expect(subject.note).to eq('automatically closed this incident because the alert resolved')
         end
       end
     end

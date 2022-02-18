@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # SaaS runners on Windows (beta) **(FREE SAAS)**
 
-SaaS runners on Windows are in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+SaaS runners on Windows are in [beta](../../../policy/alpha-beta-support.md#beta-features)
 and shouldn't be used for production workloads.
 
 During this beta period, the [shared runner quota for CI/CD minutes](../../pipelines/cicd_minutes.md)
@@ -15,14 +15,14 @@ change when the beta period ends, as discussed in this [related issue](https://g
 
 Windows runners on GitLab.com autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an
-[autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/tree/master/docs/readme.md)
+[autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/blob/main/docs/README.md)
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
 Windows runners execute your CI/CD jobs on `n1-standard-2` instances with
 2 vCPUs and 7.5 GB RAM. You can find a full list of available Windows packages in
 the [package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/main/cookbooks/preinstalled-software/README.md).
 
 We want to keep iterating to get Windows runners in a stable state and
-[generally available](https://about.gitlab.com/handbook/product/gitlab-the-product/#generally-available-ga).
+[generally available](../../../policy/alpha-beta-support.md#generally-available-ga).
 You can follow our work towards this goal in the
 [related epic](https://gitlab.com/groups/gitlab-org/-/epics/2162).
 
@@ -127,7 +127,7 @@ test:
 ## Limitations and known issues
 
 - All the limitations mentioned in our [beta
-  definition](https://about.gitlab.com/handbook/product/#beta).
+  definition](../../../policy/alpha-beta-support.md#beta-features).
 - The average provisioning time for a new Windows VM is 5 minutes.
   This means that you may notice slower build start times
   on the Windows runner fleet during the beta. In a future

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can find the available integrations under your project's
 **Settings > Integrations** page. You need to have at least
-the [Maintainer role](../../permissions.md) on the project.
+the Maintainer role on the project.
 
 ## Integrations
 

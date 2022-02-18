@@ -21,6 +21,7 @@
               .js-import-a-project-modal{ data: { project_id: @project.id, project_name: @project.name } }
             - if @project.allowed_to_share_with_group?
               .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite a group') } }
+              = render 'projects/invite_groups_modal', project: @project
             - if can_admin_project_member?(@project)
               .js-invite-members-trigger{ data: { variant: 'success',
                 classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3',
@@ -38,7 +39,7 @@
           %p
             = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
 
-    - if Feature.disabled?(:invite_members_group_modal, @project.group) && can?(current_user, :admin_project_member, @project) && project_can_be_shared?
+    - if Feature.disabled?(:invite_members_group_modal, @project.group, default_enabled: :yaml) && can?(current_user, :admin_project_member, @project) && project_can_be_shared?
       - if !membership_locked? && @project.allowed_to_share_with_group?
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }
@@ -61,7 +62,7 @@
               default_access_level: ProjectGroupLink.default_access,
               group_link_field: 'link_group_id',
               group_access_field: 'link_group_access',
-              groups_select_tag_data: { skip_groups: @skip_groups }
+              groups_select_tag_data: { min_access_level: Gitlab::Access::GUEST, skip_groups: @skip_groups }
       - elsif !membership_locked?
         .invite-member
           = render 'shared/members/invite_member',
@@ -78,7 +79,7 @@
             submit_url: project_group_links_path(@project),
             group_link_field: 'link_group_id',
             group_access_field: 'link_group_access',
-            groups_select_tag_data: { skip_groups: @skip_groups }
+            groups_select_tag_data: { min_access_level: Gitlab::Access::GUEST, skip_groups: @skip_groups }
     .js-project-members-list-app{ data: { members_data: project_members_app_data_json(@project,
                                                                                       members: @project_members,
                                                                                       group_links: @group_links,

@@ -392,8 +392,7 @@ class Integration < ApplicationRecord
   end
 
   def api_field_names
-    fields.map { |field| field[:name] }
-      .reject { |field_name| field_name =~ /(password|token|key|title|description)/ }
+    fields.pluck(:name).grep_v(/password|token|key|title|description/)
   end
 
   def global_fields

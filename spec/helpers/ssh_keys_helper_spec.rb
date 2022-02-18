@@ -17,9 +17,9 @@ RSpec.describe SshKeysHelper do
     end
 
     it 'returns only allowed algorithms' do
-      expect(ssh_key_allowed_algorithms).to match('ed25519')
-      stub_application_setting(ed25519_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE)
-      expect(ssh_key_allowed_algorithms).not_to match('ed25519')
+      expect(ssh_key_allowed_algorithms).to match('rsa')
+      stub_application_setting(rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE)
+      expect(ssh_key_allowed_algorithms).not_to match('rsa')
     end
   end
 end

@@ -18,7 +18,6 @@
       line-height: 28px;
       color: $gl-text-color-secondary;
       border: 0;
-      border-bottom: 2px solid transparent;
       white-space: nowrap;
 
       &:hover,
@@ -26,7 +25,7 @@
       &:focus {
         text-decoration: none;
         color: $black;
-        border-bottom: 2px solid $gray-darkest;
+        box-shadow: inset 0 -2px 0 0 $gray-darkest;
       }
     }
 
@@ -40,7 +39,7 @@
     a.active {
       color: $black;
       font-weight: $gl-font-weight-bold;
-      border-bottom: 2px solid var(--gl-theme-accent, $theme-indigo-500);
+      box-shadow: inset 0 -2px 0 0 var(--gl-theme-accent, $theme-indigo-500);
 
       .badge.badge-pill {
         color: $black;

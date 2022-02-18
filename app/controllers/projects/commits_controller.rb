@@ -67,11 +67,11 @@ class Projects::CommitsController < Projects::ApplicationController
   def set_commits
     render_404 unless @path.empty? || request.format == :atom || @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
 
-    limit = params[:limit].to_i
+    limit = permitted_params[:limit].to_i
     @limit = limit > 0 ? limit : COMMITS_DEFAULT_LIMIT # limit can only ever be a positive number
-    @offset = (params[:offset] || 0).to_i
-    search = params[:search]
-    author = params[:author]
+    @offset = (permitted_params[:offset] || 0).to_i
+    search = permitted_params[:search]
+    author = permitted_params[:author]
 
     @commits =
       if search.present?
@@ -86,5 +86,9 @@ class Projects::CommitsController < Projects::ApplicationController
 
     @commits = @commits.with_latest_pipeline(@ref)
     @commits = set_commits_for_rendering(@commits)
+  end
+
+  def permitted_params
+    params.permit(:limit, :offset, :search, :author)
   end
 end

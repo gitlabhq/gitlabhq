@@ -70,7 +70,7 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
     let!(:snippet_with_repo) { create(:project_snippet, :repository, project: project, author: user) }
     let(:bundle_path) { ::Gitlab::ImportExport.snippets_repo_bundle_path(shared.export_path) }
     let(:snippet_bundle_path) { File.join(bundle_path, "#{snippet_with_repo.hexdigest}.bundle") }
-    let(:result) { exporter.save }
+    let(:result) { exporter.save } # rubocop:disable Rails/SaveBang
     let(:repository) { snippet.repository }
 
     before do

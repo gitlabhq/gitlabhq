@@ -12,8 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) from GitLab Premium to GitLab Free in 13.6.
 
 Schedules for deletion the cached manifests and blobs for a group. This endpoint requires the
-[Owner role](../user/permissions.md)
-for the group.
+Owner role for the group.
 
 ```plaintext
 DELETE /groups/:id/dependency_proxy/cache

@@ -1,11 +1,9 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ManualVariablesForm from '~/jobs/components/manual_variables_form.vue';
-
-const localVue = createLocalVue();
 
 Vue.use(Vuex);
 
@@ -29,9 +27,8 @@ describe('Manual Variables Form', () => {
     });
 
     wrapper = extendedWrapper(
-      mount(localVue.extend(ManualVariablesForm), {
+      mount(ManualVariablesForm, {
         propsData: { ...requiredProps, ...props },
-        localVue,
         store,
         stubs: {
           GlSprintf,

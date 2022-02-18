@@ -40,12 +40,13 @@ RSpec.shared_examples 'assigns ref vars' do
   end
 
   context 'path contains space' do
-    let(:params) { { path: 'with space', ref: '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' } }
+    let(:ref) { '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' }
+    let(:path) { 'with space' }
 
     it 'is not converted to %20 in @path' do
       assign_ref_vars
 
-      expect(@path).to eq(params[:path])
+      expect(@path).to eq(path)
     end
   end
 

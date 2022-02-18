@@ -1,5 +1,6 @@
-import { GlIcon, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
+import { GlBadge, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
 import StatesTable from '~/terraform/components/states_table.vue';
 import StateActions from '~/terraform/components/states_table_actions.vue';
@@ -106,9 +107,9 @@ describe('StatesTable', () => {
     ],
   };
 
-  const createComponent = (propsData = defaultProps) => {
+  const createComponent = async (propsData = defaultProps) => {
     wrapper = mount(StatesTable, { propsData });
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const findActions = () => wrapper.findAll(StateActions);
@@ -138,7 +139,7 @@ describe('StatesTable', () => {
       const toolTip = state.find(GlTooltip);
 
       expect(state.text()).toContain(name);
-      expect(state.find(GlIcon).exists()).toBe(locked);
+      expect(state.find(GlBadge).exists()).toBe(locked);
       expect(state.find(GlLoadingIcon).exists()).toBe(loading);
       expect(toolTip.exists()).toBe(locked);
 

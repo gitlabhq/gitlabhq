@@ -1169,7 +1169,7 @@ RSpec.describe Projects::PipelinesController do
 
     context 'when user has ability to delete pipeline' do
       before do
-        sign_in(project.owner)
+        sign_in(project.first_owner)
       end
 
       it 'deletes pipeline and redirects' do

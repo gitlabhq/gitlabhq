@@ -9,19 +9,17 @@ export default {
     GlLink,
   },
   props: {
-    fileName: {
-      type: String,
+    blob: {
+      type: Object,
       required: true,
     },
-    filePath: {
-      type: String,
-      required: true,
-    },
-    fileSize: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
+  },
+  data() {
+    return {
+      fileName: this.blob.name,
+      filePath: this.blob.rawPath,
+      fileSize: this.blob.rawSize || 0,
+    };
   },
   computed: {
     downloadFileSize() {

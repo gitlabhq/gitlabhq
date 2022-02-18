@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User views files page' do
   let(:project) { create(:forked_project_with_submodules) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     sign_in user

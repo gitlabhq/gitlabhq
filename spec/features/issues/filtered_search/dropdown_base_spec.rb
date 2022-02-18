@@ -24,23 +24,6 @@ RSpec.describe 'Dropdown base', :js do
     visit project_issues_path(project)
   end
 
-  describe 'behavior' do
-    it 'shows loading indicator when opened' do
-      slow_requests do
-        # We aren't using `input_filtered_search` because we want to see the loading indicator
-        filtered_search.set('assignee:=')
-
-        expect(page).to have_css("#{js_dropdown_assignee} .filter-dropdown-loading", visible: true)
-      end
-    end
-
-    it 'hides loading indicator when loaded' do
-      input_filtered_search('assignee:=', submit: false, extra_space: false)
-
-      expect(find(js_dropdown_assignee)).not_to have_css('.filter-dropdown-loading')
-    end
-  end
-
   describe 'caching requests' do
     it 'caches requests after the first load' do
       input_filtered_search('assignee:=', submit: false, extra_space: false)

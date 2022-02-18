@@ -1,5 +1,5 @@
 import { print } from 'graphql';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client/core';
 import cable from '~/actioncable_consumer';
 import ActionCableLink from '~/actioncable_link';
 

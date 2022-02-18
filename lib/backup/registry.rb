@@ -9,5 +9,13 @@ module Backup
 
       super('registry', Settings.registry.path)
     end
+
+    def human_name
+      _('container registry images')
+    end
+
+    def enabled
+      Gitlab.config.registry.enabled
+    end
   end
 end

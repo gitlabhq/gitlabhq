@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
   include PositionTracerHelpers
 
   let(:project) { create(:project, :repository) }
-  let(:current_user) { project.owner }
+  let(:current_user) { project.first_owner }
   let(:repository) { project.repository }
   let(:file_name) { "test-file" }
   let(:new_file_name) { "#{file_name}-new" }

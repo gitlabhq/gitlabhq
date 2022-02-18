@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createStore as createMrStore } from '~/mr_notes/stores';
@@ -80,13 +81,12 @@ describe('IssuableLockForm', () => {
         });
 
         describe('when not editable', () => {
-          it('does not display the edit form when opened if not editable', () => {
+          it('does not display the edit form when opened if not editable', async () => {
             expect(findEditForm().exists()).toBe(false);
             findSidebarCollapseIcon().trigger('click');
 
-            return wrapper.vm.$nextTick().then(() => {
-              expect(findEditForm().exists()).toBe(false);
-            });
+            await nextTick();
+            expect(findEditForm().exists()).toBe(false);
           });
         });
 
@@ -102,13 +102,12 @@ describe('IssuableLockForm', () => {
           });
 
           describe("when 'Edit' is clicked", () => {
-            it('displays the edit form when editable', () => {
+            it('displays the edit form when editable', async () => {
               expect(findEditForm().exists()).toBe(false);
               findEditLink().trigger('click');
 
-              return wrapper.vm.$nextTick().then(() => {
-                expect(findEditForm().exists()).toBe(true);
-              });
+              await nextTick();
+              expect(findEditForm().exists()).toBe(true);
             });
 
             it('tracks the event ', () => {
@@ -123,13 +122,12 @@ describe('IssuableLockForm', () => {
           });
 
           describe('When sidebar is collapsed', () => {
-            it('displays the edit form when opened', () => {
+            it('displays the edit form when opened', async () => {
               expect(findEditForm().exists()).toBe(false);
               findSidebarCollapseIcon().trigger('click');
 
-              return wrapper.vm.$nextTick().then(() => {
-                expect(findEditForm().exists()).toBe(true);
-              });
+              await nextTick();
+              expect(findEditForm().exists()).toBe(true);
             });
 
             it('renders a tooltip with the lock status text', () => {

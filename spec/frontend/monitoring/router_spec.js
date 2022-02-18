@@ -1,4 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import DashboardPage from '~/monitoring/pages/dashboard_page.vue';
@@ -25,8 +26,7 @@ describe('Monitoring router', () => {
   let store;
 
   const createWrapper = (basePath, routeArg) => {
-    const localVue = createLocalVue();
-    localVue.use(VueRouter);
+    Vue.use(VueRouter);
 
     router = createRouter(basePath);
     if (routeArg !== undefined) {
@@ -34,7 +34,6 @@ describe('Monitoring router', () => {
     }
 
     return mount(MockApp, {
-      localVue,
       store,
       router,
     });

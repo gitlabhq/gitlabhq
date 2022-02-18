@@ -43,7 +43,7 @@ job completes:
   [Slack API](https://api.slack.com/) to send data to the channel.
 
 To use the `run` command, you must have at least the
-[Developer role](../../user/permissions.md#project-members-permissions).
+Developer role.
 If a job shouldn't be able to be triggered from chat, you can set the job to `except: [chat]`.
 
 ## Best practices for ChatOps CI jobs
@@ -55,7 +55,7 @@ functions available. Consider these best practices when creating ChatOps jobs:
   of the standard CI pipeline.
 - If the job is set to `when: manual`, ChatOps creates the pipeline, but the job waits to be started.
 - ChatOps provides limited support for access control. If the user triggering the
-  slash command has at least the [Developer role](../../user/permissions.md#project-members-permissions)
+  slash command has at least the Developer role
   in the project, the job runs. The job itself can use existing
   [CI/CD variables](../variables/index.md#predefined-cicd-variables) like
   `GITLAB_USER_ID` to perform additional rights validation, but

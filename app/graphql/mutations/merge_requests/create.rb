@@ -3,9 +3,9 @@
 module Mutations
   module MergeRequests
     class Create < BaseMutation
-      include FindsProject
-
       graphql_name 'MergeRequestCreate'
+
+      include FindsProject
 
       argument :project_path, GraphQL::Types::ID,
                required: true,

@@ -1,6 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import Participants from '~/sidebar/components/participants/participants.vue';
 
 const PARTICIPANT = {
@@ -77,7 +77,7 @@ describe('Participants', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
 
-    it('when only showing visible participants, shows an avatar only for each participant under the limit', () => {
+    it('when only showing visible participants, shows an avatar only for each participant under the limit', async () => {
       const numberOfLessParticipants = 2;
       wrapper = mountComponent({
         loading: false,
@@ -91,12 +91,11 @@ describe('Participants', () => {
         isShowingMoreParticipants: false,
       });
 
-      return Vue.nextTick().then(() => {
-        expect(wrapper.findAll('.participants-author')).toHaveLength(numberOfLessParticipants);
-      });
+      await nextTick();
+      expect(wrapper.findAll('.participants-author')).toHaveLength(numberOfLessParticipants);
     });
 
-    it('when only showing all participants, each has an avatar', () => {
+    it('when only showing all participants, each has an avatar', async () => {
       wrapper = mountComponent({
         loading: false,
         participants: PARTICIPANT_LIST,
@@ -109,9 +108,8 @@ describe('Participants', () => {
         isShowingMoreParticipants: true,
       });
 
-      return Vue.nextTick().then(() => {
-        expect(wrapper.findAll('.participants-author')).toHaveLength(PARTICIPANT_LIST.length);
-      });
+      await nextTick();
+      expect(wrapper.findAll('.participants-author')).toHaveLength(PARTICIPANT_LIST.length);
     });
 
     it('does not have more participants link when they can all be shown', () => {
@@ -126,7 +124,7 @@ describe('Participants', () => {
       expect(getMoreParticipantsButton().exists()).toBe(false);
     });
 
-    it('when too many participants, has more participants link to show more', () => {
+    it('when too many participants, has more participants link to show more', async () => {
       wrapper = mountComponent({
         loading: false,
         participants: PARTICIPANT_LIST,
@@ -139,12 +137,11 @@ describe('Participants', () => {
         isShowingMoreParticipants: false,
       });
 
-      return Vue.nextTick().then(() => {
-        expect(getMoreParticipantsButton().text()).toBe('+ 1 more');
-      });
+      await nextTick();
+      expect(getMoreParticipantsButton().text()).toBe('+ 1 more');
     });
 
-    it('when too many participants and already showing them, has more participants link to show less', () => {
+    it('when too many participants and already showing them, has more participants link to show less', async () => {
       wrapper = mountComponent({
         loading: false,
         participants: PARTICIPANT_LIST,
@@ -157,9 +154,8 @@ describe('Participants', () => {
         isShowingMoreParticipants: true,
       });
 
-      return Vue.nextTick().then(() => {
-        expect(getMoreParticipantsButton().text()).toBe('- show less');
-      });
+      await nextTick();
+      expect(getMoreParticipantsButton().text()).toBe('- show less');
     });
 
     it('clicking more participants link emits event', () => {
@@ -176,7 +172,7 @@ describe('Participants', () => {
       expect(wrapper.vm.isShowingMoreParticipants).toBe(true);
     });
 
-    it('clicking on participants icon emits `toggleSidebar` event', () => {
+    it('clicking on participants icon emits `toggleSidebar` event', async () => {
       wrapper = mountComponent({
         loading: false,
         participants: PARTICIPANT_LIST,
@@ -187,11 +183,9 @@ describe('Participants', () => {
 
       wrapper.find('.sidebar-collapsed-icon').trigger('click');
 
-      return Vue.nextTick(() => {
-        expect(spy).toHaveBeenCalledWith('toggleSidebar');
-
-        spy.mockRestore();
-      });
+      await nextTick();
+      expect(spy).toHaveBeenCalledWith('toggleSidebar');
+      spy.mockRestore();
     });
   });
 

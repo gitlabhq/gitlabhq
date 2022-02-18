@@ -1,0 +1,19 @@
+image: python:latest
+stages:
+  - run
+  - install
+
+run:
+  stage: run
+  script:
+    - pip install twine
+    - python setup.py sdist bdist_wheel
+    - "TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url <%= gitlab_address_with_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*"
+  tags:
+    - runner-for-<%= project.name %>
+install:
+  stage: install
+  script:
+  - "pip install <%= package.name %> --no-deps --index-url <%= uri.scheme %>://<%= personal_access_token %>:<%= personal_access_token %>@<%= gitlab_host_with_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host <%= gitlab_host_with_port %>"
+  tags:
+  - runner-for-<%= project.name %>

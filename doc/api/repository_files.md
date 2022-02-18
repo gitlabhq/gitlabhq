@@ -185,17 +185,17 @@ This allows you to create a single file. For creating multiple files with a sing
 POST /projects/:id/repository/files/:file_path
 ```
 
-| Attribute        | Type           | Required | Description                                                                                                     |
-|------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
-| `file_path`      | string         | yes      | URL encoded full path to new file. Ex. `lib%2Fclass%2Erb`.                                                      |
-| `branch`         | string         | yes      | Name of the branch                                                                                              |
-| `start_branch`   | string         | no       | Name of the branch to start the new commit from                                                                 |
-| `encoding`       | string         | no       | Change encoding to `base64`. Default is `text`.                                                                 |
-| `author_email`   | string         | no       | Specify the commit author's email address                                                                       |
-| `author_name`    | string         | no       | Specify the commit author's name                                                                                |
-| `content`        | string         | yes      | File content                                                                                                    |
-| `commit_message` | string         | yes      | Commit message                                                                                                  |
+| Attribute        | Type           | Required | Description |
+| ---------------- | -------------- | -------- | ----------- |
+| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `file_path`      | string         | yes      | URL-encoded full path to new file. For example:  `lib%2Fclass%2Erb`. |
+| `branch`         | string         | yes      | Name of the new branch to create. The commit is added to this branch. |
+| `start_branch`   | string         | no       | Name of the base branch to create the new branch from. |
+| `encoding`       | string         | no       | Change encoding to `base64`. Default is `text`. |
+| `author_email`   | string         | no       | The commit author's email address. |
+| `author_name`    | string         | no       | The commit author's name. |
+| `content`        | string         | yes      | The file's content. |
+| `commit_message` | string         | yes      | The commit message. |
 
 ```shell
 curl --request POST --header 'PRIVATE-TOKEN: <your_access_token>' \
@@ -222,18 +222,18 @@ This allows you to update a single file. For updating multiple files with a sing
 PUT /projects/:id/repository/files/:file_path
 ```
 
-| Attribute        | Type           | Required | Description                                                                                                     |
-|------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| Attribute        | Type           | Required | Description |
+| ---------------- | -------------- | -------- | ----------- |
 | `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
-| `file_path`      | string         | yes      | URL encoded full path to new file. Ex. `lib%2Fclass%2Erb`.                                                      |
-| `branch`         | string         | yes      | Name of the branch                                                                                              |
-| `start_branch`   | string         | no       | Name of the branch to start the new commit from                                                                 |
-| `encoding`       | string         | no       | Change encoding to `base64`. Default is `text`.                                                                 |
-| `author_email`   | string         | no       | Specify the commit author's email address                                                                       |
-| `author_name`    | string         | no       | Specify the commit author's name                                                                                |
-| `content`        | string         | yes      | File content                                                                                                    |
-| `commit_message` | string         | yes      | Commit message                                                                                                  |
-| `last_commit_id` | string         | no       | Last known file commit ID                                                                                       |
+| `file_path`      | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
+| `branch`         | string         | yes      | Name of the new branch to create. The commit is added to this branch. |
+| `start_branch`   | string         | no       | Name of the base branch to create the new branch from. |
+| `encoding`       | string         | no       | Change encoding to `base64`. Default is `text`.  |
+| `author_email`   | string         | no       | The commit author's email address. |
+| `author_name`    | string         | no       | The commit author's name. |
+| `content`        | string         | yes      | The file's content. |
+| `commit_message` | string         | yes      | The commit message. |
+| `last_commit_id` | string         | no       | Last known file commit ID. |
 
 ```shell
 curl --request PUT --header 'PRIVATE-TOKEN: <your_access_token>' \
@@ -270,16 +270,16 @@ This allows you to delete a single file. For deleting multiple files with a sing
 DELETE /projects/:id/repository/files/:file_path
 ```
 
-| Attribute        | Type           | Required | Description                                                                                                     |
-|------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
-| `file_path`      | string         | yes      | URL encoded full path to new file. Ex. `lib%2Fclass%2Erb`.                                                      |
-| `branch`         | string         | yes      | Name of the branch                                                                                              |
-| `start_branch`   | string         | no       | Name of the branch to start the new commit from                                                                 |
-| `author_email`   | string         | no       | Specify the commit author's email address.                                                                      |
-| `author_name`    | string         | no       | Specify the commit author's name.                                                                               |
-| `commit_message` | string         | yes      | Commit message.                                                                                                 |
-| `last_commit_id` | string         | no       | Last known file commit ID.                                                                                      |
+| Attribute        | Type           | Required | Description |
+| ---------------- | -------------- | -------- | ----------- |
+| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `file_path`      | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
+| `branch`         | string         | yes      | Name of the new branch to create. The commit is added to this branch. |
+| `start_branch`   | string         | no       | Name of the base branch to create the new branch from. |
+| `author_email`   | string         | no       | The commit author's email address. |
+| `author_name`    | string         | no       | The commit author's name. |
+| `commit_message` | string         | yes      | The commit message. |
+| `last_commit_id` | string         | no       | Last known file commit ID. |
 
 ```shell
 curl --request DELETE --header 'PRIVATE-TOKEN: <your_access_token>' \

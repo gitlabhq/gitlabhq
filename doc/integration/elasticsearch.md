@@ -14,21 +14,29 @@ Advanced Search provides faster search response times and [improved search featu
 
 ## Version requirements
 
-<!-- Remember to update ee/lib/system_check/app/elasticsearch_check.rb if this changes -->
+> Support for Elasticsearch 6.8 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 14.8 and is scheduled for removal in GitLab 15.0.
 
-| GitLab version                              | Elasticsearch version         |
-|---------------------------------------------|-------------------------------|
-| GitLab Enterprise Edition 13.9 or greater   | Elasticsearch 6.8 through 7.x |
-| GitLab Enterprise Edition 13.3 through 13.8 | Elasticsearch 6.4 through 7.x |
-| GitLab Enterprise Edition 12.7 through 13.2 | Elasticsearch 6.x through 7.x |
-| GitLab Enterprise Edition 11.5 through 12.6 | Elasticsearch 5.6 through 6.x |
-| GitLab Enterprise Edition 9.0 through 11.4  | Elasticsearch 5.1 through 5.5 |
-| GitLab Enterprise Edition 8.4 through 8.17  | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
+| GitLab version       | Elasticsearch version    |
+|----------------------|--------------------------|
+| GitLab 14.8 or later | Elasticsearch 7.x - 7.17 |
+| GitLab 13.9 - 14.7   | Elasticsearch 6.8 - 7.x  |
+| GitLab 13.3 - 13.8   | Elasticsearch 6.4 - 7.x  |
+| GitLab 12.7 - 13.2   | Elasticsearch 6.x - 7.x  |
+| GitLab 11.5 - 12.6   | Elasticsearch 5.6 - 6.x  |
 
 The Elasticsearch Integration works with supported versions of
 Elasticsearch and follows Elasticsearch's [End of Life Policy](https://www.elastic.co/support/eol).
 When we change Elasticsearch supported versions in GitLab, we announce them in [deprecation notes](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) in monthly release posts
 before we remove them.
+
+### Versions not supported
+
+GitLab does not support:
+
+- [Amazon's OpenSearch](https://aws.amazon.com/blogs/opensource/opensearch-1-0-launches/)
+(a [fork of Elasticsearch](https://www.elastic.co/what-is/opensearch)). Use AWS Elasticsearch Service 7.10 instead.
+For updates, see [issue #327560](https://gitlab.com/gitlab-org/gitlab/-/issues/327560).
+- Elasticsearch 8.0. For updates, see [issue #350600](https://gitlab.com/gitlab-org/gitlab/-/issues/350600). Use Elasticsearch 7.17 instead.
 
 ## System requirements
 
@@ -155,8 +163,7 @@ may need to set the `production -> elasticsearch -> indexer_path` setting in you
 
 ## Enable Advanced Search
 
-For GitLab instances with more than 50GB repository data you can follow the instructions for [Indexing large
-instances](#indexing-large-instances) below.
+For GitLab instances with more than 50GB repository data you can follow the instructions for [how to index large instances efficiently](#how-to-index-large-instances-efficiently) below.
 
 To enable Advanced Search, you must have administrator access to GitLab:
 
@@ -466,7 +473,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Enables Elasticsearch indexing and run `gitlab:elastic:create_empty_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_projects`, and `gitlab:elastic:index_snippets`.                          |
 | [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Pauses Elasticsearch indexing. Changes are still tracked. Useful for cluster/index migrations. |
 | [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Resumes Elasticsearch indexing. |
-| [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects and queues Sidekiq jobs to index them in the background.                                                                                                       |
+| [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects, and queues Sidekiq jobs to index them in the background. It can only be used after the index is created.                                                                                                      |
 | [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100. |
 | [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Deletes all instances of IndexStatus for all projects. Note that this command results in a complete wipe of the index, and it should be used with caution.                                                                                              |
 | [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indexes (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
@@ -511,7 +518,7 @@ When performing a search, the GitLab index uses the following scopes:
 | `projects`       | Project data (default) |
 | `blobs`          | Code                   |
 | `issues`         | Issue data             |
-| `merge_requests` | Merge Request data     |
+| `merge_requests` | Merge request data     |
 | `milestones`     | Milestone data         |
 | `notes`          | Note data              |
 | `snippets`       | Snippet data           |
@@ -543,7 +550,7 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 - The `Number of Elasticsearch shards` setting usually corresponds with the number of CPUs available in your cluster. For example, if you have a 3-node cluster with 4 cores each, this means you benefit from having at least 3*4=12 shards in the cluster. It's only possible to change the shards number by using [Split index API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-split-index.html) or by reindexing to a different index with a changed number of shards.
 - The `Number of Elasticsearch replicas` setting should most of the time be equal to `1` (each shard has 1 replica). Using `0` is not recommended, because losing one node corrupts the index.
 
-### Indexing large instances
+### How to index large instances efficiently
 
 This section may be helpful in the event that the other
 [basic instructions](#enable-advanced-search) cause problems
@@ -740,6 +747,86 @@ However, some larger installations may wish to tune the merge policy settings:
   ```
 
 - Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
+
+## Index large instances with dedicated Sidekiq nodes or processes
+
+Indexing a large instance can be a lengthy and resource-intensive process that has the potential
+of overwhelming Sidekiq nodes and processes. This negatively affects the GitLab performance and
+availability.
+
+As GitLab allows you to start multiple Sidekiq processes, you can create an
+additional process dedicated to indexing a set of queues (or queue group). This way, you can
+ensure that indexing queues always have a dedicated worker, while the rest of the queues have
+another dedicated worker to avoid contention.
+
+For this purpose, use the [queue selector](../administration/operations/extra_sidekiq_processes.md#queue-selector)
+option that allows a more general selection of queue groups using a [worker matching query](../administration/operations/extra_sidekiq_routing.md#worker-matching-query).
+
+To handle these two queue groups, we generally recommend one of the following two options. You can either:
+
+- [Use two queue groups on one single node](#single-node-two-processes).
+- [Use two queue groups, one on each node](#two-nodes-one-process-for-each).
+
+For the steps below, consider:
+
+- `feature_category=global_search` as an indexing queue group with its own Sidekiq process.
+- `feature_category!=global_search` as a non-indexing queue group that has its own Sidekiq process.
+
+### Single node, two processes
+
+To create both an indexing and a non-indexing Sidekiq process in one node:
+
+1. On your Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
+
+   ```ruby
+   sidekiq['enable'] = true
+    sidekiq['queue_selector'] = true
+    sidekiq['queue_groups'] = [
+      "feature_category=global_search",
+      "feature_category!=global_search"
+    ]
+   ```
+
+1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+for the changes to take effect.
+
+WARNING:
+When starting multiple processes, the number of processes cannot exceed the number of CPU
+cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
+to the available workload and concurrency settings. For more details, see how to
+[run multiple Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
+
+### Two nodes, one process for each
+
+To handle these queue groups on two nodes:
+
+1. To set up the indexing Sidekiq process, on your indexing Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
+
+    ```ruby
+    sidekiq['enable'] = true
+     sidekiq['queue_selector'] = true
+     sidekiq['queue_groups'] = [
+       "feature_category=global_search"
+     ]
+    ```
+
+1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+for the changes to take effect.
+
+1. To set up the non-indexing Sidekiq process, on your non-indexing Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
+
+    ```ruby
+    sidekiq['enable'] = true
+     sidekiq['queue_selector'] = true
+     sidekiq['queue_groups'] = [
+       "feature_category!=global_search"
+     ]
+    ```
+
+    to set up a non-indexing Sidekiq process.
+
+1. Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+for the changes to take effect.
 
 ## Reverting to Basic Search
 
@@ -982,6 +1069,13 @@ Advanced Search will store all the projects in the same Elasticsearch indexes,
 however searches will only surface results that can be viewed by the user.
 Advanced Search will honor all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
+
+### Indexing fails with `error: elastic: Error 429 (Too Many Requests)`
+
+If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
+
+- To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
+- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../administration/operations/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
 
 ### Access requirements for the self-managed AWS OpenSearch Service
 

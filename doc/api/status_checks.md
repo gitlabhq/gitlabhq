@@ -31,7 +31,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
         "id": 2,
         "name": "Rule 1",
         "external_url": "https://gitlab.com/test-endpoint",
-        "status": "approved"
+        "status": "pass"
     },
     {
         "id": 1,
@@ -47,6 +47,8 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 For a single merge request, use the API to inform GitLab that a merge request has passed a check by an external service.
 To set the status of an external check, the personal access token used must belong to a user with at least the developer role on the target project of the merge request.
 
+Execute this API call as any user with rights to approve the merge request itself.
+
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 ```
@@ -59,6 +61,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 | `merge_request_iid`        | integer | yes      | IID of a merge request                |
 | `sha`                      | string  | yes      | SHA at `HEAD` of the source branch    |
 | `external_status_check_id` | integer | yes      | ID of an external status check        |
+| `status`                   | string  | no       | Set to `pass` to pass the check       |
 
 NOTE:
 `sha` must be the SHA at the `HEAD` of the merge request's source branch.

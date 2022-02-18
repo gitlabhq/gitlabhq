@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SecurityReportsMrWidgetPromptExperiment < ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
+class SecurityReportsMrWidgetPromptExperiment < ApplicationExperiment
   def publish(_result = nil)
     super
 

@@ -1,8 +1,8 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import Cookies from 'js-cookie';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
+
 import { USER_COLLAPSED_GUTTER_COOKIE } from '../constants';
 
 export default {
@@ -10,7 +10,7 @@ export default {
     GlIcon,
   },
   data() {
-    const userExpanded = !parseBoolean(Cookies.get(USER_COLLAPSED_GUTTER_COOKIE));
+    const userExpanded = !parseBoolean(getCookie(USER_COLLAPSED_GUTTER_COOKIE));
 
     // We're deliberately keeping two different props for sidebar status;
     // 1. userExpanded reflects value based on cookie `collapsed_gutter`.
@@ -46,7 +46,7 @@ export default {
       this.isExpanded = !this.isExpanded;
       this.userExpanded = this.isExpanded;
 
-      Cookies.set(USER_COLLAPSED_GUTTER_COOKIE, !this.userExpanded);
+      setCookie(USER_COLLAPSED_GUTTER_COOKIE, !this.userExpanded);
       this.updatePageContainerClass();
     },
   },

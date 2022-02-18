@@ -13,4 +13,8 @@ class Namespaces::SyncEvent < ApplicationRecord
   def self.enqueue_worker
     ::Namespaces::ProcessSyncEventsWorker.perform_async # rubocop:disable CodeReuse/Worker
   end
+
+  def self.upper_bound_count
+    select('COALESCE(MAX(id) - MIN(id) + 1, 0) AS upper_bound_count').to_a.first.upper_bound_count
+  end
 end

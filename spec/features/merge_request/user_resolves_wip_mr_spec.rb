@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User resolves Work in Progress', :js do
+RSpec.describe 'Merge request > User resolves Draft', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project,
                                       author: user,
-                                      title: 'WIP: Bug NS-04',
+                                      title: 'Draft: Bug NS-04',
                                       merge_params: { force_remove_source_branch: '1' })
   end
 

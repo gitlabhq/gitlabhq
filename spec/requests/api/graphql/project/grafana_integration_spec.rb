@@ -5,7 +5,7 @@ RSpec.describe 'Getting Grafana Integration' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:current_user) { project.owner }
+  let_it_be(:current_user) { project.first_owner }
   let_it_be(:grafana_integration) { create(:grafana_integration, project: project) }
 
   let(:fields) do

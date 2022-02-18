@@ -159,7 +159,10 @@ describe('Landing', () => {
     });
 
     it('should call Cookies.set', () => {
-      expect(Cookies.set).toHaveBeenCalledWith(test.cookieName, 'true', { expires: 365 });
+      expect(Cookies.set).toHaveBeenCalledWith(test.cookieName, 'true', {
+        expires: 365,
+        secure: false,
+      });
     });
   });
 

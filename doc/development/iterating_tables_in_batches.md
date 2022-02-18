@@ -142,7 +142,7 @@ database query:
 SELECT "users"."id" FROM "users" ORDER BY "users"."id" ASC LIMIT 1
 ```
 
-![Reading the start `id` value](img/each_batch_users_table_iteration_1_v13_7.png)
+![Reading the start ID value](img/each_batch_users_table_iteration_1_v13_7.png)
 
 Notice that the query only reads data from the index (`INDEX ONLY SCAN`), the table is not
 accessed. Database indexes are sorted so taking out the first item is a very cheap operation.
@@ -155,7 +155,7 @@ to get a "shifted" `id` value.
 SELECT "users"."id" FROM "users" WHERE "users"."id" >= 1 ORDER BY "users"."id" ASC LIMIT 1 OFFSET 5
 ```
 
-![Reading the end `id` value](img/each_batch_users_table_iteration_2_v13_7.png)
+![Reading the end ID value](img/each_batch_users_table_iteration_2_v13_7.png)
 
 Again, the query only looks into the index. The `OFFSET 5` takes out the sixth `id` value: this
 query reads a maximum of six items from the index regardless of the table size or the iteration
@@ -181,7 +181,7 @@ previous iteration in order to find out the next end `id` value.
 SELECT "users"."id" FROM "users" WHERE "users"."id" >= 302 ORDER BY "users"."id" ASC LIMIT 1 OFFSET 5
 ```
 
-![Reading the second end `id` value](img/each_batch_users_table_iteration_4_v13_7.png)
+![Reading the second end ID value](img/each_batch_users_table_iteration_4_v13_7.png)
 
 Now we can easily construct the `users` query for the second iteration.
 

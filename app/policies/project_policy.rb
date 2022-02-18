@@ -240,6 +240,7 @@ class ProjectPolicy < BasePolicy
     enable :read_wiki
     enable :read_issue
     enable :read_label
+    enable :read_planning_hierarchy
     enable :read_milestone
     enable :read_snippet
     enable :read_project_member
@@ -258,10 +259,12 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
 
-  rule { can?(:guest_access) & can?(:create_issue) }.policy do
+  rule { can?(:create_issue) }.policy do
     enable :create_task
     enable :create_work_item
   end
+
+  rule { can?(:update_issue) }.enable :update_work_item
 
   # These abilities are not allowed to admins that are not members of the project,
   # that's why they are defined separately.
@@ -385,6 +388,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_environment
     enable :create_deployment
     enable :update_deployment
+    enable :read_cluster
     enable :create_release
     enable :update_release
     enable :destroy_release
@@ -433,7 +437,6 @@ class ProjectPolicy < BasePolicy
     enable :read_pages
     enable :update_pages
     enable :remove_pages
-    enable :read_cluster
     enable :add_cluster
     enable :create_cluster
     enable :update_cluster
@@ -572,6 +575,7 @@ class ProjectPolicy < BasePolicy
     enable :read_issue_board_list
     enable :read_wiki
     enable :read_label
+    enable :read_planning_hierarchy
     enable :read_milestone
     enable :read_snippet
     enable :read_project_member

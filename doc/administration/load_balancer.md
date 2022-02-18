@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Load Balancer for multi-node GitLab **(FREE SELF)**
@@ -21,38 +20,38 @@ How do you want to handle SSL in your multi-node environment? There are several 
 options:
 
 - Each application node terminates SSL
-- The load balancer(s) terminate SSL and communication is not secure between
-  the load balancer(s) and the application nodes
-- The load balancer(s) terminate SSL and communication is *secure* between the
-  load balancer(s) and the application nodes
+- The load balancers terminate SSL and communication is not secure between
+  the load balancers and the application nodes
+- The load balancers terminate SSL and communication is *secure* between the
+  load balancers and the application nodes
 
 ### Application nodes terminate SSL
 
-Configure your load balancer(s) to pass connections on port 443 as 'TCP' rather
+Configure your load balancers to pass connections on port 443 as 'TCP' rather
 than 'HTTP(S)' protocol. This passes the connection to the application nodes
 NGINX service untouched. NGINX has the SSL certificate and listen on port 443.
 
 See [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
 for details on managing SSL certificates and configuring NGINX.
 
-### Load Balancer(s) terminate SSL without backend SSL
+### Load Balancers terminate SSL without backend SSL
 
-Configure your load balancer(s) to use the 'HTTP(S)' protocol rather than 'TCP'.
-The load balancer(s) is be responsible for managing SSL certificates and
+Configure your load balancers to use the 'HTTP(S)' protocol rather than 'TCP'.
+The load balancers is be responsible for managing SSL certificates and
 terminating SSL.
 
-Since communication between the load balancer(s) and GitLab isn't secure,
+Since communication between the load balancers and GitLab isn't secure,
 there is some additional configuration needed. See
 [NGINX Proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
 for details.
 
-### Load Balancer(s) terminate SSL with backend SSL
+### Load Balancers terminate SSL with backend SSL
 
-Configure your load balancer(s) to use the 'HTTP(S)' protocol rather than 'TCP'.
-The load balancer(s) is responsible for managing SSL certificates that
+Configure your load balancers to use the 'HTTP(S)' protocol rather than 'TCP'.
+The load balancers is responsible for managing SSL certificates that
 end users see.
 
-Traffic is secure between the load balancer(s) and NGINX in this
+Traffic is secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
 connection is secure all the way. However, configuration must be
 added to GitLab to configure SSL certificates. See

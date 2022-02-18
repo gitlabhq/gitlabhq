@@ -14,14 +14,14 @@ In a sense, these scenarios are all transient states. But they can often persist
 
 ### When modifying a Sidekiq worker
 
-For example when [changing arguments](sidekiq_style_guide.md#changing-the-arguments-for-a-worker):
+For example when [changing arguments](sidekiq/compatibility_across_updates.md#changing-the-arguments-for-a-worker):
 
 - Is it ok if jobs are being enqueued with the old signature but executed by the new monthly release?
 - Is it ok if jobs are being enqueued with the new signature but executed by the previous monthly release?
 
 ### When adding a new Sidekiq worker
 
-Is it ok if these jobs don't get executed for several hours because [Sidekiq nodes are not yet updated](sidekiq_style_guide.md#adding-new-workers)?
+Is it ok if these jobs don't get executed for several hours because [Sidekiq nodes are not yet updated](sidekiq/compatibility_across_updates.md#adding-new-workers)?
 
 ### When modifying JavaScript
 
@@ -89,7 +89,7 @@ Many users [skip some monthly releases](../update/index.md#upgrading-to-a-new-ma
 
 - 13.0 => 13.12
 
-These users accept some downtime during the update. Unfortunately we can't ignore this case completely. For example, 13.12 may execute Sidekiq jobs from 13.0, which illustrates why [we avoid removing arguments from jobs until a major release](sidekiq_style_guide.md#deprecate-and-remove-an-argument). The main question is: Will the deployment get to a good state after the update is complete?
+These users accept some downtime during the update. Unfortunately we can't ignore this case completely. For example, 13.12 may execute Sidekiq jobs from 13.0, which illustrates why [we avoid removing arguments from jobs until a major release](sidekiq/compatibility_across_updates.md#deprecate-and-remove-an-argument). The main question is: Will the deployment get to a good state after the update is complete?
 
 ## What kind of components can GitLab be broken down into?
 
@@ -180,7 +180,7 @@ coexists in production.
 
 ### Changing Sidekiq worker's parameters
 
-This topic is explained in detail in [Sidekiq Compatibility across Updates](sidekiq_style_guide.md#sidekiq-compatibility-across-updates).
+This topic is explained in detail in [Sidekiq Compatibility across Updates](sidekiq/compatibility_across_updates.md).
 
 When we need to add a new parameter to a Sidekiq worker class, we can split this into the following steps:
 

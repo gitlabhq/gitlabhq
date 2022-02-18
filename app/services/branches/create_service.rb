@@ -21,7 +21,7 @@ module Branches
         error("Failed to create branch '#{branch_name}': invalid reference name '#{ref}'")
       end
     rescue Gitlab::Git::PreReceiveError => e
-      Gitlab::ErrorTracking.track_exception(e, pre_receive_message: e.raw_message, branch_name: branch_name, ref: ref)
+      Gitlab::ErrorTracking.log_exception(e, pre_receive_message: e.raw_message, branch_name: branch_name, ref: ref)
       error(e.message)
     end
 

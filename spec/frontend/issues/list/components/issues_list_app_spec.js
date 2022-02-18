@@ -16,6 +16,8 @@ import {
   getIssuesQueryResponse,
   filteredTokens,
   locationSearch,
+  setSortPreferenceMutationResponse,
+  setSortPreferenceMutationResponseWithErrors,
   urlParams,
 } from 'jest/issues/list/mock_data';
 import createFlash, { FLASH_TYPES } from '~/flash';
@@ -28,8 +30,6 @@ import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
 import {
   CREATED_DESC,
-  DUE_DATE_OVERDUE,
-  PARAM_DUE_DATE,
   RELATIVE_POSITION,
   RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
@@ -43,16 +43,15 @@ import {
   urlSortParams,
 } from '~/issues/list/constants';
 import eventHub from '~/issues/list/eventhub';
-import { getSortOptions } from '~/issues/list/utils';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import { getSortKey, getSortOptions } from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 
 jest.mock('@sentry/browser');
 jest.mock('~/flash');
-jest.mock('~/lib/utils/scroll_utils', () => ({
-  scrollUp: jest.fn().mockName('scrollUpMock'),
-}));
+jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 
 describe('CE IssuesListApp component', () => {
   let axiosMock;
@@ -61,6 +60,7 @@ describe('CE IssuesListApp component', () => {
   Vue.use(VueApollo);
 
   const defaultProvide = {
+    autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
     emptyStateSvgPath: 'empty-state.svg',
@@ -72,10 +72,16 @@ describe('CE IssuesListApp component', () => {
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
+    hasMultipleIssueAssigneesFeature: true,
+    initialEmail: 'email@example.com',
+    initialSort: CREATED_DESC,
+    isAnonymousSearchDisabled: false,
+    isIssueRepositioningDisabled: false,
     isProject: true,
     isSignedIn: true,
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
+    releasesPath: 'releases/path',
     rssPath: 'rss/path',
     showNewIssueLink: true,
     signInPath: 'sign/in/path',
@@ -103,11 +109,13 @@ describe('CE IssuesListApp component', () => {
     provide = {},
     issuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse),
     issuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse),
+    sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
     mountFn = shallowMount,
   } = {}) => {
     const requestHandlers = [
       [getIssuesQuery, issuesQueryResponse],
       [getIssuesCountsQuery, issuesCountsQueryResponse],
+      [setSortPreferenceMutation, sortPreferenceMutationResponse],
     ];
     const apolloProvider = createMockApollo(requestHandlers);
 
@@ -131,9 +139,10 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('IssuableList', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper = mountComponent();
       jest.runOnlyPendingTimers();
+      await waitForPromises();
     });
 
     it('renders', () => {
@@ -167,8 +176,9 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('header action buttons', () => {
-    it('renders rss button', () => {
+    it('renders rss button', async () => {
       wrapper = mountComponent({ mountFn: mount });
+      await waitForPromises();
 
       expect(findGlButtonAt(0).props('icon')).toBe('rss');
       expect(findGlButtonAt(0).attributes()).toMatchObject({
@@ -177,8 +187,9 @@ describe('CE IssuesListApp component', () => {
       });
     });
 
-    it('renders calendar button', () => {
+    it('renders calendar button', async () => {
       wrapper = mountComponent({ mountFn: mount });
+      await waitForPromises();
 
       expect(findGlButtonAt(1).props('icon')).toBe('calendar');
       expect(findGlButtonAt(1).attributes()).toMatchObject({
@@ -189,19 +200,21 @@ describe('CE IssuesListApp component', () => {
 
     describe('csv import/export component', () => {
       describe('when user is signed in', () => {
-        const search = '?search=refactor&sort=created_date&state=opened';
+        beforeEach(async () => {
+          setWindowLocation('?search=refactor&state=opened');
 
-        beforeEach(() => {
-          setWindowLocation(search);
-
-          wrapper = mountComponent({ provide: { isSignedIn: true }, mountFn: mount });
+          wrapper = mountComponent({
+            provide: { initialSortBy: CREATED_DESC, isSignedIn: true },
+            mountFn: mount,
+          });
 
           jest.runOnlyPendingTimers();
+          await waitForPromises();
         });
 
         it('renders', () => {
           expect(findCsvImportExportButtons().props()).toMatchObject({
-            exportCsvPath: `${defaultProvide.exportCsvPath}${search}`,
+            exportCsvPath: `${defaultProvide.exportCsvPath}?search=refactor&sort=created_date&state=opened`,
             issuableCount: 1,
           });
         });
@@ -281,16 +294,6 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('initial url params', () => {
-    describe('due_date', () => {
-      it('is set from the url params', () => {
-        setWindowLocation(`?${PARAM_DUE_DATE}=${DUE_DATE_OVERDUE}`);
-
-        wrapper = mountComponent();
-
-        expect(findIssuableList().props('urlParams')).toMatchObject({ due_date: DUE_DATE_OVERDUE });
-      });
-    });
-
     describe('search', () => {
       it('is set from the url params', () => {
         setWindowLocation(locationSearch);
@@ -302,31 +305,57 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('sort', () => {
-      it.each(Object.keys(urlSortParams))('is set as %s from the url params', (sortKey) => {
-        setWindowLocation(`?sort=${urlSortParams[sortKey]}`);
+      describe('when initial sort value uses old enum values', () => {
+        const oldEnumSortValues = Object.values(urlSortParams);
 
-        wrapper = mountComponent();
+        it.each(oldEnumSortValues)('initial sort is set with value %s', (sort) => {
+          wrapper = mountComponent({ provide: { initialSort: sort } });
 
-        expect(findIssuableList().props()).toMatchObject({
-          initialSortBy: sortKey,
-          urlParams: {
-            sort: urlSortParams[sortKey],
-          },
+          expect(findIssuableList().props()).toMatchObject({
+            initialSortBy: getSortKey(sort),
+            urlParams: { sort },
+          });
         });
       });
 
-      describe('when issue repositioning is disabled and the sort is manual', () => {
+      describe('when initial sort value uses new GraphQL enum values', () => {
+        const graphQLEnumSortValues = Object.keys(urlSortParams);
+
+        it.each(graphQLEnumSortValues)('initial sort is set with value %s', (sort) => {
+          wrapper = mountComponent({ provide: { initialSort: sort.toLowerCase() } });
+
+          expect(findIssuableList().props()).toMatchObject({
+            initialSortBy: sort,
+            urlParams: { sort: urlSortParams[sort] },
+          });
+        });
+      });
+
+      describe('when initial sort value is invalid', () => {
+        it.each(['', 'asdf', null, undefined])(
+          'initial sort is set to value CREATED_DESC',
+          (sort) => {
+            wrapper = mountComponent({ provide: { initialSort: sort } });
+
+            expect(findIssuableList().props()).toMatchObject({
+              initialSortBy: CREATED_DESC,
+              urlParams: { sort: urlSortParams[CREATED_DESC] },
+            });
+          },
+        );
+      });
+
+      describe('when sort is manual and issue repositioning is disabled', () => {
         beforeEach(() => {
-          setWindowLocation(`?sort=${RELATIVE_POSITION}`);
-          wrapper = mountComponent({ provide: { isIssueRepositioningDisabled: true } });
+          wrapper = mountComponent({
+            provide: { initialSort: RELATIVE_POSITION, isIssueRepositioningDisabled: true },
+          });
         });
 
         it('changes the sort to the default of created descending', () => {
           expect(findIssuableList().props()).toMatchObject({
             initialSortBy: CREATED_DESC,
-            urlParams: {
-              sort: urlSortParams[CREATED_DESC],
-            },
+            urlParams: { sort: urlSortParams[CREATED_DESC] },
           });
         });
 
@@ -585,16 +614,17 @@ describe('CE IssuesListApp component', () => {
       ${'fetching issues'}       | ${'issuesQueryResponse'}       | ${IssuesListApp.i18n.errorFetchingIssues}
       ${'fetching issue counts'} | ${'issuesCountsQueryResponse'} | ${IssuesListApp.i18n.errorFetchingCounts}
     `('when there is an error $error', ({ mountOption, message }) => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = mountComponent({
           [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')),
         });
         jest.runOnlyPendingTimers();
+        await waitForPromises();
       });
 
       it('shows an error message', () => {
         expect(findIssuableList().props('error')).toBe(message);
-        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Network error: ERROR'));
+        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('ERROR'));
       });
     });
 
@@ -687,12 +717,13 @@ describe('CE IssuesListApp component', () => {
           `(
             'when moving issue $description',
             ({ issueToMove, oldIndex, newIndex, moveBeforeId, moveAfterId }) => {
-              beforeEach(() => {
+              beforeEach(async () => {
                 wrapper = mountComponent({
                   provide: { isProject },
                   issuesQueryResponse: jest.fn().mockResolvedValue(response(isProject)),
                 });
                 jest.runOnlyPendingTimers();
+                await waitForPromises();
               });
 
               it('makes API call to reorder the issue', async () => {
@@ -705,7 +736,6 @@ describe('CE IssuesListApp component', () => {
                   data: JSON.stringify({
                     move_before_id: getIdFromGraphQLId(moveBeforeId),
                     move_after_id: getIdFromGraphQLId(moveAfterId),
-                    group_full_path: isProject ? undefined : defaultProvide.fullPath,
                   }),
                 });
               });
@@ -715,11 +745,12 @@ describe('CE IssuesListApp component', () => {
       });
 
       describe('when unsuccessful', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           wrapper = mountComponent({
             issuesQueryResponse: jest.fn().mockResolvedValue(response()),
           });
           jest.runOnlyPendingTimers();
+          await waitForPromises();
         });
 
         it('displays an error message', async () => {
@@ -758,8 +789,9 @@ describe('CE IssuesListApp component', () => {
         const initialSort = CREATED_DESC;
 
         beforeEach(() => {
-          setWindowLocation(`?sort=${initialSort}`);
-          wrapper = mountComponent({ provide: { isIssueRepositioningDisabled: true } });
+          wrapper = mountComponent({
+            provide: { initialSort, isIssueRepositioningDisabled: true },
+          });
 
           findIssuableList().vm.$emit('sort', RELATIVE_POSITION_ASC);
         });
@@ -775,6 +807,43 @@ describe('CE IssuesListApp component', () => {
             message: IssuesListApp.i18n.issueRepositioningMessage,
             type: FLASH_TYPES.NOTICE,
           });
+        });
+      });
+
+      describe('when user is signed in', () => {
+        it('calls mutation to save sort preference', () => {
+          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
+          wrapper = mountComponent({ sortPreferenceMutationResponse: mutationMock });
+
+          findIssuableList().vm.$emit('sort', CREATED_DESC);
+
+          expect(mutationMock).toHaveBeenCalledWith({ input: { issuesSort: CREATED_DESC } });
+        });
+
+        it('captures error when mutation response has errors', async () => {
+          const mutationMock = jest
+            .fn()
+            .mockResolvedValue(setSortPreferenceMutationResponseWithErrors);
+          wrapper = mountComponent({ sortPreferenceMutationResponse: mutationMock });
+
+          findIssuableList().vm.$emit('sort', CREATED_DESC);
+          await waitForPromises();
+
+          expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
+        });
+      });
+
+      describe('when user is signed out', () => {
+        it('does not call mutation to save sort preference', () => {
+          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
+          wrapper = mountComponent({
+            provide: { isSignedIn: false },
+            sortPreferenceMutationResponse: mutationMock,
+          });
+
+          findIssuableList().vm.$emit('sort', CREATED_DESC);
+
+          expect(mutationMock).not.toHaveBeenCalled();
         });
       });
     });

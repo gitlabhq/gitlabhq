@@ -10,7 +10,7 @@ RSpec.describe MergeRequests::BulkRemoveAttentionRequestedService do
   let(:reviewer) { merge_request.find_reviewer(user) }
   let(:assignee) { merge_request.find_assignee(assignee_user) }
   let(:project) { merge_request.project }
-  let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request) }
+  let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request, users: [user, assignee_user]) }
   let(:result) { service.execute }
 
   before do
@@ -20,7 +20,7 @@ RSpec.describe MergeRequests::BulkRemoveAttentionRequestedService do
 
   describe '#execute' do
     context 'invalid permissions' do
-      let(:service) { described_class.new(project: project, current_user: create(:user), merge_request: merge_request) }
+      let(:service) { described_class.new(project: project, current_user: create(:user), merge_request: merge_request, users: [user]) }
 
       it 'returns an error' do
         expect(result[:status]).to eq :error

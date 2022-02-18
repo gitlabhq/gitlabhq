@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Api from '~/api';
 import NamespaceSelect from '~/pages/admin/projects/components/namespace_select.vue';
 
@@ -55,14 +56,14 @@ describe('Dropdown select component', () => {
       mountDropdown({ fieldName: 'namespace-input' });
 
       // wait for dropdown options to populate
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findDropdownOption('user: Administrator').exists()).toBe(true);
       expect(findDropdownOption('group: GitLab Org').exists()).toBe(true);
       expect(findDropdownOption('group: Foobar').exists()).toBe(false);
 
       findDropdownOption('user: Administrator').trigger('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findNamespaceInput().attributes('value')).toBe('10');
       expect(findDropdownToggle().text()).toBe('user: Administrator');
@@ -72,7 +73,7 @@ describe('Dropdown select component', () => {
       mountDropdown();
 
       // wait for dropdown options to populate
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findDropdownOption('group: GitLab Org').trigger('click');
 

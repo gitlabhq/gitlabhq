@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { removeBreakLine } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -20,7 +21,7 @@ describe('MRWidgetConflicts', () => {
   const resolveConflictsBtnText = 'Resolve conflicts';
   const mergeLocallyBtnText = 'Merge locally';
 
-  function createComponent(propsData = {}) {
+  async function createComponent(propsData = {}) {
     wrapper = extendedWrapper(
       shallowMount(ConflictsComponent, {
         propsData,
@@ -55,7 +56,7 @@ describe('MRWidgetConflicts', () => {
       });
     }
 
-    return wrapper.vm.$nextTick();
+    await nextTick();
   }
 
   afterEach(() => {

@@ -507,7 +507,7 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" \
 
 Called from the GitLab Agent Server (`kas`) to create a security vulnerability
 from a Starboard vulnerability report. This request is idempotent. Multiple requests with the same data
-create a single vulnerability.
+create a single vulnerability. The response contains the UUID of the created vulnerability finding.
 
 | Attribute       | Type   | Required | Description |
 |:----------------|:-------|:---------|:------------|
@@ -551,6 +551,37 @@ curl --request PUT --header "Gitlab-Kas-Api-Request: <JWT token>" \
     "vendor": "GitLab"
   }
 }'
+```
+
+Example response:
+
+```json
+{
+  "uuid": "4773b2ee-5ba5-5e9f-b48c-5f7a17f0faac"
+}
+```
+
+### Resolve Starboard vulnerabilities
+
+Called from the GitLab Agent Server (`kas`) to resolve Starboard security vulnerabilities.
+Accepts a list of finding UUIDs and marks all Starboard vulnerabilities not identified by
+the list as resolved.
+
+| Attribute | Type         | Required | Description                                                                                                                       |
+|:----------|:-------------|:---------|:----------------------------------------------------------------------------------------------------------------------------------|
+| `uuids`   | string array | yes      | UUIDs of detected vulnerabilities, as collected from [Create Starboard vulnerability](#create-starboard-vulnerability) responses. |
+
+```plaintext
+POST internal/kubernetes/modules/starboard_vulnerability/scan_result
+```
+
+Example Request:
+
+```shell
+curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" \
+     --header "Authorization: Bearer <agent token>" --header "Content-Type: application/json" \
+     --url "http://localhost:3000/api/v4/internal/kubernetes/modules/starboard_vulnerability/scan_result" \
+     --data '{ "uuids": ["102e8a0a-fe29-59bd-b46c-57c3e9bc6411", "5eb12985-0ed5-51f4-b545-fd8871dc2870"] }'
 ```
 
 ## Subscriptions

@@ -15,6 +15,10 @@ RSpec.describe 'Dashboard Groups page', :js do
     wait_for_requests
   end
 
+  def click_options_menu(group)
+    page.find("[data-testid='group-#{group.id}-dropdown-button'").click
+  end
+
   it 'shows groups user is member of' do
     group.add_owner(user)
     nested_group.add_owner(user)
@@ -109,6 +113,67 @@ RSpec.describe 'Dashboard Groups page', :js do
       click_group_caret(group)
 
       expect(page).not_to have_selector("#group-#{group.id} #group-#{subgroup.id}")
+    end
+  end
+
+  context 'group actions dropdown' do
+    let!(:subgroup) { create(:group, :public, parent: group) }
+
+    context 'user with subgroup ownership' do
+      before do
+        subgroup.add_owner(user)
+        sign_in(user)
+
+        visit dashboard_groups_path
+      end
+
+      it 'cannot remove parent group' do
+        expect(page).not_to have_selector("[data-testid='group-#{group.id}-dropdown-button'")
+      end
+    end
+
+    context 'user with parent group ownership' do
+      before do
+        group.add_owner(user)
+        sign_in(user)
+
+        visit dashboard_groups_path
+      end
+
+      it 'can remove parent group' do
+        click_options_menu(group)
+
+        expect(page).to have_selector("[data-testid='remove-group-#{group.id}-btn']")
+      end
+
+      it 'can remove subgroups' do
+        click_group_caret(group)
+        click_options_menu(subgroup)
+
+        expect(page).to have_selector("[data-testid='remove-group-#{subgroup.id}-btn']")
+      end
+    end
+
+    context 'user is a maintainer' do
+      before do
+        group.add_maintainer(user)
+        sign_in(user)
+
+        visit dashboard_groups_path
+        click_options_menu(group)
+      end
+
+      it 'cannot remove the group' do
+        expect(page).not_to have_selector("[data-testid='remove-group-#{group.id}-btn']")
+      end
+
+      it 'cannot edit the group' do
+        expect(page).not_to have_selector("[data-testid='edit-group-#{group.id}-btn']")
+      end
+
+      it 'can leave the group' do
+        expect(page).to have_selector("[data-testid='leave-group-#{group.id}-btn']")
+      end
     end
   end
 

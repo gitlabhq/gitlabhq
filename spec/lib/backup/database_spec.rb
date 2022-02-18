@@ -6,6 +6,10 @@ RSpec.describe Backup::Database do
   let(:progress) { StringIO.new }
   let(:output) { progress.string }
 
+  before do
+    allow(Gitlab::TaskHelpers).to receive(:ask_to_continue)
+  end
+
   describe '#restore' do
     let(:cmd) { %W[#{Gem.ruby} -e $stdout.puts(1)] }
     let(:data) { Rails.root.join("spec/fixtures/pages_empty.tar.gz").to_s }
@@ -20,7 +24,7 @@ RSpec.describe Backup::Database do
       let(:data) { Rails.root.join("spec/fixtures/pages_empty.tar.gz").to_s }
 
       it 'returns successfully' do
-        expect(subject.restore).to eq([])
+        subject.restore
 
         expect(output).to include("Restoring PostgreSQL database")
         expect(output).to include("[DONE]")
@@ -42,7 +46,8 @@ RSpec.describe Backup::Database do
       let(:cmd) { %W[#{Gem.ruby} -e $stderr.write("#{noise}#{visible_error}")] }
 
       it 'filters out noise from errors' do
-        expect(subject.restore).to eq([visible_error])
+        subject.restore
+
         expect(output).to include("ERRORS")
         expect(output).not_to include(noise)
         expect(output).to include(visible_error)

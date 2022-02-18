@@ -1,9 +1,10 @@
-mutation configureSecurityTrainingProviders($input: configureSecurityTrainingProvidersInput!) {
-  configureSecurityTrainingProviders(input: $input) @client {
+mutation updateSecurityTraining($input: SecurityTrainingUpdateInput!) {
+  securityTrainingUpdate(input: $input) {
     errors
-    securityTrainingProviders {
+    training {
       id
       isEnabled
+      isPrimary
     }
   }
 }

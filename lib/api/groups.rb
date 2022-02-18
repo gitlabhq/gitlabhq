@@ -84,10 +84,11 @@ module API
         paginate(projects)
       end
 
-      def present_projects(params, projects)
+      def present_projects(params, projects, single_hierarchy: false)
         options = {
           with: params[:simple] ? Entities::BasicProjectDetails : Entities::Project,
-          current_user: current_user
+          current_user: current_user,
+          single_hierarchy: single_hierarchy
         }
 
         projects, options = with_custom_attributes(projects, options)
@@ -292,6 +293,7 @@ module API
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
         optional :with_shared, type: Boolean, default: true, desc: 'Include projects shared to this group'
         optional :include_subgroups, type: Boolean, default: false, desc: 'Includes projects in subgroups of this group'
+        optional :include_ancestor_groups, type: Boolean, default: false, desc: 'Includes projects in ancestors of this group'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user on projects'
 
         use :pagination
@@ -301,12 +303,13 @@ module API
       get ":id/projects" do
         finder_options = {
           only_owned: !params[:with_shared],
-          include_subgroups: params[:include_subgroups]
+          include_subgroups: params[:include_subgroups],
+          include_ancestor_groups: params[:include_ancestor_groups]
         }
 
         projects = find_group_projects(params, finder_options)
 
-        present_projects(params, projects)
+        present_projects(params, projects, single_hierarchy: true)
       end
 
       desc 'Get a list of shared projects in this group' do

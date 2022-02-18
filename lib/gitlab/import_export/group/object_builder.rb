@@ -9,12 +9,6 @@ module Gitlab
       #   `Group::ObjectBuilder.build(Label, label_attributes)`
       #    finds or initializes a label with the given attributes.
       class ObjectBuilder < Base::ObjectBuilder
-        def self.build(*args)
-          ::Group.transaction do
-            super
-          end
-        end
-
         def initialize(klass, attributes)
           super
 

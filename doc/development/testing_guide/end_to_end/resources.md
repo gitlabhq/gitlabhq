@@ -431,7 +431,28 @@ module QA
       def validate_reuse_preconditions
         raise ResourceReuseError unless reused_name_valid?
       end
+
+      # Internally we identify an instance of a reusable resource by a unique value of `@reuse_as`, but in GitLab the
+      # resource has one or more attributes that must also be unique. This method lists those attributes and allows the
+      # test framework to check that each instance of a reusable resource has values that match the associated values
+      # in Gitlab.
+      def unique_identifiers
+        [:name, :path]
+      end
     end
+  end
+end
+```
+
+Reusable resources aren't removed immediately when `remove_via_api!` is called. Instead, they're removed after the test
+suite completes. To do so each class must be registered with `QA::Resource::ReusableCollection` in `qa/spec/spec_helper.rb`
+as in the example below. Registration allows `QA::Resource::ReusableCollection` to keep track of each instance of each
+registered class, and to delete them all in the `config.after(:suite)` hook.
+
+```ruby
+config.before(:suite) do |suite|
+  QA::Resource::ReusableCollection.register_resource_classes do |collection|
+    QA::Resource::ReusableProject.register(collection)
   end
 end
 ```
@@ -486,6 +507,65 @@ end
 
 # => ResourceReuseError will be raised because it will try to use the default name, "reusable_project", which doesn't
 # match the name specified when the project was first fabricated.
+```
+
+### Validating reusable resources
+
+Reusable resources can speed up test suites by avoiding the cost of creating the same resource again and again. However,
+that can cause problems if a test makes changes to a resource that prevent it from being reused as expected by later
+tests. That can lead to order-dependent test failures that can be difficult to troubleshoot.
+
+For example, the default project created by `QA::Resource::ReusableProject` has `auto_devops_enabled` set to `false`
+(inherited from `QA::Resource::Project`). If a test reuses that project and enables Auto DevOps, subsequent tests that reuse
+the project will fail if they expect Auto DevOps to be disabled.
+
+We try to avoid that kind of trouble by validating reusable resources after a test suite. If the environment variable
+`QA_VALIDATE_RESOURCE_REUSE` is set to `true` the test framework will check each reusable resource to verify that none
+of the attributes they were created with have been changed. It does that by creating a new resource using the same
+attributes that were used to create the original resource. It then compares the new resource to the original and raises
+an error if any attributes don't match.
+
+#### Implementation
+
+When you implement a new type of reusable resource there are two `private` methods you must implement so the resource
+can be validated. They are:
+
+- `reference_resource`: creates a new instance of the resource that can be compared with the one that was used during the tests.
+- `unique_identifiers`: returns an array of attributes that allow the resource to be identified (e.g., name) and that are therefore
+expected to differ when comparing the reference resource with the resource reused in the tests.
+
+The following example shows the implementation of those two methods in `QA::Resource::ReusableProject`.
+
+```ruby
+# Creates a new project that can be compared to a reused project, using the attributes of the original.
+#
+# @return [QA::Resource] a new instance of Resource::ReusableProject that should be a copy of the original resource
+def reference_resource
+  # These are the attributes that the reused resource was created with
+  attributes = self.class.resources[reuse_as][:attributes]
+
+  # Two projects can't have the same path, and since we typically use the same value for the name and path, we assign
+  # a unique name and path to the reference resource.
+  name = "reference_resource_#{SecureRandom.hex(8)}_for_#{attributes.delete(:name)}"
+
+  Project.fabricate_via_api! do |project|
+    self.class.resources[reuse_as][:attributes].each do |attribute_name, attribute_value|
+      project.instance_variable_set("@#{attribute_name}", attribute_value) if attribute_value
+    end
+    project.name = name
+    project.path = name
+    project.path_with_namespace = "#{project.group.full_path}/#{project.name}"
+  end
+end
+
+# The attributes of the resource that should be the same whenever a test wants to reuse a project.
+#
+# @return [Array<Symbol>] the attribute names.
+def unique_identifiers
+  # As noted above, path must be unique, and since we typically use the same value for both, we treat name and path
+  # as unique. These attributes are ignored when we compare the reference and reused resources.
+  [:name, :path]
+end
 ```
 
 ## Where to ask for help?

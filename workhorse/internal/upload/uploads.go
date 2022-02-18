@@ -15,7 +15,8 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
-// These methods are allowed to have thread-unsafe implementations.
+// MultipartFormProcessor abstracts away implementation differences
+// between generic MIME multipart file uploads and CI artifact uploads.
 type MultipartFormProcessor interface {
 	ProcessFile(ctx context.Context, formName string, file *filestore.FileHandler, writer *multipart.Writer) error
 	ProcessField(ctx context.Context, formName string, writer *multipart.Writer) error
@@ -24,7 +25,10 @@ type MultipartFormProcessor interface {
 	Count() int
 }
 
-func HandleFileUploads(w http.ResponseWriter, r *http.Request, h http.Handler, preauth *api.Response, filter MultipartFormProcessor, opts *filestore.SaveFileOpts) {
+// InterceptMultipartFiles is the core of the implementation of
+// Multipart. Because it is also used for CI artifact uploads it is a
+// public function.
+func InterceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, preauth *api.Response, filter MultipartFormProcessor, opts *filestore.SaveFileOpts) {
 	var body bytes.Buffer
 	writer := multipart.NewWriter(&body)
 	defer writer.Close()

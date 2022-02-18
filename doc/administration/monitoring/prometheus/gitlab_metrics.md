@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Monitor
+group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To enable the GitLab Prometheus metrics:
 
-1. Log in to GitLab as a user with Administrator [role](../../../user/permissions.md).
+1. Log in to GitLab as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and select **Add link to Prometheus**.
@@ -48,6 +48,7 @@ The following metrics are available:
 | `gitlab_database_transaction_seconds`                            | Histogram   | 12.1    | Time spent in database transactions, in seconds                                                                       |                                                           |
 | `gitlab_method_call_duration_seconds`                            | Histogram   | 10.2    | Method calls real duration                                                                                            | `controller`, `action`, `module`, `method`                |
 | `gitlab_page_out_of_bounds`                                      | Counter     | 12.8    | Counter for the PageLimiter pagination limit being hit                                                                | `controller`, `action`, `bot`                             |
+| `gitlab_rails_boot_time_seconds`                                 | Gauge       | 14.8    | Time elapsed for Rails primary process to finish startup                                               |                                                           |
 | `gitlab_rails_queue_duration_seconds`                            | Histogram   | 9.4     | Measures latency between GitLab Workhorse forwarding a request to Rails                                               |                                                           |
 | `gitlab_sql_duration_seconds`                                    | Histogram   | 10.2    | SQL execution time, excluding `SCHEMA` operations and `BEGIN` / `COMMIT`                                              |                                                           |
 | `gitlab_sql_<role>_duration_seconds`                             | Histogram   | 13.10   | SQL execution time, excluding `SCHEMA` operations and `BEGIN` / `COMMIT`, grouped by database roles (primary/replica) |                                                           |
@@ -269,6 +270,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_pages_deployments_verification_total`     | Gauge   | 14.6  | Number of pages deployments verifications tried on secondary | `url` |
 | `geo_pages_deployments_verified`               | Gauge   | 14.6  | Number of pages deployments verified on secondary | `url` |
 | `geo_pages_deployments_verification_failed`    | Gauge   | 14.6  | Number of pages deployments verifications failed on secondary | `url` |
+| `geo_job_artifacts`                            | Gauge   | 14.8  | Number of job artifacts on primary | `url` |
+| `geo_job_artifacts_checksum_total`             | Gauge   | 14.8  | Number of job artifacts tried to checksum on primary | `url` |
+| `geo_job_artifacts_checksummed`                | Gauge   | 14.8  | Number of job artifacts successfully checksummed on primary | `url` |
+| `geo_job_artifacts_checksum_failed`            | Gauge   | 14.8  | Number of job artifacts failed to calculate the checksum on primary | `url` |
+| `geo_job_artifacts_synced`                     | Gauge   | 14.8  | Number of syncable job artifacts synced on secondary | `url` |
+| `geo_job_artifacts_failed`                     | Gauge   | 14.8  | Number of syncable job artifacts failed to sync on secondary | `url` |
+| `geo_job_artifacts_registry`                   | Gauge   | 14.8  | Number of job artifacts in the registry | `url` |
+| `geo_job_artifacts_verification_total`         | Gauge   | 14.8  | Number of job artifacts verifications tried on secondary | `url` |
+| `geo_job_artifacts_verified`                   | Gauge   | 14.8  | Number of job artifacts verified on secondary | `url` |
+| `geo_job_artifacts_verification_failed`        | Gauge   | 14.8  | Number of job artifacts verifications failed on secondary | `url` |
 | `limited_capacity_worker_running_jobs`         | Gauge   | 13.5  | Number of running jobs | `worker` |
 | `limited_capacity_worker_max_running_jobs`     | Gauge   | 13.5  | Maximum number of running jobs | `worker` |
 | `limited_capacity_worker_remaining_work_count` | Gauge   | 13.5  | Number of jobs waiting to be enqueued | `worker` |

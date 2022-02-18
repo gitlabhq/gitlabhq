@@ -6,11 +6,13 @@ describe('Confirm Modal', () => {
   let wrapper;
   let modal;
 
-  const createComponent = ({ primaryText, primaryVariant } = {}) => {
+  const createComponent = ({ primaryText, primaryVariant, title, hideCancel = false } = {}) => {
     wrapper = mount(ConfirmModal, {
       propsData: {
         primaryText,
         primaryVariant,
+        hideCancel,
+        title,
       },
     });
   };
@@ -54,6 +56,20 @@ describe('Confirm Modal', () => {
       const customProps = findGlModal().props('actionPrimary');
       expect(customProps.text).toBe('OK');
       expect(customProps.attributes.variant).toBe('confirm');
+    });
+
+    it('should hide the cancel button if `hideCancel` is set', () => {
+      createComponent({ hideCancel: true });
+      const props = findGlModal().props();
+
+      expect(props.actionCancel).toBeNull();
+    });
+
+    it('should set the modal title when the `title` prop is set', () => {
+      const title = 'Modal title';
+      createComponent({ title });
+
+      expect(findGlModal().props().title).toBe(title);
     });
   });
 });

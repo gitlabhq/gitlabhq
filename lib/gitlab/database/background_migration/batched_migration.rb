@@ -47,7 +47,7 @@ module Gitlab
 
         def self.successful_rows_counts(migrations)
           BatchedJob
-            .succeeded
+            .with_status(:succeeded)
             .where(batched_background_migration_id: migrations)
             .group(:batched_background_migration_id)
             .sum(:batch_size)
@@ -71,7 +71,7 @@ module Gitlab
         end
 
         def retry_failed_jobs!
-          batched_jobs.failed.each_batch(of: 100) do |batch|
+          batched_jobs.with_status(:failed).each_batch(of: 100) do |batch|
             self.class.transaction do
               batch.lock.each(&:split_and_retry!)
               self.active!
@@ -102,7 +102,7 @@ module Gitlab
         end
 
         def migrated_tuple_count
-          batched_jobs.succeeded.sum(:batch_size)
+          batched_jobs.with_status(:succeeded).sum(:batch_size)
         end
 
         def prometheus_labels

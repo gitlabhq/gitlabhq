@@ -17,7 +17,7 @@ RSpec.describe Issues::CreateService do
 
       expect(described_class.rate_limiter_scoped_and_keyed.key).to eq(:issues_create)
       expect(described_class.rate_limiter_scoped_and_keyed.opts[:scope]).to eq(%i[project current_user external_author])
-      expect(described_class.rate_limiter_scoped_and_keyed.rate_limiter_klass).to eq(Gitlab::ApplicationRateLimiter)
+      expect(described_class.rate_limiter_scoped_and_keyed.rate_limiter).to eq(Gitlab::ApplicationRateLimiter)
     end
   end
 
@@ -92,6 +92,21 @@ RSpec.describe Issues::CreateService do
         end
       end
 
+      context 'when setting a position' do
+        let(:issue_before) { create(:issue, project: project, relative_position: 10) }
+        let(:issue_after) { create(:issue, project: project, relative_position: 50) }
+
+        before do
+          opts.merge!(move_between_ids: [issue_before.id, issue_after.id])
+        end
+
+        it 'sets the correct relative position' do
+          expect(issue).to be_persisted
+          expect(issue.relative_position).to be_present
+          expect(issue.relative_position).to be_between(issue_before.relative_position, issue_after.relative_position)
+        end
+      end
+
       it_behaves_like 'not an incident issue'
 
       context 'when issue is incident type' do
@@ -100,7 +115,6 @@ RSpec.describe Issues::CreateService do
         end
 
         let(:current_user) { user }
-        let(:incident_label_attributes) { attributes_for(:label, :incident) }
 
         subject { issue }
 
@@ -114,12 +128,6 @@ RSpec.describe Issues::CreateService do
           end
 
           it_behaves_like 'incident issue'
-          it_behaves_like 'does not have incident label'
-
-          it 'does not create an incident label' do
-            expect { subject }
-              .to not_change { Label.where(incident_label_attributes).count }
-          end
 
           it 'calls IncidentManagement::Incidents::CreateEscalationStatusService' do
             expect_next(::IncidentManagement::IssuableEscalationStatuses::CreateService, a_kind_of(Issue))

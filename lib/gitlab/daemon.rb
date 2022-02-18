@@ -20,6 +20,8 @@ module Gitlab
       !thread.nil?
     end
 
+    # Possible options:
+    # - synchronous [Boolean] if true, turns `start` into a blocking call
     def initialize(**options)
       @synchronous = options[:synchronous]
       @mutex = Mutex.new

@@ -9,7 +9,7 @@ RSpec.describe Projects::MergeRequestsController do
   let_it_be_with_refind(:project) { create(:project, :repository) }
   let_it_be_with_reload(:project_public_with_private_builds) { create(:project, :repository, :public, :builds_private) }
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: merge_request_source_project, allow_collaboration: false) }
   let(:merge_request_source_project) { project }
 
@@ -57,19 +57,13 @@ RSpec.describe Projects::MergeRequestsController do
         merge_request.mark_as_unchecked!
       end
 
-      context 'check_mergeability_async_in_widget feature flag is disabled' do
-        before do
-          stub_feature_flags(check_mergeability_async_in_widget: false)
+      it 'checks mergeability asynchronously' do
+        expect_next_instance_of(MergeRequests::MergeabilityCheckService) do |service|
+          expect(service).not_to receive(:execute)
+          expect(service).to receive(:async_execute)
         end
 
-        it 'checks mergeability asynchronously' do
-          expect_next_instance_of(MergeRequests::MergeabilityCheckService) do |service|
-            expect(service).not_to receive(:execute)
-            expect(service).to receive(:async_execute)
-          end
-
-          go
-        end
+        go
       end
     end
 
@@ -449,7 +443,7 @@ RSpec.describe Projects::MergeRequestsController do
 
     context 'when the merge request is not mergeable' do
       before do
-        merge_request.update!(title: "WIP: #{merge_request.title}")
+        merge_request.update!(title: "Draft: #{merge_request.title}")
 
         post :merge, params: base_params
       end
@@ -2081,6 +2075,20 @@ RSpec.describe Projects::MergeRequestsController do
 
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['merge_error']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
+      end
+    end
+
+    context 'when source branch is protected from force push' do
+      before do
+        create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false)
+      end
+
+      it 'returns 404' do
+        expect_rebase_worker_for(user).never
+
+        post_rebase
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

@@ -6,7 +6,7 @@ RSpec.describe 'Merge request > image review', :js do
   include MergeRequestDiffHelpers
   include RepoHelpers
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, author: user) }
 

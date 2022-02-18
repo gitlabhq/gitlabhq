@@ -1,5 +1,7 @@
 import { mount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   CREATED,
@@ -20,6 +22,11 @@ import {
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
+  return {
+    confirmAction: jest.fn(),
+  };
+});
 
 describe('DeploymentAction component', () => {
   let wrapper;
@@ -51,6 +58,7 @@ describe('DeploymentAction component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    confirmAction.mockReset();
   });
 
   describe('actions do not appear when conditions are unmet', () => {
@@ -95,16 +103,6 @@ describe('DeploymentAction component', () => {
       '$configConst action',
       ({ configConst, computedDeploymentStatus, displayConditionChanges, finderFn, endpoint }) => {
         describe(`${configConst} action`, () => {
-          const confirmAction = () => {
-            jest.spyOn(window, 'confirm').mockReturnValueOnce(true);
-            finderFn().trigger('click');
-          };
-
-          const rejectAction = () => {
-            jest.spyOn(window, 'confirm').mockReturnValueOnce(false);
-            finderFn().trigger('click');
-          };
-
           beforeEach(() => {
             factory({
               propsData: {
@@ -125,13 +123,18 @@ describe('DeploymentAction component', () => {
             describe('should show a confirm dialog but not call executeInlineAction when declined', () => {
               beforeEach(() => {
                 executeActionSpy.mockResolvedValueOnce();
-                rejectAction();
+                confirmAction.mockResolvedValueOnce(false);
+                finderFn().trigger('click');
               });
 
               it('should show the confirm dialog', () => {
-                expect(window.confirm).toHaveBeenCalled();
-                expect(window.confirm).toHaveBeenCalledWith(
+                expect(confirmAction).toHaveBeenCalled();
+                expect(confirmAction).toHaveBeenCalledWith(
                   actionButtonMocks[configConst].confirmMessage,
+                  {
+                    primaryBtnVariant: actionButtonMocks[configConst].buttonVariant,
+                    primaryBtnText: actionButtonMocks[configConst].buttonText,
+                  },
                 );
               });
 
@@ -143,13 +146,18 @@ describe('DeploymentAction component', () => {
             describe('should show a confirm dialog and call executeInlineAction when accepted', () => {
               beforeEach(() => {
                 executeActionSpy.mockResolvedValueOnce();
-                confirmAction();
+                confirmAction.mockResolvedValueOnce(true);
+                finderFn().trigger('click');
               });
 
               it('should show the confirm dialog', () => {
-                expect(window.confirm).toHaveBeenCalled();
-                expect(window.confirm).toHaveBeenCalledWith(
+                expect(confirmAction).toHaveBeenCalled();
+                expect(confirmAction).toHaveBeenCalledWith(
                   actionButtonMocks[configConst].confirmMessage,
+                  {
+                    primaryBtnVariant: actionButtonMocks[configConst].buttonVariant,
+                    primaryBtnText: actionButtonMocks[configConst].buttonText,
+                  },
                 );
               });
 
@@ -164,11 +172,15 @@ describe('DeploymentAction component', () => {
 
               describe('response includes redirect_url', () => {
                 const url = '/root/example';
-                beforeEach(() => {
+                beforeEach(async () => {
                   executeActionSpy.mockResolvedValueOnce({
                     data: { redirect_url: url },
                   });
-                  confirmAction();
+
+                  await waitForPromises();
+
+                  confirmAction.mockResolvedValueOnce(true);
+                  finderFn().trigger('click');
                 });
 
                 it('calls visit url with the redirect_url', () => {
@@ -178,9 +190,13 @@ describe('DeploymentAction component', () => {
               });
 
               describe('it should call the executeAction method ', () => {
-                beforeEach(() => {
+                beforeEach(async () => {
                   jest.spyOn(wrapper.vm, 'executeAction').mockImplementation();
-                  confirmAction();
+
+                  await waitForPromises();
+
+                  confirmAction.mockResolvedValueOnce(true);
+                  finderFn().trigger('click');
                 });
 
                 it('calls with the expected arguments', () => {
@@ -193,9 +209,13 @@ describe('DeploymentAction component', () => {
               });
 
               describe('when executeInlineAction errors', () => {
-                beforeEach(() => {
+                beforeEach(async () => {
                   executeActionSpy.mockRejectedValueOnce();
-                  confirmAction();
+
+                  await waitForPromises();
+
+                  confirmAction.mockResolvedValueOnce(true);
+                  finderFn().trigger('click');
                 });
 
                 it('should call createFlash with error message', () => {

@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import LastCommit from '~/repository/components/last_commit.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
@@ -63,7 +64,7 @@ describe('Repository last commit component', () => {
   `('$label when loading icon $loading is true', async ({ loading }) => {
     factory(createCommitData(), loading);
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find(GlLoadingIcon).exists()).toBe(loading);
   });
@@ -71,7 +72,7 @@ describe('Repository last commit component', () => {
   it('renders commit widget', async () => {
     factory();
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.element).toMatchSnapshot();
   });
@@ -79,7 +80,7 @@ describe('Repository last commit component', () => {
   it('renders short commit ID', async () => {
     factory();
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find('[data-testid="last-commit-id-label"]').text()).toEqual('12345678');
   });
@@ -87,7 +88,7 @@ describe('Repository last commit component', () => {
   it('hides pipeline components when pipeline does not exist', async () => {
     factory(createCommitData({ pipeline: null }));
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find('.js-commit-pipeline').exists()).toBe(false);
   });
@@ -95,7 +96,7 @@ describe('Repository last commit component', () => {
   it('renders pipeline components', async () => {
     factory();
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find('.js-commit-pipeline').exists()).toBe(true);
   });
@@ -103,7 +104,7 @@ describe('Repository last commit component', () => {
   it('hides author component when author does not exist', async () => {
     factory(createCommitData({ author: null }));
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find('.js-user-link').exists()).toBe(false);
     expect(vm.find(UserAvatarLink).exists()).toBe(false);
@@ -112,7 +113,7 @@ describe('Repository last commit component', () => {
   it('does not render description expander when description is null', async () => {
     factory(createCommitData({ descriptionHtml: null }));
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find('.text-expander').exists()).toBe(false);
     expect(vm.find('.commit-row-description').exists()).toBe(false);
@@ -121,11 +122,11 @@ describe('Repository last commit component', () => {
   it('expands commit description when clicking expander', async () => {
     factory(createCommitData({ descriptionHtml: 'Test description' }));
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     vm.find('.text-expander').vm.$emit('click');
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find('.commit-row-description').isVisible()).toBe(true);
     expect(vm.find('.text-expander').classes('open')).toBe(true);
@@ -134,7 +135,7 @@ describe('Repository last commit component', () => {
   it('strips the first newline of the description', async () => {
     factory(createCommitData({ descriptionHtml: '&#x000A;Update ADOPTERS.md' }));
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find('.commit-row-description').html()).toBe(
       '<pre class="commit-row-description gl-mb-3">Update ADOPTERS.md</pre>',
@@ -144,7 +145,7 @@ describe('Repository last commit component', () => {
   it('renders the signature HTML as returned by the backend', async () => {
     factory(createCommitData({ signatureHtml: '<button>Verified</button>' }));
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.element).toMatchSnapshot();
   });
@@ -152,7 +153,7 @@ describe('Repository last commit component', () => {
   it('sets correct CSS class if the commit message is empty', async () => {
     factory(createCommitData({ message: '' }));
 
-    await vm.vm.$nextTick();
+    await nextTick();
 
     expect(vm.find('.item-title').classes()).toContain(emptyMessageClass);
   });

@@ -7,7 +7,8 @@ import {
   GlAlert,
   GlSprintf,
 } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import {
   severityLevel,
@@ -27,8 +28,7 @@ import Tracking from '~/tracking';
 
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ErrorDetails', () => {
   let store;
@@ -53,7 +53,6 @@ describe('ErrorDetails', () => {
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
       stubs: { GlButton, GlSprintf },
-      localVue,
       store,
       mocks,
       propsData: {
@@ -140,32 +139,30 @@ describe('ErrorDetails', () => {
       mountComponent();
     });
 
-    it('when before timeout, still shows loading', () => {
+    it('when before timeout, still shows loading', async () => {
       Date.now.mockReturnValue(endTime - 1);
 
       wrapper.vm.onNoApolloResult();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-        expect(createFlash).not.toHaveBeenCalled();
-        expect(mocks.$apollo.queries.error.stopPolling).not.toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(createFlash).not.toHaveBeenCalled();
+      expect(mocks.$apollo.queries.error.stopPolling).not.toHaveBeenCalled();
     });
 
-    it('when timeout is hit and no apollo result, stops loading and shows flash', () => {
+    it('when timeout is hit and no apollo result, stops loading and shows flash', async () => {
       Date.now.mockReturnValue(endTime + 1);
 
       wrapper.vm.onNoApolloResult();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-        expect(wrapper.find(GlLink).exists()).toBe(false);
-        expect(createFlash).toHaveBeenCalledWith({
-          message: 'Could not connect to Sentry. Refresh the page to try again.',
-          type: 'warning',
-        });
-        expect(mocks.$apollo.queries.error.stopPolling).toHaveBeenCalled();
+      await nextTick();
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.find(GlLink).exists()).toBe(false);
+      expect(createFlash).toHaveBeenCalledWith({
+        message: 'Could not connect to Sentry. Refresh the page to try again.',
+        type: 'warning',
       });
+      expect(mocks.$apollo.queries.error.stopPolling).toHaveBeenCalled();
     });
   });
 
@@ -225,7 +222,7 @@ describe('ErrorDetails', () => {
     });
 
     describe('Badges', () => {
-      it('should show language and error level badges', () => {
+      it('should show language and error level badges', async () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
@@ -233,12 +230,11 @@ describe('ErrorDetails', () => {
             tags: { level: 'error', logger: 'ruby' },
           },
         });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.findAll(GlBadge).length).toBe(2);
-        });
+        await nextTick();
+        expect(wrapper.findAll(GlBadge).length).toBe(2);
       });
 
-      it('should NOT show the badge if the tag is not present', () => {
+      it('should NOT show the badge if the tag is not present', async () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
@@ -246,14 +242,13 @@ describe('ErrorDetails', () => {
             tags: { level: 'error' },
           },
         });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.findAll(GlBadge).length).toBe(1);
-        });
+        await nextTick();
+        expect(wrapper.findAll(GlBadge).length).toBe(1);
       });
 
       it.each(Object.keys(severityLevel))(
         'should set correct severity level variant for %s badge',
-        (level) => {
+        async (level) => {
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
           // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
@@ -261,15 +256,14 @@ describe('ErrorDetails', () => {
               tags: { level: severityLevel[level] },
             },
           });
-          return wrapper.vm.$nextTick().then(() => {
-            expect(wrapper.find(GlBadge).props('variant')).toEqual(
-              severityLevelVariant[severityLevel[level]],
-            );
-          });
+          await nextTick();
+          expect(wrapper.find(GlBadge).props('variant')).toEqual(
+            severityLevelVariant[severityLevel[level]],
+          );
         },
       );
 
-      it('should fallback for ERROR severityLevelVariant when severityLevel is unknown', () => {
+      it('should fallback for ERROR severityLevelVariant when severityLevel is unknown', async () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
@@ -277,32 +271,29 @@ describe('ErrorDetails', () => {
             tags: { level: 'someNewErrorLevel' },
           },
         });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.find(GlBadge).props('variant')).toEqual(
-            severityLevelVariant[severityLevel.ERROR],
-          );
-        });
+        await nextTick();
+        expect(wrapper.find(GlBadge).props('variant')).toEqual(
+          severityLevelVariant[severityLevel.ERROR],
+        );
       });
     });
 
     describe('Stacktrace', () => {
-      it('should show stacktrace', () => {
+      it('should show stacktrace', async () => {
         store.state.details.loadingStacktrace = false;
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-          expect(wrapper.find(Stacktrace).exists()).toBe(true);
-          expect(findAlert().exists()).toBe(false);
-        });
+        await nextTick();
+        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+        expect(wrapper.find(Stacktrace).exists()).toBe(true);
+        expect(findAlert().exists()).toBe(false);
       });
 
-      it('should NOT show stacktrace if no entries and show Alert message', () => {
+      it('should NOT show stacktrace if no entries and show Alert message', async () => {
         store.state.details.loadingStacktrace = false;
         store.getters = { 'details/sentryUrl': () => 'sentry.io', 'details/stacktrace': () => [] };
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-          expect(wrapper.find(Stacktrace).exists()).toBe(false);
-          expect(findAlert().text()).toBe('No stack trace for this error');
-        });
+        await nextTick();
+        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+        expect(wrapper.find(Stacktrace).exists()).toBe(false);
+        expect(findAlert().text()).toBe('No stack trace for this error');
       });
     });
 
@@ -339,10 +330,10 @@ describe('ErrorDetails', () => {
       });
 
       describe('when error is unresolved', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           store.state.details.errorStatus = errorStatus.UNRESOLVED;
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('displays Ignore and Resolve buttons', () => {
@@ -366,10 +357,10 @@ describe('ErrorDetails', () => {
       });
 
       describe('when error is ignored', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           store.state.details.errorStatus = errorStatus.IGNORED;
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('displays Undo Ignore and Resolve buttons', () => {
@@ -393,10 +384,10 @@ describe('ErrorDetails', () => {
       });
 
       describe('when error is resolved', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           store.state.details.errorStatus = errorStatus.RESOLVED;
 
-          return wrapper.vm.$nextTick();
+          await nextTick();
         });
 
         it('displays Ignore and Unresolve buttons', () => {
@@ -418,7 +409,7 @@ describe('ErrorDetails', () => {
           );
         });
 
-        it('should show alert with closed issueId', () => {
+        it('should show alert with closed issueId', async () => {
           const closedIssueId = 123;
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
           // eslint-disable-next-line no-restricted-syntax
@@ -427,10 +418,9 @@ describe('ErrorDetails', () => {
             closedIssueId,
           });
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(findAlert().exists()).toBe(true);
-            expect(findAlert().text()).toContain(`#${closedIssueId}`);
-          });
+          await nextTick();
+          expect(findAlert().exists()).toBe(true);
+          expect(findAlert().text()).toContain(`#${closedIssueId}`);
         });
       });
     });
@@ -496,7 +486,7 @@ describe('ErrorDetails', () => {
         '/gitlab-org/gitlab-test/commit/7975be0116940bf2ad4321f79d02a55c5f7779aa';
       const findGitLabCommitLink = () => wrapper.find(`[href$="${gitlabCommitPath}"]`);
 
-      it('should display a link', () => {
+      it('should display a link', async () => {
         mocks.$apollo.queries.error.loading = false;
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
@@ -506,12 +496,11 @@ describe('ErrorDetails', () => {
             gitlabCommitPath,
           },
         });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findGitLabCommitLink().exists()).toBe(true);
-        });
+        await nextTick();
+        expect(findGitLabCommitLink().exists()).toBe(true);
       });
 
-      it('should not display a link', () => {
+      it('should not display a link', async () => {
         mocks.$apollo.queries.error.loading = false;
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
@@ -520,9 +509,8 @@ describe('ErrorDetails', () => {
             gitlabCommit: null,
           },
         });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findGitLabCommitLink().exists()).toBe(false);
-        });
+        await nextTick();
+        expect(findGitLabCommitLink().exists()).toBe(false);
       });
     });
 
@@ -595,33 +583,25 @@ describe('ErrorDetails', () => {
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
 
-    it('should track IGNORE status update', () => {
+    it('should track IGNORE status update', async () => {
       Tracking.event.mockClear();
-      findUpdateIgnoreStatusButton().vm.$emit('click');
-      setImmediate(() => {
-        const { category, action } = trackErrorStatusUpdateOptions('ignored');
-        expect(Tracking.event).toHaveBeenCalledWith(category, action);
-      });
+      await findUpdateIgnoreStatusButton().trigger('click');
+      const { category, action } = trackErrorStatusUpdateOptions('ignored');
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
 
-    it('should track RESOLVE status update', () => {
+    it('should track RESOLVE status update', async () => {
       Tracking.event.mockClear();
-      findUpdateResolveStatusButton().vm.$emit('click');
-      setImmediate(() => {
-        const { category, action } = trackErrorStatusUpdateOptions('resolved');
-        expect(Tracking.event).toHaveBeenCalledWith(category, action);
-      });
+      await findUpdateResolveStatusButton().trigger('click');
+      const { category, action } = trackErrorStatusUpdateOptions('resolved');
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
 
-    it('should track external Sentry link views', () => {
+    it('should track external Sentry link views', async () => {
       Tracking.event.mockClear();
-      findExternalUrl().trigger('click');
-      setImmediate(() => {
-        const { category, action, label, property } = trackClickErrorLinkToSentryOptions(
-          externalUrl,
-        );
-        expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property });
-      });
+      await findExternalUrl().trigger('click');
+      const { category, action, label, property } = trackClickErrorLinkToSentryOptions(externalUrl);
+      expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property });
     });
   });
 });

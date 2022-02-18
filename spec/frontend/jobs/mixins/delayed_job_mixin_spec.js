@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import delayedJobFixture from 'test_fixtures/jobs/delayed.json';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 
@@ -34,7 +35,7 @@ describe('DelayedJobMixin', () => {
     });
 
     it('does not update remaining time after mounting', async () => {
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.text()).toBe('00:00:00');
     });
@@ -57,7 +58,7 @@ describe('DelayedJobMixin', () => {
           },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('sets remaining time', () => {
@@ -68,7 +69,7 @@ describe('DelayedJobMixin', () => {
         remainingTimeInMilliseconds = 41000;
         jest.advanceTimersByTime(1000);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(wrapper.text()).toBe('00:00:41');
       });
     });
@@ -104,7 +105,7 @@ describe('DelayedJobMixin', () => {
           },
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('sets remaining time', () => {
@@ -115,7 +116,7 @@ describe('DelayedJobMixin', () => {
         remainingTimeInMilliseconds = 41000;
         jest.advanceTimersByTime(1000);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(wrapper.text()).toBe('00:00:41');
       });
     });

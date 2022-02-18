@@ -255,7 +255,8 @@ This regex allows almost all of the characters that npm allows, with a few excep
 
 The regex also allows for capital letters, while npm does not.
 
-WARNING:
+## Limitations
+
 When you update the path of a user or group, or transfer a subgroup or project,
 you must remove any npm packages first. You cannot update the root namespace
 of a project with npm packages. Make sure you update your `.npmrc` files to follow

@@ -1,10 +1,15 @@
 <script>
 export default {
   props: {
-    url: {
-      type: String,
+    blob: {
+      type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      url: this.blob.rawPath,
+    };
   },
 };
 </script>

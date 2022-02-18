@@ -19,7 +19,7 @@ export default (store) => {
 
     return new Vue({
       el: discussionFilterEl,
-      name: 'DiscussionFilter',
+      name: 'DiscussionFilterRoot',
       components: {
         DiscussionFilter,
       },

@@ -1,5 +1,6 @@
 import { GlEmptyState, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import StageTable from '~/cycle_analytics/components/stage_table.vue';
@@ -263,7 +264,7 @@ describe('StageTable', () => {
       expect(wrapper.emitted('handleUpdatePagination')).toBeUndefined();
 
       findPagination().vm.$emit('input', 2);
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.emitted('handleUpdatePagination')[0]).toEqual([{ page: 2 }]);
     });

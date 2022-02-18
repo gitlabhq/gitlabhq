@@ -1,7 +1,9 @@
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';
@@ -10,8 +12,7 @@ import CiCdAnalyticsCharts from '~/vue_shared/components/ci_cd_analytics/ci_cd_a
 import { mockPipelineCount, mockPipelineStatistics } from '../mock_data';
 
 const projectPath = 'gitlab-org/gitlab';
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
   let wrapper;
@@ -25,14 +26,15 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
     return createMockApollo(requestHandlers);
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     wrapper = shallowMount(PipelineCharts, {
       provide: {
         projectPath,
       },
-      localVue,
       apolloProvider: createMockApolloProvider(),
     });
+
+    await waitForPromises();
   });
 
   afterEach(() => {

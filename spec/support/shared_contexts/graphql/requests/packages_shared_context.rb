@@ -11,7 +11,7 @@ RSpec.shared_context 'package details setup' do
   let(:package_files) { all_graphql_fields_for('PackageFile') }
   let(:dependency_links) { all_graphql_fields_for('PackageDependencyLink') }
   let(:pipelines) { all_graphql_fields_for('Pipeline', max_depth: 1) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:package_details) { graphql_data_at(:package) }
   let(:metadata_response) { graphql_data_at(:package, :metadata) }
   let(:first_file) { package.package_files.find { |f| global_id_of(f) == first_file_response['id'] } }

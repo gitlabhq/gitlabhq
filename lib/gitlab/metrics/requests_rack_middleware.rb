@@ -62,6 +62,8 @@ module Gitlab
             http_requests_total.get({ method: method, status: status, feature_category: feature_category })
           end
         end
+
+        Gitlab::Metrics::RailsSlis.initialize_request_slis!
       end
 
       def call(env)

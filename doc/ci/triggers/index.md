@@ -22,7 +22,7 @@ to authenticate an API call. The token impersonates a user's project access and 
 
 Prerequisite:
 
-- You must have at least the [Maintainer role](../../user/permissions.md) for the project.
+- You must have at least the Maintainer role for the project.
 
 To create a trigger token:
 

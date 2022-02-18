@@ -108,7 +108,7 @@ module Blobs
     def limit(lines)
       return lines if full?
 
-      lines[since - 1..to - 1]
+      lines[since - 1..to - 1] || []
     end
   end
 end

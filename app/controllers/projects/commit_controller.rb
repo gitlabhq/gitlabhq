@@ -92,6 +92,8 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def branches
+    return git_not_found! unless commit
+
     # branch_names_contains/tag_names_contains can take a long time when there are thousands of
     # branches/tags - each `git branch --contains xxx` request can consume a cpu core.
     # so only do the query when there are a manageable number of branches/tags

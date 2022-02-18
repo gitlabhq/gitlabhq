@@ -43,7 +43,7 @@ The default theme is Indigo. You can choose between 10 themes:
 
 GitLab has started work on dark mode! The dark mode Alpha release is available in the
 spirit of iteration and the lower expectations of
-[Alpha versions](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
+[Alpha versions](../../policy/alpha-beta-support.md#alpha-features).
 
 Progress on dark mode is tracked in the [Dark theme epic](https://gitlab.com/groups/gitlab-org/-/epics/2902).
 See the epic for:

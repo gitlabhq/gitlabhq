@@ -41,7 +41,7 @@ class X509CertificateCredentialsValidator < ActiveModel::Validator
 
     return if private_key.nil? || certificate.nil?
 
-    unless certificate.public_key.fingerprint == private_key.public_key.fingerprint
+    unless certificate.check_private_key(private_key)
       record.errors.add(options[:pkey], _('private key does not match certificate.'))
     end
   end

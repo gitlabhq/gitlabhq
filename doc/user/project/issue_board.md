@@ -194,7 +194,7 @@ card includes:
 
 ## Permissions
 
-Users with the [Reporter and higher roles](../permissions.md) can use all the functionality of the
+Users with at least the Reporter role can use all the functionality of the
 issue board feature to create or delete lists. They can also drag issues from one list to another.
 
 ## Ordering issues in a list
@@ -402,7 +402,7 @@ To set a WIP limit for a list:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34723) in GitLab 12.8.
 > - [View blocking issues when hovering over blocked icon](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10.
 
-If an issue is blocked by another issue, an icon appears next to its title to indicate its blocked
+If an issue is [blocked by another issue](issues/related_issues.md#blocking-issues), an icon appears next to its title to indicate its blocked
 status.
 
 When you hover over the blocked icon (**{issue-block}**), a detailed information popover is displayed.
@@ -496,6 +496,9 @@ The steps depend on the scope of the list:
 
 ### Filter issues
 
+> - Filtering by iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
+> - Filtering by issue type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268152) in GitLab 14.6.
+
 You can use the filters on top of your issue board to show only
 the results you want. It's similar to the filtering used in the [issue tracker](issues/index.md).
 
@@ -504,11 +507,12 @@ You can filter by the following:
 - Assignee
 - Author
 - Epic
-- Iteration ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)
+- Iteration
 - Label
 - Milestone
 - My Reaction
 - Release
+- Type (issue/incident)
 - Weight
 
 #### Filtering issues in a group board
@@ -565,7 +569,7 @@ You can move issues and lists by dragging them.
 
 Prerequisites:
 
-- You must have at least the Reporter [role](../permissions.md#project-members-permissions) for a project in GitLab.
+- You must have at least the Reporter role for a project in GitLab.
 
 To move an issue, select the issue card and drag it to another position in its current list or
 into a different list. Learn about possible effects in [Dragging issues between lists](#dragging-issues-between-lists).

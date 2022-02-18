@@ -1579,6 +1579,44 @@ export const mockJobsQueryResponse = {
   },
 };
 
+export const mockJobsQueryResponseLastPage = {
+  data: {
+    project: {
+      id: '1',
+      jobs: {
+        ...mockJobsQueryResponse.data.project.jobs,
+        pageInfo: {
+          endCursor: 'eyJpZCI6IjIzMTcifQ',
+          hasNextPage: false,
+          hasPreviousPage: true,
+          startCursor: 'eyJpZCI6IjIzMzYifQ',
+          __typename: 'PageInfo',
+        },
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const mockJobsQueryResponseFirstPage = {
+  data: {
+    project: {
+      id: '1',
+      jobs: {
+        ...mockJobsQueryResponse.data.project.jobs,
+        pageInfo: {
+          endCursor: 'eyJpZCI6IjIzMTcifQ',
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'eyJpZCI6IjIzMzYifQ',
+          __typename: 'PageInfo',
+        },
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
 export const mockJobsQueryEmptyResponse = {
   data: {
     project: {
@@ -1650,6 +1688,65 @@ export const retryableJob = {
   active: false,
   stuck: false,
   userPermissions: { readBuild: true, updateBuild: true, __typename: 'JobPermissions' },
+  __typename: 'CiJob',
+};
+
+export const cancelableJob = {
+  artifacts: {
+    nodes: [],
+    __typename: 'CiJobArtifactConnection',
+  },
+  allowFailure: false,
+  status: 'PENDING',
+  scheduledAt: null,
+  manualJob: false,
+  triggered: null,
+  createdByTag: false,
+  detailedStatus: {
+    id: 'pending-1305-1305',
+    detailsPath: '/root/lots-of-jobs-project/-/jobs/1305',
+    group: 'pending',
+    icon: 'status_pending',
+    label: 'pending',
+    text: 'pending',
+    tooltip: 'pending',
+    action: {
+      id: 'Ci::Build-pending-1305',
+      buttonTitle: 'Cancel this job',
+      icon: 'cancel',
+      method: 'post',
+      path: '/root/lots-of-jobs-project/-/jobs/1305/cancel',
+      title: 'Cancel',
+      __typename: 'StatusAction',
+    },
+    __typename: 'DetailedStatus',
+  },
+  id: 'gid://gitlab/Ci::Build/1305',
+  refName: 'main',
+  refPath: '/root/lots-of-jobs-project/-/commits/main',
+  tags: [],
+  shortSha: '750605f2',
+  commitPath: '/root/lots-of-jobs-project/-/commit/750605f29530778cf0912779eba6d073128962a5',
+  stage: {
+    id: 'gid://gitlab/Ci::Stage/181',
+    name: 'deploy',
+    __typename: 'CiStage',
+  },
+  name: 'job_212',
+  duration: null,
+  finishedAt: null,
+  coverage: null,
+  retryable: false,
+  playable: false,
+  cancelable: true,
+  active: true,
+  stuck: false,
+  userPermissions: {
+    readBuild: true,
+    readJobArtifacts: true,
+    updateBuild: true,
+    __typename: 'JobPermissions',
+  },
   __typename: 'CiJob',
 };
 

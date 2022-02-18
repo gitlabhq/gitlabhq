@@ -9,6 +9,7 @@ const actionButtonMocks = {
   [STOPPING]: {
     actionName: STOPPING,
     buttonText: 'Stop environment',
+    buttonVariant: 'danger',
     busyText: 'This environment is being deployed',
     confirmMessage: 'Are you sure you want to stop this environment?',
     errorMessage: 'Something went wrong while stopping this environment. Please try again.',
@@ -16,6 +17,7 @@ const actionButtonMocks = {
   [DEPLOYING]: {
     actionName: DEPLOYING,
     buttonText: 'Deploy',
+    buttonVariant: 'confirm',
     busyText: 'This environment is being deployed',
     confirmMessage: 'Are you sure you want to deploy this environment?',
     errorMessage: 'Something went wrong while deploying this environment. Please try again.',
@@ -23,6 +25,7 @@ const actionButtonMocks = {
   [REDEPLOYING]: {
     actionName: REDEPLOYING,
     buttonText: 'Re-deploy',
+    buttonVariant: 'confirm',
     busyText: 'This environment is being re-deployed',
     confirmMessage: 'Are you sure you want to re-deploy this environment?',
     errorMessage: 'Something went wrong while deploying this environment. Please try again.',

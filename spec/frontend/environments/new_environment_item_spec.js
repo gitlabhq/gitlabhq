@@ -2,12 +2,14 @@ import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlCollapse, GlIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { stubTransition } from 'helpers/stub_transition';
-import { __, s__ } from '~/locale';
+import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
+import { __, s__, sprintf } from '~/locale';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
 import Deployment from '~/environments/components/deployment.vue';
-import { resolvedEnvironment } from './graphql/mock_data';
+import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
+import { resolvedEnvironment, rolloutStatus } from './graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -22,10 +24,18 @@ describe('~/environments/components/new_environment_item.vue', () => {
     mountExtended(EnvironmentItem, {
       apolloProvider,
       propsData: { environment: resolvedEnvironment, ...propsData },
+      provide: { helpPagePath: '/help' },
       stubs: { transition: stubTransition() },
     });
 
   const findDeployment = () => wrapper.findComponent(Deployment);
+
+  const expandCollapsedSection = async () => {
+    const button = wrapper.findByRole('button', { name: __('Expand') });
+    await button.trigger('click');
+
+    return button;
+  };
 
   afterEach(() => {
     wrapper?.destroy();
@@ -165,25 +175,92 @@ describe('~/environments/components/new_environment_item.vue', () => {
   });
 
   describe('pin', () => {
-    it('shows the option to pin the environment if there is an autostop date', () => {
-      wrapper = createWrapper({
-        propsData: {
-          environment: { ...resolvedEnvironment, autoStopAt: new Date(Date.now() + 100000) },
-        },
-        apolloProvider: createApolloProvider(),
+    describe('with autostop', () => {
+      let environment;
+
+      beforeEach(() => {
+        environment = {
+          ...resolvedEnvironment,
+          autoStopAt: new Date(Date.now() + 100000).toString(),
+        };
+        wrapper = createWrapper({
+          propsData: {
+            environment,
+          },
+          apolloProvider: createApolloProvider(),
+        });
       });
 
-      const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+      it('shows the option to pin the environment if there is an autostop date', () => {
+        const pin = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
 
-      expect(rollback.exists()).toBe(true);
+        expect(pin.exists()).toBe(true);
+      });
+
+      it('shows when the environment auto stops', () => {
+        const autoStop = wrapper.findByTitle(formatDate(environment.autoStopAt));
+
+        expect(autoStop.text()).toBe('in 1 minute');
+      });
     });
 
-    it('does not show the option to pin the environment if there is no autostop date', () => {
-      wrapper = createWrapper({ apolloProvider: createApolloProvider() });
+    describe('without autostop', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({ apolloProvider: createApolloProvider() });
+      });
 
-      const rollback = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+      it('does not show the option to pin the environment if there is no autostop date', () => {
+        wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      expect(rollback.exists()).toBe(false);
+        const pin = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+
+        expect(pin.exists()).toBe(false);
+      });
+
+      it('does not show when the environment auto stops', () => {
+        const autoStop = wrapper.findByText(
+          sprintf(s__('Environment|Auto stop %{time}'), {
+            time: getTimeago().format(resolvedEnvironment.autoStopAt),
+          }),
+        );
+
+        expect(autoStop.exists()).toBe(false);
+      });
+    });
+
+    describe('with past autostop', () => {
+      let environment;
+
+      beforeEach(() => {
+        environment = {
+          ...resolvedEnvironment,
+          autoStopAt: new Date(Date.now() - 100000).toString(),
+        };
+        wrapper = createWrapper({
+          propsData: {
+            environment,
+          },
+          apolloProvider: createApolloProvider(),
+        });
+      });
+
+      it('does not show the option to pin the environment if there is no autostop date', () => {
+        wrapper = createWrapper({ apolloProvider: createApolloProvider() });
+
+        const pin = wrapper.findByRole('menuitem', { name: __('Prevent auto-stopping') });
+
+        expect(pin.exists()).toBe(false);
+      });
+
+      it('does not show when the environment auto stops', () => {
+        const autoStop = wrapper.findByText(
+          sprintf(s__('Environment|Auto stop %{time}'), {
+            time: getTimeago().format(environment.autoStopAt),
+          }),
+        );
+
+        expect(autoStop.exists()).toBe(false);
+      });
     });
   });
 
@@ -258,14 +335,12 @@ describe('~/environments/components/new_environment_item.vue', () => {
   describe('collapse', () => {
     let icon;
     let collapse;
-    let button;
     let environmentName;
 
     beforeEach(() => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
       collapse = wrapper.findComponent(GlCollapse);
       icon = wrapper.findComponent(GlIcon);
-      button = wrapper.findByRole('button', { name: __('Expand') });
       environmentName = wrapper.findByText(resolvedEnvironment.name);
     });
 
@@ -278,7 +353,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('opens on click', async () => {
       expect(findDeployment().isVisible()).toBe(false);
 
-      await button.trigger('click');
+      const button = await expandCollapsedSection();
 
       expect(button.attributes('aria-label')).toBe(__('Collapse'));
       expect(collapse.attributes('visible')).toBe('visible');
@@ -336,6 +411,80 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       const deployment = findDeployment();
       expect(deployment.exists()).toBe(false);
+    });
+  });
+
+  describe('empty state', () => {
+    it('should link to documentation', async () => {
+      const environment = {
+        ...resolvedEnvironment,
+        lastDeployment: null,
+        upcomingDeployment: null,
+      };
+
+      wrapper = createWrapper({
+        propsData: { environment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      await expandCollapsedSection();
+
+      const text = s__(
+        'Environments|There are no deployments for this environment yet. Learn more about setting up deployments.',
+      );
+
+      const emptyState = wrapper.findByText((_content, element) => element.textContent === text);
+
+      const link = extendedWrapper(emptyState).findByRole('link');
+
+      expect(link.attributes('href')).toBe('/help');
+    });
+
+    it('should not link to the documentation when there are deployments', async () => {
+      wrapper = createWrapper({
+        apolloProvider: createApolloProvider(),
+      });
+
+      await expandCollapsedSection();
+
+      const text = s__(
+        'Environments|There are no deployments for this environment yet. Learn more about setting up deployments.',
+      );
+
+      const emptyState = wrapper.findByText((_content, element) => element.textContent === text);
+
+      expect(emptyState.exists()).toBe(false);
+    });
+  });
+
+  describe('deploy boards', () => {
+    it('should show a deploy board if the environment has a rollout status', async () => {
+      const environment = {
+        ...resolvedEnvironment,
+        rolloutStatus,
+      };
+
+      wrapper = createWrapper({
+        propsData: { environment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      await expandCollapsedSection();
+
+      const deployBoard = wrapper.findComponent(DeployBoardWrapper);
+      expect(deployBoard.exists()).toBe(true);
+      expect(deployBoard.props('rolloutStatus')).toBe(rolloutStatus);
+    });
+
+    it('should not show a deploy board if the environment has no rollout status', async () => {
+      wrapper = createWrapper({
+        apolloProvider: createApolloProvider(),
+      });
+
+      await expandCollapsedSection();
+
+      const deployBoard = wrapper.findComponent(DeployBoardWrapper);
+      expect(deployBoard.exists()).toBe(false);
     });
   });
 });

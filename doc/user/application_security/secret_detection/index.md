@@ -63,7 +63,7 @@ as shown in the following table:
 | [Configure Secret Detection Scanners](#configuration)           | **{check-circle}**  | **{check-circle}** |
 | [Customize Secret Detection Settings](#customizing-settings)    | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](../sast/index.md#reports-json-format)        | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in Merge Request                    | **{dotted-circle}** | **{check-circle}** |
+| Presentation of JSON Report in merge request                    | **{dotted-circle}** | **{check-circle}** |
 | View identified secrets in the pipelines' **Security** tab      | **{dotted-circle}** | **{check-circle}** |
 | [Interaction with Vulnerabilities](../vulnerabilities/index.md) | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** | **{check-circle}** |
@@ -182,14 +182,89 @@ Secret Detection can be customized by defining available CI/CD variables:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for
 >   passthrough chains. Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 
 You can customize the default secret detection rules provided with GitLab.
+Ruleset customization supports the following capabilities that can be used
+simultaneously:
+
+- [Disabling predefined rules](index.md#disable-predefined-analyzer-rules).
+- [Overriding predefined rules](index.md#override-predefined-analyzer-rules).
+- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration). Available for only `nodejs-scan`, `gosec`, and `semgrep`.
+
 Customization allows replacing the default secret detection rules with rules that you define.
 
 To create a custom ruleset:
 
 1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
 1. Create a custom ruleset file named `secret-detection-ruleset.toml` in the `.gitlab` directory.
+
+#### Disable predefined analyzer rules
+
+To disable analyzer rules:
+
+1. Set the `disabled` flag to `true` in the context of a `ruleset` section.
+
+1. In one or more `ruleset.identifier` subsections, list the rules that you want disabled. Every `ruleset.identifier` section has:
+
+   - a `type` field, to name the predefined rule identifier.
+   - a `value` field, to name the rule to be disabled.
+
+##### Example: Disable predefined rules of Secret Detection analyzer
+
+In the following example, the disabled rules is assigned to `secrets`
+by matching the `type` and `value` of identifiers:
+
+```toml
+[secrets]
+  [[secrets.ruleset]]
+    disable = true
+    [secrets.ruleset.identifier]
+      type = "gitleaks_rule_id"
+      value = "RSA private key"
+```
+
+#### Override predefined analyzer rules
+
+To override rules:
+
+1. In one or more `ruleset.identifier` subsections, list the rules that you want to override. Every `ruleset.identifier` section has:
+
+   - a `type` field, to name the predefined rule identifier that the Secret Detection analyzer uses.
+   - a `value` field, to name the rule to be overridden.
+
+1. In the `ruleset.override` context of a `ruleset` section,
+   provide the keys to override. Any combination of keys can be
+   overridden. Valid keys are:
+
+   - description
+   - message
+   - name
+   - severity (valid options are: Critical, High, Medium, Low, Unknown, Info)
+
+##### Example: Override predefined rules of Secret Detection analyzer
+
+In the following example, rules
+are matched by the `type` and `value` of identifiers and
+then overridden:
+
+```toml
+[secrets]
+  [[secrets.ruleset]]
+    [secrets.ruleset.identifier]
+      type = "gitleaks_rule_id"
+      value = "RSA private key"
+    [secrets.ruleset.override]
+      description = "OVERRIDDEN description"
+      message = "OVERRIDDEN message"
+      name = "OVERRIDDEN name"
+      severity = "Info"
+```
+
+#### Synthesize a custom configuration
+
+To create a custom configuration, you can use passthrough chains.
+
 1. In the `secret-detection-ruleset.toml` file, do one of the following:
 
    - Define a custom ruleset:
@@ -239,31 +314,8 @@ From highest to lowest severity, the logging levels are:
 
 ## Post-processing and revocation
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
-
-Upon detection of a secret, GitLab supports post-processing hooks. These can be used to take actions like notifying the cloud service who issued the secret. The cloud provider can confirm the credentials and take remediation actions like revoking or reissuing a new secret and notifying the creator of the secret. Post-processing workflows vary by supported cloud providers.
-
-GitLab currently supports post-processing for following service providers:
-
-- Amazon Web Services (AWS)
-
-Third party cloud and SaaS providers can [express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9). Learn more about the [technical details of post-processing secrets](https://gitlab.com/groups/gitlab-org/-/epics/4639).
-
-NOTE:
-Post-processing is currently limited to a project's default branch, see the above epic for future efforts to support additional branches.
-
-```mermaid
-sequenceDiagram
-    autonumber
-    Rails->>+Sidekiq: gl-secret-detection-report.json
-    Sidekiq-->+Sidekiq: Ci::BuildFinishedWorker
-    Sidekiq-->+RevocationAPI: GET revocable keys types
-    RevocationAPI-->>-Sidekiq: OK
-    Sidekiq->>+RevocationAPI: POST revoke revocable keys
-    RevocationAPI-->>-Sidekiq: ACCEPTED
-    RevocationAPI-->>+Cloud Vendor: revoke revocable keys
-    Cloud Vendor-->>+RevocationAPI: ACCEPTED
-```
+Upon detection of a secret, GitLab SaaS supports post-processing hooks.
+For more information, see [Post-processing and revocation](post_processing.md).
 
 ## Full History Secret Detection
 
@@ -316,7 +368,7 @@ registry.gitlab.com/security-products/secret-detection:3
 
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Please consult your IT staff to find an accepted and approved
-process by which external resources can be imported or temporarily accessed. These scanners are [periodically updated](../vulnerabilities/index.md#vulnerability-scanner-maintenance)
+process by which external resources can be imported or temporarily accessed. These scanners are [periodically updated](../index.md#vulnerability-scanner-maintenance)
 with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see Docker's documentation on
@@ -370,7 +422,7 @@ For information on this, see the [general Application Security troubleshooting s
 
 ### Error: `Couldn't run the gitleaks command: exit status 2`
 
-If a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` variable's
+If a pipeline is triggered from a merge request containing 60 commits while the `GIT_DEPTH` variable's
 value is less than that, the Secret Detection job fails as the clone is not deep enough to contain all of the
 relevant commits. For information on the current default value, see the
 [pipeline configuration documentation](../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
@@ -395,3 +447,12 @@ secret_detection:
   variables:
     GIT_DEPTH: 100
 ```
+
+### `secret-detection` job fails with `ERR fatal: ambiguous argument` message
+
+Your `secret-detection` job can fail with `ERR fatal: ambiguous argument` error if your 
+repository's default branch is unrelated to the branch the job was triggered for. 
+See issue [!352014](https://gitlab.com/gitlab-org/gitlab/-/issues/352014) for more details.
+
+To resolve the issue, make sure to correctly [set your default branch](../../project/repository/branches/default.md#change-the-default-branch-name-for-a-project) on your repository. You should set it to a branch 
+that has related history with the branch you run the `secret-detection` job on. 

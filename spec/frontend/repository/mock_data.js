@@ -5,16 +5,20 @@ export const simpleViewerMock = {
   rawSize: 123,
   rawTextBlob: 'raw content',
   fileType: 'text',
+  language: 'javascript',
   path: 'some_file.js',
   webPath: 'some_file.js',
   editBlobPath: 'some_file.js/edit',
   ideEditPath: 'some_file.js/ide/edit',
   forkAndEditPath: 'some_file.js/fork/edit',
   ideForkAndEditPath: 'some_file.js/fork/ide',
+  environmentFormattedExternalUrl: '',
+  environmentExternalUrlForRouteMap: '',
   canModifyBlob: true,
   canCurrentUserPushToBranch: true,
   archived: false,
   storedExternally: false,
+  externalStorageUrl: '',
   externalStorage: 'lfs',
   rawPath: 'some_file.js',
   replacePath: 'some_file.js/replace',
@@ -46,6 +50,7 @@ export const userPermissionsMock = {
 };
 
 export const projectMock = {
+  __typename: 'Project',
   id: '1234',
   userPermissions: userPermissionsMock,
   pathLocks: {

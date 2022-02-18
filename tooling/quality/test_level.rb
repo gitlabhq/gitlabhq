@@ -24,6 +24,7 @@ module Quality
         elastic
         elastic_integration
         experiments
+        events
         factories
         finders
         frontend

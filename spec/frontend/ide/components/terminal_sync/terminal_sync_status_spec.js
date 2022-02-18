@@ -1,5 +1,6 @@
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import TerminalSyncStatus from '~/ide/components/terminal_sync/terminal_sync_status.vue';
 import {
@@ -11,8 +12,7 @@ import {
 const TEST_MESSAGE = 'lorem ipsum dolar sit';
 const START_LOADING = 'START_LOADING';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ide/components/terminal_sync/terminal_sync_status', () => {
   let moduleState;
@@ -35,7 +35,6 @@ describe('ide/components/terminal_sync/terminal_sync_status', () => {
     });
 
     wrapper = shallowMount(TerminalSyncStatus, {
-      localVue,
       store,
     });
   };

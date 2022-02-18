@@ -18,6 +18,7 @@ module API
                           desc: 'The scope of specific runners to show'
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                           desc: 'The type of the runners to show'
+          optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                             desc: 'The status of the runners to show'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
@@ -26,9 +27,7 @@ module API
         get do
           runners = current_user.ci_owned_runners
           runners = filter_runners(runners, params[:scope], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
-          runners = filter_runners(runners, params[:type], allowed_scopes: ::Ci::Runner::AVAILABLE_TYPES)
-          runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
-          runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
+          runners = apply_filter(runners, params)
 
           present paginate(runners), with: Entities::Ci::Runner
         end
@@ -41,6 +40,7 @@ module API
                           desc: 'The scope of specific runners to show'
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                           desc: 'The type of the runners to show'
+          optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                             desc: 'The status of the runners to show'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
@@ -51,9 +51,7 @@ module API
 
           runners = ::Ci::Runner.all
           runners = filter_runners(runners, params[:scope])
-          runners = filter_runners(runners, params[:type], allowed_scopes: ::Ci::Runner::AVAILABLE_TYPES)
-          runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
-          runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
+          runners = apply_filter(runners, params)
 
           present paginate(runners), with: Entities::Ci::Runner
         end
@@ -77,18 +75,21 @@ module API
         params do
           requires :id, type: Integer, desc: 'The ID of the runner'
           optional :description, type: String, desc: 'The description of the runner'
-          optional :active, type: Boolean, desc: 'The state of a runner'
+          optional :active, type: Boolean, desc: 'Deprecated: Use `:paused` instead. Flag indicating whether the runner is allowed to receive jobs'
+          optional :paused, type: Boolean, desc: 'Flag indicating whether the runner should ignore new jobs'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The list of tags for a runner'
-          optional :run_untagged, type: Boolean, desc: 'Flag indicating the runner can execute untagged jobs'
+          optional :run_untagged, type: Boolean, desc: 'Flag indicating whether the runner can execute untagged jobs'
           optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
                                   desc: 'The access_level of the runner'
           optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
-          at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout
+          at_least_one_of :description, :active, :paused, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout
+          mutually_exclusive :active, :paused
         end
         put ':id' do
           runner = get_runner(params.delete(:id))
           authenticate_update_runner!(runner)
+          params[:active] = !params.delete(:paused) if params.include?(:paused)
           update_service = ::Ci::UpdateRunnerService.new(runner)
 
           if update_service.update(declared_params(include_missing: false))
@@ -109,7 +110,7 @@ module API
 
           authenticate_delete_runner!(runner)
 
-          destroy_conditionally!(runner)
+          destroy_conditionally!(runner) { ::Ci::UnregisterRunnerService.new(runner).execute }
         end
 
         desc 'List jobs running on a runner' do
@@ -142,7 +143,7 @@ module API
           authenticate_update_runner!(runner)
 
           runner.reset_token!
-          present runner.token, with: Entities::Ci::ResetTokenResult
+          present runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -160,6 +161,7 @@ module API
                           desc: 'The scope of specific runners to show'
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                           desc: 'The type of the runners to show'
+          optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                             desc: 'The status of the runners to show'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
@@ -223,18 +225,14 @@ module API
         params do
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                   desc: 'The type of the runners to show'
+          optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                   desc: 'The status of the runners to show'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
           use :pagination
         end
         get ':id/runners' do
-          runners = if ::Feature.enabled?(:ci_find_runners_by_ci_mirrors, user_group, default_enabled: :yaml)
-                      ::Ci::Runner.belonging_to_group_and_ancestors(user_group.id)
-                    else
-                      ::Ci::Runner.legacy_belonging_to_group(user_group.id, include_ancestors: true)
-                    end
-
+          runners = ::Ci::Runner.group_or_instance_wide(user_group)
           runners = apply_filter(runners, params)
 
           present paginate(runners), with: Entities::Ci::Runner
@@ -251,7 +249,7 @@ module API
           authorize! :update_runners_registration_token
 
           ApplicationSetting.current.reset_runners_registration_token!
-          present ApplicationSetting.current_without_cache.runners_registration_token, with: Entities::Ci::ResetTokenResult
+          present ApplicationSetting.current_without_cache.runners_registration_token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -269,7 +267,7 @@ module API
           authorize! :update_runners_registration_token, project
 
           project.reset_runners_token!
-          present project.runners_token, with: Entities::Ci::ResetTokenResult
+          present project.runners_token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -287,7 +285,7 @@ module API
           authorize! :update_runners_registration_token, group
 
           group.reset_runners_token!
-          present group.runners_token, with: Entities::Ci::ResetTokenResult
+          present group.runners_token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -310,6 +308,7 @@ module API
         def apply_filter(runners, params)
           runners = filter_runners(runners, params[:type], allowed_scopes: ::Ci::Runner::AVAILABLE_TYPES)
           runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
+          runners = filter_runners(runners, params[:paused] ? 'paused' : 'active', allowed_scopes: %w[paused active]) if params.include?(:paused)
           runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
 
           runners

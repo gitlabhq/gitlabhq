@@ -836,6 +836,24 @@ RSpec.describe 'Git HTTP requests' do
                 end
               end
             end
+
+            context "when the user is admin" do
+              let(:admin) { create(:admin) }
+              let(:env) { { user: admin.username, password: admin.password } }
+
+              # Currently, the admin mode is bypassed for git operations.
+              # Once the admin mode is considered for git operations, this test will fail.
+              # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/296509
+              context 'when admin mode is enabled', :enable_admin_mode do
+                it_behaves_like 'pulls are allowed'
+                it_behaves_like 'pushes are allowed'
+              end
+
+              context 'when admin mode is disabled' do
+                it_behaves_like 'pulls are allowed'
+                it_behaves_like 'pushes are allowed'
+              end
+            end
           end
         end
 
@@ -929,10 +947,10 @@ RSpec.describe 'Git HTTP requests' do
               context 'when admin mode is disabled' do
                 it_behaves_like 'can download code only'
 
-                it 'downloads from other project get status 404' do
+                it 'downloads from other project get status 403' do
                   clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
 
-                  expect(response).to have_gitlab_http_status(:not_found)
+                  expect(response).to have_gitlab_http_status(:forbidden)
                 end
               end
             end
@@ -1534,10 +1552,10 @@ RSpec.describe 'Git HTTP requests' do
               context 'when admin mode is disabled' do
                 it_behaves_like 'can download code only'
 
-                it 'downloads from other project get status 404' do
+                it 'downloads from other project get status 403' do
                   clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
 
-                  expect(response).to have_gitlab_http_status(:not_found)
+                  expect(response).to have_gitlab_http_status(:forbidden)
                 end
               end
             end

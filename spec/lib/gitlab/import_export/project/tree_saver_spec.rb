@@ -36,7 +36,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
 
           project_tree_saver = described_class.new(project: project, current_user: user, shared: shared)
 
-          project_tree_saver.save
+          project_tree_saver.save # rubocop:disable Rails/SaveBang
         end
       end
 
@@ -305,14 +305,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
         end
 
         before do
-          user2.update(public_email: user2.email)
+          user2.update!(public_email: user2.email)
           group.add_developer(user2)
         end
 
         context 'when has no permission' do
           before do
             group.add_developer(user)
-            project_tree_saver.save
+            project_tree_saver.save # rubocop:disable Rails/SaveBang
           end
 
           it 'does not export group members' do
@@ -324,7 +324,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
           before do
             group.add_maintainer(user)
 
-            project_tree_saver.save
+            project_tree_saver.save # rubocop:disable Rails/SaveBang
           end
 
           it 'does not export group members' do
@@ -336,7 +336,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
           before do
             group.add_owner(user)
 
-            project_tree_saver.save
+            project_tree_saver.save # rubocop:disable Rails/SaveBang
           end
 
           it 'exports group members as group owner' do
@@ -348,7 +348,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
           let(:user) { create(:admin) }
 
           before do
-            project_tree_saver.save
+            project_tree_saver.save # rubocop:disable Rails/SaveBang
           end
 
           context 'when admin mode is enabled', :enable_admin_mode do
@@ -376,7 +376,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
         let(:relation_name) { :projects }
 
         before do
-          project_tree_saver.save
+          project_tree_saver.save # rubocop:disable Rails/SaveBang
         end
 
         it { is_expected.to include({ 'description' => params[:description] }) }
@@ -471,7 +471,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
     merge_request = create(:merge_request, source_project: project, milestone: milestone)
 
     ci_build = create(:ci_build, project: project, when: nil)
-    ci_build.pipeline.update(project: project)
+    ci_build.pipeline.update!(project: project)
     create(:commit_status, project: project, pipeline: ci_build.pipeline)
 
     create(:milestone, project: project)

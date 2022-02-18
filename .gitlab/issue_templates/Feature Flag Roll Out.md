@@ -121,7 +121,7 @@ To do so, follow these steps:
     - [ ] `/chatops run auto_deploy status <merge-commit-of-default-enabling-mr>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 - [ ] Set the next milestone to this rollout issue for scheduling [the flag removal](#release-the-feature).
-- [ ] (Optional) You can create a separate issue for scheduling the steps below to [Release the feature](#release-the-feature).
+- [ ] (Optional) You can [create a separate issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20Flag%20Cleanup) for scheduling the steps below to [Release the feature](#release-the-feature).
     - [ ] Set the title to "[Feature flag] Cleanup `<feature-flag-name>`".
     - [ ] Execute the `/copy_metadata <this-rollout-issue-link>` quick action to copy the labels from this rollout issue.
     - [ ] Link this rollout issue as a related issue.
@@ -140,6 +140,8 @@ After the feature has been [deemed stable](https://about.gitlab.com/handbook/pro
 the [clean up](https://docs.gitlab.com/ee/development/feature_flags/controls.html#cleaning-up)
 should be done as soon as possible to permanently enable the feature and reduce complexity in the
 codebase.
+
+You can either [create a follow-up issue for Feature Flag Cleanup](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20Flag%20Cleanup) or use the checklist below in this same issue.
 
 <!-- The checklist here is to help stakeholders keep track of the feature flag status -->
 - [ ] Create a merge request to remove `<feature-flag-name>` feature flag. Ask for review and merge it.

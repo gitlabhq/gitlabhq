@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package Registry', :orchestrated, :packages, :object_storage do
+  RSpec.describe 'Package Registry', :orchestrated, :reliable, :packages, :object_storage do
     describe 'npm project level endpoint' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
@@ -46,62 +46,6 @@ module QA
         end
       end
 
-      let(:gitlab_ci_yaml) do
-        {
-          file_path: '.gitlab-ci.yml',
-          content:
-              <<~YAML
-              image: node:latest
-
-              stages:
-                - deploy
-                - install
-              
-              deploy:
-                stage: deploy
-                script:
-                  - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=#{auth_token}">.npmrc
-                  - npm publish
-                only:
-                  - "#{project.default_branch}"
-                tags:
-                  - "runner-for-#{project.name}"
-              install:
-                stage: install
-                script:
-                  - "npm config set @#{registry_scope}:registry #{gitlab_address_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/"
-                  - "npm install #{package.name}"
-                cache:
-                  key: ${CI_BUILD_REF_NAME}
-                  paths:
-                    - node_modules/
-                artifacts:
-                  paths:
-                    - node_modules/
-                only:
-                  - "#{project.default_branch}"
-                tags:
-                  - "runner-for-#{project.name}"
-              YAML
-        }
-      end
-
-      let(:package_json) do
-        {
-          file_path: 'package.json',
-          content: <<~JSON
-            {
-              "name": "#{package.name}",
-              "version": "1.0.0",
-              "description": "Example package for GitLab npm registry",
-              "publishConfig": {
-                "@#{registry_scope}:registry": "#{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/npm/"
-              }
-            }
-          JSON
-      }
-      end
-
       let(:package) do
         Resource::Package.init do |package|
           package.name = "@#{registry_scope}/mypackage-#{SecureRandom.hex(8)}"
@@ -115,10 +59,10 @@ module QA
         project.remove_via_api!
       end
 
-      where(:authentication_token_type, :token_name) do
-        :personal_access_token | 'Personal Access Token'
-        :ci_job_token          | 'CI Job Token'
-        :project_deploy_token  | 'Deploy Token'
+      where(:case_name, :authentication_token_type, :token_name, :testcase) do
+        'using personal access token' | :personal_access_token | 'Personal Access Token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347592'
+        'using ci job token'          | :ci_job_token          | 'CI Job Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347594'
+        'using project deploy token'  | :project_deploy_token  | 'Deploy Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347593'
       end
 
       with_them do
@@ -133,13 +77,22 @@ module QA
           end
         end
 
-        it "push and pull a npm package via CI using a #{params[:token_name]}" do
+        it 'push and pull a npm package via CI', testcase: params[:testcase] do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
+            npm_upload_install_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_install_package_project.yaml.erb')).result(binding)
+            package_json = ERB.new(read_fixture('package_managers/npm', 'package_project.json.erb')).result(binding)
+
             commit.project = project
             commit.commit_message = 'Add .gitlab-ci.yml'
             commit.add_files([
-                              gitlab_ci_yaml,
-                              package_json
+                              {
+                                file_path: '.gitlab-ci.yml',
+                                content: npm_upload_install_yaml
+                              },
+                              {
+                                file_path: 'package.json',
+                                content: package_json
+                              }
                             ])
           end
 
@@ -182,13 +135,6 @@ module QA
 
           Page::Project::Packages::Show.perform do |show|
             expect(show).to have_package_info(package.name, "1.0.0")
-
-            show.click_delete
-          end
-
-          Page::Project::Packages::Index.perform do |index|
-            expect(index).to have_content("Package deleted successfully")
-            expect(index).not_to have_package(package.name)
           end
         end
       end

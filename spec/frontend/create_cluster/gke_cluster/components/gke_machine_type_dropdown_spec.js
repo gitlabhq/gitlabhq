@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import GkeMachineTypeDropdown from '~/create_cluster/gke_cluster/components/gke_machine_type_dropdown.vue';
 import createState from '~/create_cluster/gke_cluster/store/state';
@@ -19,15 +20,12 @@ const LABELS = {
   DEFAULT: 'Select machine type',
 };
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const createComponent = (store, propsData = componentConfig) =>
   shallowMount(GkeMachineTypeDropdown, {
     propsData,
     store,
-    localVue,
   });
 
 const createStore = (initialState = {}, getters = {}) =>
@@ -75,7 +73,7 @@ describe('GkeMachineTypeDropdown', () => {
       expect(dropdownButtonLabel()).toBe(LABELS.DISABLED_NO_ZONE);
     });
 
-    it('returns loading toggle text', () => {
+    it('returns loading toggle text', async () => {
       store = createStore();
       wrapper = createComponent(store);
 
@@ -83,9 +81,8 @@ describe('GkeMachineTypeDropdown', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isLoading: true });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(dropdownButtonLabel()).toBe(LABELS.LOADING);
-      });
+      await nextTick();
+      expect(dropdownButtonLabel()).toBe(LABELS.LOADING);
     });
 
     it('returns default toggle text', () => {
@@ -115,7 +112,7 @@ describe('GkeMachineTypeDropdown', () => {
   });
 
   describe('form input', () => {
-    it('reflects new value when dropdown item is clicked', () => {
+    it('reflects new value when dropdown item is clicked', async () => {
       store = createStore({
         machineTypes: gapiMachineTypesResponseMock.items,
       });
@@ -125,9 +122,8 @@ describe('GkeMachineTypeDropdown', () => {
 
       wrapper.find('.dropdown-content button').trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(setMachineType).toHaveBeenCalledWith(expect.anything(), selectedMachineTypeMock);
-      });
+      await nextTick();
+      expect(setMachineType).toHaveBeenCalledWith(expect.anything(), selectedMachineTypeMock);
     });
   });
 });

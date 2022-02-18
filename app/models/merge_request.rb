@@ -406,6 +406,17 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  scope :attention, ->(user) do
+    # rubocop: disable Gitlab/Union
+    union = Gitlab::SQL::Union.new([
+      MergeRequestReviewer.select(:merge_request_id).where(user_id: user.id, state: MergeRequestReviewer.states[:attention_requested]),
+      MergeRequestAssignee.select(:merge_request_id).where(user_id: user.id, state: MergeRequestAssignee.states[:attention_requested])
+    ])
+    # rubocop: enable Gitlab/Union
+
+    with(Gitlab::SQL::CTE.new(:reviewers_and_assignees, union).to_arel).where('merge_requests.id in (select merge_request_id from reviewers_and_assignees)')
+  end
+
   def self.total_time_to_merge
     join_metrics
       .merge(MergeRequest::Metrics.with_valid_time_to_merge)
@@ -469,6 +480,12 @@ class MergeRequest < ApplicationRecord
 
   def rebase_in_progress?
     rebase_jid.present? && Gitlab::SidekiqStatus.running?(rebase_jid)
+  end
+
+  def permits_force_push?
+    return true unless ProtectedBranch.protected?(source_project, source_branch)
+
+    ProtectedBranch.allow_force_push?(source_project, source_branch)
   end
 
   # Use this method whenever you need to make sure the head_pipeline is synced with the
@@ -561,20 +578,24 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  # WIP is deprecated in favor of Draft. Currently both options are supported
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/227426
-  DRAFT_REGEX = /\A*#{Regexp.union(Gitlab::Regex.merge_request_wip, Gitlab::Regex.merge_request_draft)}+\s*/i.freeze
+  DRAFT_REGEX = /\A*#{Gitlab::Regex.merge_request_draft}+\s*/i.freeze
 
-  def self.work_in_progress?(title)
+  def self.draft?(title)
     !!(title =~ DRAFT_REGEX)
   end
 
-  def self.wipless_title(title)
+  def self.draftless_title(title)
     title.sub(DRAFT_REGEX, "")
   end
 
-  def self.wip_title(title)
-    work_in_progress?(title) ? title : "Draft: #{title}"
+  def self.draft_title(title)
+    draft?(title) ? title : "Draft: #{title}"
+  end
+
+  class << self
+    alias_method :work_in_progress?, :draft?
+    alias_method :wipless_title, :draftless_title
+    alias_method :wip_title, :draft_title
   end
 
   def self.participant_includes
@@ -587,9 +608,10 @@ class MergeRequest < ApplicationRecord
 
   # Verifies if title has changed not taking into account Draft prefix
   # for merge requests.
-  def wipless_title_changed(old_title)
-    self.class.wipless_title(old_title) != self.wipless_title
+  def draftless_title_changed(old_title)
+    self.class.draftless_title(old_title) != self.draftless_title
   end
+  alias_method :wipless_title_changed, :draftless_title_changed
 
   def hook_attrs
     Gitlab::HookData::MergeRequestBuilder.new(self).build
@@ -1088,18 +1110,20 @@ class MergeRequest < ApplicationRecord
     @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: :closed).last
   end
 
-  def work_in_progress?
-    self.class.work_in_progress?(title)
+  def draft?
+    self.class.draft?(title)
   end
-  alias_method :draft?, :work_in_progress?
+  alias_method :work_in_progress?, :draft?
 
-  def wipless_title
-    self.class.wipless_title(self.title)
+  def draftless_title
+    self.class.draftless_title(self.title)
   end
+  alias_method :wipless_title, :draftless_title
 
-  def wip_title
-    self.class.wip_title(self.title)
+  def draft_title
+    self.class.draft_title(self.title)
   end
+  alias_method :wip_title, :draft_title
 
   def mergeable?(skip_ci_check: false, skip_discussions_check: false)
     return false unless mergeable_state?(skip_ci_check: skip_ci_check,
@@ -1754,6 +1778,8 @@ class MergeRequest < ApplicationRecord
 
     paths = active_diff_discussions.flat_map { |n| n.diff_file.paths }.uniq
 
+    active_discussions_resolved = active_diff_discussions.all?(&:resolved?)
+
     service = Discussions::UpdateDiffPositionService.new(
       self.project,
       current_user,
@@ -1764,9 +1790,15 @@ class MergeRequest < ApplicationRecord
 
     active_diff_discussions.each do |discussion|
       service.execute(discussion)
+      discussion.clear_memoized_values
     end
 
-    if project.resolve_outdated_diff_discussions?
+    # If they were all already resolved, this method will have already been called.
+    # If they all don't get resolved, we don't need to call the method
+    # If they go from unresolved -> resolved, then we call the method
+    if !active_discussions_resolved &&
+        active_diff_discussions.all?(&:resolved?) &&
+        project.resolve_outdated_diff_discussions?
       MergeRequests::ResolvedDiscussionNotificationService
         .new(project: project, current_user: current_user)
         .execute(self)

@@ -880,7 +880,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
         before do
           group = create(:group, visibility_level: group_visibility)
           group.add_users([user], GroupMember::MAINTAINER)
-          project.update(group: group)
+          project.update!(group: group)
         end
 
         context 'private group visibility' do

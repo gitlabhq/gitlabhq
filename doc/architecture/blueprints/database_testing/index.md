@@ -100,7 +100,7 @@ The short-term goal is detailed in [this epic](https://gitlab.com/groups/gitlab-
 
 ### Mid-term - Improved feedback, query testing and background migration testing
 
-Mid-term, we plan to expand the level of detail the testing pipeline reports back to the Merge Request and expand its scope to cover query testing, too. By doing so, we use our experience from database code reviews and using thin-clone technology and bring this back closer to the GitLab workflow. Instead of reaching out to different tools (`postgres.ai`, `joe`, Slack, plan visualizations, and so on) we bring this back to GitLab and working directly on the Merge Request.
+Mid-term, we plan to expand the level of detail the testing pipeline reports back to the merge requet and expand its scope to cover query testing, too. By doing so, we use our experience from database code reviews and using thin-clone technology and bring this back closer to the GitLab workflow. Instead of reaching out to different tools (`postgres.ai`, `joe`, Slack, plan visualizations, and so on) we bring this back to GitLab and working directly on the merge request.
 
 Secondly, we plan to cover background migrations testing, too. These are typically data migrations that are scheduled to run over a long period of time. The success of both the scheduling phase and the job execution phase typically depends a lot on data distribution - which only surfaces when running these migrations on actual production data. In order to become confident about a background migration, we plan to provide the following feedback:
 
@@ -109,7 +109,7 @@ Secondly, we plan to cover background migrations testing, too. These are typical
 
 ### Long-term - incorporate into GitLab product
 
-There are opportunities to discuss for extracting features from this into GitLab itself. For example, annotating the Merge Request with query examples and attaching feedback gathered from the testing run can become a first-class citizen instead of using Merge Request description and comments for it. We plan to evaluate those ideas as we see those being used in earlier phases and bring our experience back into the product.
+There are opportunities to discuss for extracting features from this into GitLab itself. For example, annotating the merge request with query examples and attaching feedback gathered from the testing run can become a first-class citizen instead of using merge request description and comments for it. We plan to evaluate those ideas as we see those being used in earlier phases and bring our experience back into the product.
 
 ## An alternative discussed: Anonymization
 

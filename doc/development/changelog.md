@@ -101,7 +101,9 @@ EE: true
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
 - Any [GLEX experiment](experiment_guide/gitlab_experiment.md) changes **should not** have a changelog entry.
-- [Modifying](feature_flags/#changelog) a feature flag (flag removal, default-on setting).
+
+For more information, see
+[how to handle changelog entries with feature flags](feature_flags/index.md#changelog).
 
 ## Writing good changelog entries
 

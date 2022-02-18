@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects > Files > Project owner creates a license file', :js do
   let(:project) { create(:project, :repository) }
-  let(:project_maintainer) { project.owner }
+  let(:project_maintainer) { project.first_owner }
 
   before do
     project.repository.delete_file(project_maintainer, 'LICENSE',

@@ -12,7 +12,12 @@ module Tooling
     def parse(yaml_files)
       Array(yaml_files).each do |yaml_file|
         data = File.read(yaml_file)
-        _metadata, example_groups = data.split("---\n").reject(&:empty?).map { |yml| YAML.safe_load(yml, [Symbol]) }
+        metadata, example_groups = data.split("---\n").reject(&:empty?).map { |yml| YAML.safe_load(yml, [Symbol]) }
+
+        if example_groups.nil?
+          puts "No examples in #{yaml_file}! Metadata: #{metadata}"
+          next
+        end
 
         example_groups.each do |example_id, files|
           files.each do |file|

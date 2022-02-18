@@ -1,4 +1,6 @@
+import { GlFormGroup } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import AddIssuableForm from '~/related_issues/components/add_issuable_form.vue';
 import IssueToken from '~/related_issues/components/issue_token.vue';
 import { issuableTypesMap, linkedIssueTypesMap, PathIdSeparator } from '~/related_issues/constants';
@@ -152,6 +154,30 @@ describe('AddIssuableForm', () => {
       });
     });
 
+    describe('categorized issuables', () => {
+      it.each`
+        issuableType              | pathIdSeparator          | contextHeader          | contextFooter
+        ${issuableTypesMap.ISSUE} | ${PathIdSeparator.Issue} | ${'The current issue'} | ${'the following issue(s)'}
+        ${issuableTypesMap.EPIC}  | ${PathIdSeparator.Epic}  | ${'The current epic'}  | ${'the following epic(s)'}
+      `(
+        'show header text as "$contextHeader" and footer text as "$contextFooter" issuableType is set to $issuableType',
+        ({ issuableType, contextHeader, contextFooter }) => {
+          wrapper = shallowMount(AddIssuableForm, {
+            propsData: {
+              issuableType,
+              inputValue: '',
+              showCategorizedIssues: true,
+              pathIdSeparator,
+              pendingReferences: [],
+            },
+          });
+
+          expect(wrapper.findComponent(GlFormGroup).attributes('label')).toBe(contextHeader);
+          expect(wrapper.find('p.bold').text()).toContain(contextFooter);
+        },
+      );
+    });
+
     describe('when it is a Linked Issues form', () => {
       beforeEach(() => {
         wrapper = mount(AddIssuableForm, {
@@ -194,63 +220,55 @@ describe('AddIssuableForm', () => {
       });
 
       describe('when the form is submitted', () => {
-        it('emits an event with a "relates_to" link type when the "relates to" radio input selected', (done) => {
+        it('emits an event with a "relates_to" link type when the "relates to" radio input selected', async () => {
           jest.spyOn(wrapper.vm, '$emit').mockImplementation(() => {});
 
           wrapper.vm.linkedIssueType = linkedIssueTypesMap.RELATES_TO;
           wrapper.vm.onFormSubmit();
 
-          wrapper.vm.$nextTick(() => {
-            expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormSubmit', {
-              pendingReferences: '',
-              linkedIssueType: linkedIssueTypesMap.RELATES_TO,
-            });
-            done();
+          await nextTick();
+          expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormSubmit', {
+            pendingReferences: '',
+            linkedIssueType: linkedIssueTypesMap.RELATES_TO,
           });
         });
 
-        it('emits an event with a "blocks" link type when the "blocks" radio input selected', (done) => {
+        it('emits an event with a "blocks" link type when the "blocks" radio input selected', async () => {
           jest.spyOn(wrapper.vm, '$emit').mockImplementation(() => {});
 
           wrapper.vm.linkedIssueType = linkedIssueTypesMap.BLOCKS;
           wrapper.vm.onFormSubmit();
 
-          wrapper.vm.$nextTick(() => {
-            expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormSubmit', {
-              pendingReferences: '',
-              linkedIssueType: linkedIssueTypesMap.BLOCKS,
-            });
-            done();
+          await nextTick();
+          expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormSubmit', {
+            pendingReferences: '',
+            linkedIssueType: linkedIssueTypesMap.BLOCKS,
           });
         });
 
-        it('emits an event with a "is_blocked_by" link type when the "is blocked by" radio input selected', (done) => {
+        it('emits an event with a "is_blocked_by" link type when the "is blocked by" radio input selected', async () => {
           jest.spyOn(wrapper.vm, '$emit').mockImplementation(() => {});
 
           wrapper.vm.linkedIssueType = linkedIssueTypesMap.IS_BLOCKED_BY;
           wrapper.vm.onFormSubmit();
 
-          wrapper.vm.$nextTick(() => {
-            expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormSubmit', {
-              pendingReferences: '',
-              linkedIssueType: linkedIssueTypesMap.IS_BLOCKED_BY,
-            });
-            done();
+          await nextTick();
+          expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormSubmit', {
+            pendingReferences: '',
+            linkedIssueType: linkedIssueTypesMap.IS_BLOCKED_BY,
           });
         });
 
-        it('shows error message when error is present', (done) => {
+        it('shows error message when error is present', async () => {
           const itemAddFailureMessage = 'Something went wrong while submitting.';
           wrapper.setProps({
             hasError: true,
             itemAddFailureMessage,
           });
 
-          wrapper.vm.$nextTick(() => {
-            expect(wrapper.find('.gl-field-error').exists()).toBe(true);
-            expect(wrapper.find('.gl-field-error').text()).toContain(itemAddFailureMessage);
-            done();
-          });
+          await nextTick();
+          expect(wrapper.find('.gl-field-error').exists()).toBe(true);
+          expect(wrapper.find('.gl-field-error').text()).toContain(itemAddFailureMessage);
         });
       });
     });

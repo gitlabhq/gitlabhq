@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import initVueAlerts from '~/vue_alerts';
@@ -75,10 +75,9 @@ describe('VueAlerts', () => {
     });
 
     describe('when dismissed', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         findAlertDismiss(findAlerts()[0]).click();
-
-        return Vue.nextTick();
+        await nextTick();
       });
 
       it('hides the alert', () => {

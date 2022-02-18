@@ -1,5 +1,6 @@
 import { GlAlert, GlLoadingIcon, GlTable, GlAvatar, GlEmptyState } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
 import {
   I18N,
@@ -210,7 +211,7 @@ describe('Incidents List', () => {
 
     it('sets button loading on click', async () => {
       findCreateIncidentBtn().vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findCreateIncidentBtn().attributes('loading')).toBe('true');
     });
 
@@ -233,7 +234,7 @@ describe('Incidents List', () => {
 
     it('should track create new incident button', async () => {
       findCreateIncidentBtn().vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(Tracking.event).toHaveBeenCalled();
     });
   });
@@ -263,10 +264,10 @@ describe('Incidents List', () => {
         const columnHeader = () => wrapper.find(`[${attr}="${value}"]`);
         expect(columnHeader().attributes('aria-sort')).toBe(initialSort);
         columnHeader().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(columnHeader().attributes('aria-sort')).toBe(firstSort);
         columnHeader().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(columnHeader().attributes('aria-sort')).toBe(nextSort);
       },
     );
@@ -287,7 +288,7 @@ describe('Incidents List', () => {
 
     it('should track incident creation events', async () => {
       findCreateIncidentBtn().vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
       const { category, action } = trackIncidentCreateNewOptions;
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });

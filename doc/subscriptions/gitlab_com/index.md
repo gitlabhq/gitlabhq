@@ -14,7 +14,7 @@ You don't need to install anything to use GitLab SaaS, you only need to
 - [A subscription](https://about.gitlab.com/pricing/).
 - [The number of seats you want](#how-seat-usage-is-determined).
 
-The subscription determines which features are available for your private projects. Public projects automatically get **Ultimate** tier features.
+The subscription determines which features are available for your private projects. Organizations with public open source projects can actively apply to our [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/join/).
 
 Qualifying open source projects also get 50,000 CI/CD minutes and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
@@ -44,7 +44,7 @@ To subscribe to GitLab SaaS:
 
 Prerequisite:
 
-- You must have the Owner [role](../../user/permissions.md) for the group.
+- You must have the Owner role for the group.
 
 To see the status of your GitLab SaaS subscription:
 
@@ -79,10 +79,12 @@ Every user is included in seat usage, with the following exceptions:
 
 - Users who are pending approval.
 - Members with the Guest role on an Ultimate subscription.
-- GitLab-created service accounts: `Ghost User` and bots
-  ([`Support Bot`](../../user/project/service_desk.md#support-bot-user),
-  [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and
-  so on.)
+- GitLab-created service accounts:
+  - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
+  - Bots such as:
+    - [Support Bot](../../user/project/service_desk.md#support-bot-user).
+    - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
+    - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
 
 Seat usage is reviewed [quarterly or annually](../quarterly_reconciliation.md).
 
@@ -254,7 +256,7 @@ expiration date without a gap in available service. An invoice is
 generated for the renewal and available for viewing or download on the
 [View invoices](https://customers.gitlab.com/receipts) page.
 
-#### Enable automatic renewal
+#### Enable or disable automatic renewal
 
 To view or change automatic subscription renewal (at the same tier as the
 previous period), log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
@@ -290,21 +292,28 @@ for more information.
 ### Purchase additional CI/CD minutes
 
 You can [purchase additional minutes](../../ci/pipelines/cicd_minutes.md#purchase-additional-cicd-minutes)
-for your personal or group namespace.
+for your personal or group namespace. CI/CD minutes are a **one-time purchase**, so they do not renew.
 
-## Storage subscription
+## Add-on subscription for additional Storage and Transfer
+
+NOTE:
+Free namespaces are subject to a 5GB storage and 10GB transfer [soft limit](https://about.gitlab.com/pricing). Once all storage is available to view in the usage quota workflow, GitLab will automatically enforce the namespace storage limit and the project limit will be removed. This change will be announced separately. The storage and transfer add-on can be purchased to increase the limits.
 
 Projects have a free storage quota of 10 GB. To exceed this quota you must first [purchase one or
-more storage subscription units](#purchase-more-storage). Each unit provides 10 GB of additional
+more storage subscription units](#purchase-more-storage-and-transfer). Each unit provides 10 GB of additional
 storage per namespace. A storage subscription is renewed annually. For more details, see
 [Usage Quotas](../../user/usage_quotas.md).
 
 When the amount of purchased storage reaches zero, all projects over the free storage quota are
 locked. Projects can only be unlocked by purchasing more storage subscription units.
 
-### Purchase more storage
+### Purchase more storage and transfer
 
-You can purchase storage for your personal or group namespace.
+You can purchase a storage subscription for your personal or group namespace.
+
+NOTE:
+Storage subscriptions **[renew automatically](#automatic-renewal) each year**.
+You can [cancel the subscription](#enable-or-disable-automatic-renewal) to disable the automatic renewal.
 
 #### For your personal namespace
 

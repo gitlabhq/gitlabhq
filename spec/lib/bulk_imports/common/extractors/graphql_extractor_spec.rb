@@ -8,12 +8,15 @@ RSpec.describe BulkImports::Common::Extractors::GraphqlExtractor do
   let(:response) { double(original_hash: { 'data' => { 'foo' => 'bar' }, 'page_info' => {} }) }
   let(:options) do
     {
-      query: double(
-        to_s: 'test',
-        variables: {},
-        data_path: %w[data foo],
-        page_info_path: %w[data page_info]
-      )
+      query:
+        double(
+          new: double(
+            to_s: 'test',
+            variables: {},
+            data_path: %w[data foo],
+            page_info_path: %w[data page_info]
+          )
+        )
     }
   end
 

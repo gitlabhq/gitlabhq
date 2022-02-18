@@ -1,5 +1,6 @@
 import { GlTab, GlBadge } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { mount, shallowMount } from '@vue/test-utils';
 import { setLanguage } from 'helpers/locale_helper';
 
 import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
@@ -10,17 +11,18 @@ const createComponent = ({
   tabs = mockIssuableListProps.tabs,
   tabCounts = mockIssuableListProps.tabCounts,
   currentTab = mockIssuableListProps.currentTab,
+  truncateCounts = false,
+  mountFn = shallowMount,
 } = {}) =>
-  mount(IssuableTabs, {
+  mountFn(IssuableTabs, {
     propsData: {
       tabs,
       tabCounts,
       currentTab,
+      truncateCounts,
     },
     slots: {
-      'nav-actions': `
-      <button class="js-new-issuable">New issuable</button>
-    `,
+      'nav-actions': `<button class="js-new-issuable">New issuable</button>`,
     },
   });
 
@@ -29,7 +31,6 @@ describe('IssuableTabs', () => {
 
   beforeEach(() => {
     setLanguage('en');
-    wrapper = createComponent();
   });
 
   afterEach(() => {
@@ -40,60 +41,71 @@ describe('IssuableTabs', () => {
   const findAllGlBadges = () => wrapper.findAllComponents(GlBadge);
   const findAllGlTabs = () => wrapper.findAllComponents(GlTab);
 
-  describe('methods', () => {
-    describe('isTabActive', () => {
-      it.each`
-        tabName     | currentTab  | returnValue
-        ${'opened'} | ${'opened'} | ${true}
-        ${'opened'} | ${'closed'} | ${false}
-      `(
-        'returns $returnValue when tab name is "$tabName" is current tab is "$currentTab"',
-        async ({ tabName, currentTab, returnValue }) => {
-          wrapper.setProps({
-            currentTab,
-          });
+  describe('tabs', () => {
+    it.each`
+      currentTab  | returnValue
+      ${'opened'} | ${'true'}
+      ${'closed'} | ${undefined}
+    `(
+      'when "$currentTab" is the selected tab, the Open tab is active=$returnValue',
+      ({ currentTab, returnValue }) => {
+        wrapper = createComponent({ currentTab });
 
-          await wrapper.vm.$nextTick();
+        const openTab = findAllGlTabs().at(0);
 
-          expect(wrapper.vm.isTabActive(tabName)).toBe(returnValue);
-        },
-      );
-    });
+        expect(openTab.attributes('active')).toBe(returnValue);
+      },
+    );
   });
 
   describe('template', () => {
     it('renders gl-tab for each tab within `tabs` array', () => {
-      const tabsEl = findAllGlTabs();
+      wrapper = createComponent();
 
-      expect(tabsEl.exists()).toBe(true);
-      expect(tabsEl).toHaveLength(mockIssuableListProps.tabs.length);
+      const tabs = findAllGlTabs();
+
+      expect(tabs).toHaveLength(mockIssuableListProps.tabs.length);
     });
 
-    it('renders gl-badge component within a tab', () => {
+    it('renders gl-badge component within a tab', async () => {
+      wrapper = createComponent({ mountFn: mount });
+      await nextTick();
+
       const badges = findAllGlBadges();
 
       // Does not render `All` badge since it has an undefined count
       expect(badges).toHaveLength(2);
-      expect(badges.at(0).text()).toBe('5,000');
+      expect(badges.at(0).text()).toBe('5,678');
       expect(badges.at(1).text()).toBe(`${mockIssuableListProps.tabCounts.closed}`);
     });
 
     it('renders contents for slot "nav-actions"', () => {
-      const buttonEl = wrapper.find('button.js-new-issuable');
+      wrapper = createComponent();
 
-      expect(buttonEl.exists()).toBe(true);
-      expect(buttonEl.text()).toBe('New issuable');
+      const button = wrapper.find('button.js-new-issuable');
+
+      expect(button.text()).toBe('New issuable');
+    });
+  });
+
+  describe('counts', () => {
+    it('can display as truncated', async () => {
+      wrapper = createComponent({ truncateCounts: true, mountFn: mount });
+      await nextTick();
+
+      expect(findAllGlBadges().at(0).text()).toBe('5.7k');
     });
   });
 
   describe('events', () => {
     it('gl-tab component emits `click` event on `click` event', () => {
-      const tabEl = findAllGlTabs().at(0);
+      wrapper = createComponent();
 
-      tabEl.vm.$emit('click', 'opened');
+      const openTab = findAllGlTabs().at(0);
 
-      expect(wrapper.emitted('click')).toBeTruthy();
-      expect(wrapper.emitted('click')[0]).toEqual(['opened']);
+      openTab.vm.$emit('click', 'opened');
+
+      expect(wrapper.emitted('click')).toEqual([['opened']]);
     });
   });
 });

@@ -5,13 +5,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 
-# Pipelines for merge requests **(FREE)**
+# Merge request pipelines **(FREE)**
+
+> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merge requests` to `merge request pipelines` in GitLab 14.8.
 
 You can configure your [pipeline](index.md) to run every time you commit changes to a branch.
 This type of pipeline is called a *branch pipeline*.
 
 Alternatively, you can configure your pipeline to run every time you make changes to the
-source branch for a merge request. This type of pipeline is called a *pipeline for merge requests*.
+source branch for a merge request. This type of pipeline is called a *merge request pipeline*.
 
 Branch pipelines:
 
@@ -20,28 +22,28 @@ Branch pipelines:
 - Have access to [some predefined variables](../variables/predefined_variables.md).
 - Have access to [protected variables](../variables/index.md#protect-a-cicd-variable).
 
-Pipelines for merge requests:
+Merge request pipelines:
 
 - Run when you:
   - Create a new merge request.
   - Push a new commit to the source branch for a merge request.
   - Select **Run pipeline** from the **Pipelines** tab in a merge request. This option
-    is only available when pipelines for merge requests are configured for the pipeline.
+    is only available when merge request pipelines are configured for the pipeline.
 - Do not run by default. The jobs in the CI/CD configuration file [must be configured](#prerequisites)
-  to run in pipelines for merge request.
+  to run in merge request pipelines.
 - Have access to [more predefined variables](#available-predefined-variables).
 - Do not have access to [protected variables](../variables/index.md#protect-a-cicd-variable).
 
 Both of these types of pipelines can appear on the **Pipelines** tab of a merge request.
 
-## Types of pipelines for merge requests
+## Types of merge request pipelines
 
-The three types of pipelines for merge requests are:
+The three types of merge request pipelines are:
 
-- Pipelines for merge requests, which run on the changes in the merge request's
+- Merge request pipelines, which run on the changes in the merge request's
   source branch. These pipelines display a `detached` label to indicate that the
   pipeline ran only on the contents of the source branch, ignoring the target branch.
-- [Pipelines for merged results](pipelines_for_merged_results.md), which run on
+- [Merged results pipelines](merged_results_pipelines.md), which run on
   the result of combining the source branch's changes with the target branch.
 - [Merge trains](merge_trains.md), which run when merging multiple merge requests
   at the same time. The changes from each merge request are combined into the
@@ -50,31 +52,31 @@ The three types of pipelines for merge requests are:
 
 ## Prerequisites
 
-To use pipelines for merge requests:
+To use merge request pipelines:
 
 - Your project's [CI/CD configuration file](../yaml/index.md) must be configured with
-  jobs that run in pipelines for merge requests. To do this, you can use:
+  jobs that run in merge request pipelines. To do this, you can use:
   - [`rules`](#use-rules-to-add-jobs).
   - [`only/except`](#use-only-to-add-jobs).
-- You must have at least the Developer [role](../../user/permissions.md) in the
-  source project to run a pipeline for merge requests.
+- You must have at least the Developer role in the
+  source project to run a merge request pipeline.
 - Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/index.md).
 
 ## Use `rules` to add jobs
 
 You can use the [`rules`](../yaml/index.md#rules) keyword to configure jobs to run in
-pipelines for merge requests. For example:
+merge request pipelines. For example:
 
 ```yaml
 job1:
   script:
-    - echo "This job runs in pipelines for merge requests"
+    - echo "This job runs in merge request pipelines"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 ```
 
 You can also use the [`workflow: rules`](../yaml/index.md#workflowrules) keyword
-to configure the entire pipeline to run in pipelines for merge requests. For example:
+to configure the entire pipeline to run in merge request pipelines. For example:
 
 ```yaml
 workflow:
@@ -83,22 +85,22 @@ workflow:
 
 job1:
   script:
-    - echo "This job runs in pipelines for merge requests"
+    - echo "This job runs in merge request pipelines"
 
 job2:
   script:
-    - echo "This job also runs in pipelines for merge requests"
+    - echo "This job also runs in merge request pipelines"
 ```
 
 ## Use `only` to add jobs
 
 You can use the [`only`](../yaml/index.md#onlyrefs--exceptrefs) keyword with `merge_requests`
-to configure jobs to run in pipelines for merge requests.
+to configure jobs to run in merge request pipelines.
 
 ```yaml
 job1:
   script:
-    - echo "This job runs in pipelines for merge requests"
+    - echo "This job runs in merge request pipelines"
   only:
     - merge_requests
 ```
@@ -122,7 +124,7 @@ Pipelines for forks display with the **fork** badge in the parent project:
 
 ### Run pipelines in the parent project **(PREMIUM)**
 
-Project members in the parent project can choose to run a pipeline for merge requests
+Project members in the parent project can choose to run a merge request pipeline
 for a merge request submitted from a fork project. This pipeline:
 
 - Is created and runs in the parent (target) project, not the fork (source) project.
@@ -140,20 +142,26 @@ parent project when the pipeline runs, even before merge. As a reviewer, careful
 check the changes in the merge request before triggering the pipeline. GitLab shows
 a warning that you must accept before you can trigger the pipeline.
 
-Parent project members with at least the [Developer role](../../user/permissions.md)
-can create pipelines in the parent project for merge requests from a forked project:
+Prerequisites:
+
+- You must be a member of the parent project and have at least the [Developer role](../../user/permissions.md).
+- The fork project must be [visible](../../public_access/public_access.md) to the
+  user running the pipeline. Otherwise, the **Pipelines** tab does not display
+  in the merge request.
+
+To run a pipeline in the parent project for a merge request from a fork project:
 
 1. In the merge request, go to the **Pipelines** tab.
 1. Select **Run pipeline**. You must accept the warning, or the pipeline does not run.
 
 ## Available predefined variables
 
-When you use pipelines for merge requests, you can use:
+When you use merge request pipelines, you can use:
 
 - All the same [predefined variables](../variables/predefined_variables.md) that are
   available in branch pipelines.
 - [Additional predefined variables](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines)
-  available only to jobs in pipelines for merge requests. These variables contain
+  available only to jobs in merge request pipelines. These variables contain
   information from the associated merge request, which can be when calling the
   [GitLab Merge Request API endpoint](../../api/merge_requests.md) from a job.
 
@@ -166,14 +174,14 @@ to run for both branches and merge requests at the same time. Adjust your pipeli
 configuration to [avoid duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines).
 
 In [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201845),
-you can add `workflow:rules` to [switch from branch pipelines to pipelines for merge requests](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines).
+you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines).
 After a merge request is open on the branch, the pipeline switches to a merge request pipeline.
 
 ### Two pipelines when pushing an invalid CI/CD configuration file
 
 If you push an invalid CI/CD configuration to a merge request's branch, two failed
 pipelines appear in the pipelines tab. One pipeline is a failed branch pipeline,
-the other is a failed pipeline for merge requests.
+the other is a failed merge request pipeline.
 
 When the configuration syntax is fixed, no further failed pipelines should appear.
 To find and fix the configuration problem, you can use:
@@ -183,7 +191,7 @@ To find and fix the configuration problem, you can use:
 
 ### The merge request's pipeline is marked as failed but the latest pipeline succeeded
 
-It's possible to have both branch pipelines and pipelines for merge requests in the
+It's possible to have both branch pipelines and merge request pipelines in the
 **Pipelines** tab of a single merge request. This might be [by configuration](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines),
 or [by accident](#two-pipelines-when-pushing-to-a-branch).
 
@@ -191,8 +199,8 @@ If both types of pipelines are in one merge request, the merge request's pipelin
 is not considered successful if:
 
 - The branch pipeline succeeds.
-- The pipeline for merge request fails.
+- The merge request pipeline fails.
 
 When using the [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
-feature and both pipelines types are present, the pipelines for merge requests are checked,
+feature and both pipelines types are present, the merge request pipelines are checked,
 not the branch pipelines.

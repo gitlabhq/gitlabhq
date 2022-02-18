@@ -151,6 +151,7 @@ export default {
     :search-input-placeholder="filteredSearchBar.placeholder"
     :initial-filter-value="initialFilterValue"
     data-testid="members-filtered-search-bar"
+    data-qa-selector="members_filtered_search_bar_content"
     @onFilter="handleFilter"
   />
 </template>

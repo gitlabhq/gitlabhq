@@ -246,7 +246,9 @@ module MergeRequests
     def remove_all_attention_requests(merge_request)
       return unless merge_request.attention_requested_enabled?
 
-      ::MergeRequests::BulkRemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request).execute
+      users = merge_request.reviewers + merge_request.assignees
+
+      ::MergeRequests::BulkRemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request, users: users.uniq).execute
     end
 
     def remove_attention_requested(merge_request, user)

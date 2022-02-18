@@ -27,11 +27,13 @@
     - echo "${CI_ENVIRONMENT_URL}"
     - cd qa
   script:
-    - |
-      bin/test "${QA_SCENARIO}" "${CI_ENVIRONMENT_URL}" \
-        -- \
-        --color --format documentation \
-        --format RspecJunitFormatter --out tmp/rspec.xml
+    - qa_run_status=0
+    - bin/test "${QA_SCENARIO}" "${CI_ENVIRONMENT_URL}" -- --color --format documentation --format RspecJunitFormatter --out tmp/rspec.xml || qa_run_status=$?
+    - if [ ${qa_run_status} -ne 0 ]; then
+        release_sha=$(echo "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-${CI_COMMIT_SHA}}" | cut -c1-11);
+        echo "Errors can be found at https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/${release_sha}/all-events/.";
+      fi
+    - exit ${qa_run_status}
   artifacts:
     paths:
       - qa/tmp

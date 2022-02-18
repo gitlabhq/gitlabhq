@@ -65,6 +65,10 @@ module QA
         ENV['QA_LOG_PATH'] || $stdout
       end
 
+      def colorized_logs?
+        enabled?(ENV['COLORIZED_LOGS'], default: false)
+      end
+
       # set to 'false' to have the browser run visibly instead of headless
       def webdriver_headless?
         if ENV.key?('CHROME_HEADLESS')
@@ -291,6 +295,14 @@ module QA
         ENV['JIRA_HOSTNAME']
       end
 
+      # this is set by the integrations job
+      # which will allow bidirectional communication
+      # between the app and the specs container
+      # should the specs container spin up a server
+      def qa_hostname
+        ENV['QA_HOSTNAME']
+      end
+
       def cache_namespace_name?
         enabled?(ENV['CACHE_NAMESPACE_NAME'], default: true)
       end
@@ -432,6 +444,18 @@ module QA
       def test_resources_created_filepath
         file_name = running_in_ci? ? "test-resources-#{SecureRandom.hex(3)}.json" : 'test-resources.json'
         ENV.fetch('QA_TEST_RESOURCES_CREATED_FILEPATH', File.join(Path.qa_root, 'tmp', file_name))
+      end
+
+      def ee_activation_code
+        ENV['QA_EE_ACTIVATION_CODE']
+      end
+
+      def quarantine_disabled?
+        enabled?(ENV['DISABLE_QUARANTINE'], default: false)
+      end
+
+      def validate_resource_reuse?
+        enabled?(ENV['QA_VALIDATE_RESOURCE_REUSE'], default: false)
       end
 
       private

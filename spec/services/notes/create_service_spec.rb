@@ -325,11 +325,11 @@ RSpec.describe Notes::CreateService do
                   expect(issuable.work_in_progress?).to eq(can_use_quick_action)
                 }
               ),
-              # Remove WIP status
+              # Remove draft status
               QuickAction.new(
                 action_text: "/draft",
                 before_action: -> {
-                  issuable.reload.update!(title: "WIP: title")
+                  issuable.reload.update!(title: "Draft: title")
                 },
                 expectation: ->(noteable, can_use_quick_action) {
                   expect(noteable.work_in_progress?).not_to eq(can_use_quick_action)

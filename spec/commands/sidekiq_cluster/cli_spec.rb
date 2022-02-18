@@ -3,9 +3,10 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
+require_relative '../../support/stub_settings_source'
 require_relative '../../../sidekiq_cluster/cli'
 
-RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # rubocop:disable RSpec/FilePath
+RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubocop:disable RSpec/FilePath
   let(:cli) { described_class.new('/dev/null') }
   let(:timeout) { Gitlab::SidekiqCluster::DEFAULT_SOFT_TIMEOUT_SECONDS }
   let(:default_options) do
@@ -302,7 +303,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # 
             end
 
             it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:spawn)
+              expect(MetricsServer).not_to receive(:fork)
 
               cli.run(%w(foo))
             end
@@ -319,7 +320,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # 
             end
 
             it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:spawn)
+              expect(MetricsServer).not_to receive(:fork)
 
               cli.run(%w(foo))
             end
@@ -349,7 +350,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # 
             end
 
             it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:spawn)
+              expect(MetricsServer).not_to receive(:fork)
 
               cli.run(%w(foo))
             end
@@ -375,7 +376,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # 
             end
 
             it 'does not start a sidekiq metrics server' do
-              expect(MetricsServer).not_to receive(:spawn)
+              expect(MetricsServer).not_to receive(:fork)
 
               cli.run(%w(foo))
             end
@@ -405,9 +406,9 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # 
 
               specify do
                 if start_metrics_server
-                  expect(MetricsServer).to receive(:spawn).with('sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: true, trapped_signals: trapped_signals)
+                  expect(MetricsServer).to receive(:fork).with('sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: true, reset_signals: trapped_signals)
                 else
-                  expect(MetricsServer).not_to receive(:spawn)
+                  expect(MetricsServer).not_to receive(:fork)
                 end
 
                 cli.run(%w(foo))
@@ -420,7 +421,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # 
           let(:sidekiq_exporter_enabled) { true }
 
           it 'does not start the server' do
-            expect(MetricsServer).not_to receive(:spawn)
+            expect(MetricsServer).not_to receive(:fork)
 
             cli.run(%w(foo --dryrun))
           end
@@ -433,7 +434,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # 
 
         before do
           allow(cli).to receive(:sleep).with(a_kind_of(Numeric))
-          allow(MetricsServer).to receive(:spawn).and_return(99)
+          allow(MetricsServer).to receive(:fork).and_return(99)
           cli.start_metrics_server
         end
 
@@ -452,8 +453,8 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stubbing_settings_source: true do # 
           allow(Gitlab::ProcessManagement).to receive(:all_alive?).with(an_instance_of(Array)).and_return(false)
           allow(cli).to receive(:stop_metrics_server)
 
-          expect(MetricsServer).to receive(:spawn).with(
-            'sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: false, trapped_signals: trapped_signals
+          expect(MetricsServer).to receive(:fork).with(
+            'sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: false, reset_signals: trapped_signals
           )
 
           cli.start_loop

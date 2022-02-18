@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { merge } from 'lodash';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 
 import { TEST_HOST } from 'helpers/test_constants';
 import deleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
@@ -56,7 +56,7 @@ describe('DeleteAccountModal component', () => {
   const findModal = () => wrapper.find(GlModalStub);
 
   describe('with password confirmation', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       createWrapper({
         propsData: {
           confirmWithPassword: true,
@@ -65,48 +65,40 @@ describe('DeleteAccountModal component', () => {
 
       vm.isOpen = true;
 
-      Vue.nextTick().then(done).catch(done.fail);
+      await nextTick();
     });
 
-    it('does not accept empty password', (done) => {
+    it('does not accept empty password', async () => {
       const { form, input } = findElements();
       jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = '';
       input.dispatchEvent(new Event('input'));
 
-      Vue.nextTick()
-        .then(() => {
-          expect(vm.enteredPassword).toBe(input.value);
-          expect(findModal().attributes('ok-disabled')).toBe('true');
-          findModal().vm.$emit('primary');
+      await nextTick();
+      expect(vm.enteredPassword).toBe(input.value);
+      expect(findModal().attributes('ok-disabled')).toBe('true');
+      findModal().vm.$emit('primary');
 
-          expect(form.submit).not.toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(form.submit).not.toHaveBeenCalled();
     });
 
-    it('submits form with password', (done) => {
+    it('submits form with password', async () => {
       const { form, input } = findElements();
       jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = 'anything';
       input.dispatchEvent(new Event('input'));
 
-      Vue.nextTick()
-        .then(() => {
-          expect(vm.enteredPassword).toBe(input.value);
-          expect(findModal().attributes('ok-disabled')).toBeUndefined();
-          findModal().vm.$emit('primary');
+      await nextTick();
+      expect(vm.enteredPassword).toBe(input.value);
+      expect(findModal().attributes('ok-disabled')).toBeUndefined();
+      findModal().vm.$emit('primary');
 
-          expect(form.submit).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(form.submit).toHaveBeenCalled();
     });
   });
 
   describe('with username confirmation', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       createWrapper({
         propsData: {
           confirmWithPassword: false,
@@ -115,43 +107,35 @@ describe('DeleteAccountModal component', () => {
 
       vm.isOpen = true;
 
-      Vue.nextTick().then(done).catch(done.fail);
+      await nextTick();
     });
 
-    it('does not accept wrong username', (done) => {
+    it('does not accept wrong username', async () => {
       const { form, input } = findElements();
       jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = 'this is wrong';
       input.dispatchEvent(new Event('input'));
 
-      Vue.nextTick()
-        .then(() => {
-          expect(vm.enteredUsername).toBe(input.value);
-          expect(findModal().attributes('ok-disabled')).toBe('true');
-          findModal().vm.$emit('primary');
+      await nextTick();
+      expect(vm.enteredUsername).toBe(input.value);
+      expect(findModal().attributes('ok-disabled')).toBe('true');
+      findModal().vm.$emit('primary');
 
-          expect(form.submit).not.toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(form.submit).not.toHaveBeenCalled();
     });
 
-    it('submits form with correct username', (done) => {
+    it('submits form with correct username', async () => {
       const { form, input } = findElements();
       jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = username;
       input.dispatchEvent(new Event('input'));
 
-      Vue.nextTick()
-        .then(() => {
-          expect(vm.enteredUsername).toBe(input.value);
-          expect(findModal().attributes('ok-disabled')).toBeUndefined();
-          findModal().vm.$emit('primary');
+      await nextTick();
+      expect(vm.enteredUsername).toBe(input.value);
+      expect(findModal().attributes('ok-disabled')).toBeUndefined();
+      findModal().vm.$emit('primary');
 
-          expect(form.submit).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(form.submit).toHaveBeenCalled();
     });
   });
 });

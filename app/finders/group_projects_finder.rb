@@ -13,6 +13,7 @@
 #     only_shared: boolean
 #     limit: integer
 #     include_subgroups: boolean
+#     include_ancestor_groups: boolean
 #   params:
 #     sort: string
 #     visibility_level: int
@@ -113,12 +114,19 @@ class GroupProjectsFinder < ProjectsFinder
     options.fetch(:include_subgroups, false)
   end
 
+  # ancestor groups are supported only for owned projects not for shared
+  def include_ancestor_groups?
+    options.fetch(:include_ancestor_groups, false)
+  end
+
   def owned_projects
-    if include_subgroups?
-      Project.for_group_and_its_subgroups(group)
-    else
-      group.projects
-    end
+    return group.projects unless include_subgroups? || include_ancestor_groups?
+
+    union_relations = []
+    union_relations << Project.for_group_and_its_subgroups(group) if include_subgroups?
+    union_relations << Project.for_group_and_its_ancestor_groups(group) if include_ancestor_groups?
+
+    Project.from_union(union_relations)
   end
 
   def shared_projects

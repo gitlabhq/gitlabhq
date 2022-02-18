@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User wants to edit a file' do
   let(:project) { create(:project, :repository) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:commit_params) do
     {
       start_branch: project.default_branch,

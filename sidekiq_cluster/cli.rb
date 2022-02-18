@@ -191,11 +191,11 @@ module Gitlab
         return unless metrics_server_enabled?
 
         @logger.info("Starting metrics server on port #{sidekiq_exporter_port}")
-        @metrics_server_pid = MetricsServer.spawn(
+        @metrics_server_pid = MetricsServer.fork(
           'sidekiq',
           metrics_dir: @metrics_dir,
           wipe_metrics_dir: wipe_metrics_dir,
-          trapped_signals: TERMINATE_SIGNALS + FORWARD_SIGNALS
+          reset_signals: TERMINATE_SIGNALS + FORWARD_SIGNALS
         )
       end
 

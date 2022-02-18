@@ -32,6 +32,7 @@ describe('~/environments/components/new_environments_folder.vue', () => {
       apolloProvider,
       propsData,
       stubs: { transition: stubTransition() },
+      provide: { helpPagePath: '/help' },
     });
 
   beforeEach(async () => {

@@ -90,7 +90,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-pr-10 gl-transition-medium gl-w-full">
+  <div class="gl-transition-medium gl-w-full">
     <gl-modal
       v-if="showSwitchBranchModal"
       visible

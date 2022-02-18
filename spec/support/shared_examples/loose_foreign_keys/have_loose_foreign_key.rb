@@ -7,6 +7,12 @@ RSpec.shared_examples 'it has loose foreign keys' do
   let(:fully_qualified_table_name) { "#{connection.current_schema}.#{table_name}" }
   let(:deleted_records) { LooseForeignKeys::DeletedRecord.where(fully_qualified_table_name: fully_qualified_table_name) }
 
+  around do |example|
+    LooseForeignKeys::DeletedRecord.using_connection(connection) do
+      example.run
+    end
+  end
+
   it 'has at least one loose foreign key definition' do
     definitions = Gitlab::Database::LooseForeignKeys.definitions_by_table[table_name]
     expect(definitions.size).to be > 0
@@ -69,7 +75,9 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do
 
     expect(find_model).to be_present
 
-    LooseForeignKeys::ProcessDeletedRecordsService.new(connection: model.connection).execute
+    LooseForeignKeys::DeletedRecord.using_connection(parent.connection) do
+      LooseForeignKeys::ProcessDeletedRecordsService.new(connection: parent.connection).execute
+    end
 
     if foreign_key_definition.on_delete.eql?(:async_delete)
       expect(find_model).not_to be_present

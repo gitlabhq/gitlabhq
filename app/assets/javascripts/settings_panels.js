@@ -18,8 +18,6 @@ export function expandSection(sectionArg) {
   const $section = $(sectionArg);
 
   $section.find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)').text(__('Collapse'));
-  // eslint-disable-next-line @gitlab/no-global-event-off
-  $section.find('.settings-content').off('scroll.expandSection').scrollTop(0);
   $section.addClass('expanded');
   if (!$section.hasClass('no-animate')) {
     $section
@@ -32,7 +30,6 @@ export function closeSection(sectionArg) {
   const $section = $(sectionArg);
 
   $section.find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)').text(__('Expand'));
-  $section.find('.settings-content').on('scroll.expandSection', () => expandSection($section));
   $section.removeClass('expanded');
   if (!$section.hasClass('no-animate')) {
     $section
@@ -55,18 +52,16 @@ export default function initSettingsPanels() {
     const $section = $(elm);
     $section.on('click.toggleSection', '.js-settings-toggle', () => toggleSection($section));
 
-    if (!isExpanded($section)) {
-      $section.find('.settings-content').on('scroll.expandSection', () => {
-        $section.removeClass('no-animate');
+    if (window.location.hash) {
+      const $target = $(window.location.hash);
+      if (
+        $target.length &&
+        !isExpanded($section) &&
+        ($section.is($target) || $section.find($target).length)
+      ) {
+        $section.addClass('no-animate');
         expandSection($section);
-      });
+      }
     }
   });
-
-  if (window.location.hash) {
-    const $target = $(window.location.hash);
-    if ($target.length && $target.hasClass('settings')) {
-      expandSection($target);
-    }
-  }
 }

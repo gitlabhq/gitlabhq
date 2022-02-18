@@ -60,18 +60,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups do
           expect(job.resource_group).to be_nil
         end
       end
-
-      context 'when create_deployment_in_separate_transaction feature flag is disabled' do
-        before do
-          stub_feature_flags(create_deployment_in_separate_transaction: false)
-        end
-
-        it 'does not create any resource groups' do
-          expect { subject }.not_to change { Ci::ResourceGroup.count }
-
-          expect(job.resource_group).to be_nil
-        end
-      end
     end
 
     context 'when a pipeline does not contain a job that requires a resource group' do

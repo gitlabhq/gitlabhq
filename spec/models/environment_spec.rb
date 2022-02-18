@@ -412,7 +412,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       context 'in the same branch' do
         it 'returns true' do
-          expect(environment.includes_commit?(RepoHelpers.sample_commit)).to be true
+          expect(environment.includes_commit?(RepoHelpers.sample_commit.id)).to be true
         end
       end
 
@@ -422,7 +422,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
         end
 
         it 'returns false' do
-          expect(environment.includes_commit?(RepoHelpers.sample_commit)).to be false
+          expect(environment.includes_commit?(RepoHelpers.sample_commit.id)).to be false
         end
       end
     end

@@ -324,6 +324,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
     # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
     # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
     # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+    # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
     # Note that environment variables can be set in several places
     # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
     stages:
@@ -344,6 +345,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
     # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
     # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
     # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+    # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
     # Note that environment variables can be set in several places
     # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
     stages:
@@ -361,6 +363,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
       # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
       stages:
@@ -384,6 +387,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
       # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
       stages:
@@ -420,6 +424,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
       # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
       stages:
@@ -445,6 +450,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
       # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
       stages:
@@ -468,6 +474,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
       # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
       stages:
@@ -492,6 +499,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
       # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
       stages:
@@ -516,6 +524,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
       # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+      # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
       stages:

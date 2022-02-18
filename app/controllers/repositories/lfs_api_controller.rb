@@ -155,7 +155,6 @@ module Repositories
     end
 
     def should_auto_link?
-      return false unless Feature.enabled?(:lfs_auto_link_fork_source, project, default_enabled: :yaml)
       return false unless project.forked?
 
       # Sanity check in case for some reason the user doesn't have access to the parent

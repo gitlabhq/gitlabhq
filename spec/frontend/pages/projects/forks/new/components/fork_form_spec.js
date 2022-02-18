@@ -4,6 +4,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { kebabCase } from 'lodash';
+import { nextTick } from 'vue';
 import createFlash from '~/flash';
 import httpStatus from '~/lib/utils/http_status';
 import * as urlUtility from '~/lib/utils/url_utility';
@@ -217,7 +218,7 @@ describe('ForkForm component', () => {
     it('changes to kebab case when project name changes', async () => {
       const newInput = `${projectPath}1`;
       findForkNameInput().vm.$emit('input', newInput);
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findForkSlugInput().attributes('value')).toBe(kebabCase(newInput));
     });
@@ -225,7 +226,7 @@ describe('ForkForm component', () => {
     it('does not change to kebab case when project slug is changed manually', async () => {
       const newInput = `${projectPath}1`;
       findForkSlugInput().vm.$emit('input', newInput);
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findForkSlugInput().attributes('value')).toBe(newInput);
     });
@@ -273,7 +274,7 @@ describe('ForkForm component', () => {
         expect(wrapper.vm.form.fields.visibility.value).toBe('public');
         await findFormSelectOptions().at(1).setSelected();
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(getByRole(wrapper.element, 'radio', { name: /private/i }).checked).toBe(true);
       });
@@ -283,7 +284,7 @@ describe('ForkForm component', () => {
 
         await findFormSelectOptions().at(1).setSelected();
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         const container = getByRole(wrapper.element, 'radiogroup', { name: /visibility/i });
         const visibilityRadios = getAllByRole(container, 'radio');
@@ -419,7 +420,7 @@ describe('ForkForm component', () => {
       const form = wrapper.find(GlForm);
 
       await form.trigger('submit');
-      await wrapper.vm.$nextTick();
+      await nextTick();
     };
 
     describe('with invalid form', () => {

@@ -32,6 +32,21 @@ RSpec.describe Projects::GitGarbageCollectWorker do
 
         subject.perform(*params)
       end
+
+      context 'when deduplication service runs into a GRPC internal error' do
+        before do
+          allow_next_instance_of(::Projects::GitDeduplicationService) do |instance|
+            expect(instance).to receive(:execute).and_raise(GRPC::Internal)
+          end
+        end
+
+        it_behaves_like 'can collect git garbage' do
+          let(:resource) { project }
+          let(:statistics_service_klass) { Projects::UpdateStatisticsService }
+          let(:statistics_keys) { [:repository_size, :lfs_objects_size] }
+          let(:expected_default_lease) { "projects:#{resource.id}" }
+        end
+      end
     end
 
     context 'LFS object garbage collection' do

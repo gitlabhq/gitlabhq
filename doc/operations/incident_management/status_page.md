@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Monitor
+group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -41,7 +41,7 @@ Only AWS S3 is supported as a deploy target.
 
 Prerequisite:
 
-- You must have at least the Maintainer [role](../../user/permissions.md).
+- You must have at least the Maintainer role.
 
 To provide GitLab with the AWS account information needed to push content to your Status Page:
 
@@ -175,5 +175,5 @@ within GitLab. Closing the issue triggers a background worker to update the
 GitLab Status Page website.
 
 If you
-[make a published issue confidential](../../user/project/issues/confidential_issues.md#making-an-issue-confidential),
+[make a published issue confidential](../../user/project/issues/confidential_issues.md#make-an-issue-confidential),
 GitLab unpublishes it from your GitLab Status Page website.

@@ -204,6 +204,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** site.
 - GitLab Runners cannot register with a **secondary** site. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
 - [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
+- [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 
 ### Limitations on replication/verification
 

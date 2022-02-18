@@ -154,7 +154,7 @@ job:
 ### Add a CI/CD variable to a project
 
 You can add CI/CD variables to a project's settings. Only project members with the
-[Maintainer role](../../user/permissions.md#project-members-permissions)
+Maintainer role
 can add or update project CI/CD variables. To keep a CI/CD variable secret, put it
 in the project settings, not in the `.gitlab-ci.yml` file.
 
@@ -233,7 +233,7 @@ inherited.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299879) in GitLab 13.11.
 
 To make a CI/CD variable available to all projects and groups in a GitLab instance,
-add an instance CI/CD variable. You must have the [Administrator role](../../user/permissions.md).
+add an instance CI/CD variable. You must have administrator access.
 
 You can define instance variables via the UI or [API](../../api/instance_level_ci_variables.md).
 
@@ -372,7 +372,7 @@ You can protect a project, group or instance CI/CD variable so it is only passed
 to pipelines running on [protected branches](../../user/project/protected_branches.md)
 or [protected tags](../../user/project/protected_tags.md).
 
-[Pipelines for merge requests](../pipelines/merge_request_pipelines.md) do not have access to protected variables.
+[Merge request pipelines](../pipelines/merge_request_pipelines.md) do not have access to protected variables.
 An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/28002) regarding this limitation.
 
 To protect a variable:
@@ -651,9 +651,11 @@ which variables take precedence.
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call),
-   [scheduled pipeline variables](../pipelines/schedules.md#using-variables),
-   and [manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
+1. These all have the same (highest) precedence:
+   - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
+   - [Scheduled pipeline variables](../pipelines/schedules.md#using-variables).
+   - [Manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
+   - Variables added when [creating a pipeline with the API](../../api/pipelines.md#create-a-new-pipeline).
 1. Project [variables](#custom-cicd-variables).
 1. Group [variables](#add-a-cicd-variable-to-a-group).
 1. Instance [variables](#add-a-cicd-variable-to-an-instance).
@@ -900,7 +902,7 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292661) in GitLab 13.8.
 
 You can restrict access to debug logging. When restricted, only users with
-[developer or higher permissions](../../user/permissions.md#project-members-permissions)
+at least the Developer role
 can view job logs when debug logging is enabled with a variable in:
 
 - The [`.gitlab-ci.yml` file](#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file).

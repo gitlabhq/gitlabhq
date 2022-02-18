@@ -2,22 +2,14 @@ import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea 
 import { mount } from '@vue/test-utils';
 
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
+import { mockField } from '../mock_data';
 
 describe('DynamicField', () => {
   let wrapper;
 
-  const defaultProps = {
-    help: 'The URL of the project',
-    name: 'project_url',
-    placeholder: 'https://jira.example.com',
-    title: 'Project URL',
-    type: 'text',
-    value: '1',
-  };
-
   const createComponent = (props, isInheriting = false) => {
     wrapper = mount(DynamicField, {
-      propsData: { ...defaultProps, ...props },
+      propsData: { ...mockField, ...props },
       computed: {
         isInheriting: () => isInheriting,
       },
@@ -61,7 +53,7 @@ describe('DynamicField', () => {
           });
 
           it(`renders GlFormCheckbox with correct text content when checkboxLabel is ${checkboxLabel}`, () => {
-            expect(findGlFormCheckbox().text()).toContain(checkboxLabel ?? defaultProps.title);
+            expect(findGlFormCheckbox().text()).toContain(checkboxLabel ?? mockField.title);
           });
 
           it('does not render other types of input', () => {
@@ -160,7 +152,7 @@ describe('DynamicField', () => {
               type: 'text',
               id: 'service_project_url',
               name: 'service[project_url]',
-              placeholder: defaultProps.placeholder,
+              placeholder: mockField.placeholder,
               required: 'required',
             });
             expect(findGlFormInput().attributes('readonly')).toBe(readonly);
@@ -179,7 +171,7 @@ describe('DynamicField', () => {
       it('renders description with help text', () => {
         createComponent();
 
-        expect(findGlFormGroup().find('small').text()).toBe(defaultProps.help);
+        expect(findGlFormGroup().find('small').text()).toBe(mockField.help);
       });
 
       describe('when type is checkbox', () => {
@@ -189,7 +181,7 @@ describe('DynamicField', () => {
           });
 
           expect(findGlFormGroup().find('small').exists()).toBe(false);
-          expect(findGlFormCheckbox().text()).toContain(defaultProps.help);
+          expect(findGlFormCheckbox().text()).toContain(mockField.help);
         });
       });
 
@@ -221,40 +213,36 @@ describe('DynamicField', () => {
       it('renders label with title', () => {
         createComponent();
 
-        expect(findGlFormGroup().find('label').text()).toBe(defaultProps.title);
+        expect(findGlFormGroup().find('label').text()).toBe(mockField.title);
       });
     });
 
-    describe('validations', () => {
-      describe('password field', () => {
-        beforeEach(() => {
+    describe('password field validations', () => {
+      describe('without value', () => {
+        it('requires validation', () => {
           createComponent({
             type: 'password',
             required: true,
             value: null,
+            isValidated: true,
           });
 
-          wrapper.vm.validated = true;
+          expect(findGlFormGroup().classes('is-invalid')).toBe(true);
+          expect(findGlFormInput().classes('is-invalid')).toBe(true);
         });
+      });
 
-        describe('without value', () => {
-          it('requires validation', () => {
-            expect(wrapper.vm.valid).toBe(false);
-            expect(findGlFormGroup().classes('is-invalid')).toBe(true);
-            expect(findGlFormInput().classes('is-invalid')).toBe(true);
-          });
-        });
-
-        describe('with value', () => {
-          beforeEach(() => {
-            wrapper.setProps({ value: 'true' });
+      describe('with value', () => {
+        it('does not require validation', () => {
+          createComponent({
+            type: 'password',
+            required: true,
+            value: 'test value',
+            isValidated: true,
           });
 
-          it('does not require validation', () => {
-            expect(wrapper.vm.valid).toBe(true);
-            expect(findGlFormGroup().classes('is-valid')).toBe(true);
-            expect(findGlFormInput().classes('is-valid')).toBe(true);
-          });
+          expect(findGlFormGroup().classes('is-valid')).toBe(true);
+          expect(findGlFormInput().classes('is-valid')).toBe(true);
         });
       });
     });

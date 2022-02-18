@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Cookies from 'js-cookie';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
+
 import DismissibleAlert from '~/vue_shared/components/dismissible_alert.vue';
 
 const getCookieExpirationPeriod = (expirationPeriod) => {
@@ -33,7 +33,7 @@ const mountVueAlert = (el) => {
             if (!dismissCookieName) {
               return;
             }
-            Cookies.set(dismissCookieName, true, {
+            setCookie(dismissCookieName, true, {
               expires: getCookieExpirationPeriod(dismissCookieExpire),
             });
           },

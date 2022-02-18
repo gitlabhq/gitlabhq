@@ -1,4 +1,5 @@
 import { GlModal } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   I18N_PASSWORD_PROMPT_CANCEL_BUTTON,
@@ -62,7 +63,7 @@ describe('Password prompt modal', () => {
         setPassword(mockPassword);
         submitModal();
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(handleConfirmPasswordSpy).toHaveBeenCalledTimes(1);
         expect(handleConfirmPasswordSpy).toHaveBeenCalledWith(mockPassword);
@@ -73,7 +74,7 @@ describe('Password prompt modal', () => {
 
         expect(findConfirmBtnDisabledState()).toBe(true);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findConfirmBtnDisabledState()).toBe(false);
       });
@@ -84,7 +85,7 @@ describe('Password prompt modal', () => {
 
       expect(findConfirmBtnDisabledState()).toBe(true);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findConfirmBtnDisabledState()).toBe(true);
     });

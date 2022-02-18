@@ -47,7 +47,7 @@ module.exports = {
       'bootstrap/dist/js/bootstrap.js',
       'sortablejs/modular/sortable.esm.js',
       'popper.js',
-      'apollo-client',
+      '@apollo/client/core',
       'source-map',
       'mousetrap',
     ],

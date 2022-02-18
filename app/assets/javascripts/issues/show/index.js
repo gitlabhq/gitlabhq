@@ -44,6 +44,7 @@ export function initIncidentApp(issueData = {}) {
 
   return new Vue({
     el,
+    name: 'DescriptionRoot',
     apolloProvider,
     provide: {
       issueType: INCIDENT_TYPE,
@@ -74,6 +75,8 @@ export function initIssueApp(issueData, store) {
     return undefined;
   }
 
+  const { fullPath } = el.dataset;
+
   if (gon?.features?.fixCommentScroll) {
     scrollToTargetOnResize();
   }
@@ -84,10 +87,12 @@ export function initIssueApp(issueData, store) {
 
   return new Vue({
     el,
+    name: 'DescriptionRoot',
     apolloProvider,
     store,
     provide: {
       canCreateIncident,
+      fullPath,
     },
     computed: {
       ...mapGetters(['getNoteableData']),
@@ -120,6 +125,7 @@ export function initHeaderActions(store, type = '') {
 
   return new Vue({
     el,
+    name: 'HeaderActionsRoot',
     apolloProvider,
     store,
     provide: {
@@ -154,6 +160,7 @@ export function initSentryErrorStackTrace() {
 
   return new Vue({
     el,
+    name: 'SentryErrorStackTraceRoot',
     store: errorTrackingStore,
     render: (createElement) =>
       createElement(SentryErrorStackTrace, { props: { issueStackTracePath } }),

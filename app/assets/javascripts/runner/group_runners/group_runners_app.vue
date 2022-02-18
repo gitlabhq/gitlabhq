@@ -1,9 +1,9 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { formatNumber, sprintf, s__ } from '~/locale';
+import { formatNumber } from '~/locale';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -18,7 +18,7 @@ import {
   I18N_FETCH_ERROR,
   GROUP_FILTERED_SEARCH_NAMESPACE,
   GROUP_TYPE,
-  GROUP_RUNNER_COUNT_LIMIT,
+  PROJECT_TYPE,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_STALE,
@@ -46,6 +46,7 @@ const runnersCountSmartQuery = {
 export default {
   name: 'GroupRunnersApp',
   components: {
+    GlBadge,
     GlLink,
     RegistrationDropdown,
     RunnerFilteredSearchBar,
@@ -131,6 +132,33 @@ export default {
         };
       },
     },
+    allRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          ...this.countVariables,
+          type: null,
+        };
+      },
+    },
+    groupRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          ...this.countVariables,
+          type: GROUP_TYPE,
+        };
+      },
+    },
+    projectRunnersCount: {
+      ...runnersCountSmartQuery,
+      variables() {
+        return {
+          ...this.countVariables,
+          type: PROJECT_TYPE,
+        };
+      },
+    },
   },
   computed: {
     variables() {
@@ -139,22 +167,16 @@ export default {
         groupFullPath: this.groupFullPath,
       };
     },
+    countVariables() {
+      // Exclude pagination variables, leave only filters variables
+      const { sort, before, last, after, first, ...countVariables } = this.variables;
+      return countVariables;
+    },
     runnersLoading() {
       return this.$apollo.queries.runners.loading;
     },
     noRunnersFound() {
       return !this.runnersLoading && !this.runners.items.length;
-    },
-    groupRunnersCount() {
-      if (this.groupRunnersLimitedCount > GROUP_RUNNER_COUNT_LIMIT) {
-        return `${formatNumber(GROUP_RUNNER_COUNT_LIMIT)}+`;
-      }
-      return formatNumber(this.groupRunnersLimitedCount);
-    },
-    runnerCountMessage() {
-      return sprintf(s__('Runners|Runners in this group: %{groupRunnersCount}'), {
-        groupRunnersCount: this.groupRunnersCount,
-      });
     },
     searchTokens() {
       return [statusTokenConfig];
@@ -179,10 +201,31 @@ export default {
     this.reportToSentry(error);
   },
   methods: {
+    tabCount({ runnerType }) {
+      let count;
+      switch (runnerType) {
+        case null:
+          count = this.allRunnersCount;
+          break;
+        case GROUP_TYPE:
+          count = this.groupRunnersCount;
+          break;
+        case PROJECT_TYPE:
+          count = this.projectRunnersCount;
+          break;
+        default:
+          return null;
+      }
+      if (typeof count === 'number') {
+        return formatNumber(count);
+      }
+      return null;
+    },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
     },
   },
+  TABS_RUNNER_TYPES: [GROUP_TYPE, PROJECT_TYPE],
   GROUP_TYPE,
 };
 </script>
@@ -198,9 +241,17 @@ export default {
     <div class="gl-display-flex gl-align-items-center">
       <runner-type-tabs
         v-model="search"
+        :runner-types="$options.TABS_RUNNER_TYPES"
         content-class="gl-display-none"
         nav-class="gl-border-none!"
-      />
+      >
+        <template #title="{ tab }">
+          {{ tab.title }}
+          <gl-badge v-if="tabCount(tab)" class="gl-ml-1" size="sm">
+            {{ tabCount(tab) }}
+          </gl-badge>
+        </template>
+      </runner-type-tabs>
 
       <registration-dropdown
         class="gl-ml-auto"

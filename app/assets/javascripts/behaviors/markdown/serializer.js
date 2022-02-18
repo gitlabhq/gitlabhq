@@ -1,4 +1,4 @@
-import { MarkdownSerializer } from 'prosemirror-markdown';
+import { MarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 import editorExtensions from './editor_extensions';
 
 const nodes = editorExtensions

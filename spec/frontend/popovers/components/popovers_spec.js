@@ -1,5 +1,6 @@
 import { GlPopover } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { useMockMutationObserver } from 'helpers/mock_dom_observer';
 import Popovers from '~/popovers/components/popovers.vue';
 
@@ -7,10 +8,10 @@ describe('popovers/components/popovers.vue', () => {
   const { trigger: triggerMutate } = useMockMutationObserver();
   let wrapper;
 
-  const buildWrapper = (...targets) => {
+  const buildWrapper = async (...targets) => {
     wrapper = shallowMount(Popovers);
     wrapper.vm.addPopovers(targets);
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const createPopoverTarget = (options = {}) => {
@@ -49,7 +50,7 @@ describe('popovers/components/popovers.vue', () => {
       buildWrapper(target);
       wrapper.vm.addPopovers([target]);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.findAll(GlPopover)).toHaveLength(1);
     });
@@ -86,7 +87,7 @@ describe('popovers/components/popovers.vue', () => {
       await buildWrapper(createPopoverTarget(), createPopoverTarget());
 
       wrapper.vm.dispose();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(allPopovers()).toHaveLength(0);
     });
@@ -97,7 +98,7 @@ describe('popovers/components/popovers.vue', () => {
       await buildWrapper(target, createPopoverTarget());
 
       wrapper.vm.dispose(target);
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(allPopovers()).toHaveLength(1);
     });
@@ -109,13 +110,13 @@ describe('popovers/components/popovers.vue', () => {
       await buildWrapper(target);
 
       wrapper.vm.addPopovers([target, createPopoverTarget()]);
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       triggerMutate(document.body, {
         entry: { removedNodes: [target] },
         options: { childList: true },
       });
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(allPopovers()).toHaveLength(1);
     });

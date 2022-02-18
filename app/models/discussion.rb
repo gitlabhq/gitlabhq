@@ -25,7 +25,7 @@ class Discussion
             :to_ability_name,
             :editable?,
             :resolved_by_id,
-            :system_note_with_references_visible_for?,
+            :system_note_visible_for?,
             :resource_parent,
             :save,
             to: :first_note

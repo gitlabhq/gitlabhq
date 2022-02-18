@@ -1,5 +1,5 @@
 import { GlBadge, GlPagination, GlTable } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -16,6 +16,7 @@ import {
   MEMBER_STATE_AWAITING,
   MEMBER_STATE_ACTIVE,
   USER_STATE_BLOCKED_PENDING_APPROVAL,
+  BADGE_LABELS_AWAITING_USER_SIGNUP,
   BADGE_LABELS_PENDING_OWNER_APPROVAL,
   TAB_QUERY_PARAM_VALUES,
 } from '~/members/constants';
@@ -28,8 +29,7 @@ import {
   pagination,
 } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('MembersTable', () => {
   let wrapper;
@@ -56,7 +56,6 @@ describe('MembersTable', () => {
 
   const createComponent = (state, provide = {}) => {
     wrapper = mountExtended(MembersTable, {
-      localVue,
       propsData: {
         tabQueryParamValue: TAB_QUERY_PARAM_VALUES.invite,
       },
@@ -133,9 +132,9 @@ describe('MembersTable', () => {
     describe('Invited column', () => {
       describe.each`
         state                    | userState                              | expectedBadgeLabel
-        ${MEMBER_STATE_CREATED}  | ${null}                                | ${''}
+        ${MEMBER_STATE_CREATED}  | ${null}                                | ${BADGE_LABELS_AWAITING_USER_SIGNUP}
         ${MEMBER_STATE_CREATED}  | ${USER_STATE_BLOCKED_PENDING_APPROVAL} | ${BADGE_LABELS_PENDING_OWNER_APPROVAL}
-        ${MEMBER_STATE_AWAITING} | ${''}                                  | ${''}
+        ${MEMBER_STATE_AWAITING} | ${''}                                  | ${BADGE_LABELS_AWAITING_USER_SIGNUP}
         ${MEMBER_STATE_AWAITING} | ${USER_STATE_BLOCKED_PENDING_APPROVAL} | ${BADGE_LABELS_PENDING_OWNER_APPROVAL}
         ${MEMBER_STATE_AWAITING} | ${'something_else'}                    | ${BADGE_LABELS_PENDING_OWNER_APPROVAL}
         ${MEMBER_STATE_ACTIVE}   | ${null}                                | ${''}

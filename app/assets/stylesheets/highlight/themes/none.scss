@@ -66,9 +66,9 @@
       }
     }
 
-    .diff-grid-left:hover,
-    .diff-grid-right:hover,
-    &.code-search-line:hover {
+    &:not(.match) .diff-grid-left:hover,
+    &:not(.match) .diff-grid-right:hover,
+    &:not(.match) &.code-search-line:hover {
       .diff-line-num:not(.empty-cell) {
         @include line-number-hover;
       }
@@ -204,6 +204,7 @@
   .cp { color: $gl-text-color; } /* Comment.Preproc */
   .c1 { color: $gl-text-color; } /* Comment.Single */
   .cs { color: $gl-text-color; } /* Comment.Special */
+  .cd { color: $gl-text-color; } /* Comment.Doc */
   .ge { color: $gl-text-color; } /* Generic.Emph */
   .gr { color: $gl-text-color; } /* Generic.Error */
   .gh { color: $gl-text-color; } /* Generic.Heading */

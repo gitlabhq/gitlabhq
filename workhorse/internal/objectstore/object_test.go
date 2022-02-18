@@ -56,13 +56,7 @@ func testObjectUploadNoErrors(t *testing.T, startObjectStore osFactory, useDelet
 	if useDeleteURL {
 		expectedDeleteCnt = 1
 	}
-	// Poll because the object removal is async
-	for i := 0; i < 100; i++ {
-		if osStub.DeletesCnt() == expectedDeleteCnt {
-			break
-		}
-		time.Sleep(10 * time.Millisecond)
-	}
+	require.Eventually(t, func() bool { return osStub.DeletesCnt() == expectedDeleteCnt }, time.Second, time.Millisecond)
 
 	if useDeleteURL {
 		require.Equal(t, 1, osStub.DeletesCnt(), "Object hasn't been deleted")

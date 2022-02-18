@@ -73,7 +73,7 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.4.tar.gz"
+curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.4.tar.gz"
 echo '3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b ruby-2.7.4.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.4.tar.gz
 cd ruby-2.7.4
 
@@ -111,7 +111,7 @@ Download and install Go (for Linux, 64-bit):
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --progress-bar "https://go.dev/dl/go1.16.10.linux-amd64.tar.gz"
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.16.10.linux-amd64.tar.gz"
 echo '414cd18ce1d193769b9e97d2401ad718755ab47816e13b2a1cde203d263b55cf  go1.16.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
   sudo tar -C /usr/local -xzf go1.16.10.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
@@ -409,6 +409,20 @@ Example:
 
 Additional instructions here.
 -->
+
+### 14.5.0
+
+As part of [enabling real-time issue assignees](https://gitlab.com/gitlab-org/gitlab/-/issues/330117), Action Cable is now enabled by default, and requires `config/cable.yml` to be present.
+You can configure this by running:
+
+```shell
+cd /home/git/gitlab
+
+sudo -u git -H cp config/cable.yml.example config/cable.yml
+
+# Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
+sudo -u git -H editor config/cable.yml
+```
 
 ### 13.0.1
 

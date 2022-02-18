@@ -6,7 +6,7 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
   include WebIdeSpecHelpers
 
   let(:project) { create(:project_empty_repo) }
-  let(:project_maintainer) { project.owner }
+  let(:project_maintainer) { project.first_owner }
 
   before do
     sign_in(project_maintainer)

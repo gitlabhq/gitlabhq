@@ -8,9 +8,6 @@ module Integrations::Actions
     include IntegrationsHelper
 
     before_action :integration, only: [:edit, :update, :overrides, :test]
-    before_action do
-      push_frontend_feature_flag(:vue_integration_form, current_user, default_enabled: :yaml)
-    end
 
     urgency :low, [:test]
   end

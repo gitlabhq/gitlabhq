@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module Analytics
   module CycleAnalytics
     module StageEventModel
@@ -16,10 +15,37 @@ module Analytics
         scope :authored, ->(user) { where(author_id: user) }
         scope :with_milestone_id, ->(milestone_id) { where(milestone_id: milestone_id) }
         scope :end_event_is_not_happened_yet, -> { where(end_event_timestamp: nil) }
+        scope :order_by_end_event, -> (direction) do
+          # ORDER BY end_event_timestamp, merge_request_id/issue_id, start_event_timestamp
+          # start_event_timestamp must be included in the ORDER BY clause for the duration
+          # calculation to work: SELECT end_event_timestamp - start_event_timestamp
+          keyset_order(
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: false },
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true },
+            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: false }
+          )
+        end
+        scope :order_by_duration, -> (direction) do
+          # ORDER BY EXTRACT('epoch', end_event_timestamp - start_event_timestamp)
+          duration = Arel::Nodes::Subtraction.new(
+            arel_table[:end_event_timestamp],
+            arel_table[:start_event_timestamp]
+          )
+          duration_in_seconds = Arel::Nodes::Extract.new(duration, :epoch)
+
+          keyset_order(
+            :total_time => { order_expression: arel_order(duration_in_seconds, direction), distinct: false, sql_type: 'double precision' },
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true }
+          )
+        end
       end
 
       def issuable_id
         attributes[self.class.issuable_id_column.to_s]
+      end
+
+      def total_time
+        read_attribute(:total_time) || (end_event_timestamp - start_event_timestamp).to_f
       end
 
       class_methods do
@@ -67,6 +93,18 @@ module Analytics
 
           result = connection.execute(query)
           result.cmd_tuples
+        end
+
+        def keyset_order(column_definition_options)
+          built_definitions = column_definition_options.map do |attribute_name, column_options|
+            ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(attribute_name: attribute_name, **column_options)
+          end
+
+          order(Gitlab::Pagination::Keyset::Order.build(built_definitions))
+        end
+
+        def arel_order(arel_node, direction)
+          direction.to_sym == :desc ? arel_node.desc : arel_node.asc
         end
       end
     end

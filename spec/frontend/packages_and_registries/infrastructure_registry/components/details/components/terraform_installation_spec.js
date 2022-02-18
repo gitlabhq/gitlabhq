@@ -1,11 +1,11 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 import { terraformModule as packageEntity } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('TerraformInstallation', () => {
   let wrapper;
@@ -22,7 +22,6 @@ describe('TerraformInstallation', () => {
 
   function createComponent() {
     wrapper = shallowMount(TerraformInstallation, {
-      localVue,
       store,
     });
   }

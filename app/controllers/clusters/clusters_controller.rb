@@ -10,9 +10,9 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :validate_gcp_token, only: [:new]
   before_action :gcp_cluster, only: [:new]
   before_action :user_cluster, only: [:new]
+  before_action :authorize_read_cluster!, only: [:show, :index]
   before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role]
   before_action :authorize_update_cluster!, only: [:update]
-  before_action :authorize_admin_cluster!, only: [:destroy, :clear_cache]
   before_action :update_applications_status, only: [:cluster_status]
 
   helper_method :token_in_session

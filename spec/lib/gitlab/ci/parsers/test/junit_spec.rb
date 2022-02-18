@@ -99,8 +99,34 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
             'Some failure'
         end
 
+        context 'and has failure with no message but has system-err' do
+          let(:testcase_content) do
+            <<-EOF.strip_heredoc
+              <failure></failure>
+              <system-err>Some failure</system-err>
+            EOF
+          end
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED,
+            'Some failure'
+        end
+
         context 'and has error' do
           let(:testcase_content) { '<error>Some error</error>' }
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR,
+            'Some error'
+        end
+
+        context 'and has error with no message but has system-err' do
+          let(:testcase_content) do
+            <<-EOF.strip_heredoc
+              <error></error>
+              <system-err>Some error</system-err>
+            EOF
+          end
 
           it_behaves_like '<testcase> XML parser',
             ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR,

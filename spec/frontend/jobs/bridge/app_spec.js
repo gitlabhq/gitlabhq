@@ -1,5 +1,6 @@
-import { nextTick } from 'vue';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { GlLoadingIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
@@ -16,9 +17,6 @@ import {
   MOCK_PROJECT_FULL_PATH,
   mockPipelineQueryResponse,
 } from './mock_data';
-
-const localVue = createLocalVue();
-localVue.use(VueApollo);
 
 describe('Bridge Show Page', () => {
   let wrapper;
@@ -47,10 +45,10 @@ describe('Bridge Show Page', () => {
 
   const createComponentWithApollo = () => {
     const handlers = [[getPipelineQuery, mockPipelineQuery]];
+    Vue.use(VueApollo);
     mockApollo = createMockApollo(handlers);
 
     createComponent({
-      localVue,
       apolloProvider: mockApollo,
       mocks: {},
     });
@@ -81,10 +79,10 @@ describe('Bridge Show Page', () => {
   });
 
   describe('after pipeline query is loaded', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockPipelineQuery.mockResolvedValue(mockPipelineQueryResponse);
       createComponentWithApollo();
-      waitForPromises();
+      await waitForPromises();
     });
 
     it('query is called with correct variables', async () => {
@@ -109,10 +107,10 @@ describe('Bridge Show Page', () => {
   });
 
   describe('sidebar expansion', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockPipelineQuery.mockResolvedValue(mockPipelineQueryResponse);
       createComponentWithApollo();
-      waitForPromises();
+      await waitForPromises();
     });
 
     describe('on resize', () => {

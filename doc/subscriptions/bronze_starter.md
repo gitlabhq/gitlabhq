@@ -17,9 +17,7 @@ the tiers are no longer mentioned in GitLab documentation:
 
 - [Activate GitLab EE with a license](../user/admin_area/license.md)
 - [Add a help message to the sign-in page](../user/admin_area/settings/help_page.md#add-a-help-message-to-the-sign-in-page)
-- [Burndown and burnup charts](../user/project/milestones/burndown_and_burnup_charts.md),
-  including [per-project charts](../user/project/milestones/index.md#project-burndown-charts) and
-  [per-group charts](../user/project/milestones/index.md#group-burndown-charts)
+- [Burndown and burnup charts](../user/project/milestones/burndown_and_burnup_charts.md) in the [Milestone View](../user/project/milestones/index.md#burndown-charts),
 - [Code owners](../user/project/code_owners.md)
 - Description templates:
   - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
@@ -100,7 +98,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Runners:
   - Run pipelines in the parent project [for merge requests from a forked project](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project)
   - [Shared runners CI/CD minutes](../ci/pipelines/cicd_minutes.md)
-- [Push rules](../push_rules/push_rules.md)
+- [Push rules](../user/project/repository/push_rules.md)
 - SAML for self-managed GitLab instance:
   - [Administrator groups](../integration/saml.md#administrator-groups)
   - [Auditor groups](../integration/saml.md#auditor-groups)

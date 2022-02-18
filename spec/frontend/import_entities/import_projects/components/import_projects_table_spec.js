@@ -1,6 +1,6 @@
 import { GlLoadingIcon, GlButton, GlIntersectionObserver, GlFormInput } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { STATUSES } from '~/import_entities/constants';
 import ImportProjectsTable from '~/import_entities/import_projects/components/import_projects_table.vue';
@@ -46,8 +46,7 @@ describe('ImportProjectsTable', () => {
     filterable,
     paginatable,
   } = {}) {
-    const localVue = createLocalVue();
-    localVue.use(Vuex);
+    Vue.use(Vuex);
 
     const store = new Vuex.Store({
       state: { ...state(), defaultTargetNamespace: USER_NAMESPACE, ...initialState },
@@ -67,7 +66,6 @@ describe('ImportProjectsTable', () => {
     });
 
     wrapper = shallowMount(ImportProjectsTable, {
-      localVue,
       store,
       propsData: {
         providerTitle,

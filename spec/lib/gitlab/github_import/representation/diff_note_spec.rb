@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_redis_cache do
   let(:hunk) do
     '@@ -1 +1 @@
     -Hello
@@ -165,6 +165,23 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_red
             # Because it's a new discussion, it must not use the cached value
             expect(new_discussion_note.discussion_id)
               .to eq('SECOND_DISCUSSION_ID')
+          end
+
+          context 'when cached value does not exist' do
+            it 'falls back to generating a new discussion_id' do
+              expect(Discussion)
+                .to receive(:discussion_id)
+                .and_return('NEW_DISCUSSION_ID')
+
+              reply_note = described_class.from_json_hash(
+                'note_id' => note.note_id + 1,
+                'in_reply_to_id' => note.note_id
+              )
+              reply_note.project = project
+              reply_note.merge_request = merge_request
+
+              expect(reply_note.discussion_id).to eq('NEW_DISCUSSION_ID')
+            end
           end
         end
       end

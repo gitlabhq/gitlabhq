@@ -4,6 +4,7 @@ agent_group_authorizations: :gitlab_main
 agent_project_authorizations: :gitlab_main
 alert_management_alert_assignees: :gitlab_main
 alert_management_alerts: :gitlab_main
+alert_management_alert_metric_images: :gitlab_main
 alert_management_alert_user_mentions: :gitlab_main
 alert_management_http_integrations: :gitlab_main
 allowed_email_domains: :gitlab_main
@@ -84,6 +85,7 @@ ci_instance_variables: :gitlab_ci
 ci_job_artifacts: :gitlab_ci
 ci_job_token_project_scope_links: :gitlab_ci
 ci_job_variables: :gitlab_ci
+ci_job_artifact_states: :gitlab_ci
 ci_minutes_additional_packs: :gitlab_ci
 ci_namespace_monthly_usages: :gitlab_ci
 ci_namespace_mirrors: :gitlab_ci
@@ -552,3 +554,4 @@ x509_commit_signatures: :gitlab_main
 x509_issuers: :gitlab_main
 zentao_tracker_data: :gitlab_main
 zoom_meetings: :gitlab_main
+batched_background_migration_job_transition_logs: :gitlab_main

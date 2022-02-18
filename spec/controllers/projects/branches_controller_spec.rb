@@ -657,6 +657,36 @@ RSpec.describe Projects::BranchesController do
       end
     end
 
+    context 'sorting', :aggregate_failures do
+      let(:sort) { 'name_asc' }
+
+      before do
+        get :index, format: :html, params: {
+          namespace_id: project.namespace, project_id: project, state: 'all', sort: sort
+        }
+      end
+
+      it { expect(assigns[:sort]).to eq('name_asc') }
+
+      context 'when sort is not provided' do
+        let(:sort) { nil }
+
+        it 'uses a default sort without an error message' do
+          expect(assigns[:sort]).to eq('updated_desc')
+          expect(controller).not_to set_flash.now[:alert]
+        end
+      end
+
+      context 'when sort is not supported' do
+        let(:sort) { 'unknown' }
+
+        it 'uses a default sort and shows an error message' do
+          expect(assigns[:sort]).to eq('updated_desc')
+          expect(controller).to set_flash.now[:alert].to(/Unsupported sort/)
+        end
+      end
+    end
+
     context 'when gitaly is not available' do
       before do
         allow_next_instance_of(Gitlab::GitalyClient::RefService) do |ref_service|

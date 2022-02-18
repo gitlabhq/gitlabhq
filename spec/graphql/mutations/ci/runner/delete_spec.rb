@@ -11,9 +11,7 @@ RSpec.describe Mutations::Ci::Runner::Delete do
   let(:current_ctx) { { current_user: user } }
 
   let(:mutation_params) do
-    {
-      id: runner.to_global_id
-    }
+    { id: runner.to_global_id }
   end
 
   specify { expect(described_class).to require_graphql_authorizations(:delete_runner) }
@@ -57,6 +55,10 @@ RSpec.describe Mutations::Ci::Runner::Delete do
         it 'deletes runner' do
           mutation_params[:id] = project_runner.to_global_id
 
+          expect_next_instance_of(::Ci::UnregisterRunnerService, project_runner) do |service|
+            expect(service).to receive(:execute).once.and_call_original
+          end
+
           expect { subject }.to change { Ci::Runner.count }.by(-1)
           expect(subject[:errors]).to be_empty
         end
@@ -73,6 +75,9 @@ RSpec.describe Mutations::Ci::Runner::Delete do
         it 'does not delete project runner' do
           mutation_params[:id] = two_projects_runner.to_global_id
 
+          allow_next_instance_of(::Ci::UnregisterRunnerService) do |service|
+            expect(service).not_to receive(:execute).once
+          end
           expect { subject }.not_to change { Ci::Runner.count }
           expect(subject[:errors]).to contain_exactly("Runner #{two_projects_runner.to_global_id} associated with more than one project")
         end
@@ -84,6 +89,10 @@ RSpec.describe Mutations::Ci::Runner::Delete do
       let(:current_ctx) { { current_user: admin_user } }
 
       it 'deletes runner' do
+        expect_next_instance_of(::Ci::UnregisterRunnerService, runner) do |service|
+          expect(service).to receive(:execute).once.and_call_original
+        end
+
         expect { subject }.to change { Ci::Runner.count }.by(-1)
         expect(subject[:errors]).to be_empty
       end

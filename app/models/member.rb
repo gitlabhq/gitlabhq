@@ -108,6 +108,8 @@ class Member < ApplicationRecord
       .reorder(nil)
   end
 
+  scope :active_state, -> { where(state: STATE_ACTIVE) }
+
   scope :connected_to_user, -> { where.not(user_id: nil) }
 
   # This scope is exclusively used to get the members
@@ -115,6 +117,7 @@ class Member < ApplicationRecord
   # to projects/groups.
   scope :authorizable, -> do
     connected_to_user
+      .active_state
       .non_request
       .non_minimal_access
   end
@@ -128,7 +131,8 @@ class Member < ApplicationRecord
   end
 
   scope :without_invites_and_requests, -> do
-    non_request
+    active_state
+      .non_request
       .non_invite
       .non_minimal_access
   end
@@ -180,6 +184,7 @@ class Member < ApplicationRecord
 
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 
+  before_validation :set_member_namespace_id, on: :create
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? && !member.invite_accepted_at? }
 
   after_create :send_invite, if: :invite?, unless: :importing?
@@ -203,7 +208,7 @@ class Member < ApplicationRecord
 
   class << self
     def search(query)
-      joins(:user).merge(User.search(query))
+      joins(:user).merge(User.search(query, use_minimum_char_limit: false))
     end
 
     def search_invite_email(query)
@@ -379,6 +384,12 @@ class Member < ApplicationRecord
   end
 
   private
+
+  # TODO: https://gitlab.com/groups/gitlab-org/-/epics/7054
+  # temporary until we can we properly remove the source columns
+  def set_member_namespace_id
+    self.member_namespace_id = self.source_id
+  end
 
   def access_level_inclusion
     return if access_level.in?(Gitlab::Access.all_values)

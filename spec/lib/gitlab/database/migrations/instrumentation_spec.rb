@@ -66,55 +66,43 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     context 'on successful execution' do
       subject { described_class.new(result_dir: result_dir).observe(version: migration_version, name: migration_name, connection: connection) {} }
 
-      it 'records walltime' do
+      it 'records a valid observation', :aggregate_failures do
         expect(subject.walltime).not_to be_nil
-      end
-
-      it 'records success' do
         expect(subject.success).to be_truthy
-      end
-
-      it 'records the migration version' do
         expect(subject.version).to eq(migration_version)
-      end
-
-      it 'records the migration name' do
         expect(subject.name).to eq(migration_name)
       end
     end
 
     context 'upon failure' do
-      subject { described_class.new(result_dir: result_dir).observe(version: migration_version, name: migration_name, connection: connection) { raise 'something went wrong' } }
+      where(exception: ['something went wrong', SystemStackError, Interrupt])
 
-      it 'raises the exception' do
-        expect { subject }.to raise_error(/something went wrong/)
-      end
-
-      context 'retrieving observations' do
-        subject { instance.observations.first }
-
-        before do
-          instance.observe(version: migration_version, name: migration_name, connection: connection) { raise 'something went wrong' }
-        rescue StandardError
-          # ignore
-        end
-
+      with_them do
         let(:instance) { described_class.new(result_dir: result_dir) }
 
-        it 'records walltime' do
-          expect(subject.walltime).not_to be_nil
+        subject(:observe) { instance.observe(version: migration_version, name: migration_name, connection: connection) { raise exception } }
+
+        it 'raises the exception' do
+          expect { observe }.to raise_error(exception)
         end
 
-        it 'records failure' do
-          expect(subject.success).to be_falsey
-        end
+        context 'retrieving observations' do
+          subject { instance.observations.first }
 
-        it 'records the migration version' do
-          expect(subject.version).to eq(migration_version)
-        end
+          before do
+            observe
+            # rubocop:disable Lint/RescueException
+          rescue Exception
+            # rubocop:enable Lint/RescueException
+            # ignore (we expect this exception)
+          end
 
-        it 'records the migration name' do
-          expect(subject.name).to eq(migration_name)
+          it 'records a valid observation', :aggregate_failures do
+            expect(subject.walltime).not_to be_nil
+            expect(subject.success).to be_falsey
+            expect(subject.version).to eq(migration_version)
+            expect(subject.name).to eq(migration_name)
+          end
         end
       end
     end

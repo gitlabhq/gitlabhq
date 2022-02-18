@@ -6,7 +6,7 @@ RSpec.describe 'Projects > Members > User requests access', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
 
-  let(:maintainer) { project.owner }
+  let(:maintainer) { project.first_owner }
 
   before do
     sign_in(user)

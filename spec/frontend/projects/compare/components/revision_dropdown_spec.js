@@ -1,6 +1,7 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
@@ -141,7 +142,7 @@ describe('RevisionDropdown component', () => {
   it('emits `selectRevision` event when another revision is selected', async () => {
     createComponent();
     wrapper.vm.branches = ['some-branch'];
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     findGlDropdown().findAll(GlDropdownItem).at(0).vm.$emit('click');
 

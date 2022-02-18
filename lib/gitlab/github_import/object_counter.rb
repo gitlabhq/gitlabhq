@@ -71,11 +71,7 @@ module Gitlab
 
           add_counter_to_list(project, operation, counter_key)
 
-          if Feature.disabled?(:import_redis_increment_by, default_enabled: :yaml)
-            CACHING.increment(counter_key)
-          else
-            CACHING.increment_by(counter_key, value)
-          end
+          CACHING.increment_by(counter_key, value)
         end
 
         def add_counter_to_list(project, operation, key)

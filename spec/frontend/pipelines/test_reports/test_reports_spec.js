@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -9,8 +10,7 @@ import TestSummary from '~/pipelines/components/test_reports/test_summary.vue';
 import TestSummaryTable from '~/pipelines/components/test_reports/test_summary_table.vue';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Test reports app', () => {
   let wrapper;
@@ -44,7 +44,6 @@ describe('Test reports app', () => {
     wrapper = extendedWrapper(
       shallowMount(TestReports, {
         store,
-        localVue,
       }),
     );
   };

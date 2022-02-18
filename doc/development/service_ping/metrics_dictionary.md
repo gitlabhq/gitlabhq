@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Metrics Dictionary Guide
 
-[Service Ping](index.md) metrics are defined in the
-[Metrics Dictionary](https://metrics.gitlab.com/index.html).
+[Service Ping](index.md) metrics are defined in individual YAML files definitions from which the
+[Metrics Dictionary](https://metrics.gitlab.com/) is built.
 This guide describes the dictionary and how it's implemented.
 
 ## Metrics Definition and validation
@@ -39,7 +39,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `product_group`     | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
 | `product_category`  | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the metric. |
 | `value_type`        | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type.html).                                                     |
-| `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `deprecated`, `removed`, `broken`. |
+| `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `removed`, `broken`. |
 | `time_frame`        | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
 | `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`. |
 | `data_category`     | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`.|
@@ -49,7 +49,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `tier`              | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
 | `milestone`         | no       | The milestone when the metric is introduced. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
-| `introduced_by_url` | no       | The URL to the Merge Request that introduced the metric. |
+| `introduced_by_url` | no       | The URL to the merge request that introduced the metric. |
 | `repair_issue_url`  | no       | The URL of the issue that was created to repair a metric with a `broken` status. |
 | `options`           | no       | `object`: options information needed to calculate the metric value. |
 | `skip_validation`   | no       | This should **not** be set. [Used for imported metrics until we review, update and make them valid](https://gitlab.com/groups/gitlab-org/-/epics/5425). |
@@ -60,7 +60,6 @@ Metric definitions can have one of the following statuses:
 
 - `active`: Metric is used and reports data.
 - `broken`: Metric reports broken data (for example, -1 fallback), or does not report data at all. A metric marked as `broken` must also have the `repair_issue_url` attribute.
-- `deprecated`: Metric is deprecated and possibly planned to be removed.
 - `removed`: Metric was removed, but it may appear in Service Ping payloads sent from instances running on older versions of GitLab.
 
 ### Metric value_type
@@ -194,7 +193,7 @@ tier:
 - ultimate
 ```
 
-## Create a new metric definition
+### Create a new metric definition
 
 The GitLab codebase provides a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_definition_generator.rb) to create new metric definitions.
 
@@ -229,7 +228,7 @@ bundle exec rails generate gitlab:usage_metric_definition counts.issues --ee --d
 create  ee/config/metrics/counts_7d/issues.yml
 ```
 
-## Metrics added dynamic to Service Ping payload
+### Metrics added dynamic to Service Ping payload
 
 The [Redis HLL metrics](implement.md#known-events-are-added-automatically-in-service-data-payload) are added automatically to Service Ping payload.
 
@@ -250,3 +249,13 @@ bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues users
 create  config/metrics/counts_7d/i_closed_weekly.yml
 create  config/metrics/counts_28d/i_closed_monthly.yml
 ```
+
+## Metrics Dictionary
+
+[Metrics Dictionary is a separate application](https://gitlab.com/gitlab-org/growth/product-intelligence/metric-dictionary).
+
+All metrics available in Service Ping are in the [Metrics Dictionary](https://metrics.gitlab.com/).
+
+### Copy query to clipboard
+
+To check if a metric has data in Sisense, use the copy query to clipboard feature. This copies a query that's ready to use in Sisense. The query gets the last five service ping data for GitLab.com for a given metric. For information about how to check if a Service Ping metric has data in Sisense, see this [demo](https://www.youtube.com/watch?v=n4o65ivta48).

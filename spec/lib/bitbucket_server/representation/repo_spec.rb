@@ -9,6 +9,7 @@ RSpec.describe BitbucketServer::Representation::Repo do
       "slug": "rouge",
       "id": 1,
       "name": "rouge",
+      "description": "Rogue Repo",
       "scmId": "git",
       "state": "AVAILABLE",
       "statusMessage": "Available",
@@ -17,7 +18,7 @@ RSpec.describe BitbucketServer::Representation::Repo do
         "key": "TEST",
         "id": 1,
         "name": "test",
-        "description": "Test",
+        "description": "Test Project",
         "public": false,
         "type": "NORMAL",
         "links": {
@@ -73,7 +74,7 @@ RSpec.describe BitbucketServer::Representation::Repo do
   end
 
   describe '#description' do
-    it { expect(subject.description).to eq('Test') }
+    it { expect(subject.description).to eq('Rogue Repo') }
   end
 
   describe '#full_name' do

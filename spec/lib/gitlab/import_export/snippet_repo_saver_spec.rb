@@ -38,7 +38,7 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoSaver do
           aggregate_failures do
             expect(snippet.repository).not_to receive(:bundle_to_disk)
 
-            bundler.save
+            bundler.save # rubocop:disable Rails/SaveBang
 
             expect(Dir.empty?(bundle_path)).to be_truthy
           end

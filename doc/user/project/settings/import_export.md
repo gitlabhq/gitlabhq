@@ -122,8 +122,7 @@ As described in the API documentation, the query may return an import error or e
 
 The following items are imported but changed slightly:
 
-- Project members with the [Owner role](../../permissions.md)
-  are imported as Maintainers.
+- Project members with the Owner role are imported as Maintainers.
 - If an imported project contains merge requests originating from forks, then new branches
   associated with such merge requests are created in a project during the import/export. Thus, the
   number of branches in the exported project might be bigger than in the original project.
@@ -160,6 +159,8 @@ Imported users can be mapped by their public email addresses on self-managed ins
 for mapping to work correctly.
 - For contributions to be mapped correctly, users must be an existing member of the namespace,
   or they can be added as a member of the project. Otherwise, a supplementary comment is left to mention that the original author and the MRs, notes, or issues that are owned by the importer.
+- Imported users are set as [direct members](../members/index.md)
+  in the imported project.
 
 For project migration imports performed over GitLab.com groups, preserving author information is
 possible through a [professional services engagement](https://about.gitlab.com/services/migration/).

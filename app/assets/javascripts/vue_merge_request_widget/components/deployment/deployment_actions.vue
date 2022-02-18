@@ -1,5 +1,6 @@
 <script>
 import createFlash from '~/flash';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -79,6 +80,7 @@ export default {
     [STOPPING]: {
       actionName: STOPPING,
       buttonText: s__('MrDeploymentActions|Stop environment'),
+      buttonVariant: 'danger',
       busyText: __('This environment is being deployed'),
       confirmMessage: __('Are you sure you want to stop this environment?'),
       errorMessage: __('Something went wrong while stopping this environment. Please try again.'),
@@ -86,6 +88,7 @@ export default {
     [DEPLOYING]: {
       actionName: DEPLOYING,
       buttonText: s__('MrDeploymentActions|Deploy'),
+      buttonVariant: 'confirm',
       busyText: __('This environment is being deployed'),
       confirmMessage: __('Are you sure you want to deploy this environment?'),
       errorMessage: __('Something went wrong while deploying this environment. Please try again.'),
@@ -93,14 +96,27 @@ export default {
     [REDEPLOYING]: {
       actionName: REDEPLOYING,
       buttonText: s__('MrDeploymentActions|Re-deploy'),
+      buttonVariant: 'confirm',
       busyText: __('This environment is being re-deployed'),
       confirmMessage: __('Are you sure you want to re-deploy this environment?'),
       errorMessage: __('Something went wrong while deploying this environment. Please try again.'),
     },
   },
   methods: {
-    executeAction(endpoint, { actionName, confirmMessage, errorMessage }) {
-      const isConfirmed = confirm(confirmMessage); //eslint-disable-line
+    async executeAction(
+      endpoint,
+      {
+        actionName,
+        buttonText: primaryBtnText,
+        buttonVariant: primaryBtnVariant,
+        confirmMessage,
+        errorMessage,
+      },
+    ) {
+      const isConfirmed = await confirmAction(confirmMessage, {
+        primaryBtnVariant,
+        primaryBtnText,
+      });
 
       if (isConfirmed) {
         this.actionInProgress = actionName;

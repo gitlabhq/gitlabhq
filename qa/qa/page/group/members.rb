@@ -6,6 +6,7 @@ module QA
       class Members < Page::Base
         include Page::Component::InviteMembersModal
         include Page::Component::UsersSelect
+        include Page::Component::MembersFilter
 
         view 'app/assets/javascripts/members/components/modals/remove_member_modal.vue' do
           element :remove_member_modal_content
@@ -31,6 +32,8 @@ module QA
         end
 
         def update_access_level(username, access_level)
+          search_member(username)
+
           within_element(:member_row, text: username) do
             click_element :access_level_dropdown
             click_element :access_level_link, text: access_level

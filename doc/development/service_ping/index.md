@@ -84,7 +84,7 @@ Registration is not yet required for participation, but will be added in a futur
 
 #### Enable Registration Features
 
-1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
+1. Sign in as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
@@ -96,7 +96,7 @@ Registration is not yet required for participation, but will be added in a futur
 
 You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To view the payload:
 
-1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
+1. Sign in as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
@@ -118,7 +118,7 @@ configuration file.
 
 To disable Service Ping in the GitLab UI:
 
-1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
+1. Sign in as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
@@ -198,13 +198,32 @@ sequenceDiagram
 ## How Service Ping works
 
 1. The Service Ping [cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab_service_ping_worker.rb#L24) is set in Sidekiq to run weekly.
-1. When the cron job runs, it calls [`Gitlab::UsageData.to_json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L49).
-1. `Gitlab::UsageData.to_json` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) to ~400+ other counter method calls.
-1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L68) into a single JSON payload in `Gitlab::UsageData.to_json`.
+1. When the cron job runs, it calls [`Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb).
+1. `Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) to ~400+ other counter method calls.
+1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L68) into a single JSON payload.
 1. The JSON payload is then [posted to the Versions application](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L20)
    If a firewall exception is needed, the required URL depends on several things. If
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,
    the required URL is <https://version.gitlab.com/>.
+1. In case of an error, it will be reported to the Version application along with following pieces of information:
+
+- `uuid` - GitLab instance unique identifier
+- `hostname` - GitLab instance hostname
+- `version` - GitLab instance current versions 
+- `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
+- `message` - Error message
+
+<pre>
+<code>
+{
+  "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d", 
+  "hostname"=>"127.0.0.1", 
+  "version"=>"14.7.0-pre", 
+  "elapsed"=>0.006946, 
+  "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
+}
+</code>
+</pre>
 
 ### On a Geo secondary site
 
@@ -510,7 +529,7 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 
 ### Verification (After approx 30 hours)
 
-#### Verify with a detached screen session
+#### Verify with Teleport
 
 1. Follow [the steps](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to request a new access to the required environment and connect to the Rails console
 1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
@@ -556,6 +575,28 @@ To skip database write operations, DevOps report creation, and storage of usage 
 skip_db_write:
 ServicePing::SubmitService.new(skip_db_write: true).execute
 ```
+
+## Manually upload Service Ping payload 
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7388) in GitLab 14.8 with a flag named `admin_application_settings_service_usage_data_center`. Disabled by default.
+
+Service Ping payload can be uploaded to GitLab even if your application instance doesn't have access to the internet,
+or you don't have Service Ping [cron job](#how-service-ping-works) enabled.
+
+To upload payload manually:
+
+1. Sign in as a user with administrator access.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Service** usage data.
+1. Select **Download payload**.
+1. Save the JSON file.
+1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).
+1. Select **Choose file** and choose the file from p5.
+1. Select **Upload**.
+
+## Monitoring
+
+Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health). 
 
 ## Troubleshooting
 

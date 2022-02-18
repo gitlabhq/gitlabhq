@@ -38,7 +38,7 @@ For deprecation reviewers (Technical Writers only):
 
 ## 14.0
 
-### NFS for Git repository storage deprecated
+### NFS for Git repository storage
 
 WARNING:
 This feature will be changed or removed in 15.0
@@ -55,6 +55,18 @@ Gitaly Cluster offers tremendous benefits for our customers such as:
 - [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/index.html#distributed-reads).
 
 We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### OAuth implicit grant
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The OAuth implicit grant authorization flow will be removed in our next major release, GitLab 15.0. Any applications that use OAuth implicit grant should switch to alternative [supported OAuth flows](https://docs.gitlab.com/ee/api/oauth2.html).
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
@@ -84,7 +96,7 @@ as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#brea
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#repository-push) are now deprecated and will be removed in GitLab 15.0.
+Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#repository-push-deprecated) are now deprecated and will be removed in GitLab 15.0.
 
 These events have always been disabled by default and had to be manually enabled with a
 feature flag. Enabling them can cause too many events to be generated which can
@@ -143,24 +155,28 @@ Note that we are not deprecating the Kerberos SPNEGO integration, only the old p
 ### Certificate-based integration with Kubernetes
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 15.6
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
 [We are deprecating the certificate-based integration with Kubernetes](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
-The timeline of removal of the integration from the product is not yet planned and we will communicate
-more details as they emerge. The certificate-based integration will continue to receive security and
+The timeline of removal of the integration from the product is planned to happen in two steps, starting with milestone 15.0 and finishing in GitLab version 15.6.
+
+In 15.0, we plan to introduce a feature flag that will allow GitLab Self-Managed customers to keep the certificate-based integration enabled, it will be disabled by default. We plan to remove this feature flag together with the underlying code in GitLab version 15.6.
+The certificate-based integration will continue to receive security and
 critical fixes, and features built on the integration will continue to work with supported Kubernetes
-versions. We will provide migration plans in a future iteration. See [the list of features affected by this deprecation](https://docs.gitlab.com/ee/user/infrastructure/clusters/#deprecated-features).
-For updates and details, follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+versions until the final removal in 15.6.
 
 For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend the use of the
-[Kubernetes Agent](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab.
+[Kubernetes Agent](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. 
+We provide [migration plans](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html) in the documentation. 
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+For updates and details around this deprecation, follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
-### Converting an instance (shared) runner to a project (specific) runner is deprecated
+**Planned removal milestone: 15.6 (2022-11-22)**
+
+### Converting an instance (shared) runner to a project (specific) runner
 
 WARNING:
 This feature will be changed or removed in 15.0
@@ -169,32 +185,6 @@ Before updating GitLab, review the details carefully to determine if you need to
 changes to your code, settings, or workflow.
 
 In GitLab 15.0, we will remove the feature that enables you to convert an instance (shared) runner to a project (specific) runner. Users who need to add a runner to only a particular project can register a runner to the project directly.
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
-### Deprecate `Versions` on base `PackageType`
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype).
-
-In milestone 15.0, we will completely remove `Version` from `PackageType`.
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
-### Deprecate support for SLES 12 SP2
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 12 SP2 [ended on March 31, 2021](https://www.suse.com/lifecycle/). The CA certificates on SP2 include the expired DST root certificate, and it's not getting new CA certificate package updates. We have implemented some [workarounds](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/191), but we will not be able to continue to keep the build running properly.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
@@ -240,7 +230,7 @@ In milestone 15.0, we will remove the `pipelines` attribute from the API respons
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### REST API Runner will not contain `paused`
+### REST and GraphQL API Runner status will not return `paused`
 
 WARNING:
 This feature will be changed or removed in 15.0
@@ -254,11 +244,11 @@ A runner's status will only relate to runner contact status, such as:
 `online`, `offline`, or `not_connected`. Status `paused` or `active` will no longer appear.
 
 When checking if a runner is `paused`, API users are advised to check the boolean attribute
-`active` to be `false` instead. When checking if a runner is `active`, check if `active` is `true`.
+`paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### Removal of `defaultMergeCommitMessageWithDescription` GraphQL API field
+### Support for SLES 12 SP2
 
 WARNING:
 This feature will be changed or removed in 15.0
@@ -266,62 +256,7 @@ as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#brea
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-The GraphQL API field `defaultMergeCommitMessageWithDescription` has been deprecated and will be removed in GitLab 15.0. For projects with a commit message template set, it will ignore the template.
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
-### Removal of `promote-db` command from `gitlab-ctl`
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-db` which is used to promote database nodes in multi-node Geo secondary sites. `gitlab-ctl promote-db` will continue to function as-is and be available until GitLab 15.0. We recommend that Geo customers begin testing the new `gitlab-ctl promote` command in their staging environments and incorporating the new command in their failover procedures.
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
-### Removal of `promote-to-primary-node` command from `gitlab-ctl`
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-to-primary-node` which was only usable for single-node Geo sites. `gitlab-ctl promote-to-primary-node` will continue to function as-is and be available until GitLab 15.0. We recommend that Geo customers begin testing the new `gitlab-ctl promote` command in their staging environments and incorporating the new command in their failover procedures.
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
-### Remove the `:dependency_proxy_for_private_groups` feature flag
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-We added a feature flag because [GitLab-#11582](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) changed how public groups use the Dependency Proxy. Prior to this change, you could use the Dependency Proxy without authentication. The change requires authentication to use the Dependency Proxy.
-
-In milestone 15.0, we will remove the feature flag entirely. Moving forward, you must authenticate when using the Dependency Proxy.
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
-### Remove the `pipelines` field from the `version` field
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/#packagedetailstype) to get the pipelines for package versions:
-
-- The `versions` field's `pipelines` field. This returns all the pipelines associated with all the package's versions, which can pull an unbounded number of objects in memory and create performance concerns.
-- The `pipelines` field of a specific `version`. This returns only the pipelines associated with that single package version.
-
-To mitigate possible performance problems, we will remove the `versions` field's `pipelines` field in milestone 15.0. Although you will no longer be able to get all pipelines for all versions of a package, you can still get the pipelines of a single version through the remaining `pipelines` field for that version.
+Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 12 SP2 [ended on March 31, 2021](https://www.suse.com/lifecycle/). The CA certificates on SP2 include the expired DST root certificate, and it's not getting new CA certificate package updates. We have implemented some [workarounds](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/191), but we will not be able to continue to keep the build running properly.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
@@ -350,6 +285,87 @@ changes to your code, settings, or workflow.
 We are changing how the date filter works in Value Stream Analytics. Instead of filtering by the time that the issue or merge request was created, the date filter will filter by the end event time of the given stage. This will result in completely different figures after this change has rolled out.
 
 If you monitor Value Stream Analytics metrics and rely on the date filter, to avoid losing data, you must save the data prior to this change.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### `Versions` on base `PackageType`
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype).
+
+In milestone 15.0, we will completely remove `Version` from `PackageType`.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### `defaultMergeCommitMessageWithDescription` GraphQL API field
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The GraphQL API field `defaultMergeCommitMessageWithDescription` has been deprecated and will be removed in GitLab 15.0. For projects with a commit message template set, it will ignore the template.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### `dependency_proxy_for_private_groups` feature flag
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+We added a feature flag because [GitLab-#11582](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) changed how public groups use the Dependency Proxy. Prior to this change, you could use the Dependency Proxy without authentication. The change requires authentication to use the Dependency Proxy.
+
+In milestone 15.0, we will remove the feature flag entirely. Moving forward, you must authenticate when using the Dependency Proxy.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### `pipelines` field from the `version` field
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/#packagedetailstype) to get the pipelines for package versions:
+
+- The `versions` field's `pipelines` field. This returns all the pipelines associated with all the package's versions, which can pull an unbounded number of objects in memory and create performance concerns.
+- The `pipelines` field of a specific `version`. This returns only the pipelines associated with that single package version.
+
+To mitigate possible performance problems, we will remove the `versions` field's `pipelines` field in milestone 15.0. Although you will no longer be able to get all pipelines for all versions of a package, you can still get the pipelines of a single version through the remaining `pipelines` field for that version.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### `promote-db` command from `gitlab-ctl`
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-db` which is used to promote database nodes in multi-node Geo secondary sites. `gitlab-ctl promote-db` will continue to function as-is and be available until GitLab 15.0. We recommend that Geo customers begin testing the new `gitlab-ctl promote` command in their staging environments and incorporating the new command in their failover procedures.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### `promote-to-primary-node` command from `gitlab-ctl`
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-to-primary-node` which was only usable for single-node Geo sites. `gitlab-ctl promote-to-primary-node` will continue to function as-is and be available until GitLab 15.0. We recommend that Geo customers begin testing the new `gitlab-ctl promote` command in their staging environments and incorporating the new command in their failover procedures.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
@@ -389,21 +405,7 @@ In GitLab 15.0 we are going to limit the number of characters in CI/CD job names
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### Deprecate `pipelines` fields in the Package GraphQL types
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `pipelines` fields in all Package-related GraphQL types. As of GitLab 14.6, the `pipelines` field is deprecated in [`Package`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#package) and [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype) due to scalability and performance concerns.
-
-In milestone 15.0, we will completely remove `pipelines` from `Package` and `PackageDetailsType`. You can follow and contribute to work on a replacement in the epic [GitLab-#7214](https://gitlab.com/groups/gitlab-org/-/epics/7214).
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
-### Deprecate legacy approval status names from License Compliance API
+### Legacy approval status names from License Compliance API
 
 WARNING:
 This feature will be changed or removed in 15.0
@@ -417,7 +419,7 @@ If you are using our License Compliance API you should stop using the `approved`
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### Deprecation of Runner status `not_connected` API value
+### Runner status `not_connected` API value
 
 WARNING:
 This feature will be changed or removed in 15.0
@@ -432,7 +434,7 @@ Runners that have never contacted the GitLab instance will also return `stale` i
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### Deprecation of bundler-audit Dependency Scanning tool
+### `pipelines` fields in the Package GraphQL types
 
 WARNING:
 This feature will be changed or removed in 15.0
@@ -440,13 +442,13 @@ as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#brea
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-As of 14.6 bundler-audit is being deprecated from Dependency Scanning. It will continue to be in our CI/CD template while deprecated. We are removing bundler-audit from Dependency Scanning on May 22, 2022 in 15.0. After this removal Ruby scanning functionality will not be affected as it is still being covered by Gemnasium.
+As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `pipelines` fields in all Package-related GraphQL types. As of GitLab 14.6, the `pipelines` field is deprecated in [`Package`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#package) and [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype) due to scalability and performance concerns.
 
-If you have explicitly excluded bundler-audit using DS_EXCLUDED_ANALYZERS you will need to clean up (remove the reference) in 15.0. If you have customized your pipeline's Dependency Scanning configuration, for example to edit the `bundler-audit-dependency_scanning` job, you will want to switch to gemnasium-dependency_scanning before removal in 15.0, to prevent your pipeline from failing. If you have not used the DS_EXCLUDED_ANALYZERS to reference bundler-audit, or customized your template specifically for bundler-audit, you will not need to take action.
+In milestone 15.0, we will completely remove `pipelines` from `Package` and `PackageDetailsType`. You can follow and contribute to work on a replacement in the epic [GitLab-#7214](https://gitlab.com/groups/gitlab-org/-/epics/7214).
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### Remove `type` and `types` keyword in CI/CD configuration
+### `type` and `types` keyword in CI/CD configuration
 
 WARNING:
 This feature will be changed or removed in 15.0
@@ -469,6 +471,20 @@ changes to your code, settings, or workflow.
 The API Fuzzing configuration snippet is now being generated client-side and does not require an
 API request anymore. We are therefore deprecating the `apiFuzzingCiConfigurationCreate` mutation
 which isn't being used in GitLab anymore.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### bundler-audit Dependency Scanning tool
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+As of 14.6 bundler-audit is being deprecated from Dependency Scanning. It will continue to be in our CI/CD template while deprecated. We are removing bundler-audit from Dependency Scanning on May 22, 2022 in 15.0. After this removal Ruby scanning functionality will not be affected as it is still being covered by Gemnasium.
+
+If you have explicitly excluded bundler-audit using DS_EXCLUDED_ANALYZERS you will need to clean up (remove the reference) in 15.0. If you have customized your pipeline's Dependency Scanning configuration, for example to edit the `bundler-audit-dependency_scanning` job, you will want to switch to gemnasium-dependency_scanning before removal in 15.0, to prevent your pipeline from failing. If you have not used the DS_EXCLUDED_ANALYZERS to reference bundler-audit, or customized your template specifically for bundler-audit, you will not need to take action.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
@@ -604,21 +620,6 @@ It is now considered deprecated, and will be removed in GitLab 15.0.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
-### Removal of Static Site Editor
-
-The Static Site Editor will no longer be available starting in GitLab 15.0. Improvements to the Markdown editing experience across GitLab will deliver smiliar benefit but with a wider reach. Incoming requests to the Static Site Editor will be redirected to the Web IDE. Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/static_site_editor/) for more information, including how to remove the configuration files from existing projects.
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
-### Removal of `artifacts:report:cobertura` keyword
-
-Currently, test coverage visualizations in GitLab only support Cobertura reports. Starting 15.0, the
-`artifacts:report:cobertura` keyword will be replaced by
-[`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura will be the
-only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
-
-**Planned removal milestone: 15.0 (2022-05-22)**
-
 ### SAST schemas below 14.0.0
 
 [SAST report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
@@ -685,6 +686,12 @@ to serve the Sidekiq metrics, similar to the way Sidekiq will behave in 15.0.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Static Site Editor
+
+The Static Site Editor will no longer be available starting in GitLab 15.0. Improvements to the Markdown editing experience across GitLab will deliver smiliar benefit but with a wider reach. Incoming requests to the Static Site Editor will be redirected to the Web IDE. Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/static_site_editor/) for more information, including how to remove the configuration files from existing projects.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Tracing in GitLab
 
 WARNING:
@@ -697,13 +704,698 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### `artifacts:report:cobertura` keyword
+
+Currently, test coverage visualizations in GitLab only support Cobertura reports. Starting 15.0, the
+`artifacts:report:cobertura` keyword will be replaced by
+[`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura will be the
+only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### merged_by API field
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
 
 The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests) is being deprecated and will be removed in GitLab 15.0. This field is being replaced with the `merge_user` field (already present in GraphQL) which more correctly identifies who merged a merge request when performing actions (merge when pipeline succeeds, add to merge train) other than a simple merge.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
 ## 14.8
+
+### Changes to the `CI_JOB_JWT`
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `CI_JOB_JWT` will be updated to support a wider variety of cloud providers. It will be changed to match [`CI_JOB_JWT_V2`](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html), but this change may not be backwards compatible for all users, including Hashicorp Vault users. To maintain the current behavior, users can switch to using `CI_JOB_JWT_V1`, or update their configuration in GitLab 15.0 to use the improved `CI_JOB_JWT`.
+
+**Planned removal milestone: 15.0 ()**
+
+### Configurable Gitaly `per_repository` election strategy
+
+Configuring the `per_repository` Gitaly election strategy is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352612).
+`per_repository` has been the only option since GitLab 14.0.
+
+This change is part of regular maintenance to keep our codebase clean.
+
+**Planned removal milestone: 14.9 (2022-03-22)**
+
+### Container Network and Host Security
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+All functionality related to GitLab's Container Network Security and Container Host Security categories is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. Users who need a replacement for this functionality are encouraged to evaluate the following open source projects as potential solutions that can be installed and managed outside of GitLab: [AppArmor](https://gitlab.com/apparmor/apparmor), [Cilium](https://github.com/cilium/cilium), [Falco](https://github.com/falcosecurity/falco), [FluentD](https://github.com/fluent/fluentd), [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/). To integrate these technologies into GitLab, add the desired Helm charts into your copy of the [Cluster Management Project Template](https://docs.gitlab.com/ee/user/clusters/management_project_template.html). Deploy these Helm charts in production by calling commands through the GitLab [Secure CI/CD Tunnel](https://docs.gitlab.com/ee/user/clusters/agent/repository.html#run-kubectl-commands-using-the-cicd-tunnel).
+
+As part of this change, the following specific capabilities within GitLab are now deprecated, and are scheduled for removal in GitLab 15.0:
+
+- The **Security & Compliance > Threat Monitoring** page.
+- The `Network Policy` security policy type, as found on the **Security & Compliance > Policies** page.
+- The ability to manage integrations with the following technologies through GitLab: AppArmor, Cilium, Falco, FluentD, and Pod Security Policies.
+- All APIs related to the above functionality.
+
+For additional context, or to provide feedback regarding this change, please reference our open [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/7476).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Dependency Scanning Python 3.9 and 3.6 image deprecation
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+For those using Dependency Scanning for Python projects, we are deprecating the default `gemnasium-python:2` image which uses Python 3.6 as well as the custom `gemnasium-python:2-python-3.9` image which uses Python 3.9. The new default image as of GitLab 15.0 will be for Python 3.9 as it is a [supported version](https://endoflife.date/python) and 3.6 [is no longer supported](https://endoflife.date/python).
+
+For users using Python 3.9 or 3.9-compatible projects, you should not need to take action and dependency scanning should begin to work in GitLab 15.0. If you wish to test the new container now please run a test pipeline in your project with this container (which will be removed in 15.0). Use the Python 3.9 image:
+
+```yaml
+gemnasium-python-dependency_scanning:
+  image:
+    name: registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python:2-python-3.9
+```
+
+For users using Python 3.6, as of GitLab 15.0 you will no longer be able to use the default template for dependency scanning. You will need to switch to use the deprecated `gemnasium-python:2` analyzer image. If you are impacted by this please comment in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351503) so we can extend the removal if needed.
+
+For users using the 3.9 special exception image, you must instead use the default value and no longer override your container. To verify if you are using the 3.9 special exception image, check your `.gitlab-ci.yml` file for the following reference: 
+
+```yaml
+gemnasium-python-dependency_scanning:
+  image:
+    name: registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python:2-python-3.9
+```
+
+**Planned removal milestone: 15.0 (2021-05-22)**
+
+### Deprecate Geo Admin UI Routes
+
+In GitLab 13.0, we introduced new project and design replication details routes in the Geo Admin UI. These routes are `/admin/geo/replication/projects` and `/admin/geo/replication/designs`. We kept the legacy routes and redirected them to the new routes. In GitLab 15.0, we will remove support for the legacy routes `/admin/geo/projects` and `/admin/geo/designs`. Please update any bookmarks or scripts that may use the legacy routes.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Deprecate custom Geo:db:* Rake tasks
+
+In GitLab 14.8, we are [replacing the `geo:db:*` Rake tasks with built-in tasks](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77269/diffs) that are now possible after [switching the Geo tracking database to use Rails' 6 support of multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6458).
+The following `geo:db:*` tasks will be replaced with their corresponding `db:*:geo` tasks:
+
+- `geo:db:drop` -> `db:drop:geo`
+- `geo:db:create` -> `db:create:geo`
+- `geo:db:setup` -> `db:setup:geo`
+- `geo:db:migrate` -> `db:migrate:geo`
+- `geo:db:rollback` -> `db:rollback:geo`
+- `geo:db:version` -> `db:version:geo`
+- `geo:db:reset` -> `db:reset:geo`
+- `geo:db:seed` -> `db:seed:geo`
+- `geo:schema:load:geo` -> `db:schema:load:geo`
+- `geo:db:schema:dump` -> `db:schema:dump:geo`
+- `geo:db:migrate:up` -> `db:migrate:up:geo`
+- `geo:db:migrate:down` -> `db:migrate:down:geo`
+- `geo:db:migrate:redo` -> `db:migrate:redo:geo`
+- `geo:db:migrate:status` -> `db:migrate:status:geo`
+- `geo:db:test:prepare` -> `db:test:prepare:geo`
+- `geo:db:test:load` -> `db:test:load:geo`
+- `geo:db:test:purge` -> `db:test:purge:geo`
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Deprecate feature flag PUSH_RULES_SUPERSEDE_CODE_OWNERS
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` is being removed in GitLab 15.0. Upon its removal, push rules will supersede CODEOWNERS. The CODEOWNERS feature will no longer be available for access control.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Deprecate legacy Gitaly configuration methods
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Using environment variables `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352609).
+These variables are being replaced with standard [`config.toml` Gitaly configuration](https://docs.gitlab.com/ee/administration/gitaly/reference.html).
+
+GitLab instances that use `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly should switch to configuring using
+`config.toml`.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Elasticsearch 6.8
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Elasticsearch 6.8 is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
+Customers using Elasticsearch 6.8 need to upgrade their Elasticsearch version to 7.x prior to upgrading to GitLab 15.0.
+We recommend using the latest version of Elasticsearch 7 to benefit from all Elasticsearch improvements.
+
+Elasticsearch 6.8 is also incompatible with Amazon OpenSearch, which we [plan to support in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/327560).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### External status check API breaking changes
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The [external status check API](https://docs.gitlab.com/ee/api/status_checks.html) was originally implemented to
+support pass-by-default requests to mark a status check as passing. Pass-by-default requests are now deprecated.
+Specifically, the following are deprecated:
+
+- Requests that do not contain the `status` field.
+- Requests that have the `status` field set to `approved`.
+
+Beginning in GitLab 15.0, status checks will only be updated to a passing state if the `status` field is both present
+and set to `pass`. Requests that:
+
+- Do not contain the `status` field will be rejected with a `422` error. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338827).
+- Contain any value other than `pass` will cause the status check to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/339039).
+
+To align with this change, API calls to list external status checks will also return the value of `pass` rather than
+`approved` for status checks that have passed.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### GraphQL ID and GlobalID compatibility
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+We are removing a non-standard extension to our GraphQL processor, which we added for backwards compatibility. This extension modifies the validation of GraphQL queries, allowing the use of the `ID` type for arguments where it would normally be rejected.
+Some arguments originally had the type `ID`. These were changed to specific
+kinds of `ID`. This change may be a breaking change if you:
+
+- Use GraphQL.
+- Use the `ID` type for any argument in your query signatures.
+
+Some field arguments still have the `ID` type. These are typically for
+IID values, or namespace paths. An example is `Query.project(fullPath: ID!)`.
+
+For a list of affected and unaffected field arguments,
+see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352832).
+
+You can test if this change affects you by validating
+your queries locally, using schema data fetched from a GitLab server.
+You can do this by using the GraphQL explorer tool for the relevant GitLab
+instance. For example: `https://gitlab.com/-/graphql-explorer`.
+
+For example, the following query illustrates the breaking change:
+
+```graphql
+# a query using the deprecated type of Query.issue(id:)
+# WARNING: This will not work after GitLab 15.0
+query($id: ID!) {
+  deprecated: issue(id: $id) {
+    title, description
+  }
+}
+```
+
+The query above will not work after GitLab 15.0 is released, because the type
+of `Query.issue(id:)` is actually `IssueID!`.
+
+Instead, you should use one of the following two forms:
+
+```graphql
+# This will continue to work
+query($id: IssueID!) {
+  a: issue(id: $id) {
+    title, description
+  }
+  b: issue(id: "gid://gitlab/Issue/12345") {
+    title, description
+  }
+}
+```
+
+This query works now, and will continue to work after GitLab 15.0.
+You should convert any queries in the first form (using `ID` as a named type in the signature)
+to one of the other two forms (using the correct appropriate type in the signature, or using
+an inline argument expression).
+
+**Planned removal milestone: 15.0 (2022-04-22)**
+
+### OAuth tokens without expiration
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+By default, all new applications expire access tokens after 2 hours. In GitLab 14.2 and earlier, OAuth access tokens
+had no expiration. In GitLab 15.0, an expiry will be automatically generated for any existing token that does not
+already have one.
+
+You should [opt in](https://docs.gitlab.com/ee/integration/oauth_provider.html#expiring-access-tokens) to expiring
+tokens before GitLab 15.0 is released:
+
+1. Edit the application.
+1. Select **Expire access tokens** to enable them. Tokens must be revoked or they don’t expire.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Optional enforcement of PAT expiration
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The feature to disable enforcement of PAT expiration is unusual from a security perspective.
+We have become concerned that this unusual feature could create unexpected behavior for users.
+Unexpected behavior in a security feature is inherently dangerous, so we have decided to remove this feature.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Optional enforcement of SSH expiration
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The feature to disable enforcement of SSH expiration is unusual from a security perspective.
+We have become concerned that this unusual feature could create unexpected behavior for users.
+Unexpected behavior in a security feature is inherently dangerous, so we have decided to remove this feature.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Out-of-the-box SAST support for Java 8
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The [GitLab SAST SpotBugs analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) scans [Java, Scala, Groovy, and Kotlin code](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks) for security vulnerabilities.
+For technical reasons, the analyzer must first compile the code before scanning.
+Unless you use the [pre-compilation strategy](https://docs.gitlab.com/ee/user/application_security/sast/#pre-compilation), the analyzer attempts to automatically compile your project's code.
+
+In GitLab versions prior to 15.0, the analyzer image includes Java 8 and Java 11 runtimes to facilitate compilation.
+
+In GitLab 15.0, we will:
+
+- Remove Java 8 from the analyzer image to reduce the size of the image.
+- Add Java 17 to the analyzer image to make it easier to compile with Java 17.
+
+If you rely on Java 8 being present in the analyzer environment, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352549#breaking-change).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Querying Usage Trends via the `instanceStatisticsMeasurements` GraphQL node
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTrendsMeasurements` in 13.10 and the old field name has been marked as deprecated. To fix the existing GraphQL queries, replace `instanceStatisticsMeasurements` with `usageTrendsMeasurements`.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### REST API Runner will not accept `status` filter values of `active` or `paused`
+
+WARNING:
+This feature will be changed or removed in 16.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The GitLab Runner REST endpoints will stop accepting `paused` or `active` as a status value in GitLab 16.0.
+
+A runner's status will only relate to runner contact status, such as: `online`, `offline`.
+Status values `paused` or `active` will no longer be accepted and will be replaced by the `paused` query parameter.
+
+When checking for paused runners, API users are advised to specify `paused=true` as the query parameter.
+When checking for active runners, specify `paused=false`.
+
+**Planned removal milestone: 16.0 (2023-04-22)**
+
+### REST API endpoint to list group runners no longer accepts `project_type` value for `type` argument
+
+WARNING:
+This feature will be changed or removed in 16.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `GET /groups/:id/runners?type=project_type` endpoint will be removed in GitLab 16.0. The endpoint always returned an empty collection.
+
+**Planned removal milestone: 16.0 (2023-04-22)**
+
+### REST and GraphQL API Runner usage of `active` replaced by `paused`
+
+WARNING:
+This feature will be changed or removed in 16.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Occurrences of the `active` identifier in the GitLab Runner REST and GraphQL API endpoints will be
+renamed to `paused` in GitLab 16.0, namely:
+
+- GraphQL API:
+  - the `CiRunner` property;
+  - the `RunnerUpdateInput` input type for the `runnerUpdate` mutation;
+  - the `runners` and `Group.runners` queries.
+- REST API:
+  - endpoints taking or returning `active` properties, such as:
+    - `GET /runners`
+    - `GET /runners/all`
+    - `GET /runners/:id` / `PUT /runners/:id`
+    - `PUT --form "active=false" /runners/:runner_id`
+    - `GET /projects/:id/runners` / `POST /projects/:id/runners`
+    - `GET /groups/:id/runners`
+
+The 16.0 release of the GitLab Runner will start using the `paused` property when registering runners, and therefore
+will only be compatible with GitLab 16.0 and later. Until 16.0, GitLab will accept the deprecated `active` flag from
+existing runners.
+
+**Planned removal milestone: 16.0 (2023-04-22)**
+
+### Reminder: support for NFS repository storage
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+As [announced](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#nfs-for-git-repository-storage-deprecated) at the
+release of GitLab 14.0, technical support for NFS storage for Git repositories is being removed. Please see our official
+[Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for additional information.
+
+We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on
+[migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/#migrating-to-gitaly-cluster).
+
+Gitaly Cluster offers tremendous benefits for our customers such as:
+
+- [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/praefect.html#configure-replication-factor)
+- [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/#strong-consistency)
+- [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/#distributed-reads)
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Request profiling
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+[Request profiling](https://docs.gitlab.com/ee/administration/monitoring/performance/request_profiling.html) is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
+
+We're working on [consolidating our profiling tools](https://gitlab.com/groups/gitlab-org/-/epics/7327) and making them more easily accessible.
+We [evaluated](https://gitlab.com/gitlab-org/gitlab/-/issues/350152) the use of this feature and we found that it is not widely used.
+It also depends on a few third-party gems that are not actively maintained anymore, have not been updated for the latest version of Ruby, or crash frequently when profiling heavy page loads.
+
+For more information, check the [summary section of the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352488#deprecation-summary).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Required pipeline configurations in Premium tier
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The [required pipeline configuration](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#required-pipeline-configuration) feature is deprecated in GitLab 14.8 for Premium customers and is scheduled for removal in GitLab 15.0. This feature is not deprecated for GitLab Ultimate customers.
+
+This change to move the feature to GitLab's Ultimate tier is intended to help our features better align with our [pricing philosophy](https://about.gitlab.com/company/pricing/#three-tiers) as we see demand for this feature originating primarily from executives.
+
+This change will also help GitLab remain consistent in its tiering strategy with the other related Ultimate-tier features of:
+[Security policies](https://docs.gitlab.com/ee/user/application_security/policies/) and [compliance framework pipelines](https://docs.gitlab.com/ee/user/project/settings/index.html#compliance-pipeline-configuration).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Retire-JS Dependency Scanning tool
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+As of 14.8 the retire.js job is being deprecated from Dependency Scanning. It will continue to be included in our CI/CD template while deprecated. We are removing retire.js from Dependency Scanning on May 22, 2022 in GitLab 15.0. JavaScript scanning functionality will not be affected as it is still being covered by Gemnasium.
+
+If you have explicitly excluded retire.js using DS_EXCLUDED_ANALYZERS you will need to clean up (remove the reference) in 15.0. If you have customized your pipeline's Dependency Scanning configuration related to the `retire-js-dependency_scanning` job you will want to switch to gemnasium-dependency_scanning before the removal in 15.0, to prevent your pipeline from failing. If you have not used the DS_EXCLUDED_ANALYZERS to reference retire.js, or customized your template specifically for retire.js, you will not need to take action.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### SAST analyzer consolidation and CI/CD template changes
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
+
+We are reducing the number of analyzers used in GitLab SAST as part of our long-term strategy to deliver a better and more consistent user experience.
+Streamlining the set of analyzers will also enable faster [iteration](https://about.gitlab.com/handbook/values/#iteration), better [results](https://about.gitlab.com/handbook/values/#results), and greater [efficiency](https://about.gitlab.com/handbook/values/#results) (including a reduction in CI runner usage in most cases).
+
+In GitLab 15.0, GitLab SAST will no longer use the following analyzers:
+
+- [ESLint](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (JavaScript, TypeScript, React)
+- [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Go)
+- [Bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Python)
+
+These analyzers will be removed from the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replaced with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+They will no longer receive routine updates, except for security issues.
+We will not delete container images previously published for these analyzers; any such change would be announced as a [deprecation, removal, or breaking change announcement](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+
+We will also remove Java from the scope of the [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) analyzer and replace it with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+This change will make it simpler to scan Java code; compilation will no longer be required.
+This change will be reflected in the automatic language detection portion of the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml).
+
+If you applied customizations to any of the affected analyzers, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352554#breaking-change).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### SAST support for .NET 2.1
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The GitLab SAST Security Code Scan analyzer scans .NET code for security vulnerabilities.
+For technical reasons, the analyzer must first build the code to scan it.
+
+In GitLab versions prior to 15.0, the default analyzer image (version 2) includes support for:
+
+- .NET 2.1
+- .NET 3.0 and .NET Core 3.0
+- .NET Core 3.1
+- .NET 5.0
+
+In GitLab 15.0, we will change the default major version for this analyzer from version 2 to version 3. This change:
+
+- Adds [severity values for vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/issues/350408) along with [other new features and improvements](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/blob/master/CHANGELOG.md).
+- Removes .NET 2.1 support.
+- Adds support for .NET 6.0, Visual Studio 2019, and Visual Studio 2022.
+
+Version 3 was [announced in GitLab 14.6](https://about.gitlab.com/releases/2021/12/22/gitlab-14-6-released/#sast-support-for-net-6) and made available as an optional upgrade.
+
+If you rely on .NET 2.1 support being present in the analyzer image by default, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352553#breaking-change).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Secret Detection configuration variables deprecated
+
+To make it simpler and more reliable to [customize GitLab Secret Detection](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings), we're deprecating some of the variables that you could previously set in your CI/CD configuration.
+
+The following variables currently allow you to customize the options for historical scanning, but interact poorly with the [GitLab-managed CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml) and are now deprecated:
+
+- `SECRET_DETECTION_COMMIT_FROM`
+- `SECRET_DETECTION_COMMIT_TO`
+- `SECRET_DETECTION_COMMITS`
+- `SECRET_DETECTION_COMMITS_FILE`
+
+The `SECRET_DETECTION_ENTROPY_LEVEL` previously allowed you to configure rules that only considered the entropy level of strings in your codebase, and is now deprecated.
+This type of entropy-only rule created an unacceptable number of incorrect results (false positives) and is no longer supported.
+
+In GitLab 15.0, we'll update the Secret Detection [analyzer](https://docs.gitlab.com/ee/user/application_security/terminology/#analyzer) to ignore these deprecated options.
+You'll still be able to configure historical scanning of your commit history by setting the [`SECRET_DETECTION_HISTORIC_SCAN` CI/CD variable](https://docs.gitlab.com/ee/user/application_security/secret_detection/#available-cicd-variables).
+
+For further details, see [the deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352565).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Secure and Protect analyzer images published in new location
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+GitLab uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/terminology/#analyzer) to [scan for security vulnerabilities](https://docs.gitlab.com/ee/user/application_security/).
+Each analyzer is distributed as a container image.
+
+Starting in GitLab 14.8, new versions of GitLab Secure and Protect analyzers are published to a new registry location under `registry.gitlab.com/security-products`.
+
+We will update the default value of [GitLab-managed CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Security) to reflect this change:
+  
+- For all analyzers except Container Scanning, we will update the variable `SECURE_ANALYZERS_PREFIX` to the new image registry location.
+- For Container Scanning, the default image address is already updated. There is no `SECURE_ANALYZERS_PREFIX` variable for Container Scanning.
+
+In a future release, we will stop publishing images to `registry.gitlab.com/gitlab-org/security-products/analyzers`.
+Once this happens, you must take action if you manually pull images and push them into a separate registry. This is commonly the case for [offline deployments](https://docs.gitlab.com/ee/user/application_security/offline_deployments/index.html).
+Otherwise, you won't receive further updates.
+
+See the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352564) for more details.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Secure and Protect analyzer major version update
+
+WARNING:
+This feature will be changed or removed in 15.00
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The Secure and Protect stages will be bumping the major versions of their analyzers in tandem with the GitLab 15.0 release. This major bump will enable a clear delineation for analyzers, between:
+
+- Those released prior to May 22, 2022, which generate reports that _are not_ subject to stringent schema validation.
+- Those released after May 22, 2022, which generate reports that _are_ subject to stringent schema validation.
+
+If you are not using the default inclusion templates, or have pinned your analyzer version(s) you will need to update your CI/CD job definition to either remove the pinned version or to update the latest major version.
+Users of GitLab 12.0-14.10 will continue to experience analyzer updates as normal until the release of GitLab 15.0, following which all newly fixed bugs and newly released features in the new major versions of the analyzers will not be available in the deprecated versions because we do not backport bugs and new features as per our [maintenance policy](https://docs.gitlab.com/ee/policy/maintenance.html). As required security patches will be backported within the latest 3 minor releases.
+Specifically, the following are being deprecated and will no longer be updated after 15.0 GitLab release:
+
+- API Security: version 1
+- Container Scanning: version 4
+- Coverage-guided fuzz testing: version 2
+- Dependency Scanning: version 2
+- Dynamic Application Security Testing (DAST): version 2
+- License Scanning: version 3
+- Secret Detection: version 3
+- Static Application Security Testing (SAST): version 2, except security-code-scan which is version 3
+  - `bandit`: version 2
+  - `brakeman`: version 2
+  - `eslint`: version 2
+  - `flawfinder`: version 2
+  - `gosec`: version 3
+  - `kubesec`: version 2
+  - `mobsf`: version 2
+  - `nodejs-scan`: version 2
+  - `phpcs-security-audit`: version 2
+  - `pmd-apex`: version 2
+  - `security-code-scan`: version 3
+  - `semgrep`: version 2
+  - `sobelow`: version 2
+  - `spotbugs`: version 2
+
+**Planned removal milestone: 15.00 ()**
+
+### Support for gRPC-aware proxy deployed between Gitaly and rest of GitLab
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+Although not recommended or documented, it was possible to deploy a gRPC-aware proxy between Gitaly and
+the rest of GitLab. For example, NGINX and Envoy. The ability to deploy a gRPC-aware proxy is
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352517). If you currently use a gRPC-aware proxy for
+Gitaly connections, you should change your proxy configuration to use TCP or TLS proxying (OSI layer 4) instead.
+
+Gitaly Cluster became incompatible with gRPC-aware proxies in GitLab 13.12. Now all GitLab installations will be incompatible with
+gRPC-aware proxies, even without Gitaly Cluster.
+
+By sending some of our internal RPC traffic through a custom protocol (instead of gRPC) we
+increase throughput and reduce Go garbage collection latency. For more information, see
+the [relevant epic](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/463).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Test coverage project CI/CD setting
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+To simplify setting a test coverage pattern, in GitLab 15.0 the
+[project setting for test coverage parsing](https://docs.gitlab.com/ee/ci/pipelines/settings.html#add-test-coverage-results-to-a-merge-request-deprecated)
+is being removed.
+
+Instead, using the project’s `.gitlab-ci.yml`, provide a regular expression with the `coverage` keyword to set
+testing coverage results in merge requests.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Vulnerability Check
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The vulnerability check feature is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. We encourage you to migrate to the new security approvals feature instead. You can do so by navigating to **Security & Compliance > Policies** and creating a new Scan Result Policy.
+
+The new security approvals feature is similar to vulnerability check. For example, both can require approvals for MRs that contain security vulnerabilities. However, security approvals improve the previous experience in several ways:
+
+- Users can choose who is allowed to edit security approval rules. An independent security or compliance team can therefore manage rules in a way that prevents development project maintainers from modifying the rules.
+- Multiple rules can be created and chained together to allow for filtering on different severity thresholds for each scanner type.
+- A two-step approval process can be enforced for any desired changes to security approval rules.
+- A single set of security policies can be applied to multiple development projects to allow for ease in maintaining a single, centralized ruleset.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### `CI_BUILD_*` predefined variables
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in GitLab 9.0, and will be removed in GitLab 15.0. If you still use these variables, be sure to change to the current [`CI_JOB_*` predefined variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html) which are identical (except for the updated name).
+
+**Planned removal milestone: 15.0 (2022-05-22)**
 
 ### `fixup!` commit messages setting draft status of associated Merge Request
 
@@ -716,3 +1408,30 @@ Support for `fixup!` is now considered deprecated, and will be
 removed in GitLab 15.0.
 
 **Planned removal milestone: 15.0 (2022-06-22)**
+
+### `projectFingerprint` in `PipelineSecurityReportFinding` GraphQL
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `projectFingerprint` field in the [PipelineSecurityReportFinding](https://docs.gitlab.com/ee/api/graphql/reference/index.html#pipelinesecurityreportfinding)
+GraphQL object is being deprecated. This field contains a "fingerprint" of security findings used to determine uniqueness.
+The method for calculating fingerprints has changed, resulting in different values. Going forward, the new values will be
+exposed in the UUID field. Data previously available in the projectFingerprint field will eventually be removed entirely.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### `started` iterations API field
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `started` field in the [iterations API](https://docs.gitlab.com/ee/api/iterations.html#list-project-iterations) is being deprecated and will be removed in GitLab 15.0. This field is being replaced with the `current` field (already available) which aligns with the naming for other time-based entities, such as milestones.
+
+**Planned removal milestone: 15.0 (2022-05-22)**

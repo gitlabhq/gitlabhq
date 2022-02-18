@@ -328,11 +328,6 @@ module Gitlab
           raise ForbiddenError, error_message(:push_code)
         end
       else
-        # If there are worktrees with a HEAD pointing to a non-existent object,
-        # calls to `git rev-list --all` will fail in git 2.15+. This should also
-        # clear stale lock files.
-        project.repository.clean_stale_repository_files if project.present?
-
         check_access!
       end
     end
@@ -466,11 +461,6 @@ module Gitlab
 
     def check_push_size!
       return unless check_size_limit?
-
-      # If there are worktrees with a HEAD pointing to a non-existent object,
-      # calls to `git rev-list --all` will fail in git 2.15+. This should also
-      # clear stale lock files.
-      repository.clean_stale_repository_files
 
       # Use #check_repository_disk_size to get correct push size whenever a lot of changes
       # gets pushed at the same time containing the same blobs. This is only

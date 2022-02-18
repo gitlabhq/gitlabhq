@@ -1,6 +1,7 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown_legacy.vue';
@@ -105,7 +106,7 @@ describe('RevisionDropdown component', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ branches: ['some-branch'] });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findFirstGlDropdownItem().vm.$emit('click');
 

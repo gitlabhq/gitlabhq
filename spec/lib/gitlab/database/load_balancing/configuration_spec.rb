@@ -2,10 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
+RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
   let(:configuration_hash) { {} }
   let(:db_config) { ActiveRecord::DatabaseConfigurations::HashConfig.new('test', 'ci', configuration_hash) }
   let(:model) { double(:model, connection_db_config: db_config) }
+
+  before do
+    # It's confusing to think about these specs with this enabled by default so
+    # we make it disabled by default and just write the specific spec for when
+    # it's enabled
+    stub_feature_flags(force_no_sharing_primary_model: false)
+  end
 
   describe '.for_model' do
     context 'when load balancing is not configured' do
@@ -233,10 +240,22 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
     end
 
     context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main' do
-      it 'the primary connection uses main connection' do
+      before do
         stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'main')
+      end
 
+      it 'the primary connection uses main connection' do
         expect(config.primary_connection_specification_name).to eq('ActiveRecord::Base')
+      end
+
+      context 'when force_no_sharing_primary_model feature flag is enabled' do
+        before do
+          stub_feature_flags(force_no_sharing_primary_model: true)
+        end
+
+        it 'the primary connection uses ci connection' do
+          expect(config.primary_connection_specification_name).to eq('Ci::ApplicationRecord')
+        end
       end
     end
 

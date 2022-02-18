@@ -14,13 +14,15 @@
 
   - if issuable.respond_to?(:work_in_progress?)
     .form-text.text-muted
-      .js-wip-explanation
+      .js-wip-explanation{ style: "display: none;" }
         = remove_wip_text
       .js-no-wip-explanation
         - if has_wip_commits
           = _('It looks like you have some draft commits in this branch.')
           %br
-        = add_wip_text
+        .invisible
+          .js-unwrap-on-load
+            = add_wip_text
 
   - if no_issuable_templates && can?(current_user, :push_code, issuable.project)
     = render 'shared/issuable/form/default_templates'

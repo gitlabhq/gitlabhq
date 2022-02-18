@@ -1,8 +1,13 @@
 import { GlTable, GlSkeletonLoader } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import {
+  extendedWrapper,
+  shallowMountExtended,
+  mountExtended,
+} from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
+import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
+import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import { runnersData } from '../mock_data';
 
 const mockRunners = runnersData.data.runners.nodes;
@@ -18,20 +23,18 @@ describe('RunnerList', () => {
   const findCell = ({ row = 0, fieldKey }) =>
     extendedWrapper(findRows().at(row).find(`[data-testid="td-${fieldKey}"]`));
 
-  const createComponent = ({ props = {} } = {}, mountFn = shallowMount) => {
-    wrapper = extendedWrapper(
-      mountFn(RunnerList, {
-        propsData: {
-          runners: mockRunners,
-          activeRunnersCount: mockActiveRunnersCount,
-          ...props,
-        },
-      }),
-    );
+  const createComponent = ({ props = {} } = {}, mountFn = shallowMountExtended) => {
+    wrapper = mountFn(RunnerList, {
+      propsData: {
+        runners: mockRunners,
+        activeRunnersCount: mockActiveRunnersCount,
+        ...props,
+      },
+    });
   };
 
   beforeEach(() => {
-    createComponent({}, mount);
+    createComponent({}, mountExtended);
   });
 
   afterEach(() => {
@@ -43,9 +46,9 @@ describe('RunnerList', () => {
 
     expect(headerLabels).toEqual([
       'Status',
-      'Runner ID',
+      'Runner',
       'Version',
-      'IP Address',
+      'IP',
       'Jobs',
       'Tags',
       'Last contact',
@@ -54,7 +57,7 @@ describe('RunnerList', () => {
   });
 
   it('Sets runner id as a row key', () => {
-    createComponent({}, shallowMount);
+    createComponent({});
 
     expect(findTable().attributes('primary-key')).toBe('id');
   });
@@ -89,8 +92,9 @@ describe('RunnerList', () => {
     // Actions
     const actions = findCell({ fieldKey: 'actions' });
 
-    expect(actions.findByTestId('edit-runner').exists()).toBe(true);
-    expect(actions.findByTestId('toggle-active-runner').exists()).toBe(true);
+    expect(actions.findComponent(RunnerEditButton).exists()).toBe(true);
+    expect(actions.findComponent(RunnerPauseButton).exists()).toBe(true);
+    expect(actions.findByTestId('delete-runner').exists()).toBe(true);
   });
 
   describe('Table data formatting', () => {
@@ -107,7 +111,7 @@ describe('RunnerList', () => {
     it('Formats job counts', () => {
       mockRunnersCopy[0].jobCount = 1;
 
-      createComponent({ props: { runners: mockRunnersCopy } }, mount);
+      createComponent({ props: { runners: mockRunnersCopy } }, mountExtended);
 
       expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1');
     });
@@ -115,7 +119,7 @@ describe('RunnerList', () => {
     it('Formats large job counts', () => {
       mockRunnersCopy[0].jobCount = 1000;
 
-      createComponent({ props: { runners: mockRunnersCopy } }, mount);
+      createComponent({ props: { runners: mockRunnersCopy } }, mountExtended);
 
       expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000');
     });
@@ -123,7 +127,7 @@ describe('RunnerList', () => {
     it('Formats large job counts with a plus symbol', () => {
       mockRunnersCopy[0].jobCount = 1001;
 
-      createComponent({ props: { runners: mockRunnersCopy } }, mount);
+      createComponent({ props: { runners: mockRunnersCopy } }, mountExtended);
 
       expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000+');
     });
@@ -143,13 +147,13 @@ describe('RunnerList', () => {
     });
 
     it('when there are no runners, shows an skeleton loader', () => {
-      createComponent({ props: { runners: [], loading: true } }, mount);
+      createComponent({ props: { runners: [], loading: true } }, mountExtended);
 
       expect(findSkeletonLoader().exists()).toBe(true);
     });
 
     it('when there are runners, shows a busy indicator skeleton loader', () => {
-      createComponent({ props: { loading: true } }, mount);
+      createComponent({ props: { loading: true } }, mountExtended);
 
       expect(findSkeletonLoader().exists()).toBe(false);
     });

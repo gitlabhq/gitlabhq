@@ -1,8 +1,0 @@
----
-name: loose_foreign_key_cleanup
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69165
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343545
-milestone: '14.4'
-type: development
-group: group::sharding
-default_enabled: true

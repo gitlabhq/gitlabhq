@@ -138,7 +138,7 @@ This is a brief overview. Please refer to the above instructions for more contex
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299109) in GitLab 14.5.
 
 WARNING:
-`gitlab-sshd` is in [**Alpha**](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga).
+`gitlab-sshd` is in [**Alpha**](../../policy/alpha-beta-support.md#alpha-features).
 It is not ready for production use.
 
 `gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
@@ -178,3 +178,22 @@ GitLab supports `authorized_keys` database lookups with [SELinux](https://en.wik
 Because the SELinux policy is static, GitLab doesn't support the ability to change
 internal webserver ports at the moment. Administrators would have to create a special `.te`
 file for the environment, since it isn't generated dynamically.
+
+## Troubleshooting
+
+If your SSH traffic is [slow](https://github.com/linux-pam/linux-pam/issues/270)
+or causing high CPU load, be sure to check the size of `/var/log/btmp`, and ensure it is rotated on a regular basis.
+If this file is very large, GitLab SSH fast lookup can cause the bottleneck to be hit more frequently, thus decreasing performance even further.
+If you are able to, you may consider disabling [`UsePAM` in your `sshd_config`](https://linux.die.net/man/5/sshd_config) to avoid reading `/var/log/btmp` altogether.
+
+Running `strace` and `lsof` on a running `sshd: git` process can return useful debugging information. To get an `strace` on an in-progress Git over SSH connection for IP `x.x.x.x`, run:
+
+```plaintext
+sudo strace -s 10000 -p $(sudo netstat -tp | grep x.x.x.x | egrep 'ssh.*: git' | sed -e 's/.*ESTABLISHED *//' -e 's#/.*##')
+```
+
+Or get an `lsof` for a running Git over SSH process:
+
+```plaintext
+sudo lsof -p $(sudo netstat -tp | egrep 'ssh.*: git' | head -1 | sed -e 's/.*ESTABLISHED *//' -e 's#/.*##')
+```

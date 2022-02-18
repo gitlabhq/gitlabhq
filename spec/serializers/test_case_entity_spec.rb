@@ -41,6 +41,18 @@ RSpec.describe TestCaseEntity do
       end
     end
 
+    context 'when no test name is entered' do
+      let(:test_case) { build(:report_test_case, name: "") }
+
+      it 'contains correct test case details' do
+        expect(subject[:status]).to eq('success')
+        expect(subject[:name]).to eq('(No name)')
+        expect(subject[:classname]).to eq('trace')
+        expect(subject[:file]).to eq('spec/trace_spec.rb')
+        expect(subject[:execution_time]).to eq(1.23)
+      end
+    end
+
     context 'when attachment is present' do
       let(:test_case) { build(:report_test_case, :failed_with_attachment, job: job) }
 

@@ -9,6 +9,7 @@ require 'optparse'
 require 'yaml'
 require 'fileutils'
 require 'uri'
+require 'readline'
 
 require_relative '../lib/feature/shared' unless defined?(Feature::Shared)
 
@@ -114,8 +115,7 @@ class FeatureFlagOptionParser
       $stdout.puts ">> Specify the group introducing the feature flag, like `group::apm`:"
 
       loop do
-        $stdout.print "?> "
-        group = $stdin.gets.strip
+        group = Readline.readline('?> ', false)&.strip
         group = nil if group.empty?
         return group if group.nil? || group.start_with?('group::')
 
@@ -137,9 +137,7 @@ class FeatureFlagOptionParser
       end
 
       loop do
-        $stdout.print "?> "
-
-        type = $stdin.gets.strip.to_sym
+        type = Readline.readline('?> ', false)&.strip&.to_sym
         return type if TYPES[type] && !TYPES[type][:deprecated]
 
         $stderr.puts "Invalid type specified '#{type}'"
@@ -151,8 +149,7 @@ class FeatureFlagOptionParser
       $stdout.puts ">> URL of the MR introducing the feature flag (enter to skip):"
 
       loop do
-        $stdout.print "?> "
-        introduced_by_url = $stdin.gets.strip
+        introduced_by_url = Readline.readline('?> ', false)&.strip
         introduced_by_url = nil if introduced_by_url.empty?
         return introduced_by_url if introduced_by_url.nil? || introduced_by_url.start_with?('https://')
 
@@ -184,8 +181,7 @@ class FeatureFlagOptionParser
       $stdout.puts ">> URL of the rollout issue (enter to skip):"
 
       loop do
-        $stdout.print "?> "
-        created_url = $stdin.gets.strip
+        created_url = Readline.readline('?> ', false)&.strip
         created_url = nil if created_url.empty?
         return created_url if created_url.nil? || created_url.start_with?('https://')
 
@@ -218,7 +214,7 @@ class FeatureFlagCreator
     assert_name!
     assert_existing_feature_flag!
 
-    # Read type from $stdin unless is already set
+    # Read type from stdin unless is already set
     options.type ||= FeatureFlagOptionParser.read_type
     options.ee ||= FeatureFlagOptionParser.read_ee_only(options)
     options.group ||= FeatureFlagOptionParser.read_group

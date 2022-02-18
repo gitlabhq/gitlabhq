@@ -3,12 +3,13 @@
 module Types
   module Ci
     class RunnerType < BaseObject
+      graphql_name 'CiRunner'
+
       edge_type_class(RunnerWebUrlEdge)
       connection_type_class(Types::CountableConnectionType)
-      graphql_name 'CiRunner'
+
       authorize :read_runner
       present_using ::Ci::RunnerPresenter
-
       expose_permissions Types::PermissionTypes::Ci::Runner
 
       JOB_COUNT_LIMIT = 1000
@@ -24,12 +25,18 @@ module Types
       field :contacted_at, Types::TimeType, null: true,
             description: 'Timestamp of last contact from this runner.',
             method: :contacted_at
+      field :token_expires_at, Types::TimeType, null: true,
+            description: 'Runner token expiration time.',
+            method: :token_expires_at
       field :maximum_timeout, GraphQL::Types::Int, null: true,
             description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
       field :access_level, ::Types::Ci::RunnerAccessLevelEnum, null: false,
             description: 'Access level of the runner.'
       field :active, GraphQL::Types::Boolean, null: false,
-            description: 'Indicates the runner is allowed to receive jobs.'
+            description: 'Indicates the runner is allowed to receive jobs.',
+            deprecated: { reason: 'Use paused', milestone: '14.8' }
+      field :paused, GraphQL::Types::Boolean, null: false,
+            description: 'Indicates the runner is paused and not available to run jobs.'
       field :status,
             Types::Ci::RunnerStatusEnum,
             null: false,
@@ -63,6 +70,14 @@ module Types
             description: 'Executor last advertised by the runner.',
             method: :executor_name,
             feature_flag: :graphql_ci_runner_executor
+      field :groups, ::Types::GroupType.connection_type, null: true,
+            description: 'Groups the runner is associated with. For group runners only.'
+      field :projects, ::Types::ProjectType.connection_type, null: true,
+            description: 'Projects the runner is associated with. For project runners only.'
+      field :jobs, ::Types::Ci::JobType.connection_type, null: true,
+            description: 'Jobs assigned to the runner.',
+            authorize: :read_builds,
+            resolver: ::Resolvers::Ci::RunnerJobsResolver
 
       def job_count
         # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT
@@ -94,11 +109,40 @@ module Types
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      def groups
+        return unless runner.group_type?
+
+        batched_owners(::Ci::RunnerNamespace, Group, :runner_groups, :namespace_id)
+      end
+
+      def projects
+        return unless runner.project_type?
+
+        batched_owners(::Ci::RunnerProject, Project, :runner_projects, :project_id)
+      end
+
       private
 
       def can_admin_runners?
         context[:current_user]&.can_admin_all_resources?
       end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def batched_owners(runner_assoc_type, assoc_type, key, column_name)
+        BatchLoader::GraphQL.for(runner.id).batch(key: key) do |runner_ids, loader, args|
+          runner_and_owner_ids = runner_assoc_type.where(runner_id: runner_ids).pluck(:runner_id, column_name)
+
+          owner_ids_by_runner_id = runner_and_owner_ids.group_by(&:first).transform_values { |v| v.pluck(1) }
+          owner_ids = runner_and_owner_ids.pluck(1).uniq
+
+          owners = assoc_type.where(id: owner_ids).index_by(&:id)
+
+          runner_ids.each do |runner_id|
+            loader.call(runner_id, owner_ids_by_runner_id[runner_id]&.map { |owner_id| owners[owner_id] } || [])
+          end
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

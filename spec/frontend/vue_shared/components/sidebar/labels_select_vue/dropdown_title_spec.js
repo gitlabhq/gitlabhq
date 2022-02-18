@@ -1,6 +1,6 @@
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import DropdownTitle from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_title.vue';
@@ -47,14 +47,13 @@ describe('DropdownTitle', () => {
       expect(editBtnEl.text()).toBe('Edit');
     });
 
-    it('renders loading icon element when `labelsSelectInProgress` prop is true', () => {
+    it('renders loading icon element when `labelsSelectInProgress` prop is true', async () => {
       wrapper.setProps({
         labelsSelectInProgress: true,
       });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(true);
-      });
+      await nextTick();
+      expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(true);
     });
   });
 });

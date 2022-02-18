@@ -38,7 +38,7 @@ RSpec.describe Projects::AvatarsController do
         end
 
         it 'sets appropriate caching headers' do
-          sign_in(project.owner)
+          sign_in(project.first_owner)
           subject
 
           expect(response.cache_control[:public]).to eq(true)
@@ -63,7 +63,7 @@ RSpec.describe Projects::AvatarsController do
     let(:project) { create(:project, :repository, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
     before do
-      sign_in(project.owner)
+      sign_in(project.first_owner)
     end
 
     it 'removes avatar from DB by calling destroy' do

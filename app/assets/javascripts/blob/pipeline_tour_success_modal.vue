@@ -1,6 +1,6 @@
 <script>
 import { GlModal, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
-import Cookies from 'js-cookie';
+import { getCookie, removeCookie } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 
@@ -62,7 +62,7 @@ export default {
       return this.commitCookiePath || this.projectMergeRequestsPath;
     },
     commitCookiePath() {
-      const cookieVal = Cookies.get(this.commitCookie);
+      const cookieVal = getCookie(this.commitCookie);
 
       if (cookieVal !== 'true') return cookieVal;
       return '';
@@ -85,7 +85,7 @@ export default {
   },
   methods: {
     disableModalFromRenderingAgain() {
-      Cookies.remove(this.commitCookie);
+      removeCookie(this.commitCookie);
     },
   },
 };

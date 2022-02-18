@@ -74,6 +74,21 @@ class Project < ApplicationRecord
 
   GL_REPOSITORY_TYPES = [Gitlab::GlRepository::PROJECT, Gitlab::GlRepository::WIKI, Gitlab::GlRepository::DESIGN].freeze
 
+  MAX_SUGGESTIONS_TEMPLATE_LENGTH = 255
+  MAX_COMMIT_TEMPLATE_LENGTH = 500
+
+  DEFAULT_MERGE_COMMIT_TEMPLATE = <<~MSG.rstrip.freeze
+    Merge branch '%{source_branch}' into '%{target_branch}'
+
+    %{title}
+
+    %{issues}
+
+    See merge request %{reference}
+  MSG
+
+  DEFAULT_SQUASH_COMMIT_TEMPLATE = '%{title}'
+
   cache_markdown_field :description, pipeline: :description
 
   default_value_for :packages_enabled, true
@@ -506,11 +521,12 @@ class Project < ApplicationRecord
   validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
   validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
-  validates :suggestion_commit_message, length: { maximum: 255 }
+  validates :suggestion_commit_message, length: { maximum: MAX_SUGGESTIONS_TEMPLATE_LENGTH }
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
+  scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
 
   scope :with_storage_feature, ->(feature) do
     where(arel_table[:storage_version].gteq(HASHED_STORAGE_FEATURES[feature]))
@@ -727,6 +743,7 @@ class Project < ApplicationRecord
   scope :joins_import_state, -> { joins("INNER JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
   scope :for_group, -> (group) { where(group: group) }
   scope :for_group_and_its_subgroups, ->(group) { where(namespace_id: group.self_and_descendants.select(:id)) }
+  scope :for_group_and_its_ancestor_groups, ->(group) { where(namespace_id: group.self_and_ancestors.select(:id)) }
 
   class << self
     # Searches for a list of projects based on the query given in `query`.
@@ -987,7 +1004,7 @@ class Project < ApplicationRecord
   end
 
   def context_commits_enabled?
-    Feature.enabled?(:context_commits, self, default_enabled: :yaml)
+    Feature.enabled?(:context_commits, self.group, default_enabled: :yaml)
   end
 
   # LFS and hashed repository storage are required for using Design Management.
@@ -1513,7 +1530,23 @@ class Project < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def owner
+    # This will be phased out and replaced with `owners` relationship
+    # backed by memberships with direct/inherited Owner access roles
+    # See https://gitlab.com/groups/gitlab-org/-/epics/7405
     group || namespace.try(:owner)
+  end
+
+  def deprecated_owner
+    # Kept in order to maintain webhook structures until we remove owner_name and owner_email
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/350603
+    group || namespace.try(:owner)
+  end
+
+  def owners
+    # This will be phased out and replaced with `owners` relationship
+    # backed by memberships with direct/inherited Owner access roles
+    # See https://gitlab.com/groups/gitlab-org/-/epics/7405
+    team.owners
   end
 
   def first_owner
@@ -2168,14 +2201,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def ci_instance_variables_for(ref:)
-    if protected_for?(ref)
-      Ci::InstanceVariable.all_cached
-    else
-      Ci::InstanceVariable.unprotected_cached
-    end
-  end
-
   def protected_for?(ref)
     raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
 
@@ -2610,6 +2635,14 @@ class Project < ApplicationRecord
     [project&.id, root_group&.id]
   end
 
+  def related_group_ids
+    ids = invited_group_ids
+
+    ids += group.self_and_ancestors_ids if group
+
+    ids
+  end
+
   def package_already_taken?(package_name, package_version, package_type:)
     Packages::Package.with_name(package_name)
       .with_version(package_version)
@@ -2746,6 +2779,32 @@ class Project < ApplicationRecord
     ].compact.min
   end
 
+  def merge_commit_template_or_default
+    merge_commit_template.presence || DEFAULT_MERGE_COMMIT_TEMPLATE
+  end
+
+  def merge_commit_template_or_default=(value)
+    project_setting.merge_commit_template =
+      if value.blank? || value.delete("\r") == DEFAULT_MERGE_COMMIT_TEMPLATE
+        nil
+      else
+        value
+      end
+  end
+
+  def squash_commit_template_or_default
+    squash_commit_template.presence || DEFAULT_SQUASH_COMMIT_TEMPLATE
+  end
+
+  def squash_commit_template_or_default=(value)
+    project_setting.squash_commit_template =
+      if value.blank? || value.delete("\r") == DEFAULT_SQUASH_COMMIT_TEMPLATE
+        nil
+      else
+        value
+      end
+  end
+
   private
 
   # overridden in EE
@@ -2754,6 +2813,12 @@ class Project < ApplicationRecord
   end
 
   def save_topics
+    topic_ids_before = self.topic_ids
+    update_topics
+    Projects::Topic.update_non_private_projects_counter(topic_ids_before, self.topic_ids, visibility_level_previously_was, visibility_level)
+  end
+
+  def update_topics
     return if @topic_list.nil?
 
     @topic_list = @topic_list.split(',') if @topic_list.instance_of?(String)

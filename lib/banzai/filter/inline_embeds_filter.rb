@@ -2,7 +2,7 @@
 
 module Banzai
   module Filter
-    # HTML filter that inserts a node for each occurence of
+    # HTML filter that inserts a node for each occurrence of
     # a given link format. To transform references to DB
     # resources in place, prefer to inherit from AbstractReferenceFilter.
     class InlineEmbedsFilter < HTML::Pipeline::Filter
@@ -26,7 +26,7 @@ module Banzai
       # Return a Nokogiri::XML::Element to embed in the
       # markdown which provides a url to the metric_dashboard endpoint where
       # data can be requested through a prometheus proxy. InlineMetricsRedactorFilter
-      # is responsible for premissions to see this div (and relies on the class 'js-render-metrics' ).
+      # is responsible for permissions to see this div (and relies on the class 'js-render-metrics' ).
       def create_element(params)
         doc.document.create_element(
           'div',

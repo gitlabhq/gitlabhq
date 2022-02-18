@@ -15,6 +15,7 @@ const VueDraggable = () => import('vuedraggable');
 export default {
   vueDraggableAttributes: {
     animation: 200,
+    forceFallback: true,
     ghostClass: 'gl-visibility-hidden',
     tag: 'ul',
   },
@@ -78,6 +79,11 @@ export default {
       required: false,
       default: null,
     },
+    truncateCounts: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     currentTab: {
       type: String,
       required: true,
@@ -126,11 +132,6 @@ export default {
       type: Number,
       required: false,
       default: 2,
-    },
-    enableLabelPermalinks: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     labelFilterParam: {
       type: String,
@@ -261,6 +262,7 @@ export default {
       :tabs="tabs"
       :tab-counts="tabCounts"
       :current-tab="currentTab"
+      :truncate-counts="truncateCounts"
       @click="$emit('click-tab', $event)"
     >
       <template #nav-actions>
@@ -314,7 +316,6 @@ export default {
           :data-qa-issuable-title="issuable.title"
           :issuable-symbol="issuableSymbol"
           :issuable="issuable"
-          :enable-label-permalinks="enableLabelPermalinks"
           :label-filter-param="labelFilterParam"
           :show-checkbox="showBulkEditSidebar"
           :checked="issuableChecked(issuable)"

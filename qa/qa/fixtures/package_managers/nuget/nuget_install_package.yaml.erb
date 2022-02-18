@@ -1,0 +1,15 @@
+image: mcr.microsoft.com/dotnet/sdk:5.0
+
+stages:
+  - install
+
+install:
+  stage: install
+  script:
+  - dotnet nuget locals all --clear
+  - dotnet nuget add source "$CI_SERVER_URL/api/v4/groups/<%= another_project.group.id %>/-/packages/nuget/index.json" --name gitlab --username <%= auth_token_username %> --password <%= auth_token_password %> --store-password-in-clear-text
+  - "dotnet add otherdotnet.csproj package <%= package.name %> --version 1.0.0"
+  only:
+    - "<%= another_project.default_branch %>"
+  tags:
+    - "runner-for-<%= project.group.name %>"

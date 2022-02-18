@@ -1,16 +1,21 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { HIGHLIGHT_CLASS_NAME } from '~/vue_shared/components/blob_viewers/constants';
 import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
+import LineHighlighter from '~/blob/line_highlighter';
+
+jest.mock('~/blob/line_highlighter');
 
 describe('Blob Simple Viewer component', () => {
   let wrapper;
   const contentMock = `<span id="LC1">First</span>\n<span id="LC2">Second</span>\n<span id="LC3">Third</span>`;
   const blobHash = 'foo-bar';
 
-  function createComponent(content = contentMock, isRawContent = false) {
+  function createComponent(content = contentMock, isRawContent = false, glFeatures = {}) {
     wrapper = shallowMount(SimpleViewer, {
       provide: {
         blobHash,
+        glFeatures,
       },
       propsData: {
         content,
@@ -23,6 +28,20 @@ describe('Blob Simple Viewer component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('refactorBlobViewer feature flag', () => {
+    it('loads the LineHighlighter if refactorBlobViewer is enabled', () => {
+      createComponent('', false, { refactorBlobViewer: true });
+
+      expect(LineHighlighter).toHaveBeenCalled();
+    });
+
+    it('does not load the LineHighlighter if refactorBlobViewer is disabled', () => {
+      createComponent('', false, { refactorBlobViewer: false });
+
+      expect(LineHighlighter).not.toHaveBeenCalled();
+    });
   });
 
   it('does not fail if content is empty', () => {
@@ -69,7 +88,7 @@ describe('Blob Simple Viewer component', () => {
       expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
     });
 
-    it('switches highlighting when another line is selected', () => {
+    it('switches highlighting when another line is selected', async () => {
       const currentlyHighlighted = wrapper.find('#LC2');
       const hash = '#LC3';
       const linetoBeHighlighted = wrapper.find(hash);
@@ -78,11 +97,10 @@ describe('Blob Simple Viewer component', () => {
 
       wrapper.vm.scrollToLine(hash);
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.highlightedLine).toBe(linetoBeHighlighted.element);
-        expect(currentlyHighlighted.classes()).not.toContain(HIGHLIGHT_CLASS_NAME);
-        expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
-      });
+      await nextTick();
+      expect(wrapper.vm.highlightedLine).toBe(linetoBeHighlighted.element);
+      expect(currentlyHighlighted.classes()).not.toContain(HIGHLIGHT_CLASS_NAME);
+      expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
     });
   });
 });

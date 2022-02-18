@@ -4,10 +4,10 @@ import VideoViewer from '~/repository/components/blob_viewers/video_viewer.vue';
 describe('Video Viewer', () => {
   let wrapper;
 
-  const propsData = { url: 'some/video.mp4' };
+  const DEFAULT_BLOB_DATA = { rawPath: 'some/video.mp4' };
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(VideoViewer, { propsData });
+    wrapper = shallowMountExtended(VideoViewer, { propsData: { blob: { ...DEFAULT_BLOB_DATA } } });
   };
 
   const findVideo = () => wrapper.findByTestId('video');
@@ -16,7 +16,7 @@ describe('Video Viewer', () => {
     createComponent();
 
     expect(findVideo().exists()).toBe(true);
-    expect(findVideo().attributes('src')).toBe(propsData.url);
+    expect(findVideo().attributes('src')).toBe(DEFAULT_BLOB_DATA.rawPath);
     expect(findVideo().attributes('controls')).not.toBeUndefined();
   });
 });

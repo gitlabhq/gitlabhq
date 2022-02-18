@@ -76,6 +76,10 @@ module API
       Gitlab::UsageDataCounters::VSCodeExtensionActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
     end
 
+    after do
+      Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
+    end
+
     # The locale is set to the current user's locale when `current_user` is loaded
     after { Gitlab::I18n.use_default_locale }
 
@@ -171,6 +175,7 @@ module API
       mount ::API::Ci::ResourceGroups
       mount ::API::Ci::Runner
       mount ::API::Ci::Runners
+      mount ::API::Ci::SecureFiles
       mount ::API::Ci::Triggers
       mount ::API::Ci::Variables
       mount ::API::Commits
@@ -300,6 +305,7 @@ module API
     mount ::API::Internal::Pages
     mount ::API::Internal::Kubernetes
     mount ::API::Internal::MailRoom
+    mount ::API::Internal::ContainerRegistry::Migration
 
     version 'v3', using: :path do
       # Although the following endpoints are kept behind V3 namespace,

@@ -183,24 +183,8 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
   end
 
   describe '.batch_size' do
-    context 'when export_reduce_relation_batch_size feature flag is enabled' do
-      before do
-        stub_feature_flags(export_reduce_relation_batch_size: true)
-      end
-
-      it 'returns 20' do
-        expect(described_class.batch_size(exportable)).to eq(described_class::SMALLER_BATCH_SIZE)
-      end
-    end
-
-    context 'when export_reduce_relation_batch_size feature flag is disabled' do
-      before do
-        stub_feature_flags(export_reduce_relation_batch_size: false)
-      end
-
-      it 'returns default batch size' do
-        expect(described_class.batch_size(exportable)).to eq(described_class::BATCH_SIZE)
-      end
+    it 'returns default batch size' do
+      expect(described_class.batch_size(exportable)).to eq(described_class::BATCH_SIZE)
     end
   end
 end

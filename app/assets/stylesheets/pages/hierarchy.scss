@@ -1,0 +1,15 @@
+.hierarchy-rounded-arrow-tail {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  height: calc(100% - 20px);
+}
+
+.hierarchy-icon-wrapper {
+  height: $default-icon-size;
+  width: $default-icon-size;
+}
+
+.hierarchy-rounded-arrow {
+  transform: scale(1, -1) rotate(90deg);
+}

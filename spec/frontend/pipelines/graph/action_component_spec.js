@@ -1,6 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import ActionComponent from '~/pipelines/components/jobs_shared/action_component.vue';
@@ -9,6 +10,7 @@ describe('pipeline graph action component', () => {
   let wrapper;
   let mock;
   const findButton = () => wrapper.find(GlButton);
+  const findTooltipWrapper = () => wrapper.find('[data-testid="ci-action-icon-tooltip-wrapper"]');
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -30,19 +32,14 @@ describe('pipeline graph action component', () => {
   });
 
   it('should render the provided title as a bootstrap tooltip', () => {
-    expect(wrapper.attributes('title')).toBe('bar');
+    expect(findTooltipWrapper().attributes('title')).toBe('bar');
   });
 
-  it('should update bootstrap tooltip when title changes', (done) => {
+  it('should update bootstrap tooltip when title changes', async () => {
     wrapper.setProps({ tooltipText: 'changed' });
 
-    wrapper.vm
-      .$nextTick()
-      .then(() => {
-        expect(wrapper.attributes('title')).toBe('changed');
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+    expect(findTooltipWrapper().attributes('title')).toBe('changed');
   });
 
   it('should render an svg', () => {
@@ -64,13 +61,11 @@ describe('pipeline graph action component', () => {
         .catch(done.fail);
     });
 
-    it('renders a loading icon while waiting for request', (done) => {
+    it('renders a loading icon while waiting for request', async () => {
       findButton().trigger('click');
 
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.js-action-icon-loading').exists()).toBe(true);
-        done();
-      });
+      await nextTick();
+      expect(wrapper.find('.js-action-icon-loading').exists()).toBe(true);
     });
   });
 });

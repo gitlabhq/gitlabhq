@@ -119,6 +119,7 @@ export const packageVersions = () => [
 ];
 
 export const packageData = (extend) => ({
+  __typename: 'Package',
   id: 'gid://gitlab/Packages::Package/111',
   canDestroy: true,
   name: '@gitlab-org/package-15',

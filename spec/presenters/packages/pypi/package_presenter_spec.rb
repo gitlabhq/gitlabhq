@@ -59,14 +59,6 @@ RSpec.describe ::Packages::Pypi::PackagePresenter do
       let(:project_or_group) { project }
 
       it { is_expected.not_to include(package_file_pending_destruction.file_name)}
-
-      context 'with packages_installable_package_files disabled' do
-        before do
-          stub_feature_flags(packages_installable_package_files: false)
-        end
-
-        it { is_expected.to include(package_file_pending_destruction.file_name)}
-      end
     end
   end
 end

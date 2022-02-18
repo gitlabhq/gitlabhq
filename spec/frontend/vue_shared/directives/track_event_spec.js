@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Tracking from '~/tracking';
 import TrackEvent from '~/vue_shared/directives/track_event';
 
@@ -31,7 +31,7 @@ describe('Error Tracking directive', () => {
     expect(Tracking.event).not.toHaveBeenCalled();
   });
 
-  it('should track event on click if tracking info provided', () => {
+  it('should track event on click if tracking info provided', async () => {
     const trackingOptions = {
       category: 'Tracking',
       action: 'click_trackable_btn',
@@ -43,9 +43,8 @@ describe('Error Tracking directive', () => {
     wrapper.setData({ trackingOptions });
     const { category, action, label, property, value } = trackingOptions;
 
-    return wrapper.vm.$nextTick(() => {
-      button.trigger('click');
-      expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property, value });
-    });
+    await nextTick();
+    button.trigger('click');
+    expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property, value });
   });
 });

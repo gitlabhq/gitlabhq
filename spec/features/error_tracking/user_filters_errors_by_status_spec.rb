@@ -22,7 +22,7 @@ RSpec.describe 'When a user filters Sentry errors by status', :js, :use_clean_ra
   end
 
   it 'displays the results' do
-    sign_in(project.owner)
+    sign_in(project.first_owner)
     visit project_error_tracking_index_path(project)
     page.within(find('.gl-table')) do
       results = page.all('.table-row')

@@ -584,4 +584,14 @@ RSpec.describe Discussion, ResolvableDiscussion do
       expect(subject.last_resolved_note).to eq(second_note)
     end
   end
+
+  describe '#clear_memoized_values' do
+    it 'resets the memoized values' do
+      described_class.memoized_values.each do |memo|
+        subject.instance_variable_set("@#{memo}", 'memoized')
+        expect { subject.clear_memoized_values }.to change { subject.instance_variable_get("@#{memo}") }
+          .from('memoized').to(nil)
+      end
+    end
+  end
 end

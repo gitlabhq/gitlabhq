@@ -46,6 +46,15 @@ RSpec.describe ApplicationSettingsHelper do
       expect(helper.visible_attributes).to include(:deactivate_dormant_users)
     end
 
+    it 'contains rate limit parameters' do
+      expect(helper.visible_attributes).to include(*%i(
+        issues_create_limit notes_create_limit project_export_limit
+        project_download_export_limit project_export_limit project_import_limit
+        raw_blob_request_limit group_export_limit group_download_export_limit
+        group_import_limit users_get_by_id_limit user_email_lookup_limit
+      ))
+    end
+
     context 'when GitLab.com' do
       before do
         allow(Gitlab).to receive(:com?).and_return(true)

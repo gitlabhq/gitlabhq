@@ -23,7 +23,7 @@ comments: false
 1. Fix conflicts on the `conflicts.rb` file.
 1. Stage the file and continue rebasing.
 1. Force push the changes.
-1. Finally continue with the Merge Request.
+1. Finally continue with the merge request.
 
 ```shell
 git checkout -b conflicts_branch

@@ -73,6 +73,7 @@
     - 'i_code_review_post_merge_click_cherry_pick'
     - 'i_code_review_post_merge_submit_revert_modal'
     - 'i_code_review_post_merge_submit_cherry_pick_modal'
+    - 'i_code_review_user_jetbrains_api_request'
 - name: code_review_category_monthly_active_users
   operator: OR
   source: redis
@@ -144,3 +145,4 @@
   time_frame: [7d, 28d]
   events:
     - 'i_code_review_user_vs_code_api_request'
+    - 'i_code_review_user_jetbrains_api_request'

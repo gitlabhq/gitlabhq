@@ -66,6 +66,9 @@ export default {
         return data.workspace?.issuable?.confidential || false;
       },
       result({ data }) {
+        if (!data) {
+          return;
+        }
         this.$emit('confidentialityUpdated', data.workspace?.issuable?.confidential);
       },
       error() {

@@ -13,7 +13,7 @@ module Ci
     include TaggableQueries
     include Presentable
 
-    add_authentication_token_field :token, encrypted: :optional
+    add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration, expiration_enforced?: :token_expiration_enforced?
 
     enum access_level: {
       not_protected: 0,
@@ -67,7 +67,7 @@ module Ci
 
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_many :projects, through: :runner_projects
+    has_many :projects, through: :runner_projects, disable_joins: true
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces, disable_joins: true
 
@@ -101,7 +101,7 @@ module Ci
     }
 
     scope :belonging_to_group_or_project_descendants, -> (group_id) {
-      group_ids = Ci::NamespaceMirror.contains_namespace(group_id).select(:namespace_id)
+      group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
       project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
 
       group_runners = joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_ids })
@@ -119,30 +119,6 @@ module Ci
         .where(ci_runner_namespaces: { namespace_id: group_self_and_ancestors_ids })
     }
 
-    # deprecated
-    # split this into: belonging_to_group & belonging_to_group_and_ancestors
-    scope :legacy_belonging_to_group, -> (group_id, include_ancestors: false) {
-      groups = ::Group.where(id: group_id)
-      groups = groups.self_and_ancestors if include_ancestors
-
-      joins(:runner_namespaces)
-        .where(ci_runner_namespaces: { namespace_id: groups })
-        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
-    }
-
-    # deprecated
-    scope :legacy_belonging_to_group_or_project, -> (group_id, project_id) {
-      groups = ::Group.where(id: group_id)
-
-      group_runners = joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: groups })
-      project_runners = joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
-
-      union_sql = ::Gitlab::SQL::Union.new([group_runners, project_runners]).to_sql
-
-      from("(#{union_sql}) #{table_name}")
-        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
-    }
-
     scope :belonging_to_parent_group_of_project, -> (project_id) {
       raise ArgumentError, "only 1 project_id allowed for performance reasons" unless project_id.is_a?(Integer)
 
@@ -152,11 +128,23 @@ module Ci
     }
 
     scope :owned_or_instance_wide, -> (project_id) do
+      project = project_id.respond_to?(:shared_runners) ? project_id : Project.find(project_id)
+
       from_union(
         [
           belonging_to_project(project_id),
-          belonging_to_parent_group_of_project(project_id),
-          instance_type
+          project.group_runners_enabled? ? belonging_to_parent_group_of_project(project_id) : nil,
+          project.shared_runners
+        ].compact,
+        remove_duplicates: false
+      )
+    end
+
+    scope :group_or_instance_wide, -> (group) do
+      from_union(
+        [
+          belonging_to_group_and_ancestors(group.id),
+          group.shared_runners
         ],
         remove_duplicates: false
       )
@@ -179,6 +167,8 @@ module Ci
     scope :order_contacted_at_desc, -> { order(contacted_at: :desc) }
     scope :order_created_at_asc, -> { order(created_at: :asc) }
     scope :order_created_at_desc, -> { order(created_at: :desc) }
+    scope :order_token_expires_at_asc, -> { order(token_expires_at: :asc) }
+    scope :order_token_expires_at_desc, -> { order(token_expires_at: :desc) }
     scope :with_tags, -> { preload(:tags) }
 
     validate :tag_constraints
@@ -210,7 +200,9 @@ module Ci
 
     validates :config, json_schema: { filename: 'ci_runner_config' }
 
-    validates :maintainer_note, length: { maximum: 255 }
+    validates :maintenance_note, length: { maximum: 255 }
+
+    alias_attribute :maintenance_note, :maintainer_note
 
     # Searches for runners matching the given query.
     #
@@ -247,6 +239,10 @@ module Ci
         order_contacted_at_desc
       when 'created_at_asc'
         order_created_at_asc
+      when 'token_expires_at_asc'
+        order_token_expires_at_asc
+      when 'token_expires_at_desc'
+        order_token_expires_at_desc
       else
         order_created_at_desc
       end
@@ -360,27 +356,12 @@ module Ci
       runner_projects.any?
     end
 
-    # TODO: remove this method in favor of `matches_build?` once feature flag is removed
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/323317
-    def can_pick?(build)
-      if Feature.enabled?(:ci_runners_short_circuit_assignable_for, self, default_enabled: :yaml)
-        matches_build?(build)
-      else
-        #  Run `matches_build?` checks before, since they are cheaper than
-        # `assignable_for?`.
-        #
-        matches_build?(build) && assignable_for?(build.project_id)
-      end
-    end
-
     def match_build_if_online?(build)
-      active? && online? && can_pick?(build)
+      active? && online? && matches_build?(build)
     end
 
     def only_for?(project)
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
-        projects == [project]
-      end
+      !runner_projects.where.not(project_id: project.id).exists?
     end
 
     def short_sha
@@ -388,8 +369,6 @@ module Ci
     end
 
     def tag_list
-      return super unless Feature.enabled?(:ci_preload_runner_tags, default_enabled: :yaml)
-
       if tags.loaded?
         tags.map(&:name)
       else
@@ -455,6 +434,10 @@ module Ci
       tick_runner_queue if matches_build?(build)
     end
 
+    def matches_build?(build)
+      runner_matcher.matches?(build.build_matcher)
+    end
+
     def uncached_contacted_at
       read_attribute(:contacted_at)
     end
@@ -463,6 +446,21 @@ module Ci
       strong_memoize(:namespace_ids) do
         runner_namespaces.pluck(:namespace_id).compact
       end
+    end
+
+    def compute_token_expiration
+      case runner_type
+      when 'instance_type'
+        compute_token_expiration_instance
+      when 'group_type'
+        compute_token_expiration_group
+      when 'project_type'
+        compute_token_expiration_project
+      end
+    end
+
+    def self.token_expiration_enforced?
+      Feature.enabled?(:enforce_runner_token_expires_at, default_enabled: :yaml)
     end
 
     private
@@ -483,6 +481,20 @@ module Ci
     }.freeze
 
     EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze
+
+    def compute_token_expiration_instance
+      return unless expiration_interval = Gitlab::CurrentSettings.runner_token_expiration_interval
+
+      expiration_interval.seconds.from_now
+    end
+
+    def compute_token_expiration_group
+      ::Group.where(id: runner_namespaces.map(&:namespace_id)).map(&:effective_runner_token_expiration_interval).compact.min&.from_now
+    end
+
+    def compute_token_expiration_project
+      Project.where(id: runner_projects.map(&:project_id)).map(&:effective_runner_token_expiration_interval).compact.min&.from_now
+    end
 
     def cleanup_runner_queue
       Gitlab::Redis::SharedState.with do |redis|
@@ -510,12 +522,6 @@ module Ci
       end
     end
 
-    # TODO: remove this method once feature flag ci_runners_short_circuit_assignable_for
-    # is removed. https://gitlab.com/gitlab-org/gitlab/-/issues/323317
-    def assignable_for?(project_id)
-      self.class.owned_or_instance_wide(project_id).where(id: self.id).any?
-    end
-
     def no_projects
       if runner_projects.any?
         errors.add(:runner, 'cannot have projects assigned')
@@ -538,10 +544,6 @@ module Ci
       unless runner_namespaces.one?
         errors.add(:runner, 'needs to be assigned to exactly one group')
       end
-    end
-
-    def matches_build?(build)
-      runner_matcher.matches?(build.build_matcher)
     end
   end
 end

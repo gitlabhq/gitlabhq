@@ -1,6 +1,6 @@
 # Aggregated metrics that include EE only event names within `events:` attribute have to be defined at ee/config/metrics/aggregates/common.yml
 # instead of this file.
-#- name: unique name of aggregated metric
+# - name: unique name of aggregated metric
 #  operator: aggregation operator. Valid values are:
 #             - "OR": counts unique elements that were observed triggering any of following events
 #             - "AND": counts unique elements that were observed triggering all of following events

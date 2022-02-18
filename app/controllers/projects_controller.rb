@@ -10,6 +10,7 @@ class ProjectsController < Projects::ApplicationController
   include ImportUrlParams
   include FiltersEvents
   include SourcegraphDecorator
+  include PlanningHierarchy
 
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
 
@@ -41,6 +42,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:new_dir_modal, @project, default_enabled: :yaml)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:consolidated_edit_button, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:work_items, @project, default_enabled: :yaml)
   end
 
   layout :determine_layout
@@ -54,6 +56,7 @@ class ProjectsController < Projects::ApplicationController
   feature_category :team_planning, [:preview_markdown, :new_issuable_address]
   feature_category :importers, [:export, :remove_export, :generate_new_export, :download_export]
   feature_category :code_review, [:unfoldered_environment_names]
+  feature_category :portfolio_management, [:planning_hierarchy]
 
   urgency :low, [:refs]
   urgency :high, [:unfoldered_environment_names]
@@ -283,7 +286,7 @@ class ProjectsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def refs
-    find_refs = params['find']
+    find_refs = refs_params['find']
 
     find_branches = true
     find_tags = true
@@ -298,13 +301,13 @@ class ProjectsController < Projects::ApplicationController
     options = {}
 
     if find_branches
-      branches = BranchesFinder.new(@repository, params).execute.take(100).map(&:name)
+      branches = BranchesFinder.new(@repository, refs_params).execute.take(100).map(&:name)
       options['Branches'] = branches
     end
 
     if find_tags && @repository.tag_count.nonzero?
       tags = begin
-        TagsFinder.new(@repository, params).execute
+        TagsFinder.new(@repository, refs_params).execute
       rescue Gitlab::Git::CommandError
         []
       end
@@ -313,7 +316,7 @@ class ProjectsController < Projects::ApplicationController
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
-    ref = Addressable::URI.unescape(params[:ref])
+    ref = Addressable::URI.unescape(refs_params[:ref])
     if find_commits && ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
       options['Commits'] = [ref]
     end
@@ -341,6 +344,14 @@ class ProjectsController < Projects::ApplicationController
   end
 
   private
+
+  def refs_params
+    if Feature.enabled?(:strong_parameters_for_project_controller, @project, default_enabled: :yaml)
+      params.permit(:search, :sort, :ref, find: [])
+    else
+      params
+    end
+  end
 
   # Render project landing depending of which features are available
   # So if page is not available in the list it renders the next page
@@ -461,8 +472,8 @@ class ProjectsController < Projects::ApplicationController
       :suggestion_commit_message,
       :packages_enabled,
       :service_desk_enabled,
-      :merge_commit_template,
-      :squash_commit_template,
+      :merge_commit_template_or_default,
+      :squash_commit_template_or_default,
       project_setting_attributes: project_setting_attributes
     ] + [project_feature_attributes: project_feature_attributes]
   end

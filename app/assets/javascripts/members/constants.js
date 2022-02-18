@@ -111,6 +111,7 @@ export const MEMBER_STATE_CREATED = 0;
 export const MEMBER_STATE_AWAITING = 1;
 export const MEMBER_STATE_ACTIVE = 2;
 
+export const BADGE_LABELS_AWAITING_USER_SIGNUP = __('Awaiting user signup');
 export const BADGE_LABELS_PENDING_OWNER_APPROVAL = __('Pending owner approval');
 
 export const DAYS_TO_EXPIRE_SOON = 7;

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PreviewDropdown from '~/batch_comments/components/preview_dropdown.vue';
@@ -49,7 +49,7 @@ describe('Batch comments preview dropdown', () => {
 
       wrapper.findByTestId('preview-item').vm.$emit('click');
 
-      await Vue.nextTick();
+      await nextTick();
 
       expect(setCurrentFileHash).toHaveBeenCalledWith(expect.anything(), 'hash');
       expect(scrollToDraft).toHaveBeenCalledWith(expect.anything(), { id: 1, file_hash: 'hash' });
@@ -63,7 +63,7 @@ describe('Batch comments preview dropdown', () => {
 
       wrapper.findByTestId('preview-item').vm.$emit('click');
 
-      await Vue.nextTick();
+      await nextTick();
 
       expect(scrollToDraft).toHaveBeenCalledWith(expect.anything(), { id: 1 });
     });

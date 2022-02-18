@@ -220,7 +220,7 @@ check the value of the `$CI_PIPELINE_SOURCE` variable:
 | `chat`                        | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command.                                                                                                                                                 |
 | `external`                    | When you use CI services other than GitLab.                                                                                                                                                                                        |
 | `external_pull_request_event` | When an external pull request on GitHub is created or updated. See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).                                            |
-| `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/pipelines_for_merged_results.md), and [merge trains](../pipelines/merge_trains.md). |
+| `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
 | `parent_pipeline`             | For pipelines triggered by a [parent/child pipeline](../pipelines/parent_child_pipelines.md) with `rules`. Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline.                |
 | `pipeline`                    | For [multi-project pipelines](../pipelines/multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](../yaml/index.md#trigger) keyword. |
 | `push`                        | For pipelines triggered by a `git push` event, including for branches and tags.                                                                                                                                                  |
@@ -263,6 +263,9 @@ Other commonly used variables for `if` clauses:
   branch. Use when you want to have the same configuration in multiple
   projects with different default branches.
 - `if: '$CI_COMMIT_BRANCH =~ /regex-expression/'`: If the commit branch matches a regular expression.
+- `if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TITLE =~ /Merge branch.*/`:
+   If the commit branch is the default branch and the commit message title matches a regular expression.
+   For example, the default commit message for a merge commit starts with `Merge branch`.
 - `if: '$CUSTOM_VARIABLE !~ /regex-expression/'`: If the [custom variable](../variables/index.md#custom-cicd-variables)
   `CUSTOM_VARIABLE` does **not** match a regular expression.
 - `if: '$CUSTOM_VARIABLE == "value1"'`: If the custom variable `CUSTOM_VARIABLE` is
@@ -406,9 +409,9 @@ the `build` job is still skipped. The job does not run for any of the files.
 
 With some configurations that use `changes`, [jobs or pipelines might run unexpectedly](#jobs-or-pipelines-run-unexpectedly-when-using-changes)
 
-#### Use `only:changes` with pipelines for merge requests
+#### Use `only:changes` with merge request pipelines
 
-With [pipelines for merge requests](../pipelines/merge_request_pipelines.md),
+With [merge request pipelines](../pipelines/merge_request_pipelines.md),
 it's possible to define a job to be created based on files modified
 in a merge request.
 
@@ -704,9 +707,12 @@ deploystacks: [gcp, data]
 deploystacks: [vultr, data]
 ```
 
-In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/239737), you can
-use the variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags) keyword for
-dynamic runner selection.
+### Select different runner tags for each parallel matrix job
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/239737) in GitLab 14.1.
+
+You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags)
+keyword for dynamic runner selection:
 
 ```yaml
 deploystacks:
@@ -931,7 +937,7 @@ For example:
 
 You might have jobs or pipelines that run unexpectedly when using [`rules: changes`](../yaml/index.md#ruleschanges)
 or [`only: changes`](../yaml/index.md#onlychanges--exceptchanges) without
-[pipelines for merge requests](../pipelines/merge_request_pipelines.md).
+[merge request pipelines](../pipelines/merge_request_pipelines.md).
 
 Pipelines on branches or tags that don't have an explicit association with a merge request
 use a previous SHA to calculate the diff. This calculation is equivalent to `git diff HEAD~`
@@ -944,3 +950,19 @@ and can cause unexpected behavior, including:
 Additionally, rules with `changes` always evaluate as true in [scheduled pipelines](../pipelines/schedules.md).
 All files are considered to have changed when a scheduled pipeline runs, so jobs
 might always be added to scheduled pipelines that use `changes`.
+
+### `You are not allowed to download code from this project.` error message
+
+You might see pipelines fail when a GitLab administrator runs a protected manual job
+in a private project.
+
+CI/CD jobs usually clone the project when the job starts, and this uses [the permissions](../../user/permissions.md#job-permissions)
+of the user that runs the job. All users, including administrators, must be direct members
+of a private project to clone the source of that project. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/23130)
+to change this behavior.
+
+To run protected manual jobs:
+
+- Add the administrator as a direct member of the private project (any role)
+- [Impersonate a user](../../user/admin_area/index.md#user-impersonation) who is a
+  direct member of the project.

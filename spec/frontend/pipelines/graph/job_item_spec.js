@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 
 describe('pipeline graph job item', () => {
@@ -6,6 +7,7 @@ describe('pipeline graph job item', () => {
 
   const findJobWithoutLink = () => wrapper.find('[data-testid="job-without-link"]');
   const findJobWithLink = () => wrapper.find('[data-testid="job-with-link"]');
+  const findActionComponent = () => wrapper.find('[data-testid="ci-action-component"]');
 
   const createWrapper = (propsData) => {
     wrapper = mount(JobItem, {
@@ -68,28 +70,38 @@ describe('pipeline graph job item', () => {
       hasDetails: false,
     },
   };
+  const mockJobWithUnauthorizedAction = {
+    id: 4258,
+    name: 'stop-environment',
+    status: {
+      icon: 'status_manual',
+      label: 'manual stop action (not allowed)',
+      tooltip: 'manual action',
+      group: 'manual',
+      detailsPath: '/root/ci-mock/builds/4258',
+      hasDetails: true,
+      action: null,
+    },
+  };
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   describe('name with link', () => {
-    it('should render the job name and status with a link', (done) => {
+    it('should render the job name and status with a link', async () => {
       createWrapper({ job: mockJob });
 
-      wrapper.vm.$nextTick(() => {
-        const link = wrapper.find('a');
+      await nextTick();
+      const link = wrapper.find('a');
 
-        expect(link.attributes('href')).toBe(mockJob.status.detailsPath);
+      expect(link.attributes('href')).toBe(mockJob.status.detailsPath);
 
-        expect(link.attributes('title')).toBe(`${mockJob.name} - ${mockJob.status.label}`);
+      expect(link.attributes('title')).toBe(`${mockJob.name} - ${mockJob.status.label}`);
 
-        expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
+      expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
 
-        expect(wrapper.text()).toBe(mockJob.name);
-
-        done();
-      });
+      expect(wrapper.text()).toBe(mockJob.name);
     });
   });
 
@@ -118,8 +130,21 @@ describe('pipeline graph job item', () => {
     it('it should render the action icon', () => {
       createWrapper({ job: mockJob });
 
-      expect(wrapper.find('.ci-action-icon-container').exists()).toBe(true);
-      expect(wrapper.find('.ci-action-icon-wrapper').exists()).toBe(true);
+      const actionComponent = findActionComponent();
+
+      expect(actionComponent.exists()).toBe(true);
+      expect(actionComponent.props('actionIcon')).toBe('retry');
+      expect(actionComponent.attributes('disabled')).not.toBe('disabled');
+    });
+
+    it('it should render disabled action icon when user cannot run the action', () => {
+      createWrapper({ job: mockJobWithUnauthorizedAction });
+
+      const actionComponent = findActionComponent();
+
+      expect(actionComponent.exists()).toBe(true);
+      expect(actionComponent.props('actionIcon')).toBe('stop');
+      expect(actionComponent.attributes('disabled')).toBe('disabled');
     });
   });
 

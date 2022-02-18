@@ -274,24 +274,17 @@ describe('Multi-file store actions', () => {
   });
 
   describe('scrollToTab', () => {
-    it('focuses the current active element', (done) => {
+    it('focuses the current active element', () => {
       document.body.innerHTML +=
         '<div id="tabs"><div class="active"><div class="repo-tab"></div></div></div>';
       const el = document.querySelector('.repo-tab');
       jest.spyOn(el, 'focus').mockImplementation();
 
-      store
-        .dispatch('scrollToTab')
-        .then(() => {
-          setImmediate(() => {
-            expect(el.focus).toHaveBeenCalled();
+      return store.dispatch('scrollToTab').then(() => {
+        expect(el.focus).toHaveBeenCalled();
 
-            document.getElementById('tabs').remove();
-
-            done();
-          });
-        })
-        .catch(done.fail);
+        document.getElementById('tabs').remove();
+      });
     });
   });
 

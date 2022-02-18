@@ -1,5 +1,6 @@
 import { GlIcon, GlButton, GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import IssuableTitle from '~/vue_shared/issuable/show/components/issuable_title.vue';
@@ -64,7 +65,7 @@ describe('IssuableTitle', () => {
         },
       });
 
-      await wrapperWithTitle.vm.$nextTick();
+      await nextTick();
       const titleEl = wrapperWithTitle.find('h2');
 
       expect(titleEl.exists()).toBe(true);
@@ -90,7 +91,7 @@ describe('IssuableTitle', () => {
         stickyTitleVisible: true,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       const stickyHeaderEl = wrapper.find('[data-testid="header"]');
 
       expect(stickyHeaderEl.exists()).toBe(true);

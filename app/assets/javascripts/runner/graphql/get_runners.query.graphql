@@ -29,6 +29,7 @@ query getRunners(
       editAdminUrl
     }
     pageInfo {
+      __typename
       ...PageInfo
     }
   }

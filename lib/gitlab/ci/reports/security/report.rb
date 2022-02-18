@@ -6,7 +6,7 @@ module Gitlab
       module Security
         class Report
           attr_reader :created_at, :type, :pipeline, :findings, :scanners, :identifiers
-          attr_accessor :scan, :scanned_resources, :errors, :analyzer, :version
+          attr_accessor :scan, :scanned_resources, :errors, :analyzer, :version, :schema_validation_status
 
           delegate :project_id, to: :pipeline
 

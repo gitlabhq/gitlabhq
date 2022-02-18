@@ -1,10 +1,13 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
 import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
+import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   emptySearchProjectsQueryResponse,
   project1,
@@ -15,8 +18,7 @@ import {
 describe('NewIssueDropdown component', () => {
   let wrapper;
 
-  const localVue = createLocalVue();
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
 
   const mountComponent = ({
     search = '',
@@ -27,7 +29,6 @@ describe('NewIssueDropdown component', () => {
     const apolloProvider = createMockApollo(requestHandlers);
 
     return mountFn(NewIssueDropdown, {
-      localVue,
       apolloProvider,
       provide: {
         fullPath: 'mushroom-kingdom',
@@ -42,8 +43,9 @@ describe('NewIssueDropdown component', () => {
   const findInput = () => wrapper.findComponent(GlSearchBoxByType);
   const showDropdown = async () => {
     findDropdown().vm.$emit('shown');
-    await wrapper.vm.$apollo.queries.projects.refetch();
-    jest.runOnlyPendingTimers();
+    await waitForPromises();
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    await waitForPromises();
   };
 
   afterEach(() => {
@@ -74,7 +76,6 @@ describe('NewIssueDropdown component', () => {
 
   it('renders projects with issues enabled', async () => {
     wrapper = mountComponent({ mountFn: mount });
-
     await showDropdown();
 
     const listItems = wrapper.findAll('li');
@@ -112,10 +113,11 @@ describe('NewIssueDropdown component', () => {
   describe('when a project is selected', () => {
     beforeEach(async () => {
       wrapper = mountComponent({ mountFn: mount });
-
+      await waitForPromises();
       await showDropdown();
 
       wrapper.findComponent(GlDropdownItem).vm.$emit('click', project1);
+      await waitForPromises();
     });
 
     it('dropdown button is a link', () => {

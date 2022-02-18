@@ -4,7 +4,13 @@ module BulkImports
   module Projects
     module Graphql
       module Queryable
-        def variables(context)
+        attr_reader :context
+
+        def initialize(context:)
+          @context = context
+        end
+
+        def variables
           { full_path: context.entity.source_full_path }
         end
 

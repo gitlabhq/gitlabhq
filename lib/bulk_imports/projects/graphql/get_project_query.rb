@@ -3,9 +3,8 @@
 module BulkImports
   module Projects
     module Graphql
-      module GetProjectQuery
-        extend Queryable
-        extend self
+      class GetProjectQuery
+        include Queryable
 
         def to_s
           <<-'GRAPHQL'

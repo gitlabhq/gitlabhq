@@ -104,14 +104,14 @@ describe('User select dropdown', () => {
     createComponent({ participantsQueryHandler: mockError });
     await waitForPromises();
 
-    expect(wrapper.emitted('error')).toEqual([[], []]);
+    expect(wrapper.emitted('error')).toEqual([[]]);
   });
 
   it('emits an `error` event if search query was rejected', async () => {
     createComponent({ searchQueryHandler: mockError });
     await waitForSearch();
 
-    expect(wrapper.emitted('error')).toEqual([[], []]);
+    expect(wrapper.emitted('error')).toEqual([[]]);
   });
 
   it('renders current user if they are not in participants or assignees', async () => {

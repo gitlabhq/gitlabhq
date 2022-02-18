@@ -24,38 +24,6 @@ RSpec.describe ApplicationExperiment, :experiment do
     expect { experiment('namespaced/stub') { } }.not_to raise_error
   end
 
-  describe "#enabled?" do
-    before do
-      allow(application_experiment).to receive(:enabled?).and_call_original
-
-      allow(Feature::Definition).to receive(:get).and_return('_instance_')
-      allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
-      allow(Feature).to receive(:get).and_return(double(state: :on))
-    end
-
-    it "is enabled when all criteria are met" do
-      expect(application_experiment).to be_enabled
-    end
-
-    it "isn't enabled if the feature definition doesn't exist" do
-      expect(Feature::Definition).to receive(:get).with('namespaced_stub').and_return(nil)
-
-      expect(application_experiment).not_to be_enabled
-    end
-
-    it "isn't enabled if we're not in dev or dotcom environments" do
-      expect(Gitlab).to receive(:dev_env_or_com?).and_return(false)
-
-      expect(application_experiment).not_to be_enabled
-    end
-
-    it "isn't enabled if the feature flag state is :off" do
-      expect(Feature).to receive(:get).with('namespaced_stub').and_return(double(state: :off))
-
-      expect(application_experiment).not_to be_enabled
-    end
-  end
-
   describe "#publish" do
     let(:should_track) { true }
 
@@ -117,7 +85,7 @@ RSpec.describe ApplicationExperiment, :experiment do
     describe '#publish_to_database' do
       using RSpec::Parameterized::TableSyntax
 
-      let(:publish_to_database) { application_experiment.publish_to_database }
+      let(:publish_to_database) { ActiveSupport::Deprecation.silence { application_experiment.publish_to_database } }
 
       shared_examples 'does not record to the database' do
         it 'does not create an experiment record' do
@@ -209,26 +177,6 @@ RSpec.describe ApplicationExperiment, :experiment do
           {
             schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
             data: { experiment: 'namespaced/stub', key: '86208ac54ca798e11f127e8b23ec396a', variant: 'control' }
-          }
-        ]
-      )
-    end
-
-    it "tracks the event correctly even when using the base class" do
-      subject = Gitlab::Experiment.new(:unnamed)
-      subject.track(:action, context: [fake_context])
-
-      expect_snowplow_event(
-        category: 'unnamed',
-        action: 'action',
-        context: [
-          {
-            schema: 'iglu:com.gitlab/fake/jsonschema/0-0-0',
-            data: { data: '_data_' }
-          },
-          {
-            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
-            data: { experiment: 'unnamed', key: subject.context.key, variant: 'control' }
           }
         ]
       )
@@ -347,23 +295,15 @@ RSpec.describe ApplicationExperiment, :experiment do
   end
 
   context "when resolving variants" do
-    it "uses the default value as specified in the yaml" do
-      expect(Feature).to receive(:enabled?).with('namespaced_stub', application_experiment, type: :experiment, default_enabled: :yaml)
-
-      expect(application_experiment.variant.name).to eq('control')
+    before do
+      stub_feature_flags(namespaced_stub: true)
     end
 
-    context "when rolled out to 100%" do
-      before do
-        stub_feature_flags(namespaced_stub: true)
-      end
+    it "returns an assigned name" do
+      application_experiment.variant(:variant1) {}
+      application_experiment.variant(:variant2) {}
 
-      it "returns the first variant name" do
-        application_experiment.try(:variant1) {}
-        application_experiment.try(:variant2) {}
-
-        expect(application_experiment.variant.name).to eq('variant1')
-      end
+      expect(application_experiment.assigned.name).to eq('variant2')
     end
   end
 
@@ -395,8 +335,8 @@ RSpec.describe ApplicationExperiment, :experiment do
 
       cache.clear(key: application_experiment.name)
 
-      application_experiment.use { } # setup the control
-      application_experiment.try { } # setup the candidate
+      application_experiment.control { }
+      application_experiment.candidate { }
     end
 
     it "caches the variant determined by the variant resolver" do
@@ -449,6 +389,31 @@ RSpec.describe ApplicationExperiment, :experiment do
         expect(application_experiment.cache.attr_inc(:foo)).to eq(1)
         expect(application_experiment.cache.attr_inc(:foo)).to eq(2)
       end
+    end
+  end
+
+  context "with deprecation warnings" do
+    before do
+      Gitlab::Experiment::Configuration.instance_variable_set(:@__dep_versions, nil) # clear the internal memoization
+
+      allow(ActiveSupport::Deprecation).to receive(:new).and_call_original
+    end
+
+    it "doesn't warn on non dev/test environments" do
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+
+      expect { experiment(:example) { |e| e.use { } } }.not_to raise_error
+      expect(ActiveSupport::Deprecation).not_to have_received(:new).with(anything, 'Gitlab::Experiment')
+    end
+
+    it "warns on dev and test environments" do
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(true)
+
+      # This will eventually raise an ActiveSupport::Deprecation exception,
+      # it's ok to change it when that happens.
+      expect { experiment(:example) { |e| e.use { } } }.not_to raise_error
+
+      expect(ActiveSupport::Deprecation).to have_received(:new).with(anything, 'Gitlab::Experiment')
     end
   end
 end

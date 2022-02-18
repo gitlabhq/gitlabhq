@@ -1,0 +1,17 @@
+image: mcr.microsoft.com/dotnet/sdk:5.0
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - dotnet restore -p:Configuration=Release
+    - dotnet build -c Release
+    - dotnet pack -c Release -p:PackageID=<%= package.name %>
+    - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username <%= auth_token_username %> --password <%= auth_token_password %> --store-password-in-clear-text
+    - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "<%= project.default_branch %>"'
+  tags:
+    - "runner-for-<%= project.group.name %>"

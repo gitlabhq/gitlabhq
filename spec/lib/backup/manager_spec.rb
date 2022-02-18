@@ -12,6 +12,11 @@ RSpec.describe Backup::Manager do
   before do
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)
+    FileUtils.mkdir_p('tmp/tests/public/uploads')
+  end
+
+  after do
+    FileUtils.rm_rf('tmp/tests/public/uploads', secure: true)
   end
 
   describe '#pack' do
@@ -409,7 +414,7 @@ RSpec.describe Backup::Manager do
 
       # the Fog mock only knows about directories we create explicitly
       connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
-      connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
+      connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
     end
 
     context 'target path' do
@@ -455,7 +460,7 @@ RSpec.describe Backup::Manager do
           }
         )
 
-        connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
+        connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
       end
 
       context 'with SSE-S3 without using storage_options' do
@@ -521,7 +526,7 @@ RSpec.describe Backup::Manager do
         )
 
         connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
-        connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
+        connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
       end
 
       it 'does not attempt to set ACL' do

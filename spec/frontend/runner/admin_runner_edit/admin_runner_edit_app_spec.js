@@ -1,4 +1,5 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -18,8 +19,7 @@ jest.mock('~/runner/sentry_utils');
 const mockRunnerGraphqlId = runnerData.data.runner.id;
 const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('AdminRunnerEditApp', () => {
   let wrapper;
@@ -29,7 +29,6 @@ describe('AdminRunnerEditApp', () => {
 
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(AdminRunnerEditApp, {
-      localVue,
       apolloProvider: createMockApollo([[getRunnerQuery, mockRunnerQuery]]),
       propsData: {
         runnerId: mockRunnerId,
@@ -55,10 +54,11 @@ describe('AdminRunnerEditApp', () => {
     expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunnerGraphqlId });
   });
 
-  it('displays the runner id', async () => {
+  it('displays the runner id and creation date', async () => {
     await createComponentWithApollo({ mountFn: mount });
 
-    expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId} created`);
+    expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
+    expect(findRunnerHeader().text()).toContain('created');
   });
 
   it('displays the runner type and status', async () => {
@@ -76,7 +76,7 @@ describe('AdminRunnerEditApp', () => {
 
     it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
-        error: new Error('Network error: Error!'),
+        error: new Error('Error!'),
         component: 'AdminRunnerEditApp',
       });
     });

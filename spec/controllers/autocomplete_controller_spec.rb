@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe AutocompleteController do
   let(:project) { create(:project) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   context 'GET users' do
     let!(:user2) { create(:user) }

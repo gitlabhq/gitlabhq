@@ -253,14 +253,18 @@ module Nav
     end
 
     def projects_submenu
-      # These project links come from `app/views/layouts/nav/projects_dropdown/_show.html.haml`
       builder = ::Gitlab::Nav::TopNavMenuBuilder.new
+      projects_submenu_items(builder: builder)
+      builder.build
+    end
+
+    def projects_submenu_items(builder:)
+      # These project links come from `app/views/layouts/nav/projects_dropdown/_show.html.haml`
       builder.add_primary_menu_item(id: 'your', title: _('Your projects'), href: dashboard_projects_path)
       builder.add_primary_menu_item(id: 'starred', title: _('Starred projects'), href: starred_dashboard_projects_path)
       builder.add_primary_menu_item(id: 'explore', title: _('Explore projects'), href: explore_root_path)
       builder.add_primary_menu_item(id: 'topics', title: _('Explore topics'), href: topics_explore_projects_path)
       builder.add_secondary_menu_item(id: 'create', title: _('Create new project'), href: new_project_path)
-      builder.build
     end
 
     def groups_submenu

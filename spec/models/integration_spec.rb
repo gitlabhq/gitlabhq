@@ -710,30 +710,21 @@ RSpec.describe Integration do
           [
             { name: 'token' },
             { name: 'api_token' },
+            { name: 'token_api' },
+            { name: 'safe_token' },
             { name: 'key' },
             { name: 'api_key' },
             { name: 'password' },
             { name: 'password_field' },
+            { name: 'some_safe_field' },
             { name: 'safe_field' }
-          ]
+          ].shuffle
         end
       end
     end
 
-    let(:integration) do
-      fake_integration.new(properties: [
-        { token: 'token-value' },
-        { api_token: 'api_token-value' },
-        { key: 'key-value' },
-        { api_key: 'api_key-value' },
-        { password: 'password-value' },
-        { password_field: 'password_field-value' },
-        { safe_field: 'safe_field-value' }
-      ])
-    end
-
     it 'filters out sensitive fields' do
-      expect(integration.api_field_names).to eq(['safe_field'])
+      expect(fake_integration.new).to have_attributes(api_field_names: match_array(%w[some_safe_field safe_field]))
     end
   end
 

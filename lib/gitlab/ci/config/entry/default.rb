@@ -21,7 +21,7 @@ module Gitlab
             validates :config, allowed_keys: ALLOWED_KEYS
           end
 
-          entry :before_script, Entry::Script,
+          entry :before_script, Entry::Commands,
             description: 'Script that will be executed before each job.',
             inherit: true
 
@@ -33,7 +33,7 @@ module Gitlab
             description: 'Docker images that will be linked to the container.',
             inherit: true
 
-          entry :after_script, Entry::Script,
+          entry :after_script, Entry::Commands,
             description: 'Script that will be executed after each job.',
             inherit: true
 

@@ -1,0 +1,8 @@
+---
+name: show_gitlab_agent_feedback
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78567
+rollout_issue_url: 
+milestone: '14.8'
+type: ops
+group: group::configure
+default_enabled: true

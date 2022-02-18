@@ -10,7 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include RecordUserLastActivity
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
-  SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
+  SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[calendar service_desk].freeze
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
@@ -42,18 +42,20 @@ class Projects::IssuesController < Projects::ApplicationController
                 if: -> { Feature.disabled?('rate_limited_service_issues_create', project, default_enabled: :yaml) }
 
   before_action do
-    push_frontend_feature_flag(:tribute_autocomplete, @project)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:vue_issues_list, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
+    push_frontend_feature_flag(:contacts_autocomplete, project&.group, default_enabled: :yaml)
+    push_frontend_feature_flag(:markdown_continue_lists, project, default_enabled: :yaml)
   end
 
   before_action only: :show do
-    push_frontend_feature_flag(:real_time_issue_sidebar, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:real_time_issue_sidebar, project, default_enabled: :yaml)
     push_frontend_feature_flag(:confidential_notes, project&.group, default_enabled: :yaml)
-    push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:paginated_issue_discussions, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:fix_comment_scroll, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:issue_assignees_widget, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:paginated_issue_discussions, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:fix_comment_scroll, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:work_items, project, default_enabled: :yaml)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -71,11 +73,14 @@ class Projects::IssuesController < Projects::ApplicationController
                    ]
 
   feature_category :service_desk, [:service_desk]
+  urgency :low, [:service_desk]
   feature_category :importers, [:import_csv, :export_csv]
 
   attr_accessor :vulnerability_id
 
   def index
+    set_issuables_index if !html_request? || Feature.disabled?(:vue_issues_list, project&.group, default_enabled: :yaml)
+
     @issues = @issuables
 
     respond_to do |format|
@@ -317,7 +322,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def reorder_params
-    params.permit(:move_before_id, :move_after_id, :group_full_path)
+    params.permit(:move_before_id, :move_after_id)
   end
 
   def store_uri

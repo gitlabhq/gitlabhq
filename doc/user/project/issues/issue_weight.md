@@ -15,10 +15,8 @@ value, or complexity a given issue has or costs.
 
 You can set the weight of an issue during its creation, by changing the
 value in the dropdown menu. You can set it to a non-negative integer
-value from 0, 1, 2, and so on. (The database stores a 4-byte value, so the
-upper bound is essentially limitless.)
-You can remove weight from an issue
-as well.
+value from 0, 1, 2, and so on.
+You can remove weight from an issue as well.
 
 This value appears on the right sidebar of an individual issue, as well as
 in the issues page next to a weight icon (**{weight}**).

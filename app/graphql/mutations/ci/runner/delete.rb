@@ -20,7 +20,7 @@ module Mutations
           error = authenticate_delete_runner!(runner)
           return { errors: [error] } if error
 
-          runner.destroy!
+          ::Ci::UnregisterRunnerService.new(runner).execute
 
           { errors: runner.errors.full_messages }
         end

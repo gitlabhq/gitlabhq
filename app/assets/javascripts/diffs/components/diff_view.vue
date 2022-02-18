@@ -153,21 +153,38 @@ export default {
     @mousedown="handleParallelLineMouseDown"
   >
     <template v-for="(line, index) in diffLines">
-      <div
-        v-if="line.isMatchLineLeft || line.isMatchLineRight"
-        :key="`expand-${index}`"
-        class="diff-tr line_expansion match"
-      >
-        <div class="diff-td text-center gl-font-regular">
-          <diff-expansion-cell
-            :file-hash="diffFile.file_hash"
-            :context-lines-path="diffFile.context_lines_path"
-            :line="line.left"
-            :is-top="index === 0"
-            :is-bottom="index + 1 === diffLinesLength"
-          />
+      <template v-if="line.isMatchLineLeft || line.isMatchLineRight">
+        <div :key="`expand-${index}`" class="diff-tr line_expansion match">
+          <div class="diff-td text-center gl-font-regular">
+            <diff-expansion-cell
+              :file-hash="diffFile.file_hash"
+              :context-lines-path="diffFile.context_lines_path"
+              :line="line.left"
+              :is-top="index === 0"
+              :is-bottom="index + 1 === diffLinesLength"
+            />
+          </div>
         </div>
-      </div>
+        <div
+          v-if="line.left.rich_text"
+          :key="`expand-definition-${index}`"
+          class="diff-grid-row diff-tr line_holder match"
+        >
+          <div class="diff-grid-left diff-grid-3-col left-side">
+            <div class="diff-td diff-line-num"></div>
+            <div v-if="inline" class="diff-td diff-line-num"></div>
+            <div class="diff-td line_content left-side gl-white-space-normal!">
+              {{ line.left.rich_text }}
+            </div>
+          </div>
+          <div v-if="!inline" class="diff-grid-right diff-grid-3-col right-side">
+            <div class="diff-td diff-line-num"></div>
+            <div class="diff-td line_content right-side gl-white-space-normal!">
+              {{ line.left.rich_text }}
+            </div>
+          </div>
+        </div>
+      </template>
       <diff-row
         v-if="!line.isMatchLineLeft && !line.isMatchLineRight"
         :key="line.line_code"

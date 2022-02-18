@@ -37,7 +37,7 @@ RSpec.describe TestHooks::ProjectService do
       it 'executes hook' do
         allow(Gitlab::DataBuilder::Push).to receive(:build_sample).and_return(sample_data)
 
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe TestHooks::ProjectService do
       it 'executes hook' do
         allow(Gitlab::DataBuilder::Push).to receive(:build_sample).and_return(sample_data)
 
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -69,7 +69,7 @@ RSpec.describe TestHooks::ProjectService do
         allow(Gitlab::DataBuilder::Note).to receive(:build).and_return(sample_data)
         allow_next(NotesFinder).to receive(:execute).and_return(Note.all)
 
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -86,7 +86,7 @@ RSpec.describe TestHooks::ProjectService do
         allow(issue).to receive(:to_hook_data).and_return(sample_data)
         allow_next(IssuesFinder).to receive(:execute).and_return([issue])
 
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -119,7 +119,7 @@ RSpec.describe TestHooks::ProjectService do
         allow(merge_request).to receive(:to_hook_data).and_return(sample_data)
         allow_next(MergeRequestsFinder).to receive(:execute).and_return([merge_request])
 
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -138,7 +138,7 @@ RSpec.describe TestHooks::ProjectService do
         allow(Gitlab::DataBuilder::Build).to receive(:build).and_return(sample_data)
         allow_next(Ci::JobsFinder).to receive(:execute).and_return([ci_job])
 
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -157,7 +157,7 @@ RSpec.describe TestHooks::ProjectService do
         allow(Gitlab::DataBuilder::Pipeline).to receive(:build).and_return(sample_data)
         allow_next(Ci::PipelinesFinder).to receive(:execute).and_return([pipeline])
 
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -184,7 +184,7 @@ RSpec.describe TestHooks::ProjectService do
         create(:wiki_page, wiki: project.wiki)
         allow(Gitlab::DataBuilder::WikiPage).to receive(:build).and_return(sample_data)
 
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
@@ -203,7 +203,7 @@ RSpec.describe TestHooks::ProjectService do
         allow(release).to receive(:to_hook_data).and_return(sample_data)
         allow_next(ReleasesFinder).to receive(:execute).and_return([release])
 
-        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end

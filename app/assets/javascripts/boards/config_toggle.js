@@ -12,6 +12,7 @@ export default () => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'ConfigToggleRoot',
     render(h) {
       return h(ConfigToggle, {
         props: {

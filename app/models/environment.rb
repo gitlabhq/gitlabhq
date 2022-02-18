@@ -235,10 +235,10 @@ class Environment < ApplicationRecord
     self.environment_type = names.many? ? names.first : nil
   end
 
-  def includes_commit?(commit)
+  def includes_commit?(sha)
     return false unless last_deployment
 
-    last_deployment.includes_commit?(commit)
+    last_deployment.includes_commit?(sha)
   end
 
   def last_deployed_at

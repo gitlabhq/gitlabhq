@@ -18,6 +18,7 @@ export default (apolloProvider, isSignedIn, releasesFetchPath) => {
 
   return new Vue({
     el,
+    name: 'BoardFilteredSearchRoot',
     provide: {
       initialFilterParams,
       isSignedIn,

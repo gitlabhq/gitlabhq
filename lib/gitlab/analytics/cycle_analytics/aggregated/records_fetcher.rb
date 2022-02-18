@@ -36,7 +36,13 @@ module Gitlab
 
           def serialized_records
             strong_memoize(:serialized_records) do
-              records = ordered_and_limited_query.select(stage_event_model.arel_table[Arel.star], duration_in_seconds.as('total_time'))
+              # When RecordsFetcher is used with query sourced from
+              # InOperatorOptimization::QueryBuilder only columns
+              # used in ORDER BY statement would be selected by Arel.start operation
+              selections = [stage_event_model.arel_table[Arel.star]]
+              selections << duration_in_seconds.as('total_time') if params[:sort] != :duration # duration sorting already exposes this data
+
+              records = limited_query.select(*selections)
 
               yield records if block_given?
               issuables_and_records = load_issuables(records)
@@ -56,27 +62,12 @@ module Gitlab
             end
           end
 
-          # rubocop: disable CodeReuse/ActiveRecord
-          def ordered_and_limited_query
-            sorting_options = {
-              end_event: {
-                asc: -> { query.order(end_event_timestamp: :asc) },
-                desc: -> { query.order(end_event_timestamp: :desc) }
-              },
-              duration: {
-                asc: -> { query.order(duration.asc) },
-                desc: -> { query.order(duration.desc) }
-              }
-            }
-
-            sort_lambda = sorting_options.dig(sort, direction) || sorting_options.dig(:end_event, :desc)
-
-            sort_lambda.call
+          def limited_query
+            query
               .page(page)
               .per(per_page)
               .without_count
           end
-          # rubocop: enable CodeReuse/ActiveRecord
 
           private
 

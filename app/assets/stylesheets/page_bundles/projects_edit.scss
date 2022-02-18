@@ -1,0 +1,25 @@
+@import 'page_bundles/mixins_and_variables_and_functions';
+
+.project-repo-select {
+  transition: background 2s ease-out;
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .highlight-changes & {
+    background: var(--green-50, $highlight-changes-color);
+    transition: none;
+  }
+}
+
+.project-feature-controls {
+  max-width: 432px;
+}
+
+.project-feature-setting-group {
+  .project-feature-controls {
+    max-width: 400px;
+  }
+}

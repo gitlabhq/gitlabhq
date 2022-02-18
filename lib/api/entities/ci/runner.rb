@@ -7,7 +7,10 @@ module API
         expose :id
         expose :description
         expose :ip_address
-        expose :active
+        expose :active # TODO Remove in %15.0 in favor of `paused` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/351109
+        expose :paused do |runner|
+          !runner.active
+        end
         expose :instance_type?, as: :is_shared
         expose :runner_type
         expose :name

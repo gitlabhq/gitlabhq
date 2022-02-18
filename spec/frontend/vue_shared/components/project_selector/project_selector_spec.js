@@ -1,7 +1,7 @@
 import { GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { head } from 'lodash';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import mockProjects from 'test_fixtures_static/projects.json';
 import { trimText } from 'helpers/text_helper';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
@@ -77,39 +77,36 @@ describe('ProjectSelector component', () => {
     expect(vm.$emit).toHaveBeenCalledWith('projectClicked', head(searchResults));
   });
 
-  it(`shows a "no results" message if showNoResultsMessage === true`, () => {
+  it(`shows a "no results" message if showNoResultsMessage === true`, async () => {
     wrapper.setProps({ showNoResultsMessage: true });
 
-    return vm.$nextTick().then(() => {
-      const noResultsEl = wrapper.find('.js-no-results-message');
+    await nextTick();
+    const noResultsEl = wrapper.find('.js-no-results-message');
 
-      expect(noResultsEl.exists()).toBe(true);
-      expect(trimText(noResultsEl.text())).toEqual('Sorry, no projects matched your search');
-    });
+    expect(noResultsEl.exists()).toBe(true);
+    expect(trimText(noResultsEl.text())).toEqual('Sorry, no projects matched your search');
   });
 
-  it(`shows a "minimum search query" message if showMinimumSearchQueryMessage === true`, () => {
+  it(`shows a "minimum search query" message if showMinimumSearchQueryMessage === true`, async () => {
     wrapper.setProps({ showMinimumSearchQueryMessage: true });
 
-    return vm.$nextTick().then(() => {
-      const minimumSearchEl = wrapper.find('.js-minimum-search-query-message');
+    await nextTick();
+    const minimumSearchEl = wrapper.find('.js-minimum-search-query-message');
 
-      expect(minimumSearchEl.exists()).toBe(true);
-      expect(trimText(minimumSearchEl.text())).toEqual('Enter at least three characters to search');
-    });
+    expect(minimumSearchEl.exists()).toBe(true);
+    expect(trimText(minimumSearchEl.text())).toEqual('Enter at least three characters to search');
   });
 
-  it(`shows a error message if showSearchErrorMessage === true`, () => {
+  it(`shows a error message if showSearchErrorMessage === true`, async () => {
     wrapper.setProps({ showSearchErrorMessage: true });
 
-    return vm.$nextTick().then(() => {
-      const errorMessageEl = wrapper.find('.js-search-error-message');
+    await nextTick();
+    const errorMessageEl = wrapper.find('.js-search-error-message');
 
-      expect(errorMessageEl.exists()).toBe(true);
-      expect(trimText(errorMessageEl.text())).toEqual(
-        'Something went wrong, unable to search projects',
-      );
-    });
+    expect(errorMessageEl.exists()).toBe(true);
+    expect(trimText(errorMessageEl.text())).toEqual(
+      'Something went wrong, unable to search projects',
+    );
   });
 
   describe('the search results legend', () => {
@@ -121,7 +118,7 @@ describe('ProjectSelector component', () => {
       ${2}  | ${3}  | ${'Showing 2 of 3 projects'}
     `(
       'is "$expected" given $count results are showing out of $total',
-      ({ count, total, expected }) => {
+      async ({ count, total, expected }) => {
         search('gitlab ui');
 
         wrapper.setProps({
@@ -129,9 +126,8 @@ describe('ProjectSelector component', () => {
           totalResults: total,
         });
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findLegendText()).toBe(expected);
-        });
+        await nextTick();
+        expect(findLegendText()).toBe(expected);
       },
     );
 

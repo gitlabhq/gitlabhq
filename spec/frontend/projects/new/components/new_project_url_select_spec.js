@@ -6,9 +6,10 @@ import {
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '~/projects/new/event_hub';
@@ -94,13 +95,14 @@ describe('NewProjectUrlSelect component', () => {
 
   const clickDropdownItem = async () => {
     wrapper.findComponent(GlDropdownItem).vm.$emit('click');
-    await wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const showDropdown = async () => {
     findDropdown().vm.$emit('shown');
     await wrapper.vm.$apollo.queries.currentUser.refetch();
     jest.runOnlyPendingTimers();
+    await waitForPromises();
   };
 
   afterEach(() => {
@@ -235,8 +237,7 @@ describe('NewProjectUrlSelect component', () => {
     };
 
     wrapper = mountComponent({ search: 'no matches', queryResponse, mountFn: mount });
-    jest.runOnlyPendingTimers();
-    await wrapper.vm.$nextTick();
+    await waitForPromises();
 
     expect(wrapper.find('li').text()).toBe('No matches found');
   });

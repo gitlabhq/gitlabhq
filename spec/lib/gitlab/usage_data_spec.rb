@@ -12,8 +12,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     stub_database_flavor_check('Cloud SQL for PostgreSQL')
   end
 
-  describe '.uncached_data' do
-    subject { described_class.uncached_data }
+  describe '.data' do
+    subject { described_class.data }
 
     it 'includes basic top and second level keys' do
       is_expected.to include(:counts)
@@ -556,8 +556,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:issues_created_from_alerts]).to eq(3)
       expect(count_data[:issues_created_manually_from_alerts]).to eq(1)
       expect(count_data[:alert_bot_incident_issues]).to eq(4)
-      expect(count_data[:incident_labeled_issues]).to eq(3)
-
       expect(count_data[:clusters_enabled]).to eq(6)
       expect(count_data[:project_clusters_enabled]).to eq(4)
       expect(count_data[:group_clusters_enabled]).to eq(1)

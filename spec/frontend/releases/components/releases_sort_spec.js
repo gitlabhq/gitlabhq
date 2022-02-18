@@ -1,12 +1,12 @@
 import { GlSorting, GlSortingItem } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
 import createStore from '~/releases/stores';
 import createIndexModule from '~/releases/stores/modules/index';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('~/releases/components/releases_sort.vue', () => {
   let wrapper;
@@ -30,7 +30,6 @@ describe('~/releases/components/releases_sort.vue', () => {
       stubs: {
         GlSortingItem,
       },
-      localVue,
     });
   };
 

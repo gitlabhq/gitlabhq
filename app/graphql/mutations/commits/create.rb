@@ -3,14 +3,14 @@
 module Mutations
   module Commits
     class Create < BaseMutation
+      graphql_name 'CommitCreate'
+
       include FindsProject
 
       class UrlHelpers
         include GitlabRoutingHelper
         include Gitlab::Routing
       end
-
-      graphql_name 'CommitCreate'
 
       argument :project_path, GraphQL::Types::ID,
                required: true,

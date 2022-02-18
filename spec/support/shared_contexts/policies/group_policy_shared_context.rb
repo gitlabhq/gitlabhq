@@ -47,6 +47,7 @@ RSpec.shared_context 'GroupPolicy context' do
         create_custom_emoji
         create_package
         create_package_settings
+        read_cluster
       ]
   end
 
@@ -54,7 +55,7 @@ RSpec.shared_context 'GroupPolicy context' do
     %i[
       destroy_package
       create_projects
-      read_cluster create_cluster update_cluster admin_cluster add_cluster
+      create_cluster update_cluster admin_cluster add_cluster
     ]
   end
 

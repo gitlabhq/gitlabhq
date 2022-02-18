@@ -20,6 +20,8 @@ RSpec.describe Key, :mailer do
     it { is_expected.to allow_value(attributes_for(:dsa_key_2048)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:ecdsa_key_256)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:ed25519_key_256)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:ecdsa_sk_key_256)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:ed25519_sk_key_256)[:key]).for(:key) }
     it { is_expected.not_to allow_value('foo-bar').for(:key) }
 
     context 'key format' do
@@ -187,10 +189,12 @@ RSpec.describe Key, :mailer do
       forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE
 
       [
-        [:rsa_key_2048,    0, true],
-        [:dsa_key_2048,    0, true],
-        [:ecdsa_key_256,   0, true],
-        [:ed25519_key_256, 0, true],
+        [:rsa_key_2048,       0, true],
+        [:dsa_key_2048,       0, true],
+        [:ecdsa_key_256,      0, true],
+        [:ed25519_key_256,    0, true],
+        [:ecdsa_sk_key_256,   0, true],
+        [:ed25519_sk_key_256, 0, true],
 
         [:rsa_key_2048, 1024, true],
         [:rsa_key_2048, 2048, true],
@@ -206,10 +210,18 @@ RSpec.describe Key, :mailer do
         [:ed25519_key_256, 256, true],
         [:ed25519_key_256, 384, false],
 
-        [:rsa_key_2048,    forbidden, false],
-        [:dsa_key_2048,    forbidden, false],
-        [:ecdsa_key_256,   forbidden, false],
-        [:ed25519_key_256, forbidden, false]
+        [:ecdsa_sk_key_256, 256, true],
+        [:ecdsa_sk_key_256, 384, false],
+
+        [:ed25519_sk_key_256, 256, true],
+        [:ed25519_sk_key_256, 384, false],
+
+        [:rsa_key_2048,       forbidden, false],
+        [:dsa_key_2048,       forbidden, false],
+        [:ecdsa_key_256,      forbidden, false],
+        [:ed25519_key_256,    forbidden, false],
+        [:ecdsa_sk_key_256,   forbidden, false],
+        [:ed25519_sk_key_256, forbidden, false]
       ]
     end
 

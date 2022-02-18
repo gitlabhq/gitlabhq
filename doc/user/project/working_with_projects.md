@@ -99,6 +99,8 @@ To create a blank project:
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
    - In the **Project description (optional)** field, enter the description of your project's dashboard.
+   - In the **Project target (optional)** field, select your project's deployment target.
+     This information helps GitLab better understand its users and their deployment requirements.
    - To modify the project's [viewing and access rights](../../public_access/public_access.md) for
    users, change the **Visibility Level**.
    - To create README file so that the Git repository is initialized, has a default branch, and
@@ -296,6 +298,29 @@ To delete a project:
 1. Scroll down to the **Delete project** section.
 1. Select **Delete project**
 1. Confirm this action by completing the field.
+
+## Projects pending deletion **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
+> - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
+> - [Available to all users](https://gitlab.com/gitlab-org/gitlab/-/issues/346976) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `project_owners_list_project_pending_deletion`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available to all users. To make it available for administrators only,
+ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `project_owners_list_project_pending_deletion`.
+On GitLab.com, this feature is available to all users.
+
+When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
+projects within that group are not deleted immediately, but only after a delay. To access a list of all projects that are pending deletion:
+
+1. On the top bar, select **Menu > Projects > Explore projects**.
+1. Select the **Pending deletion** tab (in GitLab 14.6 and later) or the **Deleted projects** tab (GitLab 14.5 and earlier).
+
+Listed for each project is:
+
+- The time the project was marked for deletion.
+- The time the project is scheduled for final deletion.
+- A **Restore** link to stop the project being eventually deleted.
 
 ## View project activity
 

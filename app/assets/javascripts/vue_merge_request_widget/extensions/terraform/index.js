@@ -73,25 +73,29 @@ export default {
       return `${title}${subtitle}`;
     },
     fetchCollapsedData() {
-      return Promise.resolve(this.fetchPlans().then(this.prepareReports));
+      return axios
+        .get(this.terraformReportsPath)
+        .then((res) => {
+          const reports = Object.keys(res.data).map((key) => {
+            return res.data[key];
+          });
+
+          const formattedData = this.prepareReports(reports);
+
+          return {
+            ...res,
+            data: formattedData,
+          };
+        })
+        .catch(() => {
+          const formattedData = this.prepareReports([{ tf_report_error: 'api_error' }]);
+
+          return { data: formattedData };
+        });
     },
     fetchFullData() {
       const { valid, invalid } = this.collapsedData;
       return Promise.resolve([...valid, ...invalid]);
-    },
-    // Custom methods
-    fetchPlans() {
-      return axios
-        .get(this.terraformReportsPath)
-        .then(({ data }) => {
-          return Object.keys(data).map((key) => {
-            return data[key];
-          });
-        })
-        .catch(() => {
-          const invalidData = { tf_report_error: 'api_error' };
-          return [invalidData];
-        });
     },
     createReportRow(report, iconName) {
       const addNum = Number(report.create);

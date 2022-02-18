@@ -1,6 +1,6 @@
 import { GlEmptyState, GlBadge, GlTabs, GlTab } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
@@ -41,8 +41,6 @@ import {
 jest.mock('~/flash');
 useMockLocationHelper();
 
-const localVue = createLocalVue();
-
 describe('PackagesApp', () => {
   let wrapper;
   let apolloProvider;
@@ -59,12 +57,14 @@ describe('PackagesApp', () => {
     breadCrumbState,
   };
 
+  const { __typename, ...packageWithoutTypename } = packageData();
+
   function createComponent({
     resolver = jest.fn().mockResolvedValue(packageDetailsQuery()),
     fileDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFileMutation()),
     routeId = '1',
   } = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [
       [getPackageDetails, resolver],
@@ -73,7 +73,6 @@ describe('PackagesApp', () => {
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(PackagesApp, {
-      localVue,
       apolloProvider,
       provide,
       stubs: {
@@ -133,7 +132,7 @@ describe('PackagesApp', () => {
 
     expect(findPackageTitle().exists()).toBe(true);
     expect(findPackageTitle().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageData()),
+      packageEntity: expect.objectContaining(packageWithoutTypename),
     });
   });
 
@@ -156,7 +155,7 @@ describe('PackagesApp', () => {
 
     expect(findPackageHistory().exists()).toBe(true);
     expect(findPackageHistory().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageData()),
+      packageEntity: expect.objectContaining(packageWithoutTypename),
       projectName: packageDetailsQuery().data.package.project.name,
     });
   });
@@ -168,7 +167,7 @@ describe('PackagesApp', () => {
 
     expect(findAdditionalMetadata().exists()).toBe(true);
     expect(findAdditionalMetadata().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageData()),
+      packageEntity: expect.objectContaining(packageWithoutTypename),
     });
   });
 
@@ -179,7 +178,7 @@ describe('PackagesApp', () => {
 
     expect(findInstallationCommands().exists()).toBe(true);
     expect(findInstallationCommands().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageData()),
+      packageEntity: expect.objectContaining(packageWithoutTypename),
     });
   });
 

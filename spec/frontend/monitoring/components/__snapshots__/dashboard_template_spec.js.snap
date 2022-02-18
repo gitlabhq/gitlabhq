@@ -8,6 +8,28 @@ exports[`Dashboard template matches the default snapshot 1`] = `
   metricsdashboardbasepath="/monitoring/monitor-project/-/environments/1/metrics"
   metricsendpoint="/monitoring/monitor-project/-/environments/1/additional_metrics.json"
 >
+  <div>
+    <gl-alert-stub
+      class="mb-3"
+      dismissible="true"
+      dismisslabel="Dismiss"
+      primarybuttonlink=""
+      primarybuttontext=""
+      secondarybuttonlink=""
+      secondarybuttontext=""
+      title="Feature deprecation and removal"
+      variant="danger"
+    >
+      <gl-sprintf-stub
+        message="The metrics, logs and tracing features were deprecated in GitLab 14.7 and are %{epicStart} scheduled for removal %{epicEnd} in GitLab 15.0."
+      />
+       
+      <gl-sprintf-stub
+        message="For information on a possible replacement %{epicStart} learn more about Opstrace %{epicEnd}."
+      />
+    </gl-alert-stub>
+  </div>
+   
   <div
     class="prometheus-graphs-header d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 border-bottom bg-gray-light"
   >

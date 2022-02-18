@@ -49,7 +49,7 @@ The following storage usage statistics are available to an owner:
 
 Excess storage usage is the amount that a project's repository exceeds the free storage quota. If no
 purchased storage is available the project is locked. You cannot push changes to a locked project.
-To unlock a project you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage)
+To unlock a project you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer)
 for the namespace. When the purchase is completed, locked projects are automatically unlocked. The
 amount of purchased storage available must always be greater than zero.
 

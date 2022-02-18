@@ -2,6 +2,9 @@
 
 require 'spec_helper'
 
+require 'google/rpc/status_pb'
+require 'google/protobuf/well_known_types'
+
 RSpec.describe Gitlab::GitalyClient::OperationService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
@@ -185,11 +188,16 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
     context 'with an exception with the UserMergeBranchError' do
       let(:permission_error) do
-        GRPC::PermissionDenied.new(
+        new_detailed_error(
+          GRPC::Core::StatusCodes::PERMISSION_DENIED,
           "GitLab: You are not allowed to push code to this project.",
-          { "grpc-status-details-bin" =>
-           "\b\a\x129GitLab: You are not allowed to push code to this project.\x1A\xDE\x01\n/type.googleapis.com/gitaly.UserMergeBranchError\x12\xAA\x01\n\xA7\x01\n1You are not allowed to push code to this project.\x12\x03web\x1A\auser-15\"df15b32277d2c55c6c595845a87109b09c913c556 5d6e0f935ad9240655f64e883cd98fad6f9a17ee refs/heads/master\n" }
-        )
+          Gitaly::UserMergeBranchError.new(
+            access_check: Gitaly::AccessCheckError.new(
+              error_message: "You are not allowed to push code to this project.",
+              protocol: "web",
+              user_id: "user-15",
+              changes: "df15b32277d2c55c6c595845a87109b09c913c556 5d6e0f935ad9240655f64e883cd98fad6f9a17ee refs/heads/master\n"
+            )))
       end
 
       it 'raises PreRecieveError with the error message' do
@@ -215,6 +223,27 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
           .and_raise(permission_error)
 
         expect { subject }.to raise_error(GRPC::PermissionDenied)
+      end
+    end
+
+    context 'with ReferenceUpdateError' do
+      let(:reference_update_error) do
+        new_detailed_error(GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+                           "some ignored error message",
+                           Gitaly::UserMergeBranchError.new(
+                             reference_update: Gitaly::ReferenceUpdateError.new(
+                               reference_name: "refs/heads/something",
+                               old_oid: "1234",
+                               new_oid: "6789"
+                             )))
+      end
+
+      it 'returns nil' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_merge_branch).with(kind_of(Enumerator), kind_of(Hash))
+          .and_raise(reference_update_error)
+
+        expect(subject).to be_nil
       end
     end
   end
@@ -477,5 +506,15 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         expect { commit_patches }.to raise_error(GRPC::FailedPrecondition)
       end
     end
+  end
+
+  def new_detailed_error(error_code, error_message, details)
+    status_error = Google::Rpc::Status.new(
+      code: error_code,
+      message: error_message,
+      details: [Google::Protobuf::Any.pack(details)]
+    )
+
+    GRPC::BadStatus.new(error_code, error_message, { "grpc-status-details-bin" => Google::Rpc::Status.encode(status_error) })
   end
 end

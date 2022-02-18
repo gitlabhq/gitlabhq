@@ -28,8 +28,11 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
       specify { expect { response }.not_to change(Note, :count) }
     end
 
-    shared_examples 'adds a system note' do
-      specify { expect { response }.to change { alert.reload.notes.count }.by(1) }
+    shared_examples 'adds a system note' do |note_matcher = nil|
+      specify do
+        expect { response }.to change { alert.reload.notes.count }.by(1)
+        expect(alert.notes.last.note).to match(note_matcher) if note_matcher
+      end
     end
 
     shared_examples 'error response' do |message|
@@ -287,6 +290,12 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
             end
           end
         end
+      end
+
+      context 'when a status change reason is included' do
+        let(:params) { { status: new_status, status_change_reason: ' by changing the incident status' } }
+
+        it_behaves_like 'adds a system note', /changed the status to \*\*Acknowledged\*\* by changing the incident status/
       end
     end
   end

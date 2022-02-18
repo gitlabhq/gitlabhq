@@ -1,13 +1,12 @@
 <script>
 import markdownField from '~/vue_shared/components/markdown/field.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateMixin from '../../mixins/update';
 
 export default {
   components: {
     markdownField,
   },
-  mixins: [glFeatureFlagsMixin(), updateMixin],
+  mixins: [updateMixin],
   props: {
     formState: {
       type: Object,
@@ -56,7 +55,7 @@ export default {
           v-model="formState.description"
           class="note-textarea js-gfm-input js-autosize markdown-area qa-description-textarea"
           dir="auto"
-          :data-supports-quick-actions="!glFeatures.tributeAutocomplete"
+          data-supports-quick-actions="true"
           :aria-label="__('Description')"
           :placeholder="__('Write a comment or drag your files here…')"
           @keydown.meta.enter="updateIssuable"

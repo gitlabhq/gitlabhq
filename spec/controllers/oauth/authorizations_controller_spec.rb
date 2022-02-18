@@ -4,7 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Oauth::AuthorizationsController do
   let(:user) { create(:user) }
-  let!(:application) { create(:oauth_application, scopes: 'api read_user', redirect_uri: 'http://example.com') }
+  let(:application_scopes) { 'api read_user' }
+
+  let!(:application) do
+    create(:oauth_application, scopes: application_scopes,
+                               redirect_uri: 'http://example.com')
+  end
+
   let(:params) do
     {
       response_type: "code",
@@ -118,6 +124,92 @@ RSpec.describe Oauth::AuthorizationsController do
           expect(request.session['user_return_to']).to be_nil
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template('doorkeeper/authorizations/redirect')
+        end
+
+        context 'with gl_auth_type=login' do
+          let(:minimal_scope) { Gitlab::Auth::READ_USER_SCOPE.to_s }
+
+          before do
+            params[:gl_auth_type] = 'login'
+          end
+
+          shared_examples 'downgrades scopes' do
+            it 'downgrades the scopes' do
+              subject
+
+              pre_auth = controller.send(:pre_auth)
+
+              expect(pre_auth.scopes).to contain_exactly(minimal_scope)
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to render_template('doorkeeper/authorizations/new')
+              # See: config/locales/doorkeeper.en.yml
+              expect(response.body).to include("Read the authenticated user&#39;s personal information")
+              expect(response.body).not_to include("Access the authenticated user&#39;s API")
+            end
+          end
+
+          shared_examples 'adds read_user scope' do
+            it 'modifies the client.application.scopes' do
+              expect { subject }
+                .to change { application.reload.scopes }.to include(minimal_scope)
+            end
+
+            it 'does not remove pre-existing scopes' do
+              subject
+
+              expect(application.scopes).to include(*application_scopes.split(/ /))
+            end
+          end
+
+          context 'the application has all scopes' do
+            let(:application_scopes) { 'api read_api read_user' }
+
+            include_examples 'downgrades scopes'
+          end
+
+          context 'the application has api and read_user scopes' do
+            let(:application_scopes) { 'api read_user' }
+
+            include_examples 'downgrades scopes'
+          end
+
+          context 'the application has read_api and read_user scopes' do
+            let(:application_scopes) { 'read_api read_user' }
+
+            include_examples 'downgrades scopes'
+          end
+
+          context 'the application has only api scopes' do
+            let(:application_scopes) { 'api' }
+
+            include_examples 'downgrades scopes'
+            include_examples 'adds read_user scope'
+          end
+
+          context 'the application has only read_api scopes' do
+            let(:application_scopes) { 'read_api' }
+
+            include_examples 'downgrades scopes'
+            include_examples 'adds read_user scope'
+          end
+
+          context 'the application has scopes we do not handle' do
+            let(:application_scopes) { Gitlab::Auth::PROFILE_SCOPE.to_s }
+
+            before do
+              params[:scope] = application_scopes
+            end
+
+            it 'does not modify the scopes' do
+              subject
+
+              pre_auth = controller.send(:pre_auth)
+
+              expect(pre_auth.scopes).to contain_exactly(application_scopes)
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to render_template('doorkeeper/authorizations/new')
+            end
+          end
         end
       end
     end

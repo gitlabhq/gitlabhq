@@ -195,6 +195,14 @@ describe('NotificationsDropdown', () => {
         );
       });
     });
+
+    it('passes provided `noFlip` value to `GlDropdown`', () => {
+      wrapper = createComponent({
+        noFlip: true,
+      });
+
+      expect(findDropdown().attributes('no-flip')).toBe('true');
+    });
   });
 
   describe('when selecting an item', () => {

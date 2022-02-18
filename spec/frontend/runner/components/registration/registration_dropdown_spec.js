@@ -1,9 +1,11 @@
 import { GlDropdown, GlDropdownItem, GlDropdownForm } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount, createWrapper } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { mount, shallowMount, createWrapper } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+
 import VueApollo from 'vue-apollo';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RegistrationTokenResetDropdownItem from '~/runner/components/registration/registration_token_reset_dropdown_item.vue';
@@ -73,8 +75,7 @@ describe('RegistrationDropdown', () => {
     });
 
     describe('When the dropdown item is clicked', () => {
-      const localVue = createLocalVue();
-      localVue.use(VueApollo);
+      Vue.use(VueApollo);
 
       const requestHandlers = [
         [getRunnerPlatformsQuery, jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms)],
@@ -84,10 +85,9 @@ describe('RegistrationDropdown', () => {
       const findModalInBody = () =>
         createWrapper(document.body).find('[data-testid="runner-instructions-modal"]');
 
-      beforeEach(() => {
+      beforeEach(async () => {
         createComponent(
           {
-            localVue,
             // Mock load modal contents from API
             apolloProvider: createMockApollo(requestHandlers),
             // Use `attachTo` to find the modal
@@ -96,7 +96,8 @@ describe('RegistrationDropdown', () => {
           mount,
         );
 
-        findRegistrationInstructionsDropdownItem().trigger('click');
+        await findRegistrationInstructionsDropdownItem().trigger('click');
+        await waitForPromises();
       });
 
       afterEach(() => {

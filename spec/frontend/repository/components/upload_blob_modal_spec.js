@@ -2,6 +2,7 @@ import { GlModal, GlFormInput, GlFormTextarea, GlToggle, GlAlert } from '@gitlab
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -113,7 +114,7 @@ describe('UploadBlobModal', () => {
             // eslint-disable-next-line no-restricted-syntax
             wrapper.setData({ target: 'Not main' });
 
-            await wrapper.vm.$nextTick();
+            await nextTick();
 
             expect(findMrToggle().exists()).toBe(true);
           });
@@ -202,7 +203,7 @@ describe('UploadBlobModal', () => {
       wrapper.vm.uploadFile = jest.fn();
       wrapper.vm.replaceFile = jest.fn();
       wrapper.vm.submitForm();
-      await wrapper.vm.$nextTick();
+      await nextTick();
     };
 
     const submitRequest = async () => {

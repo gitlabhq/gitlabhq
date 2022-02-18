@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
   include_context :email_shared_context
 
-  let_it_be(:user)      { create(:user) }
+  let_it_be(:user)      { create(:user, email: 'jake@adventuretime.ooo') }
   let_it_be(:project)   { create(:project, :public, :repository) }
 
   let(:noteable)  { note.noteable }
@@ -36,6 +36,43 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
 
     it 'raises a UnknownIncomingEmail' do
       expect { receiver.execute }.to raise_error(Gitlab::Email::UnknownIncomingEmail)
+    end
+  end
+
+  context 'when the incoming email is from a different email address' do
+    before do
+      SentNotification.find_by(reply_key: mail_key).update!(recipient: original_recipient)
+    end
+
+    context 'when the issue is not a Service Desk issue' do
+      let(:original_recipient) { create(:user, email: 'john@somethingelse.com') }
+
+      context 'with only one email address' do
+        it 'raises a UserNotFoundError' do
+          expect { receiver.execute }.to raise_error(Gitlab::Email::UserNotFoundError)
+        end
+      end
+
+      context 'with a secondary verified email address' do
+        let(:verified_email) { 'alan@adventuretime.ooo'}
+        let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub('jake@adventuretime.ooo', verified_email) }
+
+        before do
+          create(:email, :confirmed, user: original_recipient, email: verified_email)
+        end
+
+        it 'does not raise a UserNotFoundError' do
+          expect { receiver.execute }.not_to raise_error(Gitlab::Email::UserNotFoundError)
+        end
+      end
+    end
+
+    context 'when the issue is a Service Desk issue' do
+      let(:original_recipient) { User.support_bot }
+
+      it 'does not raise a UserNotFoundError' do
+        expect { receiver.execute }.not_to raise_error(Gitlab::Email::UserNotFoundError)
+      end
     end
   end
 

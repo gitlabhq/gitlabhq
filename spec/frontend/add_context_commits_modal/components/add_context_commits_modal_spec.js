@@ -1,5 +1,6 @@
 import { GlModal, GlSearchBoxByType } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import AddReviewItemsModal from '~/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue';
@@ -8,8 +9,7 @@ import * as actions from '~/add_context_commits_modal/store/actions';
 import mutations from '~/add_context_commits_modal/store/mutations';
 import defaultState from '~/add_context_commits_modal/store/state';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('AddContextCommitsModal', () => {
   let wrapper;
@@ -36,7 +36,6 @@ describe('AddContextCommitsModal', () => {
     });
 
     wrapper = shallowMount(AddReviewItemsModal, {
-      localVue,
       store,
       propsData: {
         contextCommitsPath: '',
@@ -85,11 +84,10 @@ describe('AddContextCommitsModal', () => {
       expect(findModal().attributes('ok-disabled')).toBe('true');
     });
 
-    it('enabled ok button when atleast one row is selected', () => {
+    it('enabled ok button when atleast one row is selected', async () => {
       wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findModal().attributes('ok-disabled')).toBeFalsy();
-      });
+      await nextTick();
+      expect(findModal().attributes('ok-disabled')).toBeFalsy();
     });
   });
 
@@ -101,11 +99,10 @@ describe('AddContextCommitsModal', () => {
       expect(findModal().attributes('ok-disabled')).toBe('true');
     });
 
-    it('an enabled ok button when atleast one row is selected', () => {
+    it('an enabled ok button when atleast one row is selected', async () => {
       wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findModal().attributes('ok-disabled')).toBeFalsy();
-      });
+      await nextTick();
+      expect(findModal().attributes('ok-disabled')).toBeFalsy();
     });
 
     it('a disabled ok button in first tab, when row is selected in second tab', () => {
@@ -115,33 +112,30 @@ describe('AddContextCommitsModal', () => {
   });
 
   describe('has an ok button when clicked calls action', () => {
-    it('"createContextCommits" when only new commits to be added ', () => {
+    it('"createContextCommits" when only new commits to be added ', async () => {
       wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
       findModal().vm.$emit('ok');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(createContextCommits).toHaveBeenCalledWith(expect.anything(), {
-          commits: [{ ...commit, isSelected: true }],
-          forceReload: true,
-        });
+      await nextTick();
+      expect(createContextCommits).toHaveBeenCalledWith(expect.anything(), {
+        commits: [{ ...commit, isSelected: true }],
+        forceReload: true,
       });
     });
-    it('"removeContextCommits" when only added commits are to be removed ', () => {
+    it('"removeContextCommits" when only added commits are to be removed ', async () => {
       wrapper.vm.$store.state.toRemoveCommits = [commit.short_id];
       findModal().vm.$emit('ok');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(removeContextCommits).toHaveBeenCalledWith(expect.anything(), true);
-      });
+      await nextTick();
+      expect(removeContextCommits).toHaveBeenCalledWith(expect.anything(), true);
     });
-    it('"createContextCommits" and "removeContextCommits" when new commits are to be added and old commits are to be removed', () => {
+    it('"createContextCommits" and "removeContextCommits" when new commits are to be added and old commits are to be removed', async () => {
       wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
       wrapper.vm.$store.state.toRemoveCommits = [commit.short_id];
       findModal().vm.$emit('ok');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(createContextCommits).toHaveBeenCalledWith(expect.anything(), {
-          commits: [{ ...commit, isSelected: true }],
-        });
-        expect(removeContextCommits).toHaveBeenCalledWith(expect.anything(), undefined);
+      await nextTick();
+      expect(createContextCommits).toHaveBeenCalledWith(expect.anything(), {
+        commits: [{ ...commit, isSelected: true }],
       });
+      expect(removeContextCommits).toHaveBeenCalledWith(expect.anything(), undefined);
     });
   });
 

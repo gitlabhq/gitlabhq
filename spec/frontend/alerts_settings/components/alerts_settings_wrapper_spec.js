@@ -1,7 +1,7 @@
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
@@ -50,8 +50,6 @@ import mockIntegrations from './mocks/integrations.json';
 
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-
 describe('AlertsSettingsWrapper', () => {
   let wrapper;
   let fakeApollo;
@@ -70,19 +68,10 @@ describe('AlertsSettingsWrapper', () => {
   const findAlertsSettingsForm = () => wrapper.findComponent(AlertsSettingsForm);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
-  async function destroyHttpIntegration(localWrapper) {
-    await jest.runOnlyPendingTimers();
-    await localWrapper.vm.$nextTick();
-
+  function destroyHttpIntegration(localWrapper) {
     localWrapper
       .find(IntegrationsList)
       .vm.$emit('delete-integration', { id: integrationToDestroy.id });
-  }
-
-  async function awaitApolloDomMock() {
-    await nextTick(); // kick off the DOM update
-    await jest.runOnlyPendingTimers(); // kick off the mocked GQL stuff (promises)
-    await nextTick(); // kick off the DOM update for flash
   }
 
   const createComponent = ({ data = {}, provide = {}, loading = false } = {}) => {
@@ -118,7 +107,7 @@ describe('AlertsSettingsWrapper', () => {
   function createComponentWithApollo({
     destroyHandler = jest.fn().mockResolvedValue(destroyIntegrationResponse),
   } = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
     destroyIntegrationHandler = destroyHandler;
 
     const requestHandlers = [
@@ -129,7 +118,6 @@ describe('AlertsSettingsWrapper', () => {
     fakeApollo = createMockApollo(requestHandlers);
 
     wrapper = mount(AlertsSettingsWrapper, {
-      localVue,
       apolloProvider: fakeApollo,
       provide: {
         alertSettings: {
@@ -476,21 +464,19 @@ describe('AlertsSettingsWrapper', () => {
   describe('with mocked Apollo client', () => {
     it('has a selection of integrations loaded via the getIntegrationsQuery', async () => {
       createComponentWithApollo();
-
-      await jest.runOnlyPendingTimers();
-      await nextTick();
+      await waitForPromises();
 
       expect(findIntegrations()).toHaveLength(4);
     });
 
     it('calls a mutation with correct parameters and destroys a integration', async () => {
       createComponentWithApollo();
+      await waitForPromises();
 
-      await destroyHttpIntegration(wrapper);
+      destroyHttpIntegration(wrapper);
 
       expect(destroyIntegrationHandler).toHaveBeenCalled();
-
-      await nextTick();
+      await waitForPromises();
 
       expect(findIntegrations()).toHaveLength(3);
     });
@@ -501,7 +487,7 @@ describe('AlertsSettingsWrapper', () => {
       });
 
       await destroyHttpIntegration(wrapper);
-      await awaitApolloDomMock();
+      await waitForPromises();
 
       expect(createFlash).toHaveBeenCalledWith({ message: 'Houston, we have a problem' });
     });
@@ -512,7 +498,7 @@ describe('AlertsSettingsWrapper', () => {
       });
 
       await destroyHttpIntegration(wrapper);
-      await awaitApolloDomMock();
+      await waitForPromises();
 
       expect(createFlash).toHaveBeenCalledWith({
         message: DELETE_INTEGRATION_ERROR,

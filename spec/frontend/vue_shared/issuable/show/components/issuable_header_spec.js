@@ -1,5 +1,6 @@
 import { GlIcon, GlAvatarLabeled } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
@@ -78,7 +79,7 @@ describe('IssuableHeader', () => {
         blocked: true,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const blockedEl = wrapper.findByTestId('blocked');
 
@@ -91,7 +92,7 @@ describe('IssuableHeader', () => {
         confidential: true,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const confidentialEl = wrapper.findByTestId('confidential');
 

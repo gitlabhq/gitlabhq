@@ -6,7 +6,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
   let(:project) { create(:project, :public, :repository) }
 
   before do
-    sign_in(project.owner)
+    sign_in(project.first_owner)
   end
 
   def click_notifications_button

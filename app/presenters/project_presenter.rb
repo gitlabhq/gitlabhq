@@ -13,7 +13,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include Gitlab::Experiment::Dsl
 
   delegator_override_with GitlabRoutingHelper # TODO: Remove `GitlabRoutingHelper` inclusion as it's duplicate
-  delegator_override_with Gitlab::Utils::StrongMemoize # TODO: Remove `Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
+  delegator_override_with Gitlab::Utils::StrongMemoize # This module inclusion is expected. See https://gitlab.com/gitlab-org/gitlab/-/issues/352884.
 
   presents ::Project, as: :project
 

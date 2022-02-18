@@ -31,14 +31,13 @@ export default {
         this.action === 'userAdded' && isExperimentVariant('invite_for_help_continuous_onboarding')
       );
     },
+    openInNewTab() {
+      return ACTION_LABELS[this.action]?.openInNewTab === true;
+    },
   },
   methods: {
     openModal() {
-      eventHub.$emit('openModal', {
-        inviteeType: 'members',
-        source: 'learn_gitlab',
-        tasksToBeDoneEnabled: true,
-      });
+      eventHub.$emit('openModal', { source: 'learn_gitlab' });
     },
   },
 };
@@ -61,8 +60,9 @@ export default {
     </gl-link>
     <gl-link
       v-else
-      target="_blank"
+      :target="openInNewTab ? '_blank' : '_self'"
       :href="value.url"
+      data-testid="uncompleted-learn-gitlab-link"
       data-track-action="click_link"
       :data-track-label="$options.i18n.ACTION_LABELS[action].title"
       data-track-property="Growth::Conversion::Experiment::LearnGitLab"

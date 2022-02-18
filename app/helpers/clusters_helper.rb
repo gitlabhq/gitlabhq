@@ -28,7 +28,8 @@ module ClustersHelper
       clusters_empty_state_image: image_path('illustrations/empty-state/empty-state-clusters.svg'),
       empty_state_help_text: clusterable.empty_state_help_text,
       new_cluster_path: clusterable.new_path(tab: 'create'),
-      can_add_cluster: clusterable.can_add_cluster?.to_s
+      can_add_cluster: clusterable.can_add_cluster?.to_s,
+      can_admin_cluster: clusterable.can_admin_cluster?.to_s
     }
   end
 
@@ -38,7 +39,8 @@ module ClustersHelper
       empty_state_image: image_path('illustrations/empty-state/empty-state-agents.svg'),
       project_path: clusterable.full_path,
       add_cluster_path: clusterable.new_path(tab: 'add'),
-      kas_address: Gitlab::Kas.external_url
+      kas_address: Gitlab::Kas.external_url,
+      gitlab_version: Gitlab.version_info
     }.merge(js_clusters_list_data(clusterable))
   end
 

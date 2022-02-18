@@ -20,8 +20,10 @@ class AbuseReportsController < ApplicationController
 
       message = _("Thank you for your report. A GitLab administrator will look into it shortly.")
       redirect_to root_path, notice: message
-    else
+    elsif report_params[:user_id].present?
       render :new
+    else
+      redirect_to root_path, alert: _("Cannot create the abuse report. The reported user was invalid. Please try again or contact support.")
     end
   end
 

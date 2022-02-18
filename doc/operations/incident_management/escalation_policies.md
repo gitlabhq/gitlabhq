@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Monitor
+group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -17,7 +17,7 @@ where you manage [On-call schedules](oncall_schedules.md).
 
 Prerequisite:
 
-- You must have at least the Maintainer [role](../../user/permissions.md).
+- You must have at least the Maintainer role.
 - You must have an [on-call schedule](oncall_schedules.md).
 
 To create an escalation policy:

@@ -502,10 +502,7 @@ RSpec.describe Projects::IssuesController do
 
       context 'with valid params' do
         it 'reorders issues and returns a successful 200 response' do
-          reorder_issue(issue1,
-            move_after_id: issue2.id,
-            move_before_id: issue3.id,
-            group_full_path: group.full_path)
+          reorder_issue(issue1, move_after_id: issue2.id, move_before_id: issue3.id)
 
           [issue1, issue2, issue3].map(&:reload)
 
@@ -531,12 +528,10 @@ RSpec.describe Projects::IssuesController do
         end
 
         it 'returns a unprocessable entity 422 response for issues not in group' do
-          another_group = create(:group)
+          other_group_project = create(:project, group: create(:group))
+          other_group_issue = create(:issue, project: other_group_project)
 
-          reorder_issue(issue1,
-            move_after_id: issue2.id,
-            move_before_id: issue3.id,
-            group_full_path: another_group.full_path)
+          reorder_issue(issue1, move_after_id: issue2.id, move_before_id: other_group_issue.id)
 
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
@@ -555,15 +550,14 @@ RSpec.describe Projects::IssuesController do
       end
     end
 
-    def reorder_issue(issue, move_after_id: nil, move_before_id: nil, group_full_path: nil)
+    def reorder_issue(issue, move_after_id: nil, move_before_id: nil)
       put :reorder,
            params: {
                namespace_id: project.namespace.to_param,
                project_id: project,
                id: issue.iid,
                move_after_id: move_after_id,
-               move_before_id: move_before_id,
-               group_full_path: group_full_path
+               move_before_id: move_before_id
            },
            format: :json
     end

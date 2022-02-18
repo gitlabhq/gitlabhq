@@ -23,7 +23,6 @@ The following lists the currently supported OSs and their possible EOL dates.
 | Debian 9         | GitLab CE / GitLab EE 9.3.0    | amd64           | 2022          | <https://wiki.debian.org/LTS>                                |
 | Debian 10        | GitLab CE / GitLab EE 12.2.0   | amd64, arm64    | 2024          | <https://wiki.debian.org/LTS>                                |
 | Debian 11        | GitLab CE / GitLab EE 14.6.0   | amd64, arm64    | 2026          | <https://wiki.debian.org/LTS>                                |
-| OpenSUSE 15.2    | GitLab CE / GitLab EE 13.11.0  | x86_64, aarch64 | Dec 2021      | <https://en.opensuse.org/Lifetime>                           |
 | OpenSUSE 15.3    | GitLab CE / GitLab EE 14.5.0   | x86_64, aarch64 | Nov 2022      | <https://en.opensuse.org/Lifetime>                           |
 | SLES 12          | GitLab EE 9.0.0                | x86_64          | Oct 2027      | <https://www.suse.com/lifecycle/>                            |
 | Ubuntu 18.04     | GitLab CE / GitLab EE 10.7.0   | amd64           | April 2023    | <https://wiki.ubuntu.com/Releases>                           |
@@ -81,8 +80,9 @@ release for them can be found below:
 | Raspbian Stretch | [June 2020](https://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/) | [GitLab CE](https://packages.gitlab.com/app/gitlab/raspberry-pi2/search?q=gitlab-ce_13.2&dist=raspbian%2Fstretch) 13.3                                                                                                           |
 | Debian Jessie   | [June 2020](https://www.debian.org/News/2020/20200709)                             | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_13.2&dist=debian%2Fjessie) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_13.2&dist=debian%2Fjessie) 13.3       |
 | CentOS 6        | [November 2020](https://wiki.centos.org/About/Product)                             | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=13.6&filter=all&filter=all&dist=el%2F6) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=13.6&filter=all&filter=all&dist=el%2F6) 13.6 |
-| OpenSUSE 15.1   | [November 2020](https://en.opensuse.org/Lifetime#Discontinued_distributions)       | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-13.12&dist=opensuse%2F15.1) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-13.12&dist=opensuse%2F15.2) 13.12    |
+| OpenSUSE 15.1   | [November 2020](https://en.opensuse.org/Lifetime#Discontinued_distributions)       | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-13.12&dist=opensuse%2F15.1) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-13.12&dist=opensuse%2F15.1) 13.12    |
 | Ubuntu 16.04    | [April 2021](https://ubuntu.com/info/release-end-of-life)                          | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_13.12&dist=ubuntu%2Fxenial) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_13.12&dist=ubuntu%2Fxenial) 13.12    |
+| OpenSUSE 15.2   | [December 2021](https://en.opensuse.org/Lifetime#Discontinued_distributions)       | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-14.7&dist=opensuse%2F15.2) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-14.7&dist=opensuse%2F15.2) 14.7       |
 
 NOTE:
 An exception to this deprecation policy is when we are unable to provide

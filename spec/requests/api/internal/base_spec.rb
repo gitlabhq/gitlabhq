@@ -612,6 +612,30 @@ RSpec.describe API::Internal::Base do
             expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'false')
           end
         end
+
+        context "with a sidechannels enabled for a project" do
+          before do
+            stub_feature_flags(gitlab_shell_upload_pack_sidechannel: project)
+          end
+
+          it "has the use_sidechannel field set to true for that project" do
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]["use_sidechannel"]).to eq(true)
+          end
+
+          it "has the use_sidechannel field set to false for other projects" do
+            other_project = create(:project, :public, :repository)
+
+            pull(key, other_project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response["gl_repository"]).to eq("project-#{other_project.id}")
+            expect(json_response["gitaly"]["use_sidechannel"]).to eq(false)
+          end
+        end
       end
 
       context "git push" do
@@ -721,6 +745,30 @@ RSpec.describe API::Internal::Base do
           expect(json_response["status"]).to be_falsey
           expect(user.reload.last_activity_on).to be_nil
         end
+      end
+    end
+
+    context 'with a pending membership' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      before_all do
+        create(:project_member, :awaiting, :developer, source: project, user: user)
+      end
+
+      it 'returns not found for git pull' do
+        pull(key, project)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response["status"]).to be_falsey
+        expect(user.reload.last_activity_on).to be_nil
+      end
+
+      it 'returns not found for git push' do
+        push(key, project)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response["status"]).to be_falsey
+        expect(user.reload.last_activity_on).to be_nil
       end
     end
 

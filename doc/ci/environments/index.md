@@ -27,7 +27,7 @@ You can even access a [web terminal](#web-terminals-deprecated) for your environ
 
 Prerequisites:
 
-- You must have at least the Reporter [role](../../user/permissions.md#project-members-permissions).
+- You must have at least the Reporter role.
 
 To view a list of environments and deployments:
 
@@ -308,9 +308,17 @@ Note the following:
 - If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
   the environment URL.
 - If the script that runs in `stop_review` exists only in your repository and therefore can't use
-  `GIT_STRATEGY: none`, configure [pipelines for merge requests](../../ci/pipelines/merge_request_pipelines.md)
+  `GIT_STRATEGY: none`, configure [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md)
   for these jobs. This ensures that runners can fetch the repository even after a feature branch is
   deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
+
+NOTE:
+For Windows runners, using `echo` to write to `.env` files may fail. Using the PowerShell `Add-Content`command
+will help in such cases. For example:
+
+```powershell
+Add-Content -Path deploy.env -Value "DYNAMIC_ENVIRONMENT_URL=$DYNAMIC_ENVIRONMENT_URL"
+```
 
 ## Track newly included merge requests per deployment
 
@@ -372,7 +380,7 @@ places in GitLab:
 - In a merge request as a link:
   ![Environment URL in merge request](../img/environments_mr_review_app.png)
 - In the Environments view as a button:
-  ![Environment URL in environments](../img/environments_available_13_10.png)
+  ![Open live environment from environments view](img/environments_open_live_environment_v14_8.png)
 - In the Deployments view as a button:
   ![Environment URL in deployments](../img/deployments_view.png)
 
@@ -440,7 +448,7 @@ the `stop_review` job might not be included in all pipelines that include the
 The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run)
 if it's in a later stage than the job that started the environment.
 
-If you can't use [pipelines for merge requests](../pipelines/merge_request_pipelines.md),
+If you can't use [merge request pipelines](../pipelines/merge_request_pipelines.md),
 set the [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy) to `none` in the
 `stop_review` job. Then the [runner](https://docs.gitlab.com/runner/) doesn't
 try to check out the code after the branch is deleted.

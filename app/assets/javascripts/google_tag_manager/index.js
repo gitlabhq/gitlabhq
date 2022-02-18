@@ -1,4 +1,42 @@
+import { v4 as uuidv4 } from 'uuid';
 import { logError } from '~/lib/logger';
+
+const SKU_PREMIUM = '2c92a00d76f0d5060176f2fb0a5029ff';
+const SKU_ULTIMATE = '2c92a0ff76f0d5250176f2f8c86f305a';
+const PRODUCT_INFO = {
+  [SKU_PREMIUM]: {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    name: 'Premium',
+    id: '0002',
+    price: '228',
+    variant: 'SaaS',
+  },
+  [SKU_ULTIMATE]: {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    name: 'Ultimate',
+    id: '0001',
+    price: '1188',
+    variant: 'SaaS',
+  },
+};
+
+const generateProductInfo = (sku, quantity) => {
+  const product = PRODUCT_INFO[sku];
+
+  if (!product) {
+    logError('Unexpected product sku provided to generateProductInfo');
+    return {};
+  }
+
+  const productInfo = {
+    ...product,
+    brand: 'GitLab',
+    category: 'DevOps',
+    quantity,
+  };
+
+  return productInfo;
+};
 
 const isSupported = () => Boolean(window.dataLayer) && gon.features?.gitlabGtmDatalayer;
 
@@ -8,6 +46,22 @@ const pushEvent = (event, args = {}) => {
   }
 
   try {
+    window.dataLayer.push({
+      event,
+      ...args,
+    });
+  } catch (e) {
+    logError('Unexpected error while pushing to dataLayer', e);
+  }
+};
+
+const pushEnhancedEcommerceEvent = (event, args = {}) => {
+  if (!window.dataLayer) {
+    return;
+  }
+
+  try {
+    window.dataLayer.push({ ecommerce: null }); // Clear the previous ecommerce object
     window.dataLayer.push({
       event,
       ...args,
@@ -119,4 +173,61 @@ export const trackSaasTrialGetStarted = () => {
   getStartedButton.addEventListener('click', () => {
     pushEvent('saasTrialGetStarted');
   });
+};
+
+export const trackCheckout = (selectedPlan, quantity) => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const product = generateProductInfo(selectedPlan, quantity);
+
+  if (Object.keys(product).length === 0) {
+    return;
+  }
+
+  const eventData = {
+    ecommerce: {
+      currencyCode: 'USD',
+      checkout: {
+        actionField: { step: 1 },
+        products: [product],
+      },
+    },
+  };
+
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  pushEnhancedEcommerceEvent('EECCheckout', eventData);
+};
+
+export const trackTransaction = (transactionDetails) => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const transactionId = uuidv4();
+  const { paymentOption, revenue, tax, selectedPlan, quantity } = transactionDetails;
+  const product = generateProductInfo(selectedPlan, quantity);
+
+  if (Object.keys(product).length === 0) {
+    return;
+  }
+
+  const eventData = {
+    ecommerce: {
+      currencyCode: 'USD',
+      purchase: {
+        actionField: {
+          id: transactionId,
+          affiliation: 'GitLab',
+          option: paymentOption,
+          revenue: revenue.toString(),
+          tax: tax.toString(),
+        },
+        products: [product],
+      },
+    },
+  };
+
+  pushEnhancedEcommerceEvent('EECtransactionSuccess', eventData);
 };

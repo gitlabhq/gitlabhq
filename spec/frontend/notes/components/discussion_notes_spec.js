@@ -1,6 +1,7 @@
 import { getByRole } from '@testing-library/dom';
 import { shallowMount, mount } from '@vue/test-utils';
 import '~/behaviors/markdown/render_gfm';
+import { nextTick } from 'vue';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import { SYSTEM_NOTE } from '~/notes/constants';
@@ -135,28 +136,25 @@ describe('DiscussionNotes', () => {
         createComponent({ shouldGroupReplies: true, isExpanded: true });
       });
 
-      it('emits deleteNote when first note emits handleDeleteNote', () => {
+      it('emits deleteNote when first note emits handleDeleteNote', async () => {
         findNoteAtIndex(0).vm.$emit('handleDeleteNote');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.emitted().deleteNote).toBeTruthy();
-        });
+        await nextTick();
+        expect(wrapper.emitted().deleteNote).toBeTruthy();
       });
 
-      it('emits startReplying when first note emits startReplying', () => {
+      it('emits startReplying when first note emits startReplying', async () => {
         findNoteAtIndex(0).vm.$emit('startReplying');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.emitted().startReplying).toBeTruthy();
-        });
+        await nextTick();
+        expect(wrapper.emitted().startReplying).toBeTruthy();
       });
 
-      it('emits deleteNote when second note emits handleDeleteNote', () => {
+      it('emits deleteNote when second note emits handleDeleteNote', async () => {
         findNoteAtIndex(1).vm.$emit('handleDeleteNote');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.emitted().deleteNote).toBeTruthy();
-        });
+        await nextTick();
+        expect(wrapper.emitted().deleteNote).toBeTruthy();
       });
     });
 
@@ -167,12 +165,11 @@ describe('DiscussionNotes', () => {
         note = wrapper.find('.notes > *');
       });
 
-      it('emits deleteNote when first note emits handleDeleteNote', () => {
+      it('emits deleteNote when first note emits handleDeleteNote', async () => {
         note.vm.$emit('handleDeleteNote');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.emitted().deleteNote).toBeTruthy();
-        });
+        await nextTick();
+        expect(wrapper.emitted().deleteNote).toBeTruthy();
       });
     });
   });

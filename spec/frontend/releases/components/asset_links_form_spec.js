@@ -1,4 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import * as commonUtils from '~/lib/utils/common_utils';
@@ -6,8 +7,7 @@ import { ENTER_KEY } from '~/lib/utils/keys';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import { ASSET_LINK_TYPE, DEFAULT_ASSET_LINK_TYPE } from '~/releases/constants';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Release edit component', () => {
   let wrapper;
@@ -52,7 +52,6 @@ describe('Release edit component', () => {
     });
 
     wrapper = mount(AssetLinksForm, {
-      localVue,
       store,
     });
   };

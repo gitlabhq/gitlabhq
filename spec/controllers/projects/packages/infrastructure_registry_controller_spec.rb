@@ -52,18 +52,6 @@ RSpec.describe Projects::Packages::InfrastructureRegistryController do
 
         expect(assigns(:package_files)).to contain_exactly(terraform_module_package_file)
       end
-
-      context 'with packages_installable_package_files disabled' do
-        before do
-          stub_feature_flags(packages_installable_package_files: false)
-        end
-
-        it 'returns them' do
-          subject
-
-          expect(assigns(:package_files)).to contain_exactly(package_file_pending_destruction, terraform_module_package_file)
-        end
-      end
     end
   end
 end

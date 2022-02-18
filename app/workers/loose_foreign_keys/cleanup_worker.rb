@@ -12,8 +12,6 @@ module LooseForeignKeys
     idempotent!
 
     def perform
-      return if Feature.disabled?(:loose_foreign_key_cleanup, default_enabled: :yaml)
-
       in_lock(self.class.name.underscore, ttl: ModificationTracker::MAX_RUNTIME, retries: 0) do
         stats = {}
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'project service activation' do
+RSpec.shared_context 'project integration activation' do
   include_context 'integration activation'
 
   let_it_be(:project) { create(:project) }

@@ -126,6 +126,24 @@ If you don't want to install all of the dependencies to test the links, you can:
 If you manually install `haml-lint` with this process, it does not update automatically
 and you should make sure your version matches the version used by GitLab.
 
+## Update linter configuration
+
+[Vale configuration](#vale) and [markdownlint configuration](#markdownlint) is under source control in each 
+project, so updates must be committed to each project individually.
+
+We consider the configuration in the `gitlab` project as the source of truth and that's where all updates should
+first be made.
+
+On a regular basis, the changes made in `gitlab` project to the Vale and markdownlint configuration should be
+synchronized to the other projects. In `omnibus-gitlab`, `gitlab-runner`, and `charts/gitlab`:
+
+1. Create a new branch.
+1. Copy the configuration files from the `gitlab` project into this branch, overwriting
+   the project's old configuration. Make sure no project-specific changes from the `gitlab`
+   project are included. For example, [`RelativeLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/RelativeLinks.yml)
+   is hard coded for specific projects.
+1. Create a merge request and submit it to a technical writer for review and merge.
+
 ## Local linters
 
 To help adhere to the [documentation style guidelines](styleguide/index.md), and improve the content
@@ -181,7 +199,7 @@ You can find Vale configuration in the following projects:
 - [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs/.vale/gitlab)
 - [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc/.vale/gitlab)
 - [`charts`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc/.vale/gitlab)
-- [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/master/doc/.vale/gitlab)
+- [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/.vale/gitlab)
 
 This configuration is also used in build pipelines, where
 [error-level rules](#vale-result-types) are enforced.
@@ -293,23 +311,7 @@ To configure Vale in your editor, install one of the following as appropriate:
 
 - Sublime Text [`SublimeLinter-contrib-vale` package](https://packagecontrol.io/packages/SublimeLinter-contrib-vale).
 - Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server).
-  You can configure the plugin to
-  [display only a subset of alerts](#show-subset-of-vale-alerts).
-
-  In the extension's settings:
-
-  <!-- vale gitlab.Spelling = NO -->
-
-  - Select the **Use CLI** checkbox.
-  - In the  **Config** setting, enter an absolute
-    path to [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini)
-    in one of the cloned GitLab repositories on your computer.
-
-  <!-- vale gitlab.Spelling = YES -->
-
-  - In the **Path** setting, enter the absolute path to the Vale binary. In most
-    cases, `vale` should work. To find the location, run `which vale` in a terminal.
-
+  You can configure the plugin to [display only a subset of alerts](#show-subset-of-vale-alerts).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
 - Emacs [Flycheck extension](https://github.com/flycheck/flycheck).
   This requires some configuration:
@@ -344,7 +346,7 @@ To configure Vale in your editor, install one of the following as appropriate:
   In this setup the `markdownlint` checker is set as a "next" checker from the defined `vale` checker.
   Enabling this custom Vale checker provides error linting from both Vale and markdownlint.
 
-We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
+We don't use [Vale Server](https://docs.errata.ai/vale-server/install).
 
 ### Configure pre-push hooks
 

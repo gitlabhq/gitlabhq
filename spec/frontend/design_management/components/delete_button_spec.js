@@ -1,5 +1,6 @@
 import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import BatchDeleteButton from '~/design_management/components/delete_button.vue';
 
 describe('Batch delete button component', () => {
@@ -36,18 +37,15 @@ describe('Batch delete button component', () => {
     expect(findButton().attributes('disabled')).toBeTruthy();
   });
 
-  it('emits `delete-selected-designs` event on modal ok click', () => {
+  it('emits `delete-selected-designs` event on modal ok click', async () => {
     createComponent();
     findButton().vm.$emit('click');
-    return wrapper.vm
-      .$nextTick()
-      .then(() => {
-        findModal().vm.$emit('ok');
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(wrapper.emitted('delete-selected-designs')).toBeTruthy();
-      });
+
+    await nextTick();
+    findModal().vm.$emit('ok');
+
+    await nextTick();
+    expect(wrapper.emitted('delete-selected-designs')).toBeTruthy();
   });
 
   it('renders slot content', () => {

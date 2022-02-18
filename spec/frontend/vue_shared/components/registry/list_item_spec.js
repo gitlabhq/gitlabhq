@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import component from '~/vue_shared/components/registry/list_item.vue';
 
 describe('list item', () => {
@@ -70,10 +71,10 @@ describe('list item', () => {
     it('are visible when details is shown', async () => {
       mountComponent({}, slotMocks);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       findToggleDetailsButton().vm.$emit('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       slotNames.forEach((name) => {
         expect(findDetailsSlot(name).exists()).toBe(true);
       });
@@ -90,7 +91,7 @@ describe('list item', () => {
   describe('details toggle button', () => {
     it('is visible when at least one details slot exists', async () => {
       mountComponent({}, { 'details-foo': '<span></span>' });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findToggleDetailsButton().exists()).toBe(true);
     });
 

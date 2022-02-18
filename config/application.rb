@@ -257,6 +257,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/build.css"
     config.assets.precompile << "page_bundles/ci_status.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
+    config.assets.precompile << "page_bundles/dashboard_projects.css"
     config.assets.precompile << "page_bundles/dev_ops_reports.css"
     config.assets.precompile << "page_bundles/environments.css"
     config.assets.precompile << "page_bundles/epics.css"
@@ -284,6 +285,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/productivity_analytics.css"
     config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
     config.assets.precompile << "page_bundles/project.css"
+    config.assets.precompile << "page_bundles/projects_edit.css"
     config.assets.precompile << "page_bundles/reports.css"
     config.assets.precompile << "page_bundles/roadmap.css"
     config.assets.precompile << "page_bundles/security_dashboard.css"
@@ -506,6 +508,16 @@ module Gitlab
         %w[images javascripts stylesheets].each do |path|
           app.config.assets.paths.unshift("#{config.root}/#{extension}/app/assets/#{path}")
         end
+      end
+    end
+
+    # DO NOT PLACE ANY INITIALIZERS AFTER THIS.
+    config.after_initialize do
+      # on_master_start yields immediately in unclustered environments and runs
+      # when the primary process is done initializing otherwise.
+      Gitlab::Cluster::LifecycleEvents.on_master_start do
+        Gitlab::Metrics::BootTimeTracker.instance.track_boot_time!
+        Gitlab::Console.welcome!
       end
     end
   end

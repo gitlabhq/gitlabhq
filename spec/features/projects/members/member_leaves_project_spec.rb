@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Member leaves project' do
+  include Spec::Support::Helpers::Features::MembersHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -21,13 +23,18 @@ RSpec.describe 'Projects > Members > Member leaves project' do
     expect(project.users.exists?(user.id)).to be_falsey
   end
 
-  it 'user leaves project by url param', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/35925' do
+  it 'user leaves project by url param', :js do
     visit project_path(project, leave: 1)
 
     page.accept_confirm
+    wait_for_all_requests
 
-    expect(find('.flash-notice')).to have_content "You left the \"#{project.full_name}\" project"
     expect(current_path).to eq(dashboard_projects_path)
-    expect(project.users.exists?(user.id)).to be_falsey
+
+    sign_in(project.first_owner)
+
+    visit project_project_members_path(project)
+
+    expect(members_table).not_to have_content(user.name)
   end
 end

@@ -7,7 +7,7 @@ module Gitlab
         class Generator < ::Gitlab::UsageData
           class << self
             def generate(key_path)
-              uncached_data.deep_stringify_keys.dig(*key_path.split('.'))
+              data.deep_stringify_keys.dig(*key_path.split('.'))
             end
 
             def add_metric(metric, time_frame: 'none', options: {})

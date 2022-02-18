@@ -102,16 +102,16 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request2)
         end
 
-        it 'tracks Draft/WIP marking' do
+        it 'tracks Draft marking' do
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
             .to receive(:track_marked_as_draft_action).once.with(user: user)
 
-          opts[:title] = "WIP: #{opts[:title]}"
+          opts[:title] = "Draft: #{opts[:title]}"
 
           MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request2)
         end
 
-        it 'tracks Draft/WIP un-marking' do
+        it 'tracks Draft un-marking' do
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
             .to receive(:track_unmarked_as_draft_action).once.with(user: user)
 

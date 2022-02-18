@@ -1,7 +1,7 @@
-import Cookies from 'js-cookie';
+import { getCookie } from '~/lib/utils/common_utils';
 import { VIEW_TYPES } from '../constants';
 
-const diffViewType = Cookies.get('diff_view');
+const diffViewType = getCookie('diff_view');
 
 export default () => ({
   isLoading: true,

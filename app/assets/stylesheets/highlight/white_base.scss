@@ -18,6 +18,7 @@ $white-cm: #998;
 $white-cp: #999;
 $white-c1: #998;
 $white-cs: #999;
+$white-cd: #998;
 $white-gd: $black;
 $white-gd-bg: #fdd;
 $white-gd-x: $black;
@@ -118,6 +119,15 @@ pre.code,
 
 .line_expansion {
   @include diff-expansion($gray-light, $border-color, $blue-600);
+
+  &.diff-tr:last-child {
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+
+    .diff-td {
+      border-bottom: 0;
+    }
+  }
 }
 
 // Diff line
@@ -128,8 +138,8 @@ pre.code,
     @include match-line;
   }
 
-  .diff-grid-left:hover,
-  .diff-grid-right:hover,
+  &:not(.match) .diff-grid-left:hover,
+  &:not(.match) .diff-grid-right:hover,
   &.code-search-line:hover {
     .diff-line-num:not(.empty-cell):not(.conflict_marker_their):not(.conflict_marker_our) {
       @include line-number-hover;
@@ -279,6 +289,9 @@ span.highlight_word {
 
 .cs { color: $white-cs;
   font-weight: $gl-font-weight-bold;
+  font-style: italic; }
+
+.cd { color: $white-cd;
   font-style: italic; }
 
 .gd {

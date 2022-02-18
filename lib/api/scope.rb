@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Encapsulate a scope used for authorization, such as `api`, or `read_user`
+# See Gitlab::Auth for the set of available scopes, and their purposes.
 module API
   class Scope
     attr_reader :name, :if

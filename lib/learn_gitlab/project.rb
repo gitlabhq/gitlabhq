@@ -3,6 +3,7 @@
 module LearnGitlab
   class Project
     PROJECT_NAME = 'Learn GitLab'
+    PROJECT_NAME_ULTIMATE_TRIAL = 'Learn GitLab - Ultimate trial'
     BOARD_NAME = 'GitLab onboarding'
     LABEL_NAME = 'Novice'
 
@@ -15,7 +16,7 @@ module LearnGitlab
     end
 
     def project
-      @project ||= current_user.projects.find_by_name(PROJECT_NAME)
+      @project ||= current_user.projects.find_by_name([PROJECT_NAME, PROJECT_NAME_ULTIMATE_TRIAL])
     end
 
     def board

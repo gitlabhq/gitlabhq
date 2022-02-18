@@ -1,10 +1,11 @@
 # frozen_string_literal: true
-
 require 'active_support/inflector'
+require 'rainbow/refinement'
 
 module QA
   module Support
     module Repeater
+      using Rainbow
       DEFAULT_MAX_WAIT_TIME = 60
 
       RepeaterConditionExceededError = Class.new(RuntimeError)
@@ -39,7 +40,7 @@ module QA
               QA::Runtime::Logger.debug(msg.join(' '))
             end
 
-            QA::Runtime::Logger.debug("Attempt number #{attempts + 1}") if log && max_attempts && attempts > 0
+            QA::Runtime::Logger.debug("Attempt number #{attempts + 1}".bg(:yellow).black) if log && max_attempts && attempts > 0
 
             result = yield
             if result

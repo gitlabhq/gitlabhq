@@ -91,12 +91,12 @@ func TestInject(t *testing.T) {
 		}))
 		defer originResourceServer.Close()
 
-		// BodyUploader expects http.Handler as its second param, we can create a stub function and verify that
+		// RequestBody expects http.Handler as its second param, we can create a stub function and verify that
 		// it's only called for successful requests
 		handlerIsCalled := false
 		handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { handlerIsCalled = true })
 
-		bodyUploader := upload.BodyUploader(&fakePreAuthHandler{}, handlerFunc, &upload.DefaultPreparer{})
+		bodyUploader := upload.RequestBody(&fakePreAuthHandler{}, handlerFunc, &upload.DefaultPreparer{})
 
 		injector := NewInjector()
 		injector.SetUploadHandler(bodyUploader)

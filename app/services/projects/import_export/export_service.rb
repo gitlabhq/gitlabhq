@@ -47,8 +47,7 @@ module Projects
       end
 
       def save_all!
-        if save_exporters
-          Gitlab::ImportExport::Saver.save(exportable: project, shared: shared)
+        if save_exporters && save_export_archive
           notify_success
         else
           notify_error!
@@ -57,6 +56,10 @@ module Projects
 
       def save_exporters
         exporters.all?(&:save)
+      end
+
+      def save_export_archive
+        Gitlab::ImportExport::Saver.save(exportable: project, shared: shared)
       end
 
       def exporters

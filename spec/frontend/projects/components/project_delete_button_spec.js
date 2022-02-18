@@ -50,7 +50,12 @@ describe('Project remove modal', () => {
     it('passes confirmPhrase and formPath props to the shared delete button', () => {
       expect(findSharedDeleteButton().props()).toEqual({
         confirmPhrase: defaultProps.confirmPhrase,
+        forksCount: defaultProps.forksCount,
         formPath: defaultProps.formPath,
+        isFork: defaultProps.isFork,
+        issuesCount: defaultProps.issuesCount,
+        mergeRequestsCount: defaultProps.mergeRequestsCount,
+        starsCount: defaultProps.starsCount,
       });
     });
   });

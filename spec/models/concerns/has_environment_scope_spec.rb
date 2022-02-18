@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe HasEnvironmentScope do
+  let_it_be(:project) { create(:project) }
+
   subject { build(:ci_variable) }
 
   it { is_expected.to allow_value('*').for(:environment_scope) }
@@ -17,8 +19,6 @@ RSpec.describe HasEnvironmentScope do
   end
 
   describe '.on_environment' do
-    let(:project) { create(:project) }
-
     it 'returns scoped objects' do
       variable1 = create(:ci_variable, project: project, environment_scope: '*')
       variable2 = create(:ci_variable, project: project, environment_scope: 'product/*')
@@ -61,6 +61,34 @@ RSpec.describe HasEnvironmentScope do
 
         expect(subject.environment_scope).to eq('*')
       end
+    end
+  end
+
+  describe '.for_environment' do
+    subject { project.variables.for_environment(environment) }
+
+    let_it_be(:variable1) do
+      create(:ci_variable, project: project, environment_scope: '*')
+    end
+
+    let_it_be(:variable2) do
+      create(:ci_variable, project: project, environment_scope: 'production/*')
+    end
+
+    let_it_be(:variable3) do
+      create(:ci_variable, project: project, environment_scope: 'staging/*')
+    end
+
+    context 'when the environment is present' do
+      let(:environment) { 'production/canary-1' }
+
+      it { is_expected.to eq([variable1, variable2]) }
+    end
+
+    context 'when the environment is nil' do
+      let(:environment) {}
+
+      it { is_expected.to eq([variable1]) }
     end
   end
 end

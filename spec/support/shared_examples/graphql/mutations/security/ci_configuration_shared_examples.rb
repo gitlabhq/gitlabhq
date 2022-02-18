@@ -18,7 +18,7 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
     ServiceResponse.success(payload: { branch: branch, success_path: success_path })
   end
 
-  let(:error) { "An error occured!" }
+  let(:error) { "An error occurred!" }
 
   let(:service_error_response) do
     ServiceResponse.error(message: error)

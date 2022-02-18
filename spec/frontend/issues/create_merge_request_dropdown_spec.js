@@ -59,7 +59,7 @@ describe('CreateMergeRequestDropdown', () => {
   describe('updateCreatePaths', () => {
     it('escapes branch names correctly', () => {
       dropdown.createBranchPath = `${TEST_HOST}/branches?branch_name=some-branch&issue=42`;
-      dropdown.createMrPath = `${TEST_HOST}/create_merge_request?branch_name=some-branch&ref=main`;
+      dropdown.createMrPath = `${TEST_HOST}/create_merge_request?merge_request%5Bsource_branch%5D=test&merge_request%5Btarget_branch%5D=master`;
 
       dropdown.updateCreatePaths('branch', 'contains#hash');
 
@@ -68,7 +68,7 @@ describe('CreateMergeRequestDropdown', () => {
       );
 
       expect(dropdown.createMrPath).toBe(
-        `${TEST_HOST}/create_merge_request?branch_name=contains%23hash&ref=main`,
+        `${TEST_HOST}/create_merge_request?merge_request%5Bsource_branch%5D=contains%23hash&merge_request%5Btarget_branch%5D=master`,
       );
     });
   });

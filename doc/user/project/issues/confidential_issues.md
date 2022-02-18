@@ -11,19 +11,20 @@ Confidential issues are [issues](index.md) visible only to members of a project 
 Confidential issues can be used by open source projects and companies alike to
 keep security vulnerabilities private or prevent surprises from leaking out.
 
-## Making an issue confidential
+## Make an issue confidential
 
-You can make an issue confidential during issue creation or by editing
-an existing one.
+You can make an issue confidential when you create or edit an issue.
 
 When you create a new issue, a checkbox right below the text area is available
 to mark the issue as confidential. Check that box and hit the **Create issue**
 button to create the issue. For existing issues, edit them, check the
 confidential checkbox and hit **Save changes**.
 
+When you create a confidential issue in a project, the project becomes listed in the **Contributed projects** section in your [profile](../../profile/index.md). **Contributed projects** does not show information about the confidential issue; it only shows the project name.
+
 ![Creating a new confidential issue](img/confidential_issues_create.png)
 
-## Modifying issue confidentiality
+## Modify issue confidentiality
 
 There are two ways to change an issue's confidentiality.
 
@@ -42,15 +43,15 @@ system note in the issue's comments.
 
 ![Confidential issues system notes](img/confidential_issues_system_notes.png)
 
-When an issue is made confidential, only users with at least the [Reporter role](../../permissions.md)
+When an issue is made confidential, only users with at least the Reporter role
 for the project have access to the issue.
 Users with Guest or [Minimal](../../permissions.md#users-with-minimal-access) roles can't access
 the issue even if they were actively participating before the change.
 
-## Indications of a confidential issue
+## Confidential issue indicators
 
 There are a few things that visually separate a confidential issue from a
-regular one. In the issues index page view, you can see the eye-slash (**(eye-slash)**) icon
+regular one. In the issues index page view, you can see the eye-slash (**{eye-slash}**) icon
 next to the issues that are marked as confidential:
 
 ![Confidential issues index page](img/confidential_issues_index_page.png)
@@ -74,19 +75,18 @@ There is also an indicator on the sidebar denoting confidentiality.
 
 ## Merge requests for confidential issues
 
-Although you can make issues be confidential in public projects, you cannot make
-confidential merge requests. Learn how to create [merge requests for confidential issues](../merge_requests/confidential.md)
-that prevent leaks of private data.
+Although you can create confidential issues (and make existing issues confidential) in a public project, you cannot make confidential merge requests.
+Learn how to create [merge requests for confidential issues](../merge_requests/confidential.md) that prevent leaks of private data.
 
 ## Permissions and access to confidential issues
 
 There are two kinds of level access for confidential issues. The general rule
 is that confidential issues are visible only to members of a project with at
-least the Reporter [role](../../permissions.md#project-members-permissions). However, a guest user can also create
+least the Reporter role. However, a guest user can also create
 confidential issues, but can only view the ones that they created themselves.
 
 Confidential issues are also hidden in search results for unprivileged users.
-For example, here's what a user with the [Maintainer role](../../permissions.md) and the Guest role
+For example, here's what a user with the Maintainer role and the Guest role
 sees in the project's search results respectively.
 
 | Maintainer role                                                                        | Guest role                                                                     |

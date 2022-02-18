@@ -7,6 +7,7 @@ module TokenAuthenticatableStrategies
     def initialize(klass, token_field, options)
       @klass = klass
       @token_field = token_field
+      @expires_at_field = "#{token_field}_expires_at"
       @options = options
     end
 
@@ -44,6 +45,25 @@ module TokenAuthenticatableStrategies
       instance.save! if Gitlab::Database.read_write?
     end
 
+    def expires_at(instance)
+      instance.read_attribute(@expires_at_field)
+    end
+
+    def expired?(instance)
+      return false unless expirable? && token_expiration_enforced?
+
+      exp = expires_at(instance)
+      !!exp && Time.current > exp
+    end
+
+    def expirable?
+      !!@options[:expires_at]
+    end
+
+    def token_with_expiration(instance)
+      API::Support::TokenWithExpiration.new(self, instance)
+    end
+
     def self.fabricate(model, field, options)
       if options[:digest] && options[:encrypted]
         raise ArgumentError, _('Incompatible options set!')
@@ -64,6 +84,10 @@ module TokenAuthenticatableStrategies
       new_token = generate_available_token
       formatted_token = format_token(instance, new_token)
       set_token(instance, formatted_token)
+
+      if expirable?
+        instance[@expires_at_field] = @options[:expires_at].to_proc.call(instance)
+      end
     end
 
     def unique
@@ -82,11 +106,21 @@ module TokenAuthenticatableStrategies
     end
 
     def relation(unscoped)
-      unscoped ? @klass.unscoped : @klass
+      unscoped ? @klass.unscoped : @klass.where(not_expired)
     end
 
     def token_set?(instance)
       raise NotImplementedError
+    end
+
+    def token_expiration_enforced?
+      return true unless @options[:expiration_enforced?]
+
+      @options[:expiration_enforced?].to_proc.call(@klass)
+    end
+
+    def not_expired
+      Arel.sql("#{@expires_at_field} IS NULL OR #{@expires_at_field} >= NOW()") if expirable? && token_expiration_enforced?
     end
   end
 end

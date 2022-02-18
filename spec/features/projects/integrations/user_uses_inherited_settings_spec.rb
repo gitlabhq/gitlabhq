@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User uses inherited settings', :js do
   include JiraServiceHelper
 
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
   before do
     stub_jira_integration_test

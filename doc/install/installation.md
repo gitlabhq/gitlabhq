@@ -230,7 +230,7 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.4.tar.gz"
+curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.4.tar.gz"
 echo '3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b ruby-2.7.4.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.4.tar.gz
 cd ruby-2.7.4
 
@@ -250,7 +250,7 @@ page](https://go.dev/dl).
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --progress-bar "https://go.dev/dl/go1.16.10.linux-amd64.tar.gz"
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.16.10.linux-amd64.tar.gz"
 echo '414cd18ce1d193769b9e97d2401ad718755ab47816e13b2a1cde203d263b55cf  go1.16.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
   sudo tar -C /usr/local -xzf go1.16.10.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
@@ -560,10 +560,6 @@ sudo -u git -H cp config/puma.rb.example config/puma.rb
 # cores you have available. You can get that number via the `nproc` command.
 sudo -u git -H editor config/puma.rb
 
-# Configure Git global settings for git user
-# 'autocrlf' is needed for the web editor
-sudo -u git -H git config --global core.autocrlf input
-
 # Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
 sudo -u git -H git config --global gc.auto 0
 
@@ -571,6 +567,7 @@ sudo -u git -H git config --global gc.auto 0
 sudo -u git -H git config --global repack.writeBitmaps true
 
 # Enable push options
+# Refer to https://docs.gitlab.com/ee/user/project/push_options.html for more information.
 sudo -u git -H git config --global receive.advertisePushOptions true
 
 # Enable fsyncObjectFiles to reduce risk of repository corruption if the server crashes
@@ -578,9 +575,10 @@ sudo -u git -H git config --global core.fsyncObjectFiles true
 
 # Configure Redis connection settings
 sudo -u git -H cp config/resque.yml.example config/resque.yml
+sudo -u git -H cp config/cable.yml.example config/cable.yml
 
 # Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
-sudo -u git -H editor config/resque.yml
+sudo -u git -H editor config/resque.yml config/cable.yml
 ```
 
 Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
@@ -1041,9 +1039,8 @@ To use GitLab with HTTPS:
    1. Update `ssl_certificate` and `ssl_certificate_key`.
    1. Review the configuration file and consider applying other security and performance enhancing features.
 
-Using a self-signed certificate is discouraged but if you must use it, follow the normal directions. Then:
-
-1. Generate a self-signed SSL certificate:
+Using a self-signed certificate is discouraged. If you must use one,
+follow the normal directions and generate a self-signed SSL certificate:
 
    ```shell
    mkdir -p /etc/nginx/ssl/
@@ -1052,7 +1049,12 @@ Using a self-signed certificate is discouraged but if you must use it, follow th
    sudo chmod o-r gitlab.key
    ```
 
-1. In the `config.yml` of GitLab Shell set `self_signed_cert` to `true`.
+WARNING:
+The `self_signed_cert` variable is
+[deprecated and redundant](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/120).
+It is set to `false` by default, but still accepts self-signed certificates. Setting
+this value to `true` allows any certificate to be accepted, and can make
+machine-in-the-middle attacks possible.
 
 ### Enable Reply by email
 
@@ -1142,7 +1144,7 @@ You can configure the Prometheus server in `config/gitlab.yml`:
 # example
 prometheus:
   enabled: true
-  server_address: '10.1.2.3:9090' 
+  server_address: '10.1.2.3:9090'
 ```
 
 ## Troubleshooting

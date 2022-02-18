@@ -1,4 +1,4 @@
-import { ApolloLink, Observable } from 'apollo-link';
+import { ApolloLink, Observable } from '@apollo/client/core';
 
 import { apolloCaptchaLink } from '~/captcha/apollo_captcha_link';
 import UnsolvedCaptchaError from '~/captcha/unsolved_captcha_error';

@@ -96,6 +96,7 @@ export const workspaceLabelsQueryResponse = {
       labels: {
         nodes: [
           {
+            __typename: 'Label',
             color: '#330066',
             description: null,
             id: 'gid://gitlab/ProjectLabel/1',
@@ -103,6 +104,7 @@ export const workspaceLabelsQueryResponse = {
             textColor: '#000000',
           },
           {
+            __typename: 'Label',
             color: '#2f7b2e',
             description: null,
             id: 'gid://gitlab/ProjectLabel/2',
@@ -125,6 +127,7 @@ export const issuableLabelsQueryResponse = {
         labels: {
           nodes: [
             {
+              __typename: 'Label',
               color: '#330066',
               description: null,
               id: 'gid://gitlab/ProjectLabel/1',

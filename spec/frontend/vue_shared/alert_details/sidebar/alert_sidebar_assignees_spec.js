@@ -1,6 +1,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarAssignee from '~/vue_shared/alert_details/components/sidebar/sidebar_assignee.vue';
 import SidebarAssignees from '~/vue_shared/alert_details/components/sidebar/sidebar_assignees.vue';
@@ -112,7 +113,7 @@ describe('Alert Details Sidebar Assignees', () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isDropdownSearching: false });
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findDropdown().text()).toBe('Unassigned');
     });
 
@@ -126,7 +127,7 @@ describe('Alert Details Sidebar Assignees', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isDropdownSearching: false });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       wrapper.find(SidebarAssignee).vm.$emit('update-alert-assignees', 'root');
 
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
@@ -139,7 +140,7 @@ describe('Alert Details Sidebar Assignees', () => {
       });
     });
 
-    it('emits an error when request contains error messages', () => {
+    it('emits an error when request contains error messages', async () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isDropdownSearching: false });
@@ -153,15 +154,11 @@ describe('Alert Details Sidebar Assignees', () => {
       };
 
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(errorMutationResult);
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          const SideBarAssigneeItem = wrapper.findAll(SidebarAssignee).at(0);
-          SideBarAssigneeItem.vm.$emit('update-alert-assignees');
-        })
-        .then(() => {
-          expect(wrapper.emitted('alert-error')).toBeDefined();
-        });
+
+      await nextTick();
+      const SideBarAssigneeItem = wrapper.findAll(SidebarAssignee).at(0);
+      await SideBarAssigneeItem.vm.$emit('update-alert-assignees');
+      expect(wrapper.emitted('alert-error')).toBeDefined();
     });
 
     it('stops updating and cancels loading when the request fails', () => {

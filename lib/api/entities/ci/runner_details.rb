@@ -15,18 +15,18 @@ module API
         # rubocop: disable CodeReuse/ActiveRecord
         expose :projects, with: Entities::BasicProjectDetails do |runner, options|
           if options[:current_user].admin? # rubocop: disable Cop/UserAdmin
-            runner.projects.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659')
+            runner.projects
           else
-            options[:current_user].authorized_projects.where(id: runner.projects).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659')
+            options[:current_user].authorized_projects.where(id: runner.runner_projects.pluck(:project_id))
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord
         # rubocop: disable CodeReuse/ActiveRecord
         expose :groups, with: Entities::BasicGroupDetails do |runner, options|
           if options[:current_user].admin? # rubocop: disable Cop/UserAdmin
-            runner.groups.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659')
+            runner.groups
           else
-            options[:current_user].authorized_groups.where(id: runner.groups).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659')
+            options[:current_user].authorized_groups.where(id: runner.runner_namespaces.pluck(:namespace_id))
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord

@@ -24,6 +24,20 @@ describe('Settings Panels', () => {
 
       expect(isExpanded(panel)).toBe(true);
     });
+
+    it('should expand panel containing linked hash', () => {
+      window.location.hash = '#group_description';
+
+      const panel = document.querySelector('#js-general-settings');
+      // Our test environment automatically expands everything so we need to clear that out first
+      panel.classList.remove('expanded');
+
+      expect(isExpanded(panel)).toBe(false);
+
+      initSettingsPanels();
+
+      expect(isExpanded(panel)).toBe(true);
+    });
   });
 
   it('does not change the text content of triggers', () => {

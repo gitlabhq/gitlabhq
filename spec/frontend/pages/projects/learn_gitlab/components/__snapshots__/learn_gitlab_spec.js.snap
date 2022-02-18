@@ -135,13 +135,13 @@ exports[`Learn GitLab renders correctly 1`] = `
           >
             <a
               class="gl-link"
+              data-testid="uncompleted-learn-gitlab-link"
               data-track-action="click_link"
               data-track-experiment="change_continuous_onboarding_link_urls"
               data-track-label="Set up CI/CD"
               data-track-property="Growth::Conversion::Experiment::LearnGitLab"
               href="http://example.com/"
-              rel="noopener noreferrer"
-              target="_blank"
+              target="_self"
             >
               
     Set up CI/CD
@@ -155,13 +155,13 @@ exports[`Learn GitLab renders correctly 1`] = `
           >
             <a
               class="gl-link"
+              data-testid="uncompleted-learn-gitlab-link"
               data-track-action="click_link"
               data-track-experiment="change_continuous_onboarding_link_urls"
               data-track-label="Start a free Ultimate trial"
               data-track-property="Growth::Conversion::Experiment::LearnGitLab"
               href="http://example.com/"
-              rel="noopener noreferrer"
-              target="_blank"
+              target="_self"
             >
               
     Start a free Ultimate trial
@@ -175,13 +175,13 @@ exports[`Learn GitLab renders correctly 1`] = `
           >
             <a
               class="gl-link"
+              data-testid="uncompleted-learn-gitlab-link"
               data-track-action="click_link"
               data-track-experiment="change_continuous_onboarding_link_urls"
               data-track-label="Add code owners"
               data-track-property="Growth::Conversion::Experiment::LearnGitLab"
               href="http://example.com/"
-              rel="noopener noreferrer"
-              target="_blank"
+              target="_self"
             >
               
     Add code owners
@@ -202,13 +202,13 @@ exports[`Learn GitLab renders correctly 1`] = `
           >
             <a
               class="gl-link"
+              data-testid="uncompleted-learn-gitlab-link"
               data-track-action="click_link"
               data-track-experiment="change_continuous_onboarding_link_urls"
               data-track-label="Add merge request approval"
               data-track-property="Growth::Conversion::Experiment::LearnGitLab"
               href="http://example.com/"
-              rel="noopener noreferrer"
-              target="_blank"
+              target="_self"
             >
               
     Add merge request approval
@@ -265,13 +265,13 @@ exports[`Learn GitLab renders correctly 1`] = `
           >
             <a
               class="gl-link"
+              data-testid="uncompleted-learn-gitlab-link"
               data-track-action="click_link"
               data-track-experiment="change_continuous_onboarding_link_urls"
               data-track-label="Create an issue"
               data-track-property="Growth::Conversion::Experiment::LearnGitLab"
               href="http://example.com/"
-              rel="noopener noreferrer"
-              target="_blank"
+              target="_self"
             >
               
     Create an issue
@@ -285,13 +285,13 @@ exports[`Learn GitLab renders correctly 1`] = `
           >
             <a
               class="gl-link"
+              data-testid="uncompleted-learn-gitlab-link"
               data-track-action="click_link"
               data-track-experiment="change_continuous_onboarding_link_urls"
               data-track-label="Submit a merge request"
               data-track-property="Growth::Conversion::Experiment::LearnGitLab"
               href="http://example.com/"
-              rel="noopener noreferrer"
-              target="_blank"
+              target="_self"
             >
               
     Submit a merge request
@@ -341,11 +341,12 @@ exports[`Learn GitLab renders correctly 1`] = `
           >
             <a
               class="gl-link"
+              data-testid="uncompleted-learn-gitlab-link"
               data-track-action="click_link"
               data-track-experiment="change_continuous_onboarding_link_urls"
               data-track-label="Run a Security scan using CI/CD"
               data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-              href="http://example.com/"
+              href="https://docs.gitlab.com/ee/foobar/"
               rel="noopener noreferrer"
               target="_blank"
             >

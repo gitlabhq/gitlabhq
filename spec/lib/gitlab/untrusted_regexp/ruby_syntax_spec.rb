@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'support/shared_examples/lib/gitlab/malicious_regexp_shared_examples'
-require 'support/helpers/stub_feature_flags'
+require 'spec_helper'
 
 RSpec.describe Gitlab::UntrustedRegexp::RubySyntax do
   describe '.matches_syntax?' do
@@ -77,6 +75,7 @@ RSpec.describe Gitlab::UntrustedRegexp::RubySyntax do
       include StubFeatureFlags
 
       before do
+        # When removed we could use `require 'fast_spec_helper'` again.
         stub_feature_flags(allow_unsafe_ruby_regexp: true)
 
         allow(Gitlab::UntrustedRegexp).to receive(:new).and_raise(RegexpError)

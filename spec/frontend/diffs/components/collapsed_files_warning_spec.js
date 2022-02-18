@@ -1,8 +1,8 @@
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
-import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '~/diffs/constants';
+import { EVT_EXPAND_ALL_FILES } from '~/diffs/constants';
 import eventHub from '~/diffs/event_hub';
 import createStore from '~/diffs/store/modules';
 
@@ -13,21 +13,19 @@ const propsData = {
   mergeable: true,
   resolutionPath: 'a-path',
 };
-const limitedClasses = CENTERED_LIMITED_CONTAINER_CLASSES.split(' ');
 
 async function files(store, count) {
   const copies = Array(count).fill(file);
   store.state.diffs.diffFiles.push(...copies);
 
-  return nextTick();
+  await nextTick();
 }
 
 describe('CollapsedFilesWarning', () => {
-  const localVue = createLocalVue();
   let store;
   let wrapper;
 
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   const getAlertActionButton = () =>
     wrapper.find(CollapsedFilesWarning).find('button.gl-alert-action:first-child');
@@ -43,7 +41,6 @@ describe('CollapsedFilesWarning', () => {
 
     wrapper = mounter(CollapsedFilesWarning, {
       propsData: { ...propsData, ...props },
-      localVue,
       store,
     });
   };
@@ -53,20 +50,6 @@ describe('CollapsedFilesWarning', () => {
   });
 
   describe('when there is more than one file', () => {
-    it.each`
-      limited  | containerClasses
-      ${true}  | ${limitedClasses}
-      ${false} | ${[]}
-    `(
-      'has the correct container classes when limited is $limited',
-      async ({ limited, containerClasses }) => {
-        createComponent({ limited });
-        await files(store, 2);
-
-        expect(wrapper.classes()).toEqual(['col-12'].concat(containerClasses));
-      },
-    );
-
     it.each`
       present  | dismissed
       ${false} | ${true}
@@ -86,7 +69,7 @@ describe('CollapsedFilesWarning', () => {
 
       getAlertCloseButton().element.click();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find('[data-testid="root"]').exists()).toBe(false);
     });

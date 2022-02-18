@@ -266,7 +266,7 @@ export default {
               >
               <span class="gl-font-lg">&middot;</span>
               <span data-testid="vsa-stage-event-date">
-                {{ s__('OpenedNDaysAgo|Opened') }}
+                {{ s__('OpenedNDaysAgo|Created') }}
                 <gl-link class="gl-text-black-normal" :href="item.url">{{
                   item.createdAt
                 }}</gl-link>

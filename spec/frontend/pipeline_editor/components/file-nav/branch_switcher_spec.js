@@ -12,6 +12,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import BranchSwitcher from '~/pipeline_editor/components/file_nav/branch_switcher.vue';
 import { DEFAULT_FAILURE } from '~/pipeline_editor/constants';
 import getAvailableBranchesQuery from '~/pipeline_editor/graphql/queries/available_branches.query.graphql';
+import getCurrentBranch from '~/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
+import getLastCommitBranch from '~/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
+import { resolvers } from '~/pipeline_editor/graphql/resolvers';
+
 import {
   mockBranchPaginationLimit,
   mockDefaultBranch,
@@ -34,6 +38,7 @@ describe('Pipeline editor branch switcher', () => {
 
   const createComponent = ({
     currentBranch = mockDefaultBranch,
+    availableBranches = ['main'],
     isQueryLoading = false,
     mountFn = shallowMount,
     options = {},
@@ -59,7 +64,7 @@ describe('Pipeline editor branch switcher', () => {
       },
       data() {
         return {
-          availableBranches: ['main'],
+          availableBranches,
           currentBranch,
         };
       },
@@ -67,13 +72,44 @@ describe('Pipeline editor branch switcher', () => {
     });
   };
 
-  const createComponentWithApollo = ({ mountFn = shallowMount, props = {} } = {}) => {
+  const createComponentWithApollo = ({
+    mountFn = shallowMount,
+    props = {},
+    availableBranches = ['main'],
+  } = {}) => {
     const handlers = [[getAvailableBranchesQuery, mockAvailableBranchQuery]];
-    mockApollo = createMockApollo(handlers);
+    mockApollo = createMockApollo(handlers, resolvers);
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getCurrentBranch,
+      data: {
+        workBranches: {
+          __typename: 'BranchList',
+          current: {
+            __typename: 'WorkBranch',
+            name: mockDefaultBranch,
+          },
+        },
+      },
+    });
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getLastCommitBranch,
+      data: {
+        workBranches: {
+          __typename: 'BranchList',
+          lastCommit: {
+            __typename: 'WorkBranch',
+            name: '',
+          },
+        },
+      },
+    });
 
     createComponent({
       mountFn,
       props,
+      availableBranches,
       options: {
         localVue,
         apolloProvider: mockApollo,
@@ -113,7 +149,7 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('when querying for the first time', () => {
     beforeEach(() => {
-      createComponentWithApollo();
+      createComponentWithApollo({ availableBranches: [] });
     });
 
     it('disables the dropdown', () => {
@@ -153,7 +189,7 @@ describe('Pipeline editor branch switcher', () => {
   describe('on fetch error', () => {
     beforeEach(async () => {
       setAvailableBranchesMock(new Error());
-      createComponentWithApollo();
+      createComponentWithApollo({ availableBranches: [] });
       await waitForPromises();
     });
 

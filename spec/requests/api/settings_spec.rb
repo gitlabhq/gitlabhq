@@ -32,6 +32,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['dsa_key_restriction']).to eq(0)
       expect(json_response['ecdsa_key_restriction']).to eq(0)
       expect(json_response['ed25519_key_restriction']).to eq(0)
+      expect(json_response['ecdsa_sk_key_restriction']).to eq(0)
+      expect(json_response['ed25519_sk_key_restriction']).to eq(0)
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
       expect(json_response['allow_local_requests_from_hooks_and_services']).to be(false)
       expect(json_response['allow_local_requests_from_web_hooks_and_services']).to be(false)
@@ -49,6 +51,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['whats_new_variant']).to eq('all_tiers')
       expect(json_response['user_deactivation_emails_enabled']).to be(true)
       expect(json_response['suggest_pipeline_enabled']).to be(true)
+      expect(json_response['runner_token_expiration_interval']).to be_nil
+      expect(json_response['group_runner_token_expiration_interval']).to be_nil
+      expect(json_response['project_runner_token_expiration_interval']).to be_nil
     end
   end
 
@@ -111,6 +116,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             dsa_key_restriction: 2048,
             ecdsa_key_restriction: 384,
             ed25519_key_restriction: 256,
+            ecdsa_sk_key_restriction: 256,
+            ed25519_sk_key_restriction: 256,
             enforce_terms: true,
             terms: 'Hello world!',
             performance_bar_allowed_group_path: group.full_path,
@@ -137,7 +144,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             personal_access_token_prefix: "GL-",
             user_deactivation_emails_enabled: false,
             admin_mode: true,
-            suggest_pipeline_enabled: false
+            suggest_pipeline_enabled: false,
+            users_get_by_id_limit: 456
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -163,6 +171,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['dsa_key_restriction']).to eq(2048)
         expect(json_response['ecdsa_key_restriction']).to eq(384)
         expect(json_response['ed25519_key_restriction']).to eq(256)
+        expect(json_response['ecdsa_sk_key_restriction']).to eq(256)
+        expect(json_response['ed25519_sk_key_restriction']).to eq(256)
         expect(json_response['enforce_terms']).to be(true)
         expect(json_response['terms']).to eq('Hello world!')
         expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
@@ -190,6 +200,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['admin_mode']).to be(true)
         expect(json_response['user_deactivation_emails_enabled']).to be(false)
         expect(json_response['suggest_pipeline_enabled']).to be(false)
+        expect(json_response['users_get_by_id_limit']).to eq(456)
       end
     end
 
@@ -642,6 +653,38 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
           message = json_response['message']
           expect(message["sentry_dsn"]).to include(a_string_matching("can't be blank"))
         end
+      end
+    end
+
+    context 'runner token expiration_intervals' do
+      it 'updates the settings' do
+        put api("/application/settings", admin), params: {
+          runner_token_expiration_interval: 3600,
+          group_runner_token_expiration_interval: 3600 * 2,
+          project_runner_token_expiration_interval: 3600 * 3
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'runner_token_expiration_interval' => 3600,
+          'group_runner_token_expiration_interval' => 3600 * 2,
+          'project_runner_token_expiration_interval' => 3600 * 3
+        )
+      end
+
+      it 'updates the settings with empty values' do
+        put api("/application/settings", admin), params: {
+          runner_token_expiration_interval: nil,
+          group_runner_token_expiration_interval: nil,
+          project_runner_token_expiration_interval: nil
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'runner_token_expiration_interval' => nil,
+          'group_runner_token_expiration_interval' => nil,
+          'project_runner_token_expiration_interval' => nil
+        )
       end
     end
   end

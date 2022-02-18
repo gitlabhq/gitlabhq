@@ -11,6 +11,8 @@ module Gitlab
           end
 
           def ==(other)
+            return false unless other.is_a?(self.class)
+
             has_fingerprints? && other.has_fingerprints? &&
               location_fingerprint == other.location_fingerprint &&
                 identifier_fingerprint == other.identifier_fingerprint

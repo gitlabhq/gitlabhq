@@ -9,7 +9,7 @@
       = f.label :notes_create_limit_allowlist, _('Users to exclude from the rate limit'), class: 'label-bold'
       = f.text_area :notes_create_limit_allowlist_raw, placeholder: 'username1, username2', class: 'form-control gl-form-input', rows: 5
       .form-text.text-muted
-        = _('Comma-separated list of users allowed to exceed the rate limit.')
+        = _('List of users allowed to exceed the rate limit.')
 
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

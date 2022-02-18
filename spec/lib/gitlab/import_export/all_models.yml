@@ -529,6 +529,7 @@ project:
 - vulnerability_feedback
 - vulnerability_identifiers
 - vulnerability_scanners
+- dast_profiles
 - dast_site_profiles
 - dast_scanner_profiles
 - dast_sites
@@ -605,6 +606,7 @@ project:
 - ci_project_mirror
 - sync_events
 - secure_files
+- security_trainings
 award_emoji:
 - awardable
 - user

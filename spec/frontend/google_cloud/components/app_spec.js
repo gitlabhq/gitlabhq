@@ -24,8 +24,8 @@ const HOME_PROPS = {
   serviceAccounts: [{}, {}],
   createServiceAccountUrl: '#url-create-service-account',
   emptyIllustrationUrl: '#url-empty-illustration',
-  deploymentsCloudRunUrl: '#url-deployments-cloud-run',
-  deploymentsCloudStorageUrl: '#deploymentsCloudStorageUrl',
+  enableCloudRunUrl: '#url-enable-cloud-run',
+  enableCloudStorageUrl: '#enableCloudStorageUrl',
 };
 
 describe('google_cloud App component', () => {

@@ -43,34 +43,99 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
     # Only thing we can do is to verify that args from the resolver is correctly transformed to params of the Finder and we return the Finder's result back.
     describe 'Allowed query arguments' do
       let(:finder) { instance_double(::Ci::RunnersFinder) }
-      let(:args) do
-        {
-          active: true,
-          status: 'active',
-          type: :instance_type,
-          tag_list: ['active_runner'],
-          search: 'abc',
-          sort: :contacted_asc
-        }
+
+      context 'with active filter' do
+        let(:args) do
+          {
+            active: true,
+            status: 'active',
+            type: :instance_type,
+            tag_list: ['active_runner'],
+            search: 'abc',
+            sort: :contacted_asc
+          }
+        end
+
+        let(:expected_params) do
+          {
+            active: true,
+            status_status: 'active',
+            type_type: :instance_type,
+            tag_name: ['active_runner'],
+            preload: { tag_name: nil },
+            search: 'abc',
+            sort: 'contacted_asc'
+          }
+        end
+
+        it 'calls RunnersFinder with expected arguments' do
+          expect(::Ci::RunnersFinder).to receive(:new).with(current_user: user, params: expected_params).once.and_return(finder)
+          allow(finder).to receive(:execute).once.and_return([:execute_return_value])
+
+          expect(subject.items.to_a).to eq([:execute_return_value])
+        end
       end
 
-      let(:expected_params) do
-        {
-          active: true,
-          status_status: 'active',
-          type_type: :instance_type,
-          tag_name: ['active_runner'],
-          preload: { tag_name: nil },
-          search: 'abc',
-          sort: 'contacted_asc'
-        }
+      context 'with both active and paused filter' do
+        let(:args) do
+          {
+            active: true,
+            paused: true
+          }
+        end
+
+        let(:expected_params) do
+          {
+            active: false,
+            preload: { tag_name: nil }
+          }
+        end
+
+        it 'calls RunnersFinder with expected arguments' do
+          expect(::Ci::RunnersFinder).to receive(:new).with(current_user: user, params: expected_params).once.and_return(finder)
+          allow(finder).to receive(:execute).once.and_return([:execute_return_value])
+
+          expect(subject.items.to_a).to eq([:execute_return_value])
+        end
       end
 
-      it 'calls RunnersFinder with expected arguments' do
-        allow(::Ci::RunnersFinder).to receive(:new).with(current_user: user, params: expected_params).once.and_return(finder)
-        allow(finder).to receive(:execute).once.and_return([:execute_return_value])
+      context 'with paused filter' do
+        let(:args) do
+          { paused: true }
+        end
 
-        expect(subject.items.to_a).to eq([:execute_return_value])
+        let(:expected_params) do
+          {
+            active: false,
+            preload: { tag_name: nil }
+          }
+        end
+
+        it 'calls RunnersFinder with expected arguments' do
+          expect(::Ci::RunnersFinder).to receive(:new).with(current_user: user, params: expected_params).once.and_return(finder)
+          allow(finder).to receive(:execute).once.and_return([:execute_return_value])
+
+          expect(subject.items.to_a).to eq([:execute_return_value])
+        end
+      end
+
+      context 'with neither paused or active filters' do
+        let(:args) do
+          {}
+        end
+
+        let(:expected_params) do
+          {
+            preload: { tag_name: nil }
+          }
+        end
+
+        it 'calls RunnersFinder with expected arguments' do
+          expect(::Ci::RunnersFinder).to receive(:new).with(current_user: user, params: expected_params).once.and_return(finder)
+          allow(finder).to receive(:execute).once.and_return([:execute_return_value])
+
+          expect(subject.items.to_a).to eq([:execute_return_value])
+        end
       end
     end
   end

@@ -15,6 +15,8 @@ module Types
           description: 'Full path of the project.'
     field :path, GraphQL::Types::String, null: false,
           description: 'Path of the project.'
+    field :ci_config_path_or_default, GraphQL::Types::String, null: false,
+          description: 'Path of the CI configuration file.'
 
     field :sast_ci_configuration, Types::CiConfiguration::Sast::Type, null: true,
       calls_gitaly: true,
@@ -195,6 +197,12 @@ module Types
           extras: [:lookahead],
           resolver: Resolvers::ProjectPipelineResolver
 
+    field :pipeline_counts,
+          Types::Ci::PipelineCountsType,
+          null: true,
+          description: 'Build pipeline counts of the project.',
+          resolver: Resolvers::Ci::ProjectPipelineCountsResolver
+
     field :ci_cd_settings,
           Types::Ci::CiCdSettingType,
           null: true,
@@ -230,6 +238,12 @@ module Types
           description: 'Boards of the project.',
           max_page_size: 2000,
           resolver: Resolvers::BoardsResolver
+
+    field :recent_issue_boards,
+          Types::BoardType.connection_type,
+          null: true,
+          description: 'List of recently visited boards of the project. Maximum size is 4.',
+          resolver: Resolvers::RecentBoardsResolver
 
     field :board,
           Types::BoardType,

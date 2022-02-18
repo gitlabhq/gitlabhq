@@ -32,7 +32,7 @@ module Gitlab
             description: 'List of external YAML files to include.',
             reserved: true
 
-          entry :before_script, Entry::Script,
+          entry :before_script, Entry::Commands,
             description: 'Script that will be executed before each job.',
             reserved: true
 
@@ -44,7 +44,7 @@ module Gitlab
             description: 'Docker images that will be linked to the container.',
             reserved: true
 
-          entry :after_script, Entry::Script,
+          entry :after_script, Entry::Commands,
             description: 'Script that will be executed after each job.',
             reserved: true
 
@@ -60,7 +60,7 @@ module Gitlab
           entry :types, Entry::Stages,
             description: 'Deprecated: stages for this pipeline.',
             reserved: true,
-            deprecation: { deprecated: '9.0', warning: '14.8', removed: '15.0', documentation: 'https://docs.gitlab.com/ee/ci/yaml/#deprecated-keywords' }
+            deprecation: { deprecated: '9.0', warning: '14.8', removed: '15.0' }
 
           entry :cache, Entry::Caches,
             description: 'Configure caching between build jobs.',
@@ -122,6 +122,8 @@ module Gitlab
             ##
             # Deprecated `:types` key workaround - if types are defined and
             # stages are not defined we use types definition as stages.
+            # This keyword will be removed in 15.0:
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/346823
             #
             if types_defined?
               @entries[:stages] = @entries[:types] unless stages_defined?

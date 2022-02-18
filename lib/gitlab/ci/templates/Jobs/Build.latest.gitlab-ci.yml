@@ -1,7 +1,3 @@
-# WARNING: This latest template is for internal FEATURE-FLAG TESTING ONLY.
-#          It is not meant to be used with `include:`.
-#          This template is scheduled for removal when testing is complete: https://gitlab.com/gitlab-org/gitlab/-/issues/337987
-
 variables:
   AUTO_BUILD_IMAGE_VERSION: 'v1.5.0'
 

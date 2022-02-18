@@ -35,7 +35,7 @@ module Gitlab
         time = Time.current.to_f
 
         cache_backend.write(key, data: data, cached_at: time)
-        touch_cache_timestamp(key, time)
+        touch_cache_timestamp(key, time) unless shared_backend.read(key)
         data
       end
 

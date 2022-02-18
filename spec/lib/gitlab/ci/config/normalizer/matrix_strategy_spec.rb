@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'support/helpers/stubbed_feature'
-require 'support/helpers/stub_feature_flags'
 
 RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
-  include StubFeatureFlags
-
   describe '.applies_to?' do
     subject { described_class.applies_to?(config) }
 

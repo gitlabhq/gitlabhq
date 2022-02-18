@@ -30,7 +30,15 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::AfterUpdateServic
     end
   end
 
+  shared_examples 'adds a status change system note' do
+    specify do
+      expect { result }.to change { issue.reload.notes.count }.by(1)
+    end
+  end
+
   context 'with status attributes' do
+    it_behaves_like 'adds a status change system note'
+
     it 'updates the alert with the new alert status' do
       expect(::AlertManagement::Alerts::UpdateService).to receive(:new).once.and_call_original
       expect(described_class).to receive(:new).once.and_call_original
@@ -45,12 +53,15 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::AfterUpdateServic
       end
 
       it_behaves_like 'does not attempt to update the alert'
+      it_behaves_like 'adds a status change system note'
     end
 
     context 'when new status matches the current status' do
       let(:status_event) { :trigger }
 
       it_behaves_like 'does not attempt to update the alert'
+
+      specify { expect { result }.not_to change { issue.reload.notes.count } }
     end
   end
 end

@@ -278,6 +278,12 @@ GET /projects/:id/approval_rules/:approval_rule_id
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
 
+WARNING:
+The Vulnerability-Check feature, including the Vulnerability-Check attributes listed here, is in its
+end-of-life process. It is [deprecated](../update/deprecations.md#vulnerability-check)
+for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
+[Security Approval Policies](../user/application_security/policies/#scan-result-policy-editor).
+
 You can create project approval rules using the following endpoint:
 
 ```plaintext
@@ -295,11 +301,11 @@ POST /projects/:id/approval_rules
 | `user_ids`             | Array   | no       | The ids of users as approvers                                    |
 | `group_ids`            | Array   | no       | The ids of groups as approvers                                   |
 | `protected_branch_ids` | Array   | no       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
-| `report_type` | string   | no       | The report type required when the rule type is `report_approver`. The supported report types are: `vulnerability`, `license_scanning`, `code_coverage`. |
-| `scanners` | Array   | no       | The security scanners the `Vulnerability-Check` approval rule considers. The supported scanners are: `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing`. Defaults to all supported scanners. |
-| `severity_levels` | Array   | no       | The severity levels the `Vulnerability-Check` approval rule considers. The supported severity levels are: `info`, `unknown`, `low`, `medium`, `high`, `critical`. Defaults to `unknown`, `high`, and `critical`. |
-| `vulnerabilities_allowed` | integer   | no       | The number of vulnerabilities allowed for the `Vulnerability-Check` approval rule. Defaults to `0`. |
-| `vulnerability_states` | Array   | no       | The vulnerability states the `Vulnerability-Check` approval rule considers. The supported vulnerability states are: `newly_detected` (default), `detected`, `confirmed`, `resolved`, `dismissed`. |
+| `report_type` | string   | no       | The report type required when the rule type is `report_approver`. The supported report types are: `vulnerability`, `license_scanning`, `code_coverage`. The `vulnerability` report type is part of the Vulnerability-Check feature, which deprecated in GitLab 14.8, and planned for removal in GitLab 15.0. |
+| `scanners` | Array   | no       | The security scanners the Vulnerability-Check approval rule considers. The supported scanners are: `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing`. Defaults to all supported scanners. Deprecated in GitLab 14.8, and planned for removal in GitLab 15.0. |
+| `severity_levels` | Array   | no       | The severity levels the Vulnerability-Check approval rule considers. The supported severity levels are: `info`, `unknown`, `low`, `medium`, `high`, `critical`. Defaults to `unknown`, `high`, and `critical`. Deprecated in GitLab 14.8, and planned for removal in GitLab 15.0. |
+| `vulnerabilities_allowed` | integer   | no       | The number of vulnerabilities allowed for the Vulnerability-Check approval rule. Defaults to `0`. Deprecated in GitLab 14.8, and planned for removal in GitLab 15.0. |
+| `vulnerability_states` | Array   | no       | The vulnerability states the Vulnerability-Check approval rule considers. The supported vulnerability states are: `newly_detected` (default), `detected`, `confirmed`, `resolved`, `dismissed`. Deprecated in GitLab 14.8, and planned for removal in GitLab 15.0. |
 
 ```json
 {
@@ -404,6 +410,12 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
 
+WARNING:
+The Vulnerability-Check feature, including the Vulnerability-Check attributes listed here, is in its
+end-of-life process. It is [deprecated](../update/deprecations.md#vulnerability-check)
+for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
+[Security Approval Policies](../user/application_security/policies/#scan-result-policy-editor).
+
 You can update project approval rules using the following endpoint:
 
 ```plaintext
@@ -423,10 +435,10 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 | `user_ids`             | Array   | no       | The ids of users as approvers                                    |
 | `group_ids`            | Array   | no       | The ids of groups as approvers                                   |
 | `protected_branch_ids` | Array   | no       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
-| `scanners` | Array   | no       | The security scanners the `Vulnerability-Check` approval rule considers. The supported scanners are: `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing`. Defaults to all supported scanners. |
-| `severity_levels` | Array   | no       | The severity levels the `Vulnerability-Check` approval rule considers. The supported severity levels are: `info`, `unknown`, `low`, `medium`, `high`, `critical`. Defaults to `unknown`, `high`, and `critical`. |
-| `vulnerabilities_allowed` | integer   | no       | The number of vulnerabilities allowed for the `Vulnerability-Check` approval rule. Defaults to `0`. |
-| `vulnerability_states` | Array   | no       | The vulnerability states the `Vulnerability-Check` approval rule considers. The supported vulnerability states are: `newly_detected` (default), `detected`, `confirmed`, `resolved`, `dismissed`. |
+| `scanners` | Array   | no       | The security scanners the Vulnerability-Check approval rule considers. The supported scanners are: `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing`. Defaults to all supported scanners. Deprecated in GitLab 14.8, and planned for removal in GitLab 15.0. |
+| `severity_levels` | Array   | no       | The severity levels the Vulnerability-Check approval rule considers. The supported severity levels are: `info`, `unknown`, `low`, `medium`, `high`, `critical`. Defaults to `unknown`, `high`, and `critical`. Deprecated in GitLab 14.8, and planned for removal in GitLab 15.0. |
+| `vulnerabilities_allowed` | integer   | no       | The number of vulnerabilities allowed for the Vulnerability-Check approval rule. Defaults to `0`. Deprecated in GitLab 14.8, and planned for removal in GitLab 15.0. |
+| `vulnerability_states` | Array   | no       | The vulnerability states the Vulnerability-Check approval rule considers. The supported vulnerability states are: `newly_detected` (default), `detected`, `confirmed`, `resolved`, `dismissed`. Deprecated in GitLab 14.8, and planned for removal in GitLab 15.0. |
 
 ```json
 {
@@ -527,9 +539,9 @@ DELETE /projects/:id/approval_rules/:approval_rule_id
 | `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
 | `approval_rule_id`   | integer | yes      | The ID of a approval rule
 
-## Merge Request-level MR approvals
+## Merge request-level MR approvals
 
-Configuration for approvals on a specific Merge Request. Must be authenticated for all endpoints.
+Configuration for approvals on a specific merge request. Must be authenticated for all endpoints.
 
 ### Get Configuration
 
@@ -957,7 +969,7 @@ These are system generated rules.
 | `merge_request_iid` | integer | yes      | The IID of the merge request |
 | `approval_rule_id`  | integer | yes      | The ID of an approval rule |
 
-## Approve Merge Request
+## Approve merge request
 
 > Moved to GitLab Premium in 13.9.
 
@@ -978,7 +990,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 | `approval_password` | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-user-password-to-approve) is enabled in the project settings. |
 
 The `sha` parameter works in the same way as
-when [accepting a merge request](merge_requests.md#accept-mr): if it is passed, then it must
+when [accepting a merge request](merge_requests.md#merge-a-merge-request): if it is passed, then it must
 match the current HEAD of the merge request for the approval to be added. If it
 does not match, the response code is `409`.
 
@@ -1020,7 +1032,7 @@ does not match, the response code is `409`.
 }
 ```
 
-## Unapprove Merge Request
+## Unapprove merge request
 
 > Moved to GitLab Premium in 13.9.
 

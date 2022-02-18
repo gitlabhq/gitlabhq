@@ -10,48 +10,15 @@ import {
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { orderBy } from 'lodash';
+import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
-import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
-import {
-  CREATED_DESC,
-  i18n,
-  MAX_LIST_SIZE,
-  PAGE_SIZE,
-  PARAM_DUE_DATE,
-  PARAM_SORT,
-  PARAM_STATE,
-  RELATIVE_POSITION_ASC,
-  TOKEN_TYPE_ASSIGNEE,
-  TOKEN_TYPE_AUTHOR,
-  TOKEN_TYPE_CONFIDENTIAL,
-  TOKEN_TYPE_LABEL,
-  TOKEN_TYPE_MILESTONE,
-  TOKEN_TYPE_MY_REACTION,
-  TOKEN_TYPE_RELEASE,
-  TOKEN_TYPE_TYPE,
-  UPDATED_DESC,
-  urlSortParams,
-} from '~/issues/list/constants';
-import {
-  convertToApiParams,
-  convertToSearchQuery,
-  convertToUrlParams,
-  getDueDateValue,
-  getFilterTokens,
-  getInitialPageParams,
-  getSortKey,
-  getSortOptions,
-} from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
@@ -67,11 +34,42 @@ import {
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import {
+  CREATED_DESC,
+  i18n,
+  MAX_LIST_SIZE,
+  PAGE_SIZE,
+  PARAM_STATE,
+  RELATIVE_POSITION_ASC,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
+  UPDATED_DESC,
+  urlSortParams,
+} from '../constants';
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 import searchUsersQuery from '../queries/search_users.query.graphql';
+import setSortPreferenceMutation from '../queries/set_sort_preference.mutation.graphql';
+import {
+  convertToApiParams,
+  convertToSearchQuery,
+  convertToUrlParams,
+  getFilterTokens,
+  getInitialPageParams,
+  getSortKey,
+  getSortOptions,
+  isSortKey,
+} from '../utils';
 import NewIssueDropdown from './new_issue_dropdown.vue';
 
 const AuthorToken = () =>
@@ -103,74 +101,31 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: {
-    autocompleteAwardEmojisPath: {
-      default: '',
-    },
-    calendarPath: {
-      default: '',
-    },
-    canBulkUpdate: {
-      default: false,
-    },
-    emptyStateSvgPath: {
-      default: '',
-    },
-    exportCsvPath: {
-      default: '',
-    },
-    fullPath: {
-      default: '',
-    },
-    hasAnyIssues: {
-      default: false,
-    },
-    hasAnyProjects: {
-      default: false,
-    },
-    hasBlockedIssuesFeature: {
-      default: false,
-    },
-    hasIssueWeightsFeature: {
-      default: false,
-    },
-    hasMultipleIssueAssigneesFeature: {
-      default: false,
-    },
-    initialEmail: {
-      default: '',
-    },
-    isAnonymousSearchDisabled: {
-      default: false,
-    },
-    isIssueRepositioningDisabled: {
-      default: false,
-    },
-    isProject: {
-      default: false,
-    },
-    isSignedIn: {
-      default: false,
-    },
-    jiraIntegrationPath: {
-      default: '',
-    },
-    newIssuePath: {
-      default: '',
-    },
-    releasesPath: {
-      default: '',
-    },
-    rssPath: {
-      default: '',
-    },
-    showNewIssueLink: {
-      default: false,
-    },
-    signInPath: {
-      default: '',
-    },
-  },
+  inject: [
+    'autocompleteAwardEmojisPath',
+    'calendarPath',
+    'canBulkUpdate',
+    'emptyStateSvgPath',
+    'exportCsvPath',
+    'fullPath',
+    'hasAnyIssues',
+    'hasAnyProjects',
+    'hasBlockedIssuesFeature',
+    'hasIssueWeightsFeature',
+    'hasMultipleIssueAssigneesFeature',
+    'initialEmail',
+    'initialSort',
+    'isAnonymousSearchDisabled',
+    'isIssueRepositioningDisabled',
+    'isProject',
+    'isSignedIn',
+    'jiraIntegrationPath',
+    'newIssuePath',
+    'releasesPath',
+    'rssPath',
+    'showNewIssueLink',
+    'signInPath',
+  ],
   props: {
     eeSearchTokens: {
       type: Array,
@@ -181,7 +136,13 @@ export default {
   data() {
     const state = getParameterByName(PARAM_STATE);
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
-    let sortKey = getSortKey(getParameterByName(PARAM_SORT)) || defaultSortKey;
+    const dashboardSortKey = getSortKey(this.initialSort);
+    const graphQLSortKey =
+      isSortKey(this.initialSort?.toUpperCase()) && this.initialSort.toUpperCase();
+
+    // The initial sort is an old enum value when it is saved on the dashboard issues page.
+    // The initial sort is a GraphQL enum value when it is saved on the Vue issues list page.
+    let sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
 
     if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
       this.showIssueRepositioningMessage();
@@ -198,7 +159,6 @@ export default {
     }
 
     return {
-      dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
       filterTokens: isSearchDisabled ? [] : getFilterTokens(window.location.search),
       issues: [],
@@ -221,6 +181,9 @@ export default {
         return data[this.namespace]?.issues.nodes ?? [];
       },
       result({ data }) {
+        if (!data) {
+          return;
+        }
         this.pageInfo = data[this.namespace]?.issues.pageInfo ?? {};
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
@@ -341,6 +304,7 @@ export default {
           token: MilestoneToken,
           fetchMilestones: this.fetchMilestones,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-milestone`,
+          shouldSkipSort: true,
         },
         {
           type: TOKEN_TYPE_LABEL,
@@ -406,7 +370,7 @@ export default {
 
       tokens.sort((a, b) => a.title.localeCompare(b.title));
 
-      return orderBy(tokens, ['title']);
+      return tokens;
     },
     showPaginationControls() {
       return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
@@ -427,7 +391,6 @@ export default {
     },
     urlParams() {
       return {
-        due_date: this.dueDateFilter,
         search: this.searchQuery,
         sort: urlSortParams[this.sortKey],
         state: this.state,
@@ -584,7 +547,6 @@ export default {
         .put(joinPaths(issueToMove.webPath, 'reorder'), {
           move_before_id: isMovingToBeginning ? null : getIdFromGraphQLId(moveBeforeId),
           move_after_id: isMovingToEnd ? null : getIdFromGraphQLId(moveAfterId),
-          group_full_path: this.isProject ? undefined : this.fullPath,
         })
         .then(() => {
           const serializedVariables = JSON.stringify(this.queryVariables);
@@ -608,6 +570,25 @@ export default {
         this.pageParams = getInitialPageParams(sortKey);
       }
       this.sortKey = sortKey;
+
+      if (this.isSignedIn) {
+        this.saveSortPreference(sortKey);
+      }
+    },
+    saveSortPreference(sortKey) {
+      this.$apollo
+        .mutate({
+          mutation: setSortPreferenceMutation,
+          variables: { input: { issuesSort: sortKey } },
+        })
+        .then(({ data }) => {
+          if (data.userPreferencesUpdate.errors.length) {
+            throw new Error(data.userPreferencesUpdate.errors);
+          }
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+        });
     },
     showAnonymousSearchingMessage() {
       createFlash({
@@ -644,6 +625,7 @@ export default {
       :tabs="$options.IssuableListTabs"
       :current-tab="state"
       :tab-counts="tabCounts"
+      :truncate-counts="!isProject"
       :issuables-loading="$apollo.queries.issues.loading"
       :is-manual-ordering="isManualOrdering"
       :show-bulk-edit-sidebar="showBulkEditSidebar"

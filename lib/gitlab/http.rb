@@ -9,6 +9,7 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
     RedirectionTooDeep = Class.new(StandardError)
     ReadTotalTimeout = Class.new(Net::ReadTimeout)
+    HeaderReadTimeout = Class.new(Net::ReadTimeout)
 
     HTTP_TIMEOUT_ERRORS = [
       Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, Gitlab::HTTP::ReadTotalTimeout
@@ -24,7 +25,7 @@ module Gitlab
       read_timeout: 20,
       write_timeout: 30
     }.freeze
-    DEFAULT_READ_TOTAL_TIMEOUT = 20.seconds
+    DEFAULT_READ_TOTAL_TIMEOUT = 30.seconds
 
     include HTTParty # rubocop:disable Gitlab/HTTParty
 

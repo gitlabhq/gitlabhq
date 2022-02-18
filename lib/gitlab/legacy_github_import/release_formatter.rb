@@ -25,7 +25,7 @@ module Gitlab
       end
 
       def valid?
-        !raw_data.draft
+        !raw_data.draft && raw_data.tag_name.present?
       end
     end
   end

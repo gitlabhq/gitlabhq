@@ -4,6 +4,7 @@ class ApplicationRecord < ActiveRecord::Base
   include DatabaseReflection
   include Transactions
   include LegacyBulkInsert
+  include CrossDatabaseModification
 
   self.abstract_class = true
 

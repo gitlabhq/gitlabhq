@@ -35,11 +35,14 @@ is select the `openid` scope in the application settings.
 
 ## Settings discovery
 
-If your client allows importing OIDC settings from a discovery URL, you can use the following URL to automatically find the correct settings:
+If your client allows importing OIDC settings from a discovery URL, you can use
+the following URL to automatically find the correct settings for GitLab.com:
 
 ```plaintext
-https://gitlab.example.com/.well-known/openid-configuration
+https://gitlab.com/.well-known/openid-configuration
 ```
+
+Similar URLs can be used for other GitLab instances.
 
 ## Shared information
 

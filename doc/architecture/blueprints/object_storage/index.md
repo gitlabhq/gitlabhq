@@ -89,19 +89,22 @@ replaced by a mock implementation. Furthermore, the presence of a
 shared disk, both in CI and in local development, often hides broken
 implementations until we deploy on an HA environment.
 
-Shipping MinIO as part of the product will reduce the differences
+One consideration we can take is to investigate shipping MinIO as part of the product. This could reduce the differences
 between a cloud and a local installation, standardizing our file
 storage on a single technology.
 
-The removal of local disk operations will reduce the complexity of
+The removal of local disk operations would reduce the complexity of
 development as well as mitigate several security attack vectors as
 we no longer write user-provided data on the local storage.
 
-It will also reduce human errors as we will always run a local object
+It would also reduce human errors as we will always run a local object
 storage in development mode and any local file disk access should
 raise a red flag during the merge request review.
 
 This effort is described in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6099).
+
+Before considering any specific third-party technology, the
+open source software licensing implications should be considered. As of 23 April 2021, [MinIO is subject to the AGPL v3 license](https://github.com/minio/minio/commit/069432566fcfac1f1053677cc925ddafd750730a). GitLab Legal must be consulted before any decision is taken to ship MinIO as proposed in this blueprint.
 
 ### Enable direct upload by default on every upload
 

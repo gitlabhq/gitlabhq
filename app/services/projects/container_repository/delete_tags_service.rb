@@ -14,6 +14,7 @@ module Projects
 
         @tag_names = params[:tags]
         return error('not tags specified') if @tag_names.blank?
+        return error('repository importing') if @container_repository.migration_importing?
 
         delete_tags
       end

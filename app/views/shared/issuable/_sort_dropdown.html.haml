@@ -21,6 +21,6 @@
           = sortable_item(sort_title_merged_date,       page_filter_path(sort: sort_value_merged_date),       sort_title) if viewing_merge_requests
           = sortable_item(sort_title_closed_date,       page_filter_path(sort: sort_value_closed_date),       sort_title) if viewing_merge_requests
           = sortable_item(sort_title_relative_position, page_filter_path(sort: sort_value_relative_position), sort_title) if viewing_issues
-          = sortable_item(sort_title_title,             page_filter_path(sort: sort_value_title),             sort_title) if viewing_issues
+          = sortable_item(sort_title_title,             page_filter_path(sort: sort_value_title),             sort_title)
           = render_if_exists('shared/ee/issuable/sort_dropdown', viewing_issues: viewing_issues, sort_title: sort_title)
     = issuable_sort_direction_button(sort_value)

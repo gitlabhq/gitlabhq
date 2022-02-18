@@ -1,10 +1,8 @@
 import { GlModal } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
-
-const localVue = createLocalVue();
 
 describe('Test case details', () => {
   let wrapper;
@@ -29,7 +27,6 @@ describe('Test case details', () => {
   const createComponent = (testCase = {}) => {
     wrapper = extendedWrapper(
       shallowMount(TestCaseDetails, {
-        localVue,
         propsData: {
           modalId: 'my-modal',
           testCase: {

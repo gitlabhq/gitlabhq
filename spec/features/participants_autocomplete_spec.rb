@@ -33,29 +33,10 @@ RSpec.describe 'Member autocomplete', :js do
     let(:noteable) { create(:issue, author: author, project: project) }
 
     before do
-      stub_feature_flags(tribute_autocomplete: false)
       visit project_issue_path(project, noteable)
     end
 
     include_examples "open suggestions when typing @", 'issue'
-  end
-
-  describe 'when tribute_autocomplete feature flag is on' do
-    context 'adding a new note on a Issue' do
-      let(:noteable) { create(:issue, author: author, project: project) }
-
-      before do
-        stub_feature_flags(tribute_autocomplete: true)
-        visit project_issue_path(project, noteable)
-
-        fill_in 'Comment', with: '@'
-      end
-
-      it 'suggests noteable author and note author' do
-        expect(find_tribute_autocomplete_menu).to have_content(author.username)
-        expect(find_tribute_autocomplete_menu).to have_content(note.author.username)
-      end
-    end
   end
 
   context 'adding a new note on a Merge Request' do
@@ -90,9 +71,5 @@ RSpec.describe 'Member autocomplete', :js do
 
   def find_autocomplete_menu
     find('.atwho-view ul', visible: true)
-  end
-
-  def find_tribute_autocomplete_menu
-    find('.tribute-container ul', visible: true)
   end
 end

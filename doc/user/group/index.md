@@ -1,7 +1,7 @@
 ---
 type: reference, howto
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -68,19 +68,9 @@ To create a group:
    - Select **Menu > Groups**, and on the right, select **Create group**.
    - To the left of the search box, select the plus sign and then **New group**.
 1. Select **Create group**.
-1. For the **Group name**, use only:
-   - Alphanumeric characters
-   - Emojis
-   - Underscores
-   - Dashes, dots, spaces, and parentheses (however, it cannot start with any of these characters)
-
-   For a list of words that cannot be used as group names, see [reserved names](../reserved_names.md).
-
-1. For the **Group URL**, which is used for the [namespace](#namespaces),
-   use only:
-   - Alphanumeric characters
-   - Underscores
-   - Dashes and dots (it cannot start with dashes or end in a dot)
+1. Enter a name for the group in **Group name**. For a list of words that cannot be used as group names, see
+   [reserved names](../reserved_names.md).
+1. Enter a path for the group in **Group URL**, which is used for the [namespace](#namespaces).
 1. Choose the [visibility level](../../public_access/public_access.md).
 1. Personalize your GitLab experience by answering the following questions:
    - What is your role?
@@ -138,7 +128,7 @@ your group.
 ## Change the owner of a group
 
 You can change the owner of a group. Each group must always have at least one
-member with the [Owner role](../permissions.md#group-members-permissions).
+member with the Owner role.
 
 - As an administrator:
   1. Go to the group and from the left menu, select **Group information > Members**.
@@ -153,7 +143,7 @@ member with the [Owner role](../permissions.md#group-members-permissions).
 
 Prerequisites:
 
-- You must have the [Owner role](../permissions.md#group-members-permissions).
+- You must have the Owner role.
 - The member must have direct membership in the group. If
   membership is inherited from a parent group, then the member can be removed
   from the parent group only.
@@ -250,7 +240,7 @@ There are two different ways to add a new project to a group:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in GitLab 10.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) from GitLab Premium to GitLab Free in 11.10.
 
-By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
+By default, users with at least the Developer role can create projects under a group.
 
 To change this setting for a specific group:
 
@@ -290,10 +280,15 @@ To view the activity feed in Atom format, select the
 
 ## Share a group with another group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../feature_flags.md). Disabled by default.
+> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
 
-NOTE:
-In GitLab 13.11, you can [replace this form with a modal window](#share-a-group-modal-window).
+FLAG:
+On self-managed GitLab, by default the modal window feature is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md)
+named `invite_members_group_modal`.
+On GitLab.com, this feature is available.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group. Members get direct access
@@ -303,34 +298,13 @@ To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:
 
 1. Go to the `Frontend` group.
-1. From the left menu, select **Group information > Members**.
-1. Select the **Invite group** tab.
+1. On the left sidebar, select **Group information > Members**.
+1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select `Engineering`.
-1. For the **Max role**, select a [role](../permissions.md).
+1. Select a [role](../permissions.md).
 1. Select **Invite**.
 
 All the members of the `Engineering` group are added to the `Frontend` group.
-
-### Share a group modal window
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11.
-> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - Replaces the existing form with buttons to open a modal window.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](../project/members/index.md#enable-or-disable-modal-window).
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-In GitLab 13.11, you can optionally replace the sharing form with a modal window.
-To share a group after enabling this feature:
-
-1. Go to your group's page.
-1. On the left sidebar, go to **Group information > Members**, and then select **Invite a group**.
-1. Select a group, and select a **Max role**.
-1. Optional. Select an **Access expiration date**.
-1. Select **Invite**.
 
 ## Manage group memberships via LDAP **(PREMIUM SELF)**
 
@@ -432,10 +406,22 @@ for the group's projects to meet your group's needs.
 
 To remove a group and its contents:
 
-1. Go to your group's **Settings > General** page.
-1. Expand the **Path, transfer, remove** section.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Advanced** section.
+1. In the **Remove group** section, select **Remove group**.
+1. Type the group name.
+1. Select **Confirm**.
+
+A group can also be removed from the groups dashboard:
+
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
+1. Select (**{ellipsis_v}**) for the group you want to delete.
+1. Select **Delete**.
 1. In the Remove group section, select **Remove group**.
-1. Confirm the action.
+1. Type the group name.
+1. Select **Confirm**.
 
 This action removes the group. It also adds a background job to delete all projects in the group.
 
@@ -534,7 +520,7 @@ disabled for the group and its subgroups.
 
 Prerequisite:
 
-- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+- You must be assigned the Owner role) for the group.
 
 To specify a user cap:
 
@@ -556,7 +542,7 @@ You can remove the user cap, so there is no limit on the number of members you c
 
 Prerequisite:
 
-- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+- You must be assigned the Owner role) for the group.
 
 To remove the user cap:
 
@@ -575,7 +561,7 @@ and must be approved.
 
 Prerequisite:
 
-- You must be assigned the [Owner role](../permissions.md#group-members-permissions) for the group.
+- You must be assigned the Owner role) for the group.
 
 To approve members that are pending because they've exceeded the user cap:
 
@@ -651,7 +637,7 @@ To restrict group access by IP address:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. In the **Allow access to the following IP addresses** field, enter IP address ranges in CIDR notation.
+1. In the **Allow access to the following IP addresses** field, enter IPv4 or IPv6 address ranges in CIDR notation.
 1. Select **Save changes**.
 
    ![Domain restriction by IP address](img/restrict-by-ip.gif)
@@ -803,7 +789,7 @@ Existing forks are not removed.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
 
 Group push rules allow group maintainers to set
-[push rules](../../push_rules/push_rules.md) for newly created projects in the specific group.
+[push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
 
 To configure push rules for a group:
 

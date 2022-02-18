@@ -238,6 +238,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `artifacts_server_url`                  | API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`. When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server), this URL must point to the main GitLab server's API. |
 | `auth_redirect_uri`                     | Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`. |
 | `auth_secret`                           | Secret key for signing authentication requests. Leave blank to pull automatically from GitLab during OAuth registration. |
+| `client_cert_key_pairs`                 | Client certificates and keys used for mutual TLS with the GitLab API. See [Support mutual TLS when calling the GitLab API](#support-mutual-tls-when-calling-the-gitlab-api) for details. [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/548) in GitLab 14.8. |
 | `dir`                                   | Working directory for configuration and secrets files. |
 | `enable`                                | Enable or disable GitLab Pages on the current system. |
 | `external_http`                         | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`. |
@@ -511,6 +512,22 @@ Authority (CA) in the system certificate store.
 
 For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
+### Support mutual TLS when calling the GitLab API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/548) in GitLab 14.8.
+
+If GitLab has been [configured to require mutual TLS](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-2-way-ssl-client-authentication), you need to add the client certificates to Pages:
+
+1. Configure in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['client_cert_key_pairs'] = ['</path/to/cert>:</path/to/key>']
+   ```
+
+   Where `</path/to/cert>` and `</path/to/key>` are the file paths to the client certificate and its respective key file.
+   Both of these files must be encoded in PEM format.
+1. To configure Pages to validate the server certificates, [add the root CA to the system trust store](#using-a-custom-certificate-authority-ca).
+
 ### ZIP serving and cache configuration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/392) in GitLab 13.7.
@@ -688,7 +705,7 @@ To override the global maximum pages size for a specific group:
 ## Running GitLab Pages on a separate server
 
 You can run the GitLab Pages daemon on a separate server to decrease the load on
-your main application server. This configuration does not support mutual TLS (mTLS). See the [corresponding feature proposal](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/548) for more information.
+your main application server.
 
 To configure GitLab Pages on a separate server:
 
@@ -1021,6 +1038,25 @@ Migrate your existing Pages deployments from local storage to object storage:
 sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 ```
 
+You can track progress and verify that all Pages deployments migrated successfully using the
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+
+- `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
+- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+
+Verify `objectstg` below (where `store=2`) has count of all Pages deployments:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM pages_deployments;
+
+total | filesystem | objectstg
+------+------------+-----------
+   10 |          0 |        10
+```
+
+After verifying everything is working correctly,
+[disable Pages local storage](#disable-pages-local-storage).
+
 ### Rolling Pages deployments back to local storage
 
 After the migration to object storage is performed, you can choose to move your Pages deployments back to local storage:
@@ -1033,7 +1069,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301159) in GitLab 13.11.
 
-If you use [object storage](#using-object-storage), you can disable local storage:
+If you use [object storage](#using-object-storage), you can disable local storage to avoid unnecessary disk usage/writes:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1064,6 +1100,8 @@ is the default starting from GitLab 14.0. Skip this step if you're already runni
 1. If you want to store your pages content in [object storage](#using-object-storage), make sure to configure it.
 If you want to store the pages content locally or continue using an NFS server, skip this step.
 1. [Migrate legacy storage to ZIP storage.](#migrate-legacy-storage-to-zip-storage)
+1. If you have configured GitLab to store your pages content in [object storage](#using-object-storage),
+   [migrate Pages deployments to object storage](#migrate-pages-deployments-to-object-storage)
 1. Upgrade GitLab to 14.0.
 
 ## Backup
@@ -1076,8 +1114,6 @@ You should strongly consider running GitLab Pages under a different hostname
 than GitLab to prevent XSS attacks.
 
 ### Rate limits
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
 
 You can enforce rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
 uses a [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket) to enforce rate limiting. By default,
@@ -1098,6 +1134,8 @@ Rate limits are enforced using the following:
 
 #### Enable source-IP rate limits
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
+
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
@@ -1115,6 +1153,8 @@ Rate limits are enforced using the following:
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 #### Enable domain rate limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/630) in GitLab 14.7.
 
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
@@ -1495,3 +1535,20 @@ behavior:
 NOTE:
 `inplace_chroot` option might not work with the other features, such as [Pages Access Control](#access-control).
 The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) has more information about caveats and workarounds.
+
+### GitLab Pages deploy job fails with error "is not a recognized provider"
+
+If the **pages** job succeeds but the **deploy** job gives the error "is not a recognized provider":
+
+![Pages Deploy Failure](img/pages_deploy_failure_v14_8.png)
+
+The error message `is not a recognized provider` could be coming from the `fog` gem that GitLab uses to connect to cloud providers for object storage.
+
+To fix that:
+
+1. Check your `gitlab.rb` file. If you have `gitlab_rails['pages_object_store_enabled']` enabled, but no bucket details have been configured, either:
+
+   - Configure object storage for your Pages deployments, following the [S3-compatible connection settings](#s3-compatible-connection-settings) guide.
+   - Store your deployments locally, by commenting out that line.
+
+1. Save the changes you made to your `gitlab.rb` file, then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

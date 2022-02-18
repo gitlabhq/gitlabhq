@@ -71,7 +71,7 @@ export default {
           mutation: updateCanaryIngress,
           variables: {
             input: {
-              id: this.environment.global_id,
+              id: this.environment.global_id || this.environment.globalId,
               weight: this.weight,
             },
           },

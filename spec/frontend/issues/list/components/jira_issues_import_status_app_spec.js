@@ -1,6 +1,6 @@
 import { GlAlert, GlLabel } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import JiraIssuesImportStatus from '~/issues/list/components/jira_issues_import_status_app.vue';
 
 describe('JiraIssuesImportStatus', () => {
@@ -100,7 +100,7 @@ describe('JiraIssuesImportStatus', () => {
   });
 
   describe('alert message', () => {
-    it('is hidden when dismissed', () => {
+    it('is hidden when dismissed', async () => {
       wrapper = mountComponent({
         shouldShowInProgressAlert: true,
       });
@@ -109,9 +109,8 @@ describe('JiraIssuesImportStatus', () => {
 
       findAlert().vm.$emit('dismiss');
 
-      return Vue.nextTick(() => {
-        expect(wrapper.find(GlAlert).exists()).toBe(false);
-      });
+      await nextTick();
+      expect(wrapper.find(GlAlert).exists()).toBe(false);
     });
   });
 });

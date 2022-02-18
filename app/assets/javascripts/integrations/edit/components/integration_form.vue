@@ -5,16 +5,13 @@ import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  VALIDATE_INTEGRATION_FORM_EVENT,
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
-  INTEGRATION_FORM_SELECTOR,
   integrationLevels,
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
-import eventHub from '../event_hub';
 import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
 import ConfirmationModal from './confirmation_modal.vue';
@@ -57,6 +54,7 @@ export default {
       isTesting: false,
       isSaving: false,
       isResetting: false,
+      isValidated: false,
     };
   },
   computed: {
@@ -83,54 +81,38 @@ export default {
     disableButtons() {
       return Boolean(this.isSaving || this.isResetting || this.isTesting);
     },
-    useVueForm() {
-      return this.glFeatures?.vueIntegrationForm;
+    form() {
+      return this.$refs.integrationForm.$el;
     },
-    formContainerProps() {
-      return this.useVueForm
-        ? {
-            ref: 'integrationForm',
-            method: 'post',
-            class: 'gl-mb-3 gl-show-field-errors integration-settings-form',
-            action: this.propsSource.formPath,
-            novalidate: !this.integrationActive,
-          }
-        : {};
-    },
-    formContainer() {
-      return this.useVueForm ? GlForm : 'div';
-    },
-  },
-  mounted() {
-    this.form = this.useVueForm
-      ? this.$refs.integrationForm.$el
-      : document.querySelector(INTEGRATION_FORM_SELECTOR);
   },
   methods: {
-    ...mapActions(['setOverride', 'fetchResetIntegration', 'requestJiraIssueTypes']),
+    ...mapActions(['setOverride', 'requestJiraIssueTypes']),
+    setIsValidated() {
+      this.isValidated = true;
+    },
     onSaveClick() {
       this.isSaving = true;
 
       if (this.integrationActive && !this.form.checkValidity()) {
         this.isSaving = false;
-        eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+        this.setIsValidated();
         return;
       }
 
       this.form.submit();
     },
     onTestClick() {
-      this.isTesting = true;
-
       if (!this.form.checkValidity()) {
-        eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+        this.setIsValidated();
         return;
       }
+
+      this.isTesting = true;
 
       testIntegrationSettings(this.propsSource.testPath, this.getFormData())
         .then(({ data: { error, message = I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE } }) => {
           if (error) {
-            eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
+            this.setIsValidated();
             this.$toast.show(message);
             return;
           }
@@ -169,16 +151,6 @@ export default {
     },
     onToggleIntegrationState(integrationActive) {
       this.integrationActive = integrationActive;
-      if (!this.form || this.useVueForm) {
-        return;
-      }
-
-      // If integration will be active, enable form validation.
-      if (integrationActive) {
-        this.form.removeAttribute('novalidate');
-      } else {
-        this.form.setAttribute('novalidate', true);
-      }
     },
   },
   helpHtmlConfig: {
@@ -191,17 +163,21 @@ export default {
 </script>
 
 <template>
-  <component :is="formContainer" v-bind="formContainerProps">
-    <template v-if="useVueForm">
-      <input type="hidden" name="_method" value="put" />
-      <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
-      <input
-        type="hidden"
-        name="redirect_to"
-        :value="propsSource.redirectTo"
-        data-testid="redirect-to-field"
-      />
-    </template>
+  <gl-form
+    ref="integrationForm"
+    method="post"
+    class="gl-mb-3 gl-show-field-errors integration-settings-form"
+    :action="propsSource.formPath"
+    :novalidate="!integrationActive"
+  >
+    <input type="hidden" name="_method" value="put" />
+    <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+    <input
+      type="hidden"
+      name="redirect_to"
+      :value="propsSource.redirectTo"
+      data-testid="redirect-to-field"
+    />
 
     <override-dropdown
       v-if="defaultState !== null"
@@ -227,6 +203,7 @@ export default {
           v-if="isJira"
           :key="`${currentKey}-jira-trigger-fields`"
           v-bind="propsSource.triggerFieldsProps"
+          :is-validated="isValidated"
         />
         <trigger-fields
           v-else-if="propsSource.triggerEvents.length"
@@ -238,11 +215,13 @@ export default {
           v-for="field in propsSource.fields"
           :key="`${currentKey}-${field.name}`"
           v-bind="field"
+          :is-validated="isValidated"
         />
         <jira-issues-fields
           v-if="isJira && !isInstanceOrGroupLevel"
           :key="`${currentKey}-jira-issues-fields`"
           v-bind="propsSource.jiraIssuesProps"
+          :is-validated="isValidated"
           @request-jira-issue-types="onRequestJiraIssueTypes"
         />
 
@@ -311,5 +290,5 @@ export default {
         </div>
       </div>
     </div>
-  </component>
+  </gl-form>
 </template>

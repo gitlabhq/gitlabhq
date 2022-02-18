@@ -1,6 +1,7 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -58,7 +59,7 @@ describe('UpdateUsername component', () => {
   it('has a disabled button if the username was not changed', async () => {
     const { openModalBtn } = findElements();
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(openModalBtn.props('disabled')).toBe(true);
   });
@@ -69,7 +70,7 @@ describe('UpdateUsername component', () => {
     input.element.value = 'newUsername';
     input.trigger('input');
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(openModalBtn.props('disabled')).toBe(false);
   });
@@ -83,7 +84,7 @@ describe('UpdateUsername component', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ newUsername });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('confirmation modal contains proper header and body', async () => {
@@ -100,7 +101,7 @@ describe('UpdateUsername component', () => {
       jest.spyOn(axios, 'put');
 
       await wrapper.vm.onConfirm();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(axios.put).toHaveBeenCalledWith(actionUrl, { user: { username: newUsername } });
     });
@@ -117,7 +118,7 @@ describe('UpdateUsername component', () => {
       });
 
       await wrapper.vm.onConfirm();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(input.attributes('disabled')).toBe(undefined);
       expect(openModalBtn.props('disabled')).toBe(true);

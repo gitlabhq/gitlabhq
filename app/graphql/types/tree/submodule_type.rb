@@ -4,9 +4,9 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     # This is presented through `Repository` that has its own authorization
     class SubmoduleType < BaseObject
-      implements Types::Tree::EntryType
-
       graphql_name 'Submodule'
+
+      implements Types::Tree::EntryType
 
       field :web_url, type: GraphQL::Types::String, null: true,
             description: 'Web URL for the sub-module.'

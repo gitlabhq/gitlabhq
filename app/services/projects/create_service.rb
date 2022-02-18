@@ -89,7 +89,7 @@ module Projects
     end
 
     def after_create_actions
-      log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")
+      log_info("#{current_user.name} created a new project \"#{@project.full_name}\"")
 
       if @project.import?
         experiment(:combined_registration, user: current_user).track(:import_project)
@@ -167,7 +167,7 @@ module Projects
     end
 
     def readme_content
-      @readme_template.presence || experiment(:new_project_readme_content, namespace: @project.namespace).run_with(@project)
+      @readme_template.presence || ReadmeRendererService.new(@project, current_user).execute
     end
 
     def skip_wiki?

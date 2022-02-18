@@ -299,4 +299,51 @@ RSpec.shared_examples 'namespace traversal scopes' do
       include_examples '.self_and_descendant_ids'
     end
   end
+
+  shared_examples '.self_and_hierarchy' do
+    let(:base_scope) { Group.where(id: base_groups) }
+
+    subject { base_scope.self_and_hierarchy }
+
+    context 'with ancestors only' do
+      let(:base_groups) { [group_1, group_2] }
+
+      it { is_expected.to match_array(groups) }
+    end
+
+    context 'with descendants only' do
+      let(:base_groups) { [deep_nested_group_1, deep_nested_group_2] }
+
+      it { is_expected.to match_array(groups) }
+    end
+
+    context 'nodes with both ancestors and descendants' do
+      let(:base_groups) { [nested_group_1, nested_group_2] }
+
+      it { is_expected.to match_array(groups) }
+    end
+
+    context 'with duplicate base groups' do
+      let(:base_groups) { [nested_group_1, nested_group_1] }
+
+      it { is_expected.to contain_exactly(group_1, nested_group_1, deep_nested_group_1) }
+    end
+  end
+
+  describe '.self_and_hierarchy' do
+    it_behaves_like '.self_and_hierarchy'
+
+    context "use_traversal_ids_for_self_and_hierarchy_scopes feature flag is false" do
+      before do
+        stub_feature_flags(use_traversal_ids_for_self_and_hierarchy_scopes: false)
+      end
+
+      it_behaves_like '.self_and_hierarchy'
+
+      it 'make recursive queries' do
+        base_groups = Group.where(id: nested_group_1)
+        expect { base_groups.self_and_hierarchy.load }.to make_queries_matching(/WITH RECURSIVE/)
+      end
+    end
+  end
 end

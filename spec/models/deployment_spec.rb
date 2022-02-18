@@ -369,38 +369,6 @@ RSpec.describe Deployment do
     end
   end
 
-  describe '#finished_at' do
-    subject { deployment.finished_at }
-
-    context 'when deployment status is created' do
-      let(:deployment) { create(:deployment) }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when deployment status is success' do
-      let(:deployment) { create(:deployment, :success) }
-
-      it { is_expected.to eq(deployment.read_attribute(:finished_at)) }
-    end
-
-    context 'when deployment status is success' do
-      let(:deployment) { create(:deployment, :success, finished_at: nil) }
-
-      before do
-        deployment.update_column(:finished_at, nil)
-      end
-
-      it { is_expected.to eq(deployment.read_attribute(:created_at)) }
-    end
-
-    context 'when deployment status is running' do
-      let(:deployment) { create(:deployment, :running) }
-
-      it { is_expected.to be_nil }
-    end
-  end
-
   describe '#deployed_at' do
     subject { deployment.deployed_at }
 
@@ -615,7 +583,7 @@ RSpec.describe Deployment do
       it 'returns false' do
         commit = project.commit('feature')
 
-        expect(deployment.includes_commit?(commit)).to be false
+        expect(deployment.includes_commit?(commit.id)).to be false
       end
     end
 
@@ -623,7 +591,7 @@ RSpec.describe Deployment do
       it 'returns true' do
         commit = project.commit
 
-        expect(deployment.includes_commit?(commit)).to be true
+        expect(deployment.includes_commit?(commit.id)).to be true
       end
     end
 
@@ -632,7 +600,7 @@ RSpec.describe Deployment do
         deployment.update!(sha: Gitlab::Git::BLANK_SHA)
         commit = project.commit
 
-        expect(deployment.includes_commit?(commit)).to be false
+        expect(deployment.includes_commit?(commit.id)).to be false
       end
     end
   end

@@ -140,19 +140,6 @@ RSpec.shared_examples 'issues move service' do |group|
       expect(issue2.reload.updated_at.change(usec: 0)).to eq updated_at2.change(usec: 0)
     end
 
-    if group
-      context 'when on a group board' do
-        it 'sends the board_group_id parameter' do
-          params.merge!(move_after_id: issue1.id, move_before_id: issue2.id)
-
-          match_params = { move_between_ids: [issue1.id, issue2.id], board_group_id: parent.id }
-          expect(Issues::UpdateService).to receive(:new).with(project: issue.project, current_user: user, params: match_params).and_return(double(execute: build(:issue)))
-
-          described_class.new(parent, user, params).execute(issue)
-        end
-      end
-    end
-
     def reorder_issues(params, issues: [])
       issues.each do |issue|
         issue.move_to_end && issue.save!

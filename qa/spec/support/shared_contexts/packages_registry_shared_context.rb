@@ -32,7 +32,7 @@ module QA
         runner.name = "qa-runner-#{Time.now.to_i}"
         runner.tags = ["runner-for-#{package_project.group.name}"]
         runner.executor = :docker
-        runner.token = package_project.group.runners_token
+        runner.token = package_project.group.reload!.runners_token
       end
     end
 

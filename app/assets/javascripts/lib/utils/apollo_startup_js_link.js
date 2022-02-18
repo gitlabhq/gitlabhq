@@ -1,4 +1,4 @@
-import { ApolloLink, Observable } from 'apollo-link';
+import { ApolloLink, Observable } from '@apollo/client/core';
 import { parse } from 'graphql';
 import { isEqual, pickBy } from 'lodash';
 

@@ -9,7 +9,12 @@ module Resolvers
 
       argument :active, ::GraphQL::Types::Boolean,
                required: false,
-               description: 'Filter runners by active (true) or paused (false) status.'
+               description: 'Filter runners by `active` (true) or `paused` (false) status.',
+               deprecated: { reason: :renamed, replacement: 'paused', milestone: '14.8' }
+
+      argument :paused, ::GraphQL::Types::Boolean,
+               required: false,
+               description: 'Filter runners by `paused` (true) or `active` (false) status.'
 
       argument :status, ::Types::Ci::RunnerStatusEnum,
                required: false,
@@ -41,8 +46,11 @@ module Resolvers
       protected
 
       def runners_finder_params(params)
+        # Give preference to paused argument over the deprecated 'active' argument
+        paused = params.fetch(:paused, params[:active] ? !params[:active] : nil)
+
         {
-          active: params[:active],
+          active: paused.nil? ? nil : !paused,
           status_status: params[:status]&.to_s,
           type_type: params[:type],
           tag_name: params[:tag_list],

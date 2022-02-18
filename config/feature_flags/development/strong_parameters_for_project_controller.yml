@@ -1,0 +1,8 @@
+---
+name: strong_parameters_for_project_controller
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79956
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352251
+milestone: '14.8'
+type: development
+group: group::source code
+default_enabled: false

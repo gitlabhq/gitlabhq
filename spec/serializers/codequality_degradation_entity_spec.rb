@@ -30,6 +30,21 @@ RSpec.describe CodequalityDegradationEntity do
           expect(subject[:line]).to eq(10)
         end
       end
+
+      context 'when severity is capitalized' do
+        let(:codequality_degradation) { build(:codequality_degradation_3) }
+
+        before do
+          codequality_degradation[:severity] = 'MINOR'
+        end
+
+        it 'lowercases severity', :aggregate_failures do
+          expect(subject[:description]).to eq("Avoid parameter lists longer than 5 parameters. [12/5]")
+          expect(subject[:severity]).to eq("minor")
+          expect(subject[:file_path]).to eq("file_b.rb")
+          expect(subject[:line]).to eq(10)
+        end
+      end
     end
   end
 end

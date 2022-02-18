@@ -50,14 +50,14 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Directed Acyclic Graph Pipeline (DAG) pipelines](../directed_acyclic_graph/index.md) are based on relationships
   between jobs and can run more quickly than basic pipelines.
-- [Pipelines for Merge Requests](../pipelines/merge_request_pipelines.md) run for merge
+- [Merge request pipelines](../pipelines/merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
-- [Pipelines for Merged Results](../pipelines/pipelines_for_merged_results.md)
+- [Merged results pipelines](../pipelines/merged_results_pipelines.md)
   are merge request pipelines that act as though the changes from the source branch have
   already been merged into the target branch.
-- [Merge Trains](../pipelines/merge_trains.md)
-  use pipelines for merged results to queue merges one after the other.
-- [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
+- [Merge trains](../pipelines/merge_trains.md)
+  use merged results pipelines to queue merges one after the other.
+- [Parent-child pipelines](parent_child_pipelines.md) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
   run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
 - [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
@@ -123,7 +123,7 @@ This table lists the refspecs injected for each pipeline type:
 |---------------                                                     |----------------------------------------                                                        |
 | pipeline for branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
 | pipeline for tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
-| [pipeline for merge requests](../pipelines/merge_request_pipelines.md) | `+<sha>:refs/pipelines/<id>`                                                     |
+| [merge request pipeline](../pipelines/merge_request_pipelines.md) | `+<sha>:refs/pipelines/<id>`                                                     |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
@@ -281,7 +281,7 @@ pipelines.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
 
-Users with the [Owner role](../../user/permissions.md) in a project can delete a pipeline
+Users with the Owner role for a project can delete a pipeline
 by clicking on the pipeline in the **CI/CD > Pipelines** to get to the **Pipeline Details**
 page, then using the **Delete** button.
 

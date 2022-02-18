@@ -24,7 +24,7 @@ RSpec.describe 'Getting versions related to an issue' do
     create(:design_version, issue: issue)
   end
 
-  let_it_be(:owner) { issue.project.owner }
+  let_it_be(:owner) { issue.project.first_owner }
 
   def version_query(params = version_params)
     query_graphql_field(:versions, params, version_query_fields)

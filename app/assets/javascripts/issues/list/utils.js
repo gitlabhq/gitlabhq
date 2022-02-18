@@ -1,3 +1,9 @@
+import { isPositiveInteger } from '~/lib/utils/number_utils';
+import { __ } from '~/locale';
+import {
+  FILTERED_SEARCH_TERM,
+  OPERATOR_IS_NOT,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   API_PARAM,
   BLOCKING_ISSUES_ASC,
@@ -7,7 +13,6 @@ import {
   defaultPageSizeParams,
   DUE_DATE_ASC,
   DUE_DATE_DESC,
-  DUE_DATE_VALUES,
   filters,
   LABEL_PRIORITY_ASC,
   LABEL_PRIORITY_DESC,
@@ -36,13 +41,7 @@ import {
   urlSortParams,
   WEIGHT_ASC,
   WEIGHT_DESC,
-} from '~/issues/list/constants';
-import { isPositiveInteger } from '~/lib/utils/number_utils';
-import { __ } from '~/locale';
-import {
-  FILTERED_SEARCH_TERM,
-  OPERATOR_IS_NOT,
-} from '~/vue_shared/components/filtered_search_bar/constants';
+} from './constants';
 
 export const getInitialPageParams = (sortKey) =>
   sortKey === RELATIVE_POSITION_ASC ? largePageSizeParams : defaultPageSizeParams;
@@ -50,7 +49,7 @@ export const getInitialPageParams = (sortKey) =>
 export const getSortKey = (sort) =>
   Object.keys(urlSortParams).find((key) => urlSortParams[key] === sort);
 
-export const getDueDateValue = (value) => (DUE_DATE_VALUES.includes(value) ? value : undefined);
+export const isSortKey = (sort) => Object.keys(urlSortParams).includes(sort);
 
 export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) => {
   const sortOptions = [

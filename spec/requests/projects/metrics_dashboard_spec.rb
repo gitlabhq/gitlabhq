@@ -6,7 +6,7 @@ RSpec.describe 'Projects::MetricsDashboardController' do
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:environment2) { create(:environment, project: project) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
 
   before do
     project.add_developer(user)

@@ -18,6 +18,7 @@ import {
   RUNNER_PAGE_SIZE,
   STATUS_NEVER_CONTACTED,
 } from './constants';
+import { getPaginationVariables } from './utils';
 
 /**
  * The filters and sorting of the runners are built around
@@ -184,30 +185,27 @@ export const fromSearchToVariables = ({
   sort = null,
   pagination = {},
 } = {}) => {
-  const variables = {};
+  const filterVariables = {};
 
   const queryObj = filterToQueryObject(processFilters(filters), {
     filteredSearchTermKey: PARAM_KEY_SEARCH,
   });
 
-  [variables.status] = queryObj[PARAM_KEY_STATUS] || [];
-  variables.search = queryObj[PARAM_KEY_SEARCH];
-  variables.tagList = queryObj[PARAM_KEY_TAG];
+  [filterVariables.status] = queryObj[PARAM_KEY_STATUS] || [];
+  filterVariables.search = queryObj[PARAM_KEY_SEARCH];
+  filterVariables.tagList = queryObj[PARAM_KEY_TAG];
 
   if (runnerType) {
-    variables.type = runnerType;
+    filterVariables.type = runnerType;
   }
   if (sort) {
-    variables.sort = sort;
+    filterVariables.sort = sort;
   }
 
-  if (pagination.before) {
-    variables.before = pagination.before;
-    variables.last = RUNNER_PAGE_SIZE;
-  } else {
-    variables.after = pagination.after;
-    variables.first = RUNNER_PAGE_SIZE;
-  }
+  const paginationVariables = getPaginationVariables(pagination, RUNNER_PAGE_SIZE);
 
-  return variables;
+  return {
+    ...filterVariables,
+    ...paginationVariables,
+  };
 };

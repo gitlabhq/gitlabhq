@@ -1,13 +1,11 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import MergeConflictWarning from '~/diffs/components/merge_conflict_warning.vue';
-import { CENTERED_LIMITED_CONTAINER_CLASSES } from '~/diffs/constants';
 
 const propsData = {
   limited: true,
   mergeable: true,
   resolutionPath: 'a-path',
 };
-const limitedClasses = CENTERED_LIMITED_CONTAINER_CLASSES.split(' ');
 
 function findResolveButton(wrapper) {
   return wrapper.find('.gl-alert-actions a.gl-button:first-child');
@@ -30,19 +28,6 @@ describe('MergeConflictWarning', () => {
   afterEach(() => {
     wrapper.destroy();
   });
-
-  it.each`
-    limited  | containerClasses
-    ${true}  | ${limitedClasses}
-    ${false} | ${[]}
-  `(
-    'has the correct container classes when limited is $limited',
-    ({ limited, containerClasses }) => {
-      createComponent({ limited });
-
-      expect(wrapper.classes()).toEqual(containerClasses);
-    },
-  );
 
   it.each`
     present  | resolutionPath

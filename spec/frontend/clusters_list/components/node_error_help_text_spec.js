@@ -1,13 +1,14 @@
 import { GlPopover } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import NodeErrorHelpText from '~/clusters_list/components/node_error_help_text.vue';
 
 describe('NodeErrorHelpText', () => {
   let wrapper;
 
-  const createWrapper = (propsData) => {
+  const createWrapper = async (propsData) => {
     wrapper = shallowMount(NodeErrorHelpText, { propsData, stubs: { GlPopover } });
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const findPopover = () => wrapper.find(GlPopover);

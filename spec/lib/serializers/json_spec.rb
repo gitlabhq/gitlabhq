@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'oj'
 
 RSpec.describe Serializers::Json do
   describe '.dump' do

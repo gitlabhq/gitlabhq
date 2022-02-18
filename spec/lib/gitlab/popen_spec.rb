@@ -40,6 +40,17 @@ RSpec.describe Gitlab::Popen do
     it { expect(@output).to include('No such file or directory') }
   end
 
+  context 'non-zero status with a kill' do
+    let(:cmd) { [Gem.ruby, "-e", "thr = Thread.new { sleep 5 }; Process.kill(9, Process.pid); thr.join"] }
+
+    before do
+      @output, @status = @klass.new.popen(cmd)
+    end
+
+    it { expect(@status).to eq(9) }
+    it { expect(@output).to be_empty }
+  end
+
   context 'unsafe string command' do
     it 'raises an error when it gets called with a string argument' do
       expect { @klass.new.popen('ls', path) }.to raise_error(RuntimeError)

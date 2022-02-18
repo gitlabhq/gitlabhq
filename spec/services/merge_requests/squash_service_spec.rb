@@ -168,7 +168,7 @@ RSpec.describe MergeRequests::SquashService do
       it 'raises a squash error' do
         expect(service.execute).to match(
           status: :error,
-          message: a_string_including('does not allow squashing commits when merge requests are accepted'))
+          message: a_string_including('allow you to squash commits when merging'))
       end
     end
 
@@ -205,7 +205,7 @@ RSpec.describe MergeRequests::SquashService do
         end
 
         it 'returns an error' do
-          expect(service.execute).to match(status: :error, message: a_string_including('squash'))
+          expect(service.execute).to match(status: :error, message: a_string_including('Squash'))
         end
       end
     end
@@ -232,7 +232,7 @@ RSpec.describe MergeRequests::SquashService do
       end
 
       it 'returns an error' do
-        expect(service.execute).to match(status: :error, message: a_string_including('squash'))
+        expect(service.execute).to match(status: :error, message: a_string_including('Squash'))
       end
 
       it 'cleans up the temporary directory' do

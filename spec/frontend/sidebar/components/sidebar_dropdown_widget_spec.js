@@ -8,9 +8,9 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -36,8 +36,6 @@ import {
 } from '../mock_data';
 
 jest.mock('~/flash');
-
-const localVue = createLocalVue();
 
 describe('SidebarDropdownWidget', () => {
   let wrapper;
@@ -78,7 +76,7 @@ describe('SidebarDropdownWidget', () => {
     // It then emits `shown` event in a watcher for `visible`
     // Hence we need both of these:
     await waitForPromises();
-    await wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const waitForApollo = async () => {
@@ -108,7 +106,7 @@ describe('SidebarDropdownWidget', () => {
     projectMilestonesSpy = jest.fn().mockResolvedValue(mockProjectMilestonesResponse),
     currentMilestoneSpy = jest.fn().mockResolvedValue(noCurrentMilestoneResponse),
   } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
     mockApollo = createMockApollo([
       [projectMilestonesQuery, projectMilestonesSpy],
       [projectIssueMilestoneQuery, currentMilestoneSpy],
@@ -117,7 +115,6 @@ describe('SidebarDropdownWidget', () => {
 
     wrapper = extendedWrapper(
       mount(SidebarDropdownWidget, {
-        localVue,
         provide: { canUpdate: true },
         apolloProvider: mockApollo,
         propsData: {
@@ -354,7 +351,7 @@ describe('SidebarDropdownWidget', () => {
                 });
 
                 it(`calls createFlash with "${expectedMsg}"`, async () => {
-                  await wrapper.vm.$nextTick();
+                  await nextTick();
                   expect(createFlash).toHaveBeenCalledWith({
                     message: expectedMsg,
                     captureError: true,
@@ -377,7 +374,7 @@ describe('SidebarDropdownWidget', () => {
 
               findSearchBox().vm.$emit('input', 'non existing milestones');
 
-              await wrapper.vm.$nextTick();
+              await nextTick();
 
               expect(findDropdownText().text()).toBe('No milestone found');
             });
@@ -482,7 +479,7 @@ describe('SidebarDropdownWidget', () => {
 
             it('sends a projectMilestones query with the entered search term "foo"', async () => {
               findSearchBox().vm.$emit('input', mockSearchTerm);
-              await wrapper.vm.$nextTick();
+              await nextTick();
 
               // Account for debouncing
               jest.runAllTimers();

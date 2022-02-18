@@ -45,6 +45,8 @@ module Tooling
         %r{\Adoc/.*(\.(md|png|gif|jpg|yml))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
+        %r{\Adata/deprecations/} => :none,
+        %r{\Adata/removals/} => :none,
 
         %r{\A((ee|jh)/)?app/finders/(.+/)?integrations/} => [:integrations_be, :database, :backend],
         [%r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/}, %r{(:integrations|:\w+_tracker_data)\b}] => [:integrations_be, :database, :migration],
@@ -56,7 +58,7 @@ module Tooling
           ((ee|jh)/)?app/controllers/(.+/)?oauth/jira/.+ |
           ((ee|jh)/)?app/services/(.+/)?jira.+ |
           ((ee|jh)/)?app/workers/(.+/)?(propagate_integration.+|irker_worker\.rb) |
-          ((ee|jh)/)?lib/(.+/)?(atlassian|data_builder|hook_data)/.+ |
+          ((ee|jh)/)?lib/(.+/)?(atlassian|data_builder|hook_data|web_hooks)/.+ |
           ((ee|jh)/)?lib/(.+/)?.*integration.+ |
           ((ee|jh)/)?lib/(.+/)?api/v3/github\.rb |
           ((ee|jh)/)?lib/(.+/)?api/github/entities\.rb

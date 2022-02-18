@@ -13,6 +13,7 @@ FactoryBot.define do
     transient do
       groups { [] }
       projects { [] }
+      token_expires_at { nil }
     end
 
     after(:build) do |runner, evaluator|
@@ -23,6 +24,10 @@ FactoryBot.define do
       evaluator.groups.each do |group|
         runner.runner_namespaces << build(:ci_runner_namespace, namespace: group)
       end
+    end
+
+    after(:create) do |runner, evaluator|
+      runner.update!(token_expires_at: evaluator.token_expires_at) if evaluator.token_expires_at
     end
 
     trait :online do

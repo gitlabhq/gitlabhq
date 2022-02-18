@@ -257,4 +257,15 @@ RSpec.describe ProjectMember do
       it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
     end
   end
+
+  describe '#set_member_namespace_id' do
+    let(:project) { create(:project) }
+    let(:member) { create(:project_member, project: project) }
+
+    context 'on create' do
+      it 'sets the member_namespace_id' do
+        expect(member.member_namespace_id).to eq project.project_namespace_id
+      end
+    end
+  end
 end

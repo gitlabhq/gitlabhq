@@ -41,6 +41,7 @@ module Graphql
       when Hash then "{#{new(value)}}"
       when Integer, Float, Symbol then value.to_s
       when String then "\"#{value.gsub(/"/, '\\"')}\""
+      when Time, Date then "\"#{value.iso8601}\""
       when nil then 'null'
       when true then 'true'
       when false then 'false'

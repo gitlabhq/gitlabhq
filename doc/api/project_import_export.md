@@ -188,9 +188,9 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 
 ## Import a file from a remote object storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/alpha-beta-support.md#beta-features).
 
-This endpoint is behind a feature flag that is disabled by default.
+This endpoint is behind a feature flag that is enabled by default.
 
 To enable this endpoint:
 
@@ -243,8 +243,8 @@ curl --request POST \
 }
 ```
 
-The `ContentType` header must return a valid number. The maximum file size is 10 gigabytes.
-The `ContentLength` header must be `application/gzip`.
+The `Content-Length` header must return a valid number. The maximum file size is 10 gigabytes.
+The `Content-Type` header must be `application/gzip`.
 
 ## Import status
 

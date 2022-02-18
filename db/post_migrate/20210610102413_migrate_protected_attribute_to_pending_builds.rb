@@ -8,7 +8,7 @@ class MigrateProtectedAttributeToPendingBuilds < ActiveRecord::Migration[6.1]
   def up
     return unless Gitlab.dev_or_test_env? || Gitlab.com?
 
-    each_batch_range('ci_pending_builds', of: 1000) do |min, max|
+    each_batch_range('ci_pending_builds', connection: connection, of: 1000) do |min, max|
       execute <<~SQL
         UPDATE ci_pending_builds
           SET protected = true

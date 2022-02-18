@@ -168,6 +168,48 @@ RSpec.describe Issues::MoveService do
         end
       end
 
+      context 'issue with contacts' do
+        let_it_be(:contacts) { create_list(:contact, 2, group: group) }
+
+        before do
+          old_issue.customer_relations_contacts = contacts
+        end
+
+        it 'preserves contacts' do
+          new_issue = move_service.execute(old_issue, new_project)
+
+          expect(new_issue.customer_relations_contacts).to eq(contacts)
+        end
+
+        context 'when moving to another root group' do
+          let(:another_project) { create(:project, namespace: create(:group)) }
+
+          before do
+            another_project.add_reporter(user)
+          end
+
+          it 'does not preserve contacts' do
+            new_issue = move_service.execute(old_issue, another_project)
+
+            expect(new_issue.customer_relations_contacts).to be_empty
+          end
+        end
+
+        context 'when customer_relations feature is disabled' do
+          let(:another_project) { create(:project, namespace: create(:group)) }
+
+          before do
+            stub_feature_flags(customer_relations: false)
+          end
+
+          it 'does not preserve contacts' do
+            new_issue = move_service.execute(old_issue, new_project)
+
+            expect(new_issue.customer_relations_contacts).to be_empty
+          end
+        end
+      end
+
       context 'moving to same project' do
         let(:new_project) { old_project }
 

@@ -100,7 +100,7 @@ microservice_a:
 
 ## Merge request child pipelines
 
-To trigger a child pipeline as a [Merge Request Pipeline](merge_request_pipelines.md) we need to:
+To trigger a child pipeline as a [merge request pipeline](merge_request_pipelines.md) we need to:
 
 - Set the trigger job to run on merge requests:
 

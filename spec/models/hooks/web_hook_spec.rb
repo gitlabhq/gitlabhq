@@ -100,12 +100,18 @@ RSpec.describe WebHook do
       hook.execute(data, hook_name)
     end
 
-    it 'does not execute non-executable hooks' do
-      hook.update!(disabled_until: 1.day.from_now)
+    it 'passes force: false to the web hook service by default' do
+      expect(WebHookService)
+        .to receive(:new).with(hook, data, hook_name, force: false).and_return(double(execute: :done))
 
-      expect(WebHookService).not_to receive(:new)
+      expect(hook.execute(data, hook_name)).to eq :done
+    end
 
-      hook.execute(data, hook_name)
+    it 'passes force: true to the web hook service if required' do
+      expect(WebHookService)
+        .to receive(:new).with(hook, data, hook_name, force: true).and_return(double(execute: :forced))
+
+      expect(hook.execute(data, hook_name, force: true)).to eq :forced
     end
 
     it '#async_execute' do

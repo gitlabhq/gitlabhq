@@ -188,6 +188,24 @@ RSpec.describe API::Branches do
       end
     end
 
+    context 'when sort parameter is passed' do
+      it 'sorts branches' do
+        get api(route, user), params: { sort: 'name_asc', per_page: 10 }
+
+        sorted_branch_names = json_response.map { |branch| branch['name'] }
+
+        project_branch_names = project.repository.branch_names.sort.take(10)
+
+        expect(sorted_branch_names).to eq(project_branch_names)
+      end
+
+      context 'when sort value is not supported' do
+        it_behaves_like '400 response' do
+          let(:request) { get api(route, user), params: { sort: 'unknown' }}
+        end
+      end
+    end
+
     context 'when unauthenticated', 'and project is public' do
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)

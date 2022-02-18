@@ -146,7 +146,7 @@ RSpec.describe Releases::CreateService do
       end
     end
 
-    context 'when multiple miletone titles are passed in but one of them does not exist' do
+    context 'when multiple milestone titles are passed in but one of them does not exist' do
       let(:title) { 'v1.0' }
       let(:inexistent_title) { 'v111.0' }
       let!(:milestone) { create(:milestone, :active, project: project, title: title) }

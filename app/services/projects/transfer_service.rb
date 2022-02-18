@@ -2,11 +2,11 @@
 
 # Projects::TransferService class
 #
-# Used for transfer project to another namespace
+# Used to transfer a project to another namespace
 #
 # Ex.
-#   # Move projects to namespace with ID 17 by user
-#   Projects::TransferService.new(project, user, namespace_id: 17).execute
+#   # Move project to namespace by user
+#   Projects::TransferService.new(project, user).execute(namespace)
 #
 module Projects
   class TransferService < BaseService
@@ -102,6 +102,8 @@ module Projects
         project.old_path_with_namespace = @old_path
 
         update_repository_configuration(@new_path)
+
+        remove_issue_contacts
 
         execute_system_hooks
       end
@@ -253,6 +255,12 @@ module Projects
         namespace_id: new_namespace.id,
         namespace_traversal_ids: new_namespace.traversal_ids
       }
+    end
+
+    def remove_issue_contacts
+      return unless @old_group&.root_ancestor != @new_namespace&.root_ancestor
+
+      CustomerRelations::IssueContact.delete_for_project(project.id)
     end
   end
 end

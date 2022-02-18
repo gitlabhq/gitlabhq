@@ -1,0 +1,9 @@
+mutation CreateCommit($input: CommitCreateInput!) {
+  commitCreate(input: $input) {
+    commit {
+      id
+    }
+    content
+    errors
+  }
+}

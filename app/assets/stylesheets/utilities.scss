@@ -200,6 +200,12 @@
   }
 }
 
+.gl-xl-ml-3 {
+  @include media-breakpoint-up(lg) {
+    margin-left: $gl-spacing-scale-3;
+  }
+}
+
 .gl-mb-n3 {
   margin-bottom: -$gl-spacing-scale-3;
 }
@@ -247,30 +253,6 @@ $gl-line-height-42: px-to-rem(42px);
   max-width: 50%;
 }
 
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1490
-.gl-w-grid-size-28 {
-  width: $grid-size * 28;
-}
-
-// Will be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2347 is merged
-.gl-min-w-8 {
-  min-width: $gl-spacing-scale-8;
-}
-
-// Will be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2347 is merged
-.gl-min-w-10 {
-  min-width: $gl-spacing-scale-10;
-}
-
-// Will both be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1526
-.gl-opacity-6 {
-  opacity: 0.6;
-}
-
-.gl-opacity-7 {
-  opacity: 0.7;
-}
-
 /**
   Note: ::-webkit-scrollbar is a non-standard rule only
   supported by webkit browsers.
@@ -298,14 +280,66 @@ $gl-line-height-42: px-to-rem(42px);
   @include gl-focus($gl-border-size-1, $gray-900, true);
 }
 
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1637
-.gl-lg-w-25p {
-  @include gl-media-breakpoint-up(lg) {
-    width: 25%;
-  }
-}
-
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2600
 .gl-pr-10 {
   padding-right: $gl-spacing-scale-10;
 }
+
+/*
+All of the following (up until the "End gitlab-ui#1709" comment) will be moved
+to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
+*/
+.gl-sm-grid-template-columns-2 {
+  @include media-breakpoint-up(sm) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.gl-md-grid-template-columns-2 {
+  @include media-breakpoint-up(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.gl-md-grid-template-columns-3 {
+  @include media-breakpoint-up(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.gl-lg-grid-template-columns-4 {
+  @include media-breakpoint-up(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.gl-gap-6 {
+  gap: $gl-spacing-scale-6;
+}
+
+.gl-max-w-48 {
+  max-width: $gl-spacing-scale-48;
+}
+
+.gl-max-w-75 {
+  max-width: $gl-spacing-scale-75;
+}
+
+.gl-md-pt-11 {
+  @include media-breakpoint-up(md) {
+    padding-top: $gl-spacing-scale-11 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
+  }
+}
+
+.gl-md-mb-6 {
+  @include media-breakpoint-up(md) {
+    margin-bottom: $gl-spacing-scale-6 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
+  }
+}
+
+.gl-md-mb-12 {
+  @include media-breakpoint-up(md) {
+    margin-bottom: $gl-spacing-scale-12 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
+  }
+}
+/* End gitlab-ui#1709 */

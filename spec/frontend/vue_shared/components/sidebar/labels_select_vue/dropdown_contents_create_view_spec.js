@@ -1,6 +1,6 @@
 import { GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_create_view.vue';
@@ -42,7 +42,7 @@ describe('DropdownContentsCreateView', () => {
         expect(wrapper.vm.disableCreate).toBe(true);
       });
 
-      it('returns `true` when `labelCreateInProgress` is true', () => {
+      it('returns `true` when `labelCreateInProgress` is true', async () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
@@ -51,12 +51,11 @@ describe('DropdownContentsCreateView', () => {
         });
         wrapper.vm.$store.dispatch('requestCreateLabel');
 
-        return wrapper.vm.$nextTick(() => {
-          expect(wrapper.vm.disableCreate).toBe(true);
-        });
+        await nextTick();
+        expect(wrapper.vm.disableCreate).toBe(true);
       });
 
-      it('returns `false` when label title and color is defined and create request is not already in progress', () => {
+      it('returns `false` when label title and color is defined and create request is not already in progress', async () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
@@ -64,9 +63,8 @@ describe('DropdownContentsCreateView', () => {
           selectedColor: '#ff0000',
         });
 
-        return wrapper.vm.$nextTick(() => {
-          expect(wrapper.vm.disableCreate).toBe(false);
-        });
+        await nextTick();
+        expect(wrapper.vm.disableCreate).toBe(false);
       });
     });
 
@@ -101,7 +99,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     describe('handleCreateClick', () => {
-      it('calls action `createLabel` with object containing `labelTitle` & `selectedColor`', () => {
+      it('calls action `createLabel` with object containing `labelTitle` & `selectedColor`', async () => {
         jest.spyOn(wrapper.vm, 'createLabel').mockImplementation();
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
@@ -112,14 +110,13 @@ describe('DropdownContentsCreateView', () => {
 
         wrapper.vm.handleCreateClick();
 
-        return wrapper.vm.$nextTick(() => {
-          expect(wrapper.vm.createLabel).toHaveBeenCalledWith(
-            expect.objectContaining({
-              title: 'Foo',
-              color: '#ff0000',
-            }),
-          );
-        });
+        await nextTick();
+        expect(wrapper.vm.createLabel).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Foo',
+            color: '#ff0000',
+          }),
+        );
       });
     });
   });
@@ -169,25 +166,22 @@ describe('DropdownContentsCreateView', () => {
       });
     });
 
-    it('renders color input element', () => {
+    it('renders color input element', async () => {
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         selectedColor: '#ff0000',
       });
 
-      return wrapper.vm.$nextTick(() => {
-        const colorPreviewEl = wrapper.find(
-          '.color-input-container > .dropdown-label-color-preview',
-        );
-        const colorInputEl = wrapper.find('.color-input-container').find(GlFormInput);
+      await nextTick();
+      const colorPreviewEl = wrapper.find('.color-input-container > .dropdown-label-color-preview');
+      const colorInputEl = wrapper.find('.color-input-container').find(GlFormInput);
 
-        expect(colorPreviewEl.exists()).toBe(true);
-        expect(colorPreviewEl.attributes('style')).toContain('background-color');
-        expect(colorInputEl.exists()).toBe(true);
-        expect(colorInputEl.attributes('placeholder')).toBe('Use custom color #FF0000');
-        expect(colorInputEl.attributes('value')).toBe('#ff0000');
-      });
+      expect(colorPreviewEl.exists()).toBe(true);
+      expect(colorPreviewEl.attributes('style')).toContain('background-color');
+      expect(colorInputEl.exists()).toBe(true);
+      expect(colorInputEl.attributes('placeholder')).toBe('Use custom color #FF0000');
+      expect(colorInputEl.attributes('value')).toBe('#ff0000');
     });
 
     it('renders create button element', () => {
@@ -197,15 +191,14 @@ describe('DropdownContentsCreateView', () => {
       expect(createBtnEl.text()).toContain('Create');
     });
 
-    it('shows gl-loading-icon within create button element when `labelCreateInProgress` is `true`', () => {
+    it('shows gl-loading-icon within create button element when `labelCreateInProgress` is `true`', async () => {
       wrapper.vm.$store.dispatch('requestCreateLabel');
 
-      return wrapper.vm.$nextTick(() => {
-        const loadingIconEl = wrapper.find('.dropdown-actions').find(GlLoadingIcon);
+      await nextTick();
+      const loadingIconEl = wrapper.find('.dropdown-actions').find(GlLoadingIcon);
 
-        expect(loadingIconEl.exists()).toBe(true);
-        expect(loadingIconEl.isVisible()).toBe(true);
-      });
+      expect(loadingIconEl.exists()).toBe(true);
+      expect(loadingIconEl.isVisible()).toBe(true);
     });
 
     it('renders cancel button element', () => {

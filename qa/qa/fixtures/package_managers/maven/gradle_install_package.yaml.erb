@@ -1,0 +1,8 @@
+ build:
+  image: gradle:6.5-jdk11
+  script:
+  - 'gradle build'
+  only:
+  - "<%= client_project.default_branch %>"
+  tags:
+  - "runner-for-<%= client_project.group.name %>"

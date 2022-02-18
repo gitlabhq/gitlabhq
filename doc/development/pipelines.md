@@ -12,7 +12,7 @@ which itself includes files under
 [`.gitlab/ci/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab/ci)
 for easier maintenance.
 
-We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/#dogfooding)
+We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/principles/#dogfooding)
 GitLab [CI/CD features and best-practices](../ci/yaml/index.md)
 as much as possible.
 
@@ -89,6 +89,13 @@ In addition, there are a few circumstances where we would always run the full Je
 - when any frontend "core" file is changed (i.e. `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
 - when any vendored JavaScript file is changed (i.e. `vendor/assets/javascripts/**/*`)
 - when any backend file is changed ([see the patterns list for details](https://gitlab.com/gitlab-org/gitlab/-/blob/3616946936c1adbd9e754c1bd06f86ba670796d8/.gitlab/ci/rules.gitlab-ci.yml#L205-216))
+
+### Fork pipelines
+
+We only run the minimal RSpec & Jest jobs for fork pipelines unless the `pipeline:run-all-rspec`
+label is set on the MR. The goal is to reduce the CI minutes consumed by fork pipelines.
+
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
 
 ## Fail-fast job in merge request pipelines
 
@@ -170,9 +177,22 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 
 ### Flaky tests
 
+#### Automatic skipping of flaky tests
+
 Tests that are [known to be flaky](testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection) are
 skipped unless the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `false` or if the `~"pipeline:run-flaky-tests"`
 label is set on the MR.
+
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1069).
+
+#### Automatic retry of failing tests in a separate process
+
+When the `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable is set to `true`, RSpec tests that failed are automatically retried once in a separate
+RSpec process. The goal is to get rid of most side-effects from previous tests that may lead to a subsequent test failure.
+
+We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
+
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
 
 ### Monitoring
 
@@ -194,7 +214,7 @@ If you want to force a Review App to be deployed regardless of your changes, you
 ## As-if-FOSS jobs
 
 The `* as-if-foss` jobs run the GitLab test suite "as if FOSS", meaning as if the jobs would run in the context
-of the `gitlab-org/gitlab-foss` project. These jobs are only created in the following cases:
+of `gitlab-org/gitlab-foss`. These jobs are only created in the following cases:
 
 - when the `pipeline:run-as-if-foss` label is set on the merge request
 - when the merge request is created in the `gitlab-org/security/gitlab` project
@@ -203,13 +223,12 @@ of the `gitlab-org/gitlab-foss` project. These jobs are only created in the foll
 The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
 set and get the `ee/` folder removed before the tests start running.
 
-The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
-the `gitlab-org/gitlab-foss` project.
+The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to `gitlab-org/gitlab-foss`.
 
 ## As-if-JH jobs
 
 The `* as-if-jh` jobs run the GitLab test suite "as if JiHu", meaning as if the jobs would run in the context
-of [the `gitlab-jh/gitlab` project](jh_features_review.md). These jobs are only created in the following cases:
+of [GitLab JH](jh_features_review.md). These jobs are only created in the following cases:
 
 - when the `pipeline:run-as-if-jh` label is set on the merge request
 - when the `pipeline:run-all-rspec` label is set on the merge request
@@ -218,15 +237,17 @@ of [the `gitlab-jh/gitlab` project](jh_features_review.md). These jobs are only 
 
 The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `jh/` folder is added before the tests start running.
 
-The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
-the `gitlab-jh/gitlab` project.
+The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to [GitLab JH](https://jihulab.com/gitlab-cn/gitlab).
 
 ### Corresponding JH branch
 
-You can create a corresponding JH branch on the `gitlab-jh/gitlab` project by
+You can create a corresponding JH branch on [GitLab JH](https://jihulab.com/gitlab-cn/gitlab) by
 appending `-jh` to the branch name. If a corresponding JH branch is found,
 `* as-if-jh` jobs grab the `jh` folder from the respective branch,
 rather than from the default branch.
+
+NOTE:
+For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
 
 ## `undercover` RSpec test
 
@@ -235,7 +256,7 @@ rather than from the default branch.
 The `rspec:undercoverage` job runs [`undercover`](https://rubygems.org/gems/undercover)
 to detect, and fail if any changes introduced in the merge request has zero coverage.
 
-The `rsepc:undercoverage` job obtains coverage data from the `rspec:coverage`
+The `rspec:undercoverage` job obtains coverage data from the `rspec:coverage`
 job.
 
 In the event of an emergency, or false positive from this job, add the

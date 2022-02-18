@@ -22,8 +22,6 @@ module AlertManagement
       return result unless result.success?
 
       issue = result.payload[:issue]
-      return error(object_errors(alert), issue) unless associate_alert_with_issue(issue)
-
       update_title_for(issue)
 
       SystemNoteService.new_alert_issue(alert, issue, user)
@@ -47,12 +45,9 @@ module AlertManagement
         user,
         title: alert_presenter.title,
         description: alert_presenter.issue_description,
-        severity: alert.severity
+        severity: alert.severity,
+        alert: alert
       ).execute
-    end
-
-    def associate_alert_with_issue(issue)
-      alert.update(issue_id: issue.id)
     end
 
     def update_title_for(issue)
@@ -77,10 +72,6 @@ module AlertManagement
       strong_memoize(:alert_presenter) do
         alert.present
       end
-    end
-
-    def object_errors(object)
-      object.errors.full_messages.to_sentence
     end
   end
 end

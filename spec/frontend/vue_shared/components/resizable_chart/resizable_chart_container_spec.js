@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import $ from 'jquery';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import ResizableChartContainer from '~/vue_shared/components/resizable_chart/resizable_chart_container.vue';
 
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -35,7 +35,7 @@ describe('Resizable Chart Container', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('updates the slot width and height props', () => {
+  it('updates the slot width and height props', async () => {
     const width = 1920;
     const height = 1080;
 
@@ -44,13 +44,12 @@ describe('Resizable Chart Container', () => {
 
     $(document).trigger('content.resize');
 
-    return Vue.nextTick().then(() => {
-      const widthNode = wrapper.find('.slot > .width');
-      const heightNode = wrapper.find('.slot > .height');
+    await nextTick();
+    const widthNode = wrapper.find('.slot > .width');
+    const heightNode = wrapper.find('.slot > .height');
 
-      expect(parseInt(widthNode.text(), 10)).toEqual(width);
-      expect(parseInt(heightNode.text(), 10)).toEqual(height);
-    });
+    expect(parseInt(widthNode.text(), 10)).toEqual(width);
+    expect(parseInt(heightNode.text(), 10)).toEqual(height);
   });
 
   it('calls onResize on manual resize', () => {

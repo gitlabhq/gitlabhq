@@ -65,9 +65,10 @@ RSpec.describe 'User interacts with awards' do
         expect(page.find('[data-testid="award-button"].selected .js-counter')).to have_content('1')
         expect(page).to have_css('[data-testid="award-button"].selected[title="You reacted with :8ball:"]')
 
+        wait_for_requests
+
         expect do
           page.find('[data-testid="award-button"].selected').click
-          wait_for_requests
         end.to change { page.all('[data-testid="award-button"]').size }.from(3).to(2)
       end
     end

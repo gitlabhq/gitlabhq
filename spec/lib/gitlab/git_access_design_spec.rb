@@ -5,7 +5,7 @@ RSpec.describe Gitlab::GitAccessDesign do
   include DesignManagementTestHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
 
   let(:protocol) { 'web' }
   let(:actor) { user }

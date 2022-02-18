@@ -7,9 +7,10 @@ RSpec.describe Gitlab::Ci::Lint do
   let_it_be(:user) { create(:user) }
 
   let(:lint) { described_class.new(project: project, current_user: user) }
+  let(:ref) { project.default_branch }
 
   describe '#validate' do
-    subject { lint.validate(content, dry_run: dry_run) }
+    subject { lint.validate(content, dry_run: dry_run, ref: ref) }
 
     shared_examples 'content is valid' do
       let(:content) do
@@ -251,6 +252,29 @@ RSpec.describe Gitlab::Ci::Lint do
           end
         end
 
+        context 'when using a ref other than the default branch' do
+          let(:ref) { 'feature' }
+          let(:content) do
+            <<~YAML
+            build:
+              stage: build
+              script: echo 1
+              rules:
+                - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+            test:
+              stage: test
+              script: echo 2
+              rules:
+                - if: "$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH"
+            YAML
+          end
+
+          it 'includes only jobs that are excluded on the default branch' do
+            expect(subject.jobs.size).to eq(1)
+            expect(subject.jobs[0][:name]).to eq('test')
+          end
+        end
+
         it_behaves_like 'sets merged yaml'
 
         include_context 'advanced validations' do
@@ -294,6 +318,104 @@ RSpec.describe Gitlab::Ci::Lint do
         it 'does not allow validation' do
           expect(subject).not_to be_valid
           expect(subject.errors).to include('Insufficient permissions to create a new pipeline')
+        end
+      end
+    end
+  end
+
+  context 'pipeline logger' do
+    let(:counters) do
+      {
+        'count' => a_kind_of(Numeric),
+        'avg'   => a_kind_of(Numeric),
+        'max'   => a_kind_of(Numeric),
+        'min'   => a_kind_of(Numeric)
+      }
+    end
+
+    let(:loggable_data) do
+      {
+        'class' => 'Gitlab::Ci::Pipeline::Logger',
+        'config_build_context_duration_s' => counters,
+        'config_build_variables_duration_s' => counters,
+        'config_compose_duration_s' => counters,
+        'config_expand_duration_s' => counters,
+        'config_external_process_duration_s' => counters,
+        'config_stages_inject_duration_s' => counters,
+        'config_tags_resolve_duration_s' => counters,
+        'config_yaml_extend_duration_s' => counters,
+        'config_yaml_load_duration_s' => counters,
+        'pipeline_creation_caller' => 'Gitlab::Ci::Lint',
+        'pipeline_creation_service_duration_s' => a_kind_of(Numeric),
+        'pipeline_persisted' => false,
+        'pipeline_source' => 'unknown',
+        'project_id' => project&.id,
+        'yaml_process_duration_s' => counters
+      }
+    end
+
+    let(:content) do
+      <<~YAML
+      build:
+        script: echo
+      YAML
+    end
+
+    subject(:validate) { lint.validate(content, dry_run: false) }
+
+    before do
+      project&.add_developer(user)
+    end
+
+    context 'when the duration is under the threshold' do
+      it 'does not create a log entry' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+        validate
+      end
+    end
+
+    context 'when the durations exceeds the threshold' do
+      let(:timer) do
+        proc do
+          @timer = @timer.to_i + 30
+        end
+      end
+
+      before do
+        allow(Gitlab::Ci::Pipeline::Logger)
+          .to receive(:current_monotonic_time) { timer.call }
+      end
+
+      it 'creates a log entry' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(loggable_data)
+
+        validate
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_pipeline_creation_logger: false)
+        end
+
+        it 'does not create a log entry' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+          validate
+        end
+      end
+
+      context 'when project is not provided' do
+        let(:project) { nil }
+
+        let(:project_nil_loggable_data) do
+          loggable_data.except('project_id')
+        end
+
+        it 'creates a log entry without project_id' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(project_nil_loggable_data)
+
+          validate
         end
       end
     end

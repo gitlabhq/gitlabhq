@@ -1,7 +1,7 @@
 import { GlToggle, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -12,6 +12,7 @@ import createStore from '~/feature_flags/store/edit';
 import axios from '~/lib/utils/axios_utils';
 
 Vue.use(Vuex);
+
 describe('Edit feature flag form', () => {
   let wrapper;
   let mock;
@@ -66,13 +67,12 @@ describe('Edit feature flag form', () => {
   });
 
   describe('with error', () => {
-    it('should render the error', () => {
+    it('should render the error', async () => {
       store.dispatch('receiveUpdateFeatureFlagError', { message: ['The name is required'] });
-      return wrapper.vm.$nextTick(() => {
-        const warningGlAlert = findWarningGlAlert();
-        expect(warningGlAlert.exists()).toEqual(true);
-        expect(warningGlAlert.text()).toContain('The name is required');
-      });
+      await nextTick();
+      const warningGlAlert = findWarningGlAlert();
+      expect(warningGlAlert.exists()).toEqual(true);
+      expect(warningGlAlert.text()).toContain('The name is required');
     });
   });
 

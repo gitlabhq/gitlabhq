@@ -217,6 +217,69 @@ default:
     - echo "Job complete."
 ```
 
+### Use nested includes with duplicate `includes` entries
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28987) in GitLab 14.8
+
+Nested includes can include the same configuration file. The duplicate configuration
+file is included multiple times, but the effect is the same as if it was only
+included once.
+
+For example, with the following nested includes, where `defaults.gitlab-ci.yml`
+is included multiple times:
+
+- Contents of the `.gitlab-ci.yml` file:
+
+  ```yaml
+  include:
+    - template: defaults.gitlab-ci.yml
+    - local: unit-tests.gitlab-ci.yml
+    - local: smoke-tests.gitlab-ci.yml
+  ```
+
+- Contents of the `defaults.gitlab-ci.yml` file:
+
+  ```yaml
+  default:
+    before_script: default-before-script.sh
+    retry: 2
+  ```
+
+- Contents of the `unit-tests.gitlab-ci.yml` file:
+
+  ```yaml
+  include:
+    - template: defaults.gitlab-ci.yml
+
+  unit-test-job:
+    script: unit-test.sh
+    retry: 0
+  ```
+
+- Contents of the `smoke-tests.gitlab-ci.yml` file:
+
+  ```yaml
+  include:
+    - template: defaults.gitlab-ci.yml
+
+  smoke-test-job:
+    script: smoke-test.sh
+  ```
+
+The final configuration would be:
+
+```yaml
+unit-test-job:
+  before_script: default-before-script.sh
+  script: unit-test.sh
+  retry: 0
+
+smoke-test-job:
+  before_script: default-before-script.sh
+  script: smoke-test.sh
+  retry: 2
+```
+
 ## Use variables with `include`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.

@@ -1,0 +1,3 @@
+mutation SetEnvironmentToChangeCanary($environment: LocalEnvironmentInput, $weight: Int!) {
+  setEnvironmentToChangeCanary(environment: $environment, weight: $weight) @client
+}

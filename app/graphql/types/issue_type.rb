@@ -21,10 +21,8 @@ module Types
           description: "Internal ID of the issue."
     field :title, GraphQL::Types::String, null: false,
           description: 'Title of the issue.'
-    markdown_field :title_html, null: true
     field :description, GraphQL::Types::String, null: true,
           description: 'Description of the issue.'
-    markdown_field :description_html, null: true
     field :state, IssueStateEnum, null: false,
           description: 'State of the issue.'
 
@@ -143,6 +141,9 @@ module Types
     field :escalation_status, Types::IncidentManagement::EscalationStatusEnum, null: true,
           description: 'Escalation status of the issue.'
 
+    markdown_field :title_html, null: true
+    markdown_field :description_html, null: true
+
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
     end
@@ -168,13 +169,11 @@ module Types
     end
 
     def hidden?
-      object.hidden? if Feature.enabled?(:ban_user_feature_flag)
+      object.hidden? if Feature.enabled?(:ban_user_feature_flag, default_enabled: :yaml)
     end
 
     def escalation_status
-      return unless Feature.enabled?(:incident_escalations, object.project) && object.supports_escalation?
-
-      object.escalation_status&.status_name
+      object.supports_escalation? ? object.escalation_status&.status_name : nil
     end
   end
 end

@@ -21,5 +21,11 @@ class MergeRequestsFinder
         end
       end
     end
+
+    def attention
+      strong_memoize(:attention) do
+        User.find_by_username(params[:attention])
+      end
+    end
   end
 end

@@ -24,7 +24,7 @@ RSpec.describe ProjectMemberPolicy do
   end
 
   context 'when user is project owner' do
-    let(:member_user) { project.owner }
+    let(:member_user) { project.first_owner }
     let(:member) { project.members.find_by!(user: member_user) }
 
     it { is_expected.to be_allowed(:read_project) }

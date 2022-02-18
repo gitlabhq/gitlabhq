@@ -61,11 +61,13 @@ export default {
     </template>
 
     <template #right-secondary>
-      <gl-sprintf :message="__('Created %{timestamp}')">
-        <template #timestamp>
-          <time-ago-tooltip :time="packageEntity.createdAt" />
-        </template>
-      </gl-sprintf>
+      <span>
+        <gl-sprintf :message="__('Created %{timestamp}')">
+          <template #timestamp>
+            <time-ago-tooltip :time="packageEntity.createdAt" />
+          </template>
+        </gl-sprintf>
+      </span>
     </template>
   </list-item>
 </template>

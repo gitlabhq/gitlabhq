@@ -23,6 +23,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :root_storage_statistics }
     it { is_expected.to have_one :aggregation_schedule }
     it { is_expected.to have_one :namespace_settings }
+    it { is_expected.to have_one(:namespace_statistics) }
     it { is_expected.to have_many :custom_emoji }
     it { is_expected.to have_one :package_setting_relation }
     it { is_expected.to have_one :onboarding_progress }
@@ -361,10 +362,70 @@ RSpec.describe Namespace do
     context 'linear' do
       it_behaves_like 'namespace traversal scopes'
     end
+
+    shared_examples 'makes recursive queries' do
+      specify do
+        expect { subject }.to make_queries_matching(/WITH RECURSIVE/)
+      end
+    end
+
+    shared_examples 'does not make recursive queries' do
+      specify do
+        expect { subject }.not_to make_queries_matching(/WITH RECURSIVE/)
+      end
+    end
+
+    describe '.self_and_descendants' do
+      let_it_be(:namespace) { create(:namespace) }
+
+      subject { described_class.where(id: namespace).self_and_descendants.load }
+
+      it_behaves_like 'does not make recursive queries'
+
+      context 'when feature flag :use_traversal_ids is disabled' do
+        before do
+          stub_feature_flags(use_traversal_ids: false)
+        end
+
+        it_behaves_like 'makes recursive queries'
+      end
+
+      context 'when feature flag :use_traversal_ids_for_descendants_scopes is disabled' do
+        before do
+          stub_feature_flags(use_traversal_ids_for_descendants_scopes: false)
+        end
+
+        it_behaves_like 'makes recursive queries'
+      end
+    end
+
+    describe '.self_and_descendant_ids' do
+      let_it_be(:namespace) { create(:namespace) }
+
+      subject { described_class.where(id: namespace).self_and_descendant_ids.load }
+
+      it_behaves_like 'does not make recursive queries'
+
+      context 'when feature flag :use_traversal_ids is disabled' do
+        before do
+          stub_feature_flags(use_traversal_ids: false)
+        end
+
+        it_behaves_like 'makes recursive queries'
+      end
+
+      context 'when feature flag :use_traversal_ids_for_descendants_scopes is disabled' do
+        before do
+          stub_feature_flags(use_traversal_ids_for_descendants_scopes: false)
+        end
+
+        it_behaves_like 'makes recursive queries'
+      end
+    end
   end
 
   context 'traversal_ids on create' do
-    context 'default traversal_ids' do
+    shared_examples 'default traversal_ids' do
       let(:namespace) { build(:namespace) }
 
       before do
@@ -373,6 +434,18 @@ RSpec.describe Namespace do
       end
 
       it { expect(namespace.traversal_ids).to eq [namespace.id] }
+    end
+
+    context 'with before_commit callback' do
+      it_behaves_like 'default traversal_ids'
+    end
+
+    context 'with after_create callback' do
+      before do
+        stub_feature_flags(sync_traversal_ids_before_commit: false)
+      end
+
+      it_behaves_like 'default traversal_ids'
     end
   end
 
@@ -2156,6 +2229,15 @@ RSpec.describe Namespace do
           expect(namespace.sync_events.count).to eq(2)
         end
       end
+    end
+  end
+
+  describe 'storage_enforcement_date' do
+    let_it_be(:namespace) { create(:group) }
+
+    # Date TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
+    it 'returns false' do
+      expect(namespace.storage_enforcement_date).to be(nil)
     end
   end
 end

@@ -1,8 +1,0 @@
----
-name: linear_mirrors_worker_roots
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76735
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348415
-milestone: '14.7'
-type: development
-group: group::authentication and authorization
-default_enabled: false

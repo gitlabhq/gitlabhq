@@ -20,7 +20,7 @@ NOTE:
 GitLab administrators can use all environments, including protected environments.
 
 To protect, update, or unprotect an environment, you need to have at least the
-[Maintainer role](../../user/permissions.md).
+Maintainer role.
 
 ## Protecting environments
 
@@ -38,6 +38,9 @@ To protect an environment:
    - You can select groups that are already associated with the project only.
    - Users must have at least the Developer role to appear in
      the **Allowed to deploy** list.
+1. In the **Required approvals** list, select the number of approvals required to deploy to this environment.
+   - Ensure that this number is less than the number of users allowed to deploy.
+   - See [Deployment Approvals](deployment_approvals.md) for more information about this feature.
 1. Select **Protect**.
 
 The protected environment now appears in the list of protected environments.
@@ -94,7 +97,7 @@ Alternatively, you can use the API to protect an environment:
 1. Use the API to add the group with protected environment access:
 
    ```shell
-   curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' \
+   curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}], "required_approval_count": 0}' \
         --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/projects/22034114/protected_environments"
    ```
 
@@ -103,12 +106,12 @@ The group now has access and can be seen in the UI.
 ## Environment access by group membership
 
 A user may be granted access to protected environments as part of [group membership](../../user/group/index.md). Users
-with the Reporter [role](../../user/permissions.md) can only be granted access to protected environments with this
+with the Reporter role can only be granted access to protected environments with this
 method.
 
 ## Deployment branch access
 
-Users with the [Developer role](../../user/permissions.md) can be granted
+Users with the Developer role can be granted
 access to a protected environment through any of these methods:
 
 - As an individual contributor, through a role.
@@ -125,7 +128,7 @@ they have the following privileges:
 
 Users granted access to a protected environment, but not push or merge access
 to the branch deployed to it, are only granted access to deploy the environment. An individual in a
-group with the Reporter [role](../../user/permissions.md), or in groups added to the project with the Reporter
+group with the Reporter role, or in groups added to the project with the Reporter
 role, appears in the dropdown menu for deployment-only access.
 
 To add deployment-only access:
@@ -136,7 +139,7 @@ To add deployment-only access:
 1. Follow the steps in [Protecting Environments](#protecting-environments).
 
 Note that deployment-only access is the only possible access level for groups with the Reporter
-[role](../../user/permissions.md).
+role.
 
 ## Modifying and unprotecting environments
 
@@ -194,14 +197,14 @@ and are protected at the same time.
 In an enterprise organization, with thousands of projects under a single group,
 ensuring that all of the [project-level protected environments](#protecting-environments)
 are properly configured is not a scalable solution. For example, a developer
-might gain privileged access to a higher environment when they are given the [Maintainer role](../../user/permissions.md)
+might gain privileged access to a higher environment when they are given the Maintainer role
 for a new project. Group-level protected environments can be a solution in this situation.
 
 To maximize the effectiveness of group-level protected environments,
 [group-level memberships](../../user/group/index.md) must be correctly
 configured:
 
-- Operators should be given at least the [Maintainer role](../../user/permissions.md)
+- Operators should be given at least the Maintainer role
   for the top-level group. They can maintain CI/CD configurations for
   the higher environments (such as production) in the group-level settings page,
   which includes group-level protected environments,
@@ -210,8 +213,8 @@ configured:
   configurations are inherited to the child projects as read-only entries.
   This ensures that only operators can configure the organization-wide
   deployment ruleset.
-- Developers should be given no more than the [Developer role](../../user/permissions.md)
-  for the top-level group, or explicitly given the [Maintainer role](../../user/permissions.md) for a child project
+- Developers should be given no more than the Developer role
+  for the top-level group, or explicitly given the Maintainer role for a child project
   They do *NOT* have access to the CI/CD configurations in the
   top-level group, so operators can ensure that the critical configuration won't
   be accidentally changed by the developers.
@@ -224,7 +227,7 @@ configured:
     environment configurations exist, to run a deployment job, the user must be allowed in **both**
     rulesets.
   - In a project or a subgroup of the top-level group, developers can be
-    safely assigned the [Maintainer role](../../user/permissions.md) to tune their lower environments (such
+    safely assigned the Maintainer role to tune their lower environments (such
     as `testing`).
 
 Having this configuration in place:

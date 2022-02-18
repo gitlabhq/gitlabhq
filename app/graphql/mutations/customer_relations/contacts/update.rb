@@ -4,9 +4,9 @@ module Mutations
   module CustomerRelations
     module Contacts
       class Update < Mutations::BaseMutation
-        include ResolvesIds
-
         graphql_name 'CustomerRelationsContactUpdate'
+
+        include ResolvesIds
 
         authorize :admin_crm_contact
 

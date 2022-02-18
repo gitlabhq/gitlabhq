@@ -1,3 +1,5 @@
+For guidance on the overall deprecations, removals and breaking changes workflow, please visit https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes-deprecations-and-removing-features
+
 <!-- Use this template as a starting point for deprecations. -->
 
 ### Deprecation Summary
@@ -37,23 +39,27 @@ Which tier is this feature available in?
 - [ ] @mention your stage's stable counterparts on this issue. For example, Customer Support, Customer Success (Technical Account Manager), Product Marketing Manager.
   - To see who the stable counterparts are for a product team visit [product categories](https://about.gitlab.com/handbook/product/categories/)
        - If there is no stable counterpart listed for Sales/CS please mention `@timtams`
-       - If there is no stable counterpart listed for Support please @mention `@gitlab-com/support/managers`
-       - If there is no stable counterpart listed for Marketing please mention `@williamchia`
+       - If there is no stable counterpart listed for Support please mention `@gitlab-com/support/managers`
+       - If there is no stable counterpart listed for Marketing please mention `@cfoster3`
 
-- [ ] @mention your GPM so that they are aware of planned deprecations. The goal is to have reviews happen at least two releases before the final removal of the feature or introduction of a breaking change.
+- [ ] `@mention` your GPM so that they are aware of planned deprecations. The goal is to have reviews happen at least two releases before the final removal of the feature or introduction of a breaking change.
 
 ### Deprecation Milestone
 
 <!-- In which milestone will this deprecation be announced ? -->
 
-### Planned Removal  Milestone
+### Planned Removal Milestone
 
 <!-- In which milestone will the feature or functionality be removed and announced? -->
 
 ### Links
 
 <!--
-Add links to any relevant documentation or code that will provide additional details or clarity regarding the planned change. Also, include a link to the removal issue if relevant.
+Add links to any relevant documentation or code that will provide additional details or clarity regarding the planned change.
+
+This issue is the main SSOT for the deprecations and removals process. Be sure to link all
+issues and MRs related to this deprecation/removal to this issue. This can include removal
+issues that were created ahead of time, and the MRs doing the actual deprecation/removal work.
 -->
 
 <!-- Label reminders - you should have one of each of the following labels.

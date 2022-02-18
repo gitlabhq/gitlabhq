@@ -74,11 +74,24 @@ module Gitlab
         # With connection re-use the primary connection can be overwritten
         # to be used from different model
         def primary_connection_specification_name
-          (@primary_model || @model).connection_specification_name
+          primary_model_or_model_if_enabled.connection_specification_name
         end
 
-        def primary_db_config
-          (@primary_model || @model).connection_db_config
+        def primary_model_or_model_if_enabled
+          if force_no_sharing_primary_model?
+            @model
+          else
+            @primary_model || @model
+          end
+        end
+
+        def force_no_sharing_primary_model?
+          return false unless @primary_model # Doesn't matter since we don't have an overriding primary model
+          return false unless ::Gitlab::SafeRequestStore.active?
+
+          ::Gitlab::SafeRequestStore.fetch(:force_no_sharing_primary_model) do
+            ::Feature::FlipperFeature.table_exists? && ::Feature.enabled?(:force_no_sharing_primary_model, default_enabled: :yaml)
+          end
         end
 
         def replica_db_config

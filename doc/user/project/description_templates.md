@@ -114,7 +114,9 @@ To re-use templates [you've created](../project/description_templates.md#create-
 You might also be interested in templates for various
 [file types in groups](../group/index.md#group-file-templates).
 
-### Set a default template for merge requests and issues **(PREMIUM)**
+### Set a default template for merge requests and issues
+
+> `Default.md` template [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78302) in GitLab 14.8.
 
 In a project, you can choose a default description template for new issues and merge requests.
 As a result, every time a new merge request or issue is created, it's pre-filled with the text you
@@ -125,23 +127,45 @@ Prerequisites:
 - On your project's left sidebar, select **Settings > General** and expand **Visibility, project features, permissions**.
   Ensure issues or merge requests are set to either **Everyone with access** or **Only Project Members**.
 
-To set a default description template for merge requests:
+To set a default description template for merge requests, either:
 
-1. Go to your project's **Settings**.
-1. Select **Expand** under the **Merge requests** header.
-1. Fill in the **Default description template for merge requests** text area.
-1. Select **Save changes**.
+- [Create a merge request template](#create-a-merge-request-template) named `Default.md` and save it in `.gitlab/merge_request_templates/`.
+  This will not overwrite the default template if one has been set in the project settings.
+- Users on GitLab Premium and higher: set the default template in project settings:
 
-To set a default description template for issues:
+  1. On the top bar, select **Menu > Projects** and find your project.
+  1. On the left sidebar, select **Settings**.
+  1. Expand **Merge requests**.
+  1. Fill in the **Default description template for merge requests** text area.
+  1. Select **Save changes**.
 
-1. Select **Expand** under **Default issue template**.
-1. Fill in the **Default description template for issues** text area.
+To set a default description template for issues, either:
+
+- [Create an issue template](#create-an-issue-template) named `Default.md` and save it in `.gitlab/issue_templates/`.
+  This will not overwrite the default template if one has been set in the project settings.
+- Users on GitLab Premium and higher: set the default template in project settings:
+
+  1. On the top bar, select **Menu > Projects** and find your project.
+  1. On the left sidebar, select **Settings**.
+  1. Expand **Default issue template**.
+  1. Fill in the **Default description template for issues** text area.
+  1. Select **Save changes**.
 
 Because GitLab merge request and issues support [Markdown](../markdown.md), you can use it to format
 headings, lists, and so on.
 
 You can also provide `issues_template` and `merge_requests_template` attributes in the
 [Projects REST API](../../api/projects.md) to keep your default issue and merge request templates up to date.
+
+#### Priority of description templates
+
+When you set [merge request and issue description templates](#set-a-default-template-for-merge-requests-and-issues)
+in various places, they have the following priorities in a project.
+The ones higher up override the ones below:
+
+1. Template selected in project settings.
+1. `Default.md` from the parent group.
+1. `Default.md` from the project repository.
 
 ## Example description template
 

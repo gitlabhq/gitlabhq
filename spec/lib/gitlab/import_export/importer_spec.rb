@@ -17,7 +17,7 @@ RSpec.describe Gitlab::ImportExport::Importer do
     stub_uploads_object_storage(FileUploader)
 
     FileUtils.mkdir_p(shared.export_path)
-    ImportExportUpload.create(project: project, import_file: import_file)
+    ImportExportUpload.create!(project: project, import_file: import_file)
     allow(FileUtils).to receive(:rm_rf).and_call_original
   end
 

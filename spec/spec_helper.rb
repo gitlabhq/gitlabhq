@@ -112,10 +112,19 @@ RSpec.configure do |config|
     # falling back to all tests when there is no `:focus` example.
     config.filter_run focus: true
     config.run_all_when_everything_filtered = true
-
-    # Re-run failures locally with `--only-failures`
-    config.example_status_persistence_file_path = './spec/examples.txt'
   end
+
+  # Attempt to troubleshoot  https://gitlab.com/gitlab-org/gitlab/-/issues/351531
+  config.after do |example|
+    if example.exception.is_a?(Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification::CrossDatabaseModificationAcrossUnsupportedTablesError)
+      ::CrossDatabaseModification::TransactionStackTrackRecord.log_gitlab_transactions_stack(action: :after_failure, example: example.description)
+    else
+      ::CrossDatabaseModification::TransactionStackTrackRecord.log_gitlab_transactions_stack(action: :after_example, example: example.description)
+    end
+  end
+
+  # Re-run failures locally with `--only-failures`
+  config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', './spec/examples.txt')
 
   config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_spec\.rb\z}) do |metadata|
     location = metadata[:location]
@@ -184,7 +193,6 @@ RSpec.configure do |config|
   config.include RedisHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
   config.include PolicyHelpers, type: :policy
-  config.include MemoryUsageHelper
   config.include ExpectRequestWithStatus, type: :request
   config.include IdempotentWorkerHelper, type: :worker
   config.include RailsHelpers
@@ -208,7 +216,9 @@ RSpec.configure do |config|
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 
-  if ENV['FLAKY_RSPEC_GENERATE_REPORT']
+  require_relative '../tooling/rspec_flaky/config'
+
+  if RspecFlaky::Config.generate_report?
     require_relative '../tooling/rspec_flaky/listener'
 
     config.reporter.register_listener(
@@ -240,10 +250,6 @@ RSpec.configure do |config|
   config.prepend_before do
     ApplicationRecord.set_open_transactions_baseline
     ::Ci::ApplicationRecord.set_open_transactions_baseline
-  end
-
-  config.append_before do
-    Thread.current[:current_example_group] = ::RSpec.current_example.metadata[:example_group]
   end
 
   config.append_after do
@@ -287,8 +293,6 @@ RSpec.configure do |config|
       # Disable the usage of file_identifier_hash by default until it is ready
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/33867
       stub_feature_flags(file_identifier_hash: false)
-
-      stub_feature_flags(diffs_virtual_scrolling: false)
 
       # The following `vue_issues_list` stub can be removed
       # once the Vue issues page has feature parity with the current Haml page
@@ -460,14 +464,6 @@ RSpec.configure do |config|
 
   config.after(:each, :silence_stdout) do
     $stdout = STDOUT
-  end
-
-  config.around(:each, stubbing_settings_source: true) do |example|
-    original_instance = ::Settings.instance_variable_get(:@instance)
-
-    example.run
-
-    ::Settings.instance_variable_set(:@instance, original_instance)
   end
 
   config.disable_monkey_patching!

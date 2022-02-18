@@ -14,7 +14,7 @@ RSpec.describe Projects::ClusterAgentsController do
       let_it_be(:user) { create(:user) }
 
       before do
-        project.add_developer(user)
+        project.add_reporter(user)
         sign_in(user)
         subject
       end

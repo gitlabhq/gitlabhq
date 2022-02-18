@@ -25,6 +25,29 @@ module Projects
       def search(query)
         fuzzy_search(query, [:name])
       end
+
+      def update_non_private_projects_counter(ids_before, ids_after, project_visibility_level_before, project_visibility_level_after)
+        project_visibility_level_before ||= project_visibility_level_after
+
+        topics_to_decrement = []
+        topics_to_increment = []
+        topic_ids_removed = ids_before - ids_after
+        topic_ids_retained = ids_before & ids_after
+        topic_ids_added = ids_after - ids_before
+
+        if project_visibility_level_before > Gitlab::VisibilityLevel::PRIVATE
+          topics_to_decrement += topic_ids_removed
+          topics_to_decrement += topic_ids_retained if project_visibility_level_after == Gitlab::VisibilityLevel::PRIVATE
+        end
+
+        if project_visibility_level_after > Gitlab::VisibilityLevel::PRIVATE
+          topics_to_increment += topic_ids_added
+          topics_to_increment += topic_ids_retained if project_visibility_level_before == Gitlab::VisibilityLevel::PRIVATE
+        end
+
+        where(id: topics_to_increment).update_counters(non_private_projects_count: 1) unless topics_to_increment.empty?
+        where(id: topics_to_decrement).where('non_private_projects_count > 0').update_counters(non_private_projects_count: -1) unless topics_to_decrement.empty?
+      end
     end
   end
 end

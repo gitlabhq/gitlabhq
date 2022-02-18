@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective, GlBadge } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { leftSidebarViews } from '../constants';
@@ -7,6 +7,7 @@ import { leftSidebarViews } from '../constants';
 export default {
   components: {
     GlIcon,
+    GlBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -82,9 +83,13 @@ export default {
           @click.prevent="changedActivityView($event, $options.leftSidebarViews.commit.name)"
         >
           <gl-icon name="commit" />
-          <div v-if="stagedFiles.length > 0" class="ide-commit-badge badge badge-pill">
+          <gl-badge
+            v-if="stagedFiles.length"
+            class="gl-absolute gl-px-2 gl-top-3 gl-right-3 gl-font-weight-bold gl-bg-gray-900! gl-text-white!"
+            size="sm"
+          >
             {{ stagedFiles.length }}
-          </div>
+          </gl-badge>
         </button>
       </li>
     </ul>

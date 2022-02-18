@@ -312,7 +312,7 @@ Example response:
 
 ### Retrieve a specific project audit event
 
-Only available to users with at least the [Maintainer role](../user/permissions.md) for the project.
+Only available to users with at least the Maintainer role for the project.
 
 ```plaintext
 GET /projects/:id/audit_events/:audit_event_id

@@ -1,7 +1,8 @@
 import { GlKeysetPagination, GlEmptyState } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { nextTick } from 'vue';
+
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -11,7 +12,7 @@ import DetailsHeader from '~/packages_and_registries/container_registry/explorer
 import PartialCleanupAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/partial_cleanup_alert.vue';
 import StatusAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/status_alert.vue';
 import TagsList from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
-import TagsLoader from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_loader.vue';
+import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 
 import {
   UNFINISHED_STATUS,
@@ -38,8 +39,6 @@ import {
   imageTagsMock,
 } from '../mock_data';
 import { DeleteModal } from '../stubs';
-
-const localVue = createLocalVue();
 
 describe('Details Page', () => {
   let wrapper;
@@ -85,7 +84,7 @@ describe('Details Page', () => {
     options,
     config = defaultConfig,
   } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [
       [getContainerRepositoryDetailsQuery, resolver],
@@ -96,7 +95,6 @@ describe('Details Page', () => {
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMount(component, {
-      localVue,
       apolloProvider,
       stubs: {
         DeleteModal,
@@ -522,7 +520,7 @@ describe('Details Page', () => {
 
       findDeleteImage().vm.$emit('start');
 
-      await nextTick();
+      await waitForPromises();
 
       expect(findTagsLoader().exists()).toBe(true);
 

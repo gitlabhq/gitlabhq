@@ -1,5 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
 import RightPane from '~/ide/components/panes/right.vue';
@@ -7,8 +7,7 @@ import { rightSidebarViews } from '~/ide/constants';
 import { createStore } from '~/ide/stores';
 import extendStore from '~/ide/stores/extend';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ide/components/panes/right.vue', () => {
   let wrapper;
@@ -18,7 +17,6 @@ describe('ide/components/panes/right.vue', () => {
     extendStore(store, document.createElement('div'));
 
     wrapper = shallowMount(RightPane, {
-      localVue,
       store,
       propsData: {
         ...props,
@@ -88,19 +86,18 @@ describe('ide/components/panes/right.vue', () => {
       createComponent();
     });
 
-    it('adds terminal tab', () => {
+    it('adds terminal tab', async () => {
       store.state.terminal.isVisible = true;
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              show: true,
-              title: 'Terminal',
-            }),
-          ]),
-        );
-      });
+      await nextTick();
+      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            show: true,
+            title: 'Terminal',
+          }),
+        ]),
+      );
     });
 
     it('hides terminal tab when not visible', () => {

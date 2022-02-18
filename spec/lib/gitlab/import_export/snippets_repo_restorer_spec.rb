@@ -64,7 +64,7 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer do
       let!(:snippet2) { create(:project_snippet, project: project, author: user) }
 
       before do
-        exporter.save
+        exporter.save # rubocop:disable Rails/SaveBang
 
         expect(File.exist?(bundle_path(snippet1))).to be true
         expect(File.exist?(bundle_path(snippet2))).to be false
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer do
       let!(:snippet2) { create(:project_snippet, :repository, project: project, author: user) }
 
       before do
-        exporter.save
+        exporter.save # rubocop:disable Rails/SaveBang
 
         expect(File.exist?(bundle_path(snippet1))).to be true
         expect(File.exist?(bundle_path(snippet2))).to be true

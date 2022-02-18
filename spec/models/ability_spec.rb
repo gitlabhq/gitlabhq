@@ -394,7 +394,7 @@ RSpec.describe Ability do
   describe '.project_disabled_features_rules' do
     let(:project) { create(:project, :wiki_disabled) }
 
-    subject { described_class.policy_for(project.owner, project) }
+    subject { described_class.policy_for(project.first_owner, project) }
 
     context 'wiki named abilities' do
       it 'disables wiki abilities if the project has no wiki' do

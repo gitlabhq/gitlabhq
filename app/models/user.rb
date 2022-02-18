@@ -149,6 +149,7 @@ class User < ApplicationRecord
   has_many :members
   has_many :group_members, -> { where(requested_at: nil).where("access_level >= ?", Gitlab::Access::GUEST) }, class_name: 'GroupMember'
   has_many :groups, through: :group_members
+  has_many :groups_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :group_members, source: :group
   has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }) }, through: :group_members, source: :group
   has_many :maintainers_groups, -> { where(members: { access_level: Gitlab::Access::MAINTAINER }) }, through: :group_members, source: :group
   has_many :developer_groups, -> { where(members: { access_level: ::Gitlab::Access::DEVELOPER }) }, through: :group_members, source: :group
@@ -170,6 +171,7 @@ class User < ApplicationRecord
   has_many :project_members, -> { where(requested_at: nil) }
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
+  has_many :projects_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :project_members, source: :project
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :starred_projects, through: :users_star_projects, source: :project
   has_many :project_authorizations, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
@@ -668,7 +670,8 @@ class User < ApplicationRecord
 
       sanitized_order_sql = Arel.sql(sanitize_sql_array([order, query: query]))
 
-      scope = options[:with_private_emails] ? search_with_secondary_emails(query) : search_with_public_emails(query)
+      scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
+      scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
 
       scope.reorder(sanitized_order_sql, :name)
     end
@@ -685,50 +688,32 @@ class User < ApplicationRecord
       reorder(:name)
     end
 
-    def search_with_public_emails(query)
-      return none if query.blank?
-
-      query = query.downcase
-
-      where(
-        fuzzy_arel_match(:name, query, use_minimum_char_limit: user_search_minimum_char_limit)
-          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: user_search_minimum_char_limit))
-          .or(arel_table[:public_email].eq(query))
-      )
-    end
-
-    def search_without_secondary_emails(query)
-      return none if query.blank?
-
-      query = query.downcase
-
-      where(
-        fuzzy_arel_match(:name, query, lower_exact_match: true)
-          .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
-          .or(arel_table[:email].eq(query))
-      )
-    end
-
     # searches user by given pattern
-    # it compares name, email, username fields and user's secondary emails with given pattern
+    # it compares name and username fields with given pattern
     # This method uses ILIKE on PostgreSQL.
+    def search_by_name_or_username(query, use_minimum_char_limit: nil)
+      use_minimum_char_limit = user_search_minimum_char_limit if use_minimum_char_limit.nil?
 
-    def search_with_secondary_emails(query)
-      return none if query.blank?
+      where(
+        fuzzy_arel_match(:name, query, use_minimum_char_limit: use_minimum_char_limit)
+          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: use_minimum_char_limit))
+      )
+    end
 
-      query = query.downcase
+    def with_public_email(email_address)
+      where(public_email: email_address)
+    end
 
+    def with_primary_or_secondary_email(email_address)
       email_table = Email.arel_table
       matched_by_email_user_id = email_table
         .project(email_table[:user_id])
-        .where(email_table[:email].eq(query))
+        .where(email_table[:email].eq(email_address))
         .take(1) # at most 1 record as there is a unique constraint
 
       where(
-        fuzzy_arel_match(:name, query, use_minimum_char_limit: user_search_minimum_char_limit)
-          .or(fuzzy_arel_match(:username, query, use_minimum_char_limit: user_search_minimum_char_limit))
-          .or(arel_table[:email].eq(query))
-          .or(arel_table[:id].eq(matched_by_email_user_id))
+        arel_table[:email].eq(email_address)
+        .or(arel_table[:id].eq(matched_by_email_user_id))
       )
     end
 
@@ -1608,7 +1593,7 @@ class User < ApplicationRecord
       .distinct
       .reorder(nil)
 
-    Project.where(id: events)
+    Project.where(id: events).not_aimed_for_deletion
   end
 
   def can_be_removed?

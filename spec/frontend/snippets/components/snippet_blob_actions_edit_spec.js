@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { times } from 'lodash';
+import { nextTick } from 'vue';
 import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
 import {
@@ -193,7 +194,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
       it('emits an action when content changes again', async () => {
         triggerBlobUpdate(0, { content });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(getLastActions()).toEqual([testEntries.updated.diff]);
       });

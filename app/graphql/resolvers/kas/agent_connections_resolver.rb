@@ -29,7 +29,7 @@ module Resolvers
 
       def get_connected_agents
         kas_client.get_connected_agents(project: project)
-      rescue GRPC::BadStatus => e
+      rescue GRPC::BadStatus, Gitlab::Kas::Client::ConfigurationError => e
         raise Gitlab::Graphql::Errors::ResourceNotAvailable, e.class.name
       end
 

@@ -6,7 +6,7 @@ RSpec.describe 'Protected Tags', :js do
   include ProtectedTagHelpers
 
   let(:project) { create(:project, :repository) }
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     sign_in(user)

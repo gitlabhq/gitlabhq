@@ -2,6 +2,7 @@ import { GlStackedColumnChart, GlChartLegend } from '@gitlab/ui/dist/charts';
 import { shallowMount, mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import timezoneMock from 'timezone-mock';
+import { nextTick } from 'vue';
 import StackedColumnChart from '~/monitoring/components/charts/stacked_column.vue';
 import { stackedColumnGraphData } from '../../graph_data';
 
@@ -34,9 +35,9 @@ describe('Stacked column chart component', () => {
   });
 
   describe('when graphData is present', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createWrapper();
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('chart is rendered', () => {
@@ -116,25 +117,24 @@ describe('Stacked column chart component', () => {
         expect(xAxis.axisLabel.formatter('2020-01-30T12:01:00.000Z')).toBe('4:01 AM');
       });
 
-      it('date is shown in UTC', () => {
+      it('date is shown in UTC', async () => {
         wrapper.setProps({ timezone: 'UTC' });
 
-        return wrapper.vm.$nextTick().then(() => {
-          const { xAxis } = findChart().props('option');
-          expect(xAxis.axisLabel.formatter('2020-01-30T12:01:00.000Z')).toBe('12:01 PM');
-        });
+        await nextTick();
+        const { xAxis } = findChart().props('option');
+        expect(xAxis.axisLabel.formatter('2020-01-30T12:01:00.000Z')).toBe('12:01 PM');
       });
     });
   });
 
   describe('when graphData has results missing', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const graphData = cloneDeep(stackedColumnMockedData);
 
       graphData.metrics[0].result = null;
 
       createWrapper({ graphData });
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('chart is rendered', () => {
@@ -147,7 +147,7 @@ describe('Stacked column chart component', () => {
       wrapper = createWrapper({}, mount);
     });
 
-    it('allows user to override legend label texts using props', () => {
+    it('allows user to override legend label texts using props', async () => {
       const legendRelatedProps = {
         legendMinText: 'legendMinText',
         legendMaxText: 'legendMaxText',
@@ -158,9 +158,8 @@ describe('Stacked column chart component', () => {
         ...legendRelatedProps,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findChart().props()).toMatchObject(legendRelatedProps);
-      });
+      await nextTick();
+      expect(findChart().props()).toMatchObject(legendRelatedProps);
     });
 
     it('should render a tabular legend layout by default', () => {

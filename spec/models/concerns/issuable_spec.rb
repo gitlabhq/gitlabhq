@@ -935,6 +935,14 @@ RSpec.describe Issuable do
       subject { issuable.supports_escalation? }
 
       it { is_expected.to eq(supports_escalation) }
+
+      context 'with feature disabled' do
+        before do
+          stub_feature_flags(incident_escalations: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
     end
   end
 

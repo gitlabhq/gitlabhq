@@ -11,6 +11,7 @@ import ProjectLabelSubscription from './project_label_subscription';
 
 export function initDeleteLabelModal(optionalProps = {}) {
   new Vue({
+    name: 'DeleteLabelModalRoot',
     render(h) {
       return h(DeleteLabelModal, {
         props: {
@@ -65,6 +66,7 @@ export function initLabelIndex() {
 
   return new Vue({
     el: '#js-promote-label-modal',
+    name: 'PromoteLabelModal',
     data() {
       return {
         modalProps: {

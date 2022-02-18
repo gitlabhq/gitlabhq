@@ -10,20 +10,20 @@ if [ $# -eq 0 ]; then
   exit
 fi
 
-files=( $@ )
+files=( "$@" )
 len=${#files[@]}
 target=${files[$len-1]}
 
 # Trap interrupts and exit instead of continuing the loop
 trap "echo Exited!; exit 2;" SIGINT SIGTERM
 
-# Show which set of specs are running
-set -x
+# Show which set of specs are running and exit immediately if they fail.
+set -xe
 
 # Do the speedy case first, run each spec with our failing spec
 for file in "${files[@]}"; do
-  bin/rspec $file $target
+  bin/rspec "$file" "$target"
 done
 
 # Do a full bisect given we did not find candidates with speedy cases 
-bin/rspec --bisect=verbose $@
+bin/rspec --bisect=verbose "$@"

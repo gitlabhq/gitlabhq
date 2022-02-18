@@ -4,7 +4,7 @@ class TestCaseEntity < Grape::Entity
   include API::Helpers::RelatedResourcesHelpers
 
   expose :status
-  expose :name
+  expose :name, default: "(No name)"
   expose :classname
   expose :file
   expose :execution_time

@@ -139,8 +139,10 @@ export default {
           />
           <gl-button
             v-if="commit.descriptionHtml"
+            v-gl-tooltip
             :class="{ open: showDescription }"
-            :aria-label="__('Show commit description')"
+            :title="__('Toggle commit description')"
+            :aria-label="__('Toggle commit description')"
             class="text-expander gl-vertical-align-bottom!"
             icon="ellipsis_h"
             @click="toggleShowDescription"

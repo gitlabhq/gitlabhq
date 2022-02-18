@@ -35,13 +35,19 @@
   - 1
 - - analytics_usage_trends_counter_job
   - 1
+- - app_sec_dast_scanner_profiles_builds_consistency
+  - 1
 - - app_sec_dast_scans_consistency
+  - 1
+- - app_sec_dast_site_profiles_builds_consistency
   - 1
 - - approval_rules_external_approval_rule_payload
   - 1
 - - approve_blocked_pending_approval_users
   - 1
 - - audit_events_audit_event_streaming
+  - 1
+- - audit_events_user_impersonation_event_create
   - 1
 - - authorized_keys
   - 2
@@ -54,6 +60,8 @@
 - - auto_merge
   - 3
 - - background_migration
+  - 1
+- - background_migration_ci_database
   - 1
 - - bulk_import
   - 1
@@ -78,6 +86,8 @@
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
 - - cluster_agent
+  - 1
+- - compliance_management_merge_requests_compliance_violations
   - 1
 - - container_repository
   - 1
@@ -175,6 +185,8 @@
   - 1
 - - gitlab_shell
   - 2
+- - gitlab_subscriptions_notify_seats_exceeded
+  - 1
 - - group_destroy
   - 1
 - - group_export
@@ -285,6 +297,8 @@
   - 1
 - - namespaces_sync_namespace_name
   - 1
+- - namespaces_update_root_statistics
+  - 1
 - - new_epic
   - 2
 - - new_issue
@@ -310,8 +324,6 @@
 - - pages_domain_verification
   - 1
 - - pages_transfer
-  - 1
-- - pages_update_configuration
   - 1
 - - personal_access_tokens
   - 1
@@ -400,6 +412,8 @@
 - - requirements_management_process_requirements_reports
   - 1
 - - security_auto_fix
+  - 1
+- - security_findings_delete_by_job_id
   - 1
 - - security_scans
   - 2

@@ -12,21 +12,13 @@
             = search_field_tag :search, params[:search], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
             %button.user-search-btn{ type: "submit", "aria-label" => _("Submit search") }
               = sprite_icon('search')
-          .dropdown.inline.gl-ml-3
-            = dropdown_toggle(starrers_sort_options_hash[@sort], { toggle: 'dropdown' })
-            %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
-              %li.dropdown-header
-                = _("Sort by")
-              - starrers_sort_options_hash.each do |value, title|
-                %li
-                  = link_to filter_starrer_path(sort: value), class: ("is-active" if @sort == value) do
-                    = title
+          - starrers_sort_options = starrers_sort_options_hash.map { |value, text| { value: value, text: text, href: filter_starrer_path(sort: value) } }
+          = gl_redirect_listbox_tag starrers_sort_options, @sort, class: 'gl-ml-3', data: { right: true }
 - if @starrers.size > 0
   .row.gl-mt-3
     = render partial: 'starrer', collection: @starrers, as: :starrer
   = paginate @starrers, theme: 'gitlab'
+- elsif params[:search].present?
+  .nothing-here-block= _('No starrers matched your search')
 - else
-  - if params[:search].present?
-    .nothing-here-block= _('No starrers matched your search')
-  - else
-    .nothing-here-block= _('Nobody has starred this repository yet')
+  .nothing-here-block= _('Nobody has starred this repository yet')

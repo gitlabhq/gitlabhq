@@ -1,13 +1,20 @@
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const RUNNER_PAGE_SIZE = 20;
 export const RUNNER_JOB_COUNT_LIMIT = 1000;
-export const GROUP_RUNNER_COUNT_LIMIT = 1000;
+
+export const RUNNER_DETAILS_PROJECTS_PAGE_SIZE = 5;
+export const RUNNER_DETAILS_JOBS_PAGE_SIZE = 30;
 
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
 // Type
+
+export const I18N_ALL_TYPES = s__('Runners|All');
+export const I18N_INSTANCE_TYPE = s__('Runners|Instance');
+export const I18N_GROUP_TYPE = s__('Runners|Group');
+export const I18N_PROJECT_TYPE = s__('Runners|Project');
 export const I18N_INSTANCE_RUNNER_DESCRIPTION = s__('Runners|Available to all projects');
 export const I18N_GROUP_RUNNER_DESCRIPTION = s__(
   'Runners|Available to all projects and subgroups in the group',
@@ -28,8 +35,20 @@ export const I18N_STALE_RUNNER_DESCRIPTION = s__(
   'Runners|No contact from this runner in over 3 months',
 );
 
+// Active flag
+export const I18N_PAUSE = __('Pause');
+export const I18N_RESUME = __('Resume');
+
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
 export const I18N_PAUSED_RUNNER_DESCRIPTION = s__('Runners|Not available to run jobs');
+
+// Runner details
+
+export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
+export const I18N_NONE = __('None');
+export const I18N_NO_JOBS_FOUND = s__('Runner|This runner has not run any jobs.');
+
+// Styles
 
 export const RUNNER_TAG_BADGE_VARIANT = 'neutral';
 export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';

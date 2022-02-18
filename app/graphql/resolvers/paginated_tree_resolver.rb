@@ -11,14 +11,14 @@ module Resolvers
               required: false,
               default_value: '', # root of the repository
               description: 'Path to get the tree for. Default value is the root of the repository.'
-    argument :ref, GraphQL::Types::String,
-              required: false,
-              default_value: :head,
-              description: 'Commit ref to get the tree for. Default value is HEAD.'
     argument :recursive, GraphQL::Types::Boolean,
               required: false,
               default_value: false,
               description: 'Used to get a recursive tree. Default is false.'
+    argument :ref, GraphQL::Types::String,
+              required: false,
+              default_value: :head,
+              description: 'Commit ref to get the tree for. Default value is HEAD.'
 
     alias_method :repository, :object
 

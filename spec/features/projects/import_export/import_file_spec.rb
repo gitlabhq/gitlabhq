@@ -41,7 +41,7 @@ RSpec.describe 'Import/Export - project import integration test', :js do
 
       project = Project.last
       expect(project).not_to be_nil
-      expect(page).to have_content("Project 'test-project-path' is being imported")
+      expect(page).to have_content("Project 'Test Project Name' is being imported")
     end
 
     it 'invalid project' do

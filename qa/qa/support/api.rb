@@ -44,6 +44,18 @@ module QA
         end
       end
 
+      def patch(url, payload = nil)
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(
+            method: :patch,
+            url: url,
+            payload: payload,
+            verify_ssl: false)
+        rescue RestClient::ExceptionWithResponse => e
+          return_response_or_raise(e)
+        end
+      end
+
       def put(url, payload = nil)
         with_retry_on_too_many_requests do
           RestClient::Request.execute(

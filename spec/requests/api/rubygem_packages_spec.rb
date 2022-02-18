@@ -187,19 +187,6 @@ RSpec.describe API::RubygemPackages do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).not_to eq(package_file_pending_destruction.file.file.read)
       end
-
-      context 'with packages_installable_package_files disabled' do
-        before do
-          stub_feature_flags(packages_installable_package_files: false)
-        end
-
-        it 'returns them' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(package_file_pending_destruction.file.file.read)
-        end
-      end
     end
   end
 

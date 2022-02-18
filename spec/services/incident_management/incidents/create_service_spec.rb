@@ -14,7 +14,6 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
     context 'when incident has title and description' do
       let(:title) { 'Incident title' }
       let(:new_issue) { Issue.last! }
-      let(:label_title) { attributes_for(:label, :incident)[:title] }
 
       it 'responds with success' do
         expect(create_incident).to be_success
@@ -38,8 +37,6 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
         end
 
         let(:issue) { new_issue }
-
-        include_examples 'does not have incident label'
       end
 
       context 'with default severity' do
@@ -69,20 +66,6 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
           end
         end
       end
-
-      context 'when incident label does not exists' do
-        it 'does not create incident label' do
-          expect { create_incident }.to not_change { project.labels.where(title: label_title).count }
-        end
-      end
-
-      context 'when incident label already exists' do
-        let!(:label) { create(:label, project: project, title: label_title) }
-
-        it 'does not create new labels' do
-          expect { create_incident }.not_to change(Label, :count)
-        end
-      end
     end
 
     context 'when incident has no title' do
@@ -99,6 +82,25 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
 
       it 'result payload contains an Issue object' do
         expect(create_incident.payload[:issue]).to be_kind_of(Issue)
+      end
+
+      context 'with alert' do
+        let(:alert) { create(:alert_management_alert, project: project) }
+
+        subject(:create_incident) { described_class.new(project, user, title: title, description: description, alert: alert).execute }
+
+        it 'associates the alert with the incident' do
+          expect(create_incident[:issue].alert_management_alert).to eq(alert)
+        end
+
+        context 'the alert prevents the issue from saving' do
+          let(:alert) { create(:alert_management_alert, :with_validation_errors, project: project) }
+
+          it 'responds with errors' do
+            expect(create_incident).to be_error
+            expect(create_incident.message).to eq('Hosts hosts array is over 255 chars')
+          end
+        end
       end
     end
   end

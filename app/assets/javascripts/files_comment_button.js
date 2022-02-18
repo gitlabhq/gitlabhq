@@ -4,7 +4,7 @@
  * causes reflows, visit https://gist.github.com/paulirish/5d52fb081b3570c81e3a
  */
 
-import Cookies from 'js-cookie';
+import { getCookie } from '~/lib/utils/common_utils';
 
 const LINE_NUMBER_CLASS = 'diff-line-num';
 const UNFOLDABLE_LINE_CLASS = 'js-unfold';
@@ -29,7 +29,7 @@ export default {
         $diffFile.closest(DIFF_CONTAINER_SELECTOR).data('canCreateNote') === '';
     }
 
-    this.isParallelView = Cookies.get('diff_view') === 'parallel';
+    this.isParallelView = getCookie('diff_view') === 'parallel';
 
     if (this.userCanCreateNote) {
       $diffFile

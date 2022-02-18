@@ -1,13 +1,13 @@
 import { GlModal } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import createStore from '~/deploy_freeze/store';
 import { RECEIVE_FREEZE_PERIODS_SUCCESS } from '~/deploy_freeze/store/mutation_types';
 import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Deploy freeze table', () => {
   let wrapper;
@@ -21,7 +21,6 @@ describe('Deploy freeze table', () => {
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(DeployFreezeTable, {
       attachTo: document.body,
-      localVue,
       store,
     });
   };
@@ -57,7 +56,7 @@ describe('Deploy freeze table', () => {
     describe('with data', () => {
       beforeEach(async () => {
         store.commit(RECEIVE_FREEZE_PERIODS_SUCCESS, freezePeriodsFixture);
-        await wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('displays data', () => {
@@ -69,7 +68,7 @@ describe('Deploy freeze table', () => {
 
       it('allows user to edit deploy freeze', async () => {
         findEditDeployFreezeButton().trigger('click');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(store.dispatch).toHaveBeenCalledWith(
           'setFreezePeriod',

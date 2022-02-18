@@ -1,0 +1,12 @@
+query GetFileMetadata($fullPath: ID!, $filePath: String!, $ref: String) {
+  project(fullPath: $fullPath) {
+    id
+    repository {
+      blobs(paths: [$filePath], ref: $ref) {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+}

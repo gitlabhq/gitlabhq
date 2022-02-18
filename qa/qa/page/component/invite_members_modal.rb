@@ -9,7 +9,7 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/assets/javascripts/invite_members/components/invite_members_modal.vue' do
+          base.view 'app/assets/javascripts/invite_members/components/invite_modal_base.vue' do
             element :invite_button
             element :access_level_dropdown
             element :invite_members_modal_content
@@ -44,9 +44,9 @@ module QA
           open_invite_members_modal
 
           within_element(:invite_members_modal_content) do
-            fill_element :members_token_select_input, username
+            fill_element(:members_token_select_input, username)
             Support::WaitForRequests.wait_for_requests
-            click_button username
+            click_button(username, match: :prefer_exact)
             set_access_level(access_level)
           end
 

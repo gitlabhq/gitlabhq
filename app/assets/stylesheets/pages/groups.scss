@@ -112,19 +112,6 @@ table.pipeline-project-metrics tr td {
   font-weight: $gl-font-weight-normal;
 }
 
-.js-groups-dropdown {
-  width: 100%;
-}
-
-.dropdown-group-transfer {
-  bottom: 100%;
-  top: initial;
-
-  .dropdown-content {
-    overflow-y: unset;
-  }
-}
-
 .groups-list-tree-container {
   .has-no-search-results {
     text-align: center;

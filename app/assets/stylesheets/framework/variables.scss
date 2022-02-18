@@ -52,6 +52,11 @@ $spacing-scale: (
   5: #{4 * $grid-size}
 );
 
+/* Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709 */
+$gl-spacing-scale-48: 48 * $grid-size;
+$gl-spacing-scale-75: 75 * $grid-size;
+/* End gitlab-ui#1709 */
+
 /*
  * Why another sizing scale???
  * Great question, friend!
@@ -589,8 +594,6 @@ $gl-btn-vert-padding: 8px;
 $gl-btn-horz-padding: 12px;
 $gl-btn-small-font-size: 13px;
 $gl-btn-small-line-height: 18px;
-$gl-btn-xs-font-size: 13px;
-$gl-btn-xs-line-height: 13px;
 
 /*
 * Badges
@@ -722,7 +725,7 @@ $calendar-activity-colors: (
   #7fa8c9,
   #527ba0,
   #254e77,
-);
+) !default;
 
 /*
 * Commit Page
@@ -931,8 +934,6 @@ Merge requests
 */
 $mr-tabs-height: 48px;
 $mr-version-controls-height: 56px;
-$mr-widget-margin-left: 40px;
-$mr-review-bar-height: calc(2rem + 13px);
 
 /*
 Compare Branches

@@ -10,20 +10,20 @@ module Tasks
       JH_ASSET_FOLDERS = %w[jh/app/assets].freeze
       JS_ASSET_PATTERNS = %w[*.js config/**/*.js].freeze
       JS_ASSET_FILES = %w[package.json yarn.lock].freeze
-      MASTER_MD5_HASH_FILE = 'master-assets-hash.txt'
-      HEAD_MD5_HASH_FILE = 'assets-hash.txt'
+      MASTER_SHA256_HASH_FILE = 'master-assets-hash.txt'
+      HEAD_SHA256_HASH_FILE = 'assets-hash.txt'
       PUBLIC_ASSETS_WEBPACK_DIR = 'public/assets/webpack'
 
-      def self.md5_of_assets_impacting_webpack_compilation
+      def self.sha256_of_assets_impacting_webpack_compilation
         start_time = Time.now
         asset_files = assets_impacting_webpack_compilation
-        puts "Generating the MD5 hash for #{assets_impacting_webpack_compilation.size} Webpack-related assets..."
+        puts "Generating the SHA256 hash for #{assets_impacting_webpack_compilation.size} Webpack-related assets..."
 
-        asset_file_md5s = asset_files.map do |asset_file|
-          Digest::MD5.file(asset_file).hexdigest
+        asset_file_sha256s = asset_files.map do |asset_file|
+          Digest::SHA256.file(asset_file).hexdigest
         end
 
-        Digest::MD5.hexdigest(asset_file_md5s.join).tap { |md5| puts "=> MD5 generated in #{Time.now - start_time}: #{md5}" }
+        Digest::SHA256.hexdigest(asset_file_sha256s.join).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" }
       end
 
       def self.assets_impacting_webpack_compilation
@@ -63,25 +63,25 @@ namespace :gitlab do
 
     desc 'GitLab | Assets | Compile all Webpack assets'
     task :compile_webpack_if_needed do
-      FileUtils.mv(Tasks::Gitlab::Assets::HEAD_MD5_HASH_FILE, Tasks::Gitlab::Assets::MASTER_MD5_HASH_FILE, force: true)
+      FileUtils.mv(Tasks::Gitlab::Assets::HEAD_SHA256_HASH_FILE, Tasks::Gitlab::Assets::MASTER_SHA256_HASH_FILE, force: true)
 
-      master_assets_md5 =
-        if File.exist?(Tasks::Gitlab::Assets::MASTER_MD5_HASH_FILE)
-          File.read(Tasks::Gitlab::Assets::MASTER_MD5_HASH_FILE)
+      master_assets_sha256 =
+        if File.exist?(Tasks::Gitlab::Assets::MASTER_SHA256_HASH_FILE)
+          File.read(Tasks::Gitlab::Assets::MASTER_SHA256_HASH_FILE)
         else
           'missing!'
         end
 
-      head_assets_md5 = Tasks::Gitlab::Assets.md5_of_assets_impacting_webpack_compilation.tap do |md5|
-        File.write(Tasks::Gitlab::Assets::HEAD_MD5_HASH_FILE, md5)
+      head_assets_sha256 = Tasks::Gitlab::Assets.sha256_of_assets_impacting_webpack_compilation.tap do |sha256|
+        File.write(Tasks::Gitlab::Assets::HEAD_SHA256_HASH_FILE, sha256)
       end
 
-      puts "Webpack assets MD5 for `master`: #{master_assets_md5}"
-      puts "Webpack assets MD5 for `HEAD`: #{head_assets_md5}"
+      puts "Webpack assets SHA256 for `master`: #{master_assets_sha256}"
+      puts "Webpack assets SHA256 for `HEAD`: #{head_assets_sha256}"
 
       public_assets_webpack_dir_exists = Dir.exist?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR)
 
-      if head_assets_md5 != master_assets_md5 || !public_assets_webpack_dir_exists
+      if head_assets_sha256 != master_assets_sha256 || !public_assets_webpack_dir_exists
         FileUtils.rm_r(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR) if public_assets_webpack_dir_exists
 
         unless system('yarn webpack')

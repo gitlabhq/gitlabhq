@@ -15,6 +15,7 @@ For any of the following scenarios, the `start-review-app-pipeline` job would be
 - for merge requests with CI config changes
 - for merge requests with frontend changes
 - for merge requests with changes to `{,ee/,jh/}{app/controllers}/**/*`
+- for merge requests with changes to `{,ee/,jh/}{app/models}/**/*`
 - for merge requests with QA changes
 - for scheduled pipelines
 - the MR has the `pipeline:run-review-app` label set
@@ -29,6 +30,8 @@ You can also manually start the `review-qa-all`: it runs the full QA suite.
 
 After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
 the `allure-report-qa-smoke`, `allure-report-qa-reliable`, and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
+
+Errors can be found in the `gitlab-review-apps` Sentry project and [filterable by Review App URL](https://sentry.gitlab.net/gitlab/gitlab-review-apps/?query=url%3A%22https%3A%2F%2Fgitlab-review-require-ve-u92nn2.gitlab-review.app%2F%22) or [commit SHA](https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/6095b501da7/all-events/).
 
 ## Performance Metrics
 

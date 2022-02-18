@@ -281,7 +281,7 @@ README.md  @docs
 
 ### Approvals shown as optional
 
-A Code Owner approval rule is optional if these conditions are not met:
+A Code Owner approval rule is optional if any of these conditions are true:
 
 - The user or group are not a member of the project or parent group.
 - [Code Owner approval on a protected branch](protected_branches.md#require-code-owner-approval-on-a-protected-branch) has not been set up.

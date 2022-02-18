@@ -170,7 +170,6 @@ Rails.application.routes.draw do
     Gitlab.ee do
       draw :security
       draw :smartcard
-      draw :username
       draw :trial
       draw :trial_registration
       draw :country

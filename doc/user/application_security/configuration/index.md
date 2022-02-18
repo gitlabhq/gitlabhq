@@ -58,11 +58,11 @@ You can configure the following security controls:
 - [API Fuzzing](../api_fuzzing/index.md)
   - Select **Enable API Fuzzing** to use API Fuzzing for the current project. For more details, read [API Fuzzing](../../../user/application_security/api_fuzzing/index.md#enable-web-api-fuzzing).
 - [Coverage Fuzzing](../coverage_fuzzing/index.md)
-  - Can be configured with `.gitlab-ci.yml`. For more details, read [Coverage Fuzzing](../../../user/application_security/coverage_fuzzing/index.md#configuration).
+  - Can be configured with `.gitlab-ci.yml`. For more details, read [Coverage Fuzzing](../../../user/application_security/coverage_fuzzing/index.md#enable-coverage-guided-fuzz-testing).
 
 ## Compliance **(ULTIMATE)**
 
 You can configure the following security controls:
 
 - [License Compliance](../../../user/compliance/license_compliance/index.md)
-  - Can be configured with `.gitlab-ci.yml`. For more details, read [License Compliance](../../../user/compliance/license_compliance/index.md#configuration).
+  - Can be configured with `.gitlab-ci.yml`. For more details, read [License Compliance](../../../user/compliance/license_compliance/index.md#enable-license-compliance).

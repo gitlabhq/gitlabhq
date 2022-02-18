@@ -142,6 +142,14 @@ module UploadsActions
     uploader && uploader.exists? && uploader.embeddable?
   end
 
+  def bypass_auth_checks_on_uploads?
+    if ::Feature.enabled?(:enforce_auth_checks_on_uploads, default_enabled: :yaml)
+      false
+    else
+      action_name == 'show' && embeddable?
+    end
+  end
+
   def find_model
     nil
   end

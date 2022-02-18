@@ -3,9 +3,8 @@
 module BulkImports
   module Projects
     module Graphql
-      module GetSnippetRepositoryQuery
-        extend Queryable
-        extend self
+      class GetSnippetRepositoryQuery
+        include Queryable
 
         def to_s
           <<-'GRAPHQL'
@@ -27,7 +26,7 @@ module BulkImports
           GRAPHQL
         end
 
-        def variables(context)
+        def variables
           {
             full_path: context.entity.source_full_path,
             cursor: context.tracker.next_page,

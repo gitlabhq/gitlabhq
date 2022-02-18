@@ -4,7 +4,12 @@ import { listen } from 'codesandbox-api';
 import { isEmpty, debounce } from 'lodash';
 import { Manager } from 'smooshpack';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { packageJsonPath, LIVE_PREVIEW_DEBOUNCE } from '../../constants';
+import {
+  packageJsonPath,
+  LIVE_PREVIEW_DEBOUNCE,
+  PING_USAGE_PREVIEW_KEY,
+  PING_USAGE_PREVIEW_SUCCESS_KEY,
+} from '../../constants';
 import eventHub from '../../eventhub';
 import { createPathWithExt } from '../../utils';
 import Navigator from './navigator.vue';
@@ -62,6 +67,15 @@ export default {
       };
     },
   },
+  watch: {
+    sandpackReady: {
+      handler(val) {
+        if (val) {
+          this.pingUsage(PING_USAGE_PREVIEW_SUCCESS_KEY);
+        }
+      },
+    },
+  },
   mounted() {
     this.onFilesChangeCallback = debounce(() => this.update(), LIVE_PREVIEW_DEBOUNCE);
     eventHub.$on('ide.files.change', this.onFilesChangeCallback);
@@ -101,7 +115,7 @@ export default {
     initPreview() {
       if (!this.mainEntry) return null;
 
-      this.pingUsage();
+      this.pingUsage(PING_USAGE_PREVIEW_KEY);
 
       return this.loadFileContent(this.mainEntry)
         .then(() => this.$nextTick())

@@ -1,7 +1,7 @@
 ---
 type: howto
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -116,8 +116,10 @@ reactivate 2FA from scratch if they want to use it again.
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-Two-factor authentication can be enforced for Git over SSH operations. The one-time password (OTP)
-verification can be done via a GitLab Shell command:
+Two-factor authentication can be enforced for Git over SSH operations. However, we recommend using
+[ED25519_SK](../ssh/index.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../ssh/index.md#ecdsa_sk-ssh-keys) SSH keys instead.
+
+The one-time password (OTP) verification can be done using a command:
 
 ```shell
 ssh git@<hostname> 2fa_verify

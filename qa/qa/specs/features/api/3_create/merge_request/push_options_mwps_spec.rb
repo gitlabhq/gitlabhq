@@ -68,9 +68,10 @@ module QA
           mr.iid = merge_request[:iid]
         end
 
-        expect(merge_request.state).to eq('opened')
-        expect(merge_request.merge_status).to eq('checking')
-        expect(merge_request.merge_when_pipeline_succeeds).to be true
+        aggregate_failures do
+          expect(merge_request.state).to eq('opened')
+          expect(merge_request.merge_when_pipeline_succeeds).to be true
+        end
       end
 
       it 'merges when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347842' do

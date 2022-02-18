@@ -128,4 +128,30 @@ RSpec.describe 'User views an open merge request' do
       expect(find("[data-testid='ref-name']")[:title]).to eq(source_branch)
     end
   end
+
+  context 'when user preferred language has changed', :use_clean_rails_memory_store_fragment_caching do
+    let(:project) { create(:project, :public, :repository) }
+    let(:user) { create(:user) }
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+    end
+
+    it 'renders edit button in preferred language' do
+      visit(merge_request_path(merge_request))
+
+      page.within('.detail-page-header-actions') do
+        expect(page).to have_link('Edit')
+      end
+
+      user.update!(preferred_language: 'de')
+
+      visit(merge_request_path(merge_request))
+
+      page.within('.detail-page-header-actions') do
+        expect(page).to have_link('Bearbeiten')
+      end
+    end
+  end
 end

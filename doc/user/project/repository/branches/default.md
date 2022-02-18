@@ -38,7 +38,7 @@ the [Git commands you need](#update-the-default-branch-name-in-your-repository) 
 
 To update the default branch name for an individual [project](../../index.md):
 
-1. Sign in to GitLab with at least the [Maintainer](../../../permissions.md) role.
+1. Sign in to GitLab with at least the Maintainer role.
 1. In the left navigation menu, go to **Settings > Repository**.
 1. Expand **Default branch**, and select a new default branch.
 1. Optional. Select the **Auto-close referenced issues on default branch** checkbox to close
@@ -57,8 +57,8 @@ GitLab administrators can configure a new default branch name at the
 
 ### Instance-level custom initial branch name **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221013) in GitLab 13.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/325163) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221013) in GitLab 13.2 [with a flag](../../../../administration/feature_flags.md) named `global_default_branch_name`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/325163) in GitLab 13.12. Feature flag `global_default_branch_name` removed.
 
 GitLab [administrators](../../../permissions.md) of self-managed instances can
 customize the initial branch for projects hosted on that instance. Individual
@@ -129,7 +129,7 @@ renames a Git repository's (`example`) default branch.
    git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
    ```
 
-1. Sign in to GitLab with at least the [Maintainer](../../../permissions.md)
+1. Sign in to GitLab with at least the Maintainer
    role and follow the instructions to
    [change the default branch for this project](#change-the-default-branch-name-for-a-project).
    Select `main` as your new default branch.

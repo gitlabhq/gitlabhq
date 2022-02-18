@@ -86,6 +86,9 @@ export default {
         return data.workspace?.issuable || {};
       },
       result({ data }) {
+        if (!data) {
+          return;
+        }
         this.$emit(`${this.dateType}Updated`, data.workspace?.issuable?.[this.dateType]);
       },
       error() {

@@ -73,7 +73,7 @@ update-qa-cache:
     - echo $exit_code
     - |
       if [ $exit_code -eq 0 ]; then
-        ./scripts/trigger-build omnibus
+        ./scripts/trigger-build.rb omnibus
       elif [ $exit_code -eq 1 ]; then
         exit 1
       else
@@ -108,7 +108,7 @@ update-qa-cache:
       if [[ $feature_flags ]]; then
         export GITLAB_QA_OPTIONS="--set-feature-flags $feature_flags"
         echo $GITLAB_QA_OPTIONS
-        ./scripts/trigger-build omnibus
+        ./scripts/trigger-build.rb omnibus
       else
         echo "No changed feature flag found to test. The tests are skipped if the flag was removed."
       fi

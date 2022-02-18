@@ -109,6 +109,26 @@ module Gitlab
       name.to_s == CI_DATABASE_NAME
     end
 
+    class PgUser < ApplicationRecord
+      self.table_name = 'pg_user'
+      self.primary_key = :usename
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def self.check_for_non_superuser
+      user = PgUser.find_by('usename = CURRENT_USER')
+      am_i_superuser = user.usesuper
+
+      Gitlab::AppLogger.info(
+        "Account details: User: \"#{user.usename}\", UseSuper: (#{am_i_superuser})"
+      )
+
+      raise 'Error: detected superuser' if am_i_superuser
+    rescue ActiveRecord::StatementInvalid
+      raise 'User CURRENT_USER not found'
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     def self.check_postgres_version_and_print_warning
       return if Gitlab::Runtime.rails_runner?
 

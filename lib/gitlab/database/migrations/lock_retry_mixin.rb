@@ -9,6 +9,10 @@ module Gitlab
             migration.class
           end
 
+          def migration_connection
+            migration.connection
+          end
+
           def enable_lock_retries?
             # regular AR migrations don't have this,
             # only ones inheriting from Gitlab::Database::Migration have
@@ -24,6 +28,7 @@ module Gitlab
           def ddl_transaction(migration, &block)
             if use_transaction?(migration) && migration.enable_lock_retries?
               Gitlab::Database::WithLockRetries.new(
+                connection: migration.migration_connection,
                 klass: migration.migration_class,
                 logger: Gitlab::BackgroundMigration::Logger
               ).run(raise_on_exhaustion: false, &block)

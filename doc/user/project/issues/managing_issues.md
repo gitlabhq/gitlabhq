@@ -29,7 +29,7 @@ You can create an issue in many ways in GitLab:
 
 Prerequisites:
 
-- You must have at least the [Guest role](../../permissions.md) for the project.
+- You must have at least the Guest role for the project.
 
 To create an issue:
 
@@ -52,7 +52,7 @@ to the projects in the group.
 
 Prerequisites:
 
-- You must have at least the [Guest role](../../permissions.md) for the project in the group.
+- You must have at least the Guest role for the project in the group.
 
 To create an issue from a group:
 
@@ -78,7 +78,7 @@ You can create a new issue from an existing one. The two issues can then be mark
 
 Prerequisites:
 
-- You must have at least the [Guest role](../../permissions.md) for the project.
+- You must have at least the Guest role for the project.
 
 To create an issue from another issue:
 
@@ -98,7 +98,7 @@ You can create a new issue from an [issue board](../issue_board.md).
 
 Prerequisites:
 
-- You must have at least the [Guest role](../../permissions.md) for the project.
+- You must have at least the Guest role for the project.
 
 To create an issue from a project issue board:
 
@@ -133,7 +133,7 @@ Prerequisites:
 - Your GitLab instance must have [incoming email](../../../administration/incoming_email.md)
   configured.
 - There must be at least one issue in the issue list.
-- You must have at least the [Guest role](../../permissions.md) for the project.
+- You must have at least the Guest role for the project.
 
 To email an issue to a project:
 
@@ -224,7 +224,7 @@ You can edit an issue's title and description.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have at least the Reporter role for the project, be the author of the issue, or be assigned to the issue.
 
 To edit an issue:
 
@@ -242,7 +242,7 @@ You can edit multiple issues at a time when you're in a project.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have at least the Reporter role for the project.
 
 To edit multiple issues at the same time:
 
@@ -275,7 +275,7 @@ You can edit multiple issues across multiple projects when you're in a group.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for a group.
+- You must have at least the Reporter role for a group.
 
 To edit multiple issues at the same time:
 
@@ -300,9 +300,11 @@ When you move an issue, it's closed and copied to the target project.
 The original issue is not deleted. A system note, which indicates
 where it came from and went to, is added to both issues.
 
+Be careful when moving an issue to a project with different access rules. Before moving the issue, make sure it does not contain sensitive data.
+
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have at least the Reporter role for the project.
 
 To move an issue:
 
@@ -317,7 +319,7 @@ You can move all open issues from one project to another.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have access to the Rails console of the GitLab instance.
 
 To do it:
 
@@ -351,7 +353,7 @@ The issue is marked as closed but is not deleted.
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have at least the Reporter role for the project, be the author of the issue, or be assigned to the issue.
 
 To close an issue, you can do the following:
 
@@ -364,7 +366,7 @@ To close an issue, you can do the following:
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have at least the Reporter role for the project, be the author of the issue, or be assigned to the issue.
 
 To reopen a closed issue, at the top of the issue, select **Reopen issue**.
 A reopened issue is no different from any other open issue.
@@ -440,7 +442,7 @@ in the [project's settings](../settings/index.md).
 
 Prerequisites:
 
-- You must have at least the [Maintainer role](../../permissions.md) for the project.
+- You must have at least the Maintainer role for the project.
 
 To disable automatic issue closing:
 
@@ -466,7 +468,7 @@ Merge requests in other projects can still close another project's issues.
 
 Prerequisites:
 
-- You must have the [administrator access level](../../../administration/index.md) for your GitLab instance.
+- You must have [administrator access](../../../administration/index.md) to your GitLab instance.
 
 To change the default issue closing pattern, edit the
 [`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)
@@ -476,7 +478,7 @@ of your installation.
 
 Prerequisites:
 
-- You must be the issue author or have at least the [Reporter role](../../permissions.md) for the project.
+- You must be the issue author or have at least the Reporter role for the project, be the author of the issue, or be assigned to the issue.
 
 To change issue type:
 
@@ -494,7 +496,7 @@ To change issue type:
 
 Prerequisites:
 
-- You must have the [Owner role](../../permissions.md) for a project.
+- You must have the Owner role for a project.
 
 To delete an issue:
 
@@ -508,9 +510,9 @@ Alternatively:
 
 ## Promote an issue to an epic **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab Ultimate 11.6.
-> - Moved to GitLab Premium in 12.8.
-> - Promoting issues to epics via the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233974) in GitLab Premium 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab 11.6.
+> - Moved from GitLab Ultimate to GitLab Premium in 12.8.
+> - Promoting issues to epics via the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233974) in GitLab 13.6.
 
 You can promote an issue to an [epic](../../group/epics/index.md) in the immediate parent group.
 
@@ -622,7 +624,7 @@ This status marks issues as progressing as planned or needing attention to keep 
 
 Prerequisites:
 
-- You must have at least the [Reporter role](../../permissions.md) for the project.
+- You must have at least the Reporter role for the project.
 
 To edit health status of an issue:
 

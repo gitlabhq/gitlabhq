@@ -3,11 +3,10 @@
 module Mutations
   module Snippets
     class Update < Base
-      include ServiceCompatibility
-      include CanMutateSpammable
-      include Mutations::SpamProtection
-
       graphql_name 'UpdateSnippet'
+
+      include ServiceCompatibility
+      include Mutations::SpamProtection
 
       argument :id, ::Types::GlobalIDType[::Snippet],
                required: true,

@@ -79,8 +79,12 @@ X-Gitlab-Event: System Hook
           "updated_at": "2012-07-21T07:38:22Z",
           "event_name": "project_create",
                 "name": "StoreCloud",
-         "owner_email": "johnsmith@gmail.com",
+         "owner_email": "johnsmith@example.com",
           "owner_name": "John Smith",
+              "owners": [{
+                         "name": "John",
+                         "email": "user1@example.com"
+                        }],
                 "path": "storecloud",
  "path_with_namespace": "jsmith/storecloud",
           "project_id": 74,
@@ -96,8 +100,12 @@ X-Gitlab-Event: System Hook
           "updated_at": "2012-07-21T07:38:22Z",
           "event_name": "project_destroy",
                 "name": "Underscore",
-         "owner_email": "johnsmith@gmail.com",
+         "owner_email": "johnsmith@example.com",
           "owner_name": "John Smith",
+              "owners": [{
+                         "name": "John",
+                         "email": "user1@example.com"
+                        }],
                 "path": "underscore",
  "path_with_namespace": "jsmith/underscore",
           "project_id": 73,
@@ -117,7 +125,11 @@ X-Gitlab-Event: System Hook
       "path_with_namespace": "jsmith/underscore",
                "project_id": 73,
                "owner_name": "John Smith",
-              "owner_email": "johnsmith@gmail.com",
+              "owner_email": "johnsmith@example.com",
+                   "owners": [{
+                              "name": "John",
+                              "email": "user1@example.com"
+                             }],
        "project_visibility": "internal",
   "old_path_with_namespace": "jsmith/overscore"
 }
@@ -138,7 +150,11 @@ Please refer to `group_rename` and `user_rename` for that case.
       "path_with_namespace": "scores/underscore",
                "project_id": 73,
                "owner_name": "John Smith",
-              "owner_email": "johnsmith@gmail.com",
+              "owner_email": "johnsmith@example.com",
+                   "owners": [{
+                              "name": "John",
+                              "email": "user1@example.com"
+                             }],
        "project_visibility": "internal",
   "old_path_with_namespace": "jsmith/overscore"
 }
@@ -152,8 +168,12 @@ Please refer to `group_rename` and `user_rename` for that case.
           "updated_at": "2012-07-21T07:38:22Z",
           "event_name": "project_update",
                 "name": "StoreCloud",
-         "owner_email": "johnsmith@gmail.com",
+         "owner_email": "johnsmith@example.com",
           "owner_name": "John Smith",
+              "owners": [{
+                         "name": "John",
+                         "email": "user1@example.com"
+                        }],
                 "path": "storecloud",
  "path_with_namespace": "jsmith/storecloud",
           "project_id": 74,
@@ -173,7 +193,7 @@ Please refer to `group_rename` and `user_rename` for that case.
                 "project_name": "StoreCloud",
                 "project_path": "storecloud",
  "project_path_with_namespace": "jsmith/storecloud",
-                  "user_email": "johnsmith@gmail.com",
+                  "user_email": "johnsmith@example.com",
                    "user_name": "John Smith",
                "user_username": "johnsmith",
                      "user_id": 41,
@@ -193,7 +213,7 @@ Please refer to `group_rename` and `user_rename` for that case.
                 "project_name": "StoreCloud",
                 "project_path": "storecloud",
  "project_path_with_namespace": "jsmith/storecloud",
-                  "user_email": "johnsmith@gmail.com",
+                  "user_email": "johnsmith@example.com",
                    "user_name": "John Smith",
                "user_username": "johnsmith",
                      "user_id": 41,
@@ -213,7 +233,7 @@ Please refer to `group_rename` and `user_rename` for that case.
                 "project_name": "StoreCloud",
                 "project_path": "storecloud",
  "project_path_with_namespace": "jsmith/storecloud",
-                  "user_email": "johnsmith@gmail.com",
+                  "user_email": "johnsmith@example.com",
                    "user_name": "John Smith",
                "user_username": "johnsmith",
                      "user_id": 41,
@@ -360,7 +380,7 @@ If the user is blocked via LDAP, `state` is `ldap_blocked`.
       "group_id": 78,
     "group_name": "StoreCloud",
     "group_path": "storecloud",
-    "user_email": "johnsmith@gmail.com",
+    "user_email": "johnsmith@example.com",
      "user_name": "John Smith",
  "user_username": "johnsmith",
        "user_id": 41
@@ -378,7 +398,7 @@ If the user is blocked via LDAP, `state` is `ldap_blocked`.
       "group_id": 78,
     "group_name": "StoreCloud",
     "group_path": "storecloud",
-    "user_email": "johnsmith@gmail.com",
+    "user_email": "johnsmith@example.com",
      "user_name": "John Smith",
  "user_username": "johnsmith",
        "user_id": 41
@@ -396,7 +416,7 @@ If the user is blocked via LDAP, `state` is `ldap_blocked`.
       "group_id": 78,
     "group_name": "StoreCloud",
     "group_path": "storecloud",
-    "user_email": "johnsmith@gmail.com",
+    "user_email": "johnsmith@example.com",
      "user_name": "John Smith",
  "user_username": "johnsmith",
        "user_id": 41

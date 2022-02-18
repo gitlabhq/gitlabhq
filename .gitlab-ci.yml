@@ -16,7 +16,7 @@ stages:
 # in cases where jobs require Docker-in-Docker, the job
 # definition must be extended with `.use-docker-in-docker`
 default:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-89-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
   tags:
     - gitlab-org
   # All jobs are interruptible by default
@@ -67,12 +67,17 @@ variables:
   GIT_DEPTH: "20"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
+  DEBIAN_VERSION: "bullseye"
 
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
-  FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
+  FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
   RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
+  RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
+  RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
+  JUNIT_RESULT_FILE: rspec/junit_rspec.xml
+  JUNIT_RETRY_FILE: rspec/junit_rspec-retry.xml
 
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"

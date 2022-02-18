@@ -1,6 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import ToggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
 
 describe('ToggleSidebar', () => {
@@ -38,7 +39,7 @@ describe('ToggleSidebar', () => {
     createComponent({ mountFn: mount });
 
     findGlButton().trigger('click');
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.emitted('toggle')[0]).toBeDefined();
   });

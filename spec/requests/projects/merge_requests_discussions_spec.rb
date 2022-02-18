@@ -6,7 +6,7 @@ RSpec.describe 'merge requests discussions' do
   # Further tests can be found at merge_requests_controller_spec.rb
   describe 'GET /:namespace/:project/-/merge_requests/:iid/discussions' do
     let(:project) { create(:project, :repository, :public) }
-    let(:owner) { project.owner }
+    let(:owner) { project.first_owner }
     let(:user) { create(:user) }
     let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 

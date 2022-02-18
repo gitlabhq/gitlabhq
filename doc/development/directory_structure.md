@@ -38,7 +38,7 @@ end
 ### About namespace naming
 
 A good guideline for naming a top-level namespace (bounded context) is to use the related
-feature category. For example, `Continuous Integration` feature category maps to `Ci::` namespace.
+[feature category](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). For example, `Continuous Integration` feature category maps to `Ci::` namespace.
 
 Alternatively a new class could be added to `Projects::` or `Groups::` if it's either:
 

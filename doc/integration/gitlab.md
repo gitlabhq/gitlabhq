@@ -24,7 +24,12 @@ GitLab.com generates an application ID and secret key for you to use.
    http://your-gitlab.example.com/users/auth/gitlab/callback
    ```
 
-   The first link is required for the importer and second for the authorization.
+   The first link is required for the importer and second for authentication.
+
+   If you:
+
+   - Plan to use the importer, you can leave scopes as they are.
+   - Only want to use this application for authentication, we recommend using a more minimal set of scopes. `read_user` is sufficient.
 
 1. Select **Save application**.
 1. You should now see an **Application ID** and **Secret**. Keep this page open as you continue
@@ -57,7 +62,9 @@ GitLab.com generates an application ID and secret key for you to use.
        # label: "Provider name", # optional label for login button, defaults to "GitLab.com"
        app_id: "YOUR_APP_ID",
        app_secret: "YOUR_APP_SECRET",
-       args: { scope: "api" }
+       args: { scope: "read_user" # optional: defaults to the scopes of the application
+             , client_options: { site: "https://gitlab.example.com/api/v4" }
+             }
      }
    ]
    ```
@@ -71,7 +78,8 @@ GitLab.com generates an application ID and secret key for you to use.
        label: "Provider name", # optional label for login button, defaults to "GitLab.com"
        app_id: "YOUR_APP_ID",
        app_secret: "YOUR_APP_SECRET",
-       args: { scope: "api", client_options: { site: "https://gitlab.example.com/api/v4" } }
+       args: { scope: "read_user" # optional: defaults to the scopes of the application
+             , client_options: { site: "https://gitlab.example.com/api/v4" } }
      }
    ]
    ```
@@ -83,7 +91,7 @@ GitLab.com generates an application ID and secret key for you to use.
        # label: 'Provider name', # optional label for login button, defaults to "GitLab.com"
        app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET',
-       args: { scope: 'api' } }
+       args: { "client_options": { "site": 'https://gitlab.example.com/api/v4' } }
    ```
 
    Or, for installations from source to authenticate against a different GitLab instance:
@@ -93,7 +101,7 @@ GitLab.com generates an application ID and secret key for you to use.
        label: 'Provider name', # optional label for login button, defaults to "GitLab.com"
        app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET',
-       args: { scope: 'api', "client_options": { "site": 'https://gitlab.example.com/api/v4' } }
+       args: { "client_options": { "site": 'https://gitlab.example.com/api/v4' } }
    ```
 
 1. Change `'YOUR_APP_ID'` to the Application ID from the GitLab.com application page.
@@ -101,7 +109,6 @@ GitLab.com generates an application ID and secret key for you to use.
 1. Save the configuration file.
 1. Based on how GitLab was installed, implement these changes by using
    the appropriate method:
-
    - Omnibus GitLab: [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
    - Source: [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
 
@@ -110,3 +117,20 @@ regular sign-in form. Select the icon to begin the authentication process.
 GitLab.com asks the user to sign in and authorize the GitLab application. If
 everything goes well, the user is returned to your GitLab instance and is
 signed in.
+
+## Reduce access privileges on sign in
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337663) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `omniauth_login_minimal_scopes`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `omniauth_login_minimal_scopes`. On GitLab.com, this feature is not available.
+
+If you use a GitLab instance for authentication, you can reduce access rights when an OAuth application is used for sign in. 
+
+Any OAuth application can advertise the purpose of the application with the
+authorization parameter: `gl_auth_type=login`. If the application is
+configured with `api` or `read_api`, the access token is issued with
+`read_user` for login, because no higher permissions are needed.
+
+The GitLab OAuth client is configured to pass this parameter, but other
+applications can also pass it.

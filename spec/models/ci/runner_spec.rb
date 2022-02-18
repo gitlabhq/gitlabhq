@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Runner do
+  include StubGitlabCalls
+
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'it has loose foreign keys' do
@@ -19,6 +21,16 @@ RSpec.describe Ci::Runner do
 
       with_cross_joins_prevented do
         expect(runner.groups.count).to eq(1)
+      end
+    end
+  end
+
+  describe 'projects association' do
+    let(:runner) { create(:ci_runner, :project) }
+
+    it 'does not create a cross-database query' do
+      with_cross_joins_prevented do
+        expect(runner.projects.count).to eq(1)
       end
     end
   end
@@ -255,22 +267,89 @@ RSpec.describe Ci::Runner do
     it_behaves_like '.belonging_to_parent_group_of_project'
   end
 
-  describe '.owned_or_instance_wide' do
-    it 'returns a globally shared, a project specific and a group specific runner' do
-      # group specific
-      group = create(:group)
-      project = create(:project, group: group)
-      group_runner = create(:ci_runner, :group, groups: [group])
+  context 'with instance runners sharing enabled' do
+    # group specific
+    let_it_be(:group) { create(:group, shared_runners_enabled: true) }
+    let_it_be(:project) { create(:project, group: group, shared_runners_enabled: true) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
-      # project specific
-      project_runner = create(:ci_runner, :project, projects: [project])
+    # project specific
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
-      # globally shared
-      shared_runner = create(:ci_runner, :instance)
+    # globally shared
+    let_it_be(:shared_runner) { create(:ci_runner, :instance) }
 
-      expect(described_class.owned_or_instance_wide(project.id)).to contain_exactly(
-        group_runner, project_runner, shared_runner
-      )
+    describe '.owned_or_instance_wide' do
+      subject { described_class.owned_or_instance_wide(project.id) }
+
+      it 'returns a globally shared, a project specific and a group specific runner' do
+        is_expected.to contain_exactly(group_runner, project_runner, shared_runner)
+      end
+    end
+
+    describe '.group_or_instance_wide' do
+      subject { described_class.group_or_instance_wide(group) }
+
+      before do
+        # Ensure the project runner is instantiated
+        project_runner
+      end
+
+      it 'returns a globally shared and a group specific runner' do
+        is_expected.to contain_exactly(group_runner, shared_runner)
+      end
+    end
+  end
+
+  context 'with instance runners sharing disabled' do
+    # group specific
+    let_it_be(:group) { create(:group, shared_runners_enabled: false) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+
+    let(:group_runners_enabled) { true }
+    let(:project) { create(:project, group: group, shared_runners_enabled: false) }
+
+    # project specific
+    let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+
+    # globally shared
+    let_it_be(:shared_runner) { create(:ci_runner, :instance) }
+
+    before do
+      project.update!(group_runners_enabled: group_runners_enabled)
+    end
+
+    describe '.owned_or_instance_wide' do
+      subject { described_class.owned_or_instance_wide(project.id) }
+
+      context 'with group runners disabled' do
+        let(:group_runners_enabled) { false }
+
+        it 'returns only the project specific runner' do
+          is_expected.to contain_exactly(project_runner)
+        end
+      end
+
+      context 'with group runners enabled' do
+        let(:group_runners_enabled) { true }
+
+        it 'returns a project specific and a group specific runner' do
+          is_expected.to contain_exactly(group_runner, project_runner)
+        end
+      end
+    end
+
+    describe '.group_or_instance_wide' do
+      subject { described_class.group_or_instance_wide(group) }
+
+      before do
+        # Ensure the project runner is instantiated
+        project_runner
+      end
+
+      it 'returns a group specific runner' do
+        is_expected.to contain_exactly(group_runner)
+      end
     end
   end
 
@@ -288,6 +367,30 @@ RSpec.describe Ci::Runner do
     it 'returns the token if the description is an empty string' do
       runner = build(:ci_runner, description: '', token: 'token')
       expect(runner.display_name).to eq runner.token
+    end
+  end
+
+  describe '#only_for' do
+    let_it_be_with_reload(:runner) { create(:ci_runner, :project) }
+    let_it_be(:project) { runner.projects.first }
+
+    subject { runner.only_for?(project) }
+
+    context 'with matching project' do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'without matching project' do
+      let_it_be(:project) { create(:project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with runner having multiple projects' do
+      let_it_be(:other_project) { create(:project) }
+      let_it_be(:runner_project) { create(:ci_runner_project, project: other_project, runner: runner) }
+
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -544,7 +647,7 @@ RSpec.describe Ci::Runner do
     end
   end
 
-  describe '#can_pick?' do
+  describe '#matches_build?' do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:pipeline) { create(:ci_pipeline) }
@@ -555,31 +658,15 @@ RSpec.describe Ci::Runner do
     let(:tag_list) { [] }
     let(:run_untagged) { true }
 
-    subject { runner.can_pick?(build) }
-
-    context 'a different runner' do
-      let(:other_project) { create(:project) }
-      let(:other_runner) { create(:ci_runner, :project, projects: [other_project], tag_list: tag_list, run_untagged: run_untagged) }
-
-      before do
-        # `can_pick?` is not used outside the runners available for the project
-        stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
-      end
-
-      it 'cannot handle builds' do
-        expect(other_runner.can_pick?(build)).to be_falsey
-      end
-    end
+    subject { runner.matches_build?(build) }
 
     context 'when runner does not have tags' do
-      it 'can handle builds without tags' do
-        expect(runner.can_pick?(build)).to be_truthy
-      end
+      it { is_expected.to be_truthy }
 
       it 'cannot handle build with tags' do
         build.tag_list = ['aa']
 
-        expect(runner.can_pick?(build)).to be_falsey
+        is_expected.to be_falsey
       end
     end
 
@@ -590,20 +677,18 @@ RSpec.describe Ci::Runner do
         it 'can handle build with matching tags' do
           build.tag_list = ['bb']
 
-          expect(runner.can_pick?(build)).to be_truthy
+          is_expected.to be_truthy
         end
 
         it 'cannot handle build without matching tags' do
           build.tag_list = ['aa']
 
-          expect(runner.can_pick?(build)).to be_falsey
+          is_expected.to be_falsey
         end
       end
 
       context 'when runner can pick untagged jobs' do
-        it 'can handle builds without tags' do
-          expect(runner.can_pick?(build)).to be_truthy
-        end
+        it { is_expected.to be_truthy }
 
         it_behaves_like 'tagged build picker'
       end
@@ -611,9 +696,7 @@ RSpec.describe Ci::Runner do
       context 'when runner cannot pick untagged jobs' do
         let(:run_untagged) { false }
 
-        it 'cannot handle builds without tags' do
-          expect(runner.can_pick?(build)).to be_falsey
-        end
+        it { is_expected.to be_falsey }
 
         it_behaves_like 'tagged build picker'
       end
@@ -622,64 +705,31 @@ RSpec.describe Ci::Runner do
     context 'when runner is shared' do
       let(:runner) { create(:ci_runner, :instance) }
 
-      it 'can handle builds' do
-        expect(runner.can_pick?(build)).to be_truthy
-      end
+      it { is_expected.to be_truthy }
 
       context 'when runner is locked' do
         let(:runner) { create(:ci_runner, :instance, locked: true) }
 
-        it 'can handle builds' do
-          expect(runner.can_pick?(build)).to be_truthy
-        end
+        it { is_expected.to be_truthy }
       end
 
       it 'does not query for owned or instance runners' do
         expect(described_class).not_to receive(:owned_or_instance_wide)
 
-        runner.can_pick?(build)
-      end
-
-      context 'when feature flag ci_runners_short_circuit_assignable_for is disabled' do
-        before do
-          stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
-        end
-
-        it 'does not query for owned or instance runners' do
-          expect(described_class).to receive(:owned_or_instance_wide).and_call_original
-
-          runner.can_pick?(build)
-        end
+        subject
       end
     end
 
     context 'when runner is not shared' do
-      before do
-        # `can_pick?` is not used outside the runners available for the project
-        stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
-      end
-
       context 'when runner is assigned to a project' do
-        it 'can handle builds' do
-          expect(runner.can_pick?(build)).to be_truthy
-        end
-      end
-
-      context 'when runner is assigned to another project' do
-        let(:runner_project) { create(:project) }
-
-        it 'cannot handle builds' do
-          expect(runner.can_pick?(build)).to be_falsey
-        end
+        it { is_expected.to be_truthy }
       end
 
       context 'when runner is assigned to a group' do
         let(:group) { create(:group, projects: [build.project]) }
         let(:runner) { create(:ci_runner, :group, tag_list: tag_list, run_untagged: run_untagged, groups: [group]) }
 
-        it 'can handle builds' do
-          expect(runner.can_pick?(build)).to be_truthy
-        end
+        it { is_expected.to be_truthy }
 
         it 'knows namespace id it is assigned to' do
           expect(runner.namespace_ids).to eq [group.id]
@@ -1220,14 +1270,6 @@ RSpec.describe Ci::Runner do
         runner.pick_build!(build)
       end
     end
-
-    context 'build picking improvement' do
-      it 'does not check if the build is assignable to a runner' do
-        expect(runner).not_to receive(:can_pick?)
-
-        runner.pick_build!(build)
-      end
-    end
   end
 
   describe 'project runner without projects is destroyable' do
@@ -1258,6 +1300,20 @@ RSpec.describe Ci::Runner do
       runners = described_class.order_by('created_asc')
 
       expect(runners).to eq([runner2, runner1])
+    end
+
+    it 'supports ordering by the token expiration' do
+      runner1 = create(:ci_runner)
+      runner1.update!(token_expires_at: 1.year.from_now)
+      runner2 = create(:ci_runner)
+      runner3 = create(:ci_runner)
+      runner3.update!(token_expires_at: 1.month.from_now)
+
+      runners = described_class.order_by('token_expires_at_asc')
+      expect(runners).to eq([runner3, runner1, runner2])
+
+      runners = described_class.order_by('token_expires_at_desc')
+      expect(runners).to eq([runner2, runner1, runner3])
     end
   end
 
@@ -1386,47 +1442,6 @@ RSpec.describe Ci::Runner do
     it { is_expected.to eq(contacted_at_stored) }
   end
 
-  describe '.legacy_belonging_to_group' do
-    shared_examples 'returns group runners' do
-      it 'returns the specific group runner' do
-        group = create(:group)
-        runner = create(:ci_runner, :group, groups: [group])
-        unrelated_group = create(:group)
-        create(:ci_runner, :group, groups: [unrelated_group])
-
-        expect(described_class.legacy_belonging_to_group(group.id)).to contain_exactly(runner)
-      end
-
-      context 'runner belonging to parent group' do
-        let_it_be(:parent_group) { create(:group) }
-        let_it_be(:parent_runner) { create(:ci_runner, :group, groups: [parent_group]) }
-        let_it_be(:group) { create(:group, parent: parent_group) }
-
-        context 'when include_parent option is passed' do
-          it 'returns the group runner from the parent group' do
-            expect(described_class.legacy_belonging_to_group(group.id, include_ancestors: true)).to contain_exactly(parent_runner)
-          end
-        end
-
-        context 'when include_parent option is not passed' do
-          it 'does not return the group runner from the parent group' do
-            expect(described_class.legacy_belonging_to_group(group.id)).to be_empty
-          end
-        end
-      end
-    end
-
-    it_behaves_like 'returns group runners'
-
-    context 'when feature flag :linear_runner_ancestor_scopes is disabled' do
-      before do
-        stub_feature_flags(linear_runner_ancestor_scopes: false)
-      end
-
-      it_behaves_like 'returns group runners'
-    end
-  end
-
   describe '.belonging_to_group' do
     it 'returns the specific group runner' do
       group = create(:group)
@@ -1468,6 +1483,184 @@ RSpec.describe Ci::Runner do
       expect(described_class.belonging_to_group_or_project_descendants(group1.id)).to contain_exactly(
         runner1, runner2, runner4, runner5
       )
+    end
+  end
+
+  describe '#token_expires_at', :freeze_time do
+    shared_examples 'expiring token' do |interval:|
+      it 'expires' do
+        expect(runner.token_expires_at).to eq(interval.from_now)
+      end
+    end
+
+    shared_examples 'non-expiring token' do
+      it 'does not expire' do
+        expect(runner.token_expires_at).to be_nil
+      end
+    end
+
+    context 'no expiration' do
+      let(:runner) { create(:ci_runner) }
+
+      it_behaves_like 'non-expiring token'
+    end
+
+    context 'system-wide shared expiration' do
+      before do
+        stub_application_setting(runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let(:runner) { create(:ci_runner) }
+
+      it_behaves_like 'expiring token', interval: 5.days
+    end
+
+    context 'system-wide group expiration' do
+      before do
+        stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let(:runner) { create(:ci_runner) }
+
+      it_behaves_like 'non-expiring token'
+    end
+
+    context 'system-wide project expiration' do
+      before do
+        stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
+      end
+
+      let(:runner) { create(:ci_runner) }
+
+      it_behaves_like 'non-expiring token'
+    end
+
+    context 'group expiration' do
+      let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 6.days.to_i) }
+      let(:group) { create(:group, namespace_settings: group_settings) }
+      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it_behaves_like 'expiring token', interval: 6.days
+    end
+
+    context 'human-readable group expiration' do
+      let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval_human_readable: '7 days') }
+      let(:group) { create(:group, namespace_settings: group_settings) }
+      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it_behaves_like 'expiring token', interval: 7.days
+    end
+
+    context 'project expiration' do
+      let(:project) { create(:project, runner_token_expiration_interval: 4.days.to_i).tap(&:save!) }
+      let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it_behaves_like 'expiring token', interval: 4.days
+    end
+
+    context 'human-readable project expiration' do
+      let(:project) { create(:project, runner_token_expiration_interval_human_readable: '5 days').tap(&:save!) }
+      let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it_behaves_like 'expiring token', interval: 5.days
+    end
+
+    context 'multiple projects' do
+      let(:project1) { create(:project, runner_token_expiration_interval: 8.days.to_i).tap(&:save!) }
+      let(:project2) { create(:project, runner_token_expiration_interval: 7.days.to_i).tap(&:save!) }
+      let(:project3) { create(:project, runner_token_expiration_interval: 9.days.to_i).tap(&:save!) }
+      let(:runner) { create(:ci_runner, :project, projects: [project1, project2, project3]) }
+
+      it_behaves_like 'expiring token', interval: 7.days
+    end
+
+    context 'with project runner token expiring' do
+      let_it_be(:project) { create(:project, runner_token_expiration_interval: 4.days.to_i).tap(&:save!) }
+
+      context 'project overrides system' do
+        before do
+          stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
+        end
+
+        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it_behaves_like 'expiring token', interval: 4.days
+      end
+
+      context 'system overrides project' do
+        before do
+          stub_application_setting(project_runner_token_expiration_interval: 3.days.to_i)
+        end
+
+        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it_behaves_like 'expiring token', interval: 3.days
+      end
+    end
+
+    context 'with group runner token expiring' do
+      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:group) { create(:group, namespace_settings: group_settings) }
+
+      context 'group overrides system' do
+        before do
+          stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
+        end
+
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it_behaves_like 'expiring token', interval: 4.days
+      end
+
+      context 'system overrides group' do
+        before do
+          stub_application_setting(group_runner_token_expiration_interval: 3.days.to_i)
+        end
+
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it_behaves_like 'expiring token', interval: 3.days
+      end
+    end
+
+    context "with group's project runner token expiring" do
+      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 2.days.to_i) }
+      let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
+
+      context 'parent group overrides subgroup' do
+        let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 3.days.to_i) }
+        let(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it_behaves_like 'expiring token', interval: 2.days
+      end
+
+      context 'subgroup overrides parent group' do
+        let(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 1.day.to_i) }
+        let(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it_behaves_like 'expiring token', interval: 1.day
+      end
+    end
+
+    context "with group's project runner token expiring" do
+      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 2.days.to_i) }
+      let_it_be(:group) { create(:group, namespace_settings: group_settings) }
+
+      context 'group overrides project' do
+        let(:project) { create(:project, group: group, runner_token_expiration_interval: 3.days.to_i).tap(&:save!) }
+        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it_behaves_like 'expiring token', interval: 2.days
+      end
+
+      context 'project overrides group' do
+        let(:project) { create(:project, group: group, runner_token_expiration_interval: 1.day.to_i).tap(&:save!) }
+        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it_behaves_like 'expiring token', interval: 1.day
+      end
     end
   end
 end

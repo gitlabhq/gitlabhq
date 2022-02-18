@@ -9,7 +9,11 @@ import PipelineTriggerer from '~/pipelines/components/pipelines_list/pipeline_tr
 import PipelineUrl from '~/pipelines/components/pipelines_list/pipeline_url.vue';
 import PipelinesTable from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import PipelinesTimeago from '~/pipelines/components/pipelines_list/time_ago.vue';
-import { PipelineKeyOptions } from '~/pipelines/constants';
+import {
+  PipelineKeyOptions,
+  BUTTON_TOOLTIP_RETRY,
+  BUTTON_TOOLTIP_CANCEL,
+} from '~/pipelines/constants';
 
 import eventHub from '~/pipelines/event_hub';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
@@ -33,12 +37,17 @@ describe('Pipelines Table', () => {
     return pipelines.find((p) => p.user !== null && p.commit !== null);
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, rearrangePipelinesTable = false) => {
     wrapper = extendedWrapper(
       mount(PipelinesTable, {
         propsData: {
           ...defaultProps,
           ...props,
+        },
+        provide: {
+          glFeatures: {
+            rearrangePipelinesTable,
+          },
         },
       }),
     );
@@ -61,6 +70,8 @@ describe('Pipelines Table', () => {
   const findStagesTh = () => wrapper.findByTestId('stages-th');
   const findTimeAgoTh = () => wrapper.findByTestId('timeago-th');
   const findActionsTh = () => wrapper.findByTestId('actions-th');
+  const findRetryBtn = () => wrapper.findByTestId('pipelines-retry-button');
+  const findCancelBtn = () => wrapper.findByTestId('pipelines-cancel-button');
 
   beforeEach(() => {
     pipeline = createMockPipeline();
@@ -71,7 +82,7 @@ describe('Pipelines Table', () => {
     wrapper = null;
   });
 
-  describe('Pipelines Table', () => {
+  describe('Pipelines Table with rearrangePipelinesTable feature flag turned off', () => {
     beforeEach(() => {
       createComponent({ pipelines: [pipeline], viewType: 'root' });
     });
@@ -186,6 +197,39 @@ describe('Pipelines Table', () => {
     describe('operations cell', () => {
       it('should render pipeline operations', () => {
         expect(findActions().exists()).toBe(true);
+      });
+
+      it('should render retry action tooltip', () => {
+        expect(findRetryBtn().attributes('title')).toBe(BUTTON_TOOLTIP_RETRY);
+      });
+
+      it('should render cancel action tooltip', () => {
+        expect(findCancelBtn().attributes('title')).toBe(BUTTON_TOOLTIP_CANCEL);
+      });
+    });
+  });
+
+  describe('Pipelines Table with rearrangePipelinesTable feature flag turned on', () => {
+    beforeEach(() => {
+      createComponent({ pipelines: [pipeline], viewType: 'root' }, true);
+    });
+
+    it('should render table head with correct columns', () => {
+      expect(findStatusTh().text()).toBe('Status');
+      expect(findPipelineTh().text()).toBe('Pipeline');
+      expect(findStagesTh().text()).toBe('Stages');
+      expect(findActionsTh().text()).toBe('Actions');
+    });
+
+    describe('triggerer cell', () => {
+      it('should render the pipeline triggerer', () => {
+        expect(findTriggerer().exists()).toBe(true);
+      });
+    });
+
+    describe('commit cell', () => {
+      it('should not render commit information', () => {
+        expect(findCommit().exists()).toBe(false);
       });
     });
   });

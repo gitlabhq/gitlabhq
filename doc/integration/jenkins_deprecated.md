@@ -19,7 +19,7 @@ This service was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1600) i
 Integration includes:
 
 - Trigger Jenkins build after push to repository
-- Show build status on Merge Request page
+- Show build status on Merge request page
 
 Requirements:
 

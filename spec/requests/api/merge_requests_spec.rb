@@ -436,6 +436,26 @@ RSpec.describe API::MergeRequests do
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
         end
+
+        context 'returns an array of merge_requests ordered by title' do
+          it 'asc when requested' do
+            path = endpoint_path + '?order_by=title&sort=asc'
+
+            get api(path, user)
+
+            response_titles = json_response.map { |merge_request| merge_request['title'] }
+            expect(response_titles).to eq(response_titles.sort)
+          end
+
+          it 'desc when requested' do
+            path = endpoint_path + '?order_by=title&sort=desc'
+
+            get api(path, user)
+
+            response_titles = json_response.map { |merge_request| merge_request['title'] }
+            expect(response_titles).to eq(response_titles.sort.reverse)
+          end
+        end
       end
 
       context 'NOT params' do
@@ -984,14 +1004,6 @@ RSpec.describe API::MergeRequests do
     let(:endpoint_path) { "/projects/#{project.id}/merge_requests" }
 
     it_behaves_like 'merge requests list'
-
-    context 'when :api_caching_merge_requests is disabled' do
-      before do
-        stub_feature_flags(api_caching_merge_requests: false)
-      end
-
-      it_behaves_like 'merge requests list'
-    end
 
     it "returns 404 for non public projects" do
       project = create(:project, :private)
@@ -2876,7 +2888,7 @@ RSpec.describe API::MergeRequests do
 
         it 'is false for an unauthorized user' do
           expect do
-            put api("/projects/#{target_project.id}/merge_requests/#{merge_request.iid}", target_project.owner), params: { state_event: 'close', remove_source_branch: true }
+            put api("/projects/#{target_project.id}/merge_requests/#{merge_request.iid}", target_project.first_owner), params: { state_event: 'close', remove_source_branch: true }
           end.not_to change { merge_request.reload.merge_params }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -3321,6 +3333,18 @@ RSpec.describe API::MergeRequests do
           expect(merge_request.reload).to be_rebase_in_progress
           expect(json_response['rebase_in_progress']).to be(true)
         end
+      end
+    end
+
+    context 'when merge request branch does not allow force push' do
+      before do
+        create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false)
+      end
+
+      it 'returns 403' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 

@@ -5,9 +5,7 @@ module Gitlab
     class GitlabCiYmlTemplate < BaseTemplate
       BASE_EXCLUDED_PATTERNS = [%r{\.latest\.}].freeze
 
-      TEMPLATES_WITH_LATEST_VERSION = {
-        'Jobs/Build' => true
-      }.freeze
+      TEMPLATES_WITH_LATEST_VERSION = {}.freeze
 
       def description
         "# This file is a template, and might need editing before it works on your project."

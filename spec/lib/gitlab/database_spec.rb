@@ -104,6 +104,34 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.check_for_non_superuser' do
+    subject { described_class.check_for_non_superuser }
+
+    let(:non_superuser) { Gitlab::Database::PgUser.new(usename: 'foo', usesuper: false ) }
+    let(:superuser) { Gitlab::Database::PgUser.new(usename: 'bar', usesuper: true) }
+
+    it 'prints user details if not superuser' do
+      allow(Gitlab::Database::PgUser).to receive(:find_by).with('usename = CURRENT_USER').and_return(non_superuser)
+
+      expect(Gitlab::AppLogger).to receive(:info).with("Account details: User: \"foo\", UseSuper: (false)")
+
+      subject
+    end
+
+    it 'raises an exception if superuser' do
+      allow(Gitlab::Database::PgUser).to receive(:find_by).with('usename = CURRENT_USER').and_return(superuser)
+
+      expect(Gitlab::AppLogger).to receive(:info).with("Account details: User: \"bar\", UseSuper: (true)")
+      expect { subject }.to raise_error('Error: detected superuser')
+    end
+
+    it 'catches exception if find_by fails' do
+      allow(Gitlab::Database::PgUser).to receive(:find_by).with('usename = CURRENT_USER').and_raise(ActiveRecord::StatementInvalid)
+
+      expect { subject }.to raise_error('User CURRENT_USER not found')
+    end
+  end
+
   describe '.check_postgres_version_and_print_warning' do
     let(:reflect) { instance_spy(Gitlab::Database::Reflection) }
 

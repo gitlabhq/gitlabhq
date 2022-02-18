@@ -315,14 +315,14 @@ describe('fetchMilestones', () => {
       'project',
       {
         query: projectBoardMilestones,
-        variables: { fullPath: 'gitlab-org/gitlab', state: 'active' },
+        variables: { fullPath: 'gitlab-org/gitlab' },
       },
     ],
     [
       'group',
       {
         query: groupBoardMilestones,
-        variables: { fullPath: 'gitlab-org/gitlab', state: 'active' },
+        variables: { fullPath: 'gitlab-org/gitlab' },
       },
     ],
   ])(

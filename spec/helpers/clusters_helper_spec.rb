@@ -93,8 +93,9 @@ RSpec.describe ClustersHelper do
     end
 
     context 'user has no permissions to create a cluster' do
-      it 'displays that user can\t add cluster' do
+      it 'displays that user can\'t add cluster' do
         expect(subject[:can_add_cluster]).to eq("false")
+        expect(subject[:can_admin_cluster]).to eq("false")
       end
     end
 
@@ -105,6 +106,7 @@ RSpec.describe ClustersHelper do
 
       it 'displays that the user can add cluster' do
         expect(subject[:can_add_cluster]).to eq("true")
+        expect(subject[:can_admin_cluster]).to eq("true")
       end
     end
 
@@ -149,6 +151,10 @@ RSpec.describe ClustersHelper do
 
     it 'displays kas address' do
       expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
+    end
+
+    it 'displays GitLab version' do
+      expect(subject[:gitlab_version]).to eq(Gitlab.version_info)
     end
   end
 

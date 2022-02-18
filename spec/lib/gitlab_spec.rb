@@ -99,6 +99,13 @@ RSpec.describe Gitlab do
       expect(described_class.com?).to eq true
     end
 
+    it 'is true when on other gitlab subdomain with hyphen' do
+      url_with_subdomain = Gitlab::Saas.com_url.gsub('https://', 'https://test-example.')
+      stub_config_setting(url: url_with_subdomain)
+
+      expect(described_class.com?).to eq true
+    end
+
     it 'is false when not on GitLab.com' do
       stub_config_setting(url: 'http://example.com')
 

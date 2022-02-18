@@ -1,6 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import GlModalVuex from '~/vue_shared/components/gl_modal_vuex.vue';
@@ -118,7 +118,7 @@ describe('GlModalVuex', () => {
     expect(actions.hide).toHaveBeenCalledTimes(1);
   });
 
-  it('calls bootstrap show when isVisible changes', (done) => {
+  it('calls bootstrap show when isVisible changes', async () => {
     state.isVisible = false;
 
     factory();
@@ -126,16 +126,11 @@ describe('GlModalVuex', () => {
 
     state.isVisible = true;
 
-    wrapper.vm
-      .$nextTick()
-      .then(() => {
-        expect(rootEmit).toHaveBeenCalledWith(BV_SHOW_MODAL, TEST_MODAL_ID);
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+    expect(rootEmit).toHaveBeenCalledWith(BV_SHOW_MODAL, TEST_MODAL_ID);
   });
 
-  it('calls bootstrap hide when isVisible changes', (done) => {
+  it('calls bootstrap hide when isVisible changes', async () => {
     state.isVisible = true;
 
     factory();
@@ -143,13 +138,8 @@ describe('GlModalVuex', () => {
 
     state.isVisible = false;
 
-    wrapper.vm
-      .$nextTick()
-      .then(() => {
-        expect(rootEmit).toHaveBeenCalledWith(BV_HIDE_MODAL, TEST_MODAL_ID);
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+    expect(rootEmit).toHaveBeenCalledWith(BV_HIDE_MODAL, TEST_MODAL_ID);
   });
 
   it.each(['ok', 'cancel'])(

@@ -4,11 +4,11 @@ export const mockUsageCounts = [
 ];
 
 export const mockCountsData1 = [
-  { recordedAt: '2020-07-23', count: 52 },
-  { recordedAt: '2020-07-22', count: 40 },
-  { recordedAt: '2020-07-21', count: 31 },
-  { recordedAt: '2020-06-14', count: 23 },
-  { recordedAt: '2020-06-12', count: 20 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-07-23', count: 52 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-07-22', count: 40 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-07-21', count: 31 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-06-14', count: 23 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-06-12', count: 20 },
 ];
 
 export const countsMonthlyChartData1 = [
@@ -17,11 +17,11 @@ export const countsMonthlyChartData1 = [
 ];
 
 export const mockCountsData2 = [
-  { recordedAt: '2020-07-28', count: 10 },
-  { recordedAt: '2020-07-27', count: 9 },
-  { recordedAt: '2020-06-26', count: 14 },
-  { recordedAt: '2020-06-25', count: 23 },
-  { recordedAt: '2020-06-24', count: 25 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-07-28', count: 10 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-07-27', count: 9 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-06-26', count: 14 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-06-25', count: 23 },
+  { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-06-24', count: 25 },
 ];
 
 export const countsMonthlyChartData2 = [

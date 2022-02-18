@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import Bar from '~/ide/components/file_templates/bar.vue';
 import { createStore } from '~/ide/stores';
@@ -46,7 +46,7 @@ describe('IDE file templates bar component', () => {
   });
 
   describe('template dropdown', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       vm.$store.state.fileTemplates.templates = [
         {
           name: 'test',
@@ -57,7 +57,7 @@ describe('IDE file templates bar component', () => {
         key: 'gitlab_ci_ymls',
       };
 
-      vm.$nextTick(done);
+      await nextTick();
     });
 
     it('renders dropdown component', () => {
@@ -75,14 +75,11 @@ describe('IDE file templates bar component', () => {
     });
   });
 
-  it('shows undo button if updateSuccess is true', (done) => {
+  it('shows undo button if updateSuccess is true', async () => {
     vm.$store.state.fileTemplates.updateSuccess = true;
 
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.btn-default').style.display).not.toBe('none');
-
-      done();
-    });
+    await nextTick();
+    expect(vm.$el.querySelector('.btn-default').style.display).not.toBe('none');
   });
 
   it('calls undoFileTemplate when clicking undo button', () => {
@@ -93,7 +90,7 @@ describe('IDE file templates bar component', () => {
     expect(vm.undoFileTemplate).toHaveBeenCalled();
   });
 
-  it('calls setSelectedTemplateType if activeFile name matches a template', (done) => {
+  it('calls setSelectedTemplateType if activeFile name matches a template', async () => {
     const fileName = '.gitlab-ci.yml';
 
     jest.spyOn(vm, 'setSelectedTemplateType').mockImplementation(() => {});
@@ -101,13 +98,10 @@ describe('IDE file templates bar component', () => {
 
     vm.setInitialType();
 
-    vm.$nextTick(() => {
-      expect(vm.setSelectedTemplateType).toHaveBeenCalledWith({
-        name: fileName,
-        key: 'gitlab_ci_ymls',
-      });
-
-      done();
+    await nextTick();
+    expect(vm.setSelectedTemplateType).toHaveBeenCalledWith({
+      name: fileName,
+      key: 'gitlab_ci_ymls',
     });
   });
 });

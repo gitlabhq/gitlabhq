@@ -7,7 +7,6 @@ class MetricsController < ActionController::Base
 
   def index
     response = if Gitlab::Metrics.prometheus_metrics_enabled?
-                 Gitlab::Metrics::RailsSlis.initialize_request_slis_if_needed!
                  metrics_service.metrics_text
                else
                  help_page = help_page_url('administration/monitoring/prometheus/gitlab_metrics',

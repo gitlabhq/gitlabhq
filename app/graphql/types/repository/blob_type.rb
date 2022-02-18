@@ -4,9 +4,9 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     # This is presented through `Repository` that has its own authorization
     class BlobType < BaseObject
-      present_using BlobPresenter
-
       graphql_name 'RepositoryBlob'
+
+      present_using BlobPresenter
 
       field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the blob.'
@@ -87,6 +87,14 @@ module Types
             description: 'Web path to blob permalink.',
             calls_gitaly: true
 
+      field :environment_formatted_external_url, GraphQL::Types::String, null: true,
+            description: 'Environment on which the blob is available.',
+            calls_gitaly: true
+
+      field :environment_external_url_for_route_map, GraphQL::Types::String, null: true,
+            description: 'Web path to blob on an environment.',
+            calls_gitaly: true
+
       field :code_owners, [Types::UserType], null: true,
             description: 'List of code owners for the blob.',
             calls_gitaly: true
@@ -116,6 +124,12 @@ module Types
 
       field :archived, GraphQL::Types::Boolean, null: true, method: :archived?,
             description: 'Whether the current project is archived.'
+
+      field :language, GraphQL::Types::String,
+            description: 'Blob language.',
+            method: :blob_language,
+            null: true,
+            calls_gitaly: true
 
       def raw_text_blob
         object.data unless object.binary?

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
-Get a list of all deploy tokens across the GitLab instance. This endpoint requires the Administrator role.
+Get a list of all deploy tokens across the GitLab instance. This endpoint requires administrator access.
 
 ```plaintext
 GET /deploy_tokens
@@ -49,7 +49,7 @@ Example response:
 
 ## Project deploy tokens
 
-Project deploy token API endpoints require the [Maintainer role](../user/permissions.md) or higher
+Project deploy token API endpoints require the Maintainer role or higher
 for the project.
 
 ### List project deploy tokens
@@ -165,7 +165,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Group deploy tokens
 
-Users with at least the [Maintainer role](../user/permissions.md) for the group can list group deploy
+Users with at least the Maintainer role for the group can list group deploy
 tokens. Only group Owners can create and delete group deploy tokens.
 
 ### List group deploy tokens

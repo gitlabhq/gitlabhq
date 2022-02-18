@@ -20,6 +20,7 @@ const initPerformanceBar = (el) => {
 
   return new Vue({
     el,
+    name: 'PerformanceBarRoot',
     components: {
       PerformanceBarApp: () => import('./components/performance_bar_app.vue'),
     },

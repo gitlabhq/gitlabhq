@@ -42,6 +42,9 @@ export default {
     showLabel: {
       default: false,
     },
+    noFlip: {
+      default: false,
+    },
   },
   data() {
     return {
@@ -127,6 +130,7 @@ export default {
       :disabled="disabled"
       :split="isCustomNotification"
       :text="buttonText"
+      :no-flip="noFlip"
       @click="openNotificationsModal"
     >
       <notifications-dropdown-item

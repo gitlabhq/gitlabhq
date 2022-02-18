@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
+import { nextTick } from 'vue';
 import DesignNote from '~/design_management/components/design_notes/design_note.vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -96,7 +97,7 @@ describe('Design note component', () => {
   });
 
   describe('when user has a permission to edit note', () => {
-    it('should open an edit form on edit button click', () => {
+    it('should open an edit form on edit button click', async () => {
       createComponent({
         note: {
           ...note,
@@ -108,10 +109,9 @@ describe('Design note component', () => {
 
       findEditButton().trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findReplyForm().exists()).toBe(true);
-        expect(findNoteContent().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findReplyForm().exists()).toBe(true);
+      expect(findNoteContent().exists()).toBe(false);
     });
 
     describe('when edit form is rendered', () => {
@@ -134,27 +134,22 @@ describe('Design note component', () => {
         expect(findReplyForm().exists()).toBe(true);
       });
 
-      it('hides the form on cancel-form event', () => {
+      it('hides the form on cancel-form event', async () => {
         findReplyForm().vm.$emit('cancel-form');
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findReplyForm().exists()).toBe(false);
-          expect(findNoteContent().exists()).toBe(true);
-        });
+        await nextTick();
+        expect(findReplyForm().exists()).toBe(false);
+        expect(findNoteContent().exists()).toBe(true);
       });
 
-      it('calls a mutation on submit-form event and hides a form', () => {
+      it('calls a mutation on submit-form event and hides a form', async () => {
         findReplyForm().vm.$emit('submit-form');
         expect(mutate).toHaveBeenCalled();
 
-        return mutate()
-          .then(() => {
-            return wrapper.vm.$nextTick();
-          })
-          .then(() => {
-            expect(findReplyForm().exists()).toBe(false);
-            expect(findNoteContent().exists()).toBe(true);
-          });
+        await mutate();
+        await nextTick();
+        expect(findReplyForm().exists()).toBe(false);
+        expect(findNoteContent().exists()).toBe(true);
       });
     });
   });

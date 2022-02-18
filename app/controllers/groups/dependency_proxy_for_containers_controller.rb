@@ -120,7 +120,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def manifest_file_name
-    @manifest_file_name ||= "#{image}:#{tag}.json"
+    @manifest_file_name ||= Gitlab::Utils.check_path_traversal!("#{image}:#{tag}.json")
   end
 
   def group

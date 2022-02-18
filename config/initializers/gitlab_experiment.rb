@@ -10,6 +10,11 @@ Gitlab::Experiment.configure do |config|
   #
   config.base_class = 'ApplicationExperiment'
 
+  # Customize the logic of our default rollout, which shouldn't include
+  # assigning the control yet -- we specifically set it to false for now.
+  #
+  config.default_rollout = Gitlab::Experiment::Rollout::Feature.new
+
   # Mount the engine and middleware at a gitlab friendly style path.
   #
   # The middleware currently focuses only on handling redirection logic, which
@@ -66,4 +71,31 @@ Gitlab::Experiment.configure do |config|
       )
     ))
   end
+
+  # Deprecation warnings resolution for 0.7.0
+  #
+  # We're working through deprecation warnings one by one in:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/350944
+  #
+  config.singleton_class.prepend(Module.new do
+    # Disable all deprecations in non dev/test environments.
+    #
+    def deprecated(*args, version:, stack: 0)
+      super if Gitlab.dev_or_test_env?
+    end
+
+    # Maintain a list of resolved deprecations to ensure that no new uses appear.
+    #
+    # Once a resolved deprecation warning has been added here, any future use will
+    # raise an exception.
+    #
+    ActiveSupport::Deprecation.disallowed_warnings += [
+      # 'Gitlab::Experiment 0.8 (instead use `control`)', # don't use `use`
+      # 'Gitlab::Experiment 0.8 (instead use `candidate`)', # don't use `try`
+      # 'Gitlab::Experiment 0.8 (instead use `variant(:variant_name)`)', # don't use `try(:variant_name)`
+      # 'Gitlab::Experiment 0.8 (instead use `assigned(:candidate)`)', # don't use variant(:variant_name) to assign
+      # 'Gitlab::Experiment 0.8 (instead use `assigned`)', # don't use variant.name to get the assigned variant
+      # 'Gitlab::Experiment 0.8, instead register variants using:', # don't use public `*_behavior` methods
+    ]
+  end)
 end

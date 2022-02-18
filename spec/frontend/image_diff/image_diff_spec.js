@@ -15,9 +15,9 @@ describe('ImageDiff', () => {
           <div class="js-image-frame">
             <img src="${TEST_HOST}/image.png">
             <div class="comment-indicator"></div>
-            <div id="badge-1" class="badge">1</div>
-            <div id="badge-2" class="badge">2</div>
-            <div id="badge-3" class="badge">3</div>
+            <div id="badge-1" class="design-note-pin">1</div>
+            <div id="badge-2" class="design-note-pin">2</div>
+            <div id="badge-3" class="design-note-pin">3</div>
           </div>
           <div class="note-container">
             <div class="discussion-notes">
@@ -335,7 +335,7 @@ describe('ImageDiff', () => {
 
     describe('cascade badge count', () => {
       it('should update next imageBadgeEl value', () => {
-        const imageBadgeEls = imageDiff.imageFrameEl.querySelectorAll('.badge');
+        const imageBadgeEls = imageDiff.imageFrameEl.querySelectorAll('.design-note-pin');
 
         expect(imageBadgeEls[0].textContent).toEqual('1');
         expect(imageBadgeEls[1].textContent).toEqual('2');

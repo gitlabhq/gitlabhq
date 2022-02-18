@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import DiffContentComponent from '~/diffs/components/diff_content.vue';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
@@ -11,8 +12,7 @@ import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_prev
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
 import diffFileMockData from '../mock_data/diff_file';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('DiffContent', () => {
   let wrapper;
@@ -88,7 +88,6 @@ describe('DiffContent', () => {
         ...defaultProps,
         ...props,
       },
-      localVue,
       store: fakeStore,
       provide: { glFeatures },
     });

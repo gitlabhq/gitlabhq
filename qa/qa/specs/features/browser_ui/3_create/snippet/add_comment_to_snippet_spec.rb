@@ -28,8 +28,8 @@ module QA
         project_snippet&.remove_via_api!
       end
 
-      shared_examples 'comments on snippets' do |snippet_type|
-        it "adds, edits, and deletes a comment on a #{snippet_type}" do
+      shared_examples 'comments on snippets' do |snippet_type, testcase|
+        it "adds, edits, and deletes a comment on a #{snippet_type}", testcase: testcase do
           send(snippet_type)
 
           Page::Main::Menu.perform(&:sign_out)
@@ -49,8 +49,8 @@ module QA
         end
       end
 
-      it_behaves_like 'comments on snippets', :personal_snippet
-      it_behaves_like 'comments on snippets', :project_snippet
+      it_behaves_like 'comments on snippets', :personal_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347816'
+      it_behaves_like 'comments on snippets', :project_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347817'
 
       def create_comment
         Page::Dashboard::Snippet::Show.perform do |snippet|

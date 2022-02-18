@@ -1,12 +1,18 @@
 <!-- Set the correct label and milestone using autocomplete for guidance. Please @mention only the DRI(s) for each stage or group rather than an entire department. -->
 
-/label ~"release post" ~"release post item" ~"Technical Writing" ~"devops::" ~"group::" ~"release post item::deprecation"
+/label ~"release post" ~"release post item" ~"Technical Writing" ~devops:: ~group:: ~"release post item::deprecation"
+/label ~"type::maintenance"
 /milestone %
 /assign `@EM/PM` (choose the DRI; remove backticks here, and below)
 
 **Be sure to link this MR to the relevant deprecation issue(s).**
 
-If the MR does not have a deprecation issue, hit pause and review [this handbook documentation](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature) and connect with the Product Manager DRI. 
+- Deprecation Issue:
+
+If there is no relevant deprecation issue, hit pause and:
+
+- Review the [process for deprecating and removing features](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
+- Connect with the Product Manager DRI.
 
 Deprecation announcements can and should be created and merged into Docs at any time, to optimize user awareness and planning. We encourage confirmed deprecations to be merged as soon as the required reviews are complete, even if weeks ahead of the target milestone's release post. For the announcement to be included in a specific release post and that release's documentation packages, this MR must be reviewed/merged per the due dates below:
 
@@ -28,18 +34,13 @@ Please review the [guidelines for deprecations](https://about.gitlab.com/handboo
 as well as the process for [creating a deprecation entry](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
 They are frequently updated, and everyone should make sure they are aware of the current standards (PM, PMM, EM, and TW).
 
-## Links
-
-- Deprecation Issue:
-- Deprecation MR (optional):
-
 ## EM/PM release post item checklist
 
 - [ ] Set yourself as the Assignee, meaning you are the DRI.
 - [ ] If the deprecation is a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-change), add label `breaking change`.
 - [ ] Follow the process to [create a deprecation YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
 - [ ] Add reviewers by the 10th.
-- [ ] When ready to be merged and not later than the 15th, add the ~ready label and @ message the TW for final review and merge.
+- [ ] When ready to be merged and not later than the 15th, add the `~ready` label and @ message the TW for final review and merge.
 
 ## Reviewers
 
@@ -68,7 +69,7 @@ yourself as a reviewer if it's not ready for merge yet.
 - [ ] Title:
   - Length limit: 7 words (not including articles or prepositions).
   - Capitalization: ensure the title is [sentence cased](https://design.gitlab.com/content/punctuation#case).
-  - No Markdown `` `code` `` formatting in the title, as it doesn't render correctly in the release post.
+  - Rewrite to exclude the words `deprecation`, `deprecate`, `removal`, and `remove` if necessary.
 - [ ] Consistency:
   - Ensure that all resources (docs, deprecation, etc.) refer to the feature with the same term / feature name.
 - [ ] Content:
@@ -98,4 +99,4 @@ must be updated before this MR is merged:
 1. Commit the updated file and push the changes.
 1. Set the MR to merge when the pipeline succeeds (or merge if the pipeline is already complete).
 
-If you have trouble running the rake task, check the [troubleshooting steps](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecation-rake-task-troubleshooting).
+If you have trouble running the Rake task, check the [troubleshooting steps](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecation-rake-task-troubleshooting).

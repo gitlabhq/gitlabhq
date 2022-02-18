@@ -22,13 +22,9 @@ module Ci
     end
 
     def dependent_jobs
-      if ::Feature.enabled?(:ci_order_subsequent_jobs_by_stage, @processable.pipeline.project, default_enabled: :yaml)
-        stage_dependent_jobs
-          .or(needs_dependent_jobs.except(:preload))
-          .ordered_by_stage
-      else
-        stage_dependent_jobs | needs_dependent_jobs
-      end
+      stage_dependent_jobs
+        .or(needs_dependent_jobs.except(:preload))
+        .ordered_by_stage
     end
 
     def process(job)

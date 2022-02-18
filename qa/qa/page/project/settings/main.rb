@@ -9,11 +9,13 @@ module QA
           include Component::Select2
           include SubMenus::Project
           include Component::Breadcrumbs
+          include Layout::Flash
 
           view 'app/views/projects/edit.html.haml' do
             element :advanced_settings_content
             element :merge_request_settings_content
             element :visibility_features_permissions_content
+            element :badges_settings_content
           end
 
           view 'app/views/projects/settings/_general.html.haml' do
@@ -49,6 +51,12 @@ module QA
           def expand_visibility_project_features_permissions(&block)
             expand_content(:visibility_features_permissions_content) do
               VisibilityFeaturesPermissions.perform(&block)
+            end
+          end
+
+          def expand_badges_settings(&block)
+            expand_content(:badges_settings_content) do
+              Component::Badges.perform(&block)
             end
           end
         end

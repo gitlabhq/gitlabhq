@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink, GlModal, GlModalDirective, GlLoadingIcon } from '@gitlab/ui';
+import { GlIcon, GlLink, GlModal, GlButton, GlModalDirective, GlLoadingIcon } from '@gitlab/ui';
 import { IssuableType } from '~/issues/constants';
 import { s__, __ } from '~/locale';
 import { timeTrackingQueries } from '~/sidebar/constants';
@@ -21,6 +21,7 @@ export default {
     GlIcon,
     GlLink,
     GlModal,
+    GlButton,
     GlLoadingIcon,
     TimeTrackingCollapsedState,
     TimeTrackingSpentOnlyPane,
@@ -187,7 +188,11 @@ export default {
 </script>
 
 <template>
-  <div v-cloak class="time-tracker time-tracking-component-wrap" data-testid="time-tracker">
+  <div
+    v-cloak
+    class="time-tracker time-tracking-component-wrap sidebar-help-wrap"
+    data-testid="time-tracker"
+  >
     <time-tracking-collapsed-state
       v-if="showCollapsed"
       :show-comparison-state="showComparisonState"
@@ -198,25 +203,21 @@ export default {
       :time-spent-human-readable="humanTotalTimeSpent"
       :time-estimate-human-readable="humanTimeEstimate"
     />
-    <div class="hide-collapsed gl-line-height-20 gl-text-gray-900">
+    <div
+      class="hide-collapsed gl-line-height-20 gl-text-gray-900 gl-display-flex gl-align-items-center"
+    >
       {{ __('Time tracking') }}
       <gl-loading-icon v-if="isTimeTrackingInfoLoading" size="sm" inline />
-      <div
-        v-if="!showHelpState"
-        data-testid="helpButton"
-        class="help-button float-right"
-        @click="toggleHelpState(true)"
+      <gl-button
+        :data-testid="showHelpState ? 'closeHelpButton' : 'helpButton'"
+        category="tertiary"
+        size="small"
+        variant="link"
+        class="gl-ml-auto"
+        @click="toggleHelpState(!showHelpState)"
       >
-        <gl-icon name="question-o" />
-      </div>
-      <div
-        v-else
-        data-testid="closeHelpButton"
-        class="close-help-button float-right"
-        @click="toggleHelpState(false)"
-      >
-        <gl-icon name="close" />
-      </div>
+        <gl-icon :name="showHelpState ? 'close' : 'question-o'" class="gl-text-gray-900!" />
+      </gl-button>
     </div>
     <div v-if="!isTimeTrackingInfoLoading" class="hide-collapsed">
       <div v-if="showEstimateOnlyState" data-testid="estimateOnlyPane">

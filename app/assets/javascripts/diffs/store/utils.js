@@ -9,7 +9,6 @@ import {
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
   MATCH_LINE_TYPE,
-  LINES_TO_BE_RENDERED_DIRECTLY,
   INLINE_DIFF_LINES_KEY,
   CONFLICT_OUR,
   CONFLICT_THEIR,
@@ -380,16 +379,9 @@ function prepareDiffFileLines(file) {
   return file;
 }
 
-function finalizeDiffFile(file, index) {
-  let renderIt = Boolean(window.gon?.features?.diffsVirtualScrolling);
-
-  if (!window.gon?.features?.diffsVirtualScrolling) {
-    renderIt =
-      index < 3 ? file[INLINE_DIFF_LINES_KEY].length < LINES_TO_BE_RENDERED_DIRECTLY : false;
-  }
-
+function finalizeDiffFile(file) {
   Object.assign(file, {
-    renderIt,
+    renderIt: true,
     isShowingFullFile: false,
     isLoadingFullFile: false,
     discussions: [],
@@ -417,15 +409,13 @@ export function prepareDiffData({ diff, priorFiles = [], meta = false }) {
     .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles, meta }))
     .map(ensureBasicDiffFileLines)
     .map(prepareDiffFileLines)
-    .map((file, index) => finalizeDiffFile(file, priorFiles.length + index));
+    .map((file) => finalizeDiffFile(file));
 
   return deduplicateFilesList([...priorFiles, ...cleanedFiles]);
 }
 
 export function getDiffPositionByLineCode(diffFiles) {
-  let lines = [];
-
-  lines = diffFiles.reduce((acc, diffFile) => {
+  const lines = diffFiles.reduce((acc, diffFile) => {
     diffFile[INLINE_DIFF_LINES_KEY].forEach((line) => {
       acc.push({ file: diffFile, line });
     });

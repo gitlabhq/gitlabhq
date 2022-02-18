@@ -4,12 +4,14 @@ require 'yaml'
 
 module Backup
   class Repositories
-    def initialize(progress, strategy:)
+    def initialize(progress, strategy:, max_concurrency: 1, max_storage_concurrency: 1)
       @progress = progress
       @strategy = strategy
+      @max_concurrency = max_concurrency
+      @max_storage_concurrency = max_storage_concurrency
     end
 
-    def dump(max_concurrency:, max_storage_concurrency:)
+    def dump
       strategy.start(:create)
 
       # gitaly-backup is designed to handle concurrency on its own. So we want
@@ -17,6 +19,11 @@ module Backup
       # is enabled.
       if (max_concurrency <= 1 && max_storage_concurrency <= 1) || !strategy.parallel_enqueue?
         return enqueue_consecutive
+      end
+
+      if max_concurrency < 1 || max_storage_concurrency < 1
+        puts "GITLAB_BACKUP_MAX_CONCURRENCY and GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY must have a value of at least 1".color(:red)
+        exit 1
       end
 
       check_valid_storages!
@@ -54,9 +61,17 @@ module Backup
       restore_object_pools
     end
 
+    def enabled
+      true
+    end
+
+    def human_name
+      _('repositories')
+    end
+
     private
 
-    attr_reader :progress, :strategy
+    attr_reader :progress, :strategy, :max_concurrency, :max_storage_concurrency
 
     def check_valid_storages!
       repository_storage_klasses.each do |klass|

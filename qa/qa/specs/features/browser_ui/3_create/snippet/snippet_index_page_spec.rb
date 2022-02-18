@@ -56,8 +56,8 @@ module QA
         project_snippet_with_multiple_files.remove_via_api!
       end
 
-      shared_examples 'displaying details on index page' do |snippet_type|
-        it "shows correct details of #{snippet_type} including file number" do
+      shared_examples 'displaying details on index page' do |snippet_type, testcase|
+        it "shows correct details of #{snippet_type} including file number", testcase: testcase do
           send(snippet_type)
           Page::Main::Menu.perform do |menu|
             menu.go_to_menu_dropdown_option(:snippets_link)
@@ -73,10 +73,10 @@ module QA
         end
       end
 
-      it_behaves_like 'displaying details on index page', :personal_snippet_with_single_file
-      it_behaves_like 'displaying details on index page', :personal_snippet_with_multiple_files
-      it_behaves_like 'displaying details on index page', :project_snippet_with_single_file
-      it_behaves_like 'displaying details on index page', :project_snippet_with_multiple_files
+      it_behaves_like 'displaying details on index page', :personal_snippet_with_single_file, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347717'
+      it_behaves_like 'displaying details on index page', :personal_snippet_with_multiple_files, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347720'
+      it_behaves_like 'displaying details on index page', :project_snippet_with_single_file, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347718'
+      it_behaves_like 'displaying details on index page', :project_snippet_with_multiple_files, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347719'
     end
   end
 end

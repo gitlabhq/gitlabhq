@@ -36,7 +36,7 @@ RSpec.describe Gitlab::ImportExport::LfsRestorer do
           )
         end
 
-        saver.save
+        saver.save # rubocop:disable Rails/SaveBang
 
         project.lfs_objects.delete_all
       end
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::ImportExport::LfsRestorer do
 
       context 'when there is not an existing `LfsObject`' do
         before do
-          lfs_object.destroy
+          lfs_object.destroy!
         end
 
         it 'creates a new lfs object' do

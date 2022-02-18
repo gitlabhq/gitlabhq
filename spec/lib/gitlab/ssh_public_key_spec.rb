@@ -12,7 +12,7 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
     end
 
     where(:name) do
-      [:rsa, :dsa, :ecdsa, :ed25519]
+      [:rsa, :dsa, :ecdsa, :ed25519, :ecdsa_sk, :ed25519_sk]
     end
 
     with_them do
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
   describe '.supported_types' do
     it 'returns array with the names of supported technologies' do
       expect(described_class.supported_types).to eq(
-        [:rsa, :dsa, :ecdsa, :ed25519]
+        [:rsa, :dsa, :ecdsa, :ed25519, :ecdsa_sk, :ed25519_sk]
       )
     end
   end
@@ -35,7 +35,9 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
         [:rsa, [1024, 2048, 3072, 4096]],
         [:dsa, [1024, 2048, 3072]],
         [:ecdsa, [256, 384, 521]],
-        [:ed25519, [256]]
+        [:ed25519, [256]],
+        [:ecdsa_sk, [256]],
+        [:ed25519_sk, [256]]
       ]
     end
 
@@ -53,6 +55,8 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
         ssh-dss
         ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521
         ssh-ed25519
+        sk-ecdsa-sha2-nistp256@openssh.com
+        sk-ssh-ed25519@openssh.com
         )
       )
     end
@@ -64,7 +68,9 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
         [:rsa, %w(ssh-rsa)],
         [:dsa, %w(ssh-dss)],
         [:ecdsa, %w(ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521)],
-        [:ed25519, %w(ssh-ed25519)]
+        [:ed25519, %w(ssh-ed25519)],
+        [:ecdsa_sk, %w(sk-ecdsa-sha2-nistp256@openssh.com)],
+        [:ed25519_sk, %w(sk-ssh-ed25519@openssh.com)]
       ]
     end
 
@@ -122,13 +128,35 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
            rsa_key_8192
            dsa_key_2048
            ecdsa_key_256
-           ed25519_key_256)
+           ed25519_key_256
+           ecdsa_sk_key_256
+           ed25519_sk_key_256)
       end
 
       with_them do
         let(:key) { attributes_for(factory)[:key] }
 
         it { is_expected.to be_valid }
+
+        context 'when key begins with options' do
+          let(:key) { "restrict,command='dump /home' #{attributes_for(factory)[:key]}" }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when key is in known_hosts format' do
+          context "when key begins with 'example.com'" do
+            let(:key) { "example.com #{attributes_for(factory)[:key]}" }
+
+            it { is_expected.to be_valid }
+          end
+
+          context "when key begins with '@revoked other.example.com'" do
+            let(:key) { "@revoked other.example.com #{attributes_for(factory)[:key]}" }
+
+            it { is_expected.to be_valid }
+          end
+        end
       end
     end
 
@@ -136,6 +164,40 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
       let(:key) { 'this is not a key' }
 
       it { is_expected.not_to be_valid }
+    end
+
+    context 'when an unsupported SSH key algorithm' do
+      let(:key) { "unsupported-#{attributes_for(:rsa_key_2048)[:key]}" }
+
+      it { is_expected.not_to be_valid }
+    end
+  end
+
+  shared_examples 'raises error when the key is represented by a class that is not in the list of supported technologies' do
+    context 'when the key is represented by a class that is not in the list of supported technologies' do
+      it 'raises error' do
+        klass = Class.new
+        key = klass.new
+
+        allow(public_key).to receive(:key).and_return(key)
+
+        expect { subject }.to raise_error("Unsupported key type: #{key.class}")
+      end
+    end
+
+    context 'when the key is represented by a subclass of the class that is in the list of supported technologies' do
+      it 'raises error' do
+        rsa_subclass = Class.new(described_class.technology(:rsa).key_class) do
+          def initialize
+          end
+        end
+
+        key = rsa_subclass.new
+
+        allow(public_key).to receive(:key).and_return(key)
+
+        expect { subject }.to raise_error("Unsupported key type: #{key.class}")
+      end
     end
   end
 
@@ -147,7 +209,9 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
         [:rsa_key_2048, :rsa],
         [:dsa_key_2048, :dsa],
         [:ecdsa_key_256, :ecdsa],
-        [:ed25519_key_256, :ed25519]
+        [:ed25519_key_256, :ed25519],
+        [:ecdsa_sk_key_256, :ecdsa_sk],
+        [:ed25519_sk_key_256, :ed25519_sk]
       ]
     end
 
@@ -162,6 +226,8 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
 
       it { is_expected.to be_nil }
     end
+
+    include_examples 'raises error when the key is represented by a class that is not in the list of supported technologies'
   end
 
   describe '#bits' do
@@ -175,7 +241,9 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
         [:rsa_key_8192, 8192],
         [:dsa_key_2048, 2048],
         [:ecdsa_key_256, 256],
-        [:ed25519_key_256, 256]
+        [:ed25519_key_256, 256],
+        [:ecdsa_sk_key_256, 256],
+        [:ed25519_sk_key_256, 256]
       ]
     end
 
@@ -190,6 +258,8 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
 
       it { is_expected.to be_nil }
     end
+
+    include_examples 'raises error when the key is represented by a class that is not in the list of supported technologies'
   end
 
   describe '#fingerprint' do
@@ -203,7 +273,9 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
         [:rsa_key_8192, 'fb:53:7f:e9:2f:f7:17:aa:c8:32:52:06:8e:05:e2:82'],
         [:dsa_key_2048, 'c8:85:1e:df:44:0f:20:00:3c:66:57:2b:21:10:5a:27'],
         [:ecdsa_key_256, '67:a3:a9:7d:b8:e1:15:d4:80:40:21:34:bb:ed:97:38'],
-        [:ed25519_key_256, 'e6:eb:45:8a:3c:59:35:5f:e9:5b:80:12:be:7e:22:73']
+        [:ed25519_key_256, 'e6:eb:45:8a:3c:59:35:5f:e9:5b:80:12:be:7e:22:73'],
+        [:ecdsa_sk_key_256, '56:b9:bc:99:3d:2f:cf:63:6b:70:d8:f9:40:7e:09:4c'],
+        [:ed25519_sk_key_256, 'f9:a0:64:0b:4b:72:72:0e:62:92:d7:04:14:74:1c:c9']
       ]
     end
 
@@ -220,18 +292,20 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
     end
   end
 
-  describe '#fingerprint in SHA256 format' do
-    subject { public_key.fingerprint("SHA256").gsub("SHA256:", "") if public_key.fingerprint("SHA256") }
+  describe '#fingerprint_sha256' do
+    subject { public_key.fingerprint_sha256 }
 
     where(:factory, :fingerprint_sha256) do
       [
-        [:rsa_key_2048, 'GdtgO0eHbwLB+mK47zblkoXujkqKRZjgMQrHH6Kks3E'],
-        [:rsa_key_4096, 'ByDU7hQ1JB95l6p53rHrffc4eXvEtqGUtQhS+Dhyy7g'],
-        [:rsa_key_5120, 'PCCupLbFHScm4AbEufbGDvhBU27IM0MVAor715qKQK8'],
-        [:rsa_key_8192, 'CtHFQAS+9Hb8z4vrv4gVQPsHjNN0WIZhWODaB1mQLs4'],
-        [:dsa_key_2048, '+a3DQ7cU5GM+gaYOfmc0VWNnykHQSuth3VRcCpWuYNI'],
-        [:ecdsa_key_256, 'C+I5k3D+IGeM6k5iBR1ZsphqTKV+7uvL/XZ5hcrTr7g'],
-        [:ed25519_key_256, 'DCKAjzxWrdOTjaGKBBjtCW8qY5++GaiAJflrHPmp6W0']
+        [:rsa_key_2048, 'SHA256:GdtgO0eHbwLB+mK47zblkoXujkqKRZjgMQrHH6Kks3E'],
+        [:rsa_key_4096, 'SHA256:ByDU7hQ1JB95l6p53rHrffc4eXvEtqGUtQhS+Dhyy7g'],
+        [:rsa_key_5120, 'SHA256:PCCupLbFHScm4AbEufbGDvhBU27IM0MVAor715qKQK8'],
+        [:rsa_key_8192, 'SHA256:CtHFQAS+9Hb8z4vrv4gVQPsHjNN0WIZhWODaB1mQLs4'],
+        [:dsa_key_2048, 'SHA256:+a3DQ7cU5GM+gaYOfmc0VWNnykHQSuth3VRcCpWuYNI'],
+        [:ecdsa_key_256, 'SHA256:C+I5k3D+IGeM6k5iBR1ZsphqTKV+7uvL/XZ5hcrTr7g'],
+        [:ed25519_key_256, 'SHA256:DCKAjzxWrdOTjaGKBBjtCW8qY5++GaiAJflrHPmp6W0'],
+        [:ecdsa_sk_key_256, 'SHA256:N0sNKBgWKK8usPuPegtgzHQQA9vQ/dRhAEhwFDAnLA4'],
+        [:ed25519_sk_key_256, 'SHA256:U8IKRkIHed6vFMTflwweA3HhIf2DWgZ8EFTm9fgwOUk']
       ]
     end
 
@@ -249,10 +323,19 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
   end
 
   describe '#key_text' do
-    let(:key) { 'this is not a key' }
+    where(:key_value) do
+      [
+        'this is not a key',
+        nil
+      ]
+    end
 
-    it 'carries the unmodified key data' do
-      expect(public_key.key_text).to eq(key)
+    with_them do
+      let(:key) { key_value }
+
+      it 'carries the unmodified key data' do
+        expect(public_key.key_text).to eq(key)
+      end
     end
   end
 end

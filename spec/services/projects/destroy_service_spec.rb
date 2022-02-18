@@ -15,19 +15,38 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
+    allow(Gitlab::EventStore).to receive(:publish)
   end
 
   shared_examples 'deleting the project' do
-    before do
-      # Run sidekiq immediately to check that renamed repository will be removed
-      destroy_project(project, user, {})
-    end
-
     it 'deletes the project', :sidekiq_inline do
+      destroy_project(project, user, {})
+
       expect(Project.unscoped.all).not_to include(project)
 
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, remove_path + '.git')).to be_falsey
+    end
+
+    it 'publishes a ProjectDeleted event with project id and namespace id' do
+      expected_data = { project_id: project.id, namespace_id: project.namespace_id }
+      expect(Gitlab::EventStore)
+        .to receive(:publish)
+        .with(event_type(Projects::ProjectDeletedEvent).containing(expected_data))
+
+      destroy_project(project, user, {})
+    end
+
+    context 'when feature flag publish_project_deleted_event is disabled' do
+      before do
+        stub_feature_flags(publish_project_deleted_event: false)
+      end
+
+      it 'does not publish an event' do
+        expect(Gitlab::EventStore).not_to receive(:publish).with(event_type(Projects::ProjectDeletedEvent))
+
+        destroy_project(project, user, {})
+      end
     end
   end
 
@@ -94,6 +113,24 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
 
       expect(project.reload.delete_error).to be_present
       expect(project.delete_error).to include(error_message)
+    end
+  end
+
+  context "deleting a project with merge requests" do
+    let!(:merge_request) { create(:merge_request, source_project: project) }
+
+    before do
+      allow(project).to receive(:destroy!).and_return(true)
+    end
+
+    it "deletes merge request and related records" do
+      merge_request_diffs = merge_request.merge_request_diffs
+      expect(merge_request_diffs.size).to eq(1)
+
+      mrdc_count = MergeRequestDiffCommit.where(merge_request_diff_id: merge_request_diffs.first.id).count
+
+      expect { destroy_project(project, user, {}) }
+      .to change { MergeRequestDiffCommit.count }.by(-mrdc_count)
     end
   end
 

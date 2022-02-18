@@ -29,7 +29,7 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
   describe 'the created pipeline' do
     let_it_be(:project, refind: true) { create(:project, :repository) }
 
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
     let(:default_branch) { 'master' }
     let(:pipeline_ref) { default_branch }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_ref) }
@@ -64,6 +64,11 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
         it 'by default' do
           expect(build_names).to include('production')
           expect(build_names).not_to include('review')
+        end
+
+        it 'when CI_DEPLOY_FREEZE is present' do
+          create(:ci_variable, project: project, key: 'CI_DEPLOY_FREEZE', value: 'true')
+          expect(build_names).to eq %w(placeholder)
         end
 
         it 'when CANARY_ENABLED' do

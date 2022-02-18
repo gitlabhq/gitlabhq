@@ -408,6 +408,22 @@ RSpec.describe MergeRequestsFinder do
         end
       end
 
+      context 'attention' do
+        subject { described_class.new(user, params).execute }
+
+        before do
+          reviewer = merge_request1.find_reviewer(user2)
+          reviewer.update!(state: :reviewed)
+        end
+
+        context 'by username' do
+          let(:params) { { attention: user2.username } }
+          let(:expected_mr) { [merge_request2, merge_request3] }
+
+          it { is_expected.to contain_exactly(*expected_mr) }
+        end
+      end
+
       context 'reviewer filtering' do
         subject { described_class.new(user, params).execute }
 

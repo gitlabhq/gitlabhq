@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import ResponsiveApp from '~/nav/components/responsive_app.vue';
 import ResponsiveHeader from '~/nav/components/responsive_header.vue';
 import ResponsiveHome from '~/nav/components/responsive_home.vue';
@@ -62,7 +63,7 @@ describe('~/nav/components/responsive_app.vue', () => {
 
           wrapper.vm.$root.$emit(evt);
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
         }, Promise.resolve());
 
         expect(hasMobileOverlayVisible()).toBe(expectation);
@@ -97,7 +98,7 @@ describe('~/nav/components/responsive_app.vue', () => {
 
       findHome().vm.$emit('menu-item-click', { view });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('shows header', () => {

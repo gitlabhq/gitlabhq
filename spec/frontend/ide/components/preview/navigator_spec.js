@@ -1,6 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { listen } from 'codesandbox-api';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import ClientsideNavigator from '~/ide/components/preview/navigator.vue';
 
@@ -29,31 +30,28 @@ describe('IDE clientside preview navigator', () => {
     wrapper.destroy();
   });
 
-  it('renders readonly URL bar', () => {
+  it('renders readonly URL bar', async () => {
     listenHandler({ type: 'urlchange', url: manager.bundlerURL });
-    return wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('input[readonly]').element.value).toBe('/');
-    });
+    await nextTick();
+    expect(wrapper.find('input[readonly]').element.value).toBe('/');
   });
 
   it('renders loading icon by default', () => {
     expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('removes loading icon when done event is fired', () => {
+  it('removes loading icon when done event is fired', async () => {
     listenHandler({ type: 'done' });
-    return wrapper.vm.$nextTick(() => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-    });
+    await nextTick();
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
   });
 
-  it('does not count visiting same url multiple times', () => {
+  it('does not count visiting same url multiple times', async () => {
     listenHandler({ type: 'done' });
     listenHandler({ type: 'done', url: `${TEST_HOST}/url1` });
     listenHandler({ type: 'done', url: `${TEST_HOST}/url1` });
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findBackButton().attributes('disabled')).toBe('disabled');
-    });
+    await nextTick();
+    expect(findBackButton().attributes('disabled')).toBe('disabled');
   });
 
   it('unsubscribes from listen on destroy', () => {
@@ -64,107 +62,93 @@ describe('IDE clientside preview navigator', () => {
   });
 
   describe('back button', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       listenHandler({ type: 'done' });
       listenHandler({ type: 'urlchange', url: TEST_HOST });
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('is disabled by default', () => {
       expect(findBackButton().attributes('disabled')).toBe('disabled');
     });
 
-    it('is enabled when there is previous entry', () => {
+    it('is enabled when there is previous entry', async () => {
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
-      return wrapper.vm.$nextTick().then(() => {
-        findBackButton().trigger('click');
-        expect(findBackButton().attributes('disabled')).toBeFalsy();
-      });
+      await nextTick();
+      findBackButton().trigger('click');
+      expect(findBackButton().attributes('disabled')).toBeFalsy();
     });
 
-    it('is disabled when there is no previous entry', () => {
+    it('is disabled when there is no previous entry', async () => {
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          findBackButton().trigger('click');
 
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(findBackButton().attributes('disabled')).toBe('disabled');
-        });
+      await nextTick();
+      findBackButton().trigger('click');
+
+      await nextTick();
+      expect(findBackButton().attributes('disabled')).toBe('disabled');
     });
 
-    it('updates manager iframe src', () => {
+    it('updates manager iframe src', async () => {
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url2` });
-      return wrapper.vm.$nextTick().then(() => {
-        findBackButton().trigger('click');
+      await nextTick();
+      findBackButton().trigger('click');
 
-        expect(manager.iframe.src).toBe(`${TEST_HOST}/url1`);
-      });
+      expect(manager.iframe.src).toBe(`${TEST_HOST}/url1`);
     });
   });
 
   describe('forward button', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       listenHandler({ type: 'done' });
       listenHandler({ type: 'urlchange', url: TEST_HOST });
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('is disabled by default', () => {
       expect(findForwardButton().attributes('disabled')).toBe('disabled');
     });
 
-    it('is enabled when there is next entry', () => {
+    it('is enabled when there is next entry', async () => {
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          findBackButton().trigger('click');
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(findForwardButton().attributes('disabled')).toBeFalsy();
-        });
+
+      await nextTick();
+      findBackButton().trigger('click');
+
+      await nextTick();
+      expect(findForwardButton().attributes('disabled')).toBeFalsy();
     });
 
-    it('is disabled when there is no next entry', () => {
+    it('is disabled when there is no next entry', async () => {
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          findBackButton().trigger('click');
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          findForwardButton().trigger('click');
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(findForwardButton().attributes('disabled')).toBe('disabled');
-        });
+
+      await nextTick();
+      findBackButton().trigger('click');
+
+      await nextTick();
+      findForwardButton().trigger('click');
+
+      await nextTick();
+      expect(findForwardButton().attributes('disabled')).toBe('disabled');
     });
 
-    it('updates manager iframe src', () => {
+    it('updates manager iframe src', async () => {
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
       listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url2` });
-      return wrapper.vm.$nextTick().then(() => {
-        findBackButton().trigger('click');
+      await nextTick();
+      findBackButton().trigger('click');
 
-        expect(manager.iframe.src).toBe(`${TEST_HOST}/url1`);
-      });
+      expect(manager.iframe.src).toBe(`${TEST_HOST}/url1`);
     });
   });
 
   describe('refresh button', () => {
     const url = `${TEST_HOST}/some_url`;
-    beforeEach(() => {
+    beforeEach(async () => {
       listenHandler({ type: 'done' });
       listenHandler({ type: 'urlchange', url });
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('calls refresh with current path', () => {

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ProjectSetting < ApplicationRecord
+  include IgnorableColumns
+
+  ignore_column :show_diff_preview_in_email, remove_with: '14.10', remove_after: '2022-03-22'
+
   belongs_to :project, inverse_of: :project_setting
 
   enum squash_option: {
@@ -12,8 +16,12 @@ class ProjectSetting < ApplicationRecord
 
   self.primary_key = :project_id
 
-  validates :merge_commit_template, length: { maximum: 500 }
-  validates :squash_commit_template, length: { maximum: 500 }
+  validates :merge_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
+  validates :squash_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
+
+  default_value_for(:legacy_open_source_license_available) do
+    Feature.enabled?(:legacy_open_source_license_available, default_enabled: :yaml, type: :ops)
+  end
 
   def squash_enabled_by_default?
     %w[always default_on].include?(squash_option)

@@ -25,7 +25,7 @@ RSpec.describe 'Projects tree', :js do
 
     expect(page).to have_selector('.tree-item')
     expect(page).to have_content('add tests for .gitattributes custom highlighting')
-    expect(page).not_to have_selector('.flash-alert')
+    expect(page).not_to have_selector('[data-testid="alert-danger"]')
     expect(page).not_to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS') # rubocop:disable QA/SelectorUsage
   end
 
@@ -36,7 +36,7 @@ RSpec.describe 'Projects tree', :js do
     expect(page).to have_selector('.tree-item')
     expect(page).to have_content('add spaces in whitespace file')
     expect(page).not_to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS') # rubocop:disable QA/SelectorUsage
-    expect(page).not_to have_selector('.flash-alert')
+    expect(page).not_to have_selector('[data-testid="alert-danger"]')
   end
 
   it 'renders tree table with non-ASCII filenames without errors' do
@@ -46,7 +46,7 @@ RSpec.describe 'Projects tree', :js do
     expect(page).to have_selector('.tree-item')
     expect(page).to have_content('Files, encoding and much more')
     expect(page).to have_content('テスト.txt')
-    expect(page).not_to have_selector('.flash-alert')
+    expect(page).not_to have_selector('[data-testid="alert-danger"]')
   end
 
   context "with a tree that contains pathspec characters" do
@@ -139,7 +139,7 @@ RSpec.describe 'Projects tree', :js do
       wait_for_requests
 
       expect(page).to have_selector('.tree-item')
-      expect(page).not_to have_selector('.flash-alert')
+      expect(page).not_to have_selector('[data-testid="alert-danger"]')
     end
 
     context 'for signed commit' do

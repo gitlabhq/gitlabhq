@@ -31,7 +31,7 @@
             = check_box_tag checkbox_id, nil, false, class: "check-all-issues left"
         - if is_epic_board
           #js-board-filtered-search{ data: { full_path: @group&.full_path } }
-        - elsif Feature.enabled?(:issue_boards_filtered_search, ff_resource) && board
+        - elsif Feature.enabled?(:issue_boards_filtered_search, ff_resource, default_enabled: :yaml) && board
           #js-issue-board-filtered-search
         - else
           .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row
@@ -107,6 +107,16 @@
                     = render 'shared/issuable/user_dropdown_item',
                       user: User.new(username: '{{username}}', name: '{{name}}'),
                       avatar: { lazy: true, url: '{{avatar_url}}' }
+                - if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+                  #js-dropdown-attention-requested.filtered-search-input-dropdown-menu.dropdown-menu
+                    - if current_user
+                      %ul{ data: { dropdown: true } }
+                        = render 'shared/issuable/user_dropdown_item',
+                          user: current_user
+                    %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                      = render 'shared/issuable/user_dropdown_item',
+                        user: User.new(username: '{{username}}', name: '{{name}}'),
+                        avatar: { lazy: true, url: '{{avatar_url}}' }
                 = render_if_exists 'shared/issuable/approver_dropdown'
                 = render_if_exists 'shared/issuable/approved_by_dropdown'
                 #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
@@ -206,7 +216,7 @@
 
               %button.clear-search.hidden{ type: 'button' }
                 = sprite_icon('close', size: 16, css_class: 'clear-search-icon')
-    .filter-dropdown-container.d-flex.flex-column.flex-md-row
+    .filter-dropdown-container.gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-align-items-flex-start
       - if type == :boards
         #js-board-labels-toggle
         - if current_user

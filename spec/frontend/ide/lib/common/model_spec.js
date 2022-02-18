@@ -81,16 +81,13 @@ describe('Multi-file editor library model', () => {
   });
 
   describe('onChange', () => {
-    it('calls callback on change', (done) => {
+    it('calls callback on change', () => {
       const spy = jest.fn();
       model.onChange(spy);
 
       model.getModel().setValue('123');
 
-      setImmediate(() => {
-        expect(spy).toHaveBeenCalledWith(model, expect.anything());
-        done();
-      });
+      expect(spy).toHaveBeenCalledWith(model, expect.anything());
     });
   });
 

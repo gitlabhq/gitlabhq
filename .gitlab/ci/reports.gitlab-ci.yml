@@ -112,7 +112,6 @@ yarn-audit-dependency_scanning:
     name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:1.1.0
     entrypoint: [""]
   variables:
-    DEBUG: '*'
     HTR_user: '$PACKAGE_HUNTER_USER'
     HTR_pass: '$PACKAGE_HUNTER_PASS'
   needs: []
@@ -121,7 +120,7 @@ yarn-audit-dependency_scanning:
     - rm -r spec locale .git app/assets/images doc/
     - cd .. && tar -I "gzip --best" -cf gitlab.tgz gitlab/
   script:
-    - node /usr/src/app/cli.js analyze --format gitlab --manager ${PACKAGE_MANAGER} gitlab.tgz | tee ${CI_PROJECT_DIR}/gl-dependency-scanning-report.json
+    - DEBUG=* node /usr/src/app/cli.js analyze --format gitlab --manager ${PACKAGE_MANAGER} gitlab.tgz | tee ${CI_PROJECT_DIR}/gl-dependency-scanning-report.json
   artifacts:
     paths:
       - gl-dependency-scanning-report.json

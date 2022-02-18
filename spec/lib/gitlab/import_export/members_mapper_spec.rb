@@ -243,7 +243,6 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
 
           before do
             group.add_users([user, user2], GroupMember::DEVELOPER)
-            user.update(public_email: 'invite@test.com')
           end
 
           it 'maps the importer' do

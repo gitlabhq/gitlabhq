@@ -1,6 +1,6 @@
 import { GlFormRadioGroup, GlFormRadio, GlFormInputGroup } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -10,8 +10,7 @@ import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracki
 import ProjectDropdown from '~/error_tracking_settings/components/project_dropdown.vue';
 import createStore from '~/error_tracking_settings/store';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const TEST_GITLAB_DSN = 'https://gitlab.example.com/123456';
 
@@ -22,7 +21,6 @@ describe('error tracking settings app', () => {
   function mountComponent() {
     wrapper = extendedWrapper(
       shallowMount(ErrorTrackingSettings, {
-        localVue,
         store, // Override the imported store
         propsData: {
           initialEnabled: 'true',
@@ -81,12 +79,11 @@ describe('error tracking settings app', () => {
       expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeFalsy();
     });
 
-    it('disables the button when saving', () => {
+    it('disables the button when saving', async () => {
       store.state.settingsLoading = true;
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeTruthy();
     });
   });
 

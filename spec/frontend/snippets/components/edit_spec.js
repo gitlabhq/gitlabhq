@@ -1,7 +1,8 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import { merge } from 'lodash';
-import { nextTick } from 'vue';
+
 import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -78,8 +79,7 @@ const getApiData = ({
   blobActions: [],
 });
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('Snippet Edit app', () => {
   useFakeDate();
@@ -141,7 +141,6 @@ describe('Snippet Edit app', () => {
 
     wrapper = shallowMount(SnippetEditApp, {
       apolloProvider,
-      localVue,
       stubs: {
         ApolloMutation,
         FormFooterActions,
@@ -330,6 +329,7 @@ describe('Snippet Edit app', () => {
           mutateSpy.mockRejectedValue(TEST_API_ERROR);
 
           await createComponentAndSubmit();
+          await nextTick();
         });
 
         it('should not redirect', () => {
@@ -339,7 +339,7 @@ describe('Snippet Edit app', () => {
         it('should flash', () => {
           // Apollo automatically wraps the resolver's error in a NetworkError
           expect(createFlash).toHaveBeenCalledWith({
-            message: `Can't update snippet: Network error: ${TEST_API_ERROR.message}`,
+            message: `Can't update snippet: ${TEST_API_ERROR.message}`,
           });
         });
 
@@ -349,7 +349,7 @@ describe('Snippet Edit app', () => {
           // eslint-disable-next-line no-console
           expect(console.error).toHaveBeenCalledWith(
             '[gitlab] unexpected error while updating snippet',
-            expect.objectContaining({ message: `Network error: ${TEST_API_ERROR.message}` }),
+            expect.objectContaining({ message: `${TEST_API_ERROR.message}` }),
           );
         });
       });

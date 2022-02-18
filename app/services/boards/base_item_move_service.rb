@@ -39,7 +39,7 @@ module Boards
     end
 
     def reposition_params(reposition_ids)
-      reposition_parent.merge(move_between_ids: reposition_ids)
+      { move_between_ids: reposition_ids }
     end
 
     def move_single_issuable(issuable, issuable_modification_params)
@@ -91,7 +91,7 @@ module Boards
     end
 
     def move_between_ids(move_params)
-      ids = [move_params[:move_after_id], move_params[:move_before_id]]
+      ids = [move_params[:move_before_id], move_params[:move_after_id]]
               .map(&:to_i)
               .map { |m| m > 0 ? m : nil }
 

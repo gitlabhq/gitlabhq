@@ -39,15 +39,15 @@
             = _('Namespace:')
           %strong
             - if @project.namespace
-              = link_to @project.namespace.human_name, [:admin, @project.group || @project.owner]
+              = link_to @project.namespace.human_name, [:admin, @project.personal? ? @project.namespace.owner : @project.group]
             - else
               = s_('ProjectSettings|Global')
         %li
           %span.light
             = _('Owned by:')
           %strong
-            - if @project.owner
-              = link_to @project.owner_name, [:admin, @project.owner]
+            - if @project.owners.any?
+              = safe_join(@project.owners.map { |owner| link_to(owner.name, [:admin, owner]) }, ", ".html_safe)
             - else
               = _('(deleted)')
 

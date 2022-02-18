@@ -1,0 +1,14 @@
+deploy:
+  image: alpine:3
+  script:
+    - apk add helm --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    - apk add curl
+    - helm create <%= package_name %>
+    - cp ./Chart.yaml <%= package_name %>
+    - helm package <%= package_name %>
+    - http_code=$(curl --write-out "%{http_code}" --request POST --form 'chart=@<%= package_name %>-<%= package_version %>.tgz' --user <%= username %>:<%= access_token %> ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/api/stable/charts --output /dev/null --silent)
+    - '[ $http_code = "201" ]'
+  only:
+    - <%= package_project.default_branch %>
+  tags:
+    - runner-for-<%= package_project.group.name %>

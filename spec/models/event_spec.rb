@@ -25,20 +25,21 @@ RSpec.describe Event do
           expect(instance).to receive(:reset_project_activity)
         end
 
-        create_push_event(project, project.owner)
+        create_push_event(project, project.first_owner)
       end
     end
 
     describe 'after_create :set_last_repository_updated_at' do
       context 'with a push event' do
-        it 'updates the project last_repository_updated_at' do
-          project.update!(last_repository_updated_at: 1.year.ago)
+        it 'updates the project last_repository_updated_at and updated_at' do
+          project.touch(:last_repository_updated_at, time: 1.year.ago) # rubocop: disable Rails/SkipsModelValidations
 
-          create_push_event(project, project.owner)
+          event = create_push_event(project, project.first_owner)
 
           project.reload
 
-          expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.current)
+          expect(project.last_repository_updated_at).to be_like_time(event.created_at)
+          expect(project.updated_at).to be_like_time(event.created_at)
         end
       end
 
@@ -46,7 +47,7 @@ RSpec.describe Event do
         it 'does not update the project last_repository_updated_at' do
           project.update!(last_repository_updated_at: 1.year.ago)
 
-          create(:closed_issue_event, project: project, author: project.owner)
+          create(:closed_issue_event, project: project, author: project.first_owner)
 
           project.reload
 
@@ -62,14 +63,14 @@ RSpec.describe Event do
         project.reload # a reload removes fractions of seconds
 
         expect do
-          create_push_event(project, project.owner)
+          create_push_event(project, project.first_owner)
           project.reload
         end.not_to change { project.last_repository_updated_at }
       end
     end
 
     describe 'after_create UserInteractedProject.track' do
-      let(:event) { build(:push_event, project: project, author: project.owner) }
+      let(:event) { build(:push_event, project: project, author: project.first_owner) }
 
       it 'passes event to UserInteractedProject.track' do
         expect(UserInteractedProject).to receive(:track).with(event)
@@ -156,7 +157,7 @@ RSpec.describe Event do
 
   describe "Push event" do
     let(:project) { create(:project, :private) }
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
     let(:event) { create_push_event(project, user) }
 
     it do
@@ -172,7 +173,7 @@ RSpec.describe Event do
   describe '#target_title' do
     let_it_be(:project) { create(:project) }
 
-    let(:author) { project.owner }
+    let(:author) { project.first_owner }
     let(:target) { nil }
 
     let(:event) do
@@ -745,7 +746,7 @@ RSpec.describe Event do
 
         target = kind == :project ? nil : build(kind, **extra_data)
 
-        [kind, build(:event, :created, author: project.owner, project: project, target: target)]
+        [kind, build(:event, :created, author: project.first_owner, project: project, target: target)]
       end
     end
 
@@ -829,19 +830,20 @@ RSpec.describe Event do
         expect(project).not_to receive(:update_column)
           .with(:last_activity_at, a_kind_of(Time))
 
-        create_push_event(project, project.owner)
+        create_push_event(project, project.first_owner)
       end
     end
 
     context 'when a project was updated more than 1 hour ago' do
       it 'updates the project' do
-        project.update!(last_activity_at: 1.year.ago)
+        project.touch(:last_activity_at, time: 1.year.ago) # rubocop: disable Rails/SkipsModelValidations
 
-        create_push_event(project, project.owner)
+        event = create_push_event(project, project.first_owner)
 
         project.reload
 
-        expect(project.last_activity_at).to be_within(1.minute).of(Time.current)
+        expect(project.last_activity_at).to be_like_time(event.created_at)
+        expect(project.updated_at).to be_like_time(event.created_at)
       end
     end
   end

@@ -14,9 +14,13 @@ module Gitlab
       # @param [Integer] id
       # @param [String] name
       #
-      # @return [Gitlab::Audit::UnauthenticatedAuthor, Gitlab::Audit::DeletedAuthor]
-      def self.for(id, name)
-        if id == -1
+      # @return [Gitlab::Audit::UnauthenticatedAuthor, Gitlab::Audit::DeletedAuthor, Gitlab::Audit::CiRunnerTokenAuthor]
+      def self.for(id, audit_event)
+        name = audit_event[:author_name] || audit_event.details[:author_name]
+
+        if audit_event.target_type == ::Ci::Runner.name
+          Gitlab::Audit::CiRunnerTokenAuthor.new(audit_event)
+        elsif id == -1
           Gitlab::Audit::UnauthenticatedAuthor.new(name: name)
         else
           Gitlab::Audit::DeletedAuthor.new(id: id, name: name)
@@ -29,6 +33,10 @@ module Gitlab
       end
 
       def current_sign_in_ip
+        nil
+      end
+
+      def full_path
         nil
       end
     end

@@ -8,6 +8,7 @@ module QA
     class Base
       include ApiFabricator
       extend Capybara::DSL
+      using Rainbow
 
       NoValueError = Class.new(RuntimeError)
 
@@ -31,7 +32,7 @@ module QA
           parents = options.fetch(:parents) { [] }
 
           do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
-            log_fabrication(:browser_ui, resource, parents, args) { resource.fabricate!(*args) }
+            log_and_record_fabrication(:browser_ui, resource, parents, args) { resource.fabricate!(*args) }
 
             current_url
           end
@@ -47,7 +48,7 @@ module QA
           resource.eager_load_api_client!
 
           do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
-            log_fabrication(:api, resource, parents, args) { resource.fabricate_via_api! }
+            log_and_record_fabrication(:api, resource, parents, args) { resource.fabricate_via_api! }
           end
         end
 
@@ -59,7 +60,7 @@ module QA
           resource.eager_load_api_client!
 
           do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
-            log_fabrication(:api, resource, parents, args) { resource.remove_via_api! }
+            log_and_record_fabrication(:api, resource, parents, args) { resource.remove_via_api! }
           end
         end
 
@@ -71,36 +72,17 @@ module QA
           resource_web_url = yield
           resource.web_url = resource_web_url
 
-          QA::Tools::TestResourceDataProcessor.collect(resource, resource_identifier(resource))
-
           resource
         end
 
-        def resource_identifier(resource)
-          if resource.respond_to?(:username) && resource.username
-            "with username '#{resource.username}'"
-          elsif resource.respond_to?(:full_path) && resource.full_path
-            "with full_path '#{resource.full_path}'"
-          elsif resource.respond_to?(:name) && resource.name
-            "with name '#{resource.name}'"
-          elsif resource.respond_to?(:id) && resource.id
-            "with id '#{resource.id}'"
-          elsif resource.respond_to?(:iid) && resource.iid
-            "with iid '#{resource.iid}'"
-          end
-        rescue QA::Resource::Base::NoValueError
-          nil
-        end
-
-        def log_fabrication(method, resource, parents, args)
+        def log_and_record_fabrication(fabrication_method, resource, parents, args)
           start = Time.now
 
           Support::FabricationTracker.start_fabrication
           result = yield.tap do
             fabrication_time = Time.now - start
-
             fabrication_http_method = if resource.api_fabrication_http_method == :get
-                                        if self.include?(Reusable)
+                                        if include?(Reusable)
                                           "Retrieved for reuse"
                                         else
                                           "Retrieved"
@@ -109,16 +91,23 @@ module QA
                                         "Built"
                                       end
 
-            Support::FabricationTracker.save_fabrication(:"#{method}_fabrication", fabrication_time)
+            Support::FabricationTracker.save_fabrication(:"#{fabrication_method}_fabrication", fabrication_time)
+            Tools::TestResourceDataProcessor.collect(
+              resource: resource,
+              info: resource.identifier,
+              fabrication_method: fabrication_method,
+              fabrication_time: fabrication_time
+            )
+
             Runtime::Logger.debug do
               msg = ["==#{'=' * parents.size}>"]
-              msg << "#{fabrication_http_method} a #{name}"
-              msg << resource_identifier(resource) if resource_identifier(resource)
+              msg << "#{fabrication_http_method} a #{Rainbow(name).black.bg(:white)}"
+              msg << resource.identifier
               msg << "as a dependency of #{parents.last}" if parents.any?
-              msg << "via #{method}"
+              msg << "via #{fabrication_method}"
               msg << "in #{fabrication_time} seconds"
 
-              msg.join(' ')
+              msg.compact.join(' ')
             end
           end
           Support::FabricationTracker.finish_fabrication
@@ -172,7 +161,7 @@ module QA
       end
 
       def visit!(skip_resp_code_check: false)
-        Runtime::Logger.debug(%(Visiting #{self.class.name} at "#{web_url}"))
+        Runtime::Logger.debug("Visiting #{Rainbow(self.class.name).black.bg(:white)} at #{web_url}")
 
         # Just in case an async action is not yet complete
         Support::WaitForRequests.wait_for_requests(skip_resp_code_check: skip_resp_code_check)
@@ -207,6 +196,35 @@ module QA
       # @return [String]
       def inspect
         JSON.pretty_generate(comparable)
+      end
+
+      def diff(other)
+        return if self == other
+
+        diff_values = self.comparable.to_a - other.comparable.to_a
+        diff_values.to_h
+      end
+
+      def identifier
+        if respond_to?(:username) && username
+          "with username '#{username}'"
+        elsif respond_to?(:full_path) && full_path
+          "with full_path '#{full_path}'"
+        elsif respond_to?(:name) && name
+          "with name '#{name}'"
+        elsif respond_to?(:id) && id
+          "with id '#{id}'"
+        elsif respond_to?(:iid) && iid
+          "with iid '#{iid}'"
+        end
+      rescue QA::Resource::Base::NoValueError
+        nil
+      end
+
+      def remove_via_api!
+        super
+
+        Runtime::Logger.debug(["Removed a #{self.class.name}", identifier].compact.join(' '))
       end
 
       protected

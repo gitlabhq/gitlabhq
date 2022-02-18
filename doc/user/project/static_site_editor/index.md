@@ -12,6 +12,14 @@ description: "The static site editor enables users to edit content on static web
 > - WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214559) in GitLab 13.0.
 > - Non-Markdown content blocks not editable on the WYSIWYG mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216836) in GitLab 13.3.
 > - Formatting Markdown [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49052) in GitLab 13.7.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77246) in GitLab 14.7.
+
+WARNING:
+This feature is in its end-of-life process. It is
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77246)
+for use in GitLab 14.7, and is planned for
+[removal](https://gitlab.com/groups/gitlab-org/-/epics/7351) in GitLab 15.0.
+Users should instead use the [Web Editor](../repository/web_editor.md) or [Web IDE](../web_ide/index.md).
 
 Static Site Editor (SSE) enables users to edit content on static websites without
 prior knowledge of the underlying templating language, site architecture, or

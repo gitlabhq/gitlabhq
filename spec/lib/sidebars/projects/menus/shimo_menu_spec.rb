@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Sidebars::Projects::Menus::ShimoMenu do
   let_it_be_with_reload(:project) { create(:project) }
 
-  let(:context) { Sidebars::Projects::Context.new(current_user: project.owner, container: project) }
+  let(:context) { Sidebars::Projects::Context.new(current_user: project.first_owner, container: project) }
 
   subject(:shimo_menu) { described_class.new(context) }
 

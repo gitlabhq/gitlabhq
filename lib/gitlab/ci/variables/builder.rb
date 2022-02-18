@@ -8,14 +8,13 @@ module Gitlab
 
         def initialize(pipeline)
           @pipeline = pipeline
+          @instance_variables_builder = Builder::Instance.new
+          @project_variables_builder = Builder::Project.new(project)
         end
 
         def scoped_variables(job, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.concat(predefined_variables(job))
-
-            next variables unless pipeline.use_variables_builder_definitions?
-
             variables.concat(project.predefined_variables)
             variables.concat(pipeline.predefined_variables)
             variables.concat(job.runner.predefined_variables) if job.runnable? && job.runner
@@ -24,7 +23,7 @@ module Gitlab
             variables.concat(job.yaml_variables)
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
-            variables.concat(secret_instance_variables(ref: job.git_ref))
+            variables.concat(secret_instance_variables)
             variables.concat(secret_group_variables(environment: environment, ref: job.git_ref))
             variables.concat(secret_project_variables(environment: environment, ref: job.git_ref))
             variables.concat(job.trigger_request.user_variables) if job.trigger_request
@@ -65,8 +64,11 @@ module Gitlab
           end
         end
 
-        def secret_instance_variables(ref:)
-          project.ci_instance_variables_for(ref: ref)
+        def secret_instance_variables
+          strong_memoize(:secret_instance_variables) do
+            instance_variables_builder
+              .secret_variables(protected_ref: protected_ref?)
+          end
         end
 
         def secret_group_variables(environment:, ref:)
@@ -76,12 +78,18 @@ module Gitlab
         end
 
         def secret_project_variables(environment:, ref:)
-          project.ci_variables_for(ref: ref, environment: environment)
+          if memoize_secret_variables?
+            memoized_secret_project_variables(environment: environment)
+          else
+            project.ci_variables_for(ref: ref, environment: environment)
+          end
         end
 
         private
 
         attr_reader :pipeline
+        attr_reader :instance_variables_builder
+        attr_reader :project_variables_builder
         delegate :project, to: :pipeline
 
         def predefined_variables(job)
@@ -102,10 +110,43 @@ module Gitlab
           end
         end
 
+        def memoized_secret_project_variables(environment:)
+          strong_memoize_with(:secret_project_variables, environment) do
+            project_variables_builder
+              .secret_variables(
+                environment: environment,
+                protected_ref: protected_ref?)
+          end
+        end
+
         def ci_node_total_value(job)
           parallel = job.options&.dig(:parallel)
           parallel = parallel.dig(:total) if parallel.is_a?(Hash)
           parallel || 1
+        end
+
+        def protected_ref?
+          strong_memoize(:protected_ref) do
+            project.protected_for?(pipeline.jobs_git_ref)
+          end
+        end
+
+        def memoize_secret_variables?
+          strong_memoize(:memoize_secret_variables) do
+            ::Feature.enabled?(:ci_variables_builder_memoize_secret_variables,
+              project,
+              default_enabled: :yaml)
+          end
+        end
+
+        def strong_memoize_with(name, *args)
+          container = strong_memoize(name) { {} }
+
+          if container.key?(args)
+            container[args]
+          else
+            container[args] = yield
+          end
         end
       end
     end

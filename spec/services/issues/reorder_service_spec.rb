@@ -67,19 +67,9 @@ RSpec.describe Issues::ReorderService do
       it_behaves_like 'issues reorder service'
 
       context 'when ordering in a group issue list' do
-        let(:params) { { move_after_id: issue2.id, move_before_id: issue3.id, group_full_path: group.full_path } }
+        let(:params) { { move_after_id: issue2.id, move_before_id: issue3.id } }
 
         subject { service(params) }
-
-        it 'sends the board_group_id parameter' do
-          match_params = { move_between_ids: [issue2.id, issue3.id], board_group_id: group.id }
-
-          expect(Issues::UpdateService)
-            .to receive(:new).with(project: project, current_user: user, params: match_params)
-            .and_return(double(execute: build(:issue)))
-
-          subject.execute(issue1)
-        end
 
         it 'sorts issues' do
           project2 = create(:project, namespace: group)

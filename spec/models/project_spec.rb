@@ -236,27 +236,42 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       context 'with project namespaces' do
-        it 'automatically creates a project namespace' do
-          project = build(:project, path: 'hopefully-valid-path1')
-          project.save!
-
-          expect(project).to be_persisted
-          expect(project.project_namespace).to be_persisted
-          expect(project.project_namespace).to be_in_sync_with_project(project)
-        end
-
-        context 'with FF disabled' do
-          before do
-            stub_feature_flags(create_project_namespace_on_project_create: false)
-          end
-
-          it 'does not create a project namespace' do
-            project = build(:project, path: 'hopefully-valid-path2')
+        shared_examples 'creates project namespace' do
+          it 'automatically creates a project namespace' do
+            project = build(:project, path: 'hopefully-valid-path1')
             project.save!
 
             expect(project).to be_persisted
-            expect(project.project_namespace).to be_nil
+            expect(project.project_namespace).to be_persisted
+            expect(project.project_namespace).to be_in_sync_with_project(project)
+            expect(project.reload.project_namespace.traversal_ids).to eq([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact)
           end
+
+          context 'with FF disabled' do
+            before do
+              stub_feature_flags(create_project_namespace_on_project_create: false)
+            end
+
+            it 'does not create a project namespace' do
+              project = build(:project, path: 'hopefully-valid-path2')
+              project.save!
+
+              expect(project).to be_persisted
+              expect(project.project_namespace).to be_nil
+            end
+          end
+        end
+
+        context 'sync-ing traversal_ids in before_commit callback' do
+          it_behaves_like 'creates project namespace'
+        end
+
+        context 'sync-ing traversal_ids in after_create callback' do
+          before do
+            stub_feature_flags(sync_traversal_ids_before_commit: false)
+          end
+
+          it_behaves_like 'creates project namespace'
         end
       end
     end
@@ -870,7 +885,88 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#merge_commit_template_or_default' do
+    let_it_be(:project) { create(:project) }
+
+    it 'returns default merge commit template' do
+      expect(project.merge_commit_template_or_default).to eq(Project::DEFAULT_MERGE_COMMIT_TEMPLATE)
+    end
+
+    context 'when merge commit template is set and not nil' do
+      before do
+        project.merge_commit_template = '%{description}'
+      end
+
+      it 'returns current value' do
+        expect(project.merge_commit_template_or_default).to eq('%{description}')
+      end
+    end
+  end
+
+  describe '#merge_commit_template_or_default=' do
+    let_it_be(:project) { create(:project) }
+
+    it 'sets template to nil when set to default value' do
+      project.merge_commit_template_or_default = Project::DEFAULT_MERGE_COMMIT_TEMPLATE
+      expect(project.merge_commit_template).to be_nil
+    end
+
+    it 'sets template to nil when set to default value but with CRLF line endings' do
+      project.merge_commit_template_or_default = "Merge branch '%{source_branch}' into '%{target_branch}'\r\n\r\n%{title}\r\n\r\n%{issues}\r\n\r\nSee merge request %{reference}"
+      expect(project.merge_commit_template).to be_nil
+    end
+
+    it 'allows changing template' do
+      project.merge_commit_template_or_default = '%{description}'
+      expect(project.merge_commit_template).to eq('%{description}')
+    end
+
+    it 'allows setting template to nil' do
+      project.merge_commit_template_or_default = nil
+      expect(project.merge_commit_template).to be_nil
+    end
+  end
+
+  describe '#squash_commit_template_or_default' do
+    let_it_be(:project) { create(:project) }
+
+    it 'returns default squash commit template' do
+      expect(project.squash_commit_template_or_default).to eq(Project::DEFAULT_SQUASH_COMMIT_TEMPLATE)
+    end
+
+    context 'when squash commit template is set and not nil' do
+      before do
+        project.squash_commit_template = '%{description}'
+      end
+
+      it 'returns current value' do
+        expect(project.squash_commit_template_or_default).to eq('%{description}')
+      end
+    end
+  end
+
+  describe '#squash_commit_template_or_default=' do
+    let_it_be(:project) { create(:project) }
+
+    it 'sets template to nil when set to default value' do
+      project.squash_commit_template_or_default = Project::DEFAULT_SQUASH_COMMIT_TEMPLATE
+      expect(project.squash_commit_template).to be_nil
+    end
+
+    it 'allows changing template' do
+      project.squash_commit_template_or_default = '%{description}'
+      expect(project.squash_commit_template).to eq('%{description}')
+    end
+
+    it 'allows setting template to nil' do
+      project.squash_commit_template_or_default = nil
+      expect(project.squash_commit_template).to be_nil
+    end
+  end
+
   describe 'reference methods' do
+    # TODO update when we have multiple owners of a project
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/350605
     let_it_be(:owner)     { create(:user, name: 'Gitlab') }
     let_it_be(:namespace) { create(:namespace, name: 'Sample namespace', path: 'sample-namespace', owner: owner) }
     let_it_be(:project)   { create(:project, name: 'Sample project', path: 'sample-project', namespace: namespace) }
@@ -2874,7 +2970,7 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       before do
-        project.repository.rm_branch(project.owner, branch.name)
+        project.repository.rm_branch(project.first_owner, branch.name)
       end
 
       subject { project.latest_pipeline(branch.name) }
@@ -3865,45 +3961,6 @@ RSpec.describe Project, factory_default: :keep do
              partially_matched_variable,
              perfectly_matched_variable])
         end
-      end
-    end
-  end
-
-  describe '#ci_instance_variables_for' do
-    let(:project) { build_stubbed(:project) }
-
-    let!(:instance_variable) do
-      create(:ci_instance_variable, value: 'secret')
-    end
-
-    let!(:protected_instance_variable) do
-      create(:ci_instance_variable, :protected, value: 'protected')
-    end
-
-    subject { project.ci_instance_variables_for(ref: 'ref') }
-
-    before do
-      stub_application_setting(
-        default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-    end
-
-    context 'when the ref is not protected' do
-      before do
-        allow(project).to receive(:protected_for?).with('ref').and_return(false)
-      end
-
-      it 'contains only the CI variables' do
-        is_expected.to contain_exactly(instance_variable)
-      end
-    end
-
-    context 'when the ref is protected' do
-      before do
-        allow(project).to receive(:protected_for?).with('ref').and_return(true)
-      end
-
-      it 'contains all the variables' do
-        is_expected.to contain_exactly(instance_variable, protected_instance_variable)
       end
     end
   end
@@ -6238,6 +6295,21 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '.for_group_and_its_ancestor_groups' do
+    it 'returns projects for group and its ancestors' do
+      group_1 = create(:group)
+      project_1 = create(:project, namespace: group_1)
+      group_2 = create(:group, parent: group_1)
+      project_2 = create(:project, namespace: group_2)
+      group_3 = create(:group, parent: group_2)
+      project_3 = create(:project, namespace: group_2)
+      group_4 = create(:group, parent: group_3)
+      create(:project, namespace: group_4)
+
+      expect(described_class.for_group_and_its_ancestor_groups(group_3)).to match_array([project_1, project_2, project_3])
+    end
+  end
+
   describe '.deployments' do
     subject { project.deployments }
 
@@ -7116,6 +7188,29 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to be true }
   end
 
+  describe '#related_group_ids' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:sub_group) { create(:group, parent: group) }
+
+    context 'when associated with a namespace' do
+      let(:project) { create(:project, namespace: create(:namespace)) }
+      let!(:linked_group) { create(:project_group_link, project: project).group }
+
+      it 'only includes linked groups' do
+        expect(project.related_group_ids).to contain_exactly(linked_group.id)
+      end
+    end
+
+    context 'when associated with a group' do
+      let(:project) { create(:project, group: sub_group) }
+      let!(:linked_group) { create(:project_group_link, project: project).group }
+
+      it 'includes self, ancestors and linked groups' do
+        expect(project.related_group_ids).to contain_exactly(group.id, sub_group.id, linked_group.id)
+      end
+    end
+  end
+
   describe '#package_already_taken?' do
     let_it_be(:namespace) { create(:namespace, path: 'test') }
     let_it_be(:project) { create(:project, :public, namespace: namespace) }
@@ -7408,6 +7503,67 @@ RSpec.describe Project, factory_default: :keep do
 
         expect(project.save).to be_falsy
         expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
+      end
+    end
+
+    context 'public topics counter' do
+      let_it_be(:topic_1) { create(:topic, name: 't1') }
+      let_it_be(:topic_2) { create(:topic, name: 't2') }
+      let_it_be(:topic_3) { create(:topic, name: 't3') }
+
+      let(:private) { Gitlab::VisibilityLevel::PRIVATE }
+      let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
+      let(:public) { Gitlab::VisibilityLevel::PUBLIC }
+
+      subject do
+        project_updates = {
+          visibility_level: new_visibility,
+          topic_list: new_topic_list
+        }.compact
+
+        project.update!(project_updates)
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+      where(:initial_visibility, :new_visibility, :new_topic_list, :expected_count_changes) do
+        ref(:private)  | nil            | 't2, t3' | [0, 0, 0]
+        ref(:internal) | nil            | 't2, t3' | [-1, 0, 1]
+        ref(:public)   | nil            | 't2, t3' | [-1, 0, 1]
+        ref(:private)  | ref(:public)   | nil      | [1, 1, 0]
+        ref(:private)  | ref(:internal) | nil      | [1, 1, 0]
+        ref(:private)  | ref(:private)  | nil      | [0, 0, 0]
+        ref(:internal) | ref(:public)   | nil      | [0, 0, 0]
+        ref(:internal) | ref(:internal) | nil      | [0, 0, 0]
+        ref(:internal) | ref(:private)  | nil      | [-1, -1, 0]
+        ref(:public)   | ref(:public)   | nil      | [0, 0, 0]
+        ref(:public)   | ref(:internal) | nil      | [0, 0, 0]
+        ref(:public)   | ref(:private)  | nil      | [-1, -1, 0]
+        ref(:private)  | ref(:public)   | 't2, t3' | [0, 1, 1]
+        ref(:private)  | ref(:internal) | 't2, t3' | [0, 1, 1]
+        ref(:private)  | ref(:private)  | 't2, t3' | [0, 0, 0]
+        ref(:internal) | ref(:public)   | 't2, t3' | [-1, 0, 1]
+        ref(:internal) | ref(:internal) | 't2, t3' | [-1, 0, 1]
+        ref(:internal) | ref(:private)  | 't2, t3' | [-1, -1, 0]
+        ref(:public)   | ref(:public)   | 't2, t3' | [-1, 0, 1]
+        ref(:public)   | ref(:internal) | 't2, t3' | [-1, 0, 1]
+        ref(:public)   | ref(:private)  | 't2, t3' | [-1, -1, 0]
+      end
+      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
+
+      with_them do
+        it 'increments or decrements counters of topics' do
+          project.reload.update!(
+            visibility_level: initial_visibility,
+            topic_list: [topic_1.name, topic_2.name]
+          )
+
+          expect { subject }
+            .to change { topic_1.reload.non_private_projects_count }.by(expected_count_changes[0])
+            .and change { topic_2.reload.non_private_projects_count }.by(expected_count_changes[1])
+            .and change { topic_3.reload.non_private_projects_count }.by(expected_count_changes[2])
+        end
       end
     end
   end
@@ -7801,7 +7957,8 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#context_commits_enabled?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
 
     subject(:result) { project.context_commits_enabled? }
 
@@ -7821,19 +7978,19 @@ RSpec.describe Project, factory_default: :keep do
       it { is_expected.to be_falsey }
     end
 
-    context 'when context_commits feature flag is enabled on this project' do
+    context 'when context_commits feature flag is enabled on project group' do
       before do
-        stub_feature_flags(context_commits: project)
+        stub_feature_flags(context_commits: group)
       end
 
       it { is_expected.to be_truthy }
     end
 
-    context 'when context_commits feature flag is enabled on another project' do
-      let(:another_project) { create(:project) }
+    context 'when context_commits feature flag is enabled on another group' do
+      let(:another_group) { create(:group) }
 
       before do
-        stub_feature_flags(context_commits: another_project)
+        stub_feature_flags(context_commits: another_group)
       end
 
       it { is_expected.to be_falsey }

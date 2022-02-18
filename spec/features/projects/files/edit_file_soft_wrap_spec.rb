@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects > Files > User uses soft wrap while editing file', :js do
   before do
     project = create(:project, :repository)
-    user = project.owner
+    user = project.first_owner
     sign_in user
     visit project_new_blob_path(project, 'master', file_name: 'test_file-name')
 

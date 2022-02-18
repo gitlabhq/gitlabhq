@@ -10,12 +10,12 @@ export function setPositionDataAttribute(el, options) {
 }
 
 export function updateDiscussionAvatarBadgeNumber(discussionEl, newBadgeNumber) {
-  const avatarBadgeEl = discussionEl.querySelector('.image-diff-avatar-link .badge');
+  const avatarBadgeEl = discussionEl.querySelector('.image-diff-avatar-link .design-note-pin');
   avatarBadgeEl.textContent = newBadgeNumber;
 }
 
 export function updateDiscussionBadgeNumber(discussionEl, newBadgeNumber) {
-  const discussionBadgeEl = discussionEl.querySelector('.badge');
+  const discussionBadgeEl = discussionEl.querySelector('.design-note-pin');
   discussionBadgeEl.textContent = newBadgeNumber;
 }
 

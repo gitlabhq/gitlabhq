@@ -16,7 +16,7 @@ class NotePolicy < BasePolicy
 
   condition(:for_design) { @subject.for_design? }
 
-  condition(:is_visible) { @subject.system_note_with_references_visible_for?(@user) }
+  condition(:is_visible) { @subject.system_note_visible_for?(@user) }
 
   condition(:confidential, scope: :subject) { @subject.confidential? }
 

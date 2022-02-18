@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import AssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
@@ -7,8 +8,7 @@ import SidebarMediator from '~/sidebar/sidebar_mediator';
 import getIssueAssigneesQuery from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
 import Mock, { issuableQueryResponse, subscriptionNullResponse } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('Assignees Realtime', () => {
   let wrapper;
@@ -38,7 +38,6 @@ describe('Assignees Realtime', () => {
         mediator,
       },
       apolloProvider: fakeApollo,
-      localVue,
     });
   };
 

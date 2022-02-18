@@ -1,5 +1,6 @@
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import MrCollapsibleSection from '~/vue_merge_request_widget/components/mr_collapsible_extension.vue';
 
 describe('Merge Request Collapsible Extension', () => {
@@ -46,9 +47,9 @@ describe('Merge Request Collapsible Extension', () => {
     });
 
     describe('onClick', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper.find('button').trigger('click');
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('rendes the provided slot', () => {

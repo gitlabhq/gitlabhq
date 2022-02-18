@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Board < ApplicationRecord
+  RECENT_BOARDS_SIZE = 4
+
   belongs_to :group
   belongs_to :project
 

@@ -130,7 +130,7 @@ describe('BoardForm', () => {
 
       it('passes correct primary action text and variant', () => {
         expect(findModalActionPrimary().text).toBe('Create board');
-        expect(findModalActionPrimary().attributes[0].variant).toBe('success');
+        expect(findModalActionPrimary().attributes[0].variant).toBe('confirm');
       });
 
       it('does not render delete confirmation message', () => {

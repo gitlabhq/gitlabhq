@@ -14,8 +14,8 @@ module MergeRequests
 
     def async_execute
       return service_error if service_error
-      return unless merge_request.mark_as_checking
 
+      merge_request.mark_as_checking
       MergeRequestMergeabilityCheckWorker.perform_async(merge_request.id)
     end
 

@@ -1,18 +1,23 @@
 import Raphael from 'raphael/raphael';
+import { formatDate } from '~/lib/utils/datetime_utility';
 
 Raphael.prototype.commitTooltip = function commitTooltip(x, y, commit) {
   const boxWidth = 300;
   const icon = this.image(gon.relative_url_root + commit.author.icon, x, y, 20, 20);
   const nameText = this.text(x + 25, y + 10, commit.author.name);
-  const idText = this.text(x, y + 35, commit.id);
-  const messageText = this.text(x, y + 50, commit.message.replace(/\r?\n/g, ' \n '));
-  const textSet = this.set(icon, nameText, idText, messageText).attr({
+  const dateText = this.text(x, y + 35, formatDate(commit.date));
+  const idText = this.text(x, y + 55, commit.id);
+  const messageText = this.text(x, y + 70, commit.message.replace(/\r?\n/g, ' \n '));
+  const textSet = this.set(icon, nameText, dateText, idText, messageText).attr({
     'text-anchor': 'start',
     font: '12px Monaco, monospace',
   });
   nameText.attr({
     font: '14px Arial',
     'font-weight': 'bold',
+  });
+  dateText.attr({
+    fill: '#666',
   });
   idText.attr({
     fill: '#AAA',

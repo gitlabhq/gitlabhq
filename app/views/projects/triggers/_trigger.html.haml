@@ -8,7 +8,7 @@
 
     .label-container
       - unless trigger.can_access_project?
-        %span.badge.badge-danger.has-tooltip{ title: "Trigger user has insufficient permissions to project" } invalid
+        = gl_badge_tag s_('Trigger|invalid'), { variant: :danger }, { title: s_('Trigger|Trigger user has insufficient permissions to project'), data: { toggle: 'tooltip', container: 'body' } }
 
   %td
     - if trigger.description? && trigger.description.length > 15

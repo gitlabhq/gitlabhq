@@ -3,7 +3,37 @@
 require "spec_helper"
 
 RSpec.describe Projects::RepositoriesController do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
+  describe 'POST create' do
+    let_it_be(:user) { create(:user) }
+
+    let(:request) { post :create, params: { namespace_id: project.namespace, project_id: project } }
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+    end
+
+    context 'when repository does not exist' do
+      let!(:project) { create(:project) }
+
+      it 'creates the repository' do
+        expect { request }.to change { project.repository.raw_repository.exists? }.from(false).to(true)
+
+        expect(response).to be_redirect
+      end
+    end
+
+    context 'when repository already exists' do
+      it 'does not raise an exception' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+        request
+
+        expect(response).to be_redirect
+      end
+    end
+  end
 
   describe "GET archive" do
     before do

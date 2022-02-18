@@ -11,7 +11,9 @@ import {
   ACTIVE_TAB_QUERY_PARAM_NAME,
   TAB_QUERY_PARAM_VALUES,
   MEMBER_STATE_AWAITING,
+  MEMBER_STATE_ACTIVE,
   USER_STATE_BLOCKED_PENDING_APPROVAL,
+  BADGE_LABELS_AWAITING_USER_SIGNUP,
   BADGE_LABELS_PENDING_OWNER_APPROVAL,
 } from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
@@ -154,8 +156,12 @@ export default {
      * @see {@link ~/app/serializers/member_entity.rb}
      * @returns {boolean}
      */
-    isNewUser(memberInviteMetadata) {
-      return memberInviteMetadata && !memberInviteMetadata.userState;
+    isNewUser(memberInviteMetadata, memberState) {
+      return (
+        memberInviteMetadata &&
+        !memberInviteMetadata.userState &&
+        memberState !== MEMBER_STATE_ACTIVE
+      );
     },
     /**
      * Returns whether the user is awaiting root approval
@@ -204,6 +210,10 @@ export default {
      * @returns {string}
      */
     inviteBadge(memberInviteMetadata, memberState) {
+      if (this.isNewUser(memberInviteMetadata, memberState)) {
+        return BADGE_LABELS_AWAITING_USER_SIGNUP;
+      }
+
       if (this.shouldAddPendingOwnerApprovalBadge(memberInviteMetadata, memberState)) {
         return BADGE_LABELS_PENDING_OWNER_APPROVAL;
       }

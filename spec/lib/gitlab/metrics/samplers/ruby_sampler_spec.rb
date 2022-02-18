@@ -18,6 +18,20 @@ RSpec.describe Gitlab::Metrics::Samplers::RubySampler do
         expect(sampler.metrics[:process_start_time_seconds].get).to eq(Time.now.to_i)
       end
     end
+
+    context 'when not setting a prefix' do
+      it 'does not prepend metrics with that prefix' do
+        expect(sampler.metrics[:process_start_time_seconds].name).to eq(:ruby_process_start_time_seconds)
+      end
+    end
+
+    context 'when using custom prefix' do
+      let(:sampler) { described_class.new(prefix: 'custom') }
+
+      it 'prepends metrics with that prefix' do
+        expect(sampler.metrics[:process_start_time_seconds].name).to eq(:custom_ruby_process_start_time_seconds)
+      end
+    end
   end
 
   describe '#sample' do

@@ -40,7 +40,7 @@ can create a new requirement.
 
 Prerequisite:
 
-- You must have at least the Reporter [role](../../permissions.md).
+- You must have at least the Reporter role.
 
 To create a requirement:
 
@@ -70,7 +70,7 @@ You can edit a requirement from the requirements list page.
 
 Prerequisite:
 
-- You must have at least the Reporter [role](../../permissions.md).
+- You must have at least the Reporter role.
 
 To edit a requirement:
 
@@ -86,7 +86,7 @@ you're in the **Open** tab.
 
 Prerequisite:
 
-- You must have at least the Reporter [role](../../permissions.md).
+- You must have at least the Reporter role.
 
 To archive a requirement, select **Archive** (**{archive}**).
 
@@ -98,7 +98,7 @@ You can view the list of archived requirements in the **Archived** tab.
 
 Prerequisite:
 
-- You must have at least the Reporter [role](../../permissions.md).
+- You must have at least the Reporter role.
 
 ![archived requirements list](img/requirements_archived_list_view_v13_1.png)
 
@@ -217,7 +217,7 @@ requirements_confirmation:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/246857) in GitLab 13.7.
 
-You must have at least the Reporter [role](../../permissions.md).
+You must have at least the Reporter role.
 
 You can import requirements to a project by uploading a [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values)
 with the columns `title` and `description`.
@@ -291,7 +291,7 @@ audit and regulatory compliance tasks.
 
 Prerequisite:
 
-- You must have at least the Reporter [role](../../permissions.md).
+- You must have at least the Reporter role.
 
 To export requirements:
 

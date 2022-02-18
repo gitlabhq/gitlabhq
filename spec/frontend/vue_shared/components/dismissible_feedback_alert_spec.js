@@ -1,5 +1,6 @@
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import Component from '~/vue_shared/components/dismissible_feedback_alert.vue';
 
@@ -64,7 +65,7 @@ describe('Dismissible Feedback Alert', () => {
       it('should not show the alert once dismissed', async () => {
         localStorage.setItem(STORAGE_DISMISSAL_KEY, 'true');
         createFullComponent();
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findAlert().exists()).toBe(false);
       });

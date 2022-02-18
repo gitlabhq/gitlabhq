@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'User activates Asana' do
-  include_context 'project service activation'
+  include_context 'project integration activation'
 
-  it 'activates service', :js do
+  it 'activates integration', :js do
     visit_project_integration('Asana')
     fill_in('API key', with: 'verySecret')
     fill_in('Restrict to branch', with: 'verySecret')

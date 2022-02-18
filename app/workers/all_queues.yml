@@ -273,6 +273,33 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:container_registry_migration_enqueuer
+  :worker_name: ContainerRegistry::Migration::EnqueuerWorker
+  :feature_category: :container_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:container_registry_migration_guard
+  :worker_name: ContainerRegistry::Migration::GuardWorker
+  :feature_category: :container_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:container_registry_migration_observer
+  :worker_name: ContainerRegistry::Migration::ObserverWorker
+  :feature_category: :container_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:database_batched_background_migration
   :worker_name: Database::BatchedBackgroundMigrationWorker
   :feature_category: :database
@@ -1100,8 +1127,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :needs_own_queue
+  :tags: []
 - :name: hashed_storage:hashed_storage_project_migrate
   :worker_name: HashedStorage::ProjectMigrateWorker
   :feature_category: :source_code_management
@@ -1110,8 +1136,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :needs_own_queue
+  :tags: []
 - :name: hashed_storage:hashed_storage_project_rollback
   :worker_name: HashedStorage::ProjectRollbackWorker
   :feature_category: :source_code_management
@@ -1120,8 +1145,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :needs_own_queue
+  :tags: []
 - :name: hashed_storage:hashed_storage_rollbacker
   :worker_name: HashedStorage::RollbackerWorker
   :feature_category: :source_code_management
@@ -1130,8 +1154,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :needs_own_queue
+  :tags: []
 - :name: incident_management:incident_management_add_severity_system_note
   :worker_name: IncidentManagement::AddSeveritySystemNoteWorker
   :feature_category: :incident_management
@@ -1960,6 +1983,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: background_migration_ci_database
+  :worker_name: BackgroundMigration::CiDatabaseWorker
+  :feature_category: :database
+  :has_external_dependencies:
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: bulk_import
   :worker_name: BulkImportWorker
   :feature_category: :importers
@@ -2303,6 +2335,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: groups_update_statistics
+  :worker_name: Groups::UpdateStatisticsWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: import_issues_csv
   :worker_name: ImportIssuesCsvWorker
   :feature_category: :team_planning
@@ -2564,6 +2605,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: namespaces_update_root_statistics
+  :worker_name: Namespaces::UpdateRootStatisticsWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: new_issue
   :worker_name: NewIssueWorker
   :feature_category: :team_planning
@@ -2635,15 +2685,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
-- :name: pages_update_configuration
-  :worker_name: PagesUpdateConfigurationWorker
-  :feature_category: :pages
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: phabricator_import_import_tasks
   :worker_name: Gitlab::PhabricatorImport::ImportTasksWorker

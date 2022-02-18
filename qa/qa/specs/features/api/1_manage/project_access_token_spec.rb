@@ -78,11 +78,6 @@ module QA
           @different_project.remove_via_api!
         end
       end
-
-      after(:all) do
-        @project_access_token.remove_via_api!
-        @project_access_token.project.remove_via_api!
-      end
     end
   end
 end

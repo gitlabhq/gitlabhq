@@ -23,3 +23,7 @@ running on.
 
 [strace-parser](https://gitlab.com/wchandler/strace-parser) is a small tool to analyze
 and summarize raw `strace` data.
+
+## kubesos
+
+The [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) utiltity retrieves GitLab cluster configuration and logs from GitLab Cloud Native chart deployments.

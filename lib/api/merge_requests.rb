@@ -117,6 +117,9 @@ module API
 
         forbidden!('Cannot push to source branch') unless
           user_access.can_push_to_branch?(merge_request.source_branch)
+
+        forbidden!('Source branch is protected from force push') unless
+          merge_request.permits_force_push?
       end
 
       params :merge_requests_params do
@@ -204,11 +207,7 @@ module API
         options = serializer_options_for(merge_requests).merge(project: user_project)
         options[:project] = user_project
 
-        if Feature.enabled?(:api_caching_merge_requests, user_project, type: :development, default_enabled: :yaml)
-          present_cached merge_requests, expires_in: 2.days, **options
-        else
-          present merge_requests, options
-        end
+        present_cached merge_requests, expires_in: 2.days, **options
       end
 
       desc 'Create a merge request' do

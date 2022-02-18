@@ -68,6 +68,7 @@ const STATE_MACHINE = {
   states: {
     IDLE: 'IDLE',
     MERGING: 'MERGING',
+    MERGED: 'MERGED',
     AUTO_MERGE: 'AUTO_MERGE',
   },
   transitions: {
@@ -75,6 +76,7 @@ const STATE_MACHINE = {
     AUTO_MERGE: 'start-auto-merge',
     MERGE_FAILURE: 'merge-failed',
     MERGED: 'merge-done',
+    MERGING: 'merging',
   },
 };
 const { states, transitions } = STATE_MACHINE;
@@ -86,11 +88,12 @@ STATE_MACHINE.definition = {
       on: {
         [transitions.MERGE]: states.MERGING,
         [transitions.AUTO_MERGE]: states.AUTO_MERGE,
+        [transitions.MERGING]: states.MERGING,
       },
     },
     [states.MERGING]: {
       on: {
-        [transitions.MERGED]: states.IDLE,
+        [transitions.MERGED]: states.MERGED,
         [transitions.MERGE_FAILURE]: states.IDLE,
       },
     },
@@ -110,6 +113,7 @@ export const stateToTransitionMap = {
 };
 export const stateToComponentMap = {
   [states.MERGING]: classStateMap[stateKey.merging],
+  [states.MERGED]: classStateMap[stateKey.merged],
   [states.AUTO_MERGE]: classStateMap[stateKey.autoMergeEnabled],
 };
 

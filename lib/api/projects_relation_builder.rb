@@ -13,6 +13,7 @@ module API
         preload_repository_cache(projects_relation)
 
         Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_relation, options[:current_user]).execute if options[:current_user]
+        Preloaders::SingleHierarchyProjectGroupPlansPreloader.new(projects_relation).execute if options[:single_hierarchy]
 
         projects_relation
       end

@@ -11,8 +11,10 @@ import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../../constants';
 export default {
   name: 'RunnerRegistrationTokenReset',
   i18n: {
-    modalTitle: __('Reset registration token'),
+    modalAction: s__('Runners|Reset token'),
+    modalCancel: __('Cancel'),
     modalCopy: __('Are you sure you want to reset the registration token?'),
+    modalTitle: __('Reset registration token'),
   },
   components: {
     GlDropdownItem,
@@ -30,7 +32,7 @@ export default {
       default: null,
     },
   },
-  modalID: 'token-reset-modal',
+  modalId: 'token-reset-modal',
   props: {
     type: {
       type: String,
@@ -111,10 +113,19 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown-item v-gl-modal="$options.modalID">
+  <gl-dropdown-item v-gl-modal="$options.modalId">
     {{ __('Reset registration token') }}
     <gl-modal
-      :modal-id="$options.modalID"
+      size="sm"
+      :modal-id="$options.modalId"
+      :action-primary="{
+        text: $options.i18n.modalAction,
+        attributes: [{ variant: 'danger' }],
+      }"
+      :action-secondary="{
+        text: $options.i18n.modalCancel,
+        attributes: [{ variant: 'default' }],
+      }"
       :title="$options.i18n.modalTitle"
       @primary="handleModalPrimary"
     >

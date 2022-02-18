@@ -12,7 +12,7 @@ RSpec.describe 'ConfigureSastIac' do
   let(:mutation_response) { graphql_mutation_response(:configureSastIac) }
 
   context 'when authorized' do
-    let_it_be(:user) { project.owner }
+    let_it_be(:user) { project.first_owner }
 
     it 'creates a branch with sast iac configured' do
       post_graphql_mutation(mutation, current_user: user)

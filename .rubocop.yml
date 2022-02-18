@@ -97,14 +97,8 @@ RSpec/FilePath:
 
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:
-  Max: 28
+  Max: 25
   AllowSubject: true
-  Exclude:
-    - 'spec/migrations/**/*.rb'
-    - 'spec/lib/gitlab/background_migration/populate_project_snippet_statistics_spec.rb'
-    - 'spec/lib/gitlab/background_migration/populate_finding_uuid_for_vulnerability_feedback_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings_spec.rb'
-    - 'ee/spec/lib/gitlab/background_migration/user_mentions/create_resource_user_mention_spec.rb'
 
 Naming/FileName:
   ExpectMatchingDefinition: true
@@ -174,6 +168,7 @@ Naming/FileName:
     - GitLab
     - JavaScript
     - VSCode
+    - JetBrains
     # default ones:
     - CLI
     - DSL
@@ -293,6 +288,12 @@ Gitlab/AvoidUploadedFileFromParams:
   Enabled: true
   Exclude:
     - 'lib/gitlab/middleware/multipart.rb'
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
+Gitlab/EventStoreSubscriber:
+  Enabled: true
+  Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
@@ -517,24 +518,6 @@ Graphql/Descriptions:
 RSpec/ImplicitSubject:
   Enabled: false
 
-# WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/211580
-RSpec/LeakyConstantDeclaration:
-  Enabled: true
-  Exclude:
-    - 'spec/db/schema_spec.rb'
-    - 'spec/lib/feature_spec.rb'
-    - 'spec/lib/gitlab/config/entry/simplifiable_spec.rb'
-    - 'spec/lib/gitlab/quick_actions/dsl_spec.rb'
-    - 'spec/lib/marginalia_spec.rb'
-    - 'spec/mailers/notify_spec.rb'
-    - 'spec/models/concerns/batch_destroy_dependent_associations_spec.rb'
-    - 'spec/models/concerns/bulk_insert_safe_spec.rb'
-    - 'spec/models/concerns/bulk_insertable_associations_spec.rb'
-    - 'spec/models/concerns/triggerable_hooks_spec.rb'
-    - 'spec/models/repository_spec.rb'
-    - 'spec/services/clusters/applications/check_installation_progress_service_spec.rb'
-    - 'spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb'
-
 RSpec/EmptyLineAfterHook:
   Enabled: false
 
@@ -689,6 +672,7 @@ Gitlab/NamespacedClass:
     - 'ee/elastic/**/*.rb'
     - 'scripts/**/*'
     - 'spec/migrations/**/*.rb'
+    - 'app/experiments/**/*_experiment.rb'
 
 Lint/HashCompareByIdentity:
   Enabled: true

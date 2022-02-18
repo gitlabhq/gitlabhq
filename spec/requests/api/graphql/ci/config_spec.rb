@@ -225,7 +225,7 @@ RSpec.describe 'Query.ciConfig' do
   context 'when using deprecated keywords' do
     let_it_be(:content) do
       YAML.dump(
-        rspec: { script: 'ls' },
+        rspec: { script: 'ls', type: 'test' },
         types: ['test']
       )
     end
@@ -233,7 +233,10 @@ RSpec.describe 'Query.ciConfig' do
     it 'returns a warning' do
       post_graphql_query
 
-      expect(graphql_data['ciConfig']['warnings']).to include('root `types` is deprecated in 9.0 and will be removed in 15.0.')
+      expect(graphql_data['ciConfig']['warnings']).to include(
+        'root `types` is deprecated in 9.0 and will be removed in 15.0.',
+        'jobs:rspec `type` is deprecated in 9.0 and will be removed in 15.0.'
+      )
     end
   end
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'support/helpers/file_read_helpers'
-require 'support/webmock'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Webpack::FileLoader do
   include FileReadHelpers

@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import { GlEmptyState } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -8,7 +8,7 @@ import { stripTypenames } from 'helpers/graphql_helpers';
 
 import component from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
 import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
-import TagsLoader from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_loader.vue';
+import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import getContainerRepositoryTagsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';
@@ -21,8 +21,6 @@ import {
 } from '~/packages_and_registries/container_registry/explorer/constants/index';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import { tagsMock, imageTagsMock, tagsPageInfo } from '../../mock_data';
-
-const localVue = createLocalVue();
 
 describe('Tags List', () => {
   let wrapper;
@@ -50,13 +48,12 @@ describe('Tags List', () => {
   };
 
   const mountComponent = ({ propsData = { isMobile: false, id: 1 } } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [[getContainerRepositoryTagsQuery, resolver]];
 
     apolloProvider = createMockApollo(requestHandlers);
     wrapper = shallowMount(component, {
-      localVue,
       apolloProvider,
       propsData,
       stubs: { RegistryList },
@@ -108,6 +105,7 @@ describe('Tags List', () => {
     describe('events', () => {
       it('prev-page fetch the previous page', async () => {
         findRegistryList().vm.$emit('prev-page');
+        await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith({
           first: null,
@@ -119,8 +117,9 @@ describe('Tags List', () => {
         });
       });
 
-      it('next-page fetch the previous page', () => {
+      it('next-page fetch the previous page', async () => {
         findRegistryList().vm.$emit('next-page');
+        await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith({
           after: tagsPageInfo.endCursor,

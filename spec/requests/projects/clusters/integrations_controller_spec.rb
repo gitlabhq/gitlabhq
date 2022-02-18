@@ -28,7 +28,7 @@ RSpec.describe Projects::Clusters::IntegrationsController do
   describe 'POST create_or_update' do
     let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
     let(:project) { cluster.project }
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
 
     it_behaves_like '#create_or_update action' do
       let(:path) { create_or_update_project_cluster_integration_path(project, cluster) }

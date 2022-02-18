@@ -20,6 +20,28 @@ RSpec.describe DraftNote do
     it { is_expected.to delegate_method(:file_identifier_hash).to(:diff_file).allow_nil }
   end
 
+  describe '#line_code' do
+    describe 'stored line_code' do
+      let(:draft_note) { build(:draft_note, merge_request: merge_request, line_code: '1234567890') }
+
+      it 'returns stored line_code' do
+        expect(draft_note.line_code).to eq('1234567890')
+      end
+    end
+
+    describe 'none stored line_code' do
+      let(:draft_note) { build(:draft_note, merge_request: merge_request) }
+
+      before do
+        allow(draft_note).to receive(:find_line_code).and_return('none stored line_code')
+      end
+
+      it 'returns found line_code' do
+        expect(draft_note.line_code).to eq('none stored line_code')
+      end
+    end
+  end
+
   describe '#diff_file' do
     let(:draft_note) { build(:draft_note, merge_request: merge_request) }
 

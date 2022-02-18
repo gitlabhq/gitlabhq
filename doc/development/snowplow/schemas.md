@@ -12,19 +12,23 @@ This page provides Snowplow schema reference for GitLab events.
 
 We are including the [`gitlab_standard` schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_standard/jsonschema/) with every event. See [Standardize Snowplow Schema](https://gitlab.com/groups/gitlab-org/-/epics/5218) for details.
 
-The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/standard_context.rb) class represents this schema in the application.
+The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/standard_context.rb)
+class represents this schema in the application. Some properties are automatically populated for [frontend](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/layouts/_snowplow.html.haml)
+events.
 
-| Field Name     | Required            | Type                  | Description                                                                                 |
-|----------------|---------------------|-----------------------|---------------------------------------------------------------------------------------------|
-| `project_id`   | **{dotted-circle}** | integer               |                                                                 |
-| `namespace_id` | **{dotted-circle}** | integer               |                                                               |
-| `user_id`      | **{dotted-circle}** | integer               | User database record ID attribute. This file undergoes a pseudonymization process at the collector level. |
-| `context_generated_at` | **{dotted-circle}** | string (date time format) | Timestamp indicating when context was generated.                                                                |
-| `environment`  | **{check-circle}**  | string (max 32 chars) | Name of the source environment, such as `production` or `staging`             |
-| `source`       | **{check-circle}**  | string (max 32 chars) | Name of the source application, such as  `gitlab-rails` or `gitlab-javascript` |
-| `plan`         | **{dotted-circle}**  | string (max 32 chars) | Name of the plan for the namespace, such as `free`, `premium`, or `ultimate`. Automatically picked from the `namespace`. |
-| `google_analytics_id` | **{dotted-circle}**  | string (max 32 chars) | Google Analytics ID, present when set from our marketing sites. |
-| `extra`        | **{dotted-circle}**  | JSON                  | Any additional data associated with the event, in the form of key-value pairs |
+| Field Name     | Required            | Default value | Type                  | Description                                                                                 |
+|----------------|:-------------------:|-----------------------|--|---------------------------------------------------------------------------------------------|
+| `project_id`   | **{dotted-circle}** | Current project ID * | integer               |                                                                 |
+| `namespace_id` | **{dotted-circle}** | Current group/namespace ID * | integer               |                                                               |
+| `user_id`      | **{dotted-circle}** | Current user ID * | integer               | User database record ID attribute. This file undergoes a pseudonymization process at the collector level. |
+| `context_generated_at` | **{dotted-circle}** | Current timestamp | string (date time format) | Timestamp indicating when context was generated.                                                                |
+| `environment`  | **{check-circle}**  | Current environment | string (max 32 chars) | Name of the source environment, such as `production` or `staging`             |
+| `source`       | **{check-circle}**  | Event source | string (max 32 chars) | Name of the source application, such as  `gitlab-rails` or `gitlab-javascript` |
+| `plan`         | **{dotted-circle}**  | Current namespace plan * | string (max 32 chars) | Name of the plan for the namespace, such as `free`, `premium`, or `ultimate`. Automatically picked from the `namespace`. |
+| `google_analytics_id` | **{dotted-circle}**  | GA ID value * | string (max 32 chars) | Google Analytics ID, present when set from our marketing sites. |
+| `extra`        | **{dotted-circle}**  |  | JSON                  | Any additional data associated with the event, in the form of key-value pairs |
+
+_\* Default value present for frontend events only_
 
 ## Default Schema
 

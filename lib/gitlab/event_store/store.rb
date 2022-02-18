@@ -29,7 +29,7 @@ module Gitlab
           raise InvalidEvent, "Event being published is not an instance of Gitlab::EventStore::Event: got #{event.inspect}"
         end
 
-        subscriptions[event.class].each do |subscription|
+        subscriptions.fetch(event.class, []).each do |subscription|
           subscription.consume_event(event)
         end
       end

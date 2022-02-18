@@ -5,9 +5,8 @@ module MergeRequests
     include Gitlab::Utils::StrongMemoize
 
     def execute(merge_request)
-      prepare_for_mergeability(merge_request) if early_prepare_for_mergeability?(merge_request)
+      prepare_for_mergeability(merge_request)
       prepare_merge_request(merge_request)
-      mark_as_unchecked(merge_request) unless early_prepare_for_mergeability?(merge_request)
     end
 
     private
@@ -15,7 +14,7 @@ module MergeRequests
     def prepare_for_mergeability(merge_request)
       create_pipeline_for(merge_request, current_user)
       merge_request.update_head_pipeline
-      mark_as_unchecked(merge_request)
+      check_mergeability(merge_request)
     end
 
     def prepare_merge_request(merge_request)
@@ -25,11 +24,6 @@ module MergeRequests
       merge_request_activity_counter.track_mr_including_ci_config(user: current_user, merge_request: merge_request)
 
       notification_service.new_merge_request(merge_request, current_user)
-
-      unless early_prepare_for_mergeability?(merge_request)
-        create_pipeline_for(merge_request, current_user)
-        merge_request.update_head_pipeline
-      end
 
       merge_request.diffs(include_stats: false).write_cache
       merge_request.create_cross_references!(current_user)
@@ -49,14 +43,13 @@ module MergeRequests
       LinkLfsObjectsService.new(project: merge_request.target_project).execute(merge_request)
     end
 
-    def early_prepare_for_mergeability?(merge_request)
-      strong_memoize("early_prepare_for_mergeability_#{merge_request.target_project_id}".to_sym) do
-        Feature.enabled?(:early_prepare_for_mergeability, merge_request.target_project)
-      end
-    end
+    def check_mergeability(merge_request)
+      return unless merge_request.preparing?
 
-    def mark_as_unchecked(merge_request)
-      merge_request.mark_as_unchecked if merge_request.preparing?
+      # Need to set to unchecked to be able to check for mergeability or else
+      # it'll be a no-op.
+      merge_request.mark_as_unchecked
+      merge_request.check_mergeability(async: true)
     end
   end
 end

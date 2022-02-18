@@ -28,7 +28,7 @@ RSpec.describe Namespaces::ProjectNamespacePolicy do
   end
 
   context 'parent owner' do
-    let_it_be(:current_user) { parent.owner }
+    let_it_be(:current_user) { parent.first_owner }
 
     it { is_expected.to be_disallowed(*permissions) }
   end

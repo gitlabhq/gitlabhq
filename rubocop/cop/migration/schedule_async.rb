@@ -16,14 +16,23 @@ module RuboCop
         MSG
 
         def_node_matcher :calls_background_migration_worker?, <<~PATTERN
-          (send (const nil? :BackgroundMigrationWorker) {:perform_async :perform_in :bulk_perform_async :bulk_perform_in} ... )
+          (send (const {cbase nil?} :BackgroundMigrationWorker) #perform_method? ...)
+        PATTERN
+
+        def_node_matcher :calls_ci_database_worker?, <<~PATTERN
+          (send (const {(const {cbase nil?} :BackgroundMigration) nil?} :CiDatabaseWorker) #perform_method? ...)
+        PATTERN
+
+        def_node_matcher :perform_method?, <<~PATTERN
+          {:perform_async :bulk_perform_async :perform_in :bulk_perform_in}
         PATTERN
 
         def on_send(node)
           return unless in_migration?(node)
           return if version(node) < ENFORCED_SINCE
+          return unless calls_background_migration_worker?(node) || calls_ci_database_worker?(node)
 
-          add_offense(node, location: :expression) if calls_background_migration_worker?(node)
+          add_offense(node, location: :expression)
         end
       end
     end

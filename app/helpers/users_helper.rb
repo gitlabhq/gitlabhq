@@ -101,6 +101,7 @@ module UsersHelper
       badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin?
       badges << { text: s_('AdminUsers|External'), variant: 'secondary' } if user.external?
       badges << { text: s_("AdminUsers|It's you!"), variant: 'muted' } if current_user == user
+      badges << { text: s_("AdminUsers|Locked"), variant: 'warning' } if user.access_locked?
     end
   end
 
@@ -124,7 +125,7 @@ module UsersHelper
   end
 
   def ban_feature_available?
-    Feature.enabled?(:ban_user_feature_flag)
+    Feature.enabled?(:ban_user_feature_flag, default_enabled: :yaml)
   end
 
   def confirm_user_data(user)
@@ -169,6 +170,10 @@ module UsersHelper
       user: Admin::UserEntity.represent(user, { current_user: current_user }).to_json,
       paths: admin_users_paths.to_json
     }
+  end
+
+  def display_public_email?(user)
+    user.public_email.present?
   end
 
   private

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { editor as monacoEditor, Range } from 'monaco-editor';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import '~/behaviors/markdown/render_gfm';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -367,17 +367,17 @@ describe('RepoEditor', () => {
       expect(vm.$store.state.panelResizing).toBe(false); // default value
 
       vm.$store.state.panelResizing = true;
-      await vm.$nextTick();
+      await nextTick();
 
       expect(updateDimensionsSpy).not.toHaveBeenCalled();
 
       vm.$store.state.panelResizing = false;
-      await vm.$nextTick();
+      await nextTick();
 
       expect(updateDimensionsSpy).toHaveBeenCalledTimes(1);
 
       vm.$store.state.panelResizing = true;
-      await vm.$nextTick();
+      await nextTick();
 
       expect(updateDimensionsSpy).toHaveBeenCalledTimes(1);
     });
@@ -387,12 +387,12 @@ describe('RepoEditor', () => {
       expect(vm.$store.state.rightPane.isOpen).toBe(false); // default value
 
       vm.$store.state.rightPane.isOpen = true;
-      await vm.$nextTick();
+      await nextTick();
 
       expect(updateDimensionsSpy).toHaveBeenCalledTimes(1);
 
       vm.$store.state.rightPane.isOpen = false;
-      await vm.$nextTick();
+      await nextTick();
 
       expect(updateDimensionsSpy).toHaveBeenCalledTimes(2);
     });
@@ -411,7 +411,7 @@ describe('RepoEditor', () => {
     `('tabs in $mode are $isVisible', async ({ mode, isVisible } = {}) => {
       vm.$store.state.currentActivityView = leftSidebarViews[mode].name;
 
-      await vm.$nextTick();
+      await nextTick();
       expect(wrapper.find('.nav-links').exists()).toBe(isVisible);
     });
   });
@@ -436,7 +436,7 @@ describe('RepoEditor', () => {
       });
 
       changeViewMode(FILE_VIEW_MODE_PREVIEW);
-      await vm.$nextTick();
+      await nextTick();
     });
 
     it('do not show the editor', () => {
@@ -448,7 +448,7 @@ describe('RepoEditor', () => {
       expect(updateDimensionsSpy).not.toHaveBeenCalled();
 
       changeViewMode(FILE_VIEW_MODE_EDITOR);
-      await vm.$nextTick();
+      await nextTick();
 
       expect(updateDimensionsSpy).toHaveBeenCalled();
     });
@@ -460,7 +460,7 @@ describe('RepoEditor', () => {
       jest.spyOn(vm, 'shouldHideEditor', 'get').mockReturnValue(true);
 
       vm.initEditor();
-      await vm.$nextTick();
+      await nextTick();
     };
 
     it('does not fetch file information for temp entries', async () => {
@@ -511,20 +511,20 @@ describe('RepoEditor', () => {
 
       const origFile = vm.file;
       vm.file.pending = true;
-      await vm.$nextTick();
+      await nextTick();
 
       wrapper.setProps({
         file: file('testing'),
       });
       vm.file.content = 'foo'; // need to prevent full cycle of initEditor
-      await vm.$nextTick();
+      await nextTick();
 
       expect(vm.removePendingTab).toHaveBeenCalledWith(origFile);
     });
 
     it('does not call initEditor if the file did not change', async () => {
       Vue.set(vm, 'file', vm.file);
-      await vm.$nextTick();
+      await nextTick();
 
       expect(vm.initEditor).not.toHaveBeenCalled();
     });
@@ -538,7 +538,7 @@ describe('RepoEditor', () => {
           key: 'new',
         },
       });
-      await vm.$nextTick();
+      await nextTick();
 
       expect(vm.initEditor).toHaveBeenCalled();
     });

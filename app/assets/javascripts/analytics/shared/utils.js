@@ -1,4 +1,6 @@
 import dateFormat from 'dateformat';
+import { hideFlash } from '~/flash';
+import { slugify } from '~/lib/utils/text_utility';
 import { urlQueryToFilter } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import { dateFormats } from './constants';
 
@@ -69,3 +71,28 @@ export const getDataZoomOption = ({
     };
   });
 };
+
+export const removeFlash = (type = 'alert') => {
+  const flashEl = document.querySelector(`.flash-${type}`);
+  if (flashEl) {
+    hideFlash(flashEl);
+  }
+};
+
+/**
+ * Prepares metric data to be rendered in the metric_card component
+ *
+ * @param {MetricData[]} data - The metric data to be rendered
+ * @param {Object} popoverContent - Key value pair of data to display in the popover
+ * @returns {TransformedMetricData[]} An array of metrics ready to render in the metric_card
+ */
+export const prepareTimeMetricsData = (data = [], popoverContent = {}) =>
+  data.map(({ title: label, identifier, ...rest }) => {
+    const metricIdentifier = identifier || slugify(label);
+    return {
+      ...rest,
+      label,
+      identifier: metricIdentifier,
+      description: popoverContent[metricIdentifier]?.description || '',
+    };
+  });

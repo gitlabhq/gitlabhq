@@ -18,15 +18,17 @@ module Gitlab
         end
       end
 
+      LOG_MAX_DURATION_THRESHOLD = 2.seconds
+
       def initialize(project:, current_user:, sha: nil)
         @project = project
         @current_user = current_user
         @sha = sha || project&.repository&.commit&.sha
       end
 
-      def validate(content, dry_run: false)
+      def validate(content, dry_run: false, ref: @project&.default_branch)
         if dry_run
-          simulate_pipeline_creation(content)
+          simulate_pipeline_creation(content, ref)
         else
           static_validation(content)
         end
@@ -34,9 +36,9 @@ module Gitlab
 
       private
 
-      def simulate_pipeline_creation(content)
+      def simulate_pipeline_creation(content, ref)
         pipeline = ::Ci::CreatePipelineService
-          .new(@project, @current_user, ref: @project.default_branch)
+          .new(@project, @current_user, ref: ref)
           .execute(:push, dry_run: true, content: content)
           .payload
 
@@ -49,12 +51,9 @@ module Gitlab
       end
 
       def static_validation(content)
-        result = Gitlab::Ci::YamlProcessor.new(
-          content,
-          project: @project,
-          user: @current_user,
-          sha: @sha
-        ).execute
+        logger = build_logger
+
+        result = yaml_processor_result(content, logger)
 
         Result.new(
           jobs: static_validation_convert_to_jobs(result),
@@ -62,6 +61,17 @@ module Gitlab
           errors: result.errors,
           warnings: result.warnings.take(::Gitlab::Ci::Warnings::MAX_LIMIT) # rubocop: disable CodeReuse/ActiveRecord
         )
+      ensure
+        logger.commit(pipeline: ::Ci::Pipeline.new, caller: self.class.name)
+      end
+
+      def yaml_processor_result(content, logger)
+        logger.instrument(:yaml_process) do
+          Gitlab::Ci::YamlProcessor.new(content, project: @project,
+                                                 user: @current_user,
+                                                 sha: @sha,
+                                                 logger: logger).execute
+        end
       end
 
       def dry_run_convert_to_jobs(stages)
@@ -108,6 +118,17 @@ module Gitlab
         end
 
         jobs
+      end
+
+      def build_logger
+        Gitlab::Ci::Pipeline::Logger.new(project: @project) do |l|
+          l.log_when do |observations|
+            values = observations['yaml_process_duration_s']
+            next false if values.empty?
+
+            values.max >= LOG_MAX_DURATION_THRESHOLD
+          end
+        end
       end
     end
   end

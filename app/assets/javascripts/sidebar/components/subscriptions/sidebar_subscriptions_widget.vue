@@ -61,6 +61,9 @@ export default {
         return data.workspace?.issuable?.subscribed || false;
       },
       result({ data }) {
+        if (!data) {
+          return;
+        }
         this.emailsDisabled = this.parentIsGroup
           ? data.workspace?.emailsDisabled
           : data.workspace?.issuable?.emailsDisabled;

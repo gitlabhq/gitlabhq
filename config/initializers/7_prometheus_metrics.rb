@@ -95,13 +95,6 @@ if Gitlab::Runtime.web_server?
     Gitlab::Metrics::Exporter::WebExporter.instance.start
   end
 
-  # DEPRECATED: TO BE REMOVED
-  # This is needed to implement blackout period of `web_exporter`
-  # https://gitlab.com/gitlab-org/gitlab/issues/35343#note_238479057
-  Gitlab::Cluster::LifecycleEvents.on_before_blackout_period do
-    Gitlab::Metrics::Exporter::WebExporter.instance.mark_as_not_running!
-  end
-
   Gitlab::Cluster::LifecycleEvents.on_before_graceful_shutdown do
     # We need to ensure that before we re-exec or shutdown server
     # we do stop the exporter

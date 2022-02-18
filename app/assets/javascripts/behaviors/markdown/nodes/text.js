@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
-import { defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { Node } from 'tiptap';
+import { defaultMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 
 export default class Text extends Node {
   get name() {

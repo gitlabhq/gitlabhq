@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'it runs background migration jobs' do |tracking_database, metric_name|
+RSpec.shared_examples 'it runs background migration jobs' do |tracking_database|
   describe 'defining the job attributes' do
     it 'defines the data_consistency as always' do
       expect(described_class.get_data_consistency).to eq(:always)
@@ -30,16 +30,6 @@ RSpec.shared_examples 'it runs background migration jobs' do |tracking_database,
 
     it 'overrides the method to return the tracking database' do
       expect(described_class.tracking_database).to eq(tracking_database)
-    end
-  end
-
-  describe '.unhealthy_metric_name' do
-    it 'does not raise an error' do
-      expect { described_class.unhealthy_metric_name }.not_to raise_error
-    end
-
-    it 'overrides the method to return the unhealthy metric name' do
-      expect(described_class.unhealthy_metric_name).to eq(metric_name)
     end
   end
 
@@ -189,11 +179,11 @@ RSpec.shared_examples 'it runs background migration jobs' do |tracking_database,
       end
 
       it 'increments the unhealthy counter' do
-        counter = Gitlab::Metrics.counter(metric_name, 'msg')
+        counter = Gitlab::Metrics.counter(:background_migration_database_health_reschedules, 'msg')
 
         expect(described_class).to receive(:perform_in)
 
-        expect { worker.perform('Foo', [10, 20]) }.to change { counter.get }.by(1)
+        expect { worker.perform('Foo', [10, 20]) }.to change { counter.get(db_config_name: tracking_database) }.by(1)
       end
 
       context 'when lease_attempts is 0' do

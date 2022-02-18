@@ -1,4 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -6,8 +7,7 @@ import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';
 import { groups, initialState, metricsData, metricsWithData } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('MetricEmbed', () => {
   let wrapper;
@@ -17,7 +17,6 @@ describe('MetricEmbed', () => {
 
   function mountComponent() {
     wrapper = shallowMount(MetricEmbed, {
-      localVue,
       store,
       propsData: {
         dashboardUrl: TEST_HOST,

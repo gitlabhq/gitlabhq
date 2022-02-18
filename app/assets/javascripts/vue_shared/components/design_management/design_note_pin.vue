@@ -28,12 +28,37 @@ export default {
       required: false,
       default: false,
     },
+    isOnImage: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isDraft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    size: {
+      type: String,
+      required: false,
+      default: 'md',
+      validator: (value) => ['sm', 'md'].includes(value),
+    },
+    ariaLabel: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     isNewNote() {
       return this.label === null;
     },
     pinLabel() {
+      if (this.ariaLabel) {
+        return this.ariaLabel;
+      }
+
       return this.isNewNote
         ? __('Comment form position')
         : sprintf(__("Comment '%{label}' position"), { label: this.label });
@@ -51,7 +76,10 @@ export default {
       'js-image-badge design-note-pin': !isNewNote,
       resolved: isResolved,
       inactive: isInactive,
+      draft: isDraft,
+      'on-image': isOnImage,
       'gl-absolute': position,
+      small: size === 'sm',
     }"
     class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm"
     type="button"

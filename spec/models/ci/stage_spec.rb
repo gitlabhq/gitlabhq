@@ -362,4 +362,11 @@ RSpec.describe Ci::Stage, :models do
   end
 
   it_behaves_like 'manual playable stage', :ci_stage_entity
+
+  context 'loose foreign key on ci_stages.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_stage_entity, project: parent) }
+    end
+  end
 end

@@ -77,15 +77,43 @@ RSpec.describe ProjectTeam do
     end
   end
 
+  describe 'owner methods' do
+    context 'personal project' do
+      let(:project) { create(:project) }
+      let(:owner) { project.first_owner }
+
+      specify { expect(project.team.owners).to contain_exactly(owner) }
+      specify { expect(project.team.owner?(owner)).to be_truthy }
+    end
+
+    context 'group project' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
+
+      before do
+        group.add_owner(user1)
+        group.add_owner(user2)
+      end
+
+      specify { expect(project.team.owners).to contain_exactly(user1, user2) }
+      specify { expect(project.team.owner?(user1)).to be_truthy }
+      specify { expect(project.team.owner?(user2)).to be_truthy }
+    end
+  end
+
   describe '#fetch_members' do
     context 'personal project' do
       let(:project) { create(:project) }
 
       it 'returns project members' do
+        # TODO this can be updated when we have multiple project owners
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/350605
         user = create(:user)
         project.add_guest(user)
 
-        expect(project.team.members).to contain_exactly(user, project.owner)
+        expect(project.team.members).to contain_exactly(user, project.first_owner)
       end
 
       it 'returns project members of a specified level' do
@@ -103,7 +131,7 @@ RSpec.describe ProjectTeam do
                                     group_access: Gitlab::Access::GUEST)
 
         expect(project.team.members)
-          .to contain_exactly(group_member.user, project.owner)
+          .to contain_exactly(group_member.user, project.first_owner)
       end
 
       it 'returns invited members of a group of a specified level' do

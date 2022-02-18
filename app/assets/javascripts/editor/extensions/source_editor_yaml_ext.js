@@ -20,33 +20,6 @@ export class YamlEditorExtension {
   }
 
   /**
-   * Extends the source editor with capabilities for yaml files.
-   *
-   * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
-   * @param {YamlEditorExtensionOptions} setupOptions
-   */
-  onSetup(instance, setupOptions = {}) {
-    const { enableComments = false, highlightPath = null, model = null } = setupOptions;
-    this.enableComments = enableComments;
-    this.highlightPath = highlightPath;
-    this.model = model;
-
-    if (model) {
-      this.initFromModel(instance, model);
-    }
-
-    instance.onDidChangeModelContent(() => instance.onUpdate());
-  }
-
-  initFromModel(instance, model) {
-    const doc = new Document(model);
-    if (this.enableComments) {
-      YamlEditorExtension.transformComments(doc);
-    }
-    instance.setValue(doc.toString());
-  }
-
-  /**
    * @private
    * This wraps long comments to a maximum line length of 80 chars.
    *
@@ -164,10 +137,10 @@ export class YamlEditorExtension {
     if (!path) throw Error(`No path provided.`);
     const blob = instance.getValue();
     const doc = parseDocument(blob);
-    const pathArray = toPath(path);
+    const pathArray = Array.isArray(path) ? path : toPath(path);
 
     if (!doc.getIn(pathArray)) {
-      throw Error(`The node ${path} could not be found inside the document.`);
+      return [null, null];
     }
 
     const parentNode = doc.getIn(pathArray.slice(0, pathArray.length - 1));
@@ -190,6 +163,33 @@ export class YamlEditorExtension {
     return [startLine, endLine];
   }
 
+  /**
+   * Extends the source editor with capabilities for yaml files.
+   *
+   * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
+   * @param {YamlEditorExtensionOptions} setupOptions
+   */
+  onSetup(instance, setupOptions = {}) {
+    const { enableComments = false, highlightPath = null, model = null } = setupOptions;
+    this.enableComments = enableComments;
+    this.highlightPath = highlightPath;
+    this.model = model;
+
+    if (model) {
+      this.initFromModel(instance, model);
+    }
+
+    instance.onDidChangeModelContent(() => instance.onUpdate());
+  }
+
+  initFromModel(instance, model) {
+    const doc = new Document(model);
+    if (this.enableComments) {
+      YamlEditorExtension.transformComments(doc);
+    }
+    instance.setValue(doc.toString());
+  }
+
   setDoc(instance, doc) {
     if (this.enableComments) {
       YamlEditorExtension.transformComments(doc);
@@ -202,18 +202,31 @@ export class YamlEditorExtension {
     }
   }
 
-  highlight(instance, path) {
+  highlight(instance, path, keepOnNotFound = false) {
     // IMPORTANT
     // removeHighlight and highlightLines both come from
     // SourceEditorExtension. So it has to be installed prior to this extension
     if (this.highlightPath === path) return;
-    if (!path) {
+
+    if (!path || !path.length) {
       instance.removeHighlights();
-    } else {
-      const res = YamlEditorExtension.locate(instance, path);
-      instance.highlightLines(res);
+      this.highlightPath = null;
+      return;
     }
-    this.highlightPath = path || null;
+
+    const [startLine, endLine] = YamlEditorExtension.locate(instance, path);
+
+    if (startLine === null) {
+      // Path could not be found.
+      if (!keepOnNotFound) {
+        instance.removeHighlights();
+        this.highlightPath = null;
+      }
+      return;
+    }
+
+    instance.highlightLines([startLine, endLine]);
+    this.highlightPath = path;
   }
 
   provides() {
@@ -283,18 +296,23 @@ export class YamlEditorExtension {
        * Add a line highlight style to the node specified by the path.
        *
        * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
-       * @param {string|null|false} path A path to a node of the Editor's value,
+       * @param {string|(string|number)[]|null|false} path A path to a node
+       * of the Editor's
+       * value,
        * e.g. `"foo.bar[0]"`. If the value is falsy, this will remove all
        * highlights.
+       * @param {boolean} [keepOnNotFound=false] If the passed path cannot
+       * be located, keep the previous highlight state
        */
-      highlight: (instance, path) => this.highlight(instance, path),
+      highlight: (instance, path, keepOnNotFound) => this.highlight(instance, path, keepOnNotFound),
 
       /**
        * Return the line numbers of a certain node identified by `path` within
        * the yaml.
        *
        * @param {module:source_editor_instance~EditorInstance} instance - The Source Editor instance
-       * @param {string} path A path to a node, eg. `foo.bar[0]`
+       * @param {string|(string|number)[]} path A path to a node, eg.
+       * `foo.bar[0]`
        * @returns {number[]} Array following the schema `[firstLine, lastLine]`
        * (both inclusive)
        *

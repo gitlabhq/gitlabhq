@@ -3,10 +3,14 @@
 module QA
   module Resource
     class Group < GroupBase
-      attributes :require_two_factor_authentication, :description
+      attributes :require_two_factor_authentication, :description, :path
 
       attribute :full_path do
         determine_full_path
+      end
+
+      attribute :name do
+        @name || path
       end
 
       attribute :sandbox do
@@ -50,12 +54,6 @@ module QA
         resource_web_url(api_get)
       rescue ResourceNotFoundError
         super
-
-        Support::Retrier.retry_on_exception(sleep_interval: 5) do
-          resource = resource_web_url(api_get)
-          populate(:runners_token)
-          resource
-        end
       end
 
       def api_get_path
@@ -66,7 +64,7 @@ module QA
         {
           parent_id: sandbox.id,
           path: path,
-          name: path,
+          name: name || path,
           visibility: 'public',
           require_two_factor_authentication: @require_two_factor_authentication,
           avatar: avatar

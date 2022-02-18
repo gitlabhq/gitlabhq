@@ -164,6 +164,23 @@ module SearchHelper
     options
   end
 
+  # search_context exposes a bit too much data to the frontend, this controls what data we share and when.
+  def header_search_context
+    {}.tap do |hash|
+      hash[:group] = { id: search_context.group.id, name: search_context.group.name } if search_context.for_group?
+      hash[:group_metadata] = search_context.group_metadata if search_context.for_group?
+
+      hash[:project] = { id: search_context.project.id, name: search_context.project.name } if search_context.for_project?
+      hash[:project_metadata] = search_context.project_metadata if search_context.for_project?
+
+      hash[:scope] = search_context.scope if search_context.for_project? || search_context.for_group?
+      hash[:code_search] = search_context.code_search? if search_context.for_project? || search_context.for_group?
+
+      hash[:ref] = search_context.ref if can?(current_user, :download_code, search_context.project)
+      hash[:for_snippets] = search_context.for_snippets?
+    end
+  end
+
   private
 
   # Autocomplete results for various settings pages

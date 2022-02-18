@@ -83,7 +83,7 @@ To edit an epic's start date, due date, or labels:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7250) in GitLab 12.2.
 
-Users with at least the [Reporter role](../../permissions.md) can manage epics.
+Users with at least the Reporter role can manage epics.
 
 When bulk editing epics in a group, you can edit their labels.
 
@@ -98,8 +98,7 @@ To update multiple epics at the same time:
 ## Delete an epic
 
 NOTE:
-To delete an epic, you must be an [Owner](../../permissions.md#group-members-permissions) of a group
-or subgroup.
+To delete an epic, you must be an Owner of a group or subgroup.
 
 To delete the epic:
 
@@ -165,6 +164,7 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 > - Sorting by epic titles [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.1.
 > - Searching by milestone and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268372) in GitLab 14.2 [with a flag](../../../administration/feature_flags.md) named `vue_epics_list`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276189) in GitLab 14.7.
+> - [Feature flag `vue_epics_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/327320) removed in GitLab 14.8.
 
 You can search for an epic from the list of epics using filtered search bar based on following
 parameters:

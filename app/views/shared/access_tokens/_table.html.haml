@@ -56,7 +56,7 @@
                 %span.token-never-expires-label= _('Never')
             - if resource
               %td= resource.member(token.user).human_access
-            %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: "gl-button btn btn-danger btn-sm float-right qa-revoke-button #{'btn-danger-secondary' unless token.expires?}", data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type } }
+            %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: "gl-button btn btn-danger btn-sm float-right qa-revoke-button #{'btn-danger-secondary' unless token.expires?}", aria: { label: _('Revoke') }, data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type }, 'confirm-btn-variant': 'danger' }
 - else
   .settings-message.text-center
     = no_active_tokens_message

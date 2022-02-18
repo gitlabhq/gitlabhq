@@ -11,13 +11,14 @@ RSpec.describe QuickActions::InterpretService do
   let_it_be(:developer2) { create(:user) }
   let_it_be(:developer3) { create(:user) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
-  let(:milestone) { create(:milestone, project: project, title: '9.10') }
-  let(:commit) { create(:commit, project: project) }
   let_it_be(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let_it_be(:helmchart) { create(:label, project: project, title: 'Helm Chart Registry') }
   let_it_be(:bug) { create(:label, project: project, title: 'Bug') }
 
-  let(:service) { described_class.new(project, developer) }
+  let(:milestone) { create(:milestone, project: project, title: '9.10') }
+  let(:commit) { create(:commit, project: project) }
+
+  subject(:service) { described_class.new(project, developer) }
 
   before_all do
     public_project.add_developer(developer)
@@ -485,6 +486,8 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     shared_examples 'failed command' do |error_msg|
+      let(:match_msg) { error_msg ? eq(error_msg) : be_empty }
+
       it 'populates {} if content contains an unsupported command' do
         _, updates, _ = service.execute(content, issuable)
 
@@ -494,11 +497,7 @@ RSpec.describe QuickActions::InterpretService do
       it "returns #{error_msg || 'an empty'} message" do
         _, _, message = service.execute(content, issuable)
 
-        if error_msg
-          expect(message).to eq(error_msg)
-        else
-          expect(message).to be_empty
-        end
+        expect(message).to match_msg
       end
     end
 
@@ -703,6 +702,27 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'attention command' do
+      it 'updates reviewers attention status' do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to eq("Requested attention from #{developer.to_reference}.")
+
+        reviewer.reload
+
+        expect(reviewer).to be_attention_requested
+      end
+    end
+
+    shared_examples 'remove attention command' do
+      it 'updates reviewers attention status' do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to eq("Removed attention from #{developer.to_reference}.")
+        expect(reviewer).not_to be_attention_requested
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -887,9 +907,10 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
-    it_behaves_like 'failed command', "Failed to assign a user because no user was found." do
+    it_behaves_like 'failed command', 'a parse error' do
       let(:content) { '/assign @abcd1234' }
       let(:issuable) { issue }
+      let(:match_msg) { eq "Could not apply assign command. Failed to find users for '@abcd1234'." }
     end
 
     it_behaves_like 'failed command', "Failed to assign a user because no user was found." do
@@ -950,10 +971,38 @@ RSpec.describe QuickActions::InterpretService do
         it_behaves_like 'assign_reviewer command'
       end
 
+      context 'with a private user' do
+        let(:ref) { create(:user, :unconfirmed).to_reference }
+        let(:content) { "/assign_reviewer #{ref}" }
+
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '#{ref}'." }
+        end
+      end
+
+      context 'with a private user, bare username' do
+        let(:ref) { create(:user, :unconfirmed).username }
+        let(:content) { "/assign_reviewer #{ref}" }
+
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '#{ref}'." }
+        end
+      end
+
+      context 'with @all' do
+        let(:content) { "/assign_reviewer @all" }
+
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '@all'." }
+        end
+      end
+
       context 'with an incorrect user' do
         let(:content) { '/assign_reviewer @abcd1234' }
 
-        it_behaves_like 'failed command', "Failed to assign a reviewer because no user was found."
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '@abcd1234'." }
+        end
       end
 
       context 'with the "reviewer" alias' do
@@ -971,13 +1020,15 @@ RSpec.describe QuickActions::InterpretService do
       context 'with no user' do
         let(:content) { '/assign_reviewer' }
 
-        it_behaves_like 'failed command', "Failed to assign a reviewer because no user was found."
+        it_behaves_like 'failed command', "Failed to assign a reviewer because no user was specified."
       end
 
-      context 'includes only the user reference with extra text' do
-        let(:content) { "/assign_reviewer @#{developer.username} do it!" }
+      context 'with extra text' do
+        let(:content) { "/assign_reviewer #{developer.to_reference} do it!" }
 
-        it_behaves_like 'assign_reviewer command'
+        it_behaves_like 'failed command', 'a parse error' do
+          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for 'do' and 'it!'." }
+        end
       end
     end
 
@@ -2279,6 +2330,82 @@ RSpec.describe QuickActions::InterpretService do
         expect(message).to eq('One or more contacts were successfully removed.')
       end
     end
+
+    describe 'attention command' do
+      let(:issuable) { create(:merge_request, reviewers: [developer], source_project: project) }
+      let(:reviewer) { issuable.merge_request_reviewers.find_by(user_id: developer.id) }
+      let(:content) { "/attention @#{developer.username}" }
+
+      context 'with one user' do
+        before do
+          reviewer.update!(state: :reviewed)
+        end
+
+        it_behaves_like 'attention command'
+      end
+
+      context 'with no user' do
+        let(:content) { "/attention" }
+
+        it_behaves_like 'failed command', 'Failed to request attention because no user was found.'
+      end
+
+      context 'with incorrect permissions' do
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'failed command', 'Could not apply attention command.'
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(mr_attention_requests: false)
+        end
+
+        it_behaves_like 'failed command', 'Could not apply attention command.'
+      end
+
+      context 'with an issue instead of a merge request' do
+        let(:issuable) { issue }
+
+        it_behaves_like 'failed command', 'Could not apply attention command.'
+      end
+    end
+
+    describe 'remove attention command' do
+      let(:issuable) { create(:merge_request, reviewers: [developer], source_project: project) }
+      let(:reviewer) { issuable.merge_request_reviewers.find_by(user_id: developer.id) }
+      let(:content) { "/remove_attention @#{developer.username}" }
+
+      context 'with one user' do
+        it_behaves_like 'remove attention command'
+      end
+
+      context 'with no user' do
+        let(:content) { "/remove_attention" }
+
+        it_behaves_like 'failed command', 'Failed to remove attention because no user was found.'
+      end
+
+      context 'with incorrect permissions' do
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'failed command', 'Could not apply remove_attention command.'
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(mr_attention_requests: false)
+        end
+
+        it_behaves_like 'failed command', 'Could not apply remove_attention command.'
+      end
+
+      context 'with an issue instead of a merge request' do
+        let(:issuable) { issue }
+
+        it_behaves_like 'failed command', 'Could not apply remove_attention command.'
+      end
+    end
   end
 
   describe '#explain' do
@@ -2317,12 +2444,42 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     describe 'assign command' do
-      let(:content) { "/assign @#{developer.username} do it!" }
+      shared_examples 'assigns developer' do
+        it 'tells us we will assign the developer' do
+          _, explanations = service.explain(content, merge_request)
 
-      it 'includes only the user reference' do
-        _, explanations = service.explain(content, merge_request)
+          expect(explanations).to eq(["Assigns @#{developer.username}."])
+        end
+      end
 
-        expect(explanations).to eq(["Assigns @#{developer.username}."])
+      context 'when using a reference' do
+        let(:content) { "/assign @#{developer.username}" }
+
+        include_examples 'assigns developer'
+      end
+
+      context 'when using a bare username' do
+        let(:content) { "/assign #{developer.username}" }
+
+        include_examples 'assigns developer'
+      end
+
+      context 'when using me' do
+        let(:content) { "/assign me" }
+
+        include_examples 'assigns developer'
+      end
+
+      context 'when there are unparseable arguments' do
+        let(:arg) { "#{developer.username} to this issue" }
+        let(:content) { "/assign #{arg}" }
+
+        it 'tells us why we cannot do that' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations)
+            .to contain_exactly "Problem with assign command: Failed to find users for 'to', 'this', and 'issue'."
+        end
       end
     end
 
@@ -2596,6 +2753,45 @@ RSpec.describe QuickActions::InterpretService do
         service.execute(content, issue)
 
         expect(service.commands_executed_count).to eq(3)
+      end
+    end
+
+    describe 'crm commands' do
+      let(:add_contacts) { '/add_contacts' }
+      let(:remove_contacts) { '/remove_contacts' }
+
+      before_all do
+        group.add_developer(developer)
+      end
+
+      context 'when group has no contacts' do
+        it '/add_contacts is not available' do
+          _, explanations = service.explain(add_contacts, issue)
+
+          expect(explanations).to be_empty
+        end
+
+        it '/remove_contacts is not available' do
+          _, explanations = service.explain(remove_contacts, issue)
+
+          expect(explanations).to be_empty
+        end
+      end
+
+      context 'when group has contacts' do
+        let!(:contact) { create(:contact, group: group) }
+
+        it '/add_contacts is available' do
+          _, explanations = service.explain(add_contacts, issue)
+
+          expect(explanations).to contain_exactly("Add customer relation contact(s).")
+        end
+
+        it '/remove_contacts is available' do
+          _, explanations = service.explain(remove_contacts, issue)
+
+          expect(explanations).to contain_exactly("Remove customer relation contact(s).")
+        end
       end
     end
   end

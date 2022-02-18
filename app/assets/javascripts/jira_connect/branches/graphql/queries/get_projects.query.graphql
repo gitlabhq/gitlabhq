@@ -26,6 +26,9 @@ query jiraGetProjects(
       repository {
         empty
       }
+      userPermissions {
+        pushCode
+      }
     }
     pageInfo {
       ...PageInfo

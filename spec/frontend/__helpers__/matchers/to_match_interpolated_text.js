@@ -1,4 +1,5 @@
-export const toMatchInterpolatedText = (received, match) => {
+// Custom matchers are object methods and should be traditional functions to be able to access `utils` on `this`
+export function toMatchInterpolatedText(received, match) {
   let clearReceived;
   let clearMatch;
 
@@ -15,16 +16,14 @@ export const toMatchInterpolatedText = (received, match) => {
   const pass = clearReceived === clearMatch;
   const message = pass
     ? () => `
-        \n\n
-        Expected: ${this.utils.printExpected(clearReceived)}
-        To not equal: ${this.utils.printReceived(clearMatch)}
+        Expected to not be: ${this.utils.printExpected(clearMatch)}
+        Received:           ${this.utils.printReceived(clearReceived)}
         `
     : () =>
         `
-      \n\n
-      Expected: ${this.utils.printExpected(clearReceived)}
-      To equal: ${this.utils.printReceived(clearMatch)}
+      Expected to be: ${this.utils.printExpected(clearMatch)}
+      Received:       ${this.utils.printReceived(clearReceived)}
       `;
 
   return { actual: received, message, pass };
-};
+}

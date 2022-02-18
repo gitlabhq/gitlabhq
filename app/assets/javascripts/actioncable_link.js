@@ -1,4 +1,4 @@
-import { ApolloLink, Observable } from 'apollo-link';
+import { ApolloLink, Observable } from '@apollo/client/core';
 import { print } from 'graphql';
 import cable from '~/actioncable_consumer';
 import { uuids } from '~/lib/utils/uuids';

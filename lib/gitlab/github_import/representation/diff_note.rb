@@ -129,17 +129,7 @@ module Gitlab
 
         def discussion_id
           strong_memoize(:discussion_id) do
-            if in_reply_to_id.present?
-              current_discussion_id
-            else
-              Discussion.discussion_id(
-                Struct
-                .new(:noteable_id, :noteable_type)
-                .new(merge_request.id, NOTEABLE_TYPE)
-              ).tap do |discussion_id|
-                cache_discussion_id(discussion_id)
-              end
-            end
+            (in_reply_to_id.present? && current_discussion_id) || generate_discussion_id
           end
         end
 
@@ -158,6 +148,16 @@ module Gitlab
 
         def addition?
           side == 'RIGHT'
+        end
+
+        def generate_discussion_id
+          Discussion.discussion_id(
+            Struct
+            .new(:noteable_id, :noteable_type)
+            .new(merge_request.id, NOTEABLE_TYPE)
+          ).tap do |discussion_id|
+            cache_discussion_id(discussion_id)
+          end
         end
 
         def cache_discussion_id(discussion_id)

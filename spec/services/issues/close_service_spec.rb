@@ -118,7 +118,7 @@ RSpec.describe Issues::CloseService do
           expect { service.execute(issue) }.to change { issue.notes.count }.by(1)
 
           new_note = issue.notes.last
-          expect(new_note.note).to eq('changed the status to **Resolved** by closing the incident')
+          expect(new_note.note).to eq('changed the incident status to **Resolved** by closing the incident')
           expect(new_note.author).to eq(user)
         end
 
@@ -334,8 +334,12 @@ RSpec.describe Issues::CloseService do
           let!(:alert) { create(:alert_management_alert, issue: issue, project: project) }
 
           it 'resolves an alert and sends a system note' do
-            expect_next_instance_of(SystemNotes::AlertManagementService) do |notes_service|
-              expect(notes_service).to receive(:closed_alert_issue).with(issue)
+            expect_any_instance_of(SystemNoteService) do |notes_service|
+              expect(notes_service).to receive(:change_alert_status).with(
+                alert,
+                current_user,
+                " by closing issue #{issue.to_reference(project)}"
+              )
             end
 
             close_issue

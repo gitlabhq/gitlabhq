@@ -242,10 +242,14 @@
     }
 
     .navless-container {
-      padding: 65px 15px; // height of footer + bottom padding of email confirmation link
+      padding: 0 15px 65px; // height of footer + bottom padding of email confirmation link
+    }
+
+    .flash-container {
+      padding-bottom: 65px;
 
       @include media-breakpoint-down(xs) {
-        padding: 0 15px 65px;
+        padding-bottom: 0;
       }
     }
   }

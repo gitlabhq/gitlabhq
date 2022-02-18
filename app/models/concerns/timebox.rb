@@ -51,7 +51,7 @@ module Timebox
     validate :dates_within_4_digits
 
     cache_markdown_field :title, pipeline: :single_line
-    cache_markdown_field :description
+    cache_markdown_field :description, issuable_reference_expansion_enabled: true
 
     belongs_to :project
     belongs_to :group
@@ -123,17 +123,6 @@ module Timebox
     # Returns an ActiveRecord::Relation.
     def search(query)
       fuzzy_search(query, [:title, :description])
-    end
-
-    # Searches for timeboxes with a matching title.
-    #
-    # This method uses ILIKE on PostgreSQL
-    #
-    # query - The search query as a String
-    #
-    # Returns an ActiveRecord::Relation.
-    def search_title(query)
-      fuzzy_search(query, [:title])
     end
 
     def filter_by_state(timeboxes, state)

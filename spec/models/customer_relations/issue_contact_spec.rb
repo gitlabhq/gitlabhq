@@ -80,4 +80,12 @@ RSpec.describe CustomerRelations::IssueContact do
       expect { described_class.find_contact_ids_by_emails(issue.id, Array(0..too_many_emails)) }.to raise_error(ArgumentError)
     end
   end
+
+  describe '.delete_for_project' do
+    let_it_be(:issue_contacts) { create_list(:issue_customer_relations_contact, 3, :for_issue, issue: create(:issue, project: project)) }
+
+    it 'destroys all issue_contacts for project' do
+      expect { described_class.delete_for_project(project.id) }.to change { described_class.count }.by(-3)
+    end
+  end
 end

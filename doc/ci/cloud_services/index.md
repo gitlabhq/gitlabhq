@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Verify
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -19,7 +19,7 @@ GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/connect/faq/) t
 The original implementation of `CI_JOB_JWT` supports [HashiCorp Vault integration](../examples/authenticating-with-hashicorp-vault/). The updated implementation of `CI_JOB_JWT_V2` supports additional cloud providers with OIDC including AWS, GCP, and Vault.
 
 WARNING:
-The `CI_JOB_JWT_V2` variable is under development [(alpha)](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) and is not yet suitable for production use.
+The `CI_JOB_JWT_V2` variable is under development [(alpha)](../../policy/alpha-beta-support.md#alpha-features) and is not yet suitable for production use.
 
 ## Use cases
 
@@ -99,9 +99,9 @@ sequenceDiagram
     Note right of Cloud: Decode & verify JWT with public key (https://gitlab/-/jwks)
     Note right of Cloud: Validate audience defined in OIDC
     Note right of Cloud: Validate conditional (sub, aud) role
-    Note right of Cloud: Generate credential or fetch secret 
+    Note right of Cloud: Generate credential or fetch secret
     Cloud->>GitLab: Return temporary credential
-    Note left of GitLab: Perform operation 
+    Note left of GitLab: Perform operation
 
 ```
 
@@ -131,3 +131,4 @@ To configure the trust between GitLab and OIDC, you must create a conditional ro
 To connect with your cloud provider, see the following tutorials:
 
 - [Configure OpenID Connect in AWS](aws/index.md)
+- [Configure OpenID Connect in Google Cloud](google_cloud/index.md)

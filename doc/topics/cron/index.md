@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Cron syntax is used to schedule when jobs should run.
 
 You may need to use a cron syntax string to
-create a [pipeline schedule](../../api/pipeline_schedules.md#create-a-new-pipeline-schedule),
+create a [pipeline schedule](../../ci/pipelines/schedules.md),
 or to prevent unintentional releases by setting a
 [deploy freeze](../../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 

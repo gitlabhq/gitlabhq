@@ -20,7 +20,6 @@ module AuthorizedProjectUpdate
     urgency :low
     queue_namespace :authorized_project_update
 
-    deduplicate :until_executing, including_scheduled: true
     data_consistency :delayed
     idempotent!
 

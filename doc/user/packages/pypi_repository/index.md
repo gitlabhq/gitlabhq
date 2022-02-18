@@ -407,6 +407,16 @@ characters are removed.
 A `pip install` request for `my.package` looks for packages that match any of
 the three characters, such as `my-package`, `my_package`, and `my....package`.
 
+## Troubleshooting
+
+To improve performance, PyPI caches files related to a package. Note that PyPI doesn't remove data by
+itself. The cache grows as new packages are installed. If you encounter issues, clear the cache with
+this command:
+
+```shell
+pip cache purge
+```
+
 ## Supported CLI commands
 
 The GitLab PyPI repository supports the following CLI commands:

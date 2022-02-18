@@ -91,7 +91,7 @@ Sign up for the mailing list, answer GitLab questions on StackOverflow or respon
 If you would like to contribute to GitLab:
 
 - Issues with the
-  [`~Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
+  [`~Seeking community contributions` label](issue_workflow.md#label-for-community-contributors)
   are a great place to start.
 - Optimizing our tests is another great opportunity to contribute. You can use
   [RSpec profiling statistics](https://gitlab-org.gitlab.io/rspec_profiling_stats/) to identify

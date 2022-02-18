@@ -2,7 +2,6 @@
 
 module MergeRequests
   class UpdateHeadPipelineWorker
-    include ApplicationWorker
     include Gitlab::EventStore::Subscriber
 
     feature_category :code_review

@@ -23,9 +23,19 @@ export const DEFAULT_LABEL_NONE = { value: FILTER_NONE, text: __('None'), title:
 export const DEFAULT_LABEL_ANY = { value: FILTER_ANY, text: __('Any'), title: __('Any') };
 export const DEFAULT_NONE_ANY = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
 
+export const DEFAULT_MILESTONE_UPCOMING = {
+  value: FILTER_UPCOMING,
+  text: __('Upcoming'),
+  title: __('Upcoming'),
+};
+export const DEFAULT_MILESTONE_STARTED = {
+  value: FILTER_STARTED,
+  text: __('Started'),
+  title: __('Started'),
+};
 export const DEFAULT_MILESTONES = DEFAULT_NONE_ANY.concat([
-  { value: FILTER_UPCOMING, text: __('Upcoming'), title: __('Upcoming') },
-  { value: FILTER_STARTED, text: __('Started'), title: __('Started') },
+  DEFAULT_MILESTONE_UPCOMING,
+  DEFAULT_MILESTONE_STARTED,
 ]);
 
 export const SortDirection = {

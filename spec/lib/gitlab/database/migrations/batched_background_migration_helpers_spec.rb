@@ -59,6 +59,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
           batch_max_value: 1000,
           batch_class_name: 'MyBatchClass',
           batch_size: 100,
+          max_batch_size: 10000,
           sub_batch_size: 10)
       end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
 
@@ -71,6 +72,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
         max_value: 1000,
         batch_class_name: 'MyBatchClass',
         batch_size: 100,
+        max_batch_size: 10000,
         sub_batch_size: 10,
         job_arguments: %w[],
         status: 'active',

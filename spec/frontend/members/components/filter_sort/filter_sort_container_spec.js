@@ -1,12 +1,12 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import FilterSortContainer from '~/members/components/filter_sort/filter_sort_container.vue';
 import MembersFilteredSearchBar from '~/members/components/filter_sort/members_filtered_search_bar.vue';
 import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('FilterSortContainer', () => {
   let wrapper;
@@ -32,7 +32,6 @@ describe('FilterSortContainer', () => {
     });
 
     wrapper = shallowMount(FilterSortContainer, {
-      localVue,
       store,
       provide: {
         namespace: MEMBER_TYPES.user,

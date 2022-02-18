@@ -25,8 +25,9 @@ RSpec.describe 'Create GitLab branches from Jira', :js do
   it 'select project and branch and submit the form' do
     visit new_jira_connect_branch_path(issue_key: 'ACME-123', issue_summary: 'My issue !@#$% title')
 
-    expect(page).to have_field('Branch name', with: 'ACME-123-my-issue-title')
     expect(page).to have_button('Create branch', disabled: true)
+    # initially, branch field should be hidden.
+    expect(page).not_to have_field('Branch name')
 
     # Select project1
 
@@ -44,6 +45,7 @@ RSpec.describe 'Create GitLab branches from Jira', :js do
       click_on 'Alice / foo'
     end
 
+    expect(page).to have_field('Branch name', with: 'ACME-123-my-issue-title')
     expect(page).to have_button('Create branch', disabled: false)
 
     click_on 'master'

@@ -13,7 +13,7 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
     let(:attributes) do
       [
         :event_name, :created_at, :updated_at, :name, :path, :path_with_namespace, :project_id,
-        :owner_name, :owner_email, :project_visibility
+        :owners, :owner_name, :owner_email, :project_visibility
       ]
     end
 
@@ -30,6 +30,7 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
           expect(data[:project_id]).to eq(project.id)
           expect(data[:owner_name]).to eq('John')
           expect(data[:owner_email]).to eq('john@example.com')
+          expect(data[:owners]).to contain_exactly({ name: 'John', email: 'john@example.com' })
           expect(data[:project_visibility]).to eq('internal')
         end
       end

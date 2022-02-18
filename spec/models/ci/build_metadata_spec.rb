@@ -133,4 +133,11 @@ RSpec.describe Ci::BuildMetadata do
       expect(build.cancel_gracefully?).to be false
     end
   end
+
+  context 'loose foreign key on ci_builds_metadata.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_build_metadata, project: parent) }
+    end
+  end
 end

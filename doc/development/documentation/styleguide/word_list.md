@@ -58,11 +58,7 @@ Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
 ## administrator
 
-Use **administrator** instead of **admin** when talking about a user's access level.
-Use lowercase unless you are referring to the **Admin** access level you select in the UI.
-
-To view the administrator access level, in the GitLab UI, go to the Admin Area and select
-**Users**. Then select **New user**.
+Use **administrator access** instead of **admin** when talking about a user's access level.
 
 ![admin access level](img/admin_access_level.png)
 
@@ -71,7 +67,7 @@ An **administrator** is not a [role](#roles) or [permission](#permissions).
 Use:
 
 - To do this thing, you must be an administrator.
-- To do this thing, you must have the administrator access level.
+- To do this thing, you must have administrator access.
 
 Instead of:
 
@@ -81,6 +77,17 @@ Instead of:
 
 Use title case **Admin Area** to refer to the area of the UI that you access when you select **Menu > Admin**.
 This area of the UI says **Admin Area** at the top of the page and on the menu.
+
+## agent
+
+Use lowercase to refer to the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
+For example:
+
+- To connect your cluster to GitLab, use the GitLab agent for Kubernetes.
+- Install the agent in your cluster.
+- Select an agent from the list.
+
+Do not use title case **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
 ## allow, enable
 
@@ -102,7 +109,7 @@ This phrasing is more active and is from the user perspective, rather than the p
 
 Use uppercase for **Alpha**. For example: **The XYZ feature is in Alpha.** or **This Alpha release is ready to test.**
 
-You might also want to link to [this section](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga)
+You might also want to link to [this section](../../../policy/alpha-beta-support.md#alpha-features)
 in the handbook when writing about Alpha features.
 
 ## and/or
@@ -128,7 +135,7 @@ Try to avoid **below** when referring to an example or table in a documentation 
 
 Use uppercase for **Beta**. For example: **The XYZ feature is in Beta.** or **This Beta release is ready to test.**
 
-You might also want to link to [this section](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga)
+You might also want to link to [this section](../../../policy/alpha-beta-support.md#beta-features)
 in the handbook when writing about Beta features.
 
 ## blacklist
@@ -193,6 +200,10 @@ CI/CD is always uppercase. No need to spell it out on first use.
 
 Use **CI/CD minutes** instead of **CI minutes**, **pipeline minutes**, **pipeline minutes quota**, or
 **CI pipeline minutes**. This decision was made in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342813).
+
+## CI/CD tunnel
+
+Use lowercase for **tunnel** in **CI/CD tunnel**.
 
 ## click
 
@@ -312,6 +323,11 @@ Instead of:
 
 Use **expand** instead of **open** when you are talking about expanding or collapsing a section in the UI.
 
+## FAQ
+
+We want users to find information quickly, and they rarely search for the term **FAQ**.
+Information in FAQs belongs with other similar information, under an easily searchable topic title.
+
 ## field
 
 Use **box** instead of **field** or **text box**.
@@ -366,6 +382,11 @@ Use title case for **GitLab Runner**. This is the product you install. See also 
 ## GitLab self-managed
 
 Use **GitLab self-managed** to refer to the product license for GitLab instances managed by customers themselves.
+
+## guide
+
+We want to speak directly to users. On `docs.gitlab.com`, do not use **guide** as part of a page title.
+For example, **Snowplow Guide**. Instead, speak about the feature itself, and how to use it. For example, **Use Snowplow to do xyz**.
 
 ## Guest
 
@@ -540,6 +561,8 @@ Do not use **navigate**. Use **go** instead. For example:
 - Go to this webpage.
 - Open a terminal and go to the `runner` directory.
 
+([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
 ## need to, should
 
 Try to avoid **needs to**, because it's wordy. Avoid **should** when you can be more specific. If something is required, use **must**.
@@ -658,9 +681,21 @@ Use **press** when talking about keyboard keys. For example:
 
 Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
 
+## provision
+
+Use the term **provision** when referring to provisioning cloud infrastructure. You provision the infrastructure, and then deploy applications to it.
+
+For example, you might write something like:
+
+- Provision an AWS EKS cluster and deploy your application to it.
+
 ## push rules
 
 Use lowercase for **push rules**.
+
+## register
+
+Use **register** instead of **sign up** when talking about creating an account.
 
 ## Reporter
 
@@ -689,6 +724,9 @@ Roles are not the same as [**access levels**](#access-level).
 ## runner, runners
 
 Use lowercase for **runners**. These are the agents that run CI/CD jobs. See also [GitLab Runner](#gitlab-runner) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
+
+When referring to runners, if you have to specify that the runners are installed on a customer's GitLab instance,
+use **self-managed** rather than **self-hosted**.
 
 ## (s)
 
@@ -735,6 +773,10 @@ Instead of:
 Use **select** with buttons, links, menu items, and lists. **Select** applies to more devices,
 while **click** is more specific to a mouse.
 
+## self-managed
+
+Use **self-managed** to refer to a customer's installation of GitLab. Do not use **self-hosted**.
+
 ## Service Desk
 
 Use title case for **Service Desk**.
@@ -751,6 +793,10 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 Use **sign in** instead of **sign on** or **log on** or **log in**. If the user interface has different words, use those.
 
 You can use **single sign-on**.
+
+## sign up
+
+Use **register** instead of **sign up** when talking about creating an account.
 
 ## simply, simple
 
@@ -882,10 +928,6 @@ Instead of:
 
 Do not use **utilize**. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.
 ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
-
-## Value Stream Analytics
-
-Use title case for **Value Stream Analytics**.
 
 ## via
 

@@ -10,4 +10,4 @@
     = gl_tab_counter_badge(limited_counter_with_delimiter(@total_starred_projects_count))
   = gl_tab_link_to _("Explore projects"), explore_root_path, { item_active: is_explore_projects_path, data: { placement: 'right' } }
   = gl_tab_link_to _("Explore topics"), topics_explore_projects_path, { data: { placement: 'right' } }
-  = render_if_exists "dashboard/removed_projects_tab", removed_projects_count: @removed_projects_count
+  = render_if_exists "dashboard/removed_projects_tab"

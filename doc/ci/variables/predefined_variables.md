@@ -27,7 +27,7 @@ There are also a number of [variables you can use to configure runner behavior](
 | `CI_API_V4_URL`                          | 11.7   | all    | The GitLab API v4 root URL. |
 | `CI_BUILDS_DIR`                          | all    | 11.10  | The top-level directory where builds are executed. |
 | `CI_COMMIT_AUTHOR`                       | 13.11  | all    | The author of the commit in `Name <email>` format. |
-| `CI_COMMIT_BEFORE_SHA`                   | 11.2   | all    | The previous latest commit present on a branch. Is always `0000000000000000000000000000000000000000` in pipelines for merge requests. |
+| `CI_COMMIT_BEFORE_SHA`                   | 11.2   | all    | The previous latest commit present on a branch. Is always `0000000000000000000000000000000000000000` in merge request pipelines. |
 | `CI_COMMIT_BRANCH`                       | 12.6   | 0.5    | The commit branch name. Available in branch pipelines, including pipelines for the default branch. Not available in merge request pipelines or tag pipelines. |
 | `CI_COMMIT_DESCRIPTION`                  | 10.8   | all    | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
 | `CI_COMMIT_MESSAGE`                      | 10.8   | all    | The full commit message. |
@@ -63,7 +63,7 @@ There are also a number of [variables you can use to configure runner behavior](
 | `CI_JOB_IMAGE`                           | 12.9   | 12.9   | The name of the Docker image running the job. |
 | `CI_JOB_JWT`                             | 12.10  | all    | A RS256 JSON web token to authenticate with third party systems that support JWT authentication, for example [HashiCorp's Vault](../secrets/index.md). |
 | `CI_JOB_JWT_V1`                          | 14.6   | all    | The same value as `CI_JOB_JWT`. |
-| `CI_JOB_JWT_V2`                          | 14.6   | all    | [**alpha:**](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) A newly formatted RS256 JSON web token to increase compatibility. Similar to `CI_JOB_JWT`, except the issuer (`iss`) claim is changed from `gitlab.com` to `https://gitlab.com`, `sub` has changed from `job_id` to a string that contains the project path, and an `aud` claim is added. Format is subject to change. Be aware, the `aud` field is a constant value. Trusting JWTs in multiple relying parties can lead to [one RP sending a JWT to another one and acting maliciously as a job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72555#note_769112331).  |
+| `CI_JOB_JWT_V2`                          | 14.6   | all    | [**alpha:**](../../policy/alpha-beta-support.md#alpha-features) A newly formatted RS256 JSON web token to increase compatibility. Similar to `CI_JOB_JWT`, except the issuer (`iss`) claim is changed from `gitlab.com` to `https://gitlab.com`, `sub` has changed from `job_id` to a string that contains the project path, and an `aud` claim is added. Format is subject to change. Be aware, the `aud` field is a constant value. Trusting JWTs in multiple relying parties can lead to [one RP sending a JWT to another one and acting maliciously as a job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72555#note_769112331).  |
 | `CI_JOB_MANUAL`                          | 8.12   | all    | `true` if a job was started manually. |
 | `CI_JOB_NAME`                            | 9.0    | 0.5    | The name of the job. |
 | `CI_JOB_STAGE`                           | 9.0    | 0.5    | The name of the job's stage. |
@@ -148,12 +148,12 @@ These variables are available when:
 | `CI_MERGE_REQUEST_PROJECT_URL`         | 11.6   | all    | The URL of the project of the merge request. For example, `http://192.168.10.15:3000/namespace/awesome-project`. |
 | `CI_MERGE_REQUEST_REF_PATH`            | 11.6   | all    | The ref path of the merge request. For example, `refs/merge-requests/1/head`. |
 | `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME`  | 11.6   | all    | The source branch name of the merge request. |
-| `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the source branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/pipelines_for_merged_results.md). **(PREMIUM)** |
+| `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the source branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_ID`   | 11.6   | all    | The ID of the source project of the merge request. |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` | 11.6   | all    | The path of the source project of the merge request. |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_URL`  | 11.6   | all    | The URL of the source project of the merge request. |
 | `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`  | 11.6   | all    | The target branch name of the merge request. |
-| `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the target branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/pipelines_for_merged_results.md). **(PREMIUM)** |
+| `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the target branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
 | `CI_MERGE_REQUEST_TITLE`               | 11.9   | all    | The title of the merge request. |
 | `CI_MERGE_REQUEST_EVENT_TYPE`          | 12.3   | all    | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |
 | `CI_MERGE_REQUEST_DIFF_ID`             | 13.7   | all    | The version of the merge request diff. |

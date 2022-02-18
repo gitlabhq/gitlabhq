@@ -3,9 +3,9 @@
 module Types
   # rubocop: disable Graphql/AuthorizeTypes
   class QueryComplexityType < ::Types::BaseObject
-    ANALYZER = GraphQL::Analysis::QueryComplexity.new { |_query, complexity| complexity }
-
     graphql_name 'QueryComplexity'
+
+    ANALYZER = GraphQL::Analysis::QueryComplexity.new { |_query, complexity| complexity }
 
     alias_method :query, :object
 

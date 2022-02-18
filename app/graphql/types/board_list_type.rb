@@ -3,10 +3,10 @@
 module Types
   # rubocop: disable Graphql/AuthorizeTypes
   class BoardListType < BaseObject
-    include Gitlab::Utils::StrongMemoize
-
     graphql_name 'BoardList'
     description 'Represents a list for an issue board'
+
+    include Gitlab::Utils::StrongMemoize
 
     alias_method :list, :object
 

@@ -213,7 +213,7 @@ module Gitlab
 
           def validate_each(record, attribute, value)
             unless validate_regexp(value)
-              record.errors.add(attribute, 'must be a regular expression')
+              record.errors.add(attribute, 'must be a regular expression with re2 syntax')
             end
           end
 
@@ -238,11 +238,15 @@ module Gitlab
         class ArrayOfStringsOrRegexpsValidator < RegexpValidator
           def validate_each(record, attribute, value)
             unless validate_array_of_strings_or_regexps(value)
-              record.errors.add(attribute, 'should be an array of strings or regexps')
+              record.errors.add(attribute, validation_message)
             end
           end
 
           private
+
+          def validation_message
+            'should be an array of strings or regular expressions using re2 syntax'
+          end
 
           def validate_array_of_strings_or_regexps(values)
             values.is_a?(Array) && values.all?(&method(:validate_string_or_regexp))
@@ -258,6 +262,19 @@ module Gitlab
 
         class ArrayOfStringsOrRegexpsWithFallbackValidator < ArrayOfStringsOrRegexpsValidator
           protected
+
+          # TODO
+          #
+          # Remove ArrayOfStringsOrRegexpsWithFallbackValidator class too when
+          # you are removing the `:allow_unsafe_ruby_regexp` feature flag.
+          #
+          def validation_message
+            if ::Feature.enabled?(:allow_unsafe_ruby_regexp, default_enabled: :yaml)
+              'should be an array of strings or regular expressions'
+            else
+              super
+            end
+          end
 
           def fallback
             true
@@ -275,20 +292,6 @@ module Gitlab
 
           def validate_array_of_strings_or_string(values)
             validate_array_of_strings(values) || validate_string(values)
-          end
-        end
-
-        class NestedArrayOfStringsValidator < ArrayOfStringsOrStringValidator
-          def validate_each(record, attribute, value)
-            unless validate_nested_array_of_strings(value)
-              record.errors.add(attribute, 'should be an array containing strings and arrays of strings')
-            end
-          end
-
-          private
-
-          def validate_nested_array_of_strings(values)
-            values.is_a?(Array) && values.all? { |element| validate_array_of_strings_or_string(element) }
           end
         end
 

@@ -19,7 +19,7 @@ RSpec.describe 'Logout/Sign out', :js do
   it 'sign out does not show signed out flash notice' do
     gitlab_sign_out
 
-    expect(page).not_to have_selector('.flash-notice')
+    expect(page).not_to have_selector('[data-testid="alert-info"]')
   end
 
   context 'on a read-only instance' do

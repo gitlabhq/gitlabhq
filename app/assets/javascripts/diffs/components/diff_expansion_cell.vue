@@ -223,25 +223,31 @@ export default {
 
 <template>
   <div class="content js-line-expansion-content">
-    <a
-      v-if="canExpandDown"
-      class="gl-mx-2 gl-cursor-pointer js-unfold-down gl-display-inline-block gl-py-4"
+    <button
+      type="button"
+      :disabled="!canExpandDown"
+      class="js-unfold-down gl-mx-2 gl-py-4 gl-cursor-pointer"
       @click="handleExpandLines(EXPAND_DOWN)"
     >
       <gl-icon :size="12" name="expand-down" />
       <span>{{ $options.i18n.showMore }}</span>
-    </a>
-    <a class="gl-mx-2 cursor-pointer js-unfold-all" @click="handleExpandLines()">
+    </button>
+    <button
+      type="button"
+      class="js-unfold-all gl-mx-2 gl-py-4 gl-cursor-pointer"
+      @click="handleExpandLines()"
+    >
       <gl-icon :size="12" name="expand" />
       <span>{{ $options.i18n.showAll }}</span>
-    </a>
-    <a
-      v-if="canExpandUp"
-      class="gl-mx-2 gl-cursor-pointer js-unfold gl-display-inline-block gl-py-4"
+    </button>
+    <button
+      type="button"
+      :disabled="!canExpandUp"
+      class="js-unfold gl-mx-2 gl-py-4 gl-cursor-pointer"
       @click="handleExpandLines(EXPAND_UP)"
     >
       <gl-icon :size="12" name="expand-up" />
       <span>{{ $options.i18n.showMore }}</span>
-    </a>
+    </button>
   </div>
 </template>

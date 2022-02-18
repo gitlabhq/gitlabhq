@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe "User merges a merge request", :js do
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
 
   before do
     sign_in(user)

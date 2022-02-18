@@ -47,16 +47,21 @@ module Integrations
         format(message)
       end
 
+      # NOTE: Make sure to call `#strip_markup` on any untrusted user input that's added to the
+      # `title`, `subtitle`, `text`, `fallback`, or `author_name` fields.
       def attachments
         raise NotImplementedError
       end
 
+      # NOTE: Make sure to call `#strip_markup` on any untrusted user input that's added to the
+      # `title`, `subtitle`, `text`, `fallback`, or `author_name` fields.
       def activity
         raise NotImplementedError
       end
 
       private
 
+      # NOTE: Make sure to call `#strip_markup` on any untrusted user input that's added to the string.
       def message
         raise NotImplementedError
       end

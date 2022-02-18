@@ -1,5 +1,6 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -18,8 +19,7 @@ jest.mock('~/lib/utils/url_utility', () => {
   };
 });
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('MembersFilteredSearchBar', () => {
   let wrapper;
@@ -44,7 +44,6 @@ describe('MembersFilteredSearchBar', () => {
     });
 
     wrapper = shallowMount(MembersFilteredSearchBar, {
-      localVue,
       provide: {
         sourceId: 1,
         canManageMembers: true,

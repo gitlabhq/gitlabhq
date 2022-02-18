@@ -137,6 +137,7 @@ The **Network** settings contain:
 - [Incident Management Limits](../../../operations/incident_management/index.md) - Limit the
   number of inbound alerts that can be sent to a project.
 - [Notes creation limit](rate_limit_on_notes_creation.md) - Set a rate limit on the note creation requests.
+- [Get single user limit](rate_limit_on_users_api.md) - Set a rate limit on users API endpoint to get a user by ID.
 
 ### Preferences
 
@@ -160,7 +161,7 @@ The **Preferences** settings contain:
 The **Reporting** settings contain:
 
 - [Spam and Anti-bot Protection](../../../integration/recaptcha.md) -
-  Enable anti-spam services, like reCAPTCHA or Akismet, and set IP limits.
+  Enable anti-spam services, like reCAPTCHA, Akismet or [Spamcheck](../reporting/spamcheck.md), and set IP limits.
 - [Abuse reports](../review_abuse_reports.md) - Set notification email for abuse reports.
 
 ### Repository

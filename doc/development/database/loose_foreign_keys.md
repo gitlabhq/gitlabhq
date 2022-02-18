@@ -61,7 +61,7 @@ following information:
 - Child table name (`ci_pipelines`)
 - The data cleanup method (`async_delete` or `async_nullify`)
 
-The YAML file is located at `lib/gitlab/database/gitlab_loose_foreign_keys.yml`. The file groups
+The YAML file is located at `config/gitlab_loose_foreign_keys.yml`. The file groups
 foreign key definitions by the name of the child table. The child table can have multiple loose
 foreign key definitions, therefore we store them as an array.
 

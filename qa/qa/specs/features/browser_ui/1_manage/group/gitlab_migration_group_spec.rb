@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  describe 'Manage', :requires_admin do
+  describe 'Manage', :requires_admin, :reliable do
     describe 'Gitlab migration' do
       let!(:admin_api_client) { Runtime::API::Client.as_admin }
       let!(:user) do

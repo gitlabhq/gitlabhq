@@ -249,7 +249,9 @@ ul.related-merge-requests > li gl-emoji {
   @include media-breakpoint-up(sm) {
     width: calc(100% - #{$gutter-collapsed-width});
   }
+}
 
+.limit-container-width {
   .issue-sticky-header-text {
     max-width: $limited-layout-width;
   }
@@ -304,4 +306,33 @@ ul.related-merge-requests > li gl-emoji {
 .issuable-header-slide-enter,
 .issuable-header-slide-leave-to {
   transform: translateY(-100%);
+}
+
+.description.work-items-enabled {
+  ul.task-list {
+    > li.task-list-item {
+      padding-inline-start: 2.25rem;
+
+      .js-add-task {
+        svg {
+          visibility: hidden;
+        }
+
+        &:focus svg {
+          visibility: visible;
+        }
+      }
+
+      > input.task-list-item-checkbox {
+        left: 0.875rem;
+      }
+
+      &:hover,
+      &:focus-within {
+        .js-add-task svg {
+          visibility: visible;
+        }
+      }
+    }
+  }
 }

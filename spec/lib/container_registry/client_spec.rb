@@ -5,29 +5,7 @@ require 'spec_helper'
 RSpec.describe ContainerRegistry::Client do
   using RSpec::Parameterized::TableSyntax
 
-  let(:token) { '12345' }
-  let(:options) { { token: token } }
-  let(:registry_api_url) { 'http://container-registry' }
-  let(:client) { described_class.new(registry_api_url, options) }
-  let(:push_blob_headers) do
-    {
-        'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
-        'Authorization' => "bearer #{token}",
-        'Content-Type' => 'application/octet-stream',
-        'User-Agent' => "GitLab/#{Gitlab::VERSION}"
-    }
-  end
-
-  let(:headers_with_accept_types) do
-    {
-      'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
-      'Authorization' => "bearer #{token}",
-      'User-Agent' => "GitLab/#{Gitlab::VERSION}"
-    }
-  end
-
-  let(:expected_faraday_headers) { { user_agent: "GitLab/#{Gitlab::VERSION}" } }
-  let(:expected_faraday_request_options) { Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS }
+  include_context 'container registry client'
 
   shared_examples 'handling timeouts' do
     let(:retry_options) do
@@ -48,14 +26,14 @@ RSpec.describe ContainerRegistry::Client do
         retry_block: -> (_, _, _, _) { actual_retries += 1 }
       )
 
-      stub_const('ContainerRegistry::Client::RETRY_OPTIONS', retry_options_with_block)
+      stub_const('ContainerRegistry::BaseClient::RETRY_OPTIONS', retry_options_with_block)
 
       expect { subject }.to raise_error(Faraday::ConnectionFailed)
       expect(actual_retries).to eq(retry_options_with_block[:max])
     end
 
     it 'logs the error' do
-      stub_const('ContainerRegistry::Client::RETRY_OPTIONS', retry_options)
+      stub_const('ContainerRegistry::BaseClient::RETRY_OPTIONS', retry_options)
 
       expect(Gitlab::ErrorTracking)
         .to receive(:log_exception)
@@ -63,7 +41,7 @@ RSpec.describe ContainerRegistry::Client do
         .times
         .with(
           an_instance_of(Faraday::ConnectionFailed),
-          class: described_class.name,
+          class: ::ContainerRegistry::BaseClient.name,
           url: URI(url)
         )
 
@@ -325,14 +303,14 @@ RSpec.describe ContainerRegistry::Client do
     subject { client.supports_tag_delete? }
 
     where(:registry_tags_support_enabled, :is_on_dot_com, :container_registry_features, :expect_registry_to_be_pinged, :expected_result) do
-      true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | true
-      true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | true  | true
-      true  | true  | []                                                       | true  | true
-      true  | false | []                                                       | true  | true
-      false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | true
-      false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | true  | false
-      false | true  | []                                                       | true  | false
-      false | false | []                                                       | true  | false
+      true  | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | true
+      true  | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | true  | true
+      true  | true  | []                                             | true  | true
+      true  | false | []                                             | true  | true
+      false | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | true
+      false | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | true  | false
+      false | true  | []                                             | true  | false
+      false | false | []                                             | true  | false
     end
 
     with_them do
@@ -366,38 +344,38 @@ RSpec.describe ContainerRegistry::Client do
     subject { described_class.supports_tag_delete? }
 
     where(:registry_api_url, :registry_enabled, :registry_tags_support_enabled, :is_on_dot_com, :container_registry_features, :expect_registry_to_be_pinged, :expected_result) do
-      'http://sandbox.local' | true  | true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | true
-      'http://sandbox.local' | true  | true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | true  | true
-      'http://sandbox.local' | true  | false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | true
-      'http://sandbox.local' | true  | false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | true  | false
-      'http://sandbox.local' | false | true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      'http://sandbox.local' | false | true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      'http://sandbox.local' | false | false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      'http://sandbox.local' | false | false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      'http://sandbox.local' | true  | true  | true  | []                                                       | true  | true
-      'http://sandbox.local' | true  | true  | false | []                                                       | true  | true
-      'http://sandbox.local' | true  | false | true  | []                                                       | true  | false
-      'http://sandbox.local' | true  | false | false | []                                                       | true  | false
-      'http://sandbox.local' | false | true  | true  | []                                                       | false | false
-      'http://sandbox.local' | false | true  | false | []                                                       | false | false
-      'http://sandbox.local' | false | false | true  | []                                                       | false | false
-      'http://sandbox.local' | false | false | false | []                                                       | false | false
-      ''                     | true  | true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      ''                     | true  | true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      ''                     | true  | false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      ''                     | true  | false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      ''                     | false | true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      ''                     | false | true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      ''                     | false | false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      ''                     | false | false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
-      ''                     | true  | true  | true  | []                                                       | false | false
-      ''                     | true  | true  | false | []                                                       | false | false
-      ''                     | true  | false | true  | []                                                       | false | false
-      ''                     | true  | false | false | []                                                       | false | false
-      ''                     | false | true  | true  | []                                                       | false | false
-      ''                     | false | true  | false | []                                                       | false | false
-      ''                     | false | false | true  | []                                                       | false | false
-      ''                     | false | false | false | []                                                       | false | false
+      'http://sandbox.local' | true  | true  | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | true
+      'http://sandbox.local' | true  | true  | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | true  | true
+      'http://sandbox.local' | true  | false | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | true
+      'http://sandbox.local' | true  | false | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | true  | false
+      'http://sandbox.local' | false | true  | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      'http://sandbox.local' | false | true  | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      'http://sandbox.local' | false | false | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      'http://sandbox.local' | false | false | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      'http://sandbox.local' | true  | true  | true  | []                                             | true  | true
+      'http://sandbox.local' | true  | true  | false | []                                             | true  | true
+      'http://sandbox.local' | true  | false | true  | []                                             | true  | false
+      'http://sandbox.local' | true  | false | false | []                                             | true  | false
+      'http://sandbox.local' | false | true  | true  | []                                             | false | false
+      'http://sandbox.local' | false | true  | false | []                                             | false | false
+      'http://sandbox.local' | false | false | true  | []                                             | false | false
+      'http://sandbox.local' | false | false | false | []                                             | false | false
+      ''                     | true  | true  | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | true  | true  | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | true  | false | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | true  | false | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | false | true  | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | false | true  | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | false | false | true  | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | false | false | false | [described_class::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | true  | true  | true  | []                                             | false | false
+      ''                     | true  | true  | false | []                                             | false | false
+      ''                     | true  | false | true  | []                                             | false | false
+      ''                     | true  | false | false | []                                             | false | false
+      ''                     | false | true  | true  | []                                             | false | false
+      ''                     | false | true  | false | []                                             | false | false
+      ''                     | false | false | true  | []                                             | false | false
+      ''                     | false | false | false | []                                             | false | false
     end
 
     with_them do

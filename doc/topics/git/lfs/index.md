@@ -31,7 +31,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
 
 - Git LFS is supported in GitLab starting with version 8.2
 - Git LFS must be enabled under project settings
-- [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up
+- [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up must be installed
 
 ## Known limitations
 

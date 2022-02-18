@@ -145,6 +145,8 @@ namespace :admin do
     delete :delete_self_monitoring_project
     get :status_delete_self_monitoring_project
 
+    get :service_usage_data
+
     resource :appearances, only: [:show, :create, :update], path: 'appearance', module: 'application_settings' do
       member do
         get :preview_sign_in

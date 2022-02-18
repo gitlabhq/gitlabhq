@@ -44,7 +44,7 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 - Tracking proposals for new implementations, bug reports, and feedback with a
   fully featured [Issue tracker](project/issues/index.md).
 - Organizing and prioritizing with [issue boards](project/issue_board.md).
-- Reviewing code in [Merge Requests](project/merge_requests/index.md) with live-preview changes per
+- Reviewing code in [merge requests](project/merge_requests/index.md) with live-preview changes per
   branch with [Review Apps](../ci/review_apps/index.md).
 - Building, testing, and deploying with built-in [Continuous Integration](../ci/index.md).
 - Deploying personal and professional static websites with [GitLab Pages](project/pages/index.md).
@@ -56,7 +56,7 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 With GitLab Enterprise Edition, you can also:
 
 - Improve collaboration with:
-  - [Merge Request Approvals](project/merge_requests/approvals/index.md).
+  - [Merge request approvals](project/merge_requests/approvals/index.md).
   - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md).
   - [Multiple issue boards](project/issue_board.md#multiple-issue-boards).
 - Create formal relationships between issues with [linked issues](project/issues/related_issues.md).
@@ -152,8 +152,8 @@ it all at once, from one single project.
 - [Repositories](project/repository/index.md): Host your codebase in
   repositories with version control and as part of a fully integrated platform.
 - [Issues](project/issues/index.md): Explore the best of GitLab Issues' features.
-- [Merge Requests](project/merge_requests/index.md): Collaborate on code,
-  reviews, live preview changes per branch, and request approvals with Merge Requests.
+- [Merge requests](project/merge_requests/index.md): Collaborate on code,
+  reviews, live preview changes per branch, and request approvals with merge requests.
 - [Milestones](project/milestones/index.md): Work on multiple issues and merge
   requests towards the same target date with Milestones.
 

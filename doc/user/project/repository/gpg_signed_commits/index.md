@@ -273,7 +273,7 @@ To remove a GPG key from your account:
 ## Rejecting commits that are not signed **(PREMIUM)**
 
 You can configure your project to reject commits that aren't GPG-signed
-via [push rules](../../../../push_rules/push_rules.md).
+via [push rules](../push_rules.md).
 
 ## GPG signing API
 

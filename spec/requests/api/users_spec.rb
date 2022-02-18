@@ -499,7 +499,8 @@ RSpec.describe API::Users do
     let_it_be(:user2, reload: true) { create(:user, username: 'another_user') }
 
     before do
-      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:users_get_by_id, scope: user).and_return(false)
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+        .with(:users_get_by_id, scope: user, users_allowlist: []).and_return(false)
     end
 
     it "returns a user by id" do
@@ -600,7 +601,7 @@ RSpec.describe API::Users do
     context 'when the rate limit is not exceeded' do
       it 'returns a success status' do
         expect(Gitlab::ApplicationRateLimiter)
-          .to receive(:throttled?).with(:users_get_by_id, scope: user)
+          .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: [])
           .and_return(false)
 
         get api("/users/#{user.id}", user)
@@ -613,7 +614,7 @@ RSpec.describe API::Users do
       context 'when feature flag is enabled' do
         it 'returns "too many requests" status' do
           expect(Gitlab::ApplicationRateLimiter)
-            .to receive(:throttled?).with(:users_get_by_id, scope: user)
+            .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: [])
             .and_return(true)
 
           get api("/users/#{user.id}", user)
@@ -626,6 +627,24 @@ RSpec.describe API::Users do
             .not_to receive(:throttled?)
 
           get api("/users/#{user.id}", admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'allows users whose username is in the allowlist' do
+          allowlist = [user.username]
+          current_settings = Gitlab::CurrentSettings.current_application_settings
+
+          # Necessary to ensure the same object is returned on each call
+          allow(Gitlab::CurrentSettings).to receive(:current_application_settings).and_return current_settings
+
+          allow(current_settings).to receive(:users_get_by_id_limit_allowlist).and_return(allowlist)
+
+          expect(Gitlab::ApplicationRateLimiter)
+            .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: allowlist)
+            .and_call_original
+
+          get api("/users/#{user.id}", user)
 
           expect(response).to have_gitlab_http_status(:ok)
         end

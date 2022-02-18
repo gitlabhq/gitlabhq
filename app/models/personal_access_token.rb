@@ -33,6 +33,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :preload_users, -> { preload(:user) }
   scope :order_expires_at_asc, -> { reorder(expires_at: :asc) }
   scope :order_expires_at_desc, -> { reorder(expires_at: :desc) }
+  scope :project_access_token, -> { includes(:user).where(user: { user_type: :project_bot }) }
 
   validates :scopes, presence: true
   validate :validate_scopes
@@ -91,6 +92,10 @@ class PersonalAccessToken < ApplicationRecord
   override :format_token
   def format_token(token)
     "#{self.class.token_prefix}#{token}"
+  end
+
+  def project_access_token?
+    user&.project_bot?
   end
 
   protected

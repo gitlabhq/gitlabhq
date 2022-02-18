@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
 
 describe('Error Tracking Actions', () => {
@@ -37,13 +38,12 @@ describe('Error Tracking Actions', () => {
   const findButtons = () => wrapper.findAll(GlButton);
 
   describe('when error status is unresolved', () => {
-    it('renders the correct actions buttons to allow ignore and resolve', () => {
+    it('renders the correct actions buttons to allow ignore and resolve', async () => {
       expect(findButtons().exists()).toBe(true);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findButtons().at(0).attributes('title')).toBe('Ignore');
-        expect(findButtons().at(1).attributes('title')).toBe('Resolve');
-      });
+      await nextTick();
+      expect(findButtons().at(0).attributes('title')).toBe('Ignore');
+      expect(findButtons().at(1).attributes('title')).toBe('Resolve');
     });
   });
 
@@ -52,12 +52,11 @@ describe('Error Tracking Actions', () => {
       mountComponent({ error: { status: 'ignored' } });
     });
 
-    it('renders the correct action button to undo ignore', () => {
+    it('renders the correct action button to undo ignore', async () => {
       expect(findButtons().exists()).toBe(true);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findButtons().at(0).attributes('title')).toBe('Undo Ignore');
-      });
+      await nextTick();
+      expect(findButtons().at(0).attributes('title')).toBe('Undo Ignore');
     });
   });
 
@@ -66,12 +65,11 @@ describe('Error Tracking Actions', () => {
       mountComponent({ error: { status: 'resolved' } });
     });
 
-    it('renders the correct action button to undo unresolve', () => {
+    it('renders the correct action button to undo unresolve', async () => {
       expect(findButtons().exists()).toBe(true);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findButtons().at(1).attributes('title')).toBe('Unresolve');
-      });
+      await nextTick();
+      expect(findButtons().at(1).attributes('title')).toBe('Unresolve');
     });
   });
 });

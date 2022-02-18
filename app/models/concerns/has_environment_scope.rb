@@ -70,6 +70,14 @@ module HasEnvironmentScope
 
       relation
     end
+
+    scope :for_environment, ->(environment) do
+      if environment
+        on_environment(environment)
+      else
+        where(environment_scope: '*')
+      end
+    end
   end
 
   def environment_scope=(new_environment_scope)

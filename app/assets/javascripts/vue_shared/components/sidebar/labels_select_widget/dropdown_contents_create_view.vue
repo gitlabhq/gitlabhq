@@ -117,7 +117,11 @@ export default {
                 labelCreate: { label },
               },
             },
-          ) => this.updateLabelsInCache(store, label),
+          ) => {
+            if (label) {
+              this.updateLabelsInCache(store, label);
+            }
+          },
         });
         if (labelCreate.errors.length) {
           [this.error] = labelCreate.errors;

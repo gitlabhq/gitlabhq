@@ -93,6 +93,7 @@ $gray-darker: #4f4f4f;
 $gray-darkest: #c4c4c4;
 
 $black: #fff;
+$black-normal: $gray-900;
 $white: #333;
 $white-light: #2b2b2b;
 $white-normal: #333;
@@ -187,11 +188,18 @@ body.gl-dark {
   --purple-900: #{$purple-900};
   --purple-950: #{$purple-950};
 
+  --dark-icon-color-purple-1: #524a68;
+  --dark-icon-color-purple-2: #715bae;
+  --dark-icon-color-purple-3: #9a79f7;
+  --dark-icon-color-orange-1: #665349;
+  --dark-icon-color-orange-2: #b37a5d;
+
   --gl-text-color: #{$gray-900};
   --border-color: #{$border-color};
 
   --white: #{$white};
   --black: #{$black};
+  --black-normal: #{$black-normal};
 
   --svg-status-bg: #{$white};
 
@@ -257,3 +265,11 @@ $line-removed-dark: $red-200;
 
 $well-expand-item: $gray-200;
 $well-inner-border: $gray-200;
+
+$calendar-activity-colors: (
+  #303030,
+  #333861,
+  #4a5593,
+  #6172c5,
+  #788ff7
+);

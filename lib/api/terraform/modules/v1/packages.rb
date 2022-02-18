@@ -21,7 +21,7 @@ module API
             module_version: SEMVER_REGEX
           }.freeze
 
-          feature_category :package_registry
+          feature_category :infrastructure_as_code
 
           after_validation do
             require_packages_enabled!
@@ -71,11 +71,7 @@ module API
 
             def package_file
               strong_memoize(:package_file) do
-                if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
-                  package.installable_package_files.first
-                else
-                  package.package_files.first
-                end
+                package.installable_package_files.first
               end
             end
           end

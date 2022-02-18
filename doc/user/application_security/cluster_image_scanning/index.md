@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 14.1.
 
 WARNING:
-This analyzer is in [Alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha)
+This analyzer is in [Alpha](../../../policy/alpha-beta-support.md#alpha-features)
 and is unstable. The JSON report and CI/CD configuration may be subject to change or breakage
 across GitLab releases.
 
@@ -301,7 +301,9 @@ the security vulnerabilities in your groups, projects, and pipelines.
 
 ## Interacting with the vulnerabilities
 
-After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
+After you find a vulnerability, you can address it in the [vulnerability report](../vulnerabilities/index.md)
+or the [GitLab Agent's](../../clusters/agent/install/index.md#view-vulnerabilities-in-cluster-images)
+details section.
 
 ## Troubleshooting
 

@@ -52,5 +52,22 @@ RSpec.describe 'Create an issue' do
     it_behaves_like 'has spam protection' do
       let(:mutation_class) { ::Mutations::Issues::Create }
     end
+
+    context 'when position params are provided' do
+      let(:existing_issue) { create(:issue, project: project, relative_position: 50) }
+
+      before do
+        input.merge!(
+          move_after_id: existing_issue.to_global_id.to_s
+        )
+      end
+
+      it 'sets the correct position' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['issue']['relativePosition']).to be < existing_issue.relative_position
+      end
+    end
   end
 end

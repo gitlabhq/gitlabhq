@@ -135,6 +135,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'AutoDevops::DisableWorker' => 3,
         'AutoMergeProcessWorker' => 3,
         'BackgroundMigrationWorker' => 3,
+        'BackgroundMigration::CiDatabaseWorker' => 3,
         'BuildFinishedWorker' => 3,
         'BuildHooksWorker' => 3,
         'BuildQueueWorker' => 3,
@@ -348,6 +349,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Namespaces::OnboardingPipelineCreatedWorker' => 3,
         'Namespaces::OnboardingProgressWorker' => 3,
         'Namespaces::OnboardingUserAddedWorker' => 3,
+        'Namespaces::RefreshRootStatisticsWorker' => 3,
         'Namespaces::RootStatisticsWorker' => 3,
         'Namespaces::ScheduleAggregationWorker' => 3,
         'NetworkPolicyMetricsWorker' => 3,
@@ -371,7 +373,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'PagesDomainSslRenewalWorker' => 3,
         'PagesDomainVerificationWorker' => 3,
         'PagesTransferWorker' => 3,
-        'PagesUpdateConfigurationWorker' => 1,
         'PagesWorker' => 3,
         'PersonalAccessTokens::Groups::PolicyWorker' => 3,
         'PersonalAccessTokens::Instance::PolicyWorker' => 3,
@@ -459,7 +460,8 @@ RSpec.describe 'Every Sidekiq worker' do
         'WebHooks::DestroyWorker' => 3,
         'WebHooks::LogExecutionWorker' => 3,
         'Wikis::GitGarbageCollectWorker' => false,
-        'X509CertificateRevokeWorker' => 3
+        'X509CertificateRevokeWorker' => 3,
+        'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3
       }
     end
 

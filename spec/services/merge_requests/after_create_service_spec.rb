@@ -89,10 +89,10 @@ RSpec.describe MergeRequests::AfterCreateService do
         merge_request.mark_as_preparing!
       end
 
-      it 'marks the merge request as unchecked' do
-        execute_service
+      it 'checks for mergeability' do
+        expect(merge_request).to receive(:check_mergeability).with(async: true)
 
-        expect(merge_request.reload).to be_unchecked
+        execute_service
       end
 
       context 'when preparing for mergeability fails' do
@@ -108,17 +108,6 @@ RSpec.describe MergeRequests::AfterCreateService do
           expect { execute_service }.to raise_error(StandardError)
           expect(merge_request.reload).to be_preparing
         end
-
-        context 'when early_prepare_for_mergeability feature flag is disabled' do
-          before do
-            stub_feature_flags(early_prepare_for_mergeability: false)
-          end
-
-          it 'does not mark the merge request as unchecked' do
-            expect { execute_service }.to raise_error(StandardError)
-            expect(merge_request.reload).to be_preparing
-          end
-        end
       end
 
       context 'when preparing merge request fails' do
@@ -130,20 +119,9 @@ RSpec.describe MergeRequests::AfterCreateService do
             .and_raise(StandardError)
         end
 
-        it 'still marks the merge request as unchecked' do
+        it 'still checks for mergeability' do
+          expect(merge_request).to receive(:check_mergeability).with(async: true)
           expect { execute_service }.to raise_error(StandardError)
-          expect(merge_request.reload).to be_unchecked
-        end
-
-        context 'when early_prepare_for_mergeability feature flag is disabled' do
-          before do
-            stub_feature_flags(early_prepare_for_mergeability: false)
-          end
-
-          it 'does not mark the merge request as unchecked' do
-            expect { execute_service }.to raise_error(StandardError)
-            expect(merge_request.reload).to be_preparing
-          end
         end
       end
     end

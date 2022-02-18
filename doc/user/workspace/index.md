@@ -14,6 +14,9 @@ As with all projects, the items mentioned on this page are subject to change or 
 The development, release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 
+NOTE:
+Workspace is currently in development.
+
 Workspace will be above the [top-level namespaces](../group/index.md#namespaces) for you to manage
 everything you do as a GitLab administrator, including:
 
@@ -27,33 +30,12 @@ Our goal is to reach feature parity between SaaS and self-managed installations,
 - Hardware Controls. For functionality that does not apply to groups, Hardware Controls are only
   applicable to self-managed installations. There is one Hardware Controls section per installation.
 
-NOTE:
-Workspace is currently in development.
+To learn about the current state of workspace development,
+see [epic 4257](https://gitlab.com/groups/gitlab-org/-/epics/4257).
 
-## Demo: New hierarchy concept for groups and projects for epics
-
-The following demo introduces the new hierarchy concept for groups and projects for epics.
-
-<div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/embed/fE74lsG_8yM">Consolidating groups and projects update (2021-08-23)</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/fE74lsG_8yM" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
-
-## Concept previews
-
-The following provide a preview to the Workspace concept.
-
-![Workspace Overview](img/1.1-Instance_overview.png)
-
-![Groups Overview](img/1.2-Groups_overview.png)
-
-![Admin Overview](img/1.3-Admin.png)
-
-![Admin Overview](img/Admin_Settings.png)
-
-![Admin Overview](img/hardware_settings.png)
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video introduction to the new hierarchy concept for groups and projects for epics, see
+[Consolidating groups and projects update (August 2021)](https://www.youtube.com/watch?v=fE74lsG_8yM).
 
 ## Related topics
 

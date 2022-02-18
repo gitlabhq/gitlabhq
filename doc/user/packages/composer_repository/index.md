@@ -349,6 +349,16 @@ used to access them:
   subgroups.
 - A project deploy token only has access to packages published to that particular project.
 
+## Troubleshooting
+
+To improve performance, Composer caches files related to a package. Note that Composer doesn't remove data by
+itself. The cache grows as new packages are installed. If you encounter issues, clear the cache with
+this command:
+
+```shell
+composer clearcache
+```
+
 ## Supported CLI commands
 
 The GitLab Composer repository supports the following Composer CLI commands:

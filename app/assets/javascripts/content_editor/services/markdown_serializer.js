@@ -1,8 +1,8 @@
+import { DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
 import {
   MarkdownSerializer as ProseMirrorMarkdownSerializer,
   defaultMarkdownSerializer,
-} from 'prosemirror-markdown/src/to_markdown';
-import { DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
+} from '~/lib/prosemirror_markdown_serializer';
 import Audio from '../extensions/audio';
 import Blockquote from '../extensions/blockquote';
 import Bold from '../extensions/bold';

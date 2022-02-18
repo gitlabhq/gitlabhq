@@ -1,13 +1,14 @@
+import { nextTick } from 'vue';
+import { GlButton, GlBadge } from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
+import PublishButton from '~/batch_comments/components/publish_button.vue';
 import { createStore } from '~/batch_comments/stores';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import '~/behaviors/markdown/render_gfm';
 import { createDraft } from '../mock_data';
-
-const localVue = createLocalVue();
 
 const NoteableNoteStub = stubComponent(NoteableNote, {
   template: `
@@ -29,12 +30,13 @@ describe('Batch comments draft note component', () => {
   };
 
   const getList = () => getByRole(wrapper.element, 'list');
+  const findSubmitReviewButton = () => wrapper.findComponent(PublishButton);
+  const findAddCommentButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = (propsData = { draft }) => {
-    wrapper = shallowMount(localVue.extend(DraftNote), {
+    wrapper = shallowMount(DraftNote, {
       store,
       propsData,
-      localVue,
       stubs: {
         NoteableNote: NoteableNoteStub,
       },
@@ -54,7 +56,7 @@ describe('Batch comments draft note component', () => {
 
   it('renders template', () => {
     createComponent();
-    expect(wrapper.find('.draft-pending-label').exists()).toBe(true);
+    expect(wrapper.findComponent(GlBadge).exists()).toBe(true);
 
     const note = wrapper.find(NoteableNote);
 
@@ -65,7 +67,7 @@ describe('Batch comments draft note component', () => {
   describe('add comment now', () => {
     it('dispatches publishSingleDraft when clicking', () => {
       createComponent();
-      const publishNowButton = wrapper.find({ ref: 'publishNowButton' });
+      const publishNowButton = findAddCommentButton();
       publishNowButton.vm.$emit('click');
 
       expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith(
@@ -74,45 +76,60 @@ describe('Batch comments draft note component', () => {
       );
     });
 
-    it('sets as loading when draft is publishing', (done) => {
+    it('sets as loading when draft is publishing', async () => {
       createComponent();
       wrapper.vm.$store.state.batchComments.currentlyPublishingDrafts.push(1);
 
-      wrapper.vm.$nextTick(() => {
-        const publishNowButton = wrapper.find({ ref: 'publishNowButton' });
+      await nextTick();
+      const publishNowButton = findAddCommentButton();
 
-        expect(publishNowButton.props().loading).toBe(true);
+      expect(publishNowButton.props().loading).toBe(true);
+    });
 
-        done();
-      });
+    it('sets as disabled when review is publishing', async () => {
+      createComponent();
+      wrapper.vm.$store.state.batchComments.isPublishing = true;
+
+      await nextTick();
+      const publishNowButton = findAddCommentButton();
+
+      expect(publishNowButton.props().disabled).toBe(true);
+      expect(publishNowButton.props().loading).toBe(false);
+    });
+  });
+
+  describe('submit review', () => {
+    it('sets as disabled when draft is publishing', async () => {
+      createComponent();
+      wrapper.vm.$store.state.batchComments.currentlyPublishingDrafts.push(1);
+
+      await nextTick();
+      const publishNowButton = findSubmitReviewButton();
+
+      expect(publishNowButton.attributes().disabled).toBeTruthy();
     });
   });
 
   describe('update', () => {
-    it('dispatches updateDraft', (done) => {
+    it('dispatches updateDraft', async () => {
       createComponent();
       const note = wrapper.find(NoteableNote);
 
       note.vm.$emit('handleEdit');
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          const formData = {
-            note: draft,
-            noteText: 'a',
-            resolveDiscussion: false,
-          };
+      await nextTick();
+      const formData = {
+        note: draft,
+        noteText: 'a',
+        resolveDiscussion: false,
+      };
 
-          note.vm.$emit('handleUpdateNote', formData);
+      note.vm.$emit('handleUpdateNote', formData);
 
-          expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith(
-            'batchComments/updateDraft',
-            formData,
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith(
+        'batchComments/updateDraft',
+        formData,
+      );
     });
   });
 
@@ -130,7 +147,7 @@ describe('Batch comments draft note component', () => {
   });
 
   describe('quick actions', () => {
-    it('renders referenced commands', (done) => {
+    it('renders referenced commands', async () => {
       createComponent();
       wrapper.setProps({
         draft: {
@@ -141,14 +158,11 @@ describe('Batch comments draft note component', () => {
         },
       });
 
-      wrapper.vm.$nextTick(() => {
-        const referencedCommands = wrapper.find('.referenced-commands');
+      await nextTick();
+      const referencedCommands = wrapper.find('.referenced-commands');
 
-        expect(referencedCommands.exists()).toBe(true);
-        expect(referencedCommands.text()).toContain('test command');
-
-        done();
-      });
+      expect(referencedCommands.exists()).toBe(true);
+      expect(referencedCommands.text()).toContain('test command');
     });
   });
 

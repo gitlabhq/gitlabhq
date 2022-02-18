@@ -148,6 +148,32 @@ RSpec.describe Projects::AutocompleteService do
     end
   end
 
+  describe '#contacts' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, :crm_enabled) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:contact_1) { create(:contact, group: group) }
+    let_it_be(:contact_2) { create(:contact, group: group) }
+
+    subject { described_class.new(project, user).contacts.as_json }
+
+    before do
+      stub_feature_flags(customer_relations: true)
+      group.add_developer(user)
+    end
+
+    it 'returns contact data correctly' do
+      expected_contacts = [
+        { 'id' => contact_1.id, 'email' => contact_1.email,
+          'first_name' => contact_1.first_name, 'last_name' => contact_1.last_name },
+        { 'id' => contact_2.id, 'email' => contact_2.email,
+          'first_name' => contact_2.first_name, 'last_name' => contact_2.last_name }
+      ]
+
+      expect(subject).to match_array(expected_contacts)
+    end
+  end
+
   describe '#labels_as_hash' do
     def expect_labels_to_equal(labels, expected_labels)
       expect(labels.size).to eq(expected_labels.size)

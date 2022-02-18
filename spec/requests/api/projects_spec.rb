@@ -30,7 +30,7 @@ RSpec.shared_examples 'languages and percentages JSON response' do
 
   context 'when the languages were detected before' do
     before do
-      Projects::DetectRepositoryLanguagesService.new(project, project.owner).execute
+      Projects::DetectRepositoryLanguagesService.new(project, project.first_owner).execute
     end
 
     it 'returns the detection from the database' do
@@ -2166,6 +2166,7 @@ RSpec.describe API::Projects do
             approvals_before_merge
             compliance_frameworks
             mirror
+            requirements_access_level
             requirements_enabled
             security_and_compliance_enabled
             issues_template
@@ -2710,7 +2711,7 @@ RSpec.describe API::Projects do
       it 'returns the project users' do
         get api("/projects/#{project.id}/users", current_user)
 
-        user = project.namespace.owner
+        user = project.namespace.first_owner
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers

@@ -289,7 +289,7 @@ RSpec.describe ApplicationHelper do
 
       it 'returns paths for autocomplete_sources_controller' do
         sources = helper.autocomplete_data_sources(project, noteable_type)
-        expect(sources.keys).to match_array([:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets])
+        expect(sources.keys).to match_array([:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets, :contacts])
         sources.keys.each do |key|
           expect(sources[key]).not_to be_nil
         end

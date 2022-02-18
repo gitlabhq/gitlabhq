@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import NothingToMerge from '~/vue_merge_request_widget/components/states/nothing_to_merge.vue';
 
 describe('NothingToMerge', () => {
@@ -20,7 +20,7 @@ describe('NothingToMerge', () => {
 
     it('should not show new blob link if there is no link available', () => {
       vm.mr.newBlobPath = null;
-      Vue.nextTick(() => {
+      nextTick(() => {
         expect(vm.$el.querySelector('[data-testid="createFileButton"]')).toEqual(null);
       });
     });

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import IdeStatusBar from '~/ide/components/ide_status_bar.vue';
@@ -73,7 +73,7 @@ describe('ideStatusBar', () => {
     });
 
     describe('pipeline status', () => {
-      it('opens right sidebar on clicking icon', (done) => {
+      it('opens right sidebar on clicking icon', async () => {
         jest.spyOn(vm, 'openRightPane').mockImplementation(() => {});
         Vue.set(vm.$store.state.pipelines, 'latestPipeline', {
           details: {
@@ -88,14 +88,10 @@ describe('ideStatusBar', () => {
           },
         });
 
-        vm.$nextTick()
-          .then(() => {
-            vm.$el.querySelector('.ide-status-pipeline button').click();
+        await nextTick();
+        vm.$el.querySelector('.ide-status-pipeline button').click();
 
-            expect(vm.openRightPane).toHaveBeenCalledWith(rightSidebarViews.pipelines);
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(vm.openRightPane).toHaveBeenCalledWith(rightSidebarViews.pipelines);
       });
     });
 

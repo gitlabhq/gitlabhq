@@ -11,7 +11,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
   let_it_be(:project) { create(:project, :repository) }
 
   before do
-    sign_in project.owner
+    sign_in project.first_owner
     visit project_new_blob_path(project, 'master', file_name: filename, **params)
   end
 

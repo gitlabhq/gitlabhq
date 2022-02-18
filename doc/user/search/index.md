@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Search issues and merge requests
 
-To search through issues and merge requests in multiple projects, on the top bar, select the **Issues** or **Merge Requests** links.
+To search through issues and merge requests in multiple projects, on the top bar, select the **Issues** or **Merge requests** links.
 
 The numbers indicate how many issues, merge requests, and to-do items are assigned to you:
 
@@ -32,24 +32,33 @@ in the search field in the upper right corner:
 
 ### Filter issue and merge request lists
 
-> - Filter by Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab Ultimate 12.9.
-> - Filter by child Epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab Ultimate 13.0.
-> - Filter by Iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6. Moved to GitLab Premium in 13.9.
+> - Filtering by epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab 12.9.
+> - Filtering by child epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab 13.0.
+> - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6. Moved from GitLab Ultimate to Premium in 13.9.
+> - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
 
-Follow these steps to filter the **Issues** and **Merge Requests** list pages in projects and
+Follow these steps to filter the **Issues** and **Merge requests** list pages in projects and
 groups:
 
 1. Click in the field **Search or filter results...**.
 1. In the dropdown menu that appears, select the attribute you wish to filter by:
-   - Author
    - Assignee
-   - [Milestone](../project/milestones/index.md)
-   - [Iteration](../group/iterations/index.md)
-   - Release
-   - [Label](../project/labels.md)
-   - My-reaction
+   - Author
    - Confidential
    - [Epic and child Epic](../group/epics/index.md) (available only for the group the Epic was created, not for [higher group levels](https://gitlab.com/gitlab-org/gitlab/-/issues/233729)).
+   - [Iteration](../group/iterations/index.md)
+   - [Label](../project/labels.md)
+   - [Milestone](../project/milestones/index.md)
+   - My-reaction
+   - Release
+   - Type
+
+     FLAG:
+     On self-managed GitLab, by default filtering by type is not available.
+     To make it available per group, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `vue_issues_list`.
+     On GitLab.com, this feature is not available.
+
+   - Weight
    - Search for this text
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -95,7 +104,7 @@ You can add this URL to your feed reader.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
 
-You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge Requests** list. Enter filter `#30` to return only merge request 30.
+You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge requests** list. Enter filter `#30` to return only merge request 30.
 
 ![filter issues by specific ID](img/issue_search_by_id.png)
 
@@ -270,8 +279,13 @@ search, or choose a specific group or project.
 
 To search through code or other documents in a single project, you can use
 the search field on the top-right of your screen while the project page is open.
-Code search shows only the first result in the file. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052)
-in GitLab 14.7, you can access Git blame from any line that returned a result from the code search:
+Code search shows only the first result in the file.
+
+#### Git blame from code search **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
+
+You can access Git blame from any line that returned a result from the code search:
 
 ![code search results](img/code_search.png)
 

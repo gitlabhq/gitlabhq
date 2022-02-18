@@ -67,7 +67,7 @@ module Gitlab
             Gitlab::AppLogger.warn "Batched background migration for the given configuration is already finished: #{configuration}"
           else
             migration.finalizing!
-            migration.batched_jobs.pending.each { |job| migration_wrapper.perform(job) }
+            migration.batched_jobs.with_status(:pending).each { |job| migration_wrapper.perform(job) }
 
             run_migration_while(migration, :finalizing)
 
@@ -95,7 +95,8 @@ module Gitlab
             active_migration.table_name,
             active_migration.column_name,
             batch_min_value: batch_min_value,
-            batch_size: active_migration.batch_size)
+            batch_size: active_migration.batch_size,
+            job_arguments: active_migration.job_arguments)
 
           return if next_batch_bounds.nil?
 
@@ -115,7 +116,7 @@ module Gitlab
         def finish_active_migration(active_migration)
           return if active_migration.batched_jobs.active.exists?
 
-          if active_migration.batched_jobs.failed.exists?
+          if active_migration.batched_jobs.with_status(:failed).exists?
             active_migration.failed!
           else
             active_migration.finished!

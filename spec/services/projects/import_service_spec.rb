@@ -298,7 +298,7 @@ RSpec.describe Projects::ImportService do
     end
 
     def stub_github_omniauth_provider
-      provider = OpenStruct.new(
+      provider = ActiveSupport::InheritableOptions.new(
         'name' => 'github',
         'app_id' => 'asd123',
         'app_secret' => 'asd123',

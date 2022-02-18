@@ -1,5 +1,6 @@
 import { GlToggle, GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import FeatureFlagsTable from '~/feature_flags/components/feature_flags_table.vue';
@@ -148,13 +149,12 @@ describe('Feature flag table', () => {
       });
     });
 
-    it('should trigger a toggle event', () => {
+    it('should trigger a toggle event', async () => {
       toggle.vm.$emit('change');
       const flag = { ...props.featureFlags[0], active: !props.featureFlags[0].active };
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('toggle-flag')).toEqual([[flag]]);
-      });
+      await nextTick();
+      expect(wrapper.emitted('toggle-flag')).toEqual([[flag]]);
     });
 
     it('tracks a click', () => {

@@ -1,9 +1,8 @@
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-import { VALIDATE_INTEGRATION_FORM_EVENT } from '~/integrations/constants';
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
-import eventHub from '~/integrations/edit/event_hub';
 import { createStore } from '~/integrations/edit/store';
 
 describe('JiraIssuesFields', () => {
@@ -195,7 +194,7 @@ describe('JiraIssuesFields', () => {
         await setEnableCheckbox(true);
         expect(findJiraForVulnerabilities().attributes('show-full-feature')).toBe('true');
         wrapper.setProps({ showJiraVulnerabilitiesIntegration: false });
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findJiraForVulnerabilities().attributes('show-full-feature')).toBeUndefined();
       });
 
@@ -222,7 +221,7 @@ describe('JiraIssuesFields', () => {
     });
 
     describe('Project key input field', () => {
-      beforeEach(() => {
+      it('sets Project Key `state` attribute to `true` by default', () => {
         createComponent({
           props: {
             initialProjectKey: '',
@@ -230,29 +229,32 @@ describe('JiraIssuesFields', () => {
           },
           mountFn: shallowMountExtended,
         });
-      });
 
-      it('sets Project Key `state` attribute to `true` by default', () => {
         assertProjectKeyState('true');
       });
 
-      describe('when event hub recieves `VALIDATE_INTEGRATION_FORM_EVENT` event', () => {
+      describe('when `isValidated` prop is true', () => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              initialProjectKey: '',
+              initialEnableJiraIssues: true,
+              isValidated: true,
+            },
+            mountFn: shallowMountExtended,
+          });
+        });
+
         describe('with no project key', () => {
           it('sets Project Key `state` attribute to `undefined`', async () => {
-            eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
-            await wrapper.vm.$nextTick();
-
             assertProjectKeyState(undefined);
           });
         });
 
         describe('when project key is set', () => {
           it('sets Project Key `state` attribute to `true`', async () => {
-            eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
-
             // set the project key
             await findProjectKey().vm.$emit('input', 'AB');
-            await wrapper.vm.$nextTick();
 
             assertProjectKeyState('true');
           });

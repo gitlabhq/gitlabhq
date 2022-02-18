@@ -55,13 +55,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
         }
       end
 
-      context 'when deprecated types keyword is defined' do
+      context 'when deprecated types/type keywords are defined' do
         let(:project) { create(:project, :repository) }
         let(:user) { create(:user) }
 
         let(:hash) do
           { types: %w(test deploy),
-            rspec: { script: 'rspec' } }
+            rspec: { script: 'rspec', type: 'test' } }
         end
 
         before do
@@ -69,11 +69,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
         end
 
         it 'returns array of types as stages with a warning' do
+          expect(root.jobs_value[:rspec][:stage]).to eq 'test'
           expect(root.stages_value).to eq %w[test deploy]
-          expect(root.warnings).to match_array(["root `types` is deprecated in 9.0 and will be removed in 15.0."])
+          expect(root.warnings).to match_array([
+            "root `types` is deprecated in 9.0 and will be removed in 15.0.",
+            "jobs:rspec `type` is deprecated in 9.0 and will be removed in 15.0."
+          ])
         end
 
-        it 'logs usage of types keyword' do
+        it 'logs usage of keywords' do
           expect(Gitlab::AppJsonLogger).to(
             receive(:info)
               .with(event: 'ci_used_deprecated_keyword',
@@ -350,9 +354,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
       root.compose!
     end
 
-    context 'when before script is not an array' do
+    context 'when before script is a number' do
       let(:hash) do
-        { before_script: 'ls' }
+        { before_script: 123 }
       end
 
       describe '#valid?' do
@@ -364,7 +368,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
       describe '#errors' do
         it 'reports errors from child nodes' do
           expect(root.errors)
-            .to include 'before_script config should be an array containing strings and arrays of strings'
+            .to include 'before_script config should be a string or a nested array of strings up to 10 levels deep'
         end
       end
     end

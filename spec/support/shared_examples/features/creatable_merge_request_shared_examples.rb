@@ -62,7 +62,7 @@ RSpec.shared_examples 'a creatable merge request' do
   end
 
   it 'updates the branches when selecting a new target project', :js do
-    target_project_member = target_project.owner
+    target_project_member = target_project.first_owner
     ::Branches::CreateService.new(target_project, target_project_member)
       .execute('a-brand-new-branch-to-test', 'master')
 

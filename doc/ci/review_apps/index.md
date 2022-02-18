@@ -1,8 +1,7 @@
 ---
 stage: Verify
-group: Testing
+group: Pipeline Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Review Apps **(FREE)**
@@ -73,7 +72,7 @@ you can copy and paste into `.gitlab-ci.yml` as a starting point.
 
 Prerequisite:
 
-- You need at least the Developer [role](../../user/permissions.md) for the project.
+- You need at least the Developer role for the project.
 
 To use the Review Apps template:
 

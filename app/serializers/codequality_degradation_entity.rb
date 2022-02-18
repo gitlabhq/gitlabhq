@@ -2,7 +2,9 @@
 
 class CodequalityDegradationEntity < Grape::Entity
   expose :description
-  expose :severity
+  expose :severity do |degradation|
+    degradation.dig(:severity)&.downcase
+  end
 
   expose :file_path do |degradation|
     degradation.dig(:location, :path)

@@ -1,6 +1,7 @@
 import { GlFormCheckbox } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import ActiveCheckbox from '~/integrations/edit/components/active_checkbox.vue';
 import { createStore } from '~/integrations/edit/store';
 
@@ -68,7 +69,7 @@ describe('ActiveCheckbox', () => {
         it('switches the form value', async () => {
           findInputInCheckbox().trigger('click');
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
           expect(findGlFormCheckbox().vm.$attrs.checked).toBe(false);
         });
       });

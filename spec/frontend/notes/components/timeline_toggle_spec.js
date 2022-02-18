@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import TimelineToggle, {
   timelineEnabledTooltip,
@@ -10,8 +11,7 @@ import createStore from '~/notes/stores';
 import { trackToggleTimelineView } from '~/notes/utils';
 import Tracking from '~/tracking';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Timeline toggle', () => {
   let wrapper;
@@ -23,7 +23,6 @@ describe('Timeline toggle', () => {
     jest.spyOn(Tracking, 'event').mockImplementation();
 
     wrapper = shallowMount(TimelineToggle, {
-      localVue,
       store,
     });
   };
@@ -65,7 +64,7 @@ describe('Timeline toggle', () => {
     it('should set correct UI state', async () => {
       store.state.isTimelineEnabled = true;
       findGlButton().vm.$emit('click', mockEvent);
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findGlButton().attributes('title')).toBe(timelineEnabledTooltip);
       expect(findGlButton().attributes('selected')).toBe('true');
       expect(mockEvent.currentTarget.blur).toHaveBeenCalled();
@@ -73,7 +72,7 @@ describe('Timeline toggle', () => {
 
     it('should track Snowplow event', async () => {
       store.state.isTimelineEnabled = true;
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findGlButton().trigger('click');
 
@@ -98,7 +97,7 @@ describe('Timeline toggle', () => {
     it('should set correct UI state', async () => {
       store.state.isTimelineEnabled = false;
       findGlButton().vm.$emit('click', mockEvent);
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findGlButton().attributes('title')).toBe(timelineDisabledTooltip);
       expect(findGlButton().attributes('selected')).toBe(undefined);
       expect(mockEvent.currentTarget.blur).toHaveBeenCalled();
@@ -106,7 +105,7 @@ describe('Timeline toggle', () => {
 
     it('should track Snowplow event', async () => {
       store.state.isTimelineEnabled = false;
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findGlButton().trigger('click');
 

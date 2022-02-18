@@ -24,6 +24,8 @@ module Gitlab
 
           validate_permission!(:create_note)
 
+          validate_from_address!
+
           raise NoteableNotFoundError unless noteable
           raise EmptyEmailError if note_message.blank?
 
@@ -55,6 +57,17 @@ module Gitlab
           return message unless sent_notification.noteable_type == "Issue"
 
           message_with_appended_reply
+        end
+
+        def from_address
+          mail.from&.first
+        end
+
+        def validate_from_address!
+          # Recipieint is always set to Support bot for ServiceDesk issues so we should exclude those.
+          return if author == User.support_bot
+
+          raise UserNotFoundError unless from_address && author.verified_email?(from_address)
         end
       end
     end

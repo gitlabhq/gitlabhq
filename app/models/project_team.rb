@@ -107,6 +107,10 @@ class ProjectTeam
       end
   end
 
+  def owner?(user)
+    owners.include?(user)
+  end
+
   def import(source_project, current_user = nil)
     target_project = project
 

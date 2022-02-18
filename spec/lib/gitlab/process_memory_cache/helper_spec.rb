@@ -33,12 +33,19 @@ RSpec.describe Gitlab::ProcessMemoryCache::Helper, :use_clean_rails_memory_store
     end
 
     it 'resets the cache when the shared key is missing', :aggregate_failures do
-      expect(Rails.cache).to receive(:read).with(:cached_content_instance_key).twice.and_return(nil)
+      allow(Rails.cache).to receive(:read).with(:cached_content_instance_key).and_return(nil)
       is_expected.to receive(:expensive_computation).thrice.and_return(1, 2, 3)
 
       3.times do |index|
         expect(subject.cached_content).to eq(index + 1)
       end
+    end
+
+    it 'does not set the shared timestamp if it is already present', :redis do
+      subject.clear_cached_content
+      is_expected.to receive(:expensive_computation).once.and_return(1)
+
+      expect { subject.cached_content }.not_to change { Rails.cache.read(:cached_content_instance_key) }
     end
   end
 

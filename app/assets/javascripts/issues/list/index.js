@@ -30,6 +30,7 @@ export function mountJiraIssuesListApp() {
 
   return new Vue({
     el,
+    name: 'JiraIssuesImportStatusRoot',
     apolloProvider,
     render(createComponent) {
       return createComponent(JiraIssuesImportStatusRoot, {
@@ -99,6 +100,7 @@ export function mountIssuesListApp() {
     hasMultipleIssueAssigneesFeature,
     importCsvIssuesPath,
     initialEmail,
+    initialSort,
     isAnonymousSearchDisabled,
     isIssueRepositioningDisabled,
     isProject,
@@ -118,6 +120,7 @@ export function mountIssuesListApp() {
 
   return new Vue({
     el,
+    name: 'IssuesListRoot',
     apolloProvider,
     provide: {
       autocompleteAwardEmojisPath,
@@ -133,6 +136,7 @@ export function mountIssuesListApp() {
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasMultipleIssueAssigneesFeature: parseBoolean(hasMultipleIssueAssigneesFeature),
+      initialSort,
       isAnonymousSearchDisabled: parseBoolean(isAnonymousSearchDisabled),
       isIssueRepositioningDisabled: parseBoolean(isIssueRepositioningDisabled),
       isProject: parseBoolean(isProject),

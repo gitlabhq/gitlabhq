@@ -115,35 +115,39 @@ http://secondary.example.com/
 
 To check if PostgreSQL replication is working, check if:
 
-- [Nodes are pointing to the correct database instance](#are-nodes-pointing-to-the-correct-database-instance).
-- [Geo can detect the current node correctly](#can-geo-detect-the-current-node-correctly).
+- [Sites are pointing to the correct database node](#are-sites-pointing-to-the-correct-database-node).
+- [Geo can detect the current site correctly](#can-geo-detect-the-current-site-correctly).
 
-#### Are nodes pointing to the correct database instance?
+#### Are sites pointing to the correct database node?
 
-You should make sure your **primary** Geo node points to the instance with
-writing permissions.
+You should make sure your **primary** Geo [site](../glossary.md) points to
+the database node that has write permissions.
 
-Any **secondary** nodes should point only to read-only instances.
+Any **secondary** sites should point only to read-only database nodes.
 
-#### Can Geo detect the current node correctly?
+#### Can Geo detect the current site correctly?
 
-Geo finds the current machine's Geo node name in `/etc/gitlab/gitlab.rb` by:
+Geo finds the current Puma or Sidekiq node's Geo [site](../glossary.md) name in
+`/etc/gitlab/gitlab.rb` with the following logic:
 
-- Using the `gitlab_rails['geo_node_name']` setting.
-- If that is not defined, using the `external_url` setting.
+1. Get the "Geo node name" (there is
+   [an issue to rename the settings to "Geo site name"](https://gitlab.com/gitlab-org/gitlab/-/issues/335944)):
+   - Omnibus GitLab: Get the `gitlab_rails['geo_node_name']` setting.
+   - GitLab Helm Charts: Get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/index.html)).
+1. If that is not defined, then get the `external_url` setting.
 
-This name is used to look up the node with the same **Name** in the **Geo Nodes**
+This name is used to look up the Geo site with the same **Name** in the **Geo Sites**
 dashboard.
 
-To check if the current machine has a node name that matches a node in the
+To check if the current machine has a site name that matches a site in the
 database, run the check task:
 
 ```shell
 sudo gitlab-rake gitlab:geo:check
 ```
 
-It displays the current machine's node name and whether the matching database
-record is a **primary** or **secondary** node.
+It displays the current machine's site name and whether the matching database
+record is a **primary** or **secondary** site.
 
 ```plaintext
 This machine's Geo node name matches a database record ... yes, found a secondary node named "Shanghai"
@@ -157,6 +161,9 @@ This machine's Geo node name matches a database record ... no
   For more information see:
   doc/administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-node-correctly
 ```
+
+Learn more about recommended site names in the description of the Name field in
+[Geo Admin Area Common Settings](../../../user/admin_area/geo_nodes.md#common-settings).
 
 ### Message: `WARNING: oldest xmin is far in the past` and `pg_wal` size growing
 
@@ -692,6 +699,8 @@ determine the actual replication status of Design repositories.
 
 ### Sync failure message: "Verification failed with: Error during verification: File is not checksummable"
 
+#### Missing files on the Geo primary site
+
 In GitLab 14.5 and earlier, certain data types which were missing on the Geo primary site were marked as "synced" on Geo secondary sites. This was because from the perspective of Geo secondary sites, the state matched the primary site and nothing more could be done on secondary sites.
 
 Secondaries would regularly try to sync these files again by using the "verification" feature:
@@ -744,6 +753,32 @@ This behavior affects only the following data types through GitLab 14.6:
 [Since GitLab 14.7, files that are missing on the primary site are now treated as sync failures](https://gitlab.com/gitlab-org/gitlab/-/issues/348745)
 to make Geo visibly surface data loss risks. The sync/verification loop is
 therefore short-circuited. `last_sync_failure` is now set to `The file is missing on the Geo primary site`.
+
+#### Failed syncs with GitLab-managed object storage replication
+
+There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
+that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
+
+Since GitLab 14.2, verification failures result in synchronization failures and cause
+a re-synchronization of these objects.
+
+As verification is not implemented for files stored in object storage (see
+[issue 13845](https://gitlab.com/gitlab-org/gitlab/-/issues/13845) for more details), this
+results in a loop that consistently fails for all objects stored in object storage.
+
+You can work around this by marking the objects as synced and succeeded verification, however
+be aware that can also mark objects that may be
+[missing from the primary](#missing-files-on-the-geo-primary-site).
+
+To do that, enter the [Rails console](../../troubleshooting/navigating_gitlab_via_rails_console.md)
+and run:
+
+```ruby
+Gitlab::Geo.verification_enabled_replicator_classes.each do |klass|
+  updated = klass.registry_class.failed.where(last_sync_failure: "Verification failed with: Error during verification: File is not checksummable").update_all(verification_checksum: '0000000000000000000000000000000000000000', verification_state: 2, verification_failure: nil, verification_retry_at: nil, state: 2, last_sync_failure: nil, retry_at: nil, verification_retry_count: 0, retry_count: 0)
+  pp "Updated #{updated} #{klass.replicable_name_plural}"
+end
+```
 
 ## Fixing errors during a failover or when promoting a secondary to a primary node
 

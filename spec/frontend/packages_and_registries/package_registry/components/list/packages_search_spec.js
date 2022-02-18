@@ -5,7 +5,10 @@ import component from '~/packages_and_registries/package_registry/components/lis
 import PackageTypeToken from '~/packages_and_registries/package_registry/components/list/tokens/package_type_token.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { LIST_KEY_CREATED_AT } from '~/packages_and_registries/package_registry/constants';
+
 import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
 
 jest.mock('~/packages_and_registries/shared/utils');
@@ -22,6 +25,7 @@ describe('Package Search', () => {
 
   const findRegistrySearch = () => wrapper.findComponent(RegistrySearch);
   const findUrlSync = () => wrapper.findComponent(UrlSync);
+  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   const mountComponent = (isGroupPage = false) => {
     wrapper = shallowMountExtended(component, {
@@ -32,6 +36,7 @@ describe('Package Search', () => {
       },
       stubs: {
         UrlSync,
+        LocalStorageSync,
       },
     });
   };
@@ -64,6 +69,19 @@ describe('Package Search', () => {
     expect(findUrlSync().exists()).toBe(true);
   });
 
+  it('has a LocalStorageSync component', () => {
+    mountComponent();
+
+    expect(findLocalStorageSync().props()).toMatchObject({
+      asJson: true,
+      storageKey: 'package_registry_list_sorting',
+      value: {
+        orderBy: LIST_KEY_CREATED_AT,
+        sort: 'desc',
+      },
+    });
+  });
+
   it.each`
     isGroupPage | page
     ${false}    | ${'project'}
@@ -92,7 +110,7 @@ describe('Package Search', () => {
 
     await nextTick();
 
-    expect(findRegistrySearch().props('sorting')).toEqual({ sort: 'foo', orderBy: 'name' });
+    expect(findRegistrySearch().props('sorting')).toEqual({ sort: 'foo', orderBy: 'created_at' });
 
     // there is always a first call on mounted that emits up default values
     expect(wrapper.emitted('update')[1]).toEqual([
@@ -101,7 +119,7 @@ describe('Package Search', () => {
           packageName: '',
           packageType: undefined,
         },
-        sort: 'NAME_FOO',
+        sort: 'CREATED_FOO',
       },
     ]);
   });
@@ -133,7 +151,7 @@ describe('Package Search', () => {
           packageName: '',
           packageType: undefined,
         },
-        sort: 'NAME_DESC',
+        sort: 'CREATED_DESC',
       },
     ]);
   });

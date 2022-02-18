@@ -79,6 +79,7 @@ eslint-report.html
 /deprecations/
 /knapsack/
 /rspec_flaky/
+/rspec/
 /locale/**/LC_MESSAGES
 /locale/**/*.time_stamp
 /.rspec

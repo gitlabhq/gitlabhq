@@ -10,8 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 A Sidekiq job is enqueued whenever `deliver_later` is called on an `ActionMailer`.
 If a mailer argument needs to be added or removed, it is important to ensure
-both backward and forward compatibility. Adhere to the Sidekiq Style Guide steps for
-[changing the arguments for a worker](sidekiq_style_guide.md#changing-the-arguments-for-a-worker).
+both backward and forward compatibility. Adhere to the Sidekiq steps for
+[changing the arguments for a worker](sidekiq/compatibility_across_updates.md#changing-the-arguments-for-a-worker).
 
 In the following example from [`NotificationService`](https://gitlab.com/gitlab-org/gitlab/-/blob/33ccb22e4fc271dbaac94b003a7a1a2915a13441/app/services/notification_service.rb#L74)
 adding or removing an argument in this mailer's definition may cause problems
@@ -88,6 +88,8 @@ See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#
    ```
 
    As mentioned, the part after `+` is ignored, and this message is sent to the mailbox for `gitlab-incoming@gmail.com`.
+
+1. Read the [MailRoom Gem updates](#mailroom-gem-updates) section for more details before you proceed to make sure you have the right version of MailRoom installed. In summary, you need to update the `gitlab-mail_room` version in the `Gemfile` to the latest `gitlab-mail_room` temporarily and run `bundle install`. **Do not commit** this change as it's a temporary workaround.
 
 1. Run this command in the GitLab root directory to launch `mail_room`:
 

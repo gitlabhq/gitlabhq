@@ -1,6 +1,7 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import ResetKey from '~/prometheus_alerts/components/reset_key.vue';
@@ -45,37 +46,31 @@ describe('ResetKey', () => {
       expect(vm.find('.js-reset-auth-key').text()).toEqual('Reset key');
     });
 
-    it('reset updates key', () => {
+    it('reset updates key', async () => {
       mock.onPost(propsData.changeKeyUrl).replyOnce(200, { token: 'newToken' });
 
       vm.find(GlModal).vm.$emit('ok');
 
-      return vm.vm
-        .$nextTick()
-        .then(waitForPromises)
-        .then(() => {
-          expect(vm.vm.authorizationKey).toEqual('newToken');
-          expect(vm.find('#authorization-key').attributes('value')).toEqual('newToken');
-        });
+      await nextTick();
+      await waitForPromises();
+      expect(vm.vm.authorizationKey).toEqual('newToken');
+      expect(vm.find('#authorization-key').attributes('value')).toEqual('newToken');
     });
 
-    it('reset key failure shows error', () => {
+    it('reset key failure shows error', async () => {
       mock.onPost(propsData.changeKeyUrl).replyOnce(500);
 
       vm.find(GlModal).vm.$emit('ok');
 
-      return vm.vm
-        .$nextTick()
-        .then(waitForPromises)
-        .then(() => {
-          expect(vm.find('#authorization-key').attributes('value')).toEqual(
-            propsData.initialAuthorizationKey,
-          );
+      await nextTick();
+      await waitForPromises();
+      expect(vm.find('#authorization-key').attributes('value')).toEqual(
+        propsData.initialAuthorizationKey,
+      );
 
-          expect(document.querySelector('.flash-container').innerText.trim()).toEqual(
-            'Failed to reset key. Please try again.',
-          );
-        });
+      expect(document.querySelector('.flash-container').innerText.trim()).toEqual(
+        'Failed to reset key. Please try again.',
+      );
     });
   });
 
@@ -92,14 +87,13 @@ describe('ResetKey', () => {
       expect(vm.find('#authorization-key').attributes('value')).toEqual('');
     });
 
-    it('Generate key button triggers key change', () => {
+    it('Generate key button triggers key change', async () => {
       mock.onPost(propsData.changeKeyUrl).replyOnce(200, { token: 'newToken' });
 
       vm.find('.js-reset-auth-key').vm.$emit('click');
 
-      return waitForPromises().then(() => {
-        expect(vm.find('#authorization-key').attributes('value')).toEqual('newToken');
-      });
+      await waitForPromises();
+      expect(vm.find('#authorization-key').attributes('value')).toEqual('newToken');
     });
   });
 });

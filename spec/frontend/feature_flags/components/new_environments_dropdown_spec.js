@@ -1,6 +1,7 @@
 import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import NewEnvironmentsDropdown from '~/feature_flags/components/new_environments_dropdown.vue';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -47,16 +48,13 @@ describe('New Environments Dropdown', () => {
 
   describe('with empty results', () => {
     let item;
-    beforeEach(() => {
+    beforeEach(async () => {
       axiosMock.onGet(TEST_HOST).reply(200, []);
       wrapper.find(GlSearchBoxByType).vm.$emit('focus');
       wrapper.find(GlSearchBoxByType).vm.$emit('input', TEST_SEARCH);
-      return axios
-        .waitForAll()
-        .then(() => wrapper.vm.$nextTick())
-        .then(() => {
-          item = wrapper.find(GlDropdownItem);
-        });
+      await axios.waitForAll();
+      await nextTick();
+      item = wrapper.find(GlDropdownItem);
     });
 
     it('should display a Create item label', () => {

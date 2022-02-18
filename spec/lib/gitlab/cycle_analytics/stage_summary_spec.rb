@@ -15,6 +15,13 @@ RSpec.describe Gitlab::CycleAnalytics::StageSummary do
 
   let(:stage_summary) { described_class.new(project, **args).data }
 
+  describe '#identifier' do
+    it 'returns identifiers for each metric' do
+      identifiers = stage_summary.pluck(:identifier)
+      expect(identifiers).to eq(%i[issues commits deploys deployment_frequency])
+    end
+  end
+
   describe "#new_issues" do
     subject { stage_summary.first }
 

@@ -9,5 +9,9 @@ module Backup
 
       super('uploads', File.join(Gitlab.config.uploads.storage_path, "uploads"), excludes: ['tmp'])
     end
+
+    def human_name
+      _('uploads')
+    end
   end
 end

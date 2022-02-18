@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 We welcome merge requests from everyone, with fixes and improvements
 to GitLab code, tests, and documentation. The issues that are specifically suitable
-for community contributions are listed with the [`Accepting merge requests`](issue_workflow.md#label-for-community-contributors)
+for community contributions have the [`Seeking community contributions`](issue_workflow.md#label-for-community-contributors)
 label, but you are free to contribute to any issue you want.
 
 If an issue is marked for the current milestone at any time, even
@@ -18,7 +18,7 @@ in order to ensure the work is finished before the release date.
 
 If you want to add a new feature that is not labeled, it is best to first create
 an issue (if there isn't one already) and leave a comment asking for it
-to be marked as `Accepting merge requests`. See the [feature proposals](issue_workflow.md#feature-proposals)
+to be labeled as `Seeking community contributions`. See the [feature proposals](issue_workflow.md#feature-proposals)
 section.
 
 Merge requests should be submitted to the appropriate project at GitLab.com, for example
@@ -71,6 +71,9 @@ request is as follows:
    1. The MR must include *Before* and *After* screenshots if UI changes are made.
    1. Include any steps or setup required to ensure reviewers can view the changes you've made (for example, include any information about feature flags).
 1. If you're allowed to, set a relevant milestone and [labels](issue_workflow.md).
+   MR labels should generally match the corresponding issue (if there is one).
+   The group label should reflect the group that executed or coached the work,
+   not necessarily the group that owns the feature.
 1. UI changes should use available components from the GitLab Design System,
    [Pajamas](https://design.gitlab.com/).
 1. If the MR changes CSS classes, please include the list of affected pages, which

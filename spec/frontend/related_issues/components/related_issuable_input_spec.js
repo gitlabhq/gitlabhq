@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import RelatedIssuableInput from '~/related_issues/components/related_issuable_input.vue';
 import { issuableTypesMap, PathIdSeparator } from '~/related_issues/constants';
@@ -82,7 +83,7 @@ describe('RelatedIssuableInput', () => {
 
       wrapper.find('li').trigger('click');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(document.activeElement).toBe(wrapper.find({ ref: 'input' }).element);
     });

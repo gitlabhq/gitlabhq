@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::AutocompleteSourcesController do
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, reload: true) { create(:group) }
   let_it_be(:project) { create(:project, namespace: group) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
@@ -64,6 +64,64 @@ RSpec.describe Projects::AutocompleteSourcesController do
         project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
 
         get :milestones, format: :json, params: { namespace_id: group.path, project_id: project.path }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'GET contacts' do
+    let_it_be(:contact_1) { create(:contact, group: group) }
+    let_it_be(:contact_2) { create(:contact, group: group) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when feature flag is enabled' do
+      context 'when a group has contact relations enabled' do
+        before do
+          create(:crm_settings, group: group, enabled: true)
+        end
+
+        context 'when a user can read contacts' do
+          it 'lists contacts' do
+            group.add_developer(user)
+
+            get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path }
+
+            emails = json_response.map { |contact_data| contact_data["email"] }
+            expect(emails).to match_array([contact_1.email, contact_2.email])
+          end
+        end
+
+        context 'when a user can not read contacts' do
+          it 'renders 404' do
+            get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      context 'when a group has contact relations disabled' do
+        it 'renders 404' do
+          group.add_developer(user)
+
+          get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(customer_relations: false)
+      end
+
+      it 'renders 404' do
+        get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

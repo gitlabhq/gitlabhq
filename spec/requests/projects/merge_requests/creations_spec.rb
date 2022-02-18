@@ -7,7 +7,7 @@ RSpec.describe 'merge requests creations' do
     include ProjectForksHelper
 
     let(:project) { create(:project, :repository) }
-    let(:user) { project.owner }
+    let(:user) { project.first_owner }
 
     before do
       login_as(user)

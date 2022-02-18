@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class MemberUserEntity < UserEntity
-  unexpose :show_status
   unexpose :path
   unexpose :state
   unexpose :status_tooltip_html

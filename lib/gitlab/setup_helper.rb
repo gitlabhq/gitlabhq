@@ -113,7 +113,7 @@ module Gitlab
               # sidekiq jobs, and concurrency will be low anyway in test.
               git: {
                 catfile_cache_size: 5,
-                bin_path: File.expand_path(File.join(gitaly_dir, '_build', 'deps', 'git', 'install', 'bin', 'git'))
+                use_bundled_binaries: true
               },
               prometheus_listen_addr: prometheus_listen_addr
             }.compact
@@ -130,7 +130,7 @@ module Gitlab
 
           config[:'gitaly-ruby'] = { dir: File.join(gitaly_dir, 'ruby') } if gitaly_ruby
           config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }
-          config[:bin_dir] = File.join(gitaly_dir, '_build', 'bin') # binaries by default are in `_build/bin`
+          config[:bin_dir] = File.expand_path(File.join(gitaly_dir, '_build', 'bin')) # binaries by default are in `_build/bin`
           config[:gitlab] = { url: Gitlab.config.gitlab.url }
           config[:logging] = { dir: Rails.root.join('log').to_s }
 

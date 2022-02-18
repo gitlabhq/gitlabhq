@@ -1,6 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
 
 describe('Filtered Search Visual Tokens', () => {
@@ -715,18 +716,16 @@ describe('Filtered Search Visual Tokens', () => {
       `);
     });
 
-    it('renders a author token value element', () => {
+    it('renders a author token value element', async () => {
       const { tokenNameElement, tokenValueElement } = findElements(authorToken);
       const tokenName = tokenNameElement.textContent;
       const tokenValue = 'new value';
 
       subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
 
-      jest.runOnlyPendingTimers();
+      await waitForPromises();
 
-      setImmediate(() => {
-        expect(tokenValueElement.textContent).toBe(tokenValue);
-      });
+      expect(tokenValueElement.textContent).toBe(tokenValue);
     });
   });
 });

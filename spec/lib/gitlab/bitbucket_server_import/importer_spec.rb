@@ -22,8 +22,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
       data: { project_key: project_key, repo_slug: repo_slug },
       credentials: { base_uri: import_url, user: bitbucket_user, password: password }
     )
-    data.save
-    project.save
+    data.save!
+    project.save!
   end
 
   describe '#import_repository' do

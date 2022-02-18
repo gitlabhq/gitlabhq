@@ -6,7 +6,7 @@ module CrystalballEnv
   extend self
 
   def start!
-    return unless ENV['CRYSTALBALL']
+    return unless ENV['CRYSTALBALL'] == 'true'
 
     require 'crystalball'
     require_relative '../tooling/lib/tooling/crystalball/coverage_lines_execution_detector'

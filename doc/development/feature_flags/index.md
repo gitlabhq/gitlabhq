@@ -169,7 +169,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `name`              | yes      | Name of the feature flag.                                      |
 | `type`              | yes      | Type of feature flag.                                          |
 | `default_enabled`   | yes      | The default state of the feature flag that is strictly validated, with `default_enabled:` passed as an argument. |
-| `introduced_by_url` | no       | The URL to the Merge Request that introduced the feature flag. |
+| `introduced_by_url` | no       | The URL to the merge request that introduced the feature flag. |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
 | `milestone`         | no       | Milestone in which the feature was added.                      |
 | `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
@@ -513,7 +513,7 @@ Feature.remove(:feature_flag_name)
 
 - Any change behind a feature flag **disabled** by default **should not** have a changelog entry.
   - **Exception:** database migrations **should** have a changelog entry.
-- Any change related to a feature flag itself (flag removal, default-on setting) **should** have a changelog entry.
+- Any change related to a feature flag itself (flag removal, default-on setting) **should** have [a changelog entry](../changelog.md).
   Use the flowchart to determine the changelog entry type.
 
   ```mermaid

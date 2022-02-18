@@ -24,6 +24,18 @@ FactoryBot.define do
       after(:build) { |project_member, _| project_member.user.block! }
     end
 
+    trait :awaiting do
+      after(:create) do |member|
+        member.update!(state: ::Member::STATE_AWAITING)
+      end
+    end
+
+    trait :active do
+      after(:create) do |member|
+        member.update!(state: ::Member::STATE_ACTIVE)
+      end
+    end
+
     transient do
       tasks_to_be_done { [] }
     end

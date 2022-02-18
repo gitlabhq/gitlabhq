@@ -144,6 +144,14 @@ end
 After the feature flag is removed, clean up the resource class and delete the variable.
 All methods should use the condition procedures of the now-default state.
 
+## Managing flakiness due to caching
+
+All application settings, and all feature flags, are cached inside GitLab for one minute.
+All caching is disabled during testing, except on static environments.
+
+When a test changes a feature flag, it can cause flaky behavior if elements are visible only with an
+active feature flag. To circumvent this behavior, add a wait for elements behind a feature flag.
+
 ## Running a scenario with a feature flag enabled
 
 It's also possible to run an entire scenario with a feature flag enabled, without having to edit

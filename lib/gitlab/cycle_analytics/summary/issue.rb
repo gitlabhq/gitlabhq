@@ -10,6 +10,10 @@ module Gitlab
           @current_user = current_user
         end
 
+        def identifier
+          :issues
+        end
+
         def title
           n_('New Issue', 'New Issues', value.to_i)
         end

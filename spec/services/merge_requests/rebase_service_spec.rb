@@ -82,7 +82,7 @@ RSpec.describe MergeRequests::RebaseService do
 
     context 'with a pre-receive failure' do
       let(:pre_receive_error) { "Commit message does not follow the pattern 'ACME'" }
-      let(:merge_error) { "Something went wrong during the rebase pre-receive hook: #{pre_receive_error}." }
+      let(:merge_error) { "The rebase pre-receive hook failed: #{pre_receive_error}." }
 
       before do
         allow(repository).to receive(:gitaly_operation_client).and_raise(Gitlab::Git::PreReceiveError, "GitLab: #{pre_receive_error}")

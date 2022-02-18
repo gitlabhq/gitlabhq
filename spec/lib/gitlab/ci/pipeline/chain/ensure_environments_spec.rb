@@ -57,18 +57,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments do
           expect(job.persisted_environment).to be_nil
         end
       end
-
-      context 'when create_deployment_in_separate_transaction feature flag is disabled' do
-        before do
-          stub_feature_flags(create_deployment_in_separate_transaction: false)
-        end
-
-        it 'does not create any environments' do
-          expect { subject }.not_to change { Environment.count }
-
-          expect(job.persisted_environment).to be_nil
-        end
-      end
     end
 
     context 'when a pipeline contains a teardown job' do

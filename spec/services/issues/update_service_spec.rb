@@ -385,7 +385,6 @@ RSpec.describe Issues::UpdateService, :mailer do
           [issue_1, issue_2, issue_3].map(&:save)
 
           opts[:move_between_ids] = [issue_1.id, issue_2.id]
-          opts[:board_group_id] = group.id
 
           described_class.new(project: issue_3.project, current_user: user, params: opts).execute(issue_3)
           expect(issue_2.relative_position).to be_between(issue_1.relative_position, issue_2.relative_position)
@@ -1147,11 +1146,11 @@ RSpec.describe Issues::UpdateService, :mailer do
       let(:opts) { { escalation_status: { status: 'acknowledged' } } }
       let(:escalation_update_class) { ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService }
 
-      shared_examples 'updates the escalation status record' do |expected_status|
+      shared_examples 'updates the escalation status record' do |expected_status, expected_reason = nil|
         let(:service_double) { instance_double(escalation_update_class) }
 
         it 'has correct value' do
-          expect(escalation_update_class).to receive(:new).with(issue, user).and_return(service_double)
+          expect(escalation_update_class).to receive(:new).with(issue, user, status_change_reason: expected_reason).and_return(service_double)
           expect(service_double).to receive(:execute)
 
           update_issue(opts)
@@ -1195,6 +1194,12 @@ RSpec.describe Issues::UpdateService, :mailer do
               expect(issue.escalation_status.status_name).to eq(:acknowledged)
               expect(alert.reload.status_name).to eq(:acknowledged)
             end
+          end
+
+          context 'with a status change reason provided' do
+            let(:opts) { { escalation_status: { status: 'acknowledged', status_change_reason: ' by changing the alert status' } } }
+
+            it_behaves_like 'updates the escalation status record', :acknowledged, ' by changing the alert status'
           end
 
           context 'with unsupported status value' do
@@ -1303,15 +1308,8 @@ RSpec.describe Issues::UpdateService, :mailer do
     end
 
     context 'when moving an issue ' do
-      it 'raises an error for invalid move ids within a project' do
+      it 'raises an error for invalid move ids' do
         opts = { move_between_ids: [9000, non_existing_record_id] }
-
-        expect { described_class.new(project: issue.project, current_user: user, params: opts).execute(issue) }
-            .to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it 'raises an error for invalid move ids within a group' do
-        opts = { move_between_ids: [9000, non_existing_record_id], board_group_id: create(:group).id }
 
         expect { described_class.new(project: issue.project, current_user: user, params: opts).execute(issue) }
             .to raise_error(ActiveRecord::RecordNotFound)

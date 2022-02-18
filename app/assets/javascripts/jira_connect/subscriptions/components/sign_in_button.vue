@@ -1,6 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { getGitlabSignInURL } from '~/jira_connect/subscriptions/utils';
+import { s__ } from '~/locale';
 
 export default {
   components: {
@@ -25,12 +26,15 @@ export default {
       this.signInURL = await getGitlabSignInURL(this.usersPath);
     },
   },
+  i18n: {
+    defaultButtonText: s__('Integrations|Sign in to GitLab'),
+  },
 };
 </script>
 <template>
   <gl-button category="primary" variant="info" :href="signInURL" target="_blank">
     <slot>
-      {{ s__('Integrations|Sign in to add namespaces') }}
+      {{ $options.i18n.defaultButtonText }}
     </slot>
   </gl-button>
 </template>

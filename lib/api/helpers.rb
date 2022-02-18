@@ -117,6 +117,8 @@ module API
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
+      return unless id
+
       projects = Project.without_deleted
 
       if id.is_a?(Integer) || id =~ /^\d+$/
@@ -561,7 +563,7 @@ module API
 
     def increment_counter(event_name)
       feature_name = "usage_data_#{event_name}"
-      return unless Feature.enabled?(feature_name)
+      return unless Feature.enabled?(feature_name, default_enabled: :yaml)
 
       Gitlab::UsageDataCounters.count(event_name)
     rescue StandardError => error

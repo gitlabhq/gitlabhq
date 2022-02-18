@@ -178,6 +178,10 @@ class Blob < SimpleDelegator
     end
   end
 
+  def symlink?
+    mode == MODE_SYMLINK
+  end
+
   def extension
     @extension ||= extname.downcase.delete('.')
   end

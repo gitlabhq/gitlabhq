@@ -108,6 +108,10 @@ To customize the path:
    - Is on an external site, enter the full URL.
 1. Select **Save changes**.
 
+NOTE:
+You cannot use your project's [pipeline editor](../pipeline_editor/index.md) to
+edit CI/CD configuration files in other projects or on an external site.
+
 ### Custom CI/CD configuration file examples
 
 If the CI/CD configuration file is not in the root directory, the path must be relative to it.
@@ -191,20 +195,17 @@ Jobs that exceed the timeout are marked as failed.
 
 You can override this value [for individual runners](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
 
-## Add test coverage results to a merge request
+## Add test coverage results to a merge request (DEPRECATED)
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 14.9. Replaced by [`coverage` keyword](../yaml/index.md#coverage).
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
+for use in GitLab 14.9, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
 If you use test coverage in your code, you can use a regular expression to
 find coverage results in the job log. You can then include these results
 in the merge request in GitLab.
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **General pipelines**.
-1. In the **Test coverage parsing** field, enter a regular expression.
-   Leave blank to disable this feature.
-
-You can use <https://rubular.com> to test your regex. The regex returns the **last**
-match found in the output.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
 in the jobs table. If multiple jobs in the pipeline have coverage reports, they are
@@ -213,6 +214,31 @@ averaged.
 ![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
 
 ![Build status coverage](img/pipelines_test_coverage_build.png)
+
+To define a coverage-parsing regular expression:
+
+- Using the project's `.gitlab-ci.yml`, provide a regular expression using the [`coverage`](../yaml/index.md#coverage)
+  keyword. Setting the regular expression this way takes precedence over the project's CI/CD settings.
+
+- Using the Project's CI/CD settings:
+  - Set using the GitLab UI:
+
+    1. On the top bar, select **Menu > Projects** and find your project.
+    1. On the left sidebar, select **Settings > CI/CD**.
+    1. Expand **General pipelines**.
+    1. In the **Test coverage parsing** field, enter a regular expression. Leave blank to disable this feature.
+
+  - Set when [editing a project](../../api/projects.md#edit-project) or [creating a project](../../api/projects.md#create-project)
+    using the GitLab API with the `build_coverage_regex` attribute:
+
+    ```shell
+    curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
+       --url 'https://gitlab.com/api/v4/projects/<your-project-ID>' \
+       --data "build_coverage_regex=<your-regular-expression>"
+    ```
+
+You can use <https://rubular.com> to test your regular expression. The regular expression returns the **last**
+match found in the output.
 
 ### Test coverage examples
 
@@ -338,7 +364,7 @@ https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg?ig
 
 ### Test coverage report badge
 
-You can define the regular expression for the [coverage report](#add-test-coverage-results-to-a-merge-request)
+You can define the regular expression for the [coverage report](#add-test-coverage-results-to-a-merge-request-deprecated)
 that each job log is matched against. This means that each job in the
 pipeline can have the test coverage percentage value defined.
 

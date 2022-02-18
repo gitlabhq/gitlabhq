@@ -64,6 +64,7 @@ function mountBoardApp(el) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'BoardAppRoot',
     store,
     apolloProvider,
     provide: {
@@ -121,6 +122,7 @@ export default () => {
     // eslint-disable-next-line no-new
     new Vue({
       el: createColumnTriggerEl,
+      name: 'BoardAddNewColumnTriggerRoot',
       components: {
         BoardAddNewColumnTrigger,
       },
@@ -144,7 +146,6 @@ export default () => {
   mountMultipleBoardsSwitcher({
     fullPath: $boardApp.dataset.fullPath,
     rootPath: $boardApp.dataset.boardsEndpoint,
-    recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
     allowScopedLabels: $boardApp.dataset.scopedLabels,
     labelsManagePath: $boardApp.dataset.labelsManagePath,
   });

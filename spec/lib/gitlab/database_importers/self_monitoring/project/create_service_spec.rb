@@ -60,7 +60,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
       before do
         stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
-        application_setting.update(allow_local_requests_from_web_hooks_and_services: true)
+        application_setting.update!(allow_local_requests_from_web_hooks_and_services: true)
       end
 
       shared_examples 'has prometheus integration' do |server_address|
@@ -181,7 +181,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
         let(:existing_project) { create(:project, namespace: existing_group) }
 
         before do
-          application_setting.update(instance_administrators_group_id: existing_group.id,
+          application_setting.update!(instance_administrators_group_id: existing_group.id,
                                      self_monitoring_project_id: existing_project.id)
         end
 
@@ -195,7 +195,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
 
       context 'when local requests from hooks and integrations are not allowed' do
         before do
-          application_setting.update(allow_local_requests_from_web_hooks_and_services: false)
+          application_setting.update!(allow_local_requests_from_web_hooks_and_services: false)
         end
 
         it_behaves_like 'has prometheus integration', 'http://localhost:9090'

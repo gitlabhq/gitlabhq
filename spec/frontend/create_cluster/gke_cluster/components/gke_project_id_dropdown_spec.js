@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import GkeProjectIdDropdown from '~/create_cluster/gke_cluster/components/gke_project_id_dropdown.vue';
 import createState from '~/create_cluster/gke_cluster/store/state';
@@ -19,9 +20,7 @@ const LABELS = {
   EMPTY: 'No projects found',
 };
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('GkeProjectIdDropdown', () => {
   let wrapper;
@@ -52,7 +51,6 @@ describe('GkeProjectIdDropdown', () => {
     shallowMount(GkeProjectIdDropdown, {
       propsData,
       store,
-      localVue,
     });
 
   const bootstrap = (initialState, getters) => {
@@ -80,19 +78,18 @@ describe('GkeProjectIdDropdown', () => {
       expect(dropdownButtonLabel()).toBe(LABELS.VALIDATING_PROJECT_BILLING);
     });
 
-    it('returns default toggle text', () => {
+    it('returns default toggle text', async () => {
       bootstrap();
 
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isLoading: false });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(dropdownButtonLabel()).toBe(LABELS.DEFAULT);
-      });
+      await nextTick();
+      expect(dropdownButtonLabel()).toBe(LABELS.DEFAULT);
     });
 
-    it('returns project name if project selected', () => {
+    it('returns project name if project selected', async () => {
       bootstrap(
         {
           selectedProject: selectedProjectMock,
@@ -105,12 +102,11 @@ describe('GkeProjectIdDropdown', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isLoading: false });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(dropdownButtonLabel()).toBe(selectedProjectMock.name);
-      });
+      await nextTick();
+      expect(dropdownButtonLabel()).toBe(selectedProjectMock.name);
     });
 
-    it('returns empty toggle text', () => {
+    it('returns empty toggle text', async () => {
       bootstrap({
         projects: null,
       });
@@ -118,26 +114,24 @@ describe('GkeProjectIdDropdown', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ isLoading: false });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(dropdownButtonLabel()).toBe(LABELS.EMPTY);
-      });
+      await nextTick();
+      expect(dropdownButtonLabel()).toBe(LABELS.EMPTY);
     });
   });
 
   describe('selectItem', () => {
-    it('reflects new value when dropdown item is clicked', () => {
+    it('reflects new value when dropdown item is clicked', async () => {
       bootstrap({ projects: gapiProjectsResponseMock.projects });
 
       expect(dropdownHiddenInputValue()).toBe('');
 
       wrapper.find('.dropdown-content button').trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(setProject).toHaveBeenCalledWith(
-          expect.anything(),
-          gapiProjectsResponseMock.projects[0],
-        );
-      });
+      await nextTick();
+      expect(setProject).toHaveBeenCalledWith(
+        expect.anything(),
+        gapiProjectsResponseMock.projects[0],
+      );
     });
   });
 });

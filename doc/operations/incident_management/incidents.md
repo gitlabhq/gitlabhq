@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Monitor
+group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -21,15 +21,15 @@ You can create an incident manually or automatically.
 
 > - [Moved](https://gitlab.com/gitlab-org/monitor/monitor/-/issues/24) to GitLab Free in 13.3.
 > - [Permission changed](https://gitlab.com/gitlab-org/gitlab/-/issues/336624) from Guest to Reporter in GitLab 14.5.
+> - Automatic application of the `incident` label [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290964) in GitLab 14.8.
 
 If you have at least Reporter [permissions](../../user/permissions.md),
 you can create an incident manually from the Incidents List or the Issues List.
 
 To create an incident from the Incidents List:
 
-1. Navigate to **Monitor > Incidents** and click **Create Incident**.
-1. Create a new issue using the `incident` template available when creating it.
-1. Create a new issue and assign the `incident` label to it.
+1. Navigate to **Monitor > Incidents** and select **Create Incident**.
+1. Create a new issue using the `incident` template.
 
 ![Incident List Create](img/incident_list_create_v13_3.png)
 
@@ -47,15 +47,15 @@ To create an incident from the Issues List:
 
 ### Create incidents automatically **(ULTIMATE)**
 
-With at least the Maintainer [role](../../user/permissions.md), you can enable
- GitLab to create incident automatically whenever an alert is triggered:
+With at least the Maintainer role, you can enable
+GitLab to create incident automatically whenever an alert is triggered:
 
 1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
 1. Check the **Create an incident** checkbox.
 1. To customize the incident, select an
    [issue template](../../user/project/description_templates.md#create-an-issue-template).
 1. To send [an email notification](paging.md#email-notifications) to users
-   with the Developer [role](../../user/permissions.md), select
+   with the Developer role, select
    **Send a separate email notification to Developers**. Email notifications are
    also sent to users with the **Maintainer** and **Owner** roles.
 1. Click **Save changes**.
@@ -68,7 +68,7 @@ You can set up a webhook with PagerDuty to automatically create a GitLab inciden
 for each PagerDuty incident. This configuration requires you to make changes
 in both PagerDuty and GitLab:
 
-1. Sign in as a user with the Maintainer [role](../../user/permissions.md).
+1. Sign in as a user with the Maintainer role.
 1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
 1. Select the **PagerDuty integration** tab:
 
@@ -276,7 +276,7 @@ templates.
 > - [Introduced for Prometheus Integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13401) in GitLab 12.5.
 > - [Introduced for HTTP Integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
 
-With at least the Maintainer [role](../../user/permissions.md), you can enable
+With at least the Maintainer role, you can enable
  GitLab to close an incident automatically when a **Recovery Alert** is received:
 
 1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.

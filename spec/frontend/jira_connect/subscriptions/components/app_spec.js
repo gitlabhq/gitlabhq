@@ -1,10 +1,10 @@
-import { GlAlert, GlLink, GlEmptyState } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
+import { GlLink } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
-import AddNamespaceButton from '~/jira_connect/subscriptions/components/add_namespace_button.vue';
-import SignInButton from '~/jira_connect/subscriptions/components/sign_in_button.vue';
-import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
+import SignInPage from '~/jira_connect/subscriptions/pages/sign_in.vue';
+import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions.vue';
 import UserLink from '~/jira_connect/subscriptions/components/user_link.vue';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
@@ -20,14 +20,12 @@ describe('JiraConnectApp', () => {
   let wrapper;
   let store;
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findAlert = () => wrapper.findByTestId('jira-connect-persisted-alert');
   const findAlertLink = () => findAlert().findComponent(GlLink);
-  const findSignInButton = () => wrapper.findComponent(SignInButton);
-  const findAddNamespaceButton = () => wrapper.findComponent(AddNamespaceButton);
-  const findSubscriptionsList = () => wrapper.findComponent(SubscriptionsList);
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findSignInPage = () => wrapper.findComponent(SignInPage);
+  const findSubscriptionsPage = () => wrapper.findComponent(SubscriptionsPage);
 
-  const createComponent = ({ provide, mountFn = shallowMount } = {}) => {
+  const createComponent = ({ provide, mountFn = shallowMountExtended } = {}) => {
     store = createStore();
 
     wrapper = mountFn(JiraConnectApp, {
@@ -42,49 +40,35 @@ describe('JiraConnectApp', () => {
 
   describe('template', () => {
     describe.each`
-      scenario                                         | usersPath    | subscriptions         | expectSignInButton | expectEmptyState | expectNamespaceButton | expectSubscriptionsList
-      ${'user is not signed in with subscriptions'}    | ${'/users'}  | ${[mockSubscription]} | ${true}            | ${false}         | ${false}              | ${true}
-      ${'user is not signed in without subscriptions'} | ${'/users'}  | ${undefined}          | ${true}            | ${false}         | ${false}              | ${false}
-      ${'user is signed in with subscriptions'}        | ${undefined} | ${[mockSubscription]} | ${false}           | ${false}         | ${true}               | ${true}
-      ${'user is signed in without subscriptions'}     | ${undefined} | ${undefined}          | ${false}           | ${true}          | ${false}              | ${false}
-    `(
-      'when $scenario',
-      ({
-        usersPath,
-        expectSignInButton,
-        subscriptions,
-        expectEmptyState,
-        expectNamespaceButton,
-        expectSubscriptionsList,
-      }) => {
-        beforeEach(() => {
-          createComponent({
-            provide: {
-              usersPath,
-              subscriptions,
-            },
-          });
+      scenario                   | usersPath    | shouldRenderSignInPage | shouldRenderSubscriptionsPage
+      ${'user is not signed in'} | ${'/users'}  | ${true}                | ${false}
+      ${'user is signed in'}     | ${undefined} | ${false}               | ${true}
+    `('when $scenario', ({ usersPath, shouldRenderSignInPage, shouldRenderSubscriptionsPage }) => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            usersPath,
+            subscriptions: [mockSubscription],
+          },
         });
+      });
 
-        it(`${expectSignInButton ? 'renders' : 'does not render'} sign in button`, () => {
-          expect(findSignInButton().exists()).toBe(expectSignInButton);
-        });
+      it(`${shouldRenderSignInPage ? 'renders' : 'does not render'} sign in page`, () => {
+        expect(findSignInPage().exists()).toBe(shouldRenderSignInPage);
+        if (shouldRenderSignInPage) {
+          expect(findSignInPage().props('hasSubscriptions')).toBe(true);
+        }
+      });
 
-        it(`${expectEmptyState ? 'renders' : 'does not render'} empty state`, () => {
-          expect(findEmptyState().exists()).toBe(expectEmptyState);
-        });
-
-        it(`${
-          expectNamespaceButton ? 'renders' : 'does not render'
-        } button to add namespace`, () => {
-          expect(findAddNamespaceButton().exists()).toBe(expectNamespaceButton);
-        });
-
-        it(`${expectSubscriptionsList ? 'renders' : 'does not render'} subscriptions list`, () => {
-          expect(findSubscriptionsList().exists()).toBe(expectSubscriptionsList);
-        });
-      },
-    );
+      it(`${
+        shouldRenderSubscriptionsPage ? 'renders' : 'does not render'
+      } subscriptions page`, () => {
+        expect(findSubscriptionsPage().exists()).toBe(shouldRenderSubscriptionsPage);
+        if (shouldRenderSubscriptionsPage) {
+          expect(findSubscriptionsPage().props('hasSubscriptions')).toBe(true);
+        }
+      });
+    });
 
     it('renders UserLink component', () => {
       createComponent({
@@ -116,7 +100,7 @@ describe('JiraConnectApp', () => {
         createComponent();
 
         store.commit(SET_ALERT, { message, variant });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         const alert = findAlert();
 
@@ -134,22 +118,22 @@ describe('JiraConnectApp', () => {
       createComponent();
 
       store.commit(SET_ALERT, { message: 'test message' });
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       findAlert().vm.$emit('dismiss');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findAlert().exists()).toBe(false);
     });
 
     it('renders link when `linkUrl` is set', async () => {
-      createComponent({ mountFn: mount });
+      createComponent({ mountFn: mountExtended });
 
       store.commit(SET_ALERT, {
         message: __('test message %{linkStart}test link%{linkEnd}'),
         linkUrl: 'https://gitlab.com',
       });
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const alertLink = findAlertLink();
 

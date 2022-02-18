@@ -3,12 +3,8 @@
 require_relative 'gitlab_project_migration_common'
 
 module QA
-  RSpec.describe 'Manage', :requires_admin do
-    describe 'Gitlab migration', quarantine: {
-      only: { job: 'praefect' },
-      type: :investigating,
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/348999'
-    } do
+  RSpec.describe 'Manage' do
+    describe 'Gitlab migration' do
       include_context 'with gitlab project migration'
 
       context 'with merge request' do
@@ -33,7 +29,8 @@ module QA
         let!(:source_comment) { source_mr.add_comment('This is a test comment!') }
 
         let(:imported_mrs) { imported_project.merge_requests }
-        let(:imported_mr_comments) { imported_mr.comments }
+        let(:imported_mr_comments) { imported_mr.comments.map { |note| note.except(:id, :noteable_id) } }
+        let(:source_mr_comments) { source_mr.comments.map { |note| note.except(:id, :noteable_id) } }
 
         let(:imported_mr) do
           Resource::MergeRequest.init do |mr|
@@ -52,17 +49,12 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478'
         ) do
           expect_import_finished
+          expect(imported_mrs.count).to eq(1)
 
           aggregate_failures do
-            expect(imported_mrs.count).to eq(1)
-            # TODO: remove custom comparison after member migration is implemented
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/341886
-            expect(imported_mr.comparable.except(:author)).to eq(source_mr.reload!.comparable.except(:author))
+            expect(imported_mr).to eq(source_mr.reload!)
 
-            expect(imported_mr_comments.count).to eq(1)
-            expect(imported_mr_comments.first[:body]).to include(source_comment[:body])
-            # Comment will have mention of original user since members are not migrated yet
-            expect(imported_mr_comments.first[:body]).to include(other_user.name)
+            expect(imported_mr_comments).to eq(source_mr_comments)
           end
         end
       end

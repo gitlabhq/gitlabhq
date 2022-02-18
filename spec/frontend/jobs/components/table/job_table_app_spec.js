@@ -1,5 +1,6 @@
 import { GlSkeletonLoader, GlAlert, GlEmptyState, GlPagination } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -7,11 +8,15 @@ import getJobsQuery from '~/jobs/components/table/graphql/queries/get_jobs.query
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableApp from '~/jobs/components/table/jobs_table_app.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
-import { mockJobsQueryResponse, mockJobsQueryEmptyResponse } from '../../mock_data';
+import {
+  mockJobsQueryResponse,
+  mockJobsQueryEmptyResponse,
+  mockJobsQueryResponseLastPage,
+  mockJobsQueryResponseFirstPage,
+} from '../../mock_data';
 
 const projectPath = 'gitlab-org/gitlab';
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('Job table app', () => {
   let wrapper;
@@ -50,7 +55,6 @@ describe('Job table app', () => {
       provide: {
         projectPath,
       },
-      localVue,
       apolloProvider: createMockApolloProvider(handler),
     });
   };
@@ -96,35 +100,14 @@ describe('Job table app', () => {
   describe('pagination', () => {
     it('should disable the next page button on the last page', async () => {
       createComponent({
-        handler: successHandler,
+        handler: jest.fn().mockResolvedValue(mockJobsQueryResponseLastPage),
         mountFn: mount,
         data: {
-          pagination: {
-            currentPage: 3,
-          },
-          jobs: {
-            pageInfo: {
-              hasPreviousPage: true,
-              startCursor: 'abc',
-              endCursor: 'bcd',
-            },
-          },
+          pagination: { currentPage: 3 },
         },
       });
 
-      await wrapper.vm.$nextTick();
-
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        jobs: {
-          pageInfo: {
-            hasNextPage: false,
-          },
-        },
-      });
-
-      await wrapper.vm.$nextTick();
+      await waitForPromises();
 
       expect(findPrevious().exists()).toBe(true);
       expect(findNext().exists()).toBe(true);
@@ -133,24 +116,16 @@ describe('Job table app', () => {
 
     it('should disable the previous page button on the first page', async () => {
       createComponent({
-        handler: successHandler,
+        handler: jest.fn().mockResolvedValue(mockJobsQueryResponseFirstPage),
         mountFn: mount,
         data: {
           pagination: {
             currentPage: 1,
           },
-          jobs: {
-            pageInfo: {
-              hasNextPage: true,
-              hasPreviousPage: false,
-              startCursor: 'abc',
-              endCursor: 'bcd',
-            },
-          },
         },
       });
 
-      await wrapper.vm.$nextTick();
+      await waitForPromises();
 
       expect(findPrevious().exists()).toBe(true);
       expect(findPrevious().classes('disabled')).toBe(true);

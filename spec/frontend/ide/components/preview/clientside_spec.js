@@ -1,16 +1,19 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+import { dispatch } from 'codesandbox-api';
 import smooshpack from 'smooshpack';
 import Vuex from 'vuex';
+import waitForPromises from 'helpers/wait_for_promises';
 import Clientside from '~/ide/components/preview/clientside.vue';
+import { PING_USAGE_PREVIEW_KEY, PING_USAGE_PREVIEW_SUCCESS_KEY } from '~/ide/constants';
 import eventHub from '~/ide/eventhub';
 
 jest.mock('smooshpack', () => ({
   Manager: jest.fn(),
 }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const dummyPackageJson = () => ({
   raw: JSON.stringify({
@@ -39,8 +42,7 @@ describe('IDE clientside preview', () => {
   const storeClientsideActions = {
     pingUsage: jest.fn().mockReturnValue(Promise.resolve({})),
   };
-
-  const waitForCalls = () => new Promise(setImmediate);
+  const dispatchCodesandboxReady = () => dispatch({ type: 'done' });
 
   const createComponent = ({ state, getters } = {}) => {
     store = new Vuex.Store({
@@ -67,7 +69,6 @@ describe('IDE clientside preview', () => {
 
     wrapper = shallowMount(Clientside, {
       store,
-      localVue,
     });
   };
 
@@ -98,7 +99,7 @@ describe('IDE clientside preview', () => {
     beforeEach(() => {
       createComponent({ getters: { packageJson: dummyPackageJson } });
 
-      return waitForCalls();
+      return waitForPromises();
     });
 
     it('creates sandpack manager', () => {
@@ -111,6 +112,20 @@ describe('IDE clientside preview', () => {
 
     it('pings usage', () => {
       expect(storeClientsideActions.pingUsage).toHaveBeenCalledTimes(1);
+      expect(storeClientsideActions.pingUsage).toHaveBeenCalledWith(
+        expect.anything(),
+        PING_USAGE_PREVIEW_KEY,
+      );
+    });
+
+    it('pings usage success', async () => {
+      dispatchCodesandboxReady();
+      await nextTick();
+      expect(storeClientsideActions.pingUsage).toHaveBeenCalledTimes(2);
+      expect(storeClientsideActions.pingUsage).toHaveBeenCalledWith(
+        expect.anything(),
+        PING_USAGE_PREVIEW_SUCCESS_KEY,
+      );
     });
   });
 
@@ -123,7 +138,7 @@ describe('IDE clientside preview', () => {
         state: { codesandboxBundlerUrl: TEST_BUNDLER_URL },
       });
 
-      return waitForCalls();
+      return waitForPromises();
     });
 
     it('creates sandpack manager with bundlerURL', () => {
@@ -138,7 +153,7 @@ describe('IDE clientside preview', () => {
     beforeEach(() => {
       createComponent({ getters: { packageJson: dummyPackageJson } });
 
-      return waitForCalls();
+      return waitForPromises();
     });
 
     it('creates sandpack manager', () => {
@@ -324,7 +339,7 @@ describe('IDE clientside preview', () => {
         wrapper.setData({ sandpackReady: true });
         wrapper.vm.update();
 
-        return waitForCalls().then(() => {
+        return waitForPromises().then(() => {
           expect(smooshpack.Manager).toHaveBeenCalled();
         });
       });
@@ -352,39 +367,36 @@ describe('IDE clientside preview', () => {
   });
 
   describe('template', () => {
-    it('renders ide-preview element when showPreview is true', () => {
+    it('renders ide-preview element when showPreview is true', async () => {
       createComponent({ getters: { packageJson: dummyPackageJson } });
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ loading: false });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('#ide-preview').exists()).toBe(true);
-      });
+      await nextTick();
+      expect(wrapper.find('#ide-preview').exists()).toBe(true);
     });
 
-    it('renders empty state', () => {
+    it('renders empty state', async () => {
       createComponent();
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ loading: false });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.text()).toContain(
-          'Preview your web application using Web IDE client-side evaluation.',
-        );
-      });
+      await nextTick();
+      expect(wrapper.text()).toContain(
+        'Preview your web application using Web IDE client-side evaluation.',
+      );
     });
 
-    it('renders loading icon', () => {
+    it('renders loading icon', async () => {
       createComponent();
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ loading: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      });
+      await nextTick();
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
   });
 

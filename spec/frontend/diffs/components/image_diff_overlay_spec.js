@@ -1,5 +1,5 @@
 import { GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { createStore } from '~/mr_notes/stores';
 import { imageDiffDiscussions } from '../mock_data/diff_discussions';
@@ -19,7 +19,7 @@ describe('Diffs image diff overlay component', () => {
     extendStore(store);
     dispatch = jest.spyOn(store, 'dispatch').mockImplementation();
 
-    wrapper = shallowMount(ImageDiffOverlay, {
+    wrapper = mount(ImageDiffOverlay, {
       store,
       parentComponent: {
         data() {

@@ -30,11 +30,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           post api('/runners'), params: {
             token: 'valid token',
             description: 'server.hostname',
-            maintainer_note: 'Some maintainer notes',
+            maintenance_note: 'Some maintainer notes',
             run_untagged: false,
             tag_list: 'tag1, tag2',
             locked: true,
-            active: true,
+            paused: false,
             access_level: 'ref_protected',
             maximum_timeout: 9000
           }
@@ -46,7 +46,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           allow_next_instance_of(::Ci::RegisterRunnerService) do |service|
             expected_params = {
               description: 'server.hostname',
-              maintainer_note: 'Some maintainer notes',
+              maintenance_note: 'Some maintainer notes',
               run_untagged: false,
               tag_list: %w(tag1 tag2),
               locked: true,
@@ -55,19 +55,33 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               maximum_timeout: 9000
             }.stringify_keys
 
-            allow(service).to receive(:execute)
+            expect(service).to receive(:execute)
               .once
               .with('valid token', a_hash_including(expected_params))
               .and_return(new_runner)
           end
         end
 
-        it 'creates runner' do
-          request
+        context 'when token_expires_at is nil' do
+          it 'creates runner' do
+            request
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['id']).to eq(new_runner.id)
-          expect(json_response['token']).to eq(new_runner.token)
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to eq({ 'id' => new_runner.id, 'token' => new_runner.token, 'token_expires_at' => nil })
+          end
+        end
+
+        context 'when token_expires_at is a valid date' do
+          before do
+            new_runner.token_expires_at = DateTime.new(2022, 1, 11, 14, 39, 24)
+          end
+
+          it 'creates runner' do
+            request
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to eq({ 'id' => new_runner.id, 'token' => new_runner.token, 'token_expires_at' => '2022-01-11T14:39:24.000Z' })
+          end
         end
 
         it_behaves_like 'storing arguments in the application context for the API' do
@@ -78,6 +92,59 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
         it_behaves_like 'not executing any extra queries for the application context' do
           let(:subject_proc) { proc { request } }
+        end
+      end
+
+      context 'when deprecated maintainer_note field is provided' do
+        RSpec::Matchers.define_negated_matcher :excluding, :include
+
+        def request
+          post api('/runners'), params: {
+            token: 'valid token',
+            maintainer_note: 'Some maintainer notes'
+          }
+        end
+
+        let(:new_runner) { create(:ci_runner) }
+
+        it 'converts to maintenance_note param' do
+          allow_next_instance_of(::Ci::RegisterRunnerService) do |service|
+            expect(service).to receive(:execute)
+              .once
+              .with('valid token', a_hash_including('maintenance_note' => 'Some maintainer notes')
+                .and(excluding('maintainter_note' => anything)))
+              .and_return(new_runner)
+          end
+
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when deprecated active parameter is provided' do
+        def request
+          post api('/runners'), params: {
+            token: 'valid token',
+            active: false
+          }
+        end
+
+        let_it_be(:new_runner) { create(:ci_runner) }
+
+        it 'uses active value in registration' do
+          expect_next_instance_of(::Ci::RegisterRunnerService) do |service|
+            expected_params = { active: false }.stringify_keys
+
+            expect(service).to receive(:execute)
+              .once
+              .with('valid token', a_hash_including(expected_params))
+              .and_return(new_runner)
+          end
+
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
         end
       end
 

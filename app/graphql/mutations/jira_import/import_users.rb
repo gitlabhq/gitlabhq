@@ -3,9 +3,9 @@
 module Mutations
   module JiraImport
     class ImportUsers < BaseMutation
-      include FindsProject
-
       graphql_name 'JiraImportUsers'
+
+      include FindsProject
 
       authorize :admin_project
 

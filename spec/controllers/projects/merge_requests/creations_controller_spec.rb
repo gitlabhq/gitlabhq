@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::MergeRequests::CreationsController do
   let(:project) { create(:project, :repository) }
-  let(:user)    { project.owner }
+  let(:user)    { project.first_owner }
   let(:fork_project) { create(:forked_project_with_submodules) }
   let(:get_diff_params) do
     {

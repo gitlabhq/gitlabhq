@@ -1,6 +1,7 @@
 import { GlSkeletonLoader, GlSprintf, GlAlert } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -8,7 +9,7 @@ import getContainerRepositoriesQuery from 'shared_queries/container_registry/get
 import CleanupPolicyEnabledAlert from '~/packages_and_registries/shared/components/cleanup_policy_enabled_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import DeleteImage from '~/packages_and_registries/container_registry/explorer/components/delete_image.vue';
-import CliCommands from '~/packages_and_registries/container_registry/explorer/components/list_page/cli_commands.vue';
+import CliCommands from '~/packages_and_registries/shared/components/cli_commands.vue';
 import GroupEmptyState from '~/packages_and_registries/container_registry/explorer/components/list_page/group_empty_state.vue';
 import ImageList from '~/packages_and_registries/container_registry/explorer/components/list_page/image_list.vue';
 import ProjectEmptyState from '~/packages_and_registries/container_registry/explorer/components/list_page/project_empty_state.vue';
@@ -37,8 +38,6 @@ import {
   dockerCommands,
 } from '../mock_data';
 import { GlModal, GlEmptyState } from '../stubs';
-
-const localVue = createLocalVue();
 
 describe('List Page', () => {
   let wrapper;
@@ -75,7 +74,7 @@ describe('List Page', () => {
     config = { isGroupPage: false },
     query = {},
   } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [
       [getContainerRepositoriesQuery, resolver],
@@ -86,7 +85,6 @@ describe('List Page', () => {
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMount(component, {
-      localVue,
       apolloProvider,
       stubs: {
         GlModal,
@@ -307,15 +305,8 @@ describe('List Page', () => {
           await selectImageForDeletion();
 
           findDeleteModal().vm.$emit('primary');
-          await waitForApolloRequestRender();
 
-          expect(wrapper.vm.itemToDelete).toEqual(deletedContainerRepository);
-
-          const updatedImage = findImageList()
-            .props('images')
-            .find((i) => i.id === deletedContainerRepository.id);
-
-          expect(updatedImage.status).toBe(deletedContainerRepository.status);
+          expect(mutationResolver).toHaveBeenCalledWith({ id: deletedContainerRepository.id });
         });
 
         it('should show a success alert when delete request is successful', async () => {
@@ -361,7 +352,7 @@ describe('List Page', () => {
 
         findRegistrySearch().vm.$emit('filter:submit');
 
-        await nextTick();
+        await waitForPromises();
       };
 
       it('has a search box element', async () => {
@@ -429,7 +420,7 @@ describe('List Page', () => {
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('prev-page');
-        await nextTick();
+        await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith(
           expect.objectContaining({ before: pageInfo.startCursor }),
@@ -449,7 +440,7 @@ describe('List Page', () => {
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('next-page');
-        await nextTick();
+        await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith(
           expect.objectContaining({ after: pageInfo.endCursor }),
@@ -471,8 +462,9 @@ describe('List Page', () => {
     });
 
     it('contains a description with the path of the item to delete', async () => {
+      await waitForPromises();
       findImageList().vm.$emit('delete', { path: 'foo' });
-      await nextTick();
+      await waitForPromises();
       expect(findDeleteModal().html()).toContain('foo');
     });
   });

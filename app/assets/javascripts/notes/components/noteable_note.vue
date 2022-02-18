@@ -3,6 +3,7 @@ import { GlSprintf, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import $ from 'jquery';
 import { escape, isEmpty } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 import createFlash from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -243,14 +244,18 @@ export default {
       this.setSelectedCommentPositionHover();
       this.$emit('handleEdit');
     },
-    deleteHandler() {
+    async deleteHandler() {
       const typeOfComment = this.note.isDraft ? __('pending comment') : __('comment');
-      if (
-        // eslint-disable-next-line no-alert
-        window.confirm(
-          sprintf(__('Are you sure you want to delete this %{typeOfComment}?'), { typeOfComment }),
-        )
-      ) {
+
+      const msg = sprintf(__('Are you sure you want to delete this %{typeOfComment}?'), {
+        typeOfComment,
+      });
+      const confirmed = await confirmAction(msg, {
+        primaryBtnVariant: 'danger',
+        primaryBtnText: __('Delete Comment'),
+      });
+
+      if (confirmed) {
         this.isDeleting = true;
         this.$emit('handleDeleteNote', this.note);
 
@@ -345,10 +350,11 @@ export default {
         parent: this.$el,
       });
     },
-    formCancelHandler({ shouldConfirm, isDirty }) {
+    async formCancelHandler({ shouldConfirm, isDirty }) {
       if (shouldConfirm && isDirty) {
-        // eslint-disable-next-line no-alert
-        if (!window.confirm(__('Are you sure you want to cancel editing this comment?'))) return;
+        const msg = __('Are you sure you want to cancel editing this comment?');
+        const confirmed = await confirmAction(msg);
+        if (!confirmed) return;
       }
       this.$refs.noteBody.resetAutoSave();
       if (this.oldContent) {

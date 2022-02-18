@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { setTestTimeout } from 'helpers/timeout';
 import waitForPromises from 'helpers/wait_for_promises';
 import { waitForText } from 'helpers/wait_for_text';
@@ -134,7 +135,7 @@ describe('WebIDE', () => {
     describe('when editor position changes', () => {
       beforeEach(async () => {
         editor.setPosition({ lineNumber: 4, column: 10 });
-        await vm.$nextTick();
+        await nextTick();
       });
 
       it('shows new line position', () => {
@@ -145,7 +146,7 @@ describe('WebIDE', () => {
       it('updates after rename', async () => {
         await ideHelper.renameFile('README.md', 'READMEZ.txt');
         await ideHelper.waitForEditorModelChange(editor);
-        await vm.$nextTick();
+        await nextTick();
 
         expect(statusBar).toHaveText('1:1');
         expect(statusBar).toHaveText('plaintext');
@@ -166,7 +167,7 @@ describe('WebIDE', () => {
         await ideHelper.closeFile('README.md');
         await ideHelper.openFile('README.md');
         await ideHelper.waitForMonacoEditor();
-        await vm.$nextTick();
+        await nextTick();
 
         expect(statusBar).toHaveText('4:10');
         expect(statusBar).toHaveText('markdown');

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 MAIL_ROOM_CONFIG_ENABLED_SAMPLE =
   ":mailboxes:\n"\

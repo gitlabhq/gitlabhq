@@ -1,6 +1,7 @@
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
 import { validateParams } from '~/pipelines/utils';
@@ -195,11 +196,20 @@ export default {
           this.$toast.show(TOAST_MESSAGE);
           this.updateTable();
         })
-        .catch(() => {
+        .catch((e) => {
+          const unauthorized = e.response.status === httpStatusCodes.UNAUTHORIZED;
+          const badRequest = e.response.status === httpStatusCodes.BAD_REQUEST;
+
+          let errorMessage = __(
+            'An error occurred while trying to run a new pipeline for this merge request.',
+          );
+
+          if (unauthorized || badRequest) {
+            errorMessage = __('You do not have permission to run a pipeline on this branch.');
+          }
+
           createFlash({
-            message: __(
-              'An error occurred while trying to run a new pipeline for this merge request.',
-            ),
+            message: errorMessage,
           });
         })
         .finally(() => this.store.toggleIsRunningPipeline(false));

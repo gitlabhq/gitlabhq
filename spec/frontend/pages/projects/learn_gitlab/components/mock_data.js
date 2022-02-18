@@ -35,7 +35,7 @@ export const testActions = {
     svg: 'http://example.com/images/illustration.svg',
   },
   securityScanEnabled: {
-    url: 'http://example.com/',
+    url: 'https://docs.gitlab.com/ee/foobar/',
     completed: false,
     svg: 'http://example.com/images/illustration.svg',
   },

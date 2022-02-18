@@ -3,19 +3,8 @@
 module Gitlab
   module Database
     module Partitioning
-      class TableWithoutModel
-        include PartitionedTable::ClassMethods
-
-        attr_reader :table_name
-
-        def initialize(table_name:, partitioned_column:, strategy:)
-          @table_name = table_name
-          partitioned_by(partitioned_column, strategy: strategy)
-        end
-
-        def connection
-          Gitlab::Database::SharedModel.connection
-        end
+      class TableWithoutModel < Gitlab::Database::SharedModel
+        include PartitionedTable
       end
 
       class << self
@@ -77,7 +66,15 @@ module Gitlab
 
         def registered_for_sync
           registered_models + registered_tables.map do |table|
-            TableWithoutModel.new(**table)
+            table_without_model(**table)
+          end
+        end
+
+        def table_without_model(table_name:, partitioned_column:, strategy:, limit_connection_names: nil)
+          Class.new(TableWithoutModel).tap do |klass|
+            klass.table_name = table_name
+            klass.partitioned_by(partitioned_column, strategy: strategy)
+            klass.limit_connection_names = limit_connection_names
           end
         end
       end

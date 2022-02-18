@@ -1,7 +1,7 @@
 ---
 type: concepts, howto
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -97,7 +97,7 @@ A personal access token can perform actions based on the assigned scopes.
 | `read_user`        | Read-only for endpoints under `/users`. Essentially, access to any of the `GET` requests in the [Users API](../../api/users.md). |
 | `read_api`         | Read-only for the complete API, including all groups and projects, the Container Registry, and the Package Registry. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28944) in GitLab 12.10.) |
 | `read_repository`  | Read-only (pull) for the repository through `git clone`. |
-| `write_repository` | Read-write (pull, push) for the repository through `git clone`. Required for accessing Git repositories over HTTP when 2FA is enabled. |
+| `write_repository` | Read-write (pull, push) for the repository through `git clone`. |
 | `read_registry`    | Read-only (pull) for [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. |
 | `write_registry`   | Read-write (push) for [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28958) in GitLab 12.10.) |
 | `sudo`             | API actions as any user in the system (if the authenticated user is an administrator). |
@@ -111,7 +111,7 @@ Personal access tokens expire on the date you define, at midnight UTC.
 - In GitLab Ultimate, administrators can
   [limit the lifetime of personal access tokens](../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens).
 - In GitLab Ultimate, administrators can choose whether or not to
-  [enforce personal access token expiration](../admin_area/settings/account_and_limit_settings.md#allow-expired-personal-access-tokens-to-be-used).
+  [enforce personal access token expiration](../admin_area/settings/account_and_limit_settings.md#allow-expired-personal-access-tokens-to-be-used-deprecated).
 
 ## Create a personal access token programmatically **(FREE SELF)**
 

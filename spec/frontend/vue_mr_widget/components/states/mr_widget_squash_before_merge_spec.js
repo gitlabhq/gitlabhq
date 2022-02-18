@@ -1,16 +1,13 @@
 import { GlFormCheckbox, GlLink } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import { SQUASH_BEFORE_MERGE } from '~/vue_merge_request_widget/i18n';
-
-const localVue = createLocalVue();
 
 describe('Squash before merge component', () => {
   let wrapper;
 
   const createComponent = (props) => {
-    wrapper = shallowMount(localVue.extend(SquashBeforeMerge), {
-      localVue,
+    wrapper = shallowMount(SquashBeforeMerge, {
       propsData: {
         ...props,
       },

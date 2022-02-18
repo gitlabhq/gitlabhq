@@ -1,8 +1,8 @@
 ---
 type: reference, howto
 stage: Manage
-group: Authentication & Authorization
-info: To determine the technical writer assigned to the Stage/Group associated   with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Authentication and Authorization
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # OAuth 2.0 identity provider API **(FREE)**
@@ -32,7 +32,7 @@ GitLab supports the following authorization flows:
   hosted, first-party services. GitLab recommends against use of this flow.
 
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
-Implicit grant and Resource Owner Password Credentials flows. It will be deprecated in the next OAuth specification version.
+Implicit grant and Resource Owner Password Credentials flows.
 
 Refer to the [OAuth RFC](https://tools.ietf.org/html/rfc6749) to find out
 how all those flows work and pick the right one for your use case.
@@ -41,7 +41,9 @@ Both **authorization code** (with or without PKCE) and **implicit grant** flows 
 registered first via the `/profile/applications` page in your user's account.
 During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you obtain the
-`application` credentials: _Application ID_ and _Client Secret_ - **keep them secure**.
+`application` credentials: _Application ID_ and _Client Secret_. The _Client Secret_
+**must be kept secure**. It is also advantageous to keep the _Application ID_
+secret when your application architecture allows.
 
 For a list of scopes in GitLab, see [the provider documentation](../integration/oauth_provider.md#authorized-applications).
 
@@ -74,7 +76,10 @@ detailed flow description, from authorization request through access token.
 The following steps describe our implementation of the flow.
 
 The Authorization code with PKCE flow, PKCE for short, makes it possible to securely perform
-the OAuth exchange of client credentials for access tokens on public clients.
+the OAuth exchange of client credentials for access tokens on public clients without
+requiring access to the _Client Secret_ at all. This makes the PKCE flow advantageous
+for single page JavaScript applications or other client side apps where keeping secrets
+from the user is a technical impossibility. 
 
 Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `CODE_CHALLENGE`.
 
@@ -113,7 +118,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    any HTTP client. The following example uses Ruby's `rest-client`:
 
    ```ruby
-   parameters = 'client_id=APP_ID&client_secret=APP_SECRET&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
+   parameters = 'client_id=APP_ID&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
    RestClient.post 'https://gitlab.example.com/oauth/token', parameters
    ```
 
@@ -135,7 +140,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    - Sends new tokens in the response.
 
    ```ruby
-     parameters = 'client_id=APP_ID&client_secret=APP_SECRET&refresh_token=REFRESH_TOKEN&grant_type=refresh_token&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
+     parameters = 'client_id=APP_ID&refresh_token=REFRESH_TOKEN&grant_type=refresh_token&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
      RestClient.post 'https://gitlab.example.com/oauth/token', parameters
    ```
 
@@ -239,19 +244,13 @@ You can now make requests to the API with the access token returned.
 
 ### Implicit grant flow
 
-NOTE:
-For a detailed flow diagram, see the [RFC specification](https://tools.ietf.org/html/rfc6749#section-4.2).
-
 WARNING:
 Implicit grant flow is inherently insecure and the IETF has removed it in [OAuth 2.1](https://oauth.net/2.1/).
-For this reason, [support for it is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516).
-In GitLab 14.0, new applications can't be created using it. In GitLab 14.4, support for it is
-scheduled to be removed for existing applications.
+It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) for use in GitLab 14.0, and is planned for
+[removal](https://gitlab.com/gitlab-org/gitlab/-/issues/344609) in GitLab 15.0.
 
-We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce) instead. If you choose to use Implicit flow, be sure to verify the
-`application id` (or `client_id`) associated with the access token before granting
-access to the data. To learn more, read
-[Retrieving the token information](#retrieve-the-token-information)).
+We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce)
+instead.
 
 Unlike the authorization code flow, the client receives an `access token`
 immediately as a result of the authorization request. The flow does not use the
@@ -415,7 +414,7 @@ The following is an example response:
 
 The fields `scopes` and `expires_in_seconds` are included in the response.
 
-These are aliases for `scope` and `expires_in` respectively, and have been included to
+These fields are aliases for `scope` and `expires_in` respectively, and have been included to
 prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doorkeeper-gem/doorkeeper/wiki/Migration-from-old-versions#from-4x-to-5x).
 
 Don't rely on these fields as they are slated for removal in a later release.

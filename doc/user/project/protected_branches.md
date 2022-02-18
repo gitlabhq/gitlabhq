@@ -18,7 +18,7 @@ When a branch is protected, the default behavior enforces these restrictions on 
 
 | Action                   | Who can do it                                                     |
 |:-------------------------|:------------------------------------------------------------------|
-| Protect a branch         | Maintainers only.                                                 |
+| Protect a branch         | At least the Maintainer role.                                     |
 | Push to the branch       | GitLab administrators and anyone with **Allowed** permission. (1) |
 | Force push to the branch | No one.                                                           |
 | Delete the branch        | No one.                                                           |
@@ -35,7 +35,7 @@ Administrators can set a default branch protection level in the
 
 Prerequisite:
 
-- You must have at least the [Maintainer role](../permissions.md).
+- You must have at least the Maintainer role.
 
 To protect a branch:
 
@@ -52,7 +52,7 @@ The protected branch displays in the list of protected branches.
 
 Prerequisite:
 
-- You must have at least the [Maintainer role](../permissions.md).
+- You must have at least the Maintainer role.
 
 To protect multiple branches at the same time:
 
@@ -75,7 +75,7 @@ The protected branch displays in the list of protected branches.
 
 ## Create a protected branch
 
-Users with the Developer or higher [role](../permissions.md) can create a protected branch.
+Users with at least the Developer role can create a protected branch.
 
 Prerequisites:
 
@@ -217,16 +217,16 @@ for details about the pipelines security model.
 
 ## Delete a protected branch
 
-Users with the [Maintainer role](../permissions.md) and greater can manually delete protected
+Users with at least the Maintainer role can manually delete protected
 branches by using the GitLab web interface:
 
 1. Go to **Repository > Branches**.
 1. Next to the branch you want to delete, select the **Delete** button (**{remove}**).
 1. On the confirmation dialog, type the branch name and select **Delete protected branch**.
 
-You can delete a protected branch from the UI only.
-This prevents you from accidentally deleting a branch
-from the command line or from a Git client application.
+Protected branches can only be deleted by using GitLab either from the UI or API.
+This prevents accidentally deleting a branch through local Git commands or
+third-party Git clients.
 
 <!-- ## Troubleshooting
 

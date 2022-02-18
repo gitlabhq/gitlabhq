@@ -2,6 +2,7 @@ import { GlButton, GlModal, GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
@@ -245,7 +246,7 @@ describe('Snippet header component', () => {
     // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
     // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({ canCreateSnippet: true });
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findButtonsAsModel()).toEqual(
       expect.arrayContaining([
@@ -348,33 +349,31 @@ describe('Snippet header component', () => {
     describe('in case of successful mutation, closes modal and redirects to correct listing', () => {
       useMockLocationHelper();
 
-      const createDeleteSnippet = (snippetProps = {}) => {
+      const createDeleteSnippet = async (snippetProps = {}) => {
         createComponent({
           snippetProps,
         });
         wrapper.vm.closeDeleteModal = jest.fn();
 
         wrapper.vm.deleteSnippet();
-        return wrapper.vm.$nextTick();
+        await nextTick();
       };
 
-      it('redirects to dashboard/snippets for personal snippet', () => {
-        return createDeleteSnippet().then(() => {
-          expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
-          expect(window.location.pathname).toBe(`${gon.relative_url_root}dashboard/snippets`);
-        });
+      it('redirects to dashboard/snippets for personal snippet', async () => {
+        await createDeleteSnippet();
+        expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
+        expect(window.location.pathname).toBe(`${gon.relative_url_root}dashboard/snippets`);
       });
 
-      it('redirects to project snippets for project snippet', () => {
+      it('redirects to project snippets for project snippet', async () => {
         const fullPath = 'foo/bar';
-        return createDeleteSnippet({
+        await createDeleteSnippet({
           project: {
             fullPath,
           },
-        }).then(() => {
-          expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
-          expect(window.location.pathname).toBe(`${fullPath}/-/snippets`);
         });
+        expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
+        expect(window.location.pathname).toBe(`${fullPath}/-/snippets`);
       });
     });
   });

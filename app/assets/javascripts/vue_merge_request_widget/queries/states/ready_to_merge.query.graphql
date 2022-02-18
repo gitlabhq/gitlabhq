@@ -2,6 +2,7 @@
 
 query readyToMerge($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
+    id
     ...ReadyToMerge
   }
 }

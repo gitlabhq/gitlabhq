@@ -30,6 +30,7 @@ describe('broadcast message on dismiss', () => {
 
     expect(Cookies.set).toHaveBeenCalledWith('hide_broadcast_message_1', true, {
       expires: new Date(endsAt),
+      secure: false,
     });
   });
 });

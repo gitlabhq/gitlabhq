@@ -3,8 +3,11 @@
 - render_count = assignees_rendering_overflow ? max_render - 1 : max_render
 - more_assignees_count = issuable.assignees.size - render_count
 
-- issuable.assignees.take(render_count).each do |assignee| # rubocop: disable CodeReuse/ActiveRecord
-  = link_to_member(@project, assignee, name: false, title: _("Assigned to %{name}") % { name: assignee.name})
+- if issuable.instance_of?(MergeRequest) && Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+  = render 'shared/issuable/merge_request_assignees', issuable: issuable, count: render_count
+- else
+  - issuable.assignees.take(render_count).each do |assignee| # rubocop: disable CodeReuse/ActiveRecord
+    = link_to_member(@project, assignee, name: false, title: s_("MrList|Assigned to %{name}, go to their profile.") % { name: assignee.name})
 
 - if more_assignees_count > 0
   %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old', qa_selector: 'avatar_counter_content' }, title: _("+%{more_assignees_count} more assignees") % { more_assignees_count: more_assignees_count} }

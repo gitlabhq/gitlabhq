@@ -80,6 +80,10 @@ module Gitlab
         super(presenter_class: BlobPresenter)
       end
 
+      def binary?
+        false
+      end
+
       def fetch_blob
         path = [ref, blob_path]
         missing_blob = { binary_path: blob_path }

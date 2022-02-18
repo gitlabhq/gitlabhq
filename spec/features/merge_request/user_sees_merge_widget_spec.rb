@@ -104,10 +104,11 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'has danger button while waiting for external CI status' do
+    it 'has merge button with confirm variant while waiting for external CI status' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
-      expect(page).to have_selector('.accept-merge-request.btn-danger')
+
+      expect(page).to have_selector('.accept-merge-request.btn-confirm')
     end
   end
 
@@ -125,10 +126,27 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'has danger button when not succeeded' do
+    it 'has merge button that shows modal when pipeline does not succeeded' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
-      expect(page).to have_selector('.accept-merge-request.btn-danger')
+
+      click_button 'Merge...'
+
+      expect(page).to have_selector('[data-testid="merge-failed-pipeline-confirmation-dialog"]', visible: true)
+    end
+
+    it 'allows me to merge with a failed pipeline' do
+      modal_selector = '[data-testid="merge-failed-pipeline-confirmation-dialog"]'
+
+      wait_for_requests
+
+      click_button 'Merge...'
+
+      page.within(modal_selector) do
+        click_button 'Merge unverified changes'
+      end
+
+      expect(find('.media-body h4')).to have_content('Merging!')
     end
   end
 

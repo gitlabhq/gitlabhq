@@ -1,5 +1,5 @@
 import { GlSprintf, GlToggle } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -33,8 +33,6 @@ import {
 jest.mock('~/flash');
 jest.mock('~/packages_and_registries/settings/group/graphql/utils/optimistic_responses');
 
-const localVue = createLocalVue();
-
 describe('DependencyProxySettings', () => {
   let wrapper;
   let apolloProvider;
@@ -47,7 +45,7 @@ describe('DependencyProxySettings', () => {
     groupDependencyProxyPath: 'group_dependency_proxy_path',
   };
 
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
 
   const mountComponent = ({
     provide = defaultProvide,
@@ -63,7 +61,6 @@ describe('DependencyProxySettings', () => {
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(component, {
-      localVue,
       apolloProvider,
       provide,
       propsData: {

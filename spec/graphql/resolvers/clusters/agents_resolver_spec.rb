@@ -15,9 +15,13 @@ RSpec.describe Resolvers::Clusters::AgentsResolver do
 
   describe '#resolve' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
-    let_it_be(:developer) { create(:user, developer_projects: [project]) }
+    let_it_be(:maintainer) { create(:user, developer_projects: [project]) }
+    let_it_be(:reporter) { create(:user) }
     let_it_be(:agents) { create_list(:cluster_agent, 2, project: project) }
+
+    before do
+      project.add_reporter(reporter)
+    end
 
     let(:ctx) { { current_user: current_user } }
 
@@ -32,7 +36,7 @@ RSpec.describe Resolvers::Clusters::AgentsResolver do
     end
 
     context 'the current user does not have access to clusters' do
-      let(:current_user) { developer }
+      let(:current_user) { reporter }
 
       it 'returns an empty result' do
         expect(subject).to be_empty

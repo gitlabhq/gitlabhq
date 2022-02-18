@@ -38,7 +38,7 @@
         - popover_content_text = _('Learn more about Auto DevOps')
         = gl_badge_tag s_('Pipelines|Auto DevOps'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-autodevops', href: "#", tabindex: "0", role: "button", data: { container: 'body', toggle: 'popover', placement: 'top', html: 'true', triggers: 'focus', title: "<div class='gl-font-weight-normal gl-line-height-normal'>#{popover_title_text}</div>", content: "<a href='#{popover_content_url}' target='_blank' rel='noopener noreferrer nofollow'>#{popover_content_text}</a>" } }
       - if @pipeline.detached_merge_request_pipeline?
-        = gl_badge_tag s_('Pipelines|detached'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-mergerequest has-tooltip', title: _('Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results.') }
+        = gl_badge_tag s_('Pipelines|detached'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-mergerequest has-tooltip', title: _('Merge request pipelines are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for merge request pipelines.') }
       - if @pipeline.stuck?
         = gl_badge_tag s_('Pipelines|stuck'), { variant: :warning, size: :sm }, { class: 'js-pipeline-url-stuck has-tooltip' }
 

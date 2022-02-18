@@ -87,7 +87,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindin
   let!(:unrelated_finding) do
     create_finding!(
       id: 9999999,
-      uuid: "unreleated_finding",
+      uuid: Gitlab::UUID.v5(SecureRandom.hex),
       vulnerability_id: nil,
       report_type: 1,
       location_fingerprint: 'random_location_fingerprint',

@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe "Internal references", :js do
   include Spec::Support::Helpers::Features::NotesHelpers
 
-  let(:private_project_user) { private_project.owner }
+  let(:private_project_user) { private_project.first_owner }
   let(:private_project) { create(:project, :private, :repository) }
   let(:private_project_issue) { create(:issue, project: private_project) }
   let(:private_project_merge_request) { create(:merge_request, source_project: private_project) }
-  let(:public_project_user) { public_project.owner }
+  let(:public_project_user) { public_project.first_owner }
   let(:public_project) { create(:project, :public, :repository) }
   let(:public_project_issue) { create(:issue, project: public_project) }
   let(:public_project_merge_request) { create(:merge_request, source_project: public_project) }

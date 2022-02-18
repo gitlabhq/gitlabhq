@@ -15,10 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_quickactions_unapprove
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-    - i_quickactions_unapprove
 distribution:
   - ce
   - ee

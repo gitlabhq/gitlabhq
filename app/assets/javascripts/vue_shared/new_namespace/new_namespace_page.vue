@@ -11,7 +11,7 @@ export default {
     WelcomePage,
     LegacyContainer,
     CreditCardVerification: () =>
-      import('ee_component/pages/groups/new/components/credit_card_verification.vue'),
+      import('ee_component/namespaces/verification/components/credit_card_verification.vue'),
   },
   directives: {
     SafeHtml,

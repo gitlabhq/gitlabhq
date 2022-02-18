@@ -662,14 +662,14 @@ configurable in future releases.
 
 The Registry server listens on localhost at port `5000` by default,
 which is the address for which the Registry server should accept connections.
-In the examples below we set the Registry's port to `5001`.
+In the examples below we set the Registry's port to `5010`.
 
 **Omnibus GitLab**
 
 1. Open `/etc/gitlab/gitlab.rb` and set `registry['registry_http_addr']`:
 
    ```ruby
-   registry['registry_http_addr'] = "localhost:5001"
+   registry['registry_http_addr'] = "localhost:5010"
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
@@ -681,7 +681,7 @@ In the examples below we set the Registry's port to `5001`.
 
    ```yaml
    http:
-     addr: localhost:5001
+     addr: localhost:5010
    ```
 
 1. Save the file and restart the Registry server.
@@ -1379,7 +1379,7 @@ project or branch name. Special characters can include:
 
 To get around this, you can [change the group path](../../user/group/index.md#change-a-groups-path),
 [change the project path](../../user/project/settings/index.md#renaming-a-repository) or change the
-branch name. Another option is to create a [push rule](../../push_rules/push_rules.md) to prevent
+branch name. Another option is to create a [push rule](../../user/project/repository/push_rules.md) to prevent
 this at the instance level.
 
 ### Image push errors
@@ -1547,6 +1547,46 @@ To fix this you can do one of two things:
 
 We use a concrete example to illustrate how to
 diagnose a problem with the S3 setup.
+
+#### Investigate a cleanup policy
+
+If you're unsure why your cleanup policy did or didn't delete a tag, execute the policy line by line
+by running the below script from the [Rails console](../../administration/operations/rails_console.md).
+This can help diagnose problems with the policy.
+
+```ruby
+repo = ContainerRepository.find(<project_id>)
+policy = repo.project.container_expiration_policy
+
+tags = repo.tags
+tags.map(&:name)
+
+tags.reject!(&:latest?)
+tags.map(&:name)
+
+regex_delete = ::Gitlab::UntrustedRegexp.new("\\A#{policy.name_regex}\\z")
+regex_retain = ::Gitlab::UntrustedRegexp.new("\\A#{policy.name_regex_keep}\\z")
+
+tags.select! { |tag| regex_delete.match?(tag.name) && !regex_retain.match?(tag.name) }
+
+tags.map(&:name)
+
+now = DateTime.current
+tags.sort_by! { |tag| tag.created_at || now }.reverse! # Lengthy operation
+
+tags = tags.drop(policy.keep_n)
+tags.map(&:name)
+
+older_than_timestamp = ChronicDuration.parse(policy.older_than).seconds.ago
+
+tags.select! { |tag| tag.created_at && tag.created_at < older_than_timestamp }
+
+tags.map(&:name)
+```
+
+- The script builds the list of tags to delete (`tags`).
+- `tags.map(&:name)` prints a list of tags to remove. This may be a lengthy operation.
+- After each filter, check the list of `tags` to see if it contains the intended tags to destroy.
 
 #### Unexpected 403 error during push
 

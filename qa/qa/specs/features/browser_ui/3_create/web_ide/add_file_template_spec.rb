@@ -18,30 +18,34 @@ module QA
           file_name: '.gitignore',
           name: 'Android',
           api_path: 'gitignores',
-          api_key: 'Android'
+          api_key: 'Android',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347752'
         },
         {
           file_name: '.gitlab-ci.yml',
           name: 'Julia',
           api_path: 'gitlab_ci_ymls',
-          api_key: 'Julia'
+          api_key: 'Julia',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347753'
         },
         {
           file_name: 'Dockerfile',
           name: 'Python',
           api_path: 'dockerfiles',
-          api_key: 'Python'
+          api_key: 'Python',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347750'
         },
         {
           file_name: 'LICENSE',
           name: 'Mozilla Public License 2.0',
           api_path: 'licenses',
-          api_key: 'mpl-2.0'
+          api_key: 'mpl-2.0',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347751'
         }
       ]
 
       templates.each do |template|
-        it "user adds #{template[:file_name]} via file template #{template[:name]}" do
+        it "user adds #{template[:file_name]} via file template #{template[:name]}", testcase: template[:testcase] do
           content = fetch_template_from_api(template[:api_path], template[:api_key])
 
           Flow::Login.sign_in

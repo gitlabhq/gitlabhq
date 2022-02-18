@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import ContributorsCharts from '~/contributors/components/contributors.vue';
 import { createStore } from '~/contributors/stores';
 import axios from '~/lib/utils/axios_utils';
@@ -49,20 +49,18 @@ describe('Contributors charts', () => {
     expect(axios.get).toHaveBeenCalledWith(endpoint);
   });
 
-  it('should display loader whiled loading data', () => {
+  it('should display loader whiled loading data', async () => {
     wrapper.vm.$store.state.loading = true;
-    return wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.contributors-loader').exists()).toBe(true);
-    });
+    await nextTick();
+    expect(wrapper.find('.contributors-loader').exists()).toBe(true);
   });
 
-  it('should render charts when loading completed and there is chart data', () => {
+  it('should render charts when loading completed and there is chart data', async () => {
     wrapper.vm.$store.state.loading = false;
     wrapper.vm.$store.state.chartData = chartData;
-    return wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.contributors-loader').exists()).toBe(false);
-      expect(wrapper.find('.contributors-charts').exists()).toBe(true);
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    await nextTick();
+    expect(wrapper.find('.contributors-loader').exists()).toBe(false);
+    expect(wrapper.find('.contributors-charts').exists()).toBe(true);
+    expect(wrapper.element).toMatchSnapshot();
   });
 });

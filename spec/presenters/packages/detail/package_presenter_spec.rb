@@ -161,14 +161,6 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       subject { presenter.detail_view[:package_files].map { |e| e[:id] } }
 
       it { is_expected.not_to include(package_file_pending_destruction.id) }
-
-      context 'with packages_installable_package_files disabled' do
-        before do
-          stub_feature_flags(packages_installable_package_files: false)
-        end
-
-        it { is_expected.to include(package_file_pending_destruction.id) }
-      end
     end
   end
 end

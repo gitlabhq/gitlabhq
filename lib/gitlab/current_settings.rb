@@ -62,7 +62,7 @@ module Gitlab
         # need to be added to the application settings. To prevent Rake tasks
         # and other callers from failing, use any loaded settings and return
         # defaults for missing columns.
-        if Gitlab::Runtime.rake? && ActiveRecord::Base.connection.migration_context.needs_migration?
+        if Gitlab::Runtime.rake? && ::ApplicationSetting.connection.migration_context.needs_migration?
           db_attributes = current_settings&.attributes || {}
           fake_application_settings(db_attributes)
         elsif current_settings.present?
@@ -82,7 +82,7 @@ module Gitlab
 
       def connect_to_db?
         # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised
-        active_db_connection = ActiveRecord::Base.connection.active? rescue false
+        active_db_connection = ::ApplicationSetting.connection.active? rescue false
 
         active_db_connection &&
           ApplicationSetting.database.cached_table_exists?

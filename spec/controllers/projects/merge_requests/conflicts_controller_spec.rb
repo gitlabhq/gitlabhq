@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::MergeRequests::ConflictsController do
   let(:project) { create(:project, :repository) }
-  let(:user)    { project.owner }
+  let(:user)    { project.first_owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do
     create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project, merge_status: :unchecked) do |mr|

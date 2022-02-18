@@ -59,7 +59,7 @@ module Gitlab
           attributes = {
             class: self.class.name.to_s,
             pipeline_creation_caller: caller,
-            project_id: project.id,
+            project_id: project&.id, # project is not available when called from `/ci/lint`
             pipeline_persisted: pipeline.persisted?,
             pipeline_source: pipeline.source,
             pipeline_creation_service_duration_s: age

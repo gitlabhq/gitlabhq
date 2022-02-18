@@ -44,6 +44,8 @@ RSpec.describe Gitlab::Database::GitlabSchema do
       'my_schema.ci_builds'             | :gitlab_ci
       'information_schema.columns'      | :gitlab_shared
       'audit_events_part_5fc467ac26'    | :gitlab_main
+      '_test_gitlab_main_table'         | :gitlab_main
+      '_test_gitlab_ci_table'           | :gitlab_ci
       '_test_my_table'                  | :gitlab_shared
       'pg_attribute'                    | :gitlab_shared
       'my_other_table'                  | :undefined_my_other_table

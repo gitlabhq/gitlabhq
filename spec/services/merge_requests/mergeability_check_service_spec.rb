@@ -73,12 +73,10 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
   let(:merge_request) { create(:merge_request, merge_status: :unchecked, source_project: project, target_project: project) }
 
   describe '#async_execute' do
-    shared_examples_for 'no job is enqueued' do
-      it 'does not enqueue MergeRequestMergeabilityCheckWorker' do
-        expect(MergeRequestMergeabilityCheckWorker).not_to receive(:perform_async)
+    it 'updates merge status to checking' do
+      described_class.new(merge_request).async_execute
 
-        described_class.new(merge_request).async_execute
-      end
+      expect(merge_request).to be_checking
     end
 
     it 'enqueues MergeRequestMergeabilityCheckWorker' do
@@ -92,15 +90,11 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
         allow(Gitlab::Database).to receive(:read_only?) { true }
       end
 
-      it_behaves_like 'no job is enqueued'
-    end
+      it 'does not enqueue MergeRequestMergeabilityCheckWorker' do
+        expect(MergeRequestMergeabilityCheckWorker).not_to receive(:perform_async)
 
-    context 'when merge_status is already checking' do
-      before do
-        merge_request.mark_as_checking
+        described_class.new(merge_request).async_execute
       end
-
-      it_behaves_like 'no job is enqueued'
     end
   end
 

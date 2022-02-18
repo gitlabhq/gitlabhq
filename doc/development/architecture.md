@@ -339,7 +339,7 @@ Component statuses are linked to configuration documentation for each component.
 
 ### Component list
 
-| Component                                             | Description                                                          | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/installation.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
+| Component                                             | Description                                                          | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/installation.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
 |-------------------------------------------------------|----------------------------------------------------------------------|:--------------:|:--------------:|:------------:|:----------------:|:----------:|:------:|:---:|:-------:|
 | [Certificate Management](#certificate-management)     | TLS Settings, Let's Encrypt                                          |       ✅       |       ✅        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Consul](#consul)                                     | Database node discovery, failover                                    |       ⚙       |       ✅         |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
@@ -528,7 +528,7 @@ You can use it either for personal or business websites, such as portfolios, doc
 
 #### GitLab Runner
 
-- [Project page](https://gitlab.com/gitlab-org/gitlab-runner/blob/master/README.md)
+- [Project page](https://gitlab.com/gitlab-org/gitlab-runner/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/runner/)
   - [Charts](https://docs.gitlab.com/runner/install/kubernetes.html)

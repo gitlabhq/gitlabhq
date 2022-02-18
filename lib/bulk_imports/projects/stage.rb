@@ -19,6 +19,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::ProjectAttributesPipeline,
             stage: 1
           },
+          members: {
+            pipeline: BulkImports::Common::Pipelines::MembersPipeline,
+            stage: 1
+          },
           labels: {
             pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
             stage: 2
@@ -81,6 +85,10 @@ module BulkImports
           },
           uploads: {
             pipeline: BulkImports::Common::Pipelines::UploadsPipeline,
+            stage: 5
+          },
+          lfs_objects: {
+            pipeline: BulkImports::Common::Pipelines::LfsObjectsPipeline,
             stage: 5
           },
           auto_devops: {

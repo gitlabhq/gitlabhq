@@ -98,6 +98,15 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - [Common Geo errors](../geo/replication/troubleshooting.md#fixing-common-errors).
 
+- Mismatch in `pg_dump` and `psql` versions:
+
+  ```plaintext
+  Dumping PostgreSQL database gitlabhq_production ... pg_dump: error: server version: 13.3; pg_dump version: 14.2
+  pg_dump: error: aborting because of server version mismatch
+  ```
+
+  To fix this, see [Backup and restore a non-packaged PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#backup-and-restore-a-non-packaged-postgresql-database).
+
 ## Support topics
 
 ### Database deadlocks

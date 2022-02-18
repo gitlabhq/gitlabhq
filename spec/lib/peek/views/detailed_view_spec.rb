@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Peek::Views::DetailedView, :request_store do
   context 'when a class defines thresholds' do

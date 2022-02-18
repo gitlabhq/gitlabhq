@@ -10,6 +10,7 @@ import EnvironmentsApp from '~/environments/components/new_environments_app.vue'
 import EnvironmentsFolder from '~/environments/components/new_environment_folder.vue';
 import EnvironmentsItem from '~/environments/components/new_environment_item.vue';
 import StopEnvironmentModal from '~/environments/components/stop_environment_modal.vue';
+import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
 import { resolvedEnvironmentsApp, resolvedFolder, resolvedEnvironment } from './graphql/mock_data';
 
 Vue.use(VueApollo);
@@ -20,6 +21,8 @@ describe('~/environments/components/new_environments_app.vue', () => {
   let environmentFolderMock;
   let paginationMock;
   let environmentToStopMock;
+  let environmentToChangeCanaryMock;
+  let weightMock;
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -28,6 +31,10 @@ describe('~/environments/components/new_environments_app.vue', () => {
         folder: environmentFolderMock,
         pageInfo: paginationMock,
         environmentToStop: environmentToStopMock,
+        environmentToDelete: jest.fn().mockResolvedValue(resolvedEnvironment),
+        environmentToRollback: jest.fn().mockResolvedValue(resolvedEnvironment),
+        environmentToChangeCanary: environmentToChangeCanaryMock,
+        weight: weightMock,
       },
     };
 
@@ -40,6 +47,7 @@ describe('~/environments/components/new_environments_app.vue', () => {
         newEnvironmentPath: '/environments/new',
         canCreateEnvironment: true,
         defaultBranchName: 'main',
+        helpPagePath: '/help',
         ...provide,
       },
       apolloProvider,
@@ -50,6 +58,8 @@ describe('~/environments/components/new_environments_app.vue', () => {
     environmentsApp,
     folder,
     environmentToStop = {},
+    environmentToChangeCanary = {},
+    weight = 0,
     pageInfo = {
       total: 20,
       perPage: 5,
@@ -64,6 +74,8 @@ describe('~/environments/components/new_environments_app.vue', () => {
     environmentFolderMock.mockReturnValue(folder);
     paginationMock.mockReturnValue(pageInfo);
     environmentToStopMock.mockReturnValue(environmentToStop);
+    environmentToChangeCanaryMock.mockReturnValue(environmentToChangeCanary);
+    weightMock.mockReturnValue(weight);
     const apolloProvider = createApolloProvider();
     wrapper = createWrapper({ apolloProvider, provide });
 
@@ -75,11 +87,13 @@ describe('~/environments/components/new_environments_app.vue', () => {
     environmentAppMock = jest.fn();
     environmentFolderMock = jest.fn();
     environmentToStopMock = jest.fn();
+    environmentToChangeCanaryMock = jest.fn();
+    weightMock = jest.fn();
     paginationMock = jest.fn();
   });
 
   afterEach(() => {
-    wrapper?.destroy();
+    wrapper.destroy();
   });
 
   it('should show all the folders that are fetched', async () => {
@@ -149,8 +163,6 @@ describe('~/environments/components/new_environments_app.vue', () => {
       },
       folder: resolvedFolder,
     });
-    await waitForPromises();
-    await nextTick();
 
     const button = wrapper.findByRole('button', { name: s__('Environments|Enable review app') });
     expect(button.exists()).toBe(false);
@@ -203,6 +215,19 @@ describe('~/environments/components/new_environments_app.vue', () => {
       });
 
       const modal = wrapper.findComponent(StopEnvironmentModal);
+
+      expect(modal.props('environment')).toMatchObject(resolvedEnvironment);
+    });
+
+    it('should pass the environment to change canary to the canary update modal', async () => {
+      await createWrapperWithMocked({
+        environmentsApp: resolvedEnvironmentsApp,
+        folder: resolvedFolder,
+        environmentToChangeCanary: resolvedEnvironment,
+        weight: 10,
+      });
+
+      const modal = wrapper.findComponent(CanaryUpdateModal);
 
       expect(modal.props('environment')).toMatchObject(resolvedEnvironment);
     });

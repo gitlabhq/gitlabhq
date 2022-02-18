@@ -3,6 +3,8 @@
 module Ci
   class PipelineScheduleService < BaseService
     def execute(schedule)
+      return unless project.persisted?
+
       # Ensure `next_run_at` is set properly before creating a pipeline.
       # Otherwise, multiple pipelines could be created in a short interval.
       schedule.schedule_next_run!

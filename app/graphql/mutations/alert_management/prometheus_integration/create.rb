@@ -4,9 +4,9 @@ module Mutations
   module AlertManagement
     module PrometheusIntegration
       class Create < PrometheusIntegrationBase
-        include FindsProject
-
         graphql_name 'PrometheusIntegrationCreate'
+
+        include FindsProject
 
         argument :project_path, GraphQL::Types::ID,
                  required: true,

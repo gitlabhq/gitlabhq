@@ -1,11 +1,11 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import component from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_search.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Infrastructure Search', () => {
   let wrapper;
@@ -48,7 +48,6 @@ describe('Infrastructure Search', () => {
     createStore(isGroupPage);
 
     wrapper = shallowMount(component, {
-      localVue,
       store,
       stubs: {
         UrlSync,

@@ -1,5 +1,6 @@
 import { GlDropdown } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Breadcrumbs from '~/repository/components/breadcrumbs.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
@@ -79,7 +80,7 @@ describe('Repository breadcrumbs component', () => {
     // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({ userPermissions: { forkProject: false, createMergeRequestIn: false } });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.find(GlDropdown).exists()).toBe(false);
   });
@@ -106,7 +107,7 @@ describe('Repository breadcrumbs component', () => {
     // eslint-disable-next-line no-restricted-syntax
     wrapper.setData({ userPermissions: { forkProject: true, createMergeRequestIn: true } });
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(wrapper.find(GlDropdown).exists()).toBe(true);
   });
@@ -125,7 +126,7 @@ describe('Repository breadcrumbs component', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({ $apollo: { queries: { userPermissions: { loading: false } } } });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findUploadBlobModal().exists()).toBe(true);
     });
@@ -149,7 +150,7 @@ describe('Repository breadcrumbs component', () => {
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ $apollo: { queries: { userPermissions: { loading: false } } } });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findNewDirectoryModal().exists()).toBe(true);
       });

@@ -74,7 +74,7 @@ describe('Dropdown User', () => {
   });
 
   describe('hideCurrentUser', () => {
-    const fixtureTemplate = 'issues/issue_list.html';
+    const fixtureTemplate = 'merge_requests/merge_request_list.html';
 
     let dropdown;
     let authorFilterDropdownElement;

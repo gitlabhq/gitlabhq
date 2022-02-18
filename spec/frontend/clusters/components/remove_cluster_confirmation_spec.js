@@ -1,5 +1,6 @@
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 import RemoveClusterConfirmation from '~/clusters/components/remove_cluster_confirmation.vue';
 import SplitButton from '~/vue_shared/components/split_button.vue';
@@ -43,7 +44,7 @@ describe('Remove cluster confirmation modal', () => {
     it('opens modal with "cleanup" option', async () => {
       findSplitButton().vm.$emit('remove-cluster-and-cleanup');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findModal().vm.show).toHaveBeenCalled();
       expect(wrapper.vm.confirmCleanup).toEqual(true);
@@ -55,7 +56,7 @@ describe('Remove cluster confirmation modal', () => {
     it('opens modal without "cleanup" option', async () => {
       findSplitButton().vm.$emit('remove-cluster');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findModal().vm.show).toHaveBeenCalled();
       expect(wrapper.vm.confirmCleanup).toEqual(false);

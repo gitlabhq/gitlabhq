@@ -98,9 +98,6 @@ export default {
       return this.$options.i18n[this.currentPage].btnText;
     },
     buttonKind() {
-      if (this.isNewForm) {
-        return 'success';
-      }
       if (this.isDeleteForm) {
         return 'danger';
       }

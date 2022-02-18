@@ -9,5 +9,9 @@ module Backup
 
       super('artifacts', JobArtifactUploader.root, excludes: ['tmp'])
     end
+
+    def human_name
+      _('artifacts')
+    end
   end
 end

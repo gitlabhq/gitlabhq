@@ -64,6 +64,27 @@ export const STATUSES = {
   creating: { title: __('Creating') },
 };
 
+export const I18N_AGENT_TABLE = {
+  nameLabel: s__('ClusterAgents|Name'),
+  statusLabel: s__('ClusterAgents|Connection status'),
+  lastContactLabel: s__('ClusterAgents|Last contact'),
+  versionLabel: __('Version'),
+  configurationLabel: s__('ClusterAgents|Configuration'),
+  optionsLabel: __('Options'),
+  troubleshootingText: s__('ClusterAgents|Learn how to troubleshoot'),
+  neverConnectedText: s__('ClusterAgents|Never'),
+  versionMismatchTitle: s__('ClusterAgents|Agent version mismatch'),
+  versionMismatchText: s__(
+    "ClusterAgents|The Agent version do not match each other across your cluster's pods. This can happen when a new Agent version was just deployed and Kubernetes is shutting down the old pods.",
+  ),
+  versionOutdatedTitle: s__('ClusterAgents|Agent version update required'),
+  versionOutdatedText: s__(
+    'ClusterAgents|Your Agent version is out of sync with your GitLab version (v%{version}), which might cause compatibility problems. Update the Agent installed on your cluster to the most recent version.',
+  ),
+  versionMismatchOutdatedTitle: s__('ClusterAgents|Agent version mismatch and update'),
+  viewDocsText: s__('ClusterAgents|How to update the Agent?'),
+};
+
 export const I18N_AGENT_MODAL = {
   agent_registration: {
     registerAgentButton: s__('ClusterAgents|Register'),
@@ -112,7 +133,7 @@ export const I18N_AGENT_MODAL = {
       "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it.",
     ),
     altText: s__('ClusterAgents|GitLab Agent for Kubernetes'),
-    secondaryButton: s__('ClusterAgents|Go to the repository files'),
+    primaryButton: s__('ClusterAgents|Go to the repository files'),
     done: __('Cancel'),
   },
 };
@@ -176,8 +197,8 @@ export const I18N_CLUSTERS_EMPTY_STATE = {
 
 export const AGENT_CARD_INFO = {
   tabName: 'agent',
-  title: sprintf(s__('ClusterAgents|%{number} of %{total} agents')),
-  emptyTitle: s__('ClusterAgents|No agents'),
+  title: sprintf(s__('ClusterAgents|%{number} of %{total} Agents')),
+  emptyTitle: s__('ClusterAgents|No Agents'),
   tooltip: {
     label: s__('ClusterAgents|Recommended'),
     title: s__('ClusterAgents|GitLab Agent'),
@@ -188,8 +209,11 @@ export const AGENT_CARD_INFO = {
     ),
     link: helpPagePath('user/clusters/agent/index'),
   },
-  actionText: s__('ClusterAgents|Install a new agent'),
+  actionText: s__('ClusterAgents|Install new Agent'),
   footerText: sprintf(s__('ClusterAgents|View all %{number} agents')),
+  installAgentDisabledHint: s__(
+    'ClusterAgents|Requires a Maintainer or greater role to install new agents',
+  ),
 };
 
 export const CERTIFICATE_BASED_CARD_INFO = {
@@ -201,6 +225,9 @@ export const CERTIFICATE_BASED_CARD_INFO = {
   actionText: s__('ClusterAgents|Connect existing cluster'),
   footerText: sprintf(s__('ClusterAgents|View all %{number} clusters')),
   badgeText: s__('ClusterAgents|Deprecated'),
+  connectExistingClusterDisabledHint: s__(
+    'ClusterAgents|Requires a maintainer or greater role to connect existing clusters',
+  ),
 };
 
 export const MAX_CLUSTERS_LIST = 6;
@@ -226,8 +253,25 @@ export const CLUSTERS_TABS = [
 export const CLUSTERS_ACTIONS = {
   actionsButton: s__('ClusterAgents|Actions'),
   createNewCluster: s__('ClusterAgents|Create a new cluster'),
-  connectWithAgent: s__('ClusterAgents|Connect with the Agent'),
+  connectWithAgent: s__('ClusterAgents|Connect with Agent'),
   connectExistingCluster: s__('ClusterAgents|Connect with a certificate'),
+  agent: s__('ClusterAgents|Agent'),
+  certificate: s__('ClusterAgents|Certificate'),
+  dropdownDisabledHint: s__(
+    'ClusterAgents|Requires a Maintainer or greater role to perform these actions',
+  ),
+};
+
+export const DELETE_AGENT_BUTTON = {
+  deleteButton: s__('ClusterAgents|Delete agent'),
+  disabledHint: s__('ClusterAgents|Requires a Maintainer or greater role to delete agents'),
+  modalTitle: __('Are you sure?'),
+  modalBody: s__('ClusterAgents|Are you sure you want to delete this agent? You cannot undo this.'),
+  modalInputLabel: s__('ClusterAgents|To delete the agent, type %{name} to confirm:'),
+  modalAction: s__('ClusterAgents|Delete'),
+  modalCancel: __('Cancel'),
+  successMessage: s__('ClusterAgents|%{name} successfully deleted'),
+  defaultError: __('An error occurred. Please try again.'),
 };
 
 export const AGENT = 'agent';
@@ -244,3 +288,6 @@ export const MODAL_TYPE_EMPTY = 'empty_state';
 export const MODAL_TYPE_REGISTER = 'agent_registration';
 
 export const DELETE_AGENT_MODAL_ID = 'delete-agent-modal-%{agentName}';
+
+export const AGENT_FEEDBACK_ISSUE = 'https://gitlab.com/gitlab-org/gitlab/-/issues/342696';
+export const AGENT_FEEDBACK_KEY = 'agent_feedback_banner';

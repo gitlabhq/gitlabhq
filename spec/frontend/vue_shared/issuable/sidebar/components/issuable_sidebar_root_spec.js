@@ -1,5 +1,6 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Cookies from 'js-cookie';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import IssuableSidebarRoot from '~/vue_shared/issuable/sidebar/components/issuable_sidebar_root.vue';
@@ -69,7 +70,10 @@ describe('IssuableSidebarRoot', () => {
       it('updates "collapsed_gutter" cookie value and layout classes', async () => {
         await findToggleSidebarButton().trigger('click');
 
-        expect(Cookies.set).toHaveBeenCalledWith(USER_COLLAPSED_GUTTER_COOKIE, true);
+        expect(Cookies.set).toHaveBeenCalledWith(USER_COLLAPSED_GUTTER_COOKIE, true, {
+          expires: 365,
+          secure: false,
+        });
         assertPageLayoutClasses({ isExpanded: false });
       });
     });
@@ -88,7 +92,7 @@ describe('IssuableSidebarRoot', () => {
           jest.spyOn(bp, 'isDesktop').mockReturnValue(breakpoint === 'lg' || breakpoint === 'xl');
 
           window.dispatchEvent(new Event('resize'));
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           assertPageLayoutClasses({ isExpanded: isExpandedValue });
         },

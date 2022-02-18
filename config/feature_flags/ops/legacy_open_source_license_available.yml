@@ -1,0 +1,8 @@
+---
+name: legacy_open_source_license_available
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79855
+rollout_issue_url:
+milestone: '14.8'
+type: ops
+group: 'group::authentication and authorization'
+default_enabled: true

@@ -85,6 +85,9 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
     let(:info) { build(:codequality_degradation, :info) }
     let(:major_2) { build(:codequality_degradation, :major) }
     let(:critical) { build(:codequality_degradation, :critical) }
+    let(:uppercase_major) { build(:codequality_degradation, severity: 'MAJOR') }
+    let(:unknown) { build(:codequality_degradation, severity: 'unknown') }
+
     let(:codequality_report) { described_class.new }
 
     before do
@@ -94,6 +97,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
       codequality_report.add_degradation(major_2)
       codequality_report.add_degradation(info)
       codequality_report.add_degradation(critical)
+      codequality_report.add_degradation(unknown)
 
       codequality_report.sort_degradations!
     end
@@ -105,8 +109,30 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
         major,
         major_2,
         minor,
-        info
+        info,
+        unknown
       ])
+    end
+
+    context 'with non-existence and uppercase severities' do
+      let(:other_report) { described_class.new }
+      let(:non_existent) { build(:codequality_degradation, severity: 'non-existent') }
+
+      before do
+        other_report.add_degradation(blocker)
+        other_report.add_degradation(uppercase_major)
+        other_report.add_degradation(minor)
+        other_report.add_degradation(non_existent)
+      end
+
+      it 'sorts unknown last' do
+        expect(other_report.degradations.values).to eq([
+          blocker,
+          uppercase_major,
+          minor,
+          non_existent
+        ])
+      end
     end
   end
 end

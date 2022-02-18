@@ -34,7 +34,7 @@
         &middot;
         = commit.short_id
       - if commit.description? && collapsible
-        %button.gl-button.btn.btn-default.button-ellipsis-horizontal.btn-sm.gl-ml-2.text-expander.js-toggle-button
+        %button.gl-button.btn.btn-default.button-ellipsis-horizontal.btn-sm.gl-ml-2.text-expander.js-toggle-button{ data: { toggle: 'tooltip', container: 'body' }, :title => _("Toggle commit description"), aria: { label: _("Toggle commit description") } }
           = sprite_icon('ellipsis_h', size: 12)
 
       .committer

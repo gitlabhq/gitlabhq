@@ -1,4 +1,4 @@
-import { ApolloLink, Observable } from 'apollo-link';
+import { ApolloLink, Observable } from '@apollo/client/core';
 import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 
 describe('StartupJSLink', () => {

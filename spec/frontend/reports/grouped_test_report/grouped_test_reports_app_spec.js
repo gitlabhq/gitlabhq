@@ -1,4 +1,5 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import Api from '~/api';
 import GroupedTestReportsApp from '~/reports/grouped_test_report/grouped_test_reports_app.vue';
@@ -14,8 +15,7 @@ import resolvedFailures from '../mock_data/resolved_failures.json';
 
 jest.mock('~/api.js');
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Grouped test reports app', () => {
   const endpoint = 'endpoint.json';
@@ -27,7 +27,6 @@ describe('Grouped test reports app', () => {
   const mountComponent = ({ props = { pipelinePath } } = {}) => {
     wrapper = mount(GroupedTestReportsApp, {
       store: mockStore,
-      localVue,
       propsData: {
         endpoint,
         headBlobPath,

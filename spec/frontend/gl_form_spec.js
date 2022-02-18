@@ -8,7 +8,7 @@ describe('GLForm', () => {
   const testContext = {};
 
   describe('when instantiated', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       window.gl = window.gl || {};
 
       testContext.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
@@ -18,22 +18,11 @@ describe('GLForm', () => {
       jest.spyOn($.prototype, 'css').mockImplementation(() => {});
 
       testContext.glForm = new GLForm(testContext.form, false);
-
-      setImmediate(() => {
-        $.prototype.off.mockClear();
-        $.prototype.on.mockClear();
-        $.prototype.css.mockClear();
-        done();
-      });
     });
 
     describe('setupAutosize', () => {
-      beforeEach((done) => {
+      beforeEach(() => {
         testContext.glForm.setupAutosize();
-
-        setImmediate(() => {
-          done();
-        });
       });
 
       it('should register an autosize event handler on the textarea', () => {

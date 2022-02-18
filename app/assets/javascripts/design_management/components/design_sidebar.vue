@@ -1,7 +1,7 @@
 <script>
 import { GlCollapse, GlButton, GlPopover } from '@gitlab/ui';
-import Cookies from 'js-cookie';
-import { parseBoolean, isLoggedIn } from '~/lib/utils/common_utils';
+import { getCookie, setCookie, parseBoolean, isLoggedIn } from '~/lib/utils/common_utils';
+
 import { s__ } from '~/locale';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -53,7 +53,7 @@ export default {
   },
   data() {
     return {
-      isResolvedCommentsPopoverHidden: parseBoolean(Cookies.get(this.$options.cookieKey)),
+      isResolvedCommentsPopoverHidden: parseBoolean(getCookie(this.$options.cookieKey)),
       discussionWithOpenForm: '',
       isLoggedIn: isLoggedIn(),
     };
@@ -96,7 +96,7 @@ export default {
   methods: {
     handleSidebarClick() {
       this.isResolvedCommentsPopoverHidden = true;
-      Cookies.set(this.$options.cookieKey, 'true', { expires: 365 * 10 });
+      setCookie(this.$options.cookieKey, 'true', { expires: 365 * 10 });
       this.updateActiveDiscussion();
     },
     updateActiveDiscussion(id) {

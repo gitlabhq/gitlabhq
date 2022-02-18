@@ -23,7 +23,6 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
 - [Releases](../../api/releases/index.md).
 - [Terraform plan](../../user/infrastructure/index.md).
 
-The token has the same permissions to access the API as the user that executes the
 The token has the same permissions to access the API as the user that caused the
 job to run. A user can cause a job to run by pushing a commit, triggering a manual job,
 being the owner of a scheduled pipeline, and so on. Therefore, this user must be assigned to
@@ -95,7 +94,7 @@ The job token scope is only for controlling access to private projects.
 1. Expand **Token Access**.
 1. Toggle **Limit CI_JOB_TOKEN access** to enabled.
 1. Optional. Add existing projects to the token's access scope. The user adding a
-   project must have the [maintainer role](../../user/permissions.md) in both projects.
+   project must have the Maintainer role in both projects.
 
 There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to improve
 the feature with more strategic control of the access permissions.

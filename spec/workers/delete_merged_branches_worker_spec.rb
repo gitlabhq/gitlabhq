@@ -13,11 +13,11 @@ RSpec.describe DeleteMergedBranchesWorker do
         expect(instance).to receive(:execute).and_return(true)
       end
 
-      worker.perform(project.id, project.owner.id)
+      worker.perform(project.id, project.first_owner.id)
     end
 
     it "returns false when project was not found" do
-      expect(worker.perform('unknown', project.owner.id)).to be_falsy
+      expect(worker.perform('unknown', project.first_owner.id)).to be_falsy
     end
   end
 end

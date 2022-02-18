@@ -104,7 +104,6 @@ describe('RunnerPagination', () => {
 
       expect(wrapper.emitted('input')[0]).toEqual([
         {
-          before: mockStartCursor,
           page: 1,
         },
       ]);

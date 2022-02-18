@@ -31,8 +31,8 @@ module QA
         Flow::Login.sign_in
       end
 
-      shared_examples 'milestone assigned to existing issue' do
-        it 'is assigned to an existing issue' do
+      shared_examples 'milestone assigned to existing issue' do |testcase|
+        it 'is assigned to an existing issue', testcase: testcase do
           issue.visit!
 
           Page::Project::Issue::Show.perform do |existing_issue|
@@ -43,8 +43,8 @@ module QA
         end
       end
 
-      shared_examples 'milestone assigned to new issue' do
-        it 'is assigned to a new issue' do
+      shared_examples 'milestone assigned to new issue' do |testcase|
+        it 'is assigned to a new issue', testcase: testcase do
           Resource::Issue.fabricate_via_browser_ui! do |new_issue|
             new_issue.project = project
             new_issue.milestone = milestone
@@ -65,8 +65,8 @@ module QA
           end
         end
 
-        it_behaves_like 'milestone assigned to existing issue'
-        it_behaves_like 'milestone assigned to new issue'
+        it_behaves_like 'milestone assigned to existing issue', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347964'
+        it_behaves_like 'milestone assigned to new issue', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347965'
       end
 
       context 'Project milestone' do
@@ -78,8 +78,8 @@ module QA
           end
         end
 
-        it_behaves_like 'milestone assigned to existing issue'
-        it_behaves_like 'milestone assigned to new issue'
+        it_behaves_like 'milestone assigned to existing issue', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347962'
+        it_behaves_like 'milestone assigned to new issue', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347963'
       end
     end
   end

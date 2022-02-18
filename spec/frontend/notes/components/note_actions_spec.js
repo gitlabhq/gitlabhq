@@ -1,6 +1,6 @@
-import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
+import { mount, createWrapper } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
@@ -20,11 +20,9 @@ describe('noteActions', () => {
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
 
   const mountNoteActions = (propsData, computed) => {
-    const localVue = createLocalVue();
-    return mount(localVue.extend(noteActions), {
+    return mount(noteActions, {
       store,
       propsData,
-      localVue,
       computed,
     });
   };
@@ -78,15 +76,14 @@ describe('noteActions', () => {
       expect(findUserAccessRoleBadgeText(1)).toBe(props.accessLevel);
     });
 
-    it('should render contributor badge', () => {
+    it('should render contributor badge', async () => {
       wrapper.setProps({
         accessLevel: null,
         isContributor: true,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findUserAccessRoleBadgeText(1)).toBe('Contributor');
-      });
+      await nextTick();
+      expect(findUserAccessRoleBadgeText(1)).toBe('Contributor');
     });
 
     it('should render emoji link', () => {
@@ -107,7 +104,7 @@ describe('noteActions', () => {
         expect(wrapper.find('.js-btn-copy-note-link').exists()).toBe(true);
       });
 
-      it('should not show copy link action when `noteUrl` prop is empty', (done) => {
+      it('should not show copy link action when `noteUrl` prop is empty', async () => {
         wrapper.setProps({
           ...props,
           author: {
@@ -121,30 +118,23 @@ describe('noteActions', () => {
           noteUrl: '',
         });
 
-        Vue.nextTick()
-          .then(() => {
-            expect(wrapper.find('.js-btn-copy-note-link').exists()).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
+        await nextTick();
+        expect(wrapper.find('.js-btn-copy-note-link').exists()).toBe(false);
       });
 
       it('should be possible to delete comment', () => {
         expect(wrapper.find('.js-note-delete').exists()).toBe(true);
       });
 
-      it('closes tooltip when dropdown opens', (done) => {
+      it('closes tooltip when dropdown opens', async () => {
         wrapper.find('.more-actions-toggle').trigger('click');
 
         const rootWrapper = createWrapper(wrapper.vm.$root);
-        Vue.nextTick()
-          .then(() => {
-            const emitted = Object.keys(rootWrapper.emitted());
 
-            expect(emitted).toEqual([BV_HIDE_TOOLTIP]);
-            done();
-          })
-          .catch(done.fail);
+        await nextTick();
+        const emitted = Object.keys(rootWrapper.emitted());
+
+        expect(emitted).toEqual([BV_HIDE_TOOLTIP]);
       });
 
       it('should not be possible to assign or unassign the comment author in a merge request', () => {

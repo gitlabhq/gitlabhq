@@ -372,7 +372,8 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 | `keep_n` | integer | no | The amount of latest tags of given name to keep. |
 | `older_than` | string | no | Tags to delete that are older than the given time, written in human readable form `1h`, `1d`, `1month`. |
 
-This API call performs the following operations:
+This API returns [HTTP response status code 202](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202)
+if successful, and performs the following operations:
 
 - It orders all tags by creation date. The creation date is the time of the
   manifest creation, not the time of tag push.
@@ -395,10 +396,6 @@ because of the scale of the Container Registry there.
 If your Container Registry has a large number of tags to delete,
 only some of them will be deleted, and you might need to call this API multiple times.
 To schedule tags for automatic deletion, use a [cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
-
-NOTE:
-In GitLab 12.4 and later, individual tags are deleted.
-For more details, see the [discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/15737).
 
 Examples:
 
@@ -430,3 +427,29 @@ Examples:
    curl --request DELETE --data 'name_regex_delete=.*' --data 'older_than=1month' \
         --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
    ```
+
+## Instance-wide endpoints
+
+Beside the group- and project-specific GitLab APIs explained above,
+the Container Registry has its own endpoints.
+To query those, follow the Registry's built-in mechanism to obtain and use an
+[authentication token](https://docs.docker.com/registry/spec/auth/token/).
+
+NOTE:
+These are different from project or personal access tokens in the GitLab application.
+
+### Listing all container repositories
+
+```plaintext
+GET /v2/_catalog
+```
+
+To list all container repositories on your GitLab instance, admin credentials are required:
+
+```shell
+$ curl --request GET --user "<admin-username>:<admin-password>" "https://gitlab.example.com/jwt/auth?service=container_registry&scope=registry:catalog:*"
+{"token":" ... "}
+
+$ curl --header "Authorization: Bearer <token_from_above>" https://gitlab.example.com:5050/v2/_catalog
+{"repositories":["user/project1", "group/subgroup/project2", ... ]}
+```

@@ -12,6 +12,9 @@ Use the GitLab APIs to automate GitLab.
 
 A REST API is available in GitLab.
 Usage instructions are below.
+
+For examples, see [How to use the API](#how-to-use-the-api).
+
 For a list of the available resources and their endpoints, see
 [REST API resources](api_resources.md).
 
@@ -31,7 +34,9 @@ GitLab provides an [SCIM API](scim.md) that both implements
 
 ## GraphQL API
 
-A [GraphQL API](graphql/index.md) is available in GitLab.
+A GraphQL API is available in GitLab.
+For a list of the available resources and their endpoints, see
+[GraphQL API resources](graphql/reference/index.md).
 
 With GraphQL, you can make an API request for only what you need,
 and it's versioned by default.
@@ -60,7 +65,7 @@ month. Major API version changes, and removal of entire API versions, are done i
 with major GitLab releases.
 
 All deprecations and changes between versions are in the documentation.
-For the changes between v3 and v4, see the [v3 to v4 documentation](v3_to_v4.md).
+For the changes between v3 and v4, see the [v3 to v4 documentation](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/11-0-stable/doc/api/v3_to_v4.md).
 
 ### Current status
 
@@ -74,7 +79,7 @@ For example, the root of the v4 API is at `/api/v4`.
 
 ### Valid API request
 
-If you have a GitLab instance at `gitlab.example.com`:
+The following is a basic example of a request to the fictional `gitlab.example.com` endpoint:
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects"
@@ -82,6 +87,10 @@ curl "https://gitlab.example.com/api/v4/projects"
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the
 end of the API URL.
+
+NOTE:
+In the example above, replace `gitlab.example.com` with `gitlab.com` to query GitLab.com (GitLab SaaS).
+Access can be denied due to authentication. For more information, see [Authentication](#authentication).  
 
 ### API request to expose HTTP response headers
 

@@ -4,8 +4,8 @@ const path = require('path');
 const { History, HistoryWithTTL } = require('./history');
 const log = require('./log');
 
-const onRequestEntryPoint = (app, callback) => {
-  app.use((req, res, next) => {
+const onRequestEntryPoint = (callback) => {
+  return (req, res, next) => {
     const fileName = path.basename(req.url);
 
     /**
@@ -20,7 +20,7 @@ const onRequestEntryPoint = (app, callback) => {
     }
 
     next();
-  });
+  };
 };
 
 /**
@@ -40,7 +40,9 @@ class NoopCompiler {
   logStatus() {}
 
   // eslint-disable-next-line class-methods-use-this
-  setupMiddleware() {}
+  createMiddleware() {
+    return null;
+  }
 }
 
 /**
@@ -55,8 +57,8 @@ class HistoryOnlyCompiler extends NoopCompiler {
     this.history = new History(historyFilePath);
   }
 
-  setupMiddleware(app) {
-    onRequestEntryPoint(app, (entryPoint) => {
+  createMiddleware() {
+    return onRequestEntryPoint((entryPoint) => {
       this.history.onRequestEntryPoint(entryPoint);
     });
   }
@@ -92,16 +94,16 @@ class IncrementalWebpackCompiler {
     log(`Currently compiling route entrypoints: ${this.history.size} of ${totalCount}`);
   }
 
-  setupMiddleware(app, server) {
-    onRequestEntryPoint(app, (entryPoint) => {
+  createMiddleware(devServer) {
+    return onRequestEntryPoint((entryPoint) => {
       const wasVisitedRecently = this.history.onRequestEntryPoint(entryPoint);
       if (!wasVisitedRecently) {
         log(`Have not visited ${entryPoint} recently. Adding to compilation.`);
 
         setTimeout(() => {
-          server.middleware.invalidate(() => {
-            if (server.sockets) {
-              server.sockWrite(server.sockets, 'content-changed');
+          devServer.invalidate(() => {
+            if (devServer.sockets) {
+              devServer.sendMessage(devServer.webSocketServer.clients, 'static-changed');
             }
           });
         }, TIMEOUT);

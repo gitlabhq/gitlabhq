@@ -1,5 +1,5 @@
-mutation cancelAutoStop($environment: LocalEnvironment) {
-  cancelAutoStop(environment: $environment) @client {
+mutation cancelAutoStop($autoStopUrl: String!) {
+  cancelAutoStop(autoStopUrl: $autoStopUrl) @client {
     errors
   }
 }

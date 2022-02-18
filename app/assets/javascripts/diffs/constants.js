@@ -29,8 +29,6 @@ export const UNFOLD_COUNT = 20;
 export const COUNT_OF_AVATARS_IN_GUTTER = 3;
 export const LENGTH_OF_AVATAR_TOOLTIP = 17;
 
-export const LINES_TO_BE_RENDERED_DIRECTLY = 100;
-
 export const DIFF_FILE_SYMLINK_MODE = '120000';
 export const DIFF_FILE_DELETED_MODE = '0';
 
@@ -42,16 +40,12 @@ export const TREE_LIST_WIDTH_STORAGE_KEY = 'mr_tree_list_width';
 
 export const INITIAL_TREE_WIDTH = 320;
 export const MIN_TREE_WIDTH = 240;
-export const MAX_TREE_WIDTH = 400;
 export const TREE_HIDE_STATS_WIDTH = 260;
 
 export const OLD_LINE_KEY = 'old_line';
 export const NEW_LINE_KEY = 'new_line';
 export const TYPE_KEY = 'type';
 export const LEFT_LINE_KEY = 'left';
-
-export const CENTERED_LIMITED_CONTAINER_CLASSES =
-  'container-limited limit-container-width mx-lg-auto px-3';
 
 export const MAX_RENDERING_DIFF_LINES = 500;
 export const MAX_RENDERING_BULK_ROWS = 30;

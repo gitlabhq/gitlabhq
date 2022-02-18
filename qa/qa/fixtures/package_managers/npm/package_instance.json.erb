@@ -1,0 +1,8 @@
+{
+  "name": "<%= package.name %>",
+  "version": "1.0.0",
+  "description": "Example package for GitLab npm registry",
+  "publishConfig": {
+    "@<%= registry_scope %>:registry": "<%= gitlab_address_with_port %>/api/v4/projects/<%= project.id %>/packages/npm/"
+  }
+}

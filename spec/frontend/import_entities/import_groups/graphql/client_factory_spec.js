@@ -1,4 +1,4 @@
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache } from '@apollo/client/core';
 import MockAdapter from 'axios-mock-adapter';
 import { createMockClient } from 'mock-apollo-client';
 import waitForPromises from 'helpers/wait_for_promises';

@@ -331,6 +331,10 @@ NOTE:
 We don't support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
 in the future because we have features such as issue boards which require JavaScript extensively.
 
+## Security
+
+After installation, be sure to read and follow guidance on [maintaining a secure GitLab installation](../security/index.md).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

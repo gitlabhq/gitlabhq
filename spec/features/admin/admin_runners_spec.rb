@@ -254,6 +254,18 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content 'runner-group'
         end
 
+        it 'show the same counts after selecting another tab' do
+          visit admin_runners_path
+
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on('Project')
+
+            expect(page).to have_link('All 2')
+            expect(page).to have_link('Group 1')
+            expect(page).to have_link('Project 1')
+          end
+        end
+
         it 'shows no runner when type does not match' do
           visit admin_runners_path
 
@@ -460,7 +472,7 @@ RSpec.describe "Admin Runners" do
           click_on 'Reset registration token'
 
           within_modal do
-            click_button('OK', match: :first)
+            click_button('Reset token', match: :first)
           end
 
           wait_for_requests
@@ -476,6 +488,42 @@ RSpec.describe "Admin Runners" do
     end
   end
 
+  describe "Runner show page", :js do
+    let(:runner) do
+      create(
+        :ci_runner,
+        description: 'runner-foo',
+        version: '14.0',
+        ip_address: '127.0.0.1',
+        tag_list: ['tag1']
+      )
+    end
+
+    before do
+      visit admin_runner_path(runner)
+    end
+
+    describe 'runner show page breadcrumbs' do
+      it 'contains the current runner id and token' do
+        page.within '[data-testid="breadcrumb-links"]' do
+          expect(page.find('h2')).to have_link("##{runner.id} (#{runner.short_sha})")
+        end
+      end
+    end
+
+    it 'shows runner details' do
+      aggregate_failures do
+        expect(page).to have_content 'Description runner-foo'
+        expect(page).to have_content 'Last contact Never contacted'
+        expect(page).to have_content 'Version 14.0'
+        expect(page).to have_content 'IP Address 127.0.0.1'
+        expect(page).to have_content 'Configuration Runs untagged jobs'
+        expect(page).to have_content 'Maximum job timeout None'
+        expect(page).to have_content 'Tags tag1'
+      end
+    end
+  end
+
   describe "Runner edit page" do
     let(:runner) { create(:ci_runner) }
 
@@ -487,7 +535,7 @@ RSpec.describe "Admin Runners" do
       wait_for_requests
     end
 
-    describe 'runner page breadcrumbs' do
+    describe 'runner edit page breadcrumbs' do
       it 'contains the current runner id and token' do
         page.within '[data-testid="breadcrumb-links"]' do
           expect(page).to have_link("##{runner.id} (#{runner.short_sha})")

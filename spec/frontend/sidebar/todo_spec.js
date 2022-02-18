@@ -1,6 +1,7 @@
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
+import { nextTick } from 'vue';
 import SidebarTodos from '~/sidebar/components/todo_toggle/todo.vue';
 
 const defaultProps = {
@@ -49,13 +50,12 @@ describe('SidebarTodo', () => {
   );
 
   describe('template', () => {
-    it('emits `toggleTodo` event when clicked on button', () => {
+    it('emits `toggleTodo` event when clicked on button', async () => {
       createComponent();
       wrapper.find('button').trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().toggleTodo).toBeTruthy();
-      });
+      await nextTick();
+      expect(wrapper.emitted().toggleTodo).toBeTruthy();
     });
 
     it('renders component container element with proper data attributes', () => {

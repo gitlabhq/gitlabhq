@@ -6,7 +6,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
     class="file-content code js-syntax-highlight"
   >
     <div
-      class="line-numbers"
+      class="line-numbers gl-pt-0!"
     >
       <a
         class="diff-line-num js-line-number"
@@ -56,7 +56,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
       class="blob-content"
     >
       <pre
-        class="code highlight"
+        class="code highlight gl-p-0! gl-display-flex"
       >
         <code
           data-blob-hash="foo-bar"

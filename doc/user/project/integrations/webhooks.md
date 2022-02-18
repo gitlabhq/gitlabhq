@@ -57,7 +57,7 @@ You can configure a webhook for a group or a project.
    The URL must be percent-encoded if it contains one or more special characters.
 1. In **Secret token**, enter the [secret token](#validate-payloads-by-using-a-secret-token) to validate payloads.
 1. In the **Trigger** section, select the [events](webhook_events.md) to trigger the webhook.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](#verify-an-ssl-certificate).
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](overview.md#ssl-verification).
 1. Select **Add webhook**.
 
 ## Test a webhook
@@ -122,15 +122,6 @@ You can specify a secret token to validate received payloads.
 The token is sent with the hook request in the
 `X-Gitlab-Token` HTTP header. Your webhook endpoint can check the token to verify
 that the request is legitimate.
-
-## Verify an SSL certificate
-
-By default, the SSL certificate of the webhook endpoint is verified based on
-an internal list of Certificate Authorities. This means the certificate cannot
-be self-signed.
-
-You can turn off SSL verification in the [webhook settings](#configure-a-webhook)
-in your GitLab projects.
 
 ## Filter push events by branch
 

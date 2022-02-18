@@ -3,6 +3,7 @@ import { GlTable, GlButton, GlModalDirective, GlIcon, GlTooltipDirective } from 
 import { mapState, mapActions } from 'vuex';
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { ADD_CI_VARIABLE_MODAL_ID } from '../constants';
 import CiVariablePopover from './ci_variable_popover.vue';
 
@@ -52,10 +53,11 @@ export default {
     },
   ],
   components: {
-    GlTable,
+    CiVariablePopover,
     GlButton,
     GlIcon,
-    CiVariablePopover,
+    GlTable,
+    TooltipOnTruncate,
   },
   directives: {
     GlModalDirective,
@@ -67,8 +69,8 @@ export default {
     valuesButtonText() {
       return this.valuesHidden ? __('Reveal values') : __('Hide values');
     },
-    tableIsNotEmpty() {
-      return this.variables && this.variables.length > 0;
+    isTableEmpty() {
+      return !this.variables || this.variables.length === 0;
     },
     fields() {
       return this.$options.fields;
@@ -103,12 +105,14 @@ export default {
         <col v-for="field in scope.fields" :key="field.key" :style="field.customStyle" />
       </template>
       <template #cell(key)="{ item }">
-        <div class="gl-display-flex truncated-container gl-align-items-center">
-          <span
-            :id="`ci-variable-key-${item.id}`"
-            class="gl-display-inline-block gl-max-w-full gl-text-truncate"
-            >{{ item.key }}</span
-          >
+        <div class="gl-display-flex gl-align-items-center">
+          <tooltip-on-truncate :title="item.key" truncate-target="child">
+            <span
+              :id="`ci-variable-key-${item.id}`"
+              class="gl-display-inline-block gl-max-w-full gl-text-truncate"
+              >{{ item.key }}</span
+            >
+          </tooltip-on-truncate>
           <gl-button
             v-gl-tooltip
             category="tertiary"
@@ -120,7 +124,7 @@ export default {
         </div>
       </template>
       <template #cell(value)="{ item }">
-        <div class="gl-display-flex gl-align-items-center truncated-container">
+        <div class="gl-display-flex gl-align-items-center">
           <span v-if="valuesHidden">*********************</span>
           <span
             v-else
@@ -147,10 +151,12 @@ export default {
         <gl-icon v-else :size="$options.iconSize" :name="$options.falseIcon" />
       </template>
       <template #cell(environment_scope)="{ item }">
-        <div class="d-flex truncated-container">
-          <span :id="`ci-variable-env-${item.id}`" class="d-inline-block mw-100 text-truncate">{{
-            item.environment_scope
-          }}</span>
+        <div class="gl-display-flex">
+          <span
+            :id="`ci-variable-env-${item.id}`"
+            class="gl-display-inline-block gl-max-w-full gl-text-truncate"
+            >{{ item.environment_scope }}</span
+          >
           <ci-variable-popover
             :target="`ci-variable-env-${item.id}`"
             :value="item.environment_scope"
@@ -160,7 +166,6 @@ export default {
       </template>
       <template #cell(actions)="{ item }">
         <gl-button
-          ref="edit-ci-variable"
           v-gl-modal-directive="$options.modalId"
           icon="pencil"
           :aria-label="__('Edit')"
@@ -169,17 +174,16 @@ export default {
         />
       </template>
       <template #empty>
-        <p ref="empty-variables" class="text-center empty-variables text-plain">
+        <p class="gl-text-center gl-py-6 gl-text-black-normal gl-mb-0">
           {{ __('There are no variables yet.') }}
         </p>
       </template>
     </gl-table>
     <div
       class="ci-variable-actions gl-display-flex"
-      :class="{ 'justify-content-center': !tableIsNotEmpty }"
+      :class="{ 'gl-justify-content-center': isTableEmpty }"
     >
       <gl-button
-        ref="add-ci-variable"
         v-gl-modal-directive="$options.modalId"
         class="gl-mr-3"
         data-qa-selector="add_ci_variable_button"
@@ -188,8 +192,7 @@ export default {
         >{{ __('Add variable') }}</gl-button
       >
       <gl-button
-        v-if="tableIsNotEmpty"
-        ref="secret-value-reveal-button"
+        v-if="!isTableEmpty"
         data-qa-selector="reveal_ci_variable_value_button"
         @click="toggleValues(!valuesHidden)"
         >{{ valuesButtonText }}</gl-button

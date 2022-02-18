@@ -6,6 +6,7 @@ import {
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -31,7 +32,7 @@ const defaultStubs = {
 
 function createComponent(options = {}) {
   const {
-    config = mockMilestoneToken,
+    config = { ...mockMilestoneToken, shouldSkipSort: true },
     value = { data: '' },
     active = false,
     stubs = defaultStubs,
@@ -67,6 +68,27 @@ describe('MilestoneToken', () => {
 
   describe('methods', () => {
     describe('fetchMilestones', () => {
+      describe('when config.shouldSkipSort is true', () => {
+        beforeEach(() => {
+          wrapper.vm.config.shouldSkipSort = true;
+        });
+
+        afterEach(() => {
+          wrapper.vm.config.shouldSkipSort = false;
+        });
+        it('does not call sortMilestonesByDueDate', async () => {
+          jest.spyOn(wrapper.vm.config, 'fetchMilestones').mockResolvedValue({
+            data: mockMilestones,
+          });
+
+          wrapper.vm.fetchMilestones();
+
+          await waitForPromises();
+
+          expect(sortMilestonesByDueDate).toHaveBeenCalledTimes(0);
+        });
+      });
+
       it('calls `config.fetchMilestones` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchMilestones');
 
@@ -76,10 +98,11 @@ describe('MilestoneToken', () => {
       });
 
       it('sets response to `milestones` when request is successful', () => {
+        wrapper.vm.config.shouldSkipSort = false;
+
         jest.spyOn(wrapper.vm.config, 'fetchMilestones').mockResolvedValue({
           data: mockMilestones,
         });
-
         wrapper.vm.fetchMilestones();
 
         return waitForPromises().then(() => {
@@ -127,7 +150,7 @@ describe('MilestoneToken', () => {
         milestones: mockMilestones,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders gl-filtered-search-token component', () => {
@@ -150,7 +173,7 @@ describe('MilestoneToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
@@ -169,7 +192,7 @@ describe('MilestoneToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlFilteredSearchSuggestion).exists()).toBe(false);
       expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
@@ -184,7 +207,7 @@ describe('MilestoneToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 

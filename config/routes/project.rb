@@ -158,6 +158,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get 'milestones'
             get 'commands'
             get 'snippets'
+            get 'contacts'
           end
         end
 
@@ -464,6 +465,16 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :integrations do
           resource :shimo, only: [:show]
         end
+
+        get :planning_hierarchy
+
+        resources :badges, only: [] do
+          collection do
+            constraints format: /svg/ do
+              get :release
+            end
+          end
+        end
       end
       # End of the /-/ scope.
 
@@ -580,6 +591,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       scope :service_ping, controller: :service_ping do
         post :web_ide_clientside_preview # rubocop:todo Cop/PutProjectRoutesUnderScope
+        post :web_ide_clientside_preview_success # rubocop:todo Cop/PutProjectRoutesUnderScope
         post :web_ide_pipelines_count # rubocop:todo Cop/PutProjectRoutesUnderScope
       end
 

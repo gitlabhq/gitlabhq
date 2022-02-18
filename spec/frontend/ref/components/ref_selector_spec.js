@@ -1,5 +1,6 @@
 import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem, GlDropdown, GlIcon } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { merge, last } from 'lodash';
@@ -20,8 +21,7 @@ import {
 } from '~/ref/constants';
 import createStore from '~/ref/stores/';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Ref selector component', () => {
   const fixtures = { branches, tags, commit };
@@ -52,7 +52,6 @@ describe('Ref selector component', () => {
           stubs: {
             GlSearchBoxByType: true,
           },
-          localVue,
           store: createStore(),
         },
         mountOverrides,
@@ -138,19 +137,19 @@ describe('Ref selector component', () => {
     findSearchBox().vm.$emit('input', newQuery);
   };
 
-  const selectFirstBranch = () => {
+  const selectFirstBranch = async () => {
     findFirstBranchDropdownItem().vm.$emit('click');
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
-  const selectFirstTag = () => {
+  const selectFirstTag = async () => {
     findFirstTagDropdownItem().vm.$emit('click');
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
-  const selectFirstCommit = () => {
+  const selectFirstCommit = async () => {
     findFirstCommitDropdownItem().vm.$emit('click');
-    return wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const waitForRequests = ({ andClearMocks } = { andClearMocks: false }) =>
@@ -220,12 +219,11 @@ describe('Ref selector component', () => {
         return waitForRequests();
       });
 
-      it('renders the updated ref name', () => {
+      it('renders the updated ref name', async () => {
         wrapper.setProps({ value: updatedRef });
 
-        return localVue.nextTick().then(() => {
-          expect(findButtonContent().text()).toBe(updatedRef);
-        });
+        await nextTick();
+        expect(findButtonContent().text()).toBe(updatedRef);
       });
     });
 
@@ -547,9 +545,8 @@ describe('Ref selector component', () => {
 
           await selectFirstBranch();
 
-          return localVue.nextTick().then(() => {
-            expect(findButtonContent().text()).toBe(fixtures.branches[0].name);
-          });
+          await nextTick();
+          expect(findButtonContent().text()).toBe(fixtures.branches[0].name);
         });
 
         it("updates the v-model binding with the branch's name", async () => {
@@ -567,9 +564,8 @@ describe('Ref selector component', () => {
 
           await selectFirstTag();
 
-          return localVue.nextTick().then(() => {
-            expect(findButtonContent().text()).toBe(fixtures.tags[0].name);
-          });
+          await nextTick();
+          expect(findButtonContent().text()).toBe(fixtures.tags[0].name);
         });
 
         it("updates the v-model binding with the tag's name", async () => {
@@ -587,9 +583,8 @@ describe('Ref selector component', () => {
 
           await selectFirstCommit();
 
-          return localVue.nextTick().then(() => {
-            expect(findButtonContent().text()).toBe(fixtures.commit.id);
-          });
+          await nextTick();
+          expect(findButtonContent().text()).toBe(fixtures.commit.id);
         });
 
         it("updates the v-model binding with the commit's full SHA", async () => {

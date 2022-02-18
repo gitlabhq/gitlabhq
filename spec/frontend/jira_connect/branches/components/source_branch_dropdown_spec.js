@@ -1,22 +1,22 @@
 import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import SourceBranchDropdown from '~/jira_connect/branches/components/source_branch_dropdown.vue';
 import { BRANCHES_PER_PAGE } from '~/jira_connect/branches/constants';
 import getProjectQuery from '~/jira_connect/branches/graphql/queries/get_project.query.graphql';
-
-const localVue = createLocalVue();
+import { mockProjects } from '../mock_data';
 
 const mockProject = {
   id: 'test',
-  fullPath: 'test-path',
   repository: {
     branchNames: ['main', 'f-test', 'release'],
     rootRef: 'main',
   },
 };
+const mockSelectedProject = mockProjects[0];
 
 const mockProjectQueryResponse = {
   data: {
@@ -45,7 +45,7 @@ describe('SourceBranchDropdown', () => {
   };
 
   function createMockApolloProvider({ getProjectQueryLoading = false } = {}) {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const mockApollo = createMockApollo([
       [getProjectQuery, getProjectQueryLoading ? mockQueryLoading : mockGetProjectQuery],
@@ -56,7 +56,6 @@ describe('SourceBranchDropdown', () => {
 
   function createComponent({ mockApollo, props, mountFn = shallowMount } = {}) {
     wrapper = mountFn(SourceBranchDropdown, {
-      localVue,
       apolloProvider: mockApollo || createMockApolloProvider(),
       propsData: props,
     });
@@ -78,7 +77,7 @@ describe('SourceBranchDropdown', () => {
     describe('when `selectedProject` becomes specified', () => {
       beforeEach(async () => {
         wrapper.setProps({
-          selectedProject: mockProject,
+          selectedProject: mockSelectedProject,
         });
 
         await waitForPromises();
@@ -103,7 +102,7 @@ describe('SourceBranchDropdown', () => {
       it('renders loading icon in dropdown', () => {
         createComponent({
           mockApollo: createMockApolloProvider({ getProjectQueryLoading: true }),
-          props: { selectedProject: mockProject },
+          props: { selectedProject: mockSelectedProject },
         });
 
         expect(findLoadingIcon().isVisible()).toBe(true);
@@ -113,7 +112,7 @@ describe('SourceBranchDropdown', () => {
     describe('when branches have loaded', () => {
       describe('when searching branches', () => {
         it('triggers a refetch', async () => {
-          createComponent({ mountFn: mount, props: { selectedProject: mockProject } });
+          createComponent({ mountFn: mount, props: { selectedProject: mockSelectedProject } });
           await waitForPromises();
           jest.clearAllMocks();
 
@@ -131,7 +130,7 @@ describe('SourceBranchDropdown', () => {
 
       describe('template', () => {
         beforeEach(async () => {
-          createComponent({ props: { selectedProject: mockProject } });
+          createComponent({ props: { selectedProject: mockSelectedProject } });
           await waitForPromises();
         });
 

@@ -1,5 +1,6 @@
 - breadcrumb_title _("General Settings")
 - page_title _("General")
+- add_page_specific_style 'page_bundles/projects_edit'
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = expanded_by_default?
 - reduce_visibility_form_id = 'reduce-visibility-form'
@@ -40,7 +41,7 @@
 = render_if_exists 'projects/merge_request_approvals_settings', expanded: expanded
 
 
-%section.settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings.no-animate{ class: ('expanded' if expanded), data: { qa_selector: 'badges_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_('ProjectSettings|Badges')
@@ -62,7 +63,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
-    %p= _('Housekeeping, export, path, transfer, remove, archive.')
+    %p= s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
 
   .settings-content
     .sub-section

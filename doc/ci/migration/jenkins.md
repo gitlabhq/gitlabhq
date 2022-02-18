@@ -196,7 +196,7 @@ can leverage. You can see the complete list of packaging features in the
 
 Where you may have used plugins to get things like code quality, unit tests, security scanning, and so on working in Jenkins,
 GitLab takes advantage of our connected ecosystem to automatically pull these kinds of results into
-your Merge Requests, pipeline details pages, and other locations. You may find that you actually don't
+your merge requests, pipeline details pages, and other locations. You may find that you actually don't
 need to configure anything to have these appear.
 
 If they aren't working as expected, or if you'd like to see what's available, our [CI feature index](../index.md#gitlab-cicd-features) has the full list

@@ -27,6 +27,7 @@ RSpec.describe 'Merge request > User awards emoji', :js do
 
     it 'removes award from merge request' do
       first('[data-testid="award-button"]').click
+      expect(first('[data-testid="award-button"]')).to have_content '1'
       find('[data-testid="award-button"].selected').click
       expect(first('[data-testid="award-button"]')).to have_content '0'
 

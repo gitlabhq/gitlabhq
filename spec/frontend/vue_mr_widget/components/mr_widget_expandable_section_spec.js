@@ -1,5 +1,6 @@
 import { GlButton, GlCollapse, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import MrCollapsibleSection from '~/vue_merge_request_widget/components/mr_widget_expandable_section.vue';
 
 describe('MrWidgetExpanableSection', () => {
@@ -43,9 +44,9 @@ describe('MrWidgetExpanableSection', () => {
   });
 
   describe('when collapse section is open', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       findButton().vm.$emit('click');
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('renders button with collapse text', () => {

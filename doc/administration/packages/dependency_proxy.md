@@ -199,6 +199,55 @@ This section describes the earlier configuration format.
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source "How to restart GitLab") for the changes to take effect.
 
+#### Migrate local Dependency Proxy blobs and manifests to object storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79663) in GitLab 14.8.
+
+After [configuring object storage](#using-object-storage),
+use the following task to migrate existing Dependency Proxy blobs and manifests from local storage
+to remote storage. The processing is done in a background worker and requires no downtime.
+
+For Omnibus GitLab:
+
+```shell
+sudo gitlab-rake "gitlab:dependency_proxy:migrate"
+```
+
+For installations from source:
+
+```shell
+RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:dependency_proxy:migrate
+```
+
+You can optionally track progress and verify that all packages migrated successfully using the
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+
+- For Omnibus GitLab instances: `sudo gitlab-rails dbconsole`
+- For installations from source: `sudo -u git -H psql -d gitlabhq_production`
+
+Verify that `objectstg` (where `file_store = '2'`) has the count of all Dependency Proxy blobs and
+manifests for each respective query:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM dependency_proxy_blobs;
+
+total | filesystem | objectstg
+------+------------+-----------
+ 22   |          0 |        22
+
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM dependency_proxy_manifests;
+
+total | filesystem | objectstg
+------+------------+-----------
+ 10   |          0 |        10
+```
+
+Verify that there are no files on disk in the `dependency_proxy` folder:
+
+```shell
+sudo find /var/opt/gitlab/gitlab-rails/shared/dependency_proxy -type f | grep -v tmp | wc -l
+```
+
 ## Disabling Authentication
 
 Authentication was introduced in 13.7 as part of [enabling private groups to use the

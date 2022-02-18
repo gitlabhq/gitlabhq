@@ -1,17 +1,16 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import functionDetailsComponent from '~/serverless/components/function_details.vue';
 import { createStore } from '~/serverless/store';
 
 describe('functionDetailsComponent', () => {
-  let localVue;
   let component;
   let store;
 
   beforeEach(() => {
-    localVue = createLocalVue();
-    localVue.use(Vuex);
+    Vue.use(Vuex);
 
     store = createStore({ clustersPath: '/clusters', helpPath: '/help' });
   });
@@ -33,7 +32,6 @@ describe('functionDetailsComponent', () => {
 
     it('has a name, description, URL, and no pods loaded', () => {
       component = shallowMount(functionDetailsComponent, {
-        localVue,
         store,
         propsData: {
           func: serviceStub,
@@ -58,7 +56,6 @@ describe('functionDetailsComponent', () => {
       serviceStub.podcount = 1;
 
       component = shallowMount(functionDetailsComponent, {
-        localVue,
         store,
         propsData: {
           func: serviceStub,
@@ -73,7 +70,6 @@ describe('functionDetailsComponent', () => {
       serviceStub.podcount = 3;
 
       component = shallowMount(functionDetailsComponent, {
-        localVue,
         store,
         propsData: {
           func: serviceStub,
@@ -88,7 +84,6 @@ describe('functionDetailsComponent', () => {
       serviceStub.description = null;
 
       component = shallowMount(functionDetailsComponent, {
-        localVue,
         store,
         propsData: {
           func: serviceStub,

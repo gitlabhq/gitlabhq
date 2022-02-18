@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
   let_it_be_with_refind(:project) { create(:project) }
 
-  let(:user) { project.owner }
+  let(:user) { project.first_owner }
   let(:show_cluster_hint) { true }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project, show_cluster_hint: show_cluster_hint) }
 

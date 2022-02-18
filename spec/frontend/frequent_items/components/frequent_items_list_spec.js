@@ -1,12 +1,12 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import frequentItemsListComponent from '~/frequent_items/components/frequent_items_list.vue';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import { createStore } from '~/frequent_items/store';
 import { mockFrequentProjects } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('FrequentItemsListComponent', () => {
   let wrapper;
@@ -22,7 +22,6 @@ describe('FrequentItemsListComponent', () => {
         matcher: 'lab',
         ...props,
       },
-      localVue,
       provide: {
         vuexModule: 'frequentProjects',
       },
@@ -45,7 +44,7 @@ describe('FrequentItemsListComponent', () => {
         wrapper.setProps({
           items: mockFrequentProjects,
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.isListEmpty).toBe(false);
       });
@@ -64,7 +63,7 @@ describe('FrequentItemsListComponent', () => {
         wrapper.setProps({
           isFetchFailed: false,
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.listEmptyMessage).toBe('Projects you visit often will appear here');
       });
@@ -82,7 +81,7 @@ describe('FrequentItemsListComponent', () => {
         wrapper.setProps({
           isFetchFailed: false,
         });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.listEmptyMessage).toBe('Sorry, no projects matched your search');
       });
@@ -90,25 +89,23 @@ describe('FrequentItemsListComponent', () => {
   });
 
   describe('template', () => {
-    it('should render component element with list of projects', () => {
+    it('should render component element with list of projects', async () => {
       createComponent();
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.classes('frequent-items-list-container')).toBe(true);
-        expect(wrapper.findAll({ ref: 'frequentItemsList' })).toHaveLength(1);
-        expect(wrapper.findAll(frequentItemsListItemComponent)).toHaveLength(5);
-      });
+      await nextTick();
+      expect(wrapper.classes('frequent-items-list-container')).toBe(true);
+      expect(wrapper.findAll({ ref: 'frequentItemsList' })).toHaveLength(1);
+      expect(wrapper.findAll(frequentItemsListItemComponent)).toHaveLength(5);
     });
 
-    it('should render component element with empty message', () => {
+    it('should render component element with empty message', async () => {
       createComponent({
         items: [],
       });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.$el.querySelectorAll('li.section-empty')).toHaveLength(1);
-        expect(wrapper.findAll(frequentItemsListItemComponent)).toHaveLength(0);
-      });
+      await nextTick();
+      expect(wrapper.vm.$el.querySelectorAll('li.section-empty')).toHaveLength(1);
+      expect(wrapper.findAll(frequentItemsListItemComponent)).toHaveLength(0);
     });
   });
 });

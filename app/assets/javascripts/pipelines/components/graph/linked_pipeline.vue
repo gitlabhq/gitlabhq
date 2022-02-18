@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
+import { GlBadge, GlButton, GlLink, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
@@ -12,10 +12,10 @@ export default {
   },
   components: {
     CiStatus,
+    GlBadge,
     GlButton,
     GlLink,
     GlLoadingIcon,
-    GlBadge,
   },
   props: {
     columnTitle: {
@@ -23,6 +23,10 @@ export default {
       required: true,
     },
     expanded: {
+      type: Boolean,
+      required: true,
+    },
+    isLoading: {
       type: Boolean,
       required: true,
     },
@@ -34,33 +38,40 @@ export default {
       type: String,
       required: true,
     },
-    isLoading: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
-    tooltipText() {
-      return `${this.downstreamTitle} #${this.pipeline.id} - ${this.pipelineStatus.label} -
-      ${this.sourceJobInfo}`;
+    buttonBorderClass() {
+      return this.isUpstream ? 'gl-border-r-1!' : 'gl-border-l-1!';
     },
     buttonId() {
       return `js-linked-pipeline-${this.pipeline.id}`;
     },
-    pipelineStatus() {
-      return this.pipeline.status;
+    cardSpacingClass() {
+      return this.isDownstream ? 'gl-pr-0' : '';
     },
-    projectName() {
-      return this.pipeline.project.name;
+    expandedIcon() {
+      if (this.isUpstream) {
+        return this.expanded ? 'angle-right' : 'angle-left';
+      }
+      return this.expanded ? 'angle-left' : 'angle-right';
+    },
+    childPipeline() {
+      return this.isDownstream && this.isSameProject;
     },
     downstreamTitle() {
       return this.childPipeline ? this.sourceJobName : this.pipeline.project.name;
     },
-    parentPipeline() {
-      return this.isUpstream && this.isSameProject;
+    flexDirection() {
+      return this.isUpstream ? 'gl-flex-direction-row-reverse' : 'gl-flex-direction-row';
     },
-    childPipeline() {
-      return this.isDownstream && this.isSameProject;
+    isDownstream() {
+      return this.type === DOWNSTREAM;
+    },
+    isSameProject() {
+      return !this.pipeline.multiproject;
+    },
+    isUpstream() {
+      return this.type === UPSTREAM;
     },
     label() {
       if (this.parentPipeline) {
@@ -70,17 +81,17 @@ export default {
       }
       return __('Multi-project');
     },
+    parentPipeline() {
+      return this.isUpstream && this.isSameProject;
+    },
     pipelineIsLoading() {
       return Boolean(this.isLoading || this.pipeline.isLoading);
     },
-    isDownstream() {
-      return this.type === DOWNSTREAM;
+    pipelineStatus() {
+      return this.pipeline.status;
     },
-    isUpstream() {
-      return this.type === UPSTREAM;
-    },
-    isSameProject() {
-      return !this.pipeline.multiproject;
+    projectName() {
+      return this.pipeline.project.name;
     },
     sourceJobName() {
       return this.pipeline.sourceJob?.name ?? '';
@@ -88,27 +99,22 @@ export default {
     sourceJobInfo() {
       return this.isDownstream ? sprintf(__('Created by %{job}'), { job: this.sourceJobName }) : '';
     },
-    expandedIcon() {
-      if (this.isUpstream) {
-        return this.expanded ? 'angle-right' : 'angle-left';
-      }
-      return this.expanded ? 'angle-left' : 'angle-right';
-    },
-    expandButtonPosition() {
-      return this.isUpstream ? 'gl-left-0 gl-border-r-1!' : 'gl-right-0 gl-border-l-1!';
+    tooltipText() {
+      return `${this.downstreamTitle} #${this.pipeline.id} - ${this.pipelineStatus.label} -
+      ${this.sourceJobInfo}`;
     },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry('linked_pipeline', `error: ${err}, info: ${info}`);
   },
   methods: {
+    hideTooltips() {
+      this.$root.$emit(BV_HIDE_TOOLTIP);
+    },
     onClickLinkedPipeline() {
       this.hideTooltips();
       this.$emit('pipelineClicked', this.$refs.linkedPipeline);
       this.$emit('pipelineExpandToggle', this.sourceJobName, !this.expanded);
-    },
-    hideTooltips() {
-      this.$root.$emit(BV_HIDE_TOOLTIP);
     },
     onDownstreamHovered() {
       this.$emit('downstreamHovered', this.sourceJobName);
@@ -124,27 +130,23 @@ export default {
   <div
     ref="linkedPipeline"
     v-gl-tooltip
-    class="gl-downstream-pipeline-job-width"
+    class="gl-h-full gl-display-flex! gl-border-solid gl-border-gray-100 gl-border-1"
+    :class="flexDirection"
     :title="tooltipText"
     data-qa-selector="child_pipeline"
     @mouseover="onDownstreamHovered"
     @mouseleave="onDownstreamHoverLeave"
   >
-    <div
-      class="gl-relative gl-bg-white gl-p-3 gl-border-solid gl-border-gray-100 gl-border-1"
-      :class="{ 'gl-pl-9': isUpstream }"
-    >
-      <div class="gl-display-flex gl-pr-7 gl-pipeline-job-width">
+    <div class="gl-w-full gl-bg-white gl-p-3" :class="cardSpacingClass">
+      <div class="gl-display-flex gl-pr-3">
         <ci-status
           v-if="!pipelineIsLoading"
           :status="pipelineStatus"
           :size="24"
           css-classes="gl-top-0 gl-pr-2"
         />
-        <div v-else class="gl-pr-2"><gl-loading-icon size="sm" inline /></div>
-        <div
-          class="gl-display-flex gl-flex-direction-column gl-pipeline-job-width gl-text-truncate"
-        >
+        <div v-else class="gl-pr-3"><gl-loading-icon size="sm" inline /></div>
+        <div class="gl-display-flex gl-flex-direction-column gl-downstream-pipeline-job-width">
           <span class="gl-text-truncate" data-testid="downstream-title">
             {{ downstreamTitle }}
           </span>
@@ -160,10 +162,12 @@ export default {
           {{ label }}
         </gl-badge>
       </div>
+    </div>
+    <div class="gl-display-flex">
       <gl-button
         :id="buttonId"
-        class="gl-absolute gl-top-0 gl-bottom-0 gl-shadow-none! gl-rounded-0!"
-        :class="`js-pipeline-expand-${pipeline.id} ${expandButtonPosition}`"
+        class="gl-shadow-none! gl-rounded-0!"
+        :class="`js-pipeline-expand-${pipeline.id} ${buttonBorderClass}`"
         :icon="expandedIcon"
         :aria-label="__('Expand pipeline')"
         data-testid="expand-pipeline-button"

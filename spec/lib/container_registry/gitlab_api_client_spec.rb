@@ -1,0 +1,204 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe ContainerRegistry::GitlabApiClient do
+  using RSpec::Parameterized::TableSyntax
+
+  include_context 'container registry client'
+
+  let(:path) { 'namespace/path/to/repository' }
+
+  describe '#supports_gitlab_api?' do
+    subject { client.supports_gitlab_api? }
+
+    where(:registry_gitlab_api_enabled, :is_on_dot_com, :container_registry_features, :expect_registry_to_be_pinged, :expected_result) do
+      false | true  | [described_class::REGISTRY_GITLAB_V1_API_FEATURE] | false | true
+      true  | false | [described_class::REGISTRY_GITLAB_V1_API_FEATURE] | true  | true
+      true  | true  | []                                                | true  | true
+      true  | false | []                                                | true  | true
+      false | true  | [described_class::REGISTRY_GITLAB_V1_API_FEATURE] | false | true
+      false | false | [described_class::REGISTRY_GITLAB_V1_API_FEATURE] | true  | false
+      false | true  | []                                                | true  | false
+      false | false | []                                                | true  | false
+    end
+
+    with_them do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
+        stub_registry_gitlab_api_support(registry_gitlab_api_enabled)
+        stub_application_setting(container_registry_features: container_registry_features)
+      end
+
+      it 'returns the expected result' do
+        if expect_registry_to_be_pinged
+          expect(Faraday::Connection).to receive(:new).and_call_original
+        else
+          expect(Faraday::Connection).not_to receive(:new)
+        end
+
+        expect(subject).to be expected_result
+      end
+    end
+
+    context 'with 401 response' do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(false)
+        stub_application_setting(container_registry_features: [])
+        stub_request(:get, "#{registry_api_url}/gitlab/v1/")
+          .to_return(status: 401, body: '')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#pre_import_repository' do
+    subject { client.pre_import_repository(path) }
+
+    where(:status_code, :expected_result) do
+      200 | :already_imported
+      202 | :ok
+      401 | :unauthorized
+      404 | :not_found
+      409 | :already_being_imported
+      418 | :error
+      424 | :pre_import_failed
+      425 | :already_being_imported
+      429 | :too_many_imports
+    end
+
+    with_them do
+      before do
+        stub_pre_import(path, status_code, pre: true)
+      end
+
+      it { is_expected.to eq(expected_result) }
+    end
+  end
+
+  describe '#import_repository' do
+    subject { client.import_repository(path) }
+
+    where(:status_code, :expected_result) do
+      200 | :already_imported
+      202 | :ok
+      401 | :unauthorized
+      404 | :not_found
+      409 | :already_being_imported
+      418 | :error
+      424 | :pre_import_failed
+      425 | :already_being_imported
+      429 | :too_many_imports
+    end
+
+    with_them do
+      before do
+        stub_pre_import(path, status_code, pre: false)
+      end
+
+      it { is_expected.to eq(expected_result) }
+    end
+  end
+
+  describe '#import_status' do
+    subject { client.import_status(path) }
+
+    before do
+      stub_import_status(path, status)
+    end
+
+    context 'with a status' do
+      let(:status) { 'this_is_a_test' }
+
+      it { is_expected.to eq(status) }
+    end
+
+    context 'with no status' do
+      let(:status) { nil }
+
+      it { is_expected.to eq('error') }
+    end
+  end
+
+  describe '.supports_gitlab_api?' do
+    subject { described_class.supports_gitlab_api? }
+
+    where(:registry_gitlab_api_enabled, :is_on_dot_com, :container_registry_features, :expect_registry_to_be_pinged, :expected_result) do
+      true  | true  | [described_class::REGISTRY_GITLAB_V1_API_FEATURE] | false | true
+      true  | false | [described_class::REGISTRY_GITLAB_V1_API_FEATURE] | true  | true
+      false | true  | [described_class::REGISTRY_GITLAB_V1_API_FEATURE] | false | true
+      false | false | [described_class::REGISTRY_GITLAB_V1_API_FEATURE] | true  | false
+      true  | true  | []                                                | true  | true
+      true  | false | []                                                | true  | true
+      false | true  | []                                                | true  | false
+      false | false | []                                                | true  | false
+    end
+
+    with_them do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
+        stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+        stub_registry_gitlab_api_support(registry_gitlab_api_enabled)
+        stub_application_setting(container_registry_features: container_registry_features)
+      end
+
+      it 'returns the expected result' do
+        if expect_registry_to_be_pinged
+          expect(Faraday::Connection).to receive(:new).and_call_original
+        else
+          expect(Faraday::Connection).not_to receive(:new)
+        end
+
+        expect(subject).to be expected_result
+      end
+    end
+
+    context 'with the registry disabled' do
+      before do
+        stub_container_registry_config(enabled: false, api_url: 'http://sandbox.local', key: 'spec/fixtures/x509_certificate_pk.key')
+      end
+
+      it 'returns false' do
+        expect(Faraday::Connection).not_to receive(:new)
+
+        expect(subject).to be_falsey
+      end
+    end
+
+    context 'with a blank registry url' do
+      before do
+        stub_container_registry_config(enabled: true, api_url: '', key: 'spec/fixtures/x509_certificate_pk.key')
+      end
+
+      it 'returns false' do
+        expect(Faraday::Connection).not_to receive(:new)
+
+        expect(subject).to be_falsey
+      end
+    end
+  end
+
+  def stub_pre_import(path, status_code, pre:)
+    stub_request(:put, "#{registry_api_url}/gitlab/v1/import/#{path}/?pre=#{pre}")
+      .with(headers: { 'Accept' => described_class::JSON_TYPE })
+      .to_return(status: status_code, body: '')
+  end
+
+  def stub_registry_gitlab_api_support(supported = true)
+    status_code = supported ? 200 : 404
+    stub_request(:get, "#{registry_api_url}/gitlab/v1/")
+      .with(headers: { 'Accept' => described_class::JSON_TYPE })
+      .to_return(status: status_code, body: '')
+  end
+
+  def stub_import_status(path, status)
+    stub_request(:get, "#{registry_api_url}/gitlab/v1/import/#{path}/")
+      .with(headers: { 'Accept' => described_class::JSON_TYPE })
+      .to_return(
+        status: 200,
+        body: { status: status }.to_json,
+        headers: { content_type: 'application/json' }
+      )
+  end
+end

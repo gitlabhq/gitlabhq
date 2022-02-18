@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: concepts, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Sign commits and tags with X.509 certificates **(FREE)**
@@ -335,7 +334,7 @@ step of the previous [main verification checks](#main-verification-checks).
    signature.__send__(:p7).verify([], signature.__send__(:cert_store), signature.__send__(:signed_text))
    ```
 
-   1. If this fails, add the missing certificate(s) required to establish trust
+   1. If this fails, add the missing certificates required to establish trust
       [to the GitLab certificate store](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
    1. After adding more certificates, (if these troubleshooting steps then pass)
@@ -347,7 +346,7 @@ step of the previous [main verification checks](#main-verification-checks).
       pp signature.__send__(:p7).certificates ; nil
       ```
 
-Ensure any additional intermediate certificate(s) and the root certificate are added
+Ensure any additional intermediate certificates and the root certificate are added
 to the certificate store. For consistency with how certificate chains are built on
 web servers:
 

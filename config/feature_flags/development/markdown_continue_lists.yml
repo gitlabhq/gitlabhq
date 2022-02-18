@@ -1,0 +1,8 @@
+---
+name: markdown_continue_lists
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79161
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351386
+milestone: '14.8'
+type: development
+group: group::project management
+default_enabled: false

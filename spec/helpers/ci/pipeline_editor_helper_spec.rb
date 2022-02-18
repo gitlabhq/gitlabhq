@@ -88,6 +88,17 @@ RSpec.describe Ci::PipelineEditorHelper do
       end
     end
 
+    context 'with a project with no repository' do
+      let(:project) { create(:project) }
+
+      it 'returns pipeline editor data' do
+        expect(pipeline_editor_data).to include({
+          "pipeline_etag" => '',
+          "total-branches" => 0
+        })
+      end
+    end
+
     context 'with a non-default branch name' do
       let(:user) { create(:user) }
 

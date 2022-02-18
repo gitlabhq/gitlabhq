@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable @gitlab/vue-require-i18n-strings */
 /**
  * Renders a deploy board.
  *
@@ -17,11 +16,11 @@ import {
   GlTooltip,
   GlTooltipDirective,
   GlSafeHtmlDirective as SafeHtml,
+  GlSprintf,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import { n__ } from '~/locale';
+import { s__, n__ } from '~/locale';
 import instanceComponent from '~/vue_shared/components/deployment_instance.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { STATUS_MAP, CANARY_STATUS } from '../constants';
 import CanaryIngress from './canary_ingress.vue';
 
@@ -32,13 +31,13 @@ export default {
     GlIcon,
     GlLoadingIcon,
     GlLink,
+    GlSprintf,
     GlTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     deployBoardData: {
       type: Object,
@@ -57,6 +56,11 @@ export default {
       required: false,
       default: '',
     },
+    graphql: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     canRenderDeployBoard() {
@@ -65,8 +69,15 @@ export default {
     canRenderEmptyState() {
       return this.isEmpty;
     },
+    canaryIngress() {
+      if (this.graphql) {
+        return this.deployBoardData.canaryIngress;
+      }
+
+      return this.deployBoardData.canary_ingress;
+    },
     canRenderCanaryWeight() {
-      return !isEmpty(this.deployBoardData.canary_ingress);
+      return !isEmpty(this.canaryIngress);
     },
     instanceCount() {
       const { instances } = this.deployBoardData;
@@ -90,8 +101,20 @@ export default {
     deployBoardSvg() {
       return deployBoardSvg;
     },
+    rollbackUrl() {
+      if (this.graphql) {
+        return this.deployBoardData.rollbackUrl;
+      }
+      return this.deployBoardData.rollback_url;
+    },
+    abortUrl() {
+      if (this.graphql) {
+        return this.deployBoardData.abortUrl;
+      }
+      return this.deployBoardData.abort_url;
+    },
     deployBoardActions() {
-      return this.deployBoardData.rollback_url || this.deployBoardData.abort_url;
+      return this.rollbackUrl || this.abortUrl;
     },
     statuses() {
       // Canary is not a pod status but it needs to be in the legend.
@@ -106,7 +129,17 @@ export default {
     changeCanaryWeight(weight) {
       this.$emit('changeCanaryWeight', weight);
     },
+    podName(instance) {
+      if (this.graphql) {
+        return instance.podName;
+      }
+
+      return instance.pod_name;
+    },
   },
+  emptyStateText: s__(
+    'DeployBoards|To see deployment progress for your environments, make sure you are deploying to %{codeStart}$KUBE_NAMESPACE%{codeEnd} and annotating with %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} and %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}.',
+  ),
 };
 </script>
 <template>
@@ -152,7 +185,7 @@ export default {
                   :key="i"
                   :status="instance.status"
                   :tooltip-text="instance.tooltip"
-                  :pod-name="instance.pod_name"
+                  :pod-name="podName(instance)"
                   :logs-path="logsPath"
                   :stable="instance.stable"
                 />
@@ -163,22 +196,23 @@ export default {
           <canary-ingress
             v-if="canRenderCanaryWeight"
             class="deploy-board-canary-ingress"
-            :canary-ingress="deployBoardData.canary_ingress"
+            :canary-ingress="canaryIngress"
+            :graphql="graphql"
             @change="changeCanaryWeight"
           />
 
           <section v-if="deployBoardActions" class="deploy-board-actions">
             <gl-link
-              v-if="deployBoardData.rollback_url"
-              :href="deployBoardData.rollback_url"
+              v-if="rollbackUrl"
+              :href="rollbackUrl"
               class="btn"
               data-method="post"
               rel="nofollow"
               >{{ __('Rollback') }}</gl-link
             >
             <gl-link
-              v-if="deployBoardData.abort_url"
-              :href="deployBoardData.abort_url"
+              v-if="abortUrl"
+              :href="abortUrl"
               class="btn btn-danger btn-inverted"
               data-method="post"
               rel="nofollow"
@@ -196,11 +230,11 @@ export default {
             __('Kubernetes deployment not found')
           }}</span>
           <span>
-            To see deployment progress for your environments, make sure you are deploying to
-            <code>$KUBE_NAMESPACE</code> and annotating with
-            <code>app.gitlab.com/app=$CI_PROJECT_PATH_SLUG</code>
-            and
-            <code>app.gitlab.com/env=$CI_ENVIRONMENT_SLUG</code>.
+            <gl-sprintf :message="$options.emptyStateText">
+              <template #code="{ content }">
+                <code>{{ content }}</code>
+              </template>
+            </gl-sprintf>
           </span>
         </section>
       </div>

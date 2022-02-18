@@ -2,7 +2,6 @@
 - page_title _("Learn GitLab")
 - add_page_specific_style 'page_bundles/learn_gitlab'
 - data = learn_gitlab_data(@project)
-- invite_members_open = session.delete(:confetti_post_signup)
 
 = render 'projects/invite_members_modal', project: @project
 
@@ -10,4 +9,4 @@
   - e.control do
     #js-learn-gitlab-app{ data: data }
   - e.candidate do
-    #js-learn-gitlab-app{ data: data.merge(invite_members_open: invite_members_open) }
+    #js-learn-gitlab-app{ data: data.merge(invite_members: 'true') }

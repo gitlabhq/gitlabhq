@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import { projectData } from 'jest/ide/mock_data';
 import { TEST_HOST } from 'spec/test_constants';
@@ -19,7 +19,7 @@ describe('ProjectAvatarDefault component', () => {
     vm.$destroy();
   });
 
-  it('renders identicon if project has no avatar_url', (done) => {
+  it('renders identicon if project has no avatar_url', async () => {
     const expectedText = getFirstCharacterCapitalized(projectData.name);
 
     vm.project = {
@@ -27,18 +27,14 @@ describe('ProjectAvatarDefault component', () => {
       avatar_url: null,
     };
 
-    vm.$nextTick()
-      .then(() => {
-        const identiconEl = vm.$el.querySelector('.identicon');
+    await nextTick();
+    const identiconEl = vm.$el.querySelector('.identicon');
 
-        expect(identiconEl).not.toBe(null);
-        expect(identiconEl.textContent.trim()).toEqual(expectedText);
-      })
-      .then(done)
-      .catch(done.fail);
+    expect(identiconEl).not.toBe(null);
+    expect(identiconEl.textContent.trim()).toEqual(expectedText);
   });
 
-  it('renders avatar image if project has avatar_url', (done) => {
+  it('renders avatar image if project has avatar_url', async () => {
     const avatarUrl = `${TEST_HOST}/images/home/nasa.svg`;
 
     vm.project = {
@@ -46,13 +42,9 @@ describe('ProjectAvatarDefault component', () => {
       avatar_url: avatarUrl,
     };
 
-    vm.$nextTick()
-      .then(() => {
-        expect(vm.$el.querySelector('.avatar')).not.toBeNull();
-        expect(vm.$el.querySelector('.identicon')).toBeNull();
-        expect(vm.$el.querySelector('img')).toHaveAttr('src', avatarUrl);
-      })
-      .then(done)
-      .catch(done.fail);
+    await nextTick();
+    expect(vm.$el.querySelector('.avatar')).not.toBeNull();
+    expect(vm.$el.querySelector('.identicon')).toBeNull();
+    expect(vm.$el.querySelector('img')).toHaveAttr('src', avatarUrl);
   });
 });

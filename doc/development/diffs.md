@@ -35,7 +35,7 @@ have changed since then, it should still serve as a good introduction.
 
 ### Merge request diffs
 
-When refreshing a Merge Request (pushing to a source branch, force-pushing to target branch, or if the target branch now contains any commits from the MR)
+When refreshing a merge request (pushing to a source branch, force-pushing to target branch, or if the target branch now contains any commits from the MR)
 we fetch the comparison information using `Gitlab::Git::Compare`, which fetches `base` and `head` data using Gitaly and diff between them through
 `Gitlab::Git::Diff.between`.
 The diffs fetching process _limits_ single file diff sizes and the overall size of the whole diff through a series of constant values. Raw diff files are
@@ -45,7 +45,7 @@ Even though diffs larger than 10% of the value of `ApplicationSettings#diff_max_
 we still keep them on PostgreSQL. However, diff files larger than defined _safety limits_
 (see the [Diff limits section](#diff-limits)) are _not_ persisted in the database.
 
-In order to present diffs information on the Merge Request diffs page, we:
+In order to present diffs information on the merge request diffs page, we:
 
 1. Fetch all diff files from database `merge_request_diff_files`
 1. Fetch the _old_ and _new_ file blobs in batch to:

@@ -10,6 +10,7 @@ jest.mock('~/flash');
 describe('PersistentUserCallout', () => {
   const dismissEndpoint = '/dismiss';
   const featureName = 'feature';
+  const groupId = '5';
 
   function createFixture() {
     const fixture = document.createElement('div');
@@ -18,6 +19,7 @@ describe('PersistentUserCallout', () => {
         class="container"
         data-dismiss-endpoint="${dismissEndpoint}"
         data-feature-id="${featureName}"
+        data-group-id="${groupId}"
       >
         <button type="button" class="js-close"></button>
       </div>
@@ -86,7 +88,9 @@ describe('PersistentUserCallout', () => {
 
       return waitForPromises().then(() => {
         expect(persistentUserCallout.container.remove).toHaveBeenCalled();
-        expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
+        expect(mockAxios.history.post[0].data).toBe(
+          JSON.stringify({ feature_name: featureName, group_id: groupId }),
+        );
       });
     });
 
@@ -191,8 +195,8 @@ describe('PersistentUserCallout', () => {
 
       return waitForPromises().then(() => {
         expect(window.location.assign).toBeCalledWith(href);
-        expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
         expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
+        expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
       });
     });
 

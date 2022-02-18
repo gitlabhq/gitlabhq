@@ -26,7 +26,7 @@ RSpec.describe 'Pipeline Editor', :js do
     expect(page).to have_content('Pipeline Editor')
   end
 
-  context 'branch switcher' do
+  describe 'Branch switcher' do
     def switch_to_branch(branch)
       find('[data-testid="branch-selector"]').click
 
@@ -64,7 +64,64 @@ RSpec.describe 'Pipeline Editor', :js do
     end
   end
 
-  context 'Editor content' do
+  describe 'Editor navigation' do
+    context 'when no change is made' do
+      it 'user can navigate away without a browser alert' do
+        expect(page).to have_content('Pipeline Editor')
+
+        click_link 'Pipelines'
+
+        expect(page).not_to have_content('Pipeline Editor')
+      end
+    end
+
+    context 'when a change is made' do
+      before do
+        click_button 'Collapse'
+
+        page.within('#source-editor-') do
+          find('textarea').send_keys '123'
+          # It takes some time after sending keys for the vue
+          # component to update
+          sleep 1
+        end
+      end
+
+      it 'user who tries to navigate away can cancel the action and keep their changes' do
+        click_link 'Pipelines'
+
+        page.driver.browser.switch_to.alert.dismiss
+
+        expect(page).to have_content('Pipeline Editor')
+
+        page.within('#source-editor-') do
+          expect(page).to have_content('Default Content123')
+        end
+      end
+
+      it 'user who tries to navigate away can confirm the action and discard their change' do
+        click_link 'Pipelines'
+
+        page.driver.browser.switch_to.alert.accept
+
+        expect(page).not_to have_content('Pipeline Editor')
+      end
+
+      it 'user who creates a MR is taken to the merge request page without warnings' do
+        expect(page).not_to have_content('New merge request')
+
+        find_field('Target Branch').set 'new_branch'
+        find_field('Start a new merge request with these changes').click
+
+        click_button 'Commit changes'
+
+        expect(page).not_to have_content('Pipeline Editor')
+        expect(page).to have_content('New merge request')
+      end
+    end
+  end
+
+  describe 'Editor content' do
     it 'user can reset their CI configuration' do
       click_button 'Collapse'
 

@@ -18,7 +18,7 @@ module QA
           view 'app/assets/javascripts/pipelines/components/graph/job_item.vue' do
             element :job_item_container
             element :job_link
-            element :action_button
+            element :job_action_button
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue' do
@@ -38,6 +38,11 @@ module QA
             element :pipeline_badges
           end
 
+          view 'app/assets/javascripts/pipelines/components/graph/job_group_dropdown.vue' do
+            element :job_dropdown_container
+            element :jobs_dropdown_menu
+          end
+
           def running?(wait: 0)
             within_element(:pipeline_header) do
               page.has_content?('running', wait: wait)
@@ -47,7 +52,7 @@ module QA
           def has_build?(name, status: :success, wait: nil)
             if status
               within_element(:job_item_container, text: name) do
-                has_selector?(".ci-status-icon-#{status}", { wait: wait }.compact)
+                has_selector?(".ci-status-icon-#{status}", **{ wait: wait }.compact)
               end
             else
               has_element?(:job_item_container, text: name)
@@ -110,8 +115,22 @@ module QA
           end
 
           def click_job_action(job_name)
+            wait_for_requests
+
             within_element(:job_item_container, text: job_name) do
-              click_element(:action_button)
+              click_element(:job_action_button)
+            end
+          end
+
+          def click_job_dropdown(job_dropdown_name)
+            click_element(:job_dropdown_container, text: job_dropdown_name)
+          end
+
+          def has_skipped_job_in_group?
+            within_element(:jobs_dropdown_menu) do
+              all_elements(:job_item_container, minimum: 1).all? do
+                has_selector?('.ci-status-icon-skipped')
+              end
             end
           end
         end

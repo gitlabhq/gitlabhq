@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButton, GlSafeHtmlDirective, GlBadge } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import PublishButton from './publish_button.vue';
@@ -9,6 +9,7 @@ export default {
     NoteableNote,
     PublishButton,
     GlButton,
+    GlBadge,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -100,9 +101,7 @@ export default {
         @toggleResolveStatus="toggleResolveDiscussion(draft.id)"
       >
         <template #note-header-info>
-          <strong class="badge draft-pending-label gl-mr-2">
-            {{ __('Pending') }}
-          </strong>
+          <gl-badge variant="warning" class="gl-mr-2">{{ __('Pending') }}</gl-badge>
         </template>
       </noteable-note>
     </ul>
@@ -115,10 +114,15 @@ export default {
       ></div>
 
       <p class="draft-note-actions d-flex">
-        <publish-button :show-count="true" :should-publish="false" category="secondary" />
+        <publish-button
+          :show-count="true"
+          :should-publish="false"
+          category="secondary"
+          :disabled="isPublishingDraft(draft.id)"
+        />
         <gl-button
-          ref="publishNowButton"
-          :loading="isPublishingDraft(draft.id) || isPublishing"
+          :disabled="isPublishing"
+          :loading="isPublishingDraft(draft.id)"
           class="gl-ml-3"
           @click="publishNow"
         >

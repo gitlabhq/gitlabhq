@@ -1,0 +1,8 @@
+---
+name: force_no_sharing_primary_model
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76188
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347286
+milestone: '14.8'
+type: development
+group: group::sharding
+default_enabled: false

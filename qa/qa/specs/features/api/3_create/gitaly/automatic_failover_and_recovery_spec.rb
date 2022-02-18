@@ -9,37 +9,30 @@ module QA
       project = nil
 
       let(:intial_commit_message) { 'Initial commit' }
-      let(:first_added_commit_message) { 'pushed to primary gitaly node' }
-      let(:second_added_commit_message) { 'commit to failover node' }
+      let(:first_added_commit_message) { 'first_added_commit_message to primary gitaly node' }
+      let(:second_added_commit_message) { 'second_added_commit_message to failover node' }
 
       before(:context) do
-        # Reset the cluster in case previous tests left it in a bad state
         praefect_manager.start_all_nodes
 
         project = Resource::Project.fabricate! do |project|
           project.name = "gitaly_cluster"
           project.initialize_with_readme = true
         end
-      end
-
-      after do
-        praefect_manager.start_all_nodes
+        # We need to ensure that the the project is replicated to all nodes before proceeding with this test
+        praefect_manager.wait_for_replication(project.id)
       end
 
       it 'automatically fails over', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347830' do
-        # Create a new project with a commit and wait for it to replicate
-
-        # make sure that our project is published to the 'primary' node
+        # stop other nodes, so we can control which node the commit is sent to
         praefect_manager.stop_secondary_node
         praefect_manager.stop_tertiary_node
-        praefect_manager.wait_for_secondary_node_health_check_failure
-        praefect_manager.wait_for_tertiary_node_health_check_failure
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.commit_message = first_added_commit_message
           push.new_branch = false
-          push.file_content = "This should exist on all nodes"
+          push.file_content = 'This file created on gitaly1 while gitaly2/gitaly3 not running'
         end
 
         praefect_manager.start_all_nodes
@@ -56,7 +49,7 @@ module QA
           commit.add_files([
             {
               file_path: "file-#{SecureRandom.hex(8)}",
-              content: 'This should exist on one node before reconciliation'
+              content: 'This is created on gitaly2/gitaly3 while gitaly1 is unavailable'
             }
           ])
         end

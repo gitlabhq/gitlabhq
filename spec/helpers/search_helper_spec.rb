@@ -658,4 +658,152 @@ RSpec.describe SearchHelper do
       expect(search_sort_options).to eq(mock_created_sort)
     end
   end
+
+  describe '#header_search_context' do
+    let(:user) { create(:user) }
+    let(:can_download) { false }
+
+    let(:for_group) { false }
+    let(:group) { nil }
+    let(:group_metadata) { nil }
+
+    let(:for_project) { false }
+    let(:project) { nil }
+    let(:project_metadata) { nil }
+
+    let(:scope) { nil }
+    let(:code_search) { false }
+    let(:ref) { nil }
+    let(:for_snippets) { false }
+
+    let(:search_context) do
+      instance_double(Gitlab::SearchContext,
+        group: group,
+        group_metadata: group_metadata,
+        project: project,
+        project_metadata: project_metadata,
+        scope: scope,
+        ref: ref)
+    end
+
+    before do
+      allow(self).to receive(:search_context).and_return(search_context)
+      allow(self).to receive(:current_user).and_return(user)
+      allow(self).to receive(:can?).and_return(can_download)
+
+      allow(search_context).to receive(:for_group?).and_return(for_group)
+      allow(search_context).to receive(:for_project?).and_return(for_project)
+
+      allow(search_context).to receive(:code_search?).and_return(code_search)
+      allow(search_context).to receive(:for_snippets?).and_return(for_snippets)
+    end
+
+    context 'group data' do
+      let(:group) { create(:group) }
+      let(:group_metadata) { { group_path: group.path, issues_path: "/issues" } }
+      let(:scope) { 'issues' }
+      let(:code_search) { true }
+
+      context 'when for_group? is true' do
+        let(:for_group) { true }
+
+        it 'adds the :group and :group_metadata correctly to hash' do
+          expect(header_search_context[:group]).to eq({ id: group.id, name: group.name })
+          expect(header_search_context[:group_metadata]).to eq(group_metadata)
+        end
+
+        it 'adds scope and code_search? correctly to hash' do
+          expect(header_search_context[:scope]).to eq(scope)
+          expect(header_search_context[:code_search]).to eq(code_search)
+        end
+      end
+
+      context 'when for_group? is false' do
+        let(:for_group) { false }
+
+        it 'does not add the :group and :group_metadata to hash' do
+          expect(header_search_context[:group]).to eq(nil)
+          expect(header_search_context[:group_metadata]).to eq(nil)
+        end
+
+        it 'does not add scope and code_search? to hash' do
+          expect(header_search_context[:scope]).to eq(nil)
+          expect(header_search_context[:code_search]).to eq(nil)
+        end
+      end
+    end
+
+    context 'project data' do
+      let(:project) { create(:project) }
+      let(:project_metadata) { { project_path: project.path, issues_path: "/issues" } }
+      let(:scope) { 'issues' }
+      let(:code_search) { true }
+
+      context 'when for_project? is true' do
+        let(:for_project) { true }
+
+        it 'adds the :project and :project_metadata correctly to hash' do
+          expect(header_search_context[:project]).to eq({ id: project.id, name: project.name })
+          expect(header_search_context[:project_metadata]).to eq(project_metadata)
+        end
+
+        it 'adds scope and code_search? correctly to hash' do
+          expect(header_search_context[:scope]).to eq(scope)
+          expect(header_search_context[:code_search]).to eq(code_search)
+        end
+      end
+
+      context 'when for_project? is false' do
+        let(:for_project) { false }
+
+        it 'does not add the :project and :project_metadata to hash' do
+          expect(header_search_context[:project]).to eq(nil)
+          expect(header_search_context[:project_metadata]).to eq(nil)
+        end
+
+        it 'does not add scope and code_search? to hash' do
+          expect(header_search_context[:scope]).to eq(nil)
+          expect(header_search_context[:code_search]).to eq(nil)
+        end
+      end
+    end
+
+    context 'ref data' do
+      let(:ref) { 'test-branch' }
+
+      context 'when user can? download project data' do
+        let(:can_download) { true }
+
+        it 'adds the :ref correctly to hash' do
+          expect(header_search_context[:ref]).to eq(ref)
+        end
+      end
+
+      context 'when user cannot download project data' do
+        let(:can_download) { false }
+
+        it 'does not add the :ref to hash' do
+          expect(header_search_context[:ref]).to eq(nil)
+        end
+      end
+    end
+
+    context 'snippets' do
+      context 'when for_snippets? is true' do
+        let(:for_snippets) { true }
+
+        it 'adds :for_snippets correctly to hash' do
+          expect(header_search_context[:for_snippets]).to eq(for_snippets)
+        end
+      end
+
+      context 'when for_snippets? is false' do
+        let(:for_snippets) { false }
+
+        it 'adds :for_snippets correctly to hash' do
+          expect(header_search_context[:for_snippets]).to eq(for_snippets)
+        end
+      end
+    end
+  end
 end

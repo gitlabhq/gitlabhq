@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Authentication & Authorization
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -78,13 +78,14 @@ GET /users?external=true
 GitLab supports bot users such as the [alert bot](../operations/incident_management/integrations.md)
 or the [support bot](../user/project/service_desk.md#support-bot-user).
 You can exclude the following types of [internal users](../development/internal_users.md#internal-users)
-from the users' list, with the `exclude_internal=true` parameter,
-([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241144) in GitLab 13.4).
+from the users' list with the `exclude_internal=true` parameter
+([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241144) in GitLab 13.4):
 
 - Alert bot
 - Support bot
 
-However, this action does not exclude [project bot users](../user/project/settings/project_access_tokens.md#project-bot-users).
+However, this action does not exclude [bot users for projects](../user/project/settings/project_access_tokens.md#bot-users-for-projects)
+or [bot users for groups](../user/group/settings/group_access_tokens.md#bot-users-for-groups).
 
 ```plaintext
 GET /users?exclude_internal=true
@@ -108,7 +109,7 @@ GET /users
 | `sort`             | string  | no       | Return users sorted in `asc` or `desc` order. Default is `desc`                                                       |
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
-| `admins`           | boolean | no       | Return only admin users. Default is `false`                                 |
+| `admins`           | boolean | no       | Return only administrators. Default is `false`                                 |
 | `saml_provider_id` **(PREMIUM)** | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. |
 
 ```json
@@ -532,7 +533,7 @@ Parameters:
 | Attribute     | Type    | Required | Description                                  |
 |---------------|---------|----------|----------------------------------------------|
 | `id`          | integer | yes      | The ID of a user                             |
-| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to the ghost user](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this user. |
+| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this user. |
 
 ## List current user (for normal users)
 
@@ -696,6 +697,38 @@ Example response:
 }
 ```
 
+## Set user status
+
+Set the status of the current user.
+
+```plaintext
+PUT /user/status
+```
+
+| Attribute            | Type   | Required | Description                                                                                                                                                                                                             |
+| -------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `emoji`              | string | no       | The name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
+| `message`            | string | no       | The message to set as a status. It can also contain emoji codes.                                                                                                                                                        |
+| `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days`
+
+When both parameters `emoji` and `message` are empty, the status is cleared. When the `clear_status_after` parameter is missing from the request, the previously set value for `"clear_status_after` is cleared.
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" \
+     --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
+```
+
+Example responses
+
+```json
+{
+  "emoji":"coffee",
+  "message":"I crave coffee",
+  "message_html": "I crave coffee",
+  "clear_status_at":"2021-02-15T10:49:01.311Z"
+}
+```
+
 ## Get user preferences
 
 Get a list of currently authenticated user's preferences.
@@ -742,38 +775,6 @@ Parameters:
 | :--------------------------- | :------- | :---------------------------------------------------------- |
 | `view_diffs_file_by_file`    | Yes      | Flag indicating the user sees only one file diff per page.  |
 | `show_whitespace_in_diffs`   | Yes      | Flag indicating the user sees whitespace changes in diffs.  |
-
-## Set user status
-
-Set the status of the current user.
-
-```plaintext
-PUT /user/status
-```
-
-| Attribute            | Type   | Required | Description                                                                                                                                                                                                             |
-| -------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `emoji`              | string | no       | The name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
-| `message`            | string | no       | The message to set as a status. It can also contain emoji codes.                                                                                                                                                        |
-| `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days`
-
-When both parameters `emoji` and `message` are empty, the status is cleared. When the `clear_status_after` parameter is missing from the request, the previously set value for `"clear_status_after` is cleared.
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" \
-     --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
-```
-
-Example responses
-
-```json
-{
-  "emoji":"coffee",
-  "message":"I crave coffee",
-  "message_html": "I crave coffee",
-  "clear_status_at":"2021-02-15T10:49:01.311Z"
-}
-```
 
 ## User Follow
 
@@ -1545,7 +1546,7 @@ Please refer to the [Events API documentation](events.md#get-user-contribution-e
 
 ## Get all impersonation tokens of a user
 
-> Requires administrator permissions.
+Requires administrator access.
 
 It retrieves every impersonation token of the user. Use the pagination
 parameters `page` and `per_page` to restrict the list of impersonation tokens.
@@ -1719,8 +1720,8 @@ Example response:
 
 ## Create an impersonation token
 
-> Requires administrator permissions.
-> Token values are returned once. Make sure you save it - you can't access it again.
+Requires administrator access. Token values are returned once. Make sure you save it because you can't access
+it again.
 
 It creates a new impersonation token. Only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform
@@ -1764,7 +1765,7 @@ Example response:
 
 ## Revoke an impersonation token
 
-> Requires administrator permissions.
+Requires administrator access.
 
 It revokes an impersonation token.
 
@@ -1837,7 +1838,7 @@ The activities that update the timestamp are:
 
 - Git HTTP/SSH activities (such as clone, push)
 - User logging in to GitLab
-- User visiting pages related to Dashboards, Projects, Issues, and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54947) in GitLab 11.8)
+- User visiting pages related to dashboards, projects, issues, and merge requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54947) in GitLab 11.8)
 - User using the API
 - User using the GraphQL API
 

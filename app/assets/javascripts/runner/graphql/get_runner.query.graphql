@@ -4,6 +4,7 @@ query getRunner($id: CiRunnerID!) {
   # We have an id in deeply nested fragment
   # eslint-disable-next-line @graphql-eslint/require-id-when-available
   runner(id: $id) {
+    __typename
     ...RunnerDetails
   }
 }

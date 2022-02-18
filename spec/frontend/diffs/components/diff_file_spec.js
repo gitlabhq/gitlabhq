@@ -1,6 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import DiffContentComponent from 'jh_else_ce/diffs/components/diff_content.vue';
@@ -70,9 +70,7 @@ function markFileToBeRendered(store, index = 0) {
 }
 
 function createComponent({ file, first = false, last = false, options = {}, props = {} }) {
-  const localVue = createLocalVue();
-
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   const store = new Vuex.Store({
     ...createNotesStore(),
@@ -85,7 +83,6 @@ function createComponent({ file, first = false, last = false, options = {}, prop
 
   const wrapper = shallowMount(DiffFileComponent, {
     store,
-    localVue,
     propsData: {
       file,
       canCurrentUserFork: false,
@@ -98,7 +95,6 @@ function createComponent({ file, first = false, last = false, options = {}, prop
   });
 
   return {
-    localVue,
     wrapper,
     store,
   };
@@ -164,7 +160,7 @@ describe('DiffFile', () => {
             last,
           }));
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(eventHub.$emit).toHaveBeenCalledTimes(events.length);
           events.forEach((event) => {
@@ -188,13 +184,13 @@ describe('DiffFile', () => {
 
         makeFileAutomaticallyCollapsed(store);
 
-        await wrapper.vm.$nextTick(); // Wait for store updates to flow into the component
+        await nextTick(); // Wait for store updates to flow into the component
 
         toggleFile(wrapper);
 
-        await wrapper.vm.$nextTick(); // Wait for the load to resolve
-        await wrapper.vm.$nextTick(); // Wait for the idleCallback
-        await wrapper.vm.$nextTick(); // Wait for nextTick inside postRender
+        await nextTick(); // Wait for the load to resolve
+        await nextTick(); // Wait for the idleCallback
+        await nextTick(); // Wait for nextTick inside postRender
 
         expect(eventHub.$emit).toHaveBeenCalledTimes(2);
         expect(eventHub.$emit).toHaveBeenCalledWith(EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN);
@@ -218,7 +214,7 @@ describe('DiffFile', () => {
 
       markFileToBeRendered(store);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(DiffContentComponent).exists()).toBe(true);
     });
@@ -268,7 +264,7 @@ describe('DiffFile', () => {
       it('performs the normal file toggle when the file is collapsed', async () => {
         makeFileAutomaticallyCollapsed(store);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         eventHub.$emit(EVT_EXPAND_ALL_FILES);
 
@@ -278,7 +274,7 @@ describe('DiffFile', () => {
       it('does nothing when the file is not collapsed', async () => {
         eventHub.$emit(EVT_EXPAND_ALL_FILES);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.vm.handleToggle).not.toHaveBeenCalled();
       });
@@ -290,7 +286,7 @@ describe('DiffFile', () => {
       });
 
       it('should not have any content at all', async () => {
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findDiffContentArea(wrapper).element.children.length).toBe(0);
       });
@@ -396,7 +392,7 @@ describe('DiffFile', () => {
             readableText,
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           toggleFile(wrapper);
         };
@@ -444,7 +440,7 @@ describe('DiffFile', () => {
         makeFileAutomaticallyCollapsed(store);
         wrapper.vm.requestDiff();
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findLoader(wrapper).exists()).toBe(true);
       });
@@ -455,7 +451,7 @@ describe('DiffFile', () => {
         ({ wrapper, store } = createComponent({ file: getUnreadableFile() }));
         makeFileAutomaticallyCollapsed(store);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findDiffContentArea(wrapper).html()).toContain(
           'Files with large changes are collapsed by default.',
@@ -474,7 +470,7 @@ describe('DiffFile', () => {
           markFileToBeRendered(store);
           changeViewerType(store, mode);
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.classes('has-body')).toBe(true);
           expect(wrapper.find(DiffContentComponent).exists()).toBe(true);
@@ -500,7 +496,7 @@ describe('DiffFile', () => {
         },
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       const button = wrapper.find('[data-testid="blob-button"]');
 
@@ -525,7 +521,7 @@ describe('DiffFile', () => {
 
     ({ wrapper, store } = createComponent({ file, props: { viewDiffsFileByFile: true } }));
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     expect(findLoader(wrapper).exists()).toBe(true);
   });

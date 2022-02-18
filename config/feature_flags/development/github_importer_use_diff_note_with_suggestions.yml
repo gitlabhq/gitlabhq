@@ -1,8 +1,0 @@
----
-name: github_importer_use_diff_note_with_suggestions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71765
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344309
-milestone: '14.5'
-type: development
-group: group::import
-default_enabled: true

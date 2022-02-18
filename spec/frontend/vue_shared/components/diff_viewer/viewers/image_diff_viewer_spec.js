@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { compileToFunctions } from 'vue-template-compiler';
 
 import { GREEN_BOX_IMAGE_URL, RED_BOX_IMAGE_URL } from 'spec/test_constants';
@@ -51,60 +51,53 @@ describe('ImageDiffViewer', () => {
     wrapper.destroy();
   });
 
-  it('renders image diff for replaced', (done) => {
+  it('renders image diff for replaced', async () => {
     createComponent({ ...allProps });
 
-    vm.$nextTick(() => {
-      const metaInfoElements = vm.$el.querySelectorAll('.image-info');
+    await nextTick();
+    const metaInfoElements = vm.$el.querySelectorAll('.image-info');
 
-      expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
+    expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
 
-      expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(RED_BOX_IMAGE_URL);
+    expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(RED_BOX_IMAGE_URL);
 
-      expect(vm.$el.querySelector('.view-modes-menu li.active').textContent.trim()).toBe('2-up');
-      expect(vm.$el.querySelector('.view-modes-menu li:nth-child(2)').textContent.trim()).toBe(
-        'Swipe',
-      );
+    expect(vm.$el.querySelector('.view-modes-menu li.active').textContent.trim()).toBe('2-up');
+    expect(vm.$el.querySelector('.view-modes-menu li:nth-child(2)').textContent.trim()).toBe(
+      'Swipe',
+    );
 
-      expect(vm.$el.querySelector('.view-modes-menu li:nth-child(3)').textContent.trim()).toBe(
-        'Onion skin',
-      );
+    expect(vm.$el.querySelector('.view-modes-menu li:nth-child(3)').textContent.trim()).toBe(
+      'Onion skin',
+    );
 
-      expect(metaInfoElements.length).toBe(2);
-      expect(metaInfoElements[0]).toHaveText('2.00 KiB');
-      expect(metaInfoElements[1]).toHaveText('1.00 KiB');
-
-      done();
-    });
+    expect(metaInfoElements.length).toBe(2);
+    expect(metaInfoElements[0]).toHaveText('2.00 KiB');
+    expect(metaInfoElements[1]).toHaveText('1.00 KiB');
   });
 
-  it('renders image diff for new', (done) => {
+  it('renders image diff for new', async () => {
     createComponent({ ...allProps, diffMode: 'new', oldPath: '' });
 
-    setImmediate(() => {
-      const metaInfoElement = vm.$el.querySelector('.image-info');
+    await nextTick();
 
-      expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
-      expect(metaInfoElement).toHaveText('1.00 KiB');
+    const metaInfoElement = vm.$el.querySelector('.image-info');
 
-      done();
-    });
+    expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
+    expect(metaInfoElement).toHaveText('1.00 KiB');
   });
 
-  it('renders image diff for deleted', (done) => {
+  it('renders image diff for deleted', async () => {
     createComponent({ ...allProps, diffMode: 'deleted', newPath: '' });
 
-    setImmediate(() => {
-      const metaInfoElement = vm.$el.querySelector('.image-info');
+    await nextTick();
 
-      expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(RED_BOX_IMAGE_URL);
-      expect(metaInfoElement).toHaveText('2.00 KiB');
+    const metaInfoElement = vm.$el.querySelector('.image-info');
 
-      done();
-    });
+    expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(RED_BOX_IMAGE_URL);
+    expect(metaInfoElement).toHaveText('2.00 KiB');
   });
 
-  it('renders image diff for renamed', (done) => {
+  it('renders image diff for renamed', async () => {
     vm = new Vue({
       components: {
         imageDiffViewer,
@@ -130,69 +123,56 @@ describe('ImageDiffViewer', () => {
       `),
     }).$mount();
 
-    setImmediate(() => {
-      const metaInfoElement = vm.$el.querySelector('.image-info');
+    await nextTick();
 
-      expect(vm.$el.querySelector('img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
-      expect(vm.$el.querySelector('.overlay')).not.toBe(null);
+    const metaInfoElement = vm.$el.querySelector('.image-info');
 
-      expect(metaInfoElement).toHaveText('2.00 KiB');
+    expect(vm.$el.querySelector('img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
+    expect(vm.$el.querySelector('.overlay')).not.toBe(null);
 
-      done();
-    });
+    expect(metaInfoElement).toHaveText('2.00 KiB');
   });
 
   describe('swipeMode', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       createComponent({ ...requiredProps });
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
-    it('switches to Swipe Mode', (done) => {
+    it('switches to Swipe Mode', async () => {
       vm.$el.querySelector('.view-modes-menu li:nth-child(2)').click();
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.view-modes-menu li.active').textContent.trim()).toBe('Swipe');
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.view-modes-menu li.active').textContent.trim()).toBe('Swipe');
     });
   });
 
   describe('onionSkin', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       createComponent({ ...requiredProps });
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
-    it('switches to Onion Skin Mode', (done) => {
+    it('switches to Onion Skin Mode', async () => {
       vm.$el.querySelector('.view-modes-menu li:nth-child(3)').click();
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.view-modes-menu li.active').textContent.trim()).toBe(
-          'Onion skin',
-        );
-        done();
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.view-modes-menu li.active').textContent.trim()).toBe(
+        'Onion skin',
+      );
     });
 
-    it('has working drag handler', (done) => {
+    it('has working drag handler', async () => {
       vm.$el.querySelector('.view-modes-menu li:nth-child(3)').click();
 
-      vm.$nextTick(() => {
-        dragSlider(vm.$el.querySelector('.dragger'), document, 20);
+      await nextTick();
+      dragSlider(vm.$el.querySelector('.dragger'), document, 20);
 
-        vm.$nextTick(() => {
-          expect(vm.$el.querySelector('.dragger').style.left).toBe('20px');
-          expect(vm.$el.querySelector('.added.frame').style.opacity).toBe('0.2');
-          done();
-        });
-      });
+      await nextTick();
+      expect(vm.$el.querySelector('.dragger').style.left).toBe('20px');
+      expect(vm.$el.querySelector('.added.frame').style.opacity).toBe('0.2');
     });
   });
 });

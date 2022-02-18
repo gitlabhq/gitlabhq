@@ -1,5 +1,6 @@
 import { GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DeleteUserModal from '~/admin/users/components/modals/delete_user_modal.vue';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
 import ModalStub from './stubs/modal_stub';
@@ -82,11 +83,11 @@ describe('User Operation confirmation modal', () => {
   });
 
   describe('with incorrect username', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent();
       setUsername(badUsername);
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('shows incorrect username', () => {
@@ -100,11 +101,11 @@ describe('User Operation confirmation modal', () => {
   });
 
   describe('with correct username', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent();
       setUsername(username);
 
-      return wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('shows correct username', () => {
@@ -117,10 +118,10 @@ describe('User Operation confirmation modal', () => {
     });
 
     describe('when primary action is submitted', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         findPrimaryButton().vm.$emit('click');
 
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('clears the input', () => {
@@ -136,10 +137,10 @@ describe('User Operation confirmation modal', () => {
     });
 
     describe('when secondary action is submitted', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         findSecondaryButton().vm.$emit('click');
 
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('has correct form attributes and calls submit', () => {
@@ -168,7 +169,7 @@ describe('User Operation confirmation modal', () => {
     it("shows enabled buttons when user's name is entered without whitespace", async () => {
       setUsername('John Smith');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findPrimaryButton().attributes('disabled')).toBeUndefined();
       expect(findSecondaryButton().attributes('disabled')).toBeUndefined();

@@ -85,6 +85,8 @@ RSpec.describe 'Admin updates settings' do
           select 'Are allowed', from: 'DSA SSH keys'
           select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
           select 'Are forbidden', from: 'ED25519 SSH keys'
+          select 'Are forbidden', from: 'ECDSA_SK SSH keys'
+          select 'Are forbidden', from: 'ED25519_SK SSH keys'
           click_on 'Save changes'
         end
 
@@ -95,6 +97,8 @@ RSpec.describe 'Admin updates settings' do
         expect(find_field('DSA SSH keys').value).to eq('0')
         expect(find_field('ECDSA SSH keys').value).to eq('384')
         expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
+        expect(find_field('ECDSA_SK SSH keys').value).to eq(forbidden)
+        expect(find_field('ED25519_SK SSH keys').value).to eq(forbidden)
       end
 
       it 'change Account and Limit Settings' do
@@ -528,7 +532,7 @@ RSpec.describe 'Admin updates settings' do
         expect(find_field('Allow access to members of the following group').value).to be_nil
       end
 
-      it 'loads usage ping payload on click', :js do
+      it 'loads togglable usage ping payload on click', :js do
         stub_usage_data_connections
         stub_database_flavor_check
 
@@ -544,6 +548,10 @@ RSpec.describe 'Admin updates settings' do
           expect(page).to have_selector '.js-service-ping-payload'
           expect(page).to have_button 'Hide payload'
           expect(page).to have_content expected_payload_content
+
+          click_button('Hide payload')
+
+          expect(page).not_to have_content expected_payload_content
         end
       end
     end
@@ -621,6 +629,20 @@ RSpec.describe 'Admin updates settings' do
 
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.issues_create_limit).to eq(0)
+      end
+
+      it 'changes Users API rate limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-users-api-limits') do
+          fill_in 'Maximum requests per 10 minutes per user', with: 0
+          fill_in 'Users to exclude from the rate limit', with: 'someone, someone_else'
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.users_get_by_id_limit).to eq(0)
+        expect(current_settings.users_get_by_id_limit_allowlist).to eq(%w[someone someone_else])
       end
 
       shared_examples 'regular throttle rate limit settings' do
@@ -769,6 +791,38 @@ RSpec.describe 'Admin updates settings' do
         page.within '.header-help' do
           expect(page).to have_link(text: 'Support', href: new_support_url)
         end
+      end
+    end
+
+    context 'Service usage data page' do
+      before do
+        stub_usage_data_connections
+        stub_database_flavor_check
+
+        visit service_usage_data_admin_application_settings_path
+      end
+
+      it 'loads usage ping payload on click', :js do
+        expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
+
+        expect(page).not_to have_content expected_payload_content
+
+        click_button('Preview payload')
+
+        wait_for_requests
+
+        expect(page).to have_button 'Hide payload'
+        expect(page).to have_content expected_payload_content
+      end
+
+      it 'generates usage ping payload on button click', :js do
+        expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
+          expect(instance).to receive(:usage_data).and_call_original
+        end
+
+        click_button('Download payload')
+
+        wait_for_requests
       end
     end
   end

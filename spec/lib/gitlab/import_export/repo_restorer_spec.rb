@@ -19,7 +19,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
   before do
     allow(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
 
-    bundler.save
+    bundler.save # rubocop:disable Rails/SaveBang
   end
 
   after do

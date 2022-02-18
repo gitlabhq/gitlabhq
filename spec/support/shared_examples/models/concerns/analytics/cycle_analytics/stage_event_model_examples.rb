@@ -178,4 +178,22 @@ RSpec.shared_examples 'StageEventModel' do
       end
     end
   end
+
+  describe '#total_time' do
+    it 'calcualtes total time from the start_event_timestamp and end_event_timestamp columns' do
+      model = described_class.new(start_event_timestamp: Time.new(2022, 1, 1, 12, 5, 0), end_event_timestamp: Time.new(2022, 1, 1, 12, 6, 30))
+
+      expect(model.total_time).to eq(90)
+    end
+
+    context 'when total time is calculated in SQL as an extra column' do
+      it 'returns the SQL calculated time' do
+        create(stage_event_factory) # rubocop:disable Rails/SaveBang
+
+        model = described_class.select('*, 5 AS total_time').first
+
+        expect(model.total_time).to eq(5)
+      end
+    end
+  end
 end

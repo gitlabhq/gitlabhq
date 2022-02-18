@@ -4,6 +4,7 @@ import {
   bytesToMiB,
   bytesToGiB,
   numberToHumanSize,
+  numberToMetricPrefix,
   sum,
   isOdd,
   median,
@@ -96,6 +97,21 @@ describe('Number Utils', () => {
     it('should return GiB', () => {
       expect(numberToHumanSize(10737418240)).toEqual('10.00 GiB');
       expect(numberToHumanSize(-10737418240)).toEqual('-10.00 GiB');
+    });
+  });
+
+  describe('numberToMetricPrefix', () => {
+    it.each`
+      number       | expected
+      ${123}       | ${'123'}
+      ${1234}      | ${'1.2k'}
+      ${12345}     | ${'12.3k'}
+      ${123456}    | ${'123.5k'}
+      ${1234567}   | ${'1.2m'}
+      ${12345678}  | ${'12.3m'}
+      ${123456789} | ${'123.5m'}
+    `('returns $expected given $number', ({ number, expected }) => {
+      expect(numberToMetricPrefix(number)).toBe(expected);
     });
   });
 

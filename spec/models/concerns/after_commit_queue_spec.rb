@@ -75,7 +75,7 @@ RSpec.describe AfterCommitQueue do
         skip_if_multiple_databases_not_setup
 
         table_sql = <<~SQL
-          CREATE TABLE _test_ci_after_commit_queue (
+          CREATE TABLE _test_gitlab_ci_after_commit_queue (
             id serial NOT NULL PRIMARY KEY);
         SQL
 
@@ -84,7 +84,7 @@ RSpec.describe AfterCommitQueue do
 
       let(:ci_klass) do
         Class.new(Ci::ApplicationRecord) do
-          self.table_name = '_test_ci_after_commit_queue'
+          self.table_name = '_test_gitlab_ci_after_commit_queue'
 
           include AfterCommitQueue
 

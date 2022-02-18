@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlButton, GlEmptyState, GlTable } from '@gitlab/ui';
+import { GlAlert, GlButton, GlEmptyState, GlTable } from '@gitlab/ui';
 import ServiceAccountsList from '~/google_cloud/components/service_accounts_list.vue';
 
 describe('ServiceAccounts component', () => {
@@ -28,7 +28,7 @@ describe('ServiceAccounts component', () => {
     it('shows the link to create new service accounts', () => {
       const button = findButtonInEmptyState();
       expect(button.exists()).toBe(true);
-      expect(button.text()).toBe('Create service account');
+      expect(button.text()).toBe(ServiceAccountsList.i18n.createServiceAccount);
       expect(button.attributes('href')).toBe('#create-url');
     });
   });
@@ -41,6 +41,7 @@ describe('ServiceAccounts component', () => {
     const findTable = () => wrapper.findComponent(GlTable);
     const findRows = () => findTable().findAll('tr');
     const findButton = () => wrapper.findComponent(GlButton);
+    const findSecretManagerTip = () => wrapper.findComponent(GlAlert);
 
     beforeEach(() => {
       const propsData = {
@@ -52,13 +53,11 @@ describe('ServiceAccounts component', () => {
     });
 
     it('shows the title', () => {
-      expect(findTitle().text()).toBe('Service Accounts');
+      expect(findTitle().text()).toBe(ServiceAccountsList.i18n.serviceAccountsTitle);
     });
 
     it('shows the description', () => {
-      expect(findDescription().text()).toBe(
-        'Service Accounts keys authorize GitLab to deploy your Google Cloud project',
-      );
+      expect(findDescription().text()).toBe(ServiceAccountsList.i18n.serviceAccountsDescription);
     });
 
     it('shows the table', () => {
@@ -72,8 +71,14 @@ describe('ServiceAccounts component', () => {
     it('shows the link to create new service accounts', () => {
       const button = findButton();
       expect(button.exists()).toBe(true);
-      expect(button.text()).toBe('Create service account');
+      expect(button.text()).toBe(ServiceAccountsList.i18n.createServiceAccount);
       expect(button.attributes('href')).toBe('#create-url');
+    });
+
+    it('must contain secret managers tip', () => {
+      const tip = findSecretManagerTip();
+      const expectedText = ServiceAccountsList.i18n.secretManagersDescription.substr(0, 48);
+      expect(tip.text()).toContain(expectedText);
     });
   });
 });

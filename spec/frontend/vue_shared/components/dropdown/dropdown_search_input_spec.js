@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DropdownSearchInputComponent from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
 
 describe('DropdownSearchInputComponent', () => {
@@ -36,16 +37,15 @@ describe('DropdownSearchInputComponent', () => {
       expect(findInputEl().attributes('placeholder')).toBe(defaultProps.placeholderText);
     });
 
-    it('focuses input element when focused property equals true', () => {
+    it('focuses input element when focused property equals true', async () => {
       const inputEl = findInputEl().element;
 
       jest.spyOn(inputEl, 'focus');
 
       wrapper.setProps({ focused: true });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(inputEl.focus).toHaveBeenCalled();
-      });
+      await nextTick();
+      expect(inputEl.focus).toHaveBeenCalled();
     });
   });
 });

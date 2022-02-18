@@ -32,7 +32,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def blob_language
-    @_blob_language ||= Gitlab::Diff::CustomDiff.transformed_blob_language(blob) || language
+    @_blob_language ||= Gitlab::Diff::CustomDiff.transformed_blob_language(blob) || gitattr_language || detect_language
   end
 
   def raw_plain_data
@@ -79,6 +79,18 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     url_helpers.project_blob_path(project, File.join(project.repository.commit.sha, blob.path))
   end
 
+  def environment_formatted_external_url
+    return unless environment
+
+    environment.formatted_external_url
+  end
+
+  def environment_external_url_for_route_map
+    return unless environment
+
+    environment.external_url_for(blob.path, blob.commit_id)
+  end
+
   # Will be overridden in EE
   def code_owners
     []
@@ -113,13 +125,19 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   def external_storage_url
     return unless static_objects_external_storage_enabled?
 
-    external_storage_url_or_path(url_helpers.project_raw_url(project, ref_qualified_path))
+    external_storage_url_or_path(url_helpers.project_raw_url(project, ref_qualified_path), project)
   end
 
   private
 
   def url_helpers
     Gitlab::Routing.url_helpers
+  end
+
+  def environment
+    environment_params = project.repository.branch_exists?(blob.commit_id) ? { ref: blob.commit_id } : { sha: blob.commit_id }
+    environment_params[:find_latest] = true
+    ::Environments::EnvironmentsByDeploymentsFinder.new(project, current_user, environment_params).execute.last
   end
 
   def project
@@ -148,8 +166,14 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     @all_lines ||= blob.data.lines
   end
 
-  def language
+  def gitattr_language
     blob.language_from_gitattributes
+  end
+
+  def detect_language
+    return if blob.binary?
+
+    Rouge::Lexer.guess(filename: blob.path, source: blob_data(nil)) { |lex| lex.min_by(&:tag) }.tag
   end
 end
 

@@ -64,11 +64,11 @@ module Gitlab
           def create_test_case(data, test_suite, job)
             if data.key?('failure')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
-              system_output = data['failure']
+              system_output = data['failure'] || data['system_err']
               attachment = attachment_path(data['system_out'])
             elsif data.key?('error')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR
-              system_output = data['error']
+              system_output = data['error'] || data['system_err']
               attachment = attachment_path(data['system_out'])
             elsif data.key?('skipped')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_SKIPPED

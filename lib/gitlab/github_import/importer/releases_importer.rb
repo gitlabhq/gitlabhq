@@ -21,10 +21,12 @@ module Gitlab
         end
 
         def already_imported?(release)
-          existing_tags.include?(release.tag_name)
+          existing_tags.include?(release.tag_name) || release.tag_name.nil?
         end
 
         def build(release)
+          existing_tags.add(release.tag_name)
+
           {
             name: release.name,
             tag: release.tag_name,

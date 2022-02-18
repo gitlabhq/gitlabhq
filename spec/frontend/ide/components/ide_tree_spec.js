@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { keepAlive } from 'helpers/keep_alive_component_helper';
@@ -7,8 +7,7 @@ import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('IdeTree', () => {
   let store;
@@ -27,7 +26,6 @@ describe('IdeTree', () => {
 
     wrapper = mount(keepAlive(IdeTree), {
       store,
-      localVue,
     });
   });
 

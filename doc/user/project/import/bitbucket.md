@@ -42,7 +42,7 @@ When issues/pull requests are being imported, the Bitbucket importer tries to fi
 the Bitbucket author/assignee in the GitLab database using the Bitbucket `nickname`.
 For this to work, the Bitbucket author/assignee should have signed in beforehand in GitLab
 and **associated their Bitbucket account**. Their `nickname` must also match their Bitbucket
-`username.`. If the user is not found in the GitLab database, the project creator
+`username`. If the user is not found in the GitLab database, the project creator
 (most of the times the current user that started the import process) is set as the author,
 but a reference on the issue about the original Bitbucket author is kept.
 

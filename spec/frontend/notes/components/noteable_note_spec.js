@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import waitForPromises from 'helpers/wait_for_promises';
@@ -107,11 +107,11 @@ describe('issue_note', () => {
         line,
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(findMultilineComment().text()).toBe('Comment on lines 1 to 2');
     });
 
-    it('should only render if it has everything it needs', () => {
+    it('should only render if it has everything it needs', async () => {
       const position = {
         line_range: {
           start: {
@@ -140,12 +140,11 @@ describe('issue_note', () => {
         line,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findMultilineComment().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findMultilineComment().exists()).toBe(false);
     });
 
-    it('should not render if has single line comment', () => {
+    it('should not render if has single line comment', async () => {
       const position = {
         line_range: {
           start: {
@@ -174,9 +173,8 @@ describe('issue_note', () => {
         line,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findMultilineComment().exists()).toBe(false);
-      });
+      await nextTick();
+      expect(findMultilineComment().exists()).toBe(false);
     });
 
     it('should not render if `line_range` is unavailable', () => {
@@ -204,7 +202,7 @@ describe('issue_note', () => {
           line,
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.findComponent(UserAvatarLink).props('imgSize')).toBe(24);
       });
@@ -318,13 +316,13 @@ describe('issue_note', () => {
         callback: () => {},
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
       let noteBodyProps = noteBody.props();
 
       expect(noteBodyProps.note.note_html).toBe(`<p>${updatedText}</p>\n`);
 
       noteBody.vm.$emit('cancelForm', {});
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       noteBodyProps = noteBody.props();
 

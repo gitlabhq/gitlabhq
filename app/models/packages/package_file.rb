@@ -55,12 +55,11 @@ class Packages::PackageFile < ApplicationRecord
   end
 
   scope :for_helm_with_channel, ->(project, channel) do
-    result = joins(:package)
-               .merge(project.packages.helm.installable)
-               .joins(:helm_file_metadatum)
-               .where(packages_helm_file_metadata: { channel: channel })
-    result = result.installable if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
-    result
+    joins(:package)
+      .merge(project.packages.helm.installable)
+      .joins(:helm_file_metadatum)
+      .where(packages_helm_file_metadata: { channel: channel })
+      .installable
   end
 
   scope :with_conan_file_type, ->(file_type) do
@@ -110,13 +109,9 @@ class Packages::PackageFile < ApplicationRecord
     cte_name = :packages_cte
     cte = Gitlab::SQL::CTE.new(cte_name, packages.select(:id))
 
-    package_files = if Feature.enabled?(:packages_installable_package_files, default_enabled: :yaml)
-                      ::Packages::PackageFile.installable.limit_recent(1)
-                        .where(arel_table[:package_id].eq(Arel.sql("#{cte_name}.id")))
-                    else
-                      ::Packages::PackageFile.limit_recent(1)
-                        .where(arel_table[:package_id].eq(Arel.sql("#{cte_name}.id")))
-                    end
+    package_files = ::Packages::PackageFile.installable
+                                           .limit_recent(1)
+                                           .where(arel_table[:package_id].eq(Arel.sql("#{cte_name}.id")))
 
     package_files = package_files.joins(extra_join) if extra_join
     package_files = package_files.where(extra_where) if extra_where

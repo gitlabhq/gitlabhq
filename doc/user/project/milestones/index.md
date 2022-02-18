@@ -53,35 +53,23 @@ If you're in a project and select **Issues > Milestones**, GitLab displays only 
 
 ## Creating milestones
 
-NOTE:
-A permission level of [Developer or higher](../../permissions.md) is required to create milestones.
+Users with at least the Developer role can create milestones.
 
-### New project milestone
+Milestones can be created either at project or group level.
 
-To create a project milestone:
+To create a milestone:
 
-1. In a project, go to **{issues}** **Issues > Milestones**.
+1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
+1. On the left sidebar, select **Issues > Milestones**.
 1. Select **New milestone**.
 1. Enter the title, an optional description, an optional start date, and an optional due date.
 1. Select **New milestone**.
 
-![New project milestone](img/milestones_new_project_milestone.png)
-
-### New group milestone
-
-To create a group milestone:
-
-1. In a group, go to **{issues}** **Issues > Milestones**.
-1. Select **New milestone**.
-1. Enter the title, an optional description, an optional start date, and an optional due date.
-1. Select **New milestone**.
-
-![New group milestone](img/milestones_new_group_milestone_v13_5.png)
+![New milestone](img/milestones_new_project_milestone.png)
 
 ## Editing milestones
 
-NOTE:
-A permission level of [Developer or higher](../../permissions.md) is required to edit milestones.
+Users with at least the Developer role can edit milestones.
 
 To edit a milestone:
 
@@ -155,23 +143,18 @@ There are also tabs below these that show the following:
   - Completed Issues (closed)
 - **Merge Requests**: Shows all merge requests assigned to the milestone. These are displayed in four columns named:
   - Work in progress (open and unassigned)
-  - Waiting for merge (open and unassigned)
+  - Waiting for merge (open and assigned)
   - Rejected (closed)
   - Merged
 - **Participants**: Shows all assignees of issues assigned to the milestone.
 - **Labels**: Shows all labels that are used in issues assigned to the milestone.
 
-### Project Burndown Charts
+### Burndown Charts
 
-For project milestones, a [burndown chart](burndown_and_burnup_charts.md) is in the milestone view,
+The milestone view contains a [burndown and burnup chart](burndown_and_burnup_charts.md),
 showing the progress of completing a milestone.
 
-![burndown chart](img/burndown_chart_v13_6.png)
-
-### Group Burndown Charts
-
-For group milestones, a [burndown chart](burndown_and_burnup_charts.md) is in the milestone view,
-showing the progress of completing a milestone.
+![burndown chart](img/burndown_and_burnup_charts_v13_6.png)
 
 ### Milestone sidebar
 

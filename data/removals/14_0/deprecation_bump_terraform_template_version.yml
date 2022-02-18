@@ -1,8 +1,9 @@
-- name: "New Terraform template version"
+- name: "Terraform template version"
   removal_date: "2021-06-22"
   removal_milestone: "14.0" # example
   issue_url: ""
   reporter: nagyv-gitlab
+  breaking_change: true
   body: |
     As we continuously [develop GitLab's Terraform integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/325312), to minimize customer disruption, we maintain two GitLab CI/CD templates for Terraform:
 

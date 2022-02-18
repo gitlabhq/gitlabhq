@@ -1,8 +1,0 @@
----
-name: packages_installable_package_files
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76767
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348677
-milestone: '14.6'
-type: development
-group: group::package
-default_enabled: true

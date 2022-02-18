@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { setHTMLFixture } from 'helpers/fixtures';
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 
@@ -10,7 +11,7 @@ describe('RecentSearchesRoot', () => {
     let vm;
     let containerEl;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       setHTMLFixture(`
         <div id="${containerId}">
           <div id="${dropdownElementId}"></div>
@@ -33,7 +34,7 @@ describe('RecentSearchesRoot', () => {
       RecentSearchesRoot.prototype.render.call(recentSearchesRootMockInstance);
       vm = recentSearchesRootMockInstance.vm;
 
-      return vm.$nextTick();
+      await nextTick();
     });
 
     afterEach(() => {

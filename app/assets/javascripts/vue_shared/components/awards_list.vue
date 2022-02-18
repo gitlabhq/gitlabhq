@@ -75,6 +75,9 @@ export default {
       return this.noteAuthorId === this.currentUserId;
     },
   },
+  mounted() {
+    this.virtualScrollerItem = this.$el.closest('.vue-recycle-scroller__item-view');
+  },
   methods: {
     getAwardClassBindings(awardList) {
       return {
@@ -162,6 +165,10 @@ export default {
     },
     setIsMenuOpen(menuOpen) {
       this.isMenuOpen = menuOpen;
+
+      if (this.virtualScrollerItem) {
+        this.virtualScrollerItem.style.zIndex = this.isMenuOpen ? 1 : null;
+      }
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },

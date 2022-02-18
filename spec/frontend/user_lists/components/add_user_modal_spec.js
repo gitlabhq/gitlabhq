@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import AddUserModal from '~/user_lists/components/add_user_modal.vue';
 
 describe('Add User Modal', () => {
@@ -30,7 +31,7 @@ describe('Add User Modal', () => {
 
     it('should clear the input after emitting', async () => {
       click('confirm-add-user-ids');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find('#add-user-ids').element.value).toBe('');
     });
@@ -42,7 +43,7 @@ describe('Add User Modal', () => {
 
     it('should clear the input after cancelling', async () => {
       click('cancel-add-user-ids');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find('#add-user-ids').element.value).toBe('');
     });

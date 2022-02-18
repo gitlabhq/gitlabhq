@@ -24,6 +24,10 @@ export default {
     prop: 'selectedGroup',
   },
   props: {
+    accessLevels: {
+      type: Object,
+      required: true,
+    },
     groupsFilter: {
       type: String,
       required: false,
@@ -33,6 +37,10 @@ export default {
       type: Number,
       required: false,
       default: null,
+    },
+    invalidGroups: {
+      type: Array,
+      required: true,
     },
   },
   data() {
@@ -50,6 +58,13 @@ export default {
     isFetchResultEmpty() {
       return this.groups.length === 0;
     },
+    defaultFetchOptions() {
+      return {
+        exclude_internal: true,
+        active: true,
+        min_access_level: this.accessLevels.Guest,
+      };
+    },
   },
   watch: {
     searchTerm() {
@@ -64,18 +79,26 @@ export default {
       this.isFetching = true;
       return this.fetchGroups()
         .then((response) => {
-          this.groups = response.map((group) => ({
-            id: group.id,
-            name: group.full_name,
-            path: group.path,
-            avatarUrl: group.avatar_url,
-          }));
+          this.groups = this.processGroups(response);
           this.isFetching = false;
         })
         .catch(() => {
           this.isFetching = false;
         });
     }, SEARCH_DELAY),
+    processGroups(response) {
+      const rawGroups = response.map((group) => ({
+        id: group.id,
+        name: group.full_name,
+        path: group.path,
+        avatarUrl: group.avatar_url,
+      }));
+
+      return this.filterOutInvalidGroups(rawGroups);
+    },
+    filterOutInvalidGroups(groups) {
+      return groups.filter((group) => this.invalidGroups.indexOf(group.id) === -1);
+    },
     selectGroup(group) {
       this.selectedGroup = group;
 
@@ -84,13 +107,9 @@ export default {
     fetchGroups() {
       switch (this.groupsFilter) {
         case GROUP_FILTERS.DESCENDANT_GROUPS:
-          return getDescendentGroups(
-            this.parentGroupId,
-            this.searchTerm,
-            this.$options.defaultFetchOptions,
-          );
+          return getDescendentGroups(this.parentGroupId, this.searchTerm, this.defaultFetchOptions);
         default:
-          return getGroups(this.searchTerm, this.$options.defaultFetchOptions);
+          return getGroups(this.searchTerm, this.defaultFetchOptions);
       }
     },
   },
@@ -98,10 +117,6 @@ export default {
     dropdownText: s__('GroupSelect|Select a group'),
     searchPlaceholder: s__('GroupSelect|Search groups'),
     emptySearchResult: s__('GroupSelect|No matching results'),
-  },
-  defaultFetchOptions: {
-    exclude_internal: true,
-    active: true,
   },
 };
 </script>

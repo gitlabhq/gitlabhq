@@ -1,0 +1,21 @@
+---
+data_category: optional
+key_path: counts.web_ide_previews_success
+description: Count of Live Preview tab successful initializations in the Web IDE
+product_section: dev
+product_stage: create
+product_group: group::editor
+product_category: web_ide
+value_type: number
+status: active
+time_frame: all
+data_source: redis
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate
+performance_indicator_type: []
+milestone: "14.8"

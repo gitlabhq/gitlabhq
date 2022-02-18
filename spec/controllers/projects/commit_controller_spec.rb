@@ -183,6 +183,18 @@ RSpec.describe Projects::CommitController do
       expect(assigns(:tags)).to eq([])
       expect(assigns(:tags_limit_exceeded)).to be_truthy
     end
+
+    context 'when commit is not found' do
+      it 'responds with 404' do
+        get(:branches, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: '11111111111111111111111111111111111111'
+        })
+
+        expect(response).to be_not_found
+      end
+    end
   end
 
   describe 'POST revert' do

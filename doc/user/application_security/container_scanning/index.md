@@ -222,6 +222,7 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 | `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. | All |
+| `CS_IGNORE_UNFIXED`            | `"false"`     | Ignore vulnerabilities that are not fixed. | All |
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are Unknown, Low, Medium, High, and Critical. | Trivy |
 | `DOCKER_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
@@ -513,7 +514,7 @@ registry.gitlab.com/security-products/container-scanning/trivy:4
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Please consult your IT staff to find an accepted and approved
 process by which you can import or temporarily access external resources. These scanners
-are [periodically updated](../vulnerabilities/index.md#vulnerability-scanner-maintenance),
+are [periodically updated](../index.md#vulnerability-scanner-maintenance),
 and you may be able to make occasional updates on your own.
 
 For more information, see [the specific steps on how to update an image with a pipeline](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
@@ -728,8 +729,16 @@ the security vulnerabilities in your groups, projects and pipelines.
 
 ## Vulnerabilities database update
 
-If you use container scanning and want more information about the vulnerabilities database update,
-see the [maintenance table](../vulnerabilities/index.md#vulnerability-scanner-maintenance).
+All analyzer images are [updated daily](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/README.md#image-updates).
+
+The images include the latest advisory database available for their respective scanner. Each
+scanner includes data from multiple sources:
+
+- [Grype](https://github.com/anchore/grype#grypes-database).
+- [Trivy](https://aquasecurity.github.io/trivy/latest/vulnerability/detection/data-source/).
+
+Database update information for other analyzers is available in the
+[maintenance table](../index.md#vulnerability-scanner-maintenance).
 
 ## Interacting with the vulnerabilities
 

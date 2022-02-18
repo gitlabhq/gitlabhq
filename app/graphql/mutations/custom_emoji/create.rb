@@ -3,9 +3,9 @@
 module Mutations
   module CustomEmoji
     class Create < BaseMutation
-      include Mutations::ResolvesGroup
-
       graphql_name 'CreateCustomEmoji'
+
+      include Mutations::ResolvesGroup
 
       authorize :create_custom_emoji
 

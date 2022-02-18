@@ -78,7 +78,11 @@ module Gitlab
         # All tables from `information_schema.` are `:gitlab_shared`
         return :gitlab_shared if schema_name == 'information_schema'
 
-        # All tables that start with `_test_` are shared and ignored
+        return :gitlab_main if table_name.start_with?('_test_gitlab_main_')
+
+        return :gitlab_ci if table_name.start_with?('_test_gitlab_ci_')
+
+        # All tables that start with `_test_` without a following schema are shared and ignored
         return :gitlab_shared if table_name.start_with?('_test_')
 
         # All `pg_` tables are marked as `shared`

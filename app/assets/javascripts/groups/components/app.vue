@@ -41,6 +41,7 @@ export default {
   },
   data() {
     return {
+      isModalVisible: false,
       isLoading: true,
       isSearchEmpty: false,
       searchEmptyMessage: '',
@@ -101,6 +102,12 @@ export default {
     eventHub.$off(`${this.action}updateGroups`, this.updateGroups);
   },
   methods: {
+    hideModal() {
+      this.isModalVisible = false;
+    },
+    showModal() {
+      this.isModalVisible = true;
+    },
     fetchGroups({ parentId, page, filterGroupsBy, sortBy, archived, updatePagination }) {
       return this.service
         .getGroups(parentId, page, filterGroupsBy, sortBy, archived)
@@ -185,6 +192,7 @@ export default {
     showLeaveGroupModal(group, parentGroup) {
       this.targetGroup = group;
       this.targetParentGroup = parentGroup;
+      this.showModal();
     },
     leaveGroup() {
       this.targetGroup.isBeingRemoved = true;
@@ -256,10 +264,12 @@ export default {
     />
     <gl-modal
       modal-id="leave-group-modal"
+      :visible="isModalVisible"
       :title="__('Are you sure?')"
       :action-primary="primaryProps"
       :action-cancel="cancelProps"
       @primary="leaveGroup"
+      @hide="hideModal"
     >
       {{ groupLeaveConfirmationMessage }}
     </gl-modal>

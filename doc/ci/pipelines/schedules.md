@@ -17,7 +17,9 @@ Pipeline schedules can be used to also run [pipelines](index.md) at specific int
 - Every other Sunday at 0900 hours (cron example: `0 9 * * sun%2`).
 - Once every day (cron example: `0 0 * * *`).
 
-Schedule timing is configured with cron notation, parsed by [Fugit](https://github.com/floraison/fugit).
+Schedule timing is configured with [cron notation](../../topics/cron/index.md).
+You can use any cron value, but scheduled pipelines cannot run more frequently
+than the instance's [maximum frequency for scheduled pipelines](#advanced-configuration).
 
 In addition to using the GitLab UI, pipeline schedules can be maintained using the
 [Pipeline schedules API](../../api/pipeline_schedules.md).
@@ -82,20 +84,24 @@ job:
 
 ### Advanced configuration **(FREE SELF)**
 
-The pipelines are not executed exactly on schedule because schedules are handled by
-Sidekiq, which runs according to its interval.
+Scheduled pipelines can be configured with any [cron value](../../topics/cron/index.md),
+but they do not always run exactly when scheduled. An internal process, called the
+_pipeline schedule worker_, queues all the scheduled pipelines, but does not
+run continuously. The worker runs on its own schedule, and scheduled pipelines that
+are ready to start are only queued the next time the worker runs. Scheduled pipelines
+can't run more frequently than the worker.
 
-For example, only two pipelines are created per day if:
+The default frequency of the pipeline schedule worker is `3-59/10 * * * *` (every ten minutes,
+starting with `0:03`, `0:13`, `0:23`, and so on). The default frequency for GitLab.com
+is listed in the [GitLab.com settings](../../user/gitlab_com/index.md#gitlab-cicd).
 
-- You set a schedule to create a pipeline every minute (`* * * * *`).
-- The Sidekiq worker runs on 00:00 and 12:00 every day (`0 */12 * * *`).
-
-To change the Sidekiq worker's frequency:
+To change the frequency of the pipeline schedule worker:
 
 1. Edit the `gitlab_rails['pipeline_schedule_worker_cron']` value in your instance's `gitlab.rb` file.
 1. [Reconfigure GitLab](../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-For GitLab.com, refer to the [dedicated settings page](../../user/gitlab_com/index.md#gitlab-cicd).
+For example, to set the maximum frequency of pipelines to twice a day, set `pipeline_schedule_worker_cron`
+to a cron value of `0 */12 * * *` (`00:00` and `12:00` every day).
 
 ## Working with scheduled pipelines
 

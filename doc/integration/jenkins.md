@@ -44,7 +44,7 @@ Grant a GitLab user access to the relevant GitLab projects.
 1. Grant the user permission to the GitLab projects.
 
    If you're integrating Jenkins with many GitLab projects, consider granting the
-   user the administrator access level. Otherwise, add the user to each project
+   user administrator access. Otherwise, add the user to each project
    and grant the Developer role.
 
 ## Grant Jenkins access to the GitLab API
@@ -137,6 +137,7 @@ than the [webhook integration](#configure-a-webhook).
    - Merge request
    - Tag push
 1. Enter the **Jenkins server URL**.
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/overview.md#ssl-verification).
 1. Enter the **Project name**.
 
    The project name should be URL-friendly, where spaces are replaced with underscores. To ensure

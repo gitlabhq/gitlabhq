@@ -180,9 +180,6 @@ module Gitlab
     class GrapeFormatter
       # Convert an object to JSON.
       #
-      # This will default to the built-in Grape formatter if either :oj_json or :grape_gitlab_json
-      # flags are disabled.
-      #
       # The `env` param is ignored because it's not needed in either our formatter or Grape's,
       # but it is passed through for consistency.
       #
@@ -194,11 +191,7 @@ module Gitlab
       def self.call(object, env = nil)
         return object.to_s if object.is_a?(PrecompiledJson)
 
-        if Feature.enabled?(:grape_gitlab_json, default_enabled: true)
-          Gitlab::Json.dump(object)
-        else
-          Grape::Formatter::Json.call(object, env)
-        end
+        Gitlab::Json.dump(object)
       end
     end
 
@@ -248,8 +241,6 @@ module Gitlab
       # @return [String]
       # @raise [LimitExceeded] if the resulting json string is bigger than the specified limit
       def self.encode(object, limit: 25.megabytes)
-        return ::Gitlab::Json.dump(object) unless Feature.enabled?(:json_limited_encoder)
-
         buffer = StringIO.new
         buffer_size = 0
 

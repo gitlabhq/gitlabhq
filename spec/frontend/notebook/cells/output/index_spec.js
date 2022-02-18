@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import json from 'test_fixtures/blob/notebook/basic.json';
 import CodeComponent from '~/notebook/cells/output/index.vue';
 
@@ -18,13 +18,11 @@ describe('Output component', () => {
   };
 
   describe('text output', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       const textType = json.cells[2];
       createComponent(textType.outputs[0]);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('renders as plain text', () => {
@@ -37,13 +35,11 @@ describe('Output component', () => {
   });
 
   describe('image output', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       const imageType = json.cells[3];
       createComponent(imageType.outputs[0]);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('renders as an image', () => {
@@ -86,13 +82,11 @@ describe('Output component', () => {
   });
 
   describe('svg output', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       const svgType = json.cells[5];
       createComponent(svgType.outputs[0]);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('renders as an svg', () => {
@@ -101,13 +95,11 @@ describe('Output component', () => {
   });
 
   describe('default to plain text', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       const unknownType = json.cells[6];
       createComponent(unknownType.outputs[0]);
 
-      setImmediate(() => {
-        done();
-      });
+      return nextTick();
     });
 
     it('renders as plain text', () => {
@@ -119,16 +111,14 @@ describe('Output component', () => {
       expect(vm.$el.querySelector('.prompt span')).not.toBeNull();
     });
 
-    it("renders as plain text when doesn't recognise other types", (done) => {
+    it("renders as plain text when doesn't recognise other types", async () => {
       const unknownType = json.cells[7];
       createComponent(unknownType.outputs[0]);
 
-      setImmediate(() => {
-        expect(vm.$el.querySelector('pre')).not.toBeNull();
-        expect(vm.$el.textContent.trim()).toContain('testing');
+      await nextTick();
 
-        done();
-      });
+      expect(vm.$el.querySelector('pre')).not.toBeNull();
+      expect(vm.$el.textContent.trim()).toContain('testing');
     });
   });
 });

@@ -1,4 +1,5 @@
 import { merge } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 import {
   trackFreeTrialAccountSubmissions,
   trackNewRegistrations,
@@ -8,11 +9,14 @@ import {
   trackSaasTrialProject,
   trackSaasTrialProjectImport,
   trackSaasTrialGetStarted,
+  trackCheckout,
+  trackTransaction,
 } from '~/google_tag_manager';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { logError } from '~/lib/logger';
 
 jest.mock('~/lib/logger');
+jest.mock('uuid');
 
 describe('~/google_tag_manager/index', () => {
   let spy;
@@ -208,6 +212,180 @@ describe('~/google_tag_manager/index', () => {
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith({ event: 'saasTrialSubmit' });
       expect(logError).not.toHaveBeenCalled();
+    });
+
+    describe('when trackCheckout is invoked', () => {
+      it('with selectedPlan: 2c92a00d76f0d5060176f2fb0a5029ff', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCheckout('2c92a00d76f0d5060176f2fb0a5029ff', 1);
+
+        expect(spy.mock.calls.flatMap((x) => x)).toEqual([
+          { ecommerce: null },
+          {
+            event: 'EECCheckout',
+            ecommerce: {
+              currencyCode: 'USD',
+              checkout: {
+                actionField: { step: 1 },
+                products: [
+                  {
+                    brand: 'GitLab',
+                    category: 'DevOps',
+                    id: '0002',
+                    name: 'Premium',
+                    price: '228',
+                    quantity: 1,
+                    variant: 'SaaS',
+                  },
+                ],
+              },
+            },
+          },
+        ]);
+      });
+
+      it('with selectedPlan: 2c92a0ff76f0d5250176f2f8c86f305a', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCheckout('2c92a0ff76f0d5250176f2f8c86f305a', 1);
+
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledWith({ ecommerce: null });
+        expect(spy).toHaveBeenCalledWith({
+          event: 'EECCheckout',
+          ecommerce: {
+            currencyCode: 'USD',
+            checkout: {
+              actionField: { step: 1 },
+              products: [
+                {
+                  brand: 'GitLab',
+                  category: 'DevOps',
+                  id: '0001',
+                  name: 'Ultimate',
+                  price: '1188',
+                  quantity: 1,
+                  variant: 'SaaS',
+                },
+              ],
+            },
+          },
+        });
+      });
+
+      it('with selectedPlan: Something else', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCheckout('Something else', 1);
+
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it('with a different number of users', () => {
+        expect(spy).not.toHaveBeenCalled();
+
+        trackCheckout('2c92a0ff76f0d5250176f2f8c86f305a', 5);
+
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledWith({ ecommerce: null });
+        expect(spy).toHaveBeenCalledWith({
+          event: 'EECCheckout',
+          ecommerce: {
+            currencyCode: 'USD',
+            checkout: {
+              actionField: { step: 1 },
+              products: [
+                {
+                  brand: 'GitLab',
+                  category: 'DevOps',
+                  id: '0001',
+                  name: 'Ultimate',
+                  price: '1188',
+                  quantity: 5,
+                  variant: 'SaaS',
+                },
+              ],
+            },
+          },
+        });
+      });
+    });
+
+    describe('when trackTransactions is invoked', () => {
+      describe.each([
+        {
+          selectedPlan: '2c92a00d76f0d5060176f2fb0a5029ff',
+          revenue: 228,
+          name: 'Premium',
+          id: '0002',
+        },
+        {
+          selectedPlan: '2c92a0ff76f0d5250176f2f8c86f305a',
+          revenue: 1188,
+          name: 'Ultimate',
+          id: '0001',
+        },
+      ])('with %o', (planObject) => {
+        it('invokes pushes a new event that references the selected plan', () => {
+          const { selectedPlan, revenue, name, id } = planObject;
+
+          expect(spy).not.toHaveBeenCalled();
+          uuidv4.mockImplementationOnce(() => '123');
+
+          const transactionDetails = {
+            paymentOption: 'visa',
+            revenue,
+            tax: 10,
+            selectedPlan,
+            quantity: 1,
+          };
+
+          trackTransaction(transactionDetails);
+
+          expect(spy.mock.calls.flatMap((x) => x)).toEqual([
+            { ecommerce: null },
+            {
+              event: 'EECtransactionSuccess',
+              ecommerce: {
+                currencyCode: 'USD',
+                purchase: {
+                  actionField: {
+                    id: '123',
+                    affiliation: 'GitLab',
+                    option: 'visa',
+                    revenue: revenue.toString(),
+                    tax: '10',
+                  },
+                  products: [
+                    {
+                      brand: 'GitLab',
+                      category: 'DevOps',
+                      id,
+                      name,
+                      price: revenue.toString(),
+                      quantity: 1,
+                      variant: 'SaaS',
+                    },
+                  ],
+                },
+              },
+            },
+          ]);
+        });
+      });
+    });
+
+    describe('when trackTransaction is invoked', () => {
+      describe('with an invalid plan object', () => {
+        it('does not get called', () => {
+          expect(spy).not.toHaveBeenCalled();
+
+          trackTransaction({ selectedPlan: 'notAplan' });
+
+          expect(spy).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 

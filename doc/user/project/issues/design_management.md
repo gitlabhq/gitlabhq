@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Design Management **(FREE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in GitLab Premium 12.2.
-> - Support for SVGs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12771) in GitLab Premium 12.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in GitLab 12.2.
+> - Support for SVGs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12771) in GitLab 12.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) from GitLab Premium to GitLab Free in 13.0.
 
 Design Management allows you to upload design assets (including wireframes and mockups)
 to GitLab issues and keep them stored in a single place, accessed by the Design
@@ -84,10 +84,10 @@ You can find to the **Design Management** section in the issue description:
 
 ## Adding designs
 
-> - Drag and drop uploads [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab Premium 12.9.
-> - New version creation on upload [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab Premium 12.9.
+> - Drag and drop uploads [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab 12.9.
+> - New version creation on upload [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab 12.9.
 > - Copy and paste uploads [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634) in GitLab 12.10.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) from GitLab Premium to GitLab Free in 13.0.
 
 To upload Design images, drag files from your computer and drop them in the Design Management section,
 or select **click to upload** to select images from your file browser:
@@ -142,9 +142,9 @@ to help summarize changes between versions.
 
 ### Exploring designs by zooming
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13217) in GitLab Premium 12.7.
-> - Drag to move a zoomed image [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197324) in GitLab 12.10.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13217) in GitLab 12.7.
+> - Ability to drag a zoomed image to move it [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197324) in GitLab 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) from GitLab Premium to GitLab Free in 13.0.
 
 Designs can be explored in greater detail by zooming in and out of the image.
 Control the amount of zoom with the `+` and `-` buttons at the bottom of the image.
@@ -155,8 +155,8 @@ While zoomed in, you can drag the image to move around it.
 
 ## Deleting designs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11089) in GitLab Premium 12.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11089) in GitLab 12.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) from GitLab Premium to GitLab Free in 13.0.
 
 There are two ways to delete designs: manually delete them
 individually, or select a few of them to delete at once,
@@ -190,8 +190,8 @@ You can change the order of designs by dragging them to a new position.
 
 ## Starting discussions on designs
 
-> - Adjusting a pin's position [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab Premium 12.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
+> - Adjusting a pin's position [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) adjusting a pin's position in GitLab 12.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) from GitLab Premium to GitLab Free in 13.0.
 
 When a design is uploaded, you can start a discussion by selecting
 the image on the exact location you would like the discussion to be focused on.

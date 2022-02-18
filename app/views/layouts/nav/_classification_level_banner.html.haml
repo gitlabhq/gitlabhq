@@ -1,5 +1,3 @@
 - if ::Gitlab::ExternalAuthorization.enabled? && @project
   = content_for :header_content do
-    %span.badge.color-label.gl-bg-red-500.has-tooltip{ title: s_('ExternalAuthorizationService|Classification label') }
-      = sprite_icon('lock-open', size: 8, css_class: 'inline')
-      = @project.external_authorization_classification_label
+    = gl_badge_tag(@project.external_authorization_classification_label, { variant: :danger, icon: 'lock-open' }, { class: 'has-tooltip', title: s_('ExternalAuthorizationService|Classification label') })

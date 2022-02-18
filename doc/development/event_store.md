@@ -185,7 +185,7 @@ Changes to the schema require multiple rollouts. While the new version is being 
 - Events get persisted in the Sidekiq queue as job arguments, so we could have 2 versions of the schema during deployments.
 
 As changing the schema ultimately impacts the Sidekiq arguments, please refer to our
-[Sidekiq style guide](sidekiq_style_guide.md#changing-the-arguments-for-a-worker) with regards to multiple rollouts.
+[Sidekiq style guide](sidekiq/compatibility_across_updates.md#changing-the-arguments-for-a-worker) with regards to multiple rollouts.
 
 #### Add properties
 
@@ -232,7 +232,6 @@ the event safely via the `handle_event` method. For example:
 ```ruby
 module MergeRequests
   class UpdateHeadPipelineWorker
-    include ApplicationWorker
     include Gitlab::EventStore::Subscriber
 
     def handle_event(event)
@@ -252,18 +251,19 @@ add a line like this to the `Gitlab::EventStore.configure!` method:
 ```ruby
 module Gitlab
   module EventStore
-    def self.configure!
-      Store.new.tap do |store|
-        # ...
+    def self.configure!(store)
+      # ...
 
-        store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
+      store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
 
-        # ...
-      end
+      # ...
     end
   end
 end
 ```
+
+A worker that is only defined in the EE codebase can subscribe to an event in the same way by 
+declaring the subscription in `ee/lib/ee/gitlab/event_store.rb`.
 
 Subscriptions are stored in memory when the Rails app is loaded and they are immediately frozen.
 It's not possible to modify subscriptions at runtime.
@@ -274,7 +274,7 @@ A subscription can specify a condition when to accept an event:
 
 ```ruby
 store.subscribe ::MergeRequests::UpdateHeadPipelineWorker,
-  to: ::Ci::PipelineCreatedEvent, 
+  to: ::Ci::PipelineCreatedEvent,
   if: -> (event) { event.data[:merge_request_id].present? }
 ```
 

@@ -111,6 +111,9 @@ export default {
     canCancel() {
       return !this.registered && !this.registering && this.isAgentRegistrationModal;
     },
+    canRegister() {
+      return !this.registered && this.isAgentRegistrationModal;
+    },
     agentRegistrationCommand() {
       return generateAgentRegistrationCommand(this.agentToken, this.kasAddress);
     },
@@ -141,6 +144,9 @@ export default {
     },
     isAgentRegistrationModal() {
       return this.modalType === MODAL_TYPE_REGISTER;
+    },
+    isKasEnabledInEmptyStateModal() {
+      return this.isEmptyStateModal && !this.kasDisabled;
     },
   },
   methods: {
@@ -350,18 +356,18 @@ export default {
         <img :alt="i18n.altText" :src="emptyStateImage" height="100" />
       </div>
 
-      <p>
-        <gl-sprintf :message="i18n.modalBody">
+      <p v-if="kasDisabled">
+        <gl-sprintf :message="i18n.enableKasText">
           <template #link="{ content }">
-            <gl-link :href="$options.installAgentPath"> {{ content }}</gl-link>
+            <gl-link :href="$options.enableKasPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </p>
 
-      <p v-if="kasDisabled">
-        <gl-sprintf :message="i18n.enableKasText">
+      <p v-else>
+        <gl-sprintf :message="i18n.modalBody">
           <template #link="{ content }">
-            <gl-link :href="$options.enableKasPath"> {{ content }}</gl-link>
+            <gl-link :href="$options.installAgentPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </p>
@@ -380,7 +386,16 @@ export default {
       </gl-button>
 
       <gl-button
-        v-else-if="isAgentRegistrationModal"
+        v-if="canCancel"
+        :data-track-action="$options.EVENT_ACTIONS_CLICK"
+        :data-track-label="$options.EVENT_LABEL_MODAL"
+        data-track-property="cancel"
+        @click="closeModal"
+        >{{ i18n.cancel }}
+      </gl-button>
+
+      <gl-button
+        v-if="canRegister"
         :disabled="!nextButtonDisabled"
         variant="confirm"
         category="primary"
@@ -392,32 +407,21 @@ export default {
       </gl-button>
 
       <gl-button
-        v-if="canCancel"
-        :data-track-action="$options.EVENT_ACTIONS_CLICK"
-        :data-track-label="$options.EVENT_LABEL_MODAL"
-        data-track-property="cancel"
-        @click="closeModal"
-        >{{ i18n.cancel }}
-      </gl-button>
-
-      <gl-button
         v-if="isEmptyStateModal"
-        :href="repositoryPath"
-        variant="confirm"
-        category="secondary"
-        data-testid="agent-secondary-button"
-        >{{ i18n.secondaryButton }}
-      </gl-button>
-
-      <gl-button
-        v-if="isEmptyStateModal"
-        variant="confirm"
-        category="primary"
         :data-track-action="$options.EVENT_ACTIONS_CLICK"
         :data-track-label="$options.EVENT_LABEL_MODAL"
         data-track-property="done"
         @click="closeModal"
         >{{ i18n.done }}
+      </gl-button>
+
+      <gl-button
+        v-if="isKasEnabledInEmptyStateModal"
+        :href="repositoryPath"
+        variant="confirm"
+        category="primary"
+        data-testid="agent-primary-button"
+        >{{ i18n.primaryButton }}
       </gl-button>
     </template>
   </gl-modal>

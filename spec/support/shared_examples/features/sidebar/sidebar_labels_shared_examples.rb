@@ -54,7 +54,10 @@ RSpec.shared_examples 'labels sidebar widget' do
         end
 
         fill_in 'Search', with: 'Devel'
-        sleep 1
+        expect(page).to have_css('.labels-fetch-loading')
+        wait_for_all_requests
+
+        expect(page).to have_css('[data-testid="dropdown-content"] .gl-new-dropdown-item')
         expect(page.all(:css, '[data-testid="dropdown-content"] .gl-new-dropdown-item').length).to eq(1)
 
         find_field('Search').native.send_keys(:enter)

@@ -38,6 +38,7 @@ $monokai-cm: #75715e;
 $monokai-cp: #75715e;
 $monokai-c1: #75715e;
 $monokai-cs: #75715e;
+$monokai-cd: #75715e;
 $monokai-kc: #66d9ef;
 $monokai-kd: #66d9ef;
 $monokai-kn: #f92672;
@@ -169,8 +170,8 @@ $monokai-gh: #75715e;
       }
     }
 
-    .diff-grid-left:hover,
-    .diff-grid-right:hover,
+    &:not(.match) .diff-grid-left:hover,
+    &:not(.match) .diff-grid-right:hover,
     &.code-search-line:hover {
       .diff-line-num:not(.empty-cell) {
         @include line-number-hover;
@@ -240,6 +241,7 @@ $monokai-gh: #75715e;
   .cp { color: $monokai-cp; } /* Comment.Preproc */
   .c1 { color: $monokai-c1; } /* Comment.Single */
   .cs { color: $monokai-cs; } /* Comment.Special */
+  .cd { color: $monokai-cd; } /* Comment.Doc */
   .ge { font-style: italic; } /* Generic.Emph */
   .gs { font-weight: $gl-font-weight-bold; } /* Generic.Strong */
   .kc { color: $monokai-kc; } /* Keyword.Constant */

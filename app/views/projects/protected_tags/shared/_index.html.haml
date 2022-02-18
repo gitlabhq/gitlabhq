@@ -11,7 +11,7 @@
       =  link_to s_("ProtectedTag|What are protected tags?"), help_page_path("user/project/protected_tags")
   .settings-content
     %p
-      = s_("ProtectedTag|By default, protected branches restrict who can modify the tag.")
+      = s_("ProtectedTag|By default, protected tags restrict who can modify the tag.")
       = link_to s_("ProtectedTag|Learn more."), help_page_path("user/project/protected_tags", anchor: "who-can-modify-a-protected-tag")
 
     - if can? current_user, :admin_project, @project

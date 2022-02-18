@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createFlash from '~/flash';
@@ -93,29 +94,28 @@ describe('grafana integration component', () => {
         },
       ];
 
-      it('submits form on click', () => {
+      it('submits form on click', async () => {
         axios.patch.mockResolvedValue();
         findSubmitButton(wrapper).trigger('click');
 
         expect(axios.patch).toHaveBeenCalledWith(...endpointRequest);
-        return wrapper.vm.$nextTick().then(() => expect(refreshCurrentPage).toHaveBeenCalled());
+        await nextTick();
+        expect(refreshCurrentPage).toHaveBeenCalled();
       });
 
-      it('creates flash banner on error', () => {
+      it('creates flash banner on error', async () => {
         const message = 'mockErrorMessage';
         axios.patch.mockRejectedValue({ response: { data: { message } } });
 
         findSubmitButton().trigger('click');
 
         expect(axios.patch).toHaveBeenCalledWith(...endpointRequest);
-        return wrapper.vm
-          .$nextTick()
-          .then(jest.runAllTicks)
-          .then(() =>
-            expect(createFlash).toHaveBeenCalledWith({
-              message: `There was an error saving your changes. ${message}`,
-            }),
-          );
+
+        await nextTick();
+        await jest.runAllTicks();
+        expect(createFlash).toHaveBeenCalledWith({
+          message: `There was an error saving your changes. ${message}`,
+        });
       });
     });
   });

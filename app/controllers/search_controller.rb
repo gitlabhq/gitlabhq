@@ -144,6 +144,7 @@ class SearchController < ApplicationController
     payload[:metadata]['meta.search.filters.state'] = params[:state]
     payload[:metadata]['meta.search.force_search_results'] = params[:force_search_results]
     payload[:metadata]['meta.search.project_ids'] = params[:project_ids]
+    payload[:metadata]['meta.search.search_level'] = params[:search_level]
 
     if search_service.abuse_detected?
       payload[:metadata]['abuse.confidence'] = Gitlab::Abuse.confidence(:certain)

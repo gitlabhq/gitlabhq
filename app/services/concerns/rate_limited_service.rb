@@ -17,7 +17,7 @@ module RateLimitedService
     end
 
     def log_request(request, current_user)
-      rate_limiter.class.log_request(request, "#{key}_request_limit".to_sym, current_user)
+      rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
     end
 
     private
@@ -26,20 +26,19 @@ module RateLimitedService
   end
 
   class RateLimiterScopedAndKeyed
-    attr_reader :key, :opts, :rate_limiter_klass
+    attr_reader :key, :opts, :rate_limiter
 
-    def initialize(key:, opts:, rate_limiter_klass:)
+    def initialize(key:, opts:, rate_limiter:)
       @key = key
       @opts = opts
-      @rate_limiter_klass = rate_limiter_klass
+      @rate_limiter = rate_limiter
     end
 
     def rate_limit!(service)
       evaluated_scope = evaluated_scope_for(service)
       return if feature_flag_disabled?(evaluated_scope[:project])
 
-      rate_limiter = new_rate_limiter(evaluated_scope)
-      if rate_limiter.throttled?
+      if rate_limiter.throttled?(key, **opts.merge(scope: evaluated_scope.values, users_allowlist: users_allowlist))
         raise RateLimitedError.new(key: key, rate_limiter: rate_limiter), _('This endpoint has been requested too many times. Try again later.')
       end
     end
@@ -59,20 +58,16 @@ module RateLimitedService
     def feature_flag_disabled?(project)
       Feature.disabled?("rate_limited_service_#{key}", project, default_enabled: :yaml)
     end
-
-    def new_rate_limiter(evaluated_scope)
-      rate_limiter_klass.new(key, **opts.merge(scope: evaluated_scope.values, users_allowlist: users_allowlist))
-    end
   end
 
   prepended do
     attr_accessor :rate_limiter_bypassed
     cattr_accessor :rate_limiter_scoped_and_keyed
 
-    def self.rate_limit(key:, opts:, rate_limiter_klass: ::Gitlab::ApplicationRateLimiter)
+    def self.rate_limit(key:, opts:, rate_limiter: ::Gitlab::ApplicationRateLimiter)
       self.rate_limiter_scoped_and_keyed = RateLimiterScopedAndKeyed.new(key: key,
                                                                          opts: opts,
-                                                                         rate_limiter_klass: rate_limiter_klass)
+                                                                         rate_limiter: rate_limiter)
     end
   end
 

@@ -2,7 +2,9 @@
 
 .form-group
   %b= s_('ProjectSettings|Merge method')
-  %p.text-secondary= s_('ProjectSettings|Determine what happens to the commit history when you merge a merge request.')
+  %p.text-secondary
+    = s_('ProjectSettings|Determine what happens to the commit history when you merge a merge request.')
+    = link_to s_('ProjectSettings|Learn about commit history.'), help_page_path('user/project/merge_requests/commits.md'), target: '_blank', rel: 'noopener noreferrer'
   .form-check.mb-2
     = form.radio_button :merge_method, :merge, class: "js-merge-method-radio form-check-input"
     = label_tag :project_merge_method_merge, class: 'form-check-label' do
@@ -33,4 +35,4 @@
         = s_('ProjectSettings|When there is a merge conflict, the user is given the option to rebase.')
         %div
           = s_('ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts.')
-          = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/merge_trains.md', anchor: 'enable-merge-trains'), target: '_blank', rel: 'noopener noreferrer'
+          = link_to s_('ProjectSettings|What are merge trains?'), help_page_path('ci/pipelines/merge_trains.md', anchor: 'enable-merge-trains'), target: '_blank', rel: 'noopener noreferrer'

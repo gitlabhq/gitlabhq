@@ -1,11 +1,11 @@
 <script>
-import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import {
   COMMIT_ACTION_CREATE,
   COMMIT_ACTION_UPDATE,
   COMMIT_FAILURE,
   COMMIT_SUCCESS,
+  COMMIT_SUCCESS_WITH_REDIRECT,
 } from '../../constants';
 import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphql';
 import updateCurrentBranchMutation from '../../graphql/mutations/client/update_current_branch.mutation.graphql';
@@ -14,9 +14,6 @@ import updatePipelineEtag from '../../graphql/mutations/client/update_pipeline_e
 import getCurrentBranch from '../../graphql/queries/client/current_branch.query.graphql';
 
 import CommitForm from './commit_form.vue';
-
-const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
-const MR_TARGET_BRANCH = 'merge_request[target_branch]';
 
 export default {
   alertTexts: {
@@ -29,7 +26,7 @@ export default {
   components: {
     CommitForm,
   },
-  inject: ['projectFullPath', 'ciConfigPath', 'newMergeRequestPath'],
+  inject: ['projectFullPath', 'ciConfigPath'],
   props: {
     ciFileContent: {
       type: String,
@@ -74,16 +71,6 @@ export default {
     },
   },
   methods: {
-    redirectToNewMergeRequest(sourceBranch) {
-      const url = mergeUrlParams(
-        {
-          [MR_SOURCE_BRANCH]: sourceBranch,
-          [MR_TARGET_BRANCH]: this.currentBranch,
-        },
-        this.newMergeRequestPath,
-      );
-      redirectTo(url);
-    },
     async onCommitSubmit({ message, targetBranch, openMergeRequest }) {
       this.isSaving = true;
 
@@ -112,12 +99,25 @@ export default {
 
         if (errors?.length) {
           this.$emit('showError', { type: COMMIT_FAILURE, reasons: errors });
-        } else if (openMergeRequest) {
-          this.redirectToNewMergeRequest(targetBranch);
         } else {
-          this.$emit('commit', { type: COMMIT_SUCCESS });
+          const commitBranch = targetBranch;
+          const params = openMergeRequest
+            ? {
+                type: COMMIT_SUCCESS_WITH_REDIRECT,
+                params: {
+                  sourceBranch: commitBranch,
+                  targetBranch: this.currentBranch,
+                },
+              }
+            : { type: COMMIT_SUCCESS };
+
+          this.$emit('commit', {
+            ...params,
+          });
+
           this.updateLastCommitBranch(targetBranch);
           this.updateCurrentBranch(targetBranch);
+
           if (this.currentBranch === targetBranch) {
             this.$emit('updateCommitSha');
           }

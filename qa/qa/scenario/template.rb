@@ -32,6 +32,9 @@ module QA
         #   Given *gitlab_address* = 'http://gitlab-abc123.test/' #=> http://about.gitlab-abc123.test/
         Runtime::Scenario.define(:about_address, URI(-> { gitlab_address.host = "about.#{gitlab_address.host}"; gitlab_address }.call).to_s) # rubocop:disable Style/Semicolon
 
+        # Save the scenario class name
+        Runtime::Scenario.define(:klass, self.class.name)
+
         ##
         # Setup knapsack and download latest report
         #

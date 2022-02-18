@@ -89,7 +89,7 @@ Example responses:
 
 The CI lint returns an expanded version of the configuration. The expansion does not
 work for CI configuration added with [`include: local`](../ci/yaml/index.md#includelocal),
-or with [`extends:`](../ci/yaml/index.md#extends).
+and the [`extends:`](../ci/yaml/index.md#extends) keyword is [not fully supported](https://gitlab.com/gitlab-org/gitlab/-/issues/258843).
 
 Example contents of a `.gitlab-ci.yml` passed to the CI Lint API with
 `include_merged_yaml` and `include_jobs` set as true:
@@ -169,8 +169,9 @@ POST /projects/:id/ci/lint
 | Attribute  | Type    | Required | Description |
 | ---------- | ------- | -------- | -------- |
 | `content`  | string  | yes      | The CI/CD configuration content. |
-| `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#pipeline-simulation), or only do static check. This is false by default. |
+| `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#simulate-a-pipeline), or only do static check. This is false by default. |
 | `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
+| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
 
 Example request:
 
@@ -220,6 +221,7 @@ GET /projects/:id/ci/lint
 | ---------- | ------- | -------- | -------- |
 | `dry_run`  | boolean | no       | Run pipeline creation simulation, or only do static check. |
 | `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
+| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
 
 Example request:
 

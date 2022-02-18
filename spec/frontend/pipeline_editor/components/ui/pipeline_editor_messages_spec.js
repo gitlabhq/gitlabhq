@@ -8,6 +8,7 @@ import PipelineEditorMessages from '~/pipeline_editor/components/ui/pipeline_edi
 import {
   COMMIT_FAILURE,
   COMMIT_SUCCESS,
+  COMMIT_SUCCESS_WITH_REDIRECT,
   DEFAULT_FAILURE,
   DEFAULT_SUCCESS,
   LOAD_FAILURE_UNKNOWN,
@@ -34,7 +35,13 @@ describe('Pipeline Editor messages', () => {
     it('shows a message for successful commit type', () => {
       createComponent({ successType: COMMIT_SUCCESS, showSuccess: true });
 
-      expect(findAlert().text()).toBe(wrapper.vm.$options.successTexts[COMMIT_SUCCESS]);
+      expect(findAlert().text()).toBe(wrapper.vm.$options.success[COMMIT_SUCCESS]);
+    });
+
+    it('shows a message for successful commit with redirect type', () => {
+      createComponent({ successType: COMMIT_SUCCESS_WITH_REDIRECT, showSuccess: true });
+
+      expect(findAlert().text()).toBe(wrapper.vm.$options.success[COMMIT_SUCCESS_WITH_REDIRECT]);
     });
 
     it('does not show alert when there is a successType but visibility is off', () => {
@@ -46,7 +53,7 @@ describe('Pipeline Editor messages', () => {
     it('shows a success alert with default copy if `showSuccess` is true and the `successType` is not valid,', () => {
       createComponent({ successType: 'random', showSuccess: true });
 
-      expect(findAlert().text()).toBe(wrapper.vm.$options.successTexts[DEFAULT_SUCCESS]);
+      expect(findAlert().text()).toBe(wrapper.vm.$options.success[DEFAULT_SUCCESS]);
     });
 
     it('emit `hide-success` event when clicking on the dismiss button', async () => {
@@ -71,7 +78,7 @@ describe('Pipeline Editor messages', () => {
     `('shows a message for $message', ({ failureType, expectedFailureType }) => {
       createComponent({ failureType, showFailure: true });
 
-      expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts[expectedFailureType]);
+      expect(findAlert().text()).toBe(wrapper.vm.$options.errors[expectedFailureType]);
     });
 
     it('show failure reasons when there are some', () => {

@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DurationBadge from '~/jobs/components/log/duration_badge.vue';
 import LineHeader from '~/jobs/components/log/line_header.vue';
 import LineNumber from '~/jobs/components/log/line_number.vue';
@@ -75,12 +76,11 @@ describe('Job Log Header Line', () => {
       createComponent(data);
     });
 
-    it('emits toggleLine event', () => {
+    it('emits toggleLine event', async () => {
       wrapper.trigger('click');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().toggleLine.length).toBe(1);
-      });
+      await nextTick();
+      expect(wrapper.emitted().toggleLine.length).toBe(1);
     });
   });
 

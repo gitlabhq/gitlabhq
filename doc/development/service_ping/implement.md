@@ -793,6 +793,8 @@ The Service Ping JSON payload for GitLab.com is shared in the
 You may also use the [Service Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs.
 The dashboard allows filtering by GitLab version, by "Self-managed" and "SaaS", and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you can re-optimize your metric.
 
+Use [Metrics Dictionary](https://metrics.gitlab.com/) [copy query to clipboard feature](https://www.youtube.com/watch?v=n4o65ivta48&list=PL05JrBw4t0Krg3mbR6chU7pXtMt_es6Pb) to get a query ready to run in Sisense for a specific metric.
+
 ## Set up and test Service Ping locally
 
 To set up Service Ping locally, you must:

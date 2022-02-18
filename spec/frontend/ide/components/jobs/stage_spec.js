@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Item from '~/ide/components/jobs/item.vue';
 import Stage from '~/ide/components/jobs/stage.vue';
 import { stages, jobs } from '../../mock_data';
@@ -47,23 +48,21 @@ describe('IDE pipeline stage', () => {
     expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('emits toggleCollaped event with stage id when clicking header', () => {
+  it('emits toggleCollaped event with stage id when clicking header', async () => {
     const id = 5;
     createComponent({ stage: { ...defaultProps.stage, id } });
     findHeader().trigger('click');
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().toggleCollapsed[0][0]).toBe(id);
-    });
+    await nextTick();
+    expect(wrapper.emitted().toggleCollapsed[0][0]).toBe(id);
   });
 
-  it('emits clickViewLog entity with job', () => {
+  it('emits clickViewLog entity with job', async () => {
     const [job] = defaultProps.stage.jobs;
     createComponent();
     wrapper.findAll(Item).at(0).vm.$emit('clickViewLog', job);
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().clickViewLog[0][0]).toBe(job);
-    });
+    await nextTick();
+    expect(wrapper.emitted().clickViewLog[0][0]).toBe(job);
   });
 
   it('renders stage details & icon', () => {

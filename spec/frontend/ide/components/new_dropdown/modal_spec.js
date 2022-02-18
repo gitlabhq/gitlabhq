@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import createFlash from '~/flash';
 import modal from '~/ide/components/new_dropdown/modal.vue';
@@ -19,14 +19,14 @@ describe('new file modal component', () => {
     ${'tree'} | ${'Create new directory'} | ${'Create directory'} | ${false}
     ${'blob'} | ${'Create new file'}      | ${'Create file'}      | ${true}
   `('$entryType', ({ entryType, modalTitle, btnTitle, showsFileTemplates }) => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       const store = createStore();
 
       vm = createComponentWithStore(Component, store).$mount();
       vm.open(entryType);
       vm.name = 'testing';
 
-      vm.$nextTick(done);
+      await nextTick();
     });
 
     afterEach(() => {
@@ -71,16 +71,13 @@ describe('new file modal component', () => {
       ${'blob'} | ${'Rename file'}   | ${'Rename file'}
     `(
       'renders title and button for renaming $entryType',
-      ({ entryType, modalTitle, btnTitle }, done) => {
+      async ({ entryType, modalTitle, btnTitle }) => {
         vm.$store.state.entries['test-path'].type = entryType;
         vm.open('rename', 'test-path');
 
-        vm.$nextTick(() => {
-          expect(document.querySelector('.modal-title').textContent.trim()).toBe(modalTitle);
-          expect(document.querySelector('.btn-success').textContent.trim()).toBe(btnTitle);
-
-          done();
-        });
+        await nextTick();
+        expect(document.querySelector('.modal-title').textContent.trim()).toBe(modalTitle);
+        expect(document.querySelector('.btn-success').textContent.trim()).toBe(btnTitle);
       },
     );
 

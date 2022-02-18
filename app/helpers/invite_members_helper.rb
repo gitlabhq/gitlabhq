@@ -6,7 +6,7 @@ module InviteMembersHelper
   def can_invite_members_for_project?(project)
     # do not use the can_admin_project_member? helper here due to structure of the view and how membership_locked?
     # is leveraged for inviting groups
-    Feature.enabled?(:invite_members_group_modal, project.group) && can?(current_user, :admin_project_member, project)
+    Feature.enabled?(:invite_members_group_modal, project.group, default_enabled: :yaml) && can?(current_user, :admin_project_member, project)
   end
 
   def invite_accepted_notice(member)
@@ -21,11 +21,28 @@ module InviteMembersHelper
   end
 
   def group_select_data(group)
+    # This should only be used for groups to load the invite group modal.
+    # For instance the invite groups modal should not call this from a project scope
+    # this is only to be called in scope of a group context as noted in this thread
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79036#note_821465513
+    # the group sharing in projects disabling is explained there as well
     if group.root_ancestor.namespace_settings.prevent_sharing_groups_outside_hierarchy
       { groups_filter: 'descendant_groups', parent_id: group.root_ancestor.id }
     else
       {}
     end
+  end
+
+  def common_invite_group_modal_data(source, member_class, is_project)
+    {
+      id: source.id,
+      name: source.name,
+      default_access_level: Gitlab::Access::GUEST,
+      invalid_groups: source.related_group_ids,
+      help_link: help_page_url('user/permissions'),
+      is_project: is_project,
+      access_levels: member_class.access_level_roles.to_json
+    }
   end
 
   def common_invite_modal_dataset(source)
@@ -69,3 +86,5 @@ module InviteMembersHelper
     projects.map { |project| { id: project.id, title: project.title } }
   end
 end
+
+InviteMembersHelper.prepend_mod_with('InviteMembersHelper')

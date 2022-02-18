@@ -49,17 +49,5 @@ RSpec.shared_examples 'a package with files' do
 
       expect(response_package_file_ids).not_to include(package_file_pending_destruction.to_global_id.to_s)
     end
-
-    context 'with packages_installable_package_files disabled' do
-      before(:context) do
-        stub_feature_flags(packages_installable_package_files: false)
-      end
-
-      it 'returns them' do
-        expect(package.reload.package_files).to include(package_file_pending_destruction)
-
-        expect(response_package_file_ids).to include(package_file_pending_destruction.to_global_id.to_s)
-      end
-    end
   end
 end

@@ -30,8 +30,8 @@ to Kubernetes clusters using the [GitLab Agent](../user/clusters/agent/install/i
 
 #### GitOps deployments **(PREMIUM)**
 
-With the [GitLab Agent](../user/clusters/agent/install/index.md), you can perform pull-based
-deployments using Kubernetes manifests. This provides a scalable, secure, and cloud-native
+With the [GitLab Agent](../user/clusters/agent/install/index.md), you can perform [pull-based
+deployments of Kubernetes manifests](../user/clusters/agent/repository.md#synchronize-manifest-projects). This provides a scalable, secure, and cloud-native
 approach to manage Kubernetes deployments.
 
 #### Deploy to Kubernetes with the CI/CD Tunnel
@@ -63,4 +63,4 @@ Use GitLab [Releases](../user/project/releases/index.md) to plan, build, and del
 
 ### Feature flags
 
-Use [feature flags](../operations/feature_flags.md) to control and strategically roullout application deployments.
+Use [feature flags](../operations/feature_flags.md) to control and strategically rollout application deployments.

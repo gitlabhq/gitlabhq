@@ -31,14 +31,6 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 * [Eddie (Content Editor)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#eddie-content-editor)
 -->
 
-### Metrics 
-
-<!-- How are you going to track uage of this feature? Think about user behavior and their interaction with the product. What indicates someone is getting value from it?
-
-Create tracking issue using the Snowplow event tracking template. See https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Snowplow%20event%20tracking.md
-
--->
-
 ### User experience goal
 
 <!-- What is the single user experience workflow this problem addresses?
@@ -63,7 +55,12 @@ Consider adding checkboxes and expectations of users with certain levels of memb
 * [ ] Add expected impact to Reporter (20) members
 * [ ] Add expected impact to Developer (30) members
 * [ ] Add expected impact to Maintainer (40) members
-* [ ] Add expected impact to Owner (50) members -->
+* [ ] Add expected impact to Owner (50) members 
+
+Please consider performing a threat model for the code changes that are introduced as part of this feature. To get started, refer to our Threat Modeling handbook page https://about.gitlab.com/handbook/security/threat_modeling/#threat-modeling. 
+
+Don't hesitate to reach out to the Application Security Team (`@gitlab-com/gl-security/appsec`) to discuss any security concerns.
+-->
 
 ### Documentation
 
@@ -92,6 +89,14 @@ See the test engineering planning process and reach out to your counterpart Soft
 * Free
 * Premium/Silver
 * Ultimate/Gold
+-->
+
+### Feature Usage Metrics 
+
+<!-- How are you going to track usage of this feature? Think about user behavior and their interaction with the product. What indicates someone is getting value from it?
+
+Create tracking issue using the Snowplow event tracking template. See https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Snowplow%20event%20tracking.md
+
 -->
 
 ### What does success look like, and how can we measure that?

@@ -46,7 +46,6 @@ export default {
     },
     openModal() {
       eventHub.$emit('openModal', {
-        inviteeType: 'members',
         source: this.$options.openModalSource,
       });
       this.track(this.$options.buttonClickEvent);

@@ -39,7 +39,7 @@ verification methods:
 | Blobs    | User uploads _(object storage)_                 | Geo with API/Managed (*2*)            | _Not implemented_      |
 | Blobs    | LFS objects _(file system)_                     | Geo with API                          | SHA256 checksum        |
 | Blobs    | LFS objects _(object storage)_                  | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | CI job artifacts _(file system)_                | Geo with API                          | _Not implemented_      |
+| Blobs    | CI job artifacts _(file system)_                | Geo with API                          | SHA256 checksum      |
 | Blobs    | CI job artifacts _(object storage)_             | Geo with API/Managed (*2*)            | _Not implemented_      |
 | Blobs    | Archived CI build traces _(file system)_        | Geo with API                          | _Not implemented_      |
 | Blobs    | Archived CI build traces _(object storage)_     | Geo with API/Managed (*2*)            | _Not implemented_      |

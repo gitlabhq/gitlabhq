@@ -15,6 +15,16 @@ describe('Work items router', () => {
 
     wrapper = mount(App, {
       router,
+      provide: {
+        fullPath: 'full-path',
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            workItemTypes: {},
+          },
+        },
+      },
     });
   };
 

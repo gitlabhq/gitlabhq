@@ -4,6 +4,112 @@ module Gitlab
   module Page
     module Admin
       module Subscription
+        # @note Defined as +h6 :subscription_details+
+        # @return [String] The text content or value of +subscription_details+
+        def subscription_details
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Admin::Subscription.perform do |subscription|
+        #     expect(subscription.subscription_details_element).to exist
+        #   end
+        # @return [Watir::H6] The raw +H6+ element
+        def subscription_details_element
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Admin::Subscription.perform do |subscription|
+        #     expect(subscription).to be_subscription_details
+        #   end
+        # @return [Boolean] true if the +subscription_details+ element is present on the page
+        def subscription_details?
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @note Defined as +text_field :activation_code+
+        # @return [String] The text content or value of +activation_code+
+        def activation_code
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # Set the value of activation_code
+        # @example
+        #   Gitlab::Page::Admin::Subscription.perform do |subscription|
+        #     subscription.activation_code = 'value'
+        #   end
+        # @param value [String] The value to set.
+        def activation_code=(value)
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Admin::Subscription.perform do |subscription|
+        #     expect(subscription.activation_code_element).to exist
+        #   end
+        # @return [Watir::TextField] The raw +TextField+ element
+        def activation_code_element
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Admin::Subscription.perform do |subscription|
+        #     expect(subscription).to be_activation_code
+        #   end
+        # @return [Boolean] true if the +activation_code+ element is present on the page
+        def activation_code?
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @note Defined as +label :terms_of_services+
+        # @return [String] The text content or value of +terms_of_services+
+        def terms_of_services
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Admin::Subscription.perform do |subscription|
+        #     expect(subscription.terms_of_services_element).to exist
+        #   end
+        # @return [Watir::Label] The raw +Label+ element
+        def terms_of_services_element
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Admin::Subscription.perform do |subscription|
+        #     expect(subscription).to be_terms_of_services
+        #   end
+        # @return [Boolean] true if the +terms_of_services+ element is present on the page
+        def terms_of_services?
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @note Defined as +button :activate+
+        # Clicks +activate+
+        def activate
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Admin::Subscription.perform do |subscription|
+        #     expect(subscription.activate_element).to exist
+        #   end
+        # @return [Watir::Button] The raw +Button+ element
+        def activate_element
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Admin::Subscription.perform do |subscription|
+        #     expect(subscription).to be_activate
+        #   end
+        # @return [Boolean] true if the +activate+ element is present on the page
+        def activate?
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
         # @note Defined as +p :plan+
         # @return [String] The text content or value of +plan+
         def plan

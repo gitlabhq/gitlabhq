@@ -1,6 +1,6 @@
 import { GlDatepicker } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -8,8 +8,7 @@ import ExpirationDatepicker from '~/members/components/table/expiration_datepick
 import { MEMBER_TYPES } from '~/members/constants';
 import { member } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('ExpirationDatepicker', () => {
   // March 15th, 2020 3:00
@@ -49,7 +48,6 @@ describe('ExpirationDatepicker', () => {
       provide: {
         namespace: MEMBER_TYPES.user,
       },
-      localVue,
       store: createStore(),
       mocks: {
         $toast,

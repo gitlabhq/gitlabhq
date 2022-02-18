@@ -1,5 +1,6 @@
 import { GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { useMockMutationObserver } from 'helpers/mock_dom_observer';
 import Tooltips from '~/tooltips/components/tooltips.vue';
 
@@ -46,7 +47,7 @@ describe('tooltips/components/tooltips.vue', () => {
     it('attaches tooltips to the targets specified', async () => {
       wrapper.vm.addTooltips([target]);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlTooltip).props('target')).toBe(target);
     });
@@ -56,7 +57,7 @@ describe('tooltips/components/tooltips.vue', () => {
 
       wrapper.vm.addTooltips([target]);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlTooltip).exists()).toBe(false);
     });
@@ -65,7 +66,7 @@ describe('tooltips/components/tooltips.vue', () => {
       wrapper.vm.addTooltips([target]);
       wrapper.vm.addTooltips([target]);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.findAll(GlTooltip)).toHaveLength(1);
     });
@@ -73,7 +74,7 @@ describe('tooltips/components/tooltips.vue', () => {
     it('sets tooltip content from title attribute', async () => {
       wrapper.vm.addTooltips([target]);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlTooltip).text()).toBe(target.getAttribute('title'));
     });
@@ -85,7 +86,7 @@ describe('tooltips/components/tooltips.vue', () => {
       });
       wrapper.vm.addTooltips([target]);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlTooltip).html()).toContain(target.getAttribute('title'));
     });
@@ -94,7 +95,7 @@ describe('tooltips/components/tooltips.vue', () => {
       const config = { show: true };
       target = createTooltipTarget();
       wrapper.vm.addTooltips([target], config);
-      await wrapper.vm.$nextTick();
+      await nextTick();
       expect(wrapper.find(GlTooltip).props()).toMatchObject(config);
     });
 
@@ -110,7 +111,7 @@ describe('tooltips/components/tooltips.vue', () => {
         target = createTooltipTarget({ [attribute]: value });
         wrapper.vm.addTooltips([target]);
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(wrapper.find(GlTooltip).props(prop)).toBe(value);
       },
@@ -124,10 +125,10 @@ describe('tooltips/components/tooltips.vue', () => {
 
     it('removes all tooltips when elements is nil', async () => {
       wrapper.vm.addTooltips([createTooltipTarget(), createTooltipTarget()]);
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       wrapper.vm.dispose();
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(allTooltips()).toHaveLength(0);
     });
@@ -136,10 +137,10 @@ describe('tooltips/components/tooltips.vue', () => {
       const target = createTooltipTarget();
 
       wrapper.vm.addTooltips([target, createTooltipTarget()]);
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       wrapper.vm.dispose(target);
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(allTooltips()).toHaveLength(1);
     });
@@ -154,13 +155,13 @@ describe('tooltips/components/tooltips.vue', () => {
       const target = createTooltipTarget();
 
       wrapper.vm.addTooltips([target, createTooltipTarget()]);
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       triggerMutate(document.body, {
         entry: { removedNodes: [target] },
         options: { childList: true },
       });
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(allTooltips()).toHaveLength(1);
     });
@@ -175,7 +176,7 @@ describe('tooltips/components/tooltips.vue', () => {
 
       wrapper.vm.addTooltips([target]);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       wrapper.vm.triggerEvent(target, event);
 
@@ -195,14 +196,14 @@ describe('tooltips/components/tooltips.vue', () => {
 
       wrapper.vm.addTooltips([target]);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlTooltip).text()).toBe(currentTitle);
 
       target.setAttribute('title', newTitle);
       wrapper.vm.fixTitle(target);
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find(GlTooltip).text()).toBe(newTitle);
     });
@@ -225,7 +226,7 @@ describe('tooltips/components/tooltips.vue', () => {
     buildWrapper();
     wrapper.vm.addTooltips([createTooltipTarget()]);
 
-    await wrapper.vm.$nextTick();
+    await nextTick();
 
     wrapper.findComponent(GlTooltip).vm.$emit('hidden');
     expect(wrapper.emitted('hidden')).toHaveLength(1);

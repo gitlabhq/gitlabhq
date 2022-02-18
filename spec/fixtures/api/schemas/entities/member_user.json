@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required": ["id", "name", "username", "avatar_url", "web_url", "blocked", "two_factor_enabled"],
+  "required": ["id", "name", "username", "avatar_url", "web_url", "blocked", "two_factor_enabled", "show_status"],
   "properties": {
     "id": { "type": "integer" },
     "name": { "type": "string" },
@@ -17,6 +17,7 @@
         "emoji": { "type": "string" }
       },
       "additionalProperties": false
-    }
+    },
+    "show_status": { "type": "boolean" }
   }
 }

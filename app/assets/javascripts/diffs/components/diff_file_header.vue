@@ -3,6 +3,7 @@ import {
   GlTooltipDirective,
   GlSafeHtmlDirective,
   GlIcon,
+  GlBadge,
   GlButton,
   GlButtonGroup,
   GlDropdown,
@@ -34,6 +35,7 @@ export default {
     GlIcon,
     FileIcon,
     DiffStats,
+    GlBadge,
     GlButton,
     GlButtonGroup,
     GlDropdown,
@@ -207,7 +209,7 @@ export default {
       handler(val) {
         const el = this.$el.closest('.vue-recycle-scroller__item-view');
 
-        if (this.glFeatures.diffsVirtualScrolling && el) {
+        if (el) {
           // We can't add a style with Vue because of the way the virtual
           // scroller library renders the diff files
           el.style.zIndex = val ? '1' : null;
@@ -349,7 +351,9 @@ export default {
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
-      <span v-if="isUsingLfs" class="badge label label-lfs gl-mr-2"> {{ __('LFS') }} </span>
+      <gl-badge v-if="isUsingLfs" variant="neutral" class="gl-mr-2" data-testid="label-lfs">{{
+        __('LFS')
+      }}</gl-badge>
     </div>
 
     <div

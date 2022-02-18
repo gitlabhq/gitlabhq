@@ -8,6 +8,7 @@ class Projects::BadgesController < Projects::ApplicationController
 
   feature_category :continuous_integration, [:index, :pipeline]
   feature_category :code_testing, [:coverage]
+  feature_category :release_orchestration, [:release]
 
   def pipeline
     pipeline_status = Gitlab::Ci::Badge::Pipeline::Status
@@ -32,6 +33,17 @@ class Projects::BadgesController < Projects::ApplicationController
       })
 
     render_badge coverage_report
+  end
+
+  def release
+    latest_release = Gitlab::Ci::Badge::Release::LatestRelease
+      .new(project, current_user, opts: {
+        key_text: params[:key_text],
+        key_width: params[:key_width],
+        order_by: params[:order_by]
+      })
+
+    render_badge latest_release
   end
 
   private
