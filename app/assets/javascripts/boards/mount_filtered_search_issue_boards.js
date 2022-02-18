@@ -4,7 +4,13 @@ import store from '~/boards/stores';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 
-export default (apolloProvider, isSignedIn, releasesFetchPath) => {
+export default (
+  apolloProvider,
+  isSignedIn,
+  releasesFetchPath,
+  epicFeatureAvailable,
+  iterationFeatureAvailable,
+) => {
   const el = document.getElementById('js-issue-board-filtered-search');
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
 
@@ -23,6 +29,8 @@ export default (apolloProvider, isSignedIn, releasesFetchPath) => {
       initialFilterParams,
       isSignedIn,
       releasesFetchPath,
+      epicFeatureAvailable,
+      iterationFeatureAvailable,
     },
     store, // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/324094
     apolloProvider,

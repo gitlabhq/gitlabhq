@@ -87,20 +87,21 @@ module QA
           end
 
           def update(url)
-            row_index = find_repository_row_index url
+            row_index = find_repository_row_index(url)
 
             within_element_by_index(:mirrored_repository_row, row_index) do
               # When a repository is first mirrored, the update process might
               # already be started, so the button is already "clicked"
               click_element :update_now_button unless has_element? :updating_button
             end
+          end
 
-            # Wait a few seconds for the sync to occur and then refresh the page
-            # so that 'last update' shows 'just now' or a period in seconds
-            sleep 5
+          def verify_update(url)
             refresh
 
-            wait_until(max_duration: 180, sleep_interval: 1) do
+            row_index = find_repository_row_index(url)
+
+            wait_until(sleep_interval: 1) do
               within_element_by_index(:mirrored_repository_row, row_index) do
                 last_update = find_element(:mirror_last_update_at_cell, wait: 0)
                 last_update.has_text?('just now') || last_update.has_text?('seconds')

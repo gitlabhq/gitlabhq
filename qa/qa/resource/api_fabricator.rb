@@ -165,6 +165,14 @@ module QA
       def transform_api_resource(api_resource)
         api_resource
       end
+
+      # Get api request url
+      #
+      # @param [String] path
+      # @return [String]
+      def request_url(path, **opts)
+        Runtime::API::Request.new(api_client, path, **opts).url
+      end
     end
   end
 end

@@ -5,10 +5,6 @@
 - placeholder = local_assigns[:placeholder] || _('Search or filter results...')
 - block_css_class = type != :productivity_analytics ? 'row-content-block second-block' : ''
 - is_epic_board = board&.to_type == "EpicBoard"
-- if @group.present?
-  - ff_resource = @group
-- else
-  - ff_resource = board&.resource_parent&.group
 
 - if is_epic_board
   - user_can_admin_list = can?(current_user, :admin_epic_board_list, board.resource_parent)
@@ -31,7 +27,7 @@
             = check_box_tag checkbox_id, nil, false, class: "check-all-issues left"
         - if is_epic_board
           #js-board-filtered-search{ data: { full_path: @group&.full_path } }
-        - elsif Feature.enabled?(:issue_boards_filtered_search, ff_resource, default_enabled: :yaml) && board
+        - elsif board
           #js-issue-board-filtered-search
         - else
           .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row

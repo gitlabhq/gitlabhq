@@ -13,6 +13,10 @@ RSpec.describe 'Project issue boards', :js do
   let_it_be(:user)    { create(:user) }
   let_it_be(:user2)   { create(:user) }
 
+  let(:filtered_search) { find('[data-testid="issue-board-filtered-search"]') }
+  let(:filter_input) { find('.gl-filtered-search-term-input') }
+  let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
+
   context 'signed in user' do
     before do
       project.add_maintainer(user)
@@ -90,8 +94,7 @@ RSpec.describe 'Project issue boards', :js do
       end
 
       it 'search closed list' do
-        find('.filtered-search').set(issue8.title)
-        find('.filtered-search').native.send_keys(:enter)
+        set_filter_and_search_by_token_value(issue8.title)
 
         wait_for_requests
 
@@ -101,34 +104,13 @@ RSpec.describe 'Project issue boards', :js do
       end
 
       it 'search list' do
-        find('.filtered-search').set(issue5.title)
-        find('.filtered-search').native.send_keys(:enter)
+        set_filter_and_search_by_token_value(issue5.title)
 
         wait_for_requests
 
         expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 1)
         expect(find('.board:nth-child(3)')).to have_selector('.board-card', count: 0)
         expect(find('.board:nth-child(4)')).to have_selector('.board-card', count: 0)
-      end
-
-      context 'search list negation queries' do
-        before do
-          visit_project_board_path_without_query_limit(project, board)
-        end
-
-        it 'does not have the != option' do
-          find('.filtered-search').set('label:')
-
-          wait_for_requests
-          within('#js-dropdown-operator') do
-            tokens = all(:css, 'li.filter-dropdown-item')
-            expect(tokens.count).to eq(2)
-            button = tokens[0].find('button')
-            expect(button).to have_content('=')
-            button = tokens[1].find('button')
-            expect(button).to have_content('!=')
-          end
-        end
       end
 
       it 'allows user to delete board' do
@@ -309,8 +291,8 @@ RSpec.describe 'Project issue boards', :js do
       context 'filtering' do
         it 'filters by author' do
           set_filter("author", user2.username)
-          click_filter_link(user2.username)
-          submit_filter
+          click_on user2.username
+          filter_submit.click
 
           wait_for_requests
           wait_for_board_cards(2, 1)
@@ -319,8 +301,8 @@ RSpec.describe 'Project issue boards', :js do
 
         it 'filters by assignee' do
           set_filter("assignee", user.username)
-          click_filter_link(user.username)
-          submit_filter
+          click_on user.username
+          filter_submit.click
 
           wait_for_requests
 
@@ -330,8 +312,8 @@ RSpec.describe 'Project issue boards', :js do
 
         it 'filters by milestone' do
           set_filter("milestone", "\"#{milestone.title}")
-          click_filter_link(milestone.title)
-          submit_filter
+          click_on milestone.title
+          filter_submit.click
 
           wait_for_requests
           wait_for_board_cards(2, 1)
@@ -341,8 +323,8 @@ RSpec.describe 'Project issue boards', :js do
 
         it 'filters by label' do
           set_filter("label", testing.title)
-          click_filter_link(testing.title)
-          submit_filter
+          click_on testing.title
+          filter_submit.click
 
           wait_for_requests
           wait_for_board_cards(2, 1)
@@ -351,8 +333,10 @@ RSpec.describe 'Project issue boards', :js do
 
         it 'filters by label with encoded character' do
           set_filter("label", a_plus.title)
-          click_filter_link(a_plus.title)
-          submit_filter
+          #  This one is a char encoding issue like the & issue
+          click_on a_plus.title
+          filter_submit.click
+          wait_for_requests
 
           wait_for_board_cards(1, 1)
           wait_for_empty_boards((2..4))
@@ -360,8 +344,8 @@ RSpec.describe 'Project issue boards', :js do
 
         it 'filters by label with space after reload', :quarantine do
           set_filter("label", "\"#{accepting.title}")
-          click_filter_link(accepting.title)
-          submit_filter
+          click_on accepting.title
+          filter_submit.click
 
           # Test after reload
           page.evaluate_script 'window.location.reload()'
@@ -384,13 +368,13 @@ RSpec.describe 'Project issue boards', :js do
         it 'removes filtered labels' do
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
             set_filter("label", testing.title)
-            click_filter_link(testing.title)
-            submit_filter
+            click_on testing.title
+            filter_submit.click
 
             wait_for_board_cards(2, 1)
 
-            find('.clear-search').click
-            submit_filter
+            find('[data-testid="filtered-search-clear-button"]').click
+            filter_submit.click
           end
 
           wait_for_board_cards(2, 8)
@@ -400,9 +384,9 @@ RSpec.describe 'Project issue boards', :js do
           create_list(:labeled_issue, 30, project: project, labels: [planning, testing])
 
           set_filter("label", testing.title)
-          click_filter_link(testing.title)
+          click_on testing.title
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            submit_filter
+            filter_submit.click
           end
 
           wait_for_requests
@@ -442,10 +426,10 @@ RSpec.describe 'Project issue boards', :js do
 
         it 'filters by multiple labels', :quarantine do
           set_filter("label", testing.title)
-          click_filter_link(testing.title)
+          click_on testing.title
 
           set_filter("label", bug.title)
-          click_filter_link(bug.title)
+          click_on bug.title
 
           submit_filter
 
@@ -463,7 +447,7 @@ RSpec.describe 'Project issue boards', :js do
             wait_for_requests
           end
 
-          page.within('.tokens-container') do
+          page.within('.gl-filtered-search-token') do
             expect(page).to have_content(bug.title)
           end
 
@@ -561,19 +545,26 @@ RSpec.describe 'Project issue boards', :js do
     end
   end
 
+  def set_filter_and_search_by_token_value(value)
+    filter_input.click
+    filter_input.set(value)
+    filter_submit.click
+  end
+
   def set_filter(type, text)
-    find('.filtered-search').native.send_keys("#{type}:=#{text}")
+    filter_input.click
+    filter_input.native.send_keys("#{type}:=#{text}")
   end
 
   def submit_filter
-    find('.filtered-search').native.send_keys(:enter)
+    filter_input.native.send_keys(:enter)
   end
 
   def click_filter_link(link_text)
-    page.within('.filtered-search-box') do
+    page.within(filtered_search) do
       expect(page).to have_button(link_text)
 
-      click_button(link_text)
+      click_on link_text
     end
   end
 

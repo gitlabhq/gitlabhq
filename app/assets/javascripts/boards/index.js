@@ -8,8 +8,6 @@ import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_t
 import BoardApp from '~/boards/components/board_app.vue';
 import '~/boards/filters/due_date_filters';
 import { issuableTypes } from '~/boards/constants';
-import eventHub from '~/boards/eventhub';
-import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import initBoardsFilteredSearch from '~/boards/mount_filtered_search_issue_boards';
 import store from '~/boards/stores';
 import toggleFocusMode from '~/boards/toggle_focus';
@@ -49,17 +47,6 @@ function mountBoardApp(el) {
       weight: el.dataset.boardWeight ? parseInt(el.dataset.boardWeight, 10) : null,
     },
   });
-
-  if (!gon?.features?.issueBoardsFilteredSearch) {
-    // Warning: FilteredSearchBoards has an implicit dependency on the Vuex state 'boardConfig'
-    // Improve this situation in the future.
-    const filterManager = new FilteredSearchBoards({ path: '' }, true, []);
-    filterManager.setup();
-
-    eventHub.$on('updateTokens', () => {
-      filterManager.updateTokens();
-    });
-  }
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -110,10 +97,14 @@ export default () => {
     }
   });
 
-  if (gon?.features?.issueBoardsFilteredSearch) {
-    const { releasesFetchPath } = $boardApp.dataset;
-    initBoardsFilteredSearch(apolloProvider, isLoggedIn(), releasesFetchPath);
-  }
+  const { releasesFetchPath, epicFeatureAvailable, iterationFeatureAvailable } = $boardApp.dataset;
+  initBoardsFilteredSearch(
+    apolloProvider,
+    isLoggedIn(),
+    releasesFetchPath,
+    parseBoolean(epicFeatureAvailable),
+    parseBoolean(iterationFeatureAvailable),
+  );
 
   mountBoardApp($boardApp);
 

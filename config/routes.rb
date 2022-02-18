@@ -69,7 +69,10 @@ Rails.application.routes.draw do
       resources :groups, only: [:new, :create]
       resources :projects, only: [:new, :create]
       resources :groups_projects, only: [:new, :create] do
-        post :import, on: :collection
+        collection do
+          post :import
+          put :exit
+        end
       end
       draw :verification
     end

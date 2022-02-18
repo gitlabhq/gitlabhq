@@ -56,7 +56,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def replace_path
-    url_helpers.project_create_blob_path(project, ref_qualified_path)
+    url_helpers.project_update_blob_path(project, ref_qualified_path)
   end
 
   def pipeline_editor_path

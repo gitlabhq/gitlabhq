@@ -4788,6 +4788,9 @@ msgstr ""
 msgid "Are you sure you want to remove this list?"
 msgstr ""
 
+msgid "Are you sure you want to remove this nickname?"
+msgstr ""
+
 msgid "Are you sure you want to reset the health check token?"
 msgstr ""
 
@@ -4798,9 +4801,6 @@ msgid "Are you sure you want to retry this migration?"
 msgstr ""
 
 msgid "Are you sure you want to revoke this %{type}? This action cannot be undone."
-msgstr ""
-
-msgid "Are you sure you want to revoke this nickname?"
 msgstr ""
 
 msgid "Are you sure you want to revoke this personal access token? This action cannot be undone."
@@ -14670,6 +14670,9 @@ msgstr ""
 msgid "Existing sign in methods may be removed"
 msgstr ""
 
+msgid "Exit."
+msgstr ""
+
 msgid "Expand"
 msgstr ""
 
@@ -18273,6 +18276,9 @@ msgid "IdentityVerification|Create a project"
 msgstr ""
 
 msgid "IdentityVerification|Verify your identity"
+msgstr ""
+
+msgid "IdentityVerification|You can always verify your account at a later time to create a group."
 msgstr ""
 
 msgid "If any indexed field exceeds this limit, it is truncated to this number of characters. The rest of the content is neither indexed nor searchable. This does not apply to repository and wiki indexing. For unlimited characters, set this to 0."
@@ -32418,9 +32424,6 @@ msgstr ""
 msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 
-msgid "SecurityOrchestration|Latest scan"
-msgstr ""
-
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
@@ -32428,6 +32431,9 @@ msgid "SecurityOrchestration|Network"
 msgstr ""
 
 msgid "SecurityOrchestration|New policy"
+msgstr ""
+
+msgid "SecurityOrchestration|No description"
 msgstr ""
 
 msgid "SecurityOrchestration|No rules defined - policy will not run."
@@ -32440,6 +32446,9 @@ msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
 msgid "SecurityOrchestration|Policies"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy Type"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy cannot be enabled for non-existing branches (%{branches})"
@@ -32584,9 +32593,6 @@ msgid "SecurityOrchestration|user with id"
 msgstr ""
 
 msgid "SecurityOrchestration|users with ids"
-msgstr ""
-
-msgid "SecurityOrchestration|view results"
 msgstr ""
 
 msgid "SecurityOrchestration|vulnerabilities"

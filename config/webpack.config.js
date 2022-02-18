@@ -40,11 +40,16 @@ const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/c
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.env.WEBPACK_SERVE === 'true';
 
-const { DEV_SERVER_HOST, DEV_SERVER_PUBLIC_ADDR } = process.env;
+const {
+  DEV_SERVER_HOST,
+  DEV_SERVER_PUBLIC_ADDR,
+  DEV_SERVER_TYPE,
+  DEV_SERVER_SSL_KEY,
+  DEV_SERVER_SSL_CERT,
+} = process.env;
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10);
 const DEV_SERVER_ALLOWED_HOSTS =
   process.env.DEV_SERVER_ALLOWED_HOSTS && process.env.DEV_SERVER_ALLOWED_HOSTS.split(',');
-const DEV_SERVER_HTTPS = process.env.DEV_SERVER_HTTPS && process.env.DEV_SERVER_HTTPS !== 'false';
 const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const INCREMENTAL_COMPILER_ENABLED =
   IS_DEV_SERVER &&
@@ -709,7 +714,6 @@ module.exports = {
     },
     host: DEV_SERVER_HOST || 'localhost',
     port: DEV_SERVER_PORT || 3808,
-    https: DEV_SERVER_HTTPS,
     hot: DEV_SERVER_LIVERELOAD,
     // The following settings are mainly needed for HMR support in gitpod.
     // Per default only local hosts are allowed, but here we could
@@ -719,6 +723,13 @@ module.exports = {
     ...(DEV_SERVER_ALLOWED_HOSTS ? { allowedHosts: DEV_SERVER_ALLOWED_HOSTS } : {}),
     client: {
       ...(DEV_SERVER_PUBLIC_ADDR ? { webSocketURL: DEV_SERVER_PUBLIC_ADDR } : {}),
+    },
+    server: {
+      type: DEV_SERVER_TYPE || 'http',
+      options: {
+        key: DEV_SERVER_SSL_KEY,
+        cert: DEV_SERVER_SSL_CERT,
+      },
     },
   },
 

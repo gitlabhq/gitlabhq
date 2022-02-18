@@ -28,7 +28,7 @@ RSpec.describe BlobPresenter do
   end
 
   describe '#replace_path' do
-    it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/create/#{blob.commit_id}/#{blob.path}") }
+    it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/update/#{blob.commit_id}/#{blob.path}") }
   end
 
   describe '#can_current_user_push_to_branch' do

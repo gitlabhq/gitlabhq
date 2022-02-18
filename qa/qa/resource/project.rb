@@ -407,14 +407,6 @@ module QA
           Git::Location.new(api_resource[:http_url_to_repo])
         api_resource
       end
-
-      # Get api request url
-      #
-      # @param [String] path
-      # @return [String]
-      def request_url(path, **opts)
-        Runtime::API::Request.new(api_client, path, **opts).url
-      end
     end
   end
 end

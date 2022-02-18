@@ -151,10 +151,10 @@ export default {
         });
       }
 
-      if (this.filterParams['not[iteration_id]']) {
+      if (this.filterParams['not[iterationId]']) {
         filteredSearchValue.push({
-          type: 'iteration_id',
-          value: { data: this.filterParams['not[iteration_id]'], operator: '!=' },
+          type: 'iteration',
+          value: { data: this.filterParams['not[iterationId]'], operator: '!=' },
         });
       }
 

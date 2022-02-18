@@ -79,7 +79,7 @@ module QA
         else
           default
         end
-      rescue QA::Resource::Base::NoValueError
+      rescue QA::Resource::Base::NoValueError, QA::Resource::Errors::ResourceNotFoundError
         default
       end
     end

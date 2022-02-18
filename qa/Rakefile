@@ -64,4 +64,9 @@ desc "Deletes resources created during E2E test runs"
 task :delete_test_resources, :file_pattern do |t, args|
   QA::Tools::DeleteTestResources.new(args[:file_pattern]).run
 end
+
+desc "Deletes test users"
+task :delete_test_users, [:delete_before, :dry_run, :exclude_users] do |t, args|
+  QA::Tools::DeleteTestUsers.new(args).run
+end
 # rubocop:enable Rails/RakeEnvironment

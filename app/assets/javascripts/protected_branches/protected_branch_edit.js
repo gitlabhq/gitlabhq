@@ -3,6 +3,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import AccessDropdown from '~/projects/settings/access_dropdown';
+import { initToggle } from '~/toggles';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 
 export default class ProtectedBranchEdit {
@@ -14,8 +15,6 @@ export default class ProtectedBranchEdit {
     this.$wrap = options.$wrap;
     this.$allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
     this.$allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
-    this.$forcePushToggle = this.$wrap.find('.js-force-push-toggle');
-    this.$codeOwnerToggle = this.$wrap.find('.js-code-owner-toggle');
 
     this.$wraps[ACCESS_LEVELS.MERGE] = this.$allowedToMergeDropdown.closest(
       `.${ACCESS_LEVELS.MERGE}-container`,
@@ -25,36 +24,43 @@ export default class ProtectedBranchEdit {
     );
 
     this.buildDropdowns();
-    this.bindEvents();
+    this.initToggles();
   }
 
-  bindEvents() {
-    this.$forcePushToggle.on('click', this.onForcePushToggleClick.bind(this));
+  initToggles() {
+    const wrap = this.$wrap.get(0);
+
+    const forcePushToggle = initToggle(wrap.querySelector('.js-force-push-toggle'));
+    forcePushToggle.$on('change', (value) => {
+      forcePushToggle.isLoading = true;
+      forcePushToggle.disabled = true;
+      this.updateProtectedBranch(
+        {
+          allow_force_push: value,
+        },
+        () => {
+          forcePushToggle.isLoading = false;
+          forcePushToggle.disabled = false;
+        },
+      );
+    });
+
     if (this.hasLicense) {
-      this.$codeOwnerToggle.on('click', this.onCodeOwnerToggleClick.bind(this));
+      const codeOwnerToggle = initToggle(wrap.querySelector('.js-code-owner-toggle'));
+      codeOwnerToggle.$on('change', (value) => {
+        codeOwnerToggle.isLoading = true;
+        codeOwnerToggle.disabled = true;
+        this.updateProtectedBranch(
+          {
+            code_owner_approval_required: value,
+          },
+          () => {
+            codeOwnerToggle.isLoading = false;
+            codeOwnerToggle.disabled = false;
+          },
+        );
+      });
     }
-  }
-
-  onForcePushToggleClick() {
-    this.$forcePushToggle.toggleClass('is-checked');
-    this.$forcePushToggle.prop('disabled', true);
-
-    const formData = {
-      allow_force_push: this.$forcePushToggle.hasClass('is-checked'),
-    };
-
-    this.updateProtectedBranch(formData, () => this.$forcePushToggle.prop('disabled', false));
-  }
-
-  onCodeOwnerToggleClick() {
-    this.$codeOwnerToggle.toggleClass('is-checked');
-    this.$codeOwnerToggle.prop('disabled', true);
-
-    const formData = {
-      code_owner_approval_required: this.$codeOwnerToggle.hasClass('is-checked'),
-    };
-
-    this.updateProtectedBranch(formData, () => this.$codeOwnerToggle.prop('disabled', false));
   }
 
   updateProtectedBranch(formData, callback) {
