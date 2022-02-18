@@ -29152,6 +29152,9 @@ msgstr ""
 msgid "ProjectsNew|Import project"
 msgstr ""
 
+msgid "ProjectsNew|Include a Getting Started README"
+msgstr ""
+
 msgid "ProjectsNew|Initialize repository with a README"
 msgstr ""
 
@@ -29165,6 +29168,9 @@ msgid "ProjectsNew|Project Configuration"
 msgstr ""
 
 msgid "ProjectsNew|Project description %{tag_start}(optional)%{tag_end}"
+msgstr ""
+
+msgid "ProjectsNew|Recommended if you're new to GitLab"
 msgstr ""
 
 msgid "ProjectsNew|Run CI/CD for external repository"

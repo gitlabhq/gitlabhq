@@ -341,6 +341,8 @@ declared in your reports. GitLab uses the
 [`json_schemer`](https://www.rubydoc.info/gems/json_schemer) gem to perform validation.
 
 Ongoing improvements to report validation is tracked [in this epic](https://gitlab.com/groups/gitlab-org/-/epics/6968).
+In the meantime, you can see which versions are supported in the
+[source code](https://gitlab.com/gitlab-org/gitlab/-/blob/08dd756429731a0cca1e27ca9d59eea226398a7d/lib/gitlab/ci/parsers/security/validators/schema_validator.rb#L9-27).
 
 ### Report Fields
 

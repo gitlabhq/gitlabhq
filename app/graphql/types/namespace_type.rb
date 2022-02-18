@@ -18,6 +18,10 @@ module Types
     field :full_path, GraphQL::Types::ID, null: false,
           description: 'Full path of the namespace.'
 
+    field :cross_project_pipeline_available, GraphQL::Types::Boolean, null: false,
+          resolver_method: :cross_project_pipeline_available?,
+          description: 'Indicates if the cross_project_pipeline feature is available for the namespace.'
+
     field :description, GraphQL::Types::String, null: true,
           description: 'Description of the namespace.'
 
@@ -47,6 +51,10 @@ module Types
           description: "Shared runners availability for the namespace and its descendants."
 
     markdown_field :description_html, null: true
+
+    def cross_project_pipeline_available?
+      object.licensed_feature_available?(:cross_project_pipelines)
+    end
 
     def root_storage_statistics
       Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader.new(object.id).find

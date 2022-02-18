@@ -112,6 +112,13 @@ gitops:
     inventory_policy: must_match # 'must_match' by default
 ```
 
+## Additional resources
+
+The following documentation and examples can help you get started with a GitOps workflow.
+
+- [Managing Kubernetes secrets in a GitOps workflow](gitops/secrets_management.md)
+- [Application and manifest repository example](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service-gitops)
+
 ## Troubleshooting
 
 ### Avoiding conflicts when you have multiple projects

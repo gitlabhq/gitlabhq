@@ -127,6 +127,15 @@ RSpec.describe API::Commits do
         it_behaves_like 'project commits'
       end
 
+      context 'when repository does not exist' do
+        let(:project) { create(:project, creator: user, path: 'my.project') }
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+          let(:message) { '404 Repository Not Found' }
+        end
+      end
+
       context "path optional parameter" do
         it "returns project commits matching provided path parameter" do
           path = 'files/ruby/popen.rb'

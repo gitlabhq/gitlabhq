@@ -327,7 +327,7 @@ to learn more.
 ### Value stream analytics permissions
 
 Find the current permissions on the value stream analytics dashboard, as described in
-[related documentation](analytics/value_stream_analytics.md#permissions).
+[related documentation](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics).
 
 ### Issue board permissions
 
