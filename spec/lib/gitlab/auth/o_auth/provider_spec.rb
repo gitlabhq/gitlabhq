@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider do
 
     context 'for an OmniAuth provider' do
       before do
-        provider = OpenStruct.new(
+        provider = ActiveSupport::InheritableOptions.new(
           name: 'google_oauth2',
           app_id: 'asd123',
           app_secret: 'asd123'
@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider do
         subject { described_class.config_for('google_oauth2') }
 
         it 'returns the config' do
-          expect(subject).to be_a(OpenStruct)
+          expect(subject).to be_a(ActiveSupport::InheritableOptions)
         end
 
         it 'merges defaults with the given configuration' do
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider do
     context 'when configuration specifies a custom label' do
       let(:name) { 'google_oauth2' }
       let(:label) { 'Custom Google Provider' }
-      let(:provider) { OpenStruct.new({ 'name' => name, 'label' => label }) }
+      let(:provider) { ActiveSupport::InheritableOptions.new(name: name, label: label) }
 
       before do
         stub_omniauth_setting(providers: [provider])
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider do
     end
 
     context 'when configuration does not specify a custom label' do
-      let(:provider) { OpenStruct.new({ 'name' => name } ) }
+      let(:provider) { ActiveSupport::InheritableOptions.new(name: name) }
 
       before do
         stub_omniauth_setting(providers: [provider])

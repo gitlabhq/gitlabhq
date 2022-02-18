@@ -43,6 +43,11 @@ export default {
       required: false,
       default: 0,
     },
+    enablePreview: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -164,6 +169,7 @@ export default {
         @click="writeMarkdownTab($event)"
       />
       <gl-tab
+        v-if="enablePreview"
         title-link-class="gl-pt-3 gl-px-3 js-md-preview-button"
         :title="$options.i18n.previewTabTitle"
         :active="previewMarkdown"

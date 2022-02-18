@@ -20,6 +20,7 @@ RSpec.describe ServiceFieldEntity do
 
         it 'exposes correct attributes' do
           expected_hash = {
+            section: 'connection',
             type: 'text',
             name: 'username',
             title: 'Username or Email',
@@ -40,6 +41,7 @@ RSpec.describe ServiceFieldEntity do
 
         it 'exposes correct attributes but hides password' do
           expected_hash = {
+            section: 'connection',
             type: 'password',
             name: 'password',
             title: 'Enter new password or API token',
@@ -64,6 +66,7 @@ RSpec.describe ServiceFieldEntity do
 
         it 'exposes correct attributes and casts value to Boolean' do
           expected_hash = {
+            section: nil,
             type: 'checkbox',
             name: 'send_from_committer_email',
             title: 'Send from committer',
@@ -84,6 +87,7 @@ RSpec.describe ServiceFieldEntity do
 
         it 'exposes correct attributes' do
           expected_hash = {
+            section: nil,
             type: 'select',
             name: 'branches_to_be_notified',
             title: 'Branches for which notifications are to be sent',

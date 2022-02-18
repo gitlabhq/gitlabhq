@@ -4,6 +4,7 @@ import $ from 'jquery';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownFieldHeader from '~/vue_shared/components/markdown/header.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 const markdownPreviewPath = `${TEST_HOST}/preview`;
@@ -32,7 +33,7 @@ describe('Markdown field component', () => {
     axiosMock.restore();
   });
 
-  function createSubject(lines = []) {
+  function createSubject({ lines = [], enablePreview = true } = {}) {
     // We actually mount a wrapper component so that we can force Vue to rerender classes in order to test a regression
     // caused by mixing Vanilla JS and Vue.
     subject = mountExtended(
@@ -61,6 +62,7 @@ describe('Markdown field component', () => {
           isSubmitting: false,
           textareaValue,
           lines,
+          enablePreview,
         },
         provide: {
           glFeatures: {
@@ -272,11 +274,22 @@ describe('Markdown field component', () => {
 
   describe('suggestions', () => {
     it('escapes new line characters', () => {
-      createSubject([{ rich_text: 'hello world\\n' }]);
+      createSubject({ lines: [{ rich_text: 'hello world\\n' }] });
 
       expect(subject.find('[data-testid="markdownHeader"]').props('lineContent')).toBe(
         'hello world%br',
       );
     });
+  });
+
+  it('allows enabling and disabling Markdown Preview', () => {
+    createSubject({ enablePreview: false });
+
+    expect(subject.findComponent(MarkdownFieldHeader).props('enablePreview')).toBe(false);
+
+    subject.destroy();
+    createSubject({ enablePreview: true });
+
+    expect(subject.findComponent(MarkdownFieldHeader).props('enablePreview')).toBe(true);
   });
 });

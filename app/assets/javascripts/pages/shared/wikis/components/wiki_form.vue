@@ -495,6 +495,7 @@ export default {
           :textarea-value="content"
           :markdown-docs-path="pageInfo.markdownHelpPath"
           :uploads-path="pageInfo.uploadsPath"
+          :enable-preview="isMarkdownFormat"
           class="bordered-box"
         >
           <template #textarea>

@@ -50,11 +50,13 @@ There are two kinds of events logged:
 
 When a user is being [impersonated](../user/admin_area/index.md#user-impersonation), their actions are logged as audit events as usual, with two additional details:
 
-1. Usual audit events include information about the impersonating administrator. These are visible in their respective Audit Event pages depending on their type (Group/Project/User).
-1. Extra audit events are recorded for the start and stop of the administrator's impersonation session. These are visible in
-   the:
+1. Usual audit events include information about the impersonating administrator. These audit events are visible in their
+   respective audit event pages depending on their type (group, project, or user).
+1. Extra audit events are recorded for the start and stop of the administrator's impersonation session. These audit events
+   are visible in the:
    - Instance audit events.
-   - Group audit events for all groups the user belongs to (GitLab 14.8 and later). This is limited to 20 groups for performance reasons.
+   - Group audit events for all groups the user belongs to (GitLab 14.8 and later). For performance reasons, group audit
+     events are limited to the oldest 20 groups to which you belong.
 
 ![audit events](img/impersonated_audit_events_v13_8.png)
 

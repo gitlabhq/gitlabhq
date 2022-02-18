@@ -78,6 +78,29 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         expect(fake_template).to have_received(:label).with(:user, :view_diffs_file_by_file, { class: %w(custom-control-label label-foo-bar), object: user, value: nil })
       end
     end
+
+    context 'with checkbox_options: { multiple: true }' do
+      let(:optional_args) do
+        {
+          checkbox_options: { multiple: true },
+          checked_value: 'one',
+          unchecked_value: false
+        }
+      end
+
+      it 'renders labels with correct for attributes' do
+        expected_html = <<~EOS
+          <div class="gl-form-checkbox custom-control custom-checkbox">
+            <input class="custom-control-input" type="checkbox" value="one" name="user[view_diffs_file_by_file][]" id="user_view_diffs_file_by_file_one" />
+            <label class="custom-control-label" for="user_view_diffs_file_by_file_one">
+              Show one file at a time on merge request&#39;s Changes tab
+            </label>
+          </div>
+        EOS
+
+        expect(checkbox_html).to eq(html_strip_whitespace(expected_html))
+      end
+    end
   end
 
   describe '#gitlab_ui_radio_component' do

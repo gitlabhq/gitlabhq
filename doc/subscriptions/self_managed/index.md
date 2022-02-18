@@ -388,7 +388,7 @@ Starting 30 days before a subscription expires, GitLab notifies administrators o
 
 We recommend following these steps during renewal:
 
-1. Prune any inactive or unwanted users by [blocking them](../../user/admin_area/moderate_users.md#block-a-user).
+1. Prior to the renewal date, prune any inactive or unwanted users by [blocking them](../../user/admin_area/moderate_users.md#block-a-user).
 1. Determine if you have a need for user growth in the upcoming subscription.
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and select the **Renew** button beneath your existing subscription.
 The **Renew** button remains disabled (grayed-out) until 15 days before a subscription expires.

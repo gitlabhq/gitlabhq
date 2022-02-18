@@ -157,4 +157,12 @@ describe('Markdown field header component', () => {
 
     expect(wrapper.find('.js-suggestion-btn').exists()).toBe(false);
   });
+
+  it('hides preview tab when previewMarkdown property is false', () => {
+    createWrapper({
+      enablePreview: false,
+    });
+
+    expect(wrapper.findByTestId('preview-tab').exists()).toBe(false);
+  });
 });

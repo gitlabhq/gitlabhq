@@ -83,6 +83,7 @@ module IntegrationsHelper
       comment_detail: integration.comment_detail,
       learn_more_path: integrations_help_page_path,
       trigger_events: trigger_events_for_integration(integration),
+      sections: integration.sections.to_json,
       fields: fields_for_integration(integration),
       inherit_from_id: integration.inherit_from_id,
       integration_level: integration_level(integration),

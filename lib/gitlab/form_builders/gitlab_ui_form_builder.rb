@@ -16,13 +16,15 @@ module Gitlab
           :div,
           class: 'gl-form-checkbox custom-control custom-checkbox'
         ) do
+          value = checkbox_options[:multiple] ? checked_value : nil
+
           @template.check_box(
             @object_name,
             method,
             format_options(checkbox_options, ['custom-control-input']),
             checked_value,
             unchecked_value
-          ) + generic_label(method, label, label_options, help_text: help_text)
+          ) + generic_label(method, label, label_options, help_text: help_text, value: value)
         end
       end
 

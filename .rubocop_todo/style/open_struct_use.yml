@@ -21,7 +21,6 @@ Style/OpenStructUse:
   - spec/graphql/mutations/commits/create_spec.rb
   - spec/helpers/application_settings_helper_spec.rb
   - spec/helpers/profiles_helper_spec.rb
-  - spec/lib/gitlab/auth/o_auth/provider_spec.rb
   - spec/lib/gitlab/gitaly_client/blobs_stitcher_spec.rb
   - spec/lib/gitlab/gitaly_client/diff_stitcher_spec.rb
   - spec/lib/gitlab/legacy_github_import/project_creator_spec.rb

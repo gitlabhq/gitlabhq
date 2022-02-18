@@ -3,10 +3,6 @@
 class ReleasePresenter < Gitlab::View::Presenter::Delegated
   presents ::Release, as: :release
 
-  # TODO: Remove `delegate` as it's redundant due to SimpleDelegator.
-  delegator_override :tag, :project
-  delegate :project, :tag, to: :release
-
   def commit_path
     return unless release.commit && can_download_code?
 

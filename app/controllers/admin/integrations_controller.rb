@@ -5,6 +5,10 @@ class Admin::IntegrationsController < Admin::ApplicationController
 
   before_action :not_found, unless: -> { instance_level_integrations? }
 
+  before_action do
+    push_frontend_feature_flag(:integration_form_sections, default_enabled: :yaml)
+  end
+
   feature_category :integrations
 
   def overrides

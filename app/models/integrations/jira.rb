@@ -112,7 +112,7 @@ module Integrations
 
     def help
       jira_doc_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_url('integration/jira/index.html') }
-      s_("JiraService|You need to configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}.") % { jira_doc_link_start: jira_doc_link_start, link_end: '</a>'.html_safe }
+      s_("JiraService|You must configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}.") % { jira_doc_link_start: jira_doc_link_start, link_end: '</a>'.html_safe }
     end
 
     def title
@@ -130,6 +130,7 @@ module Integrations
     def fields
       [
         {
+          section: SECTION_TYPE_CONNECTION,
           type: 'text',
           name: 'url',
           title: s_('JiraService|Web URL'),
@@ -138,12 +139,14 @@ module Integrations
           required: true
         },
         {
+          section: SECTION_TYPE_CONNECTION,
           type: 'text',
           name: 'api_url',
           title: s_('JiraService|Jira API URL'),
           help: s_('JiraService|If different from Web URL.')
         },
         {
+          section: SECTION_TYPE_CONNECTION,
           type: 'text',
           name: 'username',
           title: s_('JiraService|Username or Email'),
@@ -151,6 +154,7 @@ module Integrations
           required: true
         },
         {
+          section: SECTION_TYPE_CONNECTION,
           type: 'password',
           name: 'password',
           title: s_('JiraService|Password or API token'),
@@ -160,6 +164,16 @@ module Integrations
           required: true
         }
       ]
+    end
+
+    def sections
+      [
+        {
+          type: SECTION_TYPE_CONNECTION,
+          title: s_('Integrations|Connection details'),
+          description: help
+        }
+      ].freeze
     end
 
     def web_url(path = nil, **params)

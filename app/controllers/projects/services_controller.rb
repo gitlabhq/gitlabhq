@@ -13,6 +13,10 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :set_deprecation_notice_for_prometheus_integration, only: [:edit, :update]
   before_action :redirect_deprecated_prometheus_integration, only: [:update]
 
+  before_action do
+    push_frontend_feature_flag(:integration_form_sections, project, default_enabled: :yaml)
+  end
+
   respond_to :html
 
   layout "project_settings"

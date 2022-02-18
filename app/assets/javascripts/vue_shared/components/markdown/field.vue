@@ -48,6 +48,11 @@ export default {
       required: false,
       default: '',
     },
+    enablePreview: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     addSpacingClasses: {
       type: Boolean,
       required: false,
@@ -204,6 +209,14 @@ export default {
         }
       },
     },
+    enablePreview: {
+      immediate: true,
+      handler(newVal) {
+        if (!newVal) {
+          this.showWriteTab();
+        }
+      },
+    },
   },
   mounted() {
     // GLForm class handles all the toolbar buttons
@@ -301,6 +314,7 @@ export default {
       :preview-markdown="previewMarkdown"
       :line-content="lineContent"
       :can-suggest="canSuggest"
+      :enable-preview="enablePreview"
       :show-suggest-popover="showSuggestPopover"
       :suggestion-start-index="suggestionsStartIndex"
       data-testid="markdownHeader"

@@ -19681,6 +19681,9 @@ msgstr ""
 msgid "Integrations|Comment settings:"
 msgstr ""
 
+msgid "Integrations|Connection details"
+msgstr ""
+
 msgid "Integrations|Connection failed. Please check your settings."
 msgstr ""
 
@@ -20932,7 +20935,7 @@ msgstr ""
 msgid "JiraService|Work on Jira issues without leaving GitLab. Adds a Jira menu to access your list of Jira issues and view any issue as read-only."
 msgstr ""
 
-msgid "JiraService|You need to configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}."
+msgid "JiraService|You must configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}."
 msgstr ""
 
 msgid "Job"
