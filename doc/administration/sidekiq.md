@@ -217,6 +217,73 @@ To enable health checks for Sidekiq:
    sudo gitlab-ctl reconfigure
    ```
 
+## Configure LDAP and user or group synchronization
+
+If you use LDAP for user and group management, you must add the LDAP configuration to your Sidekiq node as well as the LDAP
+synchronization worker. If the LDAP configuration and LDAP synchronization worker are not applied to your Sidekiq node,
+users and groups are not automatically synchronized.
+
+For more information about configuring LDAP for GitLab, see:
+
+- [GitLab LDAP configuration documentation](auth/ldap/index.md#configure-ldap)
+- [LDAP synchronization documentation](auth/ldap/ldap_synchronization.md#adjust-ldap-user-sync-schedule)
+
+To enable LDAP with the synchronization worker for Sidekiq:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+   gitlab_rails['ldap_enabled'] = true
+   gitlab_rails['prevent_ldap_sign_in'] = false
+   gitlab_rails['ldap_servers'] = {
+   'main' => {
+   'label' => 'LDAP',
+   'host' =>  'ldap.mydomain.com',
+   'port' => 389,
+   'uid' => 'sAMAccountName',
+   'encryption' => 'simple_tls',
+   'verify_certificates' => true,
+   'bind_dn' => '_the_full_dn_of_the_user_you_will_bind_with',
+   'password' => '_the_password_of_the_bind_user',
+   'tls_options' => {
+      'ca_file' => '',
+      'ssl_version' => '',
+      'ciphers' => '',
+      'cert' => '',
+      'key' => ''
+   },
+   'timeout' => 10,
+   'active_directory' => true,
+   'allow_username_or_email_login' => false,
+   'block_auto_created_users' => false,
+   'base' => 'dc=example,dc=com',
+   'user_filter' => '',
+   'attributes' => {
+      'username' => ['uid', 'userid', 'sAMAccountName'],
+      'email' => ['mail', 'email', 'userPrincipalName'],
+      'name' => 'cn',
+      'first_name' => 'givenName',
+      'last_name' => 'sn'
+   },
+   'lowercase_usernames' => false,
+
+   # Enterprise Edition only
+   # https://docs.gitlab.com/ee/administration/auth/ldap/ldap_synchronization.html
+   'group_base' => '',
+   'admin_group' => '',
+   'external_groups' => [],
+   'sync_ssh_keys' => false
+   }
+   } 
+   gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
 ## Related topics
 
 - [Extra Sidekiq processes](operations/extra_sidekiq_processes.md)

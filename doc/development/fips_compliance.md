@@ -69,55 +69,10 @@ installation instructions, including the [advanced instructions for RHEL](https:
 Note that `asdf` is not used for dependency management because it's essential to
 use the RedHat-provided Go compiler and other system dependencies.
 
-### Working around broken frontend asset compilation
-
-A known bug affects asset compilation with FIPS mode enabled: [issue #322883](https://gitlab.com/gitlab-org/gitlab/-/issues/322883).
-Until this is resolved, working on frontend issues is not feasible. We can still
-work on backend issues by compiling the assets while FIPS is disabled, and
-placing GDK into [static asset mode](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#webpack-settings):
-
-1. Modify your `gdk.yml` to contain the following:
-
-   ```yaml
-   webpack:
-     host: 127.0.0.1
-     port: 3808
-     static: true
-   ```
-
-1. In the GitLab repository, apply this patch to prevent the assets from being
-   automatically deleted whenever GDK is restarted:
-
-   ```diff
-   diff --git a/scripts/frontend/webpack_dev_server.js b/scripts/frontend/webpack_dev_server.js
-   index fbb80c9617d..114720d457c 100755
-   --- a/scripts/frontend/webpack_dev_server.js
-   +++ b/scripts/frontend/webpack_dev_server.js
-   @@ -15,7 +15,7 @@ const baseConfig = {
-    // run webpack in compile-once mode and watch for changes
-    if (STATIC_MODE) {
-      nodemon({
-   -    exec: `rm -rf public/assets/webpack ; yarn run webpack && exec ruby -run -e httpd public/ -p ${DEV_SERVER_PORT}`,
-   +    exec: `ruby -run -e httpd public/ -p ${DEV_SERVER_PORT}`,
-        watch: [
-          'config/webpack.config.js',
-          'app/assets/javascripts',
-   ```
-
-1. Run this command in the GitLab repository to generate the asset files
-   to be served:
-
-   ```shell
-   bin/rails gitlab:assets:compile
-   ```
-
-Every time you change a frontend asset, you must re-run this command
-(with FIPS mode disabled) before seeing the changes.
-
 ### Enable FIPS mode
 
-After the assets are generated, run this command (as root) and restart the
-virtual machine:
+After GDK and its dependencies are installed, run this command (as
+root) and restart the virtual machine:
 
 ```shell
 fips-mode-setup --enable

@@ -10,6 +10,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/13294) in GitLab 12.0.
 > - Moved to GitLab Free.
 
+NOTE:
+Free tier namespaces on GitLab SaaS have a 5GB storage limit. To learn more, visit our [pricing page](https://about.gitlab.com/pricing/).
+
 A project's repository has a free storage quota of 10 GB. When a project's repository reaches
 the quota it is locked. You cannot push changes to a locked project. To monitor the size of each
 repository in a namespace, including a breakdown for each project, you can
