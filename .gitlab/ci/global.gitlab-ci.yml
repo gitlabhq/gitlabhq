@@ -113,7 +113,7 @@
   policy: push
 
 .qa-ruby-gems-cache: &qa-ruby-gems-cache
-  key: "qa-ruby-gems-v1"
+  key: "qa-ruby-gems-v1-debian-buster"
   paths:
     - qa/vendor/ruby/
   policy: pull
