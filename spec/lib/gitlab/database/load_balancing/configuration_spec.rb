@@ -7,13 +7,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
   let(:db_config) { ActiveRecord::DatabaseConfigurations::HashConfig.new('test', 'ci', configuration_hash) }
   let(:model) { double(:model, connection_db_config: db_config) }
 
-  before do
-    # It's confusing to think about these specs with this enabled by default so
-    # we make it disabled by default and just write the specific spec for when
-    # it's enabled
-    stub_feature_flags(force_no_sharing_primary_model: false)
-  end
-
   describe '.for_model' do
     context 'when load balancing is not configured' do
       it 'uses the default settings' do

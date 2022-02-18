@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Integrations::StiType do
     context 'SQL SELECT' do
       let(:expected_sql) do
         <<~SQL.strip
-          SELECT "integrations".* FROM "integrations" WHERE "integrations"."type" = 'AsanaService'
+          FROM "integrations" WHERE "integrations"."type" = 'AsanaService'
         SQL
       end
 
@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Integrations::StiType do
           Integration.where(type: type).to_sql
         end
 
-        expect(sql_statements).to all(eq(expected_sql))
+        expect(sql_statements).to all(end_with(expected_sql))
       end
     end
 

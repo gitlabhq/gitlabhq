@@ -20,6 +20,7 @@ class EnvironmentEntity < Grape::Entity
   expose :last_deployment, using: DeploymentEntity
   expose :stop_action_available?, as: :has_stop_action
   expose :rollout_status, if: -> (*) { can_read_deploy_board? }, using: RolloutStatusEntity
+  expose :tier
 
   expose :upcoming_deployment, if: -> (environment) { environment.upcoming_deployment } do |environment, ops|
     DeploymentEntity.represent(environment.upcoming_deployment,

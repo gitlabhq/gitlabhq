@@ -154,32 +154,50 @@ RSpec.describe 'Edit group settings' do
           namespace_select.find('button').click
           namespace_select.find('.dropdown-menu p', text: target_group_name, match: :first).click
 
-          click_button "Transfer group"
+          click_button 'Transfer group'
         end
 
         page.within(confirm_modal) do
-          expect(page).to have_text "You are going to transfer #{selected_group.name} to another namespace. Are you ABSOLUTELY sure? "
+          expect(page).to have_text "You are going to transfer #{selected_group.name} to another namespace. Are you ABSOLUTELY sure?"
 
-          fill_in "confirm_name_input", with: selected_group.name
-          click_button "Confirm"
+          fill_in 'confirm_name_input', with: selected_group.name
+          click_button 'Confirm'
         end
 
         expect(page).to have_text "Group '#{selected_group.name}' was successfully transferred."
+        expect(current_url).to include(selected_group.reload.full_path)
       end
     end
 
-    context 'with a sub group' do
+    context 'from a subgroup' do
       let(:selected_group) { create(:group, path: 'foo-subgroup', parent: group) }
-      let(:target_group_name) { "No parent group" }
 
-      it_behaves_like 'can transfer the group'
+      context 'to no parent group' do
+        let(:target_group_name) { 'No parent group' }
+
+        it_behaves_like 'can transfer the group'
+      end
+
+      context 'to a different parent group' do
+        let(:target_group) { create(:group, path: 'foo-parentgroup') }
+        let(:target_group_name) { target_group.name }
+
+        before do
+          target_group.add_owner(user)
+        end
+
+        it_behaves_like 'can transfer the group'
+      end
     end
 
-    context 'with a root group' do
+    context 'from a root group' do
       let(:selected_group) { create(:group, path: 'foo-rootgroup') }
-      let(:target_group_name) { group.name }
 
-      it_behaves_like 'can transfer the group'
+      context 'to a parent group' do
+        let(:target_group_name) { group.name }
+
+        it_behaves_like 'can transfer the group'
+      end
     end
   end
 

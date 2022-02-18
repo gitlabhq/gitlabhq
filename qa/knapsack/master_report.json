@@ -32,7 +32,6 @@
   "qa/specs/features/ee/browser_ui/10_protect/policy_alerts_list_spec.rb": 14.055217947000074,
   "qa/specs/features/browser_ui/3_create/snippet/create_personal_snippet_with_multiple_files_spec.rb": 14.212461153999811,
   "qa/specs/features/ee/api/2_plan/epics_milestone_dates_spec.rb": 14.218627059000028,
-  "qa/specs/features/browser_ui/1_manage/group/transfer_group_spec.rb": 14.295524570999987,
   "qa/specs/features/api/1_manage/project_access_token_spec.rb": 14.394589879999785,
   "qa/specs/features/ee/browser_ui/2_plan/multiple_assignees_for_issues/four_assignees_spec.rb": 14.505683429000328,
   "qa/specs/features/browser_ui/2_plan/related_issues/related_issues_spec.rb": 14.804579386000114,

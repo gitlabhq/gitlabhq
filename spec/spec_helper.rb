@@ -252,6 +252,20 @@ RSpec.configure do |config|
     ::Ci::ApplicationRecord.set_open_transactions_baseline
   end
 
+  config.around do |example|
+    if example.metadata.fetch(:stub_feature_flags, true)
+      # It doesn't make sense for this to default to enabled as we only plan to
+      # use this temporarily to override an environment variable but eventually
+      # we'll just use the environment variable value when we've completed the
+      # gradual rollout. This stub must happen in around block as there are other
+      # around blocks in tests that will run before this and get the wrong
+      # database connection.
+      stub_feature_flags(force_no_sharing_primary_model: false)
+    end
+
+    example.run
+  end
+
   config.append_after do
     ApplicationRecord.reset_open_transactions_baseline
     ::Ci::ApplicationRecord.reset_open_transactions_baseline

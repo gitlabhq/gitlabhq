@@ -75,22 +75,5 @@ RSpec.describe 'Projects > Files > User browses LFS files' do
         expect(page).to have_selector(:link_or_button, 'Edit in Web IDE')
       end
     end
-
-    context 'when feature flag :consolidated_edit_button is off' do
-      before do
-        stub_feature_flags(consolidated_edit_button: false)
-
-        click_link('files')
-        click_link('lfs')
-        click_link('lfs_object.iso')
-      end
-
-      it 'does not show single file edit link' do
-        page.within('.content') do
-          expect(page).to have_selector(:link_or_button, 'Web IDE')
-          expect(page).not_to have_css('button[data-testid="edit"')
-        end
-      end
-    end
   end
 end

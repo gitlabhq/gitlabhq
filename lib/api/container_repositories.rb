@@ -23,11 +23,17 @@ module API
         params do
           optional :tags, type: Boolean, default: false, desc: 'Determines if tags should be included'
           optional :tags_count, type: Boolean, default: false, desc: 'Determines if the tags count should be included'
+          optional :size, type: Boolean, default: false, desc: 'Determines if the size should be included'
         end
         get ':id' do
           authorize!(:read_container_image, repository)
 
-          present repository, with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count], user: current_user
+          present repository,
+                  with: Entities::ContainerRegistry::Repository,
+                  tags: params[:tags],
+                  tags_count: params[:tags_count],
+                  size: params[:size],
+                  user: current_user
         end
       end
     end

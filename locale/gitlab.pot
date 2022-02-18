@@ -11076,6 +11076,9 @@ msgstr ""
 msgid "DastProfiles|Branch missing"
 msgstr ""
 
+msgid "DastProfiles|Choose a scan method"
+msgstr ""
+
 msgid "DastProfiles|Could not create the scanner profile. Please try again."
 msgstr ""
 
@@ -11217,6 +11220,9 @@ msgstr ""
 msgid "DastProfiles|Save profile"
 msgstr ""
 
+msgid "DastProfiles|Scan method"
+msgstr ""
+
 msgid "DastProfiles|Scan mode"
 msgstr ""
 
@@ -11295,10 +11301,22 @@ msgstr ""
 msgid "DastProfiles|Website"
 msgstr ""
 
+msgid "DastProfiles|What does each method do?"
+msgstr ""
+
 msgid "DastProfiles|You can either choose a passive scan or validate the target site from the site profile management page. %{docsLinkStart}Learn more about site validation.%{docsLinkEnd}"
 msgstr ""
 
 msgid "DastProfiles|You cannot run an active scan against an unvalidated site."
+msgstr ""
+
+msgid "DastProfiles|folder/dast_example.har or https://example.com/dast_example.har"
+msgstr ""
+
+msgid "DastProfiles|folder/example.postman_collection.json or https://example.com/"
+msgstr ""
+
+msgid "DastProfiles|folder/openapi.json or https://example.com/openapi.json"
 msgstr ""
 
 msgid "DastSiteValidation|Copy HTTP header to clipboard"
@@ -17837,6 +17855,9 @@ msgid "HAR (HTTP Archive)"
 msgstr ""
 
 msgid "HAR file path or URL"
+msgstr ""
+
+msgid "HTTP Archive (HAR)"
 msgstr ""
 
 msgid "HTTP Basic: Access denied\\nYou must use a personal access token with 'api' scope for Git over HTTP.\\nYou can generate one at %{profile_personal_access_tokens_url}"

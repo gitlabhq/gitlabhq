@@ -9577,6 +9577,7 @@ Details of a container repository.
 | <a id="containerrepositorydetailsname"></a>`name` | [`String!`](#string) | Name of the container repository. |
 | <a id="containerrepositorydetailspath"></a>`path` | [`String!`](#string) | Path of the container repository. |
 | <a id="containerrepositorydetailsproject"></a>`project` | [`Project!`](#project) | Project of the container registry. |
+| <a id="containerrepositorydetailssize"></a>`size` | [`Float`](#float) | Deduplicated size of the image repository in bytes. This is only available on GitLab.com for repositories created after `2021-11-04`. |
 | <a id="containerrepositorydetailsstatus"></a>`status` | [`ContainerRepositoryStatus`](#containerrepositorystatus) | Status of the container repository. |
 | <a id="containerrepositorydetailstagscount"></a>`tagsCount` | [`Int!`](#int) | Number of tags associated with this image. |
 | <a id="containerrepositorydetailsupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the container repository was updated. |

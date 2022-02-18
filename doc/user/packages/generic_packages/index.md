@@ -6,12 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Generic Packages Repository **(FREE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4209) in GitLab 13.5.
-> - It's [deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's able to be enabled or disabled per-project.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-generic-packages-in-the-package-registry).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4209) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `generic_packages`. Enabled by default.
+> - Generally available in GitLab 14.8. [Feature flag `generic_packages`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80886) removed.
 
 Publish generic files, like release binaries, in your project's Package Registry. Then, install the packages whenever you need to use them as a dependency.
 
@@ -192,31 +188,6 @@ upload:
   stage: upload
   script:
     - Invoke-RestMethod -Headers @{ "JOB-TOKEN"="$CI_JOB_TOKEN" } -InFile path/to/file.txt -uri "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt" -Method put
-```
-
-### Enable or disable generic packages in the Package Registry
-
-Support for generic packages is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-# For the instance
-Feature.enable(:generic_packages)
-# For a single project
-Feature.enable(:generic_packages, Project.find(<project id>))
-```
-
-To disable it:
-
-```ruby
-# For the instance
-Feature.disable(:generic_packages)
-# For a single project
-Feature.disable(:generic_packages, Project.find(<project id>))
 ```
 
 ### Generic package sample project

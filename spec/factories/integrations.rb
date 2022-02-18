@@ -217,11 +217,6 @@ FactoryBot.define do
     end
   end
 
-  trait :template do
-    project { nil }
-    template { true }
-  end
-
   trait :group do
     group
     project { nil }

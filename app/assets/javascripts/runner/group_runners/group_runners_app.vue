@@ -190,6 +190,7 @@ export default {
       deep: true,
       handler() {
         // TODO Implement back button reponse using onpopstate
+        // See https://gitlab.com/gitlab-org/gitlab/-/issues/333804
         updateHistory({
           url: fromSearchToUrl(this.search),
           title: document.title,

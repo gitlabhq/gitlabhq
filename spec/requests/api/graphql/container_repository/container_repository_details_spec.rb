@@ -3,17 +3,19 @@ require 'spec_helper'
 
 RSpec.describe 'container repository details' do
   include_context 'container registry tags'
+  include_context 'container registry client stubs'
+
   using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 
   let_it_be_with_reload(:project) { create(:project) }
-  let_it_be(:container_repository) { create(:container_repository, project: project) }
+  let_it_be_with_reload(:container_repository) { create(:container_repository, project: project) }
 
   let(:query) do
     graphql_query_for(
       'containerRepository',
       { id: container_repository_global_id },
-      all_graphql_fields_for('ContainerRepositoryDetails', excluded: ['pipeline'])
+      all_graphql_fields_for('ContainerRepositoryDetails', excluded: %w[pipeline size])
     )
   end
 
@@ -217,6 +219,80 @@ RSpec.describe 'container repository details' do
       let(:name) { 1 }
 
       it_behaves_like 'returning an invalid value error'
+    end
+  end
+
+  context 'size field' do
+    let(:size_response) { container_repository_details_response.dig('size') }
+    let(:on_com) { true }
+    let(:created_at) { ::ContainerRepository::MIGRATION_PHASE_1_STARTED_AT + 3.months }
+    let(:variables) do
+      { id: container_repository_global_id }
+    end
+
+    let(:query) do
+      <<~GQL
+        query($id: ID!) {
+          containerRepository(id: $id) {
+            size
+          }
+        }
+      GQL
+    end
+
+    before do
+      allow(::Gitlab).to receive(:com?).and_return(on_com)
+      container_repository.update_column(:created_at, created_at)
+    end
+
+    it 'returns the size' do
+      stub_container_registry_gitlab_api_support(supported: true) do |client|
+        stub_container_registry_gitlab_api_repository_details(client, path: container_repository.path, size_bytes: 12345)
+      end
+
+      subject
+
+      expect(size_response).to eq(12345)
+    end
+
+    context 'with a network error' do
+      it 'returns an error' do
+        stub_container_registry_gitlab_api_network_error
+
+        subject
+
+        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+      end
+    end
+
+    context 'with not supporting the gitlab api' do
+      it 'returns nil' do
+        stub_container_registry_gitlab_api_support(supported: false)
+
+        subject
+
+        expect(size_response).to eq(nil)
+      end
+    end
+
+    context 'not on .com' do
+      let(:on_com) { false }
+
+      it 'returns nil' do
+        subject
+
+        expect(size_response).to eq(nil)
+      end
+    end
+
+    context 'with an older container repository' do
+      let(:created_at) { ::ContainerRepository::MIGRATION_PHASE_1_STARTED_AT - 3.months }
+
+      it 'returns nil' do
+        subject
+
+        expect(size_response).to eq(nil)
+      end
     end
   end
 

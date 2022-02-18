@@ -91,8 +91,8 @@ export const ACCESS_LEVEL_REF_PROTECTED = 'REF_PROTECTED';
 // CiRunnerSort
 
 export const CREATED_DESC = 'CREATED_DESC';
-export const CREATED_ASC = 'CREATED_ASC'; // TODO Add this to the API
-export const CONTACTED_DESC = 'CONTACTED_DESC'; // TODO Add this to the API
+export const CREATED_ASC = 'CREATED_ASC';
+export const CONTACTED_DESC = 'CONTACTED_DESC';
 export const CONTACTED_ASC = 'CONTACTED_ASC';
 
 export const DEFAULT_SORT = CREATED_DESC;

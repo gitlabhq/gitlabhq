@@ -653,6 +653,58 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     end
   end
 
+  describe '#size' do
+    let(:on_com) { true }
+    let(:created_at) { described_class::MIGRATION_PHASE_1_STARTED_AT + 3.months }
+
+    subject { repository.size }
+
+    before do
+      allow(::Gitlab).to receive(:com?).and_return(on_com)
+      allow(repository).to receive(:created_at).and_return(created_at)
+    end
+
+    context 'supports gitlab api on .com with a recent repository' do
+      before do
+        expect(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
+        expect(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, with_size: true).and_return(response)
+      end
+
+      context 'with a size_bytes field' do
+        let(:response) { { 'size_bytes' => 12345 } }
+
+        it { is_expected.to eq(12345) }
+      end
+
+      context 'without a size_bytes field' do
+        let(:response) { { 'foo' => 'bar' } }
+
+        it { is_expected.to eq(nil) }
+      end
+    end
+
+    context 'does not support gitlab api' do
+      before do
+        expect(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(false)
+        expect(repository.gitlab_api_client).not_to receive(:repository_details)
+      end
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'not on .com' do
+      let(:on_com) { false }
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'with an old repository' do
+      let(:created_at) { described_class::MIGRATION_PHASE_1_STARTED_AT - 3.months }
+
+      it { is_expected.to eq(nil) }
+    end
+  end
+
   describe '#reset_expiration_policy_started_at!' do
     subject { repository.reset_expiration_policy_started_at! }
 

@@ -102,16 +102,6 @@ module QA
 
             click_element(:save_permissions_changes_button)
           end
-
-          def transfer_group(target_group, source_group)
-            expand_content :advanced_settings_content
-
-            select_namespace(target_group)
-            click_element(:transfer_button)
-
-            fill_confirmation_text(source_group)
-            confirm_transfer
-          end
         end
       end
     end

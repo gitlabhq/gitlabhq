@@ -145,7 +145,7 @@ module Integrations
     end
 
     def one_issue_tracker
-      return if template? || instance?
+      return if instance?
       return if project.blank?
 
       if project.integrations.external_issue_trackers.where.not(id: id).any?

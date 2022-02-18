@@ -1,4 +1,3 @@
-import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import BlobEdit from '~/repository/components/blob_edit.vue';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
@@ -13,16 +12,11 @@ const DEFAULT_PROPS = {
 describe('BlobEdit component', () => {
   let wrapper;
 
-  const createComponent = (consolidatedEditButton = false, props = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(BlobEdit, {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,
-      },
-      provide: {
-        glFeatures: {
-          consolidatedEditButton,
-        },
       },
     });
   };
@@ -32,9 +26,7 @@ describe('BlobEdit component', () => {
     wrapper = null;
   });
 
-  const findButtons = () => wrapper.findAll(GlButton);
   const findEditButton = () => wrapper.find('[data-testid="edit"]');
-  const findWebIdeButton = () => wrapper.find('[data-testid="web-ide"]');
   const findWebIdeLink = () => wrapper.find(WebIdeLink);
 
   it('renders component', () => {
@@ -48,28 +40,8 @@ describe('BlobEdit component', () => {
     });
   });
 
-  it('renders both buttons', () => {
-    createComponent();
-
-    expect(findButtons()).toHaveLength(2);
-  });
-
-  it('renders the Edit button', () => {
-    createComponent();
-
-    expect(findEditButton().text()).toBe('Edit');
-    expect(findEditButton()).not.toBeDisabled();
-  });
-
-  it('renders the Web IDE button', () => {
-    createComponent();
-
-    expect(findWebIdeButton().text()).toBe('Web IDE');
-    expect(findWebIdeButton()).not.toBeDisabled();
-  });
-
   it('renders WebIdeLink component', () => {
-    createComponent(true);
+    createComponent();
 
     const { editPath: editUrl, webIdePath: webIdeUrl, needsToFork } = DEFAULT_PROPS;
 
@@ -86,13 +58,13 @@ describe('BlobEdit component', () => {
     const showEditButton = false;
 
     it('renders WebIdeLink component without an edit button', () => {
-      createComponent(true, { showEditButton });
+      createComponent({ showEditButton });
 
       expect(findWebIdeLink().props()).toMatchObject({ showEditButton });
     });
 
     it('does not render an Edit button', () => {
-      createComponent(false, { showEditButton });
+      createComponent({ showEditButton });
 
       expect(findEditButton().exists()).toBe(false);
     });

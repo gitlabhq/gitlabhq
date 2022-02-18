@@ -268,7 +268,7 @@ RSpec.describe Integration do
   describe '.build_from_integration' do
     context 'when integration is invalid' do
       let(:invalid_integration) do
-        build(:prometheus_integration, :template, active: true, properties: {})
+        build(:prometheus_integration, :instance, active: true, properties: {})
           .tap { |integration| integration.save!(validate: false) }
       end
 

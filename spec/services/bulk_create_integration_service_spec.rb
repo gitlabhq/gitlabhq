@@ -13,7 +13,6 @@ RSpec.describe BulkCreateIntegrationService do
   let_it_be(:excluded_project) { create(:project, group: excluded_group) }
 
   let(:instance_integration) { create(:jira_integration, :instance) }
-  let(:template_integration) { create(:jira_integration, :template) }
   let(:excluded_attributes) { %w[id project_id group_id inherit_from_id instance template created_at updated_at] }
 
   shared_examples 'creates integration from batch ids' do

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::ContainerRepositories do
+  include_context 'container registry client stubs'
+
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:guest) { create(:user) }
@@ -101,6 +103,68 @@ RSpec.describe API::ContainerRepositories do
 
           expect(response.body).to include('tags_count')
           expect(json_response['tags_count']).to eq(2)
+        end
+      end
+
+      context 'with size param' do
+        let(:url) { "/registry/repositories/#{repository.id}?size=true" }
+        let(:on_com) { true }
+        let(:created_at) { ::ContainerRepository::MIGRATION_PHASE_1_STARTED_AT + 3.months }
+
+        before do
+          allow(::Gitlab).to receive(:com?).and_return(on_com)
+          repository.update_column(:created_at, created_at)
+        end
+
+        it 'returns a repository and its size' do
+          stub_container_registry_gitlab_api_support(supported: true) do |client|
+            stub_container_registry_gitlab_api_repository_details(client, path: repository.path, size_bytes: 12345)
+          end
+
+          subject
+
+          expect(json_response['size']).to eq(12345)
+        end
+
+        context 'with a network error' do
+          it 'returns an error message' do
+            stub_container_registry_gitlab_api_network_error
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:service_unavailable)
+            expect(json_response['message']).to include('We are having trouble connecting to the Container Registry')
+          end
+        end
+
+        context 'with not supporting the gitlab api' do
+          it 'returns nil' do
+            stub_container_registry_gitlab_api_support(supported: false)
+
+            subject
+
+            expect(json_response['size']).to eq(nil)
+          end
+        end
+
+        context 'not on .com' do
+          let(:on_com) { false }
+
+          it 'returns nil' do
+            subject
+
+            expect(json_response['size']).to eq(nil)
+          end
+        end
+
+        context 'with an older container repository' do
+          let(:created_at) { ::ContainerRepository::MIGRATION_PHASE_1_STARTED_AT - 3.months }
+
+          it 'returns nil' do
+            subject
+
+            expect(json_response['size']).to eq(nil)
+          end
         end
       end
     end

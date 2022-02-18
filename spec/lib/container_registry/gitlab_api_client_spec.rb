@@ -6,8 +6,11 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
   using RSpec::Parameterized::TableSyntax
 
   include_context 'container registry client'
+  include_context 'container registry client stubs'
 
   let(:path) { 'namespace/path/to/repository' }
+  let(:import_token) { 'import_token' }
+  let(:options) { { token: token, import_token: import_token } }
 
   describe '#supports_gitlab_api?' do
     subject { client.supports_gitlab_api? }
@@ -121,6 +124,40 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
     end
   end
 
+  describe '#repository_details' do
+    let(:path) { 'namespace/path/to/repository' }
+    let(:response) { { foo: :bar, this: :is_a_test } }
+    let(:with_size) { true }
+
+    subject { client.repository_details(path, with_size: with_size) }
+
+    context 'with size' do
+      before do
+        stub_repository_details(path, with_size: with_size, respond_with: response)
+      end
+
+      it { is_expected.to eq(response.stringify_keys.deep_transform_values(&:to_s)) }
+    end
+
+    context 'without_size' do
+      let(:with_size) { false }
+
+      before do
+        stub_repository_details(path, with_size: with_size, respond_with: response)
+      end
+
+      it { is_expected.to eq(response.stringify_keys.deep_transform_values(&:to_s)) }
+    end
+
+    context 'with non successful response' do
+      before do
+        stub_repository_details(path, with_size: with_size, status_code: 404)
+      end
+
+      it { is_expected.to eq({}) }
+    end
+  end
+
   describe '.supports_gitlab_api?' do
     subject { described_class.supports_gitlab_api? }
 
@@ -181,7 +218,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
 
   def stub_pre_import(path, status_code, pre:)
     stub_request(:put, "#{registry_api_url}/gitlab/v1/import/#{path}/?pre=#{pre}")
-      .with(headers: { 'Accept' => described_class::JSON_TYPE })
+      .with(headers: { 'Accept' => described_class::JSON_TYPE, 'Authorization' => "bearer #{import_token}" })
       .to_return(status: status_code, body: '')
   end
 
@@ -194,11 +231,19 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
 
   def stub_import_status(path, status)
     stub_request(:get, "#{registry_api_url}/gitlab/v1/import/#{path}/")
-      .with(headers: { 'Accept' => described_class::JSON_TYPE })
+      .with(headers: { 'Accept' => described_class::JSON_TYPE, 'Authorization' => "bearer #{import_token}" })
       .to_return(
         status: 200,
         body: { status: status }.to_json,
         headers: { content_type: 'application/json' }
       )
+  end
+
+  def stub_repository_details(path, with_size: true, status_code: 200, respond_with: {})
+    url = "#{registry_api_url}/gitlab/v1/repositories/#{path}/"
+    url += "?size=self" if with_size
+    stub_request(:get, url)
+      .with(headers: { 'Accept' => described_class::JSON_TYPE, 'Authorization' => "bearer #{token}" })
+      .to_return(status: status_code, body: respond_with.to_json, headers: { 'Content-Type' => described_class::JSON_TYPE })
   end
 end

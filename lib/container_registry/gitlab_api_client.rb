@@ -31,8 +31,10 @@ module ContainerRegistry
         registry_features = Gitlab::CurrentSettings.container_registry_features || []
         next true if ::Gitlab.com? && registry_features.include?(REGISTRY_GITLAB_V1_API_FEATURE)
 
-        response = faraday.get('/gitlab/v1/')
-        response.success? || response.status == 401
+        with_token_faraday do |faraday_client|
+          response = faraday_client.get('/gitlab/v1/')
+          response.success? || response.status == 401
+        end
       end
     end
 
@@ -50,15 +52,46 @@ module ContainerRegistry
 
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#get-repository-import-status
     def import_status(path)
-      body_hash = response_body(faraday.get(import_url_for(path)))
-      body_hash['status'] || 'error'
+      with_import_token_faraday do |faraday_client|
+        body_hash = response_body(faraday_client.get(import_url_for(path)))
+        body_hash['status'] || 'error'
+      end
+    end
+
+    def repository_details(path, with_size: false)
+      with_token_faraday do |faraday_client|
+        req = faraday_client.get("/gitlab/v1/repositories/#{path}/") do |req|
+          req.params['size'] = 'self' if with_size
+        end
+
+        break {} unless req.success?
+
+        response_body(req)
+      end
     end
 
     private
 
     def start_import_for(path, pre:)
-      faraday.put(import_url_for(path)) do |req|
-        req.params['pre'] = pre.to_s
+      with_import_token_faraday do |faraday_client|
+        faraday_client.put(import_url_for(path)) do |req|
+          req.params['pre'] = pre.to_s
+        end
+      end
+    end
+
+    def with_token_faraday
+      yield faraday
+    end
+
+    def with_import_token_faraday
+      yield faraday_with_import_token
+    end
+
+    def faraday_with_import_token(timeout_enabled: true)
+      @faraday_with_import_token ||= faraday_base(timeout_enabled: timeout_enabled) do |conn|
+        # initialize the connection with the :import_token instead of :token
+        initialize_connection(conn, @options.merge(token: @options[:import_token]), &method(:configure_connection))
       end
     end
 

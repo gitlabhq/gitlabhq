@@ -9,6 +9,9 @@ class Integration < ApplicationRecord
   include Integrations::HasDataFields
   include FromUnion
   include EachBatch
+  include IgnorableColumns
+
+  ignore_column :template, remove_with: '14.10', remove_after: '2022-03-22'
 
   INTEGRATION_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord

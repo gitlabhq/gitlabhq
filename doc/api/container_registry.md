@@ -210,10 +210,11 @@ GET /registry/repositories/:id
 | `id`      | integer/string | yes | The ID of the registry repository accessible by the authenticated user. |
 | `tags`      | boolean | no | If the parameter is included as `true`, the response includes an array of `"tags"`. |
 | `tags_count` | boolean | no | If the parameter is included as `true`, the response includes `"tags_count"`. |
+| `size` | boolean | no | If the parameter is included as `true`, the response includes `"size"`. This is the deduplicated size of all images within the repository. Deduplication eliminates extra copies of identical data. For example, if you upload the same image twice, the Container Registry stores only one copy. This field is only available on GitLab.com for repositories created after `2021-11-04`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/registry/repositories/2?tags=true&tags_count=true"
+     "https://gitlab.example.com/api/v4/registry/repositories/2?tags=true&tags_count=true&size=true"
 ```
 
 Example response:
@@ -234,7 +235,8 @@ Example response:
       "path": "group/project:0.0.1",
       "location": "gitlab.example.com:5000/group/project:0.0.1"
     }
-  ]
+  ],
+  "size": 2818413
 }
 ```
 

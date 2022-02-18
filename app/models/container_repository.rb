@@ -14,6 +14,8 @@ class ContainerRepository < ApplicationRecord
   ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
   MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
 
+  MIGRATION_PHASE_1_STARTED_AT = Date.new(2021, 11, 4).freeze
+
   TooManyImportsError = Class.new(StandardError)
   NativeImportError = Class.new(StandardError)
 
@@ -406,6 +408,16 @@ class ContainerRepository < ApplicationRecord
 
   def start_expiration_policy!
     update!(expiration_policy_started_at: Time.zone.now)
+  end
+
+  def size
+    strong_memoize(:size) do
+      next unless Gitlab.com?
+      next if self.created_at.before?(MIGRATION_PHASE_1_STARTED_AT)
+      next unless gitlab_api_client.supports_gitlab_api?
+
+      gitlab_api_client.repository_details(self.path, with_size: true)['size_bytes']
+    end
   end
 
   def migration_in_active_state?
