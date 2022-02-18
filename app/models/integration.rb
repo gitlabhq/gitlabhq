@@ -11,7 +11,7 @@ class Integration < ApplicationRecord
   include EachBatch
   include IgnorableColumns
 
-  ignore_column :template, remove_with: '14.10', remove_after: '2022-03-22'
+  ignore_column :template, remove_with: '15.0', remove_after: '2022-04-22'
 
   INTEGRATION_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord

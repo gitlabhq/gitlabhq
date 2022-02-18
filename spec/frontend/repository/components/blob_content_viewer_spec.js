@@ -10,7 +10,7 @@ import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
-import BlobEdit from '~/repository/components/blob_edit.vue';
+import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import ForkSuggestion from '~/repository/components/fork_suggestion.vue';
 import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
@@ -99,7 +99,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
 describe('Blob content viewer component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBlobHeader = () => wrapper.findComponent(BlobHeader);
-  const findBlobEdit = () => wrapper.findComponent(BlobEdit);
+  const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
   const findPipelineEditor = () => wrapper.findByTestId('pipeline-editor');
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
@@ -255,32 +255,32 @@ describe('Blob content viewer component', () => {
   describe('BlobHeader action slot', () => {
     const { ideEditPath, editBlobPath } = simpleViewerMock;
 
-    it('renders BlobHeaderEdit buttons in simple viewer', async () => {
+    it('renders WebIdeLink button in simple viewer', async () => {
       await createComponent({ inject: { BlobContent: true, BlobReplace: true } }, mount);
 
-      expect(findBlobEdit().props()).toMatchObject({
-        editPath: editBlobPath,
-        webIdePath: ideEditPath,
+      expect(findWebIdeLink().props()).toMatchObject({
+        editUrl: editBlobPath,
+        webIdeUrl: ideEditPath,
         showEditButton: true,
       });
     });
 
-    it('renders BlobHeaderEdit button in rich viewer', async () => {
+    it('renders WebIdeLink button in rich viewer', async () => {
       await createComponent({ blob: richViewerMock }, mount);
 
-      expect(findBlobEdit().props()).toMatchObject({
-        editPath: editBlobPath,
-        webIdePath: ideEditPath,
+      expect(findWebIdeLink().props()).toMatchObject({
+        editUrl: editBlobPath,
+        webIdeUrl: ideEditPath,
         showEditButton: true,
       });
     });
 
-    it('renders BlobHeaderEdit button for binary files', async () => {
+    it('renders WebIdeLink button for binary files', async () => {
       await createComponent({ blob: richViewerMock, isBinary: true }, mount);
 
-      expect(findBlobEdit().props()).toMatchObject({
-        editPath: editBlobPath,
-        webIdePath: ideEditPath,
+      expect(findWebIdeLink().props()).toMatchObject({
+        editUrl: editBlobPath,
+        webIdeUrl: ideEditPath,
         showEditButton: false,
       });
     });
@@ -318,7 +318,7 @@ describe('Blob content viewer component', () => {
 
         expect(findBlobHeader().props('hideViewerSwitcher')).toBe(true);
         expect(findBlobHeader().props('isBinary')).toBe(true);
-        expect(findBlobEdit().props('showEditButton')).toBe(false);
+        expect(findWebIdeLink().props('showEditButton')).toBe(false);
       });
     });
 
@@ -401,12 +401,12 @@ describe('Blob content viewer component', () => {
     beforeEach(() => createComponent({}, mount));
 
     it('simple edit redirects to the simple editor', () => {
-      findBlobEdit().vm.$emit('edit', 'simple');
+      findWebIdeLink().vm.$emit('edit', 'simple');
       expect(redirectTo).toHaveBeenCalledWith(simpleViewerMock.editBlobPath);
     });
 
     it('IDE edit redirects to the IDE editor', () => {
-      findBlobEdit().vm.$emit('edit', 'ide');
+      findWebIdeLink().vm.$emit('edit', 'ide');
       expect(redirectTo).toHaveBeenCalledWith(simpleViewerMock.ideEditPath);
     });
 
@@ -435,7 +435,7 @@ describe('Blob content viewer component', () => {
           mount,
         );
 
-        findBlobEdit().vm.$emit('edit', 'simple');
+        findWebIdeLink().vm.$emit('edit', 'simple');
         await nextTick();
 
         expect(findForkSuggestion().exists()).toBe(showForkSuggestion);

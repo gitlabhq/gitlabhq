@@ -10,6 +10,14 @@ RSpec.describe API::Integrations do
     create(:project, creator_id: user.id, namespace: user.namespace)
   end
 
+  # The API supports all integrations except the GitLab Slack Application
+  # integration; this integration must be installed via the UI.
+  def self.integration_names
+    names = Integration.available_integration_names
+    names.delete(Integrations::GitlabSlackApplication.to_param) if Gitlab.ee?
+    names
+  end
+
   %w[integrations services].each do |endpoint|
     describe "GET /projects/:id/#{endpoint}" do
       it 'returns authentication error when unauthenticated' do
@@ -43,7 +51,7 @@ RSpec.describe API::Integrations do
       end
     end
 
-    Integration.available_integration_names.each do |integration|
+    integration_names.each do |integration|
       describe "PUT /projects/:id/#{endpoint}/#{integration.dasherize}" do
         include_context integration
 

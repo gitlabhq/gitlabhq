@@ -111,6 +111,15 @@ class ApplicationController < ActionController::Base
     render plain: e.message, status: :too_many_requests
   end
 
+  content_security_policy do |p|
+    next if p.directives.blank?
+    next unless Gitlab::CurrentSettings.snowplow_enabled? && !Gitlab::CurrentSettings.snowplow_collector_hostname.blank?
+
+    default_connect_src = p.directives['connect-src'] || p.directives['default-src']
+    connect_src_values = Array.wrap(default_connect_src) | [Gitlab::CurrentSettings.snowplow_collector_hostname]
+    p.connect_src(*connect_src_values)
+  end
+
   def redirect_back_or_default(default: root_path, options: {})
     redirect_back(fallback_location: default, **options)
   end

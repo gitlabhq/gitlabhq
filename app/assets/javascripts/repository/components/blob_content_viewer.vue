@@ -10,11 +10,11 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE } from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
-import BlobEdit from './blob_edit.vue';
 import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
 
@@ -24,12 +24,12 @@ export default {
   },
   components: {
     BlobHeader,
-    BlobEdit,
     BlobButtonGroup,
     BlobContent,
     GlLoadingIcon,
     GlButton,
     ForkSuggestion,
+    WebIdeLink,
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
@@ -213,12 +213,15 @@ export default {
         @viewer-changed="switchViewer"
       >
         <template #actions>
-          <blob-edit
+          <web-ide-link
             v-if="!blobInfo.archived"
             :show-edit-button="!isBinaryFileType"
-            :edit-path="blobInfo.editBlobPath"
-            :web-ide-path="blobInfo.ideEditPath"
+            class="gl-mr-3"
+            :edit-url="blobInfo.editBlobPath"
+            :web-ide-url="blobInfo.ideEditPath"
             :needs-to-fork="showForkSuggestion"
+            is-blob
+            disable-fork-modal
             @edit="editBlob"
           />
 

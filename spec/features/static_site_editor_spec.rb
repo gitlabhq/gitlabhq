@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Static Site Editor' do
+  include ContentSecurityPolicyHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
 
@@ -79,10 +81,7 @@ RSpec.describe 'Static Site Editor' do
 
     context 'when no global CSP config exists' do
       before do
-        expect_next_instance_of(Projects::StaticSiteEditorController) do |controller|
-          expect(controller).to receive(:current_content_security_policy)
-            .and_return(ActionDispatch::ContentSecurityPolicy.new)
-        end
+        setup_csp_for_controller(Projects::StaticSiteEditorController)
       end
 
       it 'does not add CSP directives' do
@@ -101,9 +100,7 @@ RSpec.describe 'Static Site Editor' do
           p.frame_src :self, cdn_url
         end
 
-        expect_next_instance_of(Projects::StaticSiteEditorController) do |controller|
-          expect(controller).to receive(:current_content_security_policy).and_return(csp)
-        end
+        setup_existing_csp_for_controller(Projects::StaticSiteEditorController, csp)
       end
 
       it 'appends youtube to the CSP frame-src policy' do

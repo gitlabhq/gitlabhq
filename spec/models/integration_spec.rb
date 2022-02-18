@@ -566,6 +566,12 @@ RSpec.describe Integration do
     end
   end
 
+  describe '.integration_name_to_type' do
+    it 'transforms the name to a type' do
+      expect(described_class.integration_name_to_type('asana')).to eq('AsanaService')
+    end
+  end
+
   describe "{property}_changed?" do
     let(:integration) do
       Integrations::Bamboo.create!(
@@ -774,35 +780,33 @@ RSpec.describe Integration do
   end
 
   describe '.available_integration_names' do
-    it 'calls the right methods' do
-      expect(described_class).to receive(:integration_names).and_call_original
-      expect(described_class).to receive(:dev_integration_names).and_call_original
-      expect(described_class).to receive(:project_specific_integration_names).and_call_original
+    subject { described_class.available_integration_names }
 
-      described_class.available_integration_names
+    before do
+      allow(described_class).to receive(:integration_names).and_return(%w(foo))
+      allow(described_class).to receive(:project_specific_integration_names).and_return(['bar'])
+      allow(described_class).to receive(:dev_integration_names).and_return(['baz'])
     end
 
-    it 'does not call project_specific_integration_names with include_project_specific false' do
-      expect(described_class).to receive(:integration_names).and_call_original
-      expect(described_class).to receive(:dev_integration_names).and_call_original
-      expect(described_class).not_to receive(:project_specific_integration_names)
+    it { is_expected.to include('foo', 'bar', 'baz') }
 
-      described_class.available_integration_names(include_project_specific: false)
+    context 'when `include_project_specific` is false' do
+      subject { described_class.available_integration_names(include_project_specific: false) }
+
+      it { is_expected.to include('foo', 'baz') }
+      it { is_expected.not_to include('bar') }
     end
 
-    it 'does not call dev_integration_names with include_dev false' do
-      expect(described_class).to receive(:integration_names).and_call_original
-      expect(described_class).not_to receive(:dev_integration_names)
-      expect(described_class).to receive(:project_specific_integration_names).and_call_original
+    context 'when `include_dev` is false' do
+      subject { described_class.available_integration_names(include_dev: false) }
 
-      described_class.available_integration_names(include_dev: false)
+      it { is_expected.to include('foo', 'bar') }
+      it { is_expected.not_to include('baz') }
     end
-
-    it { expect(described_class.available_integration_names).to include('jenkins') }
   end
 
   describe '.project_specific_integration_names' do
-    it do
+    specify do
       expect(described_class.project_specific_integration_names)
         .to include(*described_class::PROJECT_SPECIFIC_INTEGRATION_NAMES)
     end

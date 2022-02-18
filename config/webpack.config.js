@@ -714,7 +714,14 @@ module.exports = {
     },
     host: DEV_SERVER_HOST || 'localhost',
     port: DEV_SERVER_PORT || 3808,
+    // Setting up hot module reloading
+    // HMR works by setting up a websocket server and injecting
+    // a client script which connects to that server.
+    // The server will push messages to the client to reload parts
+    // of the JavaScript or reload the page if necessary
+    webSocketServer: DEV_SERVER_LIVERELOAD ? 'ws' : false,
     hot: DEV_SERVER_LIVERELOAD,
+    liveReload: DEV_SERVER_LIVERELOAD,
     // The following settings are mainly needed for HMR support in gitpod.
     // Per default only local hosts are allowed, but here we could
     // allow different hosts (e.g. ['.gitpod'], all of gitpod),

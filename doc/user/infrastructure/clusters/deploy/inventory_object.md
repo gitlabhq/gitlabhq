@@ -20,7 +20,7 @@ The default behavior is:
   explicitly, the inventory object is stored in the `default` namespace.
 - The `name` is generated from the numeric project ID of the manifest project and the numeric agent ID.
 
-  This way the Agent constructs the name and local where the inventory object is
+  This way, the Agent constructs the name and location where the inventory object is
   stored in the cluster.
 
 The Agent cannot locate the existing inventory object if you:
@@ -31,7 +31,7 @@ The Agent cannot locate the existing inventory object if you:
 ## Inventory object template
 
 The inventory object template is a `ConfigMap` object that allows you to configure the namespace and the name of the inventory
-object. Store this template with manifest files in a single group.
+object. Store this template with manifest files as a single logical group.
 
 Example inventory object template:
 

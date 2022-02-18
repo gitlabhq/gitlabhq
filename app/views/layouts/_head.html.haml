@@ -38,6 +38,7 @@
 
   = render 'layouts/startup_css', { startup_filename: local_assigns.fetch(:startup_filename, nil) }
   - if user_application_theme == 'gl-dark'
+    %meta{ name: 'color-scheme', content: 'dark light' }
     = stylesheet_link_tag_defer "application_dark"
     = yield :page_specific_styles
     = stylesheet_link_tag_defer "application_utilities_dark"

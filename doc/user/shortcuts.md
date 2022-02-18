@@ -37,8 +37,8 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>i</kbd> | Go to your Issues page. |
 | <kbd>Shift</kbd> + <kbd>m</kbd> | Go to your [Merge requests](project/merge_requests/index.md) page. |
 | <kbd>Shift</kbd> + <kbd>t</kbd> | Go to your To-Do List page. |
-| <kbd>p</kbd> + <kbd>b</kbd>     | Show or hide the Performance Bar. |
-| <kbd>g</kbd> + <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
+| <kbd>p</kbd> then <kbd>b</kbd>     | Show or hide the Performance Bar. |
+| <kbd>g</kbd> then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
 | <kbd>.</kbd>                    | Open the [Web IDE](project/web_ide/index.md). |
 
 Additionally, the following shortcuts are available when editing text in text

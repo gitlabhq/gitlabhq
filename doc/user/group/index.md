@@ -559,6 +559,8 @@ Decreasing the user cap does not approve pending members.
 When the number of billable users reaches the user cap, any new member is put in a pending state
 and must be approved.
 
+Pending members do not count as billable. Members count as billable only after they have been approved and are no longer in a pending state.
+
 Prerequisite:
 
 - You must be assigned the Owner role) for the group.
