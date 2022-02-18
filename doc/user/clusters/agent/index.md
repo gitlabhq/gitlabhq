@@ -32,8 +32,6 @@ Kubernetes version to a supported version at any time:
 
 - 1.20 (support ends on July 22, 2022)
 - 1.19 (support ends on February 22, 2022)
-- 1.18 (support ends on November 22, 2021)
-- 1.17 (support ends on September 22, 2021)
 
 GitLab supports at least two production-ready Kubernetes minor
 versions at any given time. GitLab regularly reviews the supported versions and

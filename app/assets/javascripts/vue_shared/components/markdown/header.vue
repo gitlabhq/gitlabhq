@@ -171,8 +171,12 @@ export default {
         @click="previewMarkdownTab($event)"
       />
 
-      <template v-if="!previewMarkdown" #tabs-end>
-        <div class="md-header-toolbar gl-ml-auto gl-pb-3 gl-justify-content-center">
+      <template #tabs-end>
+        <div
+          data-testid="md-header-toolbar"
+          :class="{ 'gl-display-none': previewMarkdown }"
+          class="md-header-toolbar gl-ml-auto gl-pb-3 gl-justify-content-center"
+        >
           <toolbar-button
             tag="**"
             :button-title="

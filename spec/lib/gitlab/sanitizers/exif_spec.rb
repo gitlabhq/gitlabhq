@@ -131,6 +131,124 @@ RSpec.describe Gitlab::Sanitizers::Exif do
     end
   end
 
+  describe '#clean_existing_path' do
+    let(:dry_run) { false }
+
+    let(:tmp_file) { Tempfile.new("rails_sample.jpg") }
+
+    subject { sanitizer.clean_existing_path(tmp_file.path, dry_run: dry_run) }
+
+    context "no dry run" do
+      let(:file_content) { fixture_file_upload('spec/fixtures/rails_sample.jpg') }
+
+      before do
+        File.open(tmp_file.path, "w+b") { |f| f.write file_content }
+      end
+
+      it "removes exif from the image" do
+        expected_args = ["exiftool", "-all=", "-tagsFromFile", "@", *Gitlab::Sanitizers::Exif::EXCLUDE_PARAMS, "--IPTC:all", "--XMP-iptcExt:all", kind_of(String)]
+
+        expect(sanitizer).to receive(:extra_tags).and_return(["", 0])
+        expect(sanitizer).to receive(:exec_remove_exif!).once.and_call_original
+        expect(Gitlab::Popen).to receive(:popen).with(expected_args) do |args|
+          File.write("#{args.last}_original", "foo") if args.last.start_with?(Dir.tmpdir)
+
+          [expected_args, 0]
+        end
+
+        subject
+      end
+
+      it "ignores image without exif" do
+        expected_args = ["exiftool", "-all", "-j", "-sort", "--IPTC:all", "--XMP-iptcExt:all", kind_of(String)]
+
+        expect(Gitlab::Popen).to receive(:popen).with(expected_args).and_return(["[{}]", 0])
+        expect(sanitizer).not_to receive(:exec_remove_exif!)
+
+        subject
+      end
+
+      it "raises an error if the exiftool fails with an error" do
+        expect(Gitlab::Popen).to receive(:popen).and_return(["error", 1])
+
+        expect { subject }.to raise_exception(RuntimeError, "failed to get exif tags: error")
+      end
+
+      context 'for files that do not have the correct MIME type from file' do
+        let(:mime_type) { 'text/plain' }
+
+        it 'cleans only jpg/tiff images with the correct mime types' do
+          expect(sanitizer).not_to receive(:extra_tags)
+
+          expect { subject }.to raise_error(RuntimeError, %r{File type text/plain not supported})
+        end
+      end
+
+      context 'skip_unallowed_types is false' do
+        context 'for files that do not have the correct MIME type from input content' do
+          let(:mime_type) { 'text/plain' }
+
+          it 'raises an error if not jpg/tiff images with the correct mime types' do
+            expect(sanitizer).not_to receive(:extra_tags)
+
+            expect do
+              sanitizer.clean_existing_path(tmp_file.path, content: file_content)
+            end.to raise_error(RuntimeError, %r{File type text/plain not supported})
+          end
+        end
+
+        context 'for files that do not have the correct MIME type from input content' do
+          let(:mime_type) { 'text/plain' }
+
+          it 'raises an error if not jpg/tiff images with the correct mime types' do
+            expect(sanitizer).not_to receive(:extra_tags)
+
+            expect do
+              sanitizer.clean_existing_path(tmp_file.path, content: file_content)
+            end.to raise_error(RuntimeError, %r{File type text/plain not supported})
+          end
+        end
+      end
+
+      context 'skip_unallowed_types is true' do
+        context 'for files that do not have the correct MIME type from input content' do
+          let(:mime_type) { 'text/plain' }
+
+          it 'cleans only jpg/tiff images with the correct mime types' do
+            expect(sanitizer).not_to receive(:extra_tags)
+
+            expect do
+              sanitizer.clean_existing_path(tmp_file.path, content: file_content, skip_unallowed_types: true)
+            end.not_to raise_error
+          end
+        end
+
+        context 'for files that do not have the correct MIME type from input content' do
+          let(:mime_type) { 'text/plain' }
+
+          it 'cleans only jpg/tiff images with the correct mime types' do
+            expect(sanitizer).not_to receive(:extra_tags)
+
+            expect do
+              sanitizer.clean_existing_path(tmp_file.path, content: file_content, skip_unallowed_types: true)
+            end.not_to raise_error
+          end
+        end
+      end
+    end
+
+    context "dry run" do
+      let(:dry_run) { true }
+
+      it "doesn't change the image" do
+        expect(sanitizer).to receive(:extra_tags).and_return({ 'foo' => 'bar' })
+        expect(sanitizer).not_to receive(:exec_remove_exif!)
+
+        subject
+      end
+    end
+  end
+
   describe "#extra_tags" do
     it "returns a list of keys for exif file" do
       tags = '[{

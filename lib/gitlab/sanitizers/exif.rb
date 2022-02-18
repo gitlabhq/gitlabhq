@@ -97,6 +97,28 @@ module Gitlab
         end
       end
 
+      def clean_existing_path(src_path, dry_run: false, content: nil, skip_unallowed_types: false)
+        content ||= File.read(src_path)
+
+        if skip_unallowed_types
+          return unless check_for_allowed_types(content, raise_error: false)
+        else
+          check_for_allowed_types(content)
+        end
+
+        to_remove = extra_tags(src_path)
+
+        if to_remove.empty?
+          logger.info "#{src_path}: only whitelisted tags present, skipping"
+          return
+        end
+
+        logger.info "#{src_path}: found exif tags to remove: #{to_remove}"
+        return if dry_run
+
+        exec_remove_exif!(src_path)
+      end
+
       private
 
       def extra_tags(path)
@@ -146,12 +168,15 @@ module Gitlab
         filename
       end
 
-      def check_for_allowed_types(contents)
+      def check_for_allowed_types(contents, raise_error: true)
         mime_type = Gitlab::Utils::MimeType.from_string(contents)
 
-        unless ALLOWED_MIME_TYPES.include?(mime_type)
+        allowed = ALLOWED_MIME_TYPES.include?(mime_type)
+        if !allowed && raise_error
           raise "File type #{mime_type} not supported. Only supports #{ALLOWED_MIME_TYPES.join(", ")}."
         end
+
+        allowed
       end
 
       def upload_ref(upload)

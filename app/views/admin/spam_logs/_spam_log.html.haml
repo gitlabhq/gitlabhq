@@ -24,7 +24,7 @@
   %td
     - if user
       = link_to _('Remove user'), admin_spam_log_path(spam_log, remove_user: true),
-        data: { confirm: _("USER %{user_name} WILL BE REMOVED! Are you sure?") % { user_name: user.name } }, method: :delete, class: "gl-button btn btn-sm btn-danger"
+        data: { confirm: _("USER %{user_name} WILL BE REMOVED! Are you sure?") % { user_name: user.name }, confirm_btn_variant: 'danger' }, aria: { label: _('Remove user') }, method: :delete, class: "gl-button btn btn-sm btn-danger"
   %td
     - if spam_log.submitted_as_ham?
       .gl-button.btn.btn-default.btn-sm.disabled.gl-mb-3

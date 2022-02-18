@@ -3,12 +3,12 @@
 module Mutations
   module WorkItems
     class CreateFromTask < BaseMutation
+      graphql_name 'WorkItemCreateFromTask'
+
       include Mutations::SpamProtection
 
       description "Creates a work item from a task in another work item's description." \
                   " Available only when feature flag `work_items` is enabled. This feature is experimental and is subject to change without notice."
-
-      graphql_name 'WorkItemCreateFromTask'
 
       authorize :update_work_item
 
