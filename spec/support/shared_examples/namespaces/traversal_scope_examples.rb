@@ -90,7 +90,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.roots'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         expect { described_class.where(id: [nested_group_1]).roots.load }.to make_queries_matching(/WITH RECURSIVE/)
       end
     end
@@ -159,7 +159,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.self_and_ancestors'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         expect { described_class.where(id: [nested_group_1]).self_and_ancestors.load }.to make_queries_matching(/WITH RECURSIVE/)
       end
     end
@@ -204,7 +204,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.self_and_ancestor_ids'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         expect { described_class.where(id: [nested_group_1]).self_and_ancestor_ids.load }.not_to make_queries_matching(/WITH RECURSIVE/)
       end
     end
@@ -216,7 +216,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.self_and_ancestor_ids'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         expect { described_class.where(id: [nested_group_1]).self_and_ancestor_ids.load }.to make_queries_matching(/WITH RECURSIVE/)
       end
     end
@@ -340,7 +340,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.self_and_hierarchy'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         base_groups = Group.where(id: nested_group_1)
         expect { base_groups.self_and_hierarchy.load }.to make_queries_matching(/WITH RECURSIVE/)
       end

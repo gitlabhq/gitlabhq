@@ -4,14 +4,10 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Self-monitoring project (DEPRECATED) **(FREE SELF)**
+# Self-monitoring project **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32351) in GitLab 12.7 [with a flag](../../feature_flags.md) named `self_monitoring_project`. Disabled by default.
 > - Generally available in GitLab 12.8. [Feature flag `self_monitoring_project`](https://gitlab.com/gitlab-org/gitlab/-/issues/198511) removed.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/348909) in GitLab 14.8.
-
-WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/348909) in GitLab 14.8.
 
 GitLab provides administrators insights into the health of their GitLab instance.
 

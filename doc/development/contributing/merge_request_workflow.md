@@ -266,6 +266,7 @@ requirements.
    again.
 1. [Performance guidelines](../merge_request_performance_guidelines.md) have been followed.
 1. [Secure coding guidelines](https://gitlab.com/gitlab-com/gl-security/security-guidelines) have been followed.
+1. [Application and rate limit guidelines](../merge_request_application_and_rate_limit_guidelines.md) have been followed.
 1. [Documented](../documentation/index.md) in the `/doc` directory.
 1. [Changelog entry added](../changelog.md), if necessary.
 1. Reviewed by relevant reviewers, and all concerns are addressed for Availability, Regressions, and Security. Documentation reviews should take place as soon as possible, but they should not block a merge request.

@@ -115,6 +115,36 @@ When you add a member to a group, that member is also added to all subgroups.
 Permission level is inherited from the group's parent. This model allows access to
 subgroups if you have membership in one of its parents.
 
+Subgroup members can:
+
+1. Be [direct members](../../project/members/index.md#add-users-to-a-project) of the subgroup.
+1. [Inherit membership](../../project/members/index.md#inherited-membership) of the subgroup from the subgroup's parent group.
+1. Be a member of a group that was [shared with the subgroup's top-level group](../index.md#share-a-group-with-another-group).
+
+```mermaid
+flowchart RL
+  subgraph Group A
+    A(Direct member)
+    B{{Shared member}}
+    subgraph Subgroup A
+      H(1. Direct member)
+      C{{2. Inherited member}}
+      D{{Inherited member}}
+      E{{3. Shared member}}
+    end
+    A-->|Direct membership of Group A\nInherited membership of Subgroup A|C
+  end
+  subgraph Group C
+    G(Direct member)
+  end
+  subgraph Group B
+    F(Direct member)
+  end
+  F-->|Group B\nshared with\nGroup A|B
+  B-->|Inherited membership of Subgroup A|D
+  G-->|Group C shared with Subgroup A|E
+```
+
 Jobs for pipelines in subgroups can use [runners](../../../ci/runners/index.md) registered to the parent group(s).
 This means secrets configured for the parent group are available to subgroup jobs.
 

@@ -10,6 +10,37 @@ Members are the users and groups who have access to your project.
 
 Each member gets a role, which determines what they can do in the project.
 
+Project members can:
+
+1. Be [direct members](#add-users-to-a-project) of the project.
+1. [Inherit membership](#inherited-membership) of the project from the project's group.
+1. Be a member of a group that was [shared](share_project_with_groups.md) with the project.
+1. Be a member of a group that was [shared with the project's group](../../group/index.md#share-a-group-with-another-group).
+
+```mermaid
+flowchart RL
+  subgraph Group A
+    A(Direct member)
+    B{{Shared member}}
+    subgraph Project A
+      H(1. Direct member)
+      C{{2. Inherited member}}
+      D{{4. Inherited member}}
+      E{{3. Shared member}}
+    end
+    A-->|Direct membership of Group A\nInherited membership of Project A|C
+  end
+  subgraph Group C
+    G(Direct member)
+  end
+  subgraph Group B
+    F(Direct member)
+  end
+  F-->|Group B\nshared with\nGroup A|B
+  B-->|Inherited membership of Project A|D
+  G-->|Group C shared with Project A|E
+```
+
 ## Add users to a project
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.

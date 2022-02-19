@@ -93,6 +93,15 @@ When the pipeline finishes successfully, you can see your new cluster:
 - In AWS: from the [EKS console](https://console.aws.amazon.com/eks/home) select **Amazon EKS > Clusters**.
 - In GitLab: from your project's sidebar, select **Infrastructure > Kubernetes clusters**.
 
+## Use your cluster
+
+After you provision the cluster, it is connected to GitLab and is ready for deployments. To check the connection:
+
+1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. In the list, view the **Connection status** column.
+
+For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../index.md).
+
 ## Removing the cluster
 
 A cleanup job is not included in your pipeline by default. To remove all created resources, you
