@@ -69,6 +69,23 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Tags::Reference do
       end
     end
 
+    context 'when the references are valid but do not match the config' do
+      let(:yaml) do
+        <<~YML
+        a: [1, 2]
+        b: [3, 4]
+        c: !reference [a, b]
+        YML
+      end
+
+      it 'raises a MissingReferenceError' do
+        expect { subject }.to raise_error(
+          Gitlab::Ci::Config::Yaml::Tags::Reference::MissingReferenceError,
+          '!reference ["a", "b"] could not be found'
+        )
+      end
+    end
+
     context 'with arrays' do
       let(:yaml) do
         <<~YML
