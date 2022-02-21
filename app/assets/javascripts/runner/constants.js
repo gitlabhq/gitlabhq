@@ -38,6 +38,7 @@ export const I18N_STALE_RUNNER_DESCRIPTION = s__(
 // Active flag
 export const I18N_PAUSE = __('Pause');
 export const I18N_RESUME = __('Resume');
+export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
 
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
 export const I18N_PAUSED_RUNNER_DESCRIPTION = s__('Runners|Not available to run jobs');

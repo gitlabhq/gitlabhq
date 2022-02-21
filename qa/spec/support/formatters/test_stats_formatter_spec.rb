@@ -158,6 +158,23 @@ describe QA::Support::Formatters::TestStatsFormatter do
       end
     end
 
+    context 'with context quarantined spec' do
+      let(:quarantined) { 'false' }
+
+      it 'exports data to influxdb with correct qurantine tag' do
+        run_spec do
+          it(
+            'spec',
+            quarantine: { only: { job: 'praefect' } },
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
+          ) {}
+        end
+
+        expect(influx_write_api).to have_received(:write).once
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
     context 'with staging full run' do
       let(:run_type) { 'staging-full' }
 

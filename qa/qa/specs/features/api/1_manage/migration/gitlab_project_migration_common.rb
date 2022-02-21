@@ -3,11 +3,7 @@
 module QA
   # Disable on staging until bulk_import_projects toggle is on by default
   # Otherwise tests running in parallel can disable feature in the middle of other test
-  RSpec.shared_context 'with gitlab project migration', :requires_admin, except: { subdomain: :staging }, quarantine: {
-    only: { job: 'praefect' },
-    type: :investigating,
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/348999'
-  } do
+  RSpec.shared_context 'with gitlab project migration', :requires_admin, except: { subdomain: :staging } do
     let(:source_project_with_readme) { false }
     let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }
     let(:admin_api_client) { Runtime::API::Client.as_admin }

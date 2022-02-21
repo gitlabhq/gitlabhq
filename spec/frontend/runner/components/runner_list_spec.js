@@ -8,6 +8,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
 import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
+import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
 import { runnersData } from '../mock_data';
 
 const mockRunners = runnersData.data.runners.nodes;
@@ -94,7 +95,7 @@ describe('RunnerList', () => {
 
     expect(actions.findComponent(RunnerEditButton).exists()).toBe(true);
     expect(actions.findComponent(RunnerPauseButton).exists()).toBe(true);
-    expect(actions.findByTestId('delete-runner').exists()).toBe(true);
+    expect(actions.findComponent(RunnerDeleteButton).exists()).toBe(true);
   });
 
   describe('Table data formatting', () => {
