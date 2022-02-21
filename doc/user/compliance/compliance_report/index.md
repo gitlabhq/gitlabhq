@@ -105,3 +105,32 @@ You can generate a commit-specific Chain of Custody report for a given commit SH
 NOTE:
 The Chain of Custody report download is a CSV file, with a maximum size of 15 MB.
 The remaining records are truncated when this limit is reached.
+
+## Merge request violations
+
+> Introduced in GitLab 14.6. [Deployed behind the `compliance_violations_report` flag](../../../administration/feature_flags.md). Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `compliance_violations_report`.
+The feature is not ready for production use.
+
+Merge request violations provide a view of all the [separation of duties](#approval-status-and-separation-of-duties) compliance violations
+that exist in projects in a specific group. For each separation of duties compliance violation, you can see:
+
+- A list of compliance violations.
+- The severity of each compliance violation.
+- Reason for the compliance violation.
+- A link to the merge request that caused the compliance violation.
+
+Merge request violations can only be access in the GitLab UI, but issues are tracking adding:
+
+- [A GraphQL type to allow retrieval of compliance violations](https://gitlab.com/gitlab-org/gitlab/-/issues/347325).
+- [Consuming the merge request violations GraphQL type in the user interface](https://gitlab.com/gitlab-org/gitlab/-/issues/342897).
+
+### View merge request violations
+
+To view merge request violations:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Compliance report**.

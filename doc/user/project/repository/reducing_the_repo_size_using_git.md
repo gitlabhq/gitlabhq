@@ -13,8 +13,6 @@ Git repositories become larger over time. When large files are added to a Git re
 - They take up a large amount of storage space on the server.
 - Git repository storage limits [can be reached](#storage-limits).
 
-Such problems can be detected with [git-sizer](https://github.com/github/git-sizer#getting-started).
-
 Rewriting a repository can remove unwanted history to make the repository smaller.
 We **recommend [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/README.md)**
 over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
@@ -40,7 +38,8 @@ These refs are not automatically downloaded and hidden refs are not advertised, 
 
 To purge files from a GitLab repository:
 
-1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
+1. Install either [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md) or
+   [`git-sizer`](https://github.com/github/git-sizer#getting-started)
    using a supported package manager or from source.
 
 1. Generate a fresh [export from the
@@ -69,25 +68,37 @@ To purge files from a GitLab repository:
    cd project.git
    ```
 
-1. Using `git filter-repo`, purge any files from the history of your repository. Because we are
+1. Using either `git filter-repo` or `git-sizer`, analyze your repository
+   and review the results to determine which items you want to purge:
+
+   ```shell
+   # Using git filter-repo
+   git filter-repo --analyze
+   head .git/filter-repo/analysis/*-{all,deleted}-sizes.txt
+
+   # Using git-sizer
+   git-sizer
+   ```
+
+1. Proceed to purging any files from the history of your repository. Because we are
    trying to remove internal refs, we rely on the `commit-map` produced by each run to tell us
    which internal refs to remove.
 
    NOTE:
-   `git filter-repo` creates a new `commit-map` file every run, and overwrite the `commit-map` from
+   `git filter-repo` creates a new `commit-map` file every run, and overwrites the `commit-map` from
    the previous run. You need this file from **every** run. Do the next step every time you run
    `git filter-repo`.
 
-   To purge all files larger than 10M, the `--strip-blobs-bigger-than` option can be used:
+   To purge specific files, the `--path` and `--invert-paths` options can be combined:
+
+   ```shell
+   git filter-repo --path path/to/file.ext --invert-paths
+   ```
+
+   To generally purge all files larger than 10M, the `--strip-blobs-bigger-than` option can be used:
 
    ```shell
    git filter-repo --strip-blobs-bigger-than 10M
-   ```
-
-   To purge specific large files by path, the `--path` and `--invert-paths` options can be combined.
-
-   ```shell
-   git filter-repo --path path/to/big/file.m4v --invert-paths
    ```
 
    See the
