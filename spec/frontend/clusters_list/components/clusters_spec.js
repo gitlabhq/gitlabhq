@@ -2,7 +2,7 @@ import {
   GlLoadingIcon,
   GlPagination,
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
-  GlTable,
+  GlTableLite,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
@@ -41,7 +41,7 @@ describe('Clusters', () => {
 
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findPaginatedButtons = () => wrapper.findComponent(GlPagination);
-  const findTable = () => wrapper.findComponent(GlTable);
+  const findTable = () => wrapper.findComponent(GlTableLite);
   const findStatuses = () => findTable().findAll('.js-status');
   const findEmptyState = () => wrapper.findComponent(ClustersEmptyState);
 
@@ -51,7 +51,7 @@ describe('Clusters', () => {
 
   const createWrapper = ({ propsData = {} }) => {
     store = ClusterStore(entryData);
-    wrapper = mount(Clusters, { propsData, provide: provideData, store, stubs: { GlTable } });
+    wrapper = mount(Clusters, { propsData, provide: provideData, store, stubs: { GlTableLite } });
     return axios.waitForAll();
   };
 

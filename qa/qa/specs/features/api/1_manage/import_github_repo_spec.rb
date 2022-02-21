@@ -31,11 +31,13 @@ module QA
       end
 
       it 'imports Github repo via api', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347670' do
-        imported_project # import the project
+        imported_project.reload! # import the project
 
-        expect { imported_project.reload!.import_status }.to eventually_eq('finished').within(max_duration: 90)
+        expect { imported_project.project_import_status[:import_status] }.to eventually_eq('finished')
+          .within(max_duration: 90, sleep_interval: 1)
 
         aggregate_failures do
+          verify_status_data
           verify_repository_import
           verify_commits_import
           verify_labels_import
@@ -44,6 +46,19 @@ module QA
           verify_wikis_import
           verify_merge_requests_import
         end
+      end
+
+      def verify_status_data
+        stats = imported_project.project_import_status.dig(:stats, :imported)
+        expect(stats).to eq(
+          label: 10,
+          milestone: 1,
+          issue: 2,
+          note: 2,
+          pull_request: 1,
+          pull_request_review: 2,
+          diff_note: 2
+        )
       end
 
       def verify_repository_import

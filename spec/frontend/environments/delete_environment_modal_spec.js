@@ -5,8 +5,11 @@ import VueApollo from 'vue-apollo';
 import { s__, sprintf } from '~/locale';
 import DeleteEnvironmentModal from '~/environments/components/delete_environment_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import createFlash from '~/flash';
 import { resolvedEnvironment } from './graphql/mock_data';
 
+jest.mock('~/flash');
 Vue.use(VueApollo);
 
 describe('~/environments/components/delete_environment_modal.vue', () => {
@@ -53,6 +56,34 @@ describe('~/environments/components/delete_environment_modal.vue', () => {
     wrapper.findComponent(GlModal).vm.$emit('primary');
 
     await nextTick();
+
+    expect(createFlash).not.toHaveBeenCalled();
+
+    expect(deleteResolver).toHaveBeenCalledWith(
+      expect.anything(),
+      { environment: resolvedEnvironment },
+      expect.anything(),
+      expect.anything(),
+    );
+  });
+
+  it('should flash a message on error', async () => {
+    createComponent({ apolloProvider: mockApollo });
+
+    deleteResolver.mockRejectedValue();
+
+    wrapper.findComponent(GlModal).vm.$emit('primary');
+
+    await waitForPromises();
+
+    expect(createFlash).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: s__(
+          'Environments|An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again.',
+        ),
+        captureError: true,
+      }),
+    );
 
     expect(deleteResolver).toHaveBeenCalledWith(
       expect.anything(),

@@ -8,7 +8,7 @@ require_relative '../api/default_options'
 
 class FindJhBranch
   JH_DEFAULT_BRANCH = 'main-jh'
-  JH_PROJECT_PATH = 'gitlab-org/gitlab-jh/gitlab'
+  JH_PROJECT_PATH = 'gitlab-org/gitlab-jh-mirrors/gitlab'
   BranchNotFound = Class.new(RuntimeError)
 
   def run

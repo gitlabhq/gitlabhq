@@ -59,7 +59,7 @@ How this feature works:
 
 ## Be careful with sensitive information
 
-With some [runner executors](https://docs.gitlab.com/runner/executors/README.html),
+With some [runner executors](https://docs.gitlab.com/runner/executors/),
 if you can run a job on the runner, you can get full access to the file system,
 and thus any code it runs as well as the token of the runner. With shared runners, this means that anyone
 that runs jobs on the runner, can access anyone else's code that runs on the
@@ -70,7 +70,7 @@ to create a clone of a runner and submit false jobs, for example.
 
 The above is easily avoided by restricting the usage of shared runners
 on large public GitLab instances, controlling access to your GitLab instance,
-and using more secure [runner executors](https://docs.gitlab.com/runner/executors/README.html).
+and using more secure [runner executors](https://docs.gitlab.com/runner/executors/).
 
 ### Prevent runners from revealing sensitive information
 

@@ -11,6 +11,7 @@ import environmentToRollbackQuery from './queries/environment_to_rollback.query.
 import environmentToStopQuery from './queries/environment_to_stop.query.graphql';
 import environmentToDeleteQuery from './queries/environment_to_delete.query.graphql';
 import environmentToChangeCanaryQuery from './queries/environment_to_change_canary.query.graphql';
+import isEnvironmentStoppingQuery from './queries/is_environment_stopping.query.graphql';
 import pageInfoQuery from './queries/page_info.query.graphql';
 
 const buildErrors = (errors = []) => ({
@@ -71,11 +72,21 @@ export const resolvers = (endpoint) => ({
     },
   },
   Mutation: {
-    stopEnvironment(_, { environment }) {
+    stopEnvironment(_, { environment }, { client }) {
+      client.writeQuery({
+        query: isEnvironmentStoppingQuery,
+        variables: { environment },
+        data: { isEnvironmentStopping: true },
+      });
       return axios
         .post(environment.stopPath)
         .then(() => buildErrors())
         .catch(() => {
+          client.writeQuery({
+            query: isEnvironmentStoppingQuery,
+            variables: { environment },
+            data: { isEnvironmentStopping: false },
+          });
           return buildErrors([
             s__('Environments|An error occurred while stopping the environment, please try again'),
           ]);

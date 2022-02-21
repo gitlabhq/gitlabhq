@@ -13,6 +13,8 @@ RSpec.describe 'Expand and collapse diffs', :js do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
 
+    wait_for_requests
+
     # Ensure that undiffable.md is in .gitattributes
     project.repository.copy_gitattributes(branch)
     visit project_commit_path(project, project.commit(branch))

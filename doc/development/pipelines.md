@@ -247,7 +247,7 @@ appending `-jh` to the branch name. If a corresponding JH branch is found,
 rather than from the default branch.
 
 NOTE:
-For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
+For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
 
 ## `undercover` RSpec test
 

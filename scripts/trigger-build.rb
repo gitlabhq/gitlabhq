@@ -324,8 +324,8 @@ module Trigger
     def invoke!(post_comment: false, downstream_job_name: nil)
       pipeline = super
       gitlab = gitlab_client(:upstream)
-      project_path = base_variables['TOP_UPSTREAM_SOURCE_PROJECT']
-      merge_request_id = base_variables['TOP_UPSTREAM_MERGE_REQUEST_IID']
+      project_path = variables['TOP_UPSTREAM_SOURCE_PROJECT']
+      merge_request_id = variables['TOP_UPSTREAM_MERGE_REQUEST_IID']
       comment = "<!-- #{IDENTIFIABLE_NOTE_TAG} --> \nStarted database testing [pipeline](https://ops.gitlab.net/#{downstream_project_path}/-/pipelines/#{pipeline.id}) " \
                 "(limited access). This comment will be updated once the pipeline has finished running."
 

@@ -99,21 +99,29 @@ module QA
             import_time: @import_time,
             github: {
               project_name: github_repo,
-              branches: gh_branches,
-              commits: gh_commits,
-              labels: gh_labels,
-              milestones: gh_milestones,
-              prs: gh_prs,
-              issues: gh_issues
+              branches: gh_branches.length,
+              commits: gh_commits.length,
+              labels: gh_labels.length,
+              milestones: gh_milestones.length,
+              prs: gh_prs.length,
+              pr_comments: gh_prs.sum { |_k, v| v.length },
+              issues: gh_issues.length,
+              issue_comments: gh_issues.sum { |_k, v| v.length }
             },
             gitlab: {
               project_name: imported_project.path_with_namespace,
-              branches: gl_branches,
-              commits: gl_commits,
-              labels: gl_labels,
-              milestones: gl_milestones,
-              mrs: mrs,
-              issues: gl_issues
+              branches: gl_branches.length,
+              commits: gl_commits.length,
+              labels: gl_labels.length,
+              milestones: gl_milestones.length,
+              mrs: mrs.length,
+              mr_comments: mrs.sum { |_k, v| v.length },
+              issues: gl_issues.length,
+              issue_comments: gl_issues.sum { |_k, v| v.length }
+            },
+            not_imported: {
+              mrs: @mr_diff,
+              issues: @issue_diff
             }
           }.to_json
         )
@@ -125,14 +133,18 @@ module QA
       ) do
         start = Time.now
 
-        Runtime::Logger.info("Importing project '#{imported_project.full_path}'") # import the project and log path
-        fetch_github_objects # fetch all objects right after import has started
+        # import the project and log path
+        Runtime::Logger.info("Importing project '#{imported_project.reload!.full_path}'")
+        # fetch all objects right after import has started
+        fetch_github_objects
 
         import_status = lambda do
-          imported_project.reload!.import_status.tap do |status|
+          imported_project.project_import_status[:import_status].tap do |status|
+            # fail fast if import explicitly failed
             raise "Import of '#{imported_project.name}' failed!" if status == 'failed'
           end
         end
+
         expect(import_status).to eventually_eq('finished').within(max_duration: import_max_duration, sleep_interval: 30)
         @import_time = Time.now - start
 
@@ -177,7 +189,7 @@ module QA
       # @return [void]
       def verify_merge_requests_import
         logger.debug("== Verifying merge request import ==")
-        verify_mrs_or_issues('mr')
+        @mr_diff = verify_mrs_or_issues('mr')
       end
 
       # Verify imported issues and issue comments
@@ -185,7 +197,7 @@ module QA
       # @return [void]
       def verify_issues_import
         logger.debug("== Verifying issue import ==")
-        verify_mrs_or_issues('issue')
+        @issue_diff = verify_mrs_or_issues('issue')
       end
 
       # Verify imported labels
@@ -207,47 +219,67 @@ module QA
 
       private
 
-      # Verify imported mrs or issues
+      # Verify imported mrs or issues and return diff
       #
       # @param [String] type verification object, 'mrs' or 'issues'
-      # @return [void]
+      # @return [Hash]
       def verify_mrs_or_issues(type)
-        msg = ->(title) { "expected #{type} with title '#{title}' to have" }
-
         # Compare length to have easy to read overview how many objects are missing
+        #
         expected = type == 'mr' ? mrs : gl_issues
         actual = type == 'mr' ? gh_prs : gh_issues
         count_msg = "Expected to contain same amount of #{type}s. Gitlab: #{expected.length}, Github: #{actual.length}"
         expect(expected.length).to eq(actual.length), count_msg
 
         logger.debug("= Comparing #{type}s =")
-        actual.each do |title, actual_item|
-          print "." # indicate that it is still going but don't spam the output with newlines
+        missing_comments = verify_comments(type, actual, expected)
 
+        {
+          "#{type}s": actual.keys - expected.keys,
+          "#{type}_comments": missing_comments
+        }
+      end
+
+      # Verify imported comments
+      #
+      # @param [String] type verification object, 'mrs' or 'issues'
+      # @param [Hash] actual
+      # @param [Hash] expected
+      # @return [Hash]
+      def verify_comments(type, actual, expected)
+        actual.each_with_object({}) do |(title, actual_item), missing_comments|
+          msg = "expected #{type} with title '#{title}' to have"
           expected_item = expected[title]
 
           # Print title in the error message to see which object is missing
-          expect(expected_item).to be_truthy, "#{msg.call(title)} been imported"
+          #
+          expect(expected_item).to be_truthy, "#{msg} been imported"
           next unless expected_item
 
           # Print difference in the description
+          #
           expected_body = expected_item[:body]
           actual_body = actual_item[:body]
           body_msg = <<~MSG
-            #{msg.call(title)} same description. diff:\n#{differ.diff(expected_item[:body], actual_item[:body])}
+            #{msg} same description. diff:\n#{differ.diff(expected_item[:body], actual_item[:body])}
           MSG
           expect(expected_body).to include(actual_body), body_msg
 
           # Print amount difference first
+          #
           expected_comments = expected_item[:comments]
           actual_comments = actual_item[:comments]
           comment_count_msg = <<~MSG
-            #{msg.call(title)} same amount of comments. Gitlab: #{expected_comments.length}, Github: #{actual_comments.length}
+            #{msg} same amount of comments. Gitlab: #{expected_comments.length}, Github: #{actual_comments.length}
           MSG
           expect(expected_comments.length).to eq(actual_comments.length), comment_count_msg
           expect(expected_comments).to match_array(actual_comments)
+
+          # Save missing comments
+          #
+          comment_diff = actual_comments - expected_comments
+          missing_comments[title] = comment_diff unless comment_diff.empty?
         end
-        puts # print newline after last print to make output pretty
       end
 
       # Imported project branches
@@ -339,12 +371,12 @@ module QA
         end
       end
 
-      # Remove added prefixes by importer
+      # Remove added prefixes and legacy diff format
       #
       # @param [String] body
       # @return [String]
       def sanitize(body)
-        body.gsub(/\*Created by: \S+\*\n\n/, "")
+        body.gsub(/\*Created by: \S+\*\n\n/, "").gsub(/suggestion:-\d+\+\d+/, "suggestion\r")
       end
 
       # Save json as file

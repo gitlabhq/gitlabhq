@@ -1,10 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlDropdownItem } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import DetailedMetric from '~/performance_bar/components/detailed_metric.vue';
 import RequestWarning from '~/performance_bar/components/request_warning.vue';
-import { sortOrders } from '~/performance_bar/constants';
+import { sortOrders, sortOrderOptions } from '~/performance_bar/constants';
 
 describe('detailedMetric', () => {
   let wrapper;
@@ -29,7 +30,13 @@ describe('detailedMetric', () => {
   const findExpandBacktraceBtns = () => wrapper.findAllByTestId('backtrace-expand-btn');
   const findExpandedBacktraceBtnAtIndex = (index) => findExpandBacktraceBtns().at(index);
   const findDetailsLabel = () => wrapper.findByTestId('performance-bar-details-label');
-  const findSortOrderSwitcher = () => wrapper.findByTestId('performance-bar-sort-order');
+  const findSortOrderDropdown = () => wrapper.findByTestId('performance-bar-sort-order');
+  const clickSortOrderDropdownItem = (sortOrder) =>
+    findSortOrderDropdown()
+      .findAllComponents(GlDropdownItem)
+      .filter((item) => item.text() === sortOrderOptions[sortOrder])
+      .at(0)
+      .vm.$emit('click');
   const findEmptyDetailNotice = () => wrapper.findByTestId('performance-bar-empty-detail-notice');
   const findAllDetailDurations = () =>
     wrapper.findAllByTestId('performance-item-duration').wrappers.map((w) => w.text());
@@ -86,7 +93,7 @@ describe('detailedMetric', () => {
       });
 
       it('does not display sort by switcher', () => {
-        expect(findSortOrderSwitcher().exists()).toBe(false);
+        expect(findSortOrderDropdown().exists()).toBe(false);
       });
     });
 
@@ -216,7 +223,7 @@ describe('detailedMetric', () => {
       });
 
       it('does not display sort by switcher', () => {
-        expect(findSortOrderSwitcher().exists()).toBe(false);
+        expect(findSortOrderDropdown().exists()).toBe(false);
       });
 
       it('adds a modal with a table of the details', () => {
@@ -323,14 +330,15 @@ describe('detailedMetric', () => {
       });
 
       it('displays sort by switcher', () => {
-        expect(findSortOrderSwitcher().exists()).toBe(true);
+        expect(findSortOrderDropdown().exists()).toBe(true);
       });
 
-      it('allows switch sorting orders', async () => {
-        findSortOrderSwitcher().vm.$emit('input', sortOrders.CHRONOLOGICAL);
+      it('changes sortOrder on select', async () => {
+        clickSortOrderDropdownItem(sortOrders.CHRONOLOGICAL);
         await nextTick();
         expect(findAllDetailDurations()).toEqual(['23ms', '100ms', '75ms']);
-        findSortOrderSwitcher().vm.$emit('input', sortOrders.DURATION);
+
+        clickSortOrderDropdownItem(sortOrders.DURATION);
         await nextTick();
         expect(findAllDetailDurations()).toEqual(['100ms', '75ms', '23ms']);
       });

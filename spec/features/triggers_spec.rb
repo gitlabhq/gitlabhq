@@ -17,6 +17,8 @@ RSpec.describe 'Triggers', :js do
     @project.add_guest(guest_user)
 
     visit project_settings_ci_cd_path(@project)
+
+    wait_for_requests
   end
 
   shared_examples 'triggers page' do

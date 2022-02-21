@@ -11,6 +11,8 @@ RSpec.describe "Admin Runners" do
     admin = create(:admin)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
+
+    wait_for_requests
   end
 
   describe "Runners page", :js do

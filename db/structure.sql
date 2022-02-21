@@ -10552,7 +10552,7 @@ CREATE TABLE application_settings (
     automatic_purchased_storage_allocation boolean DEFAULT false NOT NULL,
     encrypted_ci_jwt_signing_key text,
     encrypted_ci_jwt_signing_key_iv text,
-    container_registry_expiration_policies_worker_capacity integer DEFAULT 0 NOT NULL,
+    container_registry_expiration_policies_worker_capacity integer DEFAULT 4 NOT NULL,
     elasticsearch_analyzers_smartcn_enabled boolean DEFAULT false NOT NULL,
     elasticsearch_analyzers_smartcn_search boolean DEFAULT false NOT NULL,
     elasticsearch_analyzers_kuromoji_enabled boolean DEFAULT false NOT NULL,

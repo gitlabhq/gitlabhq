@@ -262,7 +262,7 @@ module QA
         reload!.api_response[:default_branch] || Runtime::Env.default_branch
       end
 
-      def import_status
+      def project_import_status
         response = get(request_url("/projects/#{id}/import"))
 
         unless response.code == HTTP_STATUS_OK
@@ -276,7 +276,7 @@ module QA
           Runtime::Logger.error("Failed relations: #{result[:failed_relations]}")
         end
 
-        result[:import_status]
+        result
       end
 
       def commits(auto_paginate: false, attempts: 0)
