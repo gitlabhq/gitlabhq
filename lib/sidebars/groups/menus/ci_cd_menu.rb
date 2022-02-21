@@ -29,7 +29,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Runners'),
             link: group_runners_path(context.group),
-            active_routes: { path: 'groups/runners#index' },
+            active_routes: { controller: 'groups/runners' },
             item_id: :runners
           )
         end

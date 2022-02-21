@@ -382,7 +382,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
       subject { 2.times { receiver.execute } }
 
       before do
-        stub_feature_flags(rate_limited_service_issues_create: true)
         stub_application_setting(issues_create_limit: 1)
       end
 

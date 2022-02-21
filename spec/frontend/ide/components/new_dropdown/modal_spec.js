@@ -38,7 +38,7 @@ describe('new file modal component', () => {
     });
 
     it(`sets button label as ${entryType}`, () => {
-      expect(document.querySelector('.btn-success').textContent.trim()).toBe(btnTitle);
+      expect(document.querySelector('.btn-confirm').textContent.trim()).toBe(btnTitle);
     });
 
     it(`sets form label as ${entryType}`, () => {
@@ -77,7 +77,7 @@ describe('new file modal component', () => {
 
         await nextTick();
         expect(document.querySelector('.modal-title').textContent.trim()).toBe(modalTitle);
-        expect(document.querySelector('.btn-success').textContent.trim()).toBe(btnTitle);
+        expect(document.querySelector('.btn-confirm').textContent.trim()).toBe(btnTitle);
       },
     );
 

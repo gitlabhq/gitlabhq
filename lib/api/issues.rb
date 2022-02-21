@@ -262,8 +262,6 @@ module API
       post ':id/issues' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21140')
 
-        check_rate_limit!(:issues_create, scope: current_user) if Feature.disabled?("rate_limited_service_issues_create", user_project, default_enabled: :yaml)
-
         authorize! :create_issue, user_project
 
         issue_params = declared_params(include_missing: false)

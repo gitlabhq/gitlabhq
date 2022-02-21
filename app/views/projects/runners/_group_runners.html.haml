@@ -28,7 +28,11 @@
   = _('This group does not have any group runners yet.')
 
   - if can?(current_user, :admin_group_runners, @project.group)
-    - group_link = link_to _("group's CI/CD settings."), group_settings_ci_cd_path(@project.group)
+    - if Feature.enabled?(:runner_list_group_view_vue_ui, @group, default_enabled: :yaml)
+      - register_runners_path = group_runners_path(@project.group)
+    - else
+      - register_runners_path = group_settings_ci_cd_path(@project.group)
+    - group_link = link_to _("group's CI/CD settings."), register_runners_path
     = _('Group owners can register group runners in the %{link}').html_safe % { link: group_link }
   - else
     = _('Ask your group owner to set up a group runner.')

@@ -335,7 +335,6 @@ RSpec.describe Issues::CreateService do
         let(:user) { create(:user) }
 
         before do
-          stub_feature_flags(rate_limited_service_issues_create: true)
           stub_application_setting(issues_create_limit: 1)
         end
 

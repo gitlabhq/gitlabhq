@@ -89,10 +89,16 @@ module Sidebars
         end
 
         def ci_cd_menu_item
+          active_routes_path = if Feature.enabled?(:runner_list_group_view_vue_ui, context.group, default_enabled: :yaml)
+                                 'ci_cd#show'
+                               else
+                                 %w[ci_cd#show groups/runners#show groups/runners#edit]
+                               end
+
           ::Sidebars::MenuItem.new(
             title: _('CI/CD'),
             link: group_settings_ci_cd_path(context.group),
-            active_routes: { path: %w[ci_cd#show groups/runners#show groups/runners#edit] },
+            active_routes: { path: active_routes_path },
             item_id: :ci_cd
           )
         end

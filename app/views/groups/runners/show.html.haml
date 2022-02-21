@@ -1,3 +1,6 @@
-- add_to_breadcrumbs _('CI/CD Settings'), group_settings_ci_cd_path(@group)
+- if Feature.enabled?(:runner_list_group_view_vue_ui, @group, default_enabled: :yaml)
+  - add_to_breadcrumbs _('Runners'), group_runners_path(@group)
+- else
+  - add_to_breadcrumbs _('CI/CD Settings'), group_settings_ci_cd_path(@group)
 
 = render 'shared/runners/runner_details', runner: @runner

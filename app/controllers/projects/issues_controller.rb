@@ -36,11 +36,6 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_import_issues!, only: [:import_csv]
   before_action :authorize_download_code!, only: [:related_branches]
 
-  # Limit the amount of issues created per minute
-  before_action -> { check_rate_limit!(:issues_create, scope: [@project, @current_user])},
-                only: [:create],
-                if: -> { Feature.disabled?('rate_limited_service_issues_create', project, default_enabled: :yaml) }
-
   before_action do
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:vue_issues_list, project&.group, default_enabled: :yaml)
