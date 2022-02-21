@@ -196,39 +196,6 @@ RSpec.describe 'Query.runner(id)' do
     it_behaves_like 'runner details fetch', :inactive_instance_runner
   end
 
-  describe 'for runner inside group request' do
-    let(:query) do
-      %(
-        query {
-          group(fullPath: "#{group.full_path}") {
-            runners {
-              edges {
-                webUrl
-                node {
-                  id
-                }
-              }
-            }
-          }
-        }
-      )
-    end
-
-    it 'retrieves webUrl field with expected value' do
-      post_graphql(query, current_user: user)
-
-      runner_data = graphql_data_at(:group, :runners, :edges)
-      expect(runner_data).to match_array [
-        a_hash_including(
-          'webUrl' => "http://localhost/groups/#{group.full_path}/-/runners/#{active_group_runner.id}",
-          'node' => {
-            'id' => active_group_runner.to_global_id.to_s
-          }
-        )
-      ]
-    end
-  end
-
   describe 'for group runner request' do
     let(:query) do
       %(

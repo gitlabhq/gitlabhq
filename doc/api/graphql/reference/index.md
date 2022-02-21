@@ -5756,6 +5756,7 @@ The edge type for [`CiRunner`](#cirunner).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunneredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cirunneredgeediturl"></a>`editUrl` | [`String`](#string) | Web URL of the runner edit page. The value depends on where you put this field in the query. You can use it for projects or groups. |
 | <a id="cirunneredgenode"></a>`node` | [`CiRunner`](#cirunner) | The item at the end of the edge. |
 | <a id="cirunneredgeweburl"></a>`webUrl` | [`String`](#string) | Web URL of the runner. The value depends on where you put this field in the query. You can use it for projects or groups. |
 

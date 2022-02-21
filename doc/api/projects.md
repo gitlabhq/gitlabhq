@@ -2758,6 +2758,7 @@ with the API scope enabled.
 |--------------|---------|------------------------|-------------|
 | `import_url` | string  | **{check-circle}** Yes | URL of remote repository being mirrored (with `user:token` if needed). |
 | `mirror`     | boolean | **{check-circle}** Yes | Enables pull mirroring on project when set to `true`. |
+| `mirror_trigger_builds`| boolean | **{dotted-circle}** No | Trigger pipelines for mirror updates when set to `true`. |
 | `only_mirror_protected_branches`| boolean | **{dotted-circle}** No | Limits mirroring to only protected branches when set to `true`. |
 
 ## Start the pull mirroring process for a Project **(PREMIUM)**

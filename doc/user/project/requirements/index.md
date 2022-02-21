@@ -10,8 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 NOTE:
 In 14.4, Requirements was moved under **Issues**.
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2703) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-> - The ability to add and edit a requirement's long description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/224622) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2703) in GitLab 12.10.
+> - The ability to add and edit a requirement's long description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/224622) in GitLab 13.5.
 > - [Moved under Issues](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70748) in 14.4
 
 With requirements, you can set criteria to check your products against. They can be based on users,
@@ -64,7 +64,7 @@ next to the requirement title.
 
 ## Edit a requirement
 
-> The ability to mark a requirement as Satisfied [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218607) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.5.
+> The ability to mark a requirement as Satisfied [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218607) in GitLab 13.5.
 
 You can edit a requirement from the requirements list page.
 
@@ -108,7 +108,7 @@ As soon as a requirement is reopened, it no longer appears in the **Archived** t
 
 ## Search for a requirement
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212543) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212543) in GitLab 13.1.
 > - Searching by status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/224614) in GitLab 13.10.
 
 You can search for a requirement from the requirements list page based on the following criteria:
@@ -131,8 +131,8 @@ You can also sort the requirements list by:
 
 ## Allow requirements to be satisfied from a CI job
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/215514) ability to specify individual requirements and their statuses in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/215514) ability to specify individual requirements and their statuses in GitLab 13.2.
 
 GitLab supports [requirements test reports](../../../ci/yaml/artifacts_reports.md#artifactsreportsrequirements) now.
 You can add a job to your CI pipeline that, when triggered, marks all existing

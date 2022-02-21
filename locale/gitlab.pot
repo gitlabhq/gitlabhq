@@ -26948,7 +26948,7 @@ msgstr ""
 msgid "Pipelines|Project cache successfully reset."
 msgstr ""
 
-msgid "Pipelines|Revoke"
+msgid "Pipelines|Revoke trigger"
 msgstr ""
 
 msgid "Pipelines|Something went wrong while cleaning runners cache."
@@ -32038,6 +32038,9 @@ msgid "Search for a group"
 msgstr ""
 
 msgid "Search for a user"
+msgstr ""
+
+msgid "Search for an emoji"
 msgstr ""
 
 msgid "Search for projects, issues, etc."

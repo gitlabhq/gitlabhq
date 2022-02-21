@@ -108,6 +108,7 @@ export default {
         class="gl-mx-5! gl-mb-2!"
         autofocus
         debounce="500"
+        :aria-label="__('Search for an emoji')"
         @input="onSearchInput"
       />
       <div

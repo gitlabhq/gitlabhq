@@ -8,8 +8,12 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
 
 export default {
   i18n: {
+    copyTrigger: s__('Pipelines|Copy trigger token'),
     editButton: s__('Pipelines|Edit'),
-    revokeButton: s__('Pipelines|Revoke'),
+    revokeButton: s__('Pipelines|Revoke trigger'),
+    revokeButtonConfirm: s__(
+      'Pipelines|By revoking a trigger you will break any processes making use of it. Are you sure?',
+    ),
   },
   components: {
     GlTable,
@@ -72,7 +76,7 @@ export default {
           :text="item.token"
           data-testid="clipboard-btn"
           data-qa-selector="clipboard_button"
-          :title="s__('Pipelines|Copy trigger token')"
+          :title="$options.i18n.copyTrigger"
           css-class="gl-border-none gl-py-0 gl-px-2"
         />
         <div class="label-container">
@@ -122,13 +126,9 @@ export default {
           :title="$options.i18n.revokeButton"
           :aria-label="$options.i18n.revokeButton"
           icon="remove"
-          variant="warning"
-          :data-confirm="
-            s__(
-              'Pipelines|By revoking a trigger you will break any processes making use of it. Are you sure?',
-            )
-          "
+          :data-confirm="$options.i18n.revokeButtonConfirm"
           data-method="delete"
+          data-confirm-btn-variant="danger"
           rel="nofollow"
           class="gl-ml-3"
           data-testid="trigger_revoke_button"
