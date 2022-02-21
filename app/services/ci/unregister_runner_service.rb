@@ -2,11 +2,13 @@
 
 module Ci
   class UnregisterRunnerService
-    attr_reader :runner
+    attr_reader :runner, :author
 
     # @param [Ci::Runner] runner the runner to unregister/destroy
-    def initialize(runner)
+    # @param [User, authentication token String] author the user or the authentication token that authorizes the removal
+    def initialize(runner, author)
       @runner = runner
+      @author = author
     end
 
     def execute
@@ -14,3 +16,5 @@ module Ci
     end
   end
 end
+
+Ci::UnregisterRunnerService.prepend_mod

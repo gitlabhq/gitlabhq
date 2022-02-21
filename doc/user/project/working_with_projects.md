@@ -68,9 +68,8 @@ If you're an instance administrator, you can administer all project topics from 
 
 To create a project in GitLab:
 
-1. On the top bar, select **Menu > Project**.
-1. Select **Create new project**.
-1. On the **New project** page, choose if you want to:
+1. On the top bar, select **Menu > Create new project**.
+1. On the **Create new project** page, choose if you want to:
    - Create a [blank project](#create-a-blank-project).
    - Create a project from a:
       - [built-in template](#create-a-project-from-a-built-in-template).
@@ -88,8 +87,7 @@ For a list of words that can't be used as project names see
 
 To create a blank project:
 
-1. On the top bar, select **Menu > Project**.
-1. Select **Create new project**.
+1. On the top bar, select **Menu > Create new project**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. You can use spaces, hyphens,
@@ -121,8 +119,7 @@ Anyone can contribute a built-in template by following [these steps](https://abo
 
 To create a project from a built-in template:
 
-1. On the top bar, select **Menu > Project**.
-1. Select **Create new project**.
+1. On the top bar, select **Menu > Create new project**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. From the list of templates:
@@ -149,8 +146,7 @@ Custom project templates are available at:
 - The [instance-level](../../user/admin_area/custom_project_templates.md)
 - The [group-level](../../user/group/custom_project_templates.md)
 
-1. On the top bar, select **Menu > Project**.
-1. Select **Create new project**.
+1. On the top bar, select **Menu > Create new project**.
 1. Select **Create from template**.
 1. Select the **Instance** or **Group** tab.
 1. From the list of templates:
@@ -177,8 +173,7 @@ HIPAA Audit Protocol published by the U.S Department of Health and Human Service
 
 To create a project from the HIPAA Audit Protocol template:
 
-1. On the top bar, select **Menu > Project**.
-1. Select **Create new project**.
+1. On the top bar, select **Menu > Create new project**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. Locate the **HIPAA Audit Protocol** template:
@@ -218,7 +213,7 @@ Prerequisites:
 [added to your GitLab account](../../ssh/index.md#add-an-ssh-key-to-your-gitlab-account).
 - You must have permission to add new projects to a namespace. To check if you have permission:
 
-  1. On the top bar, select **Menu > Project**.
+  1. On the top bar, select **Menu > Projects**.
   1. Select **Groups**.
   1. Select a group.
   1. Confirm that **New project** is visible in the upper right
@@ -266,14 +261,14 @@ You can add a star to projects you use frequently to make them easier to find.
 
 To add a star to a project:
 
-1. On the top bar, select **Menu > Project**.
+1. On the top bar, select **Menu > Projects**.
 1. Select **Your projects** or **Explore projects**.
 1. Select a project.
 1. In the upper right corner of the page, select **Star**.
 
 ## View starred projects
 
-1. On the top bar, select **Menu > Project**.
+1. On the top bar, select **Menu > Projects**.
 1. Select **Starred projects**.
 1. GitLab displays information about your starred projects, including:
 
@@ -290,13 +285,13 @@ you can [enable delayed project removal](../group/index.md#enable-delayed-projec
 
 To delete a project:
 
-1. On the top bar, select **Menu > Project**.
+1. On the top bar, select **Menu > Projects**.
 1. Select **Your projects** or **Explore projects**.
 1. Select a project.
 1. Select **Settings > General**.
 1. Expand the **Advanced** section.
 1. Scroll down to the **Delete project** section.
-1. Select **Delete project**
+1. Select **Delete project**.
 1. Confirm this action by completing the field.
 
 ## Projects pending deletion **(PREMIUM)**
@@ -326,7 +321,7 @@ Listed for each project is:
 
 To view the activity of a project:
 
-1. On the top bar, select **Menu > Project**.
+1. On the top bar, select **Menu > Projects**.
 1. Select **Your projects** or **Explore projects**.
 1. Select a project.
 1. On the left sidebar, select **Project information > Activity**.
@@ -339,7 +334,7 @@ member and cannot contribute.
 
 To leave a project:
 
-1. On the top bar, select **Menu > Project**.
+1. On the top bar, select **Menu > Projects**.
 1. Select **Your projects** or **Explore projects**.
 1. Select a project.
 1. Select **Leave project**. The **Leave project** option only displays

@@ -1,0 +1,8 @@
+---
+name: verify_protected_tags_for_pull_mirror
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80388
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352494
+milestone: '14.9'
+type: development
+group: group::source code
+default_enabled: false

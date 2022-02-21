@@ -36,6 +36,9 @@ export default {
           id: this.id,
         };
       },
+      update(data) {
+        return data.localWorkItem;
+      },
     },
   },
   computed: {

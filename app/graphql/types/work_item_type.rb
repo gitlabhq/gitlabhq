@@ -12,6 +12,8 @@ module Types
           description: 'Global ID of the work item.'
     field :iid, GraphQL::Types::ID, null: false,
           description: 'Internal ID of the work item.'
+    field :lock_version, GraphQL::Types::Int, null: false,
+          description: 'Lock version of the work item. Incremented each time the work item is updated.'
     field :state, WorkItemStateEnum, null: false,
           description: 'State of the work item.'
     field :title, GraphQL::Types::String, null: false,

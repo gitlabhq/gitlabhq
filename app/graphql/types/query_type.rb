@@ -87,6 +87,11 @@ module Types
             argument :id, ::Types::GlobalIDType[::Issue], required: true, description: 'Global ID of the issue.'
           end
 
+    field :work_item, Types::WorkItemType,
+          null: true,
+          resolver: Resolvers::WorkItemResolver,
+          description: 'Find a work item. Returns `null` if `work_items` feature flag is disabled.'
+
     field :merge_request, Types::MergeRequestType,
           null: true,
           description: 'Find a merge request.' do

@@ -560,6 +560,18 @@ Returns [`Vulnerability`](#vulnerability).
 | ---- | ---- | ----------- |
 | <a id="queryvulnerabilityid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | Global ID of the Vulnerability. |
 
+### `Query.workItem`
+
+Find a work item. Returns `null` if `work_items` feature flag is disabled.
+
+Returns [`WorkItem`](#workitem).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryworkitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+
 ## `Mutation` type
 
 The `Mutation` type contains all the mutations you can execute.
@@ -16752,6 +16764,7 @@ Represents vulnerability letter grades with associated projects.
 | <a id="workitemdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`ID!`](#id) | Internal ID of the work item. |
+| <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
 | <a id="workitemstate"></a>`state` | [`WorkItemState!`](#workitemstate) | State of the work item. |
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |

@@ -59,6 +59,20 @@ describe('Repository breadcrumbs component', () => {
     expect(wrapper.findAll(RouterLinkStub).length).toEqual(linkCount);
   });
 
+  it.each`
+    routeName            | path                        | linkTo
+    ${'treePath'}        | ${'app/assets/javascripts'} | ${'/-/tree/app/assets/javascripts'}
+    ${'treePathDecoded'} | ${'app/assets/javascripts'} | ${'/-/tree/app/assets/javascripts'}
+    ${'blobPath'}        | ${'app/assets/index.js'}    | ${'/-/blob/app/assets/index.js'}
+    ${'blobPathDecoded'} | ${'app/assets/index.js'}    | ${'/-/blob/app/assets/index.js'}
+  `(
+    'links to the correct router path when routeName is $routeName',
+    ({ routeName, path, linkTo }) => {
+      factory(path, {}, { name: routeName });
+      expect(wrapper.findAll(RouterLinkStub).at(3).props('to')).toEqual(linkTo);
+    },
+  );
+
   it('escapes hash in directory path', () => {
     factory('app/assets/javascripts#');
 

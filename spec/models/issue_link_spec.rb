@@ -3,57 +3,38 @@
 require 'spec_helper'
 
 RSpec.describe IssueLink do
-  describe 'Associations' do
-    it { is_expected.to belong_to(:source).class_name('Issue') }
-    it { is_expected.to belong_to(:target).class_name('Issue') }
+  it_behaves_like 'issuable link' do
+    let_it_be_with_reload(:issuable_link) { create(:issue_link) }
+    let_it_be(:issuable) { create(:issue) }
+    let(:issuable_class) { 'Issue' }
+    let(:issuable_link_factory) { :issue_link }
   end
 
-  describe 'link_type' do
-    it { is_expected.to define_enum_for(:link_type).with_values(relates_to: 0, blocks: 1) }
+  describe 'Scopes' do
+    let_it_be(:issue1) { create(:issue) }
+    let_it_be(:issue2) { create(:issue) }
 
-    it 'provides the "related" as default link_type' do
-      expect(create(:issue_link).link_type).to eq 'relates_to'
-    end
-  end
+    describe '.for_source_issue' do
+      it 'includes linked issues for source issue' do
+        source_issue = create(:issue)
+        issue_link_1 = create(:issue_link, source: source_issue, target: issue1)
+        issue_link_2 = create(:issue_link, source: source_issue, target: issue2)
 
-  describe 'Validation' do
-    subject { create :issue_link }
+        result = described_class.for_source_issue(source_issue)
 
-    it { is_expected.to validate_presence_of(:source) }
-    it { is_expected.to validate_presence_of(:target) }
-    it do
-      is_expected.to validate_uniqueness_of(:source)
-                       .scoped_to(:target_id)
-                       .with_message(/already related/)
-    end
-
-    it 'is not valid if an opposite link already exists' do
-      issue_link = build(:issue_link, source: subject.target, target: subject.source)
-
-      expect(issue_link).to be_invalid
-      expect(issue_link.errors[:source]).to include('is already related to this issue')
-    end
-
-    context 'when it relates to itself' do
-      let(:issue) { create :issue }
-
-      context 'cannot be validated' do
-        it 'does not invalidate object with self relation error' do
-          issue_link = build :issue_link, source: issue, target: nil
-
-          issue_link.valid?
-
-          expect(issue_link.errors[:source]).to be_empty
-        end
+        expect(result).to contain_exactly(issue_link_1, issue_link_2)
       end
+    end
 
-      context 'can be invalidated' do
-        it 'invalidates object' do
-          issue_link = build :issue_link, source: issue, target: issue
+    describe '.for_target_issue' do
+      it 'includes linked issues for target issue' do
+        target_issue = create(:issue)
+        issue_link_1 = create(:issue_link, source: issue1, target: target_issue)
+        issue_link_2 = create(:issue_link, source: issue2, target: target_issue)
 
-          expect(issue_link).to be_invalid
-          expect(issue_link.errors[:source]).to include('cannot be related to itself')
-        end
+        result = described_class.for_target_issue(target_issue)
+
+        expect(result).to contain_exactly(issue_link_1, issue_link_2)
       end
     end
   end

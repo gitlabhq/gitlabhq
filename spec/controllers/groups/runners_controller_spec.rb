@@ -190,7 +190,7 @@ RSpec.describe Groups::RunnersController do
       end
 
       it 'destroys the runner and redirects' do
-        expect_next_instance_of(Ci::UnregisterRunnerService, runner) do |service|
+        expect_next_instance_of(Ci::UnregisterRunnerService, runner, user) do |service|
           expect(service).to receive(:execute).once.and_call_original
         end
 

@@ -49,9 +49,15 @@ module Gitlab
   INSTALLATION_TYPE = File.read(root.join("INSTALLATION_TYPE")).strip.freeze
   HTTP_PROXY_ENV_VARS = %w(http_proxy https_proxy HTTP_PROXY HTTPS_PROXY).freeze
 
+  def self.simulate_com?
+    return false unless Rails.env.test? || Rails.env.development?
+
+    Gitlab::Utils.to_boolean(ENV['GITLAB_SIMULATE_SAAS'])
+  end
+
   def self.com?
     # Check `gl_subdomain?` as well to keep parity with gitlab.com
-    Gitlab.config.gitlab.url == Gitlab::Saas.com_url || gl_subdomain?
+    simulate_com? || Gitlab.config.gitlab.url == Gitlab::Saas.com_url || gl_subdomain?
   end
 
   def self.com
@@ -87,7 +93,7 @@ module Gitlab
   end
 
   def self.dev_env_or_com?
-    Rails.env.development? || com?
+    com?
   end
 
   def self.dev_or_test_env?

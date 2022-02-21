@@ -34,7 +34,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def destroy
-    Ci::UnregisterRunnerService.new(@runner).execute
+    Ci::UnregisterRunnerService.new(@runner, current_user).execute
 
     redirect_to admin_runners_path, status: :found
   end

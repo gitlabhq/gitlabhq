@@ -55,9 +55,9 @@ module QA
 
       after do |example|
         # Checking for failures in the test currently makes test very flaky due to catching unrelated failures
-        # Just log in case of failure until cause of network errors is found
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/346500
-        Runtime::Logger.warn(import_failures) if example.exception && !import_failures.empty?
+        # Log failures for easier debugging
+        Runtime::Logger.warn("Import failures: #{import_failures}") if example.exception && !import_failures.empty?
+      ensure
         user.remove_via_api!
       end
 

@@ -148,11 +148,16 @@ export default {
         .reduce(
           (acc, name, i) => {
             const path = joinPaths(i > 0 ? acc[i].path : '', escapeFileUrl(name));
+            const isLastPath = i === this.currentPath.split('/').length - 1;
+            const to =
+              this.isBlobPath && isLastPath
+                ? `/-/blob/${joinPaths(this.escapedRef, path)}`
+                : `/-/tree/${joinPaths(this.escapedRef, path)}`;
 
             return acc.concat({
               name,
               path,
-              to: `/-/tree/${joinPaths(this.escapedRef, path)}`,
+              to,
             });
           },
           [
@@ -274,9 +279,11 @@ export default {
 
       return items;
     },
+    isBlobPath() {
+      return this.$route.name === 'blobPath' || this.$route.name === 'blobPathDecoded';
+    },
     renderAddToTreeDropdown() {
-      const isBlobPath = this.$route.name === 'blobPath' || this.$route.name === 'blobPathDecoded';
-      return !isBlobPath && (this.canCollaborate || this.canCreateMrFromFork);
+      return !this.isBlobPath && (this.canCollaborate || this.canCreateMrFromFork);
     },
   },
   methods: {

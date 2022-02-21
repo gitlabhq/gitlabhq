@@ -22,7 +22,11 @@ export const resolvers = {
         },
       };
 
-      cache.writeQuery({ query: workItemQuery, variables: { id }, data: { workItem } });
+      cache.writeQuery({
+        query: workItemQuery,
+        variables: { id },
+        data: { localWorkItem: workItem },
+      });
 
       return {
         __typename: 'LocalCreateWorkItemPayload',
@@ -47,7 +51,11 @@ export const resolvers = {
         },
       };
 
-      cache.writeQuery({ query: workItemQuery, variables: { id: input.id }, data: { workItem } });
+      cache.writeQuery({
+        query: workItemQuery,
+        variables: { id: input.id },
+        data: { localWorkItem: workItem },
+      });
 
       return {
         __typename: 'LocalUpdateWorkItemPayload',

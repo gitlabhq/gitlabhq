@@ -110,7 +110,7 @@ module API
 
           authenticate_delete_runner!(runner)
 
-          destroy_conditionally!(runner) { ::Ci::UnregisterRunnerService.new(runner).execute }
+          destroy_conditionally!(runner) { ::Ci::UnregisterRunnerService.new(runner, current_user).execute }
         end
 
         desc 'List jobs running on a runner' do

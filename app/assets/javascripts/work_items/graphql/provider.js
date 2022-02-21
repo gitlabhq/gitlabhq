@@ -10,6 +10,11 @@ export function createApolloProvider() {
 
   const defaultClient = createDefaultClient(resolvers, {
     typeDefs,
+    cacheConfig: {
+      possibleTypes: {
+        LocalWorkItemWidget: ['LocalTitleWidget'],
+      },
+    },
   });
 
   defaultClient.cache.writeQuery({
@@ -18,7 +23,7 @@ export function createApolloProvider() {
       id: '1',
     },
     data: {
-      workItem: {
+      localWorkItem: {
         __typename: 'LocalWorkItem',
         id: '1',
         type: 'FEATURE',

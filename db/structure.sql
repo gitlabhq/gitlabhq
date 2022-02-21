@@ -19241,6 +19241,24 @@ CREATE SEQUENCE redirect_routes_id_seq
 
 ALTER SEQUENCE redirect_routes_id_seq OWNED BY redirect_routes.id;
 
+CREATE TABLE related_epic_links (
+    id bigint NOT NULL,
+    source_id bigint NOT NULL,
+    target_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    link_type smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE related_epic_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE related_epic_links_id_seq OWNED BY related_epic_links.id;
+
 CREATE TABLE release_links (
     id bigint NOT NULL,
     release_id integer NOT NULL,
@@ -22327,6 +22345,8 @@ ALTER TABLE ONLY raw_usage_data ALTER COLUMN id SET DEFAULT nextval('raw_usage_d
 
 ALTER TABLE ONLY redirect_routes ALTER COLUMN id SET DEFAULT nextval('redirect_routes_id_seq'::regclass);
 
+ALTER TABLE ONLY related_epic_links ALTER COLUMN id SET DEFAULT nextval('related_epic_links_id_seq'::regclass);
+
 ALTER TABLE ONLY release_links ALTER COLUMN id SET DEFAULT nextval('release_links_id_seq'::regclass);
 
 ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
@@ -24253,6 +24273,9 @@ ALTER TABLE ONLY raw_usage_data
 
 ALTER TABLE ONLY redirect_routes
     ADD CONSTRAINT redirect_routes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY related_epic_links
+    ADD CONSTRAINT related_epic_links_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY release_links
     ADD CONSTRAINT release_links_pkey PRIMARY KEY (id);
@@ -27704,6 +27727,12 @@ CREATE UNIQUE INDEX index_redirect_routes_on_path_unique_text_pattern_ops ON red
 
 CREATE INDEX index_redirect_routes_on_source_type_and_source_id ON redirect_routes USING btree (source_type, source_id);
 
+CREATE INDEX index_related_epic_links_on_source_id ON related_epic_links USING btree (source_id);
+
+CREATE UNIQUE INDEX index_related_epic_links_on_source_id_and_target_id ON related_epic_links USING btree (source_id, target_id);
+
+CREATE INDEX index_related_epic_links_on_target_id ON related_epic_links USING btree (target_id);
+
 CREATE UNIQUE INDEX index_release_links_on_release_id_and_name ON release_links USING btree (release_id, name);
 
 CREATE UNIQUE INDEX index_release_links_on_release_id_and_url ON release_links USING btree (release_id, url);
@@ -30334,6 +30363,9 @@ ALTER TABLE ONLY packages_debian_group_distributions
 ALTER TABLE ONLY packages_conan_file_metadata
     ADD CONSTRAINT fk_rails_0afabd9328 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY related_epic_links
+    ADD CONSTRAINT fk_rails_0b72027748 FOREIGN KEY (target_id) REFERENCES epics(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_build_pending_states
     ADD CONSTRAINT fk_rails_0bbbfeaf9d FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
@@ -31467,6 +31499,9 @@ ALTER TABLE ONLY group_deploy_keys_groups
 
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT fk_rails_c440b9ea31 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY related_epic_links
+    ADD CONSTRAINT fk_rails_c464534def FOREIGN KEY (source_id) REFERENCES epics(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_board_recent_visits
     ADD CONSTRAINT fk_rails_c4dcba4a3e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

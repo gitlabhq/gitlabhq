@@ -75,13 +75,13 @@ module QA
     end
 
     after do |example|
-      # Checking for failures in the test currently makes test very flaky
-      # Just log in case of failure until cause of network errors is found
+      # Checking for failures in the test currently makes test very flaky due to catching unrelated failures
+      # Log failures for easier debugging
       Runtime::Logger.warn("Import failures: #{import_failures}") if example.exception && !import_failures.empty?
-
-      user.remove_via_api!
     ensure
       Runtime::Feature.disable(:bulk_import_projects)
+
+      user.remove_via_api!
     end
   end
 end

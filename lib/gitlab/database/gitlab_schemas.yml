@@ -442,6 +442,7 @@ push_event_payloads: :gitlab_main
 push_rules: :gitlab_main
 raw_usage_data: :gitlab_main
 redirect_routes: :gitlab_main
+related_epic_links: :gitlab_main
 release_links: :gitlab_main
 releases: :gitlab_main
 remote_mirrors: :gitlab_main

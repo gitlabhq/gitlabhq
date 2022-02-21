@@ -35,7 +35,7 @@ class Groups::RunnersController < Groups::ApplicationController
     if @runner.belongs_to_more_than_one_project?
       redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), status: :found, alert: _('Runner was not deleted because it is assigned to multiple projects.')
     else
-      Ci::UnregisterRunnerService.new(@runner).execute
+      Ci::UnregisterRunnerService.new(@runner, current_user).execute
 
       redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), status: :found
     end

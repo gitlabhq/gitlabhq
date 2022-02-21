@@ -57,6 +57,50 @@ module Gitlab
 end
 ```
 
+### Ordinary batch counters Example
+
+```ruby
+module Gitlab
+  module Usage
+    module Metrics
+      module Instrumentations
+        class CountIssuesMetric < DatabaseMetric
+          operation :count
+
+          start { Issue.minimum(:id) }
+          finish { Issue.maximum(:id) }
+
+          relation { Issue }
+        end
+      end
+    end
+  end
+end
+```
+
+### Distinct batch counters Example
+
+```ruby
+# frozen_string_literal: true
+
+module Gitlab
+  module Usage
+    module Metrics
+      module Instrumentations
+        class CountUsersAssociatingMilestonesToReleasesMetric < DatabaseMetric
+          operation :distinct_count, column: :author_id
+
+          relation { Release.with_milestones }
+
+          start { Release.minimum(:author_id) }
+          finish { Release.maximum(:author_id) }
+        end
+      end
+    end
+  end
+end
+```
+
 ## Redis metrics
 
 [Example of a merge request that adds a `Redis` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66582).

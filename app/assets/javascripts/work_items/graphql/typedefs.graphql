@@ -51,7 +51,7 @@ type LocalUpdateWorkItemPayload {
 }
 
 extend type Query {
-  workItem(id: ID!): LocalWorkItem!
+  localWorkItem(id: ID!): LocalWorkItem!
 }
 
 extend type Mutation {

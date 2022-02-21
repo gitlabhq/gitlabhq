@@ -93,13 +93,15 @@ credentials "gitlab.com" {
 
 Where `gitlab.com` can be replaced with the hostname of your self-managed GitLab instance.
 
-You can then reference your Terraform Module from a downstream Terraform project:
+You can then refer to your Terraform Module from a downstream Terraform project:
 
 ```plaintext
 module "<module>" {
   source = "gitlab.com/<namespace>/<module-name>/<module-system>"
 }
 ```
+
+Where `<namespace>` is the [namespace](../../../user/group/index.md#namespaces) of the Terraform module registry.
 
 ## Publish a Terraform module by using CI/CD
 

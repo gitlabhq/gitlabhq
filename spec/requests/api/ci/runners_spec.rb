@@ -530,7 +530,7 @@ RSpec.describe API::Ci::Runners do
     context 'admin user' do
       context 'when runner is shared' do
         it 'deletes runner' do
-          expect_next_instance_of(Ci::UnregisterRunnerService, shared_runner) do |service|
+          expect_next_instance_of(Ci::UnregisterRunnerService, shared_runner, admin) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
 
@@ -548,7 +548,7 @@ RSpec.describe API::Ci::Runners do
 
       context 'when runner is not shared' do
         it 'deletes used project runner' do
-          expect_next_instance_of(Ci::UnregisterRunnerService, project_runner) do |service|
+          expect_next_instance_of(Ci::UnregisterRunnerService, project_runner, admin) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
 

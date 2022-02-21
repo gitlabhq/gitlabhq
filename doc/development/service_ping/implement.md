@@ -32,7 +32,7 @@ For information about the progress on migrating Service ping metrics, see this [
 
 ## Instrumentation classes
 
-We recommend you use [instrumentation classes](metrics_instrumentation.md) in `usage_data.rb` where possible.
+Implementing metrics direct in `usage_data.rb` is deprecated, we recommend you use [instrumentation classes](metrics_instrumentation.md).
 
 For example, we have the following instrumentation class:
 `lib/gitlab/usage/metrics/instrumentations/count_boards_metric.rb`.
@@ -45,7 +45,7 @@ boards: add_metric('CountBoardsMetric', time_frame: 'all'),
 
 ## Types of counters
 
-There are several types of counters in `usage_data.rb`:
+There are several types of counters for metrics:
 
 - **[Batch counters](#batch-counters)**: Used for counts and sums.
 - **[Redis counters](#redis-counters):** Used for in-memory counts.
@@ -72,63 +72,38 @@ you must add a specialized index on the columns involved in a counter.
 
 #### Ordinary batch counters
 
-Simple count of a given `ActiveRecord_Relation`, does a non-distinct batch count, smartly reduces `batch_size`, and handles errors.
-Handles the `ActiveRecord::StatementInvalid` error.
+Create a new [database metrics](metrics_instrumentation.md#database-metrics) instrumentation class with `count` operation for a given `ActiveRecord_Relation`
 
 Method:
 
 ```ruby
-count(relation, column = nil, batch: true, start: nil, finish: nil)
+add_metric('CountIssuesMetric', time_frame: 'all')
 ```
-
-Arguments:
-
-- `relation` the ActiveRecord_Relation to perform the count
-- `column` the column to perform the count on, by default is the primary key
-- `batch`: default `true` to use batch counting
-- `start`: custom start of the batch counting to avoid complex min calculations
-- `end`: custom end of the batch counting to avoid complex min calculations
 
 Examples:
 
-```ruby
-count(User.active)
-count(::Clusters::Cluster.aws_installed.enabled, :cluster_id)
-count(::Clusters::Cluster.aws_installed.enabled, :cluster_id, start: ::Clusters::Cluster.minimum(:id), finish: ::Clusters::Cluster.maximum(:id))
-```
+Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recommend to use [instrumentation classes](metrics_instrumentation.md).
 
 #### Distinct batch counters
 
-Distinct count of a given `ActiveRecord_Relation` on given column, a distinct batch count, smartly reduces `batch_size`, and handles errors.
-Handles the `ActiveRecord::StatementInvalid` error.
+Create a new [database metrics](metrics_instrumentation.md#database-metrics) instrumentation class with `distinct_count` operation for a given `ActiveRecord_Relation`.
 
 Method:
 
 ```ruby
-distinct_count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
+add_metric('CountUsersAssociatingMilestonesToReleasesMetric', time_frame: 'all')
 ```
-
-Arguments:
-
-- `relation`: the ActiveRecord_Relation to perform the count
-- `column`: the column to perform the distinct count, by default is the primary key
-- `batch`: default `true` to use batch counting
-- `batch_size`: if none set it uses default value 10000 from `Gitlab::Database::BatchCounter`
-- `start`: custom start of the batch counting to avoid complex min calculations
-- `end`: custom end of the batch counting to avoid complex min calculations
 
 WARNING:
 Counting over non-unique columns can lead to performance issues. For more information, see the [iterating tables in batches](../iterating_tables_in_batches.md) guide.
 
 Examples:
 
-```ruby
-distinct_count(::Project, :creator_id)
-distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::User.minimum(:id), finish: ::User.maximum(:id))
-distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
-```
+Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recommend to use [instrumentation classes](metrics_instrumentation.md).
 
 #### Sum batch operation
+
+There is no support for `sum` for database metrics.
 
 Sum the values of a given ActiveRecord_Relation on given column and handles errors.
 Handles the `ActiveRecord::StatementInvalid` error

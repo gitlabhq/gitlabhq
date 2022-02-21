@@ -1,5 +1,5 @@
 export const workItemQueryResponse = {
-  workItem: {
+  localWorkItem: {
     __typename: 'LocalWorkItem',
     id: '1',
     type: 'FEATURE',
