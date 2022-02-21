@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 class InProductGuidanceEnvironmentsWebideExperiment < ApplicationExperiment
-  exclude :has_environments?
+  control { false }
 
-  def control_behavior
-    false
-  end
+  exclude :has_environments?
 
   private
 

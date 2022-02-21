@@ -62,9 +62,7 @@ GitLab.com generates an application ID and secret key for you to use.
        # label: "Provider name", # optional label for login button, defaults to "GitLab.com"
        app_id: "YOUR_APP_ID",
        app_secret: "YOUR_APP_SECRET",
-       args: { scope: "read_user" # optional: defaults to the scopes of the application
-             , client_options: { site: "https://gitlab.example.com/api/v4" }
-             }
+       args: { scope: "read_user" } # optional: defaults to the scopes of the application
      }
    ]
    ```
@@ -91,7 +89,6 @@ GitLab.com generates an application ID and secret key for you to use.
        # label: 'Provider name', # optional label for login button, defaults to "GitLab.com"
        app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET',
-       args: { "client_options": { "site": 'https://gitlab.example.com/api/v4' } }
    ```
 
    Or, for installations from source to authenticate against a different GitLab instance:

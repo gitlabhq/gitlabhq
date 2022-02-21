@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["major"],
+  "properties": {
+    "major": { "type": "number", "description": "Major version number" },
+    "minor": { "type": "number", "description": "Minor version number" },
+    "patch": { "type": "number", "description": "Patch number" }
+  }
+}

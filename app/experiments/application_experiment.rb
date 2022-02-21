@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationExperiment < Gitlab::Experiment
+  control { nil } # provide a default control for anonymous experiments
+
   def publish(_result = nil)
     super
 

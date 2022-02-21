@@ -232,7 +232,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
       sign_in user
     end
 
-    context 'when pipeline and merge request were created simultaneously' do
+    context 'when pipeline and merge request were created simultaneously', :delete do
       before do
         stub_ci_pipeline_to_return_yaml_file
 

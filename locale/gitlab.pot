@@ -14434,6 +14434,9 @@ msgstr ""
 msgid "Errors:"
 msgstr ""
 
+msgid "Escalate this incident"
+msgstr ""
+
 msgid "Escalation Policies"
 msgstr ""
 
@@ -21933,11 +21936,6 @@ msgstr ""
 msgid "Limit the size of Sidekiq jobs stored in Redis."
 msgstr ""
 
-msgid "Limited to showing %d event at most"
-msgid_plural "Limited to showing %d events at most"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Limiting mode"
 msgstr ""
 
@@ -27479,6 +27477,9 @@ msgid "Point to any links you like: documentation, built binaries, or other rela
 msgstr ""
 
 msgid "Policies"
+msgstr ""
+
+msgid "Policy '%{escalation_policy_name}' does not exist."
 msgstr ""
 
 msgid "Policy management project does have any policies in %{policy_path}"
@@ -33827,11 +33828,6 @@ msgstr ""
 msgid "Show whitespace changes"
 msgstr ""
 
-msgid "Showing %d event"
-msgid_plural "Showing %d events"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Showing %{conflict} between %{sourceBranch} and %{targetBranch}"
 msgstr ""
 
@@ -34806,6 +34802,9 @@ msgstr ""
 msgid "Started asynchronous removal of all repository check states."
 msgstr ""
 
+msgid "Started escalation for this incident."
+msgstr ""
+
 msgid "Starting..."
 msgstr ""
 
@@ -34816,6 +34815,9 @@ msgid "Starts %{startsIn}"
 msgstr ""
 
 msgid "Starts at (UTC)"
+msgstr ""
+
+msgid "Starts escalations for this incident"
 msgstr ""
 
 msgid "Starts on"
@@ -37373,6 +37375,9 @@ msgid "This group, its subgroups and projects has been scheduled for removal on 
 msgstr ""
 
 msgid "This group, its subgroups and projects will be removed on %{date} since its parent group '%{parent_group_name}' has been scheduled for removal."
+msgstr ""
+
+msgid "This incident is already escalated with '%{escalation_policy_name}'."
 msgstr ""
 
 msgid "This invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."

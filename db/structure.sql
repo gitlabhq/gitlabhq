@@ -10036,6 +10036,30 @@ CREATE SEQUENCE allowed_email_domains_id_seq
 
 ALTER SEQUENCE allowed_email_domains_id_seq OWNED BY allowed_email_domains.id;
 
+CREATE TABLE analytics_cycle_analytics_aggregations (
+    group_id bigint NOT NULL,
+    incremental_runtimes_in_seconds integer[] DEFAULT '{}'::integer[] NOT NULL,
+    incremental_processed_records integer[] DEFAULT '{}'::integer[] NOT NULL,
+    last_full_run_runtimes_in_seconds integer[] DEFAULT '{}'::integer[] NOT NULL,
+    last_full_run_processed_records integer[] DEFAULT '{}'::integer[] NOT NULL,
+    last_incremental_issues_id integer,
+    last_incremental_merge_requests_id integer,
+    last_full_run_issues_id integer,
+    last_full_run_merge_requests_id integer,
+    last_incremental_run_at timestamp with time zone,
+    last_incremental_issues_updated_at timestamp with time zone,
+    last_incremental_merge_requests_updated_at timestamp with time zone,
+    last_full_run_at timestamp with time zone,
+    last_full_run_issues_updated_at timestamp with time zone,
+    last_full_run_mrs_updated_at timestamp with time zone,
+    last_consistency_check_updated_at timestamp with time zone,
+    enabled boolean DEFAULT true NOT NULL,
+    CONSTRAINT chk_rails_1ef688e577 CHECK ((cardinality(incremental_runtimes_in_seconds) <= 10)),
+    CONSTRAINT chk_rails_7810292ec9 CHECK ((cardinality(last_full_run_processed_records) <= 10)),
+    CONSTRAINT chk_rails_8b9e89687c CHECK ((cardinality(last_full_run_runtimes_in_seconds) <= 10)),
+    CONSTRAINT chk_rails_e16bf3913a CHECK ((cardinality(incremental_processed_records) <= 10))
+);
+
 CREATE TABLE analytics_cycle_analytics_group_stages (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22928,6 +22952,9 @@ ALTER TABLE ONLY alert_management_http_integrations
 ALTER TABLE ONLY allowed_email_domains
     ADD CONSTRAINT allowed_email_domains_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY analytics_cycle_analytics_aggregations
+    ADD CONSTRAINT analytics_cycle_analytics_aggregations_pkey PRIMARY KEY (group_id);
+
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT analytics_cycle_analytics_group_stages_pkey PRIMARY KEY (id);
 
@@ -25242,6 +25269,12 @@ CREATE UNIQUE INDEX any_approver_project_rule_type_unique_index ON approval_proj
 CREATE INDEX approval_mr_rule_index_merge_request_id ON approval_merge_request_rules USING btree (merge_request_id);
 
 CREATE UNIQUE INDEX bulk_import_trackers_uniq_relation_by_entity ON bulk_import_trackers USING btree (bulk_import_entity_id, relation);
+
+CREATE INDEX ca_aggregations_last_consistency_check_updated_at ON analytics_cycle_analytics_aggregations USING btree (last_consistency_check_updated_at NULLS FIRST) WHERE (enabled IS TRUE);
+
+CREATE INDEX ca_aggregations_last_full_run_at ON analytics_cycle_analytics_aggregations USING btree (last_full_run_at NULLS FIRST) WHERE (enabled IS TRUE);
+
+CREATE INDEX ca_aggregations_last_incremental_run_at ON analytics_cycle_analytics_aggregations USING btree (last_incremental_run_at NULLS FIRST) WHERE (enabled IS TRUE);
 
 CREATE INDEX cadence_create_iterations_automation ON iterations_cadences USING btree (automatic, duration_in_weeks, date((COALESCE(last_run_date, '1970-01-01'::date) + ((duration_in_weeks)::double precision * '7 days'::interval)))) WHERE (duration_in_weeks IS NOT NULL);
 
@@ -30366,6 +30399,9 @@ ALTER TABLE ONLY bulk_imports
 
 ALTER TABLE ONLY diff_note_positions
     ADD CONSTRAINT fk_rails_13c7212859 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY analytics_cycle_analytics_aggregations
+    ADD CONSTRAINT fk_rails_13c8374c7a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_150cd5682c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

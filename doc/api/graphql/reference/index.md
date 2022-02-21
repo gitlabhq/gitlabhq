@@ -11942,7 +11942,6 @@ Represents an iteration object.
 | <a id="iterationid"></a>`id` | [`ID!`](#id) | ID of the iteration. |
 | <a id="iterationiid"></a>`iid` | [`ID!`](#id) | Internal ID of the iteration. |
 | <a id="iterationiterationcadence"></a>`iterationCadence` | [`IterationCadence!`](#iterationcadence) | Cadence of the iteration. |
-| <a id="iterationreport"></a>`report` | [`TimeboxReport`](#timeboxreport) | Historically accurate report about the timebox. |
 | <a id="iterationscopedpath"></a>`scopedPath` | [`String`](#string) | Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts. |
 | <a id="iterationscopedurl"></a>`scopedUrl` | [`String`](#string) | Web URL of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts. |
 | <a id="iterationsequence"></a>`sequence` | [`Int!`](#int) | Sequence number for the iteration when you sort the containing cadence's iterations by the start and end date. The earliest starting and ending iteration is assigned 1. |
@@ -11952,6 +11951,20 @@ Represents an iteration object.
 | <a id="iterationupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of last iteration update. |
 | <a id="iterationwebpath"></a>`webPath` | [`String!`](#string) | Web path of the iteration. |
 | <a id="iterationweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the iteration. |
+
+#### Fields with arguments
+
+##### `Iteration.report`
+
+Historically accurate report about the timebox.
+
+Returns [`TimeboxReport`](#timeboxreport).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="iterationreportfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group used as a scope for report. For example, `gitlab-org` or `gitlab-org/gitlab`. |
 
 ### `IterationCadence`
 
@@ -12875,7 +12888,6 @@ Represents a milestone.
 | <a id="milestoneid"></a>`id` | [`ID!`](#id) | ID of the milestone. |
 | <a id="milestoneiid"></a>`iid` | [`ID!`](#id) | Internal ID of the milestone. |
 | <a id="milestoneprojectmilestone"></a>`projectMilestone` | [`Boolean!`](#boolean) | Indicates if milestone is at project level. |
-| <a id="milestonereport"></a>`report` | [`TimeboxReport`](#timeboxreport) | Historically accurate report about the timebox. |
 | <a id="milestonestartdate"></a>`startDate` | [`Time`](#time) | Timestamp of the milestone start date. |
 | <a id="milestonestate"></a>`state` | [`MilestoneStateEnum!`](#milestonestateenum) | State of the milestone. |
 | <a id="milestonestats"></a>`stats` | [`MilestoneStats`](#milestonestats) | Milestone statistics. |
@@ -12883,6 +12895,20 @@ Represents a milestone.
 | <a id="milestonetitle"></a>`title` | [`String!`](#string) | Title of the milestone. |
 | <a id="milestoneupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of last milestone update. |
 | <a id="milestonewebpath"></a>`webPath` | [`String!`](#string) | Web path of the milestone. |
+
+#### Fields with arguments
+
+##### `Milestone.report`
+
+Historically accurate report about the timebox.
+
+Returns [`TimeboxReport`](#timeboxreport).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="milestonereportfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group used as a scope for report. For example, `gitlab-org` or `gitlab-org/gitlab`. |
 
 ### `MilestoneStats`
 
@@ -19253,11 +19279,19 @@ Implementations:
 - [`Iteration`](#iteration)
 - [`Milestone`](#milestone)
 
-##### Fields
+##### Fields with arguments
+
+###### `TimeboxReportInterface.report`
+
+Historically accurate report about the timebox.
+
+Returns [`TimeboxReport`](#timeboxreport).
+
+####### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="timeboxreportinterfacereport"></a>`report` | [`TimeboxReport`](#timeboxreport) | Historically accurate report about the timebox. |
+| <a id="timeboxreportinterfacereportfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group used as a scope for report. For example, `gitlab-org` or `gitlab-org/gitlab`. |
 
 #### `User`
 

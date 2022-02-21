@@ -304,7 +304,7 @@ describe('GroupRunnersApp', () => {
     });
 
     it('more pages can be selected', () => {
-      expect(findRunnerPagination().text()).toMatchInterpolatedText('Prev Next');
+      expect(findRunnerPagination().text()).toMatchInterpolatedText('Previous Next');
     });
 
     it('cannot navigate to the previous page', () => {

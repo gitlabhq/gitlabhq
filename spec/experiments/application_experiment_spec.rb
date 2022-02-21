@@ -18,10 +18,13 @@ RSpec.describe ApplicationExperiment, :experiment do
     allow(application_experiment).to receive(:enabled?).and_return(true)
   end
 
-  it "doesn't raise an exception without a defined control" do
-    # because we have a default behavior defined
+  it "registers a default control behavior for anonymous experiments" do
+    # This default control behavior is not inherited, intentionally, but it
+    # does provide anonymous experiments with a base control behavior to keep
+    # them optional there.
 
-    expect { experiment('namespaced/stub') { } }.not_to raise_error
+    expect(experiment(:example)).to register_behavior(:control).with(nil)
+    expect { experiment(:example) { } }.not_to raise_error
   end
 
   describe "#publish" do
