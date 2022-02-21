@@ -4,6 +4,8 @@ module QA
   module Support
     module Formatters
       class TestStatsFormatter < RSpec::Core::Formatters::BaseFormatter
+        include Support::InfluxdbTools
+
         RSpec::Core::Formatters.register(self, :stop)
 
         # Finish test execution
@@ -11,9 +13,6 @@ module QA
         # @param [RSpec::Core::Notifications::ExamplesNotification] notification
         # @return [void]
         def stop(notification)
-          return log(:warn, 'Missing QA_INFLUXDB_URL, skipping metrics export!') unless influxdb_url
-          return log(:warn, 'Missing QA_INFLUXDB_TOKEN, skipping metrics export!') unless influxdb_token
-
           push_test_stats(notification.examples)
           push_fabrication_stats
         end
@@ -27,7 +26,7 @@ module QA
         def push_test_stats(examples)
           data = examples.map { |example| test_stats(example) }.compact
 
-          influx_client.write(data: data)
+          write_api.write(data: data)
           log(:debug, "Pushed #{data.length} test execution entries to influxdb")
         rescue StandardError => e
           log(:error, "Failed to push test execution stats to influxdb, error: #{e}")
@@ -42,7 +41,7 @@ module QA
           end
           return if data.empty?
 
-          influx_client.write(data: data)
+          write_api.write(data: data)
           log(:debug, "Pushed #{data.length} resource fabrication entries to influxdb")
         rescue StandardError => e
           log(:error, "Failed to push fabrication stats to influxdb, error: #{e}")
@@ -70,7 +69,7 @@ module QA
               retried: ((example.metadata[:retry_attempts] || 0) > 0).to_s,
               job_name: job_name,
               merge_request: merge_request,
-              run_type: env('QA_RUN_TYPE') || run_type,
+              run_type: run_type,
               stage: devops_stage(file_path),
               testcase: example.metadata[:testcase]
             },
@@ -83,7 +82,8 @@ module QA
               retry_attempts: example.metadata[:retry_attempts] || 0,
               job_url: QA::Runtime::Env.ci_job_url,
               pipeline_url: env('CI_PIPELINE_URL'),
-              pipeline_id: env('CI_PIPELINE_ID')
+              pipeline_id: env('CI_PIPELINE_ID'),
+              merge_request_iid: merge_request_iid
             }
           }
         rescue StandardError => e
@@ -119,13 +119,6 @@ module QA
           }
         end
 
-        # Project name
-        #
-        # @return [String]
-        def project_name
-          @project_name ||= QA::Runtime::Env.ci_project_name
-        end
-
         # Base ci job name
         #
         # @return [String]
@@ -148,26 +141,7 @@ module QA
         #
         # @return [String]
         def merge_request
-          @merge_request ||= (!!env('CI_MERGE_REQUEST_IID') || !!env('TOP_UPSTREAM_MERGE_REQUEST_IID')).to_s
-        end
-
-        # Test run type from staging (`gstg`, `gstg-cny`, `gstg-ref`), canary, preprod or production env
-        #
-        # @return [String, nil]
-        def run_type
-          return unless %w[staging staging-canary staging-ref canary preprod production].include?(project_name)
-
-          @run_type ||= begin
-            test_subset = if env('NO_ADMIN') == 'true'
-                            'sanity-no-admin'
-                          elsif env('SMOKE_ONLY') == 'true'
-                            'sanity'
-                          else
-                            'full'
-                          end
-
-            "#{project_name}-#{test_subset}"
-          end
+          (!!merge_request_iid).to_s
         end
 
         # Print log message
@@ -179,49 +153,12 @@ module QA
           QA::Runtime::Logger.public_send(level, "[influxdb exporter]: #{message}")
         end
 
-        # Return non empty environment variable value
-        #
-        # @param [String] name
-        # @return [String, nil]
-        def env(name)
-          return unless ENV[name] && !ENV[name].empty?
-
-          ENV[name]
-        end
-
         # Get spec devops stage
         #
         # @param [String] location
         # @return [String, nil]
         def devops_stage(file_path)
           file_path.match(%r{\d{1,2}_(\w+)/})&.captures&.first
-        end
-
-        # InfluxDb client
-        #
-        # @return [InfluxDB2::WriteApi]
-        def influx_client
-          @influx_client ||= InfluxDB2::Client.new(
-            influxdb_url,
-            influxdb_token,
-            bucket: 'e2e-test-stats',
-            org: 'gitlab-qa',
-            precision: InfluxDB2::WritePrecision::NANOSECOND
-          ).create_write_api
-        end
-
-        # InfluxDb instance url
-        #
-        # @return [String]
-        def influxdb_url
-          @influxdb_url ||= env('QA_INFLUXDB_URL')
-        end
-
-        # Influxdb token
-        #
-        # @return [String]
-        def influxdb_token
-          @influxdb_token ||= env('QA_INFLUXDB_TOKEN')
         end
       end
     end

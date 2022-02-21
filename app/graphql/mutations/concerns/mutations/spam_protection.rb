@@ -16,30 +16,16 @@ module Mutations
 
     private
 
-    def spam_action_response(object)
+    def check_spam_action_response!(object)
       fields = spam_action_response_fields(object)
 
-      # If the SpamActionService detected something as spam,
-      # this is non-recoverable and the needs_captcha_response
-      # should not be considered
-      kind = if fields[:spam]
-               :spam
-             elsif fields[:needs_captcha_response]
-               :needs_captcha_response
-             end
-
-      [kind, fields]
-    end
-
-    def check_spam_action_response!(object)
-      kind, fields = spam_action_response(object)
-
-      case kind
-      when :needs_captcha_response
+      if fields[:spam]
+        # If the SpamActionService detected something as spam, this is non-recoverable and the
+        # needs_captcha_response and other CAPTCHA-related fields should not be returned
+        raise SpamDisallowedError.new(SPAM_DISALLOWED_MESSAGE, extensions: { spam: true })
+      elsif fields[:needs_captcha_response]
         fields.delete :spam
         raise NeedsCaptchaResponseError.new(NEEDS_CAPTCHA_RESPONSE_MESSAGE, extensions: fields)
-      when :spam
-        raise SpamDisallowedError.new(SPAM_DISALLOWED_MESSAGE, extensions: { spam: true })
       else
         nil
       end

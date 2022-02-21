@@ -8,7 +8,6 @@
 # which supports JSON format should be used instead.
 module SpammableActions::CaptchaCheck::HtmlFormatActionsSupport
   extend ActiveSupport::Concern
-  include SpammableActions::Attributes
   include SpammableActions::CaptchaCheck::Common
 
   included do
@@ -17,9 +16,9 @@ module SpammableActions::CaptchaCheck::HtmlFormatActionsSupport
 
   private
 
-  def with_captcha_check_html_format(&block)
+  def with_captcha_check_html_format(spammable:, &block)
     captcha_render_lambda = -> { render :captcha_check }
-    with_captcha_check_common(captcha_render_lambda: captcha_render_lambda, &block)
+    with_captcha_check_common(spammable: spammable, captcha_render_lambda: captcha_render_lambda, &block)
   end
 
   # Convert spam/CAPTCHA values from form field params to headers, because all spam-related services

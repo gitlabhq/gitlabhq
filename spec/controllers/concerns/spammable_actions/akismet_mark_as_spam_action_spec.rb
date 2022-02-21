@@ -7,12 +7,6 @@ RSpec.describe SpammableActions::AkismetMarkAsSpamAction do
 
   controller(ActionController::Base) do
     include SpammableActions::AkismetMarkAsSpamAction
-
-    private
-
-    def spammable_path
-      '/fake_spammable_path'
-    end
   end
 
   let(:spammable_type) { 'SpammableType' }
@@ -22,7 +16,6 @@ RSpec.describe SpammableActions::AkismetMarkAsSpamAction do
   before do
     allow(Gitlab::Recaptcha).to receive(:load_configurations!) { true }
     routes.draw { get 'mark_as_spam' => 'anonymous#mark_as_spam' }
-    allow(controller).to receive(:spammable) { spammable }
     allow(controller).to receive(:current_user) { double(:current_user, admin?: admin) }
     allow(controller).to receive(:current_user).and_return(current_user)
   end
@@ -31,6 +24,9 @@ RSpec.describe SpammableActions::AkismetMarkAsSpamAction do
     subject { post :mark_as_spam }
 
     before do
+      allow(controller).to receive(:spammable) { spammable }
+      allow(controller).to receive(:spammable_path) { '/fake_spammable_path' }
+
       expect_next(Spam::AkismetMarkAsSpamService, target: spammable)
         .to receive(:execute).and_return(execute_result)
     end
@@ -66,6 +62,18 @@ RSpec.describe SpammableActions::AkismetMarkAsSpamAction do
 
         subject
       end
+    end
+  end
+
+  describe '#spammable' do
+    it 'raises when unimplemented' do
+      expect { controller.send(:spammable) }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#spammable_path' do
+    it 'raises when unimplemented' do
+      expect { controller.send(:spammable_path) }.to raise_error(NotImplementedError)
     end
   end
 end

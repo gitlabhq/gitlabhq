@@ -8,6 +8,7 @@ require "colorize"
 module QA
   module Tools
     class ReliableReport
+      include Support::InfluxdbTools
       include Support::API
 
       # Project for report creation: https://gitlab.com/gitlab-org/gitlab
@@ -15,10 +16,7 @@ module QA
 
       def initialize(range)
         @range = range.to_i
-        @influxdb_bucket = "e2e-test-stats"
         @slack_channel = "#quality-reports"
-        @influxdb_url = ENV["QA_INFLUXDB_URL"] || raise("Missing QA_INFLUXDB_URL env variable")
-        @influxdb_token = ENV["QA_INFLUXDB_TOKEN"] || raise("Missing QA_INFLUXDB_TOKEN env variable")
       end
 
       # Run reliable reporter
@@ -91,7 +89,7 @@ module QA
 
       private
 
-      attr_reader :range, :influxdb_bucket, :slack_channel, :influxdb_url, :influxdb_token
+      attr_reader :range, :slack_channel
 
       # Markdown formatted report issue body
       #
@@ -304,7 +302,7 @@ module QA
       # @return [String]
       def query(reliable)
         <<~QUERY
-          from(bucket: "#{influxdb_bucket}")
+          from(bucket: "#{Support::InfluxdbTools::INFLUX_TEST_METRICS_BUCKET}")
             |> range(start: -#{range}d)
             |> filter(fn: (r) => r._measurement == "test-stats")
             |> filter(fn: (r) => r.run_type == "staging-full" or
@@ -323,26 +321,6 @@ module QA
             )
             |> group(columns: ["name"])
         QUERY
-      end
-
-      # Query client
-      #
-      # @return [QueryApi]
-      def query_api
-        @query_api ||= influx_client.create_query_api
-      end
-
-      # InfluxDb client
-      #
-      # @return [InfluxDB2::Client]
-      def influx_client
-        @influx_client ||= InfluxDB2::Client.new(
-          influxdb_url,
-          influxdb_token,
-          bucket: influxdb_bucket,
-          org: "gitlab-qa",
-          precision: InfluxDB2::WritePrecision::NANOSECOND
-        )
       end
 
       # Slack notifier

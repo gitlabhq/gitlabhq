@@ -7504,6 +7504,14 @@ RSpec.describe Project, factory_default: :keep do
         expect(project.save).to be_falsy
         expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
       end
+
+      it 'does not add new topic if name is not unique (case insensitive)' do
+        project.topic_list = 'topic1, TOPIC2, topic3'
+
+        project.save!
+
+        expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
+      end
     end
 
     context 'public topics counter' do

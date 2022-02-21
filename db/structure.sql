@@ -28023,6 +28023,8 @@ CREATE UNIQUE INDEX index_token_with_ivs_on_hashed_token ON token_with_ivs USING
 
 CREATE INDEX index_topics_non_private_projects_count ON topics USING btree (non_private_projects_count DESC, id);
 
+CREATE INDEX index_topics_on_lower_name ON topics USING btree (lower(name));
+
 CREATE UNIQUE INDEX index_topics_on_name ON topics USING btree (name);
 
 CREATE INDEX index_topics_on_name_trigram ON topics USING gin (name gin_trgm_ops);

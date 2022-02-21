@@ -12,7 +12,7 @@ module Spammable
   included do
     has_one :user_agent_detail, as: :subject, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-    attr_accessor :spam
+    attr_writer :spam
     attr_accessor :needs_recaptcha
     attr_accessor :spam_log
 
@@ -27,6 +27,10 @@ module Spammable
     end
 
     delegate :ip_address, :user_agent, to: :user_agent_detail, allow_nil: true
+  end
+
+  def spam
+    !!@spam # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def submittable_as_spam_by?(current_user)

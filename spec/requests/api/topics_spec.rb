@@ -142,6 +142,13 @@ RSpec.describe API::Topics do
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eql('name is missing')
       end
+
+      it 'returns 400 if name is not unique (case insensitive)' do
+        post api('/topics/', admin), params: { name: topic_1.name.downcase }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['name']).to eq(['has already been taken'])
+      end
     end
 
     context 'as normal user' do

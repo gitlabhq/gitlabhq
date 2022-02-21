@@ -2826,7 +2826,9 @@ class Project < ApplicationRecord
 
     if @topic_list != self.topic_list
       self.topics.delete_all
-      self.topics = @topic_list.map { |topic| Projects::Topic.find_or_create_by(name: topic) }
+      self.topics = @topic_list.map do |topic|
+        Projects::Topic.where('lower(name) = ?', topic.downcase).order(total_projects_count: :desc).first_or_create(name: topic)
+      end
     end
 
     @topic_list = nil

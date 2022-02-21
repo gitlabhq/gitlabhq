@@ -7,7 +7,7 @@ module Spam
     module HasSpamActionResponseFields
       extend ActiveSupport::Concern
 
-      # spam_action_response_fields(spammable)    -> hash
+      # spam_action_response_fields(spammable) -> hash
       #
       # Takes a Spammable as an argument and returns response fields necessary to display a CAPTCHA on
       # the client.

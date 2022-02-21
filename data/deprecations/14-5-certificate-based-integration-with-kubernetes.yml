@@ -5,19 +5,22 @@
   removal_date: "2022-11-22" # the date of the milestone release when this feature is planned to be removed
   breaking_change: true
   body: |
-    [We are deprecating the certificate-based integration with Kubernetes](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
-    The timeline of removal of the integration from the product is planned to happen in two steps, starting with milestone 15.0 and finishing in GitLab version 15.6.
+    [The certificate-based integration with Kubernetes will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
 
-    In 15.0, we plan to introduce a feature flag that will allow GitLab Self-Managed customers to keep the certificate-based integration enabled, it will be disabled by default. We plan to remove this feature flag together with the underlying code in GitLab version 15.6.
-    The certificate-based integration will continue to receive security and
-    critical fixes, and features built on the integration will continue to work with supported Kubernetes
-    versions until the final removal in 15.6.
+    If you are a self-managed customer, in GitLab 15.0, a feature flag will be introduced so you can keep
+    certificate-based integration enabled. The flag will be disabled by default.
+    The flag and the related code will be removed in GitLab 15.6.
 
-    For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend the use of the
-    [Kubernetes Agent](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. 
-    We provide [migration plans](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html) in the documentation. 
+    Until the final removal in 15.6, features built on the integration will continue to work, and
+    GitLab will continue to fix security and critical issues.
 
-    For updates and details around this deprecation, follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+    If you use GitLab.com, certificate-based integrations will cease functioning in 15.0.
+
+    For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
+    [agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. 
+    See the documentation for [how to migrate](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html). 
+
+    For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
   stage: Configure
   tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url: 'https://gitlab.com/groups/gitlab-org/configure/-/epics/8'

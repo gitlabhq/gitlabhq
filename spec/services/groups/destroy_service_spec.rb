@@ -112,6 +112,17 @@ RSpec.describe Groups::DestroyService do
     end
   end
 
+  context 'when group owner is blocked' do
+    before do
+      user.block!
+    end
+
+    it 'returns a more descriptive error message' do
+      expect { destroy_group(group, user, false) }
+      .to raise_error(Groups::DestroyService::DestroyError, "You can't delete this group because you're blocked.")
+    end
+  end
+
   describe 'repository removal' do
     before do
       destroy_group(group, user, false)

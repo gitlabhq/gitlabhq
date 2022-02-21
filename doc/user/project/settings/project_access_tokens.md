@@ -24,6 +24,8 @@ Project access tokens are similar to [group access tokens](../../group/settings/
 and [personal access tokens](../../profile/personal_access_tokens.md), except they are
 associated with a project rather than a group or user.
 
+In self-managed instances, project access tokens are subject to the same [maximum lifetime limits](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens) as personal access tokens if the limit is set. 
+
 You can use project access tokens:
 
 - On GitLab SaaS if you have the Premium license tier or higher. Project access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
@@ -43,7 +45,8 @@ To create a project access token:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the project.
-1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC.
+1. Optional. Enter an expiry date for the token. The token expires on that date at midnight UTC. An instance-wide [maximum lifetime](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
+
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-project-access-token).
 1. Select  **Create project access token**.

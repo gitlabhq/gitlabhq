@@ -60,7 +60,8 @@ describe QA::Support::Formatters::TestStatsFormatter do
         retry_attempts: 0,
         job_url: ci_job_url,
         pipeline_url: ci_pipeline_url,
-        pipeline_id: ci_pipeline_id
+        pipeline_id: ci_pipeline_id,
+        merge_request_iid: nil
       }
     }
   end

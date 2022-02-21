@@ -7,7 +7,8 @@ module Projects
     include Avatarable
     include Gitlab::SQL::Pattern
 
-    validates :name, presence: true, uniqueness: true, length: { maximum: 255 }
+    validates :name, presence: true, length: { maximum: 255 }
+    validates :name, uniqueness: { case_sensitive: false }, if: :name_changed?
     validates :description, length: { maximum: 1024 }
 
     has_many :project_topics, class_name: 'Projects::ProjectTopic'
