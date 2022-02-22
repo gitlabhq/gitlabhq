@@ -3519,9 +3519,6 @@ msgstr ""
 msgid "All environments"
 msgstr ""
 
-msgid "All epics"
-msgstr ""
-
 msgid "All groups and projects"
 msgstr ""
 
@@ -7574,9 +7571,6 @@ msgid "Closed %{epicTimeagoDate}"
 msgstr ""
 
 msgid "Closed MRs"
-msgstr ""
-
-msgid "Closed epics"
 msgstr ""
 
 msgid "Closed issues"
@@ -25608,9 +25602,6 @@ msgstr ""
 msgid "Open a CLI and connect to the cluster you want to install the agent in. Use this installation method to minimize any manual steps. The token is already included in the command."
 msgstr ""
 
-msgid "Open epics"
-msgstr ""
-
 msgid "Open errors"
 msgstr ""
 
@@ -29883,9 +29874,6 @@ msgid "PushoverService|Total commits count: %{total_commits_count}"
 msgstr ""
 
 msgid "QualitySummary|Project quality"
-msgstr ""
-
-msgid "Quarters"
 msgstr ""
 
 msgid "Query"

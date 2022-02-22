@@ -13,7 +13,7 @@ RSpec.describe Deployments::HooksWorker do
     it 'executes project services for deployment_hooks' do
       deployment = create(:deployment, :running)
       project = deployment.project
-      service = create(:integration, type: 'SlackService', project: project, deployment_events: true, active: true)
+      service = create(:integrations_slack, project: project, deployment_events: true)
 
       expect(ProjectServiceWorker).to receive(:perform_async).with(service.id, an_instance_of(Hash))
 
@@ -23,7 +23,7 @@ RSpec.describe Deployments::HooksWorker do
     it 'does not execute an inactive service' do
       deployment = create(:deployment, :running)
       project = deployment.project
-      create(:integration, type: 'SlackService', project: project, deployment_events: true, active: false)
+      create(:integrations_slack, project: project, deployment_events: true, active: false)
 
       expect(ProjectServiceWorker).not_to receive(:perform_async)
 

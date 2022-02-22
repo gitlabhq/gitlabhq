@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Open a fork in Web IDE' do
+    describe 'Open a fork in Web IDE', quarantine: {
+        only: { subdomain: %i[canary production] },
+        issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/347247",
+        type: :flaky
+    } do
       let(:parent_project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'parent-project'

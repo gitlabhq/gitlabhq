@@ -20,7 +20,7 @@ type: howto, reference
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/2493)
-to add this functionality to the [Agent](../index.md).
+to add this functionality to the [agent](../index.md).
 
 GitLab deploy boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/index.md) running on [Kubernetes](https://kubernetes.io), displaying the status

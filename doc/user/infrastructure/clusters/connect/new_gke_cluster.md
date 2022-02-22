@@ -11,9 +11,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 The process described on this page uses cluster certificates to connect the
 new cluster to GitLab, [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-You can still create a cluster and then connect it to GitLab through the [Agent](../index.md).
+You can still create a cluster and then connect it to GitLab through the [agent](../index.md).
 [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/343660)
-to migrate this functionality to the [Agent](../index.md).
+to migrate this functionality to the [agent](../index.md).
 
 Learn how to create a new cluster on Google Kubernetes Engine (GKE) through
 [Infrastructure as Code (IaC)](../../index.md).

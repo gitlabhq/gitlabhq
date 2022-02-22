@@ -244,7 +244,7 @@ It is important not to update these to incorrect values, since this causes users
 
 ### I need to change my SCIM app
 
-Individual users can follow the instructions in the ["SAML authentication failed: User has already been taken"](index.md#i-need-to-change-my-saml-app) section.
+Individual users can follow the instructions in the ["SAML authentication failed: User has already been taken"](index.md#change-the-saml-app) section.
 
 Alternatively, users can be removed from the SCIM app which de-links all removed users. Sync can then be turned on for the new SCIM app to [link existing users](#user-access-and-linking-setup).
 

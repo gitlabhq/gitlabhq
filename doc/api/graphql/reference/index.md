@@ -8726,6 +8726,7 @@ An emoji awarded by a user.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="baseserviceactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the service is active. |
+| <a id="baseserviceservicetype"></a>`serviceType` | [`ServiceType`](#servicetype) | Type of the service. |
 | <a id="baseservicetype"></a>`type` | [`String`](#string) | Class name of the service. |
 
 ### `Blob`
@@ -12028,6 +12029,7 @@ Represents an iteration cadence.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="jiraserviceactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the service is active. |
+| <a id="jiraserviceservicetype"></a>`serviceType` | [`ServiceType`](#servicetype) | Type of the service. |
 | <a id="jiraservicetype"></a>`type` | [`String`](#string) | Class name of the service. |
 
 #### Fields with arguments
@@ -19284,6 +19286,7 @@ Implementations:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="serviceactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the service is active. |
+| <a id="serviceservicetype"></a>`serviceType` | [`ServiceType`](#servicetype) | Type of the service. |
 | <a id="servicetype"></a>`type` | [`String`](#string) | Class name of the service. |
 
 #### `TimeboxReportInterface`

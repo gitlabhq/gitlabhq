@@ -16,6 +16,7 @@ RSpec.describe 'query Jira service' do
           services(active: true, type: JIRA_SERVICE) {
             nodes {
               type
+              serviceType
             }
           }
         }
@@ -23,7 +24,7 @@ RSpec.describe 'query Jira service' do
     )
   end
 
-  let(:services) { graphql_data.dig('project', 'services', 'nodes')}
+  let(:services) { graphql_data.dig('project', 'services', 'nodes') }
 
   it_behaves_like 'unauthorized users cannot read services'
 
@@ -35,10 +36,8 @@ RSpec.describe 'query Jira service' do
 
     it_behaves_like 'a working graphql query'
 
-    it 'retuns list of jira imports' do
-      service = services.first
-
-      expect(service['type']).to eq('JiraService')
+    it 'returns list of jira integrations' do
+      expect(services).to contain_exactly({ 'type' => 'JiraService', 'serviceType' => 'JIRA_SERVICE' })
     end
   end
 end

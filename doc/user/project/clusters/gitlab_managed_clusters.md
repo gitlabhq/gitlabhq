@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab Agent](../../../user/clusters/agent/index.md).
+To connect your cluster to GitLab, use the [GitLab agent](../../../user/clusters/agent/index.md).
 To manage applications, use the [Cluster Project Management Template](../../../user/clusters/management_project_template.md).
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster

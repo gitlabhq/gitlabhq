@@ -79,8 +79,8 @@ contains other variables that you can override according to your needs:
 - `TF_VAR_cluster_version`: Set the version of Kubernetes.
 - `TF_VAR_instance_type`: Set the instance type for the Kubernetes nodes.
 - `TF_VAR_instance_count`: Set the number of Kubernetes nodes.
-- `TF_VAR_agent_version`: Set the version of the GitLab Agent.
-- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab Agent.
+- `TF_VAR_agent_version`: Set the version of the GitLab agent.
+- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent.
 
 View the [AWS Terraform provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) and the [Kubernetes Terraform provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs) documentation for further resource options.
 

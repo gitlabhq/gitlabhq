@@ -12,6 +12,16 @@ FactoryBot.define do
     issue_tracker
   end
 
+  factory :jenkins_integration, class: 'Integrations::Jenkins' do
+    project
+    active { true }
+    type { 'Integrations::Jenkins' }
+    jenkins_url { 'http://jenkins.example.com/' }
+    project_name { 'my-project' }
+    username { 'jenkings-user' }
+    password { 'passw0rd' }
+  end
+
   factory :datadog_integration, class: 'Integrations::Datadog' do
     project
     active { true }
@@ -20,7 +30,7 @@ FactoryBot.define do
 
   factory :emails_on_push_integration, class: 'Integrations::EmailsOnPush' do
     project
-    type { 'EmailsOnPushService' }
+    type { 'Integrations::EmailsOnPush' }
     active { true }
     push_events { true }
     tag_push_events { true }
@@ -54,7 +64,7 @@ FactoryBot.define do
   factory :jira_integration, class: 'Integrations::Jira' do
     project
     active { true }
-    type { 'JiraService' }
+    type { 'Integrations::Jira' }
 
     transient do
       create_data { true }
@@ -88,7 +98,7 @@ FactoryBot.define do
   factory :zentao_integration, class: 'Integrations::Zentao' do
     project
     active { true }
-    type { 'ZentaoService' }
+    type { 'Integrations::Zentao' }
 
     transient do
       create_data { true }
@@ -167,7 +177,7 @@ FactoryBot.define do
 
   factory :external_wiki_integration, class: 'Integrations::ExternalWiki' do
     project
-    type { 'ExternalWikiService' }
+    type { 'Integrations::ExternalWiki' }
     active { true }
     external_wiki_url { 'http://external-wiki-url.com' }
   end
@@ -178,24 +188,39 @@ FactoryBot.define do
     password { 'my-secret-password' }
   end
 
+  trait :chat_notification do
+    webhook { 'https://example.com/webhook' }
+  end
+
+  trait :inactive do
+    active { false }
+  end
+
+  factory :mattermost_integration, class: 'Integrations::Mattermost' do
+    chat_notification
+    project
+    type { 'Integrations::Mattermost' }
+    active { true }
+  end
+
   # avoids conflict with slack_integration factory
   factory :integrations_slack, class: 'Integrations::Slack' do
+    chat_notification
     project
     active { true }
-    webhook { 'https://slack.service.url' }
-    type { 'SlackService' }
+    type { 'Integrations::Slack' }
   end
 
   factory :slack_slash_commands_integration, class: 'Integrations::SlackSlashCommands' do
     project
     active { true }
-    type { 'SlackSlashCommandsService' }
+    type { 'Integrations::SlackSlashCommands' }
   end
 
   factory :pipelines_email_integration, class: 'Integrations::PipelinesEmail' do
     project
     active { true }
-    type { 'PipelinesEmailService' }
+    type { 'Integrations::PipelinesEmail' }
     recipients { 'test@example.com' }
   end
 

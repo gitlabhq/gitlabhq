@@ -113,7 +113,7 @@ The remaining records are truncated when this limit is reached.
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `compliance_violations_report`.
-The feature is not ready for production use.
+On GitLab.com, this feature is not available. This feature is not ready for production use.
 
 Merge request violations provide a view of all the [separation of duties](#approval-status-and-separation-of-duties) compliance violations
 that exist in projects in a specific group. For each separation of duties compliance violation, you can see:

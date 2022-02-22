@@ -47,10 +47,6 @@ Filtering roadmaps by milestone might not be available to you. Check the **versi
 When you want to explore a roadmap, there are several ways to make it easier by sorting epics or
 filtering them by what's important for you.
 
-A dropdown list lets you show only open or closed epics. By default, all epics are shown.
-
-![epics state dropdown list](img/epics_state_dropdown_v14_3.png)
-
 You can sort epics in the Roadmap view by:
 
 - Start date
@@ -74,11 +70,8 @@ Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-ep
 
 ### Roadmap settings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345158) in GitLab 14.8 [with a flag](../../../administration/feature_flags.md) named `roadmap_settings`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `roadmap_settings`.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345158) in GitLab 14.8 [with a flag](../../../administration/feature_flags.md) named `roadmap_settings`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350830) in GitLab 14.9. Feature flag `roadmap_settings`removed.
 
 When you enable the roadmap settings sidebar, you can use it to refine epics shown in the roadmap.
 

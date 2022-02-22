@@ -9,10 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0.
 
 An inventory object is a `ConfigMap` object for keeping track of the set of objects applied to a cluster.
-When you remove objects from a manifest repository, the Agent uses a corresponding inventory object to
+When you remove objects from a manifest repository, the agent uses a corresponding inventory object to
 prune (delete) objects from the cluster.
 
-The Agent creates an inventory object for each manifest project specified in the
+The agent creates an inventory object for each manifest project specified in the
 `gitops.manifest_projects` configuration section. The inventory object has to be stored somewhere in the cluster.
 The default behavior is:
 
@@ -20,10 +20,10 @@ The default behavior is:
   explicitly, the inventory object is stored in the `default` namespace.
 - The `name` is generated from the numeric project ID of the manifest project and the numeric agent ID.
 
-  This way, the Agent constructs the name and location where the inventory object is
+  This way, the agent constructs the name and location where the inventory object is
   stored in the cluster.
 
-The Agent cannot locate the existing inventory object if you:
+The agent cannot locate the existing inventory object if you:
 
 - Change `gitops.manifest_projects[].default_namespace` parameter.
 - Move manifests into another project.
@@ -57,13 +57,13 @@ metadata:
 
 ## Using GitOps with pre-existing Kubernetes objects
 
-The Agent treats manifest files in the manifest repository as the source of truth. When it applies
+The agent treats manifest files in the manifest repository as the source of truth. When it applies
 objects from the files to the cluster, it tracks them in an inventory object. If an object already exists,
-The Agent behaves differently based on the `gitops.manifest_projects[].inventory_policy` configuration.
+The agent behaves differently based on the `gitops.manifest_projects[].inventory_policy` configuration.
 Check the table below with the available options and when to use them.
 
 `inventory_policy` value | Description                                                                                 |
 ------------------------ | ------------------------------------------------------------------------------------------- |
 `must_match`             | This is the default policy. A live object must have the `config.k8s.io/owning-inventory` annotation set to the same value as the `cli-utils.sigs.k8s.io/inventory-id` label on the corresponding inventory object to be updated. Object is not updated and an error is reported if the values don't match or the object doesn't have the annotation. |
 `adopt_if_no_inventory`  | This mode allows to "adopt" an object if it doesn't have the `config.k8s.io/owning-inventory` annotation. Use this mode if you want to start managing existing objects using the GitOps feature. Once all objects have been "adopted", we recommend you to put the setting back into the default `must_match` mode to avoid any unexpected adoptions. |
-`adopt_all`              | This mode allows to "adopt" an object even if it has the `config.k8s.io/owning-inventory` annotation set to a different value. This mode can be useful if you want to migrate a set of objects from one agent to another one or from some other tool to the Agent. Once all objects have been "adopted", we recommend you to put the setting back into the default `must_match` mode to avoid any unexpected adoptions. |
+`adopt_all`              | This mode allows to "adopt" an object even if it has the `config.k8s.io/owning-inventory` annotation set to a different value. This mode can be useful if you want to migrate a set of objects from one agent to another one or from some other tool to the agent. Once all objects have been "adopted", we recommend you to put the setting back into the default `must_match` mode to avoid any unexpected adoptions. |

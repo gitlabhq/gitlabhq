@@ -1470,7 +1470,7 @@ RSpec.describe Project, factory_default: :keep do
 
     context 'when there is an active external issue tracker integration' do
       let!(:integration) do
-        create(:integration, project: project, type: 'JiraService', category: 'issue_tracker', active: true)
+        create(:jira_integration, project: project, category: 'issue_tracker')
       end
 
       specify { is_expected.to eq(true) }
@@ -1489,7 +1489,7 @@ RSpec.describe Project, factory_default: :keep do
 
       context 'when there are two active external issue tracker integrations' do
         let_it_be(:second_integration) do
-          create(:integration, project: project, type: 'CustomIssueTracker', category: 'issue_tracker', active: true)
+          create(:custom_issue_tracker_integration, project: project, category: 'issue_tracker')
         end
 
         it 'does not become false when external issue tracker integration is destroyed' do

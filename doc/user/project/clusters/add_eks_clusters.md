@@ -19,7 +19,7 @@ Kubernetes Service (EKS).
 ## Connect an existing EKS cluster
 
 If you already have an EKS cluster and want to connect it to GitLab,
-use the [GitLab Agent](../../clusters/agent/index.md).
+use the [GitLab agent](../../clusters/agent/index.md).
 
 ## Create a new EKS cluster
 

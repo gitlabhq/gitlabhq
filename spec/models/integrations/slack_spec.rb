@@ -7,7 +7,7 @@ RSpec.describe Integrations::Slack do
 
   describe '#execute' do
     before do
-      stub_request(:post, "https://slack.service.url/")
+      stub_request(:post, slack_integration.webhook)
     end
 
     let_it_be(:slack_integration) { create(:integrations_slack, branches_to_be_notified: 'all') }

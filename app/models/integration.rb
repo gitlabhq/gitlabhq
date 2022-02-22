@@ -12,6 +12,11 @@ class Integration < ApplicationRecord
   include IgnorableColumns
 
   ignore_column :template, remove_with: '15.0', remove_after: '2022-04-22'
+  ignore_column :type, remove_with: '15.0', remove_after: '2022-04-22'
+
+  UnknownType = Class.new(StandardError)
+
+  self.inheritance_column = :type_new
 
   INTEGRATION_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord
@@ -44,7 +49,7 @@ class Integration < ApplicationRecord
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
-  attribute :type, Gitlab::Integrations::StiType.new
+  alias_attribute :type, :type_new
 
   default_value_for :active, false
   default_value_for :alert_events, true
@@ -79,9 +84,10 @@ class Integration < ApplicationRecord
   validate :validate_belongs_to_project_or_group
 
   scope :external_issue_trackers, -> { where(category: 'issue_tracker').active }
-  scope :external_wikis, -> { where(type: 'ExternalWikiService').active }
+  scope :by_name, ->(name) { by_type(integration_name_to_type(name)) }
+  scope :external_wikis, -> { by_name(:external_wiki).active }
   scope :active, -> { where(active: true) }
-  scope :by_type, -> (type) { where(type: type) }
+  scope :by_type, ->(type) { where(type: type) } # INTERNAL USE ONLY: use by_name instead
   scope :by_active_flag, -> (flag) { where(active: flag) }
   scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
   scope :with_default_settings, -> { where.not(inherit_from_id: nil) }
@@ -231,7 +237,7 @@ class Integration < ApplicationRecord
   end
 
   # Returns a list of available integration types.
-  # Example: ["AsanaService", ...]
+  # Example: ["Integrations::Asana", ...]
   def self.available_integration_types(include_project_specific: true, include_dev: true)
     available_integration_names(include_project_specific: include_project_specific, include_dev: include_dev).map do
       integration_name_to_type(_1)
@@ -239,22 +245,27 @@ class Integration < ApplicationRecord
   end
 
   # Returns the model for the given integration name.
-  # Example: "asana" => Integrations::Asana
+  # Example: :asana => Integrations::Asana
   def self.integration_name_to_model(name)
     type = integration_name_to_type(name)
     integration_type_to_model(type)
   end
 
   # Returns the STI type for the given integration name.
-  # Example: "asana" => "AsanaService"
+  # Example: "asana" => "Integrations::Asana"
   def self.integration_name_to_type(name)
-    "#{name}_service".camelize
+    name = name.to_s
+    if available_integration_names.exclude?(name)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownType.new(name.inspect))
+    else
+      "Integrations::#{name.camelize}"
+    end
   end
 
   # Returns the model for the given STI type.
-  # Example: "AsanaService" => Integrations::Asana
+  # Example: "Integrations::Asana" => Integrations::Asana
   def self.integration_type_to_model(type)
-    Gitlab::Integrations::StiType.new.cast(type).constantize
+    type.constantize
   end
   private_class_method :integration_type_to_model
 
@@ -303,7 +314,7 @@ class Integration < ApplicationRecord
     from_union([
       active.where(instance: true),
       active.where(group_id: group_ids, inherit_from_id: nil)
-    ]).order(Arel.sql("type ASC, array_position(#{array}::bigint[], #{table_name}.group_id), instance DESC")).group_by(&:type).each do |type, records|
+    ]).order(Arel.sql("type_new ASC, array_position(#{array}::bigint[], #{table_name}.group_id), instance DESC")).group_by(&:type).each do |type, records|
       build_from_integration(records.first, association => scope.id).save
     end
   end
@@ -380,8 +391,10 @@ class Integration < ApplicationRecord
     %w[active]
   end
 
+  # return a hash of columns => values suitable for passing to insert_all
   def to_integration_hash
-    as_json(methods: :type, except: %w[id instance project_id group_id])
+    column = self.class.attribute_aliases.fetch('type', 'type')
+    as_json(except: %w[id instance project_id group_id]).merge(column => type)
   end
 
   def to_data_fields_hash

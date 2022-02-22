@@ -85,14 +85,14 @@ RSpec.describe Integration do
 
       subject { described_class.by_type(type) }
 
-      context 'when type is "JiraService"' do
-        let(:type) { 'JiraService' }
+      context 'when type is "Integrations::JiraService"' do
+        let(:type) { 'Integrations::Jira' }
 
         it { is_expected.to match_array([integration1, integration2]) }
       end
 
-      context 'when type is "RedmineService"' do
-        let(:type) { 'RedmineService' }
+      context 'when type is "Integrations::Redmine"' do
+        let(:type) { 'Integrations::Redmine' }
 
         it { is_expected.to match_array([integration3]) }
       end
@@ -103,7 +103,7 @@ RSpec.describe Integration do
       let!(:integration2) { create(:jira_integration) }
 
       it 'returns the right group integration' do
-        expect(described_class.for_group(group)).to match_array([integration1])
+        expect(described_class.for_group(group)).to contain_exactly(integration1)
       end
     end
 
@@ -376,22 +376,24 @@ RSpec.describe Integration do
       let_it_be(:instance_integration) { create(:jira_integration, :instance) }
 
       it 'returns the instance integration' do
-        expect(described_class.default_integration('JiraService', project)).to eq(instance_integration)
+        expect(described_class.default_integration('Integrations::Jira', project)).to eq(instance_integration)
       end
 
       it 'returns nil for nonexistent integration type' do
-        expect(described_class.default_integration('HipchatService', project)).to eq(nil)
+        expect(described_class.default_integration('Integrations::Hipchat', project)).to eq(nil)
       end
 
       context 'with a group integration' do
+        let(:integration_name) { 'Integrations::Jira' }
+
         let_it_be(:group_integration) { create(:jira_integration, group_id: group.id, project_id: nil) }
 
         it 'returns the group integration for a project' do
-          expect(described_class.default_integration('JiraService', project)).to eq(group_integration)
+          expect(described_class.default_integration(integration_name, project)).to eq(group_integration)
         end
 
         it 'returns the instance integration for a group' do
-          expect(described_class.default_integration('JiraService', group)).to eq(instance_integration)
+          expect(described_class.default_integration(integration_name, group)).to eq(instance_integration)
         end
 
         context 'with a subgroup' do
@@ -400,18 +402,18 @@ RSpec.describe Integration do
           let!(:project) { create(:project, group: subgroup) }
 
           it 'returns the closest group integration for a project' do
-            expect(described_class.default_integration('JiraService', project)).to eq(group_integration)
+            expect(described_class.default_integration(integration_name, project)).to eq(group_integration)
           end
 
           it 'returns the closest group integration for a subgroup' do
-            expect(described_class.default_integration('JiraService', subgroup)).to eq(group_integration)
+            expect(described_class.default_integration(integration_name, subgroup)).to eq(group_integration)
           end
 
           context 'having a integration with custom settings' do
             let!(:subgroup_integration) { create(:jira_integration, group_id: subgroup.id, project_id: nil) }
 
             it 'returns the closest group integration for a project' do
-              expect(described_class.default_integration('JiraService', project)).to eq(subgroup_integration)
+              expect(described_class.default_integration(integration_name, project)).to eq(subgroup_integration)
             end
           end
 
@@ -419,7 +421,7 @@ RSpec.describe Integration do
             let!(:subgroup_integration) { create(:jira_integration, group_id: subgroup.id, project_id: nil, inherit_from_id: group_integration.id) }
 
             it 'returns the closest group integration which does not inherit from its parent for a project' do
-              expect(described_class.default_integration('JiraService', project)).to eq(group_integration)
+              expect(described_class.default_integration(integration_name, project)).to eq(group_integration)
             end
           end
         end
@@ -556,19 +558,26 @@ RSpec.describe Integration do
     end
   end
 
-  describe '.integration_name_to_model' do
-    it 'returns the model for the given integration name' do
-      expect(described_class.integration_name_to_model('asana')).to eq(Integrations::Asana)
+  describe '.integration_name_to_type' do
+    it 'handles a simple case' do
+      expect(described_class.integration_name_to_type(:asana)).to eq 'Integrations::Asana'
     end
 
-    it 'raises an error if integration name is invalid' do
-      expect { described_class.integration_name_to_model('foo') }.to raise_exception(NameError, /uninitialized constant FooService/)
+    it 'raises an error if the name is unknown' do
+      expect { described_class.integration_name_to_type('foo') }
+        .to raise_exception(described_class::UnknownType, /foo/)
+    end
+
+    it 'handles all available_integration_names' do
+      types = described_class.available_integration_names.map { described_class.integration_name_to_type(_1) }
+
+      expect(types).to all(start_with('Integrations::'))
     end
   end
 
-  describe '.integration_name_to_type' do
-    it 'transforms the name to a type' do
-      expect(described_class.integration_name_to_type('asana')).to eq('AsanaService')
+  describe '.integration_name_to_model' do
+    it 'raises an error if integration name is invalid' do
+      expect { described_class.integration_name_to_model('foo') }.to raise_exception(described_class::UnknownType, /foo/)
     end
   end
 

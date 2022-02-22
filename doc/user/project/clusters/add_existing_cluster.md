@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab Agent](../../clusters/agent/index.md)
+To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/index.md)
 instead.
 
 If you have an existing Kubernetes cluster, you can add it to a project, group,

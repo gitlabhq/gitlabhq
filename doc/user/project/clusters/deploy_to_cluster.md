@@ -10,8 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab Agent](../../clusters/agent/index.md).
-To deploy with the Agent, use the [CI/CD Tunnel](../../clusters/agent/ci_cd_tunnel.md).
+To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/index.md).
+To deploy with the agent, use the [CI/CD workflow](../../clusters/agent/ci_cd_tunnel.md).
 
 A Kubernetes cluster can be the destination for a deployment job. If
 

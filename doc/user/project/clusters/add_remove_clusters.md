@@ -49,7 +49,7 @@ supports connecting existing clusters using the certificate-based connection met
 
 ## Add existing cluster
 
-As of GitLab 14.0, use the [GitLab Agent](../../clusters/agent/index.md)
+As of GitLab 14.0, use the [GitLab agent](../../clusters/agent/index.md)
 to connect your cluster to GitLab.
 
 Alternatively, you can [add an existing cluster](add_existing_cluster.md)
@@ -57,7 +57,7 @@ through the certificate-based method, but we don't recommend using this method f
 
 ## Configure your cluster
 
-As of GitLab 14.0, use the [GitLab Agent](../../clusters/agent/index.md)
+As of GitLab 14.0, use the [GitLab agent](../../clusters/agent/index.md)
 to configure your cluster.
 
 ## Disable a cluster
