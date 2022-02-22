@@ -370,6 +370,11 @@ You can only use the following rules with `include` (and only with [certain vari
 
 `rules` keyword `changes` is not supported.
 
+You cannot use [`needs:`](index.md#needs) to create a job dependency that points to
+a job added with `include:local:rules`. When the configuration is checked for validity,
+GitLab returns `undefined need: <job-name>`. An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/345377)
+to improve this behavior.
+
 ## Use `include:local` with wildcard file paths
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25921) in GitLab 13.11.

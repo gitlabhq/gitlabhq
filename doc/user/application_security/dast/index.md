@@ -628,7 +628,7 @@ These CI/CD variables are specific to DAST. They can be used to customize the be
 | `DAST_AUTH_VERIFICATION_SELECTOR` <sup>2</sup>   | selector      | Verifies successful authentication by checking for presence of a selector once the login form has been submitted. Example: `css:.user-photo`. |
 | `DAST_AUTH_VERIFICATION_URL` <sup>1,2</sup>      | URL           | A URL only accessible to logged in users that DAST can use to confirm successful authentication. If provided, DAST exits if it cannot access the URL. Example: `"http://example.com/loggedin_page"`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207335) in GitLab 13.8. |
 | `DAST_AUTO_UPDATE_ADDONS`                        | boolean       | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false`. |
-| `DAST_BROWSER_PATH_TO_LOGIN_FORM` <sup>1,2</sup> | selector      | Comma-separated list of selectors that will be clicked on prior to attempting to enter `DAST_USERNAME` and `DAST_PASSWORD` into the login form. Example: `"css:.navigation-menu,css:.login-menu-item"`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326633) in GitLab 14.1. |
+| `DAST_BROWSER_PATH_TO_LOGIN_FORM` <sup>1,2</sup> | selector      | Comma-separated list of selectors that are clicked on prior to attempting to enter `DAST_USERNAME` and `DAST_PASSWORD` into the login form. Example: `"css:.navigation-menu,css:.login-menu-item"`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326633) in GitLab 14.1. |
 | `DAST_DEBUG` <sup>1</sup>                        | boolean       | Enable debug message output. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
 | `DAST_EXCLUDE_RULES`                             | string        | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from running during the scan. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). For example, `HTTP Parameter Override` has a rule ID of `10026`. Cannot be used when `DAST_ONLY_INCLUDE_RULES` is set. **Note:** In earlier versions of GitLab the excluded rules were executed but vulnerabilities they generated were suppressed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118641) in GitLab 12.10. |
 | `DAST_EXCLUDE_URLS` <sup>1,2</sup>               | URLs          | The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. Example, `http://example.com/sign-out`. |
@@ -737,7 +737,7 @@ Only run an authenticated scan against a test server.
 
 ### Log in using automatic detection of the login form
 
-By providing a `DAST_USERNAME`, `DAST_PASSWORD`, and `DAST_AUTH_URL`, DAST will attempt to authenticate to the
+By providing a `DAST_USERNAME`, `DAST_PASSWORD`, and `DAST_AUTH_URL`, DAST attempts to authenticate to the
 target application by locating the login form based on a determination about whether or not the form contains username or password fields.
 
 Automatic detection is "best-effort", and depending on the application being scanned may provide either a resilient login experience or one that fails to authenticate the user.
@@ -753,8 +753,8 @@ Login process:
 ### Log in using explicit selection of the login form
 
 By providing a `DAST_USERNAME_FIELD`, `DAST_PASSWORD_FIELD`, and `DAST_SUBMIT_FIELD`, in addition to the fields required for automatic login,
-DAST will attempt to authenticate to the target application by locating the login form based on the selectors provided.
-Most applications will benefit from this approach to authentication.
+DAST attempts to authenticate to the target application by locating the login form based on the selectors provided.
+Most applications benefit from this approach to authentication.
 
 Login process:
 
@@ -885,7 +885,7 @@ dast:
 ### Selectors
 
 Selectors are used by CI/CD variables to specify the location of an element displayed on a page in a browser.
-Selectors have the format `type`:`search string`. The crawler will search for the selector using the search string based on the type.
+Selectors have the format `type`:`search string`. The crawler searches for the selector using the search string based on the type.
 
 | Selector type | Example                            | Description |
 | ------------- | ---------------------------------- | ----------- |

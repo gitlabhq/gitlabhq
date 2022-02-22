@@ -145,7 +145,7 @@ For example, to scan an image from AWS Elastic Container Registry:
 ```yaml
 container_scanning:
   before_script:
-    - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" --output "awscliv2.zip"
+    - ruby -r open-uri -e "IO.copy_stream(URI.open('https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip'), 'awscliv2.zip')"
     - unzip awscliv2.zip
     - ./aws/install
     - aws --version

@@ -8,9 +8,9 @@ import {
 } from '@gitlab/ui';
 import { once } from 'lodash';
 import * as Sentry from '@sentry/browser';
+import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import api from '~/api';
 import { sprintf, s__, __ } from '~/locale';
-import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 import Poll from '~/lib/utils/poll';
 import { EXTENSION_ICON_CLASS, EXTENSION_ICONS } from '../../constants';
 import StatusIcon from './status_icon.vue';
@@ -30,10 +30,11 @@ export default {
     GlButton,
     GlLoadingIcon,
     GlIntersectionObserver,
-    SmartVirtualList,
     StatusIcon,
     Actions,
     ChildContent,
+    DynamicScroller,
+    DynamicScrollerItem,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -186,7 +187,7 @@ export default {
       this.fetchFullData(this.$props)
         .then((data) => {
           this.loadingState = null;
-          this.fullData = data;
+          this.fullData = data.map((x, i) => ({ id: i, ...x }));
         })
         .catch((e) => {
           this.loadingState = LOADING_STATES.expandedError;
@@ -276,34 +277,33 @@ export default {
       <div v-if="isLoadingExpanded" class="report-block-container">
         <gl-loading-icon size="sm" inline /> {{ __('Loading...') }}
       </div>
-      <smart-virtual-list
+      <dynamic-scroller
         v-else-if="hasFullData"
-        :length="fullData.length"
-        :remain="20"
-        :size="32"
-        wtag="ul"
-        wclass="report-block-list"
+        :items="fullData"
+        :min-item-size="32"
         class="report-block-container gl-px-5 gl-py-0"
       >
-        <li
-          v-for="(data, index) in fullData"
-          :key="data.id"
-          :class="{
-            'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== fullData.length - 1,
-          }"
-          class="gl-py-3 gl-pl-7"
-          data-testid="extension-list-item"
-        >
-          <gl-intersection-observer
-            :options="{ rootMargin: '100px', thresholds: 0.1 }"
-            class="gl-w-full"
-            @appear="appear(index)"
-            @disappear="disappear(index)"
-          >
-            <child-content :data="data" :widget-label="widgetLabel" :level="2" />
-          </gl-intersection-observer>
-        </li>
-      </smart-virtual-list>
+        <template #default="{ item, index, active }">
+          <dynamic-scroller-item :item="item" :active="active" :class="{ active }">
+            <div
+              :class="{
+                'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== fullData.length - 1,
+              }"
+              class="gl-py-3 gl-pl-7"
+              data-testid="extension-list-item"
+            >
+              <gl-intersection-observer
+                :options="{ rootMargin: '100px', thresholds: 0.1 }"
+                class="gl-w-full"
+                @appear="appear(index)"
+                @disappear="disappear(index)"
+              >
+                <child-content :data="item" :widget-label="widgetLabel" :level="2" />
+              </gl-intersection-observer>
+            </div>
+          </dynamic-scroller-item>
+        </template>
+      </dynamic-scroller>
       <div
         :class="{ show: showFade }"
         class="fade mr-extenson-scrim gl-absolute gl-left-0 gl-bottom-0 gl-w-full gl-h-7 gl-pointer-events-none"

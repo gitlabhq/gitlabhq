@@ -1461,7 +1461,7 @@ msgstr ""
 msgid "1000+"
 msgstr ""
 
-msgid "192.168.0.0/24"
+msgid "192.168.0.0/24 or 2001:0DB8:1234::/48"
 msgstr ""
 
 msgid "1st contribution!"

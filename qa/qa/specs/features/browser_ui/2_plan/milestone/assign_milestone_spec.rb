@@ -10,13 +10,13 @@ module QA
 
       let(:group) do
         Resource::Group.fabricate_via_api! do |group|
-          group.name = 'group-to-test-milestones'
+          group.name = "group-to-test-milestones-#{SecureRandom.hex(4)}"
         end
       end
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-to-test-milestones'
+          project.name = "project-to-test-milestones-#{SecureRandom.hex(4)}"
           project.group = group
         end
       end
