@@ -5,3 +5,5 @@ module AlertManagement
     delegate { @subject.project }
   end
 end
+
+AlertManagement::AlertPolicy.prepend_mod

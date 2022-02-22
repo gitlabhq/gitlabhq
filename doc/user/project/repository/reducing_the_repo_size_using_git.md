@@ -62,7 +62,7 @@ To purge files from a GitLab repository:
    git clone --bare --mirror /path/to/project.bundle
    ```
 
-1. Navigate to the `project.git` directory:
+1. Go to the `project.git` directory:
 
    ```shell
    cd project.git
@@ -159,7 +159,7 @@ operations before continuing.
 To clean up a repository:
 
 1. Go to the project for the repository.
-1. Navigate to **Settings > Repository**.
+1. Go to **Settings > Repository**.
 1. Upload a list of objects. For example, a `commit-map` file created by `git filter-repo` which is located in the
    `filter-repo` directory.
 
@@ -169,7 +169,7 @@ To clean up a repository:
    split -l 3000 filter-repo/commit-map filter-repo/commit-map-
    ```
 
-1. Click **Start cleanup**.
+1. Select **Start cleanup**.
 
 This:
 
@@ -240,7 +240,7 @@ Until `git gc` runs on the GitLab side, the "removed" commits and blobs still ex
 must be able to push the rewritten history to GitLab, which may be impossible if you've already
 exceeded the maximum size limit.
 
-In order to lift these restrictions, the administrator of the self-managed GitLab instance must
+To lift these restrictions, the Administrator of the self-managed GitLab instance must
 increase the limit on the particular project that exceeded it. Therefore, it's always better to
 proactively stay underneath the limit. If you hit the limit, and can't have it temporarily
 increased, your only option is to:

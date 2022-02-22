@@ -1,4 +1,4 @@
-import { GlTable, GlSkeletonLoader } from '@gitlab/ui';
+import { GlTableLite, GlSkeletonLoader } from '@gitlab/ui';
 import {
   extendedWrapper,
   shallowMountExtended,
@@ -18,7 +18,7 @@ describe('RunnerList', () => {
   let wrapper;
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findTable = () => wrapper.findComponent(GlTable);
+  const findTable = () => wrapper.findComponent(GlTableLite);
   const findHeaders = () => wrapper.findAll('th');
   const findRows = () => wrapper.findAll('[data-testid^="runner-row-"]');
   const findCell = ({ row = 0, fieldKey }) =>
@@ -144,7 +144,8 @@ describe('RunnerList', () => {
   describe('When data is loading', () => {
     it('shows a busy state', () => {
       createComponent({ props: { runners: [], loading: true } });
-      expect(findTable().attributes('busy')).toBeTruthy();
+
+      expect(findTable().classes('gl-opacity-6')).toBe(true);
     });
 
     it('when there are no runners, shows an skeleton loader', () => {

@@ -40,30 +40,29 @@ class UploadsController < ApplicationController
     upload_model_class.find(params[:id])
   end
 
+  def authorized?
+    case model
+    when Note
+      can?(current_user, :read_project, model.project)
+    when Snippet, ProjectSnippet
+      can?(current_user, :read_snippet, model)
+    when User
+      # We validate the current user has enough (writing)
+      # access to itself when a secret is given.
+      # For instance, user avatars are readable by anyone,
+      # while temporary, user snippet uploads are not.
+      !secret? || can?(current_user, :update_user, model)
+    when Appearance
+      true
+    when Projects::Topic
+      true
+    else
+      can?(current_user, "read_#{model.class.underscore}".to_sym, model)
+    end
+  end
+
   def authorize_access!
-    authorized =
-      case model
-      when Note
-        can?(current_user, :read_project, model.project)
-      when Snippet, ProjectSnippet
-        can?(current_user, :read_snippet, model)
-      when User
-        # We validate the current user has enough (writing)
-        # access to itself when a secret is given.
-        # For instance, user avatars are readable by anyone,
-        # while temporary, user snippet uploads are not.
-        !secret? || can?(current_user, :update_user, model)
-      when Appearance
-        true
-      when Projects::Topic
-        true
-      else
-        permission = "read_#{model.class.underscore}".to_sym
-
-        can?(current_user, permission, model)
-      end
-
-    render_unauthorized unless authorized
+    render_unauthorized unless authorized?
   end
 
   def authorize_create_access!

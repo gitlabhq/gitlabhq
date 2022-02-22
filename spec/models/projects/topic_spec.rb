@@ -28,16 +28,16 @@ RSpec.describe Projects::Topic do
   end
 
   describe 'scopes' do
-    describe 'order_by_total_projects_count' do
+    describe 'order_by_non_private_projects_count' do
       let!(:topic1) { create(:topic, name: 'topicB') }
       let!(:topic2) { create(:topic, name: 'topicC') }
       let!(:topic3) { create(:topic, name: 'topicA') }
-      let!(:project1) { create(:project, topic_list: 'topicC, topicA, topicB') }
-      let!(:project2) { create(:project, topic_list: 'topicC, topicA') }
-      let!(:project3) { create(:project, topic_list: 'topicC') }
+      let!(:project1) { create(:project, :public, topic_list: 'topicC, topicA, topicB') }
+      let!(:project2) { create(:project, :public, topic_list: 'topicC, topicA') }
+      let!(:project3) { create(:project, :public, topic_list: 'topicC') }
 
-      it 'sorts topics by total_projects_count' do
-        topics = described_class.order_by_total_projects_count
+      it 'sorts topics by non_private_projects_count' do
+        topics = described_class.order_by_non_private_projects_count
 
         expect(topics.map(&:name)).to eq(%w[topicC topicA topicB topic])
       end

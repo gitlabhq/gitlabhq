@@ -13,7 +13,7 @@ It is used by GitLab to read and write Git data.
 Gitaly is present in every GitLab installation and coordinates Git repository
 storage and retrieval. Gitaly can be:
 
-- A simple background service operating on a single instance Omnibus GitLab (all of
+- A background service operating on a single instance Omnibus GitLab (all of
   GitLab on one machine).
 - Separated onto its own instance and configured in a full cluster configuration,
   depending on scaling and availability requirements.
@@ -71,7 +71,7 @@ the current status of these issues, please refer to the referenced issues and ep
 | Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. Work is in-progress to update Gitaly Cluster to [identify repositories with a unique and persistent identifier](https://gitlab.com/gitlab-org/gitaly/-/issues/3485), which is expected to resolve the issue.                                                                                                                                                                                                                                          | No known solution at this time. |
 | Database inconsistencies due to repository access outside of Gitaly Cluster's control | Operations that write to the repository storage that do not go through normal Gitaly Cluster methods can cause database inconsistencies. These can include (but are not limited to) snapshot restoration for cluster node disks, node upgrades which modify files under Git control, or any other disk operation that may touch repository storage external to GitLab. The Gitaly team is actively working to provide manual commands to [reconcile the Praefect database with the repository storage](https://gitlab.com/groups/gitlab-org/-/epics/6723).  | Don't directly change repositories on any Gitaly Cluster node at this time. |
 | Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting live upgrade assistance](https://about.gitlab.com/support/scheduling-live-upgrade-assistance.html) so your upgrade plan can be reviewed by support. |
-| Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind will result in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you need to restore from backup, it's best to snapshot all Gitaly Cluster nodes at the same time and take a database dump of the Praefect database. |
+| Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind will result in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup, it's best to snapshot all Gitaly Cluster nodes at the same time and take a database dump of the Praefect database. |
 
 ### Snapshot backup and recovery limitations
 
@@ -179,7 +179,7 @@ In this example:
 - Repositories are stored on a virtual storage called `storage-1`.
 - Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
 - The three Gitaly nodes share data in three separate hashed storage locations.
-- The [replication factor](#replication-factor) is `3`. There are three copies maintained
+- The [replication factor](#replication-factor) is `3`. Three copies are maintained
   of each repository.
 
 The availability objectives for Gitaly clusters assuming a single node failure are:
@@ -237,7 +237,7 @@ Engineering support for NFS for Git repositories is deprecated. Technical suppor
 is not well suited to Git workloads which are CPU and IOPS sensitive.
 Specifically:
 
-- Git is sensitive to file system latency. Even simple operations require many
+- Git is sensitive to file system latency. Some operations require many
   read operations. Operations that are fast on block storage can become an order of
   magnitude slower. This significantly impacts GitLab application performance.
 - NFS performance optimizations that prevent the performance gap between
@@ -386,8 +386,7 @@ them back to direct Gitaly storage:
 1. Create and configure a new
    [Gitaly server](configure_gitaly.md#run-gitaly-on-its-own-server).
 1. [Move the repositories](../operations/moving_repositories.md#move-repositories)
-   to the newly created storage. There are different possibilities to move them
-   by shard or by group, this gives you the opportunity to spread them over
+   to the newly created storage. You can move them by shard or by group, which gives you the opportunity to spread them over
    multiple Gitaly servers.
 
 ## Monitor Gitaly and Gitaly Cluster
@@ -509,7 +508,7 @@ The following metrics are available from the `/metrics` endpoint:
   They reflect configuration defined for this instance of Praefect.
 
 - `gitaly_praefect_replication_latency_bucket`, a histogram measuring the amount of time it takes
-  for replication to complete once the replication job starts. Available in GitLab 12.10 and later.
+  for replication to complete after the replication job starts. Available in GitLab 12.10 and later.
 - `gitaly_praefect_replication_delay_bucket`, a histogram measuring how much time passes between
   when the replication job is created and when it starts. Available in GitLab 12.10 and later.
 - `gitaly_praefect_node_latency_bucket`, a histogram measuring the latency in Gitaly returning
@@ -542,7 +541,7 @@ You can also monitor the [Praefect logs](../logs.md#praefect-logs).
 The following metrics are available from the `/db_metrics` endpoint:
 
 - `gitaly_praefect_unavailable_repositories`, the number of repositories that have no healthy, up to date replicas.
-- `gitaly_praefect_read_only_repositories`, the number of repositories in read-only mode within a virtual storage.
+- `gitaly_praefect_read_only_repositories`, the number of repositories in read-only mode in a virtual storage.
   This metric is available for backwards compatibility reasons. `gitaly_praefect_unavailable_repositories` is more
   accurate.
 - `gitaly_praefect_replication_queue_depth`, the number of jobs in the replication queue.

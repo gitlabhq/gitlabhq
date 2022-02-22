@@ -12,7 +12,10 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   # Overridden from Doorkeeper::AuthorizationsController to
   # include the call to session.delete
   def new
+    logger.info("#{self.class.name}#new: pre_auth_params['scope'] = #{pre_auth_params['scope'].inspect}")
+
     if pre_auth.authorizable?
+      logger.info("#{self.class.name}#new: pre_auth.scopes = #{pre_auth.scopes.to_a.inspect}")
       if skip_authorization? || matching_token?
         auth = authorization.authorize
         parsed_redirect_uri = URI.parse(auth.redirect_uri)
@@ -43,9 +46,15 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     auth_type = params.delete('gl_auth_type')
     return unless auth_type == 'login'
 
+    logger.info("#{self.class.name}: BEFORE application has read_user: #{application_has_read_user_scope?}")
+    logger.info("#{self.class.name}: BEFORE scope = #{params['scope'].inspect}")
+
     ensure_read_user_scope!
 
     params['scope'] = Gitlab::Auth::READ_USER_SCOPE.to_s if application_has_read_user_scope?
+
+    logger.info("#{self.class.name}: AFTER application has read_user: #{application_has_read_user_scope?}")
+    logger.info("#{self.class.name}: AFTER scope = #{params['scope'].inspect}")
   end
 
   # Configure the application to support read_user scope, if it already

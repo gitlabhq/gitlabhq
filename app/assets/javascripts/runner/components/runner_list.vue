@@ -1,5 +1,5 @@
 <script>
-import { GlTable, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
+import { GlTableLite, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
@@ -12,7 +12,7 @@ import RunnerTags from './runner_tags.vue';
 
 export default {
   components: {
-    GlTable,
+    GlTableLite,
     GlSkeletonLoader,
     TooltipOnTruncate,
     TimeAgo,
@@ -33,6 +33,16 @@ export default {
     runners: {
       type: Array,
       required: true,
+    },
+  },
+  computed: {
+    tableClass() {
+      // <gl-table-lite> does not provide a busy state, add
+      // simple support for it.
+      // See http://bootstrap-vue.org/docs/components/table#table-busy-state
+      return {
+        'gl-opacity-6': this.loading,
+      };
     },
   },
   methods: {
@@ -62,8 +72,9 @@ export default {
 </script>
 <template>
   <div>
-    <gl-table
-      :busy="loading"
+    <gl-table-lite
+      :aria-busy="loading"
+      :class="tableClass"
       :items="runners"
       :fields="$options.fields"
       :tbody-tr-attr="runnerTrAttr"
@@ -72,10 +83,6 @@ export default {
       primary-key="id"
       fixed
     >
-      <template v-if="!runners.length" #table-busy>
-        <gl-skeleton-loader v-for="i in 4" :key="i" />
-      </template>
-
       <template #cell(status)="{ item }">
         <runner-status-cell :runner="item" />
       </template>
@@ -116,6 +123,10 @@ export default {
       <template #cell(actions)="{ item }">
         <runner-actions-cell :runner="item" />
       </template>
-    </gl-table>
+    </gl-table-lite>
+
+    <template v-if="!runners.length && loading">
+      <gl-skeleton-loader v-for="i in 4" :key="i" />
+    </template>
   </div>
 </template>
