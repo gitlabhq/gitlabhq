@@ -2,8 +2,6 @@
 import {
   GlButton,
   GlLoadingIcon,
-  GlLink,
-  GlBadge,
   GlSafeHtmlDirective,
   GlTooltipDirective,
   GlIntersectionObserver,
@@ -17,6 +15,7 @@ import Poll from '~/lib/utils/poll';
 import { EXTENSION_ICON_CLASS, EXTENSION_ICONS } from '../../constants';
 import StatusIcon from './status_icon.vue';
 import Actions from './actions.vue';
+import ChildContent from './child_content.vue';
 import { generateText } from './utils';
 
 export const LOADING_STATES = {
@@ -30,12 +29,11 @@ export default {
   components: {
     GlButton,
     GlLoadingIcon,
-    GlLink,
-    GlBadge,
     GlIntersectionObserver,
     SmartVirtualList,
     StatusIcon,
     Actions,
+    ChildContent,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -196,9 +194,6 @@ export default {
           Sentry.captureException(e);
         });
     },
-    isArray(arr) {
-      return Array.isArray(arr);
-    },
     appear(index) {
       if (index === this.fullData.length - 1) {
         this.showFade = false;
@@ -299,60 +294,14 @@ export default {
           class="gl-py-3 gl-pl-7"
           data-testid="extension-list-item"
         >
-          <div class="gl-w-full">
-            <div v-if="data.header" class="gl-mb-2">
-              <template v-if="isArray(data.header)">
-                <component
-                  :is="headerI === 0 ? 'strong' : 'span'"
-                  v-for="(header, headerI) in data.header"
-                  :key="headerI"
-                  v-safe-html="generateText(header)"
-                  class="gl-display-block"
-                />
-              </template>
-              <strong v-else v-safe-html="generateText(data.header)"></strong>
-            </div>
-            <div class="gl-display-flex">
-              <status-icon
-                v-if="data.icon"
-                :icon-name="data.icon.name"
-                :size="12"
-                class="gl-pl-0"
-              />
-              <gl-intersection-observer
-                :options="{ rootMargin: '100px', thresholds: 0.1 }"
-                class="gl-w-full"
-                @appear="appear(index)"
-                @disappear="disappear(index)"
-              >
-                <div class="gl-flex-wrap gl-display-flex gl-w-full">
-                  <div class="gl-mr-4 gl-display-flex gl-align-items-center">
-                    <p v-safe-html="generateText(data.text)" class="gl-m-0"></p>
-                  </div>
-                  <div v-if="data.link">
-                    <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
-                  </div>
-                  <div v-if="data.supportingText">
-                    <p v-safe-html="generateText(data.supportingText)" class="gl-m-0"></p>
-                  </div>
-                  <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
-                    {{ data.badge.text }}
-                  </gl-badge>
-
-                  <actions
-                    :widget="$options.label || $options.name"
-                    :tertiary-buttons="data.actions"
-                    class="gl-ml-auto"
-                  />
-                </div>
-                <p
-                  v-if="data.subtext"
-                  v-safe-html="generateText(data.subtext)"
-                  class="gl-m-0 gl-font-sm"
-                ></p>
-              </gl-intersection-observer>
-            </div>
-          </div>
+          <gl-intersection-observer
+            :options="{ rootMargin: '100px', thresholds: 0.1 }"
+            class="gl-w-full"
+            @appear="appear(index)"
+            @disappear="disappear(index)"
+          >
+            <child-content :data="data" :widget-label="widgetLabel" :level="2" />
+          </gl-intersection-observer>
         </li>
       </smart-virtual-list>
       <div

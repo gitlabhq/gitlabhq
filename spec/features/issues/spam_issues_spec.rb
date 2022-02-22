@@ -66,7 +66,7 @@ RSpec.describe 'New issue', :js do
       it 'allows issue creation' do
         click_button 'Create issue'
 
-        expect(page.find('.issue-details h2.title')).to have_content('issue title')
+        expect(page.find('.issue-details h1.title')).to have_content('issue title')
         expect(page.find('.issue-details .description')).to have_content('issue description')
       end
 
@@ -111,7 +111,7 @@ RSpec.describe 'New issue', :js do
 
           click_button 'Create issue'
 
-          expect(page.find('.issue-details h2.title')).to have_content('issue title')
+          expect(page.find('.issue-details h1.title')).to have_content('issue title')
           expect(page.find('.issue-details .description')).to have_content('issue description')
         end
       end
@@ -126,7 +126,7 @@ RSpec.describe 'New issue', :js do
           click_button 'Create issue'
 
           expect(page).not_to have_css('.recaptcha')
-          expect(page.find('.issue-details h2.title')).to have_content('issue title')
+          expect(page.find('.issue-details h1.title')).to have_content('issue title')
           expect(page.find('.issue-details .description')).to have_content('issue description')
         end
 
@@ -152,7 +152,7 @@ RSpec.describe 'New issue', :js do
           click_button 'Create issue'
 
           expect(page).not_to have_css('.recaptcha')
-          expect(page.find('.issue-details h2.title')).to have_content('issue title')
+          expect(page.find('.issue-details h1.title')).to have_content('issue title')
           expect(page.find('.issue-details .description')).to have_content('issue description')
         end
 
@@ -181,7 +181,7 @@ RSpec.describe 'New issue', :js do
 
       click_button 'Create issue'
 
-      expect(page.find('.issue-details h2.title')).to have_content('issue title')
+      expect(page.find('.issue-details h1.title')).to have_content('issue title')
       expect(page.find('.issue-details .description')).to have_content('issue description')
     end
   end

@@ -38,7 +38,7 @@ RSpec.describe 'Incident Detail', :js do
         incident_tabs = find('[data-testid="incident-tabs"]')
 
         aggregate_failures 'shows title and Summary tab' do
-          expect(find('h2')).to have_content(incident.title)
+          expect(find('h1')).to have_content(incident.title)
           expect(incident_tabs).to have_content('Summary')
           expect(incident_tabs).to have_content(incident.description)
         end

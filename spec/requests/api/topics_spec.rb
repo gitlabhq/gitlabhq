@@ -255,4 +255,43 @@ RSpec.describe API::Topics do
       end
     end
   end
+
+  describe 'DELETE /topics', :aggregate_failures do
+    context 'as administrator' do
+      it 'deletes a topic' do
+        delete api("/topics/#{topic_3.id}", admin), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'returns 404 for non existing id' do
+        delete api("/topics/#{non_existing_record_id}", admin), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 400 for invalid `id` parameter' do
+        delete api('/topics/invalid', admin), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eql('id is invalid')
+      end
+    end
+
+    context 'as normal user' do
+      it 'returns 403 Forbidden' do
+        delete api("/topics/#{topic_3.id}", user), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'as anonymous' do
+      it 'returns 401 Unauthorized' do
+        delete api("/topics/#{topic_3.id}"), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
 end

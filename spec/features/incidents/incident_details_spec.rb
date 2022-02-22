@@ -21,7 +21,7 @@ RSpec.describe 'Incident details', :js do
   context 'when a developer+ displays the incident' do
     it 'shows the incident' do
       page.within('.issuable-details') do
-        expect(find('h2')).to have_content(incident.title)
+        expect(find('h1')).to have_content(incident.title)
       end
     end
 
@@ -33,7 +33,7 @@ RSpec.describe 'Incident details', :js do
       page.within('.issuable-details') do
         incident_tabs = find('[data-testid="incident-tabs"]')
 
-        expect(find('h2')).to have_content(incident.title)
+        expect(find('h1')).to have_content(incident.title)
         expect(incident_tabs).to have_content('Summary')
         expect(incident_tabs).to have_content(incident.description)
       end

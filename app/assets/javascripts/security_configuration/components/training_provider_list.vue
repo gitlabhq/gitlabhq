@@ -6,6 +6,8 @@ import { __ } from '~/locale';
 import {
   TRACK_TOGGLE_TRAINING_PROVIDER_ACTION,
   TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
+  TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION,
+  TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
 } from '~/security_configuration/constants';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import securityTrainingProvidersQuery from '../graphql/security_training_providers.query.graphql';
@@ -137,6 +139,12 @@ export default {
         },
       });
     },
+    trackProviderLearnMoreClick(providerId) {
+      this.track(TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION, {
+        label: TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
+        property: providerId,
+      });
+    },
   },
   i18n,
 };
@@ -172,7 +180,13 @@ export default {
               <h3 class="gl-font-lg gl-m-0 gl-mb-2">{{ provider.name }}</h3>
               <p>
                 {{ provider.description }}
-                <gl-link :href="provider.url" target="_blank">{{ __('Learn more.') }}</gl-link>
+                <gl-link
+                  :href="provider.url"
+                  target="_blank"
+                  @click="trackProviderLearnMoreClick(provider.id)"
+                >
+                  {{ __('Learn more.') }}
+                </gl-link>
               </p>
             </div>
           </div>

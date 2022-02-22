@@ -8,6 +8,8 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import {
   TRACK_TOGGLE_TRAINING_PROVIDER_ACTION,
   TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
+  TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION,
+  TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
 } from '~/security_configuration/constants';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
 import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
@@ -243,6 +245,24 @@ describe('TrainingProviderList component', () => {
             providerIsEnabled: true,
           },
         });
+      });
+
+      it(`tracks when a provider's "Learn more" link is clicked`, () => {
+        const firstProviderLink = findLinks().at(0);
+        const [{ id: firstProviderId }] = securityTrainingProviders;
+
+        expect(trackingSpy).not.toHaveBeenCalled();
+
+        firstProviderLink.vm.$emit('click');
+
+        expect(trackingSpy).toHaveBeenCalledWith(
+          undefined,
+          TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION,
+          {
+            label: TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
+            property: firstProviderId,
+          },
+        );
       });
     });
   });

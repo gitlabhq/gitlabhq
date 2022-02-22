@@ -203,3 +203,28 @@ curl --request PUT \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/topics/1"
 ```
+
+## Delete a project topic
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80725) in GitLab 14.9.
+
+You must be an administrator to delete a project.
+When you delete a project topic, you also delete the topic assignment for projects.
+
+```plaintext
+DELETE /topics/:id
+```
+
+Supported attributes:
+
+| Attribute     | Type    | Required               | Description         |
+| ------------- | ------- | ---------------------- | ------------------- |
+| `id`          | integer | **{check-circle}** Yes | ID of project topic |
+
+Example request:
+
+```shell
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/topics/1"
+```

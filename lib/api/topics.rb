@@ -77,5 +77,19 @@ module API
         render_validation_error!(topic)
       end
     end
+
+    desc 'Delete a topic' do
+      detail 'This feature was introduced in GitLab 14.9.'
+    end
+    params do
+      requires :id, type: Integer, desc: 'ID of project topic'
+    end
+    delete 'topics/:id' do
+      authenticated_as_admin!
+
+      topic = ::Projects::Topic.find(params[:id])
+
+      destroy_conditionally!(topic)
+    end
   end
 end

@@ -88,6 +88,16 @@ export default {
             //   text: 'Link text', // Required: Text to be used inside the link
             // },
             actions: [{ text: 'Full report', href: 'https://gitlab.com', target: '_blank' }],
+            children: [
+              {
+                id: `child-${issue.id}`,
+                header: 'New',
+                text: '%{critical_start}1 Critical%{critical_end}',
+                icon: {
+                  name: EXTENSION_ICONS.error,
+                },
+              },
+            ],
           }));
         });
     },

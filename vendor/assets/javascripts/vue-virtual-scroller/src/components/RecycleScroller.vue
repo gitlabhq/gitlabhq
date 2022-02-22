@@ -59,6 +59,7 @@
 
 <script>
 import { ResizeObserver } from 'vue-resize'
+import 'vue-resize/dist/vue-resize.css'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import ScrollParent from 'scrollparent'
 import config from '../config'
