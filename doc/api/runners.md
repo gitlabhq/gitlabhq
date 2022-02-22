@@ -660,7 +660,7 @@ POST /runners
 | `access_level`     | string       | no       | The access_level of the runner; `not_protected` or `ref_protected`                                                                                            |
 | `maximum_timeout`  | integer      | no       | Maximum timeout set when this runner handles the job                                                                                                          |
 | `maintainer_note`  | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350730), see `maintenance_note`                                                                    |
-| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (255 characters)                                                                                                   |
+| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters)                                                                                                  |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners" \

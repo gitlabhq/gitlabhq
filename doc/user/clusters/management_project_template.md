@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318) in GitLab 12.10 with Helmfile support via Helm v2.
 > - Helm v2 support was [dropped](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63577) in GitLab 14.0. Use Helm v3 instead.
-> - [Migrated](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/24) to the GitLab Agent in GitLab 14.5.
+> - [Migrated](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/24) to the GitLab agent in GitLab 14.5.
 
 Use a repository to install, manage, and deploy clusters applications through code.
 
@@ -31,45 +31,45 @@ you can manage cluster applications with [Helm v3](https://helm.sh/).
 - An `applications` directory with a `helmfile.yaml` configured for each
 application available in the template.
 
-## Use the Agent with the Cluster Management Project Template
+## Use the agent with the Cluster Management Project Template
 
 To use a new project created from the Cluster Management Project Template
-with a cluster connected to GitLab through the [GitLab Agent](agent/index.md),
+with a cluster connected to GitLab through the [GitLab agent](agent/index.md),
 you have two options:
 
-- [Use one single project](#single-project) to configure the Agent and manage cluster applications.
-- [Use separate projects](#separate-projects) - one to configure the Agent and another to manage cluster applications.
+- [Use one single project](#single-project) to configure the agent and manage cluster applications.
+- [Use separate projects](#separate-projects) - one to configure the agent and another to manage cluster applications.
 
 ### Single project
 
 This setup is particularly useful when you haven't connected your cluster
-to GitLab through the Agent yet and you want to use the Cluster Management
+to GitLab through the agent yet and you want to use the Cluster Management
 Project Template to manage cluster applications.
 
-To use one single project to configure the Agent and to manage cluster applications:
+To use one single project to configure the agent and to manage cluster applications:
 
 1. [Create a new project from the Cluster Management Project Template](#create-a-new-project-based-on-the-cluster-management-template).
-1. Configure the new project as the [Agent's configuration repository](agent/repository.md)
-(where the Agent is registered and its `config.yaml` is stored).
+1. Configure the new project as the [agent's configuration repository](agent/repository.md)
+(where the agent is registered and its `config.yaml` is stored).
 1. From your project's settings, add a [new environment variable](../../ci/variables/index.md#add-a-cicd-variable-to-a-project) `$KUBE_CONTEXT` and set it to `path/to/agent-configuration-project:your-agent-name`.
 1. [Configure the components](#configure-the-available-components) inherited from the template.
 
 ### Separate projects
 
 This setup is particularly useful **when you already have a cluster** connected
-to GitLab through the Agent and want to use the Cluster Management
+to GitLab through the agent and want to use the Cluster Management
 Project Template to manage cluster applications.
 
-To use one project to configure the Agent ("project A") and another project to
+To use one project to configure the agent ("project A") and another project to
 manage cluster applications ("project B"), follow the steps below.
 
-We assume that you already have a cluster connected through the Agent and
-[configured through the Agent's configuration repository](agent/repository.md)
+We assume that you already have a cluster connected through the agent and
+[configured through the agent's configuration repository](agent/repository.md)
 ("project A").
 
 1. [Create a new project from the Cluster Management Project Template](#create-a-new-project-based-on-the-cluster-management-template).
 This new project is "project B".
-1. In your "project A", [grant the Agent access to the new project (B) through the CI/CD Tunnel](agent/ci_cd_tunnel.md#authorize-the-agent).
+1. In your "project A", [grant the agent access to the new project (B) through the CI/CD Tunnel](agent/ci_cd_tunnel.md#authorize-the-agent).
 1. From the "project's B" settings, add a [new environment variable](../../ci/variables/index.md#add-a-cicd-variable-to-a-project) `$KUBE_CONTEXT` and set it to `path/to/agent-configuration-project:your-agent-name`.
 1. In "project B", [configure the components](#configure-the-available-components) inherited from the template.
 

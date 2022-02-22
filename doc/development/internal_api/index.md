@@ -42,7 +42,7 @@ file, and include the token Base64 encoded in a `secret_token` parameter
 or in the `Gitlab-Shared-Secret` header.
 
 NOTE:
-The internal API used by GitLab Pages, and GitLab Agent Server (`kas`) uses JSON Web Token (JWT)
+The internal API used by GitLab Pages, and GitLab agent server (`kas`) uses JSON Web Token (JWT)
 authentication, which is different from GitLab Shell.
 
 ## Git Authentication
@@ -400,13 +400,13 @@ Example response:
 }
 ```
 
-## GitLab Agent endpoints
+## GitLab agent endpoints
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41045) in GitLab 13.4.
 > - This feature is not deployed on GitLab.com
 > - It's not recommended for production use.
 
-The following endpoints are used by the GitLab Agent Server (`kas`)
+The following endpoints are used by the GitLab agent server (`kas`)
 for various purposes.
 
 These endpoints are all authenticated using JWT. The JWT secret is stored in a file
@@ -414,11 +414,11 @@ specified in `config/gitlab.yml`. By default, the location is in the root of the
 GitLab Rails app in a file called `.gitlab_kas_secret`.
 
 WARNING:
-The GitLab Agent is under development and is not recommended for production use.
+The GitLab agent is under development and is not recommended for production use.
 
-### GitLab Agent information
+### GitLab agent information
 
-Called from GitLab Agent Server (`kas`) to retrieve agent
+Called from GitLab agent server (`kas`) to retrieve agent
 information for the given agent token. This returns the Gitaly connection
 information for the agent's project in order for `kas` to fetch and update
 the agent's configuration.
@@ -434,9 +434,9 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
      --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/agent_info"
 ```
 
-### GitLab Agent project information
+### GitLab agent project information
 
-Called from GitLab Agent Server (`kas`) to retrieve project
+Called from GitLab agent server (`kas`) to retrieve project
 information for the given agent token. This returns the Gitaly
 connection for the requested project. GitLab `kas` uses this to configure
 the agent to fetch Kubernetes resources from the project repository to
@@ -460,9 +460,9 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
      --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/project_info?id=7"
 ```
 
-### GitLab Agent usage metrics
+### GitLab agent usage metrics
 
-Called from GitLab Agent Server (`kas`) to increase the usage
+Called from GitLab agent server (`kas`) to increase the usage
 metric counters.
 
 | Attribute | Type   | Required | Description |
@@ -481,9 +481,9 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Con
      --data '{"gitops_sync_count":1}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
 ```
 
-### GitLab Agent alert metrics
+### GitLab agent alert metrics
 
-Called from GitLab Agent Server (KAS) to save alerts derived from Cilium on Kubernetes
+Called from GitLab agent server (KAS) to save alerts derived from Cilium on Kubernetes
 Cluster.
 
 | Attribute | Type   | Required | Description |
@@ -505,7 +505,7 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" \
 
 ### Create Starboard vulnerability
 
-Called from the GitLab Agent Server (`kas`) to create a security vulnerability
+Called from the GitLab agent server (`kas`) to create a security vulnerability
 from a Starboard vulnerability report. This request is idempotent. Multiple requests with the same data
 create a single vulnerability. The response contains the UUID of the created vulnerability finding.
 
@@ -563,7 +563,7 @@ Example response:
 
 ### Resolve Starboard vulnerabilities
 
-Called from the GitLab Agent Server (`kas`) to resolve Starboard security vulnerabilities.
+Called from the GitLab agent server (`kas`) to resolve Starboard security vulnerabilities.
 Accepts a list of finding UUIDs and marks all Starboard vulnerabilities not identified by
 the list as resolved.
 

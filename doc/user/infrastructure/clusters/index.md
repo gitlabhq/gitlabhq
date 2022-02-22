@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Kubernetes clusters **(FREE)**
 
-To connect clusters to GitLab, use the [GitLab Agent](../../clusters/agent/index.md).
+To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/index.md).
 
 ## Certificate-based Kubernetes integration (DEPRECATED)
 
@@ -24,7 +24,7 @@ It had the following issues:
 - Users were constantly reporting issues with features based on this model.
 
 For this reason, we started to build features based on a new model, the
-[GitLab Agent](../../clusters/agent/index.md).
+[GitLab agent](../../clusters/agent/index.md).
 Maintaining both methods in parallel caused a lot of confusion
 and significantly increased the complexity to use, develop, maintain, and
 document them. For this reason, we decided to deprecate them to focus on the
@@ -38,7 +38,7 @@ Follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 for updates.
 
 You can find technical information about why we moved away from cluster certificates into
-the GitLab Agent model on the [Agent's blueprint documentation](../../../architecture/blueprints/gitlab_to_kubernetes_communication/index.md).
+the GitLab agent model on the [agent's blueprint documentation](../../../architecture/blueprints/gitlab_to_kubernetes_communication/index.md).
 
 ## Deprecated features
 
@@ -67,6 +67,6 @@ The concept of [project-level](../../project/clusters/index.md),
 [instance-level](../../instance/clusters/index.md) clusters becomes
 extinct in the new model, although the functionality remains to some extent.
 
-The Agent is always configured in a single GitLab project, but you can use the CI/CD Tunnel to
-authorize other projects and groups to use the same Agent.
+The agent is always configured in a single GitLab project, but you can use the CI/CD Tunnel to
+authorize other projects and groups to use the same agent.
 By doing so, you are granting these projects and groups access to the same cluster, which is similar to group-level clusters' use case.

@@ -200,7 +200,7 @@ module Ci
 
     validates :config, json_schema: { filename: 'ci_runner_config' }
 
-    validates :maintenance_note, length: { maximum: 255 }
+    validates :maintenance_note, length: { maximum: 1024 }
 
     alias_attribute :maintenance_note, :maintainer_note
 

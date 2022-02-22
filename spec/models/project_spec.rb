@@ -6559,7 +6559,6 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#mark_pages_as_deployed' do
     let(:project) { create(:project) }
-    let(:artifacts_archive) { create(:ci_job_artifact, project: project) }
 
     it "works when artifacts_archive is missing" do
       project.mark_pages_as_deployed
@@ -6571,7 +6570,7 @@ RSpec.describe Project, factory_default: :keep do
       project.pages_metadatum.destroy!
       project.reload
 
-      project.mark_pages_as_deployed(artifacts_archive: artifacts_archive)
+      project.mark_pages_as_deployed
 
       expect(project.pages_metadatum.reload.deployed).to eq(true)
     end
@@ -6581,15 +6580,13 @@ RSpec.describe Project, factory_default: :keep do
       pages_metadatum.update!(deployed: false)
 
       expect do
-        project.mark_pages_as_deployed(artifacts_archive: artifacts_archive)
+        project.mark_pages_as_deployed
       end.to change { pages_metadatum.reload.deployed }.from(false).to(true)
-               .and change { pages_metadatum.reload.artifacts_archive }.from(nil).to(artifacts_archive)
     end
   end
 
   describe '#mark_pages_as_not_deployed' do
     let(:project) { create(:project) }
-    let(:artifacts_archive) { create(:ci_job_artifact, project: project) }
 
     it "creates new record and sets deployed to false if none exists yet" do
       project.pages_metadatum.destroy!
@@ -6602,12 +6599,11 @@ RSpec.describe Project, factory_default: :keep do
 
     it "updates the existing record and sets deployed to false and clears artifacts_archive" do
       pages_metadatum = project.pages_metadatum
-      pages_metadatum.update!(deployed: true, artifacts_archive: artifacts_archive)
+      pages_metadatum.update!(deployed: true)
 
       expect do
         project.mark_pages_as_not_deployed
       end.to change { pages_metadatum.reload.deployed }.from(true).to(false)
-               .and change { pages_metadatum.reload.artifacts_archive }.from(artifacts_archive).to(nil)
     end
   end
 

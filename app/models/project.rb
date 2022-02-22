@@ -1926,12 +1926,12 @@ class Project < ApplicationRecord
                .delete_all
   end
 
-  def mark_pages_as_deployed(artifacts_archive: nil)
-    ensure_pages_metadatum.update!(deployed: true, artifacts_archive: artifacts_archive)
+  def mark_pages_as_deployed
+    ensure_pages_metadatum.update!(deployed: true)
   end
 
   def mark_pages_as_not_deployed
-    ensure_pages_metadatum.update!(deployed: false, artifacts_archive: nil, pages_deployment: nil)
+    ensure_pages_metadatum.update!(deployed: false)
   end
 
   def update_pages_deployment!(deployment)

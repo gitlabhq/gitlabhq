@@ -39,7 +39,6 @@ RSpec.describe Projects::UpdatePagesService do
         expect(project.pages_deployed?).to be_falsey
         expect(execute).to eq(:success)
         expect(project.pages_metadatum).to be_deployed
-        expect(project.pages_metadatum.artifacts_archive).to eq(artifacts_archive)
         expect(project.pages_deployed?).to be_truthy
       end
 

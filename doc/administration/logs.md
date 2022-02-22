@@ -1095,9 +1095,9 @@ For Omnibus GitLab installations, GitLab Monitor logs are in `/var/log/gitlab/gi
 
 For Omnibus GitLab installations, GitLab Exporter logs are in `/var/log/gitlab/gitlab-exporter/`.
 
-## GitLab Agent Server
+## GitLab agent server
 
-For Omnibus GitLab installations, GitLab Agent Server logs are
+For Omnibus GitLab installations, GitLab agent server logs are
 in `/var/log/gitlab/gitlab-kas/`.
 
 ## Praefect Logs

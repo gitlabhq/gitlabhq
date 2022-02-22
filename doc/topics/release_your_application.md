@@ -26,17 +26,17 @@ deployment using GitLab CI/CD.
 ### Deploy applications to Kubernetes clusters
 
 With the extensive integration between GitLab and Kubernetes, you can safely deploy your applications
-to Kubernetes clusters using the [GitLab Agent](../user/clusters/agent/install/index.md).
+to Kubernetes clusters using the [GitLab agent](../user/clusters/agent/install/index.md).
 
 #### GitOps deployments **(PREMIUM)**
 
-With the [GitLab Agent](../user/clusters/agent/install/index.md), you can perform [pull-based
+With the [GitLab agent](../user/clusters/agent/install/index.md), you can perform [pull-based
 deployments of Kubernetes manifests](../user/clusters/agent/gitops.md). This provides a scalable, secure, and cloud-native
 approach to manage Kubernetes deployments.
 
 #### Deploy to Kubernetes with the CI/CD Tunnel
 
-With the [GitLab Agent](../user/clusters/agent/install/index.md), you can perform push-based
+With the [GitLab agent](../user/clusters/agent/install/index.md), you can perform push-based
 deployments with the [CI/CD Tunnel](../user/clusters/agent/ci_cd_tunnel.md). It provides
 a secure and reliable connection between GitLab and your Kubernetes cluster.
 

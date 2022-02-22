@@ -20,7 +20,7 @@ Some components (documented on the GitLab Operator doc) are not supported yet.
 
 ## Deploy to and integrate with OpenShift from GitLab
 
-Deploying custom or COTS applications on top of OpenShift from GitLab is supported using [the GitLab Agent](../../user/clusters/agent/index.md).
+Deploying custom or COTS applications on top of OpenShift from GitLab is supported using [the GitLab agent](../../user/clusters/agent/index.md).
 
 ## Use OpenShift to run a GitLab Runner Fleet
 

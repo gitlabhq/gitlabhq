@@ -474,7 +474,7 @@ Example of response
 }
 ```
 
-## Get GitLab Agent by `CI_JOB_TOKEN` **(PREMIUM)**
+## Get GitLab agent by `CI_JOB_TOKEN` **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324269) in GitLab 13.11.
 

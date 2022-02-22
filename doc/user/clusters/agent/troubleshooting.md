@@ -4,9 +4,9 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting the GitLab Agent for Kubernetes
+# Troubleshooting the GitLab agent for Kubernetes
 
-When you are using the GitLab Agent for Kubernetes, you might experience issues you need to troubleshoot.
+When you are using the GitLab agent for Kubernetes, you might experience issues you need to troubleshoot.
 
 You can start by viewing the service logs:
 
@@ -14,7 +14,7 @@ You can start by viewing the service logs:
 kubectl logs -f -l=app=gitlab-agent -n gitlab-kubernetes-agent
 ```
 
-If you are a GitLab administrator, you can also view the [GitLab Agent Server logs](../../../administration/clusters/kas.md#troubleshooting).
+If you are a GitLab administrator, you can also view the [GitLab agent server logs](../../../administration/clusters/kas.md#troubleshooting).
 
 ## Transport: Error while dialing failed to WebSocket dial
 
@@ -28,7 +28,7 @@ If you are a GitLab administrator, you can also view the [GitLab Agent Server lo
 ```
 
 This error is shown if there are some connectivity issues between the address
-specified as `kas-address`, and your Agent pod. To fix it, make sure that you
+specified as `kas-address`, and your agent pod. To fix it, make sure that you
 specified the `kas-address` correctly.
 
 ```json
@@ -189,4 +189,4 @@ Alternatively, you can mount the certificate file at a different location and in
 ```
 
 This error is shown if the manifest project is not public. To fix it, make sure your manifest project is public or your manifest files
-are stored in the Agent's configuration repository.
+are stored in the agent's configuration repository.

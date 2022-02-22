@@ -30,11 +30,11 @@ Learn more about how GitLab can help you run [Infrastructure as Code](iac/index.
 ## Integrated Kubernetes management
 
 The GitLab integration with Kubernetes helps you to install, configure, manage, deploy, and troubleshoot
-cluster applications. With the GitLab Agent, you can connect clusters behind a firewall,
+cluster applications. With the GitLab agent, you can connect clusters behind a firewall,
 have real-time access to API endpoints, perform pull-based or push-based deployments for production
 and non-production environments, and much more.
 
-Learn more about the [GitLab Agent](../clusters/agent/index.md).
+Learn more about the [GitLab agent](../clusters/agent/index.md).
 
 ## Runbooks in GitLab
 

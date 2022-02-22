@@ -4,15 +4,15 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Install the GitLab Agent Server for Kubernetes (KAS) **(FREE SELF)**
+# Install the GitLab agent server for Kubernetes (KAS) **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.10, the GitLab Agent Server (KAS) became available on GitLab.com under `wss://kas.gitlab.com`.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.10, the GitLab agent server (KAS) became available on GitLab.com under `wss://kas.gitlab.com`.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 
-The GitLab Agent Server for Kubernetes is a GitLab backend service dedicated to
-managing the [GitLab Agent for Kubernetes](../../user/clusters/agent/index.md).
+The GitLab agent server for Kubernetes is a GitLab backend service dedicated to
+managing the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
 
-The KAS acronym refers to the former name, Kubernetes Agent Server.
+The KAS acronym refers to the former name, Kubernetes agent server.
 
 The KAS is already installed and available in GitLab.com under `wss://kas.gitlab.com`.
 This document describes how to install a KAS for GitLab self-managed instances.
@@ -31,7 +31,7 @@ You can also opt to use an [external KAS](#use-an-external-kas-installation).
 
 For [Omnibus](https://docs.gitlab.com/omnibus/) package installations:
 
-1. Edit `/etc/gitlab/gitlab.rb` to enable the Agent Server:
+1. Edit `/etc/gitlab/gitlab.rb` to enable the agent server:
 
    ```ruby
    gitlab_kas['enable'] = true
@@ -96,7 +96,7 @@ For GitLab instances installed through Omnibus packages:
 
 ## Troubleshooting
 
-If you have issues while using the GitLab Agent Server for Kubernetes, view the
+If you have issues while using the GitLab agent server for Kubernetes, view the
 service logs by running the following command:
 
 ```shell
@@ -105,7 +105,7 @@ kubectl logs -f -l=app=kas -n <YOUR-GITLAB-NAMESPACE>
 
 In Omnibus GitLab, find the logs in `/var/log/gitlab/gitlab-kas/`.
 
-You can also [troubleshoot issues with individual Agents](../../user/clusters/agent/troubleshooting.md).
+You can also [troubleshoot issues with individual agents](../../user/clusters/agent/troubleshooting.md).
 
 ### KAS logs - GitOps: failed to get project information
 

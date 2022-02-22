@@ -29,7 +29,7 @@ To integrate GitLab with security scanners other than those listed here, see
 You can use cluster image scanning through the following methods:
 
 - [The cluster image scanning analyzer](#use-the-cluster-image-scanning-analyzer)
-- [The GitLab Agent](#cluster-image-scanning-with-the-gitlab-agent)
+- [The GitLab agent](#cluster-image-scanning-with-the-gitlab-agent)
 
 ## Use the cluster image scanning analyzer
 
@@ -277,22 +277,22 @@ Here's an example cluster image scanning report:
 }
 ```
 
-## Cluster image scanning with the GitLab Agent
+## Cluster image scanning with the GitLab agent
 
-You can use the [GitLab Agent](../../clusters/agent/index.md) to
+You can use the [GitLab agent](../../clusters/agent/index.md) to
 scan images from within your Kubernetes cluster and record the vulnerabilities in GitLab.
 
 ### Prerequisites
 
 - [Starboard Operator](https://aquasecurity.github.io/starboard/v0.10.3/operator/installation/kubectl/)
   installed and configured in your cluster.
-- [GitLab Agent](../../clusters/agent/install/index.md)
+- [GitLab agent](../../clusters/agent/install/index.md)
   set up in GitLab, installed in your cluster, and configured using a configuration repository.
 
 ### Configuration
 
-The Agent runs the cluster image scanning once the `cluster_image_scanning`
-directive is added to your [Agent's configuration repository](../../clusters/agent/vulnerabilities.md).
+The agent runs the cluster image scanning once the `cluster_image_scanning`
+directive is added to your [agent's configuration repository](../../clusters/agent/vulnerabilities.md).
 
 ## Security Dashboard
 
@@ -302,7 +302,7 @@ the security vulnerabilities in your groups, projects, and pipelines.
 ## Interacting with the vulnerabilities
 
 After you find a vulnerability, you can address it in the [vulnerability report](../vulnerabilities/index.md)
-or the [GitLab Agent's](../../clusters/agent/vulnerabilities.md)
+or the [GitLab agent's](../../clusters/agent/vulnerabilities.md)
 details section.
 
 ## Troubleshooting

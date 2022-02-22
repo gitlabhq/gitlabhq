@@ -659,7 +659,7 @@ ciliumNetworkPolicy:
 #### Enabling Alerts
 
 You can also enable alerts. Network policies with alerts are considered only if
-[Agent](../../user/clusters/agent/index.md)
+the [agent](../../user/clusters/agent/index.md)
 has been integrated.
 
 You can enable alerts as follows:

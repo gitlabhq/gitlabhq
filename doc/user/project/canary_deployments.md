@@ -35,7 +35,7 @@ your pods fleet and watch their behavior as a percentage of your user base
 visits the temporarily deployed feature. If all works well, you can deploy the
 feature to production knowing that it shouldn't cause any problems.
 
-Canary deployments are also especially useful for backend refactors, performance
+Canary deployments are also especially required for backend refactors, performance
 improvements, or other changes where the user interface doesn't change, but you
 want to make sure the performance stays the same, or improves. Developers need
 to be careful when using canaries with user-facing changes, because by default,
@@ -50,7 +50,7 @@ this document.
 Canary deployments require that you properly configure deploy boards:
 
 1. Follow the steps to [enable deploy boards](deploy_boards.md#enabling-deploy-boards).
-1. To track canary deployments you need to label your Kubernetes deployments and
+1. To track canary deployments you must label your Kubernetes deployments and
    pods with `track: canary`. To get started quickly, you can use the [Auto Deploy](../../topics/autodevops/stages.md#auto-deploy)
    template for canary deployments that GitLab provides.
 
@@ -60,12 +60,12 @@ Any other track label is considered `canary` (temporary).
 This allows GitLab to discover whether a deployment is stable or canary (temporary).
 
 Once all of the above are set up and the pipeline has run at least once,
-navigate to the environments page under **Pipelines > Environments**.
+Go to the environments page under **Pipelines > Environments**.
 As the pipeline executes, deploy boards clearly mark canary pods, enabling
-quick and easy insight into the status of each environment and deployment.
+quick and clear insight into the status of each environment and deployment.
 
 Canary deployments are marked with a yellow dot in the deploy board so that you
-can easily notice them.
+can quickly notice them.
 
 ![Canary deployments on deploy board](img/deploy_boards_canary_deployments.png)
 
@@ -82,7 +82,7 @@ Canary deployments can be more strategic with [Canary Ingress](https://kubernete
 which is an advanced traffic routing service that controls incoming HTTP
 requests between stable and canary deployments based on factors such as weight, sessions, cookies,
 and others. GitLab uses this service in its [Auto Deploy architecture](../../topics/autodevops/upgrading_auto_deploy_dependencies.md#v2-chart-resource-architecture)
-to let users easily and safely roll out their new deployments.
+to let users quickly and safely roll out their new deployments.
 
 #### How to set up a Canary Ingress in a canary deployment
 
@@ -115,13 +115,13 @@ Here's an example setup flow from scratch:
 
 #### How to change the traffic weight on a Canary Ingress
 
-You can change the traffic weight within your environment's deploy board by using [GraphiQL](../../api/graphql/getting_started.md#graphiql),
+You can change the traffic weight in your environment's deploy board by using [GraphiQL](../../api/graphql/getting_started.md#graphiql),
 or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md#command-line).
 
 To use your [deploy board](../../user/project/deploy_boards.md):
 
-1. Navigate to **Deployments > Environments** for your project.
-1. Set the new weight with the dropdown on the right side.
+1. Go to **Deployments > Environments** for your project.
+1. Set the new weight with the dropdown list on the right side.
 1. Confirm your selection.
 
 Here's an example using [GraphiQL](../../api/graphql/getting_started.md#graphiql):

@@ -9,7 +9,7 @@ description: 'GitLab to Kubernetes communication'
 # GitLab to Kubernetes communication **(FREE)**
 
 The goal of this document is to define how GitLab can communicate with Kubernetes
-and in-cluster services through the GitLab Agent.
+and in-cluster services through the GitLab agent.
 
 ## Challenges
 
@@ -48,7 +48,7 @@ are stored on the GitLab side and this is yet another security concern for our c
 For more discussion on these issues, read
 [issue #212810](https://gitlab.com/gitlab-org/gitlab/-/issues/212810).
 
-## GitLab Agent epic
+## GitLab agent epic
 
 To address these challenges and provide some new features, the Configure group
 is building an active in-cluster component that inverts the
@@ -62,12 +62,12 @@ The customer does not need to provide any credentials to GitLab, and
 is in full control of what permissions the agent has.
 
 For more information, visit the
-[GitLab Agent repository](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent) or
+[GitLab agent repository](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent) or
 [the epic](https://gitlab.com/groups/gitlab-org/-/epics/3329).
 
 ### Request routing
 
-Agents connect to the server-side component called GitLab Agent Server
+Agents connect to the server-side component called GitLab agent server
 (`gitlab-kas`) and keep an open connection that waits for commands. The
 difficulty with the approach is in routing requests from GitLab to the correct agent.
 Each cluster may contain multiple logical agents, and each may be running as multiple
