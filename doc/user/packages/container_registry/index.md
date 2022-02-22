@@ -553,13 +553,6 @@ this setting. However, disabling the Container Registry disables all Container R
 | Private project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)  | View Container Registry <br/> and pull images | No        | No    | Yes      |
 | Any project with Container Registry `disabled` | All operations on Container Registry | No | No | No |
 
-## Manifest lists and garbage collection
-
-Manifest lists are commonly used for creating multi-architecture images. If you rely on manifest
-lists, you should tag all the individual manifests referenced by a list in their respective
-repositories, and not just the manifest list itself. This ensures that those manifests aren't
-garbage collected, as long as they have at least one tag pointing to them.
-
 ## Troubleshooting the GitLab Container Registry
 
 ### Docker connection error

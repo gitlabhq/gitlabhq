@@ -383,6 +383,7 @@ The following table lists group permissions available for each role:
 | View Group DevOps Adoption **(ULTIMATE)**                                |       | ✓        | ✓         | ✓          | ✓     |
 | View metrics dashboard annotations                                       |       | ✓        | ✓         | ✓          | ✓     |
 | View Productivity analytics **(PREMIUM)**                                |       | ✓        | ✓         | ✓          | ✓     |
+| View Usage quota data                                                    |       | ✓        | ✓         | ✓          | ✓     |
 | Create and edit group wiki pages **(PREMIUM)**                           |       |          | ✓         | ✓          | ✓     |
 | Create project in group                                                  |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
 | Create/edit/delete group milestones                                      |       |          | ✓         | ✓          | ✓     |
@@ -412,7 +413,7 @@ The following table lists group permissions available for each role:
 | Share (invite) groups with groups                                        |       |          |           |            | ✓     |
 | View 2FA status of members                                               |       |          |           |            | ✓     |
 | View Billing **(FREE SAAS)**                                             |       |          |           |            | ✓ (4) |
-| View Usage Quotas **(FREE SAAS)**                                        |       |          |           |            | ✓ (4) |
+| View Usage Quotas Page **(FREE SAAS)**                                   |       |          |           | ✓          | ✓ (4) |
 | Manage runners                                                           |       |          |           |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->

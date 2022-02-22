@@ -414,7 +414,7 @@ RSpec.describe 'Pipelines', :js do
         it "has link to the delayed job's action" do
           find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
-          time_diff = [0, delayed_job.scheduled_at - Time.now].max
+          time_diff = [0, delayed_job.scheduled_at - Time.zone.now].max
           expect(page).to have_button('delayed job 1')
           expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M:%S"))
         end

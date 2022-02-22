@@ -485,14 +485,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         end
 
         it_behaves_like 'detects cyclical pipelines'
-
-        context 'when ci_drop_cyclical_triggered_pipelines is not enabled' do
-          before do
-            stub_feature_flags(ci_drop_cyclical_triggered_pipelines: false)
-          end
-
-          it_behaves_like 'passes cyclical pipeline precondition'
-        end
       end
 
       context 'when source in the ancestry differ' do

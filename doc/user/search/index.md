@@ -40,8 +40,8 @@ in the search field in the upper right corner:
 Follow these steps to filter the **Issues** and **Merge requests** list pages in projects and
 groups:
 
-1. Click in the field **Search or filter results...**.
-1. In the dropdown menu that appears, select the attribute you wish to filter by:
+1. Select **Search or filter results...**.
+1. In the dropdown list that appears, select the attribute you wish to filter by:
    - Assignee
    - Author
    - Confidential
@@ -113,7 +113,7 @@ You can filter the **Issues** list to individual instances by their ID. For exam
 > Moved to GitLab Premium in 13.9.
 
 To filter merge requests by an individual approver, you can type (or select from
-the dropdown) **Approver** and select the user.
+the dropdown list) **Approver** and select the user.
 
 ![Filter MRs by an approver](img/filter_approver_merge_requests_v14_6.png)
 
@@ -123,7 +123,7 @@ the dropdown) **Approver** and select the user.
 > - Moved to GitLab Premium in 13.9.
 
 To filter merge requests already approved by a specific individual, you can type (or select from
-the dropdown) **Approved-By** and select the user.
+the dropdown list) **Approved-By** and select the user.
 
 ![Filter MRs by approved by](img/filter_approved_by_merge_requests_v14_6.png)
 
@@ -132,20 +132,20 @@ the dropdown) **Approved-By** and select the user.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
 
 To filter review requested merge requests for a specific individual, you can type (or select from
-the dropdown) **Reviewer** and select the user.
+the dropdown list) **Reviewer** and select the user.
 
 ### Filtering merge requests by environment or deployment date **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
 
 To filter merge requests by deployment data, such as the environment or a date,
-you can type (or select from the dropdown) the following:
+you can type (or select from the dropdown list) the following:
 
 - Environment
 - Deployed-before
 - Deployed-after
 
-When filtering by an environment, a dropdown presents all environments that
+When filtering by an environment, a dropdown list presents all environments that
 you can choose from:
 
 ![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v14_6.png)
@@ -174,7 +174,7 @@ you must type at least `Sim` before autocomplete displays results.
 Search history is available for issues and merge requests, and is stored locally
 in your browser. To run a search from history:
 
-1. In the top menu, click **Issues** or **Merge requests**.
+1. In the top menu, select **Issues** or **Merge requests**.
 1. To the left of the search bar, click **Recent searches**, and select a search from the list.
 
 ## Removing search filters
@@ -227,7 +227,7 @@ and sort them by **Last created**, **Oldest created**, **Last updated**, or **Ol
 From an [issue board](../../user/project/issue_board.md), you can filter issues by **Author**, **Assignee**, **Milestone**, and **Labels**.
 You can also filter them by name (issue title), from the field **Filter by name**, which is loaded as you type.
 
-To search for issues to add to lists present in your issue board, click
+To search for issues to add to lists present in your issue board, select
 the button **Add issues** on the top-right of your screen, opening a modal window from which
 you can, besides filtering them by **Name**, **Author**, **Assignee**, **Milestone**,
 and **Labels**, select multiple issues to add to a list of your choice:

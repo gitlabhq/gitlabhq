@@ -4,7 +4,7 @@ require './spec/support/sidekiq_middleware'
 require './spec/support/helpers/test_env'
 
 class Gitlab::Seeder::TriageOps
-  WEBHOOK_URL = 'http://0.0.0.0:8080'
+  WEBHOOK_URL = 'http://0.0.0.0:$PORT$'
   WEBHOOK_TOKEN = "triage-ops-webhook-token"
 
   def seed!
@@ -23,7 +23,7 @@ class Gitlab::Seeder::TriageOps
       ensure_project('gitlab-org/security/gitlab')
       puts "Ensuring required bot user"
       ensure_bot_user
-      puts "Setting up webhooks for #{WEBHOOK_URL}"
+      puts "Setting up webhooks"
       ensure_webhook_for('gitlab-com')
       ensure_webhook_for('gitlab-org')
     end
@@ -65,7 +65,7 @@ class Gitlab::Seeder::TriageOps
     hook_params = {
       enable_ssl_verification: false,
       token: WEBHOOK_TOKEN,
-      url: WEBHOOK_URL
+      url: WEBHOOK_URL.gsub("$PORT$", ENV.fetch('TRIAGE_OPS_WEBHOOK_PORT', '8091'))
     }
     # Subscribe the hook to all possible events.
     all_group_hook_events = GroupHook.triggers.values
@@ -76,7 +76,7 @@ class Gitlab::Seeder::TriageOps
     hook = group.hooks.new(hook_params)
     hook.save!
 
-    puts "Hook token '#{hook.token}' for '#{group_path}' group is present now."
+    puts "Hook with url '#{hook.url}' and token '#{hook.token}' for '#{group_path}' is present now."
   end
 
   def ensure_group(full_path)

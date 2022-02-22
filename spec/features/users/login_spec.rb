@@ -437,7 +437,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
 
       context 'when the users password is expired' do
         before do
-          user.update!(password_expires_at: Time.parse('2018-05-08 11:29:46 UTC'))
+          user.update!(password_expires_at: Time.zone.parse('2018-05-08 11:29:46 UTC'))
         end
 
         it 'asks for a new password' do
@@ -860,7 +860,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
 
     context 'when the users password is expired' do
       before do
-        user.update!(password_expires_at: Time.parse('2018-05-08 11:29:46 UTC'))
+        user.update!(password_expires_at: Time.zone.parse('2018-05-08 11:29:46 UTC'))
       end
 
       it 'asks the user to accept the terms before setting a new password' do

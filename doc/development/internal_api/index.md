@@ -413,9 +413,6 @@ These endpoints are all authenticated using JWT. The JWT secret is stored in a f
 specified in `config/gitlab.yml`. By default, the location is in the root of the
 GitLab Rails app in a file called `.gitlab_kas_secret`.
 
-WARNING:
-The GitLab agent is under development and is not recommended for production use.
-
 ### GitLab agent information
 
 Called from GitLab agent server (`kas`) to retrieve agent

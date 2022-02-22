@@ -280,7 +280,7 @@ Shown metrics and charts includes:
 
 - [Lead time](#how-metrics-are-measured)
 - [Cycle time](#how-metrics-are-measured)
-- [Days to completion chart](#days-to-completion-chart)
+- [Total time chart](#total-time-chart)
 - [Tasks by type chart](#type-of-work---tasks-by-type-chart)
 
 ### Stage table
@@ -413,7 +413,7 @@ To delete a custom value stream:
 
 ![Delete value stream](img/delete_value_stream_v13_12.png "Deleting a custom value stream")
 
-## Days to completion chart
+## Total time chart
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
 > - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
@@ -422,8 +422,9 @@ To delete a custom value stream:
 This chart visually depicts the average number of days it takes for cycles to be completed.
 
 This chart uses the global page filters for displaying data based on the selected
-group, projects, and time frame. In addition, specific stages can be selected
-from the chart itself.
+group, projects, and time frame.
+
+When a stage is selected the chart only displays data relevant to the selected stage. On the overview the chart displays a sum of the times for all stages in the value stream.
 
 The chart data is limited to the last 500 items.
 

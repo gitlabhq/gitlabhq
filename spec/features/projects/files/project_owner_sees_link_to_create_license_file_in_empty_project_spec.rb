@@ -23,7 +23,7 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
     select_template('MIT License')
 
     expect(ide_editor_value).to have_content('MIT License')
-    expect(ide_editor_value).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(ide_editor_value).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
 
     ide_commit
 
@@ -33,7 +33,7 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
 
     license_file = project.repository.blob_at('master', 'LICENSE').data
     expect(license_file).to have_content('MIT License')
-    expect(license_file).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(license_file).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
   end
 
   def select_template(template)

@@ -20,6 +20,14 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     allow(Rake::Task['db:seed_fu']).to receive(:invoke).and_return(true)
   end
 
+  describe 'clear_all_connections' do
+    it 'calls clear_all_connections!' do
+      expect(ActiveRecord::Base).to receive(:clear_all_connections!)
+
+      run_rake_task('gitlab:db:clear_all_connections')
+    end
+  end
+
   describe 'mark_migration_complete' do
     context 'with a single database' do
       let(:main_model) { ActiveRecord::Base }

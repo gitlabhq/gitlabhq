@@ -183,7 +183,7 @@ RSpec.describe 'Editing file blob', :js do
           freeze_time do
             visit project_edit_blob_path(project, tree_join(protected_branch, file_path))
 
-            epoch = Time.now.strftime('%s%L').last(5)
+            epoch = Time.zone.now.strftime('%s%L').last(5)
 
             expect(find('.js-branch-name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
           end

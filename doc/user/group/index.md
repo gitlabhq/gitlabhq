@@ -717,7 +717,8 @@ To disable email notifications:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21301) in GitLab 12.6.
 
 You can prevent users from being added to a conversation and getting notified when
-anyone mentions a group in which those users are members.
+anyone [mentions a group](../discussions/index.md#mentions)
+in which those users are members.
 
 Groups with disabled mentions are visualized accordingly in the autocompletion dropdown list.
 

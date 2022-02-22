@@ -170,6 +170,13 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
+    desc "Clear all connections"
+    task :clear_all_connections do
+      ActiveRecord::Base.clear_all_connections!
+    end
+
+    Rake::Task['db:test:purge'].enhance(['gitlab:db:clear_all_connections'])
+
     # During testing, db:test:load restores the database schema from scratch
     # which does not include dynamic partitions. We cannot rely on application
     # initializers here as the application can continue to run while

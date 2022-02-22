@@ -220,7 +220,7 @@ RSpec.describe 'Admin::Users::User' do
 
         context 'a user with an expired password' do
           before do
-            another_user.update!(password_expires_at: Time.now - 5.minutes)
+            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
           end
 
           it 'does not redirect to password change page' do
@@ -255,7 +255,7 @@ RSpec.describe 'Admin::Users::User' do
 
         context 'a user with an expired password' do
           before do
-            another_user.update!(password_expires_at: Time.now - 5.minutes)
+            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
           end
 
           it 'is redirected back to the impersonated users page in the admin after stopping' do

@@ -33,20 +33,19 @@ You can create snippets in multiple ways, depending on whether you want to creat
 
 1. Select the kind of snippet you want to create:
    - **To create a personal snippet**: On the
-     [Snippets dashboard](https://gitlab.com/dashboard/snippets), click
+     [Snippets dashboard](https://gitlab.com/dashboard/snippets), select
      **New snippet**, or:
      - *If you're on a project's page,* select the plus icon (**{plus-square-o}**)
        in the top navigation bar, and then select **New snippet** from the
        **GitLab** (GitLab SaaS) or **Your Instance** (self-managed) section
-       of the same dropdown menu.
+       of the same dropdown list.
      - *For all other pages,* select the plus icon (**{plus-square-o}**)
-       in the top navigation bar, then select **New snippet** from the dropdown
-       menu.
+       in the top navigation bar, then select **New snippet** from the dropdown list.
      - If you installed the [GitLab Workflow VS Code extension](project/repository/vscode.md),
        use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
    - **To create a project snippet**: Go to your project's page. Select the
      plus icon (**{plus-square-o}**), and then select **New snippet** from the
-     **This project** section of the dropdown menu.
+     **This project** section of the dropdown list.
 1. Add a **Title** and **Description**.
 1. Name your **File** with an appropriate extension, such as `example.rb` or `index.html`.
    Filenames with appropriate extensions display [syntax highlighting](#filenames).
@@ -162,7 +161,7 @@ you wish to delete.
 
 Instead of copying a snippet to a local file, you may want to clone a snippet to
 preserve its relationship with the repository, so you can receive or make updates
-as needed. Select the **Clone** button on a snippet to display the URLs to clone with SSH or HTTPS:
+as needed. Select **Clone** on a snippet to display the URLs to clone with SSH or HTTPS:
 
 ![Clone snippet](img/snippet_clone_button_v13_0.png)
 
@@ -202,7 +201,7 @@ For example:
 ## Download snippets
 
 You can download the raw content of a snippet. By default, they download with Linux-style line endings (`LF`). If
-you want to preserve the original line endings you need to add a parameter `line_ending=raw`
+you want to preserve the original line endings you must add a parameter `line_ending=raw`
 (For example: `https://gitlab.com/snippets/SNIPPET_ID/raw?line_ending=raw`). In case a
 snippet was created using the GitLab web interface the original line ending is Windows-like (`CRLF`).
 

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Push mirror a repository over HTTP' do
-      it 'configures and syncs LFS objects for a (push) mirrored repository', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347847' do
+      it 'configures and syncs LFS objects for a (push) mirrored repository', :aggregate_failures, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347847' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
@@ -30,14 +30,15 @@ module QA
             mirror_settings.authentication_method = 'Password'
             mirror_settings.password = Runtime::User.password
             mirror_settings.mirror_repository
-            mirror_settings.update target_project_uri # rubocop:disable Rails/SaveBang
+            mirror_settings.update(target_project_uri) # rubocop:disable Rails/SaveBang
+            mirror_settings.verify_update(target_project_uri)
           end
         end
 
         # Check that the target project has the commit from the source
         target_project.visit!
         Page::Project::Show.perform do |project_page|
-          expect(project_page).to have_file('README.md')
+          expect { project_page.has_file?('README.md') }.to eventually_be_truthy.within(max_duration: 60), "Expected a file named README.md but it did not appear."
           expect(project_page).to have_readme_content('The rendered file could not be displayed because it is stored in LFS')
         end
       end

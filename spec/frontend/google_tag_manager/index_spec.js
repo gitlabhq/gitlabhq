@@ -11,6 +11,7 @@ import {
   trackSaasTrialGetStarted,
   trackCheckout,
   trackTransaction,
+  trackAddToCartUsageTab,
 } from '~/google_tag_manager';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { logError } from '~/lib/logger';
@@ -170,6 +171,32 @@ describe('~/google_tag_manager/index', () => {
         {
           cls: 'js-get-started-btn',
           expectation: { event: 'saasTrialGetStarted' },
+        },
+      ],
+    }),
+    createTestCase(trackAddToCartUsageTab, {
+      links: [
+        {
+          cls: 'js-buy-additional-minutes',
+          expectation: {
+            event: 'EECproductAddToCart',
+            ecommerce: {
+              currencyCode: 'USD',
+              add: {
+                products: [
+                  {
+                    name: 'CI/CD Minutes',
+                    id: '0003',
+                    price: '10',
+                    brand: 'GitLab',
+                    category: 'DevOps',
+                    variant: 'add-on',
+                    quantity: 1,
+                  },
+                ],
+              },
+            },
+          },
         },
       ],
     }),

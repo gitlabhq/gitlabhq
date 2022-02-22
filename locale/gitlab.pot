@@ -10868,12 +10868,6 @@ msgstr ""
 msgid "CycleAnalytics|%{selectedLabelsCount} selected (%{maxLabels} max)"
 msgstr ""
 
-msgid "CycleAnalytics|%{stageCount} stages selected"
-msgstr ""
-
-msgid "CycleAnalytics|All stages"
-msgstr ""
-
 msgid "CycleAnalytics|Average time to completion"
 msgstr ""
 
@@ -10884,9 +10878,6 @@ msgid "CycleAnalytics|Display chart filters"
 msgstr ""
 
 msgid "CycleAnalytics|Lead Time for Changes"
-msgstr ""
-
-msgid "CycleAnalytics|No stages selected"
 msgstr ""
 
 msgid "CycleAnalytics|Number of tasks"
@@ -10920,9 +10911,6 @@ msgstr ""
 msgid "CycleAnalytics|Stage time: %{title}"
 msgstr ""
 
-msgid "CycleAnalytics|Stages"
-msgstr ""
-
 msgid "CycleAnalytics|Tasks by type"
 msgstr ""
 
@@ -10954,9 +10942,6 @@ msgid "CycleAnalytics|not allowed for the given start event"
 msgstr ""
 
 msgid "CycleAnalytics|project dropdown filter"
-msgstr ""
-
-msgid "CycleAnalytics|stage dropdown"
 msgstr ""
 
 msgid "DAG visualization requires at least 3 dependent jobs."

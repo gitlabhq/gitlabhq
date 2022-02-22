@@ -231,3 +231,32 @@ export const trackTransaction = (transactionDetails) => {
 
   pushEnhancedEcommerceEvent('EECtransactionSuccess', eventData);
 };
+
+export const trackAddToCartUsageTab = () => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const getStartedButton = document.querySelector('.js-buy-additional-minutes');
+  getStartedButton.addEventListener('click', () => {
+    window.dataLayer.push({
+      event: 'EECproductAddToCart',
+      ecommerce: {
+        currencyCode: 'USD',
+        add: {
+          products: [
+            {
+              name: 'CI/CD Minutes',
+              id: '0003',
+              price: '10',
+              brand: 'GitLab',
+              category: 'DevOps',
+              variant: 'add-on',
+              quantity: 1,
+            },
+          ],
+        },
+      },
+    });
+  });
+};

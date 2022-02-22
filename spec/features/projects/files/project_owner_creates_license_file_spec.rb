@@ -26,7 +26,7 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js do
 
     file_content = first('.file-editor')
     expect(file_content).to have_content('MIT License')
-    expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(file_content).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
     click_button 'Commit changes'
@@ -34,7 +34,7 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js do
     expect(current_path).to eq(
       project_blob_path(project, 'master/LICENSE'))
     expect(page).to have_content('MIT License')
-    expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(page).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
   end
 
   it 'project maintainer creates a license file from the "Add license" link' do
@@ -50,7 +50,7 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js do
 
     file_content = first('.file-editor')
     expect(file_content).to have_content('MIT License')
-    expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(file_content).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
     click_button 'Commit changes'
@@ -58,7 +58,7 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js do
     expect(current_path).to eq(
       project_blob_path(project, 'master/LICENSE'))
     expect(page).to have_content('MIT License')
-    expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(page).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
   end
 
   def select_template(template)

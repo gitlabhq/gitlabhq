@@ -574,7 +574,7 @@ RSpec.describe 'Admin::Users' do
         user.reload
         expect(user.name).to eq('Big Bang')
         expect(user.admin?).to be_truthy
-        expect(user.password_expires_at).to be <= Time.now
+        expect(user.password_expires_at).to be <= Time.zone.now
       end
     end
 

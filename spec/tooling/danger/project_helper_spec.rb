@@ -166,6 +166,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'lib/gitlab/usage_data_counters/aggregated_metrics/common.yml' | [:product_intelligence]
       'lib/gitlab/usage_data_counters/hll_redis_counter.rb' | [:backend, :product_intelligence]
       'lib/gitlab/tracking.rb' | [:backend, :product_intelligence]
+      'lib/gitlab/usage/service_ping_report.rb' | [:backend, :product_intelligence]
+      'lib/gitlab/usage/metrics/key_path_processor.rb' | [:backend, :product_intelligence]
       'spec/lib/gitlab/tracking_spec.rb' | [:backend, :product_intelligence]
       'app/helpers/tracking_helper.rb' | [:backend, :product_intelligence]
       'spec/helpers/tracking_helper_spec.rb' | [:backend, :product_intelligence]
@@ -181,6 +183,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'config/metrics/schema.json' | [:product_intelligence]
       'doc/api/usage_data.md' | [:product_intelligence]
       'spec/lib/gitlab/usage_data_spec.rb' | [:product_intelligence]
+      'spec/lib/gitlab/usage/service_ping_report.rb' | [:backend, :product_intelligence]
+      'spec/lib/gitlab/usage/metrics/key_path_processor.rb' | [:backend, :product_intelligence]
 
       'app/models/integration.rb' | [:integrations_be, :backend]
       'ee/app/models/integrations/github.rb' | [:integrations_be, :backend]

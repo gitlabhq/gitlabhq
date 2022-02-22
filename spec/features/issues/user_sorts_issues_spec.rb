@@ -9,9 +9,9 @@ RSpec.describe "User sorts issues" do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project_empty_repo, :public, group: group) }
-  let_it_be(:issue1, reload: true) { create(:issue, title: 'foo', created_at: Time.now, project: project) }
-  let_it_be(:issue2, reload: true) { create(:issue, title: 'bar', created_at: Time.now - 60, project: project) }
-  let_it_be(:issue3, reload: true) { create(:issue, title: 'baz', created_at: Time.now - 120, project: project) }
+  let_it_be(:issue1, reload: true) { create(:issue, title: 'foo', created_at: Time.zone.now, project: project) }
+  let_it_be(:issue2, reload: true) { create(:issue, title: 'bar', created_at: Time.zone.now - 60, project: project) }
+  let_it_be(:issue3, reload: true) { create(:issue, title: 'baz', created_at: Time.zone.now - 120, project: project) }
   let_it_be(:newer_due_milestone) { create(:milestone, project: project, due_date: '2013-12-11') }
   let_it_be(:later_due_milestone) { create(:milestone, project: project, due_date: '2013-12-12') }
 
@@ -75,7 +75,7 @@ RSpec.describe "User sorts issues" do
   end
 
   it 'sorts by most recently updated', :js do
-    issue3.updated_at = Time.now + 100
+    issue3.updated_at = Time.zone.now + 100
     issue3.save!
     visit project_issues_path(project, sort: sort_value_recently_updated)
 
