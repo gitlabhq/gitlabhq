@@ -145,7 +145,7 @@ class DiffNote < Note
   end
 
   def fetch_diff_file
-    return note_diff_file.raw_diff_file if note_diff_file
+    return note_diff_file.raw_diff_file if note_diff_file && !note_diff_file.raw_diff_file.has_renderable?
 
     if created_at_diff?(noteable.diff_refs)
       # We're able to use the already persisted diffs (Postgres) if we're

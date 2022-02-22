@@ -16,10 +16,12 @@ module Gitlab
         end
 
         def transformed_diff(before, after)
+          Gitlab::AppLogger.info({ message: 'IPYNB_DIFF_GENERATED' })
+
           transformed_diff = IpynbDiff.diff(before, after,
-                                            diff_opts: { context: 5, include_diff_info: true },
-                                            transform_options: { cell_decorator: :percent },
-                                            raise_if_invalid_notebook: true)
+                         raise_if_invalid_nb: true,
+                         diffy_opts: { include_diff_info: true }).to_s(:text)
+
           strip_diff_frontmatter(transformed_diff)
         end
 
@@ -29,9 +31,7 @@ module Gitlab
 
         def transformed_blob_data(blob)
           if transformed_for_diff?(blob)
-            IpynbDiff.transform(blob.data,
-                                raise_errors: true,
-                                options: { include_metadata: false, cell_decorator: :percent })
+            IpynbDiff.transform(blob.data, raise_errors: true, include_frontmatter: false)
           end
         end
 

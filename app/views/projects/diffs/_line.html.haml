@@ -3,7 +3,7 @@
 - plain = local_assigns.fetch(:plain, false)
 - discussions = local_assigns.fetch(:discussions, nil)
 - line_code = diff_file.line_code(line)
-- if discussions && line.discussable?
+- if discussions
   - line_discussions = discussions[line_code]
 
 %tr.line_holder{ class: line.type, id: (line_code unless plain) }
@@ -15,11 +15,12 @@
     %td.new_line.diff-line-num
     %td.line_content.match= line.text
   - else
-    %td.old_line.diff-line-num{ class: [line.type, ("js-avatar-container" if !plain)], data: { linenumber: line.old_pos } }
+    %td.old_line.diff-line-num{ class: [line.type, ("js-avatar-container" unless plain)], data: { linenumber: line.old_pos } }
       - if plain
         = diff_link_number(line.type, "new", line.old_pos)
       - else
-        = add_diff_note_button(line_code, diff_file.position(line), line.type)
+        - if line.discussable?
+          = add_diff_note_button(line_code, diff_file.position(line), line.type)
         %a{ href: "##{line_code}", data: { linenumber: diff_link_number(line.type, "new", line.old_pos) } }
 
     %td.new_line.diff-line-num{ class: line.type, data: { linenumber: line.new_pos } }

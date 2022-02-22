@@ -28,7 +28,7 @@ module DiffHelper
   end
 
   def diff_options
-    options = { ignore_whitespace_change: hide_whitespace?, expanded: diffs_expanded? }
+    options = { ignore_whitespace_change: hide_whitespace?, expanded: diffs_expanded?, use_extra_viewer_as_main: true }
 
     if action_name == 'diff_for_path'
       options[:expanded] = true
@@ -74,7 +74,7 @@ module DiffHelper
   end
 
   def diff_link_number(line_type, match, text)
-    line_type == match ? " " : text
+    line_type == match || text == 0 ? " " : text
   end
 
   def parallel_diff_discussions(left, right, diff_file)

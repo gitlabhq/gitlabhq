@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'ipynbdiff'
 
 class BlobPresenter < Gitlab::View::Presenter::Delegated
   include ApplicationHelper

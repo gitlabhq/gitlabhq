@@ -981,20 +981,20 @@
     stylelint-declaration-strict-value "1.8.0"
     stylelint-scss "4.1.0"
 
-"@gitlab/svgs@2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-2.5.0.tgz#e0569916fa858462b1801cc90ef8dd9706a12e96"
-  integrity sha512-cH/EBs//wdkH6kG+kDpvRCIl63/A8JgjAhBJ+ZWucPgtNCDD6x6RDMGdQrxSqhYwcCKDoLStfcxmblBkuiSRXQ==
+"@gitlab/svgs@2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-2.6.0.tgz#49f020b0a732f5df01138bd21b610a0a940badd6"
+  integrity sha512-jI8CHlrriePtUsognRkpZQWVsZe7ZjytmKakeYyU1aKvsnJ4fAeySlVkCAiqKbbZm3T/eeH/6b3jxHn24U0k0Q==
 
-"@gitlab/ui@36.7.0":
-  version "36.7.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-36.7.0.tgz#0b4c5709bf0a9be9a24516a32181526b8367777d"
-  integrity sha512-IVY6uz5ICozLVJS7t0Pd70qyzMzNNiEULlKVcMoYEEkQQ0Iu/qKj016e5Xm8i9wheSqG2l/fMzUxuNbtftGu2w==
+"@gitlab/ui@36.7.1":
+  version "36.7.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-36.7.1.tgz#49005f55e3fedc3c3ca054355d29c7ac5ade94b5"
+  integrity sha512-MIohLWzZtKxUVwxB26em/R7JB8RB8a/BbTDZR/06xp8yMa4wpNtGTuTGajBKBnbltdKE1h1jVIOLF9Kkb3Njow==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.20.1"
     copy-to-clipboard "^3.0.8"
-    dompurify "^2.3.5"
+    dompurify "^2.3.6"
     echarts "^5.2.1"
     highlight.js "^10.6.0"
     iframe-resizer "^4.3.2"
@@ -4953,7 +4953,7 @@ dompurify@2.3.4:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.4.tgz#1cf5cf0105ccb4debdf6db162525bd41e6ddacc6"
   integrity sha512-6BVcgOAVFXjI0JTjEvZy901Rghm+7fDQOrNIcxB4+gdhj6Kwp6T9VBhBY/AbagKHJocRkDYGd6wvI+p4/10xtQ==
 
-dompurify@^2.3.5, dompurify@^2.3.6:
+dompurify@^2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.6.tgz#2e019d7d7617aacac07cbbe3d88ae3ad354cf875"
   integrity sha512-OFP2u/3T1R5CEgWCEONuJ1a5+MFKnOYpkywpUSxv/dj1LeBT1erK+JwM7zK0ROy2BRhqVCf0LRw/kHqKuMkVGg==

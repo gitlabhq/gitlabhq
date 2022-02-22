@@ -44,11 +44,15 @@ module Gitlab
         new_blob_lazy
         old_blob_lazy
 
-        diff.diff = Gitlab::Diff::CustomDiff.preprocess_before_diff(diff.new_path, old_blob_lazy, new_blob_lazy) || diff.diff if use_custom_diff?
+        diff.diff = Gitlab::Diff::CustomDiff.preprocess_before_diff(diff.new_path, old_blob_lazy, new_blob_lazy) || diff.diff unless use_renderable_diff?
       end
 
-      def use_custom_diff?
-        strong_memoize(:_custom_diff_enabled) { Feature.enabled?(:jupyter_clean_diffs, repository.project, default_enabled: true) }
+      def use_renderable_diff?
+        strong_memoize(:_renderable_diff_enabled) { Feature.enabled?(:rendered_diffs_viewer, repository.project, default_enabled: :yaml) }
+      end
+
+      def has_renderable?
+        rendered&.has_renderable?
       end
 
       def position(position_marker, position_type: :text)
@@ -370,6 +374,12 @@ module Gitlab
         lines.none? { |line| line.type.to_s == 'match' }
       end
 
+      def rendered
+        return unless use_renderable_diff? && ipynb?
+
+        strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
+      end
+
       private
 
       def diffable_by_attribute?
@@ -397,6 +407,10 @@ module Gitlab
 
       def modified_file?
         new_file? || deleted_file? || content_changed?
+      end
+
+      def ipynb?
+        modified_file? && file_path.ends_with?('.ipynb')
       end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but

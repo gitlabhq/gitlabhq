@@ -1,8 +1,0 @@
----
-name: security_report_ingestion_framework
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66735
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343332
-milestone: '14.4'
-type: development
-group: group::threat insights
-default_enabled: true

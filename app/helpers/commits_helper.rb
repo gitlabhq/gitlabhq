@@ -182,6 +182,19 @@ module CommitsHelper
     project_commit_path(project, DEFAULT_SHA).sub("/#{DEFAULT_SHA}", '/$COMMIT_SHA')
   end
 
+  def diff_mode_swap_button(mode, file_hash)
+    icon = mode == 'raw' ? 'doc-code' : 'doc-text'
+    entity = mode == 'raw' ? 'toHideBtn' : 'toShowBtn'
+    title = "Display #{mode} diff"
+
+    link_to("##{mode}-diff-#{file_hash}",
+            class: "btn gl-button btn-default btn-file-option has-tooltip btn-show-#{mode}-diff",
+            title: title,
+            data: { file_hash: file_hash, diff_toggle_entity: entity }) do
+      sprite_icon(icon)
+    end
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and

@@ -648,9 +648,9 @@ GEM
     invisible_captcha (1.1.0)
       rails (>= 4.2)
     ipaddress (0.8.3)
-    ipynbdiff (0.3.8)
-      diffy (= 3.3.0)
-      json (= 2.5.1)
+    ipynbdiff (0.4.2)
+      diffy (~> 3.3)
+      json (~> 2.5, >= 2.5.1)
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
       thrift
@@ -1507,7 +1507,7 @@ DEPENDENCIES
   icalendar
   invisible_captcha (~> 1.1.0)
   ipaddress (~> 0.8.3)
-  ipynbdiff (= 0.3.8)
+  ipynbdiff (= 0.4.2)
   jira-ruby (~> 2.1.4)
   js_regex (~> 3.7)
   json (~> 2.5.1)

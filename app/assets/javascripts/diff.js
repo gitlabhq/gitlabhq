@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { merge } from 'lodash';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -41,6 +42,8 @@ export default class Diff {
     }
 
     this.openAnchoredDiff();
+
+    this.prepareRenderedDiff();
   }
 
   handleClickUnfold(e) {
@@ -150,4 +153,43 @@ export default class Diff {
         .addClass('hll');
     }
   }
+
+  prepareRenderedDiff() {
+    const $elements = $('[data-diff-toggle-entity]');
+
+    if ($elements.length === 0) return;
+
+    const diff = this;
+
+    const elements = $elements.toArray().map(this.formatElementToObject).reduce(merge);
+
+    Object.values(elements).forEach((e) => {
+      e.toShowBtn.onclick = () => diff.showOneHideAnother('rendered', e); // eslint-disable-line no-param-reassign
+      e.toHideBtn.onclick = () => diff.showOneHideAnother('raw', e); // eslint-disable-line no-param-reassign
+
+      diff.showOneHideAnother('raw', e);
+    });
+  }
+
+  formatElementToObject = (element) => {
+    const key = element.attributes['data-file-hash'].value;
+    const name = element.attributes['data-diff-toggle-entity'].value;
+
+    return { [key]: { [name]: element } };
+  };
+
+  showOneHideAnother = (mode, elements) => {
+    let { toShowBtn, toHideBtn, toShow, toHide } = elements;
+
+    if (mode === 'raw') {
+      [toShowBtn, toHideBtn] = [toHideBtn, toShowBtn];
+      [toShow, toHide] = [toHide, toShow];
+    }
+
+    toShowBtn.classList.add('selected');
+    toHideBtn.classList.remove('selected');
+
+    toHide.classList.add('hidden');
+    toShow.classList.remove('hidden');
+  };
 }

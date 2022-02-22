@@ -1524,6 +1524,11 @@ On each node:
    # Gitaly Auth Token
    # Should be the same as praefect_internal_token
    gitaly['auth_token'] = '<praefect_internal_token>'
+
+   # Gitaly Pack-objects cache
+   # Recommended to be enabled for improved performance but can notably increase disk I/O
+   # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
+   gitaly['pack_objects_cache_enabled'] = true
    ```
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective server:

@@ -25,6 +25,7 @@ const onRequest = () => {
 // Use setImmediate to alloow the response interceptor to finish
 const onResponse = (config) => {
   activeRequests -= 1;
+  // eslint-disable-next-line no-restricted-syntax
   setImmediate(() => {
     events.emit('response', config);
   });
@@ -43,6 +44,7 @@ const subscribeToResponse = (predicate = () => true) =>
 
     // If a request has been made synchronously, setImmediate waits for it to be
     // processed and the counter incremented.
+    // eslint-disable-next-line no-restricted-syntax
     setImmediate(listener);
   });
 

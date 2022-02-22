@@ -25,6 +25,11 @@
             = edit_blob_button(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
                              blob: diff_file.blob, link_opts: link_opts)
 
+        - if diff_file.has_renderable?
+          .btn-group.gl-ml-3
+            = diff_mode_swap_button('raw', file_hash)
+            = diff_mode_swap_button('rendered', file_hash)
+
         - if image_diff && image_replaced
           = view_file_button(diff_file.old_content_sha, diff_file.old_path, project, replaced: true)
 

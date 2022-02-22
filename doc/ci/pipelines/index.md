@@ -385,6 +385,12 @@ You can group the jobs by:
 [Multi-project pipeline graphs](multi_project_pipelines.md#multi-project-pipeline-visualization) help
 you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**
 
+If a stage contains more than 100 jobs, only the first 100 jobs are listed in the
+pipeline graph. The remaining jobs still run as normal. To see the jobs:
+
+- Select the pipeline, and the jobs are listed on the right side of the pipeline details page.
+- On the left sidebar, select **CI/CD > Jobs**.
+
 ### View job dependencies in the pipeline graph
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298973) in GitLab 13.12.
