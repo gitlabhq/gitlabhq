@@ -41,7 +41,7 @@ Here's how Service Desk works for you:
 1. You provide a project-specific email address to your paying customers, who can email you directly
    from the application.
 1. Each email they send creates an issue in the appropriate project.
-1. Your team members navigate to the Service Desk issue tracker, where they can see new support
+1. Your team members go to the Service Desk issue tracker, where they can see new support
    requests and respond inside associated issues.
 1. Your team communicates back and forth with the customer to understand the request.
 1. Your team starts working on implementing code to solve your customer's problem.
@@ -153,7 +153,7 @@ To use a custom description template with Service Desk:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. [Create a description template](description_templates.md#create-an-issue-template).
 1. On the left sidebar, select **Settings > General > Service Desk**.
-1. From the dropdown **Template to append to all Service Desk issues**, search or select your template.
+1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
 
 ### Using a custom email display name
 
@@ -190,13 +190,13 @@ you can customize the mailbox used by Service Desk. This allows you to have
 a separate email address for Service Desk by also configuring a [custom suffix](#configuring-a-custom-email-address-suffix)
 in project settings.
 
-The `address` must include the `+%{key}` placeholder within the 'user'
-portion of the address, before the `@`. This is used to identify the project
+The `address` must include the `+%{key}` placeholder in the 'user'
+portion of the address, before the `@`. The placeholder is used to identify the project
 where the issue should be created.
 
 NOTE:
 When configuring a custom mailbox, the `service_desk_email` and `incoming_email`
-configurations must always use separate mailboxes. This is important, because
+configurations must always use separate mailboxes. It's important, because
 emails picked from `service_desk_email` mailbox are processed by a different
 worker and it would not recognize `incoming_email` emails.
 
@@ -267,7 +267,7 @@ The Microsoft Graph API is not yet supported in source installations. See [this 
 
 #### Configuring a custom email address suffix
 
-You can set a custom suffix in your project's Service Desk settings once you have configured a [custom mailbox](#configuring-a-custom-mailbox).
+You can set a custom suffix in your project's Service Desk settings after you have configured a [custom mailbox](#configuring-a-custom-mailbox).
 It can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
 
 When configured, the custom suffix creates a new Service Desk email address, consisting of the
@@ -281,7 +281,7 @@ For example, suppose the `mygroup/myproject` project Service Desk settings has t
 The Service Desk email address for this project is: `contact+mygroup-myproject-support@example.com`.
 The [incoming email](../../administration/incoming_email.md) address still works.
 
-If you don't configure the custom suffix, the default project identification will be used for identifying the project. You can see that email address in the project settings.
+If you don't configure the custom suffix, the default project identification is used for identifying the project. You can see that email address in the project settings.
 
 ## Using Service Desk
 

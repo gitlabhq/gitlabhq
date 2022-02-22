@@ -1016,8 +1016,23 @@ class MergeRequest < ApplicationRecord
     merge_request_diff.persisted? || create_merge_request_diff
   end
 
-  def create_merge_request_diff
+  def eager_fetch_ref!
+    return unless valid?
+
+    # has_internal_id normally attempts to allocate the iid in the
+    # before_create hook, but we need the iid to be available before
+    # that to fetch the ref into the target project.
+    track_target_project_iid!
+    ensure_target_project_iid!
+
     fetch_ref!
+    # Prevent the after_create hook from fetching the source branch again
+    # Drop this field after rollout in https://gitlab.com/gitlab-org/gitlab/-/issues/353044.
+    @skip_fetch_ref = true
+  end
+
+  def create_merge_request_diff
+    fetch_ref! unless skip_fetch_ref
 
     # n+1: https://gitlab.com/gitlab-org/gitlab/-/issues/19377
     Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -1949,6 +1964,8 @@ class MergeRequest < ApplicationRecord
   end
 
   private
+
+  attr_accessor :skip_fetch_ref
 
   def set_draft_status
     self.draft = draft?

@@ -18,36 +18,24 @@ submit them through a merge request to the repository you don't have access to.
 
 ## Creating a fork
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15013) a new form in GitLab 13.11 [with a flag](../../../user/feature_flags.md) named `fork_project_form`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77181) in GitLab 14.8. Feature flag `fork_project_form` removed.
+
 To fork an existing project in GitLab:
 
-1. On the project's home page, in the top right, click **{fork}** **Fork**.
+1. On the project's home page, in the top right, select **{fork}** **Fork**:
+   ![Fork this project](img/forking_workflow_fork_button_v13_10.png)
+1. Optional. Edit the **Project name**.
+1. For **Project URL**, select the [namespace](../../group/index.md#namespaces)
+   your fork should belong to.
+1. Add a **Project slug**. This value becomes part of the URL to your fork.
+   It must be unique in the namespace.
+1. Optional. Add a **Project description**.
+1. Select the **Visibility level** for your fork. For more information about
+   visibility levels, read [Project and group visibility](../../../public_access/public_access.md).
+1. Select **Fork project**.
 
-   ![Fork button](img/forking_workflow_fork_button_v13_10.png)
-
-1. Select the project to fork to:
-
-   - Recommended method. Below **Select a namespace to fork the project**, identify
-     the project you want to fork to, and click **Select**. Only namespaces where you have
-     at least the Developer role for are shown.
-
-     ![Choose namespace](img/forking_workflow_choose_namespace_v13_10.png)
-
-   - Experimental method. If your GitLab administrator has
-     enabled the experimental fork project form, read
-     [Create a fork with the fork project form](#create-a-fork-with-the-fork-project-form).
-     Only namespaces where you have at least the Developer role for are shown.
-
-   NOTE:
-   The project path must be unique in the namespace.
-
-GitLab creates your fork, and redirects you to the project page for your new fork.
-The permissions you have in the namespace are your permissions in the fork.
-
-WARNING:
-When a public project with the repository feature set to **Members Only**
-is forked, the repository is public in the fork. The owner
-of the fork must manually change the visibility. Issue
-[#36662](https://gitlab.com/gitlab-org/gitlab/-/issues/36662) exists for this issue.
+GitLab creates your fork, and redirects you to the new fork's page.
 
 ## Repository mirroring
 
@@ -81,24 +69,3 @@ changes are added to the repository and branch you're merging into.
 ## Removing a fork relationship
 
 You can unlink your fork from its upstream project in the [advanced settings](../settings/index.md#removing-a-fork-relationship).
-
-## Create a fork with the fork project form **(FREE SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15013) in GitLab 13.11 [with a flag](../../../administration/feature_flags.md) named `fork_project_form`. Disabled by default.
-> - [Enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64967) in GitLab 13.8.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `fork_project_form`.
-On GitLab.com, this feature is available.
-
-This version of the fork project form is experimental:
-
-![Choose namespace](img/fork_form_v13_10.png)
-
-To use it, follow the instructions at [Creating a fork](#creating-a-fork) and provide:
-
-- The project name.
-- The project URL.
-- The project slug.
-- Optional. The project description.
-- The visibility level for your fork.

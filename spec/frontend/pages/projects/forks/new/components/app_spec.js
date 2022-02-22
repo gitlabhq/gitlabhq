@@ -1,19 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
 import App from '~/pages/projects/forks/new/components/app.vue';
+import ForkForm from '~/pages/projects/forks/new/components/fork_form.vue';
 
 describe('App component', () => {
   let wrapper;
 
   const DEFAULT_PROPS = {
     forkIllustration: 'illustrations/project-create-new-sm.svg',
-    endpoint: '/some/project-full-path/-/forks/new.json',
-    projectFullPath: '/some/project-full-path',
-    projectId: '10',
-    projectName: 'Project Name',
-    projectPath: 'project-name',
-    projectDescription: 'some project description',
-    projectVisibility: 'private',
-    restrictedVisibilityLevels: [],
   };
 
   const createComponent = (props = {}) => {
@@ -37,7 +30,7 @@ describe('App component', () => {
     expect(wrapper.find('img').attributes('src')).toBe('illustrations/project-create-new-sm.svg');
   });
 
-  it('renders ForkForm component with prop', () => {
-    expect(wrapper.props()).toEqual(expect.objectContaining(DEFAULT_PROPS));
+  it('renders ForkForm component', () => {
+    expect(wrapper.findComponent(ForkForm).exists()).toBe(true);
   });
 });

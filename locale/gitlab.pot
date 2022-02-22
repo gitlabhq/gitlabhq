@@ -15814,9 +15814,6 @@ msgstr ""
 msgid "ForkProject|Select a namespace"
 msgstr ""
 
-msgid "ForkProject|Select a namespace to fork the project"
-msgstr ""
-
 msgid "ForkProject|The project can be accessed by any logged in user."
 msgstr ""
 
@@ -16864,9 +16861,6 @@ msgstr ""
 msgid "Go to find file"
 msgstr ""
 
-msgid "Go to fork"
-msgstr ""
-
 msgid "Go to issue boards"
 msgstr ""
 
@@ -17666,9 +17660,6 @@ msgid "Groups (%{count})"
 msgstr ""
 
 msgid "Groups and projects"
-msgstr ""
-
-msgid "Groups and subgroups"
 msgstr ""
 
 msgid "Groups are a great way to organize projects and people."
@@ -24559,9 +24550,6 @@ msgid "No authentication methods configured."
 msgstr ""
 
 msgid "No available branches"
-msgstr ""
-
-msgid "No available groups to fork the project."
 msgstr ""
 
 msgid "No branches found"
@@ -42073,9 +42061,6 @@ msgstr ""
 msgid "You have not added any approvers. Start by adding users or groups."
 msgstr ""
 
-msgid "You have reached your project limit"
-msgstr ""
-
 msgid "You have set up 2FA for your account! If you lose access to your 2FA device, you can use your recovery codes to access your account. Alternatively, if you upload an SSH key, you can %{anchorOpen}use that key to generate additional recovery codes%{anchorClose}."
 msgstr ""
 
@@ -42104,12 +42089,6 @@ msgid "You must have developer or higher permissions in the associated project t
 msgstr ""
 
 msgid "You must have maintainer access to force delete a lock"
-msgstr ""
-
-msgid "You must have permission to create a project in a group before forking."
-msgstr ""
-
-msgid "You must have permission to create a project in a namespace before forking."
 msgstr ""
 
 msgid "You must provide a valid current password"

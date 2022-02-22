@@ -160,6 +160,7 @@ module SystemNotes
       body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
 
       issue_activity_counter.track_issue_title_changed_action(author: author) if noteable.is_a?(Issue)
+      work_item_activity_counter.track_work_item_title_changed_action(author: author) if noteable.is_a?(WorkItem)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
     end
@@ -482,6 +483,10 @@ module SystemNotes
 
     def issue_activity_counter
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter
+    end
+
+    def work_item_activity_counter
+      Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter
     end
 
     def track_cross_reference_action

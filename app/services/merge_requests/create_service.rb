@@ -31,6 +31,16 @@ module MergeRequests
 
     private
 
+    def before_create(merge_request)
+      # If the fetching of the source branch occurs in an ActiveRecord
+      # callback (e.g. after_create), a database transaction will be
+      # open while the Gitaly RPC waits. To avoid an idle in transaction
+      # timeout, we do this before we attempt to save the merge request.
+      if Feature.enabled?(:merge_request_eager_fetch_ref, @project, default_enabled: :yaml)
+        merge_request.eager_fetch_ref!
+      end
+    end
+
     def set_projects!
       # @project is used to determine whether the user can set the merge request's
       # assignee, milestone and labels. Whether they can depends on their

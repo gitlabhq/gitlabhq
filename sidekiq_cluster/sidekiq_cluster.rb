@@ -4,8 +4,6 @@ require_relative '../lib/gitlab/process_management'
 
 module Gitlab
   module SidekiqCluster
-    CHECK_TERMINATE_INTERVAL_SECONDS = 1
-
     # How long to wait when asking for a clean termination.
     # It maps the Sidekiq default timeout:
     # https://github.com/mperham/sidekiq/wiki/Signals#term
@@ -14,8 +12,9 @@ module Gitlab
     # is given through arguments.
     DEFAULT_SOFT_TIMEOUT_SECONDS = 25
 
-    # After surpassing the soft timeout.
-    DEFAULT_HARD_TIMEOUT_SECONDS = 5
+    # Additional time granted after surpassing the soft timeout
+    # before we kill the process.
+    TIMEOUT_GRACE_PERIOD_SECONDS = 5
 
     # Starts Sidekiq workers for the pairs of processes.
     #

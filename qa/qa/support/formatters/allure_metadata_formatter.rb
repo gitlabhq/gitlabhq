@@ -24,7 +24,7 @@ module QA
           log(:debug, "Fetched #{failures.length} flaky testcases!")
         rescue StandardError => e
           log(:error, "Failed to fetch flaky spec data for report: #{e}")
-          @failures = []
+          @failures = {}
         end
 
         # Finished example

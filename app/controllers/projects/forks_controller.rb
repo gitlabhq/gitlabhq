@@ -17,10 +17,6 @@ class Projects::ForksController < Projects::ApplicationController
   feature_category :source_code_management
   urgency :low, [:index]
 
-  before_action do
-    push_frontend_feature_flag(:fork_project_form, @project, default_enabled: :yaml)
-  end
-
   def index
     @sort = forks_params[:sort]
 
@@ -54,9 +50,7 @@ class Projects::ForksController < Projects::ApplicationController
       format.json do
         namespaces = load_namespaces_with_associations - [project.namespace]
 
-        namespaces = [current_user.namespace] + namespaces if
-          Feature.enabled?(:fork_project_form, project, default_enabled: :yaml) &&
-          can_fork_to?(current_user.namespace)
+        namespaces = [current_user.namespace] + namespaces if can_fork_to?(current_user.namespace)
 
         render json: {
           namespaces: ForkNamespaceSerializer.new.represent(
