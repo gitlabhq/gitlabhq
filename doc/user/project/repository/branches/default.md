@@ -26,7 +26,7 @@ using the GitLab default only if no customizations are set:
 1. A [project-specific](#change-the-default-branch-name-for-a-project) custom default branch name.
 1. A [subgroup-level](#group-level-custom-initial-branch-name) custom default branch name.
 1. A [group-level](#group-level-custom-initial-branch-name) custom default branch name.
-1. An [instance-level](#instance-level-custom-initial-branch-name) custom default branch name. **(FREE SELF)**
+1. An [instance-level](#instance-level-custom-initial-branch-name) custom default branch name.
 1. If no custom default branch name is set at any level, GitLab defaults to:
    - `main`: Projects created with GitLab 14.0 or later.
    - `master`: Projects created before GitLab 14.0.

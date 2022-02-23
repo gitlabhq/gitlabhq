@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import Home from './home.vue';
 import IncubationBanner from './incubation_banner.vue';
 import ServiceAccountsForm from './service_accounts_form.vue';
+import GcpRegionsForm from './gcp_regions_form.vue';
 import NoGcpProjects from './errors/no_gcp_projects.vue';
 import GcpError from './errors/gcp_error.vue';
 
@@ -11,6 +12,7 @@ const SCREEN_GCP_ERROR = 'gcp_error';
 const SCREEN_HOME = 'home';
 const SCREEN_NO_GCP_PROJECTS = 'no_gcp_projects';
 const SCREEN_SERVICE_ACCOUNTS_FORM = 'service_accounts_form';
+const SCREEN_GCP_REGIONS_FORM = 'gcp_regions_form';
 
 export default {
   components: {
@@ -34,6 +36,8 @@ export default {
           return NoGcpProjects;
         case SCREEN_SERVICE_ACCOUNTS_FORM:
           return ServiceAccountsForm;
+        case SCREEN_GCP_REGIONS_FORM:
+          return GcpRegionsForm;
         default:
           throw new Error(__('Unknown screen'));
       }

@@ -320,6 +320,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         namespace :google_cloud do
           resources :service_accounts, only: [:index, :create]
+          resources :gcp_regions, only: [:index, :create]
 
           get '/deployments/cloud_run', to: 'deployments#cloud_run'
           get '/deployments/cloud_storage', to: 'deployments#cloud_storage'

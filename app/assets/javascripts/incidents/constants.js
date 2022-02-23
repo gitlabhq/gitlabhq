@@ -7,6 +7,7 @@ export const I18N = {
   unassigned: s__('IncidentManagement|Unassigned'),
   createIncidentBtnLabel: s__('IncidentManagement|Create incident'),
   unPublished: s__('IncidentManagement|Unpublished'),
+  noEscalationStatus: s__('IncidentManagement|None'),
   emptyState: {
     title: s__('IncidentManagement|Display your incidents in a dedicated view'),
     emptyClosedTabTitle: s__('IncidentManagement|There are no closed incidents'),
@@ -36,6 +37,12 @@ export const INCIDENT_STATUS_TABS = [
     filters: 'all',
   },
 ];
+
+export const ESCALATION_STATUSES = {
+  TRIGGERED: s__('AlertManagement|Triggered'),
+  ACKNOWLEDGED: s__('AlertManagement|Acknowledged'),
+  RESOLVED: s__('AlertManagement|Resolved'),
+};
 
 export const DEFAULT_PAGE_SIZE = 20;
 export const TH_CREATED_AT_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };

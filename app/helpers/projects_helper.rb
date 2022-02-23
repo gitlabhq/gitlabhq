@@ -431,18 +431,25 @@ module ProjectsHelper
   end
 
   def import_from_bitbucket_message
-    link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path("integration/bitbucket") }
+    configure_oauth_import_message('Bitbucket', help_page_path("integration/bitbucket"))
+  end
 
-    str = if current_user.admin?
-            'ImportProjects|To enable importing projects from Bitbucket, as administrator you need to configure %{link_start}OAuth integration%{link_end}'
-          else
-            'ImportProjects|To enable importing projects from Bitbucket, ask your GitLab administrator to configure %{link_start}OAuth integration%{link_end}'
-          end
-
-    s_(str).html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+  def import_from_gitlab_message
+    configure_oauth_import_message('GitLab.com', help_page_path("integration/gitlab"))
   end
 
   private
+
+  def configure_oauth_import_message(provider, help_url)
+    str = if current_user.admin?
+            'ImportProjects|To enable importing projects from %{provider}, as administrator you need to configure %{link_start}OAuth integration%{link_end}'
+          else
+            'ImportProjects|To enable importing projects from %{provider}, ask your GitLab administrator to configure %{link_start}OAuth integration%{link_end}'
+          end
+
+    link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
+    s_(str).html_safe % { provider: provider, link_start: link_start, link_end: '</a>'.html_safe }
+  end
 
   def tab_ability_map
     {

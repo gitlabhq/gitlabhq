@@ -48,6 +48,7 @@ describe('Incidents List', () => {
   const findClosedIcon = () => wrapper.findAll("[data-testid='incident-closed']");
   const findEmptyState = () => wrapper.find(GlEmptyState);
   const findSeverity = () => wrapper.findAll(SeverityToken);
+  const findEscalationStatus = () => wrapper.findAll('[data-testid="incident-escalation-status"]');
 
   function mountComponent({ data = {}, loading = false, provide = {} } = {}) {
     wrapper = mount(IncidentsList, {
@@ -80,6 +81,7 @@ describe('Incidents List', () => {
         assigneeUsernameQuery: '',
         slaFeatureAvailable: true,
         canCreateIncident: true,
+        incidentEscalationsAvailable: true,
         ...provide,
       },
       stubs: {
@@ -182,6 +184,34 @@ describe('Incidents List', () => {
 
     it('renders severity per row', () => {
       expect(findSeverity().length).toBe(mockIncidents.length);
+    });
+
+    describe('Escalation status', () => {
+      it('renders escalation status per row', () => {
+        expect(findEscalationStatus().length).toBe(mockIncidents.length);
+
+        const actualStatuses = findEscalationStatus().wrappers.map((status) => status.text());
+        expect(actualStatuses).toEqual([
+          'Triggered',
+          'Acknowledged',
+          'Resolved',
+          I18N.noEscalationStatus,
+        ]);
+      });
+
+      describe('when feature is disabled', () => {
+        beforeEach(() => {
+          mountComponent({
+            data: { incidents: { list: mockIncidents }, incidentsCount },
+            provide: { incidentEscalationsAvailable: false },
+            loading: false,
+          });
+        });
+
+        it('is absent if feature flag is disabled', () => {
+          expect(findEscalationStatus().length).toBe(0);
+        });
+      });
     });
 
     it('contains a link to the incident details page', async () => {

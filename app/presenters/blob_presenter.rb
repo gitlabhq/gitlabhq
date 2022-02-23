@@ -103,6 +103,10 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     fork_path_for_current_user(project, ide_edit_path)
   end
 
+  def fork_and_view_path
+    fork_path_for_current_user(project, web_path)
+  end
+
   def can_modify_blob?
     super(blob, project, blob.commit_id)
   end

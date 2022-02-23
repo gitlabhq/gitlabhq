@@ -18,7 +18,9 @@ describe('google_cloud Home component', () => {
 
   const TEST_HOME_PROPS = {
     serviceAccounts: [{}, {}],
+    gcpRegions: [{}, {}],
     createServiceAccountUrl: '#url-create-service-account',
+    configureGcpRegionsUrl: '#url-configure-gcp-regions',
     emptyIllustrationUrl: '#url-empty-illustration',
     enableCloudRunUrl: '#url-enable-cloud-run',
     enableCloudStorageUrl: '#enableCloudStorageUrl',

@@ -32,8 +32,7 @@ imported into the GitLab issue's description as plain text.
 Our parser for converting text in Jira issues to GitLab Flavored Markdown is only compatible with
 Jira V3 REST API.
 
-There is an [epic](https://gitlab.com/groups/gitlab-org/-/epics/2738) tracking the addition of
-items, such as issue assignees, comments, and much more. These are included in the future
+There is an [epic](https://gitlab.com/groups/gitlab-org/-/epics/2738) tracking the addition of issue assignees, comments, and much more in the future
 iterations of the GitLab Jira importer.
 
 ## Prerequisites
@@ -60,7 +59,7 @@ Importing large projects may take several minutes depending on the size of the i
 
 To import Jira issues to a GitLab project:
 
-1. On the **{issues}** **Issues** page, click **Import Issues** (**{import}**) **> Import from Jira**.
+1. On the **{issues}** **Issues** page, select **Import Issues** (**{import}**) **> Import from Jira**.
 
    ![Import issues from Jira button](img/jira/import_issues_from_jira_button_v12_10.png)
 
@@ -68,20 +67,20 @@ To import Jira issues to a GitLab project:
 
    The following form appears.
    If you've previously set up the [Jira integration](../../../integration/jira/index.md), you can now see
-   the Jira projects that you have access to in the dropdown.
+   the Jira projects that you have access to in the dropdown list.
 
    ![Import issues from Jira form](img/jira/import_issues_from_jira_form_v13_2.png)
 
-1. Click the **Import from** dropdown and select the Jira project that you wish to import issues from.
+1. Click the **Import from** dropdown list and select the Jira project that you wish to import issues from.
 
    In the **Jira-GitLab user mapping template** section, the table shows to which GitLab users your Jira
    users are mapped.
-   When the form appears, the dropdown defaults to the user conducting the import.
+   When the form appears, the dropdown list defaults to the user conducting the import.
 
-1. To change any of the mappings, click the dropdown in the **GitLab username** column and
+1. To change any of the mappings, click the dropdown list in the **GitLab username** column and
    select the user you want to map to each Jira user.
 
-   The dropdown may not show all the users, so use the search bar to find a specific
+   The dropdown list may not show all the users, so use the search bar to find a specific
    user in this GitLab project.
 
 1. Click **Continue**. You're presented with a confirmation that import has started.

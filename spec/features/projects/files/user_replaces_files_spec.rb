@@ -17,7 +17,6 @@ RSpec.describe 'Projects > Files > User replaces files', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(refactor_blob_viewer: false) # This stub will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/349953
     sign_in(user)
   end
 
@@ -34,9 +33,9 @@ RSpec.describe 'Projects > Files > User replaces files', :js do
       expect(page).to have_content('.gitignore')
 
       click_on('Replace')
-      drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
 
-      page.within('#modal-upload-blob') do
+      page.within('#modal-replace-blob') do
         fill_in(:commit_message, with: 'Replacement file commit message')
       end
 
@@ -70,9 +69,9 @@ RSpec.describe 'Projects > Files > User replaces files', :js do
       expect(page).to have_content(fork_message)
 
       click_on('Replace')
-      drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
 
-      page.within('#modal-upload-blob') do
+      page.within('#modal-replace-blob') do
         fill_in(:commit_message, with: 'Replacement file commit message')
       end
 

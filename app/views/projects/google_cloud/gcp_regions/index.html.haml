@@ -1,0 +1,8 @@
+- add_to_breadcrumbs _('Google Cloud'), @google_cloud_path
+- breadcrumb_title _('Regions')
+- page_title _('Regions')
+
+- @content_class = "limit-container-width" unless fluid_layout
+
+= form_tag project_google_cloud_gcp_regions_path(@project), method: 'post' do
+  #js-google-cloud{ data: @js_data }

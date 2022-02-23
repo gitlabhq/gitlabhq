@@ -405,46 +405,62 @@ RSpec.describe 'New project', :js do
     end
   end
 
-  context 'from Bitbucket', :js do
-    shared_examples 'has a link to bitbucket cloud' do
-      context 'when bitbucket is not configured' do
-        before do
-          allow(Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
-          allow(Gitlab::Auth::OAuth::Provider)
-            .to receive(:enabled?).with(:bitbucket)
-            .and_return(false)
+  shared_examples 'has instructions to enable OAuth' do
+    context 'when OAuth is not configured' do
+      before do
+        sign_in(user)
 
-          visit new_project_path
-          click_link 'Import project'
-          click_link 'Bitbucket Cloud'
-        end
+        allow(Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+        allow(Gitlab::Auth::OAuth::Provider)
+          .to receive(:enabled?).with(provider)
+          .and_return(false)
 
-        it 'shows import instructions' do
-          expect(find('.modal-body')).to have_content(bitbucket_link_content)
-        end
+        visit new_project_path
+        click_link 'Import project'
+        click_link target_link
+      end
+
+      it 'shows import instructions' do
+        expect(find('.modal-body')).to have_content(oauth_config_instructions)
       end
     end
+  end
+
+  context 'from Bitbucket', :js do
+    let(:target_link) { 'Bitbucket Cloud' }
+    let(:provider) { :bitbucket }
 
     context 'as a user' do
       let(:user) { create(:user) }
-      let(:bitbucket_link_content) { 'To enable importing projects from Bitbucket, ask your GitLab administrator to configure OAuth integration' }
+      let(:oauth_config_instructions) { 'To enable importing projects from Bitbucket, ask your GitLab administrator to configure OAuth integration' }
 
-      before do
-        sign_in(user)
-      end
-
-      it_behaves_like 'has a link to bitbucket cloud'
+      it_behaves_like 'has instructions to enable OAuth'
     end
 
     context 'as an admin' do
       let(:user) { create(:admin) }
-      let(:bitbucket_link_content) { 'To enable importing projects from Bitbucket, as administrator you need to configure OAuth integration' }
+      let(:oauth_config_instructions) { 'To enable importing projects from Bitbucket, as administrator you need to configure OAuth integration' }
 
-      before do
-        sign_in(user)
-      end
+      it_behaves_like 'has instructions to enable OAuth'
+    end
+  end
 
-      it_behaves_like 'has a link to bitbucket cloud'
+  context 'from GitLab.com', :js do
+    let(:target_link) { 'GitLab.com' }
+    let(:provider) { :gitlab }
+
+    context 'as a user' do
+      let(:user) { create(:user) }
+      let(:oauth_config_instructions) { 'To enable importing projects from GitLab.com, ask your GitLab administrator to configure OAuth integration' }
+
+      it_behaves_like 'has instructions to enable OAuth'
+    end
+
+    context 'as an admin' do
+      let(:user) { create(:admin) }
+      let(:oauth_config_instructions) { 'To enable importing projects from GitLab.com, as administrator you need to configure OAuth integration' }
+
+      it_behaves_like 'has instructions to enable OAuth'
     end
   end
 end

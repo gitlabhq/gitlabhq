@@ -32,6 +32,8 @@ module QA
       def run
         failures = files.flat_map do |file|
           resources = read_file(file)
+          next if resources.nil?
+
           filtered_resources = filter_resources(resources)
           delete_resources(filtered_resources)
         end
@@ -45,21 +47,24 @@ module QA
       private
 
       def files
-        puts "Gathering JSON files...\n"
+        Runtime::Logger.info('Gathering JSON files...')
         files = Dir.glob(@file_pattern)
         abort("There is no file with this pattern #{@file_pattern}") if files.empty?
 
-        files.reject { |file| File.zero?(file) }
+        files.reject! { |file| File.zero?(file) }
 
         files
       end
 
       def read_file(file)
         JSON.parse(File.read(file))
+      rescue JSON::ParserError
+        Runtime::Logger.error("Failed to read #{file} - Invalid format")
+        nil
       end
 
       def filter_resources(resources)
-        puts "Filtering resources - Only keep deletable resources...\n"
+        Runtime::Logger.info('Filtering resources - Only keep deletable resources...')
 
         transformed_values = resources.transform_values! do |v|
           v.reject do |attributes|
@@ -73,19 +78,20 @@ module QA
       end
 
       def delete_resources(resources)
+        Runtime::Logger.info('Nothing to delete.') && return if resources.nil?
+
         resources.each_with_object([]) do |(key, value), failures|
           value.each do |resource|
             next if resource_not_found?(resource['api_path'])
 
-            msg = resource['info'] ? "#{key} - #{resource['info']}" : "#{key} at #{resource['api_path']}"
-            puts "\nDeleting #{msg}..."
+            resource_info = resource['info'] ? "#{key} - #{resource['info']}" : "#{key} at #{resource['api_path']}"
             delete_response = delete(Runtime::API::Request.new(@api_client, resource['api_path']).url)
 
             if delete_response.code == 202 || delete_response.code == 204
-              print "\e[32m.\e[0m"
+              Runtime::Logger.info("Deleting #{resource_info}... SUCCESS")
             else
-              print "\e[31mF\e[0m"
-              failures << msg
+              Runtime::Logger.info("Deleting #{resource_info}... FAILED")
+              failures << resource_info
             end
           end
         end

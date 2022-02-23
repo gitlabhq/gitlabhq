@@ -43,6 +43,7 @@ RSpec.describe Projects::IncidentsController do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
+      expect(Gon.features).to include('incidentEscalations' => true)
     end
 
     context 'when user is unauthorized' do

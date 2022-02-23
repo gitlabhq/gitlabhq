@@ -30,6 +30,15 @@ export const securityTrainingProvidersResponse = {
   },
 };
 
+export const disabledSecurityTrainingProvidersResponse = {
+  data: {
+    project: {
+      id: 1,
+      securityTrainingProviders: [securityTrainingProviders[0]],
+    },
+  },
+};
+
 export const dismissUserCalloutResponse = {
   data: {
     userCalloutCreate: {

@@ -52,6 +52,7 @@ export const DEFAULT_BLOB_INFO = {
           ideEditPath: '',
           forkAndEditPath: '',
           ideForkAndEditPath: '',
+          forkAndViewPath: '',
           storedExternally: false,
           externalStorage: '',
           environmentFormattedExternalUrl: '',

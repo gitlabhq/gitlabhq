@@ -120,15 +120,6 @@ const bindHowToImport = () => {
       });
     });
   });
-
-  $('.how_to_import_link').on('click', (e) => {
-    e.preventDefault();
-    $(e.currentTarget).next('.modal').show();
-  });
-
-  $('.modal-header .close').on('click', () => {
-    $('.modal').hide();
-  });
 };
 
 const bindEvents = () => {

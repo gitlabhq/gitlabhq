@@ -2,6 +2,7 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
 import DeploymentsServiceTable from './deployments_service_table.vue';
 import ServiceAccountsList from './service_accounts_list.vue';
+import GcpRegionsList from './gcp_regions_list.vue';
 
 export default {
   components: {
@@ -9,6 +10,7 @@ export default {
     GlTab,
     DeploymentsServiceTable,
     ServiceAccountsList,
+    GcpRegionsList,
   },
   props: {
     serviceAccounts: {
@@ -16,6 +18,10 @@ export default {
       required: true,
     },
     createServiceAccountUrl: {
+      type: String,
+      required: true,
+    },
+    configureGcpRegionsUrl: {
       type: String,
       required: true,
     },
@@ -31,6 +37,10 @@ export default {
       type: String,
       required: true,
     },
+    gcpRegions: {
+      type: Array,
+      required: true,
+    },
   },
 };
 </script>
@@ -43,6 +53,13 @@ export default {
         :list="serviceAccounts"
         :create-url="createServiceAccountUrl"
         :empty-illustration-url="emptyIllustrationUrl"
+      />
+      <hr />
+      <gcp-regions-list
+        class="gl-mx-4"
+        :empty-illustration-url="emptyIllustrationUrl"
+        :create-url="configureGcpRegionsUrl"
+        :list="gcpRegions"
       />
     </gl-tab>
     <gl-tab :title="__('Deployments')">

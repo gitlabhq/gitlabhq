@@ -96,9 +96,7 @@ Prerequisite:
 1. Select **Update now** (**{retry}**):
    ![Repository mirroring force update user interface](img/repository_mirroring_force_update.png)
 
-## Mirror only protected branches **(PREMIUM)**
-
-> Moved to GitLab Premium in 13.9.
+## Mirror only protected branches
 
 You can choose to mirror only the
 [protected branches](../../protected_branches.md) in the mirroring project,

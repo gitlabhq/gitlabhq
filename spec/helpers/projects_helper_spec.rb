@@ -1027,7 +1027,7 @@ RSpec.describe ProjectsHelper do
     end
   end
 
-  describe '#import_from_bitbucket_message' do
+  shared_examples 'configure import method modal' do
     before do
       allow(helper).to receive(:current_user).and_return(user)
     end
@@ -1036,7 +1036,7 @@ RSpec.describe ProjectsHelper do
       it 'returns a link to contact an administrator' do
         allow(user).to receive(:admin?).and_return(false)
 
-        expect(helper.import_from_bitbucket_message).to have_text('To enable importing projects from Bitbucket, ask your GitLab administrator to configure OAuth integration')
+        expect(subject).to have_text("To enable importing projects from #{import_method}, ask your GitLab administrator to configure OAuth integration")
       end
     end
 
@@ -1044,8 +1044,24 @@ RSpec.describe ProjectsHelper do
       it 'returns a link to configure bitbucket' do
         allow(user).to receive(:admin?).and_return(true)
 
-        expect(helper.import_from_bitbucket_message).to have_text('To enable importing projects from Bitbucket, as administrator you need to configure OAuth integration')
+        expect(subject).to have_text("To enable importing projects from #{import_method}, as administrator you need to configure OAuth integration")
       end
     end
+  end
+
+  describe '#import_from_bitbucket_message' do
+    let(:import_method) { 'Bitbucket' }
+
+    subject { helper.import_from_bitbucket_message }
+
+    it_behaves_like 'configure import method modal'
+  end
+
+  describe '#import_from_gitlab_message' do
+    let(:import_method) { 'GitLab.com' }
+
+    subject { helper.import_from_gitlab_message }
+
+    it_behaves_like 'configure import method modal'
   end
 end

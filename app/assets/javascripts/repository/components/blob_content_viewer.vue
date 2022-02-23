@@ -142,9 +142,13 @@ export default {
       return this.isLoggedIn && !canModifyBlob && createMergeRequestIn && forkProject;
     },
     forkPath() {
-      return this.forkTarget === 'ide'
-        ? this.blobInfo.ideForkAndEditPath
-        : this.blobInfo.forkAndEditPath;
+      const forkPaths = {
+        ide: this.blobInfo.ideForkAndEditPath,
+        simple: this.blobInfo.forkAndEditPath,
+        view: this.blobInfo.forkAndViewPath,
+      };
+
+      return forkPaths[this.forkTarget];
     },
     isUsingLfs() {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
@@ -249,7 +253,7 @@ export default {
             :is-locked="Boolean(pathLockedByUser)"
             :can-lock="canLock"
             :show-fork-suggestion="showForkSuggestion"
-            @fork="setForkTarget('ide')"
+            @fork="setForkTarget('view')"
           />
         </template>
       </blob-header>

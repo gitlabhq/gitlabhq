@@ -6,6 +6,9 @@ class Projects::IncidentsController < Projects::ApplicationController
 
   before_action :authorize_read_issue!
   before_action :load_incident, only: [:show]
+  before_action do
+    push_frontend_feature_flag(:incident_escalations, @project)
+  end
 
   feature_category :incident_management
 

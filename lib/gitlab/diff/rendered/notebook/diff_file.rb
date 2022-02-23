@@ -57,7 +57,7 @@ module Gitlab
               IpynbDiff.diff(source_diff.old_blob&.data, source_diff.new_blob&.data,
                              raise_if_invalid_nb: true,
                              diffy_opts: { include_diff_info: true })
-            rescue IpynbDiff::InvalidNotebookError => e
+            rescue IpynbDiff::InvalidNotebookError, IpynbDiff::InvalidTokenError => e
               Gitlab::ErrorTracking.log_exception(e)
               nil
             end

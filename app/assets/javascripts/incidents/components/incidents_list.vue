@@ -24,9 +24,11 @@ import {
 } from '~/vue_shared/components/paginated_table_with_search_and_tabs/constants';
 import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import {
   I18N,
   INCIDENT_STATUS_TABS,
+  ESCALATION_STATUSES,
   TH_CREATED_AT_TEST_ID,
   TH_INCIDENT_SLA_TEST_ID,
   TH_SEVERITY_TEST_ID,
@@ -38,7 +40,7 @@ import {
 import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 
-const MAX_VISIBLE_ASSIGNEES = 4;
+const MAX_VISIBLE_ASSIGNEES = 3;
 
 export default {
   trackIncidentCreateNewOptions,
@@ -49,7 +51,7 @@ export default {
     {
       key: 'severity',
       label: s__('IncidentManagement|Severity'),
-      thClass: `${thClass} w-15p`,
+      thClass: `${thClass} gl-w-15p`,
       tdClass: `${tdClass} sortable-cell`,
       actualSortKey: 'SEVERITY',
       sortable: true,
@@ -59,6 +61,12 @@ export default {
       key: 'title',
       label: s__('IncidentManagement|Incident'),
       thClass: `gl-pointer-events-none`,
+      tdClass,
+    },
+    {
+      key: 'escalationStatus',
+      label: s__('IncidentManagement|Status'),
+      thClass: `${thClass} gl-w-eighth gl-pointer-events-none`,
       tdClass,
     },
     {
@@ -73,7 +81,7 @@ export default {
     {
       key: 'incidentSla',
       label: s__('IncidentManagement|Time to SLA'),
-      thClass: `gl-text-right gl-w-eighth`,
+      thClass: `gl-text-right gl-w-10p`,
       tdClass: `${tdClass} gl-text-right`,
       thAttr: TH_INCIDENT_SLA_TEST_ID,
       actualSortKey: 'SLA_DUE_AT',
@@ -83,13 +91,13 @@ export default {
     {
       key: 'assignees',
       label: s__('IncidentManagement|Assignees'),
-      thClass: 'gl-pointer-events-none w-15p',
+      thClass: 'gl-pointer-events-none gl-w-15',
       tdClass,
     },
     {
       key: 'published',
       label: s__('IncidentManagement|Published'),
-      thClass: `${thClass} w-15p`,
+      thClass: `${thClass} gl-w-15`,
       tdClass: `${tdClass} sortable-cell`,
       actualSortKey: 'PUBLISHED',
       sortable: true,
@@ -112,6 +120,7 @@ export default {
     GlEmptyState,
     SeverityToken,
     PaginatedTableWithSearchAndTabs,
+    TooltipOnTruncate,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -129,6 +138,7 @@ export default {
     'assigneeUsernameQuery',
     'slaFeatureAvailable',
     'canCreateIncident',
+    'incidentEscalationsAvailable',
   ],
   apollo: {
     incidents: {
@@ -222,6 +232,7 @@ export default {
       const isHidden = {
         published: !this.publishedAvailable,
         incidentSla: !this.slaFeatureAvailable,
+        escalationStatus: !this.incidentEscalationsAvailable,
       };
 
       return this.$options.fields.filter(({ key }) => !isHidden[key]);
@@ -282,6 +293,9 @@ export default {
     },
     getSeverity(severity) {
       return INCIDENT_SEVERITY[severity];
+    },
+    getEscalationStatus(escalationStatus) {
+      return ESCALATION_STATUSES[escalationStatus] || this.$options.i18n.noEscalationStatus;
     },
     pageChanged(pagination) {
       this.pagination = pagination;
@@ -370,7 +384,12 @@ export default {
 
           <template #cell(title)="{ item }">
             <div :class="{ 'gl-display-flex gl-align-items-center': item.state === 'closed' }">
-              <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
+              <tooltip-on-truncate
+                :title="item.title"
+                class="gl-max-w-full gl-text-truncate gl-display-block"
+              >
+                {{ item.title }}
+              </tooltip-on-truncate>
               <gl-icon
                 v-if="item.state === 'closed'"
                 name="issue-close"
@@ -381,8 +400,21 @@ export default {
             </div>
           </template>
 
+          <template v-if="incidentEscalationsAvailable" #cell(escalationStatus)="{ item }">
+            <tooltip-on-truncate
+              :title="getEscalationStatus(item.escalationStatus)"
+              data-testid="incident-escalation-status"
+              class="gl-display-block gl-text-truncate"
+            >
+              {{ getEscalationStatus(item.escalationStatus) }}
+            </tooltip-on-truncate>
+          </template>
+
           <template #cell(createdAt)="{ item }">
-            <time-ago-tooltip :time="item.createdAt" />
+            <time-ago-tooltip
+              :time="item.createdAt"
+              class="gl-display-block gl-max-w-full gl-text-truncate"
+            />
           </template>
 
           <template v-if="slaFeatureAvailable" #cell(incidentSla)="{ item }">
@@ -392,6 +424,7 @@ export default {
               :project-path="projectPath"
               :sla-due-at="item.slaDueAt"
               data-testid="incident-sla"
+              class="gl-display-block gl-max-w-full gl-text-truncate"
             />
           </template>
 
@@ -432,6 +465,7 @@ export default {
               :un-published="$options.i18n.unPublished"
             />
           </template>
+
           <template #table-busy>
             <gl-loading-icon size="lg" color="dark" class="mt-3" />
           </template>

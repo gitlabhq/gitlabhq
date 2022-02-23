@@ -41,6 +41,9 @@ module Types
       field :ide_fork_and_edit_path, GraphQL::Types::String, null: true,
             description: 'Web path to edit this blob in the Web IDE using a forked project.'
 
+      field :fork_and_view_path, GraphQL::Types::String, null: true,
+            description: 'Web path to view this blob using a forked project.'
+
       field :size, GraphQL::Types::Int, null: true,
             description: 'Size (in bytes) of the blob.'
 

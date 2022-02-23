@@ -10,14 +10,12 @@ module Gitlab
             transformed_for_diff(new_blob, old_blob)
             Gitlab::AppLogger.info({ message: 'IPYNB_DIFF_GENERATED' })
           end
-        rescue IpynbDiff::InvalidNotebookError => e
+        rescue IpynbDiff::InvalidNotebookError, IpynbDiff::InvalidTokenError => e
           Gitlab::ErrorTracking.log_exception(e)
           nil
         end
 
         def transformed_diff(before, after)
-          Gitlab::AppLogger.info({ message: 'IPYNB_DIFF_GENERATED' })
-
           transformed_diff = IpynbDiff.diff(before, after,
                          raise_if_invalid_nb: true,
                          diffy_opts: { include_diff_info: true }).to_s(:text)

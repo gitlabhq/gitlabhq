@@ -166,6 +166,18 @@ end
 Since Active Record is not calling the `.new` method on model classes to instantiate the objects,
 you should use `expect_next_found_instance_of` or `allow_next_found_instance_of` mock helpers to setup mock on objects returned by Active Record query & finder methods._
 
+It is also possible to set mocks and expectations for multiple instances of the same Active Record model by using the `expect_next_found_(number)_instances_of` and `allow_next_found_(number)_instances_of` helpers, like so;
+
+```ruby
+expect_next_found_2_instances_of(Project) do |project|
+  expect(project).to receive(:add_import_job)
+end
+
+allow_next_found_2_instances_of(Project) do |project|
+  allow(project).to receive(:add_import_job)
+end
+```
+
 If we also want to initialize the instance with some particular arguments, we
 could also pass it like:
 

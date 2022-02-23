@@ -518,3 +518,12 @@ Neither problem is present if we create a custom negatable matcher because the `
 would be used, which would wait only as long as necessary for the job to disappear.
 
 Lastly, negatable matchers are preferred over using matchers of the form `have_no_*` because it's a common and familiar practice to negate matchers using `not_to`. If we facilitate that practice by adding negatable matchers, we make it easier for subsequent test authors to write efficient tests.
+
+## Use logger over puts
+
+We currently use Rails `logger` to handle logs in both GitLab QA application and end-to-end tests.
+This provides additional functionalities when compared with `puts`, such as:
+
+- Ability to specify the logging level.
+- Ability to tag similar logs.
+- Auto-formatting log messages.

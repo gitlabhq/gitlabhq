@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.8.1 (2022-02-23)
+
+### Fixed (3 changes)
+
+- [Allow assigning users with private profiles with quick-actions](gitlab-org/gitlab@be36d36a5a0a3d2f0a3b507acd1ab1762e1b0f34) ([merge request](gitlab-org/gitlab!81398))
+- [Stop backup files from requiring directories to exist when skipped](gitlab-org/gitlab@f8002e4fe2c83bf01557020e20be5d29f70b20c6) ([merge request](gitlab-org/gitlab!81398))
+- [Fix toolbar buttons in Markdown field](gitlab-org/gitlab@74c058e49eb014662a12247ae5fc5bbfb367af0e) ([merge request](gitlab-org/gitlab!81398))
+
 ## 14.8.0 (2022-02-21)
 
 ### Added (134 changes)
