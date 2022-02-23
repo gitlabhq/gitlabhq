@@ -268,6 +268,24 @@ describe('Markdown field component', () => {
             'You are about to add 11 people to the discussion. They will all receive a notification.',
           );
         });
+
+        it('removes warning when all mention is removed while endpoint is loading', async () => {
+          axiosMock.onPost(markdownPreviewPath).reply(200, { references: { users } });
+          jest.spyOn(axios, 'post');
+
+          subject.setProps({ textareaValue: 'hello @all' });
+
+          await nextTick();
+
+          subject.setProps({ textareaValue: 'hello @allan' });
+
+          await axios.waitFor(markdownPreviewPath);
+
+          expect(axios.post).toHaveBeenCalled();
+          expect(subject.text()).not.toContain(
+            'You are about to add 11 people to the discussion. They will all receive a notification.',
+          );
+        });
       });
     });
   });

@@ -459,11 +459,14 @@ The `mem_*` values represent different aspects of how objects and memory are all
 
 We can use `memory_profiler` for profiling.
 
-The [`memory_profiler`](https://github.com/SamSaffron/memory_profiler) gem is already present in the GitLab `Gemfile`,
-you just need to require it:
+The [`memory_profiler`](https://github.com/SamSaffron/memory_profiler)
+gem is already present in the GitLab `Gemfile`. It's also available in the [performance bar](../administration/monitoring/performance/performance_bar.md)
+for the current URL.
+
+To use the memory profiler directly in your code, use `require` to add it:
 
 ```ruby
-require 'sidekiq/testing'
+require 'memory_profiler'
 
 report = MemoryProfiler.report do
   # Code you want to profile
@@ -473,10 +476,17 @@ output = File.open('/tmp/profile.txt','w')
 report.pretty_print(output)
 ```
 
-The report breaks down 2 key concepts:
+The report shows the retained and allocated memory grouped by gem, file, location, and class. The
+memory profiler also performs a string analysis that shows how often a string is allocated and
+retained.
 
-- Retained: long lived memory use and object count retained due to the execution of the code block.
-- Allocated: all object allocation and memory allocation during code block.
+#### Retained versus allocated
+
+- Retained memory: long-lived memory use and object count retained due to the execution of the code
+  block. This has a direct impact on memory and the garbage collector.
+- Allocated memory: all object allocation and memory allocation during the code block. This might
+  have minimal impact on memory, but substantial impact on performance. The more objects you
+  allocate, the more work is being done and the slower the application is.
 
 As a general rule, **retained** is always smaller than or equal to **allocated**.
 

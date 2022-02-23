@@ -5,9 +5,10 @@
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
-message: 'Avoid words like "%s" that promise future changes, because documentation is about the current state of the product.'
+message: 'Avoid words like "%s" when you write about future features. Our documentation is about the current state of the product.'
 level: suggestion
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#usage-list
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#promising-features-in-future-versions
 tokens:
   - currently
+  - yet

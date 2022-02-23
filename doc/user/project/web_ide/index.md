@@ -145,7 +145,7 @@ Each schema entry supports two properties:
 
 ## Configure the Web IDE
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23352) in GitLab Free 13.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23352) in GitLab 13.1.
 
 The Web IDE supports configuration of certain editor settings by using
 [`.editorconfig` files](https://editorconfig.org/). When opening a file, the
@@ -164,8 +164,8 @@ The Web IDE currently supports the following `.editorconfig` settings:
 
 ## Commit changes
 
-> - Starting with [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/33441), files are automatically staged.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/196609), support for staging files was removed to prevent loss of unstaged data. All of your current changes must be committed or discarded.
+> - [Starting](https://gitlab.com/gitlab-org/gitlab/-/issues/33441) with GitLab 12.7, files are automatically staged.
+> - In GitLab 12.9, support for staging files was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/196609) to prevent loss of unstaged data. All of your current changes must be committed or discarded.
 
 After making your changes, select **Commit** on the bottom-left to
 review the list of changed files.
@@ -215,8 +215,8 @@ different branch.
 
 ## Markdown editing
 
-> - Support for pasting images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22822) in GitLab Free 13.1.
-> - Side-by-side Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68274) in GitLab Free 14.3.
+> - Support for pasting images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22822) in GitLab 13.1.
+> - Side-by-side Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68274) in GitLab 14.3.
 
 To edit Markdown files in the Web IDE:
 
@@ -286,7 +286,7 @@ An example `package.json`:
 
 ## Interactive Web Terminals for the Web IDE
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) to GitLab Free in 13.1.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) from GitLab Ultimate to GitLab Free in 13.1.
 
 WARNING:
 Interactive Web Terminals for the Web IDE is currently in **Beta**.
@@ -308,7 +308,7 @@ to work:
   This section requires at least a `session_timeout` value (which defaults to 1800
   seconds) and a `listen_address` value. If `advertise_address` is not defined, `listen_address` is used.
 - If you are using a reverse proxy with your GitLab instance, web terminals must be
-  [enabled](../../../administration/integration/terminal.md#enabling-and-disabling-terminal-support). **(ULTIMATE SELF)**
+  [enabled](../../../administration/integration/terminal.md#enabling-and-disabling-terminal-support).
 
 If you have the terminal open and the job has finished with its tasks, the
 terminal blocks the job from finishing for the duration configured in
@@ -391,7 +391,7 @@ click **Restart Terminal** to start a new terminal session.
 
 ### File syncing to web terminal
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5276) in GitLab Ultimate 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5276) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211686) from GitLab Ultimate to GitLab Free in 13.1.
 
 File changes in the Web IDE can be synced to a running web terminal.

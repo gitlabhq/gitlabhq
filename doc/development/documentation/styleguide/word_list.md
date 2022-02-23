@@ -951,6 +951,17 @@ One exception: You can use **we recommend** instead of **it is recommended** or 
 
 Do not use **whitelist**. Another option is **allowlist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
+## yet
+
+Do not use **yet** when talking about the product or its features. The documentation describes the product as it is today.
+
+Sometimes you might need to use **yet** when writing a task. If you use
+**yet**, ensure the surrounding phrases are written
+in present tense, active voice. 
+
+[View guidance about how to write about future features](index.md#promising-features-in-future-versions).
+([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
+
 ## you, your, yours
 
 Use **you**, **your**, and **yours** instead of [**the user** and **the user's**](#user-users).

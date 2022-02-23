@@ -16,6 +16,9 @@ inherit_from:
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
+  <% Dir.glob('jh/rubocop/**/*.yml').each do |jh_rubocop_yaml| %>
+  - '<%= jh_rubocop_yaml %>'
+  <% end %>
 
 inherit_mode:
   merge:

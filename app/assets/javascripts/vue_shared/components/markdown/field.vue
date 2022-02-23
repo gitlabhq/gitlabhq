@@ -118,6 +118,7 @@ export default {
       markdownPreviewLoading: false,
       previewMarkdown: false,
       suggestions: this.note.suggestions || [],
+      debouncedFetchMarkdownLoading: false,
     };
   },
   computed: {
@@ -203,8 +204,10 @@ export default {
         const justRemovedAll = hadAll && !hasAll;
 
         if (justAddedAll) {
+          this.debouncedFetchMarkdownLoading = false;
           this.debouncedFetchMarkdown();
         } else if (justRemovedAll) {
+          this.debouncedFetchMarkdownLoading = true;
           this.referencedUsers = [];
         }
       },
@@ -284,7 +287,12 @@ export default {
     },
 
     debouncedFetchMarkdown: debounce(function debouncedFetchMarkdown() {
-      return this.fetchMarkdown();
+      return this.fetchMarkdown().then(() => {
+        if (this.debouncedFetchMarkdownLoading) {
+          this.referencedUsers = [];
+          this.debouncedFetchMarkdownLoading = false;
+        }
+      });
     }, 400),
 
     renderMarkdown(data = {}) {
