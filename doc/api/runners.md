@@ -15,7 +15,7 @@ There are two tokens to take into account when connecting a runner with GitLab.
 | Token | Description |
 | ----- | ----------- |
 | Registration token   | Token used to [register the runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/index.md). |
-| Authentication token | Token used to authenticate the runner with the GitLab instance. It is obtained automatically when you [register a runner](https://docs.gitlab.com/runner/register/) or by the Runner API when you manually [register a runner](#register-a-new-runner) or [reset the authentication token](#reset-runners-authentication-token). |
+| Authentication token | Token used to authenticate the runner with the GitLab instance. It is obtained automatically when you [register a runner](https://docs.gitlab.com/runner/register/) or by the Runner API when you manually [register a runner](#register-a-new-runner) or [reset the authentication token](#reset-runners-authentication-token-by-using-the-runner-id). |
 
 Here's an example of how the two tokens are used in runner registration:
 
@@ -799,9 +799,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/groups/9/runners/reset_registration_token"
 ```
 
-## Reset runner's authentication token
+## Reset runner's authentication token by using the runner ID
 
-Resets the runner's authentication token.
+Resets the runner's authentication token by using its runner ID.
 
 ```plaintext
 POST /runners/:id/reset_authentication_token
@@ -814,6 +814,32 @@ POST /runners/:id/reset_authentication_token
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/runners/1/reset_authentication_token"
+```
+
+Example response:
+
+```json
+{
+    "token": "6337ff461c94fd3fa32ba3b1ff4125",
+    "token_expires_at": "2021-09-27T21:05:03.203Z"
+}
+```
+
+## Reset runner's authentication token by using the current token
+
+Resets the runner's authentication token by using the current token's value as an input.
+
+```plaintext
+POST /runners/reset_authentication_token
+```
+
+| Attribute | Type    | Required | Description                     |
+|-----------|---------|----------|---------------------------------|
+| `token`   | string  | yes      | The current token of the runner |
+
+```shell
+curl --request POST --form "token=<current token>" \
+     "https://gitlab.example.com/api/v4/runners/reset_authentication_token"
 ```
 
 Example response:

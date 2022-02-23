@@ -34,12 +34,14 @@ module Gitlab
         ].freeze
       end
 
-      SAFE_HOOK_RELATIONS = %i[
-        assignees
-        labels
-        total_time_spent
-        time_change
-      ].freeze
+      def self.safe_hook_relations
+        %i[
+          assignees
+          labels
+          total_time_spent
+          time_change
+        ].freeze
+      end
 
       alias_method :merge_request, :object
 

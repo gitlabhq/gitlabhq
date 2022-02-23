@@ -430,13 +430,11 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
 
   context 'with multiple databases', :reestablished_active_record_base do
     before do
-      allow(ActiveRecord::Tasks::DatabaseTasks).to receive(:setup_initial_database_yaml).and_return([:main, :geo])
+      skip_if_multiple_databases_not_setup
     end
 
     describe 'db:structure:dump' do
       it 'invokes gitlab:db:clean_structure_sql' do
-        skip unless Gitlab.ee?
-
         expect(Rake::Task['gitlab:db:clean_structure_sql']).to receive(:invoke).twice.and_return(true)
 
         expect { run_rake_task('db:structure:dump:main') }.not_to raise_error
@@ -445,11 +443,17 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
 
     describe 'db:schema:dump' do
       it 'invokes gitlab:db:clean_structure_sql' do
-        skip unless Gitlab.ee?
-
         expect(Rake::Task['gitlab:db:clean_structure_sql']).to receive(:invoke).once.and_return(true)
 
         expect { run_rake_task('db:schema:dump:main') }.not_to raise_error
+      end
+    end
+
+    describe 'db:migrate' do
+      it 'invokes gitlab:db:create_dynamic_partitions' do
+        expect(Rake::Task['gitlab:db:create_dynamic_partitions']).to receive(:invoke).once.and_return(true)
+
+        expect { run_rake_task('db:migrate:main') }.not_to raise_error
       end
     end
   end

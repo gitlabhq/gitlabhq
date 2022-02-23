@@ -1157,6 +1157,13 @@ RSpec.describe Issues::UpdateService, :mailer do
 
           expect(issue.escalation_status.status_name).to eq(expected_status)
         end
+
+        it 'triggers webhooks' do
+          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
+          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+
+          update_issue(opts)
+        end
       end
 
       shared_examples 'does not change the status record' do
@@ -1169,7 +1176,8 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'does not trigger side-effects' do
-          expect(escalation_update_class).not_to receive(:new)
+          expect(project).not_to receive(:execute_hooks)
+          expect(project).not_to receive(:execute_integrations)
 
           update_issue(opts)
         end

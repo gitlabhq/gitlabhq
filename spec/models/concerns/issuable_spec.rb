@@ -572,6 +572,27 @@ RSpec.describe Issuable do
         issue.to_hook_data(user, old_associations: { severity: 'unknown' })
       end
     end
+
+    context 'escalation status is updated' do
+      let(:issue) { create(:incident, :with_escalation_status) }
+      let(:acknowledged) { IncidentManagement::IssuableEscalationStatus::STATUSES[:acknowledged] }
+
+      before do
+        issue.escalation_status.update!(status: acknowledged)
+
+        expect(Gitlab::HookData::IssuableBuilder).to receive(:new).with(issue).and_return(builder)
+      end
+
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'escalation_status' => %i(triggered acknowledged)
+          ))
+
+        issue.to_hook_data(user, old_associations: { escalation_status: :triggered })
+      end
+    end
   end
 
   describe '#labels_array' do

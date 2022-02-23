@@ -152,6 +152,12 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
+    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      Rake::Task["db:migrate:#{name}"].enhance do
+        Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+      end
+    end
+
     # When we load the database schema from db/structure.sql
     # we don't have any dynamic partitions created. We don't really need to
     # because application initializers/sidekiq take care of that, too.
@@ -160,14 +166,14 @@ namespace :gitlab do
     #
     # Other than that it's helpful to create partitions early when bootstrapping
     # a new installation.
-    #
-    # Rails 6.1 deprecates db:structure:load in favor of db:schema:load
-    Rake::Task['db:structure:load'].enhance do
+    Rake::Task['db:schema:load'].enhance do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
-    Rake::Task['db:schema:load'].enhance do
-      Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      Rake::Task["db:schema:load:#{name}"].enhance do
+        Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+      end
     end
 
     desc "Clear all connections"

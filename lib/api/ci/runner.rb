@@ -71,6 +71,19 @@ module API
           status 200
           body "200"
         end
+
+        desc 'Reset runner authentication token with current token' do
+          success Entities::Ci::ResetTokenResult
+        end
+        params do
+          requires :token, type: String, desc: 'The current authentication token of the runner'
+        end
+        post '/reset_authentication_token', feature_category: :runner do
+          authenticate_runner!
+
+          current_runner.reset_token!
+          present current_runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
+        end
       end
 
       resource :jobs do

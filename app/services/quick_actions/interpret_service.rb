@@ -79,7 +79,7 @@ module QuickActions
       # using a user-style reference, which is not in scope here.
       args        = params.split(/\s|,/).select(&:present?).uniq - ['and']
       usernames   = (args - ['me']).map { _1.delete_prefix('@') }
-      found       = User.by_username(usernames).to_a.select { can?(:read_user_profile, _1) }
+      found       = User.by_username(usernames).to_a.select { can?(:read_user, _1) }
       found_names = found.map(&:username).to_set
       missing     = args.reject { |arg| arg == 'me' || found_names.include?(arg.delete_prefix('@')) }.map { "'#{_1}'" }
 

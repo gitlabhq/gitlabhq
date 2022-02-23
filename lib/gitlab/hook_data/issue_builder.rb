@@ -3,13 +3,16 @@
 module Gitlab
   module HookData
     class IssueBuilder < BaseBuilder
-      SAFE_HOOK_RELATIONS = %i[
-        assignees
-        labels
-        total_time_spent
-        time_change
-        severity
-      ].freeze
+      def self.safe_hook_relations
+        %i[
+          assignees
+          labels
+          total_time_spent
+          time_change
+          severity
+          escalation_status
+        ].freeze
+      end
 
       def self.safe_hook_attributes
         %i[
@@ -55,6 +58,10 @@ module Gitlab
             state: issue.state,
             severity: issue.severity
         }
+
+        if issue.supports_escalation? && issue.escalation_status
+          attrs[:escalation_status] = issue.escalation_status.status_name
+        end
 
         issue.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
           .merge!(attrs)

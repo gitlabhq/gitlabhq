@@ -2,6 +2,12 @@
 
 module WebHooks
   class LogExecutionService
+    include ::Gitlab::ExclusiveLeaseHelpers
+
+    LOCK_TTL = 15.seconds.freeze
+    LOCK_SLEEP = 0.25.seconds.freeze
+    LOCK_RETRY = 65
+
     attr_reader :hook, :log_data, :response_category
 
     def initialize(hook:, log_data:, response_category:)
@@ -11,7 +17,7 @@ module WebHooks
     end
 
     def execute
-      update_hook_executability
+      update_hook_failure_state
       log_execution
     end
 
@@ -21,15 +27,25 @@ module WebHooks
       WebHookLog.create!(web_hook: hook, **log_data.transform_keys(&:to_sym))
     end
 
-    def update_hook_executability
-      case response_category
-      when :ok
-        hook.enable!
-      when :error
-        hook.backoff!
-      when :failed
-        hook.failed!
+    # Perform this operation within an `Gitlab::ExclusiveLease` lock to make it
+    # safe to be called concurrently from different workers.
+    def update_hook_failure_state
+      in_lock(lock_name, ttl: LOCK_TTL, sleep_sec: LOCK_SLEEP, retries: LOCK_RETRY) do |retried|
+        hook.reset # Reload within the lock so properties are guaranteed to be current.
+
+        case response_category
+        when :ok
+          hook.enable!
+        when :error
+          hook.backoff!
+        when :failed
+          hook.failed!
+        end
       end
+    end
+
+    def lock_name
+      "web_hooks:update_hook_failure_state:#{hook.id}"
     end
   end
 end

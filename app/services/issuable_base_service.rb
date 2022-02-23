@@ -160,7 +160,7 @@ class IssuableBaseService < ::BaseProjectService
       params.delete(:escalation_status)
     ).execute
 
-    return unless result.success? && result.payload.present?
+    return unless result.success? && result[:escalation_status].present?
 
     @escalation_status_change_reason = result[:escalation_status].delete(:status_change_reason)
 
@@ -486,7 +486,10 @@ class IssuableBaseService < ::BaseProjectService
     associations[:description] = issuable.description
     associations[:reviewers] = issuable.reviewers.to_a if issuable.allows_reviewers?
     associations[:severity] = issuable.severity if issuable.supports_severity?
-    associations[:escalation_status] = issuable.escalation_status&.slice(:status, :policy_id) if issuable.supports_escalation?
+
+    if issuable.supports_escalation? && issuable.escalation_status
+      associations[:escalation_status] = issuable.escalation_status.status_name
+    end
 
     associations
   end

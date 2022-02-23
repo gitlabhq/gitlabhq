@@ -10,22 +10,30 @@ export function createResizeObserver() {
   });
 }
 
-// watches for change in size of a container element (e.g. for lazy-loaded images)
-// and scroll the target element to the top of the content area
-// stop watching after any user input. So if user opens sidebar or manually
-// scrolls the page we don't hijack their scroll position
+/**
+ * Watches for change in size of a container element (e.g. for lazy-loaded images)
+ * and scrolls the target note to the top of the content area.
+ * Stops watching after any user input. So if user opens sidebar or manually
+ * scrolls the page we don't hijack their scroll position
+ *
+ * @param {Object} options
+ * @param {string} options.targetId - id of element to scroll to
+ * @param {string} options.container - Selector of element containing target
+ *
+ * @return {ResizeObserver|null} - ResizeObserver instance if target looks like a note DOM ID
+ */
 export function scrollToTargetOnResize({
-  target = window.location.hash,
+  targetId = window.location.hash.slice(1),
   container = '#content-body',
 } = {}) {
-  if (!target) return null;
+  if (!targetId) return null;
 
   const ro = createResizeObserver();
   const containerEl = document.querySelector(container);
   let interactionListenersAdded = false;
 
   function keepTargetAtTop() {
-    const anchorEl = document.querySelector(target);
+    const anchorEl = document.getElementById(targetId);
 
     if (!anchorEl) return;
 

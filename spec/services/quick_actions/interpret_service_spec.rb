@@ -682,6 +682,20 @@ RSpec.describe QuickActions::InterpretService do
 
         expect(message).to eq("Assigned #{developer.to_reference}.")
       end
+
+      context 'when the user has a private profile' do
+        let(:user) { create(:user, :private_profile) }
+        let(:content) { "/assign #{user.to_reference}" }
+
+        it 'assigns to the user' do
+          issuable.project.add_developer(user)
+
+          _, updates, message = service.execute(content, issuable)
+
+          expect(updates).to eq(assignee_ids: [user.id])
+          expect(message).to eq("Assigned #{user.to_reference}.")
+        end
+      end
     end
 
     shared_examples 'assign_reviewer command' do
@@ -969,24 +983,6 @@ RSpec.describe QuickActions::InterpretService do
         let(:content) { '/assign_reviewer  me ' }
 
         it_behaves_like 'assign_reviewer command'
-      end
-
-      context 'with a private user' do
-        let(:ref) { create(:user, :unconfirmed).to_reference }
-        let(:content) { "/assign_reviewer #{ref}" }
-
-        it_behaves_like 'failed command', 'a parse error' do
-          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '#{ref}'." }
-        end
-      end
-
-      context 'with a private user, bare username' do
-        let(:ref) { create(:user, :unconfirmed).username }
-        let(:content) { "/assign_reviewer #{ref}" }
-
-        it_behaves_like 'failed command', 'a parse error' do
-          let(:match_msg) { eq "Could not apply assign_reviewer command. Failed to find users for '#{ref}'." }
-        end
       end
 
       context 'with @all' do

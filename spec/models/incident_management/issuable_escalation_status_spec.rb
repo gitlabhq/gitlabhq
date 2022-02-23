@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe IncidentManagement::IssuableEscalationStatus do
-  let_it_be(:issue) { create(:issue) }
+  let_it_be(:issue) { create(:incident) }
 
   subject(:escalation_status) { build(:incident_management_issuable_escalation_status, issue: issue) }
 
