@@ -13,12 +13,6 @@ RSpec.describe Backup::Pages do
   end
 
   describe '#dump' do
-    it 'uses the correct pages dir' do
-      allow(Gitlab.config.pages).to receive(:path) { '/var/gitlab-pages' }
-
-      expect(subject.app_files_dir).to eq('/var/gitlab-pages')
-    end
-
     it 'excludes tmp from backup tar' do
       allow(Gitlab.config.pages).to receive(:path) { '/var/gitlab-pages' }
 

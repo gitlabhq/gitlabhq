@@ -16,7 +16,6 @@ RSpec.describe Backup::Lfs do
     end
 
     it 'uses the correct lfs dir in tar command', :aggregate_failures do
-      expect(backup.app_files_dir).to eq('/var/lfs-objects')
       expect(backup).to receive(:tar).and_return('blabla-tar')
       expect(backup).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found -C /var/lfs-objects -cf - .), 'gzip -c -1'], any_args).and_return([[true, true], ''])
       expect(backup).to receive(:pipeline_succeeded?).and_return(true)

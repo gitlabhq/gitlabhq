@@ -7,25 +7,11 @@ RSpec.describe Backup::Artifacts do
 
   subject(:backup) { described_class.new(progress) }
 
-  describe '#initialize' do
-    it 'uses the correct upload dir' do
-      Dir.mktmpdir do |tmpdir|
-        allow(JobArtifactUploader).to receive(:root) { "#{tmpdir}" }
-
-        expect(backup.app_files_dir).to eq("#{File.realpath(tmpdir)}")
-      end
-    end
-  end
-
   describe '#dump' do
     before do
       allow(File).to receive(:realpath).with('/var/gitlab-artifacts').and_return('/var/gitlab-artifacts')
       allow(File).to receive(:realpath).with('/var/gitlab-artifacts/..').and_return('/var')
       allow(JobArtifactUploader).to receive(:root) { '/var/gitlab-artifacts' }
-    end
-
-    it 'uses the correct artifact dir' do
-      expect(backup.app_files_dir).to eq('/var/gitlab-artifacts')
     end
 
     it 'excludes tmp from backup tar' do

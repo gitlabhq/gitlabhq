@@ -20,6 +20,7 @@ describe('Markdown field header component', () => {
 
   const findWriteTab = () => wrapper.findByTestId('write-tab');
   const findPreviewTab = () => wrapper.findByTestId('preview-tab');
+  const findToolbar = () => wrapper.findByTestId('md-header-toolbar');
   const findToolbarButtons = () => wrapper.findAll(ToolbarButton);
   const findToolbarButtonByProp = (prop, value) =>
     findToolbarButtons()
@@ -88,6 +89,12 @@ describe('Markdown field header component', () => {
 
     expect(findWriteTab().attributes('active')).toBeUndefined();
     expect(findPreviewTab().attributes('active')).toBe('true');
+  });
+
+  it('hides toolbar in preview mode', () => {
+    createWrapper({ previewMarkdown: true });
+
+    expect(findToolbar().classes().includes('gl-display-none')).toBe(true);
   });
 
   it('emits toggle markdown event when clicking preview tab', async () => {
