@@ -59,6 +59,13 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
         expect(reviewer.state).to eq 'attention_requested'
       end
 
+      it 'adds who toggled attention' do
+        service.execute
+        reviewer.reload
+
+        expect(reviewer.updated_state_by).to eq current_user
+      end
+
       it 'creates a new todo for the reviewer' do
         expect(todo_service).to receive(:create_attention_requested_todo).with(merge_request, current_user, user)
 

@@ -93,13 +93,12 @@ RSpec.shared_examples 'User views a wiki page' do
       let(:path) { upload_file_to_wiki(wiki, user, 'dk.png') }
 
       it do
-        expect(page).to have_xpath("//img[@data-src='#{wiki.wiki_base_path}/#{path}']")
+        expect(page).to have_xpath("//img[@src='#{wiki.wiki_base_path}/#{path}']")
         expect(page).to have_link('image', href: "#{wiki.wiki_base_path}/#{path}")
 
         click_on('image')
 
         expect(current_path).to match("wikis/#{path}")
-        expect(page).not_to have_xpath('/html') # Page should render the image which means there is no html involved
       end
     end
 

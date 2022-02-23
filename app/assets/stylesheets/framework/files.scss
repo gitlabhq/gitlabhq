@@ -377,10 +377,6 @@ span.idiff {
     color: $gl-text-color;
   }
 
-  .file-actions .ide-edit-button {
-    z-index: 2;
-  }
-
   @include media-breakpoint-down(md) {
     .file-actions {
       margin-top: $gl-padding-8;

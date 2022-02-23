@@ -1936,8 +1936,16 @@ class MergeRequest < ApplicationRecord
     merge_request_assignees.find_by(user_id: user.id)
   end
 
+  def merge_request_assignees_with(user_ids)
+    merge_request_assignees.where(user_id: user_ids)
+  end
+
   def find_reviewer(user)
     merge_request_reviewers.find_by(user_id: user.id)
+  end
+
+  def merge_request_reviewers_with(user_ids)
+    merge_request_reviewers.where(user_id: user_ids)
   end
 
   def enabled_reports

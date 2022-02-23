@@ -393,6 +393,8 @@ group :development, :test do
   gem 'parallel', '~> 1.19', require: false
 
   gem 'test_file_finder', '~> 0.1.3'
+
+  gem 'sigdump', '~> 0.2.4', require: 'sigdump/setup'
 end
 
 group :development, :test, :danger do

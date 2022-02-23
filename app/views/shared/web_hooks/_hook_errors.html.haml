@@ -13,7 +13,6 @@
   = render 'shared/global_alert',
     title: s_('Webhooks|Webhook was automatically disabled'),
     variant: :danger,
-    is_contained: true,
     close_button_class: 'js-close' do
     .gl-alert-body
       = s_('Webhooks|The webhook was triggered more than %{limit} times per minute and is now disabled. To re-enable this webhook, fix the problems shown in %{strong_start}Recent events%{strong_end}, then re-test your settings. %{support_link_start}Contact Support%{support_link_end} if you need help re-enabling your webhook.').html_safe % placeholders
@@ -21,7 +20,6 @@
   = render 'shared/global_alert',
     title: s_('Webhooks|Webhook failed to connect'),
     variant: :danger,
-    is_contained: true,
     close_button_class: 'js-close' do
     .gl-alert-body
       = s_('Webhooks|The webhook failed to connect, and is disabled. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below.').html_safe % { strong_start: strong_start, strong_end: strong_end }
@@ -35,7 +33,6 @@
   = render 'shared/global_alert',
     title: s_('Webhooks|Webhook fails to connect'),
     variant: :warning,
-    is_contained: true,
     close_button_class: 'js-close' do
     .gl-alert-body
       = s_('Webhooks|The webhook %{help_link_start}failed to connect%{help_link_end}, and will retry in %{retry_time}. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below.').html_safe % placeholders

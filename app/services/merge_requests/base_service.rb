@@ -61,6 +61,8 @@ module MergeRequests
 
       unless new_reviewers.include?(current_user)
         remove_attention_requested(merge_request, current_user)
+
+        merge_request.merge_request_reviewers_with(new_reviewers).update_all(updated_state_by_user_id: current_user.id)
       end
     end
 

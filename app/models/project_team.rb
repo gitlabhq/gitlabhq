@@ -23,6 +23,10 @@ class ProjectTeam
     add_user(user, :maintainer, current_user: current_user)
   end
 
+  def add_owner(user, current_user: nil)
+    add_user(user, :owner, current_user: current_user)
+  end
+
   def add_role(user, role, current_user: nil)
     public_send(:"add_#{role}", user, current_user: current_user) # rubocop:disable GitlabSecurity/PublicSend
   end
@@ -103,7 +107,9 @@ class ProjectTeam
       if group
         group.owners
       else
-        [project.owner]
+        # workaround until we migrate Project#owners to have membership with
+        # OWNER access level
+        Array.wrap(fetch_members(Gitlab::Access::OWNER)) | Array.wrap(project.owner)
       end
   end
 

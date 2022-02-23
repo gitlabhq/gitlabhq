@@ -38560,15 +38560,16 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
-msgid "Trials|%{planName} Trial %{enDash} %{num} day left"
-msgid_plural "Trials|%{planName} Trial %{enDash} %{num} days left"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Trials|%{planName} Trial"
+msgstr ""
 
 msgid "Trials|Compare all plans"
 msgstr ""
 
 msgid "Trials|Create a new group to start your GitLab Ultimate trial."
+msgstr ""
+
+msgid "Trials|Day %{daysUsed}/%{duration}"
 msgstr ""
 
 msgid "Trials|Go back to GitLab"

@@ -5109,4 +5109,34 @@ RSpec.describe MergeRequest, factory_default: :keep do
       let!(:model) { create(:merge_request, head_pipeline: parent) }
     end
   end
+
+  describe '#merge_request_reviewers_with' do
+    let_it_be(:reviewer1) { create(:user) }
+    let_it_be(:reviewer2) { create(:user) }
+
+    before do
+      subject.update!(reviewers: [reviewer1, reviewer2])
+    end
+
+    it 'returns reviewers' do
+      reviewers = subject.merge_request_reviewers_with([reviewer1.id])
+
+      expect(reviewers).to match_array([subject.merge_request_reviewers[0]])
+    end
+  end
+
+  describe '#merge_request_assignees_with' do
+    let_it_be(:assignee1) { create(:user) }
+    let_it_be(:assignee2) { create(:user) }
+
+    before do
+      subject.update!(assignees: [assignee1, assignee2])
+    end
+
+    it 'returns assignees' do
+      assignees = subject.merge_request_assignees_with([assignee1.id])
+
+      expect(assignees).to match_array([subject.merge_request_assignees[0]])
+    end
+  end
 end

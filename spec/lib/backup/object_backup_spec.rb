@@ -17,7 +17,6 @@ RSpec.shared_examples 'backup object' do |setting|
     end
 
     it 'uses the correct storage dir in tar command and excludes tmp', :aggregate_failures do
-      expect(backup.app_files_dir).to eq(backup_path)
       expect(backup).to receive(:tar).and_return('blabla-tar')
       expect(backup).to receive(:run_pipeline!).with([%W(blabla-tar --exclude=lost+found --exclude=./tmp -C #{backup_path} -cf - .), 'gzip -c -1'], any_args).and_return([[true, true], ''])
       expect(backup).to receive(:pipeline_succeeded?).and_return(true)

@@ -43,33 +43,4 @@ RSpec.describe 'shared/_global_alert.html.haml' do
       expect(rendered).not_to have_selector('.gl-dismiss-btn')
     end
   end
-
-  context 'fixed layout' do
-    before do
-      allow(view).to receive(:fluid_layout).and_return(false)
-    end
-
-    it 'adds container classes' do
-      render
-
-      expect(rendered).to have_selector('.container-fluid.container-limited')
-    end
-
-    it 'does not add container classes if is_contained is true' do
-      render partial: 'shared/global_alert', locals: { is_contained: true }
-
-      expect(rendered).not_to have_selector('.container-fluid.container-limited')
-    end
-  end
-
-  context 'fluid layout' do
-    before do
-      allow(view).to receive(:fluid_layout).and_return(true)
-      render
-    end
-
-    it 'does not add container classes' do
-      expect(rendered).not_to have_selector('.container-fluid.container-limited')
-    end
-  end
 end

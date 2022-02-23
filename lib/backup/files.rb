@@ -9,13 +9,11 @@ module Backup
 
     DEFAULT_EXCLUDE = 'lost+found'
 
-    attr_reader :name, :app_files_dir, :backup_tarball, :excludes, :files_parent_dir
+    attr_reader :name, :backup_tarball, :excludes
 
     def initialize(name, app_files_dir, excludes: [])
       @name = name
-      @app_files_dir = File.realpath(app_files_dir)
-      @files_parent_dir = File.realpath(File.join(@app_files_dir, '..'))
-      @backup_files_dir = File.join(Gitlab.config.backup.path, File.basename(@app_files_dir) )
+      @app_files_dir = app_files_dir
       @backup_tarball = File.join(Gitlab.config.backup.path, name + '.tar.gz')
       @excludes = [DEFAULT_EXCLUDE].concat(excludes)
     end
@@ -26,7 +24,7 @@ module Backup
       FileUtils.rm_f(backup_tarball)
 
       if ENV['STRATEGY'] == 'copy'
-        cmd = [%w[rsync -a --delete], exclude_dirs(:rsync), %W[#{app_files_dir} #{Gitlab.config.backup.path}]].flatten
+        cmd = [%w[rsync -a --delete], exclude_dirs(:rsync), %W[#{app_files_realpath} #{Gitlab.config.backup.path}]].flatten
         output, status = Gitlab::Popen.popen(cmd)
 
         # Retry if rsync source files vanish
@@ -40,11 +38,11 @@ module Backup
           raise_custom_error
         end
 
-        tar_cmd = [tar, exclude_dirs(:tar), %W[-C #{@backup_files_dir} -cf - .]].flatten
+        tar_cmd = [tar, exclude_dirs(:tar), %W[-C #{backup_files_realpath} -cf - .]].flatten
         status_list, output = run_pipeline!([tar_cmd, gzip_cmd], out: [backup_tarball, 'w', 0600])
-        FileUtils.rm_rf(@backup_files_dir)
+        FileUtils.rm_rf(backup_files_realpath)
       else
-        tar_cmd = [tar, exclude_dirs(:tar), %W[-C #{app_files_dir} -cf - .]].flatten
+        tar_cmd = [tar, exclude_dirs(:tar), %W[-C #{app_files_realpath} -cf - .]].flatten
         status_list, output = run_pipeline!([tar_cmd, gzip_cmd], out: [backup_tarball, 'w', 0600])
       end
 
@@ -56,7 +54,7 @@ module Backup
     def restore
       backup_existing_files_dir
 
-      cmd_list = [%w[gzip -cd], %W[#{tar} --unlink-first --recursive-unlink -C #{app_files_dir} -xf -]]
+      cmd_list = [%w[gzip -cd], %W[#{tar} --unlink-first --recursive-unlink -C #{app_files_realpath} -xf -]]
       status_list, output = run_pipeline!(cmd_list, in: backup_tarball)
       unless pipeline_succeeded?(gzip_status: status_list[0], tar_status: status_list[1], output: output)
         raise Backup::Error, "Restore operation failed: #{output}"
@@ -78,17 +76,17 @@ module Backup
 
     def backup_existing_files_dir
       timestamped_files_path = File.join(Gitlab.config.backup.path, "tmp", "#{name}.#{Time.now.to_i}")
-      if File.exist?(app_files_dir)
+      if File.exist?(app_files_realpath)
         # Move all files in the existing repos directory except . and .. to
         # repositories.old.<timestamp> directory
         FileUtils.mkdir_p(timestamped_files_path, mode: 0700)
-        files = Dir.glob(File.join(app_files_dir, "*"), File::FNM_DOTMATCH) - [File.join(app_files_dir, "."), File.join(app_files_dir, "..")]
+        files = Dir.glob(File.join(app_files_realpath, "*"), File::FNM_DOTMATCH) - [File.join(app_files_realpath, "."), File.join(app_files_realpath, "..")]
         begin
           FileUtils.mv(files, timestamped_files_path)
         rescue Errno::EACCES
-          access_denied_error(app_files_dir)
+          access_denied_error(app_files_realpath)
         rescue Errno::EBUSY
-          resource_busy_error(app_files_dir)
+          resource_busy_error(app_files_realpath)
         end
       end
     end
@@ -141,7 +139,7 @@ module Backup
         if s == DEFAULT_EXCLUDE
           '--exclude=' + s
         elsif fmt == :rsync
-          '--exclude=/' + File.join(File.basename(app_files_dir), s)
+          '--exclude=/' + File.join(File.basename(app_files_realpath), s)
         elsif fmt == :tar
           '--exclude=./' + s
         end
@@ -149,7 +147,17 @@ module Backup
     end
 
     def raise_custom_error
-      raise FileBackupError.new(app_files_dir, backup_tarball)
+      raise FileBackupError.new(app_files_realpath, backup_tarball)
+    end
+
+    private
+
+    def app_files_realpath
+      @app_files_realpath ||= File.realpath(@app_files_dir)
+    end
+
+    def backup_files_realpath
+      @backup_files_realpath ||= File.join(Gitlab.config.backup.path, File.basename(@app_files_dir) )
     end
   end
 end

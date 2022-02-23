@@ -116,14 +116,34 @@ RSpec.describe Projects::CreateService, '#execute' do
   end
 
   context 'user namespace' do
-    it 'creates a project in user namespace' do
-      project = create_project(user, opts)
+    context 'when personal_project_owner_with_owner_access feature flag is enabled' do
+      it 'creates a project in user namespace' do
+        project = create_project(user, opts)
 
-      expect(project).to be_valid
-      expect(project.first_owner).to eq(user)
-      expect(project.team.maintainers).to include(user)
-      expect(project.namespace).to eq(user.namespace)
-      expect(project.project_namespace).to be_in_sync_with_project(project)
+        expect(project).to be_valid
+        expect(project.first_owner).to eq(user)
+        expect(project.team.maintainers).not_to include(user)
+        expect(project.team.owners).to contain_exactly(user)
+        expect(project.namespace).to eq(user.namespace)
+        expect(project.project_namespace).to be_in_sync_with_project(project)
+      end
+    end
+
+    context 'when personal_project_owner_with_owner_access feature flag is disabled' do
+      before do
+        stub_feature_flags(personal_project_owner_with_owner_access: false)
+      end
+
+      it 'creates a project in user namespace' do
+        project = create_project(user, opts)
+
+        expect(project).to be_valid
+        expect(project.first_owner).to eq(user)
+        expect(project.team.maintainers).to contain_exactly(user)
+        expect(project.team.owners).to contain_exactly(user)
+        expect(project.namespace).to eq(user.namespace)
+        expect(project.project_namespace).to be_in_sync_with_project(project)
+      end
     end
   end
 
@@ -162,7 +182,7 @@ RSpec.describe Projects::CreateService, '#execute' do
         expect(project).to be_persisted
         expect(project.owner).to eq(user)
         expect(project.first_owner).to eq(user)
-        expect(project.team.maintainers).to contain_exactly(user)
+        expect(project.team.owners).to contain_exactly(user)
         expect(project.namespace).to eq(user.namespace)
         expect(project.project_namespace).to be_in_sync_with_project(project)
       end

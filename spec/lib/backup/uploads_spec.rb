@@ -7,28 +7,12 @@ RSpec.describe Backup::Uploads do
 
   subject(:backup) { described_class.new(progress) }
 
-  describe '#initialize' do
-    it 'uses the correct upload dir' do
-      Dir.mktmpdir do |tmpdir|
-        FileUtils.mkdir_p("#{tmpdir}/uploads")
-
-        allow(Gitlab.config.uploads).to receive(:storage_path) { tmpdir }
-
-        expect(backup.app_files_dir).to eq("#{File.realpath(tmpdir)}/uploads")
-      end
-    end
-  end
-
   describe '#dump' do
     before do
       allow(File).to receive(:realpath).and_call_original
       allow(File).to receive(:realpath).with('/var/uploads').and_return('/var/uploads')
       allow(File).to receive(:realpath).with('/var/uploads/..').and_return('/var')
       allow(Gitlab.config.uploads).to receive(:storage_path) { '/var' }
-    end
-
-    it 'uses the correct upload dir' do
-      expect(backup.app_files_dir).to eq('/var/uploads')
     end
 
     it 'excludes tmp from backup tar' do

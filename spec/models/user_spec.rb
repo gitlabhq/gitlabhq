@@ -3717,7 +3717,7 @@ RSpec.describe User do
 
     context 'with min_access_level' do
       let!(:user) { create(:user) }
-      let!(:project) { create(:project, :private, namespace: user.namespace) }
+      let!(:project) { create(:project, :private, group: create(:group)) }
 
       before do
         project.add_developer(user)

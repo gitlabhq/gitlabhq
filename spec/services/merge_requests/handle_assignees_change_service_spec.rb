@@ -95,6 +95,12 @@ RSpec.describe MergeRequests::HandleAssigneesChangeService do
       execute
     end
 
+    it 'updates attention requested by of assignee' do
+      execute
+
+      expect(merge_request.find_assignee(assignee).updated_state_by).to eq(user)
+    end
+
     it 'tracks users assigned event' do
       expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
         .to receive(:track_users_assigned_to_mr).once.with(users: [assignee])

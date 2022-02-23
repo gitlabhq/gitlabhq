@@ -33,14 +33,27 @@ usernames. A GitLab administrator can configure the GitLab instance to
 
 ## Project members permissions
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8, personal namespace owners appear with Owner role in new projects in their namespace. Introduced [with a flag](../administration/feature_flags.md) named `personal_project_owner_with_owner_access`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, personal namespace owners appearing with the Owner role in new projects in their namespace is disabled. To make it available,
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `personal_project_owner_with_owner_access`.
+The feature is not ready for production use.
+On GitLab.com, this feature is not available.
+
 A user's role determines what permissions they have on a project. The Owner role provides all permissions but is
 available only:
 
 - For group owners. The role is inherited for a group's projects.
 - For Administrators.
 
-Personal namespace owners have the same permissions as an Owner, but are displayed with the Maintainer role on projects created in their personal namespace.
-For more information, see [projects members documentation](project/members/index.md).
+Personal [namespace](group/index.md#namespaces) owners:
+
+- Are displayed as having the Maintainer role on projects in the namespace, but have the same permissions as a user with the Owner role.
+- (Disabled by default) In GitLab 14.8 and later, for new projects in the namespace, are displayed as having the Owner role.
+
+For more information about how to manage project members, see
+[members of a project](project/members/index.md).
 
 The following table lists project permissions available for each role:
 
