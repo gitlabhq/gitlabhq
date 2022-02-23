@@ -318,8 +318,11 @@ func configureRoutes(u *upstream) {
 		// Group Import via UI upload acceleration
 		u.route("POST", importPattern+`gitlab_group`, upload.Multipart(api, signingProxy, preparers.uploads)),
 
-		// Metric image upload
+		// Issuable Metric image upload
 		u.route("POST", apiProjectPattern+`issues/[0-9]+/metric_images\z`, upload.Multipart(api, signingProxy, preparers.uploads)),
+
+		// Alert Metric image upload
+		u.route("POST", apiProjectPattern+`alert_management_alerts/[0-9]+/metric_images\z`, upload.Multipart(api, signingProxy, preparers.uploads)),
 
 		// Requirements Import via UI upload acceleration
 		u.route("POST", projectPattern+`requirements_management/requirements/import_csv`, upload.Multipart(api, signingProxy, preparers.uploads)),

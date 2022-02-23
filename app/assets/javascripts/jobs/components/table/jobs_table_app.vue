@@ -1,7 +1,6 @@
 <script>
-import { GlAlert, GlPagination, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { GRAPHQL_PAGE_SIZE, initialPaginationState } from './constants';
 import eventHub from './event_hub';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
 import JobsTable from './jobs_table.vue';
@@ -11,14 +10,16 @@ import JobsTableTabs from './jobs_table_tabs.vue';
 export default {
   i18n: {
     errorMsg: __('There was an error fetching the jobs for your project.'),
+    loadingAriaLabel: __('Loading'),
   },
   components: {
     GlAlert,
-    GlPagination,
     GlSkeletonLoader,
     JobsTable,
     JobsTableEmptyState,
     JobsTableTabs,
+    GlIntersectionObserver,
+    GlLoadingIcon,
   },
   inject: {
     fullPath: {
@@ -31,10 +32,6 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
-          first: this.pagination.first,
-          last: this.pagination.last,
-          after: this.pagination.nextPageCursor,
-          before: this.pagination.prevPageCursor,
         };
       },
       update(data) {
@@ -57,7 +54,7 @@ export default {
       hasError: false,
       isAlertDismissed: false,
       scope: null,
-      pagination: initialPaginationState,
+      firstLoad: true,
     };
   },
   computed: {
@@ -67,14 +64,8 @@ export default {
     showEmptyState() {
       return this.jobs.list.length === 0 && !this.scope;
     },
-    prevPage() {
-      return Math.max(this.pagination.currentPage - 1, 0);
-    },
-    nextPage() {
-      return this.jobs.pageInfo?.hasNextPage ? this.pagination.currentPage + 1 : null;
-    },
-    showPaginationControls() {
-      return Boolean(this.prevPage || this.nextPage) && !this.$apollo.loading;
+    hasNextPage() {
+      return this.jobs?.pageInfo?.hasNextPage;
     },
   },
   mounted() {
@@ -88,26 +79,22 @@ export default {
       this.$apollo.queries.jobs.refetch({ statuses: this.scope });
     },
     fetchJobsByStatus(scope) {
+      this.firstLoad = true;
+
       this.scope = scope;
 
       this.$apollo.queries.jobs.refetch({ statuses: scope });
     },
-    handlePageChange(page) {
-      const { startCursor, endCursor } = this.jobs.pageInfo;
+    fetchMoreJobs() {
+      this.firstLoad = false;
 
-      if (page > this.pagination.currentPage) {
-        this.pagination = {
-          ...initialPaginationState,
-          nextPageCursor: endCursor,
-          currentPage: page,
-        };
-      } else {
-        this.pagination = {
-          last: GRAPHQL_PAGE_SIZE,
-          first: null,
-          prevPageCursor: startCursor,
-          currentPage: page,
-        };
+      if (!this.$apollo.queries.jobs.loading) {
+        this.$apollo.queries.jobs.fetchMore({
+          variables: {
+            fullPath: this.fullPath,
+            after: this.jobs?.pageInfo?.endCursor,
+          },
+        });
       }
     },
   },
@@ -128,7 +115,7 @@ export default {
 
     <jobs-table-tabs @fetchJobsByStatus="fetchJobsByStatus" />
 
-    <div v-if="$apollo.loading" class="gl-mt-5">
+    <div v-if="$apollo.loading && firstLoad" class="gl-mt-5">
       <gl-skeleton-loader :width="1248" :height="73">
         <circle cx="748.031" cy="37.7193" r="15.0307" />
         <circle cx="787.241" cy="37.7193" r="15.0307" />
@@ -149,14 +136,12 @@ export default {
 
     <jobs-table v-else :jobs="jobs.list" />
 
-    <gl-pagination
-      v-if="showPaginationControls"
-      :value="pagination.currentPage"
-      :prev-page="prevPage"
-      :next-page="nextPage"
-      align="center"
-      class="gl-mt-3"
-      @input="handlePageChange"
-    />
+    <gl-intersection-observer v-if="hasNextPage" @appear="fetchMoreJobs">
+      <gl-loading-icon
+        v-if="$apollo.loading"
+        size="md"
+        :aria-label="$options.i18n.loadingAriaLabel"
+      />
+    </gl-intersection-observer>
   </div>
 </template>

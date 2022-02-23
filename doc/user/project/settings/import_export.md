@@ -229,7 +229,7 @@ and the exports between them are compatible.
 ## Related topics
 
 - [Project import/export API](../../../api/project_import_export.md)
-- [Project import/export administration Rake tasks](../../../administration/raketasks/project_import_export.md) **(FREE SELF)**
+- [Project import/export administration Rake tasks](../../../administration/raketasks/project_import_export.md)
 - [Group import/export](../../group/settings/import_export.md)
 - [Group import/export API](../../../api/group_import_export.md)
 
@@ -351,8 +351,8 @@ Rather than attempting to push all changes at once, this workaround:
      git push -u origin ${COMMIT_SHA}:refs/heads/main
    done
    git push -u origin main
-   git push -u origin -—all
-   git push -u origin -—tags
+   git push -u origin --all
+   git push -u origin --tags
    ```
 
 ### Manually execute export steps

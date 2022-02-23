@@ -41693,6 +41693,9 @@ msgstr ""
 msgid "You are not authorized to update this scanner profile"
 msgstr ""
 
+msgid "You are not authorized to upload metric images"
+msgstr ""
+
 msgid "You are now impersonating %{username}"
 msgstr ""
 

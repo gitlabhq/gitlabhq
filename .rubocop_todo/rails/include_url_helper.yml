@@ -19,7 +19,6 @@ Rails/IncludeUrlHelper:
   - app/models/integrations/redmine.rb
   - app/models/integrations/webex_teams.rb
   - app/models/integrations/youtrack.rb
-  - app/presenters/gitlab/blame_presenter.rb
   - ee/app/models/integrations/github.rb
   - ee/spec/helpers/ee/projects/security/configuration_helper_spec.rb
   - ee/spec/lib/banzai/filter/cross_project_issuable_information_filter_spec.rb

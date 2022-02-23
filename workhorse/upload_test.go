@@ -141,6 +141,7 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/packages/pypi`, true},
 		{"POST", `/api/v4/projects/9001/issues/30/metric_images`, true},
 		{"POST", `/api/v4/projects/group%2Fproject/issues/30/metric_images`, true},
+		{"POST", `/api/v4/projects/9001/alert_management_alerts/30/metric_images`, true},
 		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/issues/30/metric_images`, true},
 		{"POST", `/my/project/-/requirements_management/requirements/import_csv`, true},
 		{"POST", `/my/project/-/requirements_management/requirements/import_csv/`, true},

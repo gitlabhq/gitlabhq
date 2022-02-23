@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Groups::DestroyService do
-  include DatabaseConnectionHelpers
-
   let!(:user)         { create(:user) }
   let!(:group)        { create(:group) }
   let!(:nested_group) { create(:group, parent: group) }

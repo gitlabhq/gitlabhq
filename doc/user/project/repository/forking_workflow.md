@@ -47,7 +47,7 @@ Without mirroring, to work locally you must use `git pull` to update your local 
 with the upstream project, then push the changes back to your fork to update it.
 
 WARNING:
-With mirroring, before approving a merge request, you are asked to sync. Because of this, automating it is recommended.
+With mirroring, before approving a merge request, you are asked to sync. We recommend you automate it.
 
 Read more about [How to keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/).
 
@@ -63,7 +63,7 @@ When creating a merge request, if the forked project's visibility is more restri
 ![Selecting branches](img/forking_workflow_branch_select.png)
 
 Then you can add labels, a milestone, and assign the merge request to someone who can review
-your changes. Then click **Submit merge request** to conclude the process. When successfully merged, your
+your changes. Then select **Submit merge request** to conclude the process. When successfully merged, your
 changes are added to the repository and branch you're merging into.
 
 ## Removing a fork relationship

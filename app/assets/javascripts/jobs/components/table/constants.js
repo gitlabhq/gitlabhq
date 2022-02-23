@@ -1,16 +1,6 @@
 import { s__, __ } from '~/locale';
 import { DEFAULT_TH_CLASSES } from '~/lib/utils/constants';
 
-export const GRAPHQL_PAGE_SIZE = 30;
-
-export const initialPaginationState = {
-  currentPage: 1,
-  prevPageCursor: '',
-  nextPageCursor: '',
-  first: GRAPHQL_PAGE_SIZE,
-  last: null,
-};
-
 /* Error constants */
 export const POST_FAILURE = 'post_failure';
 export const DEFAULT = 'default';
