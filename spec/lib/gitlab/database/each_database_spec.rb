@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::EachDatabase do
-  describe '.each_database_connection' do
+  describe '.each_database_connection', :add_ci_connection do
     before do
       allow(Gitlab::Database).to receive(:database_base_models)
         .and_return({ main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access)
     end
 
-    it 'yields each connection after connecting SharedModel', :add_ci_connection do
+    it 'yields each connection after connecting SharedModel' do
       expect(Gitlab::Database::SharedModel).to receive(:using_connection)
         .with(ActiveRecord::Base.connection).ordered.and_yield
 
@@ -21,6 +21,42 @@ RSpec.describe Gitlab::Database::EachDatabase do
           [ActiveRecord::Base.connection, 'main'],
           [Ci::ApplicationRecord.connection, 'ci']
         )
+    end
+
+    context 'when only certain databases are selected' do
+      it 'yields the selected connections after connecting SharedModel' do
+        expect(Gitlab::Database::SharedModel).to receive(:using_connection)
+          .with(Ci::ApplicationRecord.connection).ordered.and_yield
+
+        expect { |b| described_class.each_database_connection(only: 'ci', &b) }
+          .to yield_successive_args([Ci::ApplicationRecord.connection, 'ci'])
+      end
+
+      context 'when the selected names are passed as symbols' do
+        it 'yields the selected connections after connecting SharedModel' do
+          expect(Gitlab::Database::SharedModel).to receive(:using_connection)
+            .with(Ci::ApplicationRecord.connection).ordered.and_yield
+
+          expect { |b| described_class.each_database_connection(only: :ci, &b) }
+            .to yield_successive_args([Ci::ApplicationRecord.connection, 'ci'])
+        end
+      end
+
+      context 'when the selected names are invalid' do
+        it 'does not yield any connections' do
+          expect do |b|
+            described_class.each_database_connection(only: :notvalid, &b)
+          rescue ArgumentError => e
+            expect(e.message).to match(/notvalid is not a valid database name/)
+          end.not_to yield_control
+        end
+
+        it 'raises an error' do
+          expect do
+            described_class.each_database_connection(only: :notvalid) {}
+          end.to raise_error(ArgumentError, /notvalid is not a valid database name/)
+        end
+      end
     end
   end
 

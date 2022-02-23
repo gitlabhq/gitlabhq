@@ -96,6 +96,30 @@ RSpec.describe PreferencesHelper do
     end
   end
 
+  describe '#user_application_dark_mode?' do
+    context 'with a user' do
+      it "returns true if user's selected dark theme" do
+        stub_user(theme_id: 11)
+
+        expect(helper.user_application_dark_mode?).to eq true
+      end
+
+      it "returns false if user's selected any light theme" do
+        stub_user(theme_id: 1)
+
+        expect(helper.user_application_dark_mode?).to eq false
+      end
+    end
+
+    context 'without a user' do
+      it 'returns false' do
+        stub_user
+
+        expect(helper.user_application_dark_mode?).to eq false
+      end
+    end
+  end
+
   describe '#user_color_scheme' do
     context 'with a user' do
       it "returns user's scheme's css_class" do

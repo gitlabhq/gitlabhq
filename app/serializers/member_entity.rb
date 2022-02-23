@@ -41,7 +41,7 @@ class MemberEntity < Grape::Entity
   expose :valid_level_roles, as: :valid_roles
 
   expose :user, if: -> (member) { member.user.present? } do |member, options|
-    MemberUserEntity.represent(member.user, source: options[:source])
+    MemberUserEntity.represent(member.user, options)
   end
 
   expose :state

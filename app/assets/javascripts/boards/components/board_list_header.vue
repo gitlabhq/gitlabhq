@@ -89,10 +89,6 @@ export default {
     listTitle() {
       return this.list?.label?.description || this.list?.assignee?.name || this.list.title || '';
     },
-    listIterationPeriod() {
-      const iteration = this.list?.iteration;
-      return iteration ? this.getIterationPeriod(iteration) : '';
-    },
     isIterationList() {
       return this.listType === ListType.iteration;
     },
@@ -107,9 +103,6 @@ export default {
     },
     showIterationListDetails() {
       return this.isIterationList && this.showListDetails;
-    },
-    iterationCadencesAvailable() {
-      return this.isIterationList && this.glFeatures.iterationCadences;
     },
     showListDetails() {
       return !this.list.collapsed || !this.isSwimlanesHeader;
@@ -344,13 +337,6 @@ export default {
           class="board-title-main-text gl-text-truncate"
         >
           {{ listTitle }}
-          <span
-            v-if="iterationCadencesAvailable"
-            class="gl-display-inline-block gl-text-gray-400"
-            data-testid="board-list-iteration-period"
-          >
-            {{ listIterationPeriod }}</span
-          >
         </span>
         <span
           v-if="listType === 'assignee'"

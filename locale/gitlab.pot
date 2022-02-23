@@ -35570,6 +35570,12 @@ msgstr ""
 msgid "SuperSonics|You do not have an active subscription"
 msgstr ""
 
+msgid "SuperSonics|You have a future dated license"
+msgstr ""
+
+msgid "SuperSonics|You have added a license that activates on %{date}. Please see the subscription history table below for more details."
+msgstr ""
+
 msgid "SuperSonics|You have successfully added a license that activates on %{date}. Please see the subscription history table below for more details."
 msgstr ""
 

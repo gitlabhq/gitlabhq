@@ -10,6 +10,7 @@ module Gitlab
           @pipeline = pipeline
           @instance_variables_builder = Builder::Instance.new
           @project_variables_builder = Builder::Project.new(project)
+          @group_variables_builder = Builder::Group.new(project.group)
         end
 
         def scoped_variables(job, environment:, dependencies:)
@@ -72,9 +73,13 @@ module Gitlab
         end
 
         def secret_group_variables(environment:, ref:)
-          return [] unless project.group
+          if memoize_secret_variables?
+            memoized_secret_group_variables(environment: environment)
+          else
+            return [] unless project.group
 
-          project.group.ci_variables_for(ref, project, environment: environment)
+            project.group.ci_variables_for(ref, project, environment: environment)
+          end
         end
 
         def secret_project_variables(environment:, ref:)
@@ -90,6 +95,7 @@ module Gitlab
         attr_reader :pipeline
         attr_reader :instance_variables_builder
         attr_reader :project_variables_builder
+        attr_reader :group_variables_builder
         delegate :project, to: :pipeline
 
         def predefined_variables(job)
@@ -113,6 +119,15 @@ module Gitlab
         def memoized_secret_project_variables(environment:)
           strong_memoize_with(:secret_project_variables, environment) do
             project_variables_builder
+              .secret_variables(
+                environment: environment,
+                protected_ref: protected_ref?)
+          end
+        end
+
+        def memoized_secret_group_variables(environment:)
+          strong_memoize_with(:secret_group_variables, environment) do
+            group_variables_builder
               .secret_variables(
                 environment: environment,
                 protected_ref: protected_ref?)

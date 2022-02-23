@@ -261,45 +261,78 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   end
 
   describe 'drop_tables' do
-    subject { run_rake_task('gitlab:db:drop_tables') }
-
-    let(:tables) { %w(one two) }
+    let(:tables) { %w(one two schema_migrations) }
     let(:views) { %w(three four) }
-    let(:connection) { ActiveRecord::Base.connection }
+    let(:schemas) { Gitlab::Database::EXTRA_SCHEMAS }
 
-    before do
-      allow(connection).to receive(:execute).and_return(nil)
+    context 'with a single database' do
+      let(:connection) { ActiveRecord::Base.connection }
 
-      allow(connection).to receive(:tables).and_return(tables)
-      allow(connection).to receive(:views).and_return(views)
+      before do
+        skip_if_multiple_databases_are_setup
+
+        allow(connection).to receive(:execute).and_return(nil)
+
+        allow(connection).to receive(:tables).and_return(tables)
+        allow(connection).to receive(:views).and_return(views)
+      end
+
+      it 'drops all objects for the database', :aggregate_failures do
+        expect_objects_to_be_dropped(connection)
+
+        run_rake_task('gitlab:db:drop_tables')
+      end
     end
 
-    it 'drops all tables, except schema_migrations' do
+    context 'with multiple databases', :aggregate_failures do
+      let(:main_model) { double(:model, connection: double(:connection, tables: tables, views: views)) }
+      let(:ci_model) { double(:model, connection: double(:connection, tables: tables, views: views)) }
+      let(:base_models) { { 'main' => main_model, 'ci' => ci_model } }
+
+      before do
+        skip_if_multiple_databases_not_setup
+
+        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+
+        allow(main_model.connection).to receive(:table_exists?).with('schema_migrations').and_return(true)
+        allow(ci_model.connection).to receive(:table_exists?).with('schema_migrations').and_return(true)
+
+        (tables + views + schemas).each do |name|
+          allow(main_model.connection).to receive(:quote_table_name).with(name).and_return("\"#{name}\"")
+          allow(ci_model.connection).to receive(:quote_table_name).with(name).and_return("\"#{name}\"")
+        end
+      end
+
+      it 'drops all objects for all databases', :aggregate_failures do
+        expect_objects_to_be_dropped(main_model.connection)
+        expect_objects_to_be_dropped(ci_model.connection)
+
+        run_rake_task('gitlab:db:drop_tables')
+      end
+
+      context 'when the single database task is used' do
+        it 'drops all objects for the given database', :aggregate_failures do
+          expect_objects_to_be_dropped(main_model.connection)
+
+          expect(ci_model.connection).not_to receive(:execute)
+
+          run_rake_task('gitlab:db:drop_tables:main')
+        end
+      end
+    end
+
+    def expect_objects_to_be_dropped(connection)
       expect(connection).to receive(:execute).with('DROP TABLE IF EXISTS "one" CASCADE')
       expect(connection).to receive(:execute).with('DROP TABLE IF EXISTS "two" CASCADE')
 
-      subject
-    end
-
-    it 'drops all views' do
       expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "three" CASCADE')
       expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "four" CASCADE')
 
-      subject
-    end
-
-    it 'truncates schema_migrations table' do
       expect(connection).to receive(:execute).with('TRUNCATE schema_migrations')
 
-      subject
-    end
-
-    it 'drops extra schemas' do
       Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
         expect(connection).to receive(:execute).with("DROP SCHEMA IF EXISTS \"#{schema}\" CASCADE")
       end
-
-      subject
     end
   end
 

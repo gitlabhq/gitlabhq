@@ -43,6 +43,14 @@ RSpec.describe Ci::GroupVariable do
     end
   end
 
+  describe '.for_groups' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:group_variable) { create(:ci_group_variable, group: group) }
+    let_it_be(:other_variable) { create(:ci_group_variable) }
+
+    it { expect(described_class.for_groups([group.id])).to eq([group_variable]) }
+  end
+
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:model) { create(:ci_group_variable) }
 

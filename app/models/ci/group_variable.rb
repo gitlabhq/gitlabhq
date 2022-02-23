@@ -18,5 +18,6 @@ module Ci
 
     scope :unprotected, -> { where(protected: false) }
     scope :by_environment_scope, -> (environment_scope) { where(environment_scope: environment_scope) }
+    scope :for_groups, ->(group_ids) { where(group_id: group_ids) }
   end
 end

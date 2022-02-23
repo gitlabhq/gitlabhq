@@ -341,12 +341,8 @@ class Project < ApplicationRecord
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
   has_many :ci_refs, class_name: 'Ci::Ref', inverse_of: :project
 
-  # Ci::Build objects store data on the file system such as artifact files and
-  # build traces. Currently there's no efficient way of removing this data in
-  # bulk that doesn't involve loading the rows into memory. As a result we're
-  # still using `dependent: :destroy` here.
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
-  has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :builds, class_name: 'Ci::Build', inverse_of: :project
   has_many :processables, class_name: 'Ci::Processable', inverse_of: :project
   has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
   has_many :build_report_results, class_name: 'Ci::BuildReportResult', inverse_of: :project
