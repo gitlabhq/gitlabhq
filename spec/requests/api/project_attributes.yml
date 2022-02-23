@@ -9,6 +9,7 @@ itself: # project
     - external_webhook_token
     - has_external_issue_tracker
     - has_external_wiki
+    - hidden
     - import_source
     - import_type
     - import_url

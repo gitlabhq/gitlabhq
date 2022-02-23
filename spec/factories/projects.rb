@@ -154,6 +154,10 @@ FactoryBot.define do
       archived { true }
     end
 
+    trait :hidden do
+      hidden { true }
+    end
+
     trait :last_repository_check_failed do
       last_repository_check_failed { true }
     end

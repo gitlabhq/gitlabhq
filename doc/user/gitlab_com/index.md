@@ -85,7 +85,10 @@ are included when cloning.
 Top-level groups created after August 12, 2021 have delayed project deletion enabled by default.
 Projects are permanently deleted after a seven-day delay.
 
-You can disable this by changing the [group setting](../group/index.md#enable-delayed-project-deletion).
+If you are on:
+
+- Premium tier and above, you can disable this by changing the [group setting](../group/index.md#enable-delayed-project-deletion).
+- Free tier, you cannot disable this setting or restore projects.
 
 ## Alternative SSH port
 

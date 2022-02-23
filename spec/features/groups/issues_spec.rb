@@ -108,6 +108,22 @@ RSpec.describe 'Group issues page' do
     end
   end
 
+  context 'group with no issues', :js do
+    let!(:group_with_no_issues) { create(:group) }
+    let!(:subgroup_with_issues) { create(:group, parent: group_with_no_issues) }
+    let!(:subgroup_project) { create(:project, :public, group: subgroup_with_issues) }
+    let!(:subgroup_issue) { create(:issue, project: subgroup_project) }
+
+    before do
+      stub_feature_flags(vue_issues_list: true)
+      visit issues_group_path(group_with_no_issues)
+    end
+
+    it 'shows issues from subgroups on issues list' do
+      expect(page).to have_text subgroup_issue.title
+    end
+  end
+
   context 'projects with issues disabled' do
     describe 'issue dropdown' do
       let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }

@@ -9,7 +9,7 @@ export default {
     },
   },
   render() {
-    return this.$slots?.[getExperimentVariant(this.name)];
+    return this.$scopedSlots?.[getExperimentVariant(this.name)]?.();
   },
 };
 </script>

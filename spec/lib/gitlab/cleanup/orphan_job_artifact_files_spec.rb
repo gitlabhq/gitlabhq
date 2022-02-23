@@ -34,10 +34,33 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFiles do
     cleanup.run!
   end
 
-  it 'finds artifacts on disk' do
+  it 'finds job artifacts on disk' do
     artifact = create(:ci_job_artifact, :archive)
+    artifact_directory = artifact.file.relative_path.to_s.split('/')[0...6].join('/')
 
-    expect(cleanup).to receive(:find_artifacts).and_yield(artifact.file.path)
+    cleaned = []
+
+    expect(cleanup).to receive(:find_artifacts).and_wrap_original do |original_method, *args, &block|
+      original_method.call(*args) { |dir| cleaned << dir }
+    end
+
+    cleanup.run!
+
+    expect(cleaned).to include(/#{artifact_directory}/)
+  end
+
+  it 'does not find pipeline artifacts on disk' do
+    artifact = create(:ci_pipeline_artifact, :with_coverage_report)
+    # using 0...6 to match the -min/maxdepth 6 strictly, since this is one directory
+    # deeper than job artifacts, and .dirname would not match
+    artifact_directory = artifact.file.relative_path.to_s.split('/')[0...6].join('/')
+
+    expect(cleanup).to receive(:find_artifacts).and_wrap_original do |original_method, *args, &block|
+      # this can either _not_ yield at all, or yield with any other file
+      # except the one that we're explicitly excluding
+      original_method.call(*args) { |path| expect(path).not_to match(artifact_directory) }
+    end
+
     cleanup.run!
   end
 

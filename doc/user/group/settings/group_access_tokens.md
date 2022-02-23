@@ -44,7 +44,7 @@ To create a group access token:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Access Tokens**.
-1. Enter a name.
+1. Enter a name. The token name is visible to any user with permissions to view the group.
 1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-group-access-token).

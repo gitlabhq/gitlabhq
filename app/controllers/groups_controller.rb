@@ -212,7 +212,7 @@ class GroupsController < Groups::ApplicationController
   def issues
     return super if !html_request? || Feature.disabled?(:vue_issues_list, group, default_enabled: :yaml)
 
-    @has_issues = IssuesFinder.new(current_user, group_id: group.id).execute
+    @has_issues = IssuesFinder.new(current_user, group_id: group.id, include_subgroups: true).execute
       .non_archived
       .exists?
 

@@ -55,8 +55,7 @@ export default {
       },
       error(error) {
         createAlert({ message: I18N_FETCH_ERROR });
-
-        this.reportToSentry(error);
+        captureException({ error, component: this.$options.name });
       },
     },
   },
@@ -75,11 +74,6 @@ export default {
       return sprintf(I18N_ASSIGNED_PROJECTS, {
         projectCount: formatNumber(this.projects.count),
       });
-    },
-  },
-  methods: {
-    reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
     },
   },
   I18N_NONE,

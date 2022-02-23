@@ -8001,6 +8001,37 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '.not_hidden' do
+    it 'lists projects that are not hidden' do
+      project = create(:project)
+      hidden_project = create(:project, :hidden)
+
+      expect(described_class.not_hidden).to contain_exactly(project)
+      expect(described_class.not_hidden).not_to include(hidden_project)
+    end
+  end
+
+  describe '#pending_delete_or_hidden?' do
+    let_it_be(:project) { create(:project, name: 'test-project') }
+
+    where(:pending_delete, :hidden, :expected_result) do
+      true  | false | true
+      true  | true  | true
+      false | true  | true
+      false | false | false
+    end
+
+    with_them do
+      it 'returns true if project is pending delete or hidden' do
+        project.pending_delete = pending_delete
+        project.hidden = hidden
+        project.save!
+
+        expect(project.pending_delete_or_hidden?).to eq(expected_result)
+      end
+    end
+  end
+
   private
 
   def finish_job(export_job)

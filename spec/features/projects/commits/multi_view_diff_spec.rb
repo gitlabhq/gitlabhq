@@ -56,14 +56,14 @@ RSpec.describe 'Multiple view Diffs', :js do
       it 'loads the rendered diff as hidden' do
         diff = page.find('.diff-file, .file-holder', match: :first)
 
-        expect(diff).to have_selector '[data-diff-toggle-entity="toHide"]'
-        expect(diff).not_to have_selector '[data-diff-toggle-entity="toShow"]'
+        expect(diff).not_to have_selector '[data-diff-toggle-entity="toHide"]'
+        expect(diff).to have_selector '[data-diff-toggle-entity="toShow"]'
 
-        expect(classes_for_element(diff, 'toShow', visible: false)).to include('hidden')
-        expect(classes_for_element(diff, 'toHide')).not_to include('hidden')
+        expect(classes_for_element(diff, 'toHide', visible: false)).to include('hidden')
+        expect(classes_for_element(diff, 'toShow')).not_to include('hidden')
 
-        expect(classes_for_element(diff, 'toHideBtn')).to include('selected')
-        expect(classes_for_element(diff, 'toShowBtn')).not_to include('selected')
+        expect(classes_for_element(diff, 'toShowBtn')).to include('selected')
+        expect(classes_for_element(diff, 'toHideBtn')).not_to include('selected')
       end
 
       it 'displays the rendered diff and hides after selection changes' do

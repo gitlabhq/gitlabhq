@@ -46,7 +46,7 @@ export default {
       },
       error(error) {
         createAlert({ message: I18N_FETCH_ERROR });
-        this.reportToSentry(error);
+        captureException({ error, component: this.$options.name });
       },
     },
   },
@@ -60,11 +60,6 @@ export default {
     },
     loading() {
       return this.$apollo.queries.jobs.loading;
-    },
-  },
-  methods: {
-    reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
     },
   },
   I18N_NO_JOBS_FOUND,

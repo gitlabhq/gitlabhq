@@ -82,9 +82,9 @@ export default {
         this.onSuccess();
       } catch (error) {
         const { message } = error;
-        createAlert({ message });
 
-        this.reportToSentry(error);
+        createAlert({ message });
+        captureException({ error, component: this.$options.name });
       } finally {
         this.saving = false;
       }
@@ -92,9 +92,6 @@ export default {
     onSuccess() {
       createAlert({ message: __('Changes saved.'), variant: VARIANT_SUCCESS });
       this.model = runnerToModel(this.runner);
-    },
-    reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
     },
   },
   ACCESS_LEVEL_NOT_PROTECTED,

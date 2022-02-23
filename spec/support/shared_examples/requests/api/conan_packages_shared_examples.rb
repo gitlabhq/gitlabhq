@@ -178,6 +178,25 @@ RSpec.shared_examples 'rejects invalid recipe' do
   end
 end
 
+RSpec.shared_examples 'handling validation error for package' do
+  context 'with validation error' do
+    before do
+      allow_next_instance_of(Packages::Package) do |instance|
+        instance.errors.add(:base, 'validation error')
+
+        allow(instance).to receive(:valid?).and_return(false)
+      end
+    end
+
+    it 'returns 400' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to include('Validation failed')
+    end
+  end
+end
+
 RSpec.shared_examples 'handling empty values for username and channel' do
   using RSpec::Parameterized::TableSyntax
 
@@ -678,6 +697,7 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do
   it_behaves_like 'uploads a package file'
   it_behaves_like 'creates build_info when there is a job'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'handling validation error for package'
 end
 
 RSpec.shared_examples 'workhorse package file upload endpoint' do
@@ -700,6 +720,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
   it_behaves_like 'uploads a package file'
   it_behaves_like 'creates build_info when there is a job'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'handling validation error for package'
 
   context 'tracking the conan_package.tgz upload' do
     let(:file_name) { ::Packages::Conan::FileMetadatum::PACKAGE_BINARY }

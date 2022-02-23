@@ -116,11 +116,8 @@ export default {
     },
     onError(error) {
       const { message } = error;
-      createAlert({ message });
 
-      this.reportToSentry(error);
-    },
-    reportToSentry(error) {
+      createAlert({ message });
       captureException({ error, component: this.$options.name });
     },
   },

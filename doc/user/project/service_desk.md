@@ -292,6 +292,7 @@ In these issues, you can also see our friendly neighborhood [Support Bot](#suppo
 
 > Support for additional email headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346600) in GitLab 14.6.
 > In earlier versions, the Service Desk email address had to be in the "To" field.
+
 To create a Service Desk issue, an end user does not need to know anything about
 the GitLab instance. They just send an email to the address they are given, and
 receive an email back confirming receipt:
@@ -327,7 +328,14 @@ You can read and write comments as you normally do in GitLab:
 Note that:
 
 - The project's visibility (private, internal, public) does not affect Service Desk.
-- The path to the project, including its group or namespace, are shown in emails.
+- The path to the project, including its group or namespace, is shown in emails.
+
+#### Privacy considerations
+
+Service Desk issues are confidential, but the project owner can
+[make an issue public](issues/confidential_issues.md#modify-issue-confidentiality).
+When a Service Desk issue becomes public, the issue creator's email address is disclosed
+to everyone who can view the project.
 
 ### Support Bot user
 

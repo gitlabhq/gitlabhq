@@ -109,6 +109,26 @@ RSpec.describe API::Helpers do
         end
       end
     end
+
+    context 'when project is pending delete' do
+      let(:project_pending_delete) { create(:project, pending_delete: true) }
+
+      it 'does not return the project pending delete' do
+        expect(Project).not_to receive(:find_by_full_path)
+
+        expect(subject.find_project(project_pending_delete.id)).to be_nil
+      end
+    end
+
+    context 'when project is hidden' do
+      let(:hidden_project) { create(:project, :hidden) }
+
+      it 'does not return the hidden project' do
+        expect(Project).not_to receive(:find_by_full_path)
+
+        expect(subject.find_project(hidden_project.id)).to be_nil
+      end
+    end
   end
 
   describe '#find_project!' do

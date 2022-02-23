@@ -38,6 +38,10 @@ module API
           helpers ::API::Helpers::Packages::Conan::ApiHelpers
           helpers ::API::Helpers::RelatedResourcesHelpers
 
+          rescue_from ActiveRecord::RecordInvalid do |e|
+            render_api_error!(e.message, 400)
+          end
+
           before do
             require_packages_enabled!
 
@@ -285,6 +289,7 @@ module API
             params do
               requires :file_name, type: String, desc: 'Package file name', values: CONAN_FILES
             end
+
             namespace 'export/:file_name', requirements: FILE_NAME_REQUIREMENTS do
               desc 'Download recipe files' do
                 detail 'This feature was introduced in GitLab 12.6'

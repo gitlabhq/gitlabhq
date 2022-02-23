@@ -167,7 +167,7 @@ export default class Diff {
       e.toShowBtn.onclick = () => diff.showOneHideAnother('rendered', e); // eslint-disable-line no-param-reassign
       e.toHideBtn.onclick = () => diff.showOneHideAnother('raw', e); // eslint-disable-line no-param-reassign
 
-      diff.showOneHideAnother('raw', e);
+      diff.showOneHideAnother('rendered', e);
     });
   }
 

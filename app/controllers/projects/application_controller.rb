@@ -24,9 +24,12 @@ class Projects::ApplicationController < ApplicationController
     return unless params[:project_id] || params[:id]
 
     path = File.join(params[:namespace_id], params[:project_id] || params[:id])
-    auth_proc = ->(project) { !project.pending_delete? }
 
     @project = find_routable!(Project, path, request.fullpath, extra_authorization_proc: auth_proc)
+  end
+
+  def auth_proc
+    ->(project) { !project.pending_delete? }
   end
 
   def build_canonical_path(project)
@@ -89,3 +92,5 @@ class Projects::ApplicationController < ApplicationController
     return render_404 unless @project.feature_available?(:issues, current_user)
   end
 end
+
+Projects::ApplicationController.prepend_mod_with('Projects::ApplicationController')

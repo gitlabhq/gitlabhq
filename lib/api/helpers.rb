@@ -119,7 +119,7 @@ module API
     def find_project(id)
       return unless id
 
-      projects = Project.without_deleted
+      projects = Project.without_deleted.not_hidden
 
       if id.is_a?(Integer) || id =~ /^\d+$/
         projects.find_by(id: id)

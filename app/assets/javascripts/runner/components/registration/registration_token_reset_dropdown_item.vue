@@ -98,16 +98,13 @@ export default {
     },
     onError(error) {
       const { message } = error;
-      createAlert({ message });
 
-      this.reportToSentry(error);
+      createAlert({ message });
+      captureException({ error, component: this.$options.name });
     },
     onSuccess(token) {
       this.$toast?.show(s__('Runners|New registration token generated!'));
       this.$emit('tokenReset', token);
-    },
-    reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
     },
   },
 };
