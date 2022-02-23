@@ -82,7 +82,9 @@ const initPerformanceBar = (el) => {
           let summary = {};
           if (navigationEntries.length > 0) {
             const backend = Math.round(navigationEntries[0].responseEnd);
-            const firstContentfulPaint = Math.round(paintEntries[1].startTime);
+            const firstContentfulPaint = Math.round(
+              paintEntries.find((entry) => entry.name === 'first-contentful-paint')?.startTime,
+            );
             const domContentLoaded = Math.round(navigationEntries[0].domContentLoadedEventEnd);
 
             summary = {

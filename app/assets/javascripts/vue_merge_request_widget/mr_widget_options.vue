@@ -574,7 +574,7 @@ export default {
       />
 
       <grouped-accessibility-reports-app
-        v-if="shouldShowAccessibilityReport"
+        v-if="shouldShowAccessibilityReport && !shouldShowExtension"
         :endpoint="mr.accessibilityReportPath"
       />
 

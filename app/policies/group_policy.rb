@@ -80,8 +80,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   condition(:crm_enabled, score: 0, scope: :subject) { Feature.enabled?(:customer_relations, @subject) && @subject.crm_enabled? }
 
-  with_scope :subject
-  condition(:group_runner_registration_allowed, score: 0, scope: :subject) do
+  condition(:group_runner_registration_allowed) do
     Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
   end
 
@@ -280,7 +279,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :admin_crm_organization
   end
 
-  rule { ~group_runner_registration_allowed }.policy do
+  rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
   end
 

@@ -32428,6 +32428,9 @@ msgstr ""
 msgid "SecurityOrchestration|Edit policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|Empty policy name"
+msgstr ""
+
 msgid "SecurityOrchestration|Enabled"
 msgstr ""
 
@@ -41548,6 +41551,9 @@ msgid "WorkItem|New Task"
 msgstr ""
 
 msgid "WorkItem|Something went wrong when creating a work item. Please try again"
+msgstr ""
+
+msgid "WorkItem|Something went wrong when fetching the work item. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"

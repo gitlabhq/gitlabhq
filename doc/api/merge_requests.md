@@ -609,13 +609,13 @@ GET /projects/:id/merge_requests/:merge_request_iid
 
 Parameters:
 
-| Attribute                        | Type           | Required | Description                                                                                                      |
-|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| Attribute                        | Type           | Required | Description                                                                                                     |
+|----------------------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
 | `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
-| `render_html`                    | boolean        | no       | If `true` response includes rendered HTML for title and description.                                             |
-| `include_diverged_commits_count` | boolean        | no       | If `true` response includes the commits behind the target branch.                                                |
-| `include_rebase_in_progress`     | boolean        | no       | If `true` response includes whether a rebase operation is in progress.                                           |
+| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                           |
+| `render_html`                    | boolean        | no       | If `true` response includes rendered HTML for title and description.                                            |
+| `include_diverged_commits_count` | boolean        | no       | If `true` response includes the commits behind the target branch.                                               |
+| `include_rebase_in_progress`     | boolean        | no       | If `true` response includes whether a rebase operation is in progress.                                          |
 
 ```json
 {
@@ -803,10 +803,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/participants
 
 Parameters:
 
-| Attribute                        | Type           | Required | Description                                                                                                      |
-|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```json
 [
@@ -839,10 +839,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/commits
 
 Parameters:
 
-| Attribute                        | Type           | Required | Description                                                                                                      |
-|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```json
 [
@@ -886,11 +886,11 @@ GET /projects/:id/merge_requests/:merge_request_iid/changes
 
 Parameters:
 
-| Attribute                        | Type           | Required | Description                                                                                                      |
-|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
-| `access_raw_diffs`               | boolean        | no       | Retrieve change diffs via Gitaly.                                                                 |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
+| `access_raw_diffs`  | boolean        | no       | Retrieve change diffs via Gitaly.                                                                               |
 
 ```json
 {
@@ -1008,10 +1008,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/pipelines
 
 Parameters:
 
-| Attribute                        | Type           | Required | Description                                                                                                      |
-|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```json
 [
@@ -1044,10 +1044,10 @@ POST /projects/:id/merge_requests/:merge_request_iid/pipelines
 
 Parameters:
 
-| Attribute                        | Type           | Required | Description                                                                                                      |
-|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```json
 {
@@ -1445,10 +1445,10 @@ Only for administrators and project owners. Deletes the merge request in questio
 DELETE /projects/:id/merge_requests/:merge_request_iid
 ```
 
-| Attribute | Type    | Required | Description                          |
-| --------- | ----    | -------- | -----------                          |
-| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/merge_requests/85"
@@ -1464,16 +1464,16 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 
 Parameters:
 
-| Attribute                      | Type           | Required | Description                                                                                                      |
-|--------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| Attribute                      | Type           | Required | Description                                                                                                     |
+|--------------------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
 | `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
-| `merge_commit_message`         | string         | no       | Custom merge commit message.                                                                                     |
-| `squash_commit_message`        | string         | no       | Custom squash commit message.                                                                                    |
-| `squash`                       | boolean        | no       | If `true` the commits are squashed into a single commit on merge.                                    |
-| `should_remove_source_branch`  | boolean        | no       | If `true` removes the source branch.                                                                             |
-| `merge_when_pipeline_succeeds` | boolean        | no       | If `true` the MR is merged when the pipeline succeeds.                                                           |
-| `sha`                          | string         | no       | If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.                   |
+| `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                           |
+| `merge_commit_message`         | string         | no       | Custom merge commit message.                                                                                    |
+| `squash_commit_message`        | string         | no       | Custom squash commit message.                                                                                   |
+| `squash`                       | boolean        | no       | If `true` the commits are squashed into a single commit on merge.                                               |
+| `should_remove_source_branch`  | boolean        | no       | If `true` removes the source branch.                                                                            |
+| `merge_when_pipeline_succeeds` | boolean        | no       | If `true` the MR is merged when the pipeline succeeds.                                                          |
+| `sha`                          | string         | no       | If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.                  |
 
 ```json
 {
@@ -1625,12 +1625,12 @@ the `approvals_before_merge` parameter:
 
 This API returns specific HTTP status codes on failure:
 
-| HTTP Status | Message | Reason |
-| :---: | ------- | ------ |
-| `401` | `Unauthorized` | This user does not have permission to accept this merge request. |
-| `405` | `Method Not Allowed` | The merge request cannot be accepted because it is `Draft`, `Closed`, `Pipeline Pending Completion`, or `Failed`. `Success` is required. |
-| `406` | `Branch cannot be merged` | The branch has conflicts and cannot be merged. |
-| `409` | `SHA does not match HEAD of source branch` | The provided `sha` parameter does not match the HEAD of the source. |
+| HTTP Status | Message                                    | Reason                                                                                                                                   |
+|:------------|--------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `401`       | `Unauthorized`                             | This user does not have permission to accept this merge request.                                                                         |
+| `405`       | `Method Not Allowed`                       | The merge request cannot be accepted because it is `Draft`, `Closed`, `Pipeline Pending Completion`, or `Failed`. `Success` is required. |
+| `406`       | `Branch cannot be merged`                  | The branch has conflicts and cannot be merged.                                                                                           |
+| `409`       | `SHA does not match HEAD of source branch` | The provided `sha` parameter does not match the HEAD of the source.                                                                      |
 
 For additional important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
 
@@ -1655,10 +1655,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/merge_ref
 
 Parameters:
 
-| Attribute                      | Type           | Required | Description                                                                                                      |
-|--------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```json
 {
@@ -1668,9 +1668,13 @@ Parameters:
 
 ## Cancel Merge When Pipeline Succeeds
 
-- If you don't have permissions to accept this merge request - you receive a `HTTP 401 Unauthorized`.
-- If the merge request is already merged or closed - you receive a `HTTP 405 Method Not Allowed` and the error message 'Method Not Allowed'.
-- In case the merge request is not set to be merged when the pipeline succeeds, you also receive a `HTTP 406 Not Acceptable` error.
+This API returns specific HTTP status codes on failure:
+
+| HTTP Status | Message              | Reason                                                                |
+|-------------|----------------------|-----------------------------------------------------------------------|
+| `401`       | `Unauthorized`       | This user does not have permission to cancel this merge request.      |
+| `405`       | `Method Not Allowed` | The merge request is already merged or closed.                        |
+| `406`       | `Not Acceptable`     | The merge request is not set to be merged when the pipeline succeeds. |
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
@@ -1678,10 +1682,10 @@ POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_
 
 Parameters:
 
-| Attribute                      | Type           | Required | Description                                                                                                      |
-|--------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```json
 {
@@ -1845,11 +1849,11 @@ you receive a `403 Forbidden` response.
 PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 ```
 
-| Attribute           | Type    | Required | Description                          |
-| ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
-| `skip_ci`           | boolean | no       | Set to `true` to skip creating a CI pipeline. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
+| `skip_ci`           | boolean        | no       | Set to `true` to skip creating a CI pipeline.                                                                   |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase"
@@ -1908,10 +1912,10 @@ Get all the issues that would be closed by merging the provided merge request.
 GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 ```
 
-| Attribute           | Type    | Required | Description                          |
-| ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/closes_issues"
@@ -1984,10 +1988,10 @@ status code `HTTP 304 Not Modified` is returned.
 POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 ```
 
-| Attribute           | Type    | Required | Description                 |
-| ---------           | ----    | -------- | -----------                 |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.         |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/17/subscribe"
@@ -2154,10 +2158,10 @@ not subscribed to the merge request, the status code `HTTP 304 Not Modified` is 
 POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 ```
 
-| Attribute           | Type    | Required | Description                          |
-| ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/17/unsubscribe"
@@ -2324,10 +2328,10 @@ status code `HTTP 304 Not Modified` is returned.
 POST /projects/:id/merge_requests/:merge_request_iid/todo
 ```
 
-| Attribute           | Type    | Required | Description                          |
-| ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/27/todo"
@@ -2451,9 +2455,9 @@ read [SHAs in the API response](#shas-in-the-api-response).
 GET /projects/:id/merge_requests/:merge_request_iid/versions
 ```
 
-| Attribute           | Type    | Required | Description                 |
-| ---------           | ------- | -------- | ---------------------       |
-| `id`                | String  | yes      | The ID of the project.       |
+| Attribute           | Type    | Required | Description                           |
+|---------------------|---------|----------|---------------------------------------|
+| `id`                | String  | yes      | The ID of the project.                |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
 
 ```shell
@@ -2486,9 +2490,11 @@ Example response:
 
 ### SHAs in the API response
 
-- `head_commit_sha`: The HEAD commit of the source branch.
-- `base_commit_sha`: The merge-base commit SHA between the source branch and the target branches.
-- `start_commit_sha`: The HEAD commit SHA of the target branch when this version of the diff was created.
+| SHA field          | Purpose                                                                             |
+|--------------------|-------------------------------------------------------------------------------------|
+| `head_commit_sha`  | The HEAD commit of the source branch.                                               |
+| `base_commit_sha`  | The merge-base commit SHA between the source branch and the target branches.        |
+| `start_commit_sha` | The HEAD commit SHA of the target branch when this version of the diff was created. |
 
 ## Get a single MR diff version
 
@@ -2499,8 +2505,8 @@ read [SHAs in the API response](#shas-in-the-api-response).
 GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 ```
 
-| Attribute           | Type    | Required | Description                              |
-| ---------           | ------- | -------- | ---------------------                    |
+| Attribute           | Type    | Required | Description                               |
+|---------------------|---------|----------|-------------------------------------------|
 | `id`                | String  | yes      | The ID of the project.                    |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request.     |
 | `version_id`        | integer | yes      | The ID of the merge request diff version. |
@@ -2567,11 +2573,11 @@ Sets an estimated time of work for this merge request.
 POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
 ```
 
-| Attribute           | Type    | Required | Description                              |
-| ---------           | ----    | -------- | -----------                              |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                      |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request.     |
-| `duration`          | string  | yes      | The duration in human format, such as `3h30m`. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
+| `duration`          | string         | yes      | The duration in human format, such as `3h30m`.                                                                  |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_estimate?duration=3h30m"
@@ -2596,10 +2602,10 @@ Resets the estimated time for this merge request to 0 seconds.
 POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
 ```
 
-| Attribute           | Type    | Required | Description                                  |
-| ---------           | ----    | -------- | -----------                                  |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                          |
-| `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of a project's merge_request.                                                                   |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_time_estimate"
@@ -2624,12 +2630,12 @@ Adds spent time for this merge request.
 POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 ```
 
-| Attribute           | Type    | Required | Description                              |
-| ---------           | ----    | -------- | -----------                              |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                      |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request.     |
-| `duration`          | string  | yes      | The duration in human format, such as `3h30m` |
-| `summary`           | string  | no       | A summary of how the time was spent.  |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
+| `duration`          | string         | yes      | The duration in human format, such as `3h30m`                                                                   |
+| `summary`           | string         | no       | A summary of how the time was spent.                                                                            |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h"
@@ -2654,10 +2660,10 @@ Resets the total spent time for this merge request to 0 seconds.
 POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
 ```
 
-| Attribute           | Type    | Required | Description                                  |
-| ---------           | ----    | -------- | -----------                                  |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                          |
-| `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of a project's merge_request.                                                                   |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_spent_time"
@@ -2680,10 +2686,10 @@ Example response:
 GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 ```
 
-| Attribute           | Type    | Required | Description                          |
-| ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
-| `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
+| Attribute           | Type           | Required | Description                                                                                                     |
+|---------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                                                           |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats"

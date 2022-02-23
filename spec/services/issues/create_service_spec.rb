@@ -11,22 +11,12 @@ RSpec.describe Issues::CreateService do
 
   let(:spam_params) { double }
 
-  describe '.rate_limiter_scoped_and_keyed' do
-    it 'is set via the rate_limit call' do
-      expect(described_class.rate_limiter_scoped_and_keyed).to be_a(RateLimitedService::RateLimiterScopedAndKeyed)
-
-      expect(described_class.rate_limiter_scoped_and_keyed.key).to eq(:issues_create)
-      expect(described_class.rate_limiter_scoped_and_keyed.opts[:scope]).to eq(%i[project current_user external_author])
-      expect(described_class.rate_limiter_scoped_and_keyed.rate_limiter).to eq(Gitlab::ApplicationRateLimiter)
-    end
-  end
-
-  describe '#rate_limiter_bypassed' do
-    let(:subject) { described_class.new(project: project, spam_params: {}) }
-
-    it 'is nil by default' do
-      expect(subject.rate_limiter_bypassed).to be_nil
-    end
+  it_behaves_like 'rate limited service' do
+    let(:key) { :issues_create }
+    let(:key_scope) { %i[project current_user external_author] }
+    let(:application_limit_key) { :issues_create_limit }
+    let(:created_model) { Issue }
+    let(:service) { described_class.new(project: project, current_user: user, params: { title: 'title' }, spam_params: double) }
   end
 
   describe '#execute' do
@@ -329,43 +319,6 @@ RSpec.describe Issues::CreateService do
         expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
-      end
-
-      context 'when rate limiting is in effect', :freeze_time, :clean_gitlab_redis_rate_limiting do
-        let(:user) { create(:user) }
-
-        before do
-          stub_application_setting(issues_create_limit: 1)
-        end
-
-        subject do
-          2.times { described_class.new(project: project, current_user: user, params: opts, spam_params: double).execute }
-        end
-
-        context 'when too many requests are sent by one user' do
-          it 'raises an error' do
-            expect do
-              subject
-            end.to raise_error(RateLimitedService::RateLimitedError)
-          end
-
-          it 'creates 1 issue' do
-            expect do
-              subject
-            rescue RateLimitedService::RateLimitedError
-            end.to change { Issue.count }.by(1)
-          end
-        end
-
-        context 'when limit is higher than count of issues being created' do
-          before do
-            stub_application_setting(issues_create_limit: 2)
-          end
-
-          it 'creates 2 issues' do
-            expect { subject }.to change { Issue.count }.by(2)
-          end
-        end
       end
 
       context 'after_save callback to store_mentions' do

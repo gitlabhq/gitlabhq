@@ -27,8 +27,6 @@ export default {
       return this.adminUserPath.replace('id', this.user.username);
     },
     adminUserMailto() {
-      // NOTE: 'mailto:' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
-      // eslint-disable-next-line @gitlab/require-i18n-strings
       return `mailto:${this.user.email}`;
     },
     userNoteShort() {

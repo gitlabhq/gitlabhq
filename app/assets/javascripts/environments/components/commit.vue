@@ -22,7 +22,6 @@ export default {
       return this.commit?.message;
     },
     commitAuthorPath() {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
       return this.commit?.author?.path || `mailto:${escape(this.commit?.authorEmail)}`;
     },
     commitAuthorAvatar() {

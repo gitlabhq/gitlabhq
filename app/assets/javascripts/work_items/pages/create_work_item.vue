@@ -74,14 +74,14 @@ export default {
         const {
           data: {
             localCreateWorkItem: {
-              workItem: { id },
+              workItem: { id, type },
             },
           },
         } = response;
         if (!this.isModal) {
           this.$router.push({ name: 'workItem', params: { id } });
         } else {
-          this.$emit('onCreate', this.title);
+          this.$emit('onCreate', { id, title: this.title, type });
         }
       } catch {
         this.error = s__(

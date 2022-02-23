@@ -37,7 +37,7 @@ flowchart LR
     subgraph backend
     be["Backend code"]--tested with-->rspec
     end
-    
+
     be--generates-->fixtures["frontend fixtures"]
     fixtures--used in-->jest
 ```
@@ -262,6 +262,16 @@ job.
 In the event of an emergency, or false positive from this job, add the
 `pipeline:skip-undercoverage` label to the merge request to allow this job to
 fail.
+
+You can disable the `undercover` code coverage check by wrapping the desired block of code in `# :nocov:` lines:
+
+```ruby
+# :nocov:
+def some_method
+  # code coverage for this method will be skipped
+end
+# :nocov:
+```
 
 ## PostgreSQL versions testing
 

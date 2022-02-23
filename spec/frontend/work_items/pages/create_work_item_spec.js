@@ -10,6 +10,8 @@ import { resolvers } from '~/work_items/graphql/resolvers';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import { projectWorkItemTypesQueryResponse } from '../mock_data';
 
+jest.mock('~/lib/utils/uuids', () => ({ uuids: () => ['testuuid'] }));
+
 Vue.use(VueApollo);
 
 describe('Create work item component', () => {
@@ -124,7 +126,8 @@ describe('Create work item component', () => {
       wrapper.find('form').trigger('submit');
       await waitForPromises();
 
-      expect(wrapper.emitted('onCreate')).toEqual([[mockTitle]]);
+      const expected = { id: 'testuuid', title: mockTitle, type: 'FEATURE' };
+      expect(wrapper.emitted('onCreate')).toEqual([[expected]]);
     });
 
     it('does not right margin for create button', () => {

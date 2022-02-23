@@ -10,7 +10,9 @@ import $ from 'jquery';
 import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import TaskList from '~/task_list';
+import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import animateMixin from '../mixins/animate';
 
@@ -24,8 +26,9 @@ export default {
     GlPopover,
     CreateWorkItem,
     GlButton,
+    WorkItemDetailModal,
   },
-  mixins: [animateMixin, glFeatureFlagMixin()],
+  mixins: [animateMixin, glFeatureFlagMixin(), Tracking.mixin()],
   props: {
     canUpdate: {
       type: Boolean,
@@ -68,9 +71,13 @@ export default {
       initialUpdate: true,
       taskButtons: [],
       activeTask: {},
+      workItemId: null,
     };
   },
   computed: {
+    showWorkItemDetailModal() {
+      return Boolean(this.workItemId);
+    },
     workItemsEnabled() {
       return this.glFeatures.workItems;
     },
@@ -194,7 +201,13 @@ export default {
     closeCreateTaskModal() {
       this.$refs.modal.hide();
     },
-    handleCreateTask(title) {
+    closeWorkItemDetailModal() {
+      this.workItemId = null;
+    },
+    handleWorkItemDetailModalError(message) {
+      createFlash({ message });
+    },
+    handleCreateTask({ id, title, type }) {
       const listItem = this.$el.querySelector(`#${this.activeTask.id}`).parentElement;
       const taskBadge = document.createElement('span');
       taskBadge.innerHTML = `
@@ -204,11 +217,27 @@ export default {
         <span class="badge badge-info badge-pill gl-badge sm gl-mr-1">
           ${__('Task')}
         </span>
-        <a href="#">${title}</a>
       `;
+      const button = this.createWorkItemDetailButton(id, title, type);
+      taskBadge.append(button);
+
       listItem.insertBefore(taskBadge, listItem.lastChild);
       listItem.removeChild(listItem.lastChild);
       this.closeCreateTaskModal();
+    },
+    createWorkItemDetailButton(id, title, type) {
+      const button = document.createElement('button');
+      button.addEventListener('click', () => {
+        this.workItemId = id;
+        this.track('viewed_work_item_from_modal', {
+          category: 'workItems:show',
+          label: 'work_item_view',
+          property: `type_${type}`,
+        });
+      });
+      button.classList.add('btn-link');
+      button.innerText = title;
+      return button;
     },
     focusButton() {
       this.$refs.convertButton[0].$el.focus();
@@ -262,6 +291,12 @@ export default {
         @onCreate="handleCreateTask"
       />
     </gl-modal>
+    <work-item-detail-modal
+      :visible="showWorkItemDetailModal"
+      :work-item-id="workItemId"
+      @close="closeWorkItemDetailModal"
+      @error="handleWorkItemDetailModalError"
+    />
     <template v-if="workItemsEnabled">
       <gl-popover
         v-for="item in taskButtons"

@@ -551,11 +551,11 @@ Automatically [create](../../../operations/incident_management/incidents.md#crea
 
 Configure Error Tracking to discover and view [Sentry errors within GitLab](../../../operations/error_tracking.md).
 
-### Jaeger tracing **(ULTIMATE)**
+### Jaeger tracing
 
 Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../../../operations/tracing.md).
 
-### Status Page
+### Status Page **(ULTIMATE)**
 
 [Add Storage credentials](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
 to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#create-a-status-page-project).

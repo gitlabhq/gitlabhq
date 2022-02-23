@@ -65,7 +65,6 @@ export default {
       const body = sprintf(__('Enter the %{name} description'), {
         name: this.issuableName,
       });
-      // eslint-disable-next-line @gitlab/require-i18n-strings
       return `mailto:${this.email}?subject=${subject}&body=${body}`;
     },
   },

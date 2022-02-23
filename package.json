@@ -201,7 +201,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.10.1",
-    "@gitlab/eslint-plugin": "10.0.0",
+    "@gitlab/eslint-plugin": "11.0.0",
     "@gitlab/stylelint-config": "4.0.0",
     "@graphql-eslint/eslint-plugin": "3.0.0",
     "@testing-library/dom": "^7.16.2",

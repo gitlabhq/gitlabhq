@@ -48,12 +48,13 @@ From left to right, the performance bar displays:
 - **External HTTP calls**: the time taken (in milliseconds) and the total
   number of external calls to other systems. Click to display a modal window
   with more details.
-- **Load timings** of the page: if your browser supports load timings (Chromium
-  and Chrome) several values in milliseconds, separated by slashes.
+- **Load timings** of the page: if your browser supports load timings, several
+  values in milliseconds, separated by slashes.
   Click to display a modal window with more details. The values, from left to right:
   - **Backend**: time needed for the base page to load.
   - [**First Contentful Paint**](https://web.dev/first-contentful-paint/):
-    Time until something was visible to the user.
+    Time until something was visible to the user. Displays `NaN` if your browser does not
+    support this feature.
   - [**DomContentLoaded**](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp) Event.
   - **Total number of requests** the page loaded.
 - **Memory**: the amount of memory consumed and objects allocated during the selected request.
