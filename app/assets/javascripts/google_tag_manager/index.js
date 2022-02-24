@@ -260,3 +260,14 @@ export const trackAddToCartUsageTab = () => {
     });
   });
 };
+
+export const trackCombinedGroupProjectForm = () => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const form = document.querySelector('.js-groups-projects-form');
+  form.addEventListener('submit', () => {
+    pushEvent('combinedGroupProjectFormSubmit');
+  });
+};

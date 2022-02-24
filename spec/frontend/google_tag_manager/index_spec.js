@@ -1,6 +1,7 @@
 import { merge } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  trackCombinedGroupProjectForm,
   trackFreeTrialAccountSubmissions,
   trackNewRegistrations,
   trackSaasTrialSubmit,
@@ -197,6 +198,14 @@ describe('~/google_tag_manager/index', () => {
               },
             },
           },
+        },
+      ],
+    }),
+    createTestCase(trackCombinedGroupProjectForm, {
+      forms: [
+        {
+          cls: 'js-groups-projects-form',
+          expectation: { event: 'combinedGroupProjectFormSubmit' },
         },
       ],
     }),

@@ -55,3 +55,14 @@ An advanced example of an OpenMetrics text file (from the [Prometheus documentat
 renders in the merge request widget as:
 
 ![Metrics Reports Advanced](img/metrics_reports_advanced_v13_0.png)
+
+## Troubleshooting
+
+### Metrics reports did not change
+
+You can see `Metrics reports did not change` when trying to view metrics reports in merge requests. Reasons for this are:
+
+- The target branch for the merge request doesn't have a baseline metrics report for comparison.
+- You don't have GitLab license at the Premium tier or above.
+
+There is [an issue open](https://gitlab.com/gitlab-org/gitlab/-/issues/343065) to improve this message.
