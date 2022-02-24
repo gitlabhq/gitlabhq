@@ -1,8 +1,0 @@
----
-name: display_outdated_line_diff
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72597
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345491
-milestone: '14.5'
-type: development
-group: group::code review
-default_enabled: true

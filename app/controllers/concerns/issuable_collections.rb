@@ -117,6 +117,10 @@ module IssuableCollections
         options[:attempt_group_search_optimizations] = true
       end
 
+      if collection_type == 'Issue' && Feature.enabled?(:issues_full_text_search, @project || @group, default_enabled: :yaml)
+        options[:attempt_full_text_search] = true
+      end
+
       params.permit(finder_type.valid_params).merge(options)
     end
   end

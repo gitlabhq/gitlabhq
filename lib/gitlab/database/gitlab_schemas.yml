@@ -274,6 +274,7 @@ issue_emails: :gitlab_main
 issue_email_participants: :gitlab_main
 issue_links: :gitlab_main
 issue_metrics: :gitlab_main
+issue_search_data: :gitlab_main
 issues: :gitlab_main
 issues_prometheus_alert_events: :gitlab_main
 issues_self_managed_prometheus_alert_events: :gitlab_main

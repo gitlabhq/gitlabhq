@@ -1169,6 +1169,591 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
 );
 ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31 FOR VALUES WITH (modulus 32, remainder 31);
 
+CREATE TABLE issue_search_data (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+)
+PARTITION BY HASH (project_id);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_00 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_00 FOR VALUES WITH (modulus 64, remainder 0);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_01 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_01 FOR VALUES WITH (modulus 64, remainder 1);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_02 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_02 FOR VALUES WITH (modulus 64, remainder 2);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_03 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_03 FOR VALUES WITH (modulus 64, remainder 3);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_04 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_04 FOR VALUES WITH (modulus 64, remainder 4);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_05 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_05 FOR VALUES WITH (modulus 64, remainder 5);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_06 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_06 FOR VALUES WITH (modulus 64, remainder 6);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_07 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_07 FOR VALUES WITH (modulus 64, remainder 7);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_08 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_08 FOR VALUES WITH (modulus 64, remainder 8);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_09 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_09 FOR VALUES WITH (modulus 64, remainder 9);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_10 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_10 FOR VALUES WITH (modulus 64, remainder 10);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_11 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_11 FOR VALUES WITH (modulus 64, remainder 11);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_12 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_12 FOR VALUES WITH (modulus 64, remainder 12);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_13 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_13 FOR VALUES WITH (modulus 64, remainder 13);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_14 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_14 FOR VALUES WITH (modulus 64, remainder 14);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_15 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_15 FOR VALUES WITH (modulus 64, remainder 15);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_16 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_16 FOR VALUES WITH (modulus 64, remainder 16);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_17 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_17 FOR VALUES WITH (modulus 64, remainder 17);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_18 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_18 FOR VALUES WITH (modulus 64, remainder 18);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_19 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_19 FOR VALUES WITH (modulus 64, remainder 19);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_20 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_20 FOR VALUES WITH (modulus 64, remainder 20);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_21 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_21 FOR VALUES WITH (modulus 64, remainder 21);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_22 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_22 FOR VALUES WITH (modulus 64, remainder 22);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_23 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_23 FOR VALUES WITH (modulus 64, remainder 23);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_24 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_24 FOR VALUES WITH (modulus 64, remainder 24);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_25 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_25 FOR VALUES WITH (modulus 64, remainder 25);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_26 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_26 FOR VALUES WITH (modulus 64, remainder 26);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_27 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_27 FOR VALUES WITH (modulus 64, remainder 27);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_28 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_28 FOR VALUES WITH (modulus 64, remainder 28);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_29 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_29 FOR VALUES WITH (modulus 64, remainder 29);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_30 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_30 FOR VALUES WITH (modulus 64, remainder 30);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_31 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_31 FOR VALUES WITH (modulus 64, remainder 31);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_32 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_32 FOR VALUES WITH (modulus 64, remainder 32);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_33 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_33 FOR VALUES WITH (modulus 64, remainder 33);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_34 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_34 FOR VALUES WITH (modulus 64, remainder 34);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_35 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_35 FOR VALUES WITH (modulus 64, remainder 35);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_36 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_36 FOR VALUES WITH (modulus 64, remainder 36);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_37 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_37 FOR VALUES WITH (modulus 64, remainder 37);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_38 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_38 FOR VALUES WITH (modulus 64, remainder 38);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_39 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_39 FOR VALUES WITH (modulus 64, remainder 39);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_40 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_40 FOR VALUES WITH (modulus 64, remainder 40);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_41 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_41 FOR VALUES WITH (modulus 64, remainder 41);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_42 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_42 FOR VALUES WITH (modulus 64, remainder 42);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_43 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_43 FOR VALUES WITH (modulus 64, remainder 43);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_44 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_44 FOR VALUES WITH (modulus 64, remainder 44);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_45 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_45 FOR VALUES WITH (modulus 64, remainder 45);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_46 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_46 FOR VALUES WITH (modulus 64, remainder 46);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_47 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_47 FOR VALUES WITH (modulus 64, remainder 47);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_48 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_48 FOR VALUES WITH (modulus 64, remainder 48);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_49 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_49 FOR VALUES WITH (modulus 64, remainder 49);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_50 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_50 FOR VALUES WITH (modulus 64, remainder 50);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_51 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_51 FOR VALUES WITH (modulus 64, remainder 51);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_52 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_52 FOR VALUES WITH (modulus 64, remainder 52);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_53 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_53 FOR VALUES WITH (modulus 64, remainder 53);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_54 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_54 FOR VALUES WITH (modulus 64, remainder 54);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_55 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_55 FOR VALUES WITH (modulus 64, remainder 55);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_56 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_56 FOR VALUES WITH (modulus 64, remainder 56);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_57 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_57 FOR VALUES WITH (modulus 64, remainder 57);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_58 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_58 FOR VALUES WITH (modulus 64, remainder 58);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_59 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_59 FOR VALUES WITH (modulus 64, remainder 59);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_60 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_60 FOR VALUES WITH (modulus 64, remainder 60);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_61 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_61 FOR VALUES WITH (modulus 64, remainder 61);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_62 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_62 FOR VALUES WITH (modulus 64, remainder 62);
+
+CREATE TABLE gitlab_partitions_static.issue_search_data_63 (
+    project_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    search_vector tsvector
+);
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_63 FOR VALUES WITH (modulus 64, remainder 63);
+
 CREATE TABLE product_analytics_events_experimental (
     id bigint NOT NULL,
     project_id integer NOT NULL,
@@ -22749,6 +23334,201 @@ ALTER TABLE ONLY gitlab_partitions_static.analytics_cycle_analytics_merge_reques
 ALTER TABLE ONLY gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31
     ADD CONSTRAINT analytics_cycle_analytics_merge_request_stage_events_31_pkey PRIMARY KEY (stage_event_hash_id, merge_request_id);
 
+ALTER TABLE ONLY issue_search_data
+    ADD CONSTRAINT issue_search_data_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_00
+    ADD CONSTRAINT issue_search_data_00_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_01
+    ADD CONSTRAINT issue_search_data_01_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_02
+    ADD CONSTRAINT issue_search_data_02_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_03
+    ADD CONSTRAINT issue_search_data_03_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_04
+    ADD CONSTRAINT issue_search_data_04_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_05
+    ADD CONSTRAINT issue_search_data_05_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_06
+    ADD CONSTRAINT issue_search_data_06_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_07
+    ADD CONSTRAINT issue_search_data_07_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_08
+    ADD CONSTRAINT issue_search_data_08_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_09
+    ADD CONSTRAINT issue_search_data_09_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_10
+    ADD CONSTRAINT issue_search_data_10_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_11
+    ADD CONSTRAINT issue_search_data_11_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_12
+    ADD CONSTRAINT issue_search_data_12_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_13
+    ADD CONSTRAINT issue_search_data_13_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_14
+    ADD CONSTRAINT issue_search_data_14_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_15
+    ADD CONSTRAINT issue_search_data_15_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_16
+    ADD CONSTRAINT issue_search_data_16_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_17
+    ADD CONSTRAINT issue_search_data_17_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_18
+    ADD CONSTRAINT issue_search_data_18_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_19
+    ADD CONSTRAINT issue_search_data_19_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_20
+    ADD CONSTRAINT issue_search_data_20_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_21
+    ADD CONSTRAINT issue_search_data_21_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_22
+    ADD CONSTRAINT issue_search_data_22_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_23
+    ADD CONSTRAINT issue_search_data_23_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_24
+    ADD CONSTRAINT issue_search_data_24_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_25
+    ADD CONSTRAINT issue_search_data_25_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_26
+    ADD CONSTRAINT issue_search_data_26_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_27
+    ADD CONSTRAINT issue_search_data_27_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_28
+    ADD CONSTRAINT issue_search_data_28_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_29
+    ADD CONSTRAINT issue_search_data_29_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_30
+    ADD CONSTRAINT issue_search_data_30_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_31
+    ADD CONSTRAINT issue_search_data_31_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_32
+    ADD CONSTRAINT issue_search_data_32_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_33
+    ADD CONSTRAINT issue_search_data_33_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_34
+    ADD CONSTRAINT issue_search_data_34_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_35
+    ADD CONSTRAINT issue_search_data_35_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_36
+    ADD CONSTRAINT issue_search_data_36_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_37
+    ADD CONSTRAINT issue_search_data_37_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_38
+    ADD CONSTRAINT issue_search_data_38_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_39
+    ADD CONSTRAINT issue_search_data_39_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_40
+    ADD CONSTRAINT issue_search_data_40_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_41
+    ADD CONSTRAINT issue_search_data_41_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_42
+    ADD CONSTRAINT issue_search_data_42_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_43
+    ADD CONSTRAINT issue_search_data_43_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_44
+    ADD CONSTRAINT issue_search_data_44_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_45
+    ADD CONSTRAINT issue_search_data_45_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_46
+    ADD CONSTRAINT issue_search_data_46_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_47
+    ADD CONSTRAINT issue_search_data_47_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_48
+    ADD CONSTRAINT issue_search_data_48_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_49
+    ADD CONSTRAINT issue_search_data_49_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_50
+    ADD CONSTRAINT issue_search_data_50_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_51
+    ADD CONSTRAINT issue_search_data_51_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_52
+    ADD CONSTRAINT issue_search_data_52_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_53
+    ADD CONSTRAINT issue_search_data_53_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_54
+    ADD CONSTRAINT issue_search_data_54_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_55
+    ADD CONSTRAINT issue_search_data_55_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_56
+    ADD CONSTRAINT issue_search_data_56_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_57
+    ADD CONSTRAINT issue_search_data_57_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_58
+    ADD CONSTRAINT issue_search_data_58_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_59
+    ADD CONSTRAINT issue_search_data_59_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_60
+    ADD CONSTRAINT issue_search_data_60_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_61
+    ADD CONSTRAINT issue_search_data_61_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_62
+    ADD CONSTRAINT issue_search_data_62_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_63
+    ADD CONSTRAINT issue_search_data_63_pkey PRIMARY KEY (project_id, issue_id);
+
 ALTER TABLE ONLY product_analytics_events_experimental
     ADD CONSTRAINT product_analytics_events_experimental_pkey PRIMARY KEY (id, project_id);
 
@@ -25148,6 +25928,266 @@ CREATE INDEX index_ff00c038cc ON gitlab_partitions_static.analytics_cycle_analyt
 CREATE INDEX index_ff39be5400 ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_04 USING btree (stage_event_hash_id, project_id, end_event_timestamp, issue_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
 CREATE INDEX index_ff8741d8d7 ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_28 USING btree (stage_event_hash_id, group_id, start_event_timestamp, issue_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
+
+CREATE INDEX index_issue_search_data_on_issue_id ON ONLY issue_search_data USING btree (issue_id);
+
+CREATE INDEX issue_search_data_00_issue_id_idx ON gitlab_partitions_static.issue_search_data_00 USING btree (issue_id);
+
+CREATE INDEX index_issue_search_data_on_search_vector ON ONLY issue_search_data USING gin (search_vector);
+
+CREATE INDEX issue_search_data_00_search_vector_idx ON gitlab_partitions_static.issue_search_data_00 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_01_issue_id_idx ON gitlab_partitions_static.issue_search_data_01 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_01_search_vector_idx ON gitlab_partitions_static.issue_search_data_01 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_02_issue_id_idx ON gitlab_partitions_static.issue_search_data_02 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_02_search_vector_idx ON gitlab_partitions_static.issue_search_data_02 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_03_issue_id_idx ON gitlab_partitions_static.issue_search_data_03 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_03_search_vector_idx ON gitlab_partitions_static.issue_search_data_03 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_04_issue_id_idx ON gitlab_partitions_static.issue_search_data_04 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_04_search_vector_idx ON gitlab_partitions_static.issue_search_data_04 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_05_issue_id_idx ON gitlab_partitions_static.issue_search_data_05 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_05_search_vector_idx ON gitlab_partitions_static.issue_search_data_05 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_06_issue_id_idx ON gitlab_partitions_static.issue_search_data_06 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_06_search_vector_idx ON gitlab_partitions_static.issue_search_data_06 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_07_issue_id_idx ON gitlab_partitions_static.issue_search_data_07 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_07_search_vector_idx ON gitlab_partitions_static.issue_search_data_07 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_08_issue_id_idx ON gitlab_partitions_static.issue_search_data_08 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_08_search_vector_idx ON gitlab_partitions_static.issue_search_data_08 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_09_issue_id_idx ON gitlab_partitions_static.issue_search_data_09 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_09_search_vector_idx ON gitlab_partitions_static.issue_search_data_09 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_10_issue_id_idx ON gitlab_partitions_static.issue_search_data_10 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_10_search_vector_idx ON gitlab_partitions_static.issue_search_data_10 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_11_issue_id_idx ON gitlab_partitions_static.issue_search_data_11 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_11_search_vector_idx ON gitlab_partitions_static.issue_search_data_11 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_12_issue_id_idx ON gitlab_partitions_static.issue_search_data_12 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_12_search_vector_idx ON gitlab_partitions_static.issue_search_data_12 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_13_issue_id_idx ON gitlab_partitions_static.issue_search_data_13 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_13_search_vector_idx ON gitlab_partitions_static.issue_search_data_13 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_14_issue_id_idx ON gitlab_partitions_static.issue_search_data_14 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_14_search_vector_idx ON gitlab_partitions_static.issue_search_data_14 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_15_issue_id_idx ON gitlab_partitions_static.issue_search_data_15 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_15_search_vector_idx ON gitlab_partitions_static.issue_search_data_15 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_16_issue_id_idx ON gitlab_partitions_static.issue_search_data_16 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_16_search_vector_idx ON gitlab_partitions_static.issue_search_data_16 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_17_issue_id_idx ON gitlab_partitions_static.issue_search_data_17 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_17_search_vector_idx ON gitlab_partitions_static.issue_search_data_17 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_18_issue_id_idx ON gitlab_partitions_static.issue_search_data_18 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_18_search_vector_idx ON gitlab_partitions_static.issue_search_data_18 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_19_issue_id_idx ON gitlab_partitions_static.issue_search_data_19 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_19_search_vector_idx ON gitlab_partitions_static.issue_search_data_19 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_20_issue_id_idx ON gitlab_partitions_static.issue_search_data_20 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_20_search_vector_idx ON gitlab_partitions_static.issue_search_data_20 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_21_issue_id_idx ON gitlab_partitions_static.issue_search_data_21 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_21_search_vector_idx ON gitlab_partitions_static.issue_search_data_21 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_22_issue_id_idx ON gitlab_partitions_static.issue_search_data_22 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_22_search_vector_idx ON gitlab_partitions_static.issue_search_data_22 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_23_issue_id_idx ON gitlab_partitions_static.issue_search_data_23 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_23_search_vector_idx ON gitlab_partitions_static.issue_search_data_23 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_24_issue_id_idx ON gitlab_partitions_static.issue_search_data_24 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_24_search_vector_idx ON gitlab_partitions_static.issue_search_data_24 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_25_issue_id_idx ON gitlab_partitions_static.issue_search_data_25 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_25_search_vector_idx ON gitlab_partitions_static.issue_search_data_25 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_26_issue_id_idx ON gitlab_partitions_static.issue_search_data_26 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_26_search_vector_idx ON gitlab_partitions_static.issue_search_data_26 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_27_issue_id_idx ON gitlab_partitions_static.issue_search_data_27 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_27_search_vector_idx ON gitlab_partitions_static.issue_search_data_27 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_28_issue_id_idx ON gitlab_partitions_static.issue_search_data_28 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_28_search_vector_idx ON gitlab_partitions_static.issue_search_data_28 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_29_issue_id_idx ON gitlab_partitions_static.issue_search_data_29 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_29_search_vector_idx ON gitlab_partitions_static.issue_search_data_29 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_30_issue_id_idx ON gitlab_partitions_static.issue_search_data_30 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_30_search_vector_idx ON gitlab_partitions_static.issue_search_data_30 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_31_issue_id_idx ON gitlab_partitions_static.issue_search_data_31 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_31_search_vector_idx ON gitlab_partitions_static.issue_search_data_31 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_32_issue_id_idx ON gitlab_partitions_static.issue_search_data_32 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_32_search_vector_idx ON gitlab_partitions_static.issue_search_data_32 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_33_issue_id_idx ON gitlab_partitions_static.issue_search_data_33 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_33_search_vector_idx ON gitlab_partitions_static.issue_search_data_33 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_34_issue_id_idx ON gitlab_partitions_static.issue_search_data_34 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_34_search_vector_idx ON gitlab_partitions_static.issue_search_data_34 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_35_issue_id_idx ON gitlab_partitions_static.issue_search_data_35 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_35_search_vector_idx ON gitlab_partitions_static.issue_search_data_35 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_36_issue_id_idx ON gitlab_partitions_static.issue_search_data_36 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_36_search_vector_idx ON gitlab_partitions_static.issue_search_data_36 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_37_issue_id_idx ON gitlab_partitions_static.issue_search_data_37 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_37_search_vector_idx ON gitlab_partitions_static.issue_search_data_37 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_38_issue_id_idx ON gitlab_partitions_static.issue_search_data_38 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_38_search_vector_idx ON gitlab_partitions_static.issue_search_data_38 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_39_issue_id_idx ON gitlab_partitions_static.issue_search_data_39 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_39_search_vector_idx ON gitlab_partitions_static.issue_search_data_39 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_40_issue_id_idx ON gitlab_partitions_static.issue_search_data_40 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_40_search_vector_idx ON gitlab_partitions_static.issue_search_data_40 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_41_issue_id_idx ON gitlab_partitions_static.issue_search_data_41 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_41_search_vector_idx ON gitlab_partitions_static.issue_search_data_41 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_42_issue_id_idx ON gitlab_partitions_static.issue_search_data_42 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_42_search_vector_idx ON gitlab_partitions_static.issue_search_data_42 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_43_issue_id_idx ON gitlab_partitions_static.issue_search_data_43 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_43_search_vector_idx ON gitlab_partitions_static.issue_search_data_43 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_44_issue_id_idx ON gitlab_partitions_static.issue_search_data_44 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_44_search_vector_idx ON gitlab_partitions_static.issue_search_data_44 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_45_issue_id_idx ON gitlab_partitions_static.issue_search_data_45 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_45_search_vector_idx ON gitlab_partitions_static.issue_search_data_45 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_46_issue_id_idx ON gitlab_partitions_static.issue_search_data_46 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_46_search_vector_idx ON gitlab_partitions_static.issue_search_data_46 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_47_issue_id_idx ON gitlab_partitions_static.issue_search_data_47 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_47_search_vector_idx ON gitlab_partitions_static.issue_search_data_47 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_48_issue_id_idx ON gitlab_partitions_static.issue_search_data_48 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_48_search_vector_idx ON gitlab_partitions_static.issue_search_data_48 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_49_issue_id_idx ON gitlab_partitions_static.issue_search_data_49 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_49_search_vector_idx ON gitlab_partitions_static.issue_search_data_49 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_50_issue_id_idx ON gitlab_partitions_static.issue_search_data_50 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_50_search_vector_idx ON gitlab_partitions_static.issue_search_data_50 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_51_issue_id_idx ON gitlab_partitions_static.issue_search_data_51 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_51_search_vector_idx ON gitlab_partitions_static.issue_search_data_51 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_52_issue_id_idx ON gitlab_partitions_static.issue_search_data_52 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_52_search_vector_idx ON gitlab_partitions_static.issue_search_data_52 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_53_issue_id_idx ON gitlab_partitions_static.issue_search_data_53 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_53_search_vector_idx ON gitlab_partitions_static.issue_search_data_53 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_54_issue_id_idx ON gitlab_partitions_static.issue_search_data_54 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_54_search_vector_idx ON gitlab_partitions_static.issue_search_data_54 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_55_issue_id_idx ON gitlab_partitions_static.issue_search_data_55 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_55_search_vector_idx ON gitlab_partitions_static.issue_search_data_55 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_56_issue_id_idx ON gitlab_partitions_static.issue_search_data_56 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_56_search_vector_idx ON gitlab_partitions_static.issue_search_data_56 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_57_issue_id_idx ON gitlab_partitions_static.issue_search_data_57 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_57_search_vector_idx ON gitlab_partitions_static.issue_search_data_57 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_58_issue_id_idx ON gitlab_partitions_static.issue_search_data_58 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_58_search_vector_idx ON gitlab_partitions_static.issue_search_data_58 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_59_issue_id_idx ON gitlab_partitions_static.issue_search_data_59 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_59_search_vector_idx ON gitlab_partitions_static.issue_search_data_59 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_60_issue_id_idx ON gitlab_partitions_static.issue_search_data_60 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_60_search_vector_idx ON gitlab_partitions_static.issue_search_data_60 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_61_issue_id_idx ON gitlab_partitions_static.issue_search_data_61 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_61_search_vector_idx ON gitlab_partitions_static.issue_search_data_61 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_62_issue_id_idx ON gitlab_partitions_static.issue_search_data_62 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_62_search_vector_idx ON gitlab_partitions_static.issue_search_data_62 USING gin (search_vector);
+
+CREATE INDEX issue_search_data_63_issue_id_idx ON gitlab_partitions_static.issue_search_data_63 USING btree (issue_id);
+
+CREATE INDEX issue_search_data_63_search_vector_idx ON gitlab_partitions_static.issue_search_data_63 USING gin (search_vector);
 
 CREATE INDEX index_product_analytics_events_experimental_project_and_time ON ONLY product_analytics_events_experimental USING btree (project_id, collector_tstamp);
 
@@ -29157,6 +30197,390 @@ ALTER INDEX index_issue_stage_events_project_duration ATTACH PARTITION gitlab_pa
 
 ALTER INDEX index_issue_stage_events_group_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_ff8741d8d7;
 
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_00_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_00_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_00_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_01_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_01_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_01_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_02_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_02_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_02_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_03_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_03_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_03_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_04_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_04_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_04_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_05_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_05_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_05_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_06_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_06_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_06_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_07_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_07_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_07_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_08_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_08_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_08_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_09_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_09_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_09_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_10_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_10_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_10_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_11_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_11_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_11_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_12_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_12_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_12_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_13_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_13_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_13_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_14_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_14_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_14_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_15_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_15_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_15_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_16_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_16_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_16_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_17_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_17_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_17_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_18_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_18_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_18_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_19_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_19_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_19_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_20_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_20_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_20_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_21_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_21_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_21_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_22_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_22_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_22_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_23_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_23_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_23_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_24_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_24_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_24_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_25_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_25_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_25_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_26_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_26_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_26_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_27_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_27_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_27_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_28_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_28_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_28_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_29_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_29_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_29_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_30_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_30_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_30_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_31_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_31_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_31_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_32_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_32_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_32_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_33_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_33_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_33_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_34_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_34_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_34_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_35_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_35_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_35_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_36_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_36_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_36_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_37_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_37_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_37_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_38_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_38_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_38_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_39_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_39_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_39_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_40_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_40_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_40_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_41_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_41_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_41_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_42_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_42_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_42_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_43_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_43_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_43_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_44_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_44_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_44_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_45_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_45_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_45_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_46_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_46_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_46_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_47_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_47_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_47_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_48_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_48_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_48_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_49_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_49_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_49_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_50_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_50_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_50_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_51_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_51_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_51_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_52_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_52_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_52_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_53_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_53_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_53_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_54_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_54_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_54_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_55_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_55_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_55_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_56_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_56_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_56_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_57_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_57_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_57_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_58_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_58_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_58_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_59_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_59_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_59_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_60_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_60_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_60_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_61_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_61_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_61_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_62_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_62_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_62_search_vector_idx;
+
+ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitions_static.issue_search_data_63_issue_id_idx;
+
+ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_63_pkey;
+
+ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_63_search_vector_idx;
+
 ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx10;
 
 ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx11;
@@ -31883,6 +33307,12 @@ ALTER TABLE ONLY timelogs
 
 ALTER TABLE ONLY u2f_registrations
     ADD CONSTRAINT fk_u2f_registrations_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE issue_search_data
+    ADD CONSTRAINT issue_search_data_issue_id_fkey FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE issue_search_data
+    ADD CONSTRAINT issue_search_data_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE product_analytics_events_experimental
     ADD CONSTRAINT product_analytics_events_experimental_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

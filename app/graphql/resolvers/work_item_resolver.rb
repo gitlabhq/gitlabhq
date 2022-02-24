@@ -4,7 +4,7 @@ module Resolvers
   class WorkItemResolver < BaseResolver
     include Gitlab::Graphql::Authorize::AuthorizeResource
 
-    authorize :read_issue
+    authorize :read_work_item
 
     type Types::WorkItemType, null: true
 

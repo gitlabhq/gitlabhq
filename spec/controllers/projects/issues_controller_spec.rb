@@ -72,7 +72,21 @@ RSpec.describe Projects::IssuesController do
         project.add_developer(user)
       end
 
-      it_behaves_like "issuables list meta-data", :issue
+      context 'when issues_full_text_search is disabled' do
+        before do
+          stub_feature_flags(issues_full_text_search: false)
+        end
+
+        it_behaves_like 'issuables list meta-data', :issue
+      end
+
+      context 'when issues_full_text_search is enabled' do
+        before do
+          stub_feature_flags(issues_full_text_search: true)
+        end
+
+        it_behaves_like 'issuables list meta-data', :issue
+      end
 
       it_behaves_like 'set sort order from user preference' do
         let(:sorting_param) { 'updated_asc' }

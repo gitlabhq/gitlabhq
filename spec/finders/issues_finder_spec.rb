@@ -632,6 +632,29 @@ RSpec.describe IssuesFinder do
         end
       end
 
+      context 'filtering by issue term using full-text search' do
+        let(:params) { { search: search_term, attempt_full_text_search: true } }
+
+        let_it_be(:english) { create(:issue, project: project1, title: 'title', description: 'something english') }
+        let_it_be(:japanese) { create(:issue, project: project1, title: '日本語 title', description: 'another english description') }
+
+        context 'with latin search term' do
+          let(:search_term) { 'title english' }
+
+          it 'returns matching issues' do
+            expect(issues).to contain_exactly(english, japanese)
+          end
+        end
+
+        context 'with non-latin search term' do
+          let(:search_term) { '日本語' }
+
+          it 'returns matching issues' do
+            expect(issues).to contain_exactly(japanese)
+          end
+        end
+      end
+
       context 'filtering by issues iids' do
         let(:params) { { iids: [issue3.iid] } }
 

@@ -4,7 +4,7 @@ module Types
   class WorkItemType < BaseObject
     graphql_name 'WorkItem'
 
-    authorize :read_issue
+    authorize :read_work_item
 
     field :description, GraphQL::Types::String, null: true,
           description: 'Description of the work item.'
