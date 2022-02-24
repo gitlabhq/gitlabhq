@@ -3,10 +3,15 @@
 # rubocop:disable Rails/Pluck
 module QA
   # Only executes in custom job/pipeline
+  # https://gitlab.com/gitlab-org/manage/import/import-github-performance
+  #
   RSpec.describe 'Manage', :github, :requires_admin, only: { job: 'large-github-import' } do
     describe 'Project import' do
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
+
+      let(:created_by_pattern) { /\*Created by: \S+\*\n\n/ }
+      let(:suggestion_pattern) { /suggestion:-\d+\+\d+/ }
 
       let(:api_client) { Runtime::API::Client.as_admin }
 
@@ -19,46 +24,57 @@ module QA
       let(:github_repo) { ENV['QA_LARGE_GH_IMPORT_REPO'] || 'rspec/rspec-core' }
       let(:import_max_duration) { ENV['QA_LARGE_GH_IMPORT_DURATION'] ? ENV['QA_LARGE_GH_IMPORT_DURATION'].to_i : 7200 }
       let(:github_client) do
-        Octokit.middleware = Faraday::RackBuilder.new do |builder|
-          builder.response(:logger, logger, headers: false, bodies: false)
-        end
-
         Octokit::Client.new(
           access_token: ENV['QA_LARGE_GH_IMPORT_GH_TOKEN'] || Runtime::Env.github_access_token,
           auto_paginate: true
         )
       end
 
-      let(:gh_branches) { github_client.branches(github_repo).map(&:name) }
-      let(:gh_commits) { github_client.commits(github_repo).map(&:sha) }
       let(:gh_repo) { github_client.repository(github_repo) }
 
+      let(:gh_branches) do
+        logger.debug("= Fetching branches =")
+        github_client.branches(github_repo).map(&:name)
+      end
+
+      let(:gh_commits) do
+        logger.debug("= Fetching commits =")
+        github_client.commits(github_repo).map(&:sha)
+      end
+
       let(:gh_labels) do
+        logger.debug("= Fetching labels =")
         github_client.labels(github_repo).map { |label| { name: label.name, color: "##{label.color}" } }
       end
 
       let(:gh_milestones) do
+        logger.debug("= Fetching milestones =")
         github_client
           .list_milestones(github_repo, state: 'all')
           .map { |ms| { title: ms.title, description: ms.description } }
       end
 
       let(:gh_all_issues) do
+        logger.debug("= Fetching issues and prs =")
         github_client.list_issues(github_repo, state: 'all')
       end
 
       let(:gh_prs) do
         gh_all_issues.select(&:pull_request).each_with_object({}) do |pr, hash|
-          hash[pr.title] = {
+          hash[pr.number] = {
+            url: pr.html_url,
+            title: pr.title,
             body: pr.body || '',
-            comments: [*gh_pr_comments[pr.html_url], *gh_issue_comments[pr.html_url]].compact.sort
+            comments: [*gh_pr_comments[pr.html_url], *gh_issue_comments[pr.html_url]].compact
           }
         end
       end
 
       let(:gh_issues) do
         gh_all_issues.reject(&:pull_request).each_with_object({}) do |issue, hash|
-          hash[issue.title] = {
+          hash[issue.number] = {
+            url: issue.html_url,
+            title: issue.title,
             body: issue.body || '',
             comments: gh_issue_comments[issue.html_url]
           }
@@ -66,12 +82,14 @@ module QA
       end
 
       let(:gh_issue_comments) do
+        logger.debug("= Fetching issue comments =")
         github_client.issues_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
           hash[c.html_url.gsub(/\#\S+/, "")] << c.body # use base html url as key
         end
       end
 
       let(:gh_pr_comments) do
+        logger.debug("= Fetching pr comments =")
         github_client.pull_requests_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
           hash[c.html_url.gsub(/\#\S+/, "")] << c.body # use base html url as key
         end
@@ -97,6 +115,7 @@ module QA
           "data",
           {
             import_time: @import_time,
+            reported_stats: @stats,
             github: {
               project_name: github_repo,
               branches: gh_branches.length,
@@ -104,9 +123,9 @@ module QA
               labels: gh_labels.length,
               milestones: gh_milestones.length,
               prs: gh_prs.length,
-              pr_comments: gh_prs.sum { |_k, v| v.length },
+              pr_comments: gh_prs.sum { |_k, v| v[:comments].length },
               issues: gh_issues.length,
-              issue_comments: gh_issues.sum { |_k, v| v.length }
+              issue_comments: gh_issues.sum { |_k, v| v[:comments].length }
             },
             gitlab: {
               project_name: imported_project.path_with_namespace,
@@ -115,15 +134,15 @@ module QA
               labels: gl_labels.length,
               milestones: gl_milestones.length,
               mrs: mrs.length,
-              mr_comments: mrs.sum { |_k, v| v.length },
+              mr_comments: mrs.sum { |_k, v| v[:comments].length },
               issues: gl_issues.length,
-              issue_comments: gl_issues.sum { |_k, v| v.length }
+              issue_comments: gl_issues.sum { |_k, v| v[:comments].length }
             },
             not_imported: {
               mrs: @mr_diff,
               issues: @issue_diff
             }
-          }.to_json
+          }
         )
       end
 
@@ -133,19 +152,25 @@ module QA
       ) do
         start = Time.now
 
-        # import the project and log path
-        Runtime::Logger.info("Importing project '#{imported_project.reload!.full_path}'")
+        # import the project and log gitlab path
+        Runtime::Logger.info("== Importing project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
         # fetch all objects right after import has started
         fetch_github_objects
 
         import_status = lambda do
-          imported_project.project_import_status[:import_status].tap do |status|
+          imported_project.project_import_status.yield_self do |status|
+            @stats = status.dig(:stats, :imported)
+
             # fail fast if import explicitly failed
-            raise "Import of '#{imported_project.name}' failed!" if status == 'failed'
+            raise "Import of '#{imported_project.name}' failed!" if status[:import_status] == 'failed'
+
+            status[:import_status]
           end
         end
 
+        logger.info("== Waiting for import to be finished ==")
         expect(import_status).to eventually_eq('finished').within(max_duration: import_max_duration, sleep_interval: 30)
+
         @import_time = Time.now - start
 
         aggregate_failures do
@@ -161,22 +186,22 @@ module QA
       #
       # @return [void]
       def fetch_github_objects
-        logger.debug("== Fetching objects for github repo: '#{github_repo}' ==")
+        logger.info("== Fetching github repo objects ==")
 
         gh_repo
         gh_branches
         gh_commits
-        gh_prs
-        gh_issues
         gh_labels
         gh_milestones
+        gh_prs
+        gh_issues
       end
 
       # Verify repository imported correctly
       #
       # @return [void]
       def verify_repository_import
-        logger.debug("== Verifying repository import ==")
+        logger.info("== Verifying repository import ==")
         expect(imported_project.description).to eq(gh_repo.description)
         # check via include, importer creates more branches
         # https://gitlab.com/gitlab-org/gitlab/-/issues/332711
@@ -184,27 +209,11 @@ module QA
         expect(gl_commits).to match_array(gh_commits)
       end
 
-      # Verify imported merge requests and mr issues
-      #
-      # @return [void]
-      def verify_merge_requests_import
-        logger.debug("== Verifying merge request import ==")
-        @mr_diff = verify_mrs_or_issues('mr')
-      end
-
-      # Verify imported issues and issue comments
-      #
-      # @return [void]
-      def verify_issues_import
-        logger.debug("== Verifying issue import ==")
-        @issue_diff = verify_mrs_or_issues('issue')
-      end
-
       # Verify imported labels
       #
       # @return [void]
       def verify_labels_import
-        logger.debug("== Verifying label import ==")
+        logger.info("== Verifying label import ==")
         # check via include, additional labels can be inherited from parent group
         expect(gl_labels).to include(*gh_labels)
       end
@@ -213,13 +222,29 @@ module QA
       #
       # @return [void]
       def verify_milestones_import
-        logger.debug("== Verifying milestones import ==")
+        logger.info("== Verifying milestones import ==")
         expect(gl_milestones).to match_array(gh_milestones)
+      end
+
+      # Verify imported merge requests and mr issues
+      #
+      # @return [void]
+      def verify_merge_requests_import
+        logger.info("== Verifying merge request import ==")
+        @mr_diff = verify_mrs_or_issues('mr')
+      end
+
+      # Verify imported issues and issue comments
+      #
+      # @return [void]
+      def verify_issues_import
+        logger.info("== Verifying issue import ==")
+        @issue_diff = verify_mrs_or_issues('issue')
       end
 
       private
 
-      # Verify imported mrs or issues and return diff
+      # Verify imported mrs or issues and return missing items
       #
       # @param [String] type verification object, 'mrs' or 'issues'
       # @return [Hash]
@@ -231,11 +256,10 @@ module QA
         count_msg = "Expected to contain same amount of #{type}s. Gitlab: #{expected.length}, Github: #{actual.length}"
         expect(expected.length).to eq(actual.length), count_msg
 
-        logger.debug("= Comparing #{type}s =")
         missing_comments = verify_comments(type, actual, expected)
 
         {
-          "#{type}s": actual.keys - expected.keys,
+          "#{type}s": (actual.keys - expected.keys).map { |it| actual[it].slice(:title, :url) },
           "#{type}_comments": missing_comments
         }
       end
@@ -247,9 +271,10 @@ module QA
       # @param [Hash] expected
       # @return [Hash]
       def verify_comments(type, actual, expected)
-        actual.each_with_object({}) do |(title, actual_item), missing_comments|
+        actual.each_with_object([]) do |(key, actual_item), missing_comments|
+          expected_item = expected[key]
+          title = actual_item[:title]
           msg = "expected #{type} with title '#{title}' to have"
-          expected_item = expected[title]
 
           # Print title in the error message to see which object is missing
           #
@@ -261,9 +286,9 @@ module QA
           expected_body = expected_item[:body]
           actual_body = actual_item[:body]
           body_msg = <<~MSG
-            #{msg} same description. diff:\n#{differ.diff(expected_item[:body], actual_item[:body])}
+            #{msg} same description. diff:\n#{differ.diff(expected_body, actual_body)}
           MSG
-          expect(expected_body).to include(actual_body), body_msg
+          expect(expected_body).to eq(actual_body), body_msg
 
           # Print amount difference first
           #
@@ -278,7 +303,14 @@ module QA
           # Save missing comments
           #
           comment_diff = actual_comments - expected_comments
-          missing_comments[title] = comment_diff unless comment_diff.empty?
+          next if comment_diff.empty?
+
+          missing_comments << {
+            title: title,
+            github_url: actual_item[:url],
+            gitlab_url: expected_item[:url],
+            missing_comments: comment_diff
+          }
         end
       end
 
@@ -329,20 +361,25 @@ module QA
         @mrs ||= begin
           logger.debug("= Fetching merge requests =")
           imported_mrs = imported_project.merge_requests(auto_paginate: true, attempts: 2)
-          logger.debug("= Transforming merge request objects for comparison =")
-          imported_mrs.each_with_object({}) do |mr, hash|
+
+          logger.debug("= Fetching merge request comments =")
+          imported_mrs.each_with_object({}) do |mr, mrs_with_comments|
             resource = Resource::MergeRequest.init do |resource|
               resource.project = imported_project
               resource.iid = mr[:iid]
               resource.api_client = api_client
             end
 
-            hash[mr[:title]] = {
-              body: mr[:description],
-              comments: resource.comments(auto_paginate: true, attempts: 2)
+            logger.debug("Fetching comments for mr '#{mr[:title]}'")
+            mrs_with_comments[mr[:iid]] = {
+              url: mr[:web_url],
+              title: mr[:title],
+              body: sanitize_description(mr[:description]) || '',
+              comments: resource
+                .comments(auto_paginate: true, attempts: 2)
                 # remove system notes
                 .reject { |c| c[:system] || c[:body].match?(/^(\*\*Review:\*\*)|(\*Merged by:).*/) }
-                .map { |c| sanitize(c[:body]) }
+                .map { |c| sanitize_comment(c[:body]) }
             }
           end
         end
@@ -355,37 +392,51 @@ module QA
         @gl_issues ||= begin
           logger.debug("= Fetching issues =")
           imported_issues = imported_project.issues(auto_paginate: true, attempts: 2)
-          logger.debug("= Transforming issue objects for comparison =")
-          imported_issues.each_with_object({}) do |issue, hash|
+
+          logger.debug("= Fetching issue comments =")
+          imported_issues.each_with_object({}) do |issue, issues_with_comments|
             resource = Resource::Issue.init do |issue_resource|
               issue_resource.project = imported_project
               issue_resource.iid = issue[:iid]
               issue_resource.api_client = api_client
             end
 
-            hash[issue[:title]] = {
-              body: issue[:description],
-              comments: resource.comments(auto_paginate: true, attempts: 2).map { |c| sanitize(c[:body]) }
+            logger.debug("Fetching comments for issue '#{issue[:title]}'")
+            issues_with_comments[issue[:iid]] = {
+              url: issue[:web_url],
+              title: issue[:title],
+              body: sanitize_description(issue[:description]) || '',
+              comments: resource
+                .comments(auto_paginate: true, attempts: 2)
+                .map { |c| sanitize_comment(c[:body]) }
             }
           end
         end
       end
 
-      # Remove added prefixes and legacy diff format
+      # Remove added prefixes and legacy diff format from comments
       #
       # @param [String] body
       # @return [String]
-      def sanitize(body)
-        body.gsub(/\*Created by: \S+\*\n\n/, "").gsub(/suggestion:-\d+\+\d+/, "suggestion\r")
+      def sanitize_comment(body)
+        body.gsub(created_by_pattern, "").gsub(suggestion_pattern, "suggestion\r")
+      end
+
+      # Remove created by prefix from descripion
+      #
+      # @param [String] body
+      # @return [String]
+      def sanitize_description(body)
+        body&.gsub(created_by_pattern, "")
       end
 
       # Save json as file
       #
       # @param [String] name
-      # @param [String] json
+      # @param [Hash] json
       # @return [void]
       def save_json(name, json)
-        File.open("tmp/#{name}.json", "w") { |file| file.write(json) }
+        File.open("tmp/#{name}.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
       end
     end
   end

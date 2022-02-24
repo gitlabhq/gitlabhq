@@ -83,7 +83,7 @@ function install_junit_merge_gem() {
 
 function run_timed_command() {
   local cmd="${1}"
-  local metric_name="${2}"
+  local metric_name="${2:-no}"
   local timed_metric_file
   local start=$(date +%s)
 
@@ -97,7 +97,7 @@ function run_timed_command() {
   if [[ $ret -eq 0 ]]; then
     echosuccess "==> '${cmd}' succeeded in ${runtime} seconds."
 
-    if [[ -n "${metric_name}" ]]; then
+    if [[ "${metric_name}" != "no" ]]; then
       timed_metric_file=$(timed_metric_file $metric_name)
       echo "# TYPE ${metric_name} gauge" > "${timed_metric_file}"
       echo "# UNIT ${metric_name} seconds" >> "${timed_metric_file}"
@@ -132,9 +132,9 @@ function timed_metric_file() {
 }
 
 function echoerr() {
-  local header="${2}"
+  local header="${2:-no}"
 
-  if [ -n "${header}" ]; then
+  if [ "${header}" != "no" ]; then
     printf "\n\033[0;31m** %s **\n\033[0m" "${1}" >&2;
   else
     printf "\033[0;31m%s\n\033[0m" "${1}" >&2;
@@ -142,9 +142,9 @@ function echoerr() {
 }
 
 function echoinfo() {
-  local header="${2}"
+  local header="${2:-no}"
 
-  if [ -n "${header}" ]; then
+  if [ "${header}" != "no" ]; then
     printf "\n\033[0;33m** %s **\n\033[0m" "${1}" >&2;
   else
     printf "\033[0;33m%s\n\033[0m" "${1}" >&2;
@@ -152,9 +152,9 @@ function echoinfo() {
 }
 
 function echosuccess() {
-  local header="${2}"
+  local header="${2:-no}"
 
-  if [ -n "${header}" ]; then
+  if [ "${header}" != "no" ]; then
     printf "\n\033[0;32m** %s **\n\033[0m" "${1}" >&2;
   else
     printf "\033[0;32m%s\n\033[0m" "${1}" >&2;

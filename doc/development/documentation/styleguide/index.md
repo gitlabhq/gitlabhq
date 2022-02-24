@@ -1130,6 +1130,17 @@ copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
   bin/pngquant compress doc/user/img
   ```
 
+### Animated images
+
+Sometimes an image with animation (such as an animated GIF)
+can help the reader understand a complicated interaction with the user interface.
+
+However, you should use them sparingly and avoid them when you can.
+Do not use them to replace written descriptions of processes or the product.
+
+If you include an animated image, follow the same size and naming conventions we use for images. If the animated image loops, add at least a three
+second pause to the end of the loop.
+
 ## Videos
 
 Adding GitLab YouTube video tutorials to the documentation is highly

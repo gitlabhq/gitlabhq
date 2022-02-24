@@ -131,6 +131,7 @@ Example response:
   "labels": [],
   "upvotes": 4,
   "downvotes": 0,
+  "color": "#1068bf",
   "_links":{
       "self": "http://gitlab.example.com/api/v4/groups/7/epics/4",
       "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/4/issues",
@@ -179,6 +180,7 @@ Example response:
   "labels": [],
   "upvotes": 4,
   "downvotes": 0,
+  "color": "#1068bf",
   "_links":{
       "self": "http://gitlab.example.com/api/v4/groups/17/epics/35",
       "epic_issues": "http://gitlab.example.com/api/v4/groups/17/epics/35/issues",
@@ -252,6 +254,7 @@ Example response:
   "labels": [],
   "upvotes": 4,
   "downvotes": 0,
+  "color": "#1068bf",
   "subscribed": true,
   "_links":{
       "self": "http://gitlab.example.com/api/v4/groups/7/epics/5",
@@ -283,6 +286,7 @@ POST /groups/:id/epics
 | `title`             | string           | yes        | The title of the epic |
 | `labels`            | string           | no         | The comma-separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
+| `color`             | string           | no         | The color of the epic. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7641) in GitLab 14.8, behind a feature flag named `epic_highlight_color` (disabled by default) |
 | `confidential`      | boolean          | no         | Whether the epic should be confidential |
 | `created_at`        | string           | no         | When the epic was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([available](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5 and later) |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (in GitLab 11.3 and later) |
@@ -340,6 +344,7 @@ Example response:
   "labels": [],
   "upvotes": 4,
   "downvotes": 0,
+  "color": "#1068bf",
   "_links":{
     "self": "http://gitlab.example.com/api/v4/groups/7/epics/6",
     "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/6/issues",
@@ -381,6 +386,7 @@ PUT /groups/:id/epics/:epic_iid
 | `state_event`       | string           | no         | State event for an epic. Set `close` to close the epic and `reopen` to reopen it (in GitLab 11.4 and later) |
 | `title`             | string           | no         | The title of an epic |
 | `updated_at`        | string           | no         | When the epic was updated. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([available](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5 and later) |
+| `color`             | string           | no         | The color of the epic. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7641) in GitLab 14.8, behind a feature flag named `epic_highlight_color` (disabled by default) |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title&parent_id=29"
@@ -430,7 +436,8 @@ Example response:
   "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
-  "downvotes": 0
+  "downvotes": 0,
+  "color": "#1068bf"
 }
 ```
 

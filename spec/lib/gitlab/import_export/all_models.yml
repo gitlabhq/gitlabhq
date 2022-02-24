@@ -55,6 +55,7 @@ issues:
 - status_page_published_incident
 - namespace
 - note_authors
+- user_note_authors
 - issue_email_participants
 - test_reports
 - requirement
@@ -200,6 +201,7 @@ merge_requests:
 - user_mentions
 - system_note_metadata
 - note_authors
+- user_note_authors
 - cleanup_schedule
 - compliance_violations
 external_pull_requests:
@@ -774,6 +776,7 @@ epic:
 - resource_state_events
 - user_mentions
 - note_authors
+- user_note_authors
 - boards_epic_user_preferences
 - epic_board_positions
 epic_issue:

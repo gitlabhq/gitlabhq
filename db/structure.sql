@@ -14722,6 +14722,8 @@ CREATE TABLE epics (
     due_date_sourcing_epic_id integer,
     confidential boolean DEFAULT false NOT NULL,
     external_key character varying(255),
+    color text DEFAULT '#1068bf'::text,
+    CONSTRAINT check_ca608c40b3 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
 );
 

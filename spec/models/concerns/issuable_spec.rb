@@ -18,7 +18,6 @@ RSpec.describe Issuable do
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:labels) }
-    it { is_expected.to have_many(:note_authors).through(:notes) }
 
     context 'Notes' do
       let!(:note) { create(:note, noteable: issue, project: issue.project) }
@@ -27,6 +26,23 @@ RSpec.describe Issuable do
       it 'indicates if the notes have their authors loaded' do
         expect(issue.notes).not_to be_authors_loaded
         expect(scoped_issue.notes).to be_authors_loaded
+      end
+
+      describe 'note_authors' do
+        it { is_expected.to have_many(:note_authors).through(:notes) }
+      end
+
+      describe 'user_note_authors' do
+        let_it_be(:system_user) { create(:user) }
+
+        let!(:system_note) { create(:system_note, author: system_user, noteable: issue, project: issue.project) }
+
+        it 'filters the authors to those of user notes' do
+          authors = issue.user_note_authors
+
+          expect(authors).to include(note.author)
+          expect(authors).not_to include(system_user)
+        end
       end
     end
   end

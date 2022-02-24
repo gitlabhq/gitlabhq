@@ -69,6 +69,9 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
   DEBIAN_VERSION: "bullseye"
 
+  TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
+  GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
+  TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json

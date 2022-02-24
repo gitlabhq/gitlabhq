@@ -6,6 +6,7 @@ import createFlash from '~/flash';
 import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { s__, __ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -171,7 +172,7 @@ export default {
         this.expandDiscussion({ discussionId: this.discussion.id });
       }
     },
-    async cancelReplyForm(shouldConfirm, isDirty) {
+    cancelReplyForm: ignoreWhilePending(async function cancelReplyForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
         const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
 
@@ -188,7 +189,7 @@ export default {
 
       this.isReplying = false;
       clearDraft(this.autosaveKey);
-    },
+    }),
     saveReply(noteText, form, callback) {
       if (!noteText) {
         this.cancelReplyForm();
