@@ -288,7 +288,6 @@ export default {
               'sidebar-collapsed': !isSidebarOpen,
               'has-archived-block': job.archived,
             }"
-            :erase-path="job.erase_path"
             :size="jobLogSize"
             :raw-path="job.raw_path"
             :is-scroll-bottom-disabled="isScrollBottomDisabled"
@@ -325,6 +324,7 @@ export default {
         'right-sidebar-expanded': isSidebarOpen,
         'right-sidebar-collapsed': !isSidebarOpen,
       }"
+      :erase-path="job.erase_path"
       :artifact-help-url="artifactHelpUrl"
       data-testid="job-sidebar"
     />

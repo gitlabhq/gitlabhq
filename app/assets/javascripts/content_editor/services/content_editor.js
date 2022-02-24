@@ -1,15 +1,18 @@
-import eventHubFactory from '~/helpers/event_hub_factory';
 import { LOADING_CONTENT_EVENT, LOADING_SUCCESS_EVENT, LOADING_ERROR_EVENT } from '../constants';
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
-  constructor({ tiptapEditor, serializer }) {
+  constructor({ tiptapEditor, serializer, eventHub }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
-    this._eventHub = eventHubFactory();
+    this._eventHub = eventHub;
   }
 
   get tiptapEditor() {
     return this._tiptapEditor;
+  }
+
+  get eventHub() {
+    return this._eventHub;
   }
 
   get empty() {
@@ -23,39 +26,23 @@ export class ContentEditor {
     this.tiptapEditor.destroy();
   }
 
-  once(type, handler) {
-    this._eventHub.$once(type, handler);
-  }
-
-  on(type, handler) {
-    this._eventHub.$on(type, handler);
-  }
-
-  emit(type, params = {}) {
-    this._eventHub.$emit(type, params);
-  }
-
-  off(type, handler) {
-    this._eventHub.$off(type, handler);
-  }
-
   disposeAllEvents() {
     this._eventHub.dispose();
   }
 
   async setSerializedContent(serializedContent) {
-    const { _tiptapEditor: editor, _serializer: serializer } = this;
+    const { _tiptapEditor: editor, _serializer: serializer, _eventHub: eventHub } = this;
 
     try {
-      this._eventHub.$emit(LOADING_CONTENT_EVENT);
+      eventHub.$emit(LOADING_CONTENT_EVENT);
       const document = await serializer.deserialize({
         schema: editor.schema,
         content: serializedContent,
       });
       editor.commands.setContent(document);
-      this._eventHub.$emit(LOADING_SUCCESS_EVENT);
+      eventHub.$emit(LOADING_SUCCESS_EVENT);
     } catch (e) {
-      this._eventHub.$emit(LOADING_ERROR_EVENT, e);
+      eventHub.$emit(LOADING_ERROR_EVENT, e);
       throw e;
     }
   }

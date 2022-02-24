@@ -4,10 +4,10 @@
 # Ensure a transaction also occurred.
 # Be careful! This form of spec is not foolproof, but better than nothing.
 
-RSpec.shared_examples 'locked row' do
+RSpec.shared_examples 'locked row' do |lock_type|
   it "has locked row" do
     table_name = row.class.table_name
-    ids_regex = /SELECT.*FROM.*#{table_name}.*"#{table_name}"."id" = #{row.id}.+FOR UPDATE/m
+    ids_regex = /SELECT.*FROM.*#{table_name}.*"#{table_name}"."id" = #{row.id}.+#{lock_type}/m
 
     expect(recorded_queries.log).to include a_string_matching 'SAVEPOINT'
     expect(recorded_queries.log).to include a_string_matching ids_regex

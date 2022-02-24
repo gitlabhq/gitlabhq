@@ -626,7 +626,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/raketasks/x509_signatures.md @aqualls
 /doc/security/ @eread
 /doc/ssh/index.md @eread
-/doc/subscriptions/ @sselhorn
+/doc/subscriptions/ @fneill
 /doc/system_hooks/system_hooks.md @kpaizee
 /doc/topics/authentication/index.md @eread
 /doc/topics/autodevops/customize.md @marcia
@@ -791,5 +791,5 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/snippets.md @aqualls
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @msedlakjakubowski
-/doc/user/usage_quotas.md @sselhorn
+/doc/user/usage_quotas.md @fneill
 /doc/user/workspace/index.md @fneill

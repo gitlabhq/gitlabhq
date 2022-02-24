@@ -385,23 +385,43 @@ RSpec.describe Group do
         end
       end
 
-      before do
-        subject
-        reload_models(old_parent, new_parent, group)
-      end
-
       context 'within the same hierarchy' do
         let!(:root) { create(:group).reload }
         let!(:old_parent) { create(:group, parent: root) }
         let!(:new_parent) { create(:group, parent: root) }
 
-        it 'updates traversal_ids' do
-          expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
+        context 'with FOR UPDATE lock' do
+          before do
+            stub_feature_flags(for_no_key_update_lock: false)
+            subject
+            reload_models(old_parent, new_parent, group)
+          end
+
+          it 'updates traversal_ids' do
+            expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
+          end
+
+          it_behaves_like 'hierarchy with traversal_ids'
+          it_behaves_like 'locked row', 'FOR UPDATE' do
+            let(:row) { root }
+          end
         end
 
-        it_behaves_like 'hierarchy with traversal_ids'
-        it_behaves_like 'locked row' do
-          let(:row) { root }
+        context 'with FOR NO KEY UPDATE lock' do
+          before do
+            stub_feature_flags(for_no_key_update_lock: true)
+            subject
+            reload_models(old_parent, new_parent, group)
+          end
+
+          it 'updates traversal_ids' do
+            expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
+          end
+
+          it_behaves_like 'hierarchy with traversal_ids'
+          it_behaves_like 'locked row', 'FOR NO KEY UPDATE' do
+            let(:row) { root }
+          end
         end
       end
 
@@ -409,6 +429,11 @@ RSpec.describe Group do
         let!(:old_parent) { create(:group) }
         let!(:new_parent) { create(:group) }
         let!(:group) { create(:group, parent: old_parent) }
+
+        before do
+          subject
+          reload_models(old_parent, new_parent, group)
+        end
 
         it 'updates traversal_ids' do
           expect(group.traversal_ids).to eq [new_parent.id, group.id]
@@ -435,6 +460,11 @@ RSpec.describe Group do
         let!(:old_parent) { nil }
         let!(:new_parent) { create(:group) }
 
+        before do
+          subject
+          reload_models(old_parent, new_parent, group)
+        end
+
         it 'updates traversal_ids' do
           expect(group.traversal_ids).to eq [new_parent.id, group.id]
         end
@@ -451,6 +481,11 @@ RSpec.describe Group do
       context 'to being a root ancestor' do
         let!(:old_parent) { create(:group) }
         let!(:new_parent) { nil }
+
+        before do
+          subject
+          reload_models(old_parent, new_parent, group)
+        end
 
         it 'updates traversal_ids' do
           expect(group.traversal_ids).to eq [group.id]

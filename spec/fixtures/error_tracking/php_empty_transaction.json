@@ -1,0 +1,45 @@
+{
+  "event_id": "dquJXuPF9sP1fMy5RpKo979xUALjNDQB",
+  "timestamp": 1645191605.123456,
+  "platform": "php",
+  "sdk": {
+    "name": "sentry.php",
+    "version": "3.3.7"
+  },
+  "logger": "php",
+  "transaction": "",
+  "server_name": "oAjA5zTgIjqP",
+  "release": "C0FFEE",
+  "environment": "Development/Berlin",
+  "exception": {
+    "values": [
+      {
+        "type": "TestException",
+        "value": "Sentry test exception",
+        "stacktrace": {
+          "frames": [
+            {
+              "filename": "/src/Path/To/Class.php",
+              "lineno": 3,
+              "in_app": true,
+              "abs_path": "/var/www/html/src/Path/To/Class.php",
+              "function": "Path\\To\\Class::method",
+              "raw_function": "Path\\To\\Class::method",
+              "pre_context": [
+                "// Pre-context"
+              ],
+              "context_line": "throw new TestException('Sentry test exception');",
+              "post_context": [
+                "// Post-context"
+              ]
+            }
+          ]
+        },
+        "mechanism": {
+          "type": "generic",
+          "handled": true
+        }
+      }
+    ]
+  }
+}

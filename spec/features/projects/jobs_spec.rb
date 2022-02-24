@@ -313,7 +313,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       context 'job is cancelable' do
         it 'shows cancel button' do
-          click_link 'Cancel'
+          find('[data-testid="cancel-button"]').click
 
           expect(page.current_path).to eq(job_url)
         end
@@ -1031,7 +1031,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it 'loads the page and shows all needed controls' do
-        expect(page).to have_content 'Retry'
+        expect(page).to have_selector('[data-testid="retry-button"')
       end
     end
   end
@@ -1049,7 +1049,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it 'shows the right status and buttons' do
         page.within('aside.right-sidebar') do
-          expect(page).to have_content 'Cancel'
+          expect(page).to have_selector('[data-testid="cancel-button"')
         end
       end
     end

@@ -140,7 +140,7 @@ to its **Pipelines** tab.
 
 ![Pipelines index page](img/pipelines_index_v13_0.png)
 
-Click a pipeline to open the **Pipeline Details** page and show
+Select a pipeline to open the **Pipeline Details** page and show
 the jobs that were run for that pipeline. From here you can cancel a running pipeline,
 retry jobs on a failed pipeline, or [delete a pipeline](#delete-a-pipeline).
 
@@ -246,7 +246,7 @@ For each `var` or `file_var`, a key and value are required.
 [Manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually),
 allow you to require manual interaction before moving forward in the pipeline.
 
-You can do this straight from the pipeline graph. Just click the play button
+You can do this straight from the pipeline graph. Just select the play button
 to execute that particular job.
 
 For example, your pipeline can start automatically, but require a manual action to
@@ -259,8 +259,8 @@ In the example below, the `production` stage has a job with a manual action:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27188) in GitLab 11.11.
 
-Multiple manual actions in a single stage can be started at the same time using the "Play all manual" button.
-After you click this button, each individual manual action is triggered and refreshed
+Multiple manual actions in a single stage can be started at the same time using the "Play all manual"
+After you select this action, each individual manual action is triggered and refreshed
 to an updated status.
 
 This functionality is only available:
@@ -283,9 +283,9 @@ pipelines.
 
 Users with the Owner role for a project can delete a pipeline
 by clicking on the pipeline in the **CI/CD > Pipelines** to get to the **Pipeline Details**
-page, then using the **Delete** button.
+page, then selecting **Delete**.
 
-![Pipeline Delete Button](img/pipeline-delete.png)
+![Pipeline Delete](img/pipeline-delete.png)
 
 WARNING:
 Deleting a pipeline expires all pipeline caches, and deletes all related objects,
@@ -314,7 +314,7 @@ sensitive information like deployment credentials and tokens.
 **Runners** marked as **protected** can run jobs only on protected
 branches, preventing untrusted code from executing on the protected runner and
 preserving deployment keys and other credentials from being unintentionally
-accessed. In order to ensure that jobs intended to be executed on protected
+accessed. To ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be tagged accordingly.
 
 ### How pipeline duration is calculated
@@ -434,7 +434,7 @@ fix it.
 
 Pipeline mini graphs only display jobs by stage.
 
-Stages in pipeline mini graphs are collapsible. Hover your mouse over them and click to expand their jobs.
+Stages in pipeline mini graphs are expandable. Hover your mouse over each stage to see the name and status, and select a stage to expand its jobs list.
 
 | Mini graph                                                   | Mini graph expanded                                            |
 |:-------------------------------------------------------------|:---------------------------------------------------------------|

@@ -121,8 +121,8 @@ Then create policies that allow you to read these secrets (one for each secret):
 $ vault policy write myproject-staging - <<EOF
 # Policy name: myproject-staging
 #
-# Read-only permission on 'secret/data/myproject/staging/*' path
-path "secret/data/myproject/staging/*" {
+# Read-only permission on 'secret/myproject/staging/*' path
+path "secret/myproject/staging/*" {
   capabilities = [ "read" ]
 }
 EOF
@@ -131,8 +131,8 @@ Success! Uploaded policy: myproject-staging
 $ vault policy write myproject-production - <<EOF
 # Policy name: myproject-production
 #
-# Read-only permission on 'secret/data/myproject/production/*' path
-path "secret/data/myproject/production/*" {
+# Read-only permission on 'secret/myproject/production/*' path
+path "secret/myproject/production/*" {
   capabilities = [ "read" ]
 }
 EOF

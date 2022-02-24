@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLink, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlModalDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { JOB_SIDEBAR } from '../constants';
 
@@ -10,7 +10,6 @@ export default {
   },
   components: {
     GlButton,
-    GlLink,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -37,9 +36,18 @@ export default {
     :aria-label="$options.i18n.retryLabel"
     category="primary"
     variant="confirm"
-    >{{ $options.i18n.retryLabel }}</gl-button
-  >
-  <gl-link v-else :href="href" class="btn gl-button btn-confirm" data-method="post" rel="nofollow"
-    >{{ $options.i18n.retryLabel }}
-  </gl-link>
+    icon="retry"
+    data-testid="retry-job-button"
+  />
+
+  <gl-button
+    v-else
+    :href="href"
+    :aria-label="$options.i18n.retryLabel"
+    category="primary"
+    variant="confirm"
+    icon="retry"
+    data-method="post"
+    data-testid="retry-job-link"
+  />
 </template>

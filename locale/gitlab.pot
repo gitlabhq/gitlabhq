@@ -4738,9 +4738,6 @@ msgstr ""
 msgid "Are you sure you want to discard your changes?"
 msgstr ""
 
-msgid "Are you sure you want to erase this build?"
-msgstr ""
-
 msgid "Are you sure you want to import %d repository?"
 msgid_plural "Are you sure you want to import %d repositories?"
 msgstr[0] ""
@@ -21031,7 +21028,13 @@ msgstr ""
 msgid "Jobs|You're about to retry a job that failed because it attempted to deploy code that is older than the latest deployment. Retrying this job could result in overwriting the environment with the older source code."
 msgstr ""
 
+msgid "Job|Are you sure you want to erase this job log and artifacts?"
+msgstr ""
+
 msgid "Job|Browse"
+msgstr ""
+
+msgid "Job|Cancel"
 msgstr ""
 
 msgid "Job|Complete Raw"
@@ -21059,6 +21062,9 @@ msgid "Job|Keep"
 msgstr ""
 
 msgid "Job|Pipeline"
+msgstr ""
+
+msgid "Job|Retry"
 msgstr ""
 
 msgid "Job|Scroll to bottom"
@@ -26813,10 +26819,19 @@ msgstr ""
 msgid "PipelineWizardDefaultCommitMessage|Update %{filename}"
 msgstr ""
 
+msgid "PipelineWizardInputValidation|At least one entry is required"
+msgstr ""
+
 msgid "PipelineWizardInputValidation|This field is required"
 msgstr ""
 
 msgid "PipelineWizardInputValidation|This value is not valid"
+msgstr ""
+
+msgid "PipelineWizardListWidget|add another step"
+msgstr ""
+
+msgid "PipelineWizardListWidget|remove step"
 msgstr ""
 
 msgid "PipelineWizard|Commit"

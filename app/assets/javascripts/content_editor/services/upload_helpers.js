@@ -49,7 +49,7 @@ export const uploadFile = async ({ uploadsPath, renderMarkdown, file }) => {
   return extractAttachmentLinkUrl(rendered);
 };
 
-const uploadImage = async ({ editor, file, uploadsPath, renderMarkdown }) => {
+const uploadImage = async ({ editor, file, uploadsPath, renderMarkdown, eventHub }) => {
   const encodedSrc = await readFileAsDataURL(file);
   const { view } = editor;
 
@@ -72,14 +72,14 @@ const uploadImage = async ({ editor, file, uploadsPath, renderMarkdown }) => {
     );
   } catch (e) {
     editor.commands.deleteRange({ from: position, to: position + 1 });
-    editor.emit('alert', {
+    eventHub.$emit('alert', {
       message: __('An error occurred while uploading the image. Please try again.'),
       variant: 'danger',
     });
   }
 };
 
-const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown }) => {
+const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eventHub }) => {
   await Promise.resolve();
 
   const { view } = editor;
@@ -103,23 +103,23 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown }) =
     );
   } catch (e) {
     editor.commands.deleteRange({ from, to: from + 1 });
-    editor.emit('alert', {
+    eventHub.$emit('alert', {
       message: __('An error occurred while uploading the file. Please try again.'),
       variant: 'danger',
     });
   }
 };
 
-export const handleFileEvent = ({ editor, file, uploadsPath, renderMarkdown }) => {
+export const handleFileEvent = ({ editor, file, uploadsPath, renderMarkdown, eventHub }) => {
   if (!file) return false;
 
   if (acceptedMimes.image.includes(file?.type)) {
-    uploadImage({ editor, file, uploadsPath, renderMarkdown });
+    uploadImage({ editor, file, uploadsPath, renderMarkdown, eventHub });
 
     return true;
   }
 
-  uploadAttachment({ editor, file, uploadsPath, renderMarkdown });
+  uploadAttachment({ editor, file, uploadsPath, renderMarkdown, eventHub });
 
   return true;
 };

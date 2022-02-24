@@ -21,25 +21,54 @@ describe('Sidebar details block', () => {
   const findNewIssueButton = () => wrapper.findByTestId('job-new-issue');
   const findRetryButton = () => wrapper.find(JobRetryButton);
   const findTerminalLink = () => wrapper.findByTestId('terminal-link');
+  const findEraseLink = () => wrapper.findByTestId('job-log-erase-link');
 
-  const createWrapper = ({ props = {} } = {}) => {
+  const createWrapper = (props) => {
     store = createStore();
 
     store.state.job = job;
 
     wrapper = extendedWrapper(
       shallowMount(Sidebar, {
-        ...props,
+        propsData: {
+          ...props,
+        },
+
         store,
       }),
     );
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
+  });
+
+  describe('when job log is erasable', () => {
+    const path = '/root/ci-project/-/jobs/1447/erase';
+
+    beforeEach(() => {
+      createWrapper({
+        erasePath: path,
+      });
+    });
+
+    it('renders erase job link', () => {
+      expect(findEraseLink().exists()).toBe(true);
+    });
+
+    it('erase job link has correct path', () => {
+      expect(findEraseLink().attributes('href')).toBe(path);
+    });
+  });
+
+  describe('when job log is not erasable', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('does not render erase button', () => {
+      expect(findEraseLink().exists()).toBe(false);
+    });
   });
 
   describe('when there is no retry path retry', () => {
@@ -86,7 +115,7 @@ describe('Sidebar details block', () => {
     });
 
     it('should render link to cancel job', () => {
-      expect(findCancelButton().text()).toMatch('Cancel');
+      expect(findCancelButton().props('icon')).toBe('cancel');
       expect(findCancelButton().attributes('href')).toBe(job.cancel_path);
     });
   });

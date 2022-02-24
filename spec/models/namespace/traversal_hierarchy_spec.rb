@@ -68,11 +68,24 @@ RSpec.describe Namespace::TraversalHierarchy, type: :model do
       end
     end
 
-    it_behaves_like 'locked row' do
+    it_behaves_like 'locked row', 'FOR UPDATE' do
       let(:recorded_queries) { ActiveRecord::QueryRecorder.new }
       let(:row) { root }
 
       before do
+        stub_feature_flags(for_no_key_update_lock: false)
+
+        recorded_queries.record { subject }
+      end
+    end
+
+    it_behaves_like 'locked row', 'FOR NO KEY UPDATE' do
+      let(:recorded_queries) { ActiveRecord::QueryRecorder.new }
+      let(:row) { root }
+
+      before do
+        stub_feature_flags(for_no_key_update_lock: true)
+
         recorded_queries.record { subject }
       end
     end

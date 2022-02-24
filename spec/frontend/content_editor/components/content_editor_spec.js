@@ -121,7 +121,7 @@ describe('ContentEditor', () => {
     beforeEach(async () => {
       createWrapper();
 
-      contentEditor.emit(LOADING_CONTENT_EVENT);
+      contentEditor.eventHub.$emit(LOADING_CONTENT_EVENT);
 
       await nextTick();
     });
@@ -143,9 +143,9 @@ describe('ContentEditor', () => {
     beforeEach(async () => {
       createWrapper();
 
-      contentEditor.emit(LOADING_CONTENT_EVENT);
+      contentEditor.eventHub.$emit(LOADING_CONTENT_EVENT);
       await nextTick();
-      contentEditor.emit(LOADING_SUCCESS_EVENT);
+      contentEditor.eventHub.$emit(LOADING_SUCCESS_EVENT);
       await nextTick();
     });
 
@@ -164,9 +164,9 @@ describe('ContentEditor', () => {
     beforeEach(async () => {
       createWrapper();
 
-      contentEditor.emit(LOADING_CONTENT_EVENT);
+      contentEditor.eventHub.$emit(LOADING_CONTENT_EVENT);
       await nextTick();
-      contentEditor.emit(LOADING_ERROR_EVENT, error);
+      contentEditor.eventHub.$emit(LOADING_ERROR_EVENT, error);
       await nextTick();
     });
 

@@ -171,6 +171,12 @@ RSpec.describe API::ErrorTracking::Collector do
       it_behaves_like 'successful request'
     end
 
+    context 'when JSON key transaction is empty string' do
+      let_it_be(:raw_event) { fixture_file('error_tracking/php_empty_transaction.json') }
+
+      it_behaves_like 'successful request'
+    end
+
     context 'sentry_key as param and empty headers' do
       let(:url) { "/error_tracking/collector/api/#{project.id}/store?sentry_key=#{sentry_key}" }
       let(:headers) { {} }

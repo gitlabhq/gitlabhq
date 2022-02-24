@@ -1,6 +1,7 @@
 import { GlDropdown, GlButton, GlFormInputGroup } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarLinkButton from '~/content_editor/components/toolbar_link_button.vue';
+import eventHubFactory from '~/helpers/event_hub_factory';
 import Link from '~/content_editor/extensions/link';
 import { hasSelection } from '~/content_editor/services/utils';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
@@ -15,6 +16,7 @@ describe('content_editor/components/toolbar_link_button', () => {
     wrapper = mountExtended(ToolbarLinkButton, {
       provide: {
         tiptapEditor: editor,
+        eventHub: eventHubFactory(),
       },
     });
   };

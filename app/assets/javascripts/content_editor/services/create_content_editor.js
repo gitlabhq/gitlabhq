@@ -1,5 +1,6 @@
 import { Editor } from '@tiptap/vue-2';
 import { isFunction } from 'lodash';
+import eventHubFactory from '~/helpers/event_hub_factory';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import Attachment from '../extensions/attachment';
 import Audio from '../extensions/audio';
@@ -78,8 +79,10 @@ export const createContentEditor = ({
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
   }
 
+  const eventHub = eventHubFactory();
+
   const builtInContentEditorExtensions = [
-    Attachment.configure({ uploadsPath, renderMarkdown }),
+    Attachment.configure({ uploadsPath, renderMarkdown, eventHub }),
     Audio,
     Blockquote,
     Bold,
@@ -137,5 +140,5 @@ export const createContentEditor = ({
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
   const serializer = createMarkdownSerializer({ render: renderMarkdown, serializerConfig });
 
-  return new ContentEditor({ tiptapEditor, serializer });
+  return new ContentEditor({ tiptapEditor, serializer, eventHub });
 };

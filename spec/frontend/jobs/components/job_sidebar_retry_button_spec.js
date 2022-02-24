@@ -1,5 +1,4 @@
-import { GlButton, GlLink } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import JobsSidebarRetryButton from '~/jobs/components/job_sidebar_retry_button.vue';
 import createStore from '~/jobs/store';
 import job from '../mock_data';
@@ -9,12 +8,12 @@ describe('Job Sidebar Retry Button', () => {
   let wrapper;
 
   const forwardDeploymentFailure = 'forward_deployment_failure';
-  const findRetryButton = () => wrapper.find(GlButton);
-  const findRetryLink = () => wrapper.find(GlLink);
+  const findRetryButton = () => wrapper.findByTestId('retry-job-button');
+  const findRetryLink = () => wrapper.findByTestId('retry-job-link');
 
   const createWrapper = ({ props = {} } = {}) => {
     store = createStore();
-    wrapper = shallowMount(JobsSidebarRetryButton, {
+    wrapper = shallowMountExtended(JobsSidebarRetryButton, {
       propsData: {
         href: job.retry_path,
         modalId: 'modal-id',
@@ -27,7 +26,6 @@ describe('Job Sidebar Retry Button', () => {
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
-      wrapper = null;
     }
   });
 
@@ -44,7 +42,6 @@ describe('Job Sidebar Retry Button', () => {
 
       expect(findRetryButton().exists()).toBe(buttonExists);
       expect(findRetryLink().exists()).toBe(linkExists);
-      expect(wrapper.text()).toMatch('Retry');
     },
   );
 
@@ -55,6 +52,7 @@ describe('Job Sidebar Retry Button', () => {
       expect(findRetryButton().attributes()).toMatchObject({
         category: 'primary',
         variant: 'confirm',
+        icon: 'retry',
       });
     });
   });
@@ -64,6 +62,7 @@ describe('Job Sidebar Retry Button', () => {
       expect(findRetryLink().attributes()).toMatchObject({
         'data-method': 'post',
         href: job.retry_path,
+        icon: 'retry',
       });
     });
   });

@@ -5,6 +5,7 @@ import Image from '~/content_editor/extensions/image';
 import Link from '~/content_editor/extensions/link';
 import Loading from '~/content_editor/extensions/loading';
 import httpStatus from '~/lib/utils/http_status';
+import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 
 const PROJECT_WIKI_ATTACHMENT_IMAGE_HTML = `<p data-sourcepos="1:1-1:27" dir="auto">
@@ -25,6 +26,7 @@ describe('content_editor/extensions/attachment', () => {
   let link;
   let renderMarkdown;
   let mock;
+  let eventHub;
 
   const uploadsPath = '/uploads/';
   const imageFile = new File(['foo'], 'test-file.png', { type: 'image/png' });
@@ -50,9 +52,15 @@ describe('content_editor/extensions/attachment', () => {
 
   beforeEach(() => {
     renderMarkdown = jest.fn();
+    eventHub = eventHubFactory();
 
     tiptapEditor = createTestEditor({
-      extensions: [Loading, Link, Image, Attachment.configure({ renderMarkdown, uploadsPath })],
+      extensions: [
+        Loading,
+        Link,
+        Image,
+        Attachment.configure({ renderMarkdown, uploadsPath, eventHub }),
+      ],
     });
 
     ({
@@ -160,7 +168,7 @@ describe('content_editor/extensions/attachment', () => {
         it('emits an alert event that includes an error message', (done) => {
           tiptapEditor.commands.uploadAttachment({ file: imageFile });
 
-          tiptapEditor.on('alert', ({ message }) => {
+          eventHub.$on('alert', ({ message }) => {
             expect(message).toBe('An error occurred while uploading the image. Please try again.');
             done();
           });
@@ -236,7 +244,7 @@ describe('content_editor/extensions/attachment', () => {
         it('emits an alert event that includes an error message', (done) => {
           tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
 
-          tiptapEditor.on('alert', ({ message }) => {
+          eventHub.$on('alert', ({ message }) => {
             expect(message).toBe('An error occurred while uploading the file. Please try again.');
             done();
           });

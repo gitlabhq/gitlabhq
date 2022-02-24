@@ -1191,7 +1191,7 @@ has a longer discussion explaining the potential problems.
 
 To prevent writes to the Git repository data, there are two possible approaches:
 
-- Use [maintenance mode](../administration/maintenance_mode/index.md) **(PREMIUM SELF)** to place GitLab in a read-only state.
+- Use [maintenance mode](../administration/maintenance_mode/index.md) to place GitLab in a read-only state.
 - Create explicit downtime by stopping all Gitaly services before backing up the repositories:
 
   ```shell
@@ -1354,15 +1354,13 @@ To prepare the new server:
 
    ```shell
    sudo rm -f /var/opt/gitlab/redis/dump.rdb
-   sudo chown <your-linux-username> /var/opt/gitlab/redis
-   sudo mkdir /var/opt/gitlab/backups
-   sudo chown <your-linux-username> /var/opt/gitlab/backups
+   sudo chown <your-linux-username> /var/opt/gitlab/redis /var/opt/gitlab/backups
    ```
 
 ### Prepare and transfer content from the old server
 
 1. Ensure you have an up-to-date system-level backup or snapshot of the old server.
-1. Enable [maintenance mode](../administration/maintenance_mode/index.md) **(PREMIUM SELF)**,
+1. Enable [maintenance mode](../administration/maintenance_mode/index.md),
    if supported by your GitLab edition.
 1. Block new CI/CD jobs from starting:
    1. Edit `/etc/gitlab/gitlab.rb`, and set the following:
@@ -1465,7 +1463,7 @@ To prepare the new server:
    1. While still under the Sidekiq dashboard, select **Cron** and then **Enable All**
       to re-enable periodic background jobs.
 1. Test that read-only operations on the GitLab instance work as expected. For example, browse through project repository files, merge requests, and issues.
-1. Disable [Maintenance Mode](../administration/maintenance_mode/index.md) **(PREMIUM SELF)**, if previously enabled.
+1. Disable [Maintenance Mode](../administration/maintenance_mode/index.md), if previously enabled.
 1. Test that the GitLab instance is working as expected.
 1. If applicable, re-enable [incoming email](../administration/incoming_email.md) and test it is working as expected.
 1. Update your DNS or load balancer to point at the new server.

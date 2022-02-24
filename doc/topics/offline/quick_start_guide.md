@@ -12,12 +12,49 @@ instance entirely offline.
 ## Installation
 
 NOTE:
-This guide assumes the server is Ubuntu 18.04. Instructions for other servers may vary.
-This guide also assumes the server host resolves as `my-host`, which you should replace with your
-server's name.
+This guide assumes the server is Ubuntu 20.04 using the [Omnibus installation method](https://docs.gitlab.com/omnibus/) and will be running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
+This guide also assumes the server host resolves as `my-host.internal`, which you should replace with your
+server's FQDN, and that you have acess to a different server with Internet access to download the required package files. 
 
-Follow the installation instructions [as outlined in the omnibus install
-guide](https://about.gitlab.com/install/#ubuntu), but make sure to specify an `http`
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video walkthrough of this process, see [Offline GitLab Installation: Downloading & Installing](https://www.youtube.com/watch?v=TJaq4ua2Prw).
+
+### Download the GitLab package
+
+You should [manually download the GitLab package](../../update/package/index.md#upgrade-using-a-manually-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet. 
+
+If your offline environment has no local network access, you must manually transport across the relevant package files through physical media, such as a USB drive or writable DVD. 
+
+In Ubuntu, this can be performed on a server with Internet access using the following commands: 
+
+```shell
+# Download the bash script to prepare the repository
+curl --silent "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" | sudo bash
+
+# Download the gitlab-ee package and dependencies to /var/cache/apt/archives
+sudo apt-get install --download-only gitlab-ee
+
+# Copy the contents of the apt download folder to a mounted media device
+sudo cp /var/cache/apt/archives/*.deb /path/to/mount
+```
+
+### Install the GitLab package
+
+Prerequisites:
+
+- Before installing the GitLab package on your offline environment, ensure that you have installed all required dependencies first. 
+
+If you are using Ubuntu, you can install the dependency `.deb` packages you copied across with `dpkg`. Do not install the GitLab package yet.
+
+```shell
+# Navigate to the physical media device
+sudo cd /path/to/mount
+
+# Install the dependency packages
+sudo dpkg -i <package_name>.deb
+```
+
+[Use the relevant commands for your operating system to install the package](../../update/package/index.md#upgrade-using-a-manually-downloaded-package) but make sure to specify an `http`
 URL for the `EXTERNAL_URL` installation step. Once installed, we can manually
 configure the SSL ourselves.
 
@@ -25,8 +62,10 @@ It is strongly recommended to setup a domain for IP resolution rather than bind
 to the server's IP address. This better ensures a stable target for our certs' CN
 and makes long-term resolution simpler.
 
+The following example for Ubuntu specifies the `EXTERNAL_URL` using HTTP and installs the GitLab package:
+
 ```shell
-sudo EXTERNAL_URL="http://my-host.internal" apt-get install gitlab-ee
+sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
 ```
 
 ## Enabling SSL
@@ -38,7 +77,7 @@ Follow these steps to enable SSL for your fresh instance. Note that these steps 
 
    ```ruby
    # Update external_url from "http" to "https"
-   external_url "https://gitlab.example.com"
+   external_url "https://my-host.internal"
 
    # Set Let's Encrypt to false
    letsencrypt['enable'] = false

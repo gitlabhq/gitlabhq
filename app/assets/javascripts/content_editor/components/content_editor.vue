@@ -1,7 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
-import { LOADING_CONTENT_EVENT, LOADING_SUCCESS_EVENT, LOADING_ERROR_EVENT } from '../constants';
 import { createContentEditor } from '../services/create_content_editor';
 import ContentEditorAlert from './content_editor_alert.vue';
 import ContentEditorProvider from './content_editor_provider.vue';
@@ -55,17 +54,12 @@ export default {
       extensions,
       serializerConfig,
     });
-
-    this.contentEditor.on(LOADING_CONTENT_EVENT, this.displayLoadingIndicator);
-    this.contentEditor.on(LOADING_SUCCESS_EVENT, this.hideLoadingIndicator);
-    this.contentEditor.on(LOADING_ERROR_EVENT, this.hideLoadingIndicator);
+  },
+  mounted() {
     this.$emit('initialized', this.contentEditor);
   },
   beforeDestroy() {
     this.contentEditor.dispose();
-    this.contentEditor.off(LOADING_CONTENT_EVENT, this.displayLoadingIndicator);
-    this.contentEditor.off(LOADING_SUCCESS_EVENT, this.hideLoadingIndicator);
-    this.contentEditor.off(LOADING_ERROR_EVENT, this.hideLoadingIndicator);
   },
   methods: {
     displayLoadingIndicator() {
@@ -91,7 +85,14 @@ export default {
 <template>
   <content-editor-provider :content-editor="contentEditor">
     <div>
-      <editor-state-observer @docUpdate="notifyChange" @focus="focus" @blur="blur" />
+      <editor-state-observer
+        @loading="displayLoadingIndicator"
+        @loadingSuccess="hideLoadingIndicator"
+        @loadingError="hideLoadingIndicator"
+        @docUpdate="notifyChange"
+        @focus="focus"
+        @blur="blur"
+      />
       <content-editor-alert />
       <div
         data-testid="content-editor"

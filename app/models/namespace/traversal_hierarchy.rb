@@ -31,15 +31,21 @@ class Namespace
       # ActiveRecord. https://github.com/rails/rails/issues/13496
       # Ideally it would be:
       #   `incorrect_traversal_ids.update_all('traversal_ids = cte.traversal_ids')`
-      sql = """
-            UPDATE namespaces
-            SET traversal_ids = cte.traversal_ids
-            FROM (#{recursive_traversal_ids}) as cte
-            WHERE namespaces.id = cte.id
-              AND namespaces.traversal_ids::bigint[] <> cte.traversal_ids
-            """
+      sql = <<-SQL
+        UPDATE namespaces
+        SET traversal_ids = cte.traversal_ids
+        FROM (#{recursive_traversal_ids}) as cte
+        WHERE namespaces.id = cte.id
+          AND namespaces.traversal_ids::bigint[] <> cte.traversal_ids
+      SQL
+
       Namespace.transaction do
-        @root.lock!
+        if Feature.enabled?(:for_no_key_update_lock, default_enabled: :yaml)
+          @root.lock!("FOR NO KEY UPDATE")
+        else
+          @root.lock!
+        end
+
         Namespace.connection.exec_query(sql)
       end
     rescue ActiveRecord::Deadlocked

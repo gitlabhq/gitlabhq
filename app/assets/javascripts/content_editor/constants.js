@@ -42,9 +42,10 @@ export const TEXT_STYLE_DROPDOWN_ITEMS = [
   },
 ];
 
-export const LOADING_CONTENT_EVENT = 'loadingContent';
+export const LOADING_CONTENT_EVENT = 'loading';
 export const LOADING_SUCCESS_EVENT = 'loadingSuccess';
 export const LOADING_ERROR_EVENT = 'loadingError';
+export const ALERT_EVENT = 'alert';
 
 export const PARSE_HTML_PRIORITY_LOWEST = 1;
 export const PARSE_HTML_PRIORITY_DEFAULT = 50;
@@ -56,3 +57,4 @@ export const EXTENSION_PRIORITY_LOWER = 75;
  * https://tiptap.dev/guide/custom-extensions/#priority
  */
 export const EXTENSION_PRIORITY_DEFAULT = 100;
+export const EXTENSION_PRIORITY_HIGHEST = 200;

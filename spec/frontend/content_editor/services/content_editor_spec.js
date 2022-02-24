@@ -4,19 +4,21 @@ import {
   LOADING_ERROR_EVENT,
 } from '~/content_editor/constants';
 import { ContentEditor } from '~/content_editor/services/content_editor';
-
+import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor } from '../test_utils';
 
 describe('content_editor/services/content_editor', () => {
   let contentEditor;
   let serializer;
+  let eventHub;
 
   beforeEach(() => {
     const tiptapEditor = createTestEditor();
     jest.spyOn(tiptapEditor, 'destroy');
 
     serializer = { deserialize: jest.fn() };
-    contentEditor = new ContentEditor({ tiptapEditor, serializer });
+    eventHub = eventHubFactory();
+    contentEditor = new ContentEditor({ tiptapEditor, serializer, eventHub });
   });
 
   describe('.dispose', () => {
@@ -34,13 +36,13 @@ describe('content_editor/services/content_editor', () => {
       serializer.deserialize.mockResolvedValueOnce('');
     });
 
-    it('emits loadingContent and loadingSuccess event', () => {
+    it('emits loadingContent and loadingSuccess event in the eventHub', () => {
       let loadingContentEmitted = false;
 
-      contentEditor.on(LOADING_CONTENT_EVENT, () => {
+      eventHub.$on(LOADING_CONTENT_EVENT, () => {
         loadingContentEmitted = true;
       });
-      contentEditor.on(LOADING_SUCCESS_EVENT, () => {
+      eventHub.$on(LOADING_SUCCESS_EVENT, () => {
         expect(loadingContentEmitted).toBe(true);
       });
 
@@ -56,7 +58,7 @@ describe('content_editor/services/content_editor', () => {
     });
 
     it('emits loadingError event', async () => {
-      contentEditor.on(LOADING_ERROR_EVENT, (e) => {
+      eventHub.$on(LOADING_ERROR_EVENT, (e) => {
         expect(e).toBe('error');
       });
 

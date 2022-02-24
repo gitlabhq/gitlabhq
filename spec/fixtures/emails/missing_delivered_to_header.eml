@@ -1,0 +1,35 @@
+Return-Path: <jake@example.com>
+Received: from myserver.example.com ([unix socket]) by myserver (Cyrus v2.2.13-Debian-2.2.13-19+squeeze3) with LMTPA; Thu, 13 Jun 2013 17:03:50 -0400
+Received: by 10.0.0.1 with HTTP; Thu, 13 Jun 2013 14:03:48 -0700
+Received: from blabla.google.com (blabla.google.com. [1.1.1.1])
+        by bla.google.com with SMTPS id something.1.1.1.1.1.1.1
+        for <incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com>
+        (Google Transport Security);
+        Mon, 21 Feb 2022 14:41:58 -0800 (PST)
+Received: from mail.example.com (mail.example.com [IPv6:2607:f8b0:4001:c03::234]) by myserver.example.com (8.14.3/8.14.3/Debian-9.4) with ESMTP id r5DL3nFJ016967 (version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT) for <incoming+gitlabhq/gitlabhq@example.com>; Thu, 13 Jun 2013 17:03:50 -0400
+From: "jake@example.com" <jake@example.com>
+To: "support@example.com" <support@example.com>
+Subject: Insert hilarious subject line here
+Date: Tue, 26 Nov 2019 14:22:41 +0000
+Message-ID: <7e2296f83dbf4de388cbf5f56f52c11f@EXDAG29-1.EXCHANGE.INT>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [62.96.54.178]
+Content-Type: multipart/alternative;
+	boundary="_000_7e2296f83dbf4de388cbf5f56f52c11fEXDAG291EXCHANGEINT_"
+MIME-Version: 1.0
+
+--_000_7e2296f83dbf4de388cbf5f56f52c11fEXDAG291EXCHANGEINT_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+
+
+--_000_7e2296f83dbf4de388cbf5f56f52c11fEXDAG291EXCHANGEINT_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Look, a message with no Delivered-To header! Let's fallback to Received: in case it's there.
