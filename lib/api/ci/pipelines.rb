@@ -123,7 +123,7 @@ module API
           use :pagination
         end
 
-        get ':id/pipelines/:pipeline_id/jobs', feature_category: :continuous_integration do
+        get ':id/pipelines/:pipeline_id/jobs', urgency: :low, feature_category: :continuous_integration do
           authorize!(:read_pipeline, user_project)
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])

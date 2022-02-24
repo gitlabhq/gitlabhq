@@ -46,11 +46,12 @@ end
 RSpec.shared_examples_for 'wikis API returns wiki page' do
   it 'returns the wiki page' do
     expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response.size).to eq(4)
+    expect(json_response.size).to eq(5)
     expect(json_response.keys).to match_array(expected_keys_with_content)
     expect(json_response['content']).to eq(page.content)
     expect(json_response['slug']).to eq(page.slug)
     expect(json_response['title']).to eq(page.title)
+    expect(json_response['encoding']).to eq('UTF-8')
   end
 end
 
@@ -59,12 +60,13 @@ RSpec.shared_examples_for 'wikis API creates wiki page' do
     post(api(url, user), params: payload)
 
     expect(response).to have_gitlab_http_status(:created)
-    expect(json_response.size).to eq(4)
+    expect(json_response.size).to eq(5)
     expect(json_response.keys).to match_array(expected_keys_with_content)
     expect(json_response['content']).to eq(payload[:content])
     expect(json_response['slug']).to eq(payload[:title].tr(' ', '-'))
     expect(json_response['title']).to eq(payload[:title])
     expect(json_response['rdoc']).to eq(payload[:rdoc])
+    expect(json_response['encoding']).to eq('UTF-8')
   end
 
   [:title, :content].each do |part|
@@ -85,7 +87,7 @@ RSpec.shared_examples_for 'wikis API updates wiki page' do
     put(api(url, user), params: payload)
 
     expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response.size).to eq(4)
+    expect(json_response.size).to eq(5)
     expect(json_response.keys).to match_array(expected_keys_with_content)
     expect(json_response['content']).to eq(payload[:content])
     expect(json_response['slug']).to eq(payload[:title].tr(' ', '-'))

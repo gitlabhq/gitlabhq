@@ -4,6 +4,8 @@ class Projects::JobsController < Projects::ApplicationController
   include SendFileUpload
   include ContinueParams
 
+  urgency :low, [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :status, :erase, :raw]
+
   before_action :find_job_as_build, except: [:index, :play, :show]
   before_action :find_job_as_processable, only: [:play, :show]
   before_action :authorize_read_build_trace!, only: [:trace, :raw]

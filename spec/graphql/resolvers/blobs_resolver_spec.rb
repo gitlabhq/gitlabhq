@@ -68,6 +68,28 @@ RSpec.describe Resolvers::BlobsResolver do
             )
           end
         end
+
+        context 'when specifying an invalid ref' do
+          let(:ref) { 'ma:in' }
+
+          it 'raises an ArgumentError' do
+            expect { resolve_blobs }.to raise_error(
+              Gitlab::Graphql::Errors::ArgumentError,
+              'Ref is not valid'
+            )
+          end
+        end
+
+        context 'when passing an empty ref' do
+          let(:ref) { '' }
+
+          it 'raises an ArgumentError' do
+            expect { resolve_blobs }.to raise_error(
+              Gitlab::Graphql::Errors::ArgumentError,
+              'Ref is not valid'
+            )
+          end
+        end
       end
     end
   end

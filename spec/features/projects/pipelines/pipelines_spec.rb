@@ -7,6 +7,7 @@ RSpec.describe 'Pipelines', :js do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:project) { create(:project) }
+  let(:expected_detached_mr_tag) {'merge request'}
 
   context 'when user is logged in' do
     let(:user) { create(:user) }
@@ -181,7 +182,7 @@ RSpec.describe 'Pipelines', :js do
         shared_examples_for 'detached merge request pipeline' do
           it 'shows pipeline information without pipeline ref', :sidekiq_might_not_need_inline do
             within '.pipeline-tags' do
-              expect(page).to have_content('detached')
+              expect(page).to have_content(expected_detached_mr_tag)
             end
 
             within '.branch-commit' do
@@ -225,7 +226,7 @@ RSpec.describe 'Pipelines', :js do
         shared_examples_for 'detached merge request pipeline' do
           it 'shows pipeline information without pipeline ref', :sidekiq_might_not_need_inline do
             within '.pipeline-tags' do
-              expect(page).to have_content('detached')
+              expect(page).to have_content(expected_detached_mr_tag)
 
               expect(page).to have_link(merge_request.iid,
                                         href: project_merge_request_path(project, merge_request))
@@ -266,7 +267,7 @@ RSpec.describe 'Pipelines', :js do
         shared_examples_for 'Correct merge request pipeline information' do
           it 'does not show detached tag for the pipeline, and shows the link of the merge request, and does not show the ref of the pipeline', :sidekiq_might_not_need_inline do
             within '.pipeline-tags' do
-              expect(page).not_to have_content('detached')
+              expect(page).not_to have_content(expected_detached_mr_tag)
             end
 
             within '.branch-commit' do
@@ -311,7 +312,7 @@ RSpec.describe 'Pipelines', :js do
         shared_examples_for 'Correct merge request pipeline information' do
           it 'does not show detached tag for the pipeline, and shows the link of the merge request, and does not show the ref of the pipeline', :sidekiq_might_not_need_inline do
             within '.pipeline-tags' do
-              expect(page).not_to have_content('detached')
+              expect(page).not_to have_content(expected_detached_mr_tag)
 
               expect(page).to have_link(merge_request.iid,
                                         href: project_merge_request_path(project, merge_request))

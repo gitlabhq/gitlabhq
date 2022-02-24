@@ -5,6 +5,9 @@ class Projects::BuildsController < Projects::ApplicationController
 
   feature_category :continuous_integration
 
+  urgency :high, [:index, :show]
+  urgency :low, [:raw]
+
   def index
     redirect_to project_jobs_path(project)
   end

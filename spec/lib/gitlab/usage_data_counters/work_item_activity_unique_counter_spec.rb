@@ -17,16 +17,12 @@ RSpec.describe Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter, :clean_
     end
   end
 
-  describe '.track_work_item_title_changed_action' do
-    subject(:track_event) { described_class.track_work_item_title_changed_action(author: user) }
-
-    let(:event_name) { described_class::WORK_ITEM_TITLE_CHANGED }
-
+  shared_examples 'work item unique counter' do
     context 'when track_work_items_activity FF is enabled' do
       it 'tracks a unique event only once' do
         expect { 3.times { track_event } }.to change {
           Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(
-            event_names: described_class::WORK_ITEM_TITLE_CHANGED,
+            event_names: event_name,
             start_date: 2.weeks.ago,
             end_date: 2.weeks.from_now
           )
@@ -47,5 +43,21 @@ RSpec.describe Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter, :clean_
 
       it_behaves_like 'counter that does not track the event'
     end
+  end
+
+  describe '.track_work_item_created_action' do
+    subject(:track_event) { described_class.track_work_item_created_action(author: user) }
+
+    let(:event_name) { described_class::WORK_ITEM_CREATED }
+
+    it_behaves_like 'work item unique counter'
+  end
+
+  describe '.track_work_item_title_changed_action' do
+    subject(:track_event) { described_class.track_work_item_title_changed_action(author: user) }
+
+    let(:event_name) { described_class::WORK_ITEM_TITLE_CHANGED }
+
+    it_behaves_like 'work item unique counter'
   end
 end

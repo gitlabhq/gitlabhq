@@ -43,5 +43,5 @@ if project_helper.labels_to_add.any?
 end
 
 if anything_to_post
-  markdown("**If needed, you can retry the [`danger-review` job](#{ENV['CI_JOB_URL']}) that generated this comment.**")
+  markdown("**If needed, you can retry the [🔁 `danger-review` job](#{ENV['CI_JOB_URL']}) that generated this comment.**")
 end

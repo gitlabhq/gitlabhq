@@ -31,7 +31,7 @@ RSpec.describe API::Wikis do
 
   let(:project_wiki) { create(:project_wiki, project: project, user: user) }
   let(:payload) { { content: 'content', format: 'rdoc', title: 'title' } }
-  let(:expected_keys_with_content) { %w(content format slug title) }
+  let(:expected_keys_with_content) { %w(content format slug title encoding) }
   let(:expected_keys_without_content) { %w(format slug title) }
   let(:wiki) { project_wiki }
 

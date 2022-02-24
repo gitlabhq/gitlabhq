@@ -4,6 +4,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   include ::Gitlab::Utils::StrongMemoize
   include RedisTracking
 
+  urgency :default, [:status]
+  urgency :low, [:index, :new, :builds, :show, :failures, :create, :stage, :retry, :dag, :cancel]
+
   before_action :disable_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts, :config_variables]
   before_action :set_pipeline_path, only: [:show]

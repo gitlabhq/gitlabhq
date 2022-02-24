@@ -662,7 +662,7 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
    ```
 
    You can also use the `gitlab:elastic:clear_index_status` Rake task to force the
-   indexer to "forget" all progress, so it will retry the indexing process from the
+   indexer to "forget" all progress, so it retries the indexing process from the
    start.
 
 1. Personal snippets are not associated with a project and need to be indexed separately:

@@ -38,7 +38,7 @@ module API
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord
-        get ':id/jobs', feature_category: :continuous_integration do
+        get ':id/jobs', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
 
           builds = user_project.builds.order('id DESC')
@@ -55,7 +55,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
         end
-        get ':id/jobs/:job_id', feature_category: :continuous_integration do
+        get ':id/jobs/:job_id', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
 
           build = find_build!(params[:job_id])
@@ -70,7 +70,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
         end
-        get ':id/jobs/:job_id/trace', feature_category: :continuous_integration do
+        get ':id/jobs/:job_id/trace', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
 
           build = find_build!(params[:job_id])
@@ -92,7 +92,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
         end
-        post ':id/jobs/:job_id/cancel', feature_category: :continuous_integration do
+        post ':id/jobs/:job_id/cancel', urgency: :low, feature_category: :continuous_integration do
           authorize_update_builds!
 
           build = find_build!(params[:job_id])
@@ -109,7 +109,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a build'
         end
-        post ':id/jobs/:job_id/retry', feature_category: :continuous_integration do
+        post ':id/jobs/:job_id/retry', urgency: :low, feature_category: :continuous_integration do
           authorize_update_builds!
 
           build = find_build!(params[:job_id])
@@ -127,7 +127,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a build'
         end
-        post ':id/jobs/:job_id/erase', feature_category: :continuous_integration do
+        post ':id/jobs/:job_id/erase', urgency: :low, feature_category: :continuous_integration do
           authorize_update_builds!
 
           build = find_build!(params[:job_id])
@@ -146,7 +146,7 @@ module API
           requires :job_id, type: Integer, desc: 'The ID of a Job'
         end
 
-        post ":id/jobs/:job_id/play", feature_category: :continuous_integration do
+        post ':id/jobs/:job_id/play', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
 
           job = find_job!(params[:job_id])
@@ -168,11 +168,11 @@ module API
       end
 
       resource :job do
-        desc 'Get current project using job token' do
+        desc 'Get current job using job token' do
           success Entities::Ci::Job
         end
         route_setting :authentication, job_token_allowed: true
-        get '', feature_category: :continuous_integration do
+        get '', feature_category: :continuous_integration, urgency: :low do
           validate_current_authenticated_job
 
           present current_authenticated_job, with: Entities::Ci::Job

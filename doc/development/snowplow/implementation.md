@@ -520,7 +520,7 @@ To install and run Snowplow Micro, complete these steps to modify the
 ### Troubleshoot
 
 To control content security policy warnings when using an external host, modify `config/gitlab.yml`
-to allow or disallow them. To allow them, add the relevant host for `connect_src`. For example, for
+to allow or prevent them. To allow them, add the relevant host for `connect_src`. For example, for
 `https://snowplow.trx.gitlab.net`:
 
 ```yaml

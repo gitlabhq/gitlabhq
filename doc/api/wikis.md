@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Project wikis API **(FREE)**
 
+> The `encoding` field was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81150) in GitLab 14.9.
+
 The project [wikis](../user/project/wiki/index.md) API is available only in APIv4.
 An API for [group wikis](group_wikis.md) is also available.
 
@@ -34,18 +36,21 @@ Example response:
     "content" : "Here is an instruction how to deploy this project.",
     "format" : "markdown",
     "slug" : "deploy",
-    "title" : "deploy"
+    "title" : "deploy",
+    "encoding": "UTF-8"
   },
   {
     "content" : "Our development process is described here.",
     "format" : "markdown",
     "slug" : "development",
-    "title" : "development"
+    "title" : "development",
+    "encoding": "UTF-8"
   },{
     "content" : "*  [Deploy](deploy)\n*  [Development](development)",
     "format" : "markdown",
     "slug" : "home",
-    "title" : "home"
+    "title" : "home",
+    "encoding": "UTF-8"
   }
 ]
 ```
@@ -74,7 +79,8 @@ Example response:
   "content" : "home page",
   "format" : "markdown",
   "slug" : "home",
-  "title" : "home"
+  "title" : "home",
+  "encoding": "UTF-8"
 }
 ```
 
@@ -105,7 +111,8 @@ Example response:
   "content" : "Hello world",
   "format" : "markdown",
   "slug" : "Hello",
-  "title" : "Hello"
+  "title" : "Hello",
+  "encoding": "UTF-8"
 }
 ```
 
@@ -137,7 +144,8 @@ Example response:
   "content" : "documentation",
   "format" : "markdown",
   "slug" : "Docs",
-  "title" : "Docs"
+  "title" : "Docs",
+  "encoding": "UTF-8"
 }
 ```
 

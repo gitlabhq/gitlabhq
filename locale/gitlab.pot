@@ -22972,9 +22972,6 @@ msgstr ""
 msgid "Merge request not merged"
 msgstr ""
 
-msgid "Merge request pipelines are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for merge request pipelines."
-msgstr ""
-
 msgid "Merge request reports"
 msgstr ""
 
@@ -27017,6 +27014,12 @@ msgstr ""
 msgid "Pipelines|This is a child pipeline within the parent pipeline"
 msgstr ""
 
+msgid "Pipelines|This pipeline ran on the contents of this merge request combined with the contents of all other merge requests queued for merging into the target branch."
+msgstr ""
+
+msgid "Pipelines|This pipeline ran on the contents of this merge request's source branch, not the target branch."
+msgstr ""
+
 msgid "Pipelines|This pipeline will run code originating from a forked project merge request. This means that the code can potentially have security considerations like exposing CI variables."
 msgstr ""
 
@@ -27059,9 +27062,6 @@ msgstr ""
 msgid "Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page."
 msgstr ""
 
-msgid "Pipelines|detached"
-msgstr ""
-
 msgid "Pipelines|error"
 msgstr ""
 
@@ -27071,10 +27071,13 @@ msgstr ""
 msgid "Pipelines|latest"
 msgstr ""
 
-msgid "Pipelines|stuck"
+msgid "Pipelines|merge request"
 msgstr ""
 
-msgid "Pipelines|train"
+msgid "Pipelines|merge train"
+msgstr ""
+
+msgid "Pipelines|stuck"
 msgstr ""
 
 msgid "Pipelines|yaml invalid"
@@ -27206,6 +27209,12 @@ msgstr ""
 msgid "Pipeline|This change will not change the overall test coverage if merged."
 msgstr ""
 
+msgid "Pipeline|This pipeline ran on the contents of this merge request combined with the contents of all other merge requests queued for merging into the target branch."
+msgstr ""
+
+msgid "Pipeline|This pipeline ran on the contents of this merge request's source branch, not the target branch."
+msgstr ""
+
 msgid "Pipeline|Trigger author"
 msgstr ""
 
@@ -27228,6 +27237,12 @@ msgid "Pipeline|You’re about to stop pipeline #%{pipelineId}."
 msgstr ""
 
 msgid "Pipeline|for"
+msgstr ""
+
+msgid "Pipeline|merge request"
+msgstr ""
+
+msgid "Pipeline|merge train"
 msgstr ""
 
 msgid "Pipeline|on"
@@ -37452,9 +37467,6 @@ msgstr ""
 msgid "This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize."
 msgstr ""
 
-msgid "This is a merge train pipeline"
-msgstr ""
-
 msgid "This is a private email address %{helpIcon} generated just for you. Anyone who has it can create issues or merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
 msgstr ""
 
@@ -43290,9 +43302,6 @@ msgstr ""
 msgid "design"
 msgstr ""
 
-msgid "detached"
-msgstr ""
-
 msgid "disabled"
 msgstr ""
 
@@ -44446,9 +44455,6 @@ msgid "time summary"
 msgstr ""
 
 msgid "toggle collapse"
-msgstr ""
-
-msgid "train"
 msgstr ""
 
 msgid "triggered"

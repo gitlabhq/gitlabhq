@@ -131,7 +131,7 @@ module API
         formatter :build_json, ->(object, _) { object }
         parser :build_json, ::Grape::Parser::Json
 
-        post '/request', feature_category: :continuous_integration do
+        post '/request', urgency: :low, feature_category: :continuous_integration do
           authenticate_runner!
 
           unless current_runner.active?
@@ -185,7 +185,7 @@ module API
           end
           optional :exit_code, type: Integer, desc: %q(Job's exit code)
         end
-        put '/:id', feature_category: :continuous_integration do
+        put '/:id', urgency: :low, feature_category: :continuous_integration do
           job = authenticate_job!(heartbeat_runner: true)
 
           Gitlab::Metrics.add_event(:update_build)
@@ -212,7 +212,7 @@ module API
           requires :id, type: Integer, desc: %q(Job's ID)
           optional :token, type: String, desc: %q(Job's authentication token)
         end
-        patch '/:id/trace', feature_category: :continuous_integration do
+        patch '/:id/trace', urgency: :default, feature_category: :continuous_integration do
           job = authenticate_job!(heartbeat_runner: true)
 
           error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')

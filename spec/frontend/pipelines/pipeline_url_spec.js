@@ -132,7 +132,7 @@ describe('Pipeline Url Component', () => {
         ...detachedMRPipeline,
       });
 
-      expect(findDetachedTag().text()).toContain('detached');
+      expect(findDetachedTag().text()).toBe('merge request');
     });
 
     it('should render error badge when pipeline has a failure reason set', () => {
@@ -180,7 +180,7 @@ describe('Pipeline Url Component', () => {
         ...mergeTrainPipeline,
       });
 
-      expect(findTrainTag().text()).toContain('train');
+      expect(findTrainTag().text()).toBe('merge train');
     });
 
     it('should not render the train badge when the pipeline is not a merge train pipeline', () => {

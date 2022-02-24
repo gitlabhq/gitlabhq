@@ -74,7 +74,7 @@ The following are important notes about 2FA:
   2FA enabled, 2FA is **not** required for those individually added members.
 - If there are multiple 2FA requirements (for example, group + all users, or multiple
   groups) the shortest grace period is used.
-- It is possible to disallow subgroups from setting up their own 2FA requirements:
+- It is possible to prevent subgroups from setting up their own 2FA requirements:
   1. Go to the top-level group's **Settings > General**.
   1. Expand the **Permissions and group features** section.
   1. Uncheck the **Allow subgroups to set up their own two-factor authentication rule** field.

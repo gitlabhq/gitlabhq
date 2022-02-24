@@ -248,11 +248,15 @@ export default {
       <gl-badge
         v-if="pipeline.flags.merge_train_pipeline"
         v-gl-tooltip
-        :title="__('This is a merge train pipeline')"
+        :title="
+          s__(
+            'Pipeline|This pipeline ran on the contents of this merge request combined with the contents of all other merge requests queued for merging into the target branch.',
+          )
+        "
         variant="info"
         size="sm"
         data-testid="pipeline-url-train"
-        >{{ __('train') }}</gl-badge
+        >{{ s__('Pipeline|merge train') }}</gl-badge
       >
       <gl-badge
         v-if="pipeline.flags.yaml_errors"
@@ -320,14 +324,14 @@ export default {
         v-if="pipeline.flags.detached_merge_request_pipeline"
         v-gl-tooltip
         :title="
-          __(
-            'Merge request pipelines are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for merge request pipelines.',
+          s__(
+            `Pipeline|This pipeline ran on the contents of this merge request's source branch, not the target branch.`,
           )
         "
         variant="info"
         size="sm"
         data-testid="pipeline-url-detached"
-        >{{ __('detached') }}</gl-badge
+        >{{ s__('Pipeline|merge request') }}</gl-badge
       >
       <gl-badge
         v-if="isInFork"

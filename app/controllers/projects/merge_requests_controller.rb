@@ -87,7 +87,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :ci_environments_status,
     :destroy,
     :rebase,
-    :discussions
+    :discussions,
+    :pipelines
   ]
 
   def index

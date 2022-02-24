@@ -1413,7 +1413,7 @@ RSpec.describe 'Pipeline', :js do
 
       it 'contains badge that indicates detached merge request pipeline' do
         page.within(all('.well-segment')[1]) do
-          expect(page).to have_content 'detached'
+          expect(page).to have_content 'merge request'
         end
       end
     end

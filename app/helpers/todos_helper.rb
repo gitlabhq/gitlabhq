@@ -18,7 +18,7 @@ module TodosHelper
     when Todo::ASSIGNED then todo.self_added? ? 'assigned' : 'assigned you'
     when Todo::REVIEW_REQUESTED then 'requested a review of'
     when Todo::MENTIONED then "mentioned #{todo_action_subject(todo)} on"
-    when Todo::BUILD_FAILED then 'The build failed for'
+    when Todo::BUILD_FAILED then 'The pipeline failed in'
     when Todo::MARKED then 'added a todo for'
     when Todo::APPROVAL_REQUIRED then "set #{todo_action_subject(todo)} as an approver for"
     when Todo::UNMERGEABLE then 'Could not merge'
