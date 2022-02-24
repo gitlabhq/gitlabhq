@@ -226,7 +226,7 @@ To change the SAML app used for sign in:
 ### Migrate to a different SAML provider
 
 You can migrate to a different SAML provider. During the migration process users will not be able to access any of the SAML groups.
-To mitigate this, you can disable [SSO enforcement](#sso-enforcement). 
+To mitigate this, you can disable [SSO enforcement](#sso-enforcement).
 
 To migrate SAML providers:
 

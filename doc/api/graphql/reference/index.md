@@ -5967,6 +5967,29 @@ The edge type for [`ComplianceFramework`](#complianceframework).
 | <a id="complianceframeworkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="complianceframeworkedgenode"></a>`node` | [`ComplianceFramework`](#complianceframework) | The item at the end of the edge. |
 
+#### `ComplianceViolationConnection`
+
+The connection type for [`ComplianceViolation`](#complianceviolation).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceviolationconnectionedges"></a>`edges` | [`[ComplianceViolationEdge]`](#complianceviolationedge) | A list of edges. |
+| <a id="complianceviolationconnectionnodes"></a>`nodes` | [`[ComplianceViolation]`](#complianceviolation) | A list of nodes. |
+| <a id="complianceviolationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ComplianceViolationEdge`
+
+The edge type for [`ComplianceViolation`](#complianceviolation).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceviolationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="complianceviolationedgenode"></a>`node` | [`ComplianceViolation`](#complianceviolation) | The item at the end of the edge. |
+
 #### `ConnectedAgentConnection`
 
 The connection type for [`ConnectedAgent`](#connectedagent).
@@ -9499,6 +9522,20 @@ Represents a ComplianceFramework associated with a Project.
 | <a id="complianceframeworkname"></a>`name` | [`String!`](#string) | Name of the compliance framework. |
 | <a id="complianceframeworkpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` | [`String`](#string) | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE)**. |
 
+### `ComplianceViolation`
+
+Compliance violation associated with a merged merge request. Available only when feature flag `compliance_violations_graphql_type` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceviolationid"></a>`id` | [`ID!`](#id) | Compliance violation ID. |
+| <a id="complianceviolationmergerequest"></a>`mergeRequest` | [`MergeRequest!`](#mergerequest) | Merge request the compliance violation occurred in. |
+| <a id="complianceviolationreason"></a>`reason` | [`ComplianceViolationReason!`](#complianceviolationreason) | Reason the compliance violation occurred. |
+| <a id="complianceviolationseveritylevel"></a>`severityLevel` | [`ComplianceViolationSeverity!`](#complianceviolationseverity) | Severity of the compliance violation. |
+| <a id="complianceviolationviolatinguser"></a>`violatingUser` | [`UserCore!`](#usercore) | User suspected of causing the compliance violation. |
+
 ### `ComposerMetadata`
 
 Composer metadata.
@@ -11054,6 +11091,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` | [`Boolean!`](#boolean) | Status of the temporary storage increase. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
+| <a id="groupmergerequestviolations"></a>`mergeRequestViolations` | [`ComplianceViolationConnection`](#complianceviolationconnection) | Compliance violations reported on merge requests merged within the group. Available only when feature flag `compliance_violations_graphql_type` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 | <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="grouporganizations"></a>`organizations` | [`CustomerRelationsOrganizationConnection`](#customerrelationsorganizationconnection) | Find organizations of this group. (see [Connections](#connections)) |
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -17076,6 +17114,28 @@ Mode of a commit action.
 | ----- | ----------- |
 | <a id="commitencodingbase64"></a>`BASE64` | Base64 encoding. |
 | <a id="commitencodingtext"></a>`TEXT` | Text encoding. |
+
+### `ComplianceViolationReason`
+
+Reason for the compliance violation.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="complianceviolationreasonapproved_by_committer"></a>`APPROVED_BY_COMMITTER` | Approved by committer. |
+| <a id="complianceviolationreasonapproved_by_insufficient_users"></a>`APPROVED_BY_INSUFFICIENT_USERS` | Approved by insufficient users. |
+| <a id="complianceviolationreasonapproved_by_merge_request_author"></a>`APPROVED_BY_MERGE_REQUEST_AUTHOR` | Approved by merge request author. |
+
+### `ComplianceViolationSeverity`
+
+Severity of the compliance violation.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="complianceviolationseveritycritical"></a>`CRITICAL` | Critical severity. |
+| <a id="complianceviolationseverityhigh"></a>`HIGH` | High severity. |
+| <a id="complianceviolationseverityinfo"></a>`INFO` | Info severity. |
+| <a id="complianceviolationseveritylow"></a>`LOW` | Low severity. |
+| <a id="complianceviolationseveritymedium"></a>`MEDIUM` | Medium severity. |
 
 ### `ConanMetadatumFileTypeEnum`
 

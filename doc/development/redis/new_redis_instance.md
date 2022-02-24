@@ -112,7 +112,7 @@ while and there are no issues, we can proceed.
 
 ### Proposed solution: Migrate data by using MultiStore with the fallback strategy
 
-We need a way to migrate users to a new Redis store without causing any inconveniences from UX perspective. 
+We need a way to migrate users to a new Redis store without causing any inconveniences from UX perspective.
 We also want the ability to fall back to the "old" Redis instance if something goes wrong with the new instance.
 
 Migration Requirements:
@@ -129,13 +129,13 @@ We need to write data into both Redis instances (old + new).
 We read from the new instance, but we need to fall back to the old instance when pre-fetching from the new dedicated Redis instance that failed.
 We need to log any issues or exceptions with a new instance, but still fall back to the old instance.
 
-The proposed migration strategy is to implement and use the [MultiStore](https://gitlab.com/gitlab-org/gitlab/-/blob/fcc42e80ed261a862ee6ca46b182eee293ae60b6/lib/gitlab/redis/multi_store.rb). 
-We used this approach with [adding new dedicated Redis instance for session keys](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/579). 
+The proposed migration strategy is to implement and use the [MultiStore](https://gitlab.com/gitlab-org/gitlab/-/blob/fcc42e80ed261a862ee6ca46b182eee293ae60b6/lib/gitlab/redis/multi_store.rb).
+We used this approach with [adding new dedicated Redis instance for session keys](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/579).
 Also MultiStore comes with corresponding [specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/redis/multi_store_spec.rb).
 
 The MultiStore looks like a `redis-rb ::Redis` instance.
 
-In the new Redis instance class you added in [Step 1](#step-1-support-configuring-the-new-instance), 
+In the new Redis instance class you added in [Step 1](#step-1-support-configuring-the-new-instance),
 override the [Redis](https://gitlab.com/gitlab-org/gitlab/-/blob/fcc42e80ed261a862ee6ca46b182eee293ae60b6/lib/gitlab/redis/sessions.rb#L20-28) method from the `::Gitlab::Redis::Wrapper`
 
 ```ruby
@@ -177,7 +177,7 @@ bin/feature-flag use_primary_store_as_default_for_foo
 ```
 
 By enabling `use_primary_and_secondary_stores_for_foo` feature flag, our `Gitlab::Redis::Foo` will use `MultiStore` to write to both new Redis instance
-and the [old (fallback-instance)](#fallback-instance). 
+and the [old (fallback-instance)](#fallback-instance).
 If we fail to fetch data from the new instance, we will fallback and read from the old Redis instance.
 
 We can monitor logs for `Gitlab::Redis::MultiStore::ReadFromPrimaryError`, and also the Prometheus counter `gitlab_redis_multi_store_read_fallback_total`.
@@ -218,7 +218,7 @@ When a command outside of the supported list is used, `method_missing` will pass
 This ensures that anything unexpected behaves like it would before.
 
 NOTE:
-By tracking `gitlab_redis_multi_store_method_missing_total` counter and `Gitlab::Redis::MultiStore::MethodMissingError`, 
+By tracking `gitlab_redis_multi_store_method_missing_total` counter and `Gitlab::Redis::MultiStore::MethodMissingError`,
 a developer will need to add an implementation for missing Redis commands before proceeding with the migration.
 
 ##### Errors

@@ -69,7 +69,7 @@ In addition, there are a few circumstances where we would always run the full RS
 - when the `pipeline:run-all-rspec` label is set on the merge request
 - when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
-- when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any CI configuration file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
 ### Jest minimal jobs
 
@@ -85,7 +85,7 @@ In addition, there are a few circumstances where we would always run the full Je
 - when the `pipeline:run-all-jest` label is set on the merge request
 - when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
-- when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any CI configuration file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 - when any frontend "core" file is changed (i.e. `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
 - when any vendored JavaScript file is changed (i.e. `vendor/assets/javascripts/**/*`)
 - when any backend file is changed ([see the patterns list for details](https://gitlab.com/gitlab-org/gitlab/-/blob/3616946936c1adbd9e754c1bd06f86ba670796d8/.gitlab/ci/rules.gitlab-ci.yml#L205-216))
@@ -218,7 +218,7 @@ of `gitlab-org/gitlab-foss`. These jobs are only created in the following cases:
 
 - when the `pipeline:run-as-if-foss` label is set on the merge request
 - when the merge request is created in the `gitlab-org/security/gitlab` project
-- when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any CI configuration file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
 The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
 set and get the `ee/` folder removed before the tests start running.

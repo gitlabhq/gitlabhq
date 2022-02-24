@@ -90,7 +90,7 @@ module API
           runner = get_runner(params.delete(:id))
           authenticate_update_runner!(runner)
           params[:active] = !params.delete(:paused) if params.include?(:paused)
-          update_service = ::Ci::UpdateRunnerService.new(runner)
+          update_service = ::Ci::Runners::UpdateRunnerService.new(runner)
 
           if update_service.update(declared_params(include_missing: false))
             present runner, with: Entities::Ci::RunnerDetails, current_user: current_user
@@ -110,7 +110,7 @@ module API
 
           authenticate_delete_runner!(runner)
 
-          destroy_conditionally!(runner) { ::Ci::UnregisterRunnerService.new(runner, current_user).execute }
+          destroy_conditionally!(runner) { ::Ci::Runners::UnregisterRunnerService.new(runner, current_user).execute }
         end
 
         desc 'List jobs running on a runner' do
@@ -187,7 +187,7 @@ module API
           runner = get_runner(params[:runner_id])
           authenticate_enable_runner!(runner)
 
-          if ::Ci::AssignRunnerService.new(runner, user_project, current_user).execute
+          if ::Ci::Runners::AssignRunnerService.new(runner, user_project, current_user).execute
             present runner, with: Entities::Ci::Runner
           else
             render_validation_error!(runner)

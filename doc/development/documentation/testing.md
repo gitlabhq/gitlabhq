@@ -128,7 +128,7 @@ and you should make sure your version matches the version used by GitLab.
 
 ## Update linter configuration
 
-[Vale configuration](#vale) and [markdownlint configuration](#markdownlint) is under source control in each 
+[Vale configuration](#vale) and [markdownlint configuration](#markdownlint) is under source control in each
 project, so updates must be committed to each project individually.
 
 We consider the configuration in the `gitlab` project as the source of truth and that's where all updates should

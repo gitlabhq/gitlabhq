@@ -262,7 +262,7 @@ module Gitlab
 end
 ```
 
-A worker that is only defined in the EE codebase can subscribe to an event in the same way by 
+A worker that is only defined in the EE codebase can subscribe to an event in the same way by
 declaring the subscription in `ee/lib/ee/gitlab/event_store.rb`.
 
 Subscriptions are stored in memory when the Rails app is loaded and they are immediately frozen.

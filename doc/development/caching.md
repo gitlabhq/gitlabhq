@@ -265,6 +265,13 @@ All the time!
 - As the lookup is similar to a cache lookup (in the GitLab implementation), we can use
   the same key for both. This is how `Gitlab::Cache.fetch_once` works.
 
+#### Possible downsides
+
+- Adding new attributes to a cached object using `Gitlab::JsonCache`
+  and `Gitlab::SafeRequestStore`, for example, can lead to stale data issues
+  where the cache data doesn't have the appropriate value for the new attribute
+  (see this past [incident](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6372)).
+
 ### When to use SQL caching
 
 Rails uses this automatically for identical queries in a request, so no action is

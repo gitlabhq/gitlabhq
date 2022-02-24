@@ -878,12 +878,12 @@ variables:
 
 ## Reports JSON format
 
-SAST outputs a report file in JSON format. The report file contains details of all found vulnerabilities. 
-To download the report file, you can either: 
+SAST outputs a report file in JSON format. The report file contains details of all found vulnerabilities.
+To download the report file, you can either:
 
 - Download the file from the CI/CD pipelines page.
-- In the pipelines tab on merge requests, set [`artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`.  
- 
+- In the pipelines tab on merge requests, set [`artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`.
+
 For information, see [Download job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
 
 For details of the report file's schema, see

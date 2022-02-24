@@ -18,7 +18,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Act as SaaS
 
-When developing locally, there are times when you need your instance to act like the SaaS version of the product. 
+When developing locally, there are times when you need your instance to act like the SaaS version of the product.
 In those instances, you can simulate SaaS by exporting an environment variable as seen below:
 
 `export GITLAB_SIMULATE_SAAS=1`

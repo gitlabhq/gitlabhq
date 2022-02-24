@@ -190,7 +190,7 @@ You can override the default values in the `values.yaml` file in the
   `HELM_UPGRADE_VALUES_FILE` [CI/CD variable](#cicd-variables) with
   the path and name.
 
-Some values can not be overridden with the options above. Settings like `replicaCount` should instead be overridden with the `REPLICAS` 
+Some values can not be overridden with the options above. Settings like `replicaCount` should instead be overridden with the `REPLICAS`
 [build and deployment](#build-and-deployment) CI/CD variable. Follow [this issue](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/31) for more information.
 
 NOTE:

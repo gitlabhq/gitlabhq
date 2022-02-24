@@ -530,7 +530,7 @@ RSpec.describe API::Ci::Runners do
     context 'admin user' do
       context 'when runner is shared' do
         it 'deletes runner' do
-          expect_next_instance_of(Ci::UnregisterRunnerService, shared_runner, admin) do |service|
+          expect_next_instance_of(Ci::Runners::UnregisterRunnerService, shared_runner, admin) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
 
@@ -548,7 +548,7 @@ RSpec.describe API::Ci::Runners do
 
       context 'when runner is not shared' do
         it 'deletes used project runner' do
-          expect_next_instance_of(Ci::UnregisterRunnerService, project_runner, admin) do |service|
+          expect_next_instance_of(Ci::Runners::UnregisterRunnerService, project_runner, admin) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
 
@@ -561,7 +561,7 @@ RSpec.describe API::Ci::Runners do
       end
 
       it 'returns 404 if runner does not exist' do
-        allow_next_instance_of(Ci::UnregisterRunnerService) do |service|
+        allow_next_instance_of(Ci::Runners::UnregisterRunnerService) do |service|
           expect(service).not_to receive(:execute)
         end
 
@@ -646,7 +646,7 @@ RSpec.describe API::Ci::Runners do
 
     context 'unauthorized user' do
       it 'does not delete project runner' do
-        allow_next_instance_of(Ci::UnregisterRunnerService) do |service|
+        allow_next_instance_of(Ci::Runners::UnregisterRunnerService) do |service|
           expect(service).not_to receive(:execute)
         end
 

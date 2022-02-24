@@ -79,7 +79,7 @@ The Authorization code with PKCE flow, PKCE for short, makes it possible to secu
 the OAuth exchange of client credentials for access tokens on public clients without
 requiring access to the _Client Secret_ at all. This makes the PKCE flow advantageous
 for single page JavaScript applications or other client side apps where keeping secrets
-from the user is a technical impossibility. 
+from the user is a technical impossibility.
 
 Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `CODE_CHALLENGE`.
 

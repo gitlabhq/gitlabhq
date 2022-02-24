@@ -342,6 +342,18 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         end
       end
 
+      describe 'parsing evidence' do
+        it 'returns evidence object for each finding', :aggregate_failures do
+          evidences = report.findings.map(&:evidence)
+
+          expect(evidences.first.data).not_to be_empty
+          expect(evidences.first.data["summary"]).to match(/The Origin header was changed/)
+          expect(evidences.size).to eq(3)
+          expect(evidences.compact.size).to eq(2)
+          expect(evidences.first).to be_a(::Gitlab::Ci::Reports::Security::Evidence)
+        end
+      end
+
       describe 'setting the uuid' do
         let(:finding_uuids) { report.findings.map(&:uuid) }
         let(:uuid_1) do

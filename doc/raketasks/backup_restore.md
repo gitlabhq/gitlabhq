@@ -434,7 +434,7 @@ gitlab_rails['backup_upload_storage_options'] = {
 ###### SSE-KMS
 
 To enable SSE-KMS, you'll need the [KMS key via its Amazon Resource Name (ARN)
-in the `arn:aws:kms:region:acct-id:key/key-id` format](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html). Under the `backup_upload_storage_options` config setting, set:
+in the `arn:aws:kms:region:acct-id:key/key-id` format](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html). Under the `backup_upload_storage_options` configuration setting, set:
 
 - `server_side_encryption` to `aws:kms`.
 - `server_side_encryption_kms_key_id` to the ARN of the key.
@@ -1461,7 +1461,7 @@ To prepare the new server:
    1. On the top bar, select **Menu > Admin**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. Under the Sidekiq dashboard, verify that the numbers
-      match with what was shown on the old server.   
+      match with what was shown on the old server.
    1. While still under the Sidekiq dashboard, select **Cron** and then **Enable All**
       to re-enable periodic background jobs.
 1. Test that read-only operations on the GitLab instance work as expected. For example, browse through project repository files, merge requests, and issues.

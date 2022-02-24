@@ -804,7 +804,7 @@ variables:
 
 If the value must be generated or regenerated on expiration, you can provide a program or script for
 the API fuzzer to execute on a specified interval. The provided script runs in an Alpine Linux
-container that has Python 3 and Bash installed. 
+container that has Python 3 and Bash installed.
 
 You have to set the environment variable `FUZZAPI_OVERRIDES_CMD` to the program or script you would like
 to execute. The provided command creates the overrides JSON file as defined previously.
@@ -813,7 +813,7 @@ You might want to install other scripting runtimes like NodeJS or Ruby, or maybe
 your overrides command. In this case, we recommend setting the `FUZZAPI_PRE_SCRIPT` to the file path of a script which
 provides those prerequisites. The script provided by `FUZZAPI_PRE_SCRIPT` is executed once, before the analyzer starts.
 
-See the [Alpine Linux package management](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management) 
+See the [Alpine Linux package management](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management)
 page for information about installing Alpine Linux packages.
 
 You must provide three CI/CD variables, each set for correct operation:

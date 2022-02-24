@@ -23,7 +23,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def update
-    if Ci::UpdateRunnerService.new(@runner).update(runner_params)
+    if Ci::Runners::UpdateRunnerService.new(@runner).update(runner_params)
       respond_to do |format|
         format.html { redirect_to edit_admin_runner_path(@runner) }
       end
@@ -34,13 +34,13 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def destroy
-    Ci::UnregisterRunnerService.new(@runner, current_user).execute
+    Ci::Runners::UnregisterRunnerService.new(@runner, current_user).execute
 
     redirect_to admin_runners_path, status: :found
   end
 
   def resume
-    if Ci::UpdateRunnerService.new(@runner).update(active: true)
+    if Ci::Runners::UpdateRunnerService.new(@runner).update(active: true)
       redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
     else
       redirect_to admin_runners_path, alert: _('Runner was not updated.')
@@ -48,7 +48,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def pause
-    if Ci::UpdateRunnerService.new(@runner).update(active: false)
+    if Ci::Runners::UpdateRunnerService.new(@runner).update(active: false)
       redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
     else
       redirect_to admin_runners_path, alert: _('Runner was not updated.')

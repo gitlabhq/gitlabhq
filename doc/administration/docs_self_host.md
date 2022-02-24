@@ -18,7 +18,7 @@ To host the GitLab product documentation, you can use:
 - Your own web server
 
 After you create a website by using one of these methods, you redirect the UI links
-in the product to point to your website. 
+in the product to point to your website.
 
 NOTE:
 The website you create must be hosted under a subdirectory that matches

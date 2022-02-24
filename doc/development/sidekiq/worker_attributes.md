@@ -259,7 +259,7 @@ these scenarios, since `:always` should be considered the exception, not the rul
 To allow for reads to be served from replicas, we added two additional consistency modes: `:sticky` and `:delayed`.
 
 When you declare either `:sticky` or `:delayed` consistency, workers become eligible for database
-load-balancing. 
+load-balancing.
 
 In both cases, if the replica is not up-to-date and the time from scheduling the job was less than the minimum delay interval,
  the jobs sleep up to the minimum delay interval (0.8 seconds). This gives the replication process time to finish.

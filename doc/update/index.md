@@ -232,7 +232,7 @@ cannot guarantee that upgrading between major versions is seamless.
 
 A *major* upgrade requires the following steps:
 
-1. Start by identifying a [supported upgrade path](#upgrade-paths). This is essential for a successful *major* version upgrade. 
+1. Start by identifying a [supported upgrade path](#upgrade-paths). This is essential for a successful *major* version upgrade.
 1. Upgrade to the latest minor version of the preceding major version.
 1. Upgrade to the "dot zero" release of the next major version (`X.0.Z`).
 1. Optional. Follow the [upgrade path](#upgrade-paths), and proceed with upgrading to newer releases of that major version.

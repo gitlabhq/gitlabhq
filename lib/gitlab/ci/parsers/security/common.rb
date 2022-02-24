@@ -99,6 +99,7 @@ module Gitlab
             flags = create_flags(data['flags'])
             links = create_links(data['links'])
             location = create_location(data['location'] || {})
+            evidence = create_evidence(data['evidence'])
             signatures = create_signatures(tracking_data(data))
 
             if @vulnerability_finding_signatures_enabled && !signatures.empty?
@@ -117,6 +118,7 @@ module Gitlab
                 name: finding_name(data, identifiers, location),
                 compare_key: data['cve'] || '',
                 location: location,
+                evidence: evidence,
                 severity: parse_severity_level(data['severity']),
                 confidence: parse_confidence_level(data['confidence']),
                 scanner: create_scanner(data['scanner']),
@@ -251,6 +253,12 @@ module Gitlab
 
           def create_location(location_data)
             raise NotImplementedError
+          end
+
+          def create_evidence(evidence_data)
+            return unless evidence_data.is_a?(Hash)
+
+            ::Gitlab::Ci::Reports::Security::Evidence.new(data: evidence_data)
           end
 
           def finding_name(data, identifiers, location)

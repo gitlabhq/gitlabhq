@@ -209,17 +209,17 @@ sequenceDiagram
 
 - `uuid` - GitLab instance unique identifier
 - `hostname` - GitLab instance hostname
-- `version` - GitLab instance current versions 
+- `version` - GitLab instance current versions
 - `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
 - `message` - Error message
 
 <pre>
 <code>
 {
-  "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d", 
-  "hostname"=>"127.0.0.1", 
-  "version"=>"14.7.0-pre", 
-  "elapsed"=>0.006946, 
+  "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
+  "hostname"=>"127.0.0.1",
+  "version"=>"14.7.0-pre",
+  "elapsed"=>0.006946,
   "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
 }
 </code>
@@ -576,7 +576,7 @@ skip_db_write:
 ServicePing::SubmitService.new(skip_db_write: true).execute
 ```
 
-## Manually upload Service Ping payload 
+## Manually upload Service Ping payload
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7388) in GitLab 14.8 with a flag named `admin_application_settings_service_usage_data_center`. Disabled by default.
 
@@ -596,7 +596,7 @@ To upload payload manually:
 
 ## Monitoring
 
-Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health). 
+Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
 
 ## Troubleshooting
 

@@ -951,7 +951,7 @@ RSpec.describe Ci::Runner do
       let!(:last_update) { runner.ensure_runner_queue_value }
 
       before do
-        Ci::UpdateRunnerService.new(runner).update(description: 'new runner') # rubocop: disable Rails/SaveBang
+        Ci::Runners::UpdateRunnerService.new(runner).update(description: 'new runner') # rubocop: disable Rails/SaveBang
       end
 
       it 'sets a new last_update value' do

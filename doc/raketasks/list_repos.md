@@ -24,7 +24,7 @@ The results use the default ordering of the GitLab Rails application.
 ## Limit search results
 
 To list only projects with recent activity, pass a date with the `SINCE` environment variable. The
-time you specify is parsed by the Rails [TimeZone#parse function](https://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html#method-i-parse).
+time you specify is parsed by the Rails [`TimeZone#parse` function](https://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html#method-i-parse).
 
 ```shell
 # Omnibus

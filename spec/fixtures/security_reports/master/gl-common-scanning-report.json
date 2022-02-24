@@ -12,6 +12,76 @@
                 "id": "gemnasium",
                 "name": "Gemnasium"
             },
+            "evidence": {
+              "source": {
+                "id": "assert:CORS - Bad 'Origin' value",
+                "name": "CORS - Bad 'Origin' value"
+              },
+              "summary": "The Origin header was changed to an invalid value of http://peachapisecurity.com and the response contained an Access-Control-Allow-Origin header which included this invalid Origin, indicating that the CORS configuration on the server is overly permissive.\n\n\n",
+              "request": {
+                "headers": [
+                  {
+                    "name": "Host",
+                    "value": "127.0.0.1:7777"
+                  }
+                ],
+                "method": "GET",
+                "url": "http://127.0.0.1:7777/api/users",
+                "body": ""
+              },
+              "response": {
+                "headers": [
+                  {
+                    "name": "Server",
+                    "value": "TwistedWeb/20.3.0"
+                  }
+                ],
+                "reason_phrase": "OK",
+                "status_code": 200,
+                "body": "[{\"user_id\":1,\"user\":\"admin\",\"first\":\"Joe\",\"last\":\"Smith\",\"password\":\"Password!\"}]"
+              },
+              "supporting_messages": [
+                {
+                  "name": "Origional",
+                  "request": {
+                    "headers": [
+                      {
+                        "name": "Host",
+                        "value": "127.0.0.1:7777"
+                      }
+                    ],
+                    "method": "GET",
+                    "url": "http://127.0.0.1:7777/api/users",
+                    "body": ""
+                  }
+                },
+                {
+                  "name": "Recorded",
+                  "request": {
+                    "headers": [
+                      {
+                        "name": "Host",
+                        "value": "127.0.0.1:7777"
+                      }
+                    ],
+                    "method": "GET",
+                    "url": "http://127.0.0.1:7777/api/users",
+                    "body": ""
+                  },
+                  "response": {
+                    "headers": [
+                      {
+                        "name": "Server",
+                        "value": "TwistedWeb/20.3.0"
+                      }
+                    ],
+                    "reason_phrase": "OK",
+                    "status_code": 200,
+                    "body": "[{\"user_id\":1,\"user\":\"admin\",\"first\":\"Joe\",\"last\":\"Smith\",\"password\":\"Password!\"}]"
+                  }
+                }
+              ]
+            },
             "location": {},
             "identifiers": [
                 {
@@ -56,6 +126,76 @@
             "scanner": {
                 "id": "gemnasium",
                 "name": "Gemnasium"
+            },
+            "evidence": {
+              "source": {
+                "id": "assert:CORS - Bad 'Origin' value",
+                "name": "CORS - Bad 'Origin' value"
+              },
+              "summary": "The Origin header was changed to an invalid value of http://peachapisecurity.com and the response contained an Access-Control-Allow-Origin header which included this invalid Origin, indicating that the CORS configuration on the server is overly permissive.\n\n\n",
+              "request": {
+                "headers": [
+                  {
+                    "name": "Host",
+                    "value": "127.0.0.1:7777"
+                  }
+                ],
+                "method": "GET",
+                "url": "http://127.0.0.1:7777/api/users",
+                "body": ""
+              },
+              "response": {
+                "headers": [
+                  {
+                    "name": "Server",
+                    "value": "TwistedWeb/20.3.0"
+                  }
+                ],
+                "reason_phrase": "OK",
+                "status_code": 200,
+                "body": "[{\"user_id\":1,\"user\":\"admin\",\"first\":\"Joe\",\"last\":\"Smith\",\"password\":\"Password!\"}]"
+              },
+              "supporting_messages": [
+                {
+                  "name": "Origional",
+                  "request": {
+                    "headers": [
+                      {
+                        "name": "Host",
+                        "value": "127.0.0.1:7777"
+                      }
+                    ],
+                    "method": "GET",
+                    "url": "http://127.0.0.1:7777/api/users",
+                    "body": ""
+                  }
+                },
+                {
+                  "name": "Recorded",
+                  "request": {
+                    "headers": [
+                      {
+                        "name": "Host",
+                        "value": "127.0.0.1:7777"
+                      }
+                    ],
+                    "method": "GET",
+                    "url": "http://127.0.0.1:7777/api/users",
+                    "body": ""
+                  },
+                  "response": {
+                    "headers": [
+                      {
+                        "name": "Server",
+                        "value": "TwistedWeb/20.3.0"
+                      }
+                    ],
+                    "reason_phrase": "OK",
+                    "status_code": 200,
+                    "body": "[{\"user_id\":1,\"user\":\"admin\",\"first\":\"Joe\",\"last\":\"Smith\",\"password\":\"Password!\"}]"
+                  }
+                }
+              ]
             },
             "location": {},
             "identifiers": [

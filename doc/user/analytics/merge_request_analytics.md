@@ -40,7 +40,7 @@ To view the number of merge requests merged per month:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Merge request**.
-1. Optional. Filter results:   
+1. Optional. Filter results:
    1. Select the filter bar.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.

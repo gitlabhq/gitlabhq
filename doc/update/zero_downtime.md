@@ -39,7 +39,7 @@ release if the patch release is not the latest. For example, upgrading from
 14.1.1 to 14.2.0 should be safe even if 14.1.2 has been released. We do recommend
 you check the release posts of any releases between your current and target
 version just in case they include any migrations that may require you to upgrade
-one release at a time. 
+one release at a time.
 
 We also recommend you verify the [version specific upgrading instructions](index.md#version-specific-upgrading-instructions) relevant to your [upgrade path](index.md#upgrade-paths).
 

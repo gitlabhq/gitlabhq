@@ -68,7 +68,7 @@ To view the median time spent in each stage:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
 1. To view the median time for each stage, above the **Filter results** text box, point to a stage.
-    
+
 ## View the lead time and cycle time for issues
 
 Value stream analytics shows the lead time and cycle time for issues in your project:
@@ -116,7 +116,7 @@ To view deployment metrics, you must have a
 [production environment configured](../../ci/environments/index.md#deployment-tier-of-environments).
 
 Value stream analytics shows the following deployment metrics for your project:  
- 
+
 - Deploys: The number of successful deployments in the date range.
 - Deployment Frequency: The average number of successful deployments per day in the date range.
 
@@ -174,14 +174,14 @@ This example shows a workflow through all seven stages in one day. In this
 example, milestones have been created and CI for testing and setting environments is configured.
 
 - 09:00: Create issue. **Issue** stage starts.
-- 11:00: Add issue to a milestone, start work on the issue, and create a branch locally. 
-**Issue** stage stops and **Plan** stage starts. 
+- 11:00: Add issue to a milestone, start work on the issue, and create a branch locally.
+**Issue** stage stops and **Plan** stage starts.
 - 12:00: Make the first commit.
 - 12:30: Make the second commit to the branch that mentions the issue number. **Plan** stage stops and **Code** stage starts.
 - 14:00: Push branch and create a merge request that contains the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically). **Code** stage stops and **Test** and **Review** stages start.
-- The CI takes 5 minutes to run scripts defined in [`.gitlab-ci.yml`](../../ci/yaml/index.md). 
+- The CI takes 5 minutes to run scripts defined in [`.gitlab-ci.yml`](../../ci/yaml/index.md).
 **Test** stage stops.
-- Review merge request. 
+- Review merge request.
 - 19:00: Merge the merge request. **Review** stage stops and **Staging** stage starts.
 - 19:30: Deployment to the `production` environment starts and finishes. **Staging** stops.
 
@@ -191,7 +191,7 @@ Value stream analytics records the following times for each stage:
 - **Plan**: 11:00 to 12:00: 1 hr
 - **Code**: 12:00 to 14:00: 2 hrs
 - **Test**: 5 minutes
-- **Review**: 14:00 to 19:00: 5 hrs 
+- **Review**: 14:00 to 19:00: 5 hrs
 - **Staging**: 19:00 to 19:30: 30 minutes
 
 There are some additional considerations for this example:
@@ -202,5 +202,5 @@ still collects analytics data for the issue.
 as every merge request should be tested.
 - This example illustrates only one cycle of multiple stages. The value
 stream analytics dashboard shows the calculated median elapsed time for these issues.
-- Value stream analytics identifies production environments based on the 
+- Value stream analytics identifies production environments based on the
 [deployment tier of environments](../../ci/environments/index.md#deployment-tier-of-environments).

@@ -20,6 +20,8 @@ RSpec.describe 'getting group information' do
       fields = all_graphql_fields_for('Group')
       # TODO: Set required timelogs args elsewhere https://gitlab.com/gitlab-org/gitlab/-/issues/325499
       fields.selection['timelogs(startDate: "2021-03-01" endDate: "2021-03-30")'] = fields.selection.delete('timelogs')
+      # TODO: Remove when `compliance_violations_graphql_type` feature flag is removed in https://gitlab.com/gitlab-org/gitlab/-/issues/350249
+      fields.selection.delete('mergeRequestViolations')
 
       graphql_query_for(
         'group',

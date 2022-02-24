@@ -24,7 +24,7 @@ class Groups::RunnersController < Groups::ApplicationController
   end
 
   def update
-    if Ci::UpdateRunnerService.new(@runner).update(runner_params)
+    if Ci::Runners::UpdateRunnerService.new(@runner).update(runner_params)
       redirect_to group_runner_path(@group, @runner), notice: _('Runner was successfully updated.')
     else
       render 'edit'
@@ -35,14 +35,14 @@ class Groups::RunnersController < Groups::ApplicationController
     if @runner.belongs_to_more_than_one_project?
       redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), status: :found, alert: _('Runner was not deleted because it is assigned to multiple projects.')
     else
-      Ci::UnregisterRunnerService.new(@runner, current_user).execute
+      Ci::Runners::UnregisterRunnerService.new(@runner, current_user).execute
 
       redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), status: :found
     end
   end
 
   def resume
-    if Ci::UpdateRunnerService.new(@runner).update(active: true)
+    if Ci::Runners::UpdateRunnerService.new(@runner).update(active: true)
       redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), notice: _('Runner was successfully updated.')
     else
       redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), alert: _('Runner was not updated.')
@@ -50,7 +50,7 @@ class Groups::RunnersController < Groups::ApplicationController
   end
 
   def pause
-    if Ci::UpdateRunnerService.new(@runner).update(active: false)
+    if Ci::Runners::UpdateRunnerService.new(@runner).update(active: false)
       redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), notice: _('Runner was successfully updated.')
     else
       redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), alert: _('Runner was not updated.')

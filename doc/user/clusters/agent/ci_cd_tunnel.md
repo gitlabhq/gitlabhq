@@ -21,7 +21,7 @@ Then you can run Kubernetes API commands as part of your GitLab CI/CD pipeline.
 To ensure access to your cluster is safe:
 
 - Each agent has a separate context (`kubecontext`).
-- Only the project where the agent is, and any additional projects you authorize can access the agent in your cluster. 
+- Only the project where the agent is, and any additional projects you authorize can access the agent in your cluster.
 
 You do not need to have a runner in the cluster with the agent.
 
@@ -208,7 +208,7 @@ SPDY protocol.
 [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/346248) to add support for these commands.
 
 ### Grant write permissions to `~/.kube/cache`
- 
+
 Tools like `kubectl`, Helm, `kpt`, and `kustomize` cache information about
 the cluster in `~/.kube/cache`. If this directory is not writable, the tool fetches information on each invocation,
 making interactions slower and creating unnecessary load on the cluster. For the best experience, in the

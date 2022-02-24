@@ -13,6 +13,7 @@ module Gitlab
           attr_reader :flags
           attr_reader :links
           attr_reader :location
+          attr_reader :evidence
           attr_reader :metadata_version
           attr_reader :name
           attr_reader :old_location
@@ -33,13 +34,14 @@ module Gitlab
 
           alias_method :cve, :compare_key
 
-          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false) # rubocop:disable Metrics/ParameterLists
+          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false) # rubocop:disable Metrics/ParameterLists
             @compare_key = compare_key
             @confidence = confidence
             @identifiers = identifiers
             @flags = flags
             @links = links
             @location = location
+            @evidence = evidence
             @metadata_version = metadata_version
             @name = name
             @original_data = original_data
@@ -65,6 +67,7 @@ module Gitlab
               flags
               links
               location
+              evidence
               metadata_version
               name
               project_fingerprint

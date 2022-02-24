@@ -136,7 +136,7 @@ the class name with `js-`.
 
 ## ES Module Syntax
 
-For most JavaScript files, use ES module syntax to import or export from modules. 
+For most JavaScript files, use ES module syntax to import or export from modules.
 Prefer named exports, as they improve name consistency.
 
 ```javascript

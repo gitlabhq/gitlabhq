@@ -55,7 +55,7 @@ RSpec.describe Mutations::Ci::Runner::Delete do
         it 'deletes runner' do
           mutation_params[:id] = project_runner.to_global_id
 
-          expect_next_instance_of(::Ci::UnregisterRunnerService, project_runner, current_ctx[:current_user]) do |service|
+          expect_next_instance_of(::Ci::Runners::UnregisterRunnerService, project_runner, current_ctx[:current_user]) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
 
@@ -75,7 +75,7 @@ RSpec.describe Mutations::Ci::Runner::Delete do
         it 'does not delete project runner' do
           mutation_params[:id] = two_projects_runner.to_global_id
 
-          allow_next_instance_of(::Ci::UnregisterRunnerService) do |service|
+          allow_next_instance_of(::Ci::Runners::UnregisterRunnerService) do |service|
             expect(service).not_to receive(:execute)
           end
           expect { subject }.not_to change { Ci::Runner.count }
@@ -89,7 +89,7 @@ RSpec.describe Mutations::Ci::Runner::Delete do
       let(:current_ctx) { { current_user: admin_user } }
 
       it 'deletes runner' do
-        expect_next_instance_of(::Ci::UnregisterRunnerService, runner, current_ctx[:current_user]) do |service|
+        expect_next_instance_of(::Ci::Runners::UnregisterRunnerService, runner, current_ctx[:current_user]) do |service|
           expect(service).to receive(:execute).once.and_call_original
         end
 

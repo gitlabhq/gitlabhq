@@ -24,7 +24,7 @@ Project access tokens are similar to [group access tokens](../../group/settings/
 and [personal access tokens](../../profile/personal_access_tokens.md), except they are
 associated with a project rather than a group or user.
 
-In self-managed instances, project access tokens are subject to the same [maximum lifetime limits](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens) as personal access tokens if the limit is set. 
+In self-managed instances, project access tokens are subject to the same [maximum lifetime limits](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens) as personal access tokens if the limit is set.
 
 You can use project access tokens:
 

@@ -38,7 +38,7 @@ module API
           attributes[:maintenance_note] ||= deprecated_note if deprecated_note
           attributes[:active] = !attributes.delete(:paused) if attributes.include?(:paused)
 
-          @runner = ::Ci::RegisterRunnerService.new.execute(params[:token], attributes)
+          @runner = ::Ci::Runners::RegisterRunnerService.new.execute(params[:token], attributes)
           forbidden! unless @runner
 
           if @runner.persisted?
@@ -57,7 +57,7 @@ module API
         delete '/', feature_category: :runner do
           authenticate_runner!
 
-          destroy_conditionally!(current_runner) { ::Ci::UnregisterRunnerService.new(current_runner, params[:token]).execute }
+          destroy_conditionally!(current_runner) { ::Ci::Runners::UnregisterRunnerService.new(current_runner, params[:token]).execute }
         end
 
         desc 'Validates authentication credentials' do

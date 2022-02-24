@@ -14,7 +14,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
 
     path = project_runners_path(project)
 
-    if ::Ci::AssignRunnerService.new(@runner, @project, current_user).execute
+    if ::Ci::Runners::AssignRunnerService.new(@runner, @project, current_user).execute
       redirect_to path, notice: s_('Runners|Runner assigned to project.')
     else
       assign_to_messages = @runner.errors.messages[:assign_to]

@@ -73,6 +73,21 @@ describe('ProtectedBranchEdit', () => {
     });
   });
 
+  describe('when toggles are not available in the DOM on page load', () => {
+    beforeEach(() => {
+      create({ hasLicense: true });
+      setFixtures('');
+    });
+
+    it('does not instantiate the force push toggle', () => {
+      expect(findForcePushToggle()).toBe(null);
+    });
+
+    it('does not instantiate the code owner toggle', () => {
+      expect(findCodeOwnerToggle()).toBe(null);
+    });
+  });
+
   describe.each`
     description     | checkedOption               | patchParam                        | finder
     ${'force push'} | ${'forcePushToggleChecked'} | ${'allow_force_push'}             | ${findForcePushToggle}

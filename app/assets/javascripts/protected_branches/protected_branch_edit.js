@@ -31,35 +31,39 @@ export default class ProtectedBranchEdit {
     const wrap = this.$wrap.get(0);
 
     const forcePushToggle = initToggle(wrap.querySelector('.js-force-push-toggle'));
-    forcePushToggle.$on('change', (value) => {
-      forcePushToggle.isLoading = true;
-      forcePushToggle.disabled = true;
-      this.updateProtectedBranch(
-        {
-          allow_force_push: value,
-        },
-        () => {
-          forcePushToggle.isLoading = false;
-          forcePushToggle.disabled = false;
-        },
-      );
-    });
-
-    if (this.hasLicense) {
-      const codeOwnerToggle = initToggle(wrap.querySelector('.js-code-owner-toggle'));
-      codeOwnerToggle.$on('change', (value) => {
-        codeOwnerToggle.isLoading = true;
-        codeOwnerToggle.disabled = true;
+    if (forcePushToggle) {
+      forcePushToggle.$on('change', (value) => {
+        forcePushToggle.isLoading = true;
+        forcePushToggle.disabled = true;
         this.updateProtectedBranch(
           {
-            code_owner_approval_required: value,
+            allow_force_push: value,
           },
           () => {
-            codeOwnerToggle.isLoading = false;
-            codeOwnerToggle.disabled = false;
+            forcePushToggle.isLoading = false;
+            forcePushToggle.disabled = false;
           },
         );
       });
+    }
+
+    if (this.hasLicense) {
+      const codeOwnerToggle = initToggle(wrap.querySelector('.js-code-owner-toggle'));
+      if (codeOwnerToggle) {
+        codeOwnerToggle.$on('change', (value) => {
+          codeOwnerToggle.isLoading = true;
+          codeOwnerToggle.disabled = true;
+          this.updateProtectedBranch(
+            {
+              code_owner_approval_required: value,
+            },
+            () => {
+              codeOwnerToggle.isLoading = false;
+              codeOwnerToggle.disabled = false;
+            },
+          );
+        });
+      }
     }
   }
 

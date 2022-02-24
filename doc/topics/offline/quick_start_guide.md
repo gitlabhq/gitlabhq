@@ -159,3 +159,11 @@ If all goes well, this is what you should see:
 Running hooks in /etc/ca-certificates/update.d...
 done.
 ```
+
+### Disable Version Check and Service Ping
+
+The Version Check and Service Ping services improve the GitLab user experience and ensure that
+users are on the most up-to-date instances of GitLab. These two services can be turned off for air-gapped 
+environments so that they do not attempt and fail to reach out to GitLab services.
+
+Learn more about [disabling usage statistics](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics).
