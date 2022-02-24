@@ -224,7 +224,8 @@ RSpec.describe Ci::PipelineEntity do
         end
 
         it 'makes atached flag true' do
-          expect(subject[:flags][:merge_request_pipeline]).to be_truthy
+          expect(subject[:flags][:merge_request_pipeline]).to be true
+          expect(subject[:flags][:merge_request]).to be true
         end
 
         it 'exposes source sha and target sha' do

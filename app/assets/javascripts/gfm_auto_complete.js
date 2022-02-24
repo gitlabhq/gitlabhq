@@ -574,6 +574,10 @@ class GfmAutoComplete {
               // Do not match if there is no `~` before the cursor
               return null;
             }
+            if (subtext.endsWith('~~')) {
+              // Do not match if there are two consecutive `~` characters (strikethrough) before the cursor
+              return null;
+            }
             const lastCandidate = subtext.split(flag).pop();
             if (labels.find((label) => label.title.startsWith(lastCandidate))) {
               return lastCandidate;

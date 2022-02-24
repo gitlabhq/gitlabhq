@@ -46,6 +46,7 @@ describe('Markdown field header component', () => {
       const buttons = [
         'Add bold text (⌘B)',
         'Add italic text (⌘I)',
+        'Add strikethrough text (⌘⇧X)',
         'Insert a quote',
         'Insert suggestion',
         'Insert code',

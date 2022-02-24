@@ -9,6 +9,10 @@
                               data: { "md-tag" => "_", "md-shortcuts": '["mod+i"]' },
                               title: sprintf(s_("MarkdownEditor|Add italic text (%{modifier_key}I)") % { modifier_key: modifier_key }) })
 
+  = markdown_toolbar_button({ icon: "strikethrough",
+                              data: { "md-tag" => "~~", "md-shortcuts": '["mod+shift+x"]' },
+                              title: sprintf(s_("MarkdownEditor|Add strikethrough text (%{modifier_key}⇧X)") % { modifier_key: modifier_key }) })
+
   = markdown_toolbar_button({ icon: "quote", data: { "md-tag" => "> ", "md-prepend" => true }, title: _("Insert a quote") })
   = markdown_toolbar_button({ icon: "code", data: { "md-tag" => "`", "md-block" => "```" }, title: _("Insert code") })
 

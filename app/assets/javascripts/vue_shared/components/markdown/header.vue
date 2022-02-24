@@ -1,7 +1,13 @@
 <script>
 import { GlPopover, GlButton, GlTooltipDirective, GlTabs, GlTab } from '@gitlab/ui';
 import $ from 'jquery';
-import { keysFor, BOLD_TEXT, ITALIC_TEXT, LINK_TEXT } from '~/behaviors/shortcuts/keybindings';
+import {
+  keysFor,
+  BOLD_TEXT,
+  ITALIC_TEXT,
+  STRIKETHROUGH_TEXT,
+  LINK_TEXT,
+} from '~/behaviors/shortcuts/keybindings';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import { CopyAsGFM } from '../../../behaviors/markdown/copy_as_gfm';
@@ -149,6 +155,7 @@ export default {
   shortcuts: {
     bold: keysFor(BOLD_TEXT),
     italic: keysFor(ITALIC_TEXT),
+    strikethrough: keysFor(STRIKETHROUGH_TEXT),
     link: keysFor(LINK_TEXT),
   },
   i18n: {
@@ -198,6 +205,16 @@ export default {
             "
             :shortcuts="$options.shortcuts.italic"
             icon="italic"
+          />
+          <toolbar-button
+            tag="~~"
+            :button-title="
+              sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)'), {
+                modifierKey,
+              })
+            "
+            :shortcuts="$options.shortcuts.strikethrough"
+            icon="strikethrough"
           />
           <toolbar-button
             :prepend="true"

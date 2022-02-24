@@ -22383,6 +22383,12 @@ msgstr ""
 msgid "MarkdownEditor|Add italic text (%{modifier_key}I)"
 msgstr ""
 
+msgid "MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)"
+msgstr ""
+
+msgid "MarkdownEditor|Add strikethrough text (%{modifier_key}⇧X)"
+msgstr ""
+
 msgid "Marked For Deletion At - %{deletion_time}"
 msgstr ""
 
@@ -35085,6 +35091,9 @@ msgid "StorageSize|Unknown"
 msgstr ""
 
 msgid "Strikethrough"
+msgstr ""
+
+msgid "Strikethrough text"
 msgstr ""
 
 msgid "Subgroup information"

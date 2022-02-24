@@ -37,6 +37,14 @@ RSpec.describe 'Markdown keyboard shortcuts', :js do
       expect(markdown_field.value).to eq('_italic_')
     end
 
+    it 'strikes text when <modifier>+<shift>+x is pressed' do
+      type_and_select('strikethrough')
+
+      markdown_field.send_keys([modifier_key, :shift, 'x'])
+
+      expect(markdown_field.value).to eq('~~strikethrough~~')
+    end
+
     it 'links text when <modifier>+K is pressed' do
       type_and_select('link')
 

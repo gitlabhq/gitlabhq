@@ -76,7 +76,7 @@ describe('Markdown field component', () => {
   const getPreviewLink = () => subject.findByTestId('preview-tab');
   const getWriteLink = () => subject.findByTestId('write-tab');
   const getMarkdownButton = () => subject.find('.js-md');
-  const getAllMarkdownButtons = () => subject.findAll('.js-md');
+  const getListBulletedButton = () => subject.findAll('.js-md[title="Add a bullet list"]');
   const getVideo = () => subject.find('video');
   const getAttachButton = () => subject.find('.button-attach-file');
   const clickAttachButton = () => getAttachButton().trigger('click');
@@ -185,7 +185,7 @@ describe('Markdown field component', () => {
       it('converts a line', async () => {
         const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 0);
-        const markdownButton = getAllMarkdownButtons().wrappers[5];
+        const markdownButton = getListBulletedButton();
         markdownButton.trigger('click');
 
         await nextTick();
@@ -195,7 +195,7 @@ describe('Markdown field component', () => {
       it('converts multiple lines', async () => {
         const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 50);
-        const markdownButton = getAllMarkdownButtons().wrappers[5];
+        const markdownButton = getListBulletedButton();
         markdownButton.trigger('click');
 
         await nextTick();

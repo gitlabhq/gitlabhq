@@ -51,6 +51,7 @@ descriptions):
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> | Toggle Markdown preview when editing text in a text field that has **Write** and **Preview** tabs at the top. |
 | <kbd>Command</kbd> + <kbd>b</kbd>       | <kbd>Control</kbd> + <kbd>b</kbd> | Bold the selected text (surround it with `**`). |
 | <kbd>Command</kbd> + <kbd>i</kbd>       | <kbd>Control</kbd> + <kbd>i</kbd> | Italicize the selected text (surround it with `_`). |
+| <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>s</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>s</kbd> | Strike through the selected text (surround it with `~~`). |
 | <kbd>Command</kbd> + <kbd>k</kbd>       | <kbd>Control</kbd> + <kbd>k</kbd> | Add a link (surround the selected text with `[]()`). |
 
 The shortcuts for editing in text fields are always enabled, even if other

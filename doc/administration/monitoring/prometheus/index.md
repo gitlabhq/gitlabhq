@@ -301,7 +301,7 @@ Prometheus has several custom flags to configure local storage:
 
 - `storage.tsdb.retention.time`: when to remove old data. Defaults to `15d`. Overrides
   `storage.tsdb.retention` if this flag is set to anything other than the default.
-- `storage.tsdb.retention.size`: [EXPERIMENTAL] the maximum number of bytes of storage blocks to
+- `storage.tsdb.retention.size`: (experimental) the maximum number of bytes of storage blocks to
   retain. The oldest data is removed first. Defaults to `0` (disabled). This flag is experimental
   and may change in future releases. Units supported: `B`, `KB`, `MB`, `GB`, `TB`, `PB`, `EB`. For
   example, `512MB`.

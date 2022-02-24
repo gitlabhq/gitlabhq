@@ -111,6 +111,20 @@ RSpec.describe 'GFM autocomplete', :js do
         fill_in 'Comment', with: "test\n\n@"
         expect(find_autocomplete_menu).to be_visible
       end
+
+      it 'does not open label autocomplete menu after strikethrough', :aggregate_failures do
+        fill_in 'Comment', with: "~~"
+        expect(page).not_to have_css('.atwho-view')
+
+        fill_in 'Comment', with: "~~gone~~"
+        expect(page).not_to have_css('.atwho-view')
+
+        fill_in 'Comment', with: "~"
+        expect(find_autocomplete_menu).to be_visible
+
+        fill_in 'Comment', with: "test\n\n~"
+        expect(find_autocomplete_menu).to be_visible
+      end
     end
 
     context 'xss checks' do

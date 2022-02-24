@@ -25,7 +25,8 @@
 .decomposed-database-rspec:
   extends: .decomposed-database
   variables:
-    GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: "main"
+    # For decomposition phase 3, uncomment line below:
+    # GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: "main"
     GITLAB_USE_MODEL_LOAD_BALANCING: "true"
 
 .rspec-base:

@@ -1166,7 +1166,7 @@ module Ci
 
     def merge_request?
       if Feature.enabled?(:ci_pipeline_merge_request_presence_check, default_enabled: :yaml)
-        merge_request_id.present? && merge_request
+        merge_request_id.present? && merge_request.present?
       else
         merge_request_id.present?
       end

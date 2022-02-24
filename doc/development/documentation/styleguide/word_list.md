@@ -201,10 +201,6 @@ CI/CD is always uppercase. No need to spell it out on first use.
 Use **CI/CD minutes** instead of **CI minutes**, **pipeline minutes**, **pipeline minutes quota**, or
 **CI pipeline minutes**. This decision was made in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342813).
 
-## CI/CD tunnel
-
-Use lowercase for **tunnel** in **CI/CD tunnel**.
-
 ## click
 
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.

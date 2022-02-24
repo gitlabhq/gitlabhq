@@ -592,17 +592,17 @@ plugins:
 If your merge requests do not show any code quality changes when using a custom tool,
 ensure that the line property is an `integer`.
 
-### Code Quality CI job with Code Climate plugins enabled fails with error "engine <plugin_name> ran for 900 seconds and was killed"
+### Code Quality CI job with Code Climate plugins enabled fails with error
 
-If you enabled any of the Code Climate plugins, and the Code Quality CI job fails with the error below,
-it's likely the job takes longer than the default timeout of 900 seconds.
+If you enabled any of the Code Climate plugins, and the Code Quality CI job fails with the error
+below, it's likely the job takes longer than the default timeout of 900 seconds:
 
 ```shell
 error: (CC::CLI::Analyze::EngineFailure) engine pmd ran for 900 seconds and was killed
 Could not analyze code quality for the repository at /code
 ```
 
-To work around this problem, set `TIMEOUT_SECONDS` to a higher value in your `.gitlab.-ci.yml` file. 
+To work around this problem, set `TIMEOUT_SECONDS` to a higher value in your `.gitlab.-ci.yml` file.
 
 For example:
 

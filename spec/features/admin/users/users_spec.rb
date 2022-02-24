@@ -338,6 +338,8 @@ RSpec.describe 'Admin::Users' do
       end
 
       it 'displays count of the users authorized groups' do
+        visit admin_users_path
+
         wait_for_requests
 
         expect(page.find("[data-testid='user-group-count-#{current_user.id}']").text).to eq("2")
