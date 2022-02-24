@@ -1,5 +1,4 @@
 <script>
-import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlHeatmap } from '@gitlab/ui/dist/charts';
 import { formatDate, timezones, formats } from '../../format_date';
 import { graphDataValidatorForValues } from '../../utils';
@@ -7,9 +6,6 @@ import { graphDataValidatorForValues } from '../../utils';
 export default {
   components: {
     GlHeatmap,
-  },
-  directives: {
-    GlResizeObserverDirective,
   },
   props: {
     graphData: {
@@ -61,26 +57,18 @@ export default {
       return this.graphData.metrics[0];
     },
   },
-  methods: {
-    onResize() {
-      if (this.$refs.heatmapChart) return;
-      const { width } = this.$refs.heatmapChart.$el.getBoundingClientRect();
-      this.width = width;
-    },
-  },
 };
 </script>
 <template>
-  <div v-gl-resize-observer-directive="onResize">
-    <gl-heatmap
-      ref="heatmapChart"
-      v-bind="$attrs"
-      :data-series="chartData"
-      :x-axis-name="xAxisName"
-      :y-axis-name="yAxisName"
-      :x-axis-labels="xAxisLabels"
-      :y-axis-labels="yAxisLabels"
-      :width="width"
-    />
-  </div>
+  <gl-heatmap
+    ref="heatmapChart"
+    v-bind="$attrs"
+    :responsive="true"
+    :data-series="chartData"
+    :x-axis-name="xAxisName"
+    :y-axis-name="yAxisName"
+    :x-axis-labels="xAxisLabels"
+    :y-axis-labels="yAxisLabels"
+    :width="width"
+  />
 </template>

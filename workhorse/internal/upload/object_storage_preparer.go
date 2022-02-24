@@ -11,6 +11,9 @@ type ObjectStoragePreparer struct {
 	credentials config.ObjectStorageCredentials
 }
 
+// NewObjectStoragePreparer returns a new preparer instance which is responsible for
+// setting the object storage credentials and settings needed by an uploader
+// to upload to object storage.
 func NewObjectStoragePreparer(c config.Config) Preparer {
 	return &ObjectStoragePreparer{credentials: c.ObjectStorageCredentials, config: c.ObjectStorageConfig}
 }

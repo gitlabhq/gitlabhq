@@ -345,11 +345,7 @@ class ProjectsController < Projects::ApplicationController
   private
 
   def refs_params
-    if Feature.enabled?(:strong_parameters_for_project_controller, @project, default_enabled: :yaml)
-      params.permit(:search, :sort, :ref, find: [])
-    else
-      params
-    end
+    params.permit(:search, :sort, :ref, find: [])
   end
 
   # Render project landing depending of which features are available

@@ -1,5 +1,4 @@
 <script>
-import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
@@ -11,9 +10,6 @@ import { getTimeAxisOptions, getYAxisOptions, getChartGrid } from './options';
 export default {
   components: {
     GlColumnChart,
-  },
-  directives: {
-    GlResizeObserverDirective,
   },
   props: {
     graphData: {
@@ -83,11 +79,6 @@ export default {
     formatLegendLabel(query) {
       return query.label;
     },
-    onResize() {
-      if (!this.$refs.columnChart) return;
-      const { width } = this.$refs.columnChart.$el.getBoundingClientRect();
-      this.width = width;
-    },
     setSvg(name) {
       getSvgIconPathContent(name)
         .then((path) => {
@@ -101,17 +92,16 @@ export default {
 };
 </script>
 <template>
-  <div v-gl-resize-observer-directive="onResize">
-    <gl-column-chart
-      ref="columnChart"
-      v-bind="$attrs"
-      :bars="barChartData"
-      :option="chartOptions"
-      :width="width"
-      :height="height"
-      :x-axis-title="xAxisTitle"
-      :y-axis-title="yAxisTitle"
-      :x-axis-type="xAxisType"
-    />
-  </div>
+  <gl-column-chart
+    ref="columnChart"
+    v-bind="$attrs"
+    :responsive="true"
+    :bars="barChartData"
+    :option="chartOptions"
+    :width="width"
+    :height="height"
+    :x-axis-title="xAxisTitle"
+    :y-axis-title="yAxisTitle"
+    :x-axis-type="xAxisType"
+  />
 </template>

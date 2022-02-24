@@ -116,9 +116,11 @@ RSpec.describe TreeHelper do
         show_edit_button: false,
         show_web_ide_button: true,
         show_gitpod_button: false,
+        show_pipeline_editor_button: false,
 
         edit_url: '',
         web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}",
+        pipeline_editor_url: "/#{project.full_path}/-/ci/editor?branch_name=#{@ref}",
 
         gitpod_url: '',
         user_preferences_gitpod_path: user_preferences_gitpod_path,

@@ -104,7 +104,7 @@ module ContainerRegistry
     def total_size
       return unless layers
 
-      layers.map(&:size).sum if v2?
+      layers.sum(&:size) if v2?
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

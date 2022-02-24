@@ -47,13 +47,15 @@ namespace :gitlab do
   # will work.
   def self.terminate_all_connections
     cmd = <<~SQL
-    SELECT pg_terminate_backend(pg_stat_activity.pid)
-        FROM pg_stat_activity
-        WHERE datname = current_database()
+      SELECT pg_terminate_backend(pg_stat_activity.pid)
+      FROM pg_stat_activity
+      WHERE datname = current_database()
         AND pid <> pg_backend_pid();
     SQL
 
-    ActiveRecord::Base.connection.execute(cmd)&.result_status == PG::PGRES_TUPLES_OK
-  rescue ActiveRecord::NoDatabaseError
+    Gitlab::Database::EachDatabase.each_database_connection do |connection|
+      connection.execute(cmd)
+    rescue ActiveRecord::NoDatabaseError
+    end
   end
 end

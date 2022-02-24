@@ -8,6 +8,7 @@ import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
 const KEY_EDIT = 'edit';
 const KEY_WEB_IDE = 'webide';
 const KEY_GITPOD = 'gitpod';
+const KEY_PIPELINE_EDITOR = 'pipeline_editor';
 
 export default {
   components: {
@@ -64,6 +65,11 @@ export default {
       required: false,
       default: false,
     },
+    showPipelineEditorButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     userPreferencesGitpodPath: {
       type: String,
       required: false,
@@ -75,6 +81,11 @@ export default {
       default: '',
     },
     editUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    pipelineEditorUrl: {
       type: String,
       required: false,
       default: '',
@@ -117,14 +128,19 @@ export default {
   },
   data() {
     return {
-      selection: KEY_WEB_IDE,
+      selection: this.showPipelineEditorButton ? KEY_PIPELINE_EDITOR : KEY_WEB_IDE,
       showEnableGitpodModal: false,
       showForkModal: false,
     };
   },
   computed: {
     actions() {
-      return [this.webIdeAction, this.editAction, this.gitpodAction].filter((action) => action);
+      return [
+        this.pipelineEditorAction,
+        this.webIdeAction,
+        this.editAction,
+        this.gitpodAction,
+      ].filter((action) => action);
     },
     editAction() {
       if (!this.showEditButton) {
@@ -208,6 +224,24 @@ export default {
       return (
         this.showGitpodButton && this.userPreferencesGitpodPath && this.userProfileEnableGitpodPath
       );
+    },
+    pipelineEditorAction() {
+      if (!this.showPipelineEditorButton) {
+        return null;
+      }
+
+      const secondaryText = __('Edit, lint, and visualize your pipeline.');
+
+      return {
+        key: KEY_PIPELINE_EDITOR,
+        text: __('Edit in pipeline editor'),
+        secondaryText,
+        tooltip: secondaryText,
+        attrs: {
+          'data-qa-selector': 'pipeline_editor_button',
+        },
+        href: this.pipelineEditorUrl,
+      };
     },
     gitpodAction() {
       if (!this.computedShowGitpodButton) {

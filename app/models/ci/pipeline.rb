@@ -653,7 +653,7 @@ module Ci
     def coverage
       coverage_array = latest_statuses.map(&:coverage).compact
       if coverage_array.size >= 1
-        coverage_array.reduce(:+) / coverage_array.size
+        coverage_array.sum / coverage_array.size
       end
     end
 

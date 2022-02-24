@@ -296,13 +296,13 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def size
-        valid_blobs.map(&:size).sum
+        valid_blobs.sum(&:size)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       # rubocop: disable CodeReuse/ActiveRecord
       def raw_size
-        valid_blobs.map(&:raw_size).sum
+        valid_blobs.sum(&:raw_size)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

@@ -1211,16 +1211,6 @@ RSpec.describe ProjectsController do
 
         expect(response).to have_gitlab_http_status(:success)
       end
-
-      context 'when "strong_parameters_for_project_controller" FF is disabled' do
-        before do
-          stub_feature_flags(strong_parameters_for_project_controller: false)
-        end
-
-        it 'raises an exception' do
-          expect { request }.to raise_error(TypeError)
-        end
-      end
     end
   end
 

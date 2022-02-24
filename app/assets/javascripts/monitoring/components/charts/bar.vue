@@ -1,5 +1,4 @@
 <script>
-import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBarChart } from '@gitlab/ui/dist/charts';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { chartHeight } from '../../constants';
@@ -8,9 +7,6 @@ import { barChartsDataParser, graphDataValidatorForValues } from '../../utils';
 export default {
   components: {
     GlBarChart,
-  },
-  directives: {
-    GlResizeObserverDirective,
   },
   props: {
     graphData: {
@@ -60,11 +56,6 @@ export default {
     formatLegendLabel(query) {
       return query.label;
     },
-    onResize() {
-      if (!this.$refs.barChart) return;
-      const { width } = this.$refs.barChart.$el.getBoundingClientRect();
-      this.width = width;
-    },
     setSvg(name) {
       getSvgIconPathContent(name)
         .then((path) => {
@@ -81,17 +72,16 @@ export default {
 };
 </script>
 <template>
-  <div v-gl-resize-observer-directive="onResize">
-    <gl-bar-chart
-      ref="barChart"
-      v-bind="$attrs"
-      :data="chartData"
-      :option="chartOptions"
-      :width="width"
-      :height="height"
-      :x-axis-title="xAxisTitle"
-      :y-axis-title="yAxisTitle"
-      :x-axis-type="xAxisType"
-    />
-  </div>
+  <gl-bar-chart
+    ref="barChart"
+    v-bind="$attrs"
+    :responsive="true"
+    :data="chartData"
+    :option="chartOptions"
+    :width="width"
+    :height="height"
+    :x-axis-title="xAxisTitle"
+    :y-axis-title="yAxisTitle"
+    :x-axis-type="xAxisType"
+  />
 </template>

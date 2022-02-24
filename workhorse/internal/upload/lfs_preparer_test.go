@@ -1,17 +1,15 @@
-package lfs_test
+package upload
 
 import (
 	"testing"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lfs"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 
 	"github.com/stretchr/testify/require"
 )
 
-func TestLfsUploadPreparerWithConfig(t *testing.T) {
+func TestLfsPreparerWithConfig(t *testing.T) {
 	lfsOid := "abcd1234"
 	creds := config.S3Credentials{
 		AwsAccessKeyID:     "test-key",
@@ -36,8 +34,8 @@ func TestLfsUploadPreparerWithConfig(t *testing.T) {
 		},
 	}
 
-	uploadPreparer := upload.NewObjectStoragePreparer(c)
-	lfsPreparer := lfs.NewLfsUploadPreparer(c, uploadPreparer)
+	uploadPreparer := NewObjectStoragePreparer(c)
+	lfsPreparer := NewLfsPreparer(c, uploadPreparer)
 	opts, verifier, err := lfsPreparer.Prepare(r)
 
 	require.NoError(t, err)
@@ -48,11 +46,11 @@ func TestLfsUploadPreparerWithConfig(t *testing.T) {
 	require.NotNil(t, verifier)
 }
 
-func TestLfsUploadPreparerWithNoConfig(t *testing.T) {
+func TestLfsPreparerWithNoConfig(t *testing.T) {
 	c := config.Config{}
 	r := &api.Response{RemoteObject: api.RemoteObject{ID: "the upload ID"}}
-	uploadPreparer := upload.NewObjectStoragePreparer(c)
-	lfsPreparer := lfs.NewLfsUploadPreparer(c, uploadPreparer)
+	uploadPreparer := NewObjectStoragePreparer(c)
+	lfsPreparer := NewLfsPreparer(c, uploadPreparer)
 	opts, verifier, err := lfsPreparer.Prepare(r)
 
 	require.NoError(t, err)

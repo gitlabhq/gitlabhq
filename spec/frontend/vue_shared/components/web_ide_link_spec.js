@@ -12,6 +12,7 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 const TEST_EDIT_URL = '/gitlab-test/test/-/edit/main/';
 const TEST_WEB_IDE_URL = '/-/ide/project/gitlab-test/test/edit/main/-/';
 const TEST_GITPOD_URL = 'https://gitpod.test/';
+const TEST_PIPELINE_EDITOR_URL = '/-/ci/editor?branch_name="main"';
 const TEST_USER_PREFERENCES_GITPOD_PATH = '/-/profile/preferences#user_gitpod_enabled';
 const TEST_USER_PROFILE_ENABLE_GITPOD_PATH = '/-/profile?user%5Bgitpod_enabled%5D=true';
 const forkPath = '/some/fork/path';
@@ -66,6 +67,16 @@ const ACTION_GITPOD_ENABLE = {
   href: undefined,
   handle: expect.any(Function),
 };
+const ACTION_PIPELINE_EDITOR = {
+  href: TEST_PIPELINE_EDITOR_URL,
+  key: 'pipeline_editor',
+  secondaryText: 'Edit, lint, and visualize your pipeline.',
+  tooltip: 'Edit, lint, and visualize your pipeline.',
+  text: 'Edit in pipeline editor',
+  attrs: {
+    'data-qa-selector': 'pipeline_editor_button',
+  },
+};
 
 describe('Web IDE link component', () => {
   let wrapper;
@@ -76,6 +87,7 @@ describe('Web IDE link component', () => {
         editUrl: TEST_EDIT_URL,
         webIdeUrl: TEST_WEB_IDE_URL,
         gitpodUrl: TEST_GITPOD_URL,
+        pipelineEditorUrl: TEST_PIPELINE_EDITOR_URL,
         forkPath,
         ...props,
       },
@@ -105,6 +117,10 @@ describe('Web IDE link component', () => {
     {
       props: {},
       expectedActions: [ACTION_WEB_IDE, ACTION_EDIT],
+    },
+    {
+      props: { showPipelineEditorButton: true },
+      expectedActions: [ACTION_PIPELINE_EDITOR, ACTION_WEB_IDE, ACTION_EDIT],
     },
     {
       props: { webIdeText: 'Test Web IDE' },
@@ -193,12 +209,34 @@ describe('Web IDE link component', () => {
     expect(findActionsButton().props('actions')).toEqual(expectedActions);
   });
 
+  describe('when pipeline editor action is available', () => {
+    beforeEach(() => {
+      createComponent({
+        showEditButton: false,
+        showWebIdeButton: true,
+        showGitpodButton: true,
+        showPipelineEditorButton: true,
+        userPreferencesGitpodPath: TEST_USER_PREFERENCES_GITPOD_PATH,
+        userProfileEnableGitpodPath: TEST_USER_PROFILE_ENABLE_GITPOD_PATH,
+        gitpodEnabled: true,
+      });
+    });
+
+    it('selected Pipeline Editor by default', () => {
+      expect(findActionsButton().props()).toMatchObject({
+        actions: [ACTION_PIPELINE_EDITOR, ACTION_WEB_IDE, ACTION_GITPOD],
+        selectedKey: ACTION_PIPELINE_EDITOR.key,
+      });
+    });
+  });
+
   describe('with multiple actions', () => {
     beforeEach(() => {
       createComponent({
         showEditButton: false,
         showWebIdeButton: true,
         showGitpodButton: true,
+        showPipelineEditorButton: false,
         userPreferencesGitpodPath: TEST_USER_PREFERENCES_GITPOD_PATH,
         userProfileEnableGitpodPath: TEST_USER_PROFILE_ENABLE_GITPOD_PATH,
         gitpodEnabled: true,
@@ -240,6 +278,7 @@ describe('Web IDE link component', () => {
         props: {
           showWebIdeButton: true,
           showEditButton: false,
+          showPipelineEditorButton: false,
           forkPath,
           forkModalId: 'edit-modal',
         },
@@ -249,6 +288,7 @@ describe('Web IDE link component', () => {
         props: {
           showWebIdeButton: false,
           showEditButton: true,
+          showPipelineEditorButton: false,
           forkPath,
           forkModalId: 'webide-modal',
         },

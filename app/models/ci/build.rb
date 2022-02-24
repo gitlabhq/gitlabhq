@@ -10,6 +10,8 @@ module Ci
     include Presentable
     include Importable
     include Ci::HasRef
+    include HasDeploymentName
+
     extend ::Gitlab::Utils::Override
 
     BuildArchivedError = Class.new(StandardError)
@@ -34,6 +36,8 @@ module Ci
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
+
+    DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
@@ -1121,6 +1125,10 @@ module Ci
         .dig(:allow_failure_criteria, :exit_codes)
         .to_a
         .include?(exit_code)
+    end
+
+    def track_deployment_usage
+      Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_deployment_job', user_id) if user_id.present? && count_user_deployment?
     end
 
     protected

@@ -29,6 +29,10 @@ module WebIdeButtonHelper
     show_web_ide_button? && Gitlab::CurrentSettings.gitpod_enabled
   end
 
+  def show_pipeline_editor_button?(project, path)
+    can_view_pipeline_editor?(project) && path == project.ci_config_path_or_default
+  end
+
   def can_push_code?
     current_user&.can?(:push_code, @project)
   end

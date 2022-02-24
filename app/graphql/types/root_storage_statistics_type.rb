@@ -6,15 +6,15 @@ module Types
 
     authorize :read_statistics
 
-    field :storage_size, GraphQL::Types::Float, null: false, description: 'Total storage in bytes.'
-    field :repository_size, GraphQL::Types::Float, null: false, description: 'Git repository size in bytes.'
-    field :lfs_objects_size, GraphQL::Types::Float, null: false, description: 'LFS objects size in bytes.'
     field :build_artifacts_size, GraphQL::Types::Float, null: false, description: 'CI artifacts size in bytes.'
-    field :packages_size, GraphQL::Types::Float, null: false, description: 'Packages size in bytes.'
-    field :wiki_size, GraphQL::Types::Float, null: false, description: 'Wiki size in bytes.'
-    field :snippets_size, GraphQL::Types::Float, null: false, description: 'Snippets size in bytes.'
-    field :pipeline_artifacts_size, GraphQL::Types::Float, null: false, description: 'CI pipeline artifacts size in bytes.'
-    field :uploads_size, GraphQL::Types::Float, null: false, description: 'Uploads size in bytes.'
     field :dependency_proxy_size, GraphQL::Types::Float, null: false, description: 'Dependency Proxy sizes in bytes.'
+    field :lfs_objects_size, GraphQL::Types::Float, null: false, description: 'LFS objects size in bytes.'
+    field :packages_size, GraphQL::Types::Float, null: false, description: 'Packages size in bytes.'
+    field :pipeline_artifacts_size, GraphQL::Types::Float, null: false, description: 'CI pipeline artifacts size in bytes.'
+    field :repository_size, GraphQL::Types::Float, null: false, description: 'Git repository size in bytes.'
+    field :snippets_size, GraphQL::Types::Float, null: false, description: 'Snippets size in bytes.'
+    field :storage_size, GraphQL::Types::Float, null: false, description: 'Total storage in bytes.'
+    field :uploads_size, GraphQL::Types::Float, null: false, description: 'Uploads size in bytes.'
+    field :wiki_size, GraphQL::Types::Float, null: false, description: 'Wiki size in bytes.'
   end
 end

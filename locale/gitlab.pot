@@ -13214,6 +13214,9 @@ msgstr ""
 msgid "Edit in Web IDE"
 msgstr ""
 
+msgid "Edit in pipeline editor"
+msgstr ""
+
 msgid "Edit in single-file editor"
 msgstr ""
 
@@ -13254,6 +13257,9 @@ msgid "Edit wiki page"
 msgstr ""
 
 msgid "Edit your most recent comment in a thread (from an empty textarea)"
+msgstr ""
+
+msgid "Edit, lint, and visualize your pipeline."
 msgstr ""
 
 msgid "Edited"

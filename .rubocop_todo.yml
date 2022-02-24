@@ -311,23 +311,6 @@ Performance/StringInclude:
     - 'spec/spec_helper.rb'
     - 'spec/support_specs/helpers/active_record/query_recorder_spec.rb'
 
-# Offense count: 18
-# Cop supports --auto-correct.
-Performance/Sum:
-  Exclude:
-    - 'app/controllers/projects/pipelines/tests_controller.rb'
-    - 'app/models/application_setting_implementation.rb'
-    - 'app/models/ci/pipeline.rb'
-    - 'app/services/issues/export_csv_service.rb'
-    - 'ee/spec/lib/gitlab/elastic/bulk_indexer_spec.rb'
-    - 'lib/api/entities/issuable_time_stats.rb'
-    - 'lib/container_registry/tag.rb'
-    - 'lib/gitlab/ci/reports/test_suite_comparer.rb'
-    - 'lib/gitlab/diff/file.rb'
-    - 'lib/gitlab/usage_data.rb'
-    - 'lib/peek/views/detailed_view.rb'
-    - 'spec/models/namespace/root_storage_statistics_spec.rb'
-
 # Offense count: 15209
 # Configuration parameters: Prefixes.
 # Prefixes: when, with, without

@@ -1,5 +1,4 @@
 <script>
-import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlStackedColumnChart } from '@gitlab/ui/dist/charts';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { s__ } from '~/locale';
@@ -11,9 +10,6 @@ import { getTimeAxisOptions, axisTypes } from './options';
 export default {
   components: {
     GlStackedColumnChart,
-  },
-  directives: {
-    GlResizeObserverDirective,
   },
   props: {
     graphData: {
@@ -125,32 +121,26 @@ export default {
           console.error('SVG could not be rendered correctly: ', e);
         });
     },
-    onResize() {
-      if (!this.$refs.chart) return;
-      const { width } = this.$refs.chart.$el.getBoundingClientRect();
-      this.width = width;
-    },
   },
 };
 </script>
 <template>
-  <div v-gl-resize-observer-directive="onResize">
-    <gl-stacked-column-chart
-      ref="chart"
-      v-bind="$attrs"
-      :bars="chartData"
-      :option="chartOptions"
-      :x-axis-title="xAxisTitle"
-      :y-axis-title="yAxisTitle"
-      :x-axis-type="xAxisType"
-      :group-by="groupBy"
-      :width="width"
-      :height="height"
-      :legend-layout="legendLayout"
-      :legend-average-text="legendAverageText"
-      :legend-current-text="legendCurrentText"
-      :legend-max-text="legendMaxText"
-      :legend-min-text="legendMinText"
-    />
-  </div>
+  <gl-stacked-column-chart
+    ref="chart"
+    v-bind="$attrs"
+    :responsive="true"
+    :bars="chartData"
+    :option="chartOptions"
+    :x-axis-title="xAxisTitle"
+    :y-axis-title="yAxisTitle"
+    :x-axis-type="xAxisType"
+    :group-by="groupBy"
+    :width="width"
+    :height="height"
+    :legend-layout="legendLayout"
+    :legend-average-text="legendAverageText"
+    :legend-current-text="legendCurrentText"
+    :legend-max-text="legendMaxText"
+    :legend-min-text="legendMinText"
+  />
 </template>

@@ -12,6 +12,7 @@ import {
   TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
 } from '~/security_configuration/constants';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
+import { updateSecurityTrainingOptimisticResponse } from '~/security_configuration/graphql/utils/optimistic_response';
 import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
 import configureSecurityTrainingProvidersMutation from '~/security_configuration/graphql/configure_security_training_providers.mutation.graphql';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
@@ -159,17 +160,6 @@ describe('TrainingProviderList component', () => {
         await toggleFirstProvider();
       });
 
-      it.each`
-        loading  | wait     | desc
-        ${true}  | ${false} | ${'enables loading of GlToggle when mutation is called'}
-        ${false} | ${true}  | ${'disables loading of GlToggle when mutation is complete'}
-      `('$desc', async ({ loading, wait }) => {
-        if (wait) {
-          await waitForMutationToBeLoaded();
-        }
-        expect(findFirstToggle().props('isLoading')).toBe(loading);
-      });
-
       it('calls mutation when toggle is changed', () => {
         expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -182,6 +172,20 @@ describe('TrainingProviderList component', () => {
                 projectPath: testProjectPath,
               },
             },
+          }),
+        );
+      });
+
+      it('returns an optimistic response when calling the mutation', () => {
+        const optimisticResponse = updateSecurityTrainingOptimisticResponse({
+          id: securityTrainingProviders[0].id,
+          isEnabled: true,
+          isPrimary: false,
+        });
+
+        expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
+          expect.objectContaining({
+            optimisticResponse,
           }),
         );
       });

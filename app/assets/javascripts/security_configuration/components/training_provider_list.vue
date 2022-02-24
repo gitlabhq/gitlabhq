@@ -10,6 +10,7 @@ import {
   TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
 } from '~/security_configuration/constants';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
+import { updateSecurityTrainingOptimisticResponse } from '~/security_configuration/graphql/utils/optimistic_response';
 import securityTrainingProvidersQuery from '../graphql/security_training_providers.query.graphql';
 import configureSecurityTrainingProvidersMutation from '../graphql/configure_security_training_providers.mutation.graphql';
 
@@ -51,7 +52,6 @@ export default {
   data() {
     return {
       errorMessage: '',
-      providerLoadingId: null,
       securityTrainingProviders: [],
       hasTouchedConfiguration: false,
     };
@@ -99,8 +99,6 @@ export default {
       this.storeProvider({ ...provider, isEnabled: toggledIsEnabled });
     },
     async storeProvider({ id, isEnabled, isPrimary }) {
-      this.providerLoadingId = id;
-
       try {
         const {
           data: {
@@ -116,6 +114,11 @@ export default {
               isPrimary,
             },
           },
+          optimisticResponse: updateSecurityTrainingOptimisticResponse({
+            id,
+            isEnabled,
+            isPrimary,
+          }),
         });
 
         if (errors.length > 0) {
@@ -126,8 +129,6 @@ export default {
         this.hasTouchedConfiguration = true;
       } catch {
         this.errorMessage = this.$options.i18n.configMutationErrorMessage;
-      } finally {
-        this.providerLoadingId = null;
       }
     },
     trackProviderToggle(providerId, providerIsEnabled) {
@@ -173,7 +174,6 @@ export default {
               :value="provider.isEnabled"
               :label="__('Training mode')"
               label-position="hidden"
-              :is-loading="providerLoadingId === provider.id"
               @change="toggleProvider(provider)"
             />
             <div class="gl-ml-5">

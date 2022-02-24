@@ -52,7 +52,7 @@ module Issues
 
     # rubocop: disable CodeReuse/ActiveRecord
     def issue_time_spent(issue)
-      issue.timelogs.map(&:time_spent).sum
+      issue.timelogs.sum(&:time_spent)
     end
     # rubocop: enable CodeReuse/ActiveRecord
   end

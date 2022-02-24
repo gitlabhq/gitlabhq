@@ -20,7 +20,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lfs"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
@@ -408,7 +407,7 @@ func createUploadPreparers(cfg config.Config) uploadPreparers {
 
 	return uploadPreparers{
 		artifacts: defaultPreparer,
-		lfs:       lfs.NewLfsUploadPreparer(cfg, defaultPreparer),
+		lfs:       upload.NewLfsPreparer(cfg, defaultPreparer),
 		packages:  defaultPreparer,
 		uploads:   defaultPreparer,
 	}

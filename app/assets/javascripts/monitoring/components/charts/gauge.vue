@@ -1,5 +1,4 @@
 <script>
-import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlGaugeChart } from '@gitlab/ui/dist/charts';
 import { isFinite, isArray, isInteger } from 'lodash';
 import { getFormatter, SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
@@ -9,9 +8,6 @@ import { getValidThresholds } from './options';
 export default {
   components: {
     GlGaugeChart,
-  },
-  directives: {
-    GlResizeObserverDirective,
   },
   props: {
     graphData: {
@@ -96,27 +92,19 @@ export default {
       return this.queryResult || NaN;
     },
   },
-  methods: {
-    onResize() {
-      if (!this.$refs.gaugeChart) return;
-      const { width } = this.$refs.gaugeChart.$el.getBoundingClientRect();
-      this.width = width;
-    },
-  },
 };
 </script>
 <template>
-  <div v-gl-resize-observer-directive="onResize">
-    <gl-gauge-chart
-      ref="gaugeChart"
-      v-bind="$attrs"
-      :value="value"
-      :min="rangeValues.min"
-      :max="rangeValues.max"
-      :thresholds="thresholdsValue"
-      :text="textValue"
-      :split-number="splitValue"
-      :width="width"
-    />
-  </div>
+  <gl-gauge-chart
+    ref="gaugeChart"
+    v-bind="$attrs"
+    :responsive="true"
+    :value="value"
+    :min="rangeValues.min"
+    :max="rangeValues.max"
+    :thresholds="thresholdsValue"
+    :text="textValue"
+    :split-number="splitValue"
+    :width="width"
+  />
 </template>

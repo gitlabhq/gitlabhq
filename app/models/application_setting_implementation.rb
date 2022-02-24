@@ -403,7 +403,7 @@ module ApplicationSettingImplementation
   def normalized_repository_storage_weights
     strong_memoize(:normalized_repository_storage_weights) do
       repository_storages_weights = repository_storages_weighted.slice(*Gitlab.config.repositories.storages.keys)
-      weights_total = repository_storages_weights.values.reduce(:+)
+      weights_total = repository_storages_weights.values.sum
 
       repository_storages_weights.transform_values do |w|
         next w if weights_total == 0

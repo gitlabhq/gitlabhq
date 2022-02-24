@@ -51,7 +51,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'network_policies',
         'geo',
         'growth',
-        'work_items'
+        'work_items',
+        'ci_users'
       )
     end
   end
