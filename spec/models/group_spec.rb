@@ -2775,4 +2775,12 @@ RSpec.describe Group do
       end
     end
   end
+
+  describe '#runners_token' do
+    let_it_be(:group) { create(:group) }
+
+    subject { group }
+
+    it_behaves_like 'it has a prefixable runners_token', :groups_runners_token_prefix
+  end
 end
