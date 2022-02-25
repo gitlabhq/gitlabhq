@@ -1077,6 +1077,7 @@ RSpec.describe API::Projects do
         attrs[:operations_access_level] = 'disabled'
         attrs[:analytics_access_level] = 'disabled'
         attrs[:container_registry_access_level] = 'private'
+        attrs[:security_and_compliance_access_level] = 'private'
       end
 
       post api('/projects', user), params: project
@@ -1100,6 +1101,7 @@ RSpec.describe API::Projects do
       expect(project.operations_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.analytics_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::PRIVATE)
+      expect(project.project_feature.security_and_compliance_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
     it 'assigns container_registry_enabled to project', :aggregate_failures do
@@ -2227,6 +2229,7 @@ RSpec.describe API::Projects do
         expect(json_response['restrict_user_defined_variables']).to eq(project.restrict_user_defined_variables?)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['operations_access_level']).to be_present
+        expect(json_response['security_and_compliance_access_level']).to be_present
       end
 
       it 'exposes all necessary attributes' do
@@ -2295,6 +2298,7 @@ RSpec.describe API::Projects do
         expect(json_response['wiki_access_level']).to be_present
         expect(json_response['builds_access_level']).to be_present
         expect(json_response['operations_access_level']).to be_present
+        expect(json_response['security_and_compliance_access_level']).to be_present
         expect(json_response).to have_key('emails_disabled')
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['remove_source_branch_after_merge']).to be_truthy
@@ -3218,6 +3222,30 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['container_registry_enabled']).to eq(true)
       expect(project.reload.container_registry_access_level).to eq(ProjectFeature::ENABLED)
+    end
+
+    it 'sets security_and_compliance_access_level', :aggregate_failures do
+      put api("/projects/#{project.id}", user), params: { security_and_compliance_access_level: 'private' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['security_and_compliance_access_level']).to eq('private')
+      expect(Project.find_by(path: project[:path]).security_and_compliance_access_level).to eq(ProjectFeature::PRIVATE)
+    end
+
+    it 'sets operations_access_level', :aggregate_failures do
+      put api("/projects/#{project.id}", user), params: { operations_access_level: 'private' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['operations_access_level']).to eq('private')
+      expect(Project.find_by(path: project[:path]).operations_access_level).to eq(ProjectFeature::PRIVATE)
+    end
+
+    it 'sets analytics_access_level', :aggregate_failures do
+      put api("/projects/#{project.id}", user), params: { analytics_access_level: 'private' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['analytics_access_level']).to eq('private')
+      expect(Project.find_by(path: project[:path]).analytics_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
     it 'returns 400 when nothing sent' do

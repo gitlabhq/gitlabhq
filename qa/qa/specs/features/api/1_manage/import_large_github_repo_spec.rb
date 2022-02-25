@@ -363,7 +363,7 @@ module QA
           imported_mrs = imported_project.merge_requests(auto_paginate: true, attempts: 2)
 
           logger.debug("= Fetching merge request comments =")
-          imported_mrs.each_with_object({}) do |mr, mrs_with_comments|
+          Parallel.map(imported_mrs, in_threads: 4) do |mr|
             resource = Resource::MergeRequest.init do |resource|
               resource.project = imported_project
               resource.iid = mr[:iid]
@@ -371,7 +371,7 @@ module QA
             end
 
             logger.debug("Fetching comments for mr '#{mr[:title]}'")
-            mrs_with_comments[mr[:iid]] = {
+            [mr[:iid], {
               url: mr[:web_url],
               title: mr[:title],
               body: sanitize_description(mr[:description]) || '',
@@ -380,8 +380,8 @@ module QA
                 # remove system notes
                 .reject { |c| c[:system] || c[:body].match?(/^(\*\*Review:\*\*)|(\*Merged by:).*/) }
                 .map { |c| sanitize_comment(c[:body]) }
-            }
-          end
+            }]
+          end.to_h
         end
       end
 
@@ -394,7 +394,7 @@ module QA
           imported_issues = imported_project.issues(auto_paginate: true, attempts: 2)
 
           logger.debug("= Fetching issue comments =")
-          imported_issues.each_with_object({}) do |issue, issues_with_comments|
+          Parallel.map(imported_issues, in_threads: 4) do |issue|
             resource = Resource::Issue.init do |issue_resource|
               issue_resource.project = imported_project
               issue_resource.iid = issue[:iid]
@@ -402,15 +402,15 @@ module QA
             end
 
             logger.debug("Fetching comments for issue '#{issue[:title]}'")
-            issues_with_comments[issue[:iid]] = {
+            [issue[:iid], {
               url: issue[:web_url],
               title: issue[:title],
               body: sanitize_description(issue[:description]) || '',
               comments: resource
                 .comments(auto_paginate: true, attempts: 2)
                 .map { |c| sanitize_comment(c[:body]) }
-            }
-          end
+            }]
+          end.to_h
         end
       end
 

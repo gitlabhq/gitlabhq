@@ -35,6 +35,7 @@ FactoryBot.define do
       metrics_dashboard_access_level { ProjectFeature::PRIVATE }
       operations_access_level { ProjectFeature::ENABLED }
       container_registry_access_level { ProjectFeature::ENABLED }
+      security_and_compliance_access_level { ProjectFeature::PRIVATE }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -70,7 +71,8 @@ FactoryBot.define do
         metrics_dashboard_access_level: evaluator.metrics_dashboard_access_level,
         operations_access_level: evaluator.operations_access_level,
         analytics_access_level: evaluator.analytics_access_level,
-        container_registry_access_level: evaluator.container_registry_access_level
+        container_registry_access_level: evaluator.container_registry_access_level,
+        security_and_compliance_access_level: evaluator.security_and_compliance_access_level
       }
 
       project.build_project_feature(hash)
@@ -359,6 +361,9 @@ FactoryBot.define do
     trait(:container_registry_enabled)  { container_registry_access_level { ProjectFeature::ENABLED } }
     trait(:container_registry_disabled) { container_registry_access_level { ProjectFeature::DISABLED } }
     trait(:container_registry_private)  { container_registry_access_level { ProjectFeature::PRIVATE } }
+    trait(:security_and_compliance_enabled)  { security_and_compliance_access_level { ProjectFeature::ENABLED } }
+    trait(:security_and_compliance_disabled) { security_and_compliance_access_level { ProjectFeature::DISABLED } }
+    trait(:security_and_compliance_private)  { security_and_compliance_access_level { ProjectFeature::PRIVATE } }
 
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops

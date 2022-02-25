@@ -443,6 +443,7 @@ Example response:
       "builds_access_level":"enabled",
       "snippets_access_level":"enabled",
       "pages_access_level":"enabled",
+      "security_and_compliance_access_level":"enabled",
       "emails_disabled":null,
       "shared_runners_enabled":true,
       "lfs_enabled":true,

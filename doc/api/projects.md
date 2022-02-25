@@ -151,6 +151,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
     "container_registry_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -245,6 +246,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
     "container_registry_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -440,6 +442,7 @@ GET /users/:user_id/projects
     "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
     "container_registry_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -534,6 +537,7 @@ GET /users/:user_id/projects
     "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
     "container_registry_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -688,6 +692,7 @@ Example response:
     "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
     "container_registry_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -777,6 +782,7 @@ Example response:
     "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
     "container_registry_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -910,6 +916,7 @@ GET /projects/:id
   "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
   "container_registry_access_level": "disabled",
+  "security_and_compliance_access_level": "disabled",
   "container_expiration_policy": {
     "cadence": "7d",
     "enabled": false,
@@ -1257,6 +1264,7 @@ POST /projects
 | `request_access_enabled`                                    | boolean | **{dotted-circle}** No | Allow users to request member access. |
 | `requirements_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
+| `security_and_compliance_access_level`                      | string  | **{dotted-circle}** No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
@@ -1334,6 +1342,7 @@ POST /projects/user/:user_id
 | `request_access_enabled`                                    | boolean | **{dotted-circle}** No | Allow users to request member access. |
 | `requirements_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled` or `public` |
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
+| `security_and_compliance_access_level`                      | string  | **{dotted-circle}** No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
@@ -1433,6 +1442,7 @@ Supported attributes:
 | `requirements_access_level`                                 | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled` or `public` |
 | `resolve_outdated_diff_discussions`                         | boolean        | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `restrict_user_defined_variables`                           | boolean        | **{dotted-circle}** No | Allow only users with the Maintainer role to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
+| `security_and_compliance_access_level`                      | string         | **{dotted-circle}** No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `service_desk_enabled`                                      | boolean        | **{dotted-circle}** No | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                                    | boolean        | **{dotted-circle}** No | Enable shared runners for this project. |
 | `snippets_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1536,6 +1546,7 @@ Example responses:
     "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
     "container_registry_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -1630,6 +1641,7 @@ Example response:
   "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
   "container_registry_access_level": "disabled",
+  "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
@@ -1730,6 +1742,7 @@ Example response:
   "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
   "container_registry_access_level": "disabled",
+  "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
@@ -1910,6 +1923,7 @@ Example response:
   "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
   "container_registry_access_level": "disabled",
+  "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
@@ -2031,6 +2045,7 @@ Example response:
   "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
   "container_registry_access_level": "disabled",
+  "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
@@ -2691,6 +2706,7 @@ Example response:
   "builds_access_level": "enabled",
   "snippets_access_level": "enabled",
   "pages_access_level": "enabled",
+  "security_and_compliance_access_level": "enabled",
   "emails_disabled": null,
   "shared_runners_enabled": true,
   "lfs_enabled": true,
