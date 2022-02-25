@@ -174,14 +174,14 @@ export default {
       <div class="gl-mb-2">
         <gl-link
           :href="pipeline.path"
-          class="gl-text-decoration-underline gl-text-blue-600!"
+          class="gl-text-decoration-underline gl-text-blue-600! gl-mr-3"
           data-testid="pipeline-url-link"
           data-qa-selector="pipeline_url_link"
         >
           #{{ pipeline[pipelineKey] }}
         </gl-link>
         <!--Commit row-->
-        <div class="icon-container gl-display-inline-block">
+        <div class="icon-container gl-display-inline-block gl-mr-1">
           <gl-icon
             v-gl-tooltip
             :name="commitIcon"
@@ -193,18 +193,18 @@ export default {
           <gl-link
             v-if="mergeRequestRef"
             :href="mergeRequestRef.path"
-            class="ref-name"
+            class="ref-name gl-mr-3"
             data-testid="merge-request-ref"
             >{{ mergeRequestRef.iid }}</gl-link
           >
-          <gl-link v-else :href="refUrl" class="ref-name" data-testid="commit-ref-name">{{
+          <gl-link v-else :href="refUrl" class="ref-name gl-mr-3" data-testid="commit-ref-name">{{
             commitRef.name
           }}</gl-link>
         </tooltip-on-truncate>
         <gl-icon
           v-gl-tooltip
           name="commit"
-          class="commit-icon"
+          class="commit-icon gl-mr-1"
           :title="__('Commit')"
           data-testid="commit-icon"
         />

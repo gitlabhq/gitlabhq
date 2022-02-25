@@ -54,7 +54,9 @@ namespace :gitlab do
         post.puts "This document was moved to [another location](#{new_path})."
         post.puts
         post.puts "<!-- This redirect file can be deleted after <#{date}>. -->"
-        post.puts "<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->"
+        post.puts "<!-- Redirects that point to other docs in the same project expire in three months. -->"
+        post.puts "<!-- Redirects that point to docs in a different project or site (link is not relative and starts with `https:`) expire in one year. -->"
+        post.puts "<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->"
       end
     end
   end

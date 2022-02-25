@@ -2,12 +2,6 @@
 
 require_relative '../qa'
 
-require 'securerandom'
-require 'pathname'
-require 'active_support/core_ext/hash'
-require 'active_support/core_ext/object/blank'
-require 'rainbow/refinement'
-
 require_relative 'qa_deprecation_toolkit_env'
 QaDeprecationToolkitEnv.configure!
 
@@ -36,7 +30,7 @@ RSpec.configure do |config|
   end
 
   config.prepend_before do |example|
-    QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n")
+    QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
     QA::Runtime::Example.current = example
 
     # Reset fabrication counters tracked in resource base

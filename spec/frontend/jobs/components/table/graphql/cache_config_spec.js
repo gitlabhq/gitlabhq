@@ -32,6 +32,22 @@ describe('jobs/components/table/graphql/cache_config', () => {
         CIJobConnectionIncomingCache.nodes.length + CIJobConnectionExistingCache.nodes.length,
       );
     });
+
+    it('should contain the pageInfo key as part of the result', () => {
+      const res = cacheConfig.typePolicies.CiJobConnection.merge({}, CIJobConnectionIncomingCache, {
+        args: firstLoadArgs,
+      });
+
+      expect(res.pageInfo).toEqual(
+        expect.objectContaining({
+          __typename: 'PageInfo',
+          endCursor: 'eyJpZCI6IjIwNTEifQ',
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'eyJpZCI6IjIxNzMifQ',
+        }),
+      );
+    });
   });
 
   describe('when fetching data with different statuses', () => {

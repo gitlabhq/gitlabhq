@@ -2,13 +2,19 @@
 
 require 'logger'
 require 'forwardable'
-require 'rainbow/refinement'
 
 module QA
   module Runtime
     module Logger
       extend SingleForwardable
-      using Rainbow
+
+      LEVEL_COLORS = {
+        "DEBUG" => :magenta,
+        "INFO" => :green,
+        "WARN" => :yellow,
+        "ERROR" => :indianred,
+        "FATAL" => :red
+      }.freeze
 
       def_delegators :logger, :debug, :info, :warn, :error, :fatal, :unknown
 
@@ -23,8 +29,9 @@ module QA
 
             logger.formatter = proc do |severity, datetime, progname, msg|
               date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+              msg_prefix = "[date=#{date_format} from=QA Tests] #{severity.ljust(5)} -- "
 
-              "[date=#{date_format} from=QA Tests] #{severity.ljust(5)} -- ".yellow + "#{msg}\n"
+              Rainbow(msg_prefix).send(LEVEL_COLORS.fetch(severity, :yellow)) + "#{msg}\n"
             end
           end
         end

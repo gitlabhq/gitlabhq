@@ -1,4 +1,6 @@
+import $ from 'jquery';
 import { insertMarkdownText, keypressNoteText } from '~/lib/utils/text_markdown';
+import '~/lib/utils/jquery_at_who';
 
 describe('init markdown', () => {
   let textArea;
@@ -221,6 +223,24 @@ describe('init markdown', () => {
           expect(textArea.value.substr(0, textArea.selectionStart)).toEqual(expected);
           expect(textArea.selectionStart).toBe(expected.length);
           expect(textArea.selectionEnd).toBe(text.length);
+        });
+
+        // test that when we're in the middle of autocomplete, we don't
+        // add a new list item
+        it.each`
+          text          | expected          | atwho_selecting
+          ${'- item @'} | ${'- item @'}     | ${true}
+          ${'- item @'} | ${'- item @\n- '} | ${false}
+        `('behaves correctly during autocomplete', ({ text, expected, atwho_selecting }) => {
+          jest.spyOn($.fn, 'atwho').mockReturnValue(atwho_selecting);
+
+          textArea.value = text;
+          textArea.setSelectionRange(text.length, text.length);
+
+          textArea.addEventListener('keydown', keypressNoteText);
+          textArea.dispatchEvent(enterEvent);
+
+          expect(textArea.value).toEqual(expected);
         });
 
         it('does nothing if feature flag disabled', () => {

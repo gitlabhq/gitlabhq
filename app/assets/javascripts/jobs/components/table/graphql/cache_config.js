@@ -22,6 +22,7 @@ export default {
         return {
           nodes,
           statuses: Array.isArray(args.statuses) ? [...args.statuses] : args.statuses,
+          pageInfo: incoming.pageInfo,
         };
       },
     },

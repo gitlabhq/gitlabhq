@@ -367,6 +367,8 @@ function handleContinueList(e, textArea) {
 export function keypressNoteText(e) {
   const textArea = this;
 
+  if ($(textArea).atwho?.('isSelecting')) return;
+
   handleContinueList(e, textArea);
   handleSurroundSelectedText(e, textArea);
 }

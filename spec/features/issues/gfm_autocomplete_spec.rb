@@ -420,6 +420,14 @@ RSpec.describe 'GFM autocomplete', :js do
         end
       end
     end
+
+    context 'when typing enter for autocomplete in a markdown list' do
+      it 'does not create a new list item' do
+        fill_in 'Comment', with: "- @#{user.username}\n"
+
+        expect(find_field('Comment').value).to eq "- @#{user.username}\n"
+      end
+    end
   end
 
   private
