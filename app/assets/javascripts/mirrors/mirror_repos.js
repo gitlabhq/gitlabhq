@@ -6,6 +6,8 @@ import { __ } from '~/locale';
 import { hide } from '~/tooltips';
 import SSHMirror from './ssh_mirror';
 
+const PASSWORD_FIELD_SELECTOR = '.js-mirror-password-field';
+
 export default class MirrorRepos {
   constructor(container) {
     this.$container = $(container);
@@ -27,7 +29,6 @@ export default class MirrorRepos {
     this.$passwordGroup = $('.js-password-group', this.$container);
     this.$password = $('.js-password', this.$passwordGroup);
     this.$authMethod = $('.js-auth-method', this.$form);
-
     this.$keepDivergentRefsInput.on('change', () => this.updateKeepDivergentRefs());
     this.$authMethod.on('change', () => this.togglePassword());
     this.$password.on('input.updateUrl', () => this.debouncedUpdateUrl());
@@ -35,6 +36,13 @@ export default class MirrorRepos {
     this.initMirrorSSH();
     this.updateProtectedBranches();
     this.updateKeepDivergentRefs();
+    MirrorRepos.resetPasswordField();
+  }
+
+  static resetPasswordField() {
+    if (document.querySelector(PASSWORD_FIELD_SELECTOR)) {
+      document.querySelector(PASSWORD_FIELD_SELECTOR).value = '';
+    }
   }
 
   initMirrorSSH() {
