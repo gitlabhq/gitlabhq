@@ -11,16 +11,34 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
   let(:additional_params) { { invite_source: '_invite_source_' } }
   let(:params) { { user_ids: user_ids, access_level: access_level }.merge(additional_params) }
+  let(:current_user) { user }
 
-  subject(:execute_service) { described_class.new(user, params.merge({ source: source })).execute }
+  subject(:execute_service) { described_class.new(current_user, params.merge({ source: source })).execute }
 
   before do
-    if source.is_a?(Project)
+    case source
+    when Project
       source.add_maintainer(user)
       OnboardingProgress.onboard(source.namespace)
-    else
+    when Group
       source.add_owner(user)
       OnboardingProgress.onboard(source)
+    end
+  end
+
+  context 'when the current user does not have permission to create members' do
+    let(:current_user) { create(:user) }
+
+    it 'raises a Gitlab::Access::AccessDeniedError' do
+      expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
+    end
+  end
+
+  context 'when passing an invalid source' do
+    let_it_be(:source) { Object.new }
+
+    it 'raises a RuntimeError' do
+      expect { execute_service }.to raise_error(RuntimeError, 'Unknown source type: Object!')
     end
   end
 

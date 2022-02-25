@@ -126,4 +126,12 @@ RSpec.describe Banzai::Filter::MathFilter do
     expect(before.to_s).to eq '$'
     expect(after.to_s).to eq '$'
   end
+
+  it 'limits how many elements can be marked as math' do
+    stub_const('Banzai::Filter::MathFilter::RENDER_NODES_LIMIT', 2)
+
+    doc = filter('$<code>2+2</code>$ + $<code>3+3</code>$ + $<code>4+4</code>$')
+
+    expect(doc.search('.js-render-math').count).to eq(2)
+  end
 end
