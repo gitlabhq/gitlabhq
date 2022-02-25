@@ -8,6 +8,8 @@ module Types
       description 'Represents the snippet blob'
       present_using SnippetBlobPresenter
 
+      connection_type_class(Types::Snippets::BlobConnectionType)
+
       field :rich_data, GraphQL::Types::String,
             description: 'Blob highlighted data.',
             null: true

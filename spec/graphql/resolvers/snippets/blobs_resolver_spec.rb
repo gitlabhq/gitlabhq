@@ -13,11 +13,14 @@ RSpec.describe Resolvers::Snippets::BlobsResolver do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:snippet) { create(:personal_snippet, :private, :repository, author: current_user) }
 
+    let(:query_context) { {} }
+
     context 'when user is not authorized' do
       let(:other_user) { create(:user) }
 
       it 'redacts the field' do
         expect(resolve_blobs(snippet, user: other_user)).to be_nil
+        expect(query_context[:unretrievable_blobs?]).to eq(false)
       end
     end
 
@@ -28,6 +31,7 @@ RSpec.describe Resolvers::Snippets::BlobsResolver do
         expect(result).to match_array(snippet.list_files.map do |file|
           have_attributes(path: file)
         end)
+        expect(query_context[:unretrievable_blobs?]).to eq(false)
       end
     end
 
@@ -37,12 +41,14 @@ RSpec.describe Resolvers::Snippets::BlobsResolver do
           path = 'CHANGELOG'
 
           expect(resolve_blobs(snippet, paths: [path])).to contain_exactly(have_attributes(path: path))
+          expect(query_context[:unretrievable_blobs?]).to eq(false)
         end
       end
 
       context 'the argument does not match anything' do
         it 'returns an empty result' do
           expect(resolve_blobs(snippet, paths: ['does not exist'])).to be_empty
+          expect(query_context[:unretrievable_blobs?]).to eq(true)
         end
       end
 
@@ -53,12 +59,15 @@ RSpec.describe Resolvers::Snippets::BlobsResolver do
           expect(resolve_blobs(snippet, paths: paths)).to match_array(paths.map do |file|
             have_attributes(path: file)
           end)
+          expect(query_context[:unretrievable_blobs?]).to eq(false)
         end
       end
     end
   end
 
-  def resolve_blobs(snippet, user: current_user, paths: [], args: { paths: paths })
-    resolve(described_class, args: args, ctx: { current_user: user }, obj: snippet)
+  def resolve_blobs(snippet, user: current_user, paths: [], args: { paths: paths }, has_unretrievable_blobs: false)
+    query_context[:current_user] = user
+    query_context[:unretrievable_blobs?] = has_unretrievable_blobs
+    resolve(described_class, args: args, ctx: query_context, obj: snippet)
   end
 end

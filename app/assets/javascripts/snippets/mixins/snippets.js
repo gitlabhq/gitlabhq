@@ -17,6 +17,7 @@ export const getSnippetMixin = {
 
         // Set `snippet.blobs` since some child components are coupled to this.
         if (!isEmpty(res)) {
+          res.hasUnretrievableBlobs = res.blobs?.hasUnretrievableBlobs || false;
           // It's possible for us to not get any blobs in a response.
           // In this case, we should default to current blobs.
           res.blobs = res.blobs ? res.blobs.nodes : blobsDefault;
