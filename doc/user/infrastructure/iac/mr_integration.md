@@ -151,8 +151,8 @@ apply:
 
 ### Multiple Terraform Plan reports
 
-Starting with GitLab version 13.2, you can display multiple reports on a merge request.
-The reports also display the `artifacts: name:`. See example below for a suggested setup.
+Starting with GitLab version 13.2, you can display multiple reports on the merge request
+page. The reports also display the `artifacts: name:`. See example below for a suggested setup.
 
 ```yaml
 default:

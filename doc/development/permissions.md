@@ -38,7 +38,7 @@ Additionally, the following project features can have different visibility level
 
 - Issues
 - Repository
-  - Merge Request
+  - Merge request
   - Forks
   - Pipelines
 - Analytics
@@ -124,9 +124,9 @@ into different features like Merge Requests and CI flow.
 | View | License information | Dependency list, License Compliance | Can view repository |
 | View | Dependency information | Dependency list, License Compliance | Can view repository |
 | View | Vulnerabilities information | Dependency list | Can view security findings |
-| View | Black/Whitelisted licenses for the project | License Compliance, Merge request  | Can view repository |
-| View | Security findings | Merge Request, CI job page, Pipeline security tab | Can read the project and CI jobs |
-| View | Vulnerability feedback | Merge Request | Can read security findings |
+| View | Black/Whitelisted licenses for the project | License Compliance, merge request  | Can view repository |
+| View | Security findings | merge request, CI job page, Pipeline security tab | Can read the project and CI jobs |
+| View | Vulnerability feedback | merge request | Can read security findings |
 | View | Dependency List page | Project | Can access Dependency information |
 | View | License Compliance page | Project | Can access License information|
 

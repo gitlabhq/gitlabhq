@@ -662,7 +662,7 @@ This is overridden by the [documentation-specific punctuation rules](#punctuatio
 - Avoid putting numbers in headings. Numbers shift, hence documentation anchor
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
-  someone in the Merge Request.
+  someone in the merge request.
 - [Avoid using symbols and special characters](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/84)
   in headers. Whenever possible, they should be plain and short text.
 - When possible, avoid including words that might change in the future. Changing

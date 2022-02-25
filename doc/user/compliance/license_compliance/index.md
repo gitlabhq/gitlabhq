@@ -734,7 +734,7 @@ Note, the merge request is not able to be merged until the `denied` license is r
 You may add a [`License-Check` approval rule](#enabling-license-approvals-within-a-project),
 which enables a designated approver that can approve and then merge a merge request with `denied` license.
 
-![Merge Request with denied licenses](img/denied_licenses_v13_3.png)
+![Merge request with denied licenses](img/denied_licenses_v13_3.png)
 
 The **Policies** tab in the project's license compliance section displays your project's license
 policies. Project maintainers can specify policies in this section.

@@ -58,7 +58,7 @@ as shown in the following table:
 |:---------------------------------------------------------------------------------------|:--------------------|:-------------------|
 | [Configure IaC Scanners](#configuration)                                               | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](#reports-json-format)                                               | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in Merge Request                                           | **{dotted-circle}** | **{check-circle}** |
+| Presentation of JSON Report in merge request                                           | **{dotted-circle}** | **{check-circle}** |
 | [Address vulnerabilities](../../application_security/vulnerabilities/index.md)         | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](../../application_security/security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
 
