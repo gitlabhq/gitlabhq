@@ -1645,4 +1645,14 @@ RSpec.describe Note do
       end
     end
   end
+
+  describe '#commands_changes' do
+    let(:note) { build(:note) }
+
+    it 'only returns allowed keys' do
+      note.commands_changes = { emoji_award: {}, time_estimate: {}, spend_time: {}, target_project: build(:project) }
+
+      expect(note.commands_changes.keys).to contain_exactly(:emoji_award, :time_estimate, :spend_time)
+    end
+  end
 end

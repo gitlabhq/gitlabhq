@@ -233,11 +233,9 @@ RSpec.describe API::Notes do
     subject { post api(request_path, user), params: { body: request_body } }
 
     context 'a command only note' do
-      let(:assignee) { create(:user) }
-      let(:request_body) { "/assign #{assignee.to_reference}" }
+      let(:request_body) { "/spend 1h" }
 
       before do
-        project.add_developer(assignee)
         project.add_developer(user)
       end
 
@@ -256,7 +254,7 @@ RSpec.describe API::Notes do
       end
 
       it 'applies the commands' do
-        expect { subject }.to change { merge_request.reset.assignees }
+        expect { subject }.to change { merge_request.reset.total_time_spent }
       end
 
       it 'reports the changes' do
@@ -264,9 +262,9 @@ RSpec.describe API::Notes do
 
         expect(json_response).to include(
           'commands_changes' => include(
-            'assignee_ids' => [Integer]
+            'spend_time' => include('duration' => 3600)
           ),
-          'summary' => include("Assigned #{assignee.to_reference}.")
+          'summary' => include('Added 1h spent time.')
         )
       end
     end
