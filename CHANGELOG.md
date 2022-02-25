@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.8.2 (2022-02-25)
+
+### Security (8 changes)
+
+- [Limit commands_changes to certain keys](gitlab-org/security/gitlab@7a4e348b3ea3d34469bcd353286474c25288d836) ([merge request](gitlab-org/security/gitlab!2225))
+- [Add runners_token prefix to Group and Project](gitlab-org/security/gitlab@87bd94f7252f887f22f971ffd59044b355712042) ([merge request](gitlab-org/security/gitlab!2248))
+- [Anonymous user can enumerate all users through GraphQL endpoint](gitlab-org/security/gitlab@945da4fadb156ce862bdd12ee5625f57709b590d) ([merge request](gitlab-org/security/gitlab!2213))
+- [Check for unsafe characters in email addresses before sending](gitlab-org/security/gitlab@641b23f6b1ad827536ea704c848330a068fc0472) ([merge request](gitlab-org/security/gitlab!2206))
+- [Warn when snippet contains unretrievable files](gitlab-org/security/gitlab@d703ecef74f7d73eab3d5345af3a5d60f28c9d7f) ([merge request](gitlab-org/security/gitlab!2205))
+- [Prevent DOS when rendering math markdown](gitlab-org/security/gitlab@cedf63be73dc9c37352e425cf8b8cf4e16980935) ([merge request](gitlab-org/security/gitlab!2219))
+- [Check permission when creating members through service](gitlab-org/security/gitlab@6228fd285e7062dd1c2e88f8ca33bc8e9a0f4fad) ([merge request](gitlab-org/security/gitlab!2209))
+- [Reset password field on page load](gitlab-org/security/gitlab@5ece8645add37c3e77f28d7afb8f28ce4bbe2b7f) ([merge request](gitlab-org/security/gitlab!2224))
+
 ## 14.8.1 (2022-02-23)
 
 ### Fixed (3 changes)

@@ -7841,6 +7841,7 @@ The connection type for [`SnippetBlob`](#snippetblob).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="snippetblobconnectionedges"></a>`edges` | [`[SnippetBlobEdge]`](#snippetblobedge) | A list of edges. |
+| <a id="snippetblobconnectionhasunretrievableblobs"></a>`hasUnretrievableBlobs` | [`Boolean!`](#boolean) | Indicates if the snippet has unretrievable blobs. |
 | <a id="snippetblobconnectionnodes"></a>`nodes` | [`[SnippetBlob]`](#snippetblob) | A list of nodes. |
 | <a id="snippetblobconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 

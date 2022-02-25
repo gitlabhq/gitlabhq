@@ -15,6 +15,7 @@ query GetSnippetQuery($ids: [SnippetID!]) {
       sshUrlToRepo
       blobs {
         __typename
+        hasUnretrievableBlobs
         nodes {
           __typename
           binary
