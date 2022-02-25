@@ -15,9 +15,10 @@ describe('RunnerActionsCell', () => {
   const findRunnerPauseBtn = () => wrapper.findComponent(RunnerPauseButton);
   const findDeleteBtn = () => wrapper.findComponent(RunnerDeleteButton);
 
-  const createComponent = (runner = {}, options) => {
+  const createComponent = ({ runner = {}, ...props } = {}) => {
     wrapper = shallowMountExtended(RunnerActionsCell, {
       propsData: {
+        editUrl: mockRunner.editAdminUrl,
         runner: {
           id: mockRunner.id,
           shortSha: mockRunner.shortSha,
@@ -25,8 +26,8 @@ describe('RunnerActionsCell', () => {
           userPermissions: mockRunner.userPermissions,
           ...runner,
         },
+        ...props,
       },
-      ...options,
     });
   };
 
@@ -43,18 +44,20 @@ describe('RunnerActionsCell', () => {
 
     it('Does not render the runner edit link when user cannot update', () => {
       createComponent({
-        userPermissions: {
-          ...mockRunner.userPermissions,
-          updateRunner: false,
+        runner: {
+          userPermissions: {
+            ...mockRunner.userPermissions,
+            updateRunner: false,
+          },
         },
       });
 
       expect(findEditBtn().exists()).toBe(false);
     });
 
-    it('Does not render the runner edit link when editAdminUrl is not provided', () => {
+    it('Does not render the runner edit link when editUrl is not provided', () => {
       createComponent({
-        editAdminUrl: null,
+        editUrl: null,
       });
 
       expect(findEditBtn().exists()).toBe(false);
@@ -70,9 +73,11 @@ describe('RunnerActionsCell', () => {
 
     it('Does not render the runner pause button when user cannot update', () => {
       createComponent({
-        userPermissions: {
-          ...mockRunner.userPermissions,
-          updateRunner: false,
+        runner: {
+          userPermissions: {
+            ...mockRunner.userPermissions,
+            updateRunner: false,
+          },
         },
       });
 
@@ -89,9 +94,11 @@ describe('RunnerActionsCell', () => {
 
     it('Does not render the runner delete button when user cannot delete', () => {
       createComponent({
-        userPermissions: {
-          ...mockRunner.userPermissions,
-          deleteRunner: false,
+        runner: {
+          userPermissions: {
+            ...mockRunner.userPermissions,
+            deleteRunner: false,
+          },
         },
       });
 

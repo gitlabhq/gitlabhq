@@ -12,6 +12,7 @@ import RunnerName from '../components/runner_name.vue';
 import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
+import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
 
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
@@ -57,6 +58,7 @@ export default {
     RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
+    RunnerActionsCell,
   },
   props: {
     registrationToken: {
@@ -278,6 +280,9 @@ export default {
           <gl-link :href="runner.adminUrl">
             <runner-name :runner="runner" />
           </gl-link>
+        </template>
+        <template #runner-actions-cell="{ runner }">
+          <runner-actions-cell :runner="runner" :edit-url="runner.editAdminUrl" />
         </template>
       </runner-list>
       <runner-pagination

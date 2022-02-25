@@ -35,7 +35,8 @@ export const I18N_STALE_RUNNER_DESCRIPTION = s__(
   'Runners|No contact from this runner in over 3 months',
 );
 
-// Active flag
+// Actions
+export const I18N_EDIT = __('Edit');
 export const I18N_PAUSE = __('Pause');
 export const I18N_RESUME = __('Resume');
 export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');

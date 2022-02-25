@@ -6,9 +6,6 @@ import {
 } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
-import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
-import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
-import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
 import { runnersData } from '../mock_data';
 
 const mockRunners = runnersData.data.runners.nodes;
@@ -24,13 +21,14 @@ describe('RunnerList', () => {
   const findCell = ({ row = 0, fieldKey }) =>
     extendedWrapper(findRows().at(row).find(`[data-testid="td-${fieldKey}"]`));
 
-  const createComponent = ({ props = {} } = {}, mountFn = shallowMountExtended) => {
+  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMountExtended) => {
     wrapper = mountFn(RunnerList, {
       propsData: {
         runners: mockRunners,
         activeRunnersCount: mockActiveRunnersCount,
         ...props,
       },
+      ...options,
     });
   };
 
@@ -91,11 +89,31 @@ describe('RunnerList', () => {
     expect(findCell({ fieldKey: 'contactedAt' }).text()).toEqual(expect.any(String));
 
     // Actions
-    const actions = findCell({ fieldKey: 'actions' });
+    expect(findCell({ fieldKey: 'actions' }).exists()).toBe(true);
+  });
 
-    expect(actions.findComponent(RunnerEditButton).exists()).toBe(true);
-    expect(actions.findComponent(RunnerPauseButton).exists()).toBe(true);
-    expect(actions.findComponent(RunnerDeleteButton).exists()).toBe(true);
+  describe('Scoped cell slots', () => {
+    it('Render #runner-name slot in "summary" cell', () => {
+      createComponent(
+        {
+          scopedSlots: { 'runner-name': ({ runner }) => `Summary: ${runner.id}` },
+        },
+        mountExtended,
+      );
+
+      expect(findCell({ fieldKey: 'summary' }).text()).toContain(`Summary: ${mockRunners[0].id}`);
+    });
+
+    it('Render #runner-actions-cell slot in "actions" cell', () => {
+      createComponent(
+        {
+          scopedSlots: { 'runner-actions-cell': ({ runner }) => `Actions: ${runner.id}` },
+        },
+        mountExtended,
+      );
+
+      expect(findCell({ fieldKey: 'actions' }).text()).toBe(`Actions: ${mockRunners[0].id}`);
+    });
   });
 
   describe('Table data formatting', () => {

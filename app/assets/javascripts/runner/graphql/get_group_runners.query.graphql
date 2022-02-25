@@ -27,6 +27,7 @@ query getGroupRunners(
     ) {
       edges {
         webUrl
+        editUrl
         node {
           __typename
           ...RunnerNode

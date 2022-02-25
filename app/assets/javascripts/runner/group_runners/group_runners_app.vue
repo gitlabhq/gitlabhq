@@ -12,6 +12,7 @@ import RunnerName from '../components/runner_name.vue';
 import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
+import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
 
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import {
@@ -55,6 +56,7 @@ export default {
     RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
+    RunnerActionsCell,
   },
   props: {
     registrationToken: {
@@ -74,8 +76,8 @@ export default {
     return {
       search: fromUrlQueryToSearch(),
       runners: {
-        webUrls: [],
         items: [],
+        urlsById: {},
         pageInfo: {},
       },
     };
@@ -91,12 +93,23 @@ export default {
         return this.variables;
       },
       update(data) {
-        const { runners } = data?.group || {};
+        const { edges = [], pageInfo = {} } = data?.group?.runners || {};
+
+        const items = [];
+        const urlsById = {};
+
+        edges.forEach(({ node, webUrl, editUrl }) => {
+          items.push(node);
+          urlsById[node.id] = {
+            web: webUrl,
+            edit: editUrl,
+          };
+        });
 
         return {
-          webUrls: runners?.edges.map(({ webUrl }) => webUrl) || [],
-          items: runners?.edges.map(({ node }) => node) || [],
-          pageInfo: runners?.pageInfo || {},
+          items,
+          urlsById,
+          pageInfo,
         };
       },
       error(error) {
@@ -222,6 +235,12 @@ export default {
       }
       return null;
     },
+    webUrl(runner) {
+      return this.runners.urlsById[runner.id]?.web;
+    },
+    editUrl(runner) {
+      return this.runners.urlsById[runner.id]?.edit;
+    },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
     },
@@ -273,13 +292,20 @@ export default {
     </div>
     <template v-else>
       <runner-list :runners="runners.items" :loading="runnersLoading">
-        <template #runner-name="{ runner, index }">
-          <gl-link :href="runners.webUrls[index]">
+        <template #runner-name="{ runner }">
+          <gl-link :href="webUrl(runner)">
             <runner-name :runner="runner" />
           </gl-link>
         </template>
+        <template #runner-actions-cell="{ runner }">
+          <runner-actions-cell :runner="runner" :edit-url="editUrl(runner)" />
+        </template>
       </runner-list>
-      <runner-pagination v-model="search.pagination" :page-info="runners.pageInfo" />
+      <runner-pagination
+        v-model="search.pagination"
+        class="gl-mt-3"
+        :page-info="runners.pageInfo"
+      />
     </template>
   </div>
 </template>

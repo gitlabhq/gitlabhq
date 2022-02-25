@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlLink } from '@gitlab/ui';
+import { GlButton, GlLink } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -30,6 +30,7 @@ import {
   PARAM_KEY_STATUS,
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
+  I18N_EDIT,
 } from '~/runner/constants';
 import getGroupRunnersQuery from '~/runner/graphql/get_group_runners.query.graphql';
 import getGroupRunnersCountQuery from '~/runner/graphql/get_group_runners_count.query.graphql';
@@ -42,7 +43,8 @@ Vue.use(VueApollo);
 
 const mockGroupFullPath = 'group1';
 const mockRegistrationToken = 'AABBCC';
-const mockGroupRunnersLimitedCount = groupRunnersData.data.group.runners.edges.length;
+const mockGroupRunnersEdges = groupRunnersData.data.group.runners.edges;
+const mockGroupRunnersLimitedCount = mockGroupRunnersEdges.length;
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -60,6 +62,7 @@ describe('GroupRunnersApp', () => {
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
+  const findRunnerRow = (id) => extendedWrapper(wrapper.findByTestId(`runner-row-${id}`));
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationPrev = () =>
     findRunnerPagination().findByLabelText('Go to previous page');
@@ -156,20 +159,7 @@ describe('GroupRunnersApp', () => {
 
   it('shows the runners list', () => {
     const runners = findRunnerList().props('runners');
-    expect(runners).toEqual(groupRunnersData.data.group.runners.edges.map(({ node }) => node));
-  });
-
-  it('runner item links to the runner group page', async () => {
-    const { webUrl, node } = groupRunnersData.data.group.runners.edges[0];
-    const { id, shortSha } = node;
-
-    createComponent({ mountFn: mountExtended });
-
-    await waitForPromises();
-
-    const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
-    expect(runnerLink.text()).toBe(`#${getIdFromGraphQLId(id)} (${shortSha})`);
-    expect(runnerLink.attributes('href')).toBe(webUrl);
+    expect(runners).toEqual(mockGroupRunnersEdges.map(({ node }) => node));
   });
 
   it('requests the runners with group path and no other filters', () => {
@@ -194,6 +184,34 @@ describe('GroupRunnersApp', () => {
         options: expect.any(Array),
       }),
     );
+  });
+
+  describe('Single runner row', () => {
+    const { webUrl, editUrl, node } = mockGroupRunnersEdges[0];
+    const { id: graphqlId, shortSha } = node;
+    const id = getIdFromGraphQLId(graphqlId);
+
+    beforeEach(async () => {
+      createComponent({ mountFn: mountExtended });
+
+      await waitForPromises();
+    });
+
+    it('view link is displayed correctly', () => {
+      const viewLink = findRunnerRow(id).findByTestId('td-summary').findComponent(GlLink);
+
+      expect(viewLink.text()).toBe(`#${id} (${shortSha})`);
+      expect(viewLink.attributes('href')).toBe(webUrl);
+    });
+
+    it('edit link is displayed correctly', () => {
+      const editLink = findRunnerRow(id).findByTestId('td-actions').findComponent(GlButton);
+
+      expect(editLink.attributes()).toMatchObject({
+        'aria-label': I18N_EDIT,
+        href: editUrl,
+      });
+    });
   });
 
   describe('when a filter is preselected', () => {

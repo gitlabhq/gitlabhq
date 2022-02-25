@@ -19,6 +19,7 @@ import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
+import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
 import {
@@ -186,6 +187,21 @@ describe('AdminRunnersApp', () => {
 
     expect(runnerLink.text()).toBe(`#${numericId} (${shortSha})`);
     expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${numericId}`);
+  });
+
+  it('renders runner actions for each runner', async () => {
+    createComponent({ mountFn: mountExtended });
+
+    await waitForPromises();
+
+    const runnerActions = wrapper.find('tr [data-testid="td-actions"]').find(RunnerActionsCell);
+
+    const runner = runnersData.data.runners.nodes[0];
+
+    expect(runnerActions.props()).toEqual({
+      runner,
+      editUrl: runner.editAdminUrl,
+    });
   });
 
   it('requests the runners with no filters', () => {

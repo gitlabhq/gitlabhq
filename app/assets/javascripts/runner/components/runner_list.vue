@@ -5,7 +5,6 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { formatJobCount, tableField } from '../utils';
-import RunnerActionsCell from './cells/runner_actions_cell.vue';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerTags from './runner_tags.vue';
@@ -16,7 +15,6 @@ export default {
     GlSkeletonLoader,
     TooltipOnTruncate,
     TimeAgo,
-    RunnerActionsCell,
     RunnerSummaryCell,
     RunnerTags,
     RunnerStatusCell,
@@ -121,7 +119,7 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <runner-actions-cell :runner="item" />
+        <slot name="runner-actions-cell" :runner="item"></slot>
       </template>
     </gl-table-lite>
 

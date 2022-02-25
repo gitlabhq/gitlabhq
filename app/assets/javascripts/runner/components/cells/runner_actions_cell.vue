@@ -17,6 +17,11 @@ export default {
       type: Object,
       required: true,
     },
+    editUrl: {
+      type: String,
+      default: null,
+      required: false,
+    },
   },
   computed: {
     canUpdate() {
@@ -31,14 +36,7 @@ export default {
 
 <template>
   <gl-button-group>
-    <!--
-      This button appears for administrators: those with
-      access to the adminUrl. More advanced permissions policies
-      will allow more granular permissions.
-
-      See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
-    -->
-    <runner-edit-button v-if="canUpdate && runner.editAdminUrl" :href="runner.editAdminUrl" />
+    <runner-edit-button v-if="canUpdate && editUrl" :href="editUrl" />
     <runner-pause-button v-if="canUpdate" :runner="runner" :compact="true" />
     <runner-delete-button v-if="canDelete" :runner="runner" :compact="true" />
   </gl-button-group>

@@ -253,6 +253,18 @@ the mitigations for a new feature.
 
 - [More details](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2530/diffs)
 
+#### URL blocker & validation libraries
+
+[`Gitlab::UrlBlocker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/url_blocker.rb) can be used to validate that a
+provided URL meets a set of constraints. Importantly, when `dns_rebind_protection` is `true`, the method returns a known-safe URI where the hostname
+has been replaced with an IP address. This prevents DNS rebinding attacks, because the DNS record has been resolved. However, if we ignore this returned
+value, we **will not** be protected against DNS rebinding.
+
+This is the case with validators such as the `AddressableUrlValidator` (called with `validates :url, addressable_url: {opts}` or `public_url: {opts}`).
+Validation errors are only raised when validations are called, for example when a record is created or saved. If we ignore the value returned by the validation
+when persisting the record, **we need to recheck** its validity before using it. You can learn more about [Time of Check to Time of Use bugs](#time-of-check-to-time-of-use-bugs) in a later section
+of these guidelines.
+
 #### Feature-specific mitigations
 
 For situations in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
@@ -270,9 +282,9 @@ There are many tricks to bypass common SSRF validations. If feature-specific mit
   - `169.254.0.0/16`
   - In particular, for GCP: `metadata.google.internal` -> `169.254.169.254`
 - For HTTP connections: Disable redirects or validate the redirect destination
-- To mitigate DNS rebinding attacks, validate and use the first IP address received
+- To mitigate DNS rebinding attacks, validate and use the first IP address received.
 
-See [`url_blocker_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads
+See [`url_blocker_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads. See [time of check to time of use bugs](#time-of-check-to-time-of-use-bugs) to learn more about DNS rebinding's class of bug.
 
 ## XSS guidelines
 
@@ -1120,3 +1132,52 @@ func printZipContents(src string) error {
   return nil
 }
 ```
+
+## Time of check to time of use bugs
+
+Time of check to time of use, or TOCTOU, is a class of error which occur when the state of something changes unexpectedly partway during a process.
+More specifically, it's when the property you checked and validated has changed when you finally get around to using that property. 
+
+These types of bugs are often seen in environments which allow multi-threading and concurrency, like filesystems and distributed web applications; these are a type of race condition. TOCTOU also occurs when state is checked and stored, then after a period of time that state is relied on without re-checking its accuracy and/or validity.
+
+### Examples
+
+**Example 1:** you have a model which accepts a URL as input. When the model is created you verify that the URL's host resolves to a public IP address, to prevent attackers making internal network calls. But DNS records can change ([DNS rebinding](#server-side-request-forgery-ssrf)]). An attacker updates the DNS record to `127.0.0.1`, and when your code resolves those URL's host it results in sending a potentially malicious request to a server on the internal network. The property was valid at the "time of check", but invalid and malicious at "time of use".
+
+GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214401) where, although `Gitlab::UrlBlocker.validate!` was called, the returned value was not used. This made it vulnerable to TOCTOU bug and SSRF protection bypass through [DNS rebinding](#server-side-request-forgery-ssrf). The fix was to [use the validated IP address](https://gitlab.com/gitlab-org/gitlab/-/commit/7af8abd4df9a98f7a1ae7c4ec9840d0a7a8c684d).
+
+**Example 2:** you have a feature which schedules jobs. When the user schedules the job, they have permission to do so. But imagine if, between the time they schedule the job and the time it is run, their permissions are restricted. Unless you re-check permissions at time of use, you could inadvertently allow unauthorized activity.
+
+**Example 3:** you need to fetch a remote file, and perform a `HEAD` request to get and validate the content length and content type. When you subsequently make a `GET` request, though, the file delivered is a different size or different file type. (This is stretching the definition of TOCTOU, but things _have_ changed between time of check and time of use).
+
+**Example 4:** you allow users to upvote a comment if they haven't already. The server is multi-threaded, and you aren't using transactions or an applicable database index. By repeatedly clicking upvote in quick succession a malicious user is able to add multiple upvotes: the requests arrive at the same time, the checks run in parallel and confirm that no upvote exists yet, and so each upvote is written to the database. 
+
+Here's some pseudocode showing an example of a potential TOCTOU bug:
+
+```ruby
+def upvote(comment, user)
+  # The time between calling .exists? and .create can lead to TOCTOU,
+  # particulary if .create is a slow method, or runs in a background job
+  if Upvote.exists?(comment: comment, user: user)
+    return
+  else
+    Upvote.create(comment: comment, user: user)
+  end
+end
+```
+
+### Prevention & defense
+
+- Assume values will change between the time you validate them and the time you use them.
+- Perform checks as close to execution time as possible.
+- Perform checks after your operation completes.
+- Use your framework's validations and database features to impose constraints and atomic reads and writes.
+- Read about [Server Side Request Forgery (SSRF) and DNS rebinding](#server-side-request-forgery-ssrf)
+
+An example of well implemented `Gitlab::UrlBlocker.validate!` call that prevents TOCTOU bug:
+
+1. [Preventing DNS rebinding in Gitea importer](https://gitlab.com/gitlab-org/gitlab/-/commit/7af8abd4df9a98f7a1ae7c4ec9840d0a7a8c684d)
+
+### Resources
+
+- [CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition](https://cwe.mitre.org/data/definitions/367.html)
