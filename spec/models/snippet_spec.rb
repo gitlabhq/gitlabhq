@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Snippet do
+  include FakeBlobHelpers
+
   describe 'modules' do
     subject { described_class }
 
@@ -526,6 +528,21 @@ RSpec.describe Snippet do
     end
   end
 
+  describe '#all_files' do
+    let(:snippet) { create(:snippet, :repository) }
+    let(:files) { double(:files) }
+
+    subject(:all_files) { snippet.all_files }
+
+    before do
+      allow(snippet.repository).to receive(:ls_files).with(snippet.default_branch).and_return(files)
+    end
+
+    it 'lists files from the repository with the default branch' do
+      expect(all_files).to eq(files)
+    end
+  end
+
   describe '#blobs' do
     context 'when repository does not exist' do
       let(:snippet) { create(:snippet) }
@@ -550,6 +567,23 @@ RSpec.describe Snippet do
           expect(blobs.count).to eq 1
           expect(blobs.first.name).to eq 'LICENSE'
         end
+      end
+    end
+
+    context 'when some blobs are not retrievable from repository' do
+      let(:snippet) { create(:snippet, :repository) }
+      let(:container) { double(:container) }
+      let(:retrievable_filename) { 'retrievable_file'}
+      let(:unretrievable_filename) { 'unretrievable_file'}
+
+      before do
+        allow(snippet).to receive(:list_files).and_return([retrievable_filename, unretrievable_filename])
+        blob = fake_blob(path: retrievable_filename, container: container)
+        allow(snippet.repository).to receive(:blobs_at).and_return([blob, nil])
+      end
+
+      it 'does not include unretrievable blobs' do
+        expect(snippet.blobs.map(&:name)).to contain_exactly(retrievable_filename)
       end
     end
   end

@@ -8,6 +8,7 @@ end
 ActionMailer::Base.register_interceptors(
   ::Gitlab::Email::Hook::AdditionalHeadersInterceptor,
   ::Gitlab::Email::Hook::EmailTemplateInterceptor,
+  ::Gitlab::Email::Hook::ValidateAddressesInterceptor,
   ::Gitlab::Email::Hook::DeliveryMetricsObserver
 )
 
