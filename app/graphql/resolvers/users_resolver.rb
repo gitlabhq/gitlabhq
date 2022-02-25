@@ -29,7 +29,7 @@ module Resolvers
               description: 'Return only admin users.'
 
     def resolve(ids: nil, usernames: nil, sort: nil, search: nil, admins: nil)
-      authorize!
+      authorize!(usernames)
 
       ::UsersFinder.new(context[:current_user], finder_params(ids, usernames, sort, search, admins)).execute
     end
@@ -46,8 +46,11 @@ module Resolvers
       super
     end
 
-    def authorize!
-      Ability.allowed?(context[:current_user], :read_users_list) || raise_resource_not_available_error!
+    def authorize!(usernames)
+      authorized = Ability.allowed?(context[:current_user], :read_users_list)
+      authorized &&= usernames.present? if context[:current_user].blank?
+
+      raise_resource_not_available_error! unless authorized
     end
 
     private
