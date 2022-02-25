@@ -105,9 +105,6 @@ module API
           params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
         end
 
-        users = UsersFinder.new(current_user, params).execute
-        users = reorder_users(users)
-
         authorized = can?(current_user, :read_users_list)
 
         # When `current_user` is not present, require that the `username`
@@ -118,6 +115,9 @@ module API
         authorized &&= params[:username].present? if current_user.blank?
 
         forbidden!("Not authorized to access /api/v4/users") unless authorized
+
+        users = UsersFinder.new(current_user, params).execute
+        users = reorder_users(users)
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
