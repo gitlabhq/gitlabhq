@@ -767,8 +767,8 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'does not set an random token if one provided' do
-      project = FactoryBot.create(:project, runners_token: 'my-token')
-      expect(project.runners_token).to eq('my-token')
+      project = FactoryBot.create(:project, runners_token: "#{Project::RUNNERS_TOKEN_PREFIX}my-token")
+      expect(project.runners_token).to eq("#{Project::RUNNERS_TOKEN_PREFIX}my-token")
     end
   end
 
@@ -7838,6 +7838,14 @@ RSpec.describe Project, factory_default: :keep do
 
       it { is_expected.to be_falsey }
     end
+  end
+
+  describe '#runners_token' do
+    let_it_be(:project) { create(:project) }
+
+    subject { project }
+
+    it_behaves_like 'it has a prefixable runners_token', :projects_runners_token_prefix
   end
 
   private
