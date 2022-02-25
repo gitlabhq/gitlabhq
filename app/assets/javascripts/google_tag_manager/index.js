@@ -150,7 +150,7 @@ export const trackSaasTrialProject = () => {
   });
 };
 
-export const trackSaasTrialProjectImport = () => {
+export const trackProjectImport = () => {
   if (!isSupported()) {
     return;
   }
@@ -159,7 +159,7 @@ export const trackSaasTrialProjectImport = () => {
   importButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const { platform } = button.dataset;
-      pushEvent('saasTrialProjectImport', { saasProjectImport: platform });
+      pushEvent('projectImport', { platform });
     });
   });
 };
