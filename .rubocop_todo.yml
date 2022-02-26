@@ -278,16 +278,6 @@ Performance/DeletePrefix:
     - 'spec/lib/gitlab/gfm/uploads_rewriter_spec.rb'
     - 'spec/support/helpers/test_env.rb'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: SafeMultiline.
-Performance/DeleteSuffix:
-  Exclude:
-    - 'app/helpers/submodule_helper.rb'
-    - 'app/workers/concerns/application_worker.rb'
-    - 'ee/app/models/geo/upload_registry.rb'
-    - 'ee/app/workers/geo/file_download_dispatch_worker/attachment_job_finder.rb'
-
 # Offense count: 121
 Performance/MethodObjectAsBlock:
   Enabled: false

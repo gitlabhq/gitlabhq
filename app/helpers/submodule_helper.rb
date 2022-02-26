@@ -32,7 +32,7 @@ module SubmoduleHelper
 
       namespace.sub!(%r{\A/}, '')
       project.rstrip!
-      project.sub!(/\.git\z/, '')
+      project.delete_suffix!('.git')
 
       if self_url?(url, namespace, project)
         [
