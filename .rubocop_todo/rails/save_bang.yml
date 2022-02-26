@@ -1,4 +1,0 @@
----
-Rails/SaveBang:
-  Exclude:
-  - ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb
