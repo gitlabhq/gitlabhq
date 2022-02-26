@@ -5,16 +5,18 @@ module TokenAuthenticatableStrategies
     def find_token_authenticatable(token, unscoped = false)
       return if token.blank?
 
-      if required?
-        find_by_encrypted_token(token, unscoped)
-      elsif optional?
-        find_by_encrypted_token(token, unscoped) ||
-          find_by_plaintext_token(token, unscoped)
-      elsif migrating?
-        find_by_plaintext_token(token, unscoped)
-      else
-        raise ArgumentError, _("Unknown encryption strategy: %{encrypted_strategy}!") % { encrypted_strategy: encrypted_strategy }
-      end
+      instance = if required?
+                   find_by_encrypted_token(token, unscoped)
+                 elsif optional?
+                   find_by_encrypted_token(token, unscoped) ||
+                     find_by_plaintext_token(token, unscoped)
+                 elsif migrating?
+                   find_by_plaintext_token(token, unscoped)
+                 else
+                   raise ArgumentError, _("Unknown encryption strategy: %{encrypted_strategy}!") % { encrypted_strategy: encrypted_strategy }
+                 end
+
+      instance if instance && matches_prefix?(instance, token)
     end
 
     def ensure_token(instance)
@@ -41,9 +43,7 @@ module TokenAuthenticatableStrategies
     def get_token(instance)
       return insecure_strategy.get_token(instance) if migrating?
 
-      encrypted_token = instance.read_attribute(encrypted_field)
-      token = EncryptionHelper.decrypt_token(encrypted_token)
-      token || (insecure_strategy.get_token(instance) if optional?)
+      get_encrypted_token(instance)
     end
 
     def set_token(instance, token)
@@ -68,6 +68,12 @@ module TokenAuthenticatableStrategies
     end
 
     protected
+
+    def get_encrypted_token(instance)
+      encrypted_token = instance.read_attribute(encrypted_field)
+      token = EncryptionHelper.decrypt_token(encrypted_token)
+      token || (insecure_strategy.get_token(instance) if optional?)
+    end
 
     def encrypted_strategy
       value = options[:encrypted]
@@ -95,14 +101,22 @@ module TokenAuthenticatableStrategies
         .new(klass, token_field, options)
     end
 
+    def matches_prefix?(instance, token)
+      prefix = options[:prefix]
+      prefix = prefix.call(instance) if prefix.is_a?(Proc)
+      prefix = '' unless prefix.is_a?(String)
+
+      token.start_with?(prefix)
+    end
+
     def token_set?(instance)
-      raw_token = instance.read_attribute(encrypted_field)
+      token = get_encrypted_token(instance)
 
       unless required?
-        raw_token ||= insecure_strategy.get_token(instance)
+        token ||= insecure_strategy.get_token(instance)
       end
 
-      raw_token.present?
+      token.present? && matches_prefix?(instance, token)
     end
 
     def encrypted_field

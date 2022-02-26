@@ -32,6 +32,21 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
         expect(subject.find_token_authenticatable('my-value'))
           .to eq 'encrypted resource'
       end
+
+      context 'when a prefix is required' do
+        let(:options) { { encrypted: :required, prefix: 'GR1348941' } }
+
+        it 'finds the encrypted resource by cleartext' do
+          allow(model).to receive(:where)
+            .and_return(model)
+          allow(model).to receive(:find_by)
+            .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
+            .and_return('encrypted resource')
+
+          expect(subject.find_token_authenticatable('my-value'))
+            .to be_nil
+        end
+      end
     end
 
     context 'when encryption is optional' do
@@ -62,6 +77,21 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
         expect(subject.find_token_authenticatable('my-value'))
           .to eq 'plaintext resource'
       end
+
+      context 'when a prefix is required' do
+        let(:options) { { encrypted: :optional, prefix: 'GR1348941' } }
+
+        it 'finds the encrypted resource by cleartext' do
+          allow(model).to receive(:where)
+            .and_return(model)
+          allow(model).to receive(:find_by)
+            .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
+            .and_return('encrypted resource')
+
+          expect(subject.find_token_authenticatable('my-value'))
+            .to be_nil
+        end
+      end
     end
 
     context 'when encryption is migrating' do
@@ -87,6 +117,21 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
 
         expect(subject.find_token_authenticatable('my-value'))
           .to be_nil
+      end
+
+      context 'when a prefix is required' do
+        let(:options) { { encrypted: :migrating, prefix: 'GR1348941' } }
+
+        it 'finds the encrypted resource by cleartext' do
+          allow(model).to receive(:where)
+            .and_return(model)
+          allow(model).to receive(:find_by)
+            .with('some_field' => 'my-value')
+            .and_return('cleartext resource')
+
+          expect(subject.find_token_authenticatable('my-value'))
+            .to be_nil
+        end
       end
     end
   end

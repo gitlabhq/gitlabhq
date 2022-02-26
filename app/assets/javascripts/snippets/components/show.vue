@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import eventHub from '~/blob/components/eventhub';
 import {
   SNIPPET_MARK_VIEW_APP_START,
@@ -23,6 +23,7 @@ export default {
     EmbedDropdown,
     SnippetHeader,
     SnippetTitle,
+    GlAlert,
     GlLoadingIcon,
     SnippetBlob,
     CloneDropdownButton,
@@ -34,6 +35,9 @@ export default {
     },
     canBeCloned() {
       return Boolean(this.snippet.sshUrlToRepo || this.snippet.httpUrlToRepo);
+    },
+    hasUnretrievableBlobs() {
+      return this.snippet.hasUnretrievableBlobs;
     },
   },
   beforeCreate() {
@@ -66,6 +70,13 @@ export default {
           data-qa-selector="clone_button"
         />
       </div>
+      <gl-alert v-if="hasUnretrievableBlobs" variant="danger" class="gl-mb-3" :dismissible="false">
+        {{
+          __(
+            'WARNING: This snippet contains hidden files which might be used to mask malicious behavior. Exercise caution if cloning and executing code from this snippet.',
+          )
+        }}
+      </gl-alert>
       <snippet-blob
         v-for="blob in blobs"
         :key="blob.path"

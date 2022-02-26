@@ -237,15 +237,19 @@ class Snippet < ApplicationRecord
     end
   end
 
+  def all_files
+    list_files(default_branch)
+  end
+
   def blob
     @blob ||= Blob.decorate(SnippetBlob.new(self), self)
   end
 
-  def blobs
+  def blobs(paths = [])
     return [] unless repository_exists?
 
-    files = list_files(default_branch)
-    items = files.map { |file| [default_branch, file] }
+    paths = all_files if paths.empty?
+    items = paths.map { |path| [default_branch, path] }
 
     repository.blobs_at(items).compact
   end

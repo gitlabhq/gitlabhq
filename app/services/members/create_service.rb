@@ -19,6 +19,8 @@ module Members
     end
 
     def execute
+      raise Gitlab::Access::AccessDeniedError unless can?(current_user, create_member_permission(source), source)
+
       validate_invite_source!
       validate_invitable!
 
@@ -155,6 +157,17 @@ module Members
           source_type: source.class.name
         })
       )
+    end
+
+    def create_member_permission(source)
+      case source
+      when Group
+        :admin_group_member
+      when Project
+        :admin_project_member
+      else
+        raise "Unknown source type: #{source.class}!"
+      end
     end
   end
 end

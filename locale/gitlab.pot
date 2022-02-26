@@ -40897,6 +40897,9 @@ msgstr ""
 msgid "WARNING:"
 msgstr ""
 
+msgid "WARNING: This snippet contains hidden files which might be used to mask malicious behavior. Exercise caution if cloning and executing code from this snippet."
+msgstr ""
+
 msgid "Wait for the file to load to copy its contents"
 msgstr ""
 

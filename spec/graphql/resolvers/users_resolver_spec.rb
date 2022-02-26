@@ -7,6 +7,7 @@ RSpec.describe Resolvers::UsersResolver do
 
   let_it_be(:user1) { create(:user, name: "SomePerson") }
   let_it_be(:user2) { create(:user, username: "someone123784") }
+  let_it_be(:current_user) { create(:user) }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(Types::UserType.connection_type)
@@ -14,14 +15,14 @@ RSpec.describe Resolvers::UsersResolver do
 
   describe '#resolve' do
     it 'raises an error when read_users_list is not authorized' do
-      expect(Ability).to receive(:allowed?).with(nil, :read_users_list).and_return(false)
+      expect(Ability).to receive(:allowed?).with(current_user, :read_users_list).and_return(false)
 
       expect { resolve_users }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
     end
 
     context 'when no arguments are passed' do
       it 'returns all users' do
-        expect(resolve_users).to contain_exactly(user1, user2)
+        expect(resolve_users).to contain_exactly(user1, user2, current_user)
       end
     end
 
@@ -65,9 +66,21 @@ RSpec.describe Resolvers::UsersResolver do
         expect(resolve_users( args: { search: "someperson" } )).to contain_exactly(user1)
       end
     end
+
+    context 'with anonymous access' do
+      let_it_be(:current_user) { nil }
+
+      it 'prohibits search without usernames passed' do
+        expect { resolve_users }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      end
+
+      it 'allows to search by username' do
+        expect(resolve_users(args: { usernames: [user1.username] })).to contain_exactly(user1)
+      end
+    end
   end
 
   def resolve_users(args: {}, ctx: {})
-    resolve(described_class, args: args, ctx: ctx)
+    resolve(described_class, args: args, ctx: { current_user: current_user }.merge(ctx))
   end
 end

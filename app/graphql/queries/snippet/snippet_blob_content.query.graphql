@@ -12,6 +12,7 @@ query SnippetBlobContent($ids: [ID!], $rich: Boolean!, $paths: [String!]) {
           richData @include(if: $rich)
           plainData @skip(if: $rich)
         }
+        hasUnretrievableBlobs
       }
     }
   }

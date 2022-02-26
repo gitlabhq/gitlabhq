@@ -50,7 +50,7 @@ class Note < ApplicationRecord
   attr_accessor :user_visible_reference_count
 
   # Attribute used to store the attributes that have been changed by quick actions.
-  attr_accessor :commands_changes
+  attr_writer :commands_changes
 
   # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
   attr_accessor :skip_keep_around_commits
@@ -613,6 +613,41 @@ class Note < ApplicationRecord
     return false unless change_position&.line_range
 
     change_position.line_range["end"] || change_position.line_range["start"]
+  end
+
+  def commands_changes
+    @commands_changes&.slice(
+      :due_date,
+      :label_ids,
+      :remove_label_ids,
+      :add_label_ids,
+      :canonical_issue_id,
+      :clone_with_notes,
+      :confidential,
+      :create_merge_request,
+      :add_contacts,
+      :remove_contacts,
+      :assignee_ids,
+      :milestone_id,
+      :time_estimate,
+      :spend_time,
+      :discussion_locked,
+      :merge,
+      :rebase,
+      :wip_event,
+      :target_branch,
+      :reviewer_ids,
+      :health_status,
+      :promote_to_epic,
+      :weight,
+      :emoji_award,
+      :todo_event,
+      :subscription_event,
+      :state_event,
+      :title,
+      :tag_message,
+      :tag_name
+    )
   end
 
   private

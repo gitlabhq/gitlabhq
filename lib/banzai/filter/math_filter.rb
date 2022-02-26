@@ -25,7 +25,14 @@ module Banzai
 
       DOLLAR_SIGN = '$'
 
+      # Limit to how many nodes can be marked as math elements.
+      # Prevents timeouts for large notes.
+      # For more information check: https://gitlab.com/gitlab-org/gitlab/-/issues/341832
+      RENDER_NODES_LIMIT = 50
+
       def call
+        nodes_count = 0
+
         doc.xpath(XPATH_CODE).each do |code|
           closing = code.next
           opening = code.previous
@@ -41,6 +48,9 @@ module Banzai
             code[STYLE_ATTRIBUTE] = 'inline'
             closing.content = closing.content[1..]
             opening.content = opening.content[0..-2]
+
+            nodes_count += 1
+            break if nodes_count >= RENDER_NODES_LIMIT
           end
         end
 
