@@ -239,6 +239,10 @@ Rails/FindBy:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Rails/IndexBy:
+  Exclude:
+    - 'tooling/danger/**/*.rb'
+
 # This is currently exiting with a rubocop exception error and should be
 # resolved hopefully a future update
 # An error occurred while Rails/UniqueValidationWithoutIndex cop was inspecting
@@ -610,7 +614,6 @@ Rails/TimeZone:
     - 'spec/features/**/*'
     - 'ee/spec/features/**/*'
 
-# WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Enabled: true
   AllowImplicitReturn: false

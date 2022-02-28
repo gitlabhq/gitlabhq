@@ -14,18 +14,18 @@ module Types
           null: false,
           description: 'ID (global ID) of the list.'
 
-    field :title, GraphQL::Types::String, null: false,
-          description: 'Title of the list.'
-    field :list_type, GraphQL::Types::String, null: false,
-          description: 'Type of the list.'
-    field :position, GraphQL::Types::Int, null: true,
-          description: 'Position of list within the board.'
-    field :label, Types::LabelType, null: true,
-          description: 'Label of the list.'
     field :collapsed, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if the list is collapsed for this user.'
     field :issues_count, GraphQL::Types::Int, null: true,
           description: 'Count of issues in the list.'
+    field :label, Types::LabelType, null: true,
+          description: 'Label of the list.'
+    field :list_type, GraphQL::Types::String, null: false,
+          description: 'Type of the list.'
+    field :position, GraphQL::Types::Int, null: true,
+          description: 'Position of list within the board.'
+    field :title, GraphQL::Types::String, null: false,
+          description: 'Title of the list.'
 
     field :issues, ::Types::IssueType.connection_type, null: true,
           description: 'Board issues.',

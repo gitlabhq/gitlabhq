@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlTooltip, GlResizeObserverDirective, GlIcon } from '@gitlab/ui';
+import { GlLink, GlTooltip, GlIcon } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { isEmpty, omit, throttle } from 'lodash';
 import { makeDataSeries } from '~/helpers/monitor_helper';
@@ -27,9 +27,6 @@ export default {
     GlChartSeriesLabel,
     GlLink,
     GlIcon,
-  },
-  directives: {
-    GlResizeObserverDirective,
   },
   inheritAttrs: false,
   props: {
@@ -366,64 +363,58 @@ export default {
       eChart.off('datazoom');
       eChart.on('datazoom', this.throttledDatazoom);
     },
-    onResize() {
-      if (!this.$refs.chart) return;
-      const { width } = this.$refs.chart.$el.getBoundingClientRect();
-      this.width = width;
-    },
   },
 };
 </script>
 
 <template>
-  <div v-gl-resize-observer-directive="onResize">
-    <component
-      :is="glChartComponent"
-      ref="chart"
-      v-bind="$attrs"
-      :group-id="groupId"
-      :data="chartData"
-      :option="chartOptions"
-      :format-tooltip-text="formatTooltipText"
-      :format-annotations-tooltip-text="formatAnnotationsTooltipText"
-      :width="width"
-      :height="height"
-      :legend-layout="legendLayout"
-      :legend-average-text="legendAverageText"
-      :legend-current-text="legendCurrentText"
-      :legend-max-text="legendMaxText"
-      :legend-min-text="legendMinText"
-      @created="onChartCreated"
-      @updated="onChartUpdated"
-    >
-      <template #tooltip-title>
-        <template v-if="tooltip.type === 'deployments'">
-          {{ __('Deployed') }}
-        </template>
-        <div v-else class="text-nowrap">
-          {{ tooltip.title }}
-        </div>
+  <component
+    :is="glChartComponent"
+    ref="chart"
+    v-bind="$attrs"
+    :responsive="true"
+    :group-id="groupId"
+    :data="chartData"
+    :option="chartOptions"
+    :format-tooltip-text="formatTooltipText"
+    :format-annotations-tooltip-text="formatAnnotationsTooltipText"
+    :width="width"
+    :height="height"
+    :legend-layout="legendLayout"
+    :legend-average-text="legendAverageText"
+    :legend-current-text="legendCurrentText"
+    :legend-max-text="legendMaxText"
+    :legend-min-text="legendMinText"
+    @created="onChartCreated"
+    @updated="onChartUpdated"
+  >
+    <template #tooltip-title>
+      <template v-if="tooltip.type === 'deployments'">
+        {{ __('Deployed') }}
       </template>
-      <template #tooltip-content>
-        <div v-if="tooltip.type === 'deployments'" class="d-flex align-items-center">
-          <gl-icon name="commit" class="mr-2" />
-          <gl-link :href="tooltip.commitUrl">{{ tooltip.sha }}</gl-link>
-        </div>
-        <template v-else>
-          <div
-            v-for="(content, key) in tooltip.content"
-            :key="key"
-            class="d-flex justify-content-between"
-          >
-            <gl-chart-series-label :color="isMultiSeries ? content.color : ''">
-              {{ content.name }}
-            </gl-chart-series-label>
-            <div class="gl-ml-7">
-              {{ content.value }}
-            </div>
+      <div v-else class="text-nowrap">
+        {{ tooltip.title }}
+      </div>
+    </template>
+    <template #tooltip-content>
+      <div v-if="tooltip.type === 'deployments'" class="d-flex align-items-center">
+        <gl-icon name="commit" class="mr-2" />
+        <gl-link :href="tooltip.commitUrl">{{ tooltip.sha }}</gl-link>
+      </div>
+      <template v-else>
+        <div
+          v-for="(content, key) in tooltip.content"
+          :key="key"
+          class="d-flex justify-content-between"
+        >
+          <gl-chart-series-label :color="isMultiSeries ? content.color : ''">
+            {{ content.name }}
+          </gl-chart-series-label>
+          <div class="gl-ml-7">
+            {{ content.value }}
           </div>
-        </template>
+        </div>
       </template>
-    </component>
-  </div>
+    </template>
+  </component>
 </template>

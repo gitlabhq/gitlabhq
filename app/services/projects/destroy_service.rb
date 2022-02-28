@@ -74,6 +74,10 @@ module Projects
     def remove_snippets
       response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute
 
+      if response.error?
+        log_error("Snippet deletion failed on #{project.full_path} with the following message: #{response.message}")
+      end
+
       response.success?
     end
 

@@ -335,21 +335,6 @@ describe('Time series component', () => {
             expect(formattedTooltipData.content).toBe(annotationsMetadata.tooltipData.content);
           });
         });
-
-        describe('onResize', () => {
-          const mockWidth = 233;
-
-          beforeEach(() => {
-            jest.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(() => ({
-              width: mockWidth,
-            }));
-            wrapper.vm.onResize();
-          });
-
-          it('sets area chart width', () => {
-            expect(wrapper.vm.width).toBe(mockWidth);
-          });
-        });
       });
 
       describe('computed', () => {

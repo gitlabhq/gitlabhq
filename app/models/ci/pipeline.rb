@@ -421,9 +421,7 @@ module Ci
 
       sql = sql.where(ref: ref) if ref
 
-      sql.each_with_object({}) do |pipeline, hash|
-        hash[pipeline.sha] = pipeline
-      end
+      sql.index_by(&:sha)
     end
 
     def self.latest_successful_ids_per_project

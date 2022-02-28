@@ -6,20 +6,23 @@ module Types
     class DetailedStatusType < BaseObject
       graphql_name 'DetailedStatus'
 
-      field :id, GraphQL::Types::String, null: false,
-            description: 'ID for a detailed status.',
-            extras: [:parent]
-      field :group, GraphQL::Types::String, null: true,
-            description: 'Group of the status.'
-      field :icon, GraphQL::Types::String, null: true,
-            description: 'Icon of the status.'
-      field :favicon, GraphQL::Types::String, null: true,
-            description: 'Favicon of the status.'
+      field :action, Types::Ci::StatusActionType, null: true,
+            calls_gitaly: true,
+            description: 'Action information for the status. This includes method, button title, icon, path, and title.'
       field :details_path, GraphQL::Types::String, null: true,
             description: 'Path of the details for the status.'
+      field :favicon, GraphQL::Types::String, null: true,
+            description: 'Favicon of the status.'
+      field :group, GraphQL::Types::String, null: true,
+            description: 'Group of the status.'
       field :has_details, GraphQL::Types::Boolean, null: true,
             description: 'Indicates if the status has further details.',
             method: :has_details?
+      field :icon, GraphQL::Types::String, null: true,
+            description: 'Icon of the status.'
+      field :id, GraphQL::Types::String, null: false,
+            description: 'ID for a detailed status.',
+            extras: [:parent]
       field :label, GraphQL::Types::String, null: true,
             calls_gitaly: true,
             description: 'Label of the status.'
@@ -28,9 +31,6 @@ module Types
       field :tooltip, GraphQL::Types::String, null: true,
             description: 'Tooltip associated with the status.',
             method: :status_tooltip
-      field :action, Types::Ci::StatusActionType, null: true,
-            calls_gitaly: true,
-            description: 'Action information for the status. This includes method, button title, icon, path, and title.'
 
       def id(parent:)
         "#{object.id}-#{parent.object.object.id}"

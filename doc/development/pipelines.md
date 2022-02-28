@@ -624,6 +624,20 @@ otherwise.
 If you want a running pipeline to finish even if you push new commits to a merge
 request, be sure to start the `dont-interrupt-me` job before pushing.
 
+### Git fetch caching
+
+Because GitLab.com uses the [pack-objects cache](../administration/gitaly/configure_gitaly.md#pack-objects-cache),
+concurrent Git fetches of the same pipeline ref are deduplicated on
+the Gitaly server (always) and served from cache (when available).
+
+This works well for the following reasons:
+
+- The pack-objects cache is enabled on all Gitaly servers on GitLab.com.
+- The CI/CD [Git strategy setting](../ci/pipelines/settings.md#choose-the-default-git-strategy) for `gitlab-org/gitlab` is **Git clone**,
+  causing all jobs to fetch the same data, which maximizes the cache hit ratio.
+- We use [shallow clone](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone) to avoid downloading the full Git
+  history for every job.
+
 ### Caching strategy
 
 1. All jobs must only pull caches by default.
@@ -657,19 +671,31 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 
 We limit the artifacts that are saved and retrieved by jobs to the minimum in order to reduce the upload/download time and costs, as well as the artifacts storage.
 
-### Git fetch caching
+### Components caching
 
-Because GitLab.com uses the [pack-objects cache](../administration/gitaly/configure_gitaly.md#pack-objects-cache),
-concurrent Git fetches of the same pipeline ref are deduplicated on
-the Gitaly server (always) and served from cache (when available).
+Some external components (currently only GitLab Workhorse) of GitLab need to be built from source as a preliminary step for running tests.
 
-This works well for the following reasons:
+In [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79766), we introduced a new `build-components` job that:
 
-- The pack-objects cache is enabled on all Gitaly servers on GitLab.com.
-- The CI/CD [Git strategy setting](../ci/pipelines/settings.md#choose-the-default-git-strategy) for `gitlab-org/gitlab` is **Git clone**,
-  causing all jobs to fetch the same data, which maximizes the cache hit ratio.
-- We use [shallow clone](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone) to avoid downloading the full Git
-  history for every job.
+- runs automatically for all GitLab.com `gitlab-org/gitlab` scheduled pipelines
+- runs automatically for any `master` commit that touches the `workhorse/` folder
+- is manual for GitLab.com's `gitlab-org`'s MRs
+
+This job tries to download a generic package that contains GitLab Workhorse binaries needed in the GitLab test suite (under `tmp/tests/gitlab-workhorse`).
+
+- If the package URL returns a 404:
+   1. It runs `scripts/setup-test-env`, so that the GitLab Workhorse binaries are built.
+   1. It then creates an archive which contains the binaries and upload it [as a generic package](https://gitlab.com/gitlab-org/gitlab/-/packages/).
+- Otherwise, if the package already exists, it exit the job successfully.
+
+We also changed the `setup-test-env` job to:
+
+1. First download the GitLab Workhorse generic package build and uploaded by `build-components`.
+1. If the package is retrieved successfully, its content is placed in the right folder (i.e. `tmp/tests/gitlab-workhorse`), preventing the building of the binaries when `scripts/setup-test-env` is run later on.
+1. If the package URL returns a 404, the behavior doesn't change compared to the current one: the GitLab Workhorse binaries are built as part of `scripts/setup-test-env`.
+
+NOTE:
+The version of the package is the workhorse tree SHA (i.e. `git rev-parse HEAD:workhorse`).
 
 ### Pre-clone step
 

@@ -4,7 +4,7 @@ group: Workspace
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Reserved project and group names
+# Reserved project and group names **(FREE)**
 
 Not all project & group names are allowed because they would conflict with
 existing routes used by GitLab.
@@ -45,7 +45,7 @@ It is currently not possible to create a project with the following names:
 
 ## Reserved group names
 
-Currently the following names are reserved as top level groups:
+Currently, the following names are reserved as top level groups:
 
 - `\-`
 - `.well-known`

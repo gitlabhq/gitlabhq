@@ -458,24 +458,6 @@ Rails/HasManyOrHasOneDependent:
 Rails/HelperInstanceVariable:
   Enabled: false
 
-# Offense count: 17
-# Cop supports --auto-correct.
-Rails/IndexBy:
-  Exclude:
-    - 'app/graphql/types/design_management/design_fields.rb'
-    - 'app/models/ci/pipeline.rb'
-    - 'app/services/ci/pipeline_processing/atomic_processing_service/status_collection.rb'
-    - 'ee/app/services/projects/update_mirror_service.rb'
-    - 'ee/app/services/security/store_report_service.rb'
-    - 'ee/lib/ee/gitlab/auth/ldap/sync/group.rb'
-    - 'ee/lib/ee/gitlab/background_migration/backfill_version_data_from_gitaly.rb'
-    - 'ee/lib/gitlab/analytics/type_of_work/tasks_by_type.rb'
-    - 'ee/lib/gitlab/elastic/document_reference.rb'
-    - 'ee/lib/gitlab/group_plans_preloader.rb'
-    - 'lib/gitlab/database/count/reltuples_count_strategy.rb'
-    - 'lib/gitlab/language_detection.rb'
-    - 'tooling/danger/sidekiq_queues.rb'
-
 # Offense count: 47
 # Cop supports --auto-correct.
 Rails/IndexWith:

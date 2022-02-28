@@ -449,11 +449,15 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
     end
 
     context 'when an error is raised deleting snippets' do
+      let(:error_message) { 'foo' }
+
       it 'does not delete project' do
         allow_next_instance_of(Snippets::BulkDestroyService) do |instance|
-          allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'foo'))
+          allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
         end
 
+        expect(Gitlab::AppLogger).to receive(:error).with("Snippet deletion failed on #{project.full_path} with the following message: #{error_message}")
+        expect(Gitlab::AppLogger).to receive(:error).with(/Failed to remove project snippets/)
         expect(destroy_project(project, user)).to be_falsey
         expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_truthy
       end

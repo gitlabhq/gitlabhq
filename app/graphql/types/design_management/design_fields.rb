@@ -62,7 +62,7 @@ module Types
 
       def cached_actions_for_version(version)
         Gitlab::SafeRequestStore.fetch(['DesignFields', 'actions_for_version', version.id]) do
-          version.actions.to_h { |dv| [dv.design_id, dv] }
+          version.actions.index_by(&:design_id)
         end
       end
 

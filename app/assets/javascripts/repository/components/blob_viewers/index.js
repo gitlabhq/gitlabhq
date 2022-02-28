@@ -1,4 +1,5 @@
 const viewers = {
+  csv: () => import('./csv_viewer.vue'),
   download: () => import('./download_viewer.vue'),
   image: () => import('./image_viewer.vue'),
   video: () => import('./video_viewer.vue'),

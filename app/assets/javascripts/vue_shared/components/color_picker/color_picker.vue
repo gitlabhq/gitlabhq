@@ -7,6 +7,7 @@
      :invalid-feedback="__('Please enter a valid hex (#RRGGBB or #RGB) color value')"
      :label="__('Background color')"
      :value="#FF0000"
+     :suggestedColors="{ '#ff0000': 'Red', '#808080': 'Gray' }",
      state="isValidColor"
    />
  */
@@ -48,15 +49,17 @@ export default {
       required: false,
       default: null,
     },
+    suggestedColors: {
+      type: Object,
+      required: false,
+      default: () => gon.suggested_label_colors,
+    },
   },
   computed: {
     description() {
       return this.hasSuggestedColors
         ? this.$options.i18n.fullDescription
         : this.$options.i18n.shortDescription;
-    },
-    suggestedColors() {
-      return gon.suggested_label_colors;
     },
     previewColor() {
       if (this.state) {

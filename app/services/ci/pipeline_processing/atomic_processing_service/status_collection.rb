@@ -91,17 +91,13 @@ module Ci
 
         def all_statuses_by_id
           strong_memoize(:all_statuses_by_id) do
-            all_statuses.to_h do |row|
-              [row[:id], row]
-            end
+            all_statuses.index_by { |row| row[:id] }
           end
         end
 
         def all_statuses_by_name
           strong_memoize(:statuses_by_name) do
-            all_statuses.to_h do |row|
-              [row[:name], row]
-            end
+            all_statuses.index_by { |row| row[:name] }
           end
         end
 

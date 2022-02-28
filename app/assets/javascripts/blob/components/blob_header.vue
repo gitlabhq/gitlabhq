@@ -63,6 +63,9 @@ export default {
     isEmpty() {
       return this.blob.rawSize === 0;
     },
+    blobSwitcherDocIcon() {
+      return this.blob.richViewer?.fileType === 'csv' ? 'table' : 'document';
+    },
   },
   watch: {
     viewer(newVal, oldVal) {
@@ -90,7 +93,7 @@ export default {
     </div>
 
     <div class="gl-sm-display-flex file-actions">
-      <viewer-switcher v-if="showViewerSwitcher" v-model="viewer" />
+      <viewer-switcher v-if="showViewerSwitcher" v-model="viewer" :doc-icon="blobSwitcherDocIcon" />
 
       <slot name="actions"></slot>
 

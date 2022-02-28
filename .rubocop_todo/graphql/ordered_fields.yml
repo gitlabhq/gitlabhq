@@ -1,16 +1,6 @@
 ---
 GraphQL/OrderedFields:
   Exclude:
-  - app/graphql/types/board_list_type.rb
-  - app/graphql/types/ci/analytics_type.rb
-  - app/graphql/types/ci/ci_cd_setting_type.rb
-  - app/graphql/types/ci/config/group_type.rb
-  - app/graphql/types/ci/config/job_type.rb
-  - app/graphql/types/ci/config/stage_type.rb
-  - app/graphql/types/ci/detailed_status_type.rb
-  - app/graphql/types/ci/group_type.rb
-  - app/graphql/types/ci/job_type.rb
-  - app/graphql/types/ci/runner_architecture_type.rb
   - app/graphql/types/ci/runner_platform_type.rb
   - app/graphql/types/ci/runner_type.rb
   - app/graphql/types/ci/stage_type.rb
@@ -48,14 +38,6 @@ GraphQL/OrderedFields:
   - app/graphql/types/notes/diff_position_type.rb
   - app/graphql/types/notes/discussion_type.rb
   - app/graphql/types/notes/note_type.rb
-  - app/graphql/types/packages/composer/json_type.rb
-  - app/graphql/types/packages/composer/metadatum_type.rb
-  - app/graphql/types/packages/conan/file_metadatum_type.rb
-  - app/graphql/types/packages/conan/metadatum_type.rb
-  - app/graphql/types/packages/helm/dependency_type.rb
-  - app/graphql/types/packages/helm/maintainer_type.rb
-  - app/graphql/types/packages/helm/metadata_type.rb
-  - app/graphql/types/packages/maven/metadatum_type.rb
   - app/graphql/types/packages/nuget/metadatum_type.rb
   - app/graphql/types/packages/package_dependency_link_type.rb
   - app/graphql/types/packages/package_file_type.rb
