@@ -29,20 +29,7 @@
 
   #js-tab-builds.tab-pane
     - if stages.present?
-      - if Feature.enabled?(:jobs_tab_vue, @project, default_enabled: :yaml)
-        #js-pipeline-jobs-vue{ data: { full_path: @project.full_path, pipeline_iid: @pipeline.iid } }
-      - else
-        .table-holder.pipeline-holder
-          %table.table.ci-table.pipeline
-            %thead
-              %tr
-                %th= _('Status')
-                %th= _('Name')
-                %th= _('Job ID')
-                %th
-                %th= _('Coverage')
-                %th
-            = render partial: "projects/stage/stage", collection: stages, as: :stage
+      #js-pipeline-jobs-vue{ data: { full_path: @project.full_path, pipeline_iid: @pipeline.iid } }
 
   - if @pipeline.failed_builds.present?
     #js-tab-failures.build-failures.tab-pane.build-page

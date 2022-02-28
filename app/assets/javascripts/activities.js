@@ -33,7 +33,7 @@ export default class Activities {
       errorCallback: () =>
         createFlash({
           message: s__(
-            'Activity|An error occured while retrieving activity. Reload the page to try again.',
+            'Activity|An error occurred while retrieving activity. Reload the page to try again.',
           ),
           parent: this.containerEl,
         }),

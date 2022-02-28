@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 RSpec.shared_examples 'avoid N+1 on environments serialization' do |ee: false|
   # Investigating in https://gitlab.com/gitlab-org/gitlab/-/issues/353209
-  let(:query_threshold) { 50 + (ee ? 4 : 0) }
+  let(:query_threshold) { 9 + (ee ? 4 : 0) }
 
   it 'avoids N+1 database queries with grouping', :request_store do
     create_environment_with_associations(project)

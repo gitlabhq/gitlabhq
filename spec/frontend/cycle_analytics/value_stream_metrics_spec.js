@@ -109,7 +109,7 @@ describe('ValueStreamMetrics', () => {
       });
 
       describe('filterFn', () => {
-        const transferedMetricsData = prepareTimeMetricsData(metricsData, METRICS_POPOVER_CONTENT);
+        const transferredMetricsData = prepareTimeMetricsData(metricsData, METRICS_POPOVER_CONTENT);
 
         it('with a filter function, will call the function with the metrics data', async () => {
           const filteredData = [
@@ -123,7 +123,7 @@ describe('ValueStreamMetrics', () => {
 
           await waitForPromises();
 
-          expect(mockFilterFn).toHaveBeenCalledWith(transferedMetricsData);
+          expect(mockFilterFn).toHaveBeenCalledWith(transferredMetricsData);
           expect(wrapper.vm.metrics).toEqual(filteredData);
         });
 
@@ -133,7 +133,7 @@ describe('ValueStreamMetrics', () => {
           await waitForPromises();
 
           expect(mockFilterFn).not.toHaveBeenCalled();
-          expect(wrapper.vm.metrics).toEqual(transferedMetricsData);
+          expect(wrapper.vm.metrics).toEqual(transferredMetricsData);
         });
       });
 

@@ -253,7 +253,7 @@ To change this setting globally, see [Default project creation protection](../ad
 
 ## Group activity analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [beta feature](https://about.gitlab.com/handbook/product/#beta).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/alpha-beta-support.md#beta-features).
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
 

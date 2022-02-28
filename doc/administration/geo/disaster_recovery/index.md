@@ -10,7 +10,7 @@ Geo replicates your database, your Git repositories, and few other assets,
 but there are some [limitations](../index.md#limitations).
 
 WARNING:
-Disaster recovery for multi-secondary configurations is in **Alpha**.
+Disaster recovery for multi-secondary configurations is in [**Alpha**](../../../policy/alpha-beta-support.md#alpha-features).
 For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/3574).
 Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
 causes downtime.

@@ -2016,7 +2016,7 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
-msgid "Activity|An error occured while retrieving activity. Reload the page to try again."
+msgid "Activity|An error occurred while retrieving activity. Reload the page to try again."
 msgstr ""
 
 msgid "Add"
@@ -20971,9 +20971,6 @@ msgstr ""
 msgid "Job Failed #%{build_id}"
 msgstr ""
 
-msgid "Job ID"
-msgstr ""
-
 msgid "Job artifact"
 msgstr ""
 
@@ -37428,7 +37425,7 @@ msgstr ""
 msgid "This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group."
 msgstr ""
 
-msgid "This group can't be transfered because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group."
+msgid "This group can't be transferred because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group."
 msgstr ""
 
 msgid "This group cannot be invited to a project inside a group with enforced SSO"
@@ -41499,7 +41496,7 @@ msgstr ""
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
-msgid "WikiPage|An error occured while trying to render the content editor. Please try again later."
+msgid "WikiPage|An error occurred while trying to render the content editor. Please try again later."
 msgstr ""
 
 msgid "WikiPage|Are you sure you want to switch back to the classic editor?"

@@ -553,7 +553,7 @@
     * The concert starts at <time datetime="20:00">20:00</time> and you'll be able to enjoy the band for at least <time datetime="PT2H30M">2h 30m</time>.
     * Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy text (Windows).
     * WWF's goal is to: <q>Build a future where people live in harmony with nature.</q> We hope they succeed.
-    * The error occured was: <samp>Keyboard not found. Press F1 to continue.</samp>
+    * The error occurred was: <samp>Keyboard not found. Press F1 to continue.</samp>
     * The area of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the base, and <var>h</var> is the vertical height.
     * <ruby>漢<rt>ㄏㄢˋ</rt></ruby>
     * C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O
@@ -572,7 +572,7 @@
     <li data-sourcepos="8:1-8:149">The concert starts at <time datetime="20:00">20:00</time> and you'll be able to enjoy the band for at least <time datetime="PT2H30M">2h 30m</time>.</li>
     <li data-sourcepos="9:1-9:62">Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy text (Windows).</li>
     <li data-sourcepos="10:1-10:105">WWF's goal is to: <q>Build a future where people live in harmony with nature.</q> We hope they succeed.</li>
-    <li data-sourcepos="11:1-11:79">The error occured was: <samp>Keyboard not found. Press F1 to continue.</samp>
+    <li data-sourcepos="11:1-11:79">The error occurred was: <samp>Keyboard not found. Press F1 to continue.</samp>
     </li>
     <li data-sourcepos="12:1-12:136">The area of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the base, and <var>h</var> is the vertical height.</li>
     <li data-sourcepos="13:1-13:35"><ruby>漢<rt>ㄏㄢˋ</rt></ruby></li>

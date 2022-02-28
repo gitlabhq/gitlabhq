@@ -20,10 +20,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     push_frontend_feature_flag(:rearrange_pipelines_table, project, default_enabled: :yaml)
   end
 
-  before_action do
-    push_frontend_feature_flag(:jobs_tab_vue, @project, default_enabled: :yaml)
-  end
-
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
 

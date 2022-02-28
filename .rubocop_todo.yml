@@ -498,12 +498,6 @@ Rails/InverseOf:
 Rails/LexicallyScopedActionFilter:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Rails/LinkToBlank:
-  Exclude:
-    - 'app/helpers/projects_helper.rb'
-    - 'ee/app/helpers/ee/users/callouts_helper.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.

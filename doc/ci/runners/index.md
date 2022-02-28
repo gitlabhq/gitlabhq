@@ -14,8 +14,8 @@ If you are using GitLab SaaS (GitLab.com), your CI jobs automatically run on run
 No configuration is required. Your jobs can run on:
 
 - [Linux runners](saas/linux_saas_runner.md).
-- [Windows runners](saas/windows_saas_runner.md) (beta).
-- [macOS runners](saas/macos_saas_runner.md) (beta).
+- [Windows runners](saas/windows_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta-features)).
+- [macOS runners](saas/macos_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta-features)).
 
 The number of minutes you can use on these runners depends on the
 [maximum number of CI/CD minutes](../pipelines/cicd_minutes.md)

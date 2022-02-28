@@ -144,8 +144,8 @@ const bindEvents = () => {
 
   bindHowToImport();
 
-  $('.btn_import_gitlab_project').on('click', () => {
-    const importHref = $('a.btn_import_gitlab_project').attr('href');
+  $('.btn_import_gitlab_project').on('click contextmenu', () => {
+    const importHref = $('a.btn_import_gitlab_project').attr('data-href');
     $('.btn_import_gitlab_project').attr(
       'href',
       `${importHref}?namespace_id=${$(

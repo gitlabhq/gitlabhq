@@ -114,6 +114,18 @@ To view all available options, open a terminal and run this command:
 
 ```shell
 docker run --pull=always --rm registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:stable generate --help
+
+Usage:
+  cli generate [flags]
+
+Flags:
+      --agent-token string     Access token registered for agent
+      --agent-version string   Version of the agentk image to use (default "v14.8.1")
+  -h, --help                   help for generate
+      --kas-address string     GitLab Kubernetes Agent Server address
+      --name-prefix string     The prefix to use for names of Kubernetes objects
+      --namespace string       Kubernetes namespace to create resources in (default "gitlab-agent")
+      --no-rbac                Do not include corresponding Roles and RoleBindings for the agent service account
 ```
 
 WARNING:

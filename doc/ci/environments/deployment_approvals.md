@@ -11,7 +11,7 @@ description: Require approvals prior to deploying to a Protected Environment
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8.
 
 WARNING:
-This feature is in an alpha stage and subject to change without prior notice.
+This feature is in an [Alpha](../../policy/alpha-beta-support.md#alpha-features) stage and subject to change without prior notice.
 
 It may be useful to require additional approvals before deploying to certain protected environments (for example, production). This pre-deployment approval requirement is useful to accommodate testing, security, or compliance processes that must happen before each deployment.
 

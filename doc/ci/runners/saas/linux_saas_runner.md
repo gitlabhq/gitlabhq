@@ -26,7 +26,7 @@ Jobs handled by shared runners on GitLab.com (`shared-runners-manager-X.gitlab.c
 **time out after 3 hours**, regardless of the timeout configured in a
 project. Check issue [#4010](https://gitlab.com/gitlab-com/infrastructure/-/issues/4010) and [#4070](https://gitlab.com/gitlab-com/infrastructure/-/issues/4070) for the reference.
 
-Jobs handled by shared runners on Windows and macOS on GitLab.com **time out after 1 hour** while this service is in the Beta stage.
+Jobs handled by shared runners on Windows and macOS on GitLab.com **time out after 1 hour** while this service is in the [Beta](../../../policy/alpha-beta-support.md#beta-features) stage.
 
 Below are the runners' settings.
 

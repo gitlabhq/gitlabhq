@@ -69,9 +69,7 @@ export default async function initPipelineDetailsBundle() {
   }
 
   try {
-    if (gon.features?.jobsTabVue) {
-      createPipelineJobsApp(SELECTORS.PIPELINE_JOBS);
-    }
+    createPipelineJobsApp(SELECTORS.PIPELINE_JOBS);
   } catch {
     createFlash({
       message: __('An error occurred while loading the Jobs tab.'),

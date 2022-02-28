@@ -14,7 +14,7 @@ When you use SaaS runners on macOS:
 ## VM types
 
 The virtual machine where your job runs has `sudo` access with no password.
-For the Beta, there is only one available machine type, `gbc-macos-large`.
+For the [Beta](../../../../policy/alpha-beta-support.md#beta-features), there is only one available machine type, `gbc-macos-large`.
 
 | Instance type | vCPUS | Memory (GB) |
 | --------- | --- | ------- |
