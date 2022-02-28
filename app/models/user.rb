@@ -2166,7 +2166,7 @@ class User < ApplicationRecord
   end
 
   def signup_email_invalid_message
-    self.new_record? ? _('is not allowed for sign-up.') : _('is not allowed.')
+    self.new_record? ? _('is not allowed for sign-up. Please use your regular email address.') : _('is not allowed. Please use your regular email address.')
   end
 
   def check_username_format

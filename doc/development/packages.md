@@ -151,7 +151,7 @@ During this phase, the idea is to collect as much information as possible about 
   1. Empty file structure (API file, base service for this package)
   1. Authentication system for "logging in" to the package manager
   1. Identify metadata and create applicable tables
-  1. Workhorse route for [object storage direct upload](uploads.md#direct-upload)
+  1. Workhorse route for [object storage direct upload](uploads/implementation.md#direct-upload)
   1. Endpoints required for upload/publish
   1. Endpoints required for install/download
   1. Endpoints required for required actions
@@ -210,7 +210,7 @@ File uploads should be handled by GitLab Workhorse using object accelerated uplo
 the workhorse proxy that checks all incoming requests to GitLab intercept the upload request,
 upload the file, and forward a request to the main GitLab codebase only containing the metadata
 and file location rather than the file itself. An overview of this process can be found in the
-[development documentation](uploads.md#direct-upload).
+[development documentation](uploads/implementation.md#direct-upload).
 
 In terms of code, this means a route must be added to the
 [GitLab Workhorse project](https://gitlab.com/gitlab-org/gitlab-workhorse) for each upload endpoint being added
@@ -272,7 +272,7 @@ features must be implemented when the feature flag is removed.
 - File format guards (only accept valid file formats for the package type)
 - Name regex with validation
 - Version regex with validation
-- Workhorse route for [accelerated](uploads.md#how-to-add-a-new-upload-route) uploads
+- Workhorse route for [accelerated](uploads/working_with_uploads.md) uploads
 - Background workers for extracting package metadata (if applicable)
 - Documentation (how to use the feature)
 - API Documentation (individual endpoints with curl examples)

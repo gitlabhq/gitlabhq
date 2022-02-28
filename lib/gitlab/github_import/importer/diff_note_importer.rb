@@ -4,6 +4,8 @@ module Gitlab
   module GithubImport
     module Importer
       class DiffNoteImporter
+        DiffNoteCreationError = Class.new(ActiveRecord::RecordInvalid)
+
         # note - An instance of `Gitlab::GithubImport::Representation::DiffNote`
         # project - An instance of `Project`
         # client - An instance of `Gitlab::GithubImport::Client`
@@ -31,7 +33,7 @@ module Gitlab
           else
             import_with_legacy_diff_note
           end
-        rescue ::DiffNote::NoteDiffFileCreationError => e
+        rescue ::DiffNote::NoteDiffFileCreationError, DiffNoteCreationError => e
           Logger.warn(message: e.message, 'error.class': e.class.name)
 
           import_with_legacy_diff_note
@@ -84,7 +86,7 @@ module Gitlab
         def import_with_diff_note
           log_diff_note_creation('DiffNote')
 
-          ::Import::Github::Notes::CreateService.new(project, author, {
+          record = ::Import::Github::Notes::CreateService.new(project, author, {
             noteable_type: note.noteable_type,
             system: false,
             type: 'DiffNote',
@@ -97,6 +99,8 @@ module Gitlab
             updated_at: note.updated_at,
             position: note.diff_position
           }).execute
+
+          raise DiffNoteCreationError, record unless record.persisted?
         end
 
         def note_body

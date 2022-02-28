@@ -62,7 +62,7 @@ Using the consolidated object storage configuration has a number of advantages:
 - It enables the use of [encrypted S3 buckets](#encrypted-s3-buckets).
 - It [uploads files to S3 with proper `Content-MD5` headers](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/222).
 
-Because [direct upload mode](../development/uploads.md#direct-upload)
+Because [direct upload mode](../development/uploads/implementation.md#direct-upload)
 must be enabled, only the following providers can be used:
 
 - [Amazon S3-compatible providers](#s3-compatible-connection-settings)

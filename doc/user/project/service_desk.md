@@ -93,8 +93,8 @@ displayed in the information note.
 
 ### Using customized email templates
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2460) in GitLab Premium 12.7.
-> - Moved to GitLab Free in 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2460) in GitLab 12.7.
+> - Moved from GitLab Premium to GitLab Free in 13.2.
 
 An email is sent to the author when:
 
@@ -171,7 +171,7 @@ To edit the custom email display name:
 
 ### Using a custom email address **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab Premium 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
 
 It is possible to customize the email address used by Service Desk. To do this, you must configure
@@ -241,7 +241,7 @@ The configuration options are the same as for configuring
 
 ##### Microsoft Graph
 
-> Introduced in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/214900)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
 
 Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
 Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth2 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).

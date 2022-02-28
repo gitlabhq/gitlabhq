@@ -253,6 +253,24 @@ images. To configure the images, set the `CS_ANALYZER_IMAGE` variable to the sta
 | Grype           | `registry.gitlab.com/security-products/container-scanning/grype:4-ubi` |
 | Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:4-ubi` |
 
+### Enable Container Scanning through an automatic merge request
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6334) in GitLab 14.9.
+
+To enable Container Scanning in a project, create a merge request from the Security Configuration
+page:
+
+1. In the project where you want to enable Container Scanning, go to
+   **Security & Compliance > Configuration**.
+1. In the **Container Scanning** row, select **Configure with a merge request**.
+
+This automatically creates a merge request with the changes necessary to enable Container Scanning.
+To complete the configuration, review and merge this merge request.
+
+The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
+configuration file. If you have a complex GitLab configuration file, it may not be parsed
+successfully and an error may occur.
+
 ### Overriding the container scanning template
 
 If you want to override the job definition (for example, to change properties like `variables`), you

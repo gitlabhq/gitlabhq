@@ -10,7 +10,7 @@ RSpec.describe Gitlab::EtagCaching::Router do
 
         expect(result).to be_present
         expect(result.name).to eq 'project_pipelines'
-        expect(result.router).to eq Gitlab::EtagCaching::Router::Restful
+        expect(result.router).to eq Gitlab::EtagCaching::Router::Rails
       end
     end
 

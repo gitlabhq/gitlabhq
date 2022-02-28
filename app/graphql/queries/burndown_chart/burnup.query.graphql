@@ -1,4 +1,9 @@
-query BurnupTimesSeriesData($id: ID!, $isIteration: Boolean = false, $weight: Boolean = false) {
+query BurnupTimesSeriesData(
+  $id: ID!
+  $isIteration: Boolean = false
+  $weight: Boolean = false
+  $fullPath: String
+) {
   milestone(id: $id) @skip(if: $isIteration) {
     __typename
     id
@@ -37,7 +42,7 @@ query BurnupTimesSeriesData($id: ID!, $isIteration: Boolean = false, $weight: Bo
     __typename
     id
     title
-    report {
+    report(fullPath: $fullPath) {
       __typename
       burnupTimeSeries {
         __typename

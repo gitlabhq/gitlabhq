@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::EtagCaching::Router::Restful do
+RSpec.describe Gitlab::EtagCaching::Router::Rails do
   it 'matches issue notes endpoint' do
     result = match_route('/my-group/and-subgroup/here-comes-the-project/noteable/issue/1/notes')
 
@@ -111,6 +111,12 @@ RSpec.describe Gitlab::EtagCaching::Router::Restful do
 
     described_class::ROUTES.each do |route|
       expect(feature_categories).to include(route.feature_category), "#{route.name} has a category of #{route.feature_category}, which is not valid"
+    end
+  end
+
+  it 'has a caller_id for every route', :aggregate_failures do
+    described_class::ROUTES.each do |route|
+      expect(route.caller_id).to include('#'), "#{route.name} has caller_id #{route.caller_id}, which is not valid"
     end
   end
 

@@ -67,7 +67,10 @@ module Gitlab
 
         add_instrument_for_cache_hit(status_code, route, request)
 
-        Gitlab::ApplicationContext.push(feature_category: route.feature_category)
+        Gitlab::ApplicationContext.push(
+          feature_category: route.feature_category,
+          caller_id: route.caller_id
+        )
 
         new_headers = {
           'ETag' => etag,

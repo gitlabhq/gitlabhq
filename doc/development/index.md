@@ -227,7 +227,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Working with merge request diffs](diffs.md)
 - [Approval Rules](approval_rules.md)
 - [Repository mirroring](repository_mirroring.md)
-- [File uploads](uploads.md)
+- [Uploads development guide](uploads/index.md)
 - [Auto DevOps development guide](auto_devops.md)
 - [Renaming features](renaming_features.md)
 - [Code Intelligence](code_intelligence/index.md)

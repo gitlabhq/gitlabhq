@@ -62,4 +62,22 @@ RSpec.describe Preloaders::Environments::DeploymentPreloader do
 
     expect(default_preload_query).to be(false)
   end
+
+  it 'sets environment on the associated deployment', :aggregate_failures do
+    preload_association(:last_deployment)
+
+    expect do
+      project.environments.each { |environment| environment.last_deployment.environment }
+    end.not_to exceed_query_limit(0)
+
+    project.environments.each do |environment|
+      expect(environment.last_deployment.environment).to eq(environment)
+    end
+  end
+
+  it 'does not attempt to set environment on a nil deployment' do
+    create(:environment, project: project, state: :available)
+
+    expect { preload_association(:last_deployment) }.not_to raise_error
+  end
 end

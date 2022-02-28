@@ -47,7 +47,7 @@ The Content Editor requires two properties:
 
 - `renderMarkdown` is an asynchronous function that returns the response (String) of invoking the
 [Markdown API](../../api/markdown.md).
-- `uploadsPath` is a URL that points to a [GitLab upload service](../uploads.md#upload-encodings)
+- `uploadsPath` is a URL that points to a [GitLab upload service](../uploads/implementation.md#upload-encodings)
   with `multipart/form-data` support.
 
 See the [`WikiForm.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue#L207)

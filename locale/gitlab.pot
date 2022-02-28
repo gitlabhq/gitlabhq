@@ -43568,7 +43568,7 @@ msgstr ""
 msgid "is not a valid X509 certificate."
 msgstr ""
 
-msgid "is not allowed for sign-up."
+msgid "is not allowed for sign-up. Please use your regular email address."
 msgstr ""
 
 msgid "is not allowed for this group."
@@ -43580,7 +43580,7 @@ msgstr ""
 msgid "is not allowed since the group is not top-level group."
 msgstr ""
 
-msgid "is not allowed."
+msgid "is not allowed. Please use your regular email address."
 msgstr ""
 
 msgid "is not allowed. We do not currently support project-level iterations"

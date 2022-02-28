@@ -49,7 +49,9 @@ You can configure the following security controls:
   - Select **Configure with a merge request** to create a merge request with the changes required to
     enable Dependency Scanning. For more details, see [Enable Dependency Scanning via an automatic merge request](../dependency_scanning/index.md#enable-dependency-scanning-via-an-automatic-merge-request).
 - [Container Scanning](../container_scanning/index.md)
-  - Can be configured with `.gitlab-ci.yml`. For more details, read [Container Scanning](../../../user/application_security/container_scanning/index.md#configuration).
+  - Select **Configure with a merge request** to create a merge request with the changes required to
+    enable Container Scanning. For more details, see
+    [Enable Container Scanning through an automatic merge request](../container_scanning/index.md#enable-container-scanning-through-an-automatic-merge-request).
 - [Cluster Image Scanning](../cluster_image_scanning/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Cluster Image Scanning](../../../user/application_security/cluster_image_scanning/#configuration).
 - [Secret Detection](../secret_detection/index.md)

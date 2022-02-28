@@ -13,9 +13,9 @@ so you can track and find the work items you're interested in.
 
 Labels are a key part of [issue boards](issue_board.md). With labels you can:
 
-- Categorize epics, issues, and merge requests using colors and descriptive titles like
+- Categorize [epics](../group/epics/index.md), issues, and merge requests using colors and descriptive titles like
 `bug`, `feature request`, or `docs`.
-- Dynamically filter and manage epics, issues, and merge requests.
+- Dynamically filter and manage [epics](../group/epics/index.md), issues, and merge requests.
 - [Search lists of issues, merge requests, and epics](../search/index.md#search-issues-and-merge-requests),
   as well as [issue boards](../search/index.md#issue-boards).
 
@@ -26,7 +26,7 @@ There are two types of labels in GitLab:
 - **Project labels** can be assigned to issues and merge requests in that project only.
 - **Group labels** can be assigned to issues and merge requests in any project in
   the selected group or its subgroups.
-  - They can also be assigned to epics in the selected group or its subgroups.**(ULTIMATE)**
+  - They can also be assigned to [epics](../group/epics/index.md) in the selected group or its subgroups.
 
 ## Assign and unassign labels
 

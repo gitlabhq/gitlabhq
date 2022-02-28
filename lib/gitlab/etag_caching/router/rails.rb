@@ -3,7 +3,7 @@
 module Gitlab
   module EtagCaching
     module Router
-      class Restful
+      class Rails
         extend EtagCaching::Router::Helpers
 
         # We enable an ETag for every request matching the regex.
@@ -23,74 +23,88 @@ module Gitlab
           [
             %r(#{RESERVED_WORDS_PREFIX}/noteable/issue/\d+/notes\z),
             'issue_notes',
-            'team_planning'
+            ::Projects::NotesController,
+            :index
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/noteable/merge_request/\d+/notes\z),
             'merge_request_notes',
-            'code_review'
+            ::Projects::NotesController,
+            :index
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/issues/\d+/realtime_changes\z),
             'issue_title',
-            'team_planning'
+            ::Projects::IssuesController,
+            :realtime_changes
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/commit/\S+/pipelines\.json\z),
             'commit_pipelines',
-            'continuous_integration'
+            ::Projects::CommitController,
+            :pipelines
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/merge_requests/new\.json\z),
             'new_merge_request_pipelines',
-            'continuous_integration'
+            ::Projects::MergeRequests::CreationsController,
+            :new
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/merge_requests/\d+/pipelines\.json\z),
             'merge_request_pipelines',
-            'continuous_integration'
+            ::Projects::MergeRequestsController,
+            :pipelines
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/pipelines\.json\z),
             'project_pipelines',
-            'continuous_integration'
+            ::Projects::PipelinesController,
+            :index
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/pipelines/\d+\.json\z),
             'project_pipeline',
-            'continuous_integration'
+            ::Projects::PipelinesController,
+            :show
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/builds/\d+\.json\z),
             'project_build',
-            'continuous_integration'
+            ::Projects::BuildsController,
+            :show
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/clusters/\d+/environments\z),
             'cluster_environments',
-            'continuous_delivery'
+            ::Groups::ClustersController,
+            :environments
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/-/environments\.json\z),
             'environments',
-            'continuous_delivery'
+            ::Projects::EnvironmentsController,
+            :index
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/import/github/realtime_changes\.json\z),
             'realtime_changes_import_github',
-            'importers'
+            ::Import::GithubController,
+            :realtime_changes
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/import/gitea/realtime_changes\.json\z),
             'realtime_changes_import_gitea',
-            'importers'
+            ::Import::GiteaController,
+            :realtime_changes
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/merge_requests/\d+/cached_widget\.json\z),
             'merge_request_widget',
-            'code_review'
+            ::Projects::MergeRequests::ContentController,
+            :cached_widget
           ]
-        ].map(&method(:build_route)).freeze
+        ].map(&method(:build_rails_route)).freeze
 
         # Overridden in EE to add more routes
         def self.all_routes
@@ -109,4 +123,4 @@ module Gitlab
   end
 end
 
-Gitlab::EtagCaching::Router::Restful.prepend_mod_with('Gitlab::EtagCaching::Router::Restful')
+Gitlab::EtagCaching::Router::Rails.prepend_mod_with('Gitlab::EtagCaching::Router::Rails')

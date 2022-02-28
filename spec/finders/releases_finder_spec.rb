@@ -33,18 +33,6 @@ RSpec.describe ReleasesFinder do
     end
   end
 
-  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27716
-  shared_examples_for 'when tag is nil' do
-    before do
-      v1_0_0.update_column(:tag, nil)
-    end
-
-    it 'ignores rows with a nil tag' do
-      expect(subject.size).to eq(1)
-      expect(subject).to eq([v1_1_0])
-    end
-  end
-
   shared_examples_for 'when a tag parameter is passed' do
     let(:params) { { tag: 'v1.0.0' } }
 
@@ -116,7 +104,6 @@ RSpec.describe ReleasesFinder do
       end
 
       it_behaves_like 'preload'
-      it_behaves_like 'when tag is nil'
       it_behaves_like 'when a tag parameter is passed'
     end
   end

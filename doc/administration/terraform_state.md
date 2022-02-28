@@ -141,10 +141,10 @@ You can optionally track progress and verify that all packages migrated successf
 - `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
 - `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
 
-Verify `objectstg` below (where `store=2`) has count of all states:
+Verify `objectstg` below (where `file_store=2`) has count of all states:
 
 ```shell
-gitlabhq_production=# SELECT count(*) AS total, sum(case when store = '1' then 1 else 0 end) AS filesystem, sum(case when store = '2' then 1 else 0 end) AS objectstg FROM terraform_states;
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM terraform_states;
 
 total | filesystem | objectstg
 ------+------------+-----------

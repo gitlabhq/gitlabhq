@@ -52,65 +52,43 @@ To update a Kubernetes cluster by using GitOps, complete the following steps.
 
 Any time you commit updates to your Kubernetes manifests, the agent updates the cluster.
 
-### GitOps configuration reference
+## GitOps configuration reference
 
-The following snippet shows the possible keys and values for the GitOps section of an agent configuration file.
+The following snippet shows an example of the possible keys and values for the GitOps section of an agent configuration file.
 
 ```yaml
 gitops:
-  # The agent watches projects where your manifests are stored.
-  # When a project changes, the agent deploys the changes to the cluster.
   manifest_projects:
-    # No authentication mechanisms are currently supported.
-    # The `id` is a path to a Git repository that has
-    # Kubernetes manifests in YAML or JSON format.
   - id: gitlab-org/cluster-integration/gitlab-agent
-    # Namespace to use if not set explicitly in object manifest.
-    # Also used for inventory ConfigMap objects.
     default_namespace: my-ns
-    # Paths in the repository you want to scan for manifest files.
-    # Directories with names that start with a dot are ignored.
     paths:
-      # Read all .yaml files from team1/app1 directory.
-      # See https://github.com/bmatcuk/doublestar#about and
-      # https://pkg.go.dev/github.com/bmatcuk/doublestar/v2#Match for globbing rules.
+      # Read all YAML files from this directory. 
     - glob: '/team1/app1/*.yaml'
       # Read all .yaml files from team2/apps and all subdirectories.
     - glob: '/team2/apps/**/*.yaml'
       # If 'paths' is not specified or is an empty list, the configuration below is used.
     - glob: '/**/*.{yaml,yml,json}'
-    # Reconcile timeout defines whether the applier should wait
-    # until all applied resources have been reconciled, and if so,
-    # how long to wait.
-    reconcile_timeout: 3600s # 1 hour by default
-    # Dry run strategy defines whether changes should actually be performed,
-    # or if it is just talk and no action.
-    # https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/common/common.go#L68-L89
-    # Can be: none, client, server
-    dry_run_strategy: none # 'none' by default
-    # Prune defines whether pruning of previously applied
-    # objects should happen after apply.
-    prune: true # enabled by default
-    # Prune timeout defines whether we should wait for all resources
-    # to be fully deleted after pruning, and if so, how long we should
-    # wait.
-    prune_timeout: 3600s # 1 hour by default
-    # Prune propagation policy defines the deletion propagation policy
-    # that should be used for pruning.
-    # https://github.com/kubernetes/apimachinery/blob/44113beed5d39f1b261a12ec398a356e02358307/pkg/apis/meta/v1/types.go#L456-L470
-    # Can be: orphan, background, foreground
-    prune_propagation_policy: foreground # 'foreground' by default
-    # Inventory policy defines if an inventory object can take over
-    # objects that belong to another inventory object or don't
-    # belong to any inventory object.
-    # This is done by determining if the apply/prune operation
-    # can go through for a resource based on comparison of
-    # the inventory-id value in the package and the owning-inventory
-    # annotation (config.k8s.io/owning-inventory) in the live object.
-    # https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/inventory/policy.go#L12-L66
-    # Can be: must_match, adopt_if_no_inventory, adopt_all
-    inventory_policy: must_match # 'must_match' by default
+    reconcile_timeout: 3600s
+    dry_run_strategy: none
+    prune: true
+    prune_timeout: 3600s
+    prune_propagation_policy: foreground
+    inventory_policy: must_match
 ```
+
+| Keyword | Description |
+|--|--|
+| `manifest_projects` | Projects where your Kubernetes manifests are stored. The agent monitors the files in the repositories in these projects. When manifest files change, the agent deploys the changes to the cluster. |
+| `id` | Required. Path to a Git repository that has Kubernetes manifests in YAML or JSON format. No authentication mechanisms are currently supported. |
+| `default_namespace` | Namespace to use if not set explicitly in object manifest. Also used for inventory `ConfigMap` objects. |
+| `paths` | Repository paths to scan for manifest files. Directories with names that start with a dot `(.)` are ignored. |
+| `paths[].glob` | Required. See [doublestar](https://github.com/bmatcuk/doublestar#about) and [the match function](https://pkg.go.dev/github.com/bmatcuk/doublestar/v2#Match) for globbing rules. |
+| `reconcile_timeout` | Determines whether the applier should wait until all applied resources have been reconciled, and if so, how long to wait. Default is 3600 seconds (1 hour). |
+| `dry_run_strategy` | Determines whether changes [should be performed](https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/common/common.go#L68-L89). Can be: `none`, `client`, or `server`. Default is `none`.|
+| `prune` | Determines whether pruning of previously applied objects should happen after apply. Default is `true`. |
+| `prune_timeout` | Determines whether to wait for all resources to be fully deleted after pruning, and if so, how long to wait. Default is 3600 seconds (1 hour). |
+| `prune_propagation_policy` | The deletion propagation policy that [should be used for pruning](https://github.com/kubernetes/apimachinery/blob/44113beed5d39f1b261a12ec398a356e02358307/pkg/apis/meta/v1/types.go#L456-L470). Can be: `orphan`, `background`, or `foreground`. Default is `foreground`. |
+| `inventory_policy` | Determines whether an inventory object can take over objects that belong to another inventory object or don't belong to any inventory object. This is done by determining if the apply/prune operation can go through for a resource based on comparison of the `inventory-id` value in the package and the `owning-inventory` annotation (`config.k8s.io/owning-inventory`) [in the live object](https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/inventory/policy.go#L12-L66). Can be: `must_match`, `adopt_if_no_inventory`, or `adopt_all`. Default is `must_match`. |
 
 ## Additional resources
 

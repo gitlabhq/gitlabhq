@@ -281,7 +281,8 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
         "avatar_url": "https://www.gravatar.com/avatar/e83ac685f68ea07553ad3054c738c709?s=80&d=identicon",
         "web_url": "http://localhost:3000/project_6_bot"
       },
-      "status": "approved"
+      "status": "approved",
+      "created_at": "2022-02-24T20:22:30.097Z"
     }
   ],
   ...
@@ -351,7 +352,8 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
         "avatar_url": "https://www.gravatar.com/avatar/e83ac685f68ea07553ad3054c738c709?s=80&d=identicon",
         "web_url": "http://localhost:3000/project_6_bot"
       },
-      "status": "approved"
+      "status": "approved",
+      "created_at": "2022-02-24T20:22:30.097Z"
     }
   ],
   ...
@@ -417,7 +419,8 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
         "avatar_url": "https://www.gravatar.com/avatar/e83ac685f68ea07553ad3054c738c709?s=80&d=identicon",
         "web_url": "http://localhost:3000/project_6_bot"
       },
-      "status": "approved"
+      "status": "approved",
+      "created_at": "2022-02-24T20:22:30.097Z"
     }
   ],
   ...
@@ -480,6 +483,7 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
     "web_url": "http://localhost:3000/root"
   },
-  "status": "approved"
+  "status": "approved",
+  "created_at": "2022-02-24T20:22:30.097Z"
 }
 ```

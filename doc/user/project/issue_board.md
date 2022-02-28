@@ -53,7 +53,7 @@ the issue board feature.
 > - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to GitLab Free in 12.1.
 > - Multiple issue boards per group are available in GitLab Premium.
 
-Multiple issue boards allow for more than one issue board for a given project **(FREE)** or group **(PREMIUM)**.
+Multiple issue boards allow for more than one issue board for a given project in GitLab Free or group in GitLab Premium and higher tiers.
 This is great for large projects with more than one team or when a repository hosts the code of multiple products.
 
 Using the search box at the top of the menu, you can filter the listed boards.
@@ -275,7 +275,7 @@ Users on GitLab Free can use a single group issue board.
 
 ### Assignee lists **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5784) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5784) in GitLab 11.0.
 
 As in a regular list showing all issues with a chosen label, you can add
 an assignee list that shows all issues assigned to a user.
@@ -295,7 +295,7 @@ To remove an assignee list, just as with a label list, click the trash icon.
 
 ### Milestone lists **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6469) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6469) in GitLab 11.2.
 
 You're also able to create lists of a milestone. These are lists that filter issues by the assigned
 milestone, giving you more freedom and visibility on the issue board. To add a milestone list:
@@ -333,7 +333,7 @@ to and from a iteration list to manipulate the iteration of the dragged issues.
 
 ### Group issues in swimlanes **(PREMIUM)**
 
-> - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+> - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in GitLab 13.6.
 > - Editing issue titles in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232745) in GitLab 13.8.
 > - Editing iteration in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290232) in GitLab 13.9.
 
@@ -356,7 +356,7 @@ appears on the right. There you can see and edit the issue's:
 
 - Title
 - Assignees
-- Epic **(PREMIUM)**
+- [Epic](../group/epics/index.md)
 - Milestone
 - Time tracking value (view only)
 - Due date
@@ -506,14 +506,14 @@ You can filter by the following:
 
 - Assignee
 - Author
-- Epic
-- Iteration
+- [Epic](../group/epics/index.md)
+- [Iteration](../group/iterations/index.md)
 - Label
 - Milestone
 - My Reaction
 - Release
 - Type (issue/incident)
-- Weight
+- [Weight](issues/issue_weight.md)
 
 #### Filtering issues in a group board
 

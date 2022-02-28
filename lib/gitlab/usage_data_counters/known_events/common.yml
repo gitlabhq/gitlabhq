@@ -324,7 +324,6 @@
   category: snippets
   redis_slot: snippets
   aggregation: weekly
-  feature_flag: usage_data_i_snippets_show
 # Terraform
 - name: p_terraform_state_api_unique_users
   category: terraform

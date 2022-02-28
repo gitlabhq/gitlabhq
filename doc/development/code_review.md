@@ -624,7 +624,7 @@ Enterprise Edition instance. This has some implications:
       [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
 1. **File system access** is not possible in a [cloud-native architecture](architecture.md#adapting-existing-and-introducing-new-components).
    Ensure that we support object storage for any file storage we need to perform. For more
-   information, see the [uploads documentation](uploads.md).
+   information, see the [uploads documentation](uploads/index.md).
 
 ### Review turnaround time
 

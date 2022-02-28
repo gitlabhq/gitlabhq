@@ -25064,6 +25064,9 @@ ALTER TABLE ONLY related_epic_links
 ALTER TABLE ONLY release_links
     ADD CONSTRAINT release_links_pkey PRIMARY KEY (id);
 
+ALTER TABLE releases
+    ADD CONSTRAINT releases_not_null_tag CHECK ((tag IS NOT NULL)) NOT VALID;
+
 ALTER TABLE ONLY releases
     ADD CONSTRAINT releases_pkey PRIMARY KEY (id);
 

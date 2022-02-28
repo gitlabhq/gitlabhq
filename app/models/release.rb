@@ -5,6 +5,7 @@ class Release < ApplicationRecord
   include CacheMarkdownField
   include Importable
   include Gitlab::Utils::StrongMemoize
+  include EachBatch
 
   cache_markdown_field :description
 

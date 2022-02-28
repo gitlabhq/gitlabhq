@@ -50,7 +50,7 @@ describe('FeatureCard component', () => {
     expect(enableLinks.exists()).toBe(expectEnableAction);
     if (expectEnableAction) {
       expect(enableLinks).toHaveLength(1);
-      expect(enableLinks.at(0).props('category')).toBe('primary');
+      expect(enableLinks.at(0).props('category')).toBe('secondary');
     }
 
     const configureLinks = findConfigureLinks();

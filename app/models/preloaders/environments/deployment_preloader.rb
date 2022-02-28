@@ -34,8 +34,16 @@ module Preloaders
         deployments_by_environment_id = deployments.index_by(&:environment_id)
 
         environments.each do |environment|
-          environment.association(association_name).target = deployments_by_environment_id[environment.id]
+          associated_deployment = deployments_by_environment_id[environment.id]
+
+          environment.association(association_name).target = associated_deployment
           environment.association(association_name).loaded!
+
+          if associated_deployment
+            # `last?` in DeploymentEntity requires this environment to be loaded
+            associated_deployment.association(:environment).target = environment
+            associated_deployment.association(:environment).loaded!
+          end
         end
       end
     end

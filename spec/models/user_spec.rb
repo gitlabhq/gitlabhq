@@ -498,7 +498,7 @@ RSpec.describe User do
     end
 
     describe 'email' do
-      let(:expected_error) { _('is not allowed for sign-up. Check with your administrator.') }
+      let(:expected_error) { _('is not allowed for sign-up. Please use your regular email address. Check with your administrator.') }
 
       context 'when no signup domains allowed' do
         before do
@@ -550,7 +550,7 @@ RSpec.describe User do
           user = create(:user, email: "info@test.example.com")
 
           expect { user.update!(email: "test@notexample.com") }
-            .to raise_error(StandardError, 'Validation failed: Email is not allowed. Check with your administrator.')
+            .to raise_error(StandardError, 'Validation failed: Email is not allowed. Please use your regular email address. Check with your administrator.')
         end
       end
 
@@ -623,7 +623,7 @@ RSpec.describe User do
             user = create(:user, email: 'info@test.com')
 
             expect { user.update!(email: 'info@example.com') }
-              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Check with your administrator.')
+              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Please use your regular email address. Check with your administrator.')
           end
         end
 
@@ -700,7 +700,7 @@ RSpec.describe User do
             user = create(:user, email: 'info@test.com')
 
             expect { user.update!(email: 'info@gitlab.com') }
-              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Check with your administrator.')
+              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Please use your regular email address. Check with your administrator.')
           end
 
           it 'does accept a valid email address' do

@@ -8,9 +8,9 @@ module Types
 
     authorize :read_dependency_proxy
 
+    field :created_at, Types::TimeType, null: true, description: 'Timestamp of creation.'
     field :enabled, GraphQL::Types::Boolean, null: false, description: 'Indicates whether the policy is enabled or disabled.'
     field :ttl, GraphQL::Types::Int, null: true, description: 'Number of days to retain a cached image file.'
-    field :created_at, Types::TimeType, null: true, description: 'Timestamp of creation.'
     field :updated_at, Types::TimeType, null: true, description: 'Timestamp of the most recent update.'
   end
 end
