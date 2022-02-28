@@ -79,8 +79,8 @@ module MembershipActions
                   notice: _('Your request for access has been queued for review.')
     else
       redirect_to polymorphic_path(membershipable),
-                  alert: _("Your request for access could not be processed: %{error_meesage}") %
-                    { error_meesage: access_requester.errors.full_messages.to_sentence }
+                  alert: _("Your request for access could not be processed: %{error_message}") %
+                    { error_message: access_requester.errors.full_messages.to_sentence }
     end
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ClusterErrorEntity do
+RSpec.describe Clusters::KubernetesErrorEntity do
   describe '#as_json' do
     let(:cluster) { create(:cluster, :provided_by_user, :group) }
 

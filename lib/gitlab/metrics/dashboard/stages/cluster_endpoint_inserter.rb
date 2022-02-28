@@ -74,7 +74,7 @@ module Gitlab
 
           def verify_params
             raise Errors::DashboardProcessingError, _('Cluster is required for Stages::ClusterEndpointInserter') unless params[:cluster]
-            raise Errors::DashboardProcessingError, _('Cluster type must be specificed for Stages::ClusterEndpointInserter') unless params[:cluster_type]
+            raise Errors::DashboardProcessingError, _('Cluster type must be specified for Stages::ClusterEndpointInserter') unless params[:cluster_type]
           end
         end
       end

@@ -1157,7 +1157,7 @@ Here's some pseudocode showing an example of a potential TOCTOU bug:
 ```ruby
 def upvote(comment, user)
   # The time between calling .exists? and .create can lead to TOCTOU,
-  # particulary if .create is a slow method, or runs in a background job
+  # particularly if .create is a slow method, or runs in a background job
   if Upvote.exists?(comment: comment, user: user)
     return
   else

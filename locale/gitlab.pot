@@ -7612,7 +7612,7 @@ msgstr ""
 msgid "Cluster level"
 msgstr ""
 
-msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
+msgid "Cluster type must be specified for Stages::ClusterEndpointInserter"
 msgstr ""
 
 msgid "ClusterAgents|%{name} successfully deleted"
@@ -38932,7 +38932,7 @@ msgstr ""
 msgid "URL is triggered when repository is updated"
 msgstr ""
 
-msgid "URL must be percent-encoded if neccessary."
+msgid "URL must be percent-encoded if necessary."
 msgstr ""
 
 msgid "URL must start with %{codeStart}http://%{codeEnd}, %{codeStart}https://%{codeEnd}, or %{codeStart}ftp://%{codeEnd}"
@@ -42611,7 +42611,7 @@ msgstr ""
 msgid "Your public email will be displayed on your public profile."
 msgstr ""
 
-msgid "Your request for access could not be processed: %{error_meesage}"
+msgid "Your request for access could not be processed: %{error_message}"
 msgstr ""
 
 msgid "Your request for access has been queued for review."
