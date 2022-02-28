@@ -1,9 +1,12 @@
+import { TextSelection } from 'prosemirror-state';
 import { LOADING_CONTENT_EVENT, LOADING_SUCCESS_EVENT, LOADING_ERROR_EVENT } from '../constants';
+
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
-  constructor({ tiptapEditor, serializer, eventHub }) {
+  constructor({ tiptapEditor, serializer, deserializer, eventHub }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
+    this._deserializer = deserializer;
     this._eventHub = eventHub;
   }
 
@@ -31,15 +34,22 @@ export class ContentEditor {
   }
 
   async setSerializedContent(serializedContent) {
-    const { _tiptapEditor: editor, _serializer: serializer, _eventHub: eventHub } = this;
+    const { _tiptapEditor: editor, _deserializer: deserializer, _eventHub: eventHub } = this;
+    const { doc, tr } = editor.state;
+    const selection = TextSelection.create(doc, 0, doc.content.size);
 
     try {
       eventHub.$emit(LOADING_CONTENT_EVENT);
-      const document = await serializer.deserialize({
+      const newDoc = await deserializer.deserialize({
         schema: editor.schema,
         content: serializedContent,
       });
-      editor.commands.setContent(document);
+      if (newDoc) {
+        tr.setSelection(selection)
+          .replaceSelectionWith(newDoc, false)
+          .setMeta('preventUpdate', true);
+        editor.view.dispatch(tr);
+      }
       eventHub.$emit(LOADING_SUCCESS_EVENT);
     } catch (e) {
       eventHub.$emit(LOADING_ERROR_EVENT, e);

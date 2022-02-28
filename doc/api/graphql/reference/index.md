@@ -1858,6 +1858,7 @@ Input type: `DastSiteProfileCreateInput`
 | <a id="mutationdastsiteprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
 | <a id="mutationdastsiteprofilecreateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofilecreaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
+| <a id="mutationdastsiteprofilecreatescanmethod"></a>`scanMethod` | [`DastScanMethodType`](#dastscanmethodtype) | Scan method by the scanner. Is not saved or updated if `dast_api_scanner` feature flag is disabled. |
 | <a id="mutationdastsiteprofilecreatetargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | Type of target to be scanned. |
 | <a id="mutationdastsiteprofilecreatetargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be scanned. |
 
@@ -1903,6 +1904,7 @@ Input type: `DastSiteProfileUpdateInput`
 | <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be updated. |
 | <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofileupdaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
+| <a id="mutationdastsiteprofileupdatescanmethod"></a>`scanMethod` | [`DastScanMethodType`](#dastscanmethodtype) | Scan method by the scanner. Is not saved or updated if `dast_api_scanner` feature flag is disabled. |
 | <a id="mutationdastsiteprofileupdatetargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | Type of target to be scanned. |
 | <a id="mutationdastsiteprofileupdatetargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be scanned. |
 
@@ -9861,6 +9863,7 @@ Represents a DAST Site Profile.
 | <a id="dastsiteprofileprofilename"></a>`profileName` | [`String`](#string) | Name of the site profile. |
 | <a id="dastsiteprofilereferencedinsecuritypolicies"></a>`referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
 | <a id="dastsiteprofilerequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
+| <a id="dastsiteprofilescanmethod"></a>`scanMethod` | [`DastScanMethodType`](#dastscanmethodtype) | Scan method used by the scanner. Always returns `null` if `dast_api_scanner` feature flag is disabled. |
 | <a id="dastsiteprofiletargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | Type of target to be scanned. |
 | <a id="dastsiteprofiletargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be scanned. |
 | <a id="dastsiteprofileuserpermissions"></a>`userPermissions` | [`DastSiteProfilePermissions!`](#dastsiteprofilepermissions) | Permissions for the current user on the resource. |
@@ -17240,6 +17243,17 @@ Unit for the duration of Dast Profile Cadence.
 | <a id="dastprofilecadenceunitmonth"></a>`MONTH` | DAST Profile Cadence duration in months. |
 | <a id="dastprofilecadenceunitweek"></a>`WEEK` | DAST Profile Cadence duration in weeks. |
 | <a id="dastprofilecadenceunityear"></a>`YEAR` | DAST Profile Cadence duration in years. |
+
+### `DastScanMethodType`
+
+Scan method to be used by the scanner.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dastscanmethodtypehar"></a>`HAR` | HAR scan method. |
+| <a id="dastscanmethodtypeopenapi"></a>`OPENAPI` | OpenAPI scan method. |
+| <a id="dastscanmethodtypepostman_collection"></a>`POSTMAN_COLLECTION` | Postman scan method. |
+| <a id="dastscanmethodtypewebsite"></a>`WEBSITE` | Website scan method. |
 
 ### `DastScanTypeEnum`
 

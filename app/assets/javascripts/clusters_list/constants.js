@@ -75,14 +75,14 @@ export const I18N_AGENT_TABLE = {
   neverConnectedText: s__('ClusterAgents|Never'),
   versionMismatchTitle: s__('ClusterAgents|Agent version mismatch'),
   versionMismatchText: s__(
-    "ClusterAgents|The Agent version do not match each other across your cluster's pods. This can happen when a new Agent version was just deployed and Kubernetes is shutting down the old pods.",
+    "ClusterAgents|The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods.",
   ),
   versionOutdatedTitle: s__('ClusterAgents|Agent version update required'),
   versionOutdatedText: s__(
-    'ClusterAgents|Your Agent version is out of sync with your GitLab version (v%{version}), which might cause compatibility problems. Update the Agent installed on your cluster to the most recent version.',
+    'ClusterAgents|Your agent version is out of sync with your GitLab version (v%{version}), which might cause compatibility problems. Update the agent installed on your cluster to the most recent version.',
   ),
   versionMismatchOutdatedTitle: s__('ClusterAgents|Agent version mismatch and update'),
-  viewDocsText: s__('ClusterAgents|How to update the Agent?'),
+  viewDocsText: s__('ClusterAgents|How to update an agent?'),
 };
 
 export const I18N_AGENT_MODAL = {
@@ -91,7 +91,7 @@ export const I18N_AGENT_MODAL = {
     close: __('Close'),
     cancel: __('Cancel'),
 
-    modalTitle: s__('ClusterAgents|Connect a cluster through the Agent'),
+    modalTitle: s__('ClusterAgents|Connect a cluster through an agent'),
     selectAgentTitle: s__('ClusterAgents|Select an agent to register with GitLab'),
     selectAgentBody: s__(
       'ClusterAgents|Register an agent to generate a token that will be used to install the agent on your cluster in the next step.',
@@ -125,7 +125,7 @@ export const I18N_AGENT_MODAL = {
     unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
   },
   empty_state: {
-    modalTitle: s__('ClusterAgents|Connect your cluster through the Agent'),
+    modalTitle: s__('ClusterAgents|Connect your cluster through an agent'),
     modalBody: s__(
       "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}Learn more about installing GitLab Agent.%{linkEnd}",
     ),
@@ -197,8 +197,8 @@ export const I18N_CLUSTERS_EMPTY_STATE = {
 
 export const AGENT_CARD_INFO = {
   tabName: 'agent',
-  title: sprintf(s__('ClusterAgents|%{number} of %{total} Agents')),
-  emptyTitle: s__('ClusterAgents|No Agents'),
+  title: sprintf(s__('ClusterAgents|%{number} of %{total} agents')),
+  emptyTitle: s__('ClusterAgents|No agents'),
   tooltip: {
     label: s__('ClusterAgents|Recommended'),
     title: s__('ClusterAgents|GitLab Agent'),
@@ -209,7 +209,7 @@ export const AGENT_CARD_INFO = {
     ),
     link: helpPagePath('user/clusters/agent/index'),
   },
-  actionText: s__('ClusterAgents|Install new Agent'),
+  actionText: s__('ClusterAgents|Install a new agent'),
   footerText: sprintf(s__('ClusterAgents|View all %{number} agents')),
   installAgentDisabledHint: s__(
     'ClusterAgents|Requires a Maintainer or greater role to install new agents',
@@ -253,7 +253,7 @@ export const CLUSTERS_TABS = [
 export const CLUSTERS_ACTIONS = {
   actionsButton: s__('ClusterAgents|Actions'),
   createNewCluster: s__('ClusterAgents|Create a new cluster'),
-  connectWithAgent: s__('ClusterAgents|Connect with Agent'),
+  connectWithAgent: s__('ClusterAgents|Connect with an agent'),
   connectExistingCluster: s__('ClusterAgents|Connect with a certificate'),
   agent: s__('ClusterAgents|Agent'),
   certificate: s__('ClusterAgents|Certificate'),

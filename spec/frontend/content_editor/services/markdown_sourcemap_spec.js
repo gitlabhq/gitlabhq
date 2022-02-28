@@ -2,7 +2,7 @@ import { Extension } from '@tiptap/core';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import ListItem from '~/content_editor/extensions/list_item';
 import Paragraph from '~/content_editor/extensions/paragraph';
-import markdownSerializer from '~/content_editor/services/markdown_serializer';
+import markdownDeserializer from '~/content_editor/services/markdown_deserializer';
 import { getMarkdownSource } from '~/content_editor/services/markdown_sourcemap';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 
@@ -53,9 +53,8 @@ const {
 
 describe('content_editor/services/markdown_sourcemap', () => {
   it('gets markdown source for a rendered HTML element', async () => {
-    const deserialized = await markdownSerializer({
+    const deserialized = await markdownDeserializer({
       render: () => BULLET_LIST_HTML,
-      serializerConfig: {},
     }).deserialize({
       schema: tiptapEditor.schema,
       content: BULLET_LIST_MARKDOWN,
@@ -76,6 +75,6 @@ describe('content_editor/services/markdown_sourcemap', () => {
       ),
     );
 
-    expect(deserialized).toEqual(expected.toJSON());
+    expect(deserialized.toJSON()).toEqual(expected.toJSON());
   });
 });

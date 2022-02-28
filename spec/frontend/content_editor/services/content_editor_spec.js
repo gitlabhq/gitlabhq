@@ -10,6 +10,7 @@ import { createTestEditor } from '../test_utils';
 describe('content_editor/services/content_editor', () => {
   let contentEditor;
   let serializer;
+  let deserializer;
   let eventHub;
 
   beforeEach(() => {
@@ -17,8 +18,9 @@ describe('content_editor/services/content_editor', () => {
     jest.spyOn(tiptapEditor, 'destroy');
 
     serializer = { deserialize: jest.fn() };
+    deserializer = { deserialize: jest.fn() };
     eventHub = eventHubFactory();
-    contentEditor = new ContentEditor({ tiptapEditor, serializer, eventHub });
+    contentEditor = new ContentEditor({ tiptapEditor, serializer, deserializer, eventHub });
   });
 
   describe('.dispose', () => {
@@ -33,7 +35,7 @@ describe('content_editor/services/content_editor', () => {
 
   describe('when setSerializedContent succeeds', () => {
     beforeEach(() => {
-      serializer.deserialize.mockResolvedValueOnce('');
+      deserializer.deserialize.mockResolvedValueOnce('');
     });
 
     it('emits loadingContent and loadingSuccess event in the eventHub', () => {
@@ -54,7 +56,7 @@ describe('content_editor/services/content_editor', () => {
     const error = 'error';
 
     beforeEach(() => {
-      serializer.deserialize.mockRejectedValueOnce(error);
+      deserializer.deserialize.mockRejectedValueOnce(error);
     });
 
     it('emits loadingError event', async () => {
