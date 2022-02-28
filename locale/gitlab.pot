@@ -12783,6 +12783,9 @@ msgstr ""
 msgid "Direct member"
 msgstr ""
 
+msgid "Direct members"
+msgstr ""
+
 msgid "Direct non-authenticated users to this page."
 msgstr ""
 

@@ -30,7 +30,7 @@ module ContentTypeWhitelist
         content_type = mime_magic_content_type(new_file.path)
 
         unless whitelisted_content_type?(content_type)
-          message = I18n.translate(:"errors.messages.content_type_whitelist_error", allowed_types: Array(content_type_whitelist).join(", "))
+          message = I18n.t(:"errors.messages.content_type_whitelist_error", allowed_types: Array(content_type_whitelist).join(", "))
           raise CarrierWave::IntegrityError, message
         end
       end

@@ -11,6 +11,7 @@ module Projects
       LARGE_FILE_SIZE = 1.megabytes
 
       attr_reader :lfs_download_object
+
       delegate :oid, :size, :credentials, :sanitized_url, :headers, to: :lfs_download_object, prefix: :lfs
 
       def initialize(project, lfs_download_object)

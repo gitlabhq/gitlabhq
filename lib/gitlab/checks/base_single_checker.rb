@@ -4,6 +4,7 @@ module Gitlab
   module Checks
     class BaseSingleChecker < BaseChecker
       attr_reader :change_access
+
       delegate(*SingleChangeAccess::ATTRIBUTES, to: :change_access)
 
       def initialize(change_access)

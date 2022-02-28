@@ -9,6 +9,7 @@ module QA
       extend Forwardable
 
       attr_reader :git_uri, :uri
+
       def_delegators :@uri, :user, :host, :path
 
       # See: config/initializers/1_settings.rb

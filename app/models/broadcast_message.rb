@@ -53,7 +53,7 @@ class BroadcastMessage < ApplicationRecord
 
     def cache
       ::Gitlab::SafeRequestStore.fetch(:broadcast_message_json_cache) do
-        Gitlab::JsonCache.new(cache_key_with_version: false)
+        Gitlab::JsonCache.new
       end
     end
 

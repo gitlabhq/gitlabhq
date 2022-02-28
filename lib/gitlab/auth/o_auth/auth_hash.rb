@@ -7,6 +7,7 @@ module Gitlab
     module OAuth
       class AuthHash
         attr_reader :auth_hash
+
         def initialize(auth_hash)
           @auth_hash = auth_hash
         end

@@ -4,6 +4,7 @@ module NotificationRecipients
   module Builder
     class NewNote < Base
       attr_reader :note
+
       def initialize(note)
         @note = note
       end

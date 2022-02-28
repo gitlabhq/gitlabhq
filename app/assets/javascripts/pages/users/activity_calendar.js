@@ -7,6 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import { n__, s__, __ } from '~/locale';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 
 const d3 = { select };
 
@@ -23,12 +24,6 @@ const CONTRIB_LEGENDS = [
   { title: __('20-29 contributions'), min: 20 },
   { title: __('30+ contributions'), min: 30 },
 ];
-
-const LOADING_HTML = `
-  <div class="text-center">
-    <div class="spinner spinner-md"></div>
-  </div>
-`;
 
 function getSystemDate(systemUtcOffsetSeconds) {
   const date = new Date();
@@ -286,7 +281,9 @@ export default class ActivityCalendar {
         this.currentSelectedDate.getDate(),
       ].join('-');
 
-      $(this.activitiesContainer).html(LOADING_HTML);
+      $(this.activitiesContainer)
+        .empty()
+        .append(loadingIconForLegacyJS({ size: 'lg' }));
 
       axios
         .get(this.calendarActivitiesPath, {

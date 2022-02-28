@@ -96,6 +96,7 @@ module Gitlab
         attr_reader :instance_variables_builder
         attr_reader :project_variables_builder
         attr_reader :group_variables_builder
+
         delegate :project, to: :pipeline
 
         def predefined_variables(job)

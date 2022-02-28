@@ -1100,6 +1100,20 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:settings][:user_cap_feature_enabled]).to eq(Gitlab::CurrentSettings.new_user_signups_cap)
       end
 
+      it 'reports status of the certificate_based_clusters feature flag as true' do
+        expect(subject[:settings][:certificate_based_clusters_ff]).to eq(true)
+      end
+
+      context 'with certificate_based_clusters disabled' do
+        before do
+          stub_feature_flags(certificate_based_clusters: false)
+        end
+
+        it 'reports status of the certificate_based_clusters feature flag as false' do
+          expect(subject[:settings][:certificate_based_clusters_ff]).to eq(false)
+        end
+      end
+
       context 'snowplow stats' do
         before do
           stub_feature_flags(usage_data_instrumentation: false)

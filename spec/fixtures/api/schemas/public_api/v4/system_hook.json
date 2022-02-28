@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "url",
+    "created_at",
+    "push_events",
+    "tag_push_events",
+    "merge_requests_events",
+    "repository_update_events",
+    "enable_ssl_verification"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "url": { "type": "string" },
+    "created_at": { "type": "string" },
+    "push_events": { "type": "boolean" },
+    "tag_push_events": { "type": "boolean" },
+    "merge_requests_events": { "type": "boolean" },
+    "repository_update_events": { "type": "boolean" },
+    "enable_ssl_verification": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

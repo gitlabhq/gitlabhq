@@ -15,6 +15,7 @@ module Sidebars
     include ::Sidebars::Concerns::HasPartial
 
     attr_reader :context
+
     delegate :current_user, :container, to: :@context
 
     def initialize(context)

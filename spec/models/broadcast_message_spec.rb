@@ -286,9 +286,9 @@ RSpec.describe BroadcastMessage do
     it 'flushes the Redis cache' do
       message = create(:broadcast_message)
 
-      expect(Rails.cache).to receive(:delete).with(described_class::CACHE_KEY)
-      expect(Rails.cache).to receive(:delete).with(described_class::BANNER_CACHE_KEY)
-      expect(Rails.cache).to receive(:delete).with(described_class::NOTIFICATION_CACHE_KEY)
+      expect(Rails.cache).to receive(:delete).with("#{described_class::CACHE_KEY}:#{Gitlab.revision}")
+      expect(Rails.cache).to receive(:delete).with("#{described_class::BANNER_CACHE_KEY}:#{Gitlab.revision}")
+      expect(Rails.cache).to receive(:delete).with("#{described_class::NOTIFICATION_CACHE_KEY}:#{Gitlab.revision}")
 
       message.flush_redis_cache
     end

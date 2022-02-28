@@ -32,13 +32,6 @@ Graphql/IDType:
 Layout/ArgumentAlignment:
   Enabled: false
 
-# Offense count: 54
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAliasSyntax, AllowedMethods.
-# AllowedMethods: alias_method, public, protected, private
-Layout/EmptyLinesAroundAttributeAccessor:
-  Enabled: false
-
 # Offense count: 771
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -520,14 +513,6 @@ Rails/RedundantForeignKey:
 Rails/RenderInline:
   Exclude:
     - 'ee/app/controllers/sitemap_controller.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: conservative, aggressive
-Rails/ShortI18n:
-  Exclude:
-    - 'app/uploaders/content_type_whitelist.rb'
 
 # Offense count: 1144
 # Configuration parameters: ForbiddenMethods, AllowedMethods.

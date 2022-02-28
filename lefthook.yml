@@ -2,7 +2,7 @@ pre-push:
   parallel: true
   commands:
     danger:
-      run: bundle exec danger dry_run
+      run: CI_PROJECT_DIR=. bundle exec danger dry_run
     eslint:
       tags: frontend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

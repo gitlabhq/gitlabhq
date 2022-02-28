@@ -17,6 +17,7 @@ module Ci
     MAX_TRACKABLE_FAILURES = 200
 
     attr_reader :pipeline
+
     delegate :project, to: :pipeline
 
     def initialize(pipeline)

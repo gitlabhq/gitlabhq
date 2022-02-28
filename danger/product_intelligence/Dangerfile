@@ -19,4 +19,4 @@ return if product_intelligence_paths_to_review.empty? || product_intelligence.sk
 
 warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(product_intelligence_paths_to_review)) unless product_intelligence.has_approved_label?
 
-project_helper.labels_to_add.concat(labels_to_add) unless labels_to_add.empty?
+helper.labels_to_add.merge(labels_to_add) unless labels_to_add.empty?

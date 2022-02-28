@@ -1,12 +1,29 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-abort "usage: #{__FILE__} <memory_bundle_mem_file_name>" unless ARGV.length == 1
-memory_bundle_mem_file_name = ARGV.first
+abort "usage: #{__FILE__} <memory_bundle_mem_file_name_prefix> <test_count>" unless ARGV.length == 2
+memory_bundle_mem_file_name_prefix = ARGV.first
+test_count = ARGV.last.to_i
 
-full_report = File.open(memory_bundle_mem_file_name).read
+results = []
+(1..test_count).each do |i|
+  report_filename = "#{memory_bundle_mem_file_name_prefix}#{i}.txt"
 
-stats = /TOP: (?<total_mibs_str>.*) MiB/.match(full_report)
-abort 'failed to process the benchmark output' unless stats
+  stats = nil
+  File.foreach(report_filename).detect do |line|
+    stats = /TOP: (?<total_mibs_str>.*) MiB/.match(line)
+  end
+  abort 'failed to process the benchmark output' unless stats
 
-puts "total_memory_used_by_dependencies_on_boot_prod_env_mb #{stats[:total_mibs_str].to_f.round(1)}"
+  total_mibs = stats[:total_mibs_str].to_f
+  results << total_mibs
+end
+
+res = results.sort
+median = (res[(test_count - 1) / 2] + res[test_count / 2]) / 2.0
+
+METRIC_NAME = "total_memory_used_by_dependencies_on_boot_prod_env_mb"
+
+puts "# TYPE #{METRIC_NAME} gauge"
+puts "# UNIT #{METRIC_NAME} mebibytes"
+puts "#{METRIC_NAME} #{median.round(1)}"

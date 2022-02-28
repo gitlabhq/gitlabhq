@@ -22,6 +22,18 @@ module API
         present paginate(SystemHook.all), with: Entities::Hook
       end
 
+      desc 'Get a hook' do
+        success Entities::Hook
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the system hook'
+      end
+      get ":id" do
+        hook = SystemHook.find(params[:id])
+
+        present hook, with: Entities::Hook
+      end
+
       desc 'Create a new system hook' do
         success Entities::Hook
       end

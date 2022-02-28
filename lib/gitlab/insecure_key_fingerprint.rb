@@ -10,6 +10,7 @@ module Gitlab
   #
   class InsecureKeyFingerprint
     attr_accessor :key
+
     alias_attribute :fingerprint_md5, :fingerprint
 
     #

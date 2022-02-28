@@ -6,6 +6,7 @@ module UpdateRepositoryStorageMethods
   Error = Class.new(StandardError)
 
   attr_reader :repository_storage_move
+
   delegate :container, :source_storage_name, :destination_storage_name, to: :repository_storage_move
 
   def initialize(repository_storage_move)

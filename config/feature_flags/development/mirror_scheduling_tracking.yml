@@ -1,0 +1,8 @@
+---
+name: mirror_scheduling_tracking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81249
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353440
+milestone: '14.9'
+type: development
+group: group::scalability
+default_enabled: false

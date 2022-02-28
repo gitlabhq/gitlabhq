@@ -10,6 +10,7 @@ RSpec.describe ColorValidator do
       include ActiveModel::Model
       include ActiveModel::Validations
       attr_accessor :color
+
       validates :color, color: true
     end.new
   end

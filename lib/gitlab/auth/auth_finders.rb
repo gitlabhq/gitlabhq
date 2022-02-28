@@ -12,6 +12,7 @@ module Gitlab
 
     class InsufficientScopeError < AuthenticationError
       attr_reader :scopes
+
       def initialize(scopes)
         @scopes = scopes.map { |s| s.try(:name) || s }
       end

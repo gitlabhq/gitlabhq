@@ -224,7 +224,8 @@ module Gitlab
             collected_data_categories: add_metric('CollectedDataCategoriesMetric', time_frame: 'none'),
             service_ping_features_enabled: add_metric('ServicePingFeaturesMetric', time_frame: 'none'),
             snowplow_enabled: add_metric('SnowplowEnabledMetric', time_frame: 'none'),
-            snowplow_configured_to_gitlab_collector: add_metric('SnowplowConfiguredToGitlabCollectorMetric', time_frame: 'none')
+            snowplow_configured_to_gitlab_collector: add_metric('SnowplowConfiguredToGitlabCollectorMetric', time_frame: 'none'),
+            certificate_based_clusters_ff: add_metric('CertBasedClustersFfMetric')
           }
         }
       end

@@ -5,6 +5,7 @@ module Gitlab
     module Queries
       class BaseQuery
         attr_accessor :client
+
         delegate :query_range, :query, :label_values, :series, to: :client, prefix: true
 
         def raw_memory_usage_query(environment_slug)

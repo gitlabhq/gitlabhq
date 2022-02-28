@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-properties, babel/camelcase,
 no-unused-expressions, default-case,
-consistent-return, no-alert, no-param-reassign,
+consistent-return, no-param-reassign,
 no-shadow, no-useless-escape,
 class-methods-use-this */
 
@@ -20,6 +20,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import syntaxHighlight from '~/syntax_highlight';
 import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
 import * as constants from '~/notes/constants';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import Autosave from './autosave';
 import loadAwardsHandler from './awards_handler';
 import createFlash from './flash';
@@ -243,7 +244,7 @@ export default class Notes {
     });
   }
 
-  keydownNoteText(e) {
+  async keydownNoteText(e) {
     let discussionNoteForm;
     let editNote;
     let myLastNote;
@@ -276,9 +277,11 @@ export default class Notes {
         discussionNoteForm = $textarea.closest('.js-discussion-note-form');
         if (discussionNoteForm.length) {
           if ($textarea.val() !== '') {
-            if (!window.confirm(__('Your comment will be discarded.'))) {
-              return;
-            }
+            const confirmed = await confirmAction(__('Your comment will be discarded.'), {
+              primaryBtnVariant: 'danger',
+              primaryBtnText: __('Discard'),
+            });
+            if (!confirmed) return;
           }
           this.removeDiscussionNoteForm(discussionNoteForm);
           return;
@@ -288,9 +291,14 @@ export default class Notes {
           originalText = $textarea.closest('form').data('originalNote');
           newText = $textarea.val();
           if (originalText !== newText) {
-            if (!window.confirm(__('Are you sure you want to discard this comment?'))) {
-              return;
-            }
+            const confirmed = await confirmAction(
+              __('Are you sure you want to discard this comment?'),
+              {
+                primaryBtnVariant: 'danger',
+                primaryBtnText: __('Discard'),
+              },
+            );
+            if (!confirmed) return;
           }
           return this.removeNoteEditForm(editNote);
         }

@@ -18,6 +18,7 @@
 class NotificationService
   class Async
     attr_reader :parent
+
     delegate :respond_to_missing, to: :parent
 
     def initialize(parent)

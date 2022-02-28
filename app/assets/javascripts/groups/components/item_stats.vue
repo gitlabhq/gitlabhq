@@ -68,7 +68,7 @@ export default {
     />
     <item-stats-value
       v-if="isGroup"
-      :title="__('Members')"
+      :title="__('Direct members')"
       :value="item.memberCount"
       css-class="number-users gl-ml-5"
       icon-name="users"

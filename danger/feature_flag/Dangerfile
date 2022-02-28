@@ -58,7 +58,7 @@ def message_for_feature_flag_with_group!(feature_flag:, mr_group_label:)
   return if feature_flag.group_match_mr_label?(mr_group_label)
 
   if mr_group_label.nil?
-    project_helper.labels_to_add << feature_flag.group
+    helper.labels_to_add << feature_flag.group
   else
     fail %(`group` is set to ~"#{feature_flag.group}" in #{gitlab.html_link(feature_flag.path)}, which does not match ~"#{mr_group_label}" set on the MR!)
   end

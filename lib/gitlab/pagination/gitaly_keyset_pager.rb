@@ -4,6 +4,7 @@ module Gitlab
   module Pagination
     class GitalyKeysetPager
       attr_reader :request_context, :project
+
       delegate :params, to: :request_context
 
       def initialize(request_context, project)

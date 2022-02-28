@@ -9,6 +9,7 @@ RSpec.describe Mentionable do
       include Mentionable
 
       attr_accessor :project, :message
+
       attr_mentionable :message
 
       def author

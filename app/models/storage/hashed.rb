@@ -3,6 +3,7 @@
 module Storage
   class Hashed
     attr_accessor :container
+
     delegate :gitlab_shell, :repository_storage, to: :container
 
     REPOSITORY_PATH_PREFIX = '@hashed'

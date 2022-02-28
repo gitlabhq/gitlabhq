@@ -8,7 +8,7 @@ RSpec.describe Gitlab::JsonCache do
   let(:backend) { double('backend').as_null_object }
   let(:namespace) { 'geo' }
   let(:key) { 'foo' }
-  let(:expanded_key) { "#{namespace}:#{key}:#{Gitlab::VERSION}:#{Rails.version}" }
+  let(:expanded_key) { "#{namespace}:#{key}:#{Gitlab.revision}" }
 
   subject(:cache) { described_class.new(namespace: namespace, backend: backend) }
 
@@ -35,69 +35,63 @@ RSpec.describe Gitlab::JsonCache do
   end
 
   describe '#cache_key' do
-    context 'when namespace is not defined' do
-      context 'when cache_key_with_version is true' do
-        it 'expands out the key with GitLab, and Rails versions' do
-          cache = described_class.new(cache_key_with_version: true)
+    using RSpec::Parameterized::TableSyntax
 
-          cache_key = cache.cache_key(key)
-
-          expect(cache_key).to eq("#{key}:#{Gitlab::VERSION}:#{Rails.version}")
-        end
-      end
-
-      context 'when cache_key_with_version is false' do
-        it 'returns the key' do
-          cache = described_class.new(namespace: nil, cache_key_with_version: false)
-
-          cache_key = cache.cache_key(key)
-
-          expect(cache_key).to eq(key)
-        end
-      end
+    where(:namespace, :cache_key_strategy, :expanded_key) do
+      nil       | :revision | "#{key}:#{Gitlab.revision}"
+      nil       | :version  | "#{key}:#{Gitlab::VERSION}:#{Rails.version}"
+      namespace | :revision | "#{namespace}:#{key}:#{Gitlab.revision}"
+      namespace | :version  | "#{namespace}:#{key}:#{Gitlab::VERSION}:#{Rails.version}"
     end
 
-    context 'when namespace is nil' do
-      context 'when cache_key_with_version is true' do
-        it 'expands out the key with GitLab, and Rails versions' do
-          cache = described_class.new(cache_key_with_version: true)
+    with_them do
+      let(:cache) { described_class.new(namespace: namespace, cache_key_strategy: cache_key_strategy) }
 
-          cache_key = cache.cache_key(key)
+      subject { cache.cache_key(key) }
 
-          expect(cache_key).to eq("#{key}:#{Gitlab::VERSION}:#{Rails.version}")
-        end
-      end
-
-      context 'when cache_key_with_version is false' do
-        it 'returns the key' do
-          cache = described_class.new(namespace: nil, cache_key_with_version: false)
-
-          cache_key = cache.cache_key(key)
-
-          expect(cache_key).to eq(key)
-        end
-      end
+      it { is_expected.to eq expanded_key }
     end
 
-    context 'when namespace is set' do
-      context 'when cache_key_with_version is true' do
-        it 'expands out the key with namespace and Rails version' do
-          cache = described_class.new(namespace: namespace, cache_key_with_version: true)
+    context 'when cache_key_strategy is unknown' do
+      let(:cache) { described_class.new(namespace: namespace, cache_key_strategy: 'unknown') }
 
-          cache_key = cache.cache_key(key)
-
-          expect(cache_key).to eq("#{namespace}:#{key}:#{Gitlab::VERSION}:#{Rails.version}")
-        end
+      it 'raises KeyError' do
+        expect { cache.cache_key('key') }.to raise_error(KeyError)
       end
+    end
+  end
 
-      context 'when cache_key_with_version is false' do
-        it 'expands out the key with namespace' do
-          cache = described_class.new(namespace: namespace, cache_key_with_version: false)
+  describe '#namespace' do
+    it 'defaults to nil' do
+      cache = described_class.new
+      expect(cache.namespace).to be_nil
+    end
+  end
 
-          cache_key = cache.cache_key(key)
+  describe '#strategy_key_component' do
+    subject { cache.strategy_key_component }
 
-          expect(cache_key).to eq("#{namespace}:#{key}")
-        end
+    it 'defaults to Gitlab.revision' do
+      expect(described_class.new.strategy_key_component).to eq Gitlab.revision
+    end
+
+    context 'when cache_key_strategy is :revision' do
+      let(:cache) { described_class.new(cache_key_strategy: :revision) }
+
+      it { is_expected.to eq Gitlab.revision }
+    end
+
+    context 'when cache_key_strategy is :version' do
+      let(:cache) { described_class.new(cache_key_strategy: :version) }
+
+      it { is_expected.to eq [Gitlab::VERSION, Rails.version] }
+    end
+
+    context 'when cache_key_strategy is invalid' do
+      let(:cache) { described_class.new(cache_key_strategy: 'unknown') }
+
+      it 'raises KeyError' do
+        expect { subject }.to raise_error(KeyError)
       end
     end
   end

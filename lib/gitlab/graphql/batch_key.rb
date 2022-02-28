@@ -4,6 +4,7 @@ module Gitlab
   module Graphql
     class BatchKey
       attr_reader :object
+
       delegate :hash, to: :object
 
       def initialize(object, lookahead = nil, object_name: nil)

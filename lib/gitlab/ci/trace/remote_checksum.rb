@@ -23,6 +23,7 @@ module Gitlab
         private
 
         attr_reader :trace_artifact
+
         delegate :aws?, :google?, to: :object_store_config, prefix: :provider
 
         def fetch_md5_checksum

@@ -45,6 +45,7 @@ class WikiPage
 
   # The GitLab Wiki instance.
   attr_reader :wiki
+
   delegate :container, to: :wiki
 
   # The raw Gitlab::Git::WikiPage instance.

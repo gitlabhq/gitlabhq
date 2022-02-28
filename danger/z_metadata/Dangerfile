@@ -4,22 +4,8 @@
 
 DEFAULT_BRANCH = 'master'
 
-TYPE_LABELS = [
-  'type::feature',
-  'feature::addition',
-  'type::maintenance',
-  'type::tooling',
-  'tooling::pipelines',
-  'tooling::workflow',
-  'type::bug'
-].freeze
-
 if gitlab.mr_body.size < 5
   fail "Please provide a proper merge request description."
-end
-
-if (TYPE_LABELS & (gitlab.mr_labels + project_helper.labels_to_add)).empty?
-  warn 'Please add a [merge request type](https://about.gitlab.com/handbook/engineering/metrics/#work-type-classification) to this merge request.'
 end
 
 unless gitlab.mr_json["assignee"]

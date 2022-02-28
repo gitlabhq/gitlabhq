@@ -57,6 +57,7 @@ module RateLimitedService
 
   prepended do
     attr_accessor :rate_limiter_bypassed
+
     cattr_accessor :rate_limiter_scoped_and_keyed
 
     def self.rate_limit(key:, opts:, rate_limiter: ::Gitlab::ApplicationRateLimiter)

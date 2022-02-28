@@ -3,6 +3,7 @@
 module Storage
   class LegacyProject
     attr_accessor :project
+
     delegate :namespace, :gitlab_shell, :repository_storage, to: :project
 
     def initialize(project)

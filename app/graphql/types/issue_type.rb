@@ -15,16 +15,16 @@ module Types
 
     present_using IssuePresenter
 
+    field :description, GraphQL::Types::String, null: true,
+          description: 'Description of the issue.'
     field :id, GraphQL::Types::ID, null: false,
           description: "ID of the issue."
     field :iid, GraphQL::Types::ID, null: false,
           description: "Internal ID of the issue."
-    field :title, GraphQL::Types::String, null: false,
-          description: 'Title of the issue.'
-    field :description, GraphQL::Types::String, null: true,
-          description: 'Description of the issue.'
     field :state, IssueStateEnum, null: false,
           description: 'State of the issue.'
+    field :title, GraphQL::Types::String, null: false,
+          description: 'Title of the issue.'
 
     field :reference, GraphQL::Types::String, null: false,
           description: 'Internal reference of the issue. Returned in shortened format by default.',
@@ -47,52 +47,52 @@ module Types
     field :milestone, Types::MilestoneType, null: true,
           description: 'Milestone of the issue.'
 
-    field :due_date, Types::TimeType, null: true,
-          description: 'Due date of the issue.'
     field :confidential, GraphQL::Types::Boolean, null: false,
           description: 'Indicates the issue is confidential.'
+    field :discussion_locked, GraphQL::Types::Boolean, null: false,
+          description: 'Indicates discussion is locked on the issue.'
+    field :due_date, Types::TimeType, null: true,
+          description: 'Due date of the issue.'
     field :hidden, GraphQL::Types::Boolean, null: true, resolver_method: :hidden?,
           description: 'Indicates the issue is hidden because the author has been banned. ' \
           'Will always return `null` if `ban_user_feature_flag` feature flag is disabled.'
-    field :discussion_locked, GraphQL::Types::Boolean, null: false,
-          description: 'Indicates discussion is locked on the issue.'
 
-    field :upvotes, GraphQL::Types::Int, null: false,
-          description: 'Number of upvotes the issue has received.'
     field :downvotes, GraphQL::Types::Int, null: false,
           description: 'Number of downvotes the issue has received.'
     field :merge_requests_count, GraphQL::Types::Int, null: false,
           description: 'Number of merge requests that close the issue on merge.',
           resolver: Resolvers::MergeRequestsCountResolver
-    field :user_notes_count, GraphQL::Types::Int, null: false,
-          description: 'Number of user notes of the issue.',
-          resolver: Resolvers::UserNotesCountResolver
+    field :relative_position, GraphQL::Types::Int, null: true,
+          description: 'Relative position of the issue (used for positioning in epic tree and issue boards).'
+    field :upvotes, GraphQL::Types::Int, null: false,
+          description: 'Number of upvotes the issue has received.'
     field :user_discussions_count, GraphQL::Types::Int, null: false,
           description: 'Number of user discussions in the issue.',
           resolver: Resolvers::UserDiscussionsCountResolver
+    field :user_notes_count, GraphQL::Types::Int, null: false,
+          description: 'Number of user notes of the issue.',
+          resolver: Resolvers::UserNotesCountResolver
     field :web_path, GraphQL::Types::String, null: false, method: :issue_path,
           description: 'Web path of the issue.'
     field :web_url, GraphQL::Types::String, null: false,
           description: 'Web URL of the issue.'
-    field :relative_position, GraphQL::Types::Int, null: true,
-          description: 'Relative position of the issue (used for positioning in epic tree and issue boards).'
 
-    field :participants, Types::UserType.connection_type, null: true, complexity: 5,
-          description: 'List of participants in the issue.',
-          resolver: Resolvers::Users::ParticipantsResolver
     field :emails_disabled, GraphQL::Types::Boolean, null: false,
           method: :project_emails_disabled?,
           description: 'Indicates if a project has email notifications disabled: `true` if email notifications are disabled.'
+    field :human_time_estimate, GraphQL::Types::String, null: true,
+          description: 'Human-readable time estimate of the issue.'
+    field :human_total_time_spent, GraphQL::Types::String, null: true,
+          description: 'Human-readable total time reported as spent on the issue.'
+    field :participants, Types::UserType.connection_type, null: true, complexity: 5,
+          description: 'List of participants in the issue.',
+          resolver: Resolvers::Users::ParticipantsResolver
     field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
           description: 'Indicates the currently logged in user is subscribed to the issue.'
     field :time_estimate, GraphQL::Types::Int, null: false,
           description: 'Time estimate of the issue.'
     field :total_time_spent, GraphQL::Types::Int, null: false,
           description: 'Total time reported as spent on the issue.'
-    field :human_time_estimate, GraphQL::Types::String, null: true,
-          description: 'Human-readable time estimate of the issue.'
-    field :human_total_time_spent, GraphQL::Types::String, null: true,
-          description: 'Human-readable total time reported as spent on the issue.'
 
     field :closed_at, Types::TimeType, null: true,
           description: 'Timestamp of when the issue was closed.'

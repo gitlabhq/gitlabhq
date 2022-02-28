@@ -121,12 +121,13 @@ to revert the change before merging!
 #### Adding labels via Danger
 
 NOTE:
-This is currently applicable to the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab)
-project only.
+This is applicable to all the projects that use the [`gitlab-dangerfiles` gem](https://rubygems.org/gems/gitlab-dangerfiles).
 
 Danger is often used to improve MR hygiene by adding labels. Instead of calling the
-API directly in your `Dangerfile`, add the labels to the `project_helper.labels_to_add` array.
-The main `Dangerfile` will then take care of adding the labels to the MR with a single API call.
+API directly in your `Dangerfile`, add the labels to `helper.labels_to_add` set (with `helper.labels_to_add << label`
+or `helper.labels_to_add.merge(array_of_labels)`.
+`gitlab-dangerfiles` will then take care of adding the labels to the MR with a single API call after all the rules
+have had the chance to add to `helper.labels_to_add`.
 
 #### Shared rules and plugins
 
@@ -135,11 +136,30 @@ upstreaming them to the [`gitlab-dangerfiles`](https://gitlab.com/gitlab-org/rub
 
 #### Enable Danger on a project
 
-To enable the Dangerfile on another existing GitLab project, run the following
-extra steps:
+To enable the Dangerfile on another existing GitLab project, complete the following steps:
 
-1. Create a [Project access tokens](../user/project/settings/project_access_tokens.md).
-1. Add the token as a CI/CD project variable named `DANGER_GITLAB_API_TOKEN`.
+1. Add [`gitlab-dangerfiles`](https://rubygems.org/gems/gitlab-dangerfiles) to your `Gemfile`.
+1. Create a `Dangerfile` with the following content:
+
+    ```ruby
+    require_relative "lib/gitlab-dangerfiles"
+
+    Gitlab::Dangerfiles.for_project(self, &:import_defaults)
+    ```
+
+1. Add the following to your CI/CD configuration:
+
+    ```yaml
+    include:
+      - project: 'gitlab-org/quality/pipeline-common'
+        file:
+          - '/ci/danger-review.yml'
+    ```
+
+1. If your project is in the `gitlab-org` group, you don't need to set up any token as the `DANGER_GITLAB_API_TOKEN`
+  variable is available at the group level. If not, follow these last steps:
+    1. Create a [Project access tokens](../user/project/settings/project_access_tokens.md).
+    1. Add the token as a CI/CD project variable named `DANGER_GITLAB_API_TOKEN`.
 
 You should add the ~"Danger bot" label to the merge request before sending it
 for review.

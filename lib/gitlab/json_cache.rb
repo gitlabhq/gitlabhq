@@ -2,12 +2,17 @@
 
 module Gitlab
   class JsonCache
-    attr_reader :backend, :cache_key_with_version, :namespace
+    attr_reader :backend, :namespace
+
+    STRATEGY_KEY_COMPONENTS = {
+      revision: Gitlab.revision,
+      version: [Gitlab::VERSION, Rails.version]
+    }.freeze
 
     def initialize(options = {})
       @backend = options.fetch(:backend, Rails.cache)
       @namespace = options.fetch(:namespace, nil)
-      @cache_key_with_version = options.fetch(:cache_key_with_version, true)
+      @cache_key_strategy = options.fetch(:cache_key_strategy, :revision)
     end
 
     def active?
@@ -19,13 +24,12 @@ module Gitlab
     end
 
     def cache_key(key)
-      expanded_cache_key = [namespace, key].compact
+      expanded_cache_key = [namespace, key, *strategy_key_component].compact
+      expanded_cache_key.join(':').freeze
+    end
 
-      if cache_key_with_version
-        expanded_cache_key << [Gitlab::VERSION, Rails.version]
-      end
-
-      expanded_cache_key.flatten.join(':').freeze
+    def strategy_key_component
+      STRATEGY_KEY_COMPONENTS.fetch(@cache_key_strategy)
     end
 
     def expire(key)

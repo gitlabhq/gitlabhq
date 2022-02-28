@@ -38,7 +38,8 @@ To view value stream analytics for your group:
    1. Select a value or enter text to refine the results.
    1. To adjust the date range:
       - In the **From** field, select a start date.
-      - In the **To** field, select an end date.
+      - In the **To** field, select an end date. The charts and list show workflow items created
+        during the date range.
 1. Optional. Sort results by ascending or descending:
       - To sort by most recent or oldest workflow item, select the **Merge requests** or **Issues**
         header. The header name differs based on the stage you select.

@@ -12,6 +12,7 @@ RSpec.describe ArrayMembersValidator do
       include ActiveModel::Model
       include ActiveModel::Validations
       attr_accessor :children
+
       validates :children, array_members: { member_class: child_class }
     end
   end

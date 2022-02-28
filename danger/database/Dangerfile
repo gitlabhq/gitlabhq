@@ -65,7 +65,7 @@ if gitlab.mr_labels.include?('database') || db_paths_to_review.any?
     markdown(DB_REMOVE_MESSAGE)
   end
 
-  unless helper.has_database_scoped_labels?
-    project_helper.labels_to_add << 'database::review pending'
+  unless helper.has_scoped_label_with_scope?("database")
+    helper.labels_to_add << 'database::review pending'
   end
 end

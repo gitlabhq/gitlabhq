@@ -501,6 +501,7 @@ RSpec.describe ApplicationController do
   describe '#append_info_to_payload' do
     controller(described_class) do
       attr_reader :last_payload
+
       urgency :high, [:foo]
 
       def index

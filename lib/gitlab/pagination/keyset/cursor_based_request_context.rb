@@ -6,6 +6,7 @@ module Gitlab
       class CursorBasedRequestContext
         DEFAULT_SORT_DIRECTION = :desc
         attr_reader :request_context
+
         delegate :params, to: :request_context
 
         def initialize(request_context)

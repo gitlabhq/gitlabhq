@@ -7,6 +7,7 @@ module QA
   module Specs
     class Runner < Scenario::Template
       attr_accessor :tty, :tags, :options
+
       RegexMismatchError = Class.new(StandardError)
 
       DEFAULT_TEST_PATH_ARGS = ['--', File.expand_path('./features', __dir__)].freeze

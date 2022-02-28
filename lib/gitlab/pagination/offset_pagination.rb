@@ -4,6 +4,7 @@ module Gitlab
   module Pagination
     class OffsetPagination < Base
       attr_reader :request_context
+
       delegate :params, :header, :request, to: :request_context
 
       def initialize(request_context)

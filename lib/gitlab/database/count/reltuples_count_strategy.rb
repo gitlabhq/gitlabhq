@@ -14,6 +14,7 @@ module Gitlab
       # however is guaranteed to be "fast", because it only looks up statistics.
       class ReltuplesCountStrategy
         attr_reader :models
+
         def initialize(models)
           @models = models
         end
