@@ -173,8 +173,8 @@ When enabled, members who are can push to this branch can also force push.
 
 ## Require Code Owner approval on a protected branch **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13251) in GitLab Premium 12.4.
-> - [In](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5 and later, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13251) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in GitLab 13.5, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
 
 For a protected branch, you can require at least one approval by a [Code Owner](code_owners.md).
 

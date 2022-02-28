@@ -623,10 +623,14 @@ outcomes when we switch to decomposed, because now you have some queries
 happening outside the transaction and they may be partially applied while the
 outer transaction fails, which could lead to surprising bugs.
 
-If you need to do some cleanup after a `destroy` you will need to choose
-from some of the options above. If all you need to do is cleanup the child
-records themselves from PostgreSQL then you could consider using ["loose foreign
-keys"](loose_foreign_keys.md).
+For non-trivial objects that need to clean up data outside the
+database (for example, object storage), we recommend the setting
+[`dependent: :restrict_with_error`](https://guides.rubyonrails.org/association_basics.html#options-for-has-one-dependent).
+Such objects should be removed explicitly ahead of time. Using `dependent: :restrict_with_error`
+ensures that we forbid destroying the parent object if something is not cleaned up.
+
+If all you need to do is clean up the child records themselves from PostgreSQL,
+consider using [loose foreign keys](loose_foreign_keys.md).
 
 ## `config/database.yml`
 

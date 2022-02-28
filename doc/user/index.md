@@ -47,6 +47,8 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 - Reviewing code in [merge requests](project/merge_requests/index.md) with live-preview changes per
   branch with [Review Apps](../ci/review_apps/index.md).
 - Building, testing, and deploying with built-in [Continuous Integration](../ci/index.md).
+- View the current health and status of each CI environment running on Kubernetes with [deploy boards](project/deploy_boards.md).
+- Leverage continuous delivery method with [Canary Deployments](project/canary_deployments.md).
 - Deploying personal and professional static websites with [GitLab Pages](project/pages/index.md).
 - Integrating with Docker by using [GitLab Container Registry](packages/container_registry/index.md).
 - Tracking the development lifecycle by using [GitLab Value Stream Analytics](analytics/value_stream_analytics.md).
@@ -66,8 +68,6 @@ With GitLab Enterprise Edition, you can also:
 - [Mirror a repository](project/repository/mirror/index.md) from elsewhere on your local server.
 - View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipelines](../ci/pipelines/multi_project_pipelines.md).
 - [Lock files](project/file_lock.md) to prevent conflicts.
-- View the current health and status of each CI environment running on Kubernetes with [deploy boards](project/deploy_boards.md).
-- Leverage continuous delivery method with [Canary Deployments](project/canary_deployments.md).
 - Scan your code for vulnerabilities and [display them in merge requests](application_security/sast/index.md).
 
 You can also [integrate](project/integrations/overview.md) GitLab with numerous third-party applications, such as Mattermost, Microsoft Teams, Trello, Slack, Bamboo CI, Jira, and a lot more.
@@ -159,8 +159,7 @@ it all at once, from one single project.
 
 ## Account
 
-There is a lot you can customize and configure
-to enjoy the best of GitLab.
+There is a lot you can customize and configure to enjoy the best of GitLab.
 
 - [Settings](profile/index.md): Manage your user settings to change your personal information,
   personal access tokens, authorized applications, etc.
@@ -209,8 +208,7 @@ requests you're assigned to.
 ## Snippets
 
 [Snippets](snippets.md) are code blocks that you want to store in GitLab, from which
-you have quick access to. You can also gather feedback on them through
-[Discussions](#discussions).
+you have quick access to. You can also gather feedback on them through [Discussions](#discussions).
 
 ## GitLab CI/CD
 
@@ -228,8 +226,7 @@ pages and accomplish tasks faster.
 
 ## Integrations
 
-[Integrate GitLab](../integration/index.md) with your preferred tool,
-such as Trello, Jira, etc.
+[Integrate GitLab](../integration/index.md) with your preferred tool, such as Trello, Jira, etc.
 
 ## Webhooks
 
@@ -251,5 +248,4 @@ See [various statistics](admin_area/analytics/index.md) of your GitLab instance.
 
 ## Operations Dashboard
 
-See [Operations Dashboard](operations_dashboard/index.md) for a summary of each
-project's operational health.
+See [Operations Dashboard](operations_dashboard/index.md) for a summary of each project's operational health.

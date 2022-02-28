@@ -7,8 +7,8 @@ type: howto, reference
 
 # Deploy boards (DEPRECATED) **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to GitLab Free in 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in GitLab 9.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) from GitLab Premium to GitLab Free in 13.8.
 > - In GitLab 13.5 and earlier, apps that consist of multiple deployments are shown as
 >   duplicates on the deploy board. This is [fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/8463)
 >   in GitLab 13.6.

@@ -80,6 +80,12 @@ foreign keys to remove the data as this would result in the file system data
 being left behind. In such a case you should use a service class instead that
 takes care of removing non database data.
 
+In cases where the relation spans multiple databases you will have even
+further problems using `dependent: :destroy` or the above hooks. You can
+read more about alternatives at [Avoid `dependent: :nullify` and
+`dependent: :destroy` across
+databases](database/multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
+
 ## Alternative primary keys with has_one associations
 
 Sometimes a `has_one` association is used to create a one-to-one relationship:

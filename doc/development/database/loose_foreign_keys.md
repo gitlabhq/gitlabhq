@@ -234,6 +234,12 @@ We considered using these Rails features as an alternative to foreign keys but t
 1. These can lead to severe performance degradation as we load all records from PostgreSQL, loop over them in Ruby, and call individual `DELETE` queries.
 1. These can miss data as they only cover the case when the `destroy` method is called directly on the model. There are other cases including `delete_all` and cascading deletes from another parent table that could mean these are missed.
 
+For non-trivial objects that need to clean up data outside the
+database (for example, object storage) where you might wish to use `dependent: :destroy`,
+see alternatives in
+[Avoid `dependent: :nullify` and `dependent: :destroy` across
+databases](./multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
+
 ## Risks of loose foreign keys and possible mitigations
 
 In general, the loose foreign keys architecture is eventually consistent and
