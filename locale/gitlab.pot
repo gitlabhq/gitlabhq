@@ -3150,6 +3150,9 @@ msgstr ""
 msgid "Akismet helps prevent the creation of spam issues in public projects."
 msgstr ""
 
+msgid "Alert"
+msgstr ""
+
 msgid "AlertManagement|Acknowledged"
 msgstr ""
 
@@ -9110,6 +9113,12 @@ msgstr ""
 msgid "Confidential"
 msgstr ""
 
+msgid "Confidential issue"
+msgstr ""
+
+msgid "Confidential note"
+msgstr ""
+
 msgid "Confidentiality"
 msgstr ""
 
@@ -12192,6 +12201,9 @@ msgid "Deploying to"
 msgstr ""
 
 msgid "Deploying to AWS is easy with GitLab"
+msgstr ""
+
+msgid "Deployment"
 msgstr ""
 
 msgid "Deployment Frequency"
@@ -35822,6 +35834,9 @@ msgstr ""
 msgid "Tag name is required"
 msgstr ""
 
+msgid "Tag push"
+msgstr ""
+
 msgid "Tag push events"
 msgstr ""
 
@@ -40564,6 +40579,9 @@ msgstr ""
 msgid "Vulnerabilities over time"
 msgstr ""
 
+msgid "Vulnerability"
+msgstr ""
+
 msgid "Vulnerability Report"
 msgstr ""
 
@@ -41371,6 +41389,9 @@ msgid "Why are you signing up? (Optional)"
 msgstr ""
 
 msgid "Wiki"
+msgstr ""
+
+msgid "Wiki page"
 msgstr ""
 
 msgid "Wiki page was successfully created."

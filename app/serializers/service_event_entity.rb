@@ -4,7 +4,7 @@ class ServiceEventEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :title do |event|
-    event
+    IntegrationsHelper.integration_event_title(event)
   end
 
   expose :event_field_name, as: :name

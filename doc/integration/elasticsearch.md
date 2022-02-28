@@ -831,9 +831,9 @@ for the changes to take effect.
 ## Reverting to Basic Search
 
 Sometimes there may be issues with your Elasticsearch index data and as such
-GitLab will allow you to revert to "basic search" when there are no search
+GitLab allows you to revert to "basic search" when there are no search
 results and assuming that basic search is supported in that scope. This "basic
-search" will behave as though you don't have Advanced Search enabled at all for
+search" behaves as though you don't have Advanced Search enabled at all for
 your instance and search using other data sources (such as PostgreSQL data and Git
 data).
 
@@ -847,7 +847,7 @@ the Elasticsearch data store is ever corrupted for whatever reason, you can rein
 ## Troubleshooting
 
 One of the most valuable tools for identifying issues with the Elasticsearch
-integration will be logs. The most relevant logs for this integration are:
+integration are logs. The most relevant logs for this integration are:
 
 1. [`sidekiq.log`](../administration/logs.md#sidekiqlog) - All of the
    indexing happens in Sidekiq, so much of the relevant logs for the
@@ -863,7 +863,7 @@ Here are some common pitfalls and how to overcome them.
 
 There are a couple of ways to achieve that:
 
-- Whenever you perform a search there will be a link on the search results page
+- Whenever you perform a search there is a link on the search results page
   in the top right hand corner saying "Advanced search functionality is enabled".
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
@@ -923,7 +923,7 @@ See [Elasticsearch Index Scopes](#advanced-search-index-scopes) for more informa
 
 ### I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything
 
-You will need to re-run all the Rake tasks to reindex the database, repositories, and wikis.
+You must re-run all the Rake tasks to reindex the database, repositories, and wikis.
 
 ### The indexing process is taking a very long time
 
@@ -938,7 +938,7 @@ You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display pr
 NOTE:
 This was [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35936) in GitLab 13.2 and the Rake task is not available for versions greater than that.
 
-When performing the initial indexing of blobs, we lock all projects until the project finishes indexing. It could happen that an error during the process causes one or multiple projects to remain locked. In order to unlock them, run:
+When performing the initial indexing of blobs, we lock all projects until the project finishes indexing. It could happen that an error during the process causes one or multiple projects to remain locked. To unlock them, run:
 
 ```shell
 sudo gitlab-rake gitlab:elastic:clear_locked_projects
@@ -946,8 +946,8 @@ sudo gitlab-rake gitlab:elastic:clear_locked_projects
 
 ### `Can't specify parent if no parent field has been configured` error
 
-If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes you will get
-exception in lots of different cases:
+If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes, you get
+exceptions in lots of different cases:
 
 ```plaintext
 Elasticsearch::Transport::Transport::Errors::BadRequest([400] {
@@ -983,12 +983,12 @@ AWS has [fixed limits](https://docs.aws.amazon.com/opensearch-service/latest/dev
 
 ### My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly
 
-**For a single node Elasticsearch cluster the functional cluster health status will be yellow** (never green) because the primary shard is allocated but replicas cannot be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
+**For a single node Elasticsearch cluster the functional cluster health status is yellow** (never green) because the primary shard is allocated but replicas cannot be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
 
 WARNING:
-Setting the number of replicas to `0` is discouraged (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas will need to be set to an integer value larger than `0`. Failure to do so will result in lack of redundancy (losing one node will corrupt the index).
+Setting the number of replicas to `0` is discouraged (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas needs to be set to an integer value larger than `0`. Failure to do so results in lack of redundancy (losing one node corrupts the index).
 
-If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then run the following query to set the number of replicas to `0`(the cluster will no longer try to create any shard replicas):
+If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then run the following query to set the number of replicas to `0`(the cluster no longer tries to create any shard replicas):
 
 ```shell
 curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
@@ -1008,7 +1008,7 @@ Gitlab::Elastic::Indexer::Error: time="2020-01-23T09:13:00Z" level=fatal msg="he
 ```
 
 You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
-Once you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](#gitlab-advanced-search-rake-tasks)) and [reindex the content of your instance](#enable-advanced-search).
+After you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](#gitlab-advanced-search-rake-tasks)) and [reindex the content of your instance](#enable-advanced-search).
 
 ### My Elasticsearch cluster has a plugin and the integration is not working
 
@@ -1041,8 +1041,8 @@ using the above [troubleshooting](#troubleshooting) steps.
 If there are no other options, then you always have the option of recreating the
 entire index from scratch. If you have a small GitLab installation, this can
 sometimes be a quick way to resolve a problem, but if you have a large GitLab
-installation, then this will likely take a very long time to complete. Until the
-index is fully recreated, your index will not be serving correct search results,
+installation, then this might take a very long time to complete. Until the
+index is fully recreated, your index does not serve correct search results,
 so you may want to disable **Search with Elasticsearch** while it is running.
 
 If you are sure you've read the above caveats and want to proceed, then you
@@ -1065,9 +1065,9 @@ sudo -u git -H bundle exec rake gitlab:elastic:index
 
 ### How does Advanced Search handle private projects?
 
-Advanced Search will store all the projects in the same Elasticsearch indexes,
-however searches will only surface results that can be viewed by the user.
-Advanced Search will honor all permission checks in the application by
+Advanced Search stores all the projects in the same Elasticsearch indexes,
+however, searches only surface results that can be viewed by the user.
+Advanced Search honors all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
 
 ### Indexing fails with `error: elastic: Error 429 (Too Many Requests)`

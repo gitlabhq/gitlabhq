@@ -3,17 +3,41 @@
 require 'spec_helper'
 
 RSpec.describe IntegrationsHelper do
+  shared_examples 'is defined for each integration event' do
+    Integration.available_integration_names.each do |integration|
+      events = Integration.integration_name_to_model(integration).new.configurable_events
+      events.each do |event|
+        context "when integration is #{integration}, event is #{event}" do
+          let(:integration) { integration }
+          let(:event) { event }
+
+          it { is_expected.not_to be_nil }
+        end
+      end
+    end
+  end
+
+  describe '#integration_event_title' do
+    subject { helper.integration_event_title(event) }
+
+    it_behaves_like 'is defined for each integration event'
+  end
+
   describe '#integration_event_description' do
-    subject(:description) { helper.integration_event_description(integration, 'merge_request_events') }
+    subject { helper.integration_event_description(integration, event) }
+
+    it_behaves_like 'is defined for each integration event'
 
     context 'when integration is Jira' do
       let(:integration) { Integrations::Jira.new }
+      let(:event) { 'merge_request_events' }
 
       it { is_expected.to include('Jira') }
     end
 
     context 'when integration is Team City' do
       let(:integration) { Integrations::Teamcity.new }
+      let(:event) { 'merge_request_events' }
 
       it { is_expected.to include('TeamCity') }
     end

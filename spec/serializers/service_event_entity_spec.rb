@@ -19,7 +19,7 @@ RSpec.describe ServiceEventEntity do
       it 'exposes correct attributes' do
         expect(subject[:description]).to eq('Trigger event for pushes to the repository.')
         expect(subject[:name]).to eq('push_events')
-        expect(subject[:title]).to eq('push')
+        expect(subject[:title]).to eq('Push')
         expect(subject[:value]).to be(true)
       end
     end
@@ -31,7 +31,7 @@ RSpec.describe ServiceEventEntity do
       it 'exposes correct attributes' do
         expect(subject[:description]).to eq('Trigger event for new comments.')
         expect(subject[:name]).to eq('note_events')
-        expect(subject[:title]).to eq('note')
+        expect(subject[:title]).to eq('Note')
         expect(subject[:value]).to eq(false)
         expect(subject[:field][:name]).to eq('note_channel')
         expect(subject[:field][:value]).to eq('note-channel')
