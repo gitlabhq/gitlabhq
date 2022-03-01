@@ -302,7 +302,7 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 In GitLab 14.5 and later, you can also use:
 
 - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
-- [Scheduled pipeline variables](../pipelines/schedules.md#using-variables).
+- [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
 - [Manual pipeline run variables](../variables/index.md#override-a-variable-when-running-a-pipeline-manually).
 - Pipeline [predefined variables](../variables/predefined_variables.md).
 

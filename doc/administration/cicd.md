@@ -71,6 +71,27 @@ Plan.default.actual_limits.update!(ci_needs_size_limit: 100)
 
 To disable directed acyclic graphs (DAG), set the limit to `0`.
 
+## Change maximum scheduled pipeline frequency
+
+[Scheduled pipelines](../ci/pipelines/schedules.md) can be configured with any [cron value](../topics/cron/index.md),
+but they do not always run exactly when scheduled. An internal process, called the
+_pipeline schedule worker_, queues all the scheduled pipelines, but does not
+run continuously. The worker runs on its own schedule, and scheduled pipelines that
+are ready to start are only queued the next time the worker runs. Scheduled pipelines
+can't run more frequently than the worker.
+
+The default frequency of the pipeline schedule worker is `3-59/10 * * * *` (every ten minutes,
+starting with `0:03`, `0:13`, `0:23`, and so on). The default frequency for GitLab.com
+is listed in the [GitLab.com settings](../user/gitlab_com/index.md#gitlab-cicd).
+
+To change the frequency of the pipeline schedule worker:
+
+1. Edit the `gitlab_rails['pipeline_schedule_worker_cron']` value in your instance's `gitlab.rb` file.
+1. [Reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+For example, to set the maximum frequency of pipelines to twice a day, set `pipeline_schedule_worker_cron`
+to a cron value of `0 */12 * * *` (`00:00` and `12:00` every day).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

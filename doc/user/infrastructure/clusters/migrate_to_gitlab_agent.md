@@ -74,7 +74,7 @@ Follow the process to [migrate from GitLab Managed Apps to the cluster managemen
 
 ## Migrate a cluster management project
 
-See [how to use a cluster management project with the GitLab agent](../../clusters/management_project_template.md#use-the-agent-with-the-cluster-management-project-template).
+See [how to use a cluster management project with the GitLab agent](../../clusters/management_project_template.md).
 
 ## Migrate cluster monitoring features
 

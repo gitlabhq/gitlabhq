@@ -85,6 +85,28 @@ be triggered by the same event (a push to the source branch for an open merge re
 See how to [prevent duplicate pipelines](#avoid-duplicate-pipelines)
 for more details.
 
+#### Run jobs for scheduled pipelines
+
+To configure a job to be executed only when the pipeline has been
+scheduled, use the [`rules`](../yaml/index.md#rules) keyword.
+
+In this example, `make world` runs in scheduled pipelines, and `make build`
+runs in branch and tag pipelines:
+
+```yaml
+job:on-schedule:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - make world
+
+job:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+  script:
+    - make build
+```
+
 ### Complex rules
 
 You can use all `rules` keywords, like `if`, `changes`, and `exists`, in the same

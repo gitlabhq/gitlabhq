@@ -15,7 +15,7 @@ RSpec.describe ResolvesPipelines do
     end
   end
 
-  let(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
 
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
@@ -23,13 +23,15 @@ RSpec.describe ResolvesPipelines do
   let_it_be(:success_pipeline) { create(:ci_pipeline, :success, project: project) }
   let_it_be(:ref_pipeline) { create(:ci_pipeline, project: project, ref: 'awesome-feature') }
   let_it_be(:sha_pipeline) { create(:ci_pipeline, project: project, sha: 'deadbeef') }
+  let_it_be(:username_pipeline) { create(:ci_pipeline, project: project, user: current_user) }
   let_it_be(:all_pipelines) do
     [
       pipeline,
       failed_pipeline,
       success_pipeline,
       ref_pipeline,
-      sha_pipeline
+      sha_pipeline,
+      username_pipeline
     ]
   end
 
@@ -37,7 +39,7 @@ RSpec.describe ResolvesPipelines do
     project.add_developer(current_user)
   end
 
-  it { is_expected.to have_graphql_arguments(:status, :scope, :ref, :sha, :source) }
+  it { is_expected.to have_graphql_arguments(:status, :scope, :ref, :sha, :source, :username) }
 
   it 'finds all pipelines' do
     expect(resolve_pipelines).to contain_exactly(*all_pipelines)
@@ -69,6 +71,10 @@ RSpec.describe ResolvesPipelines do
     it 'returns all the pipelines' do
       expect(resolve_pipelines).to contain_exactly(*all_pipelines, source_pipeline)
     end
+  end
+
+  it 'allows filtering by username' do
+    expect(resolve_pipelines(username: current_user.username)).to contain_exactly(username_pipeline)
   end
 
   it 'does not return any pipelines if the user does not have access' do

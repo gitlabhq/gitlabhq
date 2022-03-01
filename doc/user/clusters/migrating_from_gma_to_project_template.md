@@ -20,7 +20,7 @@ To migrate from GitLab Managed Apps to a Cluster Management Project,
 follow the steps below.
 See also [video walk-throughs](#video-walk-throughs) with examples.
 
-1. Create a new project based on the [Cluster Management Project template](management_project_template.md#create-a-new-project-based-on-the-cluster-management-template).
+1. Create a new project based on the [Cluster Management Project template](management_project_template.md#create-a-project-based-on-the-cluster-management-project-template).
 1. [Associate your new Cluster Management Project with your cluster](management_project.md#associate-the-cluster-management-project-with-the-cluster).
 1. Detect apps deployed through Helm v2 releases by using the pre-configured [`.gitlab-ci.yml`](management_project_template.md#the-gitlab-ciyml-file) file:
    - In case you had overwritten the default GitLab Managed Apps namespace, edit `.gitlab-ci.yml`,

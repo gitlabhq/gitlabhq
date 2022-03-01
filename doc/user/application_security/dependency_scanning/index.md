@@ -892,11 +892,11 @@ import the following default dependency scanning analyzer images from `registry.
 your [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/retire.js:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/bundler-audit:2
+registry.gitlab.com/security-products/gemnasium:2
+registry.gitlab.com/security-products/gemnasium-maven:2
+registry.gitlab.com/security-products/gemnasium-python:2
+registry.gitlab.com/security-products/retire.js:2
+registry.gitlab.com/security-products/bundler-audit:2
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
