@@ -15,7 +15,7 @@ RSpec.describe WebHookLog do
     let(:hook) { create(:project_hook) }
 
     it 'does not return web hook logs that are too old' do
-      create(:web_hook_log, web_hook: hook, created_at: 91.days.ago)
+      create(:web_hook_log, web_hook: hook, created_at: 10.days.ago)
 
       expect(described_class.recent.size).to be_zero
     end

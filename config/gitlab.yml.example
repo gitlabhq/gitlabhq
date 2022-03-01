@@ -230,7 +230,23 @@ production: &base
     #   client_id: "YOUR-CLIENT-ID"
     #   client_secret: "YOUR-CLIENT-SECRET"
 
-    # File that contains the shared secret key for verifying access for mailroom's incoming_email.
+    # How mailroom delivers email content to Rails. There are two methods at the moment:
+    # - sidekiq: mailroom pushes the email content to Sidekiq directly. This job
+    # is then picked up by Sidekiq.
+    # - webhook: mailroom triggers a HTTP POST request to Rails web server. The
+    # content is embedded into the request body.
+    # Default is sidekiq.
+    # delivery_method: sidekiq
+
+    # When the delivery method is webhook, those configs tell the url that
+    # mailroom can contact to. Note that the combined url must not end with "/".
+    # At the moment, the webhook delivery method doesn't support HTTP/HTTPs via
+    # UNIX socket.
+    # gitlab_url: "http://gitlab.example"
+
+    # When the delivery method is webhook, this config is the file that
+    # contains the shared secret key for verifying access for mailroom's
+    # incoming_email.
     # Default is '.gitlab_mailroom_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_mailroom_secret
 

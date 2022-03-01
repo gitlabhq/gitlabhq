@@ -1649,7 +1649,7 @@ To configure Praefect with TLS:
    ```ruby
    git_data_dirs({
      "default" => {
-       "gitaly_address" => 'tls://LOAD_BALANCER_SERVER_ADDRESS:2305',
+       "gitaly_address" => 'tls://LOAD_BALANCER_SERVER_ADDRESS:3305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })

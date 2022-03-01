@@ -6,8 +6,6 @@ module Gitlab
       include JwtAuthenticatable
 
       SecretConfigurationError = Class.new(StandardError)
-      INTERNAL_API_REQUEST_HEADER = 'Gitlab-Mailroom-Api-Request'
-      INTERNAL_API_REQUEST_JWT_ISSUER = 'gitlab-mailroom'
 
       # Only allow token generated within the last 5 minutes
       EXPIRATION = 5.minutes
@@ -18,9 +16,10 @@ module Gitlab
           return false if enabled_configs[mailbox_type].blank?
 
           decode_jwt(
-            request_headers[INTERNAL_API_REQUEST_HEADER],
+            request_headers[Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER],
             secret(mailbox_type),
-            issuer: INTERNAL_API_REQUEST_JWT_ISSUER, iat_after: Time.current - EXPIRATION
+            issuer: Gitlab::MailRoom::INTERNAL_API_REQUEST_JWT_ISSUER,
+            iat_after: Time.current - EXPIRATION
           )
         rescue JWT::DecodeError => e
           ::Gitlab::AppLogger.warn("Fail to decode MailRoom JWT token: #{e.message}") if Rails.env.development?

@@ -12,6 +12,11 @@ module Gitlab
   module MailRoom
     RAILS_ROOT_DIR = Pathname.new('../..').expand_path(__dir__).freeze
 
+    DELIVERY_METHOD_SIDEKIQ = 'sidekiq'
+    DELIVERY_METHOD_WEBHOOK = 'webhook'
+    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Mailroom-Api-Request'
+    INTERNAL_API_REQUEST_JWT_ISSUER = 'gitlab-mailroom'
+
     DEFAULT_CONFIG = {
       enabled: false,
       port: 143,
@@ -20,7 +25,8 @@ module Gitlab
       mailbox: 'inbox',
       idle_timeout: 60,
       log_path: RAILS_ROOT_DIR.join('log', 'mail_room_json.log'),
-      expunge_deleted: false
+      expunge_deleted: false,
+      delivery_method: DELIVERY_METHOD_SIDEKIQ
     }.freeze
 
     # Email specific configuration which is merged with configuration
@@ -63,7 +69,9 @@ module Gitlab
         return {} unless File.exist?(config_file)
 
         config = merged_configs(config_key)
+
         config.merge!(redis_config) if enabled?(config)
+
         config[:log_path] = File.expand_path(config[:log_path], RAILS_ROOT_DIR)
 
         config

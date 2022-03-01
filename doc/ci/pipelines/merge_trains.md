@@ -201,6 +201,10 @@ the merged result is out of date and the pipeline can't be retried.
 Instead, you should [add the merge request to the train](#add-a-merge-request-to-a-merge-train)
 again, which triggers a new pipeline.
 
+If a job only fails intermittently, you can try using the [`retry`](../yaml/index.md#retry)
+keyword in the `.gitlab-ci.yml` file to have the job retried before the pipeline completes.
+If it succeeds after a retry, the merge request is not removed from the merge train.
+
 ### Unable to add to merge train with message "The pipeline for this merge request failed."
 
 Sometimes the **Start/Add to merge train** button is not available and the merge request says,

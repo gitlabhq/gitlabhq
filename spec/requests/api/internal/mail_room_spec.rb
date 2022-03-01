@@ -28,7 +28,7 @@ RSpec.describe API::Internal::MailRoom do
     }
   end
 
-  let(:auth_payload) { { 'iss' => Gitlab::MailRoom::Authenticator::INTERNAL_API_REQUEST_JWT_ISSUER, 'iat' => (Time.now - 10.seconds).to_i } }
+  let(:auth_payload) { { 'iss' => Gitlab::MailRoom::INTERNAL_API_REQUEST_JWT_ISSUER, 'iat' => (Time.now - 10.seconds).to_i } }
 
   let(:incoming_email_secret) { 'incoming_email_secret' }
   let(:service_desk_email_secret) { 'service_desk_email_secret' }
@@ -51,7 +51,7 @@ RSpec.describe API::Internal::MailRoom do
     context 'handle incoming_email successfully' do
       let(:auth_headers) do
         jwt_token = JWT.encode(auth_payload, incoming_email_secret, 'HS256')
-        { Gitlab::MailRoom::Authenticator::INTERNAL_API_REQUEST_HEADER => jwt_token }
+        { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => jwt_token }
       end
 
       it 'schedules a EmailReceiverWorker job with raw email content' do
@@ -71,7 +71,7 @@ RSpec.describe API::Internal::MailRoom do
     context 'handle service_desk_email successfully' do
       let(:auth_headers) do
         jwt_token = JWT.encode(auth_payload, service_desk_email_secret, 'HS256')
-        { Gitlab::MailRoom::Authenticator::INTERNAL_API_REQUEST_HEADER => jwt_token }
+        { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => jwt_token }
       end
 
       it 'schedules a ServiceDeskEmailReceiverWorker job with raw email content' do
@@ -91,7 +91,7 @@ RSpec.describe API::Internal::MailRoom do
     context 'email content exceeds limit' do
       let(:auth_headers) do
         jwt_token = JWT.encode(auth_payload, incoming_email_secret, 'HS256')
-        { Gitlab::MailRoom::Authenticator::INTERNAL_API_REQUEST_HEADER => jwt_token }
+        { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => jwt_token }
       end
 
       before do
@@ -134,7 +134,7 @@ RSpec.describe API::Internal::MailRoom do
     context 'wrong token authentication' do
       let(:auth_headers) do
         jwt_token = JWT.encode(auth_payload, 'wrongsecret', 'HS256')
-        { Gitlab::MailRoom::Authenticator::INTERNAL_API_REQUEST_HEADER => jwt_token }
+        { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => jwt_token }
       end
 
       it 'responds with 401 Unauthorized' do
@@ -147,7 +147,7 @@ RSpec.describe API::Internal::MailRoom do
     context 'wrong mailbox type authentication' do
       let(:auth_headers) do
         jwt_token = JWT.encode(auth_payload, service_desk_email_secret, 'HS256')
-        { Gitlab::MailRoom::Authenticator::INTERNAL_API_REQUEST_HEADER => jwt_token }
+        { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => jwt_token }
       end
 
       it 'responds with 401 Unauthorized' do
@@ -160,7 +160,7 @@ RSpec.describe API::Internal::MailRoom do
     context 'not supported mailbox type' do
       let(:auth_headers) do
         jwt_token = JWT.encode(auth_payload, incoming_email_secret, 'HS256')
-        { Gitlab::MailRoom::Authenticator::INTERNAL_API_REQUEST_HEADER => jwt_token }
+        { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => jwt_token }
       end
 
       it 'responds with 401 Unauthorized' do
@@ -181,7 +181,7 @@ RSpec.describe API::Internal::MailRoom do
 
       let(:auth_headers) do
         jwt_token = JWT.encode(auth_payload, service_desk_email_secret, 'HS256')
-        { Gitlab::MailRoom::Authenticator::INTERNAL_API_REQUEST_HEADER => jwt_token }
+        { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => jwt_token }
       end
 
       it 'responds with 401 Unauthorized' do

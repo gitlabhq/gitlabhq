@@ -1,7 +1,7 @@
 :mailboxes:
   <%
     require_relative "../lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
-    Gitlab::MailRoom.enabled_configs.each do |_key, config|
+    Gitlab::MailRoom.enabled_configs.each do |key, config|
   %>
     -
       :host: <%= config[:host].to_json %>
@@ -26,6 +26,7 @@
       <%= config.slice(:inbox_options).to_yaml(indentation: 8).gsub(/^---\n/, '') %>
       <% end %>
 
+      <% if config[:delivery_method] == Gitlab::MailRoom::DELIVERY_METHOD_SIDEKIQ %>
       :delivery_method: sidekiq
       :delivery_options:
         :redis_url: <%= config[:redis_url].to_json %>
@@ -41,6 +42,15 @@
             :port: <%= sentinel[:port] %>
           <% end %>
         <% end %>
+      <% elsif config[:delivery_method] == Gitlab::MailRoom::DELIVERY_METHOD_WEBHOOK %>
+      :delivery_method: postback
+      :delivery_options:
+        :delivery_url: <%= config[:gitlab_url] %>/api/v4/internal/mail_room/<%= key %>
+        :jwt_auth_header: <%= Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER %>
+        :jwt_issuer: <%= Gitlab::MailRoom::INTERNAL_API_REQUEST_JWT_ISSUER %>
+        :jwt_algorithm: "HS256"
+        :jwt_secret_path: <%= config[:secret_file] %>
+      <% end %>
 
       :arbitration_method: redis
       :arbitration_options:
