@@ -21040,6 +21040,18 @@ msgstr ""
 msgid "Jobs|You're about to retry a job that failed because it attempted to deploy code that is older than the latest deployment. Retrying this job could result in overwriting the environment with the older source code."
 msgstr ""
 
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id}"
+msgstr ""
+
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source}"
+msgstr ""
+
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source} into %{target}"
+msgstr ""
+
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{ref}"
+msgstr ""
+
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
 
@@ -21071,9 +21083,6 @@ msgid "Job|Job has been erased by %{userLink}"
 msgstr ""
 
 msgid "Job|Keep"
-msgstr ""
-
-msgid "Job|Pipeline"
 msgstr ""
 
 msgid "Job|Retry"
@@ -21118,19 +21127,10 @@ msgstr ""
 msgid "Job|delayed"
 msgstr ""
 
-msgid "Job|for"
-msgstr ""
-
-msgid "Job|into"
-msgstr ""
-
 msgid "Job|manual"
 msgstr ""
 
 msgid "Job|triggered"
-msgstr ""
-
-msgid "Job|with"
 msgstr ""
 
 msgid "Join Zoom meeting"

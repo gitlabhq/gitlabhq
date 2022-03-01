@@ -1214,6 +1214,11 @@ export const mockPipelineWithoutMR = {
   },
 };
 
+export const mockPipelineWithoutRef = {
+  ...mockPipelineWithoutMR,
+  ref: null,
+};
+
 export const mockPipelineWithAttachedMR = {
   id: 28029444,
   details: {

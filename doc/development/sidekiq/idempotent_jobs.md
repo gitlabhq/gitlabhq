@@ -75,7 +75,7 @@ job executed, the first job would do nothing.
 
 GitLab supports two deduplication strategies:
 
-- `until_executing`
+- `until_executing`, which is the default strategy
 - `until_executed`
 
 More [deduplication strategies have been

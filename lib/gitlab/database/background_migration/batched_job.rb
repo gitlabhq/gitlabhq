@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     module BackgroundMigration
-      class BatchedJob < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
+      class BatchedJob < SharedModel
         include EachBatch
         include FromUnion
 
@@ -87,7 +87,7 @@ module Gitlab
 
             raise 'Job cannot be split further' if new_batch_size < 1
 
-            batching_strategy = batched_migration.batch_class.new
+            batching_strategy = batched_migration.batch_class.new(connection: self.class.connection)
             next_batch_bounds = batching_strategy.next_batch(
               batched_migration.table_name,
               batched_migration.column_name,

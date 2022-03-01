@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     module BackgroundMigration
-      class BatchedMigration < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
+      class BatchedMigration < SharedModel
         JOB_CLASS_MODULE = 'Gitlab::BackgroundMigration'
         BATCH_CLASS_MODULE = "#{JOB_CLASS_MODULE}::BatchingStrategies"
 

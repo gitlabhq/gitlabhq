@@ -309,6 +309,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:database_batched_background_migration_ci_database
+  :worker_name: Database::BatchedBackgroundMigration::CiDatabaseWorker
+  :feature_category: :database
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:database_drop_detached_partitions
   :worker_name: Database::DropDetachedPartitionsWorker
   :feature_category: :database

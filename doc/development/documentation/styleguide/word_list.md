@@ -668,6 +668,10 @@ Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is
 
 Permissions are not the same as [**access levels**](#access-level).
 
+## personal access token
+
+Use lowercase for **personal access token**.
+
 ## please
 
 Do not use **please**. For details, see the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).

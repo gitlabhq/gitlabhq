@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model do
   it_behaves_like 'having unique enum values'
 
+  it { is_expected.to be_a Gitlab::Database::SharedModel }
+
   describe 'associations' do
     it { is_expected.to belong_to(:batched_migration).with_foreign_key(:batched_background_migration_id) }
     it { is_expected.to have_many(:batched_job_transition_logs).with_foreign_key(:batched_background_migration_job_id) }
