@@ -1,4 +1,4 @@
-#import "~/runner/graphql/runner_node.fragment.graphql"
+#import "~/runner/graphql/list/list_item.fragment.graphql"
 #import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
 
 query getGroupRunners(
@@ -29,8 +29,7 @@ query getGroupRunners(
         webUrl
         editUrl
         node {
-          __typename
-          ...RunnerNode
+          ...ListItem
         }
       }
       pageInfo {

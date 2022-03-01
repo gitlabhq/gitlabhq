@@ -16,7 +16,7 @@ import RunnerAssignedItem from '~/runner/components/runner_assigned_item.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 import { captureException } from '~/runner/sentry_utils';
 
-import getRunnerProjectsQuery from '~/runner/graphql/get_runner_projects.query.graphql';
+import runnerProjectsQuery from '~/runner/graphql/details/runner_projects.query.graphql';
 
 import { runnerData, runnerProjectsData } from '../mock_data';
 
@@ -40,7 +40,7 @@ describe('RunnerProjects', () => {
 
   const createComponent = ({ mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerProjects, {
-      apolloProvider: createMockApollo([[getRunnerProjectsQuery, mockRunnerProjectsQuery]]),
+      apolloProvider: createMockApollo([[runnerProjectsQuery, mockRunnerProjectsQuery]]),
       propsData: {
         runner: mockRunner,
       },

@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
-import runnerToggleActiveMutation from '~/runner/graphql/runner_toggle_active.mutation.graphql';
+import runnerToggleActiveMutation from '~/runner/graphql/shared/runner_toggle_active.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/runner/sentry_utils';
 import { createAlert } from '~/flash';

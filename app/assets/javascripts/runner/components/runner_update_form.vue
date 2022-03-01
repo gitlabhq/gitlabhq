@@ -15,7 +15,7 @@ import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { __ } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';
 import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
-import runnerUpdateMutation from '../graphql/runner_update.mutation.graphql';
+import runnerUpdateMutation from '../graphql/details/runner_update.mutation.graphql';
 
 export default {
   name: 'RunnerUpdateForm',

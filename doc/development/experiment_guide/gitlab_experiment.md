@@ -317,7 +317,7 @@ of tracking an event in Ruby would be:
 experiment(:pill_color, actor: current_user).track(:clicked)
 ```
 
-When you run an experiment with any of the examples so far, an `:assigned` event
+When you run an experiment with any of the examples so far, an `:assignment` event
 is tracked automatically by default. All events that are tracked from an
 experiment have a special
 [experiment context](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-3)

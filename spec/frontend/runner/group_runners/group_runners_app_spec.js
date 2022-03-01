@@ -32,8 +32,8 @@ import {
   RUNNER_PAGE_SIZE,
   I18N_EDIT,
 } from '~/runner/constants';
-import getGroupRunnersQuery from '~/runner/graphql/get_group_runners.query.graphql';
-import getGroupRunnersCountQuery from '~/runner/graphql/get_group_runners_count.query.graphql';
+import getGroupRunnersQuery from '~/runner/graphql/list/group_runners.query.graphql';
+import getGroupRunnersCountQuery from '~/runner/graphql/list/group_runners_count.query.graphql';
 import GroupRunnersApp from '~/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';

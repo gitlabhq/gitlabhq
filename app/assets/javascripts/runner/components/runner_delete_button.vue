@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
-import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
+import runnerDeleteMutation from '~/runner/graphql/shared/runner_delete.mutation.graphql';
 import { createAlert } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';

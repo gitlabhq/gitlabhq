@@ -225,17 +225,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(project.project_namespace).to be_in_sync_with_project(project)
     end
 
-    context 'with before_commit callback' do
-      it_behaves_like 'has sync-ed traversal_ids'
-    end
-
-    context 'with after_create callback' do
-      before do
-        stub_feature_flags(sync_traversal_ids_before_commit: false)
-      end
-
-      it_behaves_like 'has sync-ed traversal_ids'
-    end
+    it_behaves_like 'has sync-ed traversal_ids'
   end
 
   context 'group sharing', :sidekiq_inline do

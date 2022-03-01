@@ -1,4 +1,4 @@
-#import "ee_else_ce/runner/graphql/runner_details.fragment.graphql"
+#import "ee_else_ce/runner/graphql/details/runner_details.fragment.graphql"
 
 # Mutation for updates from the runner form, loads
 # attributes shown in the runner details.

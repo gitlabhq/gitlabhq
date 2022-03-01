@@ -67,15 +67,15 @@ Features not found in standard Markdown:
 
 Features [extended from standard Markdown](#features-extended-from-standard-markdown):
 
-| Standard Markdown                     | Extended Markdown in GitLab |
-| ------------------------------------- | ------------------------- |
-| [blockquotes](#blockquotes)           | [multi-line blockquotes](#multiline-blockquote) |
-| [code blocks](#code-spans-and-blocks) | [colored code and syntax highlighting](#colored-code-and-syntax-highlighting) |
-| [emphasis](#emphasis)                 | [multiple underscores in words](#multiple-underscores-in-words-and-mid-word-emphasis)
-| [headers](#headers)                   | [linkable Header IDs](#header-ids-and-links) |
-| [images](#images)                     | [embedded videos](#videos) and [audio](#audio) |
-| [line breaks](#line-breaks)           | [more line break control](#newlines) |
-| [links](#links)                       | [automatically linking URLs](#url-auto-linking) |
+| Standard Markdown                     | Extended Markdown in GitLab                                                           |
+|---------------------------------------|---------------------------------------------------------------------------------------|
+| [blockquotes](#blockquotes)           | [multi-line blockquotes](#multiline-blockquote)                                       |
+| [code blocks](#code-spans-and-blocks) | [colored code and syntax highlighting](#colored-code-and-syntax-highlighting)         |
+| [emphasis](#emphasis)                 | [multiple underscores in words](#multiple-underscores-in-words-and-mid-word-emphasis) |
+| [headers](#headers)                   | [linkable Header IDs](#header-ids-and-links)                                          |
+| [images](#images)                     | [embedded videos](#videos) and [audio](#audio)                                        |
+| [line breaks](#line-breaks)           | [more line break control](#newlines)                                                  |
+| [links](#links)                       | [automatically linking URLs](#url-auto-linking)                                       |
 
 ## Features not found in standard Markdown
 
@@ -262,7 +262,7 @@ The following delimiters are supported:
   ---
   title: About Front Matter
   example:
-  language: yaml
+    language: yaml
   ---
   ```
 
@@ -515,31 +515,31 @@ version to reference other projects from the same namespace.
 
 GitLab Flavored Markdown recognizes the following:
 
-| references                                           | input                         | cross-project reference                    | shortcut inside same namespace   |
-| :--------------------------------------------------- | :---------------------------- | :----------------------------------------- | :------------------------------- |
-| specific user                                        | `@user_name`                  |                                            |                                  |
-| specific group                                       | `@group_name`                 |                                            |                                  |
-| entire team                                          | `@all`                        |                                            |                                  |
-| project                                              | `namespace/project>`          |                                            |                                  |
-| issue                                                | ``#123``                      | `namespace/project#123`                    | `project#123`                    |
-| merge request                                        | `!123`                        | `namespace/project!123`                    | `project!123`                    |
-| snippet                                              | `$123`                        | `namespace/project$123`                    | `project$123`                    |
-| [epic](group/epics/index.md)                         | `&123`                        | `group1/subgroup&123`                      |                                  |
-| vulnerability **(ULTIMATE)** <sup>1</sup>            | `[vulnerability:123]`         | `[vulnerability:namespace/project/123]`    | `[vulnerability:project/123]`    |
-| feature flag                                         | `[feature_flag:123]`          | `[feature_flag:namespace/project/123]`     | `[feature_flag:project/123]`     |
-| label by ID                                          | `~123`                        | `namespace/project~123`                    | `project~123`                    |
-| one-word label by name                               | `~bug`                        | `namespace/project~bug`                    | `project~bug`                    |
-| multi-word label by name                             | `~"feature request"`          | `namespace/project~"feature request"`      | `project~"feature request"`      |
-| scoped label by name                                 | `~"priority::high"`           | `namespace/project~"priority::high"`       | `project~"priority::high"`       |
-| project milestone by ID                              | `%123`                        | `namespace/project%123`                    | `project%123`                    |
-| one-word milestone by name                           | `%v1.23`                      | `namespace/project%v1.23`                  | `project%v1.23`                  |
-| multi-word milestone by name                         | `%"release candidate"`        | `namespace/project%"release candidate"`    | `project%"release candidate"`    |
-| specific commit                                      | `9ba12248`                    | `namespace/project@9ba12248`               | `project@9ba12248`               |
-| commit range comparison                              | `9ba12248...b19a04f5`         | `namespace/project@9ba12248...b19a04f5`    | `project@9ba12248...b19a04f5`    |
-| repository file references                           | `[README](doc/README.md)`     |                                            |                                  |
-| repository file line references                      | `[README](doc/README.md#L13)` |                                            |                                  |
-| [alert](../operations/incident_management/alerts.md) | `^alert#123`                  | `namespace/project^alert#123`              | `project^alert#123`              |
-| contact                       | `[contact:test@example.com]`         |     |    |
+| references                                                                  | input                         | cross-project reference                 | shortcut inside same namespace |
+|:----------------------------------------------------------------------------|:------------------------------|:----------------------------------------|:-------------------------------|
+| specific user                                                               | `@user_name`                  |                                         |                                |
+| specific group                                                              | `@group_name`                 |                                         |                                |
+| entire team                                                                 | `@all`                        |                                         |                                |
+| project                                                                     | `namespace/project>`          |                                         |                                |
+| issue                                                                       | ``#123``                      | `namespace/project#123`                 | `project#123`                  |
+| merge request                                                               | `!123`                        | `namespace/project!123`                 | `project!123`                  |
+| snippet                                                                     | `$123`                        | `namespace/project$123`                 | `project$123`                  |
+| [epic](group/epics/index.md)                                                | `&123`                        | `group1/subgroup&123`                   |                                |
+| [vulnerability](application_security/vulnerabilities/index.md) <sup>1</sup> | `[vulnerability:123]`         | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`  |
+| feature flag                                                                | `[feature_flag:123]`          | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`   |
+| label by ID                                                                 | `~123`                        | `namespace/project~123`                 | `project~123`                  |
+| one-word label by name                                                      | `~bug`                        | `namespace/project~bug`                 | `project~bug`                  |
+| multi-word label by name                                                    | `~"feature request"`          | `namespace/project~"feature request"`   | `project~"feature request"`    |
+| scoped label by name                                                        | `~"priority::high"`           | `namespace/project~"priority::high"`    | `project~"priority::high"`     |
+| project milestone by ID                                                     | `%123`                        | `namespace/project%123`                 | `project%123`                  |
+| one-word milestone by name                                                  | `%v1.23`                      | `namespace/project%v1.23`               | `project%v1.23`                |
+| multi-word milestone by name                                                | `%"release candidate"`        | `namespace/project%"release candidate"` | `project%"release candidate"`  |
+| specific commit                                                             | `9ba12248`                    | `namespace/project@9ba12248`            | `project@9ba12248`             |
+| commit range comparison                                                     | `9ba12248...b19a04f5`         | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`  |
+| repository file references                                                  | `[README](doc/README.md)`     |                                         |                                |
+| repository file line references                                             | `[README](doc/README.md#L13)` |                                         |                                |
+| [alert](../operations/incident_management/alerts.md)                        | `^alert#123`                  | `namespace/project^alert#123`           | `project^alert#123`            |
+| contact                                                                     | `[contact:test@example.com]`  |                                         |                                |
 
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222483) in GitLab 13.7.
 
@@ -1486,7 +1486,7 @@ but they do not render properly on `docs.gitlab.com`:
 
 #### Copy from spreadsheet and paste in Markdown
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27205) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27205) in GitLab 12.7.
 
 If you're working in spreadsheet software (for example, Microsoft Excel, Google
 Sheets, or Apple Numbers), GitLab creates a Markdown table when you copy-and-paste

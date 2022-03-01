@@ -1,7 +1,7 @@
 <script>
 import { GlSkeletonLoading } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import getRunnerJobsQuery from '../graphql/get_runner_jobs.query.graphql';
+import runnerJobsQuery from '../graphql/details/runner_jobs.query.graphql';
 import { I18N_FETCH_ERROR, I18N_NO_JOBS_FOUND, RUNNER_DETAILS_JOBS_PAGE_SIZE } from '../constants';
 import { captureException } from '../sentry_utils';
 import { getPaginationVariables } from '../utils';
@@ -34,7 +34,7 @@ export default {
   },
   apollo: {
     jobs: {
-      query: getRunnerJobsQuery,
+      query: runnerJobsQuery,
       variables() {
         return this.variables;
       },

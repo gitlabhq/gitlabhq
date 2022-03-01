@@ -262,17 +262,7 @@ RSpec.describe Project, factory_default: :keep do
           end
         end
 
-        context 'sync-ing traversal_ids in before_commit callback' do
-          it_behaves_like 'creates project namespace'
-        end
-
-        context 'sync-ing traversal_ids in after_create callback' do
-          before do
-            stub_feature_flags(sync_traversal_ids_before_commit: false)
-          end
-
-          it_behaves_like 'creates project namespace'
-        end
+        it_behaves_like 'creates project namespace'
       end
     end
 

@@ -83,17 +83,17 @@ export default {
   i18n: {
     sectionTitle: s__('JiraService|View Jira issues in GitLab'),
     sectionDescription: s__(
-      'JiraService|Work on Jira issues without leaving GitLab. Adds a Jira menu to access your list of Jira issues and view any issue as read-only.',
+      'JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues.',
     ),
     enableCheckboxLabel: s__('JiraService|Enable Jira issues'),
     enableCheckboxHelp: s__(
-      'JiraService|Warning: All GitLab users that have access to this GitLab project are able to view all issues from the Jira project specified below.',
+      'JiraService|Warning: All GitLab users with access to this GitLab project can view all issues from the Jira project you select.',
     ),
     projectKeyLabel: s__('JiraService|Jira project key'),
     projectKeyPlaceholder: s__('JiraService|For example, AB'),
     requiredFieldFeedback: __('This field is required.'),
     issueTrackerConflictWarning: s__(
-      'JiraService|Displaying Jira issues while leaving the GitLab issue functionality enabled might be confusing. Consider %{linkStart}disabling GitLab issues%{linkEnd} if they won’t otherwise be used.',
+      'JiraService|Displaying Jira issues while leaving GitLab issues also enabled might be confusing. Consider %{linkStart}disabling GitLab issues%{linkEnd} if they won’t otherwise be used.',
     ),
   },
 };

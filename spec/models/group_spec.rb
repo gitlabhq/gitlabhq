@@ -390,26 +390,8 @@ RSpec.describe Group do
         let!(:old_parent) { create(:group, parent: root) }
         let!(:new_parent) { create(:group, parent: root) }
 
-        context 'with FOR UPDATE lock' do
-          before do
-            stub_feature_flags(for_no_key_update_lock: false)
-            subject
-            reload_models(old_parent, new_parent, group)
-          end
-
-          it 'updates traversal_ids' do
-            expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
-          end
-
-          it_behaves_like 'hierarchy with traversal_ids'
-          it_behaves_like 'locked row', 'FOR UPDATE' do
-            let(:row) { root }
-          end
-        end
-
         context 'with FOR NO KEY UPDATE lock' do
           before do
-            stub_feature_flags(for_no_key_update_lock: true)
             subject
             reload_models(old_parent, new_parent, group)
           end
@@ -419,7 +401,7 @@ RSpec.describe Group do
           end
 
           it_behaves_like 'hierarchy with traversal_ids'
-          it_behaves_like 'locked row', 'FOR NO KEY UPDATE' do
+          it_behaves_like 'locked row' do
             let(:row) { root }
           end
         end

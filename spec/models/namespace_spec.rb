@@ -436,17 +436,7 @@ RSpec.describe Namespace do
       it { expect(namespace.traversal_ids).to eq [namespace.id] }
     end
 
-    context 'with before_commit callback' do
-      it_behaves_like 'default traversal_ids'
-    end
-
-    context 'with after_create callback' do
-      before do
-        stub_feature_flags(sync_traversal_ids_before_commit: false)
-      end
-
-      it_behaves_like 'default traversal_ids'
-    end
+    it_behaves_like 'default traversal_ids'
   end
 
   describe "after_commit :expire_child_caches" do

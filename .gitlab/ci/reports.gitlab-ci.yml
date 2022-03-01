@@ -121,6 +121,11 @@ yarn-audit-dependency_scanning:
     - cd .. && tar -I "gzip --best" -cf gitlab.tgz gitlab/
   script:
     - DEBUG=* node /usr/src/app/cli.js analyze --format gitlab --manager ${PACKAGE_MANAGER} gitlab.tgz | tee ${CI_PROJECT_DIR}/gl-dependency-scanning-report.json
+  after_script:
+    - mkdir ~/.aws
+    - '[[ -z "${AWS_SIEM_REPORT_INGESTION_CREDENTIALS_FILE}" ]] || mv "${AWS_SIEM_REPORT_INGESTION_CREDENTIALS_FILE}" ~/.aws/credentials'
+    - npm install --no-save --ignore-scripts @aws-sdk/client-s3@3.49.0
+    - scripts/ingest-reports-to-siem
   artifacts:
     paths:
       - gl-dependency-scanning-report.json

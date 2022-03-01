@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Container vulnerability scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8 [with a flag](../../../administration/feature_flags.md) named `cluster_vulnerabilities`. Enabled by default.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
 
 To view cluster vulnerabilities, you can view the [vulnerability report](../../application_security/vulnerabilities/index.md).
 You can also configure your agent so the vulnerabilities are displayed with other agent information in GitLab.

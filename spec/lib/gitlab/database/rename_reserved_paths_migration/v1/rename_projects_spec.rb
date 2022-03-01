@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProject
 
     it 'invalidates the markdown cache of related projects' do
       expect(subject).to receive(:remove_cached_html_for_projects)
-                           .with(projects.map(&:id))
+                           .with(a_collection_containing_exactly(*projects.map(&:id)))
 
       subject.rename_projects
     end

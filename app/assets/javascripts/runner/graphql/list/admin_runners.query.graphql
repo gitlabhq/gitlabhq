@@ -1,4 +1,4 @@
-#import "~/runner/graphql/runner_node.fragment.graphql"
+#import "~/runner/graphql/list/list_item.fragment.graphql"
 #import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
 
 query getRunners(
@@ -24,7 +24,7 @@ query getRunners(
     sort: $sort
   ) {
     nodes {
-      ...RunnerNode
+      ...ListItem
       adminUrl
       editAdminUrl
     }

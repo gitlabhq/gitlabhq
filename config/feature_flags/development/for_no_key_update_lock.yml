@@ -1,8 +1,0 @@
----
-name: for_no_key_update_lock
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81239
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353619
-milestone: '14.9'
-type: development
-group: group::workspaces
-default_enabled: false

@@ -28,61 +28,23 @@ RSpec.describe ApplicationExperiment, :experiment do
   end
 
   describe "#publish" do
-    let(:should_track) { true }
-
-    before do
-      allow(application_experiment).to receive(:should_track?).and_return(should_track)
-    end
-
     it "tracks the assignment", :snowplow do
+      expect(application_experiment).to receive(:track).with(:assignment)
+
+      application_experiment.publish
+    end
+
+    it "adds to the published experiments" do
+      # These are surfaced in the client layer by rendering them in the
+      # _published_experiments.html.haml partial.
       application_experiment.publish
 
-      expect_snowplow_event(
-        category: 'namespaced/stub',
-        action: 'assignment',
-        context: [{ schema: anything, data: anything }]
+      expect(ApplicationExperiment.published_experiments['namespaced/stub']).to include(
+        experiment: 'namespaced/stub',
+        excluded: false,
+        key: anything,
+        variant: 'control'
       )
-    end
-
-    it "publishes to the client" do
-      expect(application_experiment).to receive(:publish_to_client)
-
-      application_experiment.publish
-    end
-
-    context 'when we should not track' do
-      let(:should_track) { false }
-
-      it 'does not track an event to Snowplow', :snowplow do
-        application_experiment.publish
-
-        expect_no_snowplow_event
-      end
-    end
-
-    describe "#publish_to_client" do
-      it "adds the data into Gon" do
-        signature = { key: '86208ac54ca798e11f127e8b23ec396a', variant: 'control' }
-        expect(Gon).to receive(:push).with({ experiment: { 'namespaced/stub' => hash_including(signature) } }, true)
-
-        application_experiment.publish_to_client
-      end
-
-      it "handles when Gon raises exceptions (like when it can't be pushed into)" do
-        expect(Gon).to receive(:push).and_raise(NoMethodError)
-
-        expect { application_experiment.publish_to_client }.not_to raise_error
-      end
-
-      context 'when we should not track' do
-        let(:should_track) { false }
-
-        it 'returns early' do
-          expect(Gon).not_to receive(:push)
-
-          application_experiment.publish_to_client
-        end
-      end
     end
 
     describe '#publish_to_database' do

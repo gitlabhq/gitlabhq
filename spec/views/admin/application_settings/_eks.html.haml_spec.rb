@@ -16,8 +16,8 @@ RSpec.describe 'admin/application_settings/_eks' do
   shared_examples 'EKS secret access key input' do
     it 'renders an empty password field' do
       render
-      expect(rendered).to have_field('Secret access key', type: 'password')
-      expect(page.find_field('Secret access key').value).to be_blank
+      expect(rendered).to have_field('AWS secret access key (Optional)', type: 'password')
+      expect(page.find_field('AWS secret access key (Optional)').value).to be_blank
     end
   end
 

@@ -135,6 +135,14 @@ export default {
       const canReopen = this.isClosed && this.canReopenIssue;
       return canClose || canReopen;
     },
+    hasDesktopDropdown() {
+      return (
+        this.canCreateIssue || this.canPromoteToEpic || !this.isIssueAuthor || this.canReportSpam
+      );
+    },
+    hasMobileDropdown() {
+      return this.hasDesktopDropdown || this.showToggleIssueStateButton;
+    },
   },
   created() {
     eventHub.$on('toggle.issuable.state', this.toggleIssueState);
@@ -223,10 +231,12 @@ export default {
 <template>
   <div class="detail-page-header-actions gl-display-flex">
     <gl-dropdown
+      v-if="hasMobileDropdown"
       class="gl-sm-display-none! w-100"
       block
       :text="dropdownText"
       data-qa-selector="issue_actions_dropdown"
+      data-testid="mobile-dropdown"
       :loading="isToggleStateButtonLoading"
     >
       <gl-dropdown-item
@@ -276,11 +286,13 @@ export default {
     </gl-button>
 
     <gl-dropdown
+      v-if="hasDesktopDropdown"
       class="gl-display-none gl-sm-display-inline-flex! gl-ml-3"
       icon="ellipsis_v"
       category="tertiary"
       :text="dropdownText"
       :text-sr-only="true"
+      data-testid="desktop-dropdown"
       no-caret
       right
     >

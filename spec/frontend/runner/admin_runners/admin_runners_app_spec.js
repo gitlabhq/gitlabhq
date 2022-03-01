@@ -35,8 +35,8 @@ import {
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
-import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
-import getRunnersCountQuery from '~/runner/graphql/get_runners_count.query.graphql';
+import adminRunnersQuery from '~/runner/graphql/list/admin_runners.query.graphql';
+import adminRunnersCountQuery from '~/runner/graphql/list/admin_runners_count.query.graphql';
 import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
@@ -71,8 +71,8 @@ describe('AdminRunnersApp', () => {
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     const handlers = [
-      [getRunnersQuery, mockRunnersQuery],
-      [getRunnersCountQuery, mockRunnersCountQuery],
+      [adminRunnersQuery, mockRunnersQuery],
+      [adminRunnersCountQuery, mockRunnersCountQuery],
     ];
 
     wrapper = mountFn(AdminRunnersApp, {

@@ -24,8 +24,8 @@ import {
   STATUS_OFFLINE,
   STATUS_STALE,
 } from '../constants';
-import getGroupRunnersQuery from '../graphql/get_group_runners.query.graphql';
-import getGroupRunnersCountQuery from '../graphql/get_group_runners_count.query.graphql';
+import groupRunnersQuery from '../graphql/list/group_runners.query.graphql';
+import groupRunnersCountQuery from '../graphql/list/group_runners_count.query.graphql';
 import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
@@ -34,7 +34,7 @@ import {
 import { captureException } from '../sentry_utils';
 
 const runnersCountSmartQuery = {
-  query: getGroupRunnersCountQuery,
+  query: groupRunnersCountQuery,
   fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
   update(data) {
     return data?.group?.runners?.count;
@@ -84,7 +84,7 @@ export default {
   },
   apollo: {
     runners: {
-      query: getGroupRunnersQuery,
+      query: groupRunnersQuery,
       // Runners can be updated by users directly in this list.
       // A "cache and network" policy prevents outdated filtered
       // results.

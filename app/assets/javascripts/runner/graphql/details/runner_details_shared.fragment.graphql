@@ -1,4 +1,5 @@
 fragment RunnerDetailsShared on CiRunner {
+  __typename
   id
   runnerType
   active
@@ -22,7 +23,7 @@ fragment RunnerDetailsShared on CiRunner {
   groups {
     # Only a single group can be loaded here, while projects
     # are loaded separately using the query with pagination
-    # parameters `get_runner_projects.query.graphql`.
+    # parameters `runner_projects.query.graphql`.
     nodes {
       id
       avatarUrl

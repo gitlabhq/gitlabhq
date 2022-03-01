@@ -70,11 +70,6 @@ describe('RevokeButton', () => {
         expect(findRevokeButton().exists()).toBe(true);
       });
 
-      it('passes the buttonClass to the button', () => {
-        wrapper = createComponent({ buttonClass: 'my-revoke-button' });
-        expect(findRevokeButton().classes()).toContain('my-revoke-button');
-      });
-
       it('opens the modal', () => {
         findRevokeButton().trigger('click');
         expect(glModalDirective).toHaveBeenCalledWith(wrapper.vm.modalId);

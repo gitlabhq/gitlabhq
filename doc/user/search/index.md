@@ -34,7 +34,8 @@ in the search field in the upper right corner:
 
 > - Filtering by epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab 12.9.
 > - Filtering by child epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab 13.0.
-> - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6. Moved from GitLab Ultimate to Premium in 13.9.
+> - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
+> - Filtering by iterations was moved from GitLab Ultimate to GitLab Premium in 13.9.
 > - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
 
 Follow these steps to filter the **Issues** and **Merge requests** list pages in projects and
@@ -127,14 +128,14 @@ the dropdown list) **Approved-By** and select the user.
 
 ![Filter MRs by approved by](img/filter_approved_by_merge_requests_v14_6.png)
 
-### Filtering merge requests by reviewer **(FREE)**
+### Filtering merge requests by reviewer
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
 
 To filter review requested merge requests for a specific individual, you can type (or select from
 the dropdown list) **Reviewer** and select the user.
 
-### Filtering merge requests by environment or deployment date **(FREE)**
+### Filtering merge requests by environment or deployment date
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
 
@@ -307,7 +308,7 @@ GitLab instance.
 ## Search settings
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8 [with a flag](../../administration/feature_flags.md) named `search_settings_in_page`. Disabled by default.
-> - [Added to Group, Administrator, and User settings](https://gitlab.com/groups/gitlab-org/-/epics/4842) in GitLab 13.9.
+> - [Added](https://gitlab.com/groups/gitlab-org/-/epics/4842) to Group, Administrator, and User settings in GitLab 13.9.
 > - [Feature flag `search_settings_in_page` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
 

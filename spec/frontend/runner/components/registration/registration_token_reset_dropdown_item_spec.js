@@ -8,7 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import RegistrationTokenResetDropdownItem from '~/runner/components/registration/registration_token_reset_dropdown_item.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
-import runnersRegistrationTokenResetMutation from '~/runner/graphql/runners_registration_token_reset.mutation.graphql';
+import runnersRegistrationTokenResetMutation from '~/runner/graphql/list/runners_registration_token_reset.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 

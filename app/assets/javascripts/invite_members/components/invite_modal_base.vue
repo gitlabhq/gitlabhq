@@ -264,7 +264,7 @@ export default {
       <gl-button
         :disabled="submitDisabled"
         :loading="isLoading"
-        variant="success"
+        variant="confirm"
         data-qa-selector="invite_button"
         data-testid="invite-button"
         @click="submit"

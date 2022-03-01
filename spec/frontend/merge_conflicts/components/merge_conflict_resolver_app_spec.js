@@ -1,7 +1,7 @@
 import { GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { shallowMountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import InlineConflictLines from '~/merge_conflicts/components/inline_conflict_lines.vue';
 import ParallelConflictLines from '~/merge_conflicts/components/parallel_conflict_lines.vue';
 import component from '~/merge_conflicts/merge_conflict_resolver_app.vue';
@@ -18,7 +18,7 @@ describe('Merge Conflict Resolver App', () => {
   const decoratedMockFiles = decorateFiles(conflictsMock.files);
 
   const mountComponent = () => {
-    wrapper = shallowMount(component, {
+    wrapper = shallowMountExtended(component, {
       store,
       stubs: { GlSprintf },
       provide() {
@@ -41,15 +41,17 @@ describe('Merge Conflict Resolver App', () => {
     wrapper.destroy();
   });
 
-  const findConflictsCount = () => wrapper.find('[data-testid="conflicts-count"]');
-  const findFiles = () => wrapper.findAll('[data-testid="files"]');
-  const findFileHeader = (w = wrapper) => w.find('[data-testid="file-name"]');
-  const findFileInteractiveButton = (w = wrapper) => w.find('[data-testid="interactive-button"]');
-  const findFileInlineButton = (w = wrapper) => w.find('[data-testid="inline-button"]');
-  const findSideBySideButton = () => wrapper.find('[data-testid="side-by-side"]');
+  const findLoadingSpinner = () => wrapper.findByTestId('loading-spinner');
+  const findConflictsCount = () => wrapper.findByTestId('conflicts-count');
+  const findFiles = () => wrapper.findAllByTestId('files');
+  const findFileHeader = (w = wrapper) => extendedWrapper(w).findByTestId('file-name');
+  const findFileInteractiveButton = (w = wrapper) =>
+    extendedWrapper(w).findByTestId('interactive-button');
+  const findFileInlineButton = (w = wrapper) => extendedWrapper(w).findByTestId('inline-button');
+  const findSideBySideButton = () => wrapper.findByTestId('side-by-side');
   const findInlineConflictLines = (w = wrapper) => w.find(InlineConflictLines);
   const findParallelConflictLines = (w = wrapper) => w.find(ParallelConflictLines);
-  const findCommitMessageTextarea = () => wrapper.find('[data-testid="commit-message"]');
+  const findCommitMessageTextarea = () => wrapper.findByTestId('commit-message');
 
   it('shows the amount of conflicts', () => {
     mountComponent();
@@ -58,6 +60,19 @@ describe('Merge Conflict Resolver App', () => {
 
     expect(title.exists()).toBe(true);
     expect(title.text().trim()).toBe('Showing 3 conflicts between test-conflicts and main');
+  });
+
+  it('shows a loading spinner while loading', () => {
+    store.commit('SET_LOADING_STATE', true);
+    mountComponent();
+
+    expect(findLoadingSpinner().exists()).toBe(true);
+  });
+
+  it('does not show a loading spinner once loaded', () => {
+    mountComponent();
+
+    expect(findLoadingSpinner().exists()).toBe(false);
   });
 
   describe('files', () => {

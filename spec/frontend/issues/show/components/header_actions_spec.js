@@ -1,5 +1,5 @@
-import { GlButton, GlDropdown, GlDropdownItem, GlLink, GlModal } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
+import { GlButton, GlDropdownItem, GlLink, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -65,12 +65,17 @@ describe('HeaderActions component', () => {
     },
   };
 
-  const findToggleIssueStateButton = () => wrapper.findComponent(GlButton);
-  const findDropdownAt = (index) => wrapper.findAllComponents(GlDropdown).at(index);
-  const findMobileDropdownItems = () => findDropdownAt(0).findAllComponents(GlDropdownItem);
-  const findDesktopDropdownItems = () => findDropdownAt(1).findAllComponents(GlDropdownItem);
-  const findModal = () => wrapper.findComponent(GlModal);
-  const findModalLinkAt = (index) => findModal().findAllComponents(GlLink).at(index);
+  const findToggleIssueStateButton = () => wrapper.find(GlButton);
+
+  const findDropdownBy = (dataTestId) => wrapper.find(`[data-testid="${dataTestId}"]`);
+  const findMobileDropdown = () => findDropdownBy('mobile-dropdown');
+  const findDesktopDropdown = () => findDropdownBy('desktop-dropdown');
+  const findMobileDropdownItems = () => findMobileDropdown().findAll(GlDropdownItem);
+  const findDesktopDropdownItems = () => findDesktopDropdown().findAll(GlDropdownItem);
+
+  const findModal = () => wrapper.find(GlModal);
+
+  const findModalLinkAt = (index) => findModal().findAll(GlLink).at(index);
 
   const mountComponent = ({
     props = {},
@@ -161,10 +166,10 @@ describe('HeaderActions component', () => {
     });
 
     describe.each`
-      description           | isCloseIssueItemVisible | findDropdownItems
-      ${'mobile dropdown'}  | ${true}                 | ${findMobileDropdownItems}
-      ${'desktop dropdown'} | ${false}                | ${findDesktopDropdownItems}
-    `('$description', ({ isCloseIssueItemVisible, findDropdownItems }) => {
+      description           | isCloseIssueItemVisible | findDropdownItems           | findDropdown
+      ${'mobile dropdown'}  | ${true}                 | ${findMobileDropdownItems}  | ${findMobileDropdown}
+      ${'desktop dropdown'} | ${false}                | ${findDesktopDropdownItems} | ${findDesktopDropdown}
+    `('$description', ({ isCloseIssueItemVisible, findDropdownItems, findDropdown }) => {
       describe.each`
         description                               | itemText                 | isItemVisible              | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam | canPromoteToEpic | canDestroyIssue
         ${`when user can update ${issueType}`}    | ${`Close ${issueType}`}  | ${isCloseIssueItemVisible} | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
@@ -214,6 +219,24 @@ describe('HeaderActions component', () => {
           });
         },
       );
+
+      describe(`when user can update but not create ${issueType}`, () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            props: {
+              canUpdateIssue: true,
+              canCreateIssue: false,
+              isIssueAuthor: true,
+              issueType,
+              canReportSpam: false,
+              canPromoteToEpic: false,
+            },
+          });
+        });
+        it(`${isCloseIssueItemVisible ? 'shows' : 'hides'} the dropdown button`, () => {
+          expect(findDropdown().exists()).toBe(isCloseIssueItemVisible);
+        });
+      });
     });
   });
 

@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
-import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
+import runnerDeleteMutation from '~/runner/graphql/shared/runner_delete.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/runner/sentry_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';

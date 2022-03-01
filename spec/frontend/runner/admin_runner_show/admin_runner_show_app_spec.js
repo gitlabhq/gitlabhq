@@ -9,7 +9,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
 import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
-import getRunnerQuery from '~/runner/graphql/get_runner.query.graphql';
+import runnerQuery from '~/runner/graphql/details/runner.query.graphql';
 import AdminRunnerShowApp from '~/runner/admin_runner_show/admin_runner_show_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 
@@ -42,7 +42,7 @@ describe('AdminRunnerShowApp', () => {
 
   const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(AdminRunnerShowApp, {
-      apolloProvider: createMockApollo([[getRunnerQuery, mockRunnerQuery]]),
+      apolloProvider: createMockApollo([[runnerQuery, mockRunnerQuery]]),
       propsData: {
         runnerId: mockRunnerId,
         ...props,

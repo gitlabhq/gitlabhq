@@ -7,7 +7,7 @@ import { createAlert } from '~/flash';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
-import getRunnerQuery from '~/runner/graphql/get_runner.query.graphql';
+import runnerQuery from '~/runner/graphql/details/runner.query.graphql';
 import AdminRunnerEditApp from '~//runner/admin_runner_edit/admin_runner_edit_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 
@@ -29,7 +29,7 @@ describe('AdminRunnerEditApp', () => {
 
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(AdminRunnerEditApp, {
-      apolloProvider: createMockApollo([[getRunnerQuery, mockRunnerQuery]]),
+      apolloProvider: createMockApollo([[runnerQuery, mockRunnerQuery]]),
       propsData: {
         runnerId: mockRunnerId,
         ...props,

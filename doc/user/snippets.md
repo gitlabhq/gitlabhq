@@ -37,8 +37,7 @@ You can create snippets in multiple ways, depending on whether you want to creat
      **New snippet**, or:
      - *If you're on a project's page,* select the plus icon (**{plus-square-o}**)
        in the top navigation bar, and then select **New snippet** from the
-       **GitLab** (GitLab SaaS) or **Your Instance** (self-managed) section
-       of the same dropdown list.
+       **GitLab** section of the same dropdown list.
      - *For all other pages,* select the plus icon (**{plus-square-o}**)
        in the top navigation bar, then select **New snippet** from the dropdown list.
      - If you installed the [GitLab Workflow VS Code extension](project/repository/vscode.md),
@@ -153,8 +152,7 @@ To delete a file from your snippet through the GitLab UI:
 
 1. Go to your snippet in the GitLab UI.
 1. Select **Edit** in the top right corner.
-1. Select **Delete file** alongside the filename of each file
-you wish to delete.
+1. Select **Delete file** alongside the filename of each file you wish to delete.
 1. Select **Save changes**.
 
 ## Clone snippets

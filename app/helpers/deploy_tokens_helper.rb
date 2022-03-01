@@ -16,4 +16,11 @@ module DeployTokensHelper
     Gitlab.config.packages.enabled &&
       can?(current_user, :read_package, group_or_project)
   end
+
+  def deploy_token_revoke_button_data(token:, group_or_project:)
+    {
+      token: token.to_json(only: [:id, :name]),
+      revoke_path: revoke_deploy_token_path(group_or_project, token)
+    }
+  end
 end

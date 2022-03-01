@@ -1,4 +1,4 @@
-fragment RunnerNode on CiRunner {
+fragment ListItem on CiRunner {
   __typename
   id
   description

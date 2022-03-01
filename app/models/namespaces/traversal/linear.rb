@@ -44,20 +44,13 @@ module Namespaces
       included do
         before_update :lock_both_roots, if: -> { sync_traversal_ids? && parent_id_changed? }
         after_update :sync_traversal_ids, if: -> { sync_traversal_ids? && saved_change_to_parent_id? }
-        # sync traversal_ids on namespace create, which can happen quite early within a transaction, thus keeping the lock on root namespace record
-        # for a relatively long time, e.g. creating the project namespace when a project is being created.
-        after_create :sync_traversal_ids, if: -> { sync_traversal_ids? && !sync_traversal_ids_before_commit? }
         # This uses rails internal before_commit API to sync traversal_ids on namespace create, right before transaction is committed.
         # This helps reduce the time during which the root namespace record is locked to ensure updated traversal_ids are valid
-        before_commit :sync_traversal_ids, on: [:create], if: -> { sync_traversal_ids? && sync_traversal_ids_before_commit? }
+        before_commit :sync_traversal_ids, on: [:create], if: -> { sync_traversal_ids? }
       end
 
       def sync_traversal_ids?
         Feature.enabled?(:sync_traversal_ids, root_ancestor, default_enabled: :yaml)
-      end
-
-      def sync_traversal_ids_before_commit?
-        Feature.enabled?(:sync_traversal_ids_before_commit, root_ancestor, default_enabled: :yaml)
       end
 
       def use_traversal_ids?

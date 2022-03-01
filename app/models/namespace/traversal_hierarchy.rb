@@ -40,12 +40,7 @@ class Namespace
       SQL
 
       Namespace.transaction do
-        if Feature.enabled?(:for_no_key_update_lock, default_enabled: :yaml)
-          @root.lock!("FOR NO KEY UPDATE")
-        else
-          @root.lock!
-        end
-
+        @root.lock!("FOR NO KEY UPDATE")
         Namespace.connection.exec_query(sql)
       end
     rescue ActiveRecord::Deadlocked

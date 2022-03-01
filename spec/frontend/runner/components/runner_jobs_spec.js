@@ -11,7 +11,7 @@ import RunnerPagination from '~/runner/components/runner_pagination.vue';
 import { captureException } from '~/runner/sentry_utils';
 import { I18N_NO_JOBS_FOUND, RUNNER_DETAILS_JOBS_PAGE_SIZE } from '~/runner/constants';
 
-import getRunnerJobsQuery from '~/runner/graphql/get_runner_jobs.query.graphql';
+import runnerJobsQuery from '~/runner/graphql/details/runner_jobs.query.graphql';
 
 import { runnerData, runnerJobsData } from '../mock_data';
 
@@ -34,7 +34,7 @@ describe('RunnerJobs', () => {
 
   const createComponent = ({ mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerJobs, {
-      apolloProvider: createMockApollo([[getRunnerJobsQuery, mockRunnerJobsQuery]]),
+      apolloProvider: createMockApollo([[runnerJobsQuery, mockRunnerJobsQuery]]),
       propsData: {
         runner: mockRunner,
       },

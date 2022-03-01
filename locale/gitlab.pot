@@ -1773,13 +1773,13 @@ msgstr ""
 msgid "AWS Access Key"
 msgstr ""
 
-msgid "AWS Access Key. Only required if not using role instance credentials"
-msgstr ""
-
 msgid "AWS Secret Access Key"
 msgstr ""
 
-msgid "AWS Secret Access Key. Only required if not using role instance credentials"
+msgid "AWS access key ID (Optional)"
+msgstr ""
+
+msgid "AWS secret access key (Optional)"
 msgstr ""
 
 msgid "AWS service error: %{error}"
@@ -1837,9 +1837,6 @@ msgid "Access forbidden. Check your access level."
 msgstr ""
 
 msgid "Access granted"
-msgstr ""
-
-msgid "Access key ID"
 msgstr ""
 
 msgid "Access requests"
@@ -19864,9 +19861,6 @@ msgstr ""
 msgid "Integrations|Use default settings"
 msgstr ""
 
-msgid "Integrations|When you mention a Jira issue in a commit or merge request, GitLab creates a remote link and comment (if enabled)."
-msgstr ""
-
 msgid "Integrations|You can now close this window and return to the GitLab for Jira application."
 msgstr ""
 
@@ -20830,13 +20824,13 @@ msgstr ""
 msgid "JiraService|Define the type of Jira issue to create from a vulnerability."
 msgstr ""
 
-msgid "JiraService|Displaying Jira issues while leaving the GitLab issue functionality enabled might be confusing. Consider %{linkStart}disabling GitLab issues%{linkEnd} if they won’t otherwise be used."
+msgid "JiraService|Displaying Jira issues while leaving GitLab issues also enabled might be confusing. Consider %{linkStart}disabling GitLab issues%{linkEnd} if they won’t otherwise be used."
+msgstr ""
+
+msgid "JiraService|Enable Jira issue creation from vulnerabilities"
 msgstr ""
 
 msgid "JiraService|Enable Jira issues"
-msgstr ""
-
-msgid "JiraService|Enable Jira issues creation from vulnerabilities"
 msgstr ""
 
 msgid "JiraService|Enable Jira transitions"
@@ -20953,16 +20947,19 @@ msgstr ""
 msgid "JiraService|View Jira issues in GitLab"
 msgstr ""
 
-msgid "JiraService|Warning: All GitLab users that have access to this GitLab project are able to view all issues from the Jira project specified below."
+msgid "JiraService|Warning: All GitLab users with access to this GitLab project can view all issues from the Jira project you select."
 msgstr ""
 
 msgid "JiraService|Web URL"
 msgstr ""
 
-msgid "JiraService|Work on Jira issues without leaving GitLab. Adds a Jira menu to access your list of Jira issues and view any issue as read-only."
+msgid "JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created."
 msgstr ""
 
-msgid "JiraService|You must configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}."
+msgid "JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues."
+msgstr ""
+
+msgid "JiraService|You must configure Jira before enabling this integration. %{jira_doc_link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Job"
@@ -25609,6 +25606,9 @@ msgid "Only projects created under a Ultimate license are available in Security 
 msgstr ""
 
 msgid "Only reCAPTCHA v2 is supported:"
+msgstr ""
+
+msgid "Only required if not using role instance credentials."
 msgstr ""
 
 msgid "Only use lowercase letters, numbers, and underscores."
@@ -32290,9 +32290,6 @@ msgstr ""
 msgid "Secret Detection"
 msgstr ""
 
-msgid "Secret access key"
-msgstr ""
-
 msgid "Secret token"
 msgstr ""
 
@@ -32491,9 +32488,6 @@ msgstr ""
 msgid "SecurityOrchestration|.yaml preview"
 msgstr ""
 
-msgid "SecurityOrchestration|Action"
-msgstr ""
-
 msgid "SecurityOrchestration|Actions"
 msgstr ""
 
@@ -32536,9 +32530,6 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
-msgid "SecurityOrchestration|Executes a %{scanType} scan"
-msgstr ""
-
 msgid "SecurityOrchestration|If you are using Auto DevOps, your %{monospacedStart}auto-deploy-values.yaml%{monospacedEnd} file will not be updated if you change a policy in this section. Auto DevOps users should make changes by following the %{linkStart}Container Network Policy documentation%{linkEnd}."
 msgstr ""
 
@@ -32552,6 +32543,9 @@ msgid "SecurityOrchestration|Network"
 msgstr ""
 
 msgid "SecurityOrchestration|New policy"
+msgstr ""
+
+msgid "SecurityOrchestration|No actions defined - policy will not run."
 msgstr ""
 
 msgid "SecurityOrchestration|No description"
@@ -32596,10 +32590,13 @@ msgstr ""
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers} if any of the following occur:"
 msgstr ""
 
-msgid "SecurityOrchestration|Rule"
+msgid "SecurityOrchestration|Rules"
 msgstr ""
 
-msgid "SecurityOrchestration|Rules"
+msgid "SecurityOrchestration|Runs %{actions} and %{lastAction} scans"
+msgstr ""
+
+msgid "SecurityOrchestration|Runs a %{action} scan"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan Execution"
@@ -34688,10 +34685,10 @@ msgstr ""
 msgid "SourcegraphAdmin|Enable code intelligence powered by %{link_start}Sourcegraph%{link_end} on your GitLab instance's code views and merge requests."
 msgstr ""
 
-msgid "SourcegraphAdmin|If checked, only public projects will have code intelligence and communicate with Sourcegraph."
+msgid "SourcegraphAdmin|Learn more."
 msgstr ""
 
-msgid "SourcegraphAdmin|More information"
+msgid "SourcegraphAdmin|Only public projects have code intelligence enabled and communicate with Sourcegraph."
 msgstr ""
 
 msgid "SourcegraphAdmin|Save changes"
@@ -34700,7 +34697,7 @@ msgstr ""
 msgid "SourcegraphAdmin|Sourcegraph URL"
 msgstr ""
 
-msgid "SourcegraphAdmin|e.g. https://sourcegraph.example.com"
+msgid "SourcegraphAdmin|https://sourcegraph.example.com"
 msgstr ""
 
 msgid "SourcegraphPreferences|This feature is experimental and currently limited to certain projects."
