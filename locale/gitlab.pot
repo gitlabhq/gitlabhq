@@ -16705,7 +16705,7 @@ msgstr ""
 msgid "GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with sub-subdomains. This means that if your username/groupname contains a dot it will not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages will continue to work provided you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}"
+msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with subdomains of subdomains. If your namespace or groupname contains a dot, it does not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages work if you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "GitLabPages|With GitLab Pages you can host your static website directly from your GitLab repository. %{docs_link_start}Learn more.%{link_end}"
@@ -28487,6 +28487,9 @@ msgstr ""
 msgid "ProjectQualitySummary|Failure"
 msgstr ""
 
+msgid "ProjectQualitySummary|Get insight into the overall percentage of tests in your project that succeed, fail and are skipped."
+msgstr ""
+
 msgid "ProjectQualitySummary|Latest pipeline results"
 msgstr ""
 
@@ -28503,6 +28506,12 @@ msgid "ProjectQualitySummary|See full report"
 msgstr ""
 
 msgid "ProjectQualitySummary|See project Code Coverage Statistics"
+msgstr ""
+
+msgid "ProjectQualitySummary|Set up test runs"
+msgstr ""
+
+msgid "ProjectQualitySummary|Set up test runs (opens in a new tab)"
 msgstr ""
 
 msgid "ProjectQualitySummary|Skipped"

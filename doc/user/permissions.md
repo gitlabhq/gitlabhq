@@ -274,13 +274,13 @@ More details about the permissions for some project-level features follow.
 | Stop [environments](../ci/environments/index.md)                                  |            |         |          | ✓         | ✓          | ✓     |
 | View a job with [debug logging](../ci/variables/index.md#debug-logging)           |            |         |          | ✓         | ✓          | ✓     |
 | Use pipeline editor                                                               |            |         |          | ✓         | ✓          | ✓     |
+| Run [interactive web terminals](../ci/interactive_web_terminal/index.md)          |            |         |          | ✓         | ✓          | ✓     |
 | Add specific runners to project                                                   |            |         |          |           | ✓          | ✓     |
 | Clear runner caches manually                                                      |            |         |          |           | ✓          | ✓     |
 | Enable shared runners in project                                                  |            |         |          |           | ✓          | ✓     |
 | Manage CI/CD settings                                                             |            |         |          |           | ✓          | ✓     |
 | Manage job triggers                                                               |            |         |          |           | ✓          | ✓     |
 | Manage project-level CI/CD variables                                              |            |         |          |           | ✓          | ✓     |
-| Run [interactive web terminals](../ci/interactive_web_terminal/index.md)          |            |         |          |           | ✓          | ✓     |
 | Use [environment terminals](../ci/environments/index.md#web-terminals-deprecated) |            |         |          |           | ✓          | ✓     |
 | Delete pipelines                                                                  |            |         |          |           |            | ✓     |
 
@@ -431,8 +431,7 @@ The following table lists group permissions available for each role:
 
 <!-- markdownlint-disable MD029 -->
 
-1. Groups can be set to [allow either Owners or Owners and
-  Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)
+1. Groups can be set to allow either Owners, or Owners and users with the Maintainer role, to [create subgroups](group/subgroups/index.md#create-a-subgroup).
 2. Introduced in GitLab 12.2.
 3. Default project creation role can be changed at:
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
@@ -451,7 +450,7 @@ permission level from the parent group(s). This model allows access to
 nested groups if you have membership in one of its parents.
 
 To learn more, read through the documentation on
-[subgroups memberships](group/subgroups/index.md#membership).
+[subgroups memberships](group/subgroups/index.md#subgroup-membership).
 
 ## External users **(FREE SELF)**
 

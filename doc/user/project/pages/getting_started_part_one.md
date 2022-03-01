@@ -34,7 +34,7 @@ Pages domains are `*.gitlab.io`.
 | Project pages owned by a subgroup | `subgroup/projectname` | `http(s)://groupname.example.io/subgroup/projectname`|
 
 WARNING:
-There are some known [limitations](introduction.md#limitations)
+There are some known [limitations](introduction.md#subdomains-of-subdomains)
 regarding namespaces served under the general domain name and HTTPS.
 Make sure to read that section.
 

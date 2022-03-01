@@ -76,17 +76,21 @@ website.
 
 ![Remove pages](img/remove_pages.png)
 
-## Limitations
+## Subdomains of subdomains
 
-When using Pages under the general domain of a GitLab instance (`*.example.io`),
-you _cannot_ use HTTPS with sub-subdomains. That means that if your
-username or group name contains a dot, for example `foo.bar`, the domain
-`https://foo.bar.example.io` does _not_ work. This is a limitation of the
-[HTTP Over TLS protocol](https://tools.ietf.org/html/rfc2818#section-3.1).
-HTTP pages continue to work provided you don't redirect HTTP to HTTPS.
+When using Pages under the top-level domain of a GitLab instance (`*.example.io`), you can't use HTTPS with subdomains
+of subdomains. If your namespace or group name contains a dot (for example, `foo.bar`) the domain
+`https://foo.bar.example.io` does _not_ work.
 
-GitLab Pages [does **not** support group websites for subgroups](../../group/subgroups/index.md#limitations).
-You can only create the highest-level group website.
+This limitation is because of the [HTTP Over TLS protocol](https://tools.ietf.org/html/rfc2818#section-3.1). HTTP pages
+work as long as you don't redirect HTTP to HTTPS.
+
+## GitLab Pages and subgroups
+
+You must host your GitLab Pages website in a project. This project can belong to a [group](../../group/index.md) or
+[subgroup](../../group/subgroups/index.md). For
+[group websites](../../project/pages/getting_started_part_one.md#gitlab-pages-default-domain-names), the group must be
+at the top level and not a subgroup.
 
 ## Specific configuration options for Pages
 

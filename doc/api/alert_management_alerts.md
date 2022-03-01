@@ -106,3 +106,24 @@ Example response:
     "url_text": "Example website"
 }
 ```
+
+## Delete metric image
+
+```plaintext
+DELETE /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `alert_iid` | integer | yes      | The internal ID of a project's alert. |
+| `image_id` | integer | yes      | The ID of the image. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images/1"
+```
+
+Can return the following status codes:
+
+- `204 No Content`: if the image was deleted successfully.
+- `422 Unprocessable`: if the image could not be deleted.

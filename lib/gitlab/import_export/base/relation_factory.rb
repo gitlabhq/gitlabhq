@@ -300,7 +300,7 @@ module Gitlab
           return cache[table_name] if cache.has_key?(table_name)
 
           index_exists =
-            ActiveRecord::Base.connection.index_exists?(
+            relation_class.connection.index_exists?(
               relation_class.table_name,
               importable_foreign_key,
               unique: true)

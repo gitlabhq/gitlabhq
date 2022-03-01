@@ -224,6 +224,17 @@ You must be an administrator to manually add emails to users:
 
 The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and their activities over time.
 
+### Prevent a user from creating groups
+
+By default, users can create groups. To prevent a user from creating groups:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users** (`/admin/users`).
+1. Locate the user and select them.
+1. Select **Edit**.
+1. Clear the **Can create group** checkbox.
+1. Select **Save changes**.
+
 ### Administering Groups
 
 You can administer all groups in the GitLab instance from the Admin Area's Groups page.

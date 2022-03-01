@@ -20,7 +20,6 @@ Database/MultipleDatabases:
   - lib/gitlab/database.rb
   - lib/gitlab/gitlab_import/importer.rb
   - lib/gitlab/health_checks/db_check.rb
-  - lib/gitlab/import_export/base/relation_factory.rb
   - lib/gitlab/import_export/group/relation_tree_restorer.rb
   - lib/gitlab/legacy_github_import/importer.rb
   - lib/gitlab/seeder.rb

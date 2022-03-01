@@ -414,7 +414,10 @@ class Integration < ApplicationRecord
   end
 
   def api_field_names
-    fields.pluck(:name).grep_v(/password|token|key|title|description/)
+    fields
+      .reject { _1[:type] == 'password' }
+      .pluck(:name)
+      .grep_v(/password|token|key/)
   end
 
   def global_fields

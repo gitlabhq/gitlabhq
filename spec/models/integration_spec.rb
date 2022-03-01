@@ -732,14 +732,21 @@ RSpec.describe Integration do
             { name: 'password' },
             { name: 'password_field' },
             { name: 'some_safe_field' },
-            { name: 'safe_field' }
+            { name: 'safe_field' },
+            { name: 'url' },
+            { name: 'trojan_horse', type: 'password' },
+            { name: 'trojan_gift', type: 'gift' }
           ].shuffle
         end
       end
     end
 
     it 'filters out sensitive fields' do
-      expect(fake_integration.new).to have_attributes(api_field_names: match_array(%w[some_safe_field safe_field]))
+      safe_fields = %w[some_safe_field safe_field url trojan_gift]
+
+      expect(fake_integration.new).to have_attributes(
+        api_field_names: match_array(safe_fields)
+      )
     end
   end
 

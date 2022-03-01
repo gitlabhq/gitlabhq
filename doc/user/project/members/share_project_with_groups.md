@@ -15,7 +15,7 @@ Groups are used primarily to [create collections of projects](../../group/index.
 take advantage of the fact that groups define collections of _users_, namely the group
 members.
 
-## Sharing a project with a group of users
+## Share a project with a group of users
 
 NOTE:
 In GitLab 13.11, you can [replace this form with a modal window](#share-a-project-modal-window).
@@ -89,7 +89,15 @@ Feature.disable(:invite_members_group_modal)
 
 In the example above, the maximum access level of 'Developer' for members from 'Engineering' means that users with higher access levels in 'Engineering' ('Maintainer' or 'Owner') only have 'Developer' access to 'Project Acme'.
 
-## Sharing public project with private group
+### Share a project with a subgroup
+
+You can't share a project with a group that's an ancestor of a [subgroup](../../group/subgroups/index.md) the project is
+in. That means you can only share down the hierarchy. For example, `group/subgroup01/project`:
+
+- Can not be shared with `group`.
+- Can be shared with `group/subgroup02` or  `group/subgroup01/subgroup03`.
+
+## Share public project with private group
 
 When sharing a public project with a private group, owners and maintainers of the project see the name of the group in the `members` page. Owners also have the possibility to see members of the private group they don't have access to when mentioning them in the issue or merge request.
 

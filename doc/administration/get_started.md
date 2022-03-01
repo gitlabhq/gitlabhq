@@ -39,8 +39,8 @@ Get started:
 - Create a [project](../user/project/working_with_projects.md#create-a-project).
 - Create a [group](../user/group/index.md#create-a-group).
 - [Add members](../user/group/index.md#add-users-to-a-group) to the group.
-- Create a [subgroup](../user/group/subgroups/index.md#creating-a-subgroup).
-- [Add members](../user/group/subgroups/index.md#membership) to the subgroup.
+- Create a [subgroup](../user/group/subgroups/index.md#create-a-subgroup).
+- [Add members](../user/group/subgroups/index.md#subgroup-membership) to the subgroup.
 - Enable [external authorization control](../user/admin_area/settings/external_authorization.md#configuration).
 
 **More resources**
@@ -49,7 +49,7 @@ Get started:
 - Sync group memberships [by using LDAP](../administration/auth/ldap/ldap_synchronization.md#group-sync).
 - Manage user access with inherited permissions. Use up to 20 levels of subgroups to organize both teams and projects.
   - Learn more about [inherited permissions](../user/project/members/index.md#inherited-membership).
-  - View [nested category examples](../user/group/subgroups/index.md#overview).
+  - View an [example](../user/group/subgroups/index.md).
 
 ## Import projects
 

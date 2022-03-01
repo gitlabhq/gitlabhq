@@ -29524,6 +29524,8 @@ CREATE INDEX tmp_idx_vulnerability_occurrences_on_id_where_report_type_7_99 ON v
 
 CREATE INDEX tmp_index_container_repositories_on_id_migration_state ON container_repositories USING btree (id, migration_state);
 
+CREATE INDEX tmp_index_for_namespace_id_migration_on_group_members ON members USING btree (id) WHERE ((member_namespace_id IS NULL) AND ((type)::text = 'GroupMember'::text));
+
 CREATE INDEX tmp_index_for_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Namespace'::text));
 
 CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (state = 2);
