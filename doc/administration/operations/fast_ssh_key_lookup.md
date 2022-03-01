@@ -182,7 +182,7 @@ file for the environment, since it isn't generated dynamically.
 ## Troubleshooting
 
 If your SSH traffic is [slow](https://github.com/linux-pam/linux-pam/issues/270)
-or causing high CPU load, be sure to check the size of `/var/log/btmp`, and ensure it is rotated on a regular basis.
+or causing high CPU load, be sure to check the size of `/var/log/btmp`, and ensure it is rotated on a regular basis or after reaching a certain size.
 If this file is very large, GitLab SSH fast lookup can cause the bottleneck to be hit more frequently, thus decreasing performance even further.
 If you are able to, you may consider disabling [`UsePAM` in your `sshd_config`](https://linux.die.net/man/5/sshd_config) to avoid reading `/var/log/btmp` altogether.
 

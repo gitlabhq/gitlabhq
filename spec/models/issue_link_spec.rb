@@ -10,6 +10,10 @@ RSpec.describe IssueLink do
     let(:issuable_link_factory) { :issue_link }
   end
 
+  describe '.issuable_type' do
+    it { expect(described_class.issuable_type).to eq(:issue) }
+  end
+
   describe 'Scopes' do
     let_it_be(:issue1) { create(:issue) }
     let_it_be(:issue2) { create(:issue) }

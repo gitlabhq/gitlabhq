@@ -10,14 +10,15 @@ module IssuableLink
   extend ActiveSupport::Concern
 
   TYPE_RELATES_TO = 'relates_to'
-  TYPE_BLOCKS = 'blocks'
-  # we don't store is_blocked_by in the db but need it for displaying the relation
-  # from the target
-  TYPE_IS_BLOCKED_BY = 'is_blocked_by'
+  TYPE_BLOCKS = 'blocks' ## EE-only. Kept here to be used on link_type enum.
 
   class_methods do
     def inverse_link_type(type)
       type
+    end
+
+    def issuable_type
+      raise NotImplementedError
     end
   end
 
@@ -44,12 +45,11 @@ module IssuableLink
       return unless source && target
 
       if self.class.base_class.find_by(source: target, target: source)
-        errors.add(:source, "is already related to this #{issuable_type}")
+        errors.add(:source, "is already related to this #{self.class.issuable_type}")
       end
-    end
-
-    def issuable_type
-      raise NotImplementedError
     end
   end
 end
+
+IssuableLink.prepend_mod_with('IssuableLink')
+IssuableLink::ClassMethods.prepend_mod_with('IssuableLink::ClassMethods')

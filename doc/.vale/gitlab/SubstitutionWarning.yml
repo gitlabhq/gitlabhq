@@ -18,7 +18,6 @@ swap:
   file name: filename
   filesystem: file system
   info: information
-  need to: must
   repo: repository
   timezone: time zone
   utilize: use

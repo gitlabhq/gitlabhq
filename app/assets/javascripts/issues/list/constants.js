@@ -52,6 +52,7 @@ export const i18n = {
   upvotes: __('Upvotes'),
 };
 
+export const ISSUE_REFERENCE = /^#\d+$/;
 export const MAX_LIST_SIZE = 10;
 export const PAGE_SIZE = 20;
 export const PAGE_SIZE_MANUAL = 100;

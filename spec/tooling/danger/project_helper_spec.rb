@@ -217,6 +217,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/lib/ee/gitlab/integrations/sti_type.rb' | [:integrations_be, :backend]
       'ee/lib/ee/api/helpers/integrations_helpers.rb' | [:integrations_be, :backend]
       'ee/app/serializers/integrations/jira_serializers/issue_entity.rb' | [:integrations_be, :backend]
+      'app/serializers/jira_connect/app_data_serializer.rb' | [:integrations_be, :backend]
       'lib/api/github/entities.rb' | [:integrations_be, :backend]
       'lib/api/v3/github.rb' | [:integrations_be, :backend]
       'app/models/clusters/integrations/elastic_stack.rb' | [:backend]

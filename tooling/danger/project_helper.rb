@@ -53,7 +53,7 @@ module Tooling
         %r{\A(
           ((ee|jh)/)?app/((?!.*clusters)(?!.*alert_management)(?!.*views)(?!.*assets).+/)?integration.+ |
           ((ee|jh)/)?app/((?!.*search).+/)?project_service.+ |
-          ((ee|jh)/)?app/(models|helpers|workers|services|controllers)/(.+/)?(jira_connect.+|.*hook.+) |
+          ((ee|jh)/)?app/(models|helpers|workers|services|serializers|controllers)/(.+/)?(jira_connect.+|.*hook.+) |
           ((ee|jh)/)?app/controllers/(.+/)?oauth/jira/.+ |
           ((ee|jh)/)?app/services/(.+/)?jira.+ |
           ((ee|jh)/)?app/workers/(.+/)?(propagate_integration.+|irker_worker\.rb) |

@@ -39,6 +39,7 @@ import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/con
 import {
   CREATED_DESC,
   i18n,
+  ISSUE_REFERENCE,
   MAX_LIST_SIZE,
   PAGE_SIZE,
   PARAM_STATE,
@@ -219,11 +220,13 @@ export default {
   },
   computed: {
     queryVariables() {
+      const isIidSearch = ISSUE_REFERENCE.test(this.searchQuery);
       return {
         fullPath: this.fullPath,
+        iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         isProject: this.isProject,
         isSignedIn: this.isSignedIn,
-        search: this.searchQuery,
+        search: isIidSearch ? undefined : this.searchQuery,
         sort: this.sortKey,
         state: this.state,
         ...this.pageParams,

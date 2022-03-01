@@ -5,6 +5,7 @@ query getIssues(
   $isProject: Boolean = false
   $isSignedIn: Boolean = false
   $fullPath: ID!
+  $iid: String
   $search: String
   $sort: IssueSort
   $state: IssuableState
@@ -29,6 +30,7 @@ query getIssues(
     id
     issues(
       includeSubgroups: true
+      iid: $iid
       search: $search
       sort: $sort
       state: $state
@@ -59,6 +61,7 @@ query getIssues(
   project(fullPath: $fullPath) @include(if: $isProject) {
     id
     issues(
+      iid: $iid
       search: $search
       sort: $sort
       state: $state

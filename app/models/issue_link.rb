@@ -10,10 +10,10 @@ class IssueLink < ApplicationRecord
   scope :for_source_issue, ->(issue) { where(source_id: issue.id) }
   scope :for_target_issue, ->(issue) { where(target_id: issue.id) }
 
-  private
-
-  def issuable_type
-    :issue
+  class << self
+    def issuable_type
+      :issue
+    end
   end
 end
 

@@ -11,21 +11,21 @@ module Types
     field :id, GraphQL::Types::ID, null: false,
           description: 'ID of the project.'
 
+    field :ci_config_path_or_default, GraphQL::Types::String, null: false,
+          description: 'Path of the CI configuration file.'
     field :full_path, GraphQL::Types::ID, null: false,
           description: 'Full path of the project.'
     field :path, GraphQL::Types::String, null: false,
           description: 'Path of the project.'
-    field :ci_config_path_or_default, GraphQL::Types::String, null: false,
-          description: 'Path of the CI configuration file.'
 
     field :sast_ci_configuration, Types::CiConfiguration::Sast::Type, null: true,
       calls_gitaly: true,
       description: 'SAST CI configuration for the project.'
 
-    field :name_with_namespace, GraphQL::Types::String, null: false,
-          description: 'Full name of the project with its namespace.'
     field :name, GraphQL::Types::String, null: false,
           description: 'Name of the project (without namespace).'
+    field :name_with_namespace, GraphQL::Types::String, null: false,
+          description: 'Full name of the project with its namespace.'
 
     field :description, GraphQL::Types::String, null: true,
           description: 'Short description of the project.'
@@ -37,17 +37,17 @@ module Types
     field :topics, [GraphQL::Types::String], null: true,
           description: 'List of project topics.'
 
-    field :ssh_url_to_repo, GraphQL::Types::String, null: true,
-          description: 'URL to connect to the project via SSH.'
     field :http_url_to_repo, GraphQL::Types::String, null: true,
           description: 'URL to connect to the project via HTTPS.'
+    field :ssh_url_to_repo, GraphQL::Types::String, null: true,
+          description: 'URL to connect to the project via SSH.'
     field :web_url, GraphQL::Types::String, null: true,
           description: 'Web URL of the project.'
 
-    field :star_count, GraphQL::Types::Int, null: false,
-          description: 'Number of times the project has been starred.'
     field :forks_count, GraphQL::Types::Int, null: false, calls_gitaly: true, # 4 times
           description: 'Number of times the project has been forked.'
+    field :star_count, GraphQL::Types::Int, null: false,
+          description: 'Number of times the project has been starred.'
 
     field :created_at, Types::TimeType, null: true,
           description: 'Timestamp of the project creation.'
@@ -60,12 +60,12 @@ module Types
     field :visibility, GraphQL::Types::String, null: true,
           description: 'Visibility of the project.'
 
-    field :shared_runners_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if shared runners are enabled for the project.'
     field :lfs_enabled, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if the project has Large File Storage (LFS) enabled.'
     field :merge_requests_ff_only_enabled, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.'
+    field :shared_runners_enabled, GraphQL::Types::Boolean, null: true,
+          description: 'Indicates if shared runners are enabled for the project.'
 
     field :service_desk_enabled, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if the project has service desk enabled.'
@@ -85,33 +85,33 @@ module Types
     field :open_issues_count, GraphQL::Types::Int, null: true,
           description: 'Number of open issues for the project.'
 
+    field :allow_merge_on_skipped_pipeline, GraphQL::Types::Boolean, null: true,
+          description: 'If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs.'
+    field :autoclose_referenced_issues, GraphQL::Types::Boolean, null: true,
+          description: 'Indicates if issues referenced by merge requests and commits within the default branch are closed automatically.'
     field :import_status, GraphQL::Types::String, null: true,
           description: 'Status of import background job of the project.'
     field :jira_import_status, GraphQL::Types::String, null: true,
           description: 'Status of Jira import background job of the project.'
-    field :only_allow_merge_if_pipeline_succeeds, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if merge requests of the project can only be merged with successful jobs.'
-    field :allow_merge_on_skipped_pipeline, GraphQL::Types::Boolean, null: true,
-          description: 'If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs.'
-    field :request_access_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if users can request member access to the project.'
     field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if merge requests of the project can only be merged when all the discussions are resolved.'
+    field :only_allow_merge_if_pipeline_succeeds, GraphQL::Types::Boolean, null: true,
+          description: 'Indicates if merge requests of the project can only be merged with successful jobs.'
     field :printing_merge_request_link_enabled, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line.'
     field :remove_source_branch_after_merge, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project.'
-    field :autoclose_referenced_issues, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if issues referenced by merge requests and commits within the default branch are closed automatically.'
-    field :suggestion_commit_message, GraphQL::Types::String, null: true,
-          description: 'Commit message used to apply merge request suggestions.'
+    field :request_access_enabled, GraphQL::Types::Boolean, null: true,
+          description: 'Indicates if users can request member access to the project.'
     field :squash_read_only, GraphQL::Types::Boolean, null: false, method: :squash_readonly?,
           description: 'Indicates if `squashReadOnly` is enabled.'
+    field :suggestion_commit_message, GraphQL::Types::String, null: true,
+          description: 'Commit message used to apply merge request suggestions.'
 
-    field :namespace, Types::NamespaceType, null: true,
-          description: 'Namespace of the project.'
     field :group, Types::GroupType, null: true,
           description: 'Group of the project.'
+    field :namespace, Types::NamespaceType, null: true,
+          description: 'Namespace of the project.'
 
     field :statistics, Types::ProjectStatisticsType,
           null: true,

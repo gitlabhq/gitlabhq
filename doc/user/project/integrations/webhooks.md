@@ -62,7 +62,8 @@ You can configure a webhook for a group or a project.
 
 ## Test a webhook
 
-You can trigger a webhook manually, to ensure it's working properly.
+You can trigger a webhook manually, to ensure it's working properly. You can also send
+a test request to re-enable a [disabled webhook](#re-enable-disabled-webhooks).
 
 For example, to test `push events`, your project should have at least one commit. The webhook uses this commit in the webhook.
 
@@ -71,6 +72,8 @@ To test a webhook:
 1. In your project, on the left sidebar, select **Settings > Webhooks**.
 1. Scroll down to the list of configured webhooks.
 1. From the **Test** dropdown list, select the type of event to test.
+
+You can also test a webhook from its edit page.
 
 ![Webhook testing](img/webhook_testing.png)
 
@@ -143,7 +146,32 @@ GitLab webhooks, keep in mind the following:
   GitLab assumes the hook failed and retries it.
   Most HTTP libraries take care of the response for you automatically but if
   you are writing a low-level hook, this is important to remember.
-- GitLab ignores the HTTP status code returned by your endpoint.
+- GitLab usually ignores the HTTP status code returned by your endpoint,
+  unless the `web_hooks_disable_failed` feature flag is set.
+
+### Failing webhooks
+
+> - Introduced in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) in GitLab 14.9.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`.
+The feature is not ready for production use.
+
+If a webhook fails repeatedly, it may be disabled automatically.
+
+Webhooks that return response codes in the `5xx` range are understood to be failing
+intermittently, and are temporarily disabled. This lasts initially
+for 10 minutes. If the hook continues to fail, the back-off period is
+extended on each retry, up to a maximum disabled period of 24 hours.
+
+Webhooks that return failure codes in the `4xx` range are understood to be
+misconfigured, and these are disabled until you manually re-enable
+them. These webhooks are not automatically retried.
+
+See [troubleshooting](#troubleshoot-webhooks) for information on
+how to see if a webhook is disabled, and how to re-enable it.
 
 ## How image URLs are displayed in the webhook body
 
@@ -186,6 +214,13 @@ To view the table:
 
 1. In your project, on the left sidebar, select **Settings > Webhooks**.
 1. Scroll down to the webhooks.
+1. Each [failing webhook](#failing-webhooks) has a badge listing it as:
+
+   - **Failed to connect** if it is misconfigured, and needs manual intervention to re-enable it.
+   - **Fails to connect** if it is temporarily disabled and will retry later.
+  
+   ![Badges on failing webhooks](img/failed_badges.png)
+   
 1. Select **Edit** for the webhook you want to view.
 
 The table includes the following details about each request:
@@ -233,3 +268,17 @@ determined by [CAcert.org](http://www.cacert.org/).
 
 If that is not the case, consider using [SSL Checker](https://www.sslshopper.com/ssl-checker.html) to identify faults.
 Missing intermediate certificates are common causes of verification failure.
+
+### Re-enable disabled webhooks
+
+If a webhook is failing, a banner displays at the top of the edit page explaining
+why it is disabled, and when it will be automatically re-enabled. For example:
+
+![A banner for a failing webhook, warning it failed to connect and will retry in 60 minutes](img/failed_banner.png)
+
+In the case of a failed webhook, an error banner is displayed:
+
+![A banner for a failed webhook, showing an error state, and explaining how to re-enable it](img/failed_banner_error.png)
+
+To re-enable a failing or failed webhook, [send a test request](#test-a-webhook). If the test
+request succeeds, the webhook is re-enabled.

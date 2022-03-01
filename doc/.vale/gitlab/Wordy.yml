@@ -5,9 +5,12 @@
 #
 # For a list of all options, see https://docs.errata.ai/vale/styles
 extends: substitution
-message: 'Be concise: "%s" is less wordy than "%s".'
+message: '%s "%s".'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
 level: suggestion
 ignorecase: true
 swap:
-  in order to: to
+  in order to: "Be concise: use 'to' rather than"
+  needs? to: "Rewrite the sentence, or use 'must', instead of"
+  note that: "Be concise: rewrite the sentence to not use"
+  please: "Remove this word from the sentence: "

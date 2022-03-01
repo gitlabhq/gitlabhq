@@ -21,8 +21,6 @@ RSpec.describe IssuableLink do
   describe '.inverse_link_type' do
     it 'returns the inverse type of link' do
       expect(test_class.inverse_link_type('relates_to')).to eq('relates_to')
-      expect(test_class.inverse_link_type('is_blocked_by')).to eq('is_blocked_by')
-      expect(test_class.inverse_link_type('blocks')).to eq('blocks')
     end
   end
 

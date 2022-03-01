@@ -13,23 +13,23 @@ module Types
       field :id, ::Types::GlobalIDType[::Packages::Package], null: false,
             description: 'ID of the package.'
 
-      field :name, GraphQL::Types::String, null: false, description: 'Name of the package.'
+      field :can_destroy, GraphQL::Types::Boolean, null: false, description: 'Whether the user can destroy the package.'
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
-      field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
-      field :version, GraphQL::Types::String, null: true, description: 'Version string.'
+      field :metadata, Types::Packages::MetadataType, null: true,
+        description: 'Package metadata.'
+      field :name, GraphQL::Types::String, null: false, description: 'Name of the package.'
       field :package_type, Types::Packages::PackageTypeEnum, null: false, description: 'Package type.'
-      field :tags, Types::Packages::PackageTagType.connection_type, null: true, description: 'Package tags.'
-      field :project, Types::ProjectType, null: false, description: 'Project where the package is stored.'
       field :pipelines, Types::Ci::PipelineType.connection_type, null: true,
             description: 'Pipelines that built the package.',
             deprecated: { reason: 'Due to scalability concerns, this field is going to be removed', milestone: '14.6' }
-      field :metadata, Types::Packages::MetadataType, null: true,
-        description: 'Package metadata.'
+      field :project, Types::ProjectType, null: false, description: 'Project where the package is stored.'
+      field :status, Types::Packages::PackageStatusEnum, null: false, description: 'Package status.'
+      field :tags, Types::Packages::PackageTagType.connection_type, null: true, description: 'Package tags.'
+      field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
+      field :version, GraphQL::Types::String, null: true, description: 'Version string.'
       field :versions, ::Types::Packages::PackageType.connection_type, null: true,
         description: 'Other versions of the package.',
         deprecated: { reason: 'This field is now only returned in the PackageDetailsType', milestone: '13.11' }
-      field :status, Types::Packages::PackageStatusEnum, null: false, description: 'Package status.'
-      field :can_destroy, GraphQL::Types::Boolean, null: false, description: 'Whether the user can destroy the package.'
 
       def project
         Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
