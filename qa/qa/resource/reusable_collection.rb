@@ -34,6 +34,7 @@ module QA
         def remove_all_via_api!
           instance.each_resource do |reuse_as, resource|
             next QA::Runtime::Logger.debug("#{resource.class.name} reused as :#{reuse_as} has already been removed.") unless resource.exists?
+            next if resource.respond_to?(:marked_for_deletion?) && resource.marked_for_deletion?
 
             resource.method(:remove_via_api!).super_method.call
           end

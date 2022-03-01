@@ -64,6 +64,10 @@ module QA
         end
       end
 
+      def marked_for_deletion?
+        !parse_body(api_get_from("#{api_get_path}"))[:marked_for_deletion_on].nil?
+      end
+
       # Get group badges
       #
       # @return [Array<QA::Resource::GroupBadge>]
