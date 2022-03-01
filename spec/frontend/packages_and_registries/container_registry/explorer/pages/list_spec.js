@@ -23,7 +23,7 @@ import deleteContainerRepositoryMutation from '~/packages_and_registries/contain
 import getContainerRepositoriesDetails from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
 import component from '~/packages_and_registries/container_registry/explorer/pages/list.vue';
 import Tracking from '~/tracking';
-import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
+import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
 import { $toast } from 'jest/packages_and_registries/shared/mocks';
@@ -55,10 +55,14 @@ describe('List Page', () => {
 
   const findDeleteAlert = () => wrapper.findComponent(GlAlert);
   const findImageList = () => wrapper.findComponent(ImageList);
-  const findRegistrySearch = () => wrapper.findComponent(RegistrySearch);
+  const findPersistedSearch = () => wrapper.findComponent(PersistedSearch);
   const findEmptySearchMessage = () => wrapper.find('[data-testid="emptySearch"]');
   const findDeleteImage = () => wrapper.findComponent(DeleteImage);
   const findCleanupAlert = () => wrapper.findComponent(CleanupPolicyEnabledAlert);
+
+  const fireFirstSortUpdate = () => {
+    findPersistedSearch().vm.$emit('update', { sort: 'UPDATED_DESC', filters: [] });
+  };
 
   const waitForApolloRequestRender = async () => {
     jest.runOnlyPendingTimers();
@@ -117,7 +121,7 @@ describe('List Page', () => {
 
   it('contains registry header', async () => {
     mountComponent();
-
+    fireFirstSortUpdate();
     await waitForApolloRequestRender();
 
     expect(findRegistryHeader().exists()).toBe(true);
@@ -167,7 +171,7 @@ describe('List Page', () => {
   describe('isLoading is true', () => {
     it('shows the skeleton loader', async () => {
       mountComponent();
-
+      fireFirstSortUpdate();
       await nextTick();
 
       expect(findSkeletonLoader().exists()).toBe(true);
@@ -187,7 +191,7 @@ describe('List Page', () => {
 
     it('title has the metadataLoading props set to true', async () => {
       mountComponent();
-
+      fireFirstSortUpdate();
       await nextTick();
 
       expect(findRegistryHeader().props('metadataLoading')).toBe(true);
@@ -244,6 +248,7 @@ describe('List Page', () => {
     describe('unfiltered state', () => {
       it('quick start is visible', async () => {
         mountComponent();
+        fireFirstSortUpdate();
 
         await waitForApolloRequestRender();
 
@@ -252,6 +257,7 @@ describe('List Page', () => {
 
       it('list component is visible', async () => {
         mountComponent();
+        fireFirstSortUpdate();
 
         await waitForApolloRequestRender();
 
@@ -264,7 +270,7 @@ describe('List Page', () => {
             .fn()
             .mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
           mountComponent({ detailsResolver });
-
+          fireFirstSortUpdate();
           jest.runOnlyPendingTimers();
           await waitForPromises();
 
@@ -274,7 +280,7 @@ describe('List Page', () => {
         it('does not block the list ui to show', async () => {
           const detailsResolver = jest.fn().mockRejectedValue();
           mountComponent({ detailsResolver });
-
+          fireFirstSortUpdate();
           await waitForApolloRequestRender();
 
           expect(findImageList().exists()).toBe(true);
@@ -285,6 +291,7 @@ describe('List Page', () => {
           const detailsResolver = jest.fn().mockImplementation(() => new Promise(() => {}));
 
           mountComponent({ detailsResolver });
+          fireFirstSortUpdate();
           await waitForApolloRequestRender();
 
           expect(findImageList().props('metadataLoading')).toBe(true);
@@ -293,6 +300,7 @@ describe('List Page', () => {
 
       describe('delete image', () => {
         const selectImageForDeletion = async () => {
+          fireFirstSortUpdate();
           await waitForApolloRequestRender();
 
           findImageList().vm.$emit('delete', deletedContainerRepository);
@@ -346,27 +354,27 @@ describe('List Page', () => {
     describe('search and sorting', () => {
       const doSearch = async () => {
         await waitForApolloRequestRender();
-        findRegistrySearch().vm.$emit('filter:changed', [
-          { type: FILTERED_SEARCH_TERM, value: { data: 'centos6' } },
-        ]);
+        findPersistedSearch().vm.$emit('update', {
+          sort: 'UPDATED_DESC',
+          filters: [{ type: FILTERED_SEARCH_TERM, value: { data: 'centos6' } }],
+        });
 
-        findRegistrySearch().vm.$emit('filter:submit');
+        findPersistedSearch().vm.$emit('filter:submit');
 
         await waitForPromises();
       };
 
-      it('has a search box element', async () => {
+      it('has a persisted search box element', async () => {
         mountComponent();
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
-        const registrySearch = findRegistrySearch();
+        const registrySearch = findPersistedSearch();
         expect(registrySearch.exists()).toBe(true);
         expect(registrySearch.props()).toMatchObject({
-          filter: [],
-          sorting: { orderBy: 'UPDATED', sort: 'desc' },
+          defaultOrder: 'UPDATED',
+          defaultSort: 'desc',
           sortableFields: SORT_FIELDS,
-          tokens: [],
         });
       });
 
@@ -376,7 +384,7 @@ describe('List Page', () => {
 
         await waitForApolloRequestRender();
 
-        findRegistrySearch().vm.$emit('sorting:changed', { sort: 'asc' });
+        findPersistedSearch().vm.$emit('update', { sort: 'UPDATED_DESC', filters: [] });
         await nextTick();
 
         expect(resolver).toHaveBeenCalledWith(expect.objectContaining({ sort: 'UPDATED_DESC' }));
@@ -416,7 +424,7 @@ describe('List Page', () => {
           .fn()
           .mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
         mountComponent({ resolver, detailsResolver });
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('prev-page');
@@ -436,7 +444,7 @@ describe('List Page', () => {
           .fn()
           .mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
         mountComponent({ resolver, detailsResolver });
-
+        fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('next-page');
@@ -455,6 +463,7 @@ describe('List Page', () => {
   describe('modal', () => {
     beforeEach(() => {
       mountComponent();
+      fireFirstSortUpdate();
     });
 
     it('exists', () => {
@@ -472,6 +481,7 @@ describe('List Page', () => {
   describe('tracking', () => {
     beforeEach(() => {
       mountComponent();
+      fireFirstSortUpdate();
     });
 
     const testTrackingCall = (action) => {
@@ -500,62 +510,6 @@ describe('List Page', () => {
       findDeleteImage().vm.$emit('start');
       testTrackingCall('confirm_delete');
     });
-  });
-
-  describe('url query string handling', () => {
-    const defaultQueryParams = {
-      search: [1, 2],
-      sort: 'asc',
-      orderBy: 'CREATED',
-    };
-    const queryChangePayload = 'foo';
-
-    it('query:updated event pushes the new query to the router', async () => {
-      const push = jest.fn();
-      mountComponent({ mocks: { $router: { push } } });
-
-      await nextTick();
-
-      findRegistrySearch().vm.$emit('query:changed', queryChangePayload);
-
-      expect(push).toHaveBeenCalledWith({ query: queryChangePayload });
-    });
-
-    it('graphql API call has the variables set from the URL', async () => {
-      const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
-      mountComponent({ query: defaultQueryParams, resolver });
-
-      await nextTick();
-
-      expect(resolver).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: 1,
-          sort: 'CREATED_ASC',
-        }),
-      );
-    });
-
-    it.each`
-      sort         | orderBy      | search            | payload
-      ${'ASC'}     | ${undefined} | ${undefined}      | ${{ sort: 'UPDATED_ASC' }}
-      ${undefined} | ${'bar'}     | ${undefined}      | ${{ sort: 'BAR_DESC' }}
-      ${'ASC'}     | ${'bar'}     | ${undefined}      | ${{ sort: 'BAR_ASC' }}
-      ${undefined} | ${undefined} | ${undefined}      | ${{}}
-      ${undefined} | ${undefined} | ${['one']}        | ${{ name: 'one' }}
-      ${undefined} | ${undefined} | ${['one', 'two']} | ${{ name: 'one' }}
-      ${undefined} | ${'UPDATED'} | ${['one', 'two']} | ${{ name: 'one', sort: 'UPDATED_DESC' }}
-      ${'ASC'}     | ${'UPDATED'} | ${['one', 'two']} | ${{ name: 'one', sort: 'UPDATED_ASC' }}
-    `(
-      'with sort equal to $sort, orderBy equal to $orderBy, search set to $search API call has the variables set as $payload',
-      async ({ sort, orderBy, search, payload }) => {
-        const resolver = jest.fn().mockResolvedValue({ sort, orderBy });
-        mountComponent({ query: { sort, orderBy, search }, resolver });
-
-        await nextTick();
-
-        expect(resolver).toHaveBeenCalledWith(expect.objectContaining(payload));
-      },
-    );
   });
 
   describe('cleanup is on alert', () => {

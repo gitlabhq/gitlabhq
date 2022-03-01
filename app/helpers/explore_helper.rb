@@ -19,24 +19,8 @@ module ExploreHelper
     request_path_with_options(options)
   end
 
-  def filter_audit_path(options = {})
-    exist_opts = {
-      entity_type: params[:entity_type],
-      entity_id: params[:entity_id],
-      created_before: params[:created_before],
-      created_after: params[:created_after],
-      sort: params[:sort]
-    }
-    options = exist_opts.merge(options).delete_if { |key, value| value.blank? }
-    request_path_with_options(options)
-  end
-
   def filter_groups_path(options = {})
     request_path_with_options(options)
-  end
-
-  def explore_controller?
-    controller.class.name.split("::").first == "Explore"
   end
 
   def explore_nav_links
@@ -47,12 +31,25 @@ module ExploreHelper
     explore_nav_links.include?(link)
   end
 
-  def any_explore_nav_link?(links)
-    links.any? { |link| explore_nav_link?(link) }
-  end
-
   def public_visibility_restricted?
     Gitlab::VisibilityLevel.public_visibility_restricted?
+  end
+
+  def projects_filter_items
+    [
+      { value: _('Any'), text: _('Any'), href: filter_projects_path(visibility_level: nil) },
+      *Gitlab::VisibilityLevel.options.keys.map do |key|
+        {
+          value: key,
+          text: key,
+          href: filter_projects_path(visibility_level: Gitlab::VisibilityLevel.options[key])
+        }
+      end
+    ]
+  end
+
+  def projects_filter_selected(visibility_level)
+    visibility_level.present? ? visibility_level_label(visibility_level.to_i) : _('Any')
   end
 
   private

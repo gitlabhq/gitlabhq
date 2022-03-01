@@ -128,8 +128,12 @@ key must have at least read access to the project.
 
 Prerequisites:
 
-- The deploy key must be [enabled for your project](deploy_keys/index.md#how-to-enable-deploy-keys).
-- The deploy key must have [write access](deploy_keys/index.md#deploy-keys-permissions) to your project repository.
+- The deploy key must be enabled for your project. A project deploy key is enabled by default when
+  it is created. However, a public deploy key must be
+  [granted](deploy_keys/index.md#grant-project-access-to-a-public-deploy-key) access to the
+  project.
+- The deploy key must have [write access](deploy_keys/index.md#permissions) to your project
+  repository.
 
 To allow a deploy key to push to a protected branch:
 

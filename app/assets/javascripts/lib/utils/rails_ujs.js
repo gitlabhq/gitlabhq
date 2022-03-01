@@ -1,5 +1,6 @@
 import Rails from '@rails/ujs';
 import { confirmViaGlModal } from './confirm_via_gl_modal/confirm_via_gl_modal';
+import { ignoreWhilePending } from './ignore_while_pending';
 
 function monkeyPatchConfirmModal() {
   /**
@@ -18,8 +19,10 @@ function monkeyPatchConfirmModal() {
    * @param element {HTMLElement} Element that was clicked on
    * @returns {boolean}
    */
+  const safeConfirm = ignoreWhilePending(confirmViaGlModal);
+
   function confirmViaModal(message, element) {
-    confirmViaGlModal(message, element)
+    safeConfirm(message, element)
       .then((confirmed) => {
         if (confirmed) {
           Rails.confirm = () => true;

@@ -1179,6 +1179,14 @@ See https://about.gitlab.com/releases/2022/02/03/security-release-gitlab-14-7-1-
 - [Fix Gitlab/DelegatePredicateMethods offenses](gitlab-org/gitlab@518700a11025b0000ff3ce011638417a882612b0) by @edith007 ([merge request](gitlab-org/gitlab!76001))
 - [Fix Rails/SaveBang offenses](gitlab-org/gitlab@513b0e1dbdf95ea595e7548ff26929e0be30ce29) by @edith007 ([merge request](gitlab-org/gitlab!75894)) **GitLab Enterprise Edition**
 
+## 14.6.6 (2022-03-01)
+
+### Fixed (3 changes)
+
+- [Ensure cleanup job artifacts task does not include pipeline artifacts](gitlab-org/gitlab@3fc3472de8bfa971985d122573e9896b17606678) ([merge request](gitlab-org/gitlab!81885))
+- [Fix Geo checksummable check failing when file is nil](gitlab-org/gitlab@38b55f334c558377de0b1b0d7f853e62723d9791) ([merge request](gitlab-org/gitlab!81885)) **GitLab Enterprise Edition**
+- [Resolve "Imports fail in 14.5.2 fail with HTTParty::UnsupportedURIScheme error"](gitlab-org/gitlab@b7cbf0c19d9702a0db3ee9a8f8897df5d7da72f1) ([merge request](gitlab-org/gitlab!81885))
+
 ## 14.6.5 (2022-02-25)
 
 ### Security (8 changes)
