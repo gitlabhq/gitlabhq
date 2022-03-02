@@ -13,7 +13,7 @@
   body: |
       When working in your editor you may need to refer to another project or upstream library for additional information. When you don't have that project already cloned locally, you're forced to either leave your editor and browse the project on GitLab, or locate and then clone the project so you can browse it in your editor. Both of those tasks break your current context, introduce delays, and can take you to a less familiar interface for working with code.
 
-      [GitLab Workflow](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) version `3.33.0` provides an option to open a remote repository. Open the command palette and use the `GitLab: Open Remote Repository` command to find and then open a project. 
+      [GitLab Workflow](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) version `3.33.0` provides an option to open a remote repository. Open the command palette and use the `GitLab: Open Remote Repository` command to find and then open a project.
 
       Opening a remote repository allows you to browse a read-only version of a project in your familiar VS Code environment. You can then quickly find the information you're looking for, compare an implementation, or copy a snippet you need.
   stage: Create
@@ -57,4 +57,3 @@
   image_url: https://about.gitlab.com/images/14_4/monitor-integrated-error-tracking.png
   published_at: 2021-10-22
   release: 14.4
-

@@ -58,7 +58,6 @@ describe('Incident Tabs component', () => {
   const findTabs = () => wrapper.findAll(GlTab);
   const findSummaryTab = () => findTabs().at(0);
   const findMetricsTab = () => wrapper.find('[data-testid="metrics-tab"]');
-  const findTimelineTab = () => wrapper.find('[data-testid="timeline-events-tab"]');
   const findAlertDetailsTab = () => wrapper.find('[data-testid="alert-details-tab"]');
   const findAlertDetailsComponent = () => wrapper.find(AlertDetailsTable);
   const findDescriptionComponent = () => wrapper.find(DescriptionComponent);
@@ -71,29 +70,6 @@ describe('Incident Tabs component', () => {
 
     it('does not show the alert details tab', () => {
       expect(findAlertDetailsComponent().exists()).toBe(false);
-    });
-  });
-
-  describe('incident timeline tab', () => {
-    beforeEach(() => {
-      mountComponent();
-    });
-
-    it('renders the timeline tab when feature flag is enabled', () => {
-      expect(findTimelineTab().exists()).toBe(true);
-      expect(findTimelineTab().attributes('title')).toBe('Timeline');
-    });
-
-    it('does not render timeline tab when feature flag is disabled', () => {
-      mountComponent({}, { provide: { glFeatures: { incidentTimelineEventTab: false } } });
-
-      expect(findTimelineTab().exists()).toBe(false);
-    });
-
-    it('does not render timeline tab when not available in license', () => {
-      mountComponent({}, { provide: { glFeatures: { incidentTimelineEvents: false } } });
-
-      expect(findTimelineTab().exists()).toBe(false);
     });
   });
 

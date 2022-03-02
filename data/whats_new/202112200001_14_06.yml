@@ -33,9 +33,9 @@
   release: 14.6
 - title: Toggle wiki editors seamlessly
   body: |
-     Editing wiki pages with the new rich Markdown editor makes it easier for everyone to contribute regardless of how well they know Markdown syntax. You may also prefer to write raw Markdown in some situations, but use the WYSIWYG interface for more complex or tedious formatting tasks, like creating tables. 
+     Editing wiki pages with the new rich Markdown editor makes it easier for everyone to contribute regardless of how well they know Markdown syntax. You may also prefer to write raw Markdown in some situations, but use the WYSIWYG interface for more complex or tedious formatting tasks, like creating tables.
 
-      Previous versions of GitLab required you to save changes before switching between the rich Markdown editor and the Markdown source, adding more steps and friction to your edits. In GitLab 14.6 you can now seamlessly switch between the two editing experiences without committing your changes, choosing the editor that suits your needs at any given moment. 
+      Previous versions of GitLab required you to save changes before switching between the rich Markdown editor and the Markdown source, adding more steps and friction to your edits. In GitLab 14.6 you can now seamlessly switch between the two editing experiences without committing your changes, choosing the editor that suits your needs at any given moment.
   stage: Create
   self-managed: true
   gitlab-com: true

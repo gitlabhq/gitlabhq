@@ -3,6 +3,7 @@
 
 - classes = local_assigns.fetch(:classes)
 - name = local_assigns.fetch(:name, nil)
+- id = local_assigns.fetch(:id, nil)
 - is_checked = local_assigns.fetch(:is_checked, false).to_s
 - disabled = local_assigns.fetch(:disabled, false).to_s
 - is_loading = local_assigns.fetch(:is_loading, false).to_s
@@ -13,6 +14,7 @@
 
 %span{ class: classes,
   data: { name: name,
+    id: id,
     is_checked: is_checked,
     disabled: disabled,
     is_loading: is_loading,

@@ -38,7 +38,7 @@
   gitlab-com: true
   packages: [Premium, Ultimate]
   url: https://docs.gitlab.com/ee/operations/incident_management/oncall_schedules.html
-  image_url:  https://img.youtube.com/vi/QXfCQ24-Ufo/hqdefault.jpg
+  image_url: https://img.youtube.com/vi/QXfCQ24-Ufo/hqdefault.jpg
   published_at: 2021-04-22
   release: 13.11
 - title: Use multiple caches in the same job
@@ -49,21 +49,21 @@
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/yaml/index.html#multiple-caches
-  image_url:  https://about.gitlab.com/images/13_11/cache.png
+  image_url: https://about.gitlab.com/images/13_11/cache.png
   published_at: 2021-04-22
   release: 13.11
-- title:  Group SAML Enforcement for Git activity
+- title: Group SAML Enforcement for Git activity
   body: |
     GitLab group maintainers can now enhance their group security by enforcing Group SAML for Git activity. Security-minded organizations want all GitLab activity to be protected and governed by their SAML Identity Provider. Currently, SAML SSO enforcement only applies to activity in the GitLab UI. Git CLI operations do not require an active SAML SSO session. When Git Group SAML SSO enforcement is enabled, users must have an active web SAML session to perform Git operations in the CLI.
   stage: Manage
   self-managed: false
   gitlab-com: true
-  packages:  [Premium, Ultimate]
+  packages: [Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/group/saml_sso/#sso-enforcement
   image_url: https://about.gitlab.com/images/sdlc-icons/manage.svg
   published_at: 2021-04-22
   release: 13.11
-- title:  Cherry pick commits from fork to parent
+- title: Cherry pick commits from fork to parent
   body: |
     With GitLab 13.11, if you are a project member, you can now cherry-pick commits from downstream forks back into your project. We've added a new **Pick into project** section to the cherry-pick dialog, shown when you select **Options > Cherry-pick** on a commit's details page.
 
@@ -73,9 +73,9 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages:  [Free, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/merge_requests/cherry_pick_changes.html#cherry-pick-into-a-project
-  image_url:  https://about.gitlab.com/images/13_11/cherry_pick_commits_from_fork_to_parent.png
+  image_url: https://about.gitlab.com/images/13_11/cherry_pick_commits_from_fork_to_parent.png
   published_at: 2021-04-22
   release: 13.11
 - title: Improvements to Jira Connect application configuration
@@ -104,7 +104,7 @@
   image_url: https://about.gitlab.com/images/13_11/search-settings.gif
   published_at: 2021-04-22
   release: 13.11
-- title:  Deploy GitLab on OpenShift and Kubernetes with the GitLab Operator (beta)
+- title: Deploy GitLab on OpenShift and Kubernetes with the GitLab Operator (beta)
   body: |
     GitLab is working to offer full support for OpenShift. To accomplish this, we have released the MVP [GitLab Operator](https://gitlab.com/gitlab-org/gl-openshift/gitlab-operator/-/tree/master/doc). The operator aims to manage the full lifecycle of GitLab instances on Kubernetes and OpenShift container platforms. Currently, this is a [beta release](https://gitlab.com/groups/gitlab-org/-/epics/3444) and it is **not recommended for production use**. The next steps will be to make the operator generally available (GA). In the future the operator will become the recommended installation method for Kubernetes and OpenShift, although the GitLab Helm chart will still be supported. We welcome you to try this operator and [provide feedback on our issue tracker](https://gitlab.com/gitlab-org/gl-openshift/gitlab-operator/-/issues/131).
   stage: Enablement
@@ -112,6 +112,6 @@
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
   url: https://gitlab.com/gitlab-org/gl-openshift/gitlab-operator/-/tree/master/doc
-  image_url:  https://about.gitlab.com/images/13_11/gitlab-operator.png
+  image_url: https://about.gitlab.com/images/13_11/gitlab-operator.png
   published_at: 2021-04-22
   release: 13.11

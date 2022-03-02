@@ -27,7 +27,7 @@
 
    With [GitLab Workflow](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) [v3.26.0](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CHANGELOG.md#3260-2021-07-13) for VS Code you can now create and apply patches directly in your editor. The new `GitLab: Create snippet patch` command creates a patch with the changes in your editor and uploads that patch as a [GitLab snippet](https://docs.gitlab.com/ee/user/snippets.html).
 
-   Anyone can search for patches in the project's snippets and apply them directly in VS Code with the `GitLab: Apply snippet patch` command. The applied changes can then be committed to the MR.    
+   Anyone can search for patches in the project's snippets and apply them directly in VS Code with the `GitLab: Apply snippet patch` command. The applied changes can then be committed to the MR.
 
    Sharing and collaborating around patches is a great way to propose more complex suggestions and provide clear improvements. Patches created in VS Code can also be linked to others through snippets and downloaded and applied outside of VS Code for users with different editing tools.
   stage: Create
@@ -38,7 +38,7 @@
   image_url: https://img.youtube.com/vi/QQxpLoKJULQ/hqdefault.jpg
   published_at: 2021-07-22
   release: 14.1
-- title: Code coverage merge request approval rule 
+- title: Code coverage merge request approval rule
   body: |
    To keep code test coverage high, you need to ensure that merge requests to your codebase never decrease test coverage. Previously, the only way to enforce this was to [require approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/#required-approvals) from users who would check for test coverage decreases as part of their reviews.
 
@@ -68,7 +68,7 @@
 
    GitLab already supports a variety of other [package manager formats](https://docs.gitlab.com/ee/user/packages/). Why not also support Helm? That's what community member and [MVP from the 14.0 milestone](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#mvp) [Mathieu Parent](https://gitlab.com/sathieu) asked several months ago before breaking ground on the new GitLab Helm chart registry. The collaboration between the community and GitLab is part of our [dual flywheel strategy](https://about.gitlab.com/company/strategy/#dual-flywheels) and one of the reasons we love working at GitLab. Chapeau Mathieu!
 
-   Now you can use your GitLab project to publish and share packaged Helm charts. Simply add your project as a remote, authenticating with a personal access, deploy, or CI/CD job token. Once that's done you can use the Helm client or GitLab CI/CD to manage your Helm charts. You can also download the charts using the [API](https://docs.gitlab.com/ee/api/packages.html#get-a-project-package) or the [user interface](https://docs.gitlab.com/ee/user/packages/package_registry/#download-a-package). 
+   Now you can use your GitLab project to publish and share packaged Helm charts. Simply add your project as a remote, authenticating with a personal access, deploy, or CI/CD job token. Once that's done you can use the Helm client or GitLab CI/CD to manage your Helm charts. You can also download the charts using the [API](https://docs.gitlab.com/ee/api/packages.html#get-a-project-package) or the [user interface](https://docs.gitlab.com/ee/user/packages/package_registry/#download-a-package).
   stage: Package
   self-managed: true
   gitlab-com: true
@@ -81,7 +81,7 @@
   body: |
    Being on-call is a stressful, 24/7 job. It's possible to miss a notification despite your best efforts and intentions. Teams that maintain critical systems can't afford to miss alerts for outages or service disruptions. Escalation policies are a safety net for these situations. Escalation policies contain time-boxed steps that automatically page a responder in the next escalation step if the responder in the step before didn't respond. To protect your company from missed critical alerts, create an escalation policy in the GitLab project where you manage on-call schedules.
 
-   In GitLab 14.1, users can create, view, or delete escalation policies. 
+   In GitLab 14.1, users can create, view, or delete escalation policies.
   stage: Monitor
   self-managed: true
   gitlab-com: true
@@ -128,7 +128,7 @@
   release: 14.1
 - title: Pronouns viewable in user profile snapshot
   body: |
-   You can now see pronouns on the snapshot view of a user profile when you hover over someone's name on an issue or merge request. This helps users better respond to comments using the correct pronouns without needing to navigate to the user's profile. 
+   You can now see pronouns on the snapshot view of a user profile when you hover over someone's name on an issue or merge request. This helps users better respond to comments using the correct pronouns without needing to navigate to the user's profile.
   stage: Manage
   self-managed: true
   gitlab-com: true

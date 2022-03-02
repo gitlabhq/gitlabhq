@@ -1,6 +1,7 @@
 import { s__, __ } from '~/locale';
 
 export const integrationLevels = {
+  PROJECT: 'project',
   GROUP: 'group',
   INSTANCE: 'instance',
 };

@@ -95,7 +95,7 @@ RSpec.describe 'User adds pages domain', :js do
 
       fill_in 'Domain', with: 'my.test.domain.com'
 
-      find('.js-auto-ssl-toggle-container .project-feature-toggle').click
+      find('.js-auto-ssl-toggle-container .js-project-feature-toggle').click
 
       fill_in 'Certificate (PEM)', with: certificate_pem
       fill_in 'Key (PEM)', with: certificate_key

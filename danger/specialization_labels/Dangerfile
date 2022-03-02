@@ -26,4 +26,4 @@ labels_to_add = helper.changes_by_category.each_with_object([]) do |(category, _
   memo << label
 end
 
-helper.labels_to_add.merge(labels_to_add) if labels_to_add.any?
+helper.labels_to_add.concat(labels_to_add) if labels_to_add.any?

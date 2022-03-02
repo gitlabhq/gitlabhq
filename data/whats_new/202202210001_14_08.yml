@@ -31,7 +31,7 @@
     - Multiple rules can be created and chained together to allow for filtering on different severity thresholds for each scanner type.
     - A two-step approval process can be enforced for any desired changes to security approval rules.
     - A single set of security policies can be applied to multiple development projects to allow for ease in maintaining a single, centralized ruleset.
-    
+
     Security approval policies can be used alongside the existing Vulnerability-Check feature, as the two policies are additive and don't conflict. However, we encourage users to migrate their Vulnerability-Check rules over to security approval policies. Vulnerability-Check rules are now [deprecated](https://docs.gitlab.com/ee/update/deprecations.html#vulnerability-check), and are scheduled for removal in GitLab 15.0. Self managed users will need to enable the `scan_result_policy` feature flag prior to using this feature. To get started, navigate to **Security & Compliance > Policies** and create a new Scan Result type policy.
   stage: protect
   self-managed: true
@@ -58,7 +58,7 @@
     [user impersonation](https://docs.gitlab.com/ee/user/admin_area/#user-impersonation) starting and stopping. This was previously
     only available on a page unavailable to GitLab SaaS customers. We are excited to bring
     it to the group page which allows both self-managed and SaaS users to view these events!
-    
+
     These events are helpful to understand if an administrator impersonated a user in your group and any actions that the
     administrator took as the impersonated user. You can correlate:
 
@@ -80,7 +80,7 @@
   body: |
     In this release, we have introduced additional progress tracking capabilities to roadmaps. You can now view the percentage of completed epics based on issue count instead of issue weight. This functionality is useful for organizations that are using Kanban or other methodologies that don't require their teams to set a weight on issues.
 
-    You can now also customize the level of milestones to include in your roadmap, allowing you to tailor your view to meet the needs of your audience.    
+    You can now also customize the level of milestones to include in your roadmap, allowing you to tailor your view to meet the needs of your audience.
   stage: plan
   self-managed: true
   gitlab-com: true
@@ -89,4 +89,3 @@
   image_url: 'https://about.gitlab.com/images/14_8/rp_roadmap_settings.png'
   published_at: 2022-02-22
   release: 14.8
-  

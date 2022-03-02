@@ -8,16 +8,12 @@ export const initToggle = (el) => {
     return false;
   }
 
-  const {
-    name,
-    isChecked,
-    disabled,
-    isLoading,
-    label,
-    help,
-    labelPosition,
-    ...dataset
-  } = el.dataset;
+  const { name, id, isChecked, disabled, isLoading, label, help, labelPosition, ...dataset } =
+    el.dataset || {};
+
+  const dataAttrs = Object.fromEntries(
+    Object.entries(dataset).map(([key, value]) => [`data-${kebabCase(key)}`, value]),
+  );
 
   return new Vue({
     el,
@@ -50,9 +46,7 @@ export const initToggle = (el) => {
           labelPosition,
         },
         class: el.className,
-        attrs: Object.fromEntries(
-          Object.entries(dataset).map(([key, value]) => [`data-${kebabCase(key)}`, value]),
-        ),
+        attrs: { id, ...dataAttrs },
         on: {
           change: (newValue) => {
             this.value = newValue;

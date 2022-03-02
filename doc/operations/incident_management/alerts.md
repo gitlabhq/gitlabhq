@@ -217,13 +217,3 @@ add a to-do item:
    ![Alert Details Add a to do](img/alert_detail_add_todo_v13_9.png)
 
 To view your To-Do List, on the top bar, select **To-Do List** (**{todo-done}**).
-
-## View the environment that generated the alert
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.5 behind a feature flag, disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.6.
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-The environment information and the link are displayed in the [Alert Details tab](#alert-details-tab).

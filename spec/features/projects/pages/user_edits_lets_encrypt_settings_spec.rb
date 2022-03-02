@@ -50,7 +50,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled do
       expect(page).to have_selector '.card-header', text: 'Certificate'
       expect(page).to have_text domain.subject
 
-      find('.js-auto-ssl-toggle-container .project-feature-toggle').click
+      find('.js-auto-ssl-toggle-container .js-project-feature-toggle').click
 
       expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'true'
       expect(page).not_to have_selector '.card-header', text: 'Certificate'
@@ -74,7 +74,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled do
       expect(page).not_to have_field 'Certificate (PEM)', type: 'textarea'
       expect(page).not_to have_field 'Key (PEM)', type: 'textarea'
 
-      find('.js-auto-ssl-toggle-container .project-feature-toggle').click
+      find('.js-auto-ssl-toggle-container .js-project-feature-toggle').click
 
       expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'false'
       expect(page).to have_field 'Certificate (PEM)', type: 'textarea'

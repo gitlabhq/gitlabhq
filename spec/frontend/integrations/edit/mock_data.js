@@ -13,6 +13,7 @@ export const mockIntegrationProps = {
   fields: [],
   type: '',
   inheritFromId: 25,
+  integrationLevel: 'project',
 };
 
 export const mockJiraIssueTypes = [

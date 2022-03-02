@@ -37,7 +37,7 @@ describe('IntegrationForm', () => {
   const createComponent = ({
     customStateProps = {},
     initialState = {},
-    props = {},
+    provide = {},
     mountFn = shallowMountExtended,
   } = {}) => {
     const store = createStore({
@@ -47,7 +47,7 @@ describe('IntegrationForm', () => {
     dispatch = jest.spyOn(store, 'dispatch').mockImplementation();
 
     wrapper = mountFn(IntegrationForm, {
-      propsData: { ...props },
+      provide,
       store,
       stubs: {
         OverrideDropdown,
@@ -300,7 +300,7 @@ describe('IntegrationForm', () => {
       });
     });
 
-    describe('with `helpHtml` prop', () => {
+    describe('with `helpHtml` provided', () => {
       const mockTestId = 'jest-help-html-test';
 
       setHTMLFixture(`
@@ -316,7 +316,7 @@ describe('IntegrationForm', () => {
         const mockHelpHtml = document.querySelector(`[data-testid="${mockTestId}"]`);
 
         createComponent({
-          props: {
+          provide: {
             helpHtml: mockHelpHtml.outerHTML,
           },
         });

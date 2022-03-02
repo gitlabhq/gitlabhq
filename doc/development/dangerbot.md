@@ -124,8 +124,8 @@ NOTE:
 This is applicable to all the projects that use the [`gitlab-dangerfiles` gem](https://rubygems.org/gems/gitlab-dangerfiles).
 
 Danger is often used to improve MR hygiene by adding labels. Instead of calling the
-API directly in your `Dangerfile`, add the labels to `helper.labels_to_add` set (with `helper.labels_to_add << label`
-or `helper.labels_to_add.merge(array_of_labels)`.
+API directly in your `Dangerfile`, add the labels to `helper.labels_to_add` array (with `helper.labels_to_add << label`
+or `helper.labels_to_add.concat(array_of_labels)`.
 `gitlab-dangerfiles` will then take care of adding the labels to the MR with a single API call after all the rules
 have had the chance to add to `helper.labels_to_add`.
 

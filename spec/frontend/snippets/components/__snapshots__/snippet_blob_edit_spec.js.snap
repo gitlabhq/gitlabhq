@@ -14,6 +14,7 @@ exports[`Snippet Blob Edit component with loaded blob matches snapshot 1`] = `
   />
    
   <source-editor-stub
+    debouncevalue="250"
     editoroptions="[object Object]"
     fileglobalid="blob_local_7"
     filename="foo/bar/test.md"
