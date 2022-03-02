@@ -40,6 +40,10 @@ RSpec.describe MergeRequests::BulkRemoveAttentionRequestedService do
         expect(reviewer.state).to eq 'reviewed'
         expect(assignee.state).to eq 'reviewed'
       end
+
+      it_behaves_like 'invalidates attention request cache' do
+        let(:users) { [assignee_user, user] }
+      end
     end
   end
 end

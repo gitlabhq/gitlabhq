@@ -27,6 +27,7 @@ import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_v
 import LabelsSelectWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
 import { LabelType } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import eventHub from '~/sidebar/event_hub';
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import Translate from '../vue_shared/translate';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
@@ -619,9 +620,10 @@ export function mountSidebar(mediator, store) {
   mountSeverityComponent();
 
   if (window.gon?.features?.mrAttentionRequests) {
-    eventHub.$on('removeCurrentUserAttentionRequested', () =>
-      mediator.removeCurrentUserAttentionRequested(),
-    );
+    eventHub.$on('removeCurrentUserAttentionRequested', () => {
+      mediator.removeCurrentUserAttentionRequested();
+      refreshUserMergeRequestCounts();
+    });
   }
 }
 

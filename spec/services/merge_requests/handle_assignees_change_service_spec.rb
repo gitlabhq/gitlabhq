@@ -89,7 +89,7 @@ RSpec.describe MergeRequests::HandleAssigneesChangeService do
 
     it 'removes attention requested state' do
       expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
-        .with(project: project, current_user: user, merge_request: merge_request, user: user)
+        .with(project: project, current_user: user, merge_request: merge_request)
         .and_call_original
 
       execute

@@ -26,7 +26,7 @@ module MergeRequests
       execute_assignees_hooks(merge_request, old_assignees) if options[:execute_hooks]
 
       unless new_assignees.include?(current_user)
-        remove_attention_requested(merge_request, current_user)
+        remove_attention_requested(merge_request)
       end
     end
 

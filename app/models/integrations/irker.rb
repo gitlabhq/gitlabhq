@@ -4,8 +4,6 @@ require 'uri'
 
 module Integrations
   class Irker < Integration
-    include ActionView::Helpers::UrlHelper
-
     prop_accessor :server_host, :server_port, :default_irc_uri
     prop_accessor :recipients, :channels
     boolean_accessor :colorize_messages
@@ -44,7 +42,7 @@ module Integrations
     end
 
     def fields
-      recipients_docs_link = link_to s_('IrkerService|How to enter channels or users?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/irker', anchor: 'enter-irker-recipients'), target: '_blank', rel: 'noopener noreferrer'
+      recipients_docs_link = ActionController::Base.helpers.link_to s_('IrkerService|How to enter channels or users?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/irker', anchor: 'enter-irker-recipients'), target: '_blank', rel: 'noopener noreferrer'
       [
         { type: 'text', name: 'server_host', placeholder: 'localhost', title: s_('IrkerService|Server host (optional)'),
           help: s_('IrkerService|irker daemon hostname (defaults to localhost).') },
@@ -61,7 +59,7 @@ module Integrations
     end
 
     def help
-      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/irker', anchor: 'set-up-an-irker-daemon'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/irker', anchor: 'set-up-an-irker-daemon'), target: '_blank', rel: 'noopener noreferrer'
       s_('IrkerService|Send update messages to an irker server. Before you can use this, you need to set up the irker daemon. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 

@@ -18,12 +18,14 @@ module MergeRequests
         update_state(reviewer)
         update_state(assignee)
 
+        user.invalidate_attention_requested_count
+
         if reviewer&.attention_requested? || assignee&.attention_requested?
           create_attention_request_note
           notity_user
 
           if current_user.id != user.id
-            remove_attention_requested(merge_request, current_user)
+            remove_attention_requested(merge_request)
           end
         else
           create_remove_attention_request_note

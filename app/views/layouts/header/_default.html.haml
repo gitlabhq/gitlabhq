@@ -68,7 +68,8 @@
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
-              = link_to assigned_mrs_dashboard_path, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
+              - top_level_link = Feature.enabled?(:mr_attention_requests, default_enabled: :yaml) ? attention_requested_mrs_dashboard_path : assigned_mrs_dashboard_path
+              = link_to top_level_link, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
                 data: { qa_selector: 'merge_requests_shortcut_button',
                 toggle: "dropdown",
                 placement: 'bottom',
@@ -84,6 +85,12 @@
                 %ul
                   %li.dropdown-header
                     = _('Merge requests')
+                  - if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+                    %li
+                      = link_to attention_requested_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
+                        = _('Need your attention')
+                        = gl_badge_tag user_merge_requests_counts[:attention_requested_count], { size: :sm, variant: user_merge_requests_counts[:attention_requested_count] == 0 ? :neutral : :warning }, { class: 'merge-request-badge gl-ml-auto js-attention-count' }
+                    %li.divider
                   %li
                     = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
                       = _('Assigned to you')

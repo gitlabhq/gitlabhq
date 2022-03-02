@@ -1,25 +1,6 @@
 ---
 Rails/IncludeUrlHelper:
   Exclude:
-  - app/models/integrations/asana.rb
-  - app/models/integrations/bamboo.rb
-  - app/models/integrations/bugzilla.rb
-  - app/models/integrations/campfire.rb
-  - app/models/integrations/confluence.rb
-  - app/models/integrations/custom_issue_tracker.rb
-  - app/models/integrations/discord.rb
-  - app/models/integrations/ewm.rb
-  - app/models/integrations/external_wiki.rb
-  - app/models/integrations/flowdock.rb
-  - app/models/integrations/hangouts_chat.rb
-  - app/models/integrations/irker.rb
-  - app/models/integrations/jenkins.rb
-  - app/models/integrations/mattermost.rb
-  - app/models/integrations/pivotaltracker.rb
-  - app/models/integrations/redmine.rb
-  - app/models/integrations/webex_teams.rb
-  - app/models/integrations/youtrack.rb
-  - ee/app/models/integrations/github.rb
   - ee/spec/helpers/ee/projects/security/configuration_helper_spec.rb
   - ee/spec/lib/banzai/filter/cross_project_issuable_information_filter_spec.rb
   - spec/helpers/merge_requests_helper_spec.rb

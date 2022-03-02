@@ -2,8 +2,6 @@
 
 module Integrations
   class HangoutsChat < BaseChatNotification
-    include ActionView::Helpers::UrlHelper
-
     def title
       'Google Chat'
     end
@@ -17,7 +15,7 @@ module Integrations
     end
 
     def help
-      docs_link = link_to _('How do I set up a Google Chat webhook?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/hangouts_chat'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to _('How do I set up a Google Chat webhook?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/hangouts_chat'), target: '_blank', rel: 'noopener noreferrer'
       s_('Before enabling this integration, create a webhook for the room in Google Chat where you want to receive notifications from this project. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 

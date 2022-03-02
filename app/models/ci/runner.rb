@@ -59,7 +59,7 @@ module Ci
 
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
     AVAILABLE_TYPES = runner_types.keys.freeze
-    AVAILABLE_STATUSES = %w[active paused online offline not_connected never_contacted stale].freeze # TODO: Remove in %15.0: active, paused, not_connected. Relevant issues: https://gitlab.com/gitlab-org/gitlab/-/issues/347303, https://gitlab.com/gitlab-org/gitlab/-/issues/347305, https://gitlab.com/gitlab-org/gitlab/-/issues/344648
+    AVAILABLE_STATUSES = %w[active paused online offline not_connected never_contacted stale].freeze # TODO: Remove in %15.0: not_connected. In %16.0: active, paused. Relevant issues: https://gitlab.com/gitlab-org/gitlab/-/issues/347303, https://gitlab.com/gitlab-org/gitlab/-/issues/347305, https://gitlab.com/gitlab-org/gitlab/-/issues/344648
     AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
@@ -329,9 +329,9 @@ module Ci
     end
 
     # DEPRECATED
-    # TODO Remove in %15.0 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
+    # TODO Remove in %16.0 in favor of `status` for REST calls
     def deprecated_rest_status
-      if contacted_at.nil?
+      if contacted_at.nil? # TODO Remove in %15.0, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
         :not_connected
       elsif active?
         online? ? :online : :offline

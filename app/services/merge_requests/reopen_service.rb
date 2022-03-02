@@ -6,6 +6,8 @@ module MergeRequests
       return merge_request unless can?(current_user, :reopen_merge_request, merge_request)
 
       if merge_request.reopen
+        users = merge_request.assignees | merge_request.reviewers
+
         create_event(merge_request)
         create_note(merge_request, 'reopened')
         merge_request_activity_counter.track_reopen_mr_action(user: current_user)
@@ -13,11 +15,13 @@ module MergeRequests
         execute_hooks(merge_request, 'reopen')
         merge_request.reload_diff(current_user)
         merge_request.mark_as_unchecked
-        invalidate_cache_counts(merge_request, users: merge_request.assignees | merge_request.reviewers)
+        invalidate_cache_counts(merge_request, users: users)
         merge_request.update_project_counter_caches
         merge_request.cache_merge_request_closes_issues!(current_user)
         merge_request.cleanup_schedule&.destroy
         merge_request.update_column(:merge_ref_sha, nil)
+
+        users.each { |user| user.invalidate_attention_requested_count }
       end
 
       merge_request

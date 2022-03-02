@@ -5,9 +5,11 @@ import SidebarService, { gqClient } from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import toast from '~/vue_shared/plugins/global_toast';
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import Mock from './mock_data';
 
 jest.mock('~/vue_shared/plugins/global_toast');
+jest.mock('~/commons/nav/user_merge_requests');
 
 describe('Sidebar mediator', () => {
   const { mediator: mediatorMockData } = Mock;
@@ -137,6 +139,7 @@ describe('Sidebar mediator', () => {
       });
 
       expect(attentionRequiredService).toHaveBeenCalledWith(1);
+      expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
     });
 
     it.each`

@@ -60,7 +60,7 @@ module MergeRequests
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
 
       unless new_reviewers.include?(current_user)
-        remove_attention_requested(merge_request, current_user)
+        remove_attention_requested(merge_request)
 
         merge_request.merge_request_reviewers_with(new_reviewers).update_all(updated_state_by_user_id: current_user.id)
       end
@@ -253,10 +253,10 @@ module MergeRequests
       ::MergeRequests::BulkRemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request, users: users.uniq).execute
     end
 
-    def remove_attention_requested(merge_request, user)
+    def remove_attention_requested(merge_request)
       return unless merge_request.attention_requested_enabled?
 
-      ::MergeRequests::RemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request, user: user).execute
+      ::MergeRequests::RemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request).execute
     end
   end
 end

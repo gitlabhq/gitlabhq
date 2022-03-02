@@ -2,7 +2,6 @@
 
 module Integrations
   class CustomIssueTracker < BaseIssueTracker
-    include ActionView::Helpers::UrlHelper
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
 
     def title
@@ -14,7 +13,7 @@ module Integrations
     end
 
     def help
-      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/custom_issue_tracker'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/custom_issue_tracker'), target: '_blank', rel: 'noopener noreferrer'
       s_('IssueTracker|Use a custom issue tracker that is not in the integration list. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 

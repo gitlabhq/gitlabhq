@@ -2,7 +2,6 @@
 
 module Integrations
   class Pivotaltracker < Integration
-    include ActionView::Helpers::UrlHelper
     API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'
 
     prop_accessor :token, :restrict_to_branch
@@ -17,7 +16,7 @@ module Integrations
     end
 
     def help
-      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/pivotal_tracker'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/pivotal_tracker'), target: '_blank', rel: 'noopener noreferrer'
       s_('Add commit messages as comments to Pivotal Tracker stories. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
