@@ -84,7 +84,7 @@ export default {
   >
     <strong class="gl-mr-3"> {{ $options.i18n.barLabel }} </strong>
     <gl-dropdown
-      class="gl-mr-6 qa-file-templates-bar"
+      class="gl-mr-6"
       :text="selectedTemplateType.name || $options.i18n.templateTypesDropdownLabel"
     >
       <gl-dropdown-item
@@ -102,7 +102,7 @@ export default {
       @show="fetchTemplateTypes"
     >
       <template #header>
-        <gl-search-box-by-type v-model.trim="search" />
+        <gl-search-box-by-type v-model.trim="search" data-qa-selector="dropdown_filter_input" />
       </template>
       <div>
         <gl-loading-icon v-if="isLoading" />

@@ -225,7 +225,7 @@ gitlab_rails['env'] = {
 ```
 
 For source installations, set the environment variable.
-Refer to [Puma Worker timeout](../operations/puma.md#worker-timeout).
+Refer to [Puma Worker timeout](../operations/puma.md#change-the-worker-timeout).
 
 [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 

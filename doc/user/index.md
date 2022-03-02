@@ -76,12 +76,15 @@ You can also [integrate](project/integrations/overview.md) GitLab with numerous 
 
 There are several types of users in GitLab:
 
-- Regular users and GitLab.com users. <!-- Note: further description TBA -->
-- [Groups](group/index.md) of users.
-- GitLab [administrator area](admin_area/index.md) user.
+- Regular users.
+- [Internal users](../development/internal_users.md) often referred to as bot or system users.
+- [Auditor](permissions.md#auditor-users) with read access to self-managed instances.
 - [GitLab Administrator](../administration/index.md) with full access to
-  self-managed instances' features and settings.
-- [Internal users](../development/internal_users.md).
+  self-managed instances including settings and the [Admin Area](admin_area/index.md).
+
+Each user can be a member in a [group](group/index.md).
+
+See the [permissions page](permissions.md) for details on how each user type is used.
 
 ## User activity
 

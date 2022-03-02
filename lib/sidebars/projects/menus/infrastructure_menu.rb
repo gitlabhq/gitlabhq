@@ -64,7 +64,7 @@ module Sidebars
         end
 
         def serverless_menu_item
-          unless can?(context.current_user, :read_cluster, context.project)
+          unless Feature.enabled?(:deprecated_serverless, context.project, default_enabled: :yaml, type: :ops) && can?(context.current_user, :read_cluster, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :serverless)
           end
 

@@ -7453,6 +7453,15 @@ msgstr ""
 msgid "Clear templates search input"
 msgstr ""
 
+msgid "Clear this checkbox to use a personal access token instead."
+msgstr ""
+
+msgid "Clear this checkbox to use a personal access token or LDAP password instead."
+msgstr ""
+
+msgid "Clear this checkbox to use an external authentication provider instead."
+msgstr ""
+
 msgid "Clear weight"
 msgstr ""
 
@@ -41342,9 +41351,6 @@ msgid "When enabled, existing personal access tokens may be revoked. Leave blank
 msgstr ""
 
 msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
-msgstr ""
-
-msgid "When inactive, an external authentication provider must be used."
 msgstr ""
 
 msgid "When merge requests and commits in the default branch close, any issues they reference also close."

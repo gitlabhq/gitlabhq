@@ -9,6 +9,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 There are multiple types of permissions across GitLab, and when implementing
 anything that deals with permissions, all of them should be considered.
 
+## Instance
+
+### User types
+
+Each user can be one of the following types:
+
+- Regular.
+- External - access to groups and projects only if direct member.
+- [Internal users](internal_users.md) - system created.
+- [Auditor](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/base_policy.rb#L9):
+  - No access to projects or groups settings menu.
+  - No access to Admin Area.
+  - Read-only access to everything else.
+- [Administrator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/policies/base_policy.rb#L6) - read-write access.
+
+See the [permissions page](../user/permissions.md) for details on how each user type is used.
+
 ## Groups and Projects
 
 ### General permissions

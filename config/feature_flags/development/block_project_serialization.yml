@@ -1,0 +1,8 @@
+---
+name: block_project_serialization
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81900
+rollout_issue_url:
+milestone: '14.9'
+type: development
+group: group::workspace
+default_enabled: false

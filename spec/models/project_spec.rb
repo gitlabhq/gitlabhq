@@ -8022,6 +8022,20 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe 'serialization' do
+    let(:object) { build(:project) }
+
+    it_behaves_like 'blocks unsafe serialization'
+
+    context 'when feature flag block_project_serialization is disabled' do
+      before do
+        stub_feature_flags(block_project_serialization: false)
+      end
+
+      it_behaves_like 'allows unsafe serialization'
+    end
+  end
+
   describe '#runners_token' do
     let_it_be(:project) { create(:project) }
 

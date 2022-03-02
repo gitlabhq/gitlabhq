@@ -140,9 +140,7 @@ To learn more, see [Coverage check approval rule](../../../../ci/pipelines/setti
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.4. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `group_merge_request_approval_settings_feature_flag`. On GitLab.com, this feature is available.
+> - [Feature flag `group_merge_request_approval_settings_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/issues/343872) removed in GitLab 14.9.
 
 You can also enforce merge request approval settings:
 

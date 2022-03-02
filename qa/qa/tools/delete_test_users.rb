@@ -5,8 +5,8 @@
 #   - If `dry_run` is true the script will list the users to be deleted by username, but it won't delete them
 #   - Specify `exclude_users` as a comma-separated list of usernames to not delete.
 #
-# Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
-#   - GITLAB_QA_ACCESS_TOKEN must have admin API access
+# Required environment variables: GITLAB_QA_ADMIN_ACCESS_TOKEN and GITLAB_ADDRESS
+#   - GITLAB_QA_ADMIN_ACCESS_TOKEN must have admin API access
 
 module QA
   module Tools
@@ -19,9 +19,9 @@ module QA
 
       def initialize(delete_before: (Date.today - 1).to_s, dry_run: 'false', exclude_users: nil)
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']
-        raise ArgumentError, "Please provide GITLAB_QA_ACCESS_TOKEN" unless ENV['GITLAB_QA_ACCESS_TOKEN']
+        raise ArgumentError, "Please provide GITLAB_QA_ADMIN_ACCESS_TOKEN" unless ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
 
-        @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
+        @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'])
         @dry_run = !FALSY_VALUES.include?(dry_run.to_s.downcase)
         @delete_before = Date.parse(delete_before)
         @page_no = '1'
@@ -29,7 +29,7 @@ module QA
       end
 
       def run
-        puts "Deleting users with a username starting with 'qa-user-' created before #{@delete_before}..."
+        puts "Deleting users with a username starting with 'qa-user-' or 'test-user-' created before #{@delete_before}..."
 
         while page_no.present?
           users = fetch_test_users

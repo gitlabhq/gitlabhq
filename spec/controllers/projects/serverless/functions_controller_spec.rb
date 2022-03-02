@@ -39,8 +39,23 @@ RSpec.describe Projects::Serverless::FunctionsController do
                        project_id: project.to_param)
   end
 
+  shared_examples_for 'behind :deprecated_serverless feature flag' do
+    before do
+      stub_feature_flags(deprecated_serverless: false)
+    end
+
+    it 'returns 404' do
+      action
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
   describe 'GET #index' do
     let(:expected_json) { { 'knative_installed' => knative_state, 'functions' => functions } }
+
+    it_behaves_like 'behind :deprecated_serverless feature flag' do
+      let(:action) { get :index, params: params({ format: :json }) }
+    end
 
     context 'when cache is being read' do
       let(:knative_state) { 'checking' }
@@ -147,6 +162,10 @@ RSpec.describe Projects::Serverless::FunctionsController do
   end
 
   describe 'GET #show' do
+    it_behaves_like 'behind :deprecated_serverless feature flag' do
+      let(:action) { get :show, params: params({ format: :json, environment_id: "*", id: "foo" }) }
+    end
+
     context 'with function that does not exist' do
       it 'returns 404' do
         get :show, params: params({ format: :json, environment_id: "*", id: "foo" })
@@ -239,6 +258,10 @@ RSpec.describe Projects::Serverless::FunctionsController do
   end
 
   describe 'GET #metrics' do
+    it_behaves_like 'behind :deprecated_serverless feature flag' do
+      let(:action) { get :metrics, params: params({ format: :json, environment_id: "*", id: "foo" }) }
+    end
+
     context 'invalid data' do
       it 'has a bad function name' do
         get :metrics, params: params({ format: :json, environment_id: "*", id: "foo" })

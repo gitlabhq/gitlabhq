@@ -38,6 +38,7 @@ class Project < ApplicationRecord
   include GitlabRoutingHelper
   include BulkMemberAccessLoad
   include RunnerTokenExpirationInterval
+  include BlocksUnsafeSerialization
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -3046,6 +3047,10 @@ class Project < ApplicationRecord
     run_after_commit do
       Projects::SyncEvent.enqueue_worker
     end
+  end
+
+  def allow_serialization?(options = nil)
+    Feature.disabled?(:block_project_serialization, self, default_enabled: :yaml) || super
   end
 end
 

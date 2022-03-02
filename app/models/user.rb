@@ -16,7 +16,7 @@ class User < ApplicationRecord
   include FeatureGate
   include CreatedAtFilterable
   include BulkMemberAccessLoad
-  include BlocksJsonSerialization
+  include BlocksUnsafeSerialization
   include WithUploads
   include OptionallySearch
   include FromUnion

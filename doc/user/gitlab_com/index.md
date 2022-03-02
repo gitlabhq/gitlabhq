@@ -299,7 +299,7 @@ for `shared_buffers` is quite high, and we are
 
 ## Puma
 
-GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#worker-timeout).
+GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#change-the-worker-timeout).
 
 ## GitLab.com-specific rate limits
 

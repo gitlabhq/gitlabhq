@@ -68,6 +68,29 @@ RSpec.shared_examples 'note entity' do
     end
   end
 
+  describe ':outdated_line_change_path' do
+    before do
+      allow(note).to receive(:show_outdated_changes?).and_return(show_outdated_changes)
+    end
+
+    context 'when note shows outdated changes' do
+      let(:show_outdated_changes) { true }
+
+      it 'returns correct outdated_line_change_namespace_project_note_path' do
+        path = "/#{note.project.namespace.path}/#{note.project.path}/notes/#{note.id}/outdated_line_change"
+        expect(subject[:outdated_line_change_path]).to eq(path)
+      end
+    end
+
+    context 'when note does not show outdated changes' do
+      let(:show_outdated_changes) { false }
+
+      it 'does not expose outdated_line_change_path' do
+        expect(subject).not_to include(:outdated_line_change_path)
+      end
+    end
+  end
+
   context 'when note was edited' do
     before do
       note.update!(updated_at: 1.minute.from_now, updated_by: user)

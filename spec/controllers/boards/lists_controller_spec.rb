@@ -208,7 +208,7 @@ RSpec.describe Boards::ListsController do
       sign_in(user)
 
       params = { namespace_id: project.namespace.to_param,
-                 project_id: project,
+                 project_id: project.id,
                  board_id: board.to_param,
                  id: list.to_param,
                  list: { position: position },
@@ -221,7 +221,7 @@ RSpec.describe Boards::ListsController do
       sign_in(user)
 
       params = { namespace_id: project.namespace.to_param,
-                 project_id: project,
+                 project_id: project.id,
                  board_id: board.to_param,
                  id: list.to_param,
                  list: setting,

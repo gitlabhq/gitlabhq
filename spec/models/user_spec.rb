@@ -17,7 +17,7 @@ RSpec.describe User do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(TokenAuthenticatable) }
-    it { is_expected.to include_module(BlocksJsonSerialization) }
+    it { is_expected.to include_module(BlocksUnsafeSerialization) }
     it { is_expected.to include_module(AsyncDeviseEmail) }
   end
 
