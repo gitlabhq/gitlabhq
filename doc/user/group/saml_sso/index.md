@@ -176,7 +176,7 @@ See the [troubleshooting page](../../../administration/troubleshooting/group_sam
 
 ### Okta setup notes
 
-Please follow the Okta documentation on [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/) with the notes below for consideration.
+Please follow the Okta documentation on [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) with the notes below for consideration.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).

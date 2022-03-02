@@ -233,10 +233,6 @@ RSpec.describe ExternalPullRequest do
     end
   end
 
-  it_behaves_like 'it has loose foreign keys' do
-    let(:factory_name) { :external_pull_request }
-  end
-
   context 'loose foreign key on external_pull_requests.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }

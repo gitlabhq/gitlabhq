@@ -199,8 +199,8 @@ RSpec.describe API::Issues do
         expect(spam_service).to receive_messages(check_for_spam?: true)
       end
 
-      expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-        expect(verdict_service).to receive(:execute).and_return(DISALLOW)
+      allow_next_instance_of(Spam::AkismetService) do |akismet_service|
+        allow(akismet_service).to receive(:spam?).and_return(true)
       end
     end
 

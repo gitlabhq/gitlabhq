@@ -57,7 +57,7 @@ If you include multiple screenshots it can be helpful to hide all but the first 
 /label ~Quality ~QA ~test
 
 <!-- Test failure type label, please use just one.-->
-/label ~"failure::broken-test" ~"failure::flaky-test" ~"failure::stale-test" ~"failure::test-environment" ~"failure::investigating"
+/label ~"failure::broken-test" ~"failure::flaky-test" ~"failure::stale-test" ~"failure::test-environment" ~"failure::investigating" ~"failure::new"
 
 <!--
 Choose the stage that appears in the test path, e.g. ~"devops::create" for

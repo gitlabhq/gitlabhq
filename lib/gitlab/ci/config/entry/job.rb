@@ -37,10 +37,12 @@ module Gitlab
               next unless dependencies.present?
               next unless needs_value.present?
 
-              missing_needs = dependencies - needs_value[:job].pluck(:name) # rubocop:disable CodeReuse/ActiveRecord (Array#pluck)
+              if needs_value[:job].nil? && needs_value[:cross_dependency].present?
+                errors.add(:needs, "corresponding to dependencies must be from the same pipeline")
+              else
+                missing_needs = dependencies - needs_value[:job].pluck(:name) # rubocop:disable CodeReuse/ActiveRecord (Array#pluck)
 
-              if missing_needs.any?
-                errors.add(:dependencies, "the #{missing_needs.join(", ")} should be part of needs")
+                errors.add(:dependencies, "the #{missing_needs.join(", ")} should be part of needs") if missing_needs.any?
               end
             end
           end

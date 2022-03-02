@@ -420,7 +420,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
-      context 'when has dependencies' do
+      context 'when it has dependencies' do
         context 'that are not a array of strings' do
           let(:config) do
             { script: 'echo', dependencies: 'build-job' }
@@ -433,8 +433,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
-      context 'when has needs' do
-        context 'when have dependencies that are not subset of needs' do
+      context 'when the job has needs' do
+        context 'and there are dependencies that are not included in needs' do
           let(:config) do
             {
               stage: 'test',
@@ -447,6 +447,24 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
           it 'returns error about invalid data' do
             expect(entry).not_to be_valid
             expect(entry.errors).to include 'job dependencies the another-job should be part of needs'
+          end
+
+          context 'and they are only cross pipeline needs' do
+            let(:config) do
+              {
+                script: 'echo',
+                dependencies: ['rspec'],
+                needs: [{
+                  job: 'rspec',
+                  pipeline: 'other'
+                }]
+              }
+            end
+
+            it 'adds an error for dependency keyword usage' do
+              expect(entry).not_to be_valid
+              expect(entry.errors).to include 'job needs corresponding to dependencies must be from the same pipeline'
+            end
           end
         end
       end

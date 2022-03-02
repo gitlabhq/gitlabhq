@@ -101,7 +101,7 @@ Once synchronized, changing the field mapped to `id` and `externalId` may cause 
 ### Okta configuration steps
 
 Before you start this section, complete the [GitLab configuration](#gitlab-configuration) process.
-Make sure that you've also set up a SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/),
+Make sure that you've also set up a SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/),
 as described in the [Okta setup notes](index.md#okta-setup-notes)
 
 Make sure that the Okta setup matches our documentation exactly, especially the NameID

@@ -42,7 +42,7 @@ To view a list of releases:
 
 - On the left sidebar, select **Deployments > Releases**, or
 
-- On the project's overview page, if at least one release exists, click the number of releases.
+- On the project's overview page, if at least one release exists, select the number of releases.
 
   ![Number of Releases](img/releases_count_v13_2.png "Incremental counter of Releases")
 
@@ -52,10 +52,10 @@ To view a list of releases:
 
 ### Sort releases
 
-To sort releases by **Released date** or **Created date**, select from the sort order dropdown. To
+To sort releases by **Released date** or **Created date**, select from the sort order dropdown list. To
 switch between ascending or descending order, select **Sort order**.
 
-![Sort releases dropdown button](img/releases_sort_v13_6.png)
+![Sort releases dropdown list options](img/releases_sort_v13_6.png)
 
 ## Create a release
 
@@ -307,9 +307,9 @@ Read more about [Release permissions](#release-permissions).
 To edit the details of a release:
 
 1. On the left sidebar, select **Deployments > Releases**.
-1. In the top-right corner of the release you want to modify, click **Edit this release** (the pencil icon).
+1. In the top-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. On the **Edit Release** page, change the release's details.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 You can edit the release title, notes, associated milestones, and asset links.
 To change the release date use the
@@ -330,16 +330,16 @@ the [Releases API](../../../api/releases/index.md#create-a-release).
 In the user interface, to associate milestones to a release:
 
 1. On the left sidebar, select **Deployments > Releases**.
-1. In the top-right corner of the release you want to modify, click **Edit this release** (the pencil icon).
+1. In the top-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. From the **Milestones** list, select each milestone you want to associate. You can select multiple milestones.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 On the **Deployments > Releases** page, the **Milestone** is listed in the top
 section, along with statistics about the issues in the milestones.
 
 ![A Release with one associated milestone](img/release_with_milestone_v12_9.png)
 
-Releases are also visible on the **Issues > Milestones** page, and when you click a milestone
+Releases are also visible on the **Issues > Milestones** page, and when you select a milestone
 on this page.
 
 Here is an example of milestones with no releases, one release, and two releases, respectively.
@@ -360,8 +360,8 @@ You can be notified by email when a new release is created for your project.
 To subscribe to notifications for releases:
 
 1. On the left sidebar, select **Project information**.
-1. Click **Notification setting** (the bell icon).
-1. In the list, click **Custom**.
+1. Select **Notification setting** (the bell icon).
+1. In the list, select **Custom**.
 1. Select the **New release** checkbox.
 1. Close the dialog box to save.
 
@@ -395,12 +395,12 @@ To set a deploy freeze window in the UI, complete these steps:
 
 1. Sign in to GitLab as a user with the Maintainer role.
 1. On the left sidebar, select **Project information**.
-1. In the left navigation menu, navigate to **Settings > CI/CD**.
+1. In the left navigation menu, go to **Settings > CI/CD**.
 1. Scroll to **Deploy freezes**.
-1. Click **Expand** to see the deploy freeze table.
-1. Click **Add deploy freeze** to open the deploy freeze modal.
+1. Select **Expand** to see the deploy freeze table.
+1. Select **Add deploy freeze** to open the deploy freeze modal.
 1. Enter the start time, end time, and time zone of the desired deploy freeze period.
-1. Click **Add deploy freeze** in the modal.
+1. Select **Add deploy freeze** in the modal.
 1. After the deploy freeze is saved, you can edit it by selecting the edit button (**{pencil}**) and remove it by selecting the delete button (**{remove}**).
    ![Deploy freeze modal for setting a deploy freeze period](img/deploy_freeze_v14_3.png)
 
@@ -611,7 +611,7 @@ On [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/releases), you can view t
 ![Feature count](img/feature_count_v14_6.png "Number of features in a release")
 
 The totals are displayed on [shields](https://shields.io/) and are generated per release by
-[a Rake task in the `www-gitlab-com` repo](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/lib/tasks/update_gitlab_project_releases_page.rake).
+[a Rake task in the `www-gitlab-com` repository](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/lib/tasks/update_gitlab_project_releases_page.rake).
 
 | Item    | Formula |
 | ------  | ------ |
@@ -634,7 +634,7 @@ This data is saved in a JSON file and called *release evidence*. The feature
 includes test artifacts and linked milestones to facilitate
 internal processes, like external audits.
 
-To access the release evidence, on the Releases page, click the link to the JSON file that's listed
+To access the release evidence, on the Releases page, select the link to the JSON file that's listed
 under the **Evidence collection** heading.
 
 You can also [use the API](../../../api/releases/index.md#collect-release-evidence) to
@@ -720,7 +720,7 @@ When you create a release, if [job artifacts](../../../ci/yaml/index.md#artifact
 
 Although job artifacts normally expire, artifacts included in release evidence do not expire.
 
-To enable job artifact collection you need to specify both:
+To enable job artifact collection you must specify both:
 
 1. [`artifacts:paths`](../../../ci/yaml/index.md#artifactspaths)
 1. [`artifacts:reports`](../../../ci/yaml/index.md#artifactsreports)

@@ -51,4 +51,4 @@ are some useful links to get you started:
 - [ClearCase to Git](https://therub.org/2013/07/19/clearcase-to-git/)
 - [Dual syncing ClearCase to Git](https://therub.org/2013/10/22/dual-syncing-clearcase-and-git/)
 - [Moving to Git from ClearCase](https://sateeshkumarb.wordpress.com/2011/01/15/moving-to-git-from-clearcase/)
-- [ClearCase to Git webinar](https://www.brighttalk.com/webcast/11817/162473/clearcase-to-git)
+- [ClearCase to Git webinar](https://www.brighttalk.com/webcast/11817/162473)

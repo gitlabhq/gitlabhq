@@ -619,11 +619,11 @@ RSpec.describe Projects::IssuesController do
         end
       end
 
-      context 'when the SpamVerdictService disallows' do
+      context 'when an issue is identified as spam' do
         before do
           stub_application_setting(recaptcha_enabled: true)
-          expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-            expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
+          allow_next_instance_of(Spam::AkismetService) do |akismet_service|
+            allow(akismet_service).to receive(:spam?).and_return(true)
           end
         end
 
@@ -940,8 +940,8 @@ RSpec.describe Projects::IssuesController do
         context 'when an issue is identified as spam' do
           context 'when recaptcha is not verified' do
             before do
-              expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-                expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
+              allow_next_instance_of(Spam::AkismetService) do |akismet_service|
+                allow(akismet_service).to receive(:spam?).and_return(true)
               end
             end
 
@@ -1274,11 +1274,11 @@ RSpec.describe Projects::IssuesController do
         end
       end
 
-      context 'when SpamVerdictService requires recaptcha' do
+      context 'when an issue is identified as spam and requires recaptcha' do
         context 'when captcha is not verified' do
           before do
-            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-              expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
+            allow_next_instance_of(Spam::AkismetService) do |akismet_service|
+              allow(akismet_service).to receive(:spam?).and_return(true)
             end
           end
 

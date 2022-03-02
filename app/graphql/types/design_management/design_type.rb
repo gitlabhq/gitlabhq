@@ -13,6 +13,12 @@ module Types
       implements(Types::Notes::NoteableInterface)
       implements(Types::DesignManagement::DesignFields)
       implements(Types::CurrentUserTodos)
+      implements(Types::TodoableInterface)
+
+      field :web_url,
+            GraphQL::Types::String,
+            null: false,
+            description: 'URL of the design.'
 
       field :versions,
             Types::DesignManagement::VersionType.connection_type,
@@ -39,6 +45,10 @@ module Types
 
       def request_cache_base_key
         self.class.name
+      end
+
+      def web_url
+        Gitlab::UrlBuilder.build(object)
       end
     end
   end

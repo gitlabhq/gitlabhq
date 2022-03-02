@@ -7,6 +7,8 @@ RSpec.describe GitlabSchema.types['AlertManagementAlert'] do
 
   specify { expect(described_class).to require_graphql_authorizations(:read_alert_management_alert) }
 
+  specify { expect(described_class.interfaces).to include(Types::TodoableInterface) }
+
   it 'exposes the expected fields' do
     expected_fields = %i[
       iid
@@ -34,6 +36,7 @@ RSpec.describe GitlabSchema.types['AlertManagementAlert'] do
       details_url
       prometheus_alert
       environment
+      web_url
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

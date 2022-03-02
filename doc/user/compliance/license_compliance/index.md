@@ -55,7 +55,7 @@ You can view and modify existing policies from the [policies](#policies) tab.
 
 ## License expressions
 
-GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/).
+GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/SPDX-license-expressions/).
 License compliance can read multiple licenses, but always considers them combined using the `AND` operator. For example,
 if a dependency has two licenses, and one of them is allowed and the other is denied by the project [policy](#policies),
 GitLab evaluates the composite license as _denied_, as this is the safer option.
@@ -90,7 +90,7 @@ The reported licenses might be incomplete or inaccurate.
 | Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage), [CocoaPods](https://cocoapods.org/) v0.39 and below |
 | Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)                               |
 | C++/C      | [Conan](https://conan.io/)                                                                                    |
-| Rust       | [Cargo](https://crates.io)                                                                                    |
+| Rust       | [Cargo](https://crates.io/)                                                                                   |
 | PHP        | [Composer](https://getcomposer.org/)                                                                          |
 
 ## Enable License Compliance
@@ -219,7 +219,7 @@ license_scanning:
     MAVEN_CLI_OPTS: --debug
 ```
 
-`mvn install` runs through all of the [build life cycle](http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
+`mvn install` runs through all of the [build life cycle](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
 stages prior to `install`, including `test`. Running unit tests is not directly
 necessary for the license scanning purposes and consumes time, so it's skipped
 by having the default value of `MAVEN_CLI_OPTS` as `-DskipTests`. If you want
@@ -249,7 +249,7 @@ license_scanning:
 
 Alternatively, you can use a Java key store to verify the TLS connection. For instructions on how to
 generate a key store file, see the
-[Maven Guide to Remote repository access through authenticated HTTPS](http://maven.apache.org/guides/mini/guide-repository-ssl.html).
+[Maven Guide to Remote repository access through authenticated HTTPS](https://maven.apache.org/guides/mini/guide-repository-ssl.html).
 
 ### Selecting the version of Java
 

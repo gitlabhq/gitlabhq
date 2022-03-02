@@ -13,6 +13,8 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
 
   specify { expect(described_class.interfaces).to include(Types::CurrentUserTodos) }
 
+  specify { expect(described_class.interfaces).to include(Types::TodoableInterface) }
+
   it 'has the expected fields' do
     expected_fields = %w[
       notes discussions user_permissions id iid title title_html description

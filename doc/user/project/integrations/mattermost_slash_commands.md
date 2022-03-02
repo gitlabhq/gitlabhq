@@ -165,4 +165,4 @@ different types of notifications. All events are sent to the specified channel.
 ## Further reading
 
 - [Mattermost slash commands documentation](https://docs.mattermost.com/developer/slash-commands.html)
-- [Omnibus GitLab Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/)
+- [Omnibus GitLab Mattermost](../../../integration/mattermost/)

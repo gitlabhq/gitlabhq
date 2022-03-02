@@ -8,6 +8,7 @@ module Types
 
     implements(Types::Notes::NoteableInterface)
     implements(Types::CurrentUserTodos)
+    implements(Types::TodoableInterface)
 
     authorize :read_issue
 

@@ -8595,6 +8595,7 @@ Describes an alert from the project's Alert Management.
 | <a id="alertmanagementalertstatus"></a>`status` | [`AlertManagementStatus`](#alertmanagementstatus) | Status of the alert. |
 | <a id="alertmanagementalerttitle"></a>`title` | [`String`](#string) | Title of the alert. |
 | <a id="alertmanagementalertupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the alert was last updated. |
+| <a id="alertmanagementalertweburl"></a>`webUrl` | [`String!`](#string) | URL of the alert. |
 
 #### Fields with arguments
 
@@ -9991,6 +9992,7 @@ A single design.
 | <a id="designnotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="designnotescount"></a>`notesCount` | [`Int!`](#int) | Total count of user-created notes for this design. |
 | <a id="designproject"></a>`project` | [`Project!`](#project) | Project the design belongs to. |
+| <a id="designweburl"></a>`webUrl` | [`String!`](#string) | URL of the design. |
 
 #### Fields with arguments
 
@@ -15901,6 +15903,7 @@ Representing a to-do entry.
 | <a id="todoid"></a>`id` | [`ID!`](#id) | ID of the to-do item. |
 | <a id="todoproject"></a>`project` | [`Project`](#project) | Project this to-do item is associated with. |
 | <a id="todostate"></a>`state` | [`TodoStateEnum!`](#todostateenum) | State of the to-do item. |
+| <a id="todotarget"></a>`target` | [`Todoable!`](#todoable) | Target of the to-do item. |
 | <a id="todotargettype"></a>`targetType` | [`TodoTargetEnum!`](#todotargetenum) | Target type of the to-do item. |
 
 ### `Topic`
@@ -19413,6 +19416,25 @@ Returns [`TimeboxReport`](#timeboxreport).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="timeboxreportinterfacereportfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group used as a scope for report. For example, `gitlab-org` or `gitlab-org/gitlab`. |
+
+#### `Todoable`
+
+Implementations:
+
+- [`AlertManagementAlert`](#alertmanagementalert)
+- [`BoardEpic`](#boardepic)
+- [`Commit`](#commit)
+- [`Design`](#design)
+- [`Epic`](#epic)
+- [`EpicIssue`](#epicissue)
+- [`Issue`](#issue)
+- [`MergeRequest`](#mergerequest)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="todoableweburl"></a>`webUrl` | [`String`](#string) | URL of this object. |
 
 #### `User`
 

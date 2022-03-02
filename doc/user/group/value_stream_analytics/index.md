@@ -24,6 +24,7 @@ Value stream analytics is also available for [projects](../../analytics/value_st
 
 > - Date range filter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 12.4
 > - Filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
+> - Horizontal stage path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in 13.0 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in 13.12
 
 You must have at least the Reporter role to view value stream analytics for groups.
 
@@ -45,15 +46,15 @@ To view value stream analytics for your group:
         header. The header name differs based on the stage you select.
       - To sort by most or least amount of time spent in each stage, select the **Time** header.
 
+A badge next to the workflow items table header shows the number of workflow items that
+completed during the selected stage.
+
 The table shows a list of related workflow items for the selected stage. Based on the stage you select, this can be:
 
 - CI/CD jobs
 - Issues
 - Merge requests
 - Pipelines
-
-A badge next to the workflow items table header shows the number of workflow items that
-completed the selected stage.
 
 ## View metrics for each development stage
 
@@ -244,7 +245,8 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in GitLab 12.9.
 
 Use custom value streams to create custom stages that align with your own development processes,
-and hide default stages.
+and hide default stages. The dashboard depicts stages as a horizontal process
+flow.
 
 ### Create a value stream
 
@@ -263,12 +265,12 @@ To create a value stream:
 1. On the left sidebar, select **Analytics > Value Stream**.
 1. In the top right, select the dropdown list and then **Create new Value Stream**.
 1. Enter a name for the new Value Stream.
-   - You can [customize the stages](#creating-a-value-stream-with-stages).
+   - You can [customize the stages](#create-a-value-stream-with-stages).
 1. Select **Create Value Stream**.
 
 ![New value stream](img/new_value_stream_v13_12.png "Creating a new value stream")
 
-### Creating a value stream with stages
+### Create a value stream with stages
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50229) in GitLab 13.7.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55572) in GitLab 13.10.
@@ -320,7 +322,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
 1. In the top right, select the dropdown list and then select the relevant value stream.
-1. Next to the value stream dropdown, select **Edit**.
+1. Next to the value stream dropdown list, select **Edit**.
    The edit form is populated with the value stream details.
 1. Optional:
     - Rename the value stream.
@@ -345,20 +347,27 @@ To delete a custom value stream:
 
 ![Delete value stream](img/delete_value_stream_v13_12.png "Deleting a custom value stream")
 
-## Total time chart
+## View number of days for a cycle to complete
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
 > - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
 > - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.
 
-This chart visually depicts the average number of days it takes for cycles to be completed.
+The **Total time chart** shows the average number of days it takes for development cycles to complete.
+The chart shows data for the last 500 workflow items.
 
-This chart uses the global page filters for displaying data based on the selected
-group, projects, and time frame.
-
-When a stage is selected the chart only displays data relevant to the selected stage. On the overview the chart displays a sum of the times for all stages in the value stream.
-
-The chart data is limited to the last 500 items.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value stream**.
+1. Above the **Filter results** box, select a stage:
+   - To view a summary of the cycle time for all stages, select **Overview**.
+   - To view the cycle time for specific stage, select a stage.
+1. Optional. Filter the results:
+   1. Select the **Filter results** text box.
+   1. Select a parameter.
+   1. Select a value or enter text to refine the results.
+   1. To adjust the date range:
+      - In the **From** field, select a start date.
+      - In the **To** field, select an end date.
 
 ## Type of work - Tasks by type chart
 
