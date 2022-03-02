@@ -31,6 +31,8 @@ RSpec.describe Types::Repository::BlobType do
       :permalink_path,
       :environment_formatted_external_url,
       :environment_external_url_for_route_map,
+      :code_navigation_path,
+      :project_blob_path_root,
       :code_owners,
       :simple_viewer,
       :rich_viewer,

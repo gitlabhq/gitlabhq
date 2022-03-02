@@ -169,6 +169,7 @@ RSpec.describe API::Internal::Kubernetes do
               'features' => {}
             ),
             'gitaly_repository' => a_hash_including(
+              'default_branch' => project.default_branch_or_main,
               'storage_name' => project.repository_storage,
               'relative_path' => project.disk_path + '.git',
               'gl_repository' => "project-#{project.id}",

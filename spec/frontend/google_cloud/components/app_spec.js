@@ -17,7 +17,7 @@ const SCREEN_COMPONENTS = {
 };
 const SERVICE_ACCOUNTS_FORM_PROPS = {
   gcpProjects: [1, 2, 3],
-  environments: [4, 5, 6],
+  refs: [4, 5, 6],
   cancelPath: '',
 };
 const HOME_PROPS = {

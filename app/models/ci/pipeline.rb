@@ -25,6 +25,7 @@ module Ci
     }.freeze
     CONFIG_EXTENSION = '.gitlab-ci.yml'
     DEFAULT_CONFIG_PATH = CONFIG_EXTENSION
+    CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
 
     BridgeStatusError = Class.new(StandardError)
 

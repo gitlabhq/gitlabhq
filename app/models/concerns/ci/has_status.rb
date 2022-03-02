@@ -13,6 +13,7 @@ module Ci
     ORDERED_STATUSES = %w[failed preparing pending running waiting_for_resource manual scheduled canceled success skipped created].freeze
     PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
     EXCLUDE_IGNORED_STATUSES = %w[manual failed canceled].to_set.freeze
+    CANCELABLE_STATUSES = %w[running waiting_for_resource preparing pending created scheduled].freeze
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
       failed: 4, canceled: 5, skipped: 6, manual: 7,
       scheduled: 8, preparing: 9, waiting_for_resource: 10 }.freeze
@@ -85,7 +86,7 @@ module Ci
       scope :waiting_for_resource_or_upcoming, -> { with_status(:created, :scheduled, :waiting_for_resource) }
 
       scope :cancelable, -> do
-        where(status: [:running, :waiting_for_resource, :preparing, :pending, :created, :scheduled])
+        where(status: klass::CANCELABLE_STATUSES)
       end
 
       scope :without_statuses, -> (names) do

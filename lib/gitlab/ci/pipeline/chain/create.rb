@@ -14,7 +14,7 @@ module Gitlab
                 with_bulk_insert_tags do
                   pipeline.transaction do
                     pipeline.save!
-                    CommitStatus.bulk_insert_tags!(statuses) if bulk_insert_tags?
+                    CommitStatus.bulk_insert_tags!(statuses)
                   end
                 end
               end
@@ -29,15 +29,9 @@ module Gitlab
 
           private
 
-          def bulk_insert_tags?
-            strong_memoize(:bulk_insert_tags) do
-              ::Feature.enabled?(:ci_bulk_insert_tags, project, default_enabled: :yaml)
-            end
-          end
-
           def with_bulk_insert_tags
             previous = Thread.current['ci_bulk_insert_tags']
-            Thread.current['ci_bulk_insert_tags'] = bulk_insert_tags?
+            Thread.current['ci_bulk_insert_tags'] = true
             yield
           ensure
             Thread.current['ci_bulk_insert_tags'] = previous

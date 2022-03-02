@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::GoogleCloud::GcpRegionsController do
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:repository) { project.repository }
 
   RSpec.shared_examples "should be not found" do
     it 'returns not found' do

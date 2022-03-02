@@ -65,12 +65,15 @@ module Gitlab
         !!defined?(::Rails::Command::RunnerCommand)
       end
 
-      def web_server?
-        puma?
+      # Whether we are executing in an actual application context i.e. Puma or Sidekiq.
+      def application?
+        puma? || sidekiq?
       end
 
+      # Whether we are executing in a multi-threaded environment. For now this is equivalent
+      # to meaning Puma or Sidekiq, but this could change in the future.
       def multi_threaded?
-        puma? || sidekiq?
+        application?
       end
 
       def puma_in_clustered_mode?
@@ -94,7 +97,7 @@ module Gitlab
           threads += Sidekiq.options[:concurrency] + 2
         end
 
-        if web_server?
+        if puma?
           threads += Gitlab::ActionCable::Config.worker_pool_size
         end
 

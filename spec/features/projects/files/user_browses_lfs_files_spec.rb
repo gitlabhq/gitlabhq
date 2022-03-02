@@ -72,7 +72,7 @@ RSpec.describe 'Projects > Files > User browses LFS files' do
         expect(page).not_to have_content('Blame')
 
         expect(page).not_to have_selector(:link_or_button, text: /^Edit$/)
-        expect(page).to have_selector(:link_or_button, 'Edit in Web IDE')
+        expect(page).to have_selector(:link_or_button, 'Open in Web IDE')
       end
     end
   end

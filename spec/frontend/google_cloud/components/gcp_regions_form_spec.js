@@ -10,7 +10,7 @@ describe('GcpRegionsForm component', () => {
   const findAllFormSelects = () => wrapper.findAllComponents(GlFormSelect);
   const findAllButtons = () => wrapper.findAllComponents(GlButton);
 
-  const propsData = { availableRegions: [], environments: [], cancelPath: '#cancel-url' };
+  const propsData = { availableRegions: [], refs: [], cancelPath: '#cancel-url' };
 
   beforeEach(() => {
     wrapper = shallowMount(GcpRegionsForm, { propsData });
@@ -34,12 +34,12 @@ describe('GcpRegionsForm component', () => {
     expect(select.exists()).toBe(true);
   });
 
-  it('contains Environments form group', () => {
+  it('contains Refs form group', () => {
     const formGroup = findAllFormGroups().at(1);
     expect(formGroup.exists()).toBe(true);
   });
 
-  it('contains Environments dropdown', () => {
+  it('contains Refs dropdown', () => {
     const select = findAllFormSelects().at(1);
     expect(select.exists()).toBe(true);
   });

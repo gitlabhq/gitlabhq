@@ -15034,6 +15034,7 @@ Returns [`Tree`](#tree).
 | <a id="repositoryblobblamepath"></a>`blamePath` | [`String`](#string) | Web path to blob blame page. |
 | <a id="repositoryblobcancurrentuserpushtobranch"></a>`canCurrentUserPushToBranch` | [`Boolean`](#boolean) | Whether the current user can push to the branch. |
 | <a id="repositoryblobcanmodifyblob"></a>`canModifyBlob` | [`Boolean`](#boolean) | Whether the current user can modify the blob. |
+| <a id="repositoryblobcodenavigationpath"></a>`codeNavigationPath` | [`String`](#string) | Web path for code navigation. |
 | <a id="repositoryblobcodeowners"></a>`codeOwners` | [`[UserCore!]`](#usercore) | List of code owners for the blob. |
 | <a id="repositoryblobeditblobpath"></a>`editBlobPath` | [`String`](#string) | Web path to edit the blob in the old-style editor. |
 | <a id="repositoryblobenvironmentexternalurlforroutemap"></a>`environmentExternalUrlForRouteMap` | [`String`](#string) | Web path to blob on an environment. |
@@ -15057,6 +15058,7 @@ Returns [`Tree`](#tree).
 | <a id="repositoryblobpermalinkpath"></a>`permalinkPath` | [`String`](#string) | Web path to blob permalink. |
 | <a id="repositoryblobpipelineeditorpath"></a>`pipelineEditorPath` | [`String`](#string) | Web path to edit .gitlab-ci.yml file. |
 | <a id="repositoryblobplaindata"></a>`plainData` | [`String`](#string) | Blob plain highlighted data. |
+| <a id="repositoryblobprojectblobpathroot"></a>`projectBlobPathRoot` | [`String`](#string) | Web path for the root of the blob. |
 | <a id="repositoryblobrawblob"></a>`rawBlob` | [`String`](#string) | Raw content of the blob. |
 | <a id="repositoryblobrawpath"></a>`rawPath` | [`String`](#string) | Web path to download the raw blob. |
 | <a id="repositoryblobrawsize"></a>`rawSize` | [`Int`](#int) | Size (in bytes) of the blob, or the blob target if stored externally. |

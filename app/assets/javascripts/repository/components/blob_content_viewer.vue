@@ -11,6 +11,7 @@ import { __ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
+import CodeIntelligence from '~/code_navigation/components/app.vue';
 import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE } from '../constants';
@@ -30,6 +31,7 @@ export default {
     GlButton,
     ForkSuggestion,
     WebIdeLink,
+    CodeIntelligence,
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
@@ -274,6 +276,12 @@ export default {
         :loading="isLoadingLegacyViewer"
       />
       <component :is="blobViewer" v-else :blob="blobInfo" class="blob-viewer" />
+      <code-intelligence
+        v-if="blobViewer || legacyViewerLoaded"
+        :code-navigation-path="blobInfo.codeNavigationPath"
+        :blob-path="blobInfo.path"
+        :path-prefix="blobInfo.projectBlobPathRoot"
+      />
     </div>
   </div>
 </template>

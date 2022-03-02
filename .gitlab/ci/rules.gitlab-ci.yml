@@ -147,6 +147,9 @@
   - "scripts/trigger-build.rb"
   - "{,ee/,jh/}{bin,config}/**/*.rb"
 
+.ci-templates-patterns: &ci-templates-patterns
+  - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
+
 .ci-qa-patterns: &ci-qa-patterns
   - ".gitlab-ci.yml"
   - ".gitlab/ci/frontend.gitlab-ci.yml"
@@ -441,6 +444,9 @@
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
+  # CI Templates changes
+  - "scripts/lint_templates_bash.rb"
+  - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
 
 .danger-patterns: &danger-patterns
   - "Dangerfile"
@@ -608,6 +614,15 @@
     - <<: *if-dot-com-gitlab-org-and-security-tag
       when: manual
       allow_failure: true
+
+######################
+# CI Templates Rules #
+######################
+.ci-templates:rules:shellcheck:
+  rules:
+    - changes: *ci-templates-patterns
+    - changes:
+        - scripts/lint_templates_bash.rb
 
 ##################
 # Delivery rules #

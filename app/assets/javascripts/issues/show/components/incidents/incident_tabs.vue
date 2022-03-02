@@ -5,6 +5,7 @@ import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DescriptionComponent from '../description.vue';
 import getAlert from './graphql/queries/get_alert.graphql';
 import HighlightBar from './highlight_bar.vue';
@@ -17,7 +18,10 @@ export default {
     GlTabs,
     HighlightBar,
     MetricsTab: () => import('ee_component/issues/show/components/incidents/metrics_tab.vue'),
+    TimelineTab: () =>
+      import('ee_component/issues/show/components/incidents/timeline_events_tab.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath', 'iid', 'uploadMetricsFeatureAvailable'],
   apollo: {
     alert: {
@@ -46,6 +50,9 @@ export default {
   computed: {
     loading() {
       return this.$apollo.queries.alert.loading;
+    },
+    incidentTabEnabled() {
+      return this.glFeatures.incidentTimelineEvents && this.glFeatures.incidentTimelineEventTab;
     },
   },
   mounted() {
@@ -76,6 +83,7 @@ export default {
       >
         <alert-details-table :alert="alert" :loading="loading" />
       </gl-tab>
+      <timeline-tab v-if="incidentTabEnabled" data-testid="timeline-events-tab" />
     </gl-tabs>
   </div>
 </template>

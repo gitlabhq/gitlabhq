@@ -131,6 +131,14 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     external_storage_url_or_path(url_helpers.project_raw_url(project, ref_qualified_path), project)
   end
 
+  def code_navigation_path
+    Gitlab::CodeNavigationPath.new(project, blob.commit_id).full_json_path_for(blob.path)
+  end
+
+  def project_blob_path_root
+    project_blob_path(project, blob.commit_id)
+  end
+
   private
 
   def url_helpers

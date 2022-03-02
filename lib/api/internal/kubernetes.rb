@@ -39,6 +39,7 @@ module API
 
         def gitaly_repository(project)
           {
+            default_branch: project.default_branch_or_main,
             storage_name: project.repository_storage,
             relative_path: project.disk_path + '.git',
             gl_repository: repo_type.identifier_for_container(project),

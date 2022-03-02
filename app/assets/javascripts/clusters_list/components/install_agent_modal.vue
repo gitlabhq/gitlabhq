@@ -194,13 +194,13 @@ export default {
           return createClusterAgent;
         });
     },
-    createAgentTokenMutation(agendId) {
+    createAgentTokenMutation(agentId) {
       return this.$apollo
         .mutate({
           mutation: createAgentToken,
           variables: {
             input: {
-              clusterAgentId: agendId,
+              clusterAgentId: agentId,
               name: this.agentName,
             },
           },

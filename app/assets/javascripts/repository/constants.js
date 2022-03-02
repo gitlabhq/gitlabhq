@@ -52,6 +52,8 @@ export const DEFAULT_BLOB_INFO = {
           ideEditPath: '',
           forkAndEditPath: '',
           ideForkAndEditPath: '',
+          codeNavigationPath: '',
+          projectBlobPathRoot: '',
           forkAndViewPath: '',
           storedExternally: false,
           externalStorage: '',

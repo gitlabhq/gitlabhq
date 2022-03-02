@@ -9,9 +9,10 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment do
 
   describe "#enabled?" do
     before do
-      allow(Feature::Definition).to receive(:get).and_return('_instance_')
+      stub_feature_flags(gitlab_experiment: true)
+      allow(subject).to receive(:feature_flag_defined?).and_return(true)
       allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
-      allow(Feature).to receive(:get).and_return(double(state: :on))
+      allow(subject).to receive(:feature_flag_instance).and_return(double(state: :on))
     end
 
     it "is enabled when all criteria are met" do
@@ -19,7 +20,7 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment do
     end
 
     it "isn't enabled if the feature definition doesn't exist" do
-      expect(Feature::Definition).to receive(:get).with('namespaced_stub').and_return(nil)
+      expect(subject).to receive(:feature_flag_defined?).and_return(false)
 
       expect(subject).not_to be_enabled
     end
@@ -31,7 +32,13 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment do
     end
 
     it "isn't enabled if the feature flag state is :off" do
-      expect(Feature).to receive(:get).with('namespaced_stub').and_return(double(state: :off))
+      expect(subject).to receive(:feature_flag_instance).and_return(double(state: :off))
+
+      expect(subject).not_to be_enabled
+    end
+
+    it "isn't enabled if the gitlab_experiment feature flag is false" do
+      stub_feature_flags(gitlab_experiment: false)
 
       expect(subject).not_to be_enabled
     end

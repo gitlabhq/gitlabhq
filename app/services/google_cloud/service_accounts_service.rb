@@ -14,12 +14,12 @@ module GoogleCloud
     #
     # This method looks up GitLab project's CI vars
     # and returns Google Cloud Service Accounts combinations
-    # aligning GitLab project and environment to GCP projects
+    # aligning GitLab project and ref to GCP projects
 
     def find_for_project
-      group_vars_by_environment.map do |environment_scope, value|
+      group_vars_by_ref.map do |environment_scope, value|
         {
-          environment: environment_scope,
+          ref: environment_scope,
           gcp_project: value['GCP_PROJECT_ID'],
           service_account_exists: value['GCP_SERVICE_ACCOUNT'].present?,
           service_account_key_exists: value['GCP_SERVICE_ACCOUNT_KEY'].present?
@@ -27,21 +27,21 @@ module GoogleCloud
       end
     end
 
-    def add_for_project(environment, gcp_project_id, service_account, service_account_key, is_protected)
+    def add_for_project(ref, gcp_project_id, service_account, service_account_key, is_protected)
       project_var_create_or_replace(
-        environment,
+        ref,
         'GCP_PROJECT_ID',
         gcp_project_id,
         is_protected
       )
       project_var_create_or_replace(
-        environment,
+        ref,
         'GCP_SERVICE_ACCOUNT',
         service_account,
         is_protected
       )
       project_var_create_or_replace(
-        environment,
+        ref,
         'GCP_SERVICE_ACCOUNT_KEY',
         service_account_key,
         is_protected
@@ -50,7 +50,7 @@ module GoogleCloud
 
     private
 
-    def group_vars_by_environment
+    def group_vars_by_ref
       filtered_vars = project.variables.filter { |variable| GCP_KEYS.include? variable.key }
       filtered_vars.each_with_object({}) do |variable, grouped|
         grouped[variable.environment_scope] ||= {}
@@ -59,10 +59,19 @@ module GoogleCloud
     end
 
     def project_var_create_or_replace(environment_scope, key, value, is_protected)
-      params = { key: key, filter: { environment_scope: environment_scope } }
-      existing_variable = ::Ci::VariablesFinder.new(project, params).execute.first
-      existing_variable.destroy if existing_variable
-      project.variables.create!(key: key, value: value, environment_scope: environment_scope, protected: is_protected)
+      change_params = { variable_params: { key: key, value: value, environment_scope: environment_scope, protected: is_protected } }
+      filter_params = { key: key, filter: { environment_scope: environment_scope } }
+
+      existing_variable = ::Ci::VariablesFinder.new(project, filter_params).execute.first
+
+      if existing_variable
+        change_params[:action] = :update
+        change_params[:variable] = existing_variable
+      else
+        change_params[:action] = :create
+      end
+
+      ::Ci::ChangeVariableService.new(container: project, current_user: current_user, params: change_params).execute
     end
   end
 end

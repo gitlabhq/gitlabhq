@@ -93,6 +93,14 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
 
         it 'returns success on GET' do
           authorized_members.each do |authorized_member|
+            allow_next_instance_of(BranchesFinder) do |branches_finder|
+              allow(branches_finder).to receive(:execute).and_return([])
+            end
+
+            allow_next_instance_of(TagsFinder) do |branches_finder|
+              allow(branches_finder).to receive(:execute).and_return([])
+            end
+
             sign_in(authorized_member)
 
             get url
@@ -105,7 +113,7 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
           authorized_members.each do |authorized_member|
             sign_in(authorized_member)
 
-            post url, params: { gcp_project: 'prj1', environment: 'env1' }
+            post url, params: { gcp_project: 'prj1', ref: 'env1' }
 
             expect(response).to redirect_to(project_google_cloud_index_path(project))
           end

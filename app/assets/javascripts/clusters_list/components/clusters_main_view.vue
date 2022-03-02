@@ -42,13 +42,19 @@ export default {
       maxAgents: MAX_CLUSTERS_LIST,
     };
   },
-  methods: {
-    onTabChange(tabName) {
-      this.selectedTabIndex = CLUSTERS_TABS.findIndex((tab) => tab.queryParamValue === tabName);
-      this.maxAgents = tabName === AGENT ? MAX_LIST_COUNT : MAX_CLUSTERS_LIST;
+  watch: {
+    selectedTabIndex(val) {
+      this.onTabChange(val);
     },
-    trackTabChange(tab) {
+  },
+  methods: {
+    setSelectedTab(tabName) {
+      this.selectedTabIndex = CLUSTERS_TABS.findIndex((tab) => tab.queryParamValue === tabName);
+    },
+    onTabChange(tab) {
       const tabName = CLUSTERS_TABS[tab].queryParamValue;
+
+      this.maxAgents = tabName === AGENT ? MAX_LIST_COUNT : MAX_CLUSTERS_LIST;
       this.track(EVENT_ACTIONS_CHANGE, { property: tabName });
     },
   },
@@ -61,7 +67,6 @@ export default {
       sync-active-tab-with-query-params
       nav-class="gl-flex-grow-1 gl-align-items-center"
       lazy
-      @input="trackTabChange"
     >
       <gl-tab
         v-for="(tab, idx) in $options.CLUSTERS_TABS"
@@ -74,7 +79,7 @@ export default {
           :is="tab.component"
           :default-branch-name="defaultBranchName"
           data-testid="clusters-tab-component"
-          @changeTab="onTabChange"
+          @changeTab="setSelectedTab"
         />
       </gl-tab>
 

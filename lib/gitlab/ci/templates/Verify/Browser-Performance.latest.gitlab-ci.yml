@@ -25,7 +25,7 @@ browser_performance:
     - mkdir gitlab-exporter
     # Busybox wget does not support proxied HTTPS, get the real thing.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/287611.
-    - (env | grep -i _proxy= 2>&1 >/dev/null) && apk --no-cache add wget
+    - (env | grep -i _proxy= >/dev/null 2>&1) && apk --no-cache add wget
     - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
     - mkdir sitespeed-results
     - |

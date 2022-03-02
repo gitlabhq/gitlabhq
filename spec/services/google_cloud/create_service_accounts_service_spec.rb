@@ -26,6 +26,8 @@ RSpec.describe GoogleCloud::CreateServiceAccountsService do
     end
 
     it 'creates unprotected vars', :aggregate_failures do
+      allow(ProtectedBranch).to receive(:protected?).and_return(false)
+
       project = create(:project)
 
       service = described_class.new(
@@ -44,6 +46,29 @@ RSpec.describe GoogleCloud::CreateServiceAccountsService do
       expect(project.variables.first.protected).to eq(false)
       expect(project.variables.second.protected).to eq(false)
       expect(project.variables.third.protected).to eq(false)
+    end
+
+    it 'creates protected vars', :aggregate_failures do
+      allow(ProtectedBranch).to receive(:protected?).and_return(true)
+
+      project = create(:project)
+
+      service = described_class.new(
+        project,
+        nil,
+        google_oauth2_token: 'mock-token',
+        gcp_project_id: 'mock-gcp-project-id',
+        environment_name: '*'
+      )
+
+      response = service.execute
+
+      expect(response.status).to eq(:success)
+      expect(response.message).to eq('Service account generated successfully')
+      expect(project.variables.count).to eq(3)
+      expect(project.variables.first.protected).to eq(true)
+      expect(project.variables.second.protected).to eq(true)
+      expect(project.variables.third.protected).to eq(true)
     end
   end
 end

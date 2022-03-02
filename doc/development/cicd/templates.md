@@ -105,6 +105,16 @@ Additional points to keep in mind when authoring templates:
 To make templates easier to follow, templates should all use clear syntax styles,
 with a consistent format.
 
+The `before_script`, `script`, and `after_script` keywords of every job are linted
+using [ShellCheck](https://www.shellcheck.net/) and should follow the
+[Shell scripting standards and style guidelines](../shell_scripting_guide/index.md)
+as much as possible.
+
+ShellCheck assumes that the script is designed to run using [Bash](https://www.gnu.org/software/bash/).
+Templates which use scripts for shells that aren't compatible with the Bash ShellCheck
+rules can be excluded from ShellCheck linting. To exclude a script, add it to the
+`EXCLUDED_TEMPLATES` list in [`scripts/lint_templates_bash.rb`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/scripts/lint_templates_bash.rb).
+
 #### Do not hardcode the default branch
 
 Use [`$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`](../../ci/variables/predefined_variables.md)
@@ -217,6 +227,30 @@ job1:
     ERROR_MESSAGE: "The $TEST_CODE_PATH path is invalid"  # (No need for a comment here, it's already clear)
   script:
     - echo ${ERROR_MESSAGE}
+```
+
+#### Use all-caps naming for non-local variables
+
+If you are expecting a variable to be provided via the CI/CD settings, or via the
+`variables` keyword, that variable must use all-caps naming with underscores (`_`)
+separating words.
+
+```yaml
+.with_login:
+  before_script:
+    # SECRET_TOKEN should be provided via the project settings
+    - docker login -u my-user -p "$SECRET_TOKEN my-registry
+```
+
+Lower-case naming can optionally be used for variables which are defined locally in
+one of the `script` keywords:
+
+```yaml
+job1:
+  script:
+    - response="$(curl "https://example.com/json")"
+    - message="$(echo "$response" | jq -r .message)"
+    - 'echo "Server responded with: $message"'
 ```
 
 ### Backward compatibility

@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -17,9 +18,11 @@ import DownloadViewer from '~/repository/components/blob_viewers/download_viewer
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
 import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
+import CodeIntelligence from '~/code_navigation/components/app.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import httpStatusCodes from '~/lib/utils/http_status';
 import {
   simpleViewerMock,
   richViewerMock,
@@ -37,6 +40,9 @@ let wrapper;
 let mockResolver;
 
 const mockAxios = new MockAdapter(axios);
+
+const createMockStore = () =>
+  new Vuex.Store({ actions: { fetchData: jest.fn, setInitialData: jest.fn() } });
 
 const createComponent = async (mockData = {}, mountFn = shallowMount) => {
   Vue.use(VueApollo);
@@ -75,6 +81,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
 
   wrapper = extendedWrapper(
     mountFn(BlobContentViewer, {
+      store: createMockStore(),
       apolloProvider: fakeApollo,
       propsData: propsMock,
       mixins: [{ data: () => ({ ref: refMock }) }],
@@ -104,6 +111,7 @@ describe('Blob content viewer component', () => {
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
   const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
+  const findCodeIntelligence = () => wrapper.findComponent(CodeIntelligence);
 
   beforeEach(() => {
     isLoggedIn.mockReturnValue(true);
@@ -217,6 +225,26 @@ describe('Blob content viewer component', () => {
   describe('Blob viewer', () => {
     afterEach(() => {
       loadViewer.mockRestore();
+    });
+
+    it('renders a CodeIntelligence component with the correct props', async () => {
+      loadViewer.mockReturnValue(SourceViewer);
+
+      await createComponent();
+
+      expect(findCodeIntelligence().props()).toMatchObject({
+        codeNavigationPath: simpleViewerMock.codeNavigationPath,
+        blobPath: simpleViewerMock.path,
+        pathPrefix: simpleViewerMock.projectBlobPathRoot,
+      });
+    });
+
+    it('does not load a CodeIntelligence component when no viewers are loaded', async () => {
+      const url = 'some_file.js?format=json&viewer=rich';
+      mockAxios.onGet(url).replyOnce(httpStatusCodes.INTERNAL_SERVER_ERROR);
+      await createComponent({ blob: { ...richViewerMock, fileType: 'unknown' } });
+
+      expect(findCodeIntelligence().exists()).toBe(false);
     });
 
     it('does not render a BlobContent component if a Blob viewer is available', async () => {

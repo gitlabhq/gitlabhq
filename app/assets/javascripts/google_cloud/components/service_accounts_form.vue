@@ -1,26 +1,29 @@
 <script>
-import { GlButton, GlFormGroup, GlFormSelect, GlFormCheckbox } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlButton, GlFormCheckbox, GlFormGroup, GlFormSelect } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 export default {
+  ALL_REFS: '*',
   components: { GlButton, GlFormGroup, GlFormSelect, GlFormCheckbox },
   props: {
     gcpProjects: { required: true, type: Array },
-    environments: { required: true, type: Array },
+    refs: { required: true, type: Array },
     cancelPath: { required: true, type: String },
   },
   i18n: {
-    title: __('Create service account'),
-    gcpProjectLabel: __('Google Cloud project'),
-    gcpProjectDescription: __(
-      'New service account is generated for the selected Google Cloud project',
+    title: s__('GoogleCloud|Create service account'),
+    gcpProjectLabel: s__('GoogleCloud|Google Cloud project'),
+    gcpProjectDescription: s__(
+      'GoogleCloud|New service account is generated for the selected Google Cloud project',
     ),
-    environmentLabel: __('Environment'),
-    environmentDescription: __('Generated service account is linked to the selected environment'),
-    submitLabel: __('Create service account'),
-    cancelLabel: __('Cancel'),
-    checkboxLabel: __(
-      'I understand the responsibilities involved with managing service account keys',
+    refsLabel: s__('GoogleCloud|Refs'),
+    refsDescription: s__(
+      'GoogleCloud|Generated service account is linked to the selected branch or tag',
+    ),
+    submitLabel: s__('GoogleCloud|Create service account'),
+    cancelLabel: s__('GoogleCloud|Cancel'),
+    checkboxLabel: s__(
+      'GoogleCloud|I understand the responsibilities involved with managing service account keys',
     ),
   },
 };
@@ -47,18 +50,14 @@ export default {
       </gl-form-select>
     </gl-form-group>
     <gl-form-group
-      label-for="environment"
-      :label="$options.i18n.environmentLabel"
-      :description="$options.i18n.environmentDescription"
+      label-for="ref"
+      :label="$options.i18n.refsLabel"
+      :description="$options.i18n.refsDescription"
     >
-      <gl-form-select id="environment" name="environment" required>
-        <option value="*">{{ __('All') }}</option>
-        <option
-          v-for="environment in environments"
-          :key="environment.name"
-          :value="environment.name"
-        >
-          {{ environment.name }}
+      <gl-form-select id="ref" name="ref" required>
+        <option :value="$options.ALL_REFS">{{ __('All') }}</option>
+        <option v-for="ref in refs" :key="ref" :value="ref">
+          {{ ref }}
         </option>
       </gl-form-select>
     </gl-form-group>

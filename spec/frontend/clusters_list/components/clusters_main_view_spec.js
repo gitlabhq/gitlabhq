@@ -49,14 +49,6 @@ describe('ClustersMainViewComponent', () => {
     expect(findAllTabs()).toHaveLength(CLUSTERS_TABS.length);
   });
 
-  it('passes child-component param to the component', () => {
-    expect(findComponent().props('defaultBranchName')).toBe(defaultBranchName);
-  });
-
-  it('passes correct max-agents param to the modal', () => {
-    expect(findModal().props('maxAgents')).toBe(MAX_CLUSTERS_LIST);
-  });
-
   describe('tabs', () => {
     it.each`
       tabTitle         | queryParamValue      | lineNumber
@@ -72,24 +64,41 @@ describe('ClustersMainViewComponent', () => {
     );
   });
 
-  describe('when the child component emits the tab change event', () => {
+  describe.each`
+    tab    | tabName
+    ${'1'} | ${AGENT}
+    ${'2'} | ${CERTIFICATE_BASED}
+  `('when the child component emits the tab change event for $tabName tab', ({ tab, tabName }) => {
     beforeEach(() => {
-      findComponent().vm.$emit('changeTab', AGENT);
+      findComponent().vm.$emit('changeTab', tabName);
     });
 
-    it('changes the tab', () => {
-      expect(findTabs().attributes('value')).toBe('1');
+    it(`changes the tab value to ${tab}`, () => {
+      expect(findTabs().attributes('value')).toBe(tab);
+    });
+  });
+
+  describe.each`
+    tab  | tabName              | maxAgents
+    ${1} | ${AGENT}             | ${MAX_LIST_COUNT}
+    ${2} | ${CERTIFICATE_BASED} | ${MAX_CLUSTERS_LIST}
+  `('when the active tab is $tabName', ({ tab, tabName, maxAgents }) => {
+    beforeEach(() => {
+      findTabs().vm.$emit('input', tab);
     });
 
-    it('passes correct max-agents param to the modal', () => {
-      expect(findModal().props('maxAgents')).toBe(MAX_LIST_COUNT);
+    it('passes child-component param to the component', () => {
+      expect(findComponent().props('defaultBranchName')).toBe(defaultBranchName);
     });
 
-    it('sends the correct tracking event', () => {
-      findTabs().vm.$emit('input', 1);
+    it(`sets max-agents param to ${maxAgents} and passes it to the modal`, () => {
+      expect(findModal().props('maxAgents')).toBe(maxAgents);
+    });
+
+    it(`sends the correct tracking event with the property '${tabName}'`, () => {
       expect(trackingSpy).toHaveBeenCalledWith(undefined, EVENT_ACTIONS_CHANGE, {
         label: EVENT_LABEL_TABS,
-        property: AGENT,
+        property: tabName,
       });
     });
   });

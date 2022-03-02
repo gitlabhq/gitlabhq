@@ -134,6 +134,12 @@ module Types
             null: true,
             calls_gitaly: true
 
+      field :code_navigation_path, GraphQL::Types::String, null: true, calls_gitaly: true,
+            description: 'Web path for code navigation.'
+
+      field :project_blob_path_root, GraphQL::Types::String, null: true,
+            description: 'Web path for the root of the blob.'
+
       def raw_text_blob
         object.data unless object.binary?
       end

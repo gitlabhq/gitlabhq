@@ -154,6 +154,16 @@ RSpec.describe BlobPresenter do
     end
   end
 
+  describe '#code_navigation_path' do
+    let(:code_navigation_path) { Gitlab::CodeNavigationPath.new(project, blob.commit_id).full_json_path_for(blob.path) }
+
+    it { expect(presenter.code_navigation_path).to eq(code_navigation_path) }
+  end
+
+  describe '#project_blob_path_root' do
+    it { expect(presenter.project_blob_path_root).to eq("/#{project.full_path}/-/blob/HEAD") }
+  end
+
   context 'given a Gitlab::Graphql::Representation::TreeEntry' do
     let(:blob) { Gitlab::Graphql::Representation::TreeEntry.new(super(), repository) }
 

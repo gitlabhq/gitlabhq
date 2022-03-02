@@ -68,11 +68,16 @@ this method only supports replies, and not the other features of [incoming email
 
 ## Accepted headers
 
-Email is processed correctly when a configured email address is present in one of the following headers:
+> Accepting `Received` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81489) in GitLab 14.9 [with a flag](feature_flags.md) named `use_received_header_for_incoming_emails`. Enabled by default.
+
+Email is processed correctly when a configured email address is present in one of the following headers
+(sorted in the order they are checked):
 
 - `To`
+- `References`
 - `Delivered-To`
 - `Envelope-To` or `X-Envelope-To`
+- `Received`
 
 In GitLab 14.6 and later, [Service Desk](../user/project/service_desk.md)
 also checks accepted headers.
@@ -83,6 +88,9 @@ However, it might not include the configured GitLab email address if:
 - The address is in the "CC" field.
 - The address was included when using "Reply all".
 - The email was forwarded.
+
+The `Received` header can contain multiple email addresses. These are checked in the order that they appear.
+The first match is used.
 
 ## Rejected headers
 

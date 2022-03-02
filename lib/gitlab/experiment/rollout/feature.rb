@@ -12,10 +12,11 @@ module Gitlab
         # - not have rolled out the feature flag at all (no percent of actors,
         #   no inclusions, etc.)
         def enabled?
-          return false if ::Feature::Definition.get(feature_flag_name).nil?
+          return false unless feature_flag_defined?
           return false unless Gitlab.dev_env_or_com?
+          return false unless ::Feature.enabled?(:gitlab_experiment, type: :ops, default_enabled: :yaml)
 
-          ::Feature.get(feature_flag_name).state != :off # rubocop:disable Gitlab/AvoidFeatureGet
+          feature_flag_instance.state != :off
         end
 
         # For assignment we first check to see if our feature flag is enabled
@@ -57,6 +58,14 @@ module Gitlab
         end
 
         private
+
+        def feature_flag_instance
+          ::Feature.get(feature_flag_name) # rubocop:disable Gitlab/AvoidFeatureGet
+        end
+
+        def feature_flag_defined?
+          ::Feature::Definition.get(feature_flag_name).present?
+        end
 
         def feature_flag_name
           experiment.name.tr('/', '_')

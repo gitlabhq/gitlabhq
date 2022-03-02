@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-return if Feature.feature_flags_available? && Feature.enabled?(:prometheus_initializer_refactor, default_enabled: :yaml)
+return unless Feature.feature_flags_available? && Feature.enabled?(:prometheus_initializer_refactor, default_enabled: :yaml)
 
 # Keep separate directories for separate processes
 def prometheus_default_multiproc_dir
@@ -18,8 +18,6 @@ end
 ::Prometheus::Client.configure do |config|
   config.logger = Gitlab::AppLogger
 
-  config.initial_mmap_file_size = 4 * 1024
-
   config.multiprocess_files_dir = ENV['prometheus_multiproc_dir'] || prometheus_default_multiproc_dir
 
   config.pid_provider = ::Prometheus::PidProvider.method(:worker_id)
@@ -29,6 +27,10 @@ Gitlab::Application.configure do |config|
   # 0 should be Sentry to catch errors in this middleware
   config.middleware.insert_after(Labkit::Middleware::Rack, Gitlab::Metrics::RequestsRackMiddleware)
 end
+
+# Any actions beyond this check should only execute outside of tests, when running in an application
+# context (i.e. not in the Rails console or rspec) and when users have enabled metrics.
+return if Rails.env.test? || !Gitlab::Runtime.application? || !Gitlab::Metrics.prometheus_metrics_enabled?
 
 if Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0')
   # The single worker outside of a sidekiq-cluster, or the first worker (sidekiq_0)
@@ -48,55 +50,56 @@ if Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER
   end
 end
 
-if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
+Gitlab::Cluster::LifecycleEvents.on_master_start do
   # When running Puma in a Single mode, `on_master_start` and `on_worker_start` are the same.
   # Thus, we order these events to run `reinitialize_on_pid_change` with `force: true` first.
-  Gitlab::Cluster::LifecycleEvents.on_master_start do
-    ::Prometheus::Client.reinitialize_on_pid_change(force: true)
+  ::Prometheus::Client.reinitialize_on_pid_change(force: true)
 
-    if Gitlab::Runtime.puma?
-      Gitlab::Metrics::Samplers::PumaSampler.instance.start
-    end
+  Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION, revision: Gitlab.revision }, 1)
 
-    Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION, revision: Gitlab.revision }, 1)
+  if Gitlab::Runtime.puma?
+    Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
 
-    if Gitlab::Runtime.puma?
-      Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
-    end
+    Gitlab::Metrics::Samplers::PumaSampler.instance.start
 
-    Gitlab::Ci::Parsers.instrument!
-  rescue IOError => e
-    Gitlab::ErrorTracking.track_exception(e)
-    Gitlab::Metrics.error_detected!
-  end
-
-  Gitlab::Cluster::LifecycleEvents.on_worker_start do
-    defined?(::Prometheus::Client.reinitialize_on_pid_change) && ::Prometheus::Client.reinitialize_on_pid_change
-    logger = Gitlab::AppLogger
-    Gitlab::Metrics::Samplers::RubySampler.initialize_instance(logger: logger).start
-    Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance(logger: logger).start
-    Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance(logger: logger).start
-
-    if Gitlab::Runtime.puma?
-      Gitlab::Metrics::Samplers::ActionCableSampler.instance(logger: logger).start
-    end
-
-    if Gitlab.ee? && Gitlab::Runtime.sidekiq?
-      Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start
-    end
-
-    Gitlab::Ci::Parsers.instrument!
-  rescue IOError => e
-    Gitlab::ErrorTracking.track_exception(e)
-    Gitlab::Metrics.error_detected!
-  end
-end
-
-if Gitlab::Runtime.puma?
-  Gitlab::Cluster::LifecycleEvents.on_master_start do
+    # Starts a metrics server to export metrics from the Puma primary.
     Gitlab::Metrics::Exporter::WebExporter.instance.start
   end
 
+  Gitlab::Ci::Parsers.instrument!
+rescue IOError => e
+  Gitlab::ErrorTracking.track_exception(e)
+  Gitlab::Metrics.error_detected!
+end
+
+Gitlab::Cluster::LifecycleEvents.on_worker_start do
+  defined?(::Prometheus::Client.reinitialize_on_pid_change) && ::Prometheus::Client.reinitialize_on_pid_change
+  logger = Gitlab::AppLogger
+  Gitlab::Metrics::Samplers::RubySampler.initialize_instance(logger: logger).start
+  Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance(logger: logger).start
+  Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance(logger: logger).start
+
+  if Gitlab::Runtime.puma?
+    # Since we are running a metrics server on the Puma primary, we would inherit
+    # this thread after forking into workers, so we need to explicitly stop it here.
+    # NOTE: This will not be necessary anymore after moving to an external server
+    # process via https://gitlab.com/gitlab-org/gitlab/-/issues/350548
+    Gitlab::Metrics::Exporter::WebExporter.instance.stop
+
+    Gitlab::Metrics::Samplers::ActionCableSampler.instance(logger: logger).start
+  end
+
+  if Gitlab.ee? && Gitlab::Runtime.sidekiq?
+    Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start
+  end
+
+  Gitlab::Ci::Parsers.instrument!
+rescue IOError => e
+  Gitlab::ErrorTracking.track_exception(e)
+  Gitlab::Metrics.error_detected!
+end
+
+if Gitlab::Runtime.puma?
   Gitlab::Cluster::LifecycleEvents.on_before_graceful_shutdown do
     # We need to ensure that before we re-exec or shutdown server
     # we do stop the exporter
@@ -109,14 +112,6 @@ if Gitlab::Runtime.puma?
     #
     # We do it again, for being extra safe,
     # but it should not be needed
-    Gitlab::Metrics::Exporter::WebExporter.instance.stop
-  end
-
-  Gitlab::Cluster::LifecycleEvents.on_worker_start do
-    # The `#close_on_exec=` takes effect only on `execve`
-    # but this does not happen for Ruby fork
-    #
-    # This does stop server, as it is running on master.
     Gitlab::Metrics::Exporter::WebExporter.instance.stop
   end
 end

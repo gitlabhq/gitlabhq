@@ -8,18 +8,22 @@ class Projects::GoogleCloud::GcpRegionsController < Projects::GoogleCloud::BaseC
 
   def index
     @google_cloud_path = project_google_cloud_index_path(project)
+    params = { per_page: 50 }
+    branches = BranchesFinder.new(project.repository, params).execute(gitaly_pagination: true)
+    tags = TagsFinder.new(project.repository, params).execute(gitaly_pagination: true)
+    refs = (branches + tags).map(&:name)
     @js_data = {
       screen: 'gcp_regions_form',
       availableRegions: AVAILABLE_REGIONS,
-      environments: project.environments,
+      refs: refs,
       cancelPath: project_google_cloud_index_path(project)
     }.to_json
   end
 
   def create
-    permitted_params = params.permit(:environment, :gcp_region)
+    permitted_params = params.permit(:ref, :gcp_region)
 
-    GoogleCloud::GcpRegionAddOrReplaceService.new(project).execute(permitted_params[:environment], permitted_params[:gcp_region])
+    GoogleCloud::GcpRegionAddOrReplaceService.new(project).execute(permitted_params[:ref], permitted_params[:gcp_region])
 
     redirect_to project_google_cloud_index_path(project), notice: _('GCP region configured')
   end

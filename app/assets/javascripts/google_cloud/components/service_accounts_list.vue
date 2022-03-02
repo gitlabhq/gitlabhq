@@ -18,16 +18,12 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      tableFields: [
-        { key: 'environment', label: __('Environment'), sortable: true },
-        { key: 'gcp_project', label: __('Google Cloud Project'), sortable: true },
-        { key: 'service_account_exists', label: __('Service Account'), sortable: true },
-        { key: 'service_account_key_exists', label: __('Service Account Key'), sortable: true },
-      ],
-    };
-  },
+  tableFields: [
+    { key: 'ref', label: __('Environment'), sortable: true },
+    { key: 'gcp_project', label: __('Google Cloud Project'), sortable: true },
+    { key: 'service_account_exists', label: __('Service Account'), sortable: true },
+    { key: 'service_account_key_exists', label: __('Service Account Key'), sortable: true },
+  ],
   i18n: {
     createServiceAccount: __('Create service account'),
     found: __('✔'),
@@ -62,7 +58,7 @@ export default {
       <h2 class="gl-font-size-h2">{{ $options.i18n.serviceAccountsTitle }}</h2>
       <p>{{ $options.i18n.serviceAccountsDescription }}</p>
 
-      <gl-table :items="list" :fields="tableFields">
+      <gl-table :items="list" :fields="$options.tableFields">
         <template #cell(service_account_exists)="{ value }">
           {{ value ? $options.i18n.found : $options.i18n.notFound }}
         </template>

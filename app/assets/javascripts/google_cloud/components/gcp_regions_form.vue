@@ -1,20 +1,20 @@
 <script>
 import { GlButton, GlFormGroup, GlFormSelect } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export default {
   components: { GlButton, GlFormGroup, GlFormSelect },
   props: {
     availableRegions: { required: true, type: Array },
-    environments: { required: true, type: Array },
+    refs: { required: true, type: Array },
     cancelPath: { required: true, type: String },
   },
   i18n: {
     title: __('Configure region for environment'),
     gcpRegionLabel: __('Region'),
     gcpRegionDescription: __('List of suitable GCP locations'),
-    environmentLabel: __('Environment'),
-    environmentDescription: __('List of environments for this project'),
+    refsLabel: s__('GoogleCloud|Refs'),
+    refsDescription: s__('GoogleCloud|Configured region is linked to the selected branch or tag'),
     submitLabel: __('Configure region'),
     cancelLabel: __('Cancel'),
   },
@@ -28,14 +28,14 @@ export default {
     </header>
 
     <gl-form-group
-      label-for="environment"
-      :label="$options.i18n.environmentLabel"
-      :description="$options.i18n.environmentDescription"
+      label-for="ref"
+      :label="$options.i18n.refsLabel"
+      :description="$options.i18n.refsDescription"
     >
-      <gl-form-select id="environment" name="environment" required>
+      <gl-form-select id="ref" name="ref" required>
         <option value="*">{{ __('All') }}</option>
-        <option v-for="environment in environments" :key="environment.id" :value="environment.name">
-          {{ environment.name }}
+        <option v-for="ref in refs" :key="ref" :value="ref">
+          {{ ref }}
         </option>
       </gl-form-select>
     </gl-form-group>

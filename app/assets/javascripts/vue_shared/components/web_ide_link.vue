@@ -178,7 +178,7 @@ export default {
       if (this.webIdeText) {
         return this.webIdeText;
       } else if (this.isBlob) {
-        return __('Edit in Web IDE');
+        return __('Open in Web IDE');
       } else if (this.isFork) {
         return __('Edit fork in Web IDE');
       }
@@ -218,6 +218,9 @@ export default {
       };
     },
     gitpodActionText() {
+      if (this.isBlob) {
+        return __('Open in Gitpod');
+      }
       return this.gitpodText || __('Gitpod');
     },
     computedShowGitpodButton() {
@@ -247,7 +250,6 @@ export default {
       if (!this.computedShowGitpodButton) {
         return null;
       }
-
       const handleOptions = this.gitpodEnabled
         ? { href: this.gitpodUrl }
         : {

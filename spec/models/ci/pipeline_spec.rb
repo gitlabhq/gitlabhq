@@ -2890,6 +2890,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.cancelable' do
+    subject { described_class.cancelable }
+
+    shared_examples 'containing the pipeline' do |status|
+      context "when it's #{status} pipeline" do
+        let!(:pipeline) { create(:ci_pipeline, status: status) }
+
+        it { is_expected.to contain_exactly(pipeline) }
+      end
+    end
+
+    shared_examples 'not containing the pipeline' do |status|
+      context "when it's #{status} pipeline" do
+        let!(:pipeline) { create(:ci_pipeline, status: status) }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    %i[running pending waiting_for_resource preparing created scheduled manual].each do |status|
+      it_behaves_like 'containing the pipeline', status
+    end
+
+    %i[failed success skipped canceled].each do |status|
+      it_behaves_like 'not containing the pipeline', status
+    end
+  end
+
   describe '#retry_failed' do
     subject(:latest_status) { pipeline.latest_statuses.pluck(:status) }
 
