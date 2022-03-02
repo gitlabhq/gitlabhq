@@ -174,13 +174,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
     end
 
     context 'specifying a delayed job' do
-      let(:config) { { if: '$THIS || $THAT', when: 'delayed', start_in: '15 minutes' } }
+      let(:config) { { if: '$THIS || $THAT', when: 'delayed', start_in: '2 days' } }
 
       it { is_expected.to be_valid }
 
       it 'sets attributes for the job delay' do
         expect(entry.when).to eq('delayed')
-        expect(entry.start_in).to eq('15 minutes')
+        expect(entry.start_in).to eq('2 days')
       end
 
       context 'without a when: key' do
@@ -198,8 +198,18 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
 
         it { is_expected.not_to be_valid }
 
-        it 'returns an error about tstart_in being blank' do
+        it 'returns an error about start_in being blank' do
           expect(entry.errors).to include(/start in can't be blank/)
+        end
+      end
+
+      context 'when start_in value is longer than a week' do
+        let(:config) { { if: '$THIS || $THAT', when: 'delayed', start_in: '2 weeks' } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns an error about start_in exceeding the limit' do
+          expect(entry.errors).to include(/start in should not exceed the limit/)
         end
       end
     end

@@ -199,6 +199,7 @@ RSpec.configure do |config|
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
   config.include StubSpamServices
+  config.include RSpec::Benchmark::Matchers, type: :benchmark
 
   include StubFeatureFlags
 

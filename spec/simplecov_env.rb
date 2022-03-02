@@ -49,7 +49,6 @@ module SimpleCovEnv
 
   def configure_profile
     SimpleCov.configure do
-      enable_coverage :branch
       load_profile 'test_frameworks'
       track_files '{app,config/initializers,config/initializers_before_autoloader,db/post_migrate,haml_lint,lib,rubocop,tooling}/**/*.rb'
 

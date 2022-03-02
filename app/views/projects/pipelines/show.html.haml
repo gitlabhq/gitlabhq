@@ -20,7 +20,7 @@
     .bs-callout.bs-callout-danger
       %h4= _('Found errors in your %{gitlab_ci_yml}:') % { gitlab_ci_yml: '.gitlab-ci.yml' }
       %ul
-        - @pipeline.yaml_errors.split(",").each do |error|
+        - @pipeline.yaml_errors.split("\n").each do |error|
           %li= error
       - lint_link_url = project_ci_pipeline_editor_path(@project, tab: "LINT_TAB")
       - lint_link_start = '<a href="%{url}" class="gl-text-blue-500!">'.html_safe % { url: lint_link_url }

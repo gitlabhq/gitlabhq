@@ -37,7 +37,7 @@ module QA
         target_project.visit!
 
         Page::Project::Show.perform do |project|
-          expect(project).to have_content('README.md')
+          expect { project.has_file?('README.md') }.to eventually_be_truthy.within(max_duration: 60), "Expected a file named README.md but it did not appear."
           expect(project).to have_content('This is a test project')
         end
       end

@@ -305,7 +305,7 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
 
     it "caches the variant determined by the variant resolver" do
-      expect(application_experiment.variant.name).to eq('candidate') # we should be in the experiment
+      expect(application_experiment.assigned.name).to eq('candidate') # we should be in the experiment
 
       application_experiment.run
 
@@ -320,7 +320,7 @@ RSpec.describe ApplicationExperiment, :experiment do
       # the control.
       stub_feature_flags(namespaced_stub: false) # simulate being not rolled out
 
-      expect(application_experiment.variant.name).to eq('control') # if we ask, it should be control
+      expect(application_experiment.assigned.name).to eq('control') # if we ask, it should be control
 
       application_experiment.run
 

@@ -54,7 +54,7 @@ module LooseForeignKeys
     attr_reader :parent_table, :loose_foreign_key_definitions, :deleted_parent_records, :modification_tracker, :deleted_records_counter, :deleted_records_rescheduled_count, :deleted_records_incremented_count
 
     def handle_over_limit
-      return if Feature.disabled?(:lfk_fair_queueing)
+      return if Feature.disabled?(:lfk_fair_queueing, default_enabled: :yaml)
 
       records_to_reschedule = []
       records_to_increment = []

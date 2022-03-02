@@ -73,7 +73,7 @@ module InviteMembersHelper
   def show_invite_members_for_task?(source)
     return unless current_user
 
-    invite_for_help_continuous_onboarding = source.is_a?(Project) && experiment(:invite_for_help_continuous_onboarding, namespace: source.namespace).variant.name == 'candidate'
+    invite_for_help_continuous_onboarding = source.is_a?(Project) && experiment(:invite_for_help_continuous_onboarding, namespace: source.namespace).assigned.name == 'candidate'
     params[:open_modal] == 'invite_members_for_task' || invite_for_help_continuous_onboarding
   end
 
