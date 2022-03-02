@@ -144,6 +144,11 @@ module API
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a Job'
+          optional :job_variables_attributes, type: Array,
+            desc: 'User defined variables that will be included when running the job' do
+            requires :key, type: String, desc: 'The name of the variable'
+            requires :value, type: String, desc: 'The value of the variable'
+          end
         end
 
         post ':id/jobs/:job_id/play', urgency: :low, feature_category: :continuous_integration do
@@ -155,7 +160,7 @@ module API
 
           bad_request!("Unplayable Job") unless job.playable?
 
-          job.play(current_user)
+          job.play(current_user, params[:job_variables_attributes])
 
           status 200
 

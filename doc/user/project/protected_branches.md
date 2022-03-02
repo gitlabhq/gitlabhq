@@ -173,7 +173,7 @@ To enable force pushes on branches that are already protected:
 1. Expand **Protected branches**.
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
 
-When enabled, members who are can push to this branch can also force push.
+Members who can push to this branch can now also force push.
 
 ## Require Code Owner approval on a protected branch **(PREMIUM)**
 

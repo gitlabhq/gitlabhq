@@ -1026,12 +1026,13 @@ class MergeRequest < ApplicationRecord
     ensure_target_project_iid!
 
     fetch_ref!
-    # Prevent the after_create hook from fetching the source branch again
-    # Drop this field after rollout in https://gitlab.com/gitlab-org/gitlab/-/issues/353044.
+    # Prevent the after_create hook from fetching the source branch again.
     @skip_fetch_ref = true
   end
 
   def create_merge_request_diff
+    # Callers such as MergeRequests::BuildService may not call eager_fetch_ref!. Just
+    # in case they haven't, we fetch the ref.
     fetch_ref! unless skip_fetch_ref
 
     # n+1: https://gitlab.com/gitlab-org/gitlab/-/issues/19377

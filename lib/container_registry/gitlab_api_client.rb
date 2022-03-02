@@ -75,7 +75,7 @@ module ContainerRegistry
     def start_import_for(path, pre:)
       with_import_token_faraday do |faraday_client|
         faraday_client.put(import_url_for(path)) do |req|
-          req.params['pre'] = pre.to_s
+          req.params['import_type'] = pre ? 'pre' : 'final'
         end
       end
     end

@@ -457,6 +457,22 @@ To configure the `s3` storage driver in Omnibus:
    - `pathstyle` should be set to true to use `host/bucket_name/object` style paths instead of
      `bucket_name.host/object`. [Set to false for AWS S3](https://aws.amazon.com/blogs/aws/amazon-s3-path-deprecation-plan-the-rest-of-the-story/).
 
+   You can set a rate limit on connections to S3 to avoid 503 errors from the S3 API. To do this,
+   set `maxrequestspersecond` to a number within the [S3 request rate threshold](https://aws.amazon.com/premiumsupport/knowledge-center/s3-503-within-request-rate-prefix/):
+
+   ```ruby
+      registry['storage'] = {
+      's3' => {
+        'accesskey' => 's3-access-key',
+        'secretkey' => 's3-secret-key-for-access-key',
+        'bucket' => 'your-s3-bucket',
+        'region' => 'your-s3-region',
+        'regionendpoint' => 'your-s3-regionendpoint',
+        'maxrequestspersecond' => 100
+      }
+    }
+   ```
+
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **Installations from source**

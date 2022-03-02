@@ -15056,6 +15056,9 @@ msgstr ""
 msgid "Failed to generate export, please try again later."
 msgstr ""
 
+msgid "Failed to generate report, please try again after sometime"
+msgstr ""
+
 msgid "Failed to get ref."
 msgstr ""
 
@@ -16526,9 +16529,6 @@ msgid "GitLab Issue"
 msgstr ""
 
 msgid "GitLab KAS"
-msgstr ""
-
-msgid "GitLab Memberships CSV Export"
 msgstr ""
 
 msgid "GitLab Pages"
@@ -30762,9 +30762,6 @@ msgstr ""
 msgid "Report abuse to admin"
 msgstr ""
 
-msgid "Report is generating and will be sent to your email address."
-msgstr ""
-
 msgid "Reported %{timeAgo} by %{reportedBy}"
 msgstr ""
 
@@ -36434,9 +36431,6 @@ msgid "The API key used by GitLab for accessing the Spam Check service endpoint.
 msgstr ""
 
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{email} in an attachment."
-msgstr ""
-
-msgid "The CSV export you requested of all user memberships is attached to this email."
 msgstr ""
 
 msgid "The GitLab subscription service (customers.gitlab.com) is currently experiencing an outage. You can monitor the status and get updates at %{linkStart}status.gitlab.com%{linkEnd}."

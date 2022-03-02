@@ -77,7 +77,10 @@ observability:
 
 ## Remove an agent
 
-You can remove an agent by using the [GitLab UI](#remove-an-agent-through-the-gitlab-ui) or the [GraphQL API](#remove-an-agent-with-the-gitlab-graphql-api).
+You can remove an agent by using the [GitLab UI](#remove-an-agent-through-the-gitlab-ui) or the
+[GraphQL API](#remove-an-agent-with-the-gitlab-graphql-api). The agent and any associated tokens
+are removed from GitLab, but no changes are made in your Kubernetes cluster. You must
+clean up those resources manually.
 
 ### Remove an agent through the GitLab UI
 

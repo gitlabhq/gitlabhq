@@ -172,7 +172,6 @@ By default, impersonation is enabled. GitLab can be configured to [disable imper
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292436) in GitLab 13.9.
-> - [Moved to delivery by email](https://gitlab.com/gitlab-org/gitlab/-/issues/343859) in GitLab 14.8.
 
 An administrator can export user permissions for all users in the GitLab instance from the Admin Area's Users page.
 The export lists direct membership the users have in groups and projects.
@@ -189,11 +188,6 @@ The following data is included in the export:
 Only the first 100,000 user accounts are exported.
 
 ![user permission export button](img/export_permissions_v13_11.png)
-
-GitLab creates a CSV file and:
-
-- In GitLab 14.7 and earlier, the file is downloaded in your browser.
-- In GitLab 14.8 and later, the file is sent to your primary email address.
 
 #### Users statistics
 

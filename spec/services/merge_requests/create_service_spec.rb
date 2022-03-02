@@ -454,7 +454,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
       end
     end
 
-    shared_examples 'when source and target projects are different' do |eager_fetch_ref_enabled|
+    shared_examples 'when source and target projects are different' do
       let(:target_project) { fork_project(project, nil, repository: true) }
 
       let(:opts) do
@@ -498,11 +498,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
 
         it 'creates the merge request', :sidekiq_might_not_need_inline do
           expect_next_instance_of(MergeRequest) do |instance|
-            if eager_fetch_ref_enabled
-              expect(instance).to receive(:eager_fetch_ref!).and_call_original
-            else
-              expect(instance).not_to receive(:eager_fetch_ref!)
-            end
+            expect(instance).to receive(:eager_fetch_ref!).and_call_original
           end
 
           merge_request = described_class.new(project: project, current_user: user, params: opts).execute
@@ -520,17 +516,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when merge_request_eager_fetch_ref is enabled' do
-      it_behaves_like 'when source and target projects are different', true
-    end
-
-    context 'when merge_request_eager_fetch_ref is disabled' do
-      before do
-        stub_feature_flags(merge_request_eager_fetch_ref: false)
-      end
-
-      it_behaves_like 'when source and target projects are different', false
-    end
+    it_behaves_like 'when source and target projects are different'
 
     context 'when user sets source project id' do
       let(:another_project) { create(:project) }

@@ -822,16 +822,38 @@ Triggers a manual action to start a job.
 POST /projects/:id/jobs/:job_id/play
 ```
 
-| Attribute | Type           | Required               | Description |
-|-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
+| Attribute                  | Type            | Required               | Description |
+|----------------------------|-----------------|------------------------|-------------|
+| `id`                       | integer/string  | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id`                   | integer         | **{check-circle}** Yes | ID of a job. |
+| `job_variables_attributes` | array of hashes | **{dotted-circle}** No | An array containing the custom variables available to the job. [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/37267) GitLab 14.9. |
+
+Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/1/play"
+curl --request POST "https://gitlab.example.com/api/v4/projects/1/jobs/1/play
+     --header "PRIVATE-TOKEN: <your_access_token>"
+     --data @variables.json
 ```
 
-Example of response
+`@variables.json` is structured like:
+
+```json
+{
+  "job_variables_attributes": [
+    {
+      "key": "TEST_VAR_1",
+      "value": "test1"
+    },
+    {
+      "key": "TEST_VAR_2",
+      "value": "test2"
+    }
+  ]
+}
+```
+
+Example response:
 
 ```json
 {

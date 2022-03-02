@@ -22,6 +22,9 @@ Then, install the packages whenever you need to use them as a dependency.
 For documentation of the specific API endpoints that the Composer
 client uses, see the [Composer API documentation](../../../api/packages/composer.md).
 
+Composer v2.0 is recommended. Composer v1.0 is supported, but it has lower performance when working
+in groups with very large numbers of packages.
+
 ## Create a Composer package
 
 If you do not have a Composer package, create one and check it in to

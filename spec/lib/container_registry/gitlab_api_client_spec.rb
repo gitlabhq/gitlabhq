@@ -217,7 +217,8 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
   end
 
   def stub_pre_import(path, status_code, pre:)
-    stub_request(:put, "#{registry_api_url}/gitlab/v1/import/#{path}/?pre=#{pre}")
+    import_type = pre ? 'pre' : 'final'
+    stub_request(:put, "#{registry_api_url}/gitlab/v1/import/#{path}/?import_type=#{import_type}")
       .with(headers: { 'Accept' => described_class::JSON_TYPE, 'Authorization' => "bearer #{import_token}" })
       .to_return(status: status_code, body: '')
   end
