@@ -307,6 +307,33 @@ To migrate back to local storage:
 
 ## Expiring artifacts
 
+> [In GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76504), we improved the performance of removing expired artifacts, introduced [with a flag](feature_flags.md) named `ci_destroy_all_expired_service`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to 
+[enable the feature flag](feature_flags.md) named `ci_destroy_all_expired_service`. The feature is not ready for 
+production use.
+On GitLab.com, this feature is not available.
+
+### Removing expired job artifacts on GitLab self-managed instances
+
+In the process of migrating old artifacts for our SaaS customers, we are working to resolve any potential unrecoverable data loss for self-managed customers for artifacts that they may not want deleted yet. Before we can use the more performant way of cleaning up expired artifacts, we need to do some remediation to make sure customers don't lose their data, which is part of our effort in [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/7097).
+
+Two options are available:
+
+- If you don't need any artifacts created before 2020-06-23, an Administrator can enable the worker for removing expired CI/CD artifacts:
+
+   ```ruby
+   Feature.enable(:ci_destroy_all_expired_service)
+   ```
+
+- If you want to keep any artifacts (including job logs) before 2020-06-23, follow the [progress of the migration effort](https://gitlab.com/groups/gitlab-org/-/epics/7097) where we work on a resolution to have this flag fully enabled in a future release.
+
+Alternatively, Administrators can also run commands in the Rails console to
+[delete artifacts from completed jobs prior to a specific date](#delete-job-artifacts-from-jobs-completed-before-a-specific-date).
+
+### Usage details
+
 If [`artifacts:expire_in`](../ci/yaml/index.md#artifactsexpire_in) is used to set
 an expiry for the artifacts, they are marked for deletion right after that date passes.
 Otherwise, they expire per the [default artifacts expiration setting](../user/admin_area/settings/continuous_integration.md).

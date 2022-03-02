@@ -7,6 +7,7 @@ const viewers = {
   text: () => import('~/vue_shared/components/source_viewer/source_viewer.vue'),
   pdf: () => import('./pdf_viewer.vue'),
   lfs: () => import('./lfs_viewer.vue'),
+  audio: () => import('./audio_viewer.vue'),
 };
 
 export const loadViewer = (type, isUsingLfs) => {

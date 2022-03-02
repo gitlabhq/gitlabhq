@@ -105,7 +105,7 @@ services: # use services to link your app container to the dast job
 
 variables:
   DAST_FULL_SCAN_ENABLED: "true" # do a full scan
-  DAST_ZAP_USE_AJAX_SPIDER: "true" # use the ajax spider
+  DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
 ```
 
 Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
@@ -314,6 +314,7 @@ include:
 
 variables:
   DAST_FULL_SCAN_ENABLED: "true"
+  DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
 ```
 
 If your DAST job exceeds the job timeout and you need to reduce the scan duration, we shared some
@@ -455,6 +456,7 @@ include:
 variables:
   GIT_STRATEGY: fetch
   DAST_PATHS_FILE: url_file.txt  # url_file.txt lives in the root directory of the project
+  DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
 ```
 
 ##### Use `DAST_PATHS` CI/CD variable
@@ -470,6 +472,7 @@ include:
 
 variables:
   DAST_PATHS: "/page1.html,/category1/page1.html,/page3.html"
+  DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
 ```
 
 When using `DAST_PATHS` and `DAST_PATHS_FILE`, note the following:
@@ -547,6 +550,7 @@ include:
 variables:
   DAST_WEBSITE: https://example.com
   DAST_SPIDER_MINS: 120
+  DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
 ```
 
 Because the template is [evaluated before](../../../ci/yaml/index.md#include) the pipeline
@@ -790,6 +794,7 @@ include:
 dast:
   variables:
     DAST_WEBSITE: "https://example.com"
+    DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
     ...
     DAST_AUTH_VERIFICATION_URL: "https://example.com/user/welcome"
 ```
@@ -808,6 +813,7 @@ include:
 dast:
   variables:
     DAST_WEBSITE: "https://example.com"
+    DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
     ...
     DAST_AUTH_VERIFICATION_SELECTOR: "css:.welcome-user"
 ```
@@ -826,6 +832,7 @@ include:
 dast:
   variables:
     DAST_WEBSITE: "https://example.com"
+    DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
     ...
     DAST_AUTH_VERIFICATION_LOGIN_FORM: "true"
 ```
@@ -847,6 +854,7 @@ include:
 dast:
   variables:
     DAST_WEBSITE: "https://my.site.com"
+    DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
     ...
     DAST_AUTH_URL: "https://my.site.com/admin"
     DAST_BROWSER_PATH_TO_LOGIN_FORM: "css:.navigation-menu,css:.login-menu-item"
@@ -875,6 +883,7 @@ An example configuration where the authentication debug report is exported may l
 dast:
   variables:
     DAST_WEBSITE: "https://example.com"
+    DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
     ...
     DAST_AUTH_REPORT: "true"
   artifacts:

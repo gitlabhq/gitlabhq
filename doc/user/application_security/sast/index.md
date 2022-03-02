@@ -661,6 +661,25 @@ repositories and thus require credentials like username and password to download
 Depending on the analyzer, such credentials can be provided to
 it via [custom CI/CD variables](#custom-cicd-variables).
 
+#### Using a CI/CD variable to pass username and password to a private Go repository
+
+If your Go project depends on private modules, see
+[Fetch modules from private projects](../../packages/go_proxy/index.md#fetch-modules-from-private-projects)
+for how to provide authentication over HTTPS.
+
+To specify credentials via `~/.netrc` provide a `before_script` containing the following:
+
+```yaml
+gosec-sast:
+  before_script:
+    - |
+      cat <<EOF > ~/.netrc
+      machine gitlab.com
+      login $CI_DEPLOY_USER
+      password $CI_DEPLOY_PASSWORD
+      EOF
+```
+
 #### Using a CI/CD variable to pass username and password to a private Maven repository
 
 If your private Maven repository requires login credentials,

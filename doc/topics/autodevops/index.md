@@ -172,7 +172,7 @@ To disable it, follow the same process and clear the
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
 
 When you enable Auto DevOps at group level, the subgroups and projects in that
-group inherit the configuration. This saves you time by batch-enabling it
+group inherit the configuration. This saves you some time by batch-enabling it
 rather than enabling individually for each subgroup or project.
 
 When enabled for a group, you can still disable Auto DevOps
@@ -207,7 +207,7 @@ instance become enabled. This is convenient when you want to run Auto DevOps by
 default for all projects. You can still disable Auto DevOps individually for
 the groups and projects where you don't want to run it.
 
-Only GitLab administrators can enable or disable Auto DevOps in the instance
+Only GitLab administrators can enable or disable Auto DevOps at the instance
 level.
 
 Even when disabled for an instance, group owners and project maintainers
@@ -234,7 +234,7 @@ and clear the **Default to Auto DevOps pipeline** checkbox.
 
 ### Quick start
 
-To guide your through the process of setting up Auto DevOps to deploy to a Kubernetes cluster on
+To guide you through the process of setting up Auto DevOps to deploy to a Kubernetes cluster on
 Google Kubernetes Engine (GKE), see the [quick start guide](quick_start_guide.md).
 
 You can also follow the quick start for the general steps, but deploy to
