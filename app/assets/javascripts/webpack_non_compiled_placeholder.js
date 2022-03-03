@@ -1,3 +1,4 @@
+/* globals LIVE_RELOAD */
 const div = document.createElement('div');
 
 Object.assign(div.style, {
@@ -15,6 +16,10 @@ Object.assign(div.style, {
   'text-align': 'center',
 });
 
+const reloadMessage = LIVE_RELOAD
+  ? 'You have live_reload enabled, the page will reload automatically when complete.'
+  : 'You have live_reload disabled, the page will reload automatically in a few seconds.';
+
 div.innerHTML = `
 <!-- https://github.com/webpack/media/blob/master/logo/icon-square-big.svg -->
 <svg height="50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
@@ -30,9 +35,15 @@ div.innerHTML = `
   Learn more <a href="https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#webpack-settings">here</a>.
 </p>
 <p>
-  If you have live_reload enabled, the page will reload automatically when complete.<br />
-  Otherwise, please <a href="">reload the page manually in a few seconds</a>
+  ${reloadMessage}<br />
+  If it doesn't, please <a href="">reload the page manually</a>.
 </p>
 `;
 
 document.body.append(div);
+
+if (!LIVE_RELOAD) {
+  setTimeout(() => {
+    window.location.reload();
+  }, 5000);
+}

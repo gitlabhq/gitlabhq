@@ -23,6 +23,7 @@ module Issues
 
       handle_move_between_ids(@issue)
 
+      @add_related_issue ||= params.delete(:add_related_issue)
       filter_resolve_discussion_params
 
       create(@issue, skip_system_notes: skip_system_notes)
@@ -52,6 +53,7 @@ module Issues
     # Add new items to Issues::AfterCreateService if they can be performed in Sidekiq
     def after_create(issue)
       user_agent_detail_service.create
+      handle_add_related_issue(issue)
       resolve_discussions_with_issue(issue)
       create_escalation_status(issue)
 
@@ -90,6 +92,12 @@ module Issues
 
     def user_agent_detail_service
       UserAgentDetailService.new(spammable: @issue, spam_params: spam_params)
+    end
+
+    def handle_add_related_issue(issue)
+      return unless @add_related_issue
+
+      IssueLinks::CreateService.new(issue, issue.author, { target_issuable: @add_related_issue }).execute
     end
   end
 end

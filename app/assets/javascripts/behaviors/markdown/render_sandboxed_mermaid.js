@@ -88,7 +88,7 @@ function renderMermaidEl(el, source) {
   const iframeEl = document.createElement('iframe');
   setAttributes(iframeEl, {
     src: getSandboxFrameSrc(),
-    sandbox: 'allow-scripts',
+    sandbox: 'allow-scripts allow-popups',
     frameBorder: 0,
     scrolling: 'no',
     width: '100%',

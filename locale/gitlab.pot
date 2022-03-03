@@ -2394,6 +2394,9 @@ msgstr ""
 msgid "Adds email participant(s)."
 msgstr ""
 
+msgid "Adds this %{issuable_type} as related to the %{issuable_type} it was created from"
+msgstr ""
+
 msgid "Adjust how frequently the GitLab UI polls for updates."
 msgstr ""
 
@@ -24337,9 +24340,6 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-msgid "New %{issueType}"
-msgstr ""
-
 msgid "New %{type} in %{project}"
 msgstr ""
 
@@ -24505,6 +24505,9 @@ msgid "New project/repository"
 msgstr ""
 
 msgid "New public deploy key"
+msgstr ""
+
+msgid "New related %{issueType}"
 msgstr ""
 
 msgid "New release"
@@ -30313,6 +30316,9 @@ msgstr ""
 msgid "Rejected (closed)"
 msgstr ""
 
+msgid "Relate to %{issuable_type} %{add_related_issue_link}"
+msgstr ""
+
 msgid "Related feature flags"
 msgstr ""
 
@@ -30320,9 +30326,6 @@ msgid "Related issues"
 msgstr ""
 
 msgid "Related merge requests"
-msgstr ""
-
-msgid "Related to #%{issue_id}."
 msgstr ""
 
 msgid "Relates to"

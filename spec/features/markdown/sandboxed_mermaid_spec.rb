@@ -26,7 +26,7 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js do
 
     wait_for_requests
 
-    expected = %(<iframe src="/-/sandbox/mermaid" sandbox="allow-scripts" frameborder="0" scrolling="no")
+    expected = %(<iframe src="/-/sandbox/mermaid" sandbox="allow-scripts allow-popups" frameborder="0" scrolling="no")
     expect(page.html).to include(expected)
   end
 end

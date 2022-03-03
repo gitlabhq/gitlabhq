@@ -526,6 +526,31 @@ RSpec.describe Issues::CreateService do
       end
     end
 
+    context 'add related issue' do
+      let_it_be(:related_issue) { create(:issue, project: project) }
+
+      let(:opts) do
+        { title: 'A new issue', add_related_issue: related_issue }
+      end
+
+      it 'ignores related issue if not accessible' do
+        expect { issue }.not_to change { IssueLink.count }
+        expect(issue).to be_persisted
+      end
+
+      context 'when user has access to the related issue' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'adds a link to the issue' do
+          expect { issue }.to change { IssueLink.count }.by(1)
+          expect(issue).to be_persisted
+          expect(issue.related_issues(user)).to eq([related_issue])
+        end
+      end
+    end
+
     context 'checking spam' do
       let(:params) do
         {

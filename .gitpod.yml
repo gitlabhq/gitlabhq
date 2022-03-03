@@ -20,6 +20,8 @@ tasks:
         gdk config set gitlab.rails.port 443
         gdk config set gitlab.rails.https.enabled true
         gdk config set webpack.host 127.0.0.1
+        gdk config set webpack.static false
+        gdk config set webpack.live_reload false
         # make documentation builds available
         gdk config set gitlab_docs.enabled true
         # reconfigure GDK
@@ -49,6 +51,8 @@ tasks:
         gdk config set gitlab.rails.port 443
         gdk config set gitlab.rails.https.enabled true
         gdk config set webpack.host 127.0.0.1
+        gdk config set webpack.static false
+        gdk config set webpack.live_reload false
         # reconfigure GDK
         echo "$(date) – Reconfiguring GDK" | tee -a /workspace/startup.log
         gdk reconfigure

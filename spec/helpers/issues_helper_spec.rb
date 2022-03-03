@@ -265,7 +265,7 @@ RSpec.describe IssuesHelper do
         is_issue_author: 'false',
         issue_path: issue_path(issue),
         issue_type: 'issue',
-        new_issue_path: new_project_issue_path(project, { issue: { description: "Related to \##{issue.iid}.\n\n" } }),
+        new_issue_path: new_project_issue_path(project, { add_related_issue: issue.iid }),
         project_path: project.full_path,
         report_abuse_path: new_abuse_report_path(user_id: issue.author.id, ref_url: issue_url(issue)),
         submit_as_spam_path: mark_as_spam_project_issue_path(project, issue)

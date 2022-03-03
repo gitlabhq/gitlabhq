@@ -26,7 +26,7 @@ RSpec.describe "User views incident" do
     it 'shows the merge request and incident actions', :js, :aggregate_failures do
       click_button 'Incident actions'
 
-      expect(page).to have_link('New incident', href: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident', description: "Related to \##{incident.iid}.\n\n" } }))
+      expect(page).to have_link('New related incident', href: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident' }, add_related_issue: incident.iid }))
       expect(page).to have_button('Create merge request')
       expect(page).to have_button('Close incident')
     end

@@ -1,3 +1,4 @@
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { FILTER_TYPE } from './constants';
 import DropdownUtils from './dropdown_utils';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
@@ -13,7 +14,7 @@ export default class FilteredSearchDropdown {
     this.filter = filter;
     this.dropdown = dropdown;
     this.loadingTemplate = `<div class="filter-dropdown-loading">
-      <span class="spinner"></span>
+      ${loadingIconForLegacyJS().outerHTML}
     </div>`;
     this.bindEvents();
   }

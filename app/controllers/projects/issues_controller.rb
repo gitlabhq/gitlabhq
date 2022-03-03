@@ -106,6 +106,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
     @issue = @noteable = service.execute
 
+    @add_related_issue = add_related_issue
+
     @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
 
     if params[:discussion_to_resolve]
@@ -122,6 +124,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def create
     create_params = issue_params.merge(
+      add_related_issue: add_related_issue,
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: params[:discussion_to_resolve]
     )
@@ -375,6 +378,11 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def service_desk?
     action_name == 'service_desk'
+  end
+
+  def add_related_issue
+    add_related_issue = project.issues.find_by_iid(params[:add_related_issue])
+    add_related_issue if Ability.allowed?(current_user, :read_issue, add_related_issue)
   end
 
   # Overridden in EE

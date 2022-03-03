@@ -19,7 +19,7 @@ You can create an issue in many ways in GitLab:
 
 - [From a project](#from-a-project)
 - [From a group](#from-a-group)
-- [From another issue](#from-another-issue)
+- [From another issue or incident](#from-another-issue-or-incident)
 - [From an issue board](#from-an-issue-board)
 - [By sending an email](#by-sending-an-email)
 - [Using a URL with prefilled values](#using-a-url-with-prefilled-values)
@@ -70,9 +70,10 @@ The newly created issue opens.
 The project you selected most recently becomes the default for your next visit.
 This can save you a lot of time and clicks, if you mostly create issues for the same project.
 
-### From another issue
+### From another issue or incident
 
-> New issue becoming linked to the issue of origin [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68226) in GitLab 14.3.
+> - New issue becoming linked to the issue of origin [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68226) in GitLab 14.3.
+> - **Relate to…** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198494) in GitLab 14.9.
 
 You can create a new issue from an existing one. The two issues can then be marked as related.
 
@@ -83,10 +84,10 @@ Prerequisites:
 To create an issue from another issue:
 
 1. In an existing issue, select the vertical ellipsis (**{ellipsis_v}**).
-1. Select **New issue**.
+1. Select **New related issue**.
 1. Complete the [fields](#fields-in-the-new-issue-form).
-   The new issue's description is prefilled with `Related to #123`, where `123` is the ID of the
-   issue of origin. If you keep this mention in the description, the two issues become
+   The new issue form has a **Relate to issue #123** checkbox, where `123` is the ID of the
+   issue of origin. If you keep this checkbox checked, the two issues become
    [linked](related_issues.md).
 1. Select **Create issue**.
 
@@ -160,7 +161,8 @@ To regenerate the email address:
 
 ### Using a URL with prefilled values
 
-> Ability to use both `issuable_template` and `issue[description]` in the same URL [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80554) in GitLab 14.9.
+> - Ability to use both `issuable_template` and `issue[description]` in the same URL [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80554) in GitLab 14.9.
+> - Ability to specify `add_related_issue` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198494) in GitLab 14.9.
 
 To link directly to the new issue page with prefilled fields, use query
 string parameters in a URL. You can embed a URL in an external
@@ -173,6 +175,7 @@ HTML page to create issues with certain fields prefilled.
 | Description template | `issuable_template`   | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).                                                          |
 | Description          | `issue[description]`  | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value is appended to the template. |
 | Confidential         | `issue[confidential]` | If `true`, the issue is marked as confidential.                                                                                 |
+| Relate to…           | `add_related_issue`   | A numeric issue ID. If present, the issue form shows a [**Relate to…** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
 
 Adapt these examples to form your new issue URL with prefilled fields.
 To create an issue in the GitLab project:

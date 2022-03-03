@@ -459,6 +459,15 @@ module Gitlab
       "can contain only lowercase letters, digits, '_' and '-'. " \
       "Must start with a letter, and cannot end with '-' or '_'"
     end
+
+    def saved_reply_name_regex
+      @saved_reply_name_regex ||= /\A[a-z]([a-z0-9\-_]*[a-z0-9])?\z/.freeze
+    end
+
+    def saved_reply_name_regex_message
+      "can contain only lowercase letters, digits, '_' and '-'. " \
+      "Must start with a letter, and cannot end with '-' or '_'"
+    end
   end
 end
 

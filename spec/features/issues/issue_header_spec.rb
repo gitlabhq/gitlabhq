@@ -25,8 +25,8 @@ RSpec.describe 'issue header', :js do
         click_button 'Issue actions'
       end
 
-      it 'shows the "New issue", "Report abuse", and "Delete issue" items', :aggregate_failures do
-        expect(page).to have_link 'New issue'
+      it 'shows the "New related issue", "Report abuse", and "Delete issue" items', :aggregate_failures do
+        expect(page).to have_link 'New related issue'
         expect(page).to have_link 'Report abuse'
         expect(page).to have_button 'Delete issue'
         expect(page).not_to have_link 'Submit as spam'
@@ -114,8 +114,8 @@ RSpec.describe 'issue header', :js do
         click_button 'Issue actions'
       end
 
-      it 'only shows the "New issue" and "Report abuse" items', :aggregate_failures do
-        expect(page).to have_link 'New issue'
+      it 'only shows the "New related issue" and "Report abuse" items', :aggregate_failures do
+        expect(page).to have_link 'New related issue'
         expect(page).to have_link 'Report abuse'
         expect(page).not_to have_link 'Submit as spam'
         expect(page).not_to have_button 'Delete issue'

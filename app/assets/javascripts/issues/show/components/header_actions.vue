@@ -128,7 +128,7 @@ export default {
       });
     },
     newIssueTypeText() {
-      return sprintf(__('New %{issueType}'), { issueType: this.issueType });
+      return sprintf(__('New related %{issueType}'), { issueType: this.issueType });
     },
     showToggleIssueStateButton() {
       const canClose = !this.isClosed && this.canUpdateIssue;

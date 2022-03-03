@@ -38,6 +38,8 @@ module AppearancesHelper
   def brand_header_logo
     if current_appearance&.header_logo?
       image_tag current_appearance.header_logo_path, class: 'brand-header-logo'
+    elsif Feature.enabled?(:ukraine_support_tanuki)
+      render partial: 'shared/logo_ukraine', formats: :svg
     else
       render partial: 'shared/logo', formats: :svg
     end

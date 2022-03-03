@@ -460,6 +460,7 @@ reviews: :gitlab_main
 routes: :gitlab_main
 saml_group_links: :gitlab_main
 saml_providers: :gitlab_main
+saved_replies: :gitlab_main
 schema_migrations: :gitlab_shared
 scim_identities: :gitlab_main
 scim_oauth_access_tokens: :gitlab_main

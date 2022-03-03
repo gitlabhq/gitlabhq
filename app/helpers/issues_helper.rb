@@ -169,7 +169,7 @@ module IssuesHelper
   end
 
   def issue_header_actions_data(project, issuable, current_user)
-    new_issuable_params = { issue: { description: _('Related to #%{issue_id}.') % { issue_id: issuable.iid } + "\n\n" } }
+    new_issuable_params = { issue: {}, add_related_issue: issuable.iid }
     if issuable.incident?
       new_issuable_params[:issuable_template] = 'incident'
       new_issuable_params[:issue][:issue_type] = 'incident'
