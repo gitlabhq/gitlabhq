@@ -35,12 +35,19 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
 
     context 'when a check is skipped' do
       it 'does not execute the check' do
+        described_class::CHECKS.each do |check|
+          allow_next_instance_of(check) do |service|
+            allow(service).to receive(:skip?).and_return(false)
+            allow(service).to receive(:execute).and_return(success_result)
+          end
+        end
+
         expect_next_instance_of(MergeRequests::Mergeability::CheckCiStatusService) do |service|
           expect(service).to receive(:skip?).and_return(true)
           expect(service).not_to receive(:execute)
         end
 
-        expect(execute).to match_array([])
+        expect(execute).to match_array([success_result])
       end
     end
 
@@ -49,6 +56,12 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
       let(:merge_check) { instance_double(MergeRequests::Mergeability::CheckCiStatusService) }
 
       before do
+        described_class::CHECKS.each do |check|
+          allow_next_instance_of(check) do |service|
+            allow(service).to receive(:skip?).and_return(true)
+          end
+        end
+
         expect(MergeRequests::Mergeability::CheckCiStatusService).to receive(:new).and_return(merge_check)
         expect(merge_check).to receive(:skip?).and_return(false)
         allow(merge_check).to receive(:cacheable?).and_return(cacheable)

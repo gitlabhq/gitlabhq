@@ -1155,12 +1155,18 @@ class MergeRequest < ApplicationRecord
     return false unless open?
     return false if work_in_progress?
     return false if broken?
-    return false unless skip_discussions_check || mergeable_discussions_state?
 
     if Feature.enabled?(:improved_mergeability_checks, self.project, default_enabled: :yaml)
-      additional_checks = MergeRequests::Mergeability::RunChecksService.new(merge_request: self, params: { skip_ci_check: skip_ci_check })
+      additional_checks = MergeRequests::Mergeability::RunChecksService.new(
+        merge_request: self,
+        params: {
+          skip_ci_check: skip_ci_check,
+          skip_discussions_check: skip_discussions_check
+        }
+      )
       additional_checks.execute.all?(&:success?)
     else
+      return false unless skip_discussions_check || mergeable_discussions_state?
       return false unless skip_ci_check || mergeable_ci_state?
 
       true

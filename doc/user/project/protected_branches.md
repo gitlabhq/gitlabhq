@@ -150,9 +150,6 @@ Deploy keys are not available in the **Allowed to merge** dropdown list.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15611) in GitLab 13.10 behind a disabled feature flag.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323431) in GitLab 14.0.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
 You can allow [force pushes](../../topics/git/git_rebase.md#force-push) to
 protected branches.
 

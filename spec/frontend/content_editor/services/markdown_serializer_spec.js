@@ -597,6 +597,7 @@ this is not really json but just trying out whether this case works or not
             paragraph('A giant ', italic('owl-like'), ' creature.'),
           ),
         ),
+        heading('this is a heading'),
       ),
     ).toBe(
       `
@@ -612,6 +613,8 @@ A giant _owl-like_ creature.
 
 </dd>
 </dl>
+
+# this is a heading
       `.trim(),
     );
   });
@@ -623,6 +626,7 @@ A giant _owl-like_ creature.
           detailsContent(paragraph('this is the summary')),
           detailsContent(paragraph('this content will be hidden')),
         ),
+        heading('this is a heading'),
       ),
     ).toBe(
       `
@@ -630,6 +634,8 @@ A giant _owl-like_ creature.
 <summary>this is the summary</summary>
 this content will be hidden
 </details>
+
+# this is a heading
       `.trim(),
     );
   });
@@ -648,7 +654,7 @@ this content will be hidden
           detailsContent(paragraph('this content will be ', italic('hidden'))),
         ),
         details(detailsContent(paragraph('summary 2')), detailsContent(paragraph('content 2'))),
-      ),
+      ).trim(),
     ).toBe(
       `
 <details>
@@ -669,6 +675,7 @@ console.log(c);
 this content will be _hidden_
 
 </details>
+
 <details>
 <summary>summary 2</summary>
 content 2
@@ -694,7 +701,7 @@ content 2
             ),
           ),
         ),
-      ),
+      ).trim(),
     ).toBe(
       `
 <details>
@@ -709,7 +716,9 @@ content 2
 _inception_
 
 </details>
+
 </details>
+
 </details>
       `.trim(),
     );

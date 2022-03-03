@@ -259,11 +259,16 @@ export function renderContent(state, node, forceRenderInline) {
   }
 }
 
-export function renderHTMLNode(tagName, forceRenderInline = false) {
+export function renderHTMLNode(tagName, forceRenderContentInline = false) {
   return (state, node) => {
     renderTagOpen(state, tagName, node.attrs);
-    renderContent(state, node, forceRenderInline);
+    renderContent(state, node, forceRenderContentInline);
     renderTagClose(state, tagName, false);
+
+    if (forceRenderContentInline) {
+      state.closeBlock(node);
+      state.flushClose();
+    }
   };
 }
 

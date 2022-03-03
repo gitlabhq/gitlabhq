@@ -87,9 +87,6 @@ In GitLab 14.0 and later, API fuzzing configuration files must be in your reposi
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299234) in GitLab 13.10.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
 The API fuzzing configuration form helps you create or modify your project's API fuzzing
 configuration. The form lets you choose values for the most common API fuzzing options and builds
 a YAML snippet that you can paste in your GitLab CI/CD configuration.
