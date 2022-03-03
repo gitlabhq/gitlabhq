@@ -65,3 +65,12 @@ If the app install failed, you might need to delete `jira_connect_installations`
 
 1. Open the [database console](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md#access-postgresql).
 1. Run `TRUNCATE TABLE jira_connect_installations CASCADE;`.
+
+#### Not authorized to access the file
+
+If you use Gitpod and you get an error about Jira not being able to access the descriptor file, you might need to make the GDK's port public by following these steps:
+
+1. Open your GitLab workspace in Gitpod.
+1. When the GDK is running, select **Ports** in the bottom-right corner.
+1. On the left sidebar, select the port the GDK is listening to (typically `3000`).
+1. If the port is marked as private, select the lock icon to make it public.
