@@ -244,6 +244,16 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it { is_expected.to contain_exactly(group_2, nested_group_2, deep_nested_group_2) }
     end
+
+    context 'with nested query groups' do
+      let!(:nested_group_1b) { create(:group, parent: group_1) }
+      let!(:deep_nested_group_1b) { create(:group, parent: nested_group_1b) }
+      let(:group1_hierarchy) { [group_1, nested_group_1, deep_nested_group_1, nested_group_1b, deep_nested_group_1b] }
+
+      subject { described_class.where(id: [group_1, nested_group_1]).self_and_descendants }
+
+      it { is_expected.to match_array group1_hierarchy }
+    end
   end
 
   describe '.self_and_descendants' do

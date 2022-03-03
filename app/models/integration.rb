@@ -49,6 +49,16 @@ class Integration < ApplicationRecord
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
+  attr_encrypted :encrypted_properties_tmp,
+                 attribute: :encrypted_properties,
+                 mode: :per_attribute_iv,
+                 key: Settings.attr_encrypted_db_key_base_32,
+                 algorithm: 'aes-256-gcm',
+                 marshal: true,
+                 marshaler: ::Gitlab::Json,
+                 encode: false,
+                 encode_iv: false
+
   alias_attribute :type, :type_new
 
   default_value_for :active, false
@@ -67,6 +77,8 @@ class Integration < ApplicationRecord
   default_value_for :wiki_page_events, true
 
   after_initialize :initialize_properties
+  after_initialize :copy_properties_to_encrypted_properties
+  before_save :copy_properties_to_encrypted_properties
 
   after_commit :reset_updated_properties
 
@@ -123,8 +135,10 @@ class Integration < ApplicationRecord
 
         def #{arg}=(value)
           self.properties ||= {}
+          self.encrypted_properties_tmp = properties
           updated_properties['#{arg}'] = #{arg} unless #{arg}_changed?
           self.properties['#{arg}'] = value
+          self.encrypted_properties_tmp['#{arg}'] = value
         end
 
         def #{arg}_changed?
@@ -354,6 +368,12 @@ class Integration < ApplicationRecord
     self.properties = {} if has_attribute?(:properties) && properties.nil?
   end
 
+  def copy_properties_to_encrypted_properties
+    self.encrypted_properties_tmp = properties
+  rescue ActiveModel::MissingAttributeError
+    # ignore - in a record built from using a restricted select list
+  end
+
   def title
     # implement inside child
   end
@@ -394,7 +414,21 @@ class Integration < ApplicationRecord
   # return a hash of columns => values suitable for passing to insert_all
   def to_integration_hash
     column = self.class.attribute_aliases.fetch('type', 'type')
-    as_json(except: %w[id instance project_id group_id]).merge(column => type)
+    copy_properties_to_encrypted_properties
+
+    as_json(except: %w[id instance project_id group_id encrypted_properties_tmp])
+      .merge(column => type)
+      .merge(reencrypt_properties)
+  end
+
+  def reencrypt_properties
+    unless properties.nil? || properties.empty?
+      alg = self.class.encrypted_attributes[:encrypted_properties_tmp][:algorithm]
+      iv = generate_iv(alg)
+      ep = self.class.encrypt(:encrypted_properties_tmp, properties, { iv: iv })
+    end
+
+    { 'encrypted_properties' => ep, 'encrypted_properties_iv' => iv }
   end
 
   def to_data_fields_hash

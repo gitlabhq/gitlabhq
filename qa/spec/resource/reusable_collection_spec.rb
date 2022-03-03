@@ -20,6 +20,10 @@ RSpec.describe QA::Resource::ReusableCollection do
       end
 
       def exists?() end
+
+      def reload!
+        Struct.new(:api_resource).new({ marked_for_deletion_on: false })
+      end
     end
   end
 
@@ -88,8 +92,22 @@ RSpec.describe QA::Resource::ReusableCollection do
     it 'removes each instance of each resource class' do
       described_class.remove_all_via_api!
 
-      expect(a_resource_instance.removed).to be true
-      expect(another_resource_instance.removed).to be true
+      expect(a_resource_instance.removed).to be_truthy
+      expect(another_resource_instance.removed).to be_truthy
+    end
+
+    context 'when a resource is marked for deletion' do
+      before do
+        marked_for_deletion = Struct.new(:api_resource).new({ marked_for_deletion_on: true })
+
+        allow(a_resource_instance).to receive(:reload!).and_return(marked_for_deletion)
+        allow(another_resource_instance).to receive(:reload!).and_return(marked_for_deletion)
+      end
+
+      it 'does not remove the resource' do
+        expect(a_resource_instance.removed).to be_falsey
+        expect(another_resource_instance.removed).to be_falsy
+      end
     end
   end
 

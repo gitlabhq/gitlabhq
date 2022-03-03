@@ -14,7 +14,7 @@ RSpec.describe Labels::CreateService do
     let(:unknown_color) { 'unknown' }
     let(:no_color) { '' }
 
-    let(:expected_saved_color) { hex_color }
+    let(:expected_saved_color) { ::Gitlab::Color.of(hex_color) }
 
     context 'in a project' do
       context 'with color in hex-code' do
@@ -47,7 +47,6 @@ RSpec.describe Labels::CreateService do
       context 'with color surrounded by spaces' do
         it 'creates a label' do
           label = described_class.new(params_with(spaced_color)).execute(project: project)
-
           expect(label).to be_persisted
           expect(label.color).to eq expected_saved_color
         end

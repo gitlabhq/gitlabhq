@@ -37,6 +37,13 @@ module Gitlab
       raise StandardError, "path #{path} is not allowed"
     end
 
+    def check_allowed_absolute_path_and_path_traversal!(path, path_allowlist)
+      traversal_path = check_path_traversal!(path)
+      raise StandardError, "path is not a string!" unless traversal_path.is_a?(String)
+
+      check_allowed_absolute_path!(traversal_path, path_allowlist)
+    end
+
     def decode_path(encoded_path)
       decoded = CGI.unescape(encoded_path)
       if decoded != CGI.unescape(decoded)

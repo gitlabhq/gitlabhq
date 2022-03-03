@@ -23,7 +23,12 @@ RSpec.describe ColorValidator do
     '#ffff'      | false
     '#000111222' | false
     'invalid'    | false
+    'red'        | false
     '000'        | false
+    nil          | true # use presence to validate non-nil
+    ''           | false
+    Time.current | false
+    ::Gitlab::Color.of(:red) | true
   end
 
   with_them do
@@ -40,5 +45,23 @@ RSpec.describe ColorValidator do
     expect do
       Timeout.timeout(5.seconds) { subject.valid? }
     end.not_to raise_error
+  end
+
+  context 'when color must be present' do
+    subject do
+      Class.new do
+        include ActiveModel::Model
+        include ActiveModel::Validations
+        attr_accessor :color
+
+        validates :color, color: true, presence: true
+      end.new
+    end
+
+    it 'rejects nil' do
+      subject.color = nil
+
+      expect(subject).not_to be_valid
+    end
   end
 end

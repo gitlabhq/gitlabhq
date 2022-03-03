@@ -34,7 +34,7 @@ RSpec.describe API::Labels do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(valid_label_title_2)
-        expect(json_response['color']).to eq(label1.color)
+        expect(json_response['color']).to be_color(label1.color)
       end
 
       it "returns 200 if colors is changed (#{route_type} route)" do
@@ -42,7 +42,7 @@ RSpec.describe API::Labels do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(label1.name)
-        expect(json_response['color']).to eq('#FFFFFF')
+        expect(json_response['color']).to be_color('#FFFFFF')
       end
 
       it "returns 200 if a priority is added (#{route_type} route)" do
@@ -86,7 +86,7 @@ RSpec.describe API::Labels do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(valid_label_title_2)
-        expect(json_response['color']).to eq('#FFFFFF')
+        expect(json_response['color']).to be_color('#FFFFFF')
         expect(json_response['description']).to eq('test')
       end
 
@@ -266,8 +266,8 @@ RSpec.describe API::Labels do
                                                 'open_merge_requests_count' => 0,
                                                 'name' => group_label.name,
                                                 'description' => nil,
-                                                'color' => a_string_matching(/^#\h{6}$/),
-                                                'text_color' => a_string_matching(/^#\h{6}$/),
+                                                'color' => a_valid_color,
+                                                'text_color' => a_valid_color,
                                                 'priority' => nil,
                                                 'subscribed' => false,
                                                 'is_project_label' => false)
@@ -277,8 +277,8 @@ RSpec.describe API::Labels do
                                                    'open_merge_requests_count' => 1,
                                                    'name' => priority_label.name,
                                                    'description' => nil,
-                                                   'color' => a_string_matching(/^#\h{6}$/),
-                                                   'text_color' => a_string_matching(/^#\h{6}$/),
+                                                   'color' => a_valid_color,
+                                                   'text_color' => a_valid_color,
                                                    'priority' => 3,
                                                    'subscribed' => false,
                                                    'is_project_label' => true)
@@ -336,7 +336,7 @@ RSpec.describe API::Labels do
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_label_title_2)
-      expect(json_response['color']).to eq('#FFAABB')
+      expect(json_response['color']).to be_color('#FFAABB')
       expect(json_response['description']).to eq('test')
       expect(json_response['priority']).to eq(2)
     end
@@ -350,7 +350,7 @@ RSpec.describe API::Labels do
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_label_title_2)
-      expect(json_response['color']).to eq('#FFAABB')
+      expect(json_response['color']).to be_color('#FFAABB')
       expect(json_response['description']).to be_nil
       expect(json_response['priority']).to be_nil
     end
@@ -365,7 +365,7 @@ RSpec.describe API::Labels do
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_label_title_2)
-      expect(json_response['color']).to eq('#FFAABB')
+      expect(json_response['color']).to be_color('#FFAABB')
       expect(json_response['description']).to be_nil
       expect(json_response['priority']).to eq(3)
     end
@@ -552,7 +552,7 @@ RSpec.describe API::Labels do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq(label1.name)
-      expect(json_response['color']).to eq(label1.color)
+      expect(json_response['color']).to be_color(label1.color.to_s)
     end
 
     context 'if group label already exists' do

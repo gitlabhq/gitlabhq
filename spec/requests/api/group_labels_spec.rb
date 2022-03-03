@@ -140,7 +140,7 @@ RSpec.describe API::GroupLabels do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq(group_label1.name)
-      expect(json_response['color']).to eq(group_label1.color)
+      expect(json_response['color']).to be_color(group_label1.color)
       expect(json_response['description']).to eq(group_label1.description)
     end
   end
@@ -156,7 +156,7 @@ RSpec.describe API::GroupLabels do
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_new_label_title)
-      expect(json_response['color']).to eq('#FFAABB')
+      expect(json_response['color']).to be_color('#FFAABB')
       expect(json_response['description']).to eq('test')
     end
 
@@ -169,7 +169,7 @@ RSpec.describe API::GroupLabels do
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_new_label_title)
-      expect(json_response['color']).to eq('#FFAABB')
+      expect(json_response['color']).to be_color('#FFAABB')
       expect(json_response['description']).to be_nil
     end
 
@@ -276,7 +276,7 @@ RSpec.describe API::GroupLabels do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq(valid_new_label_title)
-      expect(json_response['color']).to eq('#FFFFFF')
+      expect(json_response['color']).to be_color('#FFFFFF')
       expect(json_response['description']).to eq('test')
     end
 
@@ -332,7 +332,7 @@ RSpec.describe API::GroupLabels do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq(valid_new_label_title)
-      expect(json_response['color']).to eq('#FFFFFF')
+      expect(json_response['color']).to be_color('#FFFFFF')
       expect(json_response['description']).to eq('test')
     end
 

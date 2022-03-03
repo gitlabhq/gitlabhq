@@ -67,24 +67,21 @@ RSpec.describe Label do
       label = described_class.new(color: '   #abcdef   ')
       label.valid?
 
-      expect(label.color).to eq('#abcdef')
+      expect(label.color).to be_color('#abcdef')
     end
 
     it 'uses default color if color is missing' do
       label = described_class.new(color: nil)
 
-      expect(label.color).to be(Label::DEFAULT_COLOR)
+      expect(label.color).to be_color(Label::DEFAULT_COLOR)
     end
   end
 
   describe '#text_color' do
     it 'uses default color if color is missing' do
-      expect(LabelsHelper).to receive(:text_color_for_bg).with(Label::DEFAULT_COLOR)
-        .and_return(spy)
-
       label = described_class.new(color: nil)
 
-      label.text_color
+      expect(label.text_color).to eq(Label::DEFAULT_COLOR.contrast)
     end
   end
 

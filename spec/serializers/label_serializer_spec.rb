@@ -40,7 +40,7 @@ RSpec.describe LabelSerializer do
         expect(subject.keys).to eq([:id, :title, :color, :project_id, :text_color])
         expect(subject[:id]).to eq(resource.id)
         expect(subject[:title]).to eq(resource.title)
-        expect(subject[:color]).to eq(resource.color)
+        expect(subject[:color]).to be_color(resource.color)
         expect(subject[:text_color]).to eq(resource.text_color)
         expect(subject[:project_id]).to eq(resource.project_id)
       end

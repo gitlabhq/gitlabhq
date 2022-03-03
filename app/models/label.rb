@@ -12,8 +12,9 @@ class Label < ApplicationRecord
 
   cache_markdown_field :description, pipeline: :single_line
 
-  DEFAULT_COLOR = '#6699cc'
+  DEFAULT_COLOR = ::Gitlab::Color.of('#6699cc')
 
+  attribute :color, ::Gitlab::Database::Type::Color.new
   default_value_for :color, DEFAULT_COLOR
 
   has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -22,9 +23,9 @@ class Label < ApplicationRecord
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
-  before_validation :strip_whitespace_from_title_and_color
+  before_validation :strip_whitespace_from_title
 
-  validates :color, color: true, allow_blank: false
+  validates :color, color: true, presence: true
 
   # Don't allow ',' for label titles
   validates :title, presence: true, format: { with: /\A[^,]+\z/ }
@@ -212,7 +213,7 @@ class Label < ApplicationRecord
   end
 
   def text_color
-    LabelsHelper.text_color_for_bg(self.color)
+    color.contrast
   end
 
   def title=(value)
@@ -285,8 +286,8 @@ class Label < ApplicationRecord
     CGI.unescapeHTML(Sanitize.clean(value.to_s))
   end
 
-  def strip_whitespace_from_title_and_color
-    %w(color title).each { |attr| self[attr] = self[attr]&.strip }
+  def strip_whitespace_from_title
+    self[:title] = title&.strip
   end
 end
 

@@ -25,8 +25,8 @@ module Gitlab
         log_queries(id, data, 'active-record')
         log_queries(id, data, 'gitaly')
         log_queries(id, data, 'redis')
-      rescue StandardError => err
-        logger.error(message: "failed to process request id #{id}: #{err.message}")
+      rescue StandardError => e
+        logger.error(message: "failed to process request id #{id}: #{e.message}")
       end
 
       private
@@ -34,6 +34,8 @@ module Gitlab
       def request(id)
         # Peek gem stores request data under peek:requests:request_id key
         json_data = @redis.get("peek:requests:#{id}")
+        raise "No data for #{id}" if json_data.nil?
+
         Gitlab::Json.parse(json_data)
       end
 

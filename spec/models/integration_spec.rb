@@ -843,4 +843,82 @@ RSpec.describe Integration do
       expect(subject.password_fields).to eq([])
     end
   end
+
+  describe 'encrypted_properties' do
+    let(:properties) { { foo: 1, bar: true } }
+    let(:db_props) { properties.stringify_keys }
+    let(:record) { create(:integration, :instance, properties: properties) }
+
+    it 'contains the same data as properties' do
+      expect(record).to have_attributes(
+        properties: db_props,
+        encrypted_properties_tmp: db_props
+      )
+    end
+
+    it 'is persisted' do
+      encrypted_properties = described_class.id_in(record.id)
+
+      expect(encrypted_properties).to contain_exactly have_attributes(encrypted_properties_tmp: db_props)
+    end
+
+    it 'is updated when using prop_accessors' do
+      some_integration = Class.new(described_class) do
+        prop_accessor :foo
+      end
+
+      record = some_integration.new
+
+      record.foo = 'the foo'
+
+      expect(record.encrypted_properties_tmp).to eq({ 'foo' => 'the foo' })
+    end
+
+    it 'saves correctly using insert_all' do
+      hash = record.to_integration_hash
+      hash[:project_id] = project
+
+      expect do
+        described_class.insert_all([hash])
+      end.to change(described_class, :count).by(1)
+
+      expect(described_class.last).to have_attributes(encrypted_properties_tmp: db_props)
+    end
+
+    it 'is part of the to_integration_hash' do
+      hash = record.to_integration_hash
+
+      expect(hash).to include('encrypted_properties' => be_present, 'encrypted_properties_iv' => be_present)
+      expect(hash['encrypted_properties']).not_to eq(record.encrypted_properties)
+      expect(hash['encrypted_properties_iv']).not_to eq(record.encrypted_properties_iv)
+
+      decrypted = described_class.decrypt(:encrypted_properties_tmp,
+                                          hash['encrypted_properties'],
+                                          { iv: hash['encrypted_properties_iv'] })
+
+      expect(decrypted).to eq db_props
+    end
+
+    context 'when the properties are empty' do
+      let(:properties) { {} }
+
+      it 'is part of the to_integration_hash' do
+        hash = record.to_integration_hash
+
+        expect(hash).to include('encrypted_properties' => be_nil, 'encrypted_properties_iv' => be_nil)
+      end
+
+      it 'saves correctly using insert_all' do
+        hash = record.to_integration_hash
+        hash[:project_id] = project
+
+        expect do
+          described_class.insert_all([hash])
+        end.to change(described_class, :count).by(1)
+
+        expect(described_class.last).not_to eq record
+        expect(described_class.last).to have_attributes(encrypted_properties_tmp: db_props)
+      end
+    end
+  end
 end

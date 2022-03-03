@@ -147,39 +147,6 @@ module QA
           end
         end
       end
-
-      context 'with group members' do
-        let(:member) do
-          Resource::User.fabricate_via_api! do |usr|
-            usr.api_client = admin_api_client
-            usr.hard_delete_on_api_removal = true
-          end
-        end
-
-        before do
-          member.set_public_email
-          source_group.add_member(member, Resource::Members::AccessLevel::DEVELOPER)
-
-          imported_group # trigger import
-        end
-
-        after do
-          member.remove_via_api!
-        end
-
-        it(
-          'adds members for imported group',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347609'
-        ) do
-          expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
-
-          imported_member = imported_group.reload!.members.find { |usr| usr.username == member.username }
-          aggregate_failures do
-            expect(imported_member).not_to be_nil
-            expect(imported_member.access_level).to eq(Resource::Members::AccessLevel::DEVELOPER)
-          end
-        end
-      end
     end
   end
 end

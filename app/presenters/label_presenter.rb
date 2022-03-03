@@ -14,6 +14,10 @@ class LabelPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def text_color_class
+    "gl-label-text-#{label.color.contrast.luminosity}"
+  end
+
   def destroy_path
     case label
     when GroupLabel then group_label_path(label.group, label)

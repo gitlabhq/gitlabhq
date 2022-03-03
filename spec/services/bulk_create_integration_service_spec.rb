@@ -13,14 +13,23 @@ RSpec.describe BulkCreateIntegrationService do
   let_it_be(:excluded_project) { create(:project, group: excluded_group) }
 
   let(:instance_integration) { create(:jira_integration, :instance) }
-  let(:excluded_attributes) { %w[id project_id group_id inherit_from_id instance template created_at updated_at] }
+  let(:excluded_attributes) do
+    %w[
+      id project_id group_id inherit_from_id instance template
+      created_at updated_at
+      encrypted_properties encrypted_properties_iv
+    ]
+  end
 
   shared_examples 'creates integration from batch ids' do
+    def attributes(record)
+      record.reload.attributes.except(*excluded_attributes)
+    end
+
     it 'updates the inherited integrations' do
       described_class.new(integration, batch, association).execute
 
-      expect(created_integration.attributes.except(*excluded_attributes))
-        .to eq(integration.reload.attributes.except(*excluded_attributes))
+      expect(attributes(created_integration)).to eq attributes(integration)
     end
 
     context 'integration with data fields' do
@@ -29,8 +38,8 @@ RSpec.describe BulkCreateIntegrationService do
       it 'updates the data fields from inherited integrations' do
         described_class.new(integration, batch, association).execute
 
-        expect(created_integration.reload.data_fields.attributes.except(*excluded_attributes))
-          .to eq(integration.reload.data_fields.attributes.except(*excluded_attributes))
+        expect(attributes(created_integration.data_fields))
+          .to eq attributes(integration.data_fields)
       end
     end
   end

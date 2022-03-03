@@ -36,6 +36,10 @@ module QA
             next QA::Runtime::Logger.debug("#{resource.class.name} reused as :#{reuse_as} has already been removed.") unless resource.exists?
             next if resource.respond_to?(:marked_for_deletion?) && resource.marked_for_deletion?
 
+            if resource.reload!.api_resource[:marked_for_deletion_on].present?
+              next QA::Runtime::Logger.debug("#{resource.class.name} reused as :#{reuse_as} is already scheduled to be removed.")
+            end
+
             resource.method(:remove_via_api!).super_method.call
           end
         end

@@ -1,0 +1,8 @@
+---
+name: show_report_validation_warnings
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80930
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353125
+milestone: '14.9'
+type: development
+group: group::threat insights
+default_enabled: false

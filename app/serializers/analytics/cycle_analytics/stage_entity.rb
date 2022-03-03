@@ -57,7 +57,8 @@ module Analytics
       def html_description(event)
         options = {}
         if event.label_based?
-          options[:label_html] = render_label(event.label, link: '', small: true, tooltip: true)
+          label = event.label.present
+          options[:label_html] = render_label(label, link: '', small: true, tooltip: true)
         end
 
         content_tag(:p) { event.html_description(options).html_safe }

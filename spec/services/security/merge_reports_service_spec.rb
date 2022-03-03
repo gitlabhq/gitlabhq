@@ -153,7 +153,18 @@ RSpec.describe Security::MergeReportsService, '#execute' do
       report_2.add_error('zoo', 'baz')
     end
 
-    it { is_expected.to eq([{ type: 'foo', message: 'bar' }, { type: 'zoo', message: 'baz' }]) }
+    it { is_expected.to match_array([{ type: 'foo', message: 'bar' }, { type: 'zoo', message: 'baz' }]) }
+  end
+
+  describe 'warnings on target report' do
+    subject { merged_report.warnings }
+
+    before do
+      report_1.add_warning('foo', 'bar')
+      report_2.add_warning('zoo', 'baz')
+    end
+
+    it { is_expected.to match_array([{ type: 'foo', message: 'bar' }, { type: 'zoo', message: 'baz' }]) }
   end
 
   it 'copies scanners into target report and eliminates duplicates' do

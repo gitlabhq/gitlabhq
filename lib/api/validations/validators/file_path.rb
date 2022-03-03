@@ -8,8 +8,7 @@ module API
           options = @option.is_a?(Hash) ? @option : {}
           path_allowlist = options.fetch(:allowlist, [])
           path = params[attr_name]
-          path = Gitlab::Utils.check_path_traversal!(path)
-          Gitlab::Utils.check_allowed_absolute_path!(path, path_allowlist)
+          Gitlab::Utils.check_allowed_absolute_path_and_path_traversal!(path, path_allowlist)
         rescue StandardError
           raise Grape::Exceptions::Validation.new(
             params: [@scope.full_name(attr_name)],

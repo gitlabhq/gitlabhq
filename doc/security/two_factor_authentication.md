@@ -33,10 +33,10 @@ To enable 2FA for all users:
 If you want 2FA enforcement to take effect during the next sign-in attempt,
 change the grace period to `0`.
 
-## Disable 2FA enforcement through rails console
+## Disable 2FA enforcement through Rails console
 
-Using the [rails console](../administration/operations/rails_console.md), enforcing 2FA for
-all user can be disabled. Connect to the rails console and run:
+Using the [Rails console](../administration/operations/rails_console.md), enforcing 2FA for
+all user can be disabled. Connect to the Rails console and run:
 
 ```ruby
 Gitlab::CurrentSettings.update!('require_two_factor_authentication': false)
@@ -108,13 +108,10 @@ reactivate 2FA from scratch if they want to use it again.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270554) in GitLab 13.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/299088) from GitLab Free to GitLab Premium in 13.9.
-> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-2fa-for-git-operations).
+> - It's deployed behind a feature flag, disabled by default.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com, this feature is not available. The feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 Two-factor authentication can be enforced for Git over SSH operations. However, we recommend using
 [ED25519_SK](../ssh/index.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../ssh/index.md#ecdsa_sk-ssh-keys) SSH keys instead.
@@ -134,30 +131,6 @@ After the OTP is verified, Git over SSH operations can be used for a session dur
 
 Once an OTP is verified, anyone can run Git over SSH with that private SSH key for
 the configured [session duration](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
-
-### Enable or disable 2FA for Git operations
-
-2FA for Git operations is under development and not
-ready for production use. It is deployed behind a feature flag that is
-**disabled by default**. [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:two_factor_for_cli)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:two_factor_for_cli)
-```
-
-The feature flag affects these features:
-
-- [Two-factor Authentication (2FA) for Git over SSH operations](#2fa-for-git-over-ssh-operations).
-- [Customize session duration for Git Operations when 2FA is enabled](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 <!-- ## Troubleshooting
 

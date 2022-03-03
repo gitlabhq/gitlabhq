@@ -15255,6 +15255,7 @@ Represents the security scan information.
 | ---- | ---- | ----------- |
 | <a id="scanerrors"></a>`errors` | [`[String!]!`](#string) | List of errors. |
 | <a id="scanname"></a>`name` | [`String!`](#string) | Name of the scan. |
+| <a id="scanwarnings"></a>`warnings` | [`[String!]!`](#string) | List of warnings. |
 
 ### `ScanExecutionPolicy`
 
@@ -19814,8 +19815,8 @@ Input type for DastSiteProfile authentication.
 | ---- | ---- | ----------- |
 | <a id="diffpositioninputbasesha"></a>`baseSha` | [`String`](#string) | Merge base of the branch the comment was made on. |
 | <a id="diffpositioninputheadsha"></a>`headSha` | [`String!`](#string) | SHA of the HEAD at the time the comment was made. |
-| <a id="diffpositioninputnewline"></a>`newLine` | [`Int`](#int) | Line on HEAD SHA that was changed. |
-| <a id="diffpositioninputoldline"></a>`oldLine` | [`Int`](#int) | Line on start SHA that was changed. |
+| <a id="diffpositioninputnewline"></a>`newLine` | [`Int`](#int) | Line on HEAD SHA that was changed. Please see the [REST API Documentation](https://docs.gitlab.com/ee/api/discussions.html#create-a-new-thread-in-the-merge-request-diff) for more information on how to use this field. |
+| <a id="diffpositioninputoldline"></a>`oldLine` | [`Int`](#int) | Line on start SHA that was changed. Please see the [REST API Documentation](https://docs.gitlab.com/ee/api/discussions.html#create-a-new-thread-in-the-merge-request-diff) for more information on how to use this field. |
 | <a id="diffpositioninputpaths"></a>`paths` | [`DiffPathsInput!`](#diffpathsinput) | The paths of the file that was changed. Both of the properties of this input are optional, but at least one of them is required. |
 | <a id="diffpositioninputstartsha"></a>`startSha` | [`String!`](#string) | SHA of the branch being compared against. |
 

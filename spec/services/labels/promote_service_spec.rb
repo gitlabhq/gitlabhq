@@ -202,7 +202,7 @@ RSpec.describe Labels::PromoteService do
 
           expect(new_label.title).to eq(promoted_label_name)
           expect(new_label.description).to eq(promoted_description)
-          expect(new_label.color).to eq(promoted_color)
+          expect(new_label.color).to be_color(promoted_color)
         end
 
         it_behaves_like 'promoting a project label to a group label'

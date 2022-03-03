@@ -178,14 +178,9 @@ nginx['client_max_body_size'] = "200m"
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9.
 > - It's deployed behind a feature flag, disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](../../../security/two_factor_authentication.md#enable-or-disable-2fa-for-git-operations).
 
-NOTE:
-This feature is under development and not ready for production use. It is deployed
-behind a feature flag that is **disabled by default**. To use it in GitLab
-self-managed instances, ask a GitLab administrator to [enable it](../../../security/two_factor_authentication.md#enable-or-disable-2fa-for-git-operations).
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com, this feature is not available. This feature is not ready for production use. This feature flag also affects [2FA for Git over SSH operations](../../../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
 
 GitLab administrators can choose to customize the session duration (in minutes) for Git operations when 2FA is enabled. The default is 15 and this can be set to a value between 1 and 10080.
 

@@ -158,6 +158,16 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report do
     end
   end
 
+  describe '#add_warning' do
+    context 'when the message is given' do
+      it 'adds a new warning to report' do
+        expect { report.add_warning('foo', 'bar') }.to change { report.warnings }
+                                                 .from([])
+                                                 .to([{ type: 'foo', message: 'bar' }])
+      end
+    end
+  end
+
   describe 'errored?' do
     subject { report.errored? }
 

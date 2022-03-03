@@ -13,6 +13,8 @@ module MigrationsHelpers
       def self.name
         table_name.singularize.camelcase
       end
+
+      yield self if block_given?
     end
   end
 

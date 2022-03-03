@@ -4,7 +4,9 @@ class LabelEntity < Grape::Entity
   expose :id
 
   expose :title
-  expose :color
+  expose :color do |label|
+    label.color.to_s
+  end
   expose :description
   expose :group_id
   expose :project_id

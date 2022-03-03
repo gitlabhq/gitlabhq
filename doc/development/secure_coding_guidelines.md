@@ -460,8 +460,7 @@ parameter when using `check_allowed_absolute_path!()`.
 To use a combination of both checks, follow the example below:
 
 ```ruby
-path = Gitlab::Utils.check_path_traversal!(path)
-Gitlab::Utils.check_allowed_absolute_path!(path, path_allowlist)
+Gitlab::Utils.check_allowed_absolute_path_and_path_traversal!(path, path_allowlist)
 ```
 
 In the REST API, we have the [`FilePath`](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/lib/api/validations/validators/file_path.rb)

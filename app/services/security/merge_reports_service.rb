@@ -21,7 +21,10 @@ module Security
         source_reports.first.type,
         source_reports.first.pipeline,
         source_reports.first.created_at
-      ).tap { |report| report.errors = source_reports.flat_map(&:errors) }
+      ).tap do |report|
+        report.errors = source_reports.flat_map(&:errors)
+        report.warnings = source_reports.flat_map(&:warnings)
+      end
     end
 
     def copy_resources_to_target_report

@@ -42,14 +42,19 @@ module Gitlab
           attr_reader :json_data, :report, :validate
 
           def valid?
-            if Feature.enabled?(:enforce_security_report_validation)
-              if !validate || schema_validator.valid?
-                report.schema_validation_status = :valid_schema
-                true
+            if Feature.enabled?(:show_report_validation_warnings)
+              # We want validation to happen regardless of VALIDATE_SCHEMA CI variable
+              schema_validation_passed = schema_validator.valid?
+
+              if validate
+                schema_validator.errors.each { |error| report.add_error('Schema', error) } unless schema_validation_passed
+
+                schema_validation_passed
               else
-                report.schema_validation_status = :invalid_schema
-                schema_validator.errors.each { |error| report.add_error('Schema', error) }
-                false
+                # We treat all schema validation errors as warnings
+                schema_validator.errors.each { |error| report.add_warning('Schema', error) }
+
+                true
               end
             else
               return true if !validate || schema_validator.valid?

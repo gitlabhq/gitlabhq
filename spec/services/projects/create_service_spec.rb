@@ -23,11 +23,11 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
 
     it 'creates labels on project creation' do
-      created_label = project.labels.last
-
-      expect(created_label.type).to eq('ProjectLabel')
-      expect(created_label.project_id).to eq(project.id)
-      expect(created_label.title).to eq('bug')
+      expect(project.labels).to include have_attributes(
+        type: eq('ProjectLabel'),
+        project_id: eq(project.id),
+        title: eq('bug')
+      )
     end
 
     context 'using gitlab project import' do
