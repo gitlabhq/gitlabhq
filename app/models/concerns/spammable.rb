@@ -78,8 +78,9 @@ module Spammable
   end
 
   def recaptcha_error!
-    self.errors.add(:base, "Your #{spammable_entity_type} has been recognized as spam. "\
-                    "Please, change the content or solve the reCAPTCHA to proceed.")
+    self.errors.add(:base, _("Your %{spammable_entity_type} has been recognized as spam. "\
+                    "Please, change the content or solve the reCAPTCHA to proceed.") \
+                    % { spammable_entity_type: spammable_entity_type })
   end
 
   def unrecoverable_spam_error!

@@ -223,3 +223,25 @@ On GitLab SaaS an email notification is sent to the namespace owners when:
 - The available CI/CD minutes are below 30% of the quota.
 - The available CI/CD minutes are below 5% of the quota.
 - All CI/CD minutes have been used.
+
+## Reduce consumption of CI/CD minutes
+
+If your project consumes too many CI/CD minutes, there are some strategies you can
+use to reduce your CI/CD minutes usage:
+
+- If you are using project mirrors, ensure that [pipelines for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
+  is disabled.
+- Reduce the frequency of [pipeline schedules](schedules.md#pipeline-schedules).
+- [Skip pipelines](index.md#skip-a-pipeline) when not needed.
+- Use [interruptible](../yaml/index.md#interruptible) jobs which can be auto-canceled
+  if a new pipeline starts.
+- If a job doesn't have to run in every pipeline, use [`rules`](../jobs/job_control.md)
+  to make it only run when it's needed.
+- [Use private runners](../runners/runners_scope.md#group-runners) for some jobs.
+- If you are working from a fork and you submit a merge request to the parent project,
+  you can ask a maintainer to run a pipeline [in the parent project](merge_request_pipelines.md#run-pipelines-in-the-parent-project).
+
+If you manage an open source project, these improvements can also reduce CI/CD minutes
+consumption for contributor fork projects, enabling more contributions.
+
+See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.

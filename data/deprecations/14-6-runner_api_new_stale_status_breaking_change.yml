@@ -1,10 +1,10 @@
 - name: "API: `stale` status returned instead of `offline` or `not_connected`"
-  announcement_milestone: "14.6" # The milestone when this feature was first announced as deprecated.
+  announcement_milestone: "14.6"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-12-22"
-  removal_milestone: "15.0" # the milestone when this feature is planned to be removed
+  removal_milestone: "15.0"  # the milestone when this feature is planned to be removed
   removal_date: "2022-05-22"
   breaking_change: true
-  body: | # Do not modify this line, instead modify the lines below.
+  body: |  # Do not modify this line, instead modify the lines below.
     A breaking change will occur for the Runner [API](https://docs.gitlab.com/ee/api/runners.html#runners-api) endpoints in 15.0.
 
     Instead of the GitLab Runner API endpoints returning `offline` and `not_connected` for runners that have not contacted the GitLab instance in the past three months, the API endpoints will return the `stale` value, which was introduced in 14.6.

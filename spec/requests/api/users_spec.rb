@@ -1735,6 +1735,33 @@ RSpec.describe API::Users do
     end
   end
 
+  describe 'GET /user/:id/keys/:key_id' do
+    it 'gets existing key', :aggregate_failures do
+      user.keys << key
+
+      get api("/users/#{user.id}/keys/#{key.id}")
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['title']).to eq(key.title)
+    end
+
+    it 'returns 404 error if user not found', :aggregate_failures do
+      user.keys << key
+
+      get api("/users/0/keys/#{key.id}")
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns 404 error if key not found', :aggregate_failures do
+      get api("/users/#{user.id}/keys/#{non_existing_record_id}")
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Key Not Found')
+    end
+  end
+
   describe 'DELETE /user/:id/keys/:key_id' do
     context 'when unauthenticated' do
       it 'returns authentication error' do

@@ -324,7 +324,7 @@ RSpec.describe 'Signup' do
         fill_in_signup_form
 
         expect { click_button 'Register' }.not_to change { User.count }
-        expect(page).to have_content('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
+        expect(page).to have_content(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
       end
     end
 

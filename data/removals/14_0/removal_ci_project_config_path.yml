@@ -9,4 +9,3 @@
 
     If you are using `CI_PROJECT_CONFIG_PATH` in your pipeline configurations,
     please update them to use `CI_CONFIG_PATH` instead.
-

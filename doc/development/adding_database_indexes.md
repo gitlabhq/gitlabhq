@@ -275,11 +275,11 @@ You can verify if the MR was deployed to GitLab.com by executing
 `/chatops run auto_deploy status <merge_sha>`. To verify existence of
 the index, you can:
 
-- Use a meta-command in #database-lab, such as: `\d <index_name>`
-  - Ensure that the index is not [`invalid`](https://www.postgresql.org/docs/12/sql-createindex.html#:~:text=The%20psql%20%5Cd%20command%20will%20report%20such%20an%20index%20as%20INVALID)
-- Ask someone in #database to check if the index exists
+- Use a meta-command in #database-lab, such as: `\d <index_name>`.
+  - Ensure that the index is not [`invalid`](https://www.postgresql.org/docs/12/sql-createindex.html#:~:text=The%20psql%20%5Cd%20command%20will%20report%20such%20an%20index%20as%20INVALID).
+- Ask someone in #database to check if the index exists.
 - With proper access, you can also verify directly on production or in a
-production clone
+production clone.
 
 ### Add a migration to create the index synchronously
 

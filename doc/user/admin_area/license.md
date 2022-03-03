@@ -56,7 +56,7 @@ Otherwise, to upload your license:
 
 1. Sign in to GitLab as an administrator.
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings**.
+1. On the left sidebar, select **Settings > General**.
 1. In the **License file** area, select **Upload a license**.
 1. Upload a license:
    - For a file, either:

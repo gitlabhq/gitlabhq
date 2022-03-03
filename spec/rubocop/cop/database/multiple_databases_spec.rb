@@ -12,4 +12,14 @@ RSpec.describe RuboCop::Cop::Database::MultipleDatabases do
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use methods from ActiveRecord::Base, [...]
     SOURCE
   end
+
+  described_class::ALLOWED_METHODS.each do |method_name|
+    it "does not flag use of ActiveRecord::Base.#{method_name}" do
+      expect_no_offenses(<<~SOURCE)
+        ActiveRecord::Base.#{method_name} do
+          Project.save
+        end
+      SOURCE
+    end
+  end
 end

@@ -42389,6 +42389,9 @@ msgstr ""
 msgid "Your %{plan} subscription expires on %{expiry_date}"
 msgstr ""
 
+msgid "Your %{spammable_entity_type} has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."
+msgstr ""
+
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription expires on %{strong}%{expires_on}%{strong_close}. After that date, you cannot create issues or merge requests, or use many other features."
 msgstr ""
 
