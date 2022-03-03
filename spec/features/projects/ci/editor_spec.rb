@@ -55,6 +55,10 @@ RSpec.describe 'Pipeline Editor', :js do
     it 'displays new branch as selected after commiting on a new branch' do
       find('#target-branch-field').set('new_branch', clear: :backspace)
 
+      page.within('#source-editor-') do
+        find('textarea').send_keys '123'
+      end
+
       click_button 'Commit changes'
 
       page.within('[data-testid="branch-selector"]') do

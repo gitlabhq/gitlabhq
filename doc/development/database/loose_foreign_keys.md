@@ -50,6 +50,107 @@ we can:
 NOTE:
 For this procedure to work, we must register which tables to clean up asynchronously.
 
+## The `scripts/decomposition/generate-loose-foreign-key`
+
+We built an automation tool to aid migration of foreign keys into loose foreign keys as part of
+decomposition effort. It presents existing keys and allows chosen foreign keys to be automatically
+converted into loose foreign keys. This ensures consistency between foreign key and loose foreign
+key definitions, and ensures that they are properly tested.
+
+WARNING:
+We strongly advise you to use the automation script for swapping any foreign key to a loose foreign key.
+
+The tool ensures that all aspects of swapping a foreign key are covered. This includes:
+
+- Creating a migration to remove a foreign key.
+- Updating `db/structure.sql` with the new migration.
+- Updating `lib/gitlab/database/gitlab_loose_foreign_keys.yml` to add the new loose foreign key.
+- Creating or updating a model's specs to ensure that the loose foreign key is properly supported.
+- Creating a new branch, commit, push, and creating a merge request on GitLab.com.
+- Creating a merge request template with all the necessary details to validate the safety of the foreign key removal.
+
+The tool is located at `scripts/decomposition/generate-loose-foreign-key`:
+
+```shell
+$ scripts/decomposition/generate-loose-foreign-key -h
+
+Usage: scripts/decomposition/generate-loose-foreign-key [options] <filters...>
+    -c, --cross-schema               Show only cross-schema foreign keys
+    -n, --dry-run                    Do not execute any commands (dry run)
+    -b, --[no-]branch                Create or not a new branch
+    -r, --[no-]rspec                 Create or not a rspecs automatically
+    -m, --milestone MILESTONE        Specify custom milestone (current: 14.8)
+    -h, --help                       Prints this help
+```
+
+For the migration of cross-schema foreign keys, we use the `-c` modifier to show the foreign keys
+yet to migrate:
+
+```shell
+$ scripts/decomposition/generate-loose-foreign-key -c
+Re-creating current test database
+Dropped database 'gitlabhq_test_ee'
+Dropped database 'gitlabhq_geo_test_ee'
+Created database 'gitlabhq_test_ee'
+Created database 'gitlabhq_geo_test_ee'
+
+Showing cross-schema foreign keys (20):
+   ID | HAS_LFK |                                     FROM |                   TO |                         COLUMN |       ON_DELETE 
+    0 |       N |                                ci_builds |             projects |                     project_id |         cascade 
+    1 |       N |                         ci_job_artifacts |             projects |                     project_id |         cascade 
+    2 |       N |                             ci_pipelines |             projects |                     project_id |         cascade 
+    3 |       Y |                             ci_pipelines |       merge_requests |               merge_request_id |         cascade 
+    4 |       N |                   external_pull_requests |             projects |                     project_id |         cascade 
+    5 |       N |                     ci_sources_pipelines |             projects |                     project_id |         cascade 
+    6 |       N |                                ci_stages |             projects |                     project_id |         cascade 
+    7 |       N |                    ci_pipeline_schedules |             projects |                     project_id |         cascade 
+    8 |       N |                       ci_runner_projects |             projects |                     project_id |         cascade 
+    9 |       Y |             dast_site_profiles_pipelines |         ci_pipelines |                 ci_pipeline_id |         cascade 
+   10 |       Y |                   vulnerability_feedback |         ci_pipelines |                    pipeline_id |         nullify 
+   11 |       N |                             ci_variables |             projects |                     project_id |         cascade 
+   12 |       N |                                  ci_refs |             projects |                     project_id |         cascade 
+   13 |       N |                       ci_builds_metadata |             projects |                     project_id |         cascade 
+   14 |       N |                ci_subscriptions_projects |             projects |          downstream_project_id |         cascade 
+   15 |       N |                ci_subscriptions_projects |             projects |            upstream_project_id |         cascade 
+   16 |       N |                      ci_sources_projects |             projects |              source_project_id |         cascade 
+   17 |       N |         ci_job_token_project_scope_links |             projects |              source_project_id |         cascade 
+   18 |       N |         ci_job_token_project_scope_links |             projects |              target_project_id |         cascade 
+   19 |       N |                ci_project_monthly_usages |             projects |                     project_id |         cascade 
+
+To match FK write one or many filters to match against FROM/TO/COLUMN:
+- scripts/decomposition/generate-loose-foreign-key <filter(s)...>
+- scripts/decomposition/generate-loose-foreign-key ci_job_artifacts project_id
+- scripts/decomposition/generate-loose-foreign-key dast_site_profiles_pipelines
+```
+
+The command accepts a list of filters to match from, to, or column for the purpose of the foreign key generation.
+For example, run this to swap all foreign keys for `ci_job_token_project_scope_links` for the
+decomposed database:
+
+```shell
+scripts/decomposition/generate-loose-foreign-key -c ci_job_token_project_scope_links
+```
+
+To swap only the `source_project_id` of `ci_job_token_project_scope_links` for the decomposed database, run:
+
+```shell
+scripts/decomposition/generate-loose-foreign-key -c ci_job_token_project_scope_links source_project_id
+```
+
+To swap all the foreign keys (all having `_id` appended), but not create a new branch (only commit
+the changes) and not create rspecs, run:
+
+```shell
+scripts/decomposition/generate-loose-foreign-key -c --no-branch --no-rspec _id
+```
+
+To swap all foreign keys referencing `projects`, but not create a new branch (only commit the
+changes), run:
+
+```shell
+scripts/decomposition/generate-loose-foreign-key -c --no-branch projects
+```
+
 ## Example migration and configuration
 
 ### Configure the loose foreign key

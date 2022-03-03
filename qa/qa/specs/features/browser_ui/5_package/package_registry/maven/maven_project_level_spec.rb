@@ -3,8 +3,6 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'Maven project level endpoint' do
-      using RSpec::Parameterized::TableSyntax
-
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { "maven-#{SecureRandom.hex(8)}" }
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
@@ -112,10 +110,24 @@ module QA
         package_project.remove_via_api!
       end
 
-      where(:authentication_token_type, :maven_header_name) do
-        :personal_access_token | 'Private-Token'
-        :ci_job_token          | 'Job-Token'
-        :project_deploy_token  | 'Deploy-Token'
+      where do
+        {
+          'using a personal access token' => {
+            authentication_token_type: :personal_access_token,
+            maven_header_name: 'Private-Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354347'
+          },
+          'using a project deploy token' => {
+            authentication_token_type: :project_deploy_token,
+            maven_header_name: 'Deploy-Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354348'
+          },
+          'using a ci job token' => {
+            authentication_token_type: :ci_job_token,
+            maven_header_name: 'Job-Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354349'
+          }
+        }
       end
 
       with_them do
@@ -154,7 +166,7 @@ module QA
           }
         end
 
-        it "pushes and pulls a maven package via maven using #{params[:authentication_token_type]}" do
+        it 'pushes and pulls a maven package via maven', testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               commit.project = package_project

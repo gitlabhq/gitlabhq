@@ -3,7 +3,6 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'NuGet project level endpoint' do
-      using RSpec::Parameterized::TableSyntax
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'nuget-package-project'
@@ -54,10 +53,24 @@ module QA
         project.remove_via_api!
       end
 
-      where(:authentication_token_type, :token_name) do
-        :personal_access_token | 'Personal Access Token'
-        :ci_job_token          | 'CI Job Token'
-        :project_deploy_token  | 'Deploy Token'
+      where do
+        {
+          'using a personal access token' => {
+            authentication_token_type: :personal_access_token,
+            maven_header_name: 'Private-Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354351'
+          },
+          'using a project deploy token' => {
+            authentication_token_type: :project_deploy_token,
+            maven_header_name: 'Deploy-Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354352'
+          },
+          'using a ci job token' => {
+            authentication_token_type: :ci_job_token,
+            maven_header_name: 'Job-Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354353'
+          }
+        }
       end
 
       with_them do
@@ -83,7 +96,7 @@ module QA
           end
         end
 
-        it "publishes a nuget package and installs using a #{params[:token_name]}" do
+        it 'publishes a nuget package and installs', testcase: params[:testcase] do
           Flow::Login.sign_in
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do

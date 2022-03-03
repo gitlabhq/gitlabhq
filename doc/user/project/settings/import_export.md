@@ -358,25 +358,25 @@ Rather than attempting to push all changes at once, this workaround:
 ### Manually execute export steps
 
 Exports sometimes fail without giving enough information to troubleshoot. In these cases, it can be
-helpful to [execute the export process manually within rails](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/uncategorized/project-export.md#export-a-project-via-rails-console).
+helpful to [open a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+and loop through [all the defined exporters](https://gitlab.com/gitlab-org/gitlab/-/blob/b67a5b5a12498d57cd877023b7385f7251e57de8/app/services/projects/import_export/export_service.rb#L65).
 Execute each line individually, rather than pasting the entire block at once, so you can see any
 errors each command returns.
 
 ```shell
+# User needs to have permission to export
 u = User.find_by_username('someuser')
 p = Project.find_by_full_path('some/project')
 e = Projects::ImportExport::ExportService.new(p,u)
 
 e.send(:version_saver).send(:save)
-e.send(:avatar_saver).send(:save)
-e.send(:project_tree_saver).send(:save)
-e.send(:uploads_saver).send(:save)
-e.send(:wiki_repo_saver).send(:save)
-e.send(:lfs_saver).send(:save)
-e.send(:snippets_repo_saver).send(:save)
-e.send(:design_repo_saver).send(:save)
+e.send(:repo_saver).send(:save)
+## continue using `e.send(:exporter_name).send(:save)` going through the list of exporters
 
+# The following line should show you the export_path similar to /var/opt/gitlab/gitlab-rails/shared/tmp/gitlab_exports/@hashed/49/94/4994....
 s = Gitlab::ImportExport::Saver.new(exportable: p, shared:p.import_export_shared)
+
+# To try and upload use:
 s.send(:compress_and_save)
 s.send(:save_upload)
 ```

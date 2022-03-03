@@ -11,6 +11,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
+- Read more about the non-deprecated [Web Terminals accessible through the Web IDE](../../user/project/web_ide/index.md).
+- Read more about the non-deprecated [Web Terminals accessible from a running CI job](../../ci/interactive_web_terminal/index.md).
+
+---
+
 With the introduction of the [Kubernetes integration](../../user/infrastructure/clusters/index.md),
 GitLab can store and use credentials for a Kubernetes cluster.
 GitLab uses these credentials to provide access to

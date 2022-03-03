@@ -3,7 +3,6 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'Maven group level endpoint' do
-      using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
       include_context 'packages registry qa scenario'
 

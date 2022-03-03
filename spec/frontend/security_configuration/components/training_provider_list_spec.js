@@ -25,7 +25,7 @@ import {
   updateSecurityTrainingProvidersResponse,
   updateSecurityTrainingProvidersErrorResponse,
   testProjectPath,
-  textProviderIds,
+  testProviderIds,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -71,7 +71,7 @@ describe('TrainingProviderList component', () => {
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
 
-  const toggleFirstProvider = () => findFirstToggle().vm.$emit('change', textProviderIds[0]);
+  const toggleFirstProvider = () => findFirstToggle().vm.$emit('change', testProviderIds[0]);
 
   afterEach(() => {
     wrapper.destroy();
@@ -166,7 +166,7 @@ describe('TrainingProviderList component', () => {
             mutation: configureSecurityTrainingProvidersMutation,
             variables: {
               input: {
-                providerId: textProviderIds[0],
+                providerId: testProviderIds[0],
                 isEnabled: true,
                 isPrimary: false,
                 projectPath: testProjectPath,

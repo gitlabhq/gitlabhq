@@ -276,9 +276,6 @@ To create a value stream:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55572) in GitLab 13.10.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294190) in GitLab 13.11.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
 You can create value streams with stages, starting with a default or a blank template. You can
 add stages as desired.
 

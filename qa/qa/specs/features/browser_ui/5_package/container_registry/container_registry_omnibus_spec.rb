@@ -3,8 +3,6 @@
 module QA
   RSpec.describe 'Package', :orchestrated, only: { pipeline: :main } do
     describe 'Self-managed Container Registry' do
-      using RSpec::Parameterized::TableSyntax
-
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-registry'
