@@ -77,7 +77,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
 
-      expect(current_path).to eq(project_blob_path(project, 'master/.gitignore'))
+      expect(page).to have_current_path(project_blob_path(project, 'master/.gitignore'), ignore_query: true)
 
       wait_for_requests
 
@@ -97,7 +97,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       fill_in(:branch_name, with: 'new_branch_name', visible: true)
       click_button('Commit changes')
 
-      expect(current_path).to eq(project_new_merge_request_path(project))
+      expect(page).to have_current_path(project_new_merge_request_path(project), ignore_query: true)
 
       click_link('Changes')
 
@@ -194,7 +194,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
 
       fork = user.fork_of(project2.reload)
 
-      expect(current_path).to eq(project_new_merge_request_path(fork))
+      expect(page).to have_current_path(project_new_merge_request_path(fork), ignore_query: true)
 
       wait_for_requests
 
@@ -223,7 +223,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
 
         fork = user.fork_of(project2)
 
-        expect(current_path).to eq(project_new_merge_request_path(fork))
+        expect(page).to have_current_path(project_new_merge_request_path(fork), ignore_query: true)
 
         wait_for_requests
 

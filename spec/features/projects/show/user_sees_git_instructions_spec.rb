@@ -14,7 +14,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions' do
 
   shared_examples_for 'redirects to the sign in page' do
     it 'redirects to the sign in page' do
-      expect(current_path).to eq(new_user_session_path)
+      expect(page).to have_current_path(new_user_session_path, ignore_query: true)
     end
   end
 

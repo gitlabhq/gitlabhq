@@ -23,7 +23,7 @@ RSpec.describe 'Dashboard Group' do
     fill_in 'group_name', with: new_name
     click_button 'Create group'
 
-    expect(current_path).to eq group_path(Group.find_by(name: new_name))
+    expect(page).to have_current_path group_path(Group.find_by(name: new_name)), ignore_query: true
     expect(page).to have_content(new_name)
   end
 end

@@ -18,7 +18,7 @@ RSpec.shared_examples 'user activates the Mattermost Slash Command integration' 
     click_active_checkbox
     click_save_integration
 
-    expect(current_path).to eq(edit_path)
+    expect(page).to have_current_path(edit_path, ignore_query: true)
     expect(page).to have_content('Mattermost slash commands settings saved, but not active.')
   end
 
@@ -28,7 +28,7 @@ RSpec.shared_examples 'user activates the Mattermost Slash Command integration' 
     fill_in 'service_token', with: token
     click_save_integration
 
-    expect(current_path).to eq(edit_path)
+    expect(page).to have_current_path(edit_path, ignore_query: true)
     expect(page).to have_content('Mattermost slash commands settings saved and active.')
   end
 end

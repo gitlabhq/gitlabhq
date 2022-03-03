@@ -19,6 +19,8 @@ module Gitlab
           end
 
           def parse!
+            set_report_version
+
             return report_data unless valid?
 
             raise SecurityReportParserError, "Invalid report format" unless report_data.is_a?(Hash)
@@ -26,7 +28,6 @@ module Gitlab
             create_scanner
             create_scan
             create_analyzer
-            set_report_version
 
             create_findings
 
@@ -66,7 +67,7 @@ module Gitlab
           end
 
           def schema_validator
-            @schema_validator ||= ::Gitlab::Ci::Parsers::Security::Validators::SchemaValidator.new(report.type, report_data)
+            @schema_validator ||= ::Gitlab::Ci::Parsers::Security::Validators::SchemaValidator.new(report.type, report_data, report.version)
           end
 
           def report_data

@@ -20,7 +20,7 @@ RSpec.describe 'Admin Mode Logout', :js do
   it 'disable removes admin mode and redirects to root page' do
     gitlab_disable_admin_mode
 
-    expect(current_path).to eq root_path
+    expect(page).to have_current_path root_path, ignore_query: true
 
     open_top_nav
 
@@ -43,7 +43,7 @@ RSpec.describe 'Admin Mode Logout', :js do
     it 'disable removes admin mode and redirects to root page' do
       gitlab_disable_admin_mode
 
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path, ignore_query: true
 
       open_top_nav
 

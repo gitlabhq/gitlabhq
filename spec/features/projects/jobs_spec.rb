@@ -103,7 +103,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
 
         it "redirects to new URL" do
-          expect(page.current_path).to eq(jobs_url)
+          expect(page).to have_current_path(jobs_url, ignore_query: true)
         end
       end
     end
@@ -315,7 +315,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         it 'shows cancel button' do
           find('[data-testid="cancel-button"]').click
 
-          expect(page.current_path).to eq(job_url)
+          expect(page).to have_current_path(job_url, ignore_query: true)
         end
       end
     end
@@ -459,7 +459,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it "redirects to new URL" do
-        expect(page.current_path).to eq(job_url)
+        expect(page).to have_current_path(job_url, ignore_query: true)
       end
     end
 
@@ -1179,7 +1179,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it "redirects to new URL" do
-        expect(page.current_path).to eq(raw_job_url)
+        expect(page).to have_current_path(raw_job_url, ignore_query: true)
       end
     end
   end

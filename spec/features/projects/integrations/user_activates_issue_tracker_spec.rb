@@ -34,7 +34,7 @@ RSpec.describe 'User activates issue tracker', :js do
 
         it 'activates the integration' do
           expect(page).to have_content("#{tracker} settings saved and active.")
-          expect(current_path).to eq(edit_project_integration_path(project, tracker.parameterize(separator: '_')))
+          expect(page).to have_current_path(edit_project_integration_path(project, tracker.parameterize(separator: '_')), ignore_query: true)
         end
 
         it 'shows the link in the menu' do
@@ -58,7 +58,7 @@ RSpec.describe 'User activates issue tracker', :js do
           end
 
           expect(page).to have_content("#{tracker} settings saved and active.")
-          expect(current_path).to eq(edit_project_integration_path(project, tracker.parameterize(separator: '_')))
+          expect(page).to have_current_path(edit_project_integration_path(project, tracker.parameterize(separator: '_')), ignore_query: true)
         end
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe 'User activates issue tracker', :js do
 
       it 'saves but does not activate the integration' do
         expect(page).to have_content("#{tracker} settings saved, but not active.")
-        expect(current_path).to eq(edit_project_integration_path(project, tracker.parameterize(separator: '_')))
+        expect(page).to have_current_path(edit_project_integration_path(project, tracker.parameterize(separator: '_')), ignore_query: true)
       end
 
       it 'does not show the external tracker link in the menu' do

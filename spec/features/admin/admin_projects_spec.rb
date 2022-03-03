@@ -26,7 +26,7 @@ RSpec.describe "Admin::Projects" do
     end
 
     it "is ok" do
-      expect(current_path).to eq(admin_projects_path)
+      expect(page).to have_current_path(admin_projects_path, ignore_query: true)
     end
 
     it 'renders projects list without archived project' do
@@ -63,7 +63,7 @@ RSpec.describe "Admin::Projects" do
     end
 
     it "has project info" do
-      expect(current_path).to eq admin_project_path(project)
+      expect(page).to have_current_path admin_project_path(project), ignore_query: true
       expect(page).to have_content(project.path)
       expect(page).to have_content(project.name)
       expect(page).to have_content(project.full_name)
@@ -150,7 +150,7 @@ RSpec.describe "Admin::Projects" do
         click_button('Leave')
       end
 
-      expect(current_path).to match dashboard_projects_path
+      expect(page).to have_current_path(dashboard_projects_path, ignore_query: true, url: false)
     end
   end
 

@@ -477,6 +477,20 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
       end
     end
 
+    context 'when there is a reply-to address and a from address' do
+      let(:email_raw) { email_fixture('emails/service_desk_reply_to_and_from.eml') }
+
+      it 'shows both from and reply-to addresses in the issue header' do
+        setup_attachment
+
+        expect { receiver.execute }.to change { Issue.count }.by(1)
+
+        new_issue = Issue.last
+
+        expect(new_issue.external_author).to eq('finn@adventuretime.ooo (reply to: marceline@adventuretime.ooo)')
+      end
+    end
+
     context 'when service desk is not enabled for project' do
       before do
         allow(Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)

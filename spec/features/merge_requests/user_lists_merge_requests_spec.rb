@@ -77,7 +77,7 @@ RSpec.describe 'Merge requests > User lists merge requests' do
   it 'filters on no assignee' do
     visit_merge_requests(project, assignee_id: IssuableFinder::Params::FILTER_NONE)
 
-    expect(current_path).to eq(project_merge_requests_path(project))
+    expect(page).to have_current_path(project_merge_requests_path(project), ignore_query: true)
     expect(page).to have_content 'merge-test'
     expect(page).to have_content 'feature'
     expect(page).not_to have_content 'fix'

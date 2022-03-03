@@ -9,7 +9,7 @@ RSpec.describe 'Dashboard > Milestones' do
     end
 
     it 'is redirected to sign-in page' do
-      expect(current_path).to eq new_user_session_path
+      expect(page).to have_current_path new_user_session_path, ignore_query: true
     end
   end
 
@@ -27,7 +27,7 @@ RSpec.describe 'Dashboard > Milestones' do
     end
 
     it 'sees milestones' do
-      expect(current_path).to eq dashboard_milestones_path
+      expect(page).to have_current_path dashboard_milestones_path, ignore_query: true
       expect(page).to have_content(milestone.title)
       expect(page).to have_content(group.name)
       expect(first('.milestone')).to have_content('Merge requests')
@@ -43,7 +43,7 @@ RSpec.describe 'Dashboard > Milestones' do
 
         find('.js-new-project-item-link').click
 
-        expect(current_path).to eq(new_group_milestone_path(group))
+        expect(page).to have_current_path(new_group_milestone_path(group), ignore_query: true)
       end
     end
   end
@@ -61,7 +61,7 @@ RSpec.describe 'Dashboard > Milestones' do
     end
 
     it 'does not see milestones' do
-      expect(current_path).to eq dashboard_milestones_path
+      expect(page).to have_current_path dashboard_milestones_path, ignore_query: true
       expect(page).to have_content(milestone.title)
       expect(first('.milestone')).to have_no_content('Merge Requests')
     end

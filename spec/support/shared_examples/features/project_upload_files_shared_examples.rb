@@ -24,7 +24,7 @@ RSpec.shared_examples 'it uploads and commits a new text file' do |drop: false|
     click_button('Upload file')
 
     expect(page).to have_content('New commit message')
-    expect(current_path).to eq(project_new_merge_request_path(project))
+    expect(page).to have_current_path(project_new_merge_request_path(project), ignore_query: true)
 
     click_link('Changes')
     find("a[data-action='diffs']", text: 'Changes').click
@@ -129,7 +129,7 @@ RSpec.shared_examples 'it uploads and commits a new file to a forked project' do
 
     fork = user.fork_of(project2.reload)
 
-    expect(current_path).to eq(project_new_merge_request_path(fork))
+    expect(page).to have_current_path(project_new_merge_request_path(fork), ignore_query: true)
 
     find("a[data-action='diffs']", text: 'Changes').click
 

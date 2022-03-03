@@ -20,7 +20,7 @@ RSpec.describe 'Edit group settings' do
       update_path(new_group_path)
       visit new_group_full_path
 
-      expect(current_path).to eq(new_group_full_path)
+      expect(page).to have_current_path(new_group_full_path, ignore_query: true)
       expect(find('h1.home-panel-title')).to have_content(group.name)
     end
 
@@ -28,7 +28,7 @@ RSpec.describe 'Edit group settings' do
       update_path(new_group_path)
       visit old_group_full_path
 
-      expect(current_path).to eq(new_group_full_path)
+      expect(page).to have_current_path(new_group_full_path, ignore_query: true)
       expect(find('h1.home-panel-title')).to have_content(group.name)
     end
 
@@ -41,7 +41,7 @@ RSpec.describe 'Edit group settings' do
         update_path(new_group_path)
         visit new_subgroup_full_path
 
-        expect(current_path).to eq(new_subgroup_full_path)
+        expect(page).to have_current_path(new_subgroup_full_path, ignore_query: true)
         expect(find('h1.home-panel-title')).to have_content(subgroup.name)
       end
 
@@ -49,7 +49,7 @@ RSpec.describe 'Edit group settings' do
         update_path(new_group_path)
         visit old_subgroup_full_path
 
-        expect(current_path).to eq(new_subgroup_full_path)
+        expect(page).to have_current_path(new_subgroup_full_path, ignore_query: true)
         expect(find('h1.home-panel-title')).to have_content(subgroup.name)
       end
     end
@@ -71,7 +71,7 @@ RSpec.describe 'Edit group settings' do
         update_path(new_group_path)
         visit new_project_full_path
 
-        expect(current_path).to eq(new_project_full_path)
+        expect(page).to have_current_path(new_project_full_path, ignore_query: true)
         expect(find('.breadcrumbs')).to have_content(project.path)
       end
 
@@ -79,7 +79,7 @@ RSpec.describe 'Edit group settings' do
         update_path(new_group_path)
         visit old_project_full_path
 
-        expect(current_path).to eq(new_project_full_path)
+        expect(page).to have_current_path(new_project_full_path, ignore_query: true)
         expect(find('.breadcrumbs')).to have_content(project.path)
       end
     end

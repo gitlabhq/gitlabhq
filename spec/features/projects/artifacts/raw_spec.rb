@@ -21,7 +21,7 @@ RSpec.describe 'Raw artifact' do
     end
 
     it "redirects to new URL" do
-      expect(page.current_path).to eq(raw_url)
+      expect(page).to have_current_path(raw_url, ignore_query: true)
     end
   end
 end

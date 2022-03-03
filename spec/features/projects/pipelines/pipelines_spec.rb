@@ -937,7 +937,7 @@ RSpec.describe 'Pipelines', :js do
 
       it 'redirects the user to sign_in and displays the flash alert' do
         expect(page).to have_content 'You need to sign in'
-        expect(page.current_path).to eq("/users/sign_in")
+        expect(page).to have_current_path("/users/sign_in")
       end
     end
   end

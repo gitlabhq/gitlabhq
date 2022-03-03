@@ -27,13 +27,13 @@ RSpec.describe 'Developer deletes tag', :js do
   context 'from a specific tag page' do
     it 'deletes the tag' do
       click_on 'v1.0.0'
-      expect(current_path).to eq(
-        project_tag_path(project, 'v1.0.0'))
+      expect(page).to have_current_path(
+        project_tag_path(project, 'v1.0.0'), ignore_query: true)
 
       container = page.find('.nav-controls')
       delete_tag container
 
-      expect(current_path).to eq("#{project_tags_path(project)}/")
+      expect(page).to have_current_path("#{project_tags_path(project)}/", ignore_query: true)
       expect(page).not_to have_content 'v1.0.0'
     end
   end

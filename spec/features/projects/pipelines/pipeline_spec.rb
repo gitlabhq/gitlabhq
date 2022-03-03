@@ -477,7 +477,7 @@ RSpec.describe 'Pipeline', :js do
 
       it 'redirects to pipeline overview page', :sidekiq_inline do
         expect(page).to have_content('The pipeline has been deleted')
-        expect(current_path).to eq(project_pipelines_path(project))
+        expect(page).to have_current_path(project_pipelines_path(project), ignore_query: true)
       end
     end
 
@@ -1124,7 +1124,7 @@ RSpec.describe 'Pipeline', :js do
       it 'displays the pipeline graph' do
         subject
 
-        expect(current_path).to eq(pipeline_path(pipeline))
+        expect(page).to have_current_path(pipeline_path(pipeline), ignore_query: true)
         expect(page).not_to have_content('Failed Jobs')
         expect(page).to have_selector('.js-pipeline-graph')
       end

@@ -226,7 +226,7 @@ RSpec.describe 'Admin::Users::User' do
           it 'does not redirect to password change page' do
             subject
 
-            expect(current_path).to eq('/')
+            expect(page).to have_current_path('/')
           end
         end
       end
@@ -250,7 +250,7 @@ RSpec.describe 'Admin::Users::User' do
         it 'is redirected back to the impersonated users page in the admin after stopping' do
           subject
 
-          expect(current_path).to eq("/admin/users/#{another_user.username}")
+          expect(page).to have_current_path("/admin/users/#{another_user.username}", ignore_query: true)
         end
 
         context 'a user with an expired password' do
@@ -261,7 +261,7 @@ RSpec.describe 'Admin::Users::User' do
           it 'is redirected back to the impersonated users page in the admin after stopping' do
             subject
 
-            expect(current_path).to eq("/admin/users/#{another_user.username}")
+            expect(page).to have_current_path("/admin/users/#{another_user.username}", ignore_query: true)
           end
         end
       end

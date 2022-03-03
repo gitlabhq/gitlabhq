@@ -38,8 +38,8 @@ RSpec.describe 'Developer creates tag' do
     it 'with multiline message displays the message in a <pre> block' do
       create_tag_in_form(tag: 'v3.0', ref: 'master', message: "Awesome tag message\n\n- hello\n- world")
 
-      expect(current_path).to eq(
-        project_tag_path(project, 'v3.0'))
+      expect(page).to have_current_path(
+        project_tag_path(project, 'v3.0'), ignore_query: true)
       expect(page).to have_content 'v3.0'
       page.within 'pre.wrap' do
         expect(page).to have_content "Awesome tag message - hello - world"
@@ -49,8 +49,8 @@ RSpec.describe 'Developer creates tag' do
     it 'with multiline release notes parses the release note as Markdown' do
       create_tag_in_form(tag: 'v4.0', ref: 'master', desc: "Awesome release notes\n\n- hello\n- world")
 
-      expect(current_path).to eq(
-        project_tag_path(project, 'v4.0'))
+      expect(page).to have_current_path(
+        project_tag_path(project, 'v4.0'), ignore_query: true)
       expect(page).to have_content 'v4.0'
       page.within '.description' do
         expect(page).to have_content 'Awesome release notes'

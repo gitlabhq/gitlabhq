@@ -32,7 +32,7 @@ RSpec.describe 'Group' do
         group = Group.find_by(name: 'test-group')
 
         expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
-        expect(current_path).to eq(group_path(group))
+        expect(page).to have_current_path(group_path(group), ignore_query: true)
         expect(page).to have_selector '.visibility-icon [data-testid="earth-icon"]'
       end
     end
@@ -51,7 +51,7 @@ RSpec.describe 'Group' do
         fill_in 'Group URL', with: 'space group'
         click_button 'Create group'
 
-        expect(current_path).to eq(new_group_path)
+        expect(page).to have_current_path(new_group_path, ignore_query: true)
         expect(page).to have_text('Choose a group path that does not start with a dash or end with a period. It can also contain alphanumeric characters and underscores.')
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe 'Group' do
         fill_in 'Group URL', with: 'atom_group.atom'
         click_button 'Create group'
 
-        expect(current_path).to eq(groups_path)
+        expect(page).to have_current_path(groups_path, ignore_query: true)
         expect(page).to have_namespace_error_message
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe 'Group' do
         fill_in 'Group URL', with: 'git_group.git'
         click_button 'Create group'
 
-        expect(current_path).to eq(groups_path)
+        expect(page).to have_current_path(groups_path, ignore_query: true)
         expect(page).to have_namespace_error_message
       end
     end
@@ -211,7 +211,7 @@ RSpec.describe 'Group' do
           fill_in 'Group name', with: 'bar'
           click_button 'Create group'
 
-          expect(current_path).to eq(group_path('foo/bar'))
+          expect(page).to have_current_path(group_path('foo/bar'), ignore_query: true)
           expect(page).to have_selector 'h1', text: 'bar'
         end
       end
@@ -237,7 +237,7 @@ RSpec.describe 'Group' do
         fill_in 'Group name', with: 'bar'
         click_button 'Create group'
 
-        expect(current_path).to eq(group_path('foo/bar'))
+        expect(page).to have_current_path(group_path('foo/bar'), ignore_query: true)
         expect(page).to have_selector 'h1', text: 'bar'
       end
     end

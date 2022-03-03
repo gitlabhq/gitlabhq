@@ -21,7 +21,7 @@ RSpec.describe 'Admin::Users' do
     end
 
     it "is ok" do
-      expect(current_path).to eq(admin_users_path)
+      expect(page).to have_current_path(admin_users_path, ignore_query: true)
     end
 
     it "has users list" do

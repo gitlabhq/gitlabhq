@@ -20,8 +20,8 @@ RSpec.describe 'Developer updates tag' do
       fill_in 'release_description', with: 'Awesome release notes'
       click_button 'Save changes'
 
-      expect(current_path).to eq(
-        project_tag_path(project, 'v1.1.0'))
+      expect(page).to have_current_path(
+        project_tag_path(project, 'v1.1.0'), ignore_query: true)
       expect(page).to have_content 'v1.1.0'
       expect(page).to have_content 'Awesome release notes'
     end
@@ -45,8 +45,8 @@ RSpec.describe 'Developer updates tag' do
       fill_in 'release_description', with: 'Awesome release notes'
       click_button 'Save changes'
 
-      expect(current_path).to eq(
-        project_tag_path(project, 'v1.1.0'))
+      expect(page).to have_current_path(
+        project_tag_path(project, 'v1.1.0'), ignore_query: true)
       expect(page).to have_content 'v1.1.0'
       expect(page).to have_content 'Awesome release notes'
     end

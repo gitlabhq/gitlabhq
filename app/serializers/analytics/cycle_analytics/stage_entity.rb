@@ -57,7 +57,7 @@ module Analytics
       def html_description(event)
         options = {}
         if event.label_based?
-          label = event.label.present
+          label = event.label.present(issuable_subject: event.label.subject)
           options[:label_html] = render_label(label, link: '', small: true, tooltip: true)
         end
 

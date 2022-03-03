@@ -50,14 +50,14 @@ RSpec.describe 'Profile > Account', :js do
     it 'the user is accessible via the new path' do
       update_username(new_username)
       visit new_user_path
-      expect(current_path).to eq(new_user_path)
+      expect(page).to have_current_path(new_user_path, ignore_query: true)
       expect(find('.user-info')).to have_content(new_username)
     end
 
     it 'the old user path redirects to the new path' do
       update_username(new_username)
       visit old_user_path
-      expect(current_path).to eq(new_user_path)
+      expect(page).to have_current_path(new_user_path, ignore_query: true)
       expect(find('.user-info')).to have_content(new_username)
     end
 
@@ -77,14 +77,14 @@ RSpec.describe 'Profile > Account', :js do
       it 'the project is accessible via the new path' do
         update_username(new_username)
         visit new_project_path
-        expect(current_path).to eq(new_project_path)
+        expect(page).to have_current_path(new_project_path, ignore_query: true)
         expect(find('.breadcrumbs')).to have_content(user.name)
       end
 
       it 'the old project path redirects to the new path' do
         update_username(new_username)
         visit old_project_path
-        expect(current_path).to eq(new_project_path)
+        expect(page).to have_current_path(new_project_path, ignore_query: true)
         expect(find('.breadcrumbs')).to have_content(user.name)
       end
     end

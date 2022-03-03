@@ -20,7 +20,7 @@ RSpec.describe 'User activates Jira', :js do
 
       it 'activates the Jira integration' do
         expect(page).to have_content('Jira settings saved and active.')
-        expect(current_path).to eq(edit_project_integration_path(project, :jira))
+        expect(page).to have_current_path(edit_project_integration_path(project, :jira), ignore_query: true)
       end
 
       unless Gitlab.ee?
@@ -55,7 +55,7 @@ RSpec.describe 'User activates Jira', :js do
         click_test_then_save_integration
 
         expect(page).to have_content('Jira settings saved and active.')
-        expect(current_path).to eq(edit_project_integration_path(project, :jira))
+        expect(page).to have_current_path(edit_project_integration_path(project, :jira), ignore_query: true)
       end
     end
   end
@@ -72,7 +72,7 @@ RSpec.describe 'User activates Jira', :js do
 
     it 'saves but does not activate the Jira integration' do
       expect(page).to have_content('Jira settings saved, but not active.')
-      expect(current_path).to eq(edit_project_integration_path(project, :jira))
+      expect(page).to have_current_path(edit_project_integration_path(project, :jira), ignore_query: true)
     end
 
     it 'does not show the Jira link in the menu' do

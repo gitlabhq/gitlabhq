@@ -23,7 +23,7 @@ RSpec.describe 'Admin Broadcast Messages' do
     select Date.today.next_year.year, from: 'broadcast_message_ends_at_1i'
     click_button 'Add broadcast message'
 
-    expect(current_path).to eq admin_broadcast_messages_path
+    expect(page).to have_current_path admin_broadcast_messages_path, ignore_query: true
     expect(page).to have_content 'Application update from 4:00 CST to 5:00 CST'
     expect(page).to have_content '*/user_onboarded'
     expect(page).to have_selector 'strong', text: '4:00 CST to 5:00 CST'
@@ -37,7 +37,7 @@ RSpec.describe 'Admin Broadcast Messages' do
     select Date.today.next_year.year, from: 'broadcast_message_ends_at_1i'
     click_button 'Add broadcast message'
 
-    expect(current_path).to eq admin_broadcast_messages_path
+    expect(page).to have_current_path admin_broadcast_messages_path, ignore_query: true
     expect(page).to have_content 'Application update from 4:00 CST to 5:00 CST'
     expect(page).to have_content '*/user_onboarded'
     expect(page).to have_content 'Notification'
@@ -49,14 +49,14 @@ RSpec.describe 'Admin Broadcast Messages' do
     fill_in 'broadcast_message_message', with: 'Application update RIGHT NOW'
     click_button 'Update broadcast message'
 
-    expect(current_path).to eq admin_broadcast_messages_path
+    expect(page).to have_current_path admin_broadcast_messages_path, ignore_query: true
     expect(page).to have_content 'Application update RIGHT NOW'
   end
 
   it 'remove an existing broadcast message' do
     click_link 'Remove'
 
-    expect(current_path).to eq admin_broadcast_messages_path
+    expect(page).to have_current_path admin_broadcast_messages_path, ignore_query: true
     expect(page).not_to have_content 'Migration to new server'
   end
 

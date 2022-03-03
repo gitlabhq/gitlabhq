@@ -372,7 +372,7 @@ RSpec.describe 'New project', :js do
 
         it 'shows import instructions' do
           expect(page).to have_content('Authenticate with GitHub')
-          expect(current_path).to eq new_import_github_path
+          expect(page).to have_current_path new_import_github_path, ignore_query: true
         end
       end
 
@@ -383,7 +383,7 @@ RSpec.describe 'New project', :js do
 
         it 'shows import instructions' do
           expect(page).to have_content('Manifest file import')
-          expect(current_path).to eq new_import_manifest_path
+          expect(page).to have_current_path new_import_manifest_path, ignore_query: true
         end
       end
     end

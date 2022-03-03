@@ -8,7 +8,7 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions do
     Timecop.freeze(now) do
       user = create(:user)
       gitlab_sign_in(user)
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path, ignore_query: true
 
       sessions = ActiveSession.list(user)
       expect(sessions.count).to eq 1
@@ -59,12 +59,12 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions do
   it 'logout deletes the active user login' do
     user = create(:user)
     gitlab_sign_in(user)
-    expect(current_path).to eq root_path
+    expect(page).to have_current_path root_path, ignore_query: true
 
     expect(ActiveSession.list(user).count).to eq 1
 
     gitlab_sign_out
-    expect(current_path).to eq new_user_session_path
+    expect(page).to have_current_path new_user_session_path, ignore_query: true
 
     expect(ActiveSession.list(user)).to be_empty
   end

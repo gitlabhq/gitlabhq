@@ -663,6 +663,9 @@ msgstr ""
 msgid "%{firstMilestoneName} + %{numberOfOtherMilestones} more"
 msgstr ""
 
+msgid "%{from_address} (reply to: %{reply_to_address})"
+msgstr ""
+
 msgid "%{gitlab_experience_text}. Don't worry, this information isn't shared outside of your self-managed GitLab instance."
 msgstr ""
 

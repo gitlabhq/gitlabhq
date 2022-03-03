@@ -82,7 +82,7 @@ RSpec.describe 'Projects > Settings > User renames a project' do
       new_path = namespace_project_path(project.namespace, 'bar')
       visit new_path
 
-      expect(current_path).to eq(new_path)
+      expect(page).to have_current_path(new_path, ignore_query: true)
       expect(find('.breadcrumbs')).to have_content(project.name)
     end
 
@@ -92,7 +92,7 @@ RSpec.describe 'Projects > Settings > User renames a project' do
       new_path = namespace_project_path(project.namespace, 'bar')
       visit old_path
 
-      expect(current_path).to eq(new_path)
+      expect(page).to have_current_path(new_path, ignore_query: true)
       expect(find('.breadcrumbs')).to have_content(project.name)
     end
 
@@ -103,7 +103,7 @@ RSpec.describe 'Projects > Settings > User renames a project' do
         new_project = create(:project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
         visit old_path
 
-        expect(current_path).to eq(old_path)
+        expect(page).to have_current_path(old_path, ignore_query: true)
         expect(find('.breadcrumbs')).to have_content(new_project.name)
       end
     end

@@ -441,7 +441,7 @@ RSpec.describe 'Dashboard Todos' do
         target.project, target.issue, target.filename
       )
 
-      expect(current_path).to eq(expectation)
+      expect(page).to have_current_path(expectation, ignore_query: true)
     end
   end
 end

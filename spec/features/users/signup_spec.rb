@@ -203,7 +203,7 @@ RSpec.describe 'Signup' do
           fill_in_signup_form
 
           expect { click_button 'Register' }.to change { User.count }.by(1)
-          expect(current_path).to eq users_almost_there_path
+          expect(page).to have_current_path users_almost_there_path, ignore_query: true
           expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
 
           confirm_email
@@ -223,7 +223,7 @@ RSpec.describe 'Signup' do
           fill_in_signup_form
 
           expect { click_button 'Register' }.to change { User.count }.by(1)
-          expect(current_path).to eq users_sign_up_welcome_path
+          expect(page).to have_current_path users_sign_up_welcome_path, ignore_query: true
         end
       end
     end
@@ -239,7 +239,7 @@ RSpec.describe 'Signup' do
         fill_in_signup_form
         click_button "Register"
 
-        expect(current_path).to eq users_sign_up_welcome_path
+        expect(page).to have_current_path users_sign_up_welcome_path, ignore_query: true
       end
     end
 
@@ -254,7 +254,7 @@ RSpec.describe 'Signup' do
         fill_in_signup_form
 
         expect { click_button 'Register' }.to change { User.count }.by(1)
-        expect(current_path).to eq new_user_session_path
+        expect(page).to have_current_path new_user_session_path, ignore_query: true
         expect(page).to have_content("You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator")
       end
     end
@@ -268,7 +268,7 @@ RSpec.describe 'Signup' do
       fill_in_signup_form
       click_button "Register"
 
-      expect(current_path).to eq user_registration_path
+      expect(page).to have_current_path user_registration_path, ignore_query: true
       expect(page).to have_content("error prohibited this user from being saved")
       expect(page).to have_content("Email has already been taken")
     end
@@ -280,7 +280,7 @@ RSpec.describe 'Signup' do
       fill_in_signup_form
       click_button "Register"
 
-      expect(current_path).to eq user_registration_path
+      expect(page).to have_current_path user_registration_path, ignore_query: true
       expect(page.body).not_to match(/#{new_user.password}/)
     end
   end
@@ -298,7 +298,7 @@ RSpec.describe 'Signup' do
       fill_in_signup_form
       click_button 'Register'
 
-      expect(current_path).to eq users_sign_up_welcome_path
+      expect(page).to have_current_path users_sign_up_welcome_path, ignore_query: true
     end
   end
 

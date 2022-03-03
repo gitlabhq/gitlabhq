@@ -6,11 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 314
-# Cop supports --auto-correct.
-Capybara/CurrentPathExpectation:
-  Enabled: false
-
 # Offense count: 221
 Capybara/VisibilityMatcher:
   Enabled: false

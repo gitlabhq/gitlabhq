@@ -437,11 +437,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       destroy_project(project, user)
     end
 
-    it 'calls the bulk snippet destroy service' do
+    it 'calls the bulk snippet destroy service with the hard_delete param set to true' do
       expect(project.snippets.count).to eq 2
 
-      expect(Snippets::BulkDestroyService).to receive(:new)
-        .with(user, project.snippets).and_call_original
+      expect_next_instance_of(Snippets::BulkDestroyService, user, project.snippets) do |instance|
+        expect(instance).to receive(:execute).with(hard_delete: true).and_call_original
+      end
 
       expect do
         destroy_project(project, user)

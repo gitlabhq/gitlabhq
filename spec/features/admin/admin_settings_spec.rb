@@ -838,7 +838,7 @@ RSpec.describe 'Admin updates settings' do
     end
 
     it 'loads admin settings page without redirect for reauthentication' do
-      expect(current_path).to eq general_admin_application_settings_path
+      expect(page).to have_current_path general_admin_application_settings_path, ignore_query: true
     end
   end
 

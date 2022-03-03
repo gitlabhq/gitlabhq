@@ -25,7 +25,7 @@ RSpec.describe 'User creates a project', :js do
 
     project = Project.last
 
-    expect(current_path).to eq(project_path(project))
+    expect(page).to have_current_path(project_path(project), ignore_query: true)
     expect(page).to have_content('Empty')
     expect(page).to have_content('git init')
     expect(page).to have_content('git remote')
@@ -47,7 +47,7 @@ RSpec.describe 'User creates a project', :js do
 
     project = Project.last
 
-    expect(current_path).to eq(project_path(project))
+    expect(page).to have_current_path(project_path(project), ignore_query: true)
     expect(page).to have_content('With initial commits')
     expect(page).to have_content('Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist')
     expect(page).to have_content('README.md Initial commit')
@@ -72,7 +72,7 @@ RSpec.describe 'User creates a project', :js do
 
     project = Project.last
 
-    expect(current_path).to eq(project_path(project))
+    expect(page).to have_current_path(project_path(project), ignore_query: true)
     expect(page).to have_content('With initial commits')
     expect(page).to have_content('Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist')
     expect(page).to have_content('README.md Initial commit')

@@ -19,7 +19,7 @@ RSpec.describe 'Projects > Members > Member leaves project' do
 
     click_link 'Leave project'
 
-    expect(current_path).to eq(dashboard_projects_path)
+    expect(page).to have_current_path(dashboard_projects_path, ignore_query: true)
     expect(project.users.exists?(user.id)).to be_falsey
   end
 
@@ -29,7 +29,7 @@ RSpec.describe 'Projects > Members > Member leaves project' do
     page.accept_confirm
     wait_for_all_requests
 
-    expect(current_path).to eq(dashboard_projects_path)
+    expect(page).to have_current_path(dashboard_projects_path, ignore_query: true)
 
     sign_in(project.first_owner)
 

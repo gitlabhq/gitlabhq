@@ -16,7 +16,7 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
     visit project_path(project)
     click_on 'Add LICENSE'
 
-    expect(current_path).to eq("/-/ide/project/#{project.full_path}/edit/master/-/LICENSE")
+    expect(page).to have_current_path("/-/ide/project/#{project.full_path}/edit/master/-/LICENSE", ignore_query: true)
 
     expect(page).to have_selector('.qa-file-templates-bar') # rubocop:disable QA/SelectorUsage
 
@@ -27,7 +27,7 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
 
     ide_commit
 
-    expect(current_path).to eq("/-/ide/project/#{project.full_path}/tree/master/-/LICENSE/")
+    expect(page).to have_current_path("/-/ide/project/#{project.full_path}/tree/master/-/LICENSE/", ignore_query: true)
 
     expect(page).to have_content('All changes are committed')
 

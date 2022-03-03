@@ -72,7 +72,9 @@ module Projects
     end
 
     def remove_snippets
-      response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute
+      # We're setting the hard_delete param because we dont need to perform the access checks within the service since
+      # the user has enough access rights to remove the project and its resources.
+      response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute(hard_delete: true)
 
       if response.error?
         log_error("Snippet deletion failed on #{project.full_path} with the following message: #{response.message}")

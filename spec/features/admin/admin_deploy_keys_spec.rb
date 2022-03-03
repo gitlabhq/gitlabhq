@@ -47,7 +47,7 @@ RSpec.describe 'admin deploy keys', :js do
       fill_in 'deploy_key_key', with: new_ssh_key
       click_button 'Create'
 
-      expect(current_path).to eq admin_deploy_keys_path
+      expect(page).to have_current_path admin_deploy_keys_path, ignore_query: true
 
       page.within(find('[data-testid="deploy-keys-list"]', match: :first)) do
         expect(page).to have_content('laptop')
@@ -67,7 +67,7 @@ RSpec.describe 'admin deploy keys', :js do
       fill_in 'deploy_key_title', with: 'new-title'
       click_button 'Save changes'
 
-      expect(current_path).to eq admin_deploy_keys_path
+      expect(page).to have_current_path admin_deploy_keys_path, ignore_query: true
 
       page.within(find('[data-testid="deploy-keys-list"]', match: :first)) do
         expect(page).to have_content('new-title')
@@ -87,7 +87,7 @@ RSpec.describe 'admin deploy keys', :js do
         end
       end
 
-      expect(current_path).to eq admin_deploy_keys_path
+      expect(page).to have_current_path admin_deploy_keys_path, ignore_query: true
       page.within(find('[data-testid="deploy-keys-list"]', match: :first)) do
         expect(page).not_to have_content(deploy_key.title)
       end

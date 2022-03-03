@@ -34,7 +34,7 @@ module Gitlab
 
           create_issue_or_note
 
-          if from_address
+          if issue_creator_address
             add_email_participant
             send_thank_you_email unless reply_email?
           end
@@ -98,7 +98,7 @@ module Gitlab
               title: mail.subject,
               description: message_including_template,
               confidential: true,
-              external_author: from_address
+              external_author: external_author
             },
             spam_params: nil
           ).execute
@@ -176,8 +176,22 @@ module Gitlab
           ).execute
         end
 
+        def issue_creator_address
+          reply_to_address || from_address
+        end
+
         def from_address
-          (mail.reply_to || []).first || mail.from.first || mail.sender
+          mail.from.first || mail.sender
+        end
+
+        def reply_to_address
+          (mail.reply_to || []).first
+        end
+
+        def external_author
+          return issue_creator_address unless reply_to_address && from_address
+
+          _("%{from_address} (reply to: %{reply_to_address})") % { from_address: from_address, reply_to_address: reply_to_address }
         end
 
         def can_handle_legacy_format?
@@ -191,7 +205,7 @@ module Gitlab
         def add_email_participant
           return if reply_email? && !Feature.enabled?(:issue_email_participants, @issue.project)
 
-          @issue.issue_email_participants.create(email: from_address)
+          @issue.issue_email_participants.create(email: issue_creator_address)
         end
       end
     end

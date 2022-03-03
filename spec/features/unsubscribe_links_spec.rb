@@ -25,7 +25,7 @@ RSpec.describe 'Unsubscribe links', :sidekiq_might_not_need_inline do
       it 'shows the unsubscribe confirmation page and redirects to root path when confirming' do
         visit body_link
 
-        expect(current_path).to eq unsubscribe_sent_notification_path(SentNotification.last)
+        expect(page).to have_current_path unsubscribe_sent_notification_path(SentNotification.last), ignore_query: true
         expect(page).to have_text(%(Unsubscribe from issue))
         expect(page).to have_text(%(Are you sure you want to unsubscribe from the issue: #{issue.title} (#{issue.to_reference})?))
         expect(issue.subscribed?(recipient, project)).to be_truthy
@@ -33,19 +33,19 @@ RSpec.describe 'Unsubscribe links', :sidekiq_might_not_need_inline do
         click_link 'Unsubscribe'
 
         expect(issue.subscribed?(recipient, project)).to be_falsey
-        expect(current_path).to eq new_user_session_path
+        expect(page).to have_current_path new_user_session_path, ignore_query: true
       end
 
       it 'shows the unsubscribe confirmation page and redirects to root path when canceling' do
         visit body_link
 
-        expect(current_path).to eq unsubscribe_sent_notification_path(SentNotification.last)
+        expect(page).to have_current_path unsubscribe_sent_notification_path(SentNotification.last), ignore_query: true
         expect(issue.subscribed?(recipient, project)).to be_truthy
 
         click_link 'Cancel'
 
         expect(issue.subscribed?(recipient, project)).to be_truthy
-        expect(current_path).to eq new_user_session_path
+        expect(page).to have_current_path new_user_session_path, ignore_query: true
       end
     end
 

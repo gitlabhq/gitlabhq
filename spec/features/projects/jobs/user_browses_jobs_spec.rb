@@ -270,7 +270,7 @@ RSpec.describe 'User browses jobs' do
           wait_for_requests
 
           expect(page).to have_content 'You need to sign in'
-          expect(page.current_path).to eq("/users/sign_in")
+          expect(page).to have_current_path("/users/sign_in")
         end
       end
     end

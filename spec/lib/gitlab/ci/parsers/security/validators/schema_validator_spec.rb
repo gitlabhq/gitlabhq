@@ -49,14 +49,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
 
   using RSpec::Parameterized::TableSyntax
 
-  where(:report_type, :expected_errors, :valid_data) do
-    'sast' | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
-    :sast  | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
-    :secret_detection | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
+  where(:report_type, :report_version, :expected_errors, :valid_data) do
+    'sast' | '10.0.0' | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
+    :sast  | '10.0.0' | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
+    :secret_detection | '10.0.0' | ['root is missing required keys: vulnerabilities'] | { 'version' => '10.0.0', 'vulnerabilities' => [] }
   end
 
   with_them do
-    let(:validator) { described_class.new(report_type, report_data) }
+    let(:validator) { described_class.new(report_type, report_data, report_version) }
 
     describe '#valid?' do
       subject { validator.valid? }
@@ -71,6 +71,15 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         let(:report_data) { valid_data }
 
         it { is_expected.to be_truthy }
+      end
+
+      context 'when no report_version is provided' do
+        let(:report_version) { nil }
+        let(:report_data) { valid_data }
+
+        it 'does not fail' do
+          expect { subject }.not_to raise_error
+        end
       end
     end
 

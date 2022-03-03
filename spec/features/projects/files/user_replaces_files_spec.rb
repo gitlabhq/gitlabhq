@@ -81,7 +81,7 @@ RSpec.describe 'Projects > Files > User replaces files', :js do
 
       fork = user.fork_of(project2.reload)
 
-      expect(current_path).to eq(project_new_merge_request_path(fork))
+      expect(page).to have_current_path(project_new_merge_request_path(fork), ignore_query: true)
 
       click_link('Changes')
 

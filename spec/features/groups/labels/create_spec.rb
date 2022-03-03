@@ -18,6 +18,6 @@ RSpec.describe 'Create a group label' do
     click_button 'Create label'
 
     expect(page).to have_content 'test-label'
-    expect(current_path).to eq(group_labels_path(group))
+    expect(page).to have_current_path(group_labels_path(group), ignore_query: true)
   end
 end

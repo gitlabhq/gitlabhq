@@ -46,15 +46,16 @@ module Gitlab
                 File.join(__dir__, 'schemas')
               end
 
-              def initialize(report_type)
+              def initialize(report_type, report_version)
                 @report_type = report_type.to_sym
+                @report_version = report_version.to_s
               end
 
               delegate :validate, to: :schemer
 
               private
 
-              attr_reader :report_type
+              attr_reader :report_type, :report_version
 
               def schemer
                 JSONSchemer.schema(pathname)
@@ -65,7 +66,19 @@ module Gitlab
               end
 
               def schema_path
-                File.join(root_path, file_name)
+                # We can't exactly error out here pre-15.0.
+                # If the report itself doesn't specify the schema version,
+                # it will be considered invalid post-15.0 but for now we will
+                # validate against earliest supported version.
+                # https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_801479803
+                # describes the indended behavior in detail
+                # TODO: After 15.0 - pass report_type and report_data here and
+                # error out if no version.
+                report_declared_version = File.join(root_path, report_version, file_name)
+                return report_declared_version if File.file?(report_declared_version)
+
+                earliest_supported_version = SUPPORTED_VERSIONS[report_type].min
+                File.join(root_path, earliest_supported_version, file_name)
               end
 
               def file_name
@@ -73,9 +86,10 @@ module Gitlab
               end
             end
 
-            def initialize(report_type, report_data)
+            def initialize(report_type, report_data, report_version = nil)
               @report_type = report_type
               @report_data = report_data
+              @report_version = report_version
             end
 
             def valid?
@@ -88,10 +102,10 @@ module Gitlab
 
             private
 
-            attr_reader :report_type, :report_data
+            attr_reader :report_type, :report_data, :report_version
 
             def schema
-              Schema.new(report_type)
+              Schema.new(report_type, report_version)
             end
           end
         end

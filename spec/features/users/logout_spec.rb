@@ -13,7 +13,7 @@ RSpec.describe 'Logout/Sign out', :js do
   it 'sign out redirects to sign in page' do
     gitlab_sign_out
 
-    expect(current_path).to eq new_user_session_path
+    expect(page).to have_current_path new_user_session_path, ignore_query: true
   end
 
   it 'sign out does not show signed out flash notice' do
@@ -30,7 +30,7 @@ RSpec.describe 'Logout/Sign out', :js do
     it 'sign out redirects to sign in page' do
       gitlab_sign_out
 
-      expect(current_path).to eq new_user_session_path
+      expect(page).to have_current_path new_user_session_path, ignore_query: true
     end
   end
 end

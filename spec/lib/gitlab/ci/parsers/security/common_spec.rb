@@ -60,7 +60,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             it 'instantiates the validator with correct params' do
               parse_report
 
-              expect(validator_class).to have_received(:new).with(report.type, {})
+              expect(validator_class).to have_received(:new).with(report.type, {}, report.version)
             end
 
             context 'when the report data is not valid according to the schema' do
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             it 'instantiates the validator with correct params' do
               parse_report
 
-              expect(validator_class).to have_received(:new).with(report.type, {})
+              expect(validator_class).to have_received(:new).with(report.type, {}, report.version)
             end
 
             context 'when the report data is not valid according to the schema' do
@@ -175,7 +175,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             it 'instantiates the validator with correct params' do
               parse_report
 
-              expect(validator_class).to have_received(:new).with(report.type, {})
+              expect(validator_class).to have_received(:new).with(report.type, {}, report.version)
             end
 
             context 'when the report data is not valid according to the schema' do
