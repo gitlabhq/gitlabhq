@@ -468,6 +468,28 @@ Each link as an asset has the following attributes:
 | `filepath`  | The redirect link to the `url`. See [this section](#permanent-links-to-release-assets) for more information. | No       |
 | `link_type` | The content kind of what users can download via `url`. See [this section](#link-types) for more information. | No       |
 
+##### Permanent link to latest release
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
+
+Latest release page is accessible through a permanent URL.
+GitLab will redirect to the latest release page URL when it is visited.
+
+The format of the URL is:
+
+```plaintext
+https://host/namespace/project/-/releases/permalink/latest
+```
+
+We also support, suffix path carry forward on the redirect to the latest release.
+Example if release `v14.8.0-ee` is the latest release and has a readable link `https://host/namespace/project/-/releases/v14.8.0-ee#release` then it can be addressed as `https://host/namespace/project/-/releases/permalink/latest#release`.
+
+Refer [permanent links to latest release assets](#permanent-links-to-latest-release-assets) section to understand more about the suffix path carry forward usage.
+
+###### Sorting preferences
+
+By default, GitLab fetches the release using `released_at` time. The use of the query parameter `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
+
 ##### Permanent links to release assets
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27300) in GitLab 12.9.
@@ -475,7 +497,7 @@ Each link as an asset has the following attributes:
 The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
 location, so even if the assets move to a different location, you can continue
-to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link).
+to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link) using the `filepath` API attribute.
 
 The format of the URL is:
 
@@ -502,6 +524,36 @@ https://gitlab.com/gitlab-org/gitlab-runner/-/releases/v11.9.0-rc2/downloads/bin
 ```
 
 The physical location of the asset can change at any time and the direct link remains unchanged.
+
+##### Permanent links to latest release assets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
+
+The `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) can be used in combination with [permanent link to the latest release](#permanent-link-to-latest-release). It is useful when we want to link a permanant URL to download an asset from the *latest release*.
+
+The format of the URL is:
+
+```plaintext
+https://host/namespace/project/-/releases/permalink/latest/downloads/:filepath
+```
+
+If you have an asset with [`filepath`](../../../api/releases/links.md#create-a-link) for the `v11.9.0-rc2` latest release in the `gitlab-org`
+namespace and `gitlab-runner` project on `gitlab.com`, for example:
+
+```json
+{
+  "name": "linux amd64",
+  "filepath": "/binaries/gitlab-runner-linux-amd64",
+  "url": "https://gitlab-runner-downloads.s3.amazonaws.com/v11.9.0-rc2/binaries/gitlab-runner-linux-amd64",
+  "link_type": "other"
+}
+```
+
+This asset has a direct link of:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab-runner/-/releases/permalink/latest/downloads/binaries/gitlab-runner-linux-amd64
+```
 
 ##### Link Types
 

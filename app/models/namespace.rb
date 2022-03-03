@@ -509,10 +509,6 @@ class Namespace < ApplicationRecord
     Feature.enabled?(:block_issue_repositioning, self, type: :ops, default_enabled: :yaml)
   end
 
-  def project_namespace_creation_enabled?
-    Feature.enabled?(:create_project_namespace_on_project_create, self, default_enabled: :yaml)
-  end
-
   def storage_enforcement_date
     # should return something like Date.new(2022, 02, 03)
     # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632

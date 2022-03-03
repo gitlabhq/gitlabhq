@@ -246,20 +246,6 @@ RSpec.describe Project, factory_default: :keep do
             expect(project.project_namespace).to be_in_sync_with_project(project)
             expect(project.reload.project_namespace.traversal_ids).to eq([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact)
           end
-
-          context 'with FF disabled' do
-            before do
-              stub_feature_flags(create_project_namespace_on_project_create: false)
-            end
-
-            it 'does not create a project namespace' do
-              project = build(:project, path: 'hopefully-valid-path2')
-              project.save!
-
-              expect(project).to be_persisted
-              expect(project.project_namespace).to be_nil
-            end
-          end
         end
 
         it_behaves_like 'creates project namespace'
@@ -304,35 +290,6 @@ RSpec.describe Project, factory_default: :keep do
             expect(project.errors.full_messages).to include("Project namespace can't be blank")
             expect(project.reload.project_namespace).to be_in_sync_with_project(project)
           end
-        end
-      end
-
-      context 'with create_project_namespace_on_project_create FF enabled' do
-        it_behaves_like 'project update'
-
-        it 'keeps project namespace in sync with project' do
-          project = create(:project)
-          project.update!(path: 'hopefully-valid-path1')
-
-          expect(project).to be_persisted
-          expect(project.project_namespace).to be_persisted
-          expect(project.project_namespace).to be_in_sync_with_project(project)
-        end
-      end
-
-      context 'with create_project_namespace_on_project_create FF disabled' do
-        before do
-          stub_feature_flags(create_project_namespace_on_project_create: false)
-        end
-
-        it_behaves_like 'project update'
-
-        it 'does not create a project namespace when project is updated' do
-          project = create(:project)
-          project.update!(path: 'hopefully-valid-path1')
-
-          expect(project).to be_persisted
-          expect(project.project_namespace).to be_nil
         end
       end
     end

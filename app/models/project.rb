@@ -506,7 +506,7 @@ class Project < ApplicationRecord
   validates :project_feature, presence: true
 
   validates :namespace, presence: true
-  validates :project_namespace, presence: true, on: :create, if: -> { self.namespace && self.root_namespace.project_namespace_creation_enabled? }
+  validates :project_namespace, presence: true, on: :create, if: -> { self.namespace }
   validates :project_namespace, presence: true, on: :update, if: -> { self.project_namespace_id_changed?(to: nil) }
   validates :name, uniqueness: { scope: :namespace_id }
   validates :import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
@@ -3018,16 +3018,15 @@ class Project < ApplicationRecord
   end
 
   def ensure_project_namespace_in_sync
-    # create project_namespace when project is created if create_project_namespace_on_project_create FF is enabled
+    # create project_namespace when project is created
     build_project_namespace if project_namespace_creation_enabled?
 
-    # regardless of create_project_namespace_on_project_create FF we need
-    # to keep project and project namespace in sync if there is one
+    # we need to keep project and project namespace in sync if there is one
     sync_attributes(project_namespace) if sync_project_namespace?
   end
 
   def project_namespace_creation_enabled?
-    new_record? && !project_namespace && self.namespace && self.root_namespace.project_namespace_creation_enabled?
+    new_record? && !project_namespace && self.namespace
   end
 
   def sync_project_namespace?
