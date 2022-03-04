@@ -574,10 +574,62 @@ RSpec.describe Project, factory_default: :keep do
         expect(project).to be_valid
       end
 
-      it 'allows a path ending in a period' do
-        project = build(:project, path: 'foo.')
+      context 'path is unchanged' do
+        let_it_be(:invalid_path_project) do
+          project = create(:project, :repository, :public)
+          project.update_attribute(:path, 'foo.')
+          project
+        end
 
-        expect(project).to be_valid
+        it 'does not raise validation error for path for existing project' do
+          expect { invalid_path_project.update!(name: 'Foo') }.not_to raise_error
+        end
+      end
+
+      %w[. - _].each do |special_character|
+        it "rejects a path ending in '#{special_character}'" do
+          project = build(:project, path: "foo#{special_character}")
+
+          expect(project).not_to be_valid
+        end
+
+        it "rejects a path starting with '#{special_character}'" do
+          project = build(:project, path: "#{special_character}foo")
+
+          expect(project).not_to be_valid
+        end
+
+        context 'restrict_special_characters_in_project_path feature flag is disabled' do
+          before do
+            stub_feature_flags(restrict_special_characters_in_project_path: false)
+          end
+
+          it "allows a path ending in '#{special_character}'" do
+            project = build(:project, path: "foo#{special_character}")
+
+            expect(project).to be_valid
+          end
+        end
+      end
+
+      context 'restrict_special_characters_in_project_path feature flag is disabled' do
+        before do
+          stub_feature_flags(restrict_special_characters_in_project_path: false)
+        end
+
+        %w[. _].each do |special_character|
+          it "allows a path starting with '#{special_character}'" do
+            project = build(:project, path: "#{special_character}foo")
+
+            expect(project).to be_valid
+          end
+        end
+
+        it "rejects a path starting with '-'" do
+          project = build(:project, path: "-foo")
+
+          expect(project).not_to be_valid
+        end
       end
     end
   end

@@ -259,6 +259,15 @@ module Gitlab
       "It must start with a letter, digit, emoji, or '_'."
     end
 
+    # Project path must conform to this regex. See https://gitlab.com/gitlab-org/gitlab/-/issues/27483
+    def oci_repository_path_regex
+      @oci_repository_path_regex ||= %r{\A[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*\z}.freeze
+    end
+
+    def oci_repository_path_regex_message
+      'must not start or end with a special character and must not contain consecutive special characters.'
+    end
+
     def group_name_regex
       @group_name_regex ||= /\A#{group_name_regex_chars}\z/.freeze
     end

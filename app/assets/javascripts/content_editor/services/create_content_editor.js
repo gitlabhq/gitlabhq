@@ -39,6 +39,7 @@ import Loading from '../extensions/loading';
 import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
+import PasteMarkdown from '../extensions/paste_markdown';
 import Reference from '../extensions/reference';
 import Strike from '../extensions/strike';
 import Subscript from '../extensions/subscript';
@@ -120,6 +121,7 @@ export const createContentEditor = ({
     MathInline,
     OrderedList,
     Paragraph,
+    PasteMarkdown.configure({ renderMarkdown, eventHub }),
     Reference,
     Strike,
     Subscript,

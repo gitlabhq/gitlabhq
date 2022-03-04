@@ -231,7 +231,7 @@ use to reduce your CI/CD minutes usage:
 
 - If you are using project mirrors, ensure that [pipelines for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
   is disabled.
-- Reduce the frequency of [pipeline schedules](schedules.md#pipeline-schedules).
+- Reduce the frequency of [scheduled pipelines](schedules.md).
 - [Skip pipelines](index.md#skip-a-pipeline) when not needed.
 - Use [interruptible](../yaml/index.md#interruptible) jobs which can be auto-canceled
   if a new pipeline starts.

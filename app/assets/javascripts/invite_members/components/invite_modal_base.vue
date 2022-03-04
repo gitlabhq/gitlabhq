@@ -10,19 +10,15 @@ import {
   GlButton,
   GlFormInput,
 } from '@gitlab/ui';
-import { unescape } from 'lodash';
-import { sanitize } from '~/lib/dompurify';
 import { sprintf } from '~/locale';
 import {
   ACCESS_LEVEL,
   ACCESS_EXPIRE_DATE,
-  INVALID_FEEDBACK_MESSAGE_DEFAULT,
   READ_MORE_TEXT,
   INVITE_BUTTON_TEXT,
   CANCEL_BUTTON_TEXT,
   HEADER_CLOSE_LABEL,
 } from '../constants';
-import { responseMessageFromError } from '../utils/response_message_parser';
 
 export default {
   components: {
@@ -80,14 +76,22 @@ export default {
       required: false,
       default: false,
     },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    invalidFeedbackMessage: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     // Be sure to check out reset!
     return {
-      invalidFeedbackMessage: '',
       selectedAccessLevel: this.defaultAccessLevel,
       selectedDate: undefined,
-      isLoading: false,
       minDate: new Date(),
     };
   },
@@ -116,16 +120,9 @@ export default {
     },
   },
   methods: {
-    showInvalidFeedbackMessage(response) {
-      const message = this.unescapeMsg(responseMessageFromError(response));
-
-      this.invalidFeedbackMessage = message || INVALID_FEEDBACK_MESSAGE_DEFAULT;
-    },
     reset() {
       // This component isn't necessarily disposed,
       // so we might need to reset it's state.
-      this.isLoading = false;
-      this.invalidFeedbackMessage = '';
       this.selectedAccessLevel = this.defaultAccessLevel;
       this.selectedDate = undefined;
 
@@ -135,32 +132,14 @@ export default {
       this.reset();
       this.$refs.modal.hide();
     },
-    clearValidation() {
-      this.invalidFeedbackMessage = '';
-    },
     changeSelectedItem(item) {
       this.selectedAccessLevel = item;
     },
     submit() {
-      this.isLoading = true;
-      this.invalidFeedbackMessage = '';
-
       this.$emit('submit', {
-        onSuccess: () => {
-          this.isLoading = false;
-        },
-        onError: (...args) => {
-          this.isLoading = false;
-          this.showInvalidFeedbackMessage(...args);
-        },
-        data: {
-          accessLevel: this.selectedAccessLevel,
-          expiresAt: this.selectedDate,
-        },
+        accessLevel: this.selectedAccessLevel,
+        expiresAt: this.selectedDate,
       });
-    },
-    unescapeMsg(message) {
-      return unescape(sanitize(message, { ALLOWED_TAGS: [] }));
     },
   },
   HEADER_CLOSE_LABEL,
@@ -204,10 +183,7 @@ export default {
       data-testid="members-form-group"
     >
       <label :id="selectLabelId" class="col-form-label">{{ labelSearchField }}</label>
-      <slot
-        name="select"
-        v-bind="{ clearValidation, validationState, labelId: selectLabelId }"
-      ></slot>
+      <slot name="select" v-bind="{ validationState, labelId: selectLabelId }"></slot>
     </gl-form-group>
 
     <label class="gl-font-weight-bold">{{ $options.ACCESS_LEVEL }}</label>

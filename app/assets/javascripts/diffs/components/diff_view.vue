@@ -1,4 +1,5 @@
 <script>
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
@@ -18,6 +19,9 @@ export default {
     DiffRow,
     DiffCommentCell,
     DraftNote,
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [
     draftCommentsMixin,
@@ -173,15 +177,17 @@ export default {
           <div class="diff-grid-left diff-grid-3-col left-side">
             <div class="diff-td diff-line-num"></div>
             <div v-if="inline" class="diff-td diff-line-num"></div>
-            <div class="diff-td line_content left-side gl-white-space-normal!">
-              {{ line.left.rich_text }}
-            </div>
+            <div
+              v-safe-html="line.left.rich_text"
+              class="diff-td line_content left-side gl-white-space-normal!"
+            ></div>
           </div>
           <div v-if="!inline" class="diff-grid-right diff-grid-3-col right-side">
             <div class="diff-td diff-line-num"></div>
-            <div class="diff-td line_content right-side gl-white-space-normal!">
-              {{ line.left.rich_text }}
-            </div>
+            <div
+              v-safe-html="line.left.rich_text"
+              class="diff-td line_content right-side gl-white-space-normal!"
+            ></div>
           </div>
         </div>
       </template>

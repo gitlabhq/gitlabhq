@@ -37,20 +37,22 @@ describe('Header Search Store Getters', () => {
   });
 
   describe.each`
-    group         | project         | scope       | expectedPath
-    ${null}       | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
-    ${MOCK_GROUP} | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
-    ${null}       | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}&scope=issues`}
-  `('searchQuery', ({ group, project, scope, expectedPath }) => {
-    describe(`when group is ${group?.name}, project is ${project?.name}, and scope is ${scope}`, () => {
+    group         | project         | scope       | forSnippets | expectedPath
+    ${null}       | ${null}         | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${null}       | ${null}         | ${null}     | ${true}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&snippets=true`}
+    ${MOCK_GROUP} | ${null}         | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
+    ${null}       | ${MOCK_PROJECT} | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${true}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}&scope=issues&snippets=true`}
+  `('searchQuery', ({ group, project, scope, forSnippets, expectedPath }) => {
+    describe(`when group is ${group?.name}, project is ${project?.name}, scope is ${scope}, and for_snippets is ${forSnippets}`, () => {
       beforeEach(() => {
         createState({
           searchContext: {
             group,
             project,
             scope,
+            for_snippets: forSnippets,
           },
         });
         state.search = MOCK_SEARCH;
@@ -135,20 +137,22 @@ describe('Header Search Store Getters', () => {
   });
 
   describe.each`
-    group         | project         | scope       | expectedPath
-    ${null}       | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
-    ${MOCK_GROUP} | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
-    ${null}       | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}&scope=issues`}
-  `('projectUrl', ({ group, project, scope, expectedPath }) => {
-    describe(`when group is ${group?.name}, project is ${project?.name}, and scope is ${scope}`, () => {
+    group         | project         | scope       | forSnippets | expectedPath
+    ${null}       | ${null}         | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${null}       | ${null}         | ${null}     | ${true}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&snippets=true`}
+    ${MOCK_GROUP} | ${null}         | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
+    ${null}       | ${MOCK_PROJECT} | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${true}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&project_id=${MOCK_PROJECT.id}&group_id=${MOCK_GROUP.id}&scope=issues&snippets=true`}
+  `('projectUrl', ({ group, project, scope, forSnippets, expectedPath }) => {
+    describe(`when group is ${group?.name}, project is ${project?.name}, scope is ${scope}, and for_snippets is ${forSnippets}`, () => {
       beforeEach(() => {
         createState({
           searchContext: {
             group,
             project,
             scope,
+            for_snippets: forSnippets,
           },
         });
         state.search = MOCK_SEARCH;
@@ -161,20 +165,22 @@ describe('Header Search Store Getters', () => {
   });
 
   describe.each`
-    group         | project         | scope       | expectedPath
-    ${null}       | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
-    ${MOCK_GROUP} | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
-    ${null}       | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}&scope=issues`}
-  `('groupUrl', ({ group, project, scope, expectedPath }) => {
-    describe(`when group is ${group?.name}, project is ${project?.name}, and scope is ${scope}`, () => {
+    group         | project         | scope       | forSnippets | expectedPath
+    ${null}       | ${null}         | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${null}       | ${null}         | ${null}     | ${true}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&snippets=true`}
+    ${MOCK_GROUP} | ${null}         | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
+    ${null}       | ${MOCK_PROJECT} | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${true}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&group_id=${MOCK_GROUP.id}&scope=issues&snippets=true`}
+  `('groupUrl', ({ group, project, scope, forSnippets, expectedPath }) => {
+    describe(`when group is ${group?.name}, project is ${project?.name}, scope is ${scope}, and for_snippets is ${forSnippets}`, () => {
       beforeEach(() => {
         createState({
           searchContext: {
             group,
             project,
             scope,
+            for_snippets: forSnippets,
           },
         });
         state.search = MOCK_SEARCH;
@@ -187,20 +193,22 @@ describe('Header Search Store Getters', () => {
   });
 
   describe.each`
-    group         | project         | scope       | expectedPath
-    ${null}       | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
-    ${MOCK_GROUP} | ${null}         | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
-    ${null}       | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
-    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&scope=issues`}
-  `('allUrl', ({ group, project, scope, expectedPath }) => {
-    describe(`when group is ${group?.name}, project is ${project?.name}, and scope is ${scope}`, () => {
+    group         | project         | scope       | forSnippets | expectedPath
+    ${null}       | ${null}         | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${null}       | ${null}         | ${null}     | ${true}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&snippets=true`}
+    ${MOCK_GROUP} | ${null}         | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${null}       | ${MOCK_PROJECT} | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${null}     | ${false}    | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar`}
+    ${MOCK_GROUP} | ${MOCK_PROJECT} | ${'issues'} | ${true}     | ${`${MOCK_SEARCH_PATH}?search=${MOCK_SEARCH}&nav_source=navbar&scope=issues&snippets=true`}
+  `('allUrl', ({ group, project, scope, forSnippets, expectedPath }) => {
+    describe(`when group is ${group?.name}, project is ${project?.name}, scope is ${scope}, and for_snippets is ${forSnippets}`, () => {
       beforeEach(() => {
         createState({
           searchContext: {
             group,
             project,
             scope,
+            for_snippets: forSnippets,
           },
         });
         state.search = MOCK_SEARCH;

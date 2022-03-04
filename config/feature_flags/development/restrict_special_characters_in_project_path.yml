@@ -1,0 +1,8 @@
+---
+name: restrict_special_characters_in_project_path
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80055
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353054
+milestone: '14.8'
+type: development
+group: group::workspace
+default_enabled: false

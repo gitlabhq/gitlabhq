@@ -3999,6 +3999,9 @@ msgstr ""
 msgid "An error occurred while parsing the file."
 msgstr ""
 
+msgid "An error occurred while pasting text in the editor. Please try again."
+msgstr ""
+
 msgid "An error occurred while removing epics."
 msgstr ""
 
@@ -5456,6 +5459,9 @@ msgid "BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up 
 msgstr ""
 
 msgid "BambooService|The user with API access to the Bamboo server."
+msgstr ""
+
+msgid "Banner message"
 msgstr ""
 
 msgid "Based on"

@@ -4,6 +4,7 @@ import Attachment from '~/content_editor/extensions/attachment';
 import Image from '~/content_editor/extensions/image';
 import Link from '~/content_editor/extensions/link';
 import Loading from '~/content_editor/extensions/loading';
+import { VARIANT_DANGER } from '~/flash';
 import httpStatus from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, createDocBuilder } from '../test_utils';
@@ -168,7 +169,8 @@ describe('content_editor/extensions/attachment', () => {
         it('emits an alert event that includes an error message', (done) => {
           tiptapEditor.commands.uploadAttachment({ file: imageFile });
 
-          eventHub.$on('alert', ({ message }) => {
+          eventHub.$on('alert', ({ message, variant }) => {
+            expect(variant).toBe(VARIANT_DANGER);
             expect(message).toBe('An error occurred while uploading the image. Please try again.');
             done();
           });
@@ -244,7 +246,8 @@ describe('content_editor/extensions/attachment', () => {
         it('emits an alert event that includes an error message', (done) => {
           tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
 
-          eventHub.$on('alert', ({ message }) => {
+          eventHub.$on('alert', ({ message, variant }) => {
+            expect(variant).toBe(VARIANT_DANGER);
             expect(message).toBe('An error occurred while uploading the file. Please try again.');
             done();
           });

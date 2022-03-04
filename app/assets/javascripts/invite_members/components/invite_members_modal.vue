@@ -21,6 +21,7 @@ import {
 } from '../constants';
 import eventHub from '../event_hub';
 import { responseMessageFromSuccess } from '../utils/response_message_parser';
+import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import ModalConfetti from './confetti.vue';
 import MembersTokenSelect from './members_token_select.vue';
 
@@ -84,6 +85,8 @@ export default {
   },
   data() {
     return {
+      invalidFeedbackMessage: '',
+      isLoading: false,
       modalId: uniqueId('invite-members-modal-'),
       newUsersToInvite: [],
       selectedTasksToBeDone: [],
@@ -152,6 +155,9 @@ export default {
     }
   },
   methods: {
+    showInvalidFeedbackMessage(response) {
+      this.invalidFeedbackMessage = getInvalidFeedbackMessage(response);
+    },
     partitionNewUsersToInvite() {
       const [usersToInviteByEmail, usersToAddById] = partition(
         this.newUsersToInvite,
@@ -176,7 +182,10 @@ export default {
       const tracking = new ExperimentTracking(experimentName);
       tracking.event(eventName);
     },
-    sendInvite({ onError, onSuccess, data: { accessLevel, expiresAt } }) {
+    sendInvite({ accessLevel, expiresAt }) {
+      this.isLoading = true;
+      this.invalidFeedbackMessage = '';
+
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
       const promises = [];
       const baseData = {
@@ -220,19 +229,17 @@ export default {
           const message = responseMessageFromSuccess(responses);
 
           if (message) {
-            onError({
-              response: {
-                data: {
-                  message,
-                },
-              },
+            this.showInvalidFeedbackMessage({
+              response: { data: { message } },
             });
           } else {
-            onSuccess();
             this.showSuccessMessage();
           }
         })
-        .catch(onError);
+        .catch((e) => this.showInvalidFeedbackMessage(e))
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
     trackinviteMembersForTask() {
       const label = 'selected_tasks_to_be_done';
@@ -241,6 +248,8 @@ export default {
       tracking.event(INVITE_MEMBERS_FOR_TASK.submit);
     },
     resetFields() {
+      this.isLoading = false;
+      this.invalidFeedbackMessage = '';
       this.newUsersToInvite = [];
       this.selectedTasksToBeDone = [];
       [this.selectedTaskProject] = this.projects;
@@ -260,6 +269,9 @@ export default {
     onAccessLevelUpdate(val) {
       this.selectedAccessLevel = val;
     },
+    clearValidation() {
+      this.invalidFeedbackMessage = '';
+    },
   },
   labels: MEMBER_MODAL_LABELS,
 };
@@ -276,6 +288,8 @@ export default {
     :label-search-field="$options.labels.searchField"
     :form-group-description="$options.labels.placeHolder"
     :submit-disabled="inviteDisabled"
+    :invalid-feedback-message="invalidFeedbackMessage"
+    :is-loading="isLoading"
     @reset="resetFields"
     @submit="sendInvite"
     @access-level="onAccessLevelUpdate"
@@ -288,7 +302,7 @@ export default {
       <span v-if="isCelebration">{{ $options.labels.modal.celebrate.intro }} </span>
       <modal-confetti v-if="isCelebration" />
     </template>
-    <template #select="{ clearValidation, validationState, labelId }">
+    <template #select="{ validationState, labelId }">
       <members-token-select
         v-model="newUsersToInvite"
         class="gl-mb-2"

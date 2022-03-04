@@ -6,7 +6,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/schedules.
 type: reference, howto
 ---
 
-# Pipeline schedules **(FREE)**
+# Scheduled pipelines **(FREE)**
 
 Use scheduled pipelines to run GitLab CI/CD [pipelines](index.md) at regular intervals.
 

@@ -17,9 +17,10 @@ export const searchQuery = (state) => {
     {
       search: state.search,
       nav_source: 'navbar',
-      project_id: state.searchContext.project?.id,
-      group_id: state.searchContext.group?.id,
+      project_id: state.searchContext?.project?.id,
+      group_id: state.searchContext?.group?.id,
       scope: state.searchContext?.scope,
+      snippets: state.searchContext?.for_snippets ? true : null,
     },
     isNil,
   );
@@ -31,7 +32,7 @@ export const autocompleteQuery = (state) => {
   const query = omitBy(
     {
       term: state.search,
-      project_id: state.searchContext.project?.id,
+      project_id: state.searchContext?.project?.id,
       project_ref: state.searchContext?.ref,
     },
     isNil,
@@ -42,16 +43,16 @@ export const autocompleteQuery = (state) => {
 
 export const scopedIssuesPath = (state) => {
   return (
-    state.searchContext.project_metadata?.issues_path ||
-    state.searchContext.group_metadata?.issues_path ||
+    state.searchContext?.project_metadata?.issues_path ||
+    state.searchContext?.group_metadata?.issues_path ||
     state.issuesPath
   );
 };
 
 export const scopedMRPath = (state) => {
   return (
-    state.searchContext.project_metadata?.mr_path ||
-    state.searchContext.group_metadata?.mr_path ||
+    state.searchContext?.project_metadata?.mr_path ||
+    state.searchContext?.group_metadata?.mr_path ||
     state.mrPath
   );
 };
@@ -96,6 +97,7 @@ export const projectUrl = (state) => {
       project_id: state.searchContext?.project?.id,
       group_id: state.searchContext?.group?.id,
       scope: state.searchContext?.scope,
+      snippets: state.searchContext?.for_snippets ? true : null,
     },
     isNil,
   );
@@ -110,6 +112,7 @@ export const groupUrl = (state) => {
       nav_source: 'navbar',
       group_id: state.searchContext?.group?.id,
       scope: state.searchContext?.scope,
+      snippets: state.searchContext?.for_snippets ? true : null,
     },
     isNil,
   );
@@ -123,6 +126,7 @@ export const allUrl = (state) => {
       search: state.search,
       nav_source: 'navbar',
       scope: state.searchContext?.scope,
+      snippets: state.searchContext?.for_snippets ? true : null,
     },
     isNil,
   );
@@ -133,19 +137,19 @@ export const allUrl = (state) => {
 export const scopedSearchOptions = (state, getters) => {
   const options = [];
 
-  if (state.searchContext.project) {
+  if (state.searchContext?.project) {
     options.push({
       html_id: 'scoped-in-project',
-      scope: state.searchContext.project.name,
+      scope: state.searchContext?.project.name,
       description: MSG_IN_PROJECT,
       url: getters.projectUrl,
     });
   }
 
-  if (state.searchContext.group) {
+  if (state.searchContext?.group) {
     options.push({
       html_id: 'scoped-in-group',
-      scope: state.searchContext.group.name,
+      scope: state.searchContext?.group.name,
       description: MSG_IN_GROUP,
       url: getters.groupUrl,
     });

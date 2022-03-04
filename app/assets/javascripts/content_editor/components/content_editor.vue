@@ -1,5 +1,4 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { createContentEditor } from '../services/create_content_editor';
 import ContentEditorAlert from './content_editor_alert.vue';
@@ -7,10 +6,11 @@ import ContentEditorProvider from './content_editor_provider.vue';
 import EditorStateObserver from './editor_state_observer.vue';
 import FormattingBubbleMenu from './formatting_bubble_menu.vue';
 import TopToolbar from './top_toolbar.vue';
+import LoadingIndicator from './loading_indicator.vue';
 
 export default {
   components: {
-    GlLoadingIcon,
+    LoadingIndicator,
     ContentEditorAlert,
     ContentEditorProvider,
     TiptapEditorContent,
@@ -40,7 +40,6 @@ export default {
   },
   data() {
     return {
-      isLoadingContent: false,
       focused: false,
     };
   },
@@ -62,12 +61,6 @@ export default {
     this.contentEditor.dispose();
   },
   methods: {
-    displayLoadingIndicator() {
-      this.isLoadingContent = true;
-    },
-    hideLoadingIndicator() {
-      this.isLoadingContent = false;
-    },
     focus() {
       this.focused = true;
     },
@@ -85,14 +78,7 @@ export default {
 <template>
   <content-editor-provider :content-editor="contentEditor">
     <div>
-      <editor-state-observer
-        @loading="displayLoadingIndicator"
-        @loadingSuccess="hideLoadingIndicator"
-        @loadingError="hideLoadingIndicator"
-        @docUpdate="notifyChange"
-        @focus="focus"
-        @blur="blur"
-      />
+      <editor-state-observer @docUpdate="notifyChange" @focus="focus" @blur="blur" />
       <content-editor-alert />
       <div
         data-testid="content-editor"
@@ -101,13 +87,11 @@ export default {
         :class="{ 'is-focused': focused }"
       >
         <top-toolbar ref="toolbar" class="gl-mb-4" />
-        <div v-if="isLoadingContent" class="gl-w-full gl-display-flex gl-justify-content-center">
-          <gl-loading-icon size="sm" />
-        </div>
-        <template v-else>
+        <div class="gl-relative">
           <formatting-bubble-menu />
           <tiptap-editor-content class="md" :editor="contentEditor.tiptapEditor" />
-        </template>
+          <loading-indicator />
+        </div>
       </div>
     </div>
   </content-editor-provider>

@@ -1,3 +1,4 @@
+import { VARIANT_DANGER } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { extractFilename, readFileAsDataURL } from './utils';
@@ -74,7 +75,7 @@ const uploadImage = async ({ editor, file, uploadsPath, renderMarkdown, eventHub
     editor.commands.deleteRange({ from: position, to: position + 1 });
     eventHub.$emit('alert', {
       message: __('An error occurred while uploading the image. Please try again.'),
-      variant: 'danger',
+      variant: VARIANT_DANGER,
     });
   }
 };
@@ -105,7 +106,7 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eve
     editor.commands.deleteRange({ from, to: from + 1 });
     eventHub.$emit('alert', {
       message: __('An error occurred while uploading the file. Please try again.'),
-      variant: 'danger',
+      variant: VARIANT_DANGER,
     });
   }
 };

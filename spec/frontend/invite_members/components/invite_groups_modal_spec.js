@@ -50,6 +50,8 @@ describe('InviteGroupsModal', () => {
   const clickInviteButton = () => findInviteButton().vm.$emit('click');
   const clickCancelButton = () => findCancelButton().vm.$emit('click');
   const triggerGroupSelect = (val) => findGroupSelect().vm.$emit('input', val);
+  const findBase = () => wrapper.findComponent(InviteModalBase);
+  const hideModal = () => wrapper.findComponent(GlModal).vm.$emit('hide');
 
   describe('displaying the correct introText and form group description', () => {
     describe('when inviting to a project', () => {
@@ -70,26 +72,50 @@ describe('InviteGroupsModal', () => {
   });
 
   describe('submitting the invite form', () => {
-    describe('when sharing the group is successful', () => {
-      const groupPostData = {
-        group_id: sharedGroup.id,
-        group_access: propsData.defaultAccessLevel,
-        expires_at: undefined,
-        format: 'json',
-      };
+    let apiResolve;
+    let apiReject;
+    const groupPostData = {
+      group_id: sharedGroup.id,
+      group_access: propsData.defaultAccessLevel,
+      expires_at: undefined,
+      format: 'json',
+    };
 
+    beforeEach(() => {
+      createComponent();
+      triggerGroupSelect(sharedGroup);
+
+      wrapper.vm.$toast = { show: jest.fn() };
+      jest.spyOn(Api, 'groupShareWithGroup').mockImplementation(
+        () =>
+          new Promise((resolve, reject) => {
+            apiResolve = resolve;
+            apiReject = reject;
+          }),
+      );
+
+      clickInviteButton();
+    });
+
+    it('shows loading', () => {
+      expect(findBase().props('isLoading')).toBe(true);
+    });
+
+    it('calls Api groupShareWithGroup with the correct params', () => {
+      expect(Api.groupShareWithGroup).toHaveBeenCalledWith(propsData.id, groupPostData);
+    });
+
+    describe('when succeeds', () => {
       beforeEach(() => {
-        createComponent();
-        triggerGroupSelect(sharedGroup);
-
-        wrapper.vm.$toast = { show: jest.fn() };
-        jest.spyOn(Api, 'groupShareWithGroup').mockResolvedValue({ data: groupPostData });
-
-        clickInviteButton();
+        apiResolve({ data: groupPostData });
       });
 
-      it('calls Api groupShareWithGroup with the correct params', () => {
-        expect(Api.groupShareWithGroup).toHaveBeenCalledWith(propsData.id, groupPostData);
+      it('hides loading', () => {
+        expect(findBase().props('isLoading')).toBe(false);
+      });
+
+      it('has no error message', () => {
+        expect(findBase().props('invalidFeedbackMessage')).toBe('');
       });
 
       it('displays the successful toastMessage', () => {
@@ -99,18 +125,9 @@ describe('InviteGroupsModal', () => {
       });
     });
 
-    describe('when sharing the group fails', () => {
+    describe('when fails', () => {
       beforeEach(() => {
-        createInviteGroupToGroupWrapper();
-        triggerGroupSelect(sharedGroup);
-
-        wrapper.vm.$toast = { show: jest.fn() };
-
-        jest
-          .spyOn(Api, 'groupShareWithGroup')
-          .mockRejectedValue({ response: { data: { success: false } } });
-
-        clickInviteButton();
+        apiReject({ response: { data: { success: false } } });
       });
 
       it('does not show the toast message on failure', () => {
@@ -121,22 +138,18 @@ describe('InviteGroupsModal', () => {
         expect(membersFormGroupInvalidFeedback()).toBe('Something went wrong');
       });
 
-      describe('clearing the invalid state and message', () => {
-        it('clears the error when the cancel button is clicked', async () => {
-          clickCancelButton();
+      it.each`
+        desc                                   | act
+        ${'when the cancel button is clicked'} | ${clickCancelButton}
+        ${'when the modal is hidden'}          | ${hideModal}
+        ${'when invite button is clicked'}     | ${clickInviteButton}
+        ${'when group input changes'}          | ${() => triggerGroupSelect(sharedGroup)}
+      `('clears the error, $desc', async ({ act }) => {
+        act();
 
-          await nextTick();
+        await nextTick();
 
-          expect(membersFormGroupInvalidFeedback()).toBe('');
-        });
-
-        it('clears the error when the modal is hidden', async () => {
-          wrapper.findComponent(GlModal).vm.$emit('hide');
-
-          await nextTick();
-
-          expect(membersFormGroupInvalidFeedback()).toBe('');
-        });
+        expect(membersFormGroupInvalidFeedback()).toBe('');
       });
     });
   });

@@ -502,6 +502,7 @@ class Project < ApplicationRecord
     presence: true,
     project_path: true,
     length: { maximum: 255 }
+  validate :container_registry_project_path_validation
 
   validates :project_feature, presence: true
 
@@ -890,6 +891,14 @@ class Project < ApplicationRecord
     end
 
     super
+  end
+
+  def container_registry_project_path_validation
+    if Feature.enabled?(:restrict_special_characters_in_project_path, self, default_enabled: :yaml) &&
+        path_changed? &&
+        !path.match?(Gitlab::Regex.oci_repository_path_regex)
+      errors.add(:path, Gitlab::Regex.oci_repository_path_regex_message)
+    end
   end
 
   def parent_loaded?
