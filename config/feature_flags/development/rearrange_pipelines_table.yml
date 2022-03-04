@@ -1,8 +1,0 @@
----
-name: rearrange_pipelines_table
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72545
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343286
-milestone: '14.8'
-type: development
-group: group::pipeline execution
-default_enabled: true

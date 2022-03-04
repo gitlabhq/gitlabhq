@@ -10,6 +10,21 @@ module ContainerRegistry
     REGISTRY_FEATURES_HEADER = 'gitlab-container-registry-features'
     REGISTRY_TAG_DELETE_FEATURE = 'tag_delete'
 
+    ALLOWED_REDIRECT_SCHEMES = %w[http https].freeze
+    REDIRECT_OPTIONS = {
+      clear_authorization_header: true,
+      limit: 3,
+      cookies: [],
+      callback: -> (response_env, request_env) do
+        request_env.request_headers.delete(::FaradayMiddleware::FollowRedirects::AUTH_HEADER)
+
+        redirect_to = request_env.url
+        unless redirect_to.scheme.in?(ALLOWED_REDIRECT_SCHEMES)
+          raise ArgumentError, "Invalid scheme for #{redirect_to}"
+        end
+      end
+    }.freeze
+
     def self.supports_tag_delete?
       with_dummy_client(return_value_if_disabled: false) do |client|
         client.supports_tag_delete?
@@ -136,6 +151,10 @@ module ContainerRegistry
     def faraday_blob
       @faraday_blob ||= faraday_base do |conn|
         initialize_connection(conn, @options)
+
+        if Feature.enabled?(:container_registry_follow_redirects_middleware)
+          conn.use ::FaradayMiddleware::FollowRedirects, REDIRECT_OPTIONS
+        end
       end
     end
   end

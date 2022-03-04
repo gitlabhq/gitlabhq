@@ -9,6 +9,8 @@ class Admin::DevOpsReportController < Admin::ApplicationController
 
   feature_category :devops_reports
 
+  urgency :low
+
   # rubocop: disable CodeReuse/ActiveRecord
   def show
     @metric = DevOpsReport::Metric.order(:created_at).last&.present

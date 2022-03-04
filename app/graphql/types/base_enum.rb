@@ -38,7 +38,7 @@ module Types
         description(enum_mod.description) if use_description
 
         enum_mod.definition.each do |key, content|
-          value(key.to_s.upcase, **content)
+          value(key.to_s.upcase, value: key.to_s, description: content[:description])
         end
       end
       # rubocop: enable Graphql/Descriptions

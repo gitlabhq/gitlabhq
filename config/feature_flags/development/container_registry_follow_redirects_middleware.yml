@@ -1,0 +1,8 @@
+---
+name: container_registry_follow_redirects_middleware
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81056
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353291
+milestone: '14.9'
+type: development
+group: group::package
+default_enabled: false

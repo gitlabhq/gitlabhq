@@ -2,6 +2,8 @@
 class Admin::InstanceReviewController < Admin::ApplicationController
   feature_category :devops_reports
 
+  urgency :low
+
   def index
     redirect_to("#{Gitlab::SubscriptionPortal.subscriptions_instance_review_url}?#{instance_review_params}")
   end

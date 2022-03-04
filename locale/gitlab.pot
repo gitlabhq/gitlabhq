@@ -16777,6 +16777,15 @@ msgstr ""
 msgid "GithubIntegration|This requires mirroring your GitHub repository to this project. %{docs_link}"
 msgstr ""
 
+msgid "GitlabTiers|Free"
+msgstr ""
+
+msgid "GitlabTiers|Premium"
+msgstr ""
+
+msgid "GitlabTiers|Ultimate"
+msgstr ""
+
 msgid "Gitpod"
 msgstr ""
 
@@ -26990,6 +26999,9 @@ msgstr ""
 msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. There are active runners available to run your jobs right now. If you prefer, you can %{settingsLinkStart}configure your runners%{settingsLinkEnd} or %{docsLinkStart}learn more%{docsLinkEnd} about runners."
 msgstr ""
 
+msgid "Pipelines|Gitlab Premium users have access to the multi-project pipeline graph to improve the visualization of these pipelines. %{linkStart}Learn More%{linkEnd}"
+msgstr ""
+
 msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
 msgstr ""
 
@@ -27027,6 +27039,9 @@ msgid "Pipelines|Merged YAML is view only"
 msgstr ""
 
 msgid "Pipelines|More Information"
+msgstr ""
+
+msgid "Pipelines|Multi-project pipeline graphs"
 msgstr ""
 
 msgid "Pipelines|No runners detected"
@@ -27179,9 +27194,6 @@ msgstr ""
 msgid "Pipeline|Checking pipeline status."
 msgstr ""
 
-msgid "Pipeline|Commit"
-msgstr ""
-
 msgid "Pipeline|Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
@@ -27195,9 +27207,6 @@ msgid "Pipeline|Date"
 msgstr ""
 
 msgid "Pipeline|Detached merge request pipeline"
-msgstr ""
-
-msgid "Pipeline|Duration"
 msgstr ""
 
 msgid "Pipeline|Failed"
@@ -27741,6 +27750,9 @@ msgid "Preferences|Use relative times"
 msgstr ""
 
 msgid "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."
+msgstr ""
+
+msgid "Preparing the report for the scan."
 msgstr ""
 
 msgid "Prev"
@@ -30796,6 +30808,12 @@ msgid "Report abuse"
 msgstr ""
 
 msgid "Report abuse to admin"
+msgstr ""
+
+msgid "Report couldn't be prepared."
+msgstr ""
+
+msgid "Report for the scan has been removed from the database."
 msgstr ""
 
 msgid "Reported %{timeAgo} by %{reportedBy}"
@@ -36831,6 +36849,9 @@ msgstr ""
 msgid "The regular expression used to find test coverage output in the job log. For example, use %{regex} for Simplecov (Ruby). Leave blank to disable."
 msgstr ""
 
+msgid "The related CI build failed."
+msgstr ""
+
 msgid "The remote mirror URL is invalid."
 msgstr ""
 
@@ -36838,6 +36859,12 @@ msgid "The remote mirror took to long to complete."
 msgstr ""
 
 msgid "The remote repository is being updated..."
+msgstr ""
+
+msgid "The report artifact provided by the CI build couldn't be parsed."
+msgstr ""
+
+msgid "The report has been successfully prepared."
 msgstr ""
 
 msgid "The repository can be committed to, and issues, comments and other entities can be created."
@@ -36859,6 +36886,9 @@ msgid "The repository must be accessible over %{code_open}http://%{code_close}, 
 msgstr ""
 
 msgid "The same shared runner executes code from multiple projects, unless you configure autoscaling with %{link} set to 1 (which it is on GitLab.com)."
+msgstr ""
+
+msgid "The scan has been created."
 msgstr ""
 
 msgid "The snippet can be accessed without any authentication."
@@ -37314,7 +37344,7 @@ msgstr ""
 msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."
 msgstr ""
 
-msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{linkEnd} and %{lockedLinkStart}locked%{linkEnd}."
+msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and %{lockedLinkStart}locked%{lockedLinkEnd}."
 msgstr ""
 
 msgid "This %{noteableTypeText} is locked."

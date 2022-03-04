@@ -28,6 +28,10 @@ export default {
       required: true,
       validator: validateConfigPaths,
     },
+    isMultiProjectVizAvailable: {
+      type: Boolean,
+      required: true,
+    },
     linkedPipelines: {
       type: Array,
       required: true,
@@ -208,6 +212,7 @@ export default {
           <linked-pipeline
             class="gl-display-inline-block"
             :is-loading="isLoadingPipeline(pipeline.id)"
+            :is-multi-project-viz-available="isMultiProjectVizAvailable"
             :pipeline="pipeline"
             :column-title="columnTitle"
             :type="type"

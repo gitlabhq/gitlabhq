@@ -5,6 +5,8 @@ class Admin::CohortsController < Admin::ApplicationController
 
   feature_category :devops_reports
 
+  urgency :low
+
   def index
     @cohorts = load_cohorts
     track_cohorts_visit

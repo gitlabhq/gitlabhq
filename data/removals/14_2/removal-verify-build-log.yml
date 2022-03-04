@@ -1,7 +1,7 @@
 - name: "Max job log file size of 100 MB"
-  removal_date: August 22, 2021 # day the removal was released
+  removal_date: August 22, 2021  # day the removal was released
   removal_milestone: "14.2"
-  reporter: jreporter # GitLab username of the person reporting the removal
+  reporter: jreporter  # GitLab username of the person reporting the removal
   breaking_change: false
   body: |
     GitLab values efficiency for all users in our wider community of contributors, so we're always working hard to make sure the application performs at a high level with a lovable UX.

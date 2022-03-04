@@ -1,12 +1,29 @@
 <script>
-import { GlBadge, GlButton, GlLink, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlButton,
+  GlLink,
+  GlLoadingIcon,
+  GlPopover,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
+import TierBadge from '~/vue_shared/components/tier_badge.vue';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
-import { __, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { reportToSentry } from '../../utils';
 import { DOWNSTREAM, UPSTREAM } from './constants';
 
 export default {
+  i18n: {
+    popover: {
+      title: s__('Pipelines|Multi-project pipeline graphs'),
+      description: s__(
+        'Pipelines|Gitlab Premium users have access to the multi-project pipeline graph to improve the visualization of these pipelines. %{linkStart}Learn More%{linkEnd}',
+      ),
+    },
+  },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -16,13 +33,21 @@ export default {
     GlButton,
     GlLink,
     GlLoadingIcon,
+    GlPopover,
+    GlSprintf,
+    TierBadge,
   },
+  inject: ['multiProjectHelpPath'],
   props: {
     columnTitle: {
       type: String,
       required: true,
     },
     expanded: {
+      type: Boolean,
+      required: true,
+    },
+    isMultiProjectVizAvailable: {
       type: Boolean,
       required: true,
     },
@@ -90,6 +115,9 @@ export default {
     pipelineStatus() {
       return this.pipeline.status;
     },
+    popoverContainerId() {
+      return `popoverContainer-${this.pipeline.id}`;
+    },
     projectName() {
       return this.pipeline.project.name;
     },
@@ -128,16 +156,21 @@ export default {
 
 <template>
   <div
-    ref="linkedPipeline"
-    v-gl-tooltip
     class="gl-h-full gl-display-flex! gl-border-solid gl-border-gray-100 gl-border-1"
     :class="flexDirection"
-    :title="tooltipText"
     data-qa-selector="child_pipeline"
+    data-testid="linkedPipeline"
     @mouseover="onDownstreamHovered"
     @mouseleave="onDownstreamHoverLeave"
   >
-    <div class="gl-w-full gl-bg-white gl-p-3" :class="cardSpacingClass">
+    <div
+      v-gl-tooltip
+      class="gl-w-full gl-bg-white gl-p-3"
+      :class="cardSpacingClass"
+      data-testid="linkedPipelineBody"
+      data-qa-selector="linked_pipeline_body"
+      :title="tooltipText"
+    >
       <div class="gl-display-flex gl-pr-3">
         <ci-status
           v-if="!pipelineIsLoading"
@@ -163,17 +196,38 @@ export default {
         </gl-badge>
       </div>
     </div>
-    <div class="gl-display-flex">
+    <div :id="popoverContainerId" class="gl-display-flex">
       <gl-button
         :id="buttonId"
         class="gl-shadow-none! gl-rounded-0!"
         :class="`js-pipeline-expand-${pipeline.id} ${buttonBorderClass}`"
         :icon="expandedIcon"
         :aria-label="__('Expand pipeline')"
+        :disabled="!isMultiProjectVizAvailable"
         data-testid="expand-pipeline-button"
         data-qa-selector="expand_pipeline_button"
         @click="onClickLinkedPipeline"
       />
+      <gl-popover
+        v-if="!isMultiProjectVizAvailable"
+        placement="top"
+        :target="popoverContainerId"
+        triggers="hover"
+      >
+        <template #title>
+          <b>{{ $options.i18n.popover.title }}</b>
+          <tier-badge class="gl-mt-3" tier="premium"
+        /></template>
+        <p class="gl-my-0">
+          <gl-sprintf :message="$options.i18n.popover.description">
+            <template #link="{ content }"
+              ><gl-link :href="multiProjectHelpPath" class="gl-font-sm" target="_blank">{{
+                content
+              }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </p>
+      </gl-popover>
     </div>
   </div>
 </template>

@@ -92,6 +92,9 @@ export default {
     hasUpstreamPipelines() {
       return Boolean(this.pipeline?.upstream?.length > 0);
     },
+    isMultiProjectVizAvailable() {
+      return Boolean(this.pipeline?.user?.namespace?.crossProjectPipelineAvailable);
+    },
     isStageView() {
       return this.viewType === STAGE_VIEW;
     },
@@ -178,6 +181,7 @@ export default {
           <linked-pipelines-column
             v-if="showUpstreamPipelines"
             :config-paths="configPaths"
+            :is-multi-project-viz-available="isMultiProjectVizAvailable"
             :linked-pipelines="upstreamPipelines"
             :column-title="__('Upstream')"
             :show-links="showJobLinks"
@@ -226,6 +230,7 @@ export default {
             v-if="showDownstreamPipelines"
             class="gl-mr-6"
             :config-paths="configPaths"
+            :is-multi-project-viz-available="isMultiProjectVizAvailable"
             :linked-pipelines="downstreamPipelines"
             :column-title="__('Downstream')"
             :show-links="showJobLinks"

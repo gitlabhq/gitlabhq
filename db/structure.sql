@@ -27884,6 +27884,8 @@ CREATE INDEX index_issues_on_description_trigram ON issues USING gin (descriptio
 
 CREATE INDEX index_issues_on_duplicated_to_id ON issues USING btree (duplicated_to_id) WHERE (duplicated_to_id IS NOT NULL);
 
+CREATE INDEX index_issues_on_id_and_weight ON issues USING btree (id, weight);
+
 CREATE INDEX index_issues_on_incident_issue_type ON issues USING btree (issue_type) WHERE (issue_type = 1);
 
 CREATE INDEX index_issues_on_last_edited_by_id ON issues USING btree (last_edited_by_id);

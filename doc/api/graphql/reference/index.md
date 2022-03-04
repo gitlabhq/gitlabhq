@@ -10759,10 +10759,11 @@ Represents an epic board list.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epiclistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if this list is collapsed for this user. |
-| <a id="epiclistepicscount"></a>`epicsCount` | [`Int`](#int) | Count of epics in the list. |
+| <a id="epiclistepicscount"></a>`epicsCount` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 14.9. This was renamed. Use: `metadata`. |
 | <a id="epiclistid"></a>`id` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the board list. |
 | <a id="epiclistlabel"></a>`label` | [`Label`](#label) | Label of the list. |
 | <a id="epiclistlisttype"></a>`listType` | [`String!`](#string) | Type of the list. |
+| <a id="epiclistmetadata"></a>`metadata` | [`EpicListMetadata`](#epiclistmetadata) | Epic list metatada. |
 | <a id="epiclistposition"></a>`position` | [`Int`](#int) | Position of the list within the board. |
 | <a id="epiclisttitle"></a>`title` | [`String!`](#string) | Title of the list. |
 
@@ -10783,6 +10784,17 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epiclistepicsfilters"></a>`filters` | [`EpicFilters`](#epicfilters) | Filters applied when selecting epics in the board list. |
+
+### `EpicListMetadata`
+
+Represents epic board list metadata.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="epiclistmetadataepicscount"></a>`epicsCount` | [`Int`](#int) | Count of epics in the list. |
+| <a id="epiclistmetadatatotalweight"></a>`totalWeight` | [`Int`](#int) | Total weight of all issues in the list. Available only when feature flag `epic_board_total_weight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
 
 ### `EpicPermissions`
 
@@ -15271,6 +15283,7 @@ Represents the security scan information.
 | ---- | ---- | ----------- |
 | <a id="scanerrors"></a>`errors` | [`[String!]!`](#string) | List of errors. |
 | <a id="scanname"></a>`name` | [`String!`](#string) | Name of the scan. |
+| <a id="scanstatus"></a>`status` | [`ScanStatus!`](#scanstatus) | Indicates the status of the scan. |
 | <a id="scanwarnings"></a>`warnings` | [`[String!]!`](#string) | List of warnings. |
 
 ### `ScanExecutionPolicy`
@@ -18141,6 +18154,20 @@ Size of UI component in SAST configuration page.
 | <a id="sastuicomponentsizelarge"></a>`LARGE` | Size of UI component in SAST configuration page is large. |
 | <a id="sastuicomponentsizemedium"></a>`MEDIUM` | Size of UI component in SAST configuration page is medium. |
 | <a id="sastuicomponentsizesmall"></a>`SMALL` | Size of UI component in SAST configuration page is small. |
+
+### `ScanStatus`
+
+The status of the security scan.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="scanstatuscreated"></a>`CREATED` | The scan has been created. |
+| <a id="scanstatusjob_failed"></a>`JOB_FAILED` | The related CI build failed. |
+| <a id="scanstatuspreparation_failed"></a>`PREPARATION_FAILED` | Report couldn't be prepared. |
+| <a id="scanstatuspreparing"></a>`PREPARING` | Preparing the report for the scan. |
+| <a id="scanstatuspurged"></a>`PURGED` | Report for the scan has been removed from the database. |
+| <a id="scanstatusreport_error"></a>`REPORT_ERROR` | The report artifact provided by the CI build couldn't be parsed. |
+| <a id="scanstatussucceeded"></a>`SUCCEEDED` | The report has been successfully prepared. |
 
 ### `SecurityReportTypeEnum`
 

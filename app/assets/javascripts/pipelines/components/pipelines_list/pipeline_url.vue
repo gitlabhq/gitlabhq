@@ -1,8 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlSprintf, GlTooltipDirective, GlBadge } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { SCHEDULE_ORIGIN, ICONS } from '../../constants';
 
@@ -18,7 +17,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     targetProjectFullPath: {
       default: '',
@@ -139,91 +137,67 @@ export default {
     commitTitle() {
       return this.pipeline?.commit?.title;
     },
-    hasAuthor() {
-      return (
-        this.commitAuthor?.avatar_url && this.commitAuthor?.path && this.commitAuthor?.username
-      );
-    },
-    userImageAltDescription() {
-      return this.commitAuthor?.username
-        ? sprintf(__("%{username}'s avatar"), { username: this.commitAuthor.username })
-        : null;
-    },
-    rearrangePipelinesTable() {
-      return this.glFeatures?.rearrangePipelinesTable;
-    },
   },
 };
 </script>
 <template>
   <div class="pipeline-tags" data-testid="pipeline-url-table-cell">
-    <template v-if="rearrangePipelinesTable">
-      <div class="commit-title gl-mb-2" data-testid="commit-title-container">
-        <span v-if="commitTitle" class="gl-display-flex">
-          <tooltip-on-truncate :title="commitTitle" class="flex-truncate-child gl-flex-grow-1">
-            <gl-link
-              :href="commitUrl"
-              class="commit-row-message gl-text-gray-900"
-              data-testid="commit-title"
-              >{{ commitTitle }}</gl-link
-            >
-          </tooltip-on-truncate>
-        </span>
-        <span v-else>{{ __("Can't find HEAD commit for this branch") }}</span>
-      </div>
-      <div class="gl-mb-2">
-        <gl-link
-          :href="pipeline.path"
-          class="gl-text-decoration-underline gl-text-blue-600! gl-mr-3"
-          data-testid="pipeline-url-link"
-          data-qa-selector="pipeline_url_link"
-        >
-          #{{ pipeline[pipelineKey] }}
-        </gl-link>
-        <!--Commit row-->
-        <div class="icon-container gl-display-inline-block gl-mr-1">
-          <gl-icon
-            v-gl-tooltip
-            :name="commitIcon"
-            :title="commitIconTooltipTitle"
-            data-testid="commit-icon-type"
-          />
-        </div>
-        <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
+    <div class="commit-title gl-mb-2" data-testid="commit-title-container">
+      <span v-if="commitTitle" class="gl-display-flex">
+        <tooltip-on-truncate :title="commitTitle" class="gl-flex-grow-1 gl-text-truncate">
           <gl-link
-            v-if="mergeRequestRef"
-            :href="mergeRequestRef.path"
-            class="ref-name gl-mr-3"
-            data-testid="merge-request-ref"
-            >{{ mergeRequestRef.iid }}</gl-link
+            :href="commitUrl"
+            class="commit-row-message gl-text-gray-900"
+            data-testid="commit-title"
+            >{{ commitTitle }}</gl-link
           >
-          <gl-link v-else :href="refUrl" class="ref-name gl-mr-3" data-testid="commit-ref-name">{{
-            commitRef.name
-          }}</gl-link>
         </tooltip-on-truncate>
+      </span>
+      <span v-else>{{ __("Can't find HEAD commit for this branch") }}</span>
+    </div>
+    <div class="gl-mb-2">
+      <gl-link
+        :href="pipeline.path"
+        class="gl-text-decoration-underline gl-text-blue-600! gl-mr-3"
+        data-testid="pipeline-url-link"
+        data-qa-selector="pipeline_url_link"
+      >
+        #{{ pipeline[pipelineKey] }}
+      </gl-link>
+      <!--Commit row-->
+      <div class="icon-container gl-display-inline-block gl-mr-1">
         <gl-icon
           v-gl-tooltip
-          name="commit"
-          class="commit-icon gl-mr-1"
-          :title="__('Commit')"
-          data-testid="commit-icon"
+          :name="commitIcon"
+          :title="commitIconTooltipTitle"
+          data-testid="commit-icon-type"
         />
-
-        <gl-link :href="commitUrl" class="commit-sha mr-0" data-testid="commit-short-sha">{{
-          commitShortSha
-        }}</gl-link>
-        <!--End of commit row-->
       </div>
-    </template>
-    <gl-link
-      v-if="!rearrangePipelinesTable"
-      :href="pipeline.path"
-      class="gl-text-decoration-underline"
-      data-testid="pipeline-url-link"
-      data-qa-selector="pipeline_url_link"
-    >
-      #{{ pipeline[pipelineKey] }}
-    </gl-link>
+      <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
+        <gl-link
+          v-if="mergeRequestRef"
+          :href="mergeRequestRef.path"
+          class="ref-name gl-mr-3"
+          data-testid="merge-request-ref"
+          >{{ mergeRequestRef.iid }}</gl-link
+        >
+        <gl-link v-else :href="refUrl" class="ref-name gl-mr-3" data-testid="commit-ref-name">{{
+          commitRef.name
+        }}</gl-link>
+      </tooltip-on-truncate>
+      <gl-icon
+        v-gl-tooltip
+        name="commit"
+        class="commit-icon gl-mr-1"
+        :title="__('Commit')"
+        data-testid="commit-icon"
+      />
+
+      <gl-link :href="commitUrl" class="commit-sha mr-0" data-testid="commit-short-sha">{{
+        commitShortSha
+      }}</gl-link>
+      <!--End of commit row-->
+    </div>
     <div class="label-container gl-mt-1">
       <gl-badge
         v-if="isScheduled"

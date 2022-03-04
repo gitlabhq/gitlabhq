@@ -161,51 +161,7 @@ RSpec.describe 'Pipelines', :js do
         end
       end
 
-      context 'when pipeline is detached merge request pipeline, with rearrange_pipelines_table feature flag turned off' do
-        let(:merge_request) do
-          create(:merge_request,
-            :with_detached_merge_request_pipeline,
-            source_project: source_project,
-            target_project: target_project)
-        end
-
-        let!(:pipeline) { merge_request.all_pipelines.first }
-        let(:source_project) { project }
-        let(:target_project) { project }
-
-        before do
-          stub_feature_flags(rearrange_pipelines_table: false)
-
-          visit project_pipelines_path(source_project)
-        end
-
-        shared_examples_for 'detached merge request pipeline' do
-          it 'shows pipeline information without pipeline ref', :sidekiq_might_not_need_inline do
-            within '.pipeline-tags' do
-              expect(page).to have_content(expected_detached_mr_tag)
-            end
-
-            within '.branch-commit' do
-              expect(page).to have_link(merge_request.iid,
-                href: project_merge_request_path(project, merge_request))
-            end
-
-            within '.branch-commit' do
-              expect(page).not_to have_link(pipeline.ref)
-            end
-          end
-        end
-
-        it_behaves_like 'detached merge request pipeline'
-
-        context 'when source project is a forked project' do
-          let(:source_project) { fork_project(project, user, repository: true) }
-
-          it_behaves_like 'detached merge request pipeline'
-        end
-      end
-
-      context 'when pipeline is detached merge request pipeline, with rearrange_pipelines_table feature flag turned on' do
+      context 'when pipeline is detached merge request pipeline' do
         let(:merge_request) do
           create(:merge_request,
                  :with_detached_merge_request_pipeline,
@@ -218,8 +174,6 @@ RSpec.describe 'Pipelines', :js do
         let(:target_project) { project }
 
         before do
-          stub_feature_flags(rearrange_pipelines_table: true)
-
           visit project_pipelines_path(source_project)
         end
 
@@ -245,52 +199,7 @@ RSpec.describe 'Pipelines', :js do
         end
       end
 
-      context 'when pipeline is merge request pipeline, with rearrange_pipelines_table feature flag turned off' do
-        let(:merge_request) do
-          create(:merge_request,
-            :with_merge_request_pipeline,
-            source_project: source_project,
-            target_project: target_project,
-            merge_sha: target_project.commit.sha)
-        end
-
-        let!(:pipeline) { merge_request.all_pipelines.first }
-        let(:source_project) { project }
-        let(:target_project) { project }
-
-        before do
-          stub_feature_flags(rearrange_pipelines_table: false)
-
-          visit project_pipelines_path(source_project)
-        end
-
-        shared_examples_for 'Correct merge request pipeline information' do
-          it 'does not show detached tag for the pipeline, and shows the link of the merge request, and does not show the ref of the pipeline', :sidekiq_might_not_need_inline do
-            within '.pipeline-tags' do
-              expect(page).not_to have_content(expected_detached_mr_tag)
-            end
-
-            within '.branch-commit' do
-              expect(page).to have_link(merge_request.iid,
-                href: project_merge_request_path(project, merge_request))
-            end
-
-            within '.branch-commit' do
-              expect(page).not_to have_link(pipeline.ref)
-            end
-          end
-        end
-
-        it_behaves_like 'Correct merge request pipeline information'
-
-        context 'when source project is a forked project' do
-          let(:source_project) { fork_project(project, user, repository: true) }
-
-          it_behaves_like 'Correct merge request pipeline information'
-        end
-      end
-
-      context 'when pipeline is merge request pipeline, with rearrange_pipelines_table feature flag turned on' do
+      context 'when pipeline is merge request pipeline' do
         let(:merge_request) do
           create(:merge_request,
                  :with_merge_request_pipeline,
@@ -304,8 +213,6 @@ RSpec.describe 'Pipelines', :js do
         let(:target_project) { project }
 
         before do
-          stub_feature_flags(rearrange_pipelines_table: true)
-
           visit project_pipelines_path(source_project)
         end
 
@@ -676,28 +583,6 @@ RSpec.describe 'Pipelines', :js do
 
       context 'with pipeline key selection' do
         before do
-          stub_feature_flags(rearrange_pipelines_table: false)
-          visit project_pipelines_path(project)
-          wait_for_requests
-        end
-
-        it 'changes the Pipeline ID column for Pipeline IID' do
-          page.find('[data-testid="pipeline-key-dropdown"]').click
-
-          within '.gl-new-dropdown-contents' do
-            dropdown_options = page.find_all '.gl-new-dropdown-item'
-
-            dropdown_options[1].click
-          end
-
-          expect(page.find('[data-testid="pipeline-th"]')).to have_content 'Pipeline IID'
-          expect(page.find('[data-testid="pipeline-url-link"]')).to have_content "##{pipeline.iid}"
-        end
-      end
-
-      context 'with pipeline key selection and rearrange_pipelines_table ff on' do
-        before do
-          stub_feature_flags(rearrange_pipelines_table: true)
           visit project_pipelines_path(project)
           wait_for_requests
         end

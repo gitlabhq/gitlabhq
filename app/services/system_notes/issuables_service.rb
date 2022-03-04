@@ -26,8 +26,8 @@ module SystemNotes
     #   "removed the relation with gitlab-foss#9001"
     #
     # Returns the created Note object
-    def unrelate_issue(noteable_ref)
-      body = "removed the relation with #{noteable_ref.to_reference(noteable.project)}"
+    def unrelate_issuable(noteable_ref)
+      body = "removed the relation with #{noteable_ref.to_reference(noteable.resource_parent)}"
 
       issue_activity_counter.track_issue_unrelated_action(author: author) if noteable.is_a?(Issue)
 

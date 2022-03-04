@@ -62,3 +62,27 @@
     - 'i_testing_group_code_coverage_visit_total'
     - 'i_testing_load_performance_widget_total'
     - 'i_testing_metrics_report_widget_total'
+- name: xmau_plan
+  operator: OR
+  source: redis
+  time_frame: [7d, 28d]
+  events:
+    - users_creating_work_items
+    - users_updating_work_item_title
+  feature_flag: track_work_items_activity
+- name: xmau_project_management
+  operator: OR
+  source: redis
+  time_frame: [7d, 28d]
+  events:
+    - users_creating_work_items
+    - users_updating_work_item_title
+  feature_flag: track_work_items_activity
+- name: users_work_items
+  operator: OR
+  source: redis
+  time_frame: [7d, 28d]
+  events:
+    - users_creating_work_items
+    - users_updating_work_item_title
+  feature_flag: track_work_items_activity

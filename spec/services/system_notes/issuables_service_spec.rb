@@ -30,10 +30,10 @@ RSpec.describe ::SystemNotes::IssuablesService do
     end
   end
 
-  describe '#unrelate_issue' do
+  describe '#unrelate_issuable' do
     let(:noteable_ref) { create(:issue) }
 
-    subject { service.unrelate_issue(noteable_ref) }
+    subject { service.unrelate_issuable(noteable_ref) }
 
     it_behaves_like 'a system note' do
       let(:action) { 'unrelate' }

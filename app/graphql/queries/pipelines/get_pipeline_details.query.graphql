@@ -47,6 +47,15 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
       id
       iid
       complete
+      user {
+        __typename
+        id
+        namespace {
+          __typename
+          id
+          crossProjectPipelineAvailable
+        }
+      }
       usesNeeds
       userPermissions {
         updatePipeline

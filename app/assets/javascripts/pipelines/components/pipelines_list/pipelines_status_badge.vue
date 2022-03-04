@@ -3,7 +3,6 @@ import CodeQualityWalkthrough from '~/code_quality_walkthrough/components/step.v
 import { PIPELINE_STATUSES } from '~/code_quality_walkthrough/constants';
 import { CHILD_VIEW } from '~/pipelines/constants';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PipelinesTimeago from './time_ago.vue';
 
 export default {
@@ -12,7 +11,6 @@ export default {
     CiBadge,
     PipelinesTimeago,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     pipeline: {
       type: Object,
@@ -44,9 +42,6 @@ export default {
     codeQualityBuildPath() {
       return this.pipeline?.details?.code_quality_build_path;
     },
-    rearrangePipelinesTable() {
-      return this.glFeatures?.rearrangePipelinesTable;
-    },
   },
 };
 </script>
@@ -61,7 +56,7 @@ export default {
       :icon-classes="'gl-vertical-align-middle!'"
       data-qa-selector="pipeline_commit_status"
     />
-    <pipelines-timeago v-if="rearrangePipelinesTable" class="gl-mt-3" :pipeline="pipeline" />
+    <pipelines-timeago class="gl-mt-3" :pipeline="pipeline" />
     <code-quality-walkthrough
       v-if="shouldRenderCodeQualityWalkthrough"
       :step="codeQualityStep"

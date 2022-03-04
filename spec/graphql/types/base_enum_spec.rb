@@ -102,9 +102,9 @@ RSpec.describe Types::BaseEnum do
       it 'sets the values defined by the declarative enum' do
         set_declarative_enum
 
-        expect(enum_type.values.keys).to eq(['FOO'])
-        expect(enum_type.values.values.map(&:description)).to eq(['description of foo'])
-        expect(enum_type.values.values.map(&:value)).to eq([0])
+        expect(enum_type.values.keys).to contain_exactly('FOO')
+        expect(enum_type.values.values.map(&:description)).to contain_exactly('description of foo')
+        expect(enum_type.values.values.map(&:value)).to contain_exactly('foo')
       end
     end
   end

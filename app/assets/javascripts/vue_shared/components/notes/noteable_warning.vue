@@ -1,11 +1,6 @@
 <script>
-import { GlLink, GlIcon } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { GlLink, GlIcon, GlSprintf } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-
-function buildDocsLinkStart(path) {
-  return `<a href="${escape(path)}" target="_blank" rel="noopener noreferrer">`;
-}
 
 const NoteableTypeText = {
   Issue: __('issue'),
@@ -17,6 +12,7 @@ export default {
   components: {
     GlIcon,
     GlLink,
+    GlSprintf,
   },
   props: {
     isLocked: {
@@ -59,20 +55,6 @@ export default {
     noteableTypeText() {
       return NoteableTypeText[this.noteableType];
     },
-    confidentialAndLockedDiscussionText() {
-      return sprintf(
-        __(
-          'This %{noteableTypeText} is %{confidentialLinkStart}confidential%{linkEnd} and %{lockedLinkStart}locked%{linkEnd}.',
-        ),
-        {
-          noteableTypeText: this.noteableTypeText,
-          confidentialLinkStart: buildDocsLinkStart(this.confidentialNoteableDocsPath),
-          lockedLinkStart: buildDocsLinkStart(this.lockedNoteableDocsPath),
-          linkEnd: '</a>',
-        },
-        false,
-      );
-    },
     confidentialContextText() {
       return sprintf(__('This is a confidential %{noteableTypeText}.'), {
         noteableTypeText: this.noteableTypeText,
@@ -91,9 +73,23 @@ export default {
     <gl-icon v-if="!isLockedAndConfidential" :name="warningIcon" :size="16" class="icon inline" />
 
     <span v-if="isLockedAndConfidential" ref="lockedAndConfidential">
-      <span
-        v-html="confidentialAndLockedDiscussionText /* eslint-disable-line vue/no-v-html */"
-      ></span>
+      <span>
+        <gl-sprintf
+          :message="
+            __(
+              'This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and %{lockedLinkStart}locked%{lockedLinkEnd}.',
+            )
+          "
+        >
+          <template #noteableTypeText>{{ noteableTypeText }}</template>
+          <template #confidentialLink="{ content }">
+            <gl-link :href="confidentialNoteableDocsPath" target="_blank">{{ content }}</gl-link>
+          </template>
+          <template #lockedLink="{ content }">
+            <gl-link :href="lockedNoteableDocsPath" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </span>
       {{
         __("People without permission will never get a notification and won't be able to comment.")
       }}

@@ -8,7 +8,7 @@ Vue.use(VueApollo);
 const createPipelinesDetailApp = (
   selector,
   apolloProvider,
-  { pipelineProjectPath, pipelineIid, metricsPath, graphqlResourceEtag } = {},
+  { pipelineProjectPath, pipelineIid, metricsPath, graphqlResourceEtag, multiProjectHelpPath } = {},
 ) => {
   // eslint-disable-next-line no-new
   new Vue({
@@ -22,6 +22,7 @@ const createPipelinesDetailApp = (
       pipelineProjectPath,
       pipelineIid,
       graphqlResourceEtag,
+      multiProjectHelpPath,
     },
     errorCaptured(err, _vm, info) {
       reportToSentry('pipeline_details_graph', `error: ${err}, info: ${info}`);

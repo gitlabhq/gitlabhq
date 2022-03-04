@@ -1,6 +1,5 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
@@ -8,7 +7,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: { GlIcon },
-  mixins: [timeagoMixin, glFeatureFlagMixin()],
+  mixins: [timeagoMixin],
   props: {
     pipeline: {
       type: Object,
@@ -54,14 +53,11 @@ export default {
     showSkipped() {
       return !this.duration && !this.finishedTime && this.skipped;
     },
-    shouldDisplayAsBlock() {
-      return this.glFeatures?.rearrangePipelinesTable;
-    },
   },
 };
 </script>
 <template>
-  <div class="{ 'gl-display-block': shouldDisplayAsBlock }">
+  <div class="gl-display-block">
     <span v-if="showInProgress" data-testid="pipeline-in-progress">
       <gl-icon v-if="stuck" name="warning" class="gl-mr-2" :size="12" data-testid="warning-icon" />
       <gl-icon

@@ -42,10 +42,20 @@ module WebHooks
           hook.failed!
         end
       end
+    rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+      raise if raise_lock_error?
     end
 
     def lock_name
       "web_hooks:update_hook_failure_state:#{hook.id}"
+    end
+
+    # Allow an error to be raised after failing to obtain a lease only if the hook
+    # is not already in the correct failure state.
+    def raise_lock_error?
+      hook.reset # Reload so properties are guaranteed to be current.
+
+      hook.executable? != (response_category == :ok)
     end
   end
 end

@@ -14,7 +14,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Renamed](https://gitlab.com/groups/gitlab-org/-/epics/7167) from "GitLab Kubernetes Agent" to "GitLab agent for Kubernetes" in GitLab 14.6.
 
 You can connect your Kubernetes cluster with GitLab to deploy, manage,
-and monitor your cloud-native solutions. You can choose from two primary workflows.
+and monitor your cloud-native solutions. 
+
+To connect a Kubernetes cluster to GitLab, you must first [install an agent in your cluster](install/index.md).
+
+The agent runs in the cluster, and you can use it to:
+
+- Communicate with a cluster, which is behind a firewall or NAT.
+- Access API endpoints in a cluster in real time.
+- Push information about events happening in the cluster.
+- Enable a cache of Kubernetes objects, which are kept up-to-date with very low latency.
+
+For more details about the agent's purpose and architecture, see the [architecture documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/architecture.md).
+
+## Workflows
+
+You can choose from two primary workflows.
 
 In a [**GitOps** workflow](gitops.md), you keep your Kubernetes manifests in GitLab. You install a GitLab agent in your cluster, and
 any time you update your manifests, the agent updates the cluster. This workflow is fully driven with Git and is considered pull-based,
@@ -22,8 +37,6 @@ because the cluster is pulling updates from your GitLab repository.
 
 In a [**CI/CD** workflow](ci_cd_tunnel.md), you use GitLab CI/CD to query and update your cluster by using the Kubernetes API.
 This workflow is considered push-based, because GitLab is pushing requests from GitLab CI/CD to your cluster.
-
-Both of these workflows require you to [install an agent in your cluster](install/index.md).
 
 ## Supported cluster versions
 

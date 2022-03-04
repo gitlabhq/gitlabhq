@@ -12,16 +12,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
 > - Support for Omnibus installations was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5686) in GitLab 14.5.
 
-You can use GitLab CI/CD to safely deploy to and update your Kubernetes clusters.
+You can use a GitLab CI/CD workflow to safely deploy to and update your Kubernetes clusters.
 
-To do so, you install a GitLab agent in your cluster. Then in your GitLab CI/CD pipelines,
-you can refer to the cluster connection as a Kubernetes context.
-Then you can run Kubernetes API commands as part of your GitLab CI/CD pipeline.
+To do so, you must first [install an agent in your cluster](install/index.md). When done, you have a Kubernetes context and can
+run Kubernetes API commands in your GitLab CI/CD pipeline.
 
 To ensure access to your cluster is safe:
 
 - Each agent has a separate context (`kubecontext`).
-- Only the project where the agent is, and any additional projects you authorize can access the agent in your cluster.
+- Only the project where the agent is configured, and any additional projects you authorize, can access the agent in your cluster.
 
 You do not need to have a runner in the cluster with the agent.
 

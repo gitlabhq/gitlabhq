@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe WebHooks::LogExecutionService do
   include ExclusiveLeaseHelpers
+  using RSpec::Parameterized::TableSyntax
 
   describe '#execute' do
     around do |example|
@@ -34,16 +35,47 @@ RSpec.describe WebHooks::LogExecutionService do
       expect(WebHookLog.recent.first).to have_attributes(data)
     end
 
-    it 'updates failure state using a lease that ensures fresh state is written' do
-      service = described_class.new(hook: project_hook, log_data: data, response_category: :error)
-      WebHook.find(project_hook.id).update!(backoff_count: 1)
+    context 'obtaining an exclusive lease' do
+      let(:lease_key) { "web_hooks:update_hook_failure_state:#{project_hook.id}" }
 
-      lease_key = "web_hooks:update_hook_failure_state:#{project_hook.id}"
-      lease = stub_exclusive_lease(lease_key, timeout: described_class::LOCK_TTL)
+      it 'updates failure state using a lease that ensures fresh state is written' do
+        service = described_class.new(hook: project_hook, log_data: data, response_category: :error)
+        WebHook.find(project_hook.id).update!(backoff_count: 1)
 
-      expect(lease).to receive(:try_obtain)
-      expect(lease).to receive(:cancel)
-      expect { service.execute }.to change { WebHook.find(project_hook.id).backoff_count }.to(2)
+        lease = stub_exclusive_lease(lease_key, timeout: described_class::LOCK_TTL)
+
+        expect(lease).to receive(:try_obtain)
+        expect(lease).to receive(:cancel)
+        expect { service.execute }.to change { WebHook.find(project_hook.id).backoff_count }.to(2)
+      end
+
+      context 'when a lease cannot be obtained' do
+        where(:response_category, :executable, :needs_updating) do
+          :ok     | true  | false
+          :ok     | false | true
+          :failed | true  | true
+          :failed | false | false
+          :error  | true  | true
+          :error  | false | false
+        end
+
+        with_them do
+          subject(:service) { described_class.new(hook: project_hook, log_data: data, response_category: response_category) }
+
+          before do
+            stub_exclusive_lease_taken(lease_key, timeout: described_class::LOCK_TTL)
+            allow(project_hook).to receive(:executable?).and_return(executable)
+          end
+
+          it 'raises an error if the hook needs to be updated' do
+            if needs_updating
+              expect { service.execute }.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+            else
+              expect { service.execute }.not_to raise_error
+            end
+          end
+        end
+      end
     end
 
     context 'when response_category is :ok' do

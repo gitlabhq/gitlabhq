@@ -125,7 +125,6 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
 
       before do
         stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: false)
-        stub_feature_flags(rearrange_pipelines_table: false)
       end
 
       it 'creates a pipeline in the parent project when user proceeds with the warning' do

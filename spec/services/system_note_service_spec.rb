@@ -117,7 +117,7 @@ RSpec.describe SystemNoteService do
     end
   end
 
-  describe '.unrelate_issue' do
+  describe '.unrelate_issuable' do
     let(:noteable_ref) { double }
     let(:noteable) { double }
 
@@ -127,10 +127,10 @@ RSpec.describe SystemNoteService do
 
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:unrelate_issue).with(noteable_ref)
+        expect(service).to receive(:unrelate_issuable).with(noteable_ref)
       end
 
-      described_class.unrelate_issue(noteable, noteable_ref, double)
+      described_class.unrelate_issuable(noteable, noteable_ref, double)
     end
   end
 

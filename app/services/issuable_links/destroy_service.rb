@@ -4,11 +4,13 @@ module IssuableLinks
   class DestroyService < BaseService
     include IncidentManagement::UsageData
 
-    attr_reader :link, :current_user
+    attr_reader :link, :current_user, :source, :target
 
     def initialize(link, user)
       @link = link
       @current_user = user
+      @source = link.source
+      @target = link.target
     end
 
     def execute
@@ -21,6 +23,11 @@ module IssuableLinks
     end
 
     private
+
+    def create_notes
+      SystemNoteService.unrelate_issuable(source, target, current_user)
+      SystemNoteService.unrelate_issuable(target, source, current_user)
+    end
 
     def after_destroy
       create_notes

@@ -34,21 +34,19 @@ exports[`Issue Warning Component when noteable is locked and confidential render
 <span>
   <span>
     This issue is 
-    <a
+    <gl-link-stub
       href=""
-      rel="noopener noreferrer"
       target="_blank"
     >
       confidential
-    </a>
+    </gl-link-stub>
      and 
-    <a
+    <gl-link-stub
       href=""
-      rel="noopener noreferrer"
       target="_blank"
     >
       locked
-    </a>
+    </gl-link-stub>
     .
   </span>
   
