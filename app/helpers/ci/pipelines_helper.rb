@@ -78,6 +78,37 @@ module Ci
         pipeline.stuck?
     end
 
+    def pipelines_list_data(project, list_url)
+      artifacts_endpoint_placeholder = ':pipeline_artifacts_id'
+
+      data = {
+        endpoint: list_url,
+        project_id: project.id,
+        params: params.to_json,
+        artifacts_endpoint: downloadable_artifacts_project_pipeline_path(project, artifacts_endpoint_placeholder, format: :json),
+        artifacts_endpoint_placeholder: artifacts_endpoint_placeholder,
+        pipeline_schedule_url: pipeline_schedules_path(project),
+        empty_state_svg_path: image_path('illustrations/pipelines_empty.svg'),
+        error_state_svg_path: image_path('illustrations/pipelines_failed.svg'),
+        no_pipelines_svg_path: image_path('illustrations/pipelines_pending.svg'),
+        can_create_pipeline: can?(current_user, :create_pipeline, project).to_s,
+        new_pipeline_path: can?(current_user, :create_pipeline, project) && new_project_pipeline_path(project),
+        ci_lint_path: can?(current_user, :create_pipeline, project) && project_ci_lint_path(project),
+        reset_cache_path: can?(current_user, :admin_pipeline, project) && reset_cache_project_settings_ci_cd_path(project),
+        has_gitlab_ci: has_gitlab_ci?(project).to_s,
+        pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
+        suggested_ci_templates: suggested_ci_templates.to_json,
+        code_quality_page_path: project.present(current_user: current_user).add_code_quality_ci_yml_path,
+        ci_runner_settings_path: project_settings_ci_cd_path(project, ci_runner_templates: true, anchor: 'js-runners-settings')
+      }
+
+      experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
+        e.candidate { data[:any_runners_available] = project.active_runners.exists?.to_s }
+      end
+
+      data
+    end
+
     private
 
     def warning_markdown(pipeline)

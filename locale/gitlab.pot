@@ -26912,6 +26912,12 @@ msgstr ""
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
+msgid "Pipelines|\"Hello world\" with GitLab CI"
+msgstr ""
+
+msgid "Pipelines|A GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. Install GitLab Runner and register your own runners to get started with CI/CD."
+msgstr ""
+
 msgid "Pipelines|API"
 msgstr ""
 
@@ -26963,7 +26969,7 @@ msgstr ""
 msgid "Pipelines|Editor"
 msgstr ""
 
-msgid "Pipelines|Get familiar with GitLab CI/CD syntax by starting with a basic 3 stage CI/CD pipeline."
+msgid "Pipelines|Get familiar with GitLab CI syntax by  setting up a simple pipeline running a  \"Hello world\" script to see how it runs, explore how CI/CD works."
 msgstr ""
 
 msgid "Pipelines|Get started with GitLab CI/CD"
@@ -26972,10 +26978,16 @@ msgstr ""
 msgid "Pipelines|GitLab CI/CD can automatically build, test, and deploy your code. Let GitLab take care of time consuming tasks, so you can spend more time creating."
 msgstr ""
 
+msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. There are active runners available to run your jobs right now. If you prefer, you can %{settingsLinkStart}configure your runners%{settingsLinkEnd} or %{docsLinkStart}learn more%{docsLinkEnd} about runners."
+msgstr ""
+
 msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
 msgstr ""
 
 msgid "Pipelines|Improve code quality with GitLab CI/CD"
+msgstr ""
+
+msgid "Pipelines|Install GitLab Runner"
 msgstr ""
 
 msgid "Pipelines|Install GitLab Runners"
@@ -26988,6 +27000,9 @@ msgid "Pipelines|Last Used"
 msgstr ""
 
 msgid "Pipelines|Learn about Runners"
+msgstr ""
+
+msgid "Pipelines|Learn the basics of pipelines and .yml files"
 msgstr ""
 
 msgid "Pipelines|Lint"
@@ -27005,6 +27020,9 @@ msgstr ""
 msgid "Pipelines|More Information"
 msgstr ""
 
+msgid "Pipelines|No runners detected"
+msgstr ""
+
 msgid "Pipelines|No triggers have been created yet. Add one using the form above."
 msgstr ""
 
@@ -27017,7 +27035,13 @@ msgstr ""
 msgid "Pipelines|Project cache successfully reset."
 msgstr ""
 
+msgid "Pipelines|Ready to set up CI/CD for your project?"
+msgstr ""
+
 msgid "Pipelines|Revoke trigger"
+msgstr ""
+
+msgid "Pipelines|Runners are available to run your jobs now"
 msgstr ""
 
 msgid "Pipelines|Something went wrong while cleaning runners cache."
@@ -27083,13 +27107,10 @@ msgstr ""
 msgid "Pipelines|Trigger user has insufficient permissions to project"
 msgstr ""
 
-msgid "Pipelines|Use a CI/CD template"
+msgid "Pipelines|Try test template"
 msgstr ""
 
 msgid "Pipelines|Use a sample %{codeStart}.gitlab-ci.yml%{codeEnd} template file to explore how CI/CD works."
-msgstr ""
-
-msgid "Pipelines|Use a sample CI/CD template"
 msgstr ""
 
 msgid "Pipelines|Use a template based on your project's language or framework to get started with GitLab CI/CD."

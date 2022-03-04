@@ -49,6 +49,11 @@ export default {
       required: false,
       default: null,
     },
+    anyRunnersAvailable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     ciHelpPagePath() {
@@ -120,7 +125,11 @@ export default {
         </gl-empty-state>
       </template>
     </gitlab-experiment>
-    <pipelines-ci-templates v-else-if="canSetCi" />
+    <pipelines-ci-templates
+      v-else-if="canSetCi"
+      :ci-runner-settings-path="ciRunnerSettingsPath"
+      :any-runners-available="anyRunnersAvailable"
+    />
     <gl-empty-state
       v-else
       title=""

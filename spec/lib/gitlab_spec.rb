@@ -112,10 +112,17 @@ RSpec.describe Gitlab do
       expect(described_class.com?).to eq false
     end
 
-    it 'is true when GITLAB_SIMULATE_SAAS is true' do
+    it 'is true when GITLAB_SIMULATE_SAAS is true and in development' do
+      stub_rails_env('development')
       stub_env('GITLAB_SIMULATE_SAAS', '1')
 
       expect(described_class.com?).to eq true
+    end
+
+    it 'is false when GITLAB_SIMULATE_SAAS is true and in test' do
+      stub_env('GITLAB_SIMULATE_SAAS', '1')
+
+      expect(described_class.com?).to eq false
     end
   end
 
@@ -239,8 +246,8 @@ RSpec.describe Gitlab do
         stub_env('GITLAB_SIMULATE_SAAS', '1')
       end
 
-      it 'is true when test env' do
-        expect(subject).to eq true
+      it 'is false when test env' do
+        expect(subject).to eq false
       end
 
       it 'is true when dev env' do
@@ -249,7 +256,7 @@ RSpec.describe Gitlab do
         expect(subject).to eq true
       end
 
-      it 'is false when env is not dev or test' do
+      it 'is false when env is not dev' do
         stub_rails_env('production')
 
         expect(subject).to eq false

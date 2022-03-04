@@ -50,7 +50,7 @@ module Gitlab
   HTTP_PROXY_ENV_VARS = %w(http_proxy https_proxy HTTP_PROXY HTTPS_PROXY).freeze
 
   def self.simulate_com?
-    return false unless Rails.env.test? || Rails.env.development?
+    return false unless Rails.env.development?
 
     Gitlab::Utils.to_boolean(ENV['GITLAB_SIMULATE_SAAS'])
   end

@@ -136,6 +136,7 @@ export default {
           v-if="!isCurrentBranchTarget"
           v-model="openMergeRequest"
           data-testid="new-mr-checkbox"
+          data-qa-selector="new_mr_checkbox"
           class="gl-mt-3"
         >
           <gl-sprintf :message="$options.i18n.startMergeRequest">

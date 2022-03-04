@@ -6,13 +6,13 @@ module QA
       module PipelineEditor
         class Show < QA::Page::Base
           view 'app/assets/javascripts/pipeline_editor/components/file_nav/branch_switcher.vue' do
-            element :branch_selector_button, require: true
+            element :branch_selector_button, required: true
             element :branch_menu_item_button
             element :branch_menu_container
           end
 
           view 'app/assets/javascripts/pipeline_editor/components/commit/commit_form.vue' do
-            element :target_branch_field, require: true
+            element :target_branch_field, required: true
           end
 
           view 'app/assets/javascripts/pipeline_editor/components/drawer/pipeline_editor_drawer.vue' do
@@ -21,7 +21,7 @@ module QA
           end
 
           view 'app/assets/javascripts/vue_shared/components/source_editor.vue' do
-            element :source_editor_container, require: true
+            element :source_editor_container, required: true
           end
 
           view 'app/assets/javascripts/pipeline_editor/components/header/pipeline_status.vue' do
@@ -30,6 +30,7 @@ module QA
 
           view 'app/assets/javascripts/pipeline_editor/components/commit/commit_form.vue' do
             element :commit_changes_button
+            element :new_mr_checkbox
           end
 
           view 'app/assets/javascripts/pipeline_editor/components/header/validation_segment.vue' do
@@ -125,6 +126,18 @@ module QA
             within_element(:file_editor_container) do
               find('.gl-alert-body').text
             end
+          end
+
+          def has_new_mr_checkbox?
+            has_element?(:new_mr_checkbox, visible: true)
+          end
+
+          def has_no_new_mr_checkbox?
+            has_no_element?(:new_mr_checkbox, visible: true)
+          end
+
+          def select_new_mr_checkbox
+            check_element(:new_mr_checkbox, true)
           end
 
           private

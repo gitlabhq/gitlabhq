@@ -41,7 +41,12 @@ export default {
           </template>
         </gl-sprintf>
       </p>
-      <gl-button variant="confirm" class="gl-mt-3" @click="createEmptyConfigFile">
+      <gl-button
+        variant="confirm"
+        class="gl-mt-3"
+        data-qa-selector="create_new_ci_button"
+        @click="createEmptyConfigFile"
+      >
         {{ $options.i18n.btnText }}
       </gl-button>
     </div>

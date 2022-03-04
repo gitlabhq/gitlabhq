@@ -913,7 +913,7 @@ RSpec.describe 'Pipelines', :js do
       end
 
       it 'renders empty state' do
-        expect(page).to have_content 'Use a sample CI/CD template'
+        expect(page).to have_content 'Try test template'
       end
     end
   end

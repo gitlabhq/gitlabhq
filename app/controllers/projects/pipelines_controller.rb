@@ -56,6 +56,7 @@ class Projects::PipelinesController < Projects::ApplicationController
       format.html do
         enable_code_quality_walkthrough_experiment
         enable_ci_runner_templates_experiment
+        enable_runners_availability_section_experiment
       end
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
@@ -330,6 +331,18 @@ class Projects::PipelinesController < Projects::ApplicationController
       e.exclude! if helpers.has_gitlab_ci?(project)
 
       e.control {}
+      e.candidate {}
+      e.publish_to_database
+    end
+  end
+
+  def enable_runners_availability_section_experiment
+    return unless current_user
+    return unless can?(current_user, :create_pipeline, project)
+    return if @pipelines_count.to_i > 0
+    return if helpers.has_gitlab_ci?(project)
+
+    experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
       e.candidate {}
       e.publish_to_database
     end

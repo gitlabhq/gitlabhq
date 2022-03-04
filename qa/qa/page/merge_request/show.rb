@@ -116,7 +116,7 @@ module QA
         end
 
         view 'app/views/projects/merge_requests/_mr_box.html.haml' do
-          element :title_content
+          element :title_content, required: true
         end
 
         view 'app/views/projects/merge_requests/_mr_title.html.haml' do
@@ -124,9 +124,9 @@ module QA
         end
 
         view 'app/views/projects/merge_requests/show.html.haml' do
-          element :notes_tab
-          element :commits_tab
-          element :diffs_tab
+          element :notes_tab, required: true
+          element :commits_tab, required: true
+          element :diffs_tab, required: true
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue' do

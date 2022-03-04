@@ -1,28 +1,10 @@
 - page_title _('Pipelines')
 - add_page_specific_style 'page_bundles/pipelines'
 - add_page_specific_style 'page_bundles/ci_status'
-- artifacts_endpoint_placeholder = ':pipeline_artifacts_id'
 
 = render_if_exists "shared/shared_runners_minutes_limit_flash_message"
 
 - list_url = project_pipelines_path(@project, format: :json, code_quality_walkthrough: params[:code_quality_walkthrough])
 - add_page_startup_api_call list_url
 
-#pipelines-list-vue{ data: { endpoint: list_url,
-  project_id: @project.id,
-  params: params.to_json,
-  "artifacts-endpoint" => downloadable_artifacts_project_pipeline_path(@project, artifacts_endpoint_placeholder, format: :json),
-  "artifacts-endpoint-placeholder" => artifacts_endpoint_placeholder,
-  "pipeline-schedule-url" => pipeline_schedules_path(@project),
-  "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),
-  "error-state-svg-path" => image_path('illustrations/pipelines_failed.svg'),
-  "no-pipelines-svg-path" => image_path('illustrations/pipelines_pending.svg'),
-  "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
-  "new-pipeline-path" => can?(current_user, :create_pipeline, @project) && new_project_pipeline_path(@project),
-  "ci-lint-path" => can?(current_user, :create_pipeline, @project) && project_ci_lint_path(@project),
-  "reset-cache-path" => can?(current_user, :admin_pipeline, @project) && reset_cache_project_settings_ci_cd_path(@project),
-  "has-gitlab-ci" => has_gitlab_ci?(@project).to_s,
-  "pipeline-editor-path" => can?(current_user, :create_pipeline, @project) && project_ci_pipeline_editor_path(@project),
-  "suggested-ci-templates" => suggested_ci_templates.to_json,
-  "code-quality-page-path" => @project.present(current_user: current_user).add_code_quality_ci_yml_path,
-  "ci-runner-settings-path" => project_settings_ci_cd_path(@project, ci_runner_templates: true, anchor: 'js-runners-settings') } }
+#pipelines-list-vue{ data: pipelines_list_data(@project, list_url) }

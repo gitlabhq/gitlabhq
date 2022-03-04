@@ -112,6 +112,11 @@ export default {
       required: false,
       default: null,
     },
+    anyRunnersAvailable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -382,6 +387,7 @@ export default {
         :can-set-ci="canCreatePipeline"
         :code-quality-page-path="codeQualityPagePath"
         :ci-runner-settings-path="ciRunnerSettingsPath"
+        :any-runners-available="anyRunnersAvailable"
       />
 
       <gl-empty-state

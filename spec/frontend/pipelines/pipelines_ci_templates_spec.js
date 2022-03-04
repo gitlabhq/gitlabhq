@@ -1,7 +1,19 @@
 import '~/commons';
-import { shallowMount } from '@vue/test-utils';
+import { GlButton, GlSprintf } from '@gitlab/ui';
+import { sprintf } from '~/locale';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
+import { stubExperiments } from 'helpers/experimentation_helper';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
+import ExperimentTracking from '~/experimentation/experiment_tracking';
 import PipelinesCiTemplate from '~/pipelines/components/pipelines_list/pipelines_ci_templates.vue';
+import {
+  RUNNERS_AVAILABILITY_SECTION_EXPERIMENT_NAME,
+  RUNNERS_SETTINGS_LINK_CLICKED_EVENT,
+  RUNNERS_DOCUMENTATION_LINK_CLICKED_EVENT,
+  RUNNERS_SETTINGS_BUTTON_CLICKED_EVENT,
+  I18N,
+} from '~/pipeline_editor/constants';
 
 const pipelineEditorPath = '/-/ci/editor';
 const suggestedCiTemplates = [
@@ -10,16 +22,20 @@ const suggestedCiTemplates = [
   { name: 'C++', logo: '/assets/illustrations/logos/c_plus_plus.svg' },
 ];
 
+jest.mock('~/experimentation/experiment_tracking');
+
 describe('Pipelines CI Templates', () => {
   let wrapper;
   let trackingSpy;
 
-  const createWrapper = () => {
-    return shallowMount(PipelinesCiTemplate, {
+  const createWrapper = (propsData = {}, stubs = {}) => {
+    return shallowMountExtended(PipelinesCiTemplate, {
       provide: {
         pipelineEditorPath,
         suggestedCiTemplates,
       },
+      propsData,
+      stubs,
     });
   };
 
@@ -28,6 +44,9 @@ describe('Pipelines CI Templates', () => {
   const findTemplateLinks = () => wrapper.findAll('[data-testid="template-link"]');
   const findTemplateNames = () => wrapper.findAll('[data-testid="template-name"]');
   const findTemplateLogos = () => wrapper.findAll('[data-testid="template-logo"]');
+  const findSettingsLink = () => wrapper.findByTestId('settings-link');
+  const findDocumentationLink = () => wrapper.findByTestId('documentation-link');
+  const findSettingsButton = () => wrapper.findByTestId('settings-button');
 
   afterEach(() => {
     wrapper.destroy();
@@ -69,7 +88,7 @@ describe('Pipelines CI Templates', () => {
 
     it('has the description of the template', () => {
       expect(findTemplateDescriptions().at(0).text()).toBe(
-        'CI/CD template to test and deploy your Android project.',
+        sprintf(I18N.templates.description, { name: 'Android' }),
       );
     });
 
@@ -101,6 +120,75 @@ describe('Pipelines CI Templates', () => {
       expect(trackingSpy).toHaveBeenCalledTimes(1);
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'template_clicked', {
         label: 'Getting-Started',
+      });
+    });
+  });
+
+  describe('when the runners_availability_section experiment is active', () => {
+    beforeEach(() => {
+      stubExperiments({ runners_availability_section: 'candidate' });
+    });
+
+    describe('when runners are available', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({ anyRunnersAvailable: true }, { GitlabExperiment, GlSprintf });
+      });
+
+      it('renders the templates', () => {
+        expect(findTestTemplateLinks().exists()).toBe(true);
+        expect(findTemplateLinks().exists()).toBe(true);
+      });
+
+      it('show the runners available section', () => {
+        expect(wrapper.text()).toContain(I18N.runners.title);
+      });
+
+      it('tracks an event when clicking the settings link', () => {
+        findSettingsLink().vm.$emit('click');
+
+        expect(ExperimentTracking).toHaveBeenCalledWith(
+          RUNNERS_AVAILABILITY_SECTION_EXPERIMENT_NAME,
+        );
+        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
+          RUNNERS_SETTINGS_LINK_CLICKED_EVENT,
+        );
+      });
+
+      it('tracks an event when clicking the documentation link', () => {
+        findDocumentationLink().vm.$emit('click');
+
+        expect(ExperimentTracking).toHaveBeenCalledWith(
+          RUNNERS_AVAILABILITY_SECTION_EXPERIMENT_NAME,
+        );
+        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
+          RUNNERS_DOCUMENTATION_LINK_CLICKED_EVENT,
+        );
+      });
+    });
+
+    describe('when runners are not available', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({ anyRunnersAvailable: false }, { GitlabExperiment, GlButton });
+      });
+
+      it('does not render the templates', () => {
+        expect(findTestTemplateLinks().exists()).toBe(false);
+        expect(findTemplateLinks().exists()).toBe(false);
+      });
+
+      it('show the no runners available section', () => {
+        expect(wrapper.text()).toContain(I18N.noRunners.title);
+      });
+
+      it('tracks an event when clicking the settings button', () => {
+        findSettingsButton().trigger('click');
+
+        expect(ExperimentTracking).toHaveBeenCalledWith(
+          RUNNERS_AVAILABILITY_SECTION_EXPERIMENT_NAME,
+        );
+        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
+          RUNNERS_SETTINGS_BUTTON_CLICKED_EVENT,
+        );
       });
     });
   });

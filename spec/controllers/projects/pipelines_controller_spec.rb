@@ -299,6 +299,10 @@ RSpec.describe Projects::PipelinesController do
     context 'ci_runner_templates experiment' do
       it_behaves_like 'tracks assignment and records the subject', :ci_runner_templates, :namespace
     end
+
+    context 'runners_availability_section experiment' do
+      it_behaves_like 'tracks assignment and records the subject', :runners_availability_section, :namespace
+    end
   end
 
   describe 'GET #show' do

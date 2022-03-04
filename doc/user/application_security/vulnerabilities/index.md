@@ -30,6 +30,8 @@ On the vulnerability's page, you can:
 - [Resolve a vulnerability](#resolve-a-vulnerability), if a solution is
   available.
 
+In GitLab 14.9 and later, if security training is enabled, the vulnerability page includes a training link relevant to the detected vulnerability.
+
 ## Vulnerability status values
 
 A vulnerability's status can be one of the following:
@@ -159,3 +161,25 @@ To manually apply the patch that GitLab generated for a vulnerability:
 1. Ensure your local project has the same commit checked out that was used to generate the patch.
 1. Run `git apply remediation.patch`.
 1. Verify and commit the changes to your branch.
+
+## Enable security training for vulnerabilities
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
+
+Security training helps your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.
+
+To enable security training for vulnerabilities in your project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the tab bar, select **Vulnerability Management**.
+1. To enable a security training provider, turn on the toggle.
+
+## View security training for a vulnerability
+
+To view the security training for a vulnerability:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Vulnerability report**.
+1. Select the vulnerability for which you want to view security training.
+1. If the security training provider supports training for the vulnerability, select **View training**.
