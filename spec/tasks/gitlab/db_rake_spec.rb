@@ -489,6 +489,20 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
         expect { run_rake_task('db:migrate:main') }.not_to raise_error
       end
     end
+
+    describe 'db:migrate:geo' do
+      it 'does not invoke gitlab:db:create_dynamic_partitions' do
+        skip 'Skipping because geo database is not setup' unless geo_configured?
+
+        expect(Rake::Task['gitlab:db:create_dynamic_partitions']).not_to receive(:invoke)
+
+        expect { run_rake_task('db:migrate:geo') }.not_to raise_error
+      end
+
+      def geo_configured?
+        !!ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: 'geo')
+      end
+    end
   end
 
   describe 'gitlab:db:reset_as_non_superuser' do

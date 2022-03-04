@@ -6,7 +6,7 @@
   milestone_issue_count: @milestone.issues.count,
   milestone_merge_request_count: @milestone.merge_requests.count },
   disabled: true }
+  = gl_loading_icon(inline: true, css_class: "gl-mr-2 js-loading-icon hidden")
   = _('Delete')
-  .gl-spinner.js-loading-icon.hidden
 
 #js-delete-milestone-modal

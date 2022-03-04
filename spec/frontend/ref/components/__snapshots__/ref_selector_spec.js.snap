@@ -10,30 +10,37 @@ Object {
         Object {
           "default": false,
           "name": "add_images_and_changes",
+          "value": undefined,
         },
         Object {
           "default": false,
           "name": "conflict-contains-conflict-markers",
+          "value": undefined,
         },
         Object {
           "default": false,
           "name": "deleted-image-test",
+          "value": undefined,
         },
         Object {
           "default": false,
           "name": "diff-files-image-to-symlink",
+          "value": undefined,
         },
         Object {
           "default": false,
           "name": "diff-files-symlink-to-image",
+          "value": undefined,
         },
         Object {
           "default": false,
           "name": "markdown",
+          "value": undefined,
         },
         Object {
           "default": true,
           "name": "master",
+          "value": undefined,
         },
       ],
       "totalCount": 123,
@@ -54,12 +61,15 @@ Object {
       "list": Array [
         Object {
           "name": "v1.1.1",
+          "value": undefined,
         },
         Object {
           "name": "v1.1.0",
+          "value": undefined,
         },
         Object {
           "name": "v1.0.0",
+          "value": undefined,
         },
       ],
       "totalCount": 456,

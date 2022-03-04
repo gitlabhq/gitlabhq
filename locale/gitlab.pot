@@ -6840,6 +6840,9 @@ msgstr ""
 msgid "ChangeTypeAction|Your changes will be committed to %{branchName} because a merge request is open."
 msgstr ""
 
+msgid "Changed"
+msgstr ""
+
 msgid "Changed assignee(s)."
 msgstr ""
 
@@ -30901,6 +30904,9 @@ msgstr ""
 msgid "Reports|Identifier"
 msgstr ""
 
+msgid "Reports|Metrics report scanning detected no new changes"
+msgstr ""
+
 msgid "Reports|Metrics reports are loading"
 msgstr ""
 
@@ -30911,6 +30917,12 @@ msgid "Reports|Metrics reports did not change"
 msgstr ""
 
 msgid "Reports|Metrics reports failed loading results"
+msgstr ""
+
+msgid "Reports|Metrics reports failed to load results"
+msgstr ""
+
+msgid "Reports|Metrics reports: %{strong_start}%{numberOfChanges}%{strong_end} %{changes}"
 msgstr ""
 
 msgid "Reports|Scanner"
@@ -33287,6 +33299,9 @@ msgid "Select subscription"
 msgstr ""
 
 msgid "Select target branch"
+msgstr ""
+
+msgid "Select target branch or tag"
 msgstr ""
 
 msgid "Select timezone"
@@ -36039,6 +36054,9 @@ msgid "Target Path"
 msgstr ""
 
 msgid "Target branch"
+msgstr ""
+
+msgid "Target branch or tag"
 msgstr ""
 
 msgid "Target-Branch"
@@ -43008,6 +43026,11 @@ msgstr ""
 
 msgid "cannot merge"
 msgstr ""
+
+msgid "change"
+msgid_plural "changes"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ciReport|%{danger_start}%{degradedNum} degraded%{danger_end}, %{same_start}%{sameNum} same%{same_end}, and %{success_start}%{improvedNum} improved%{success_end}"
 msgstr ""

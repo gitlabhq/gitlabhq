@@ -66,6 +66,18 @@ module Ci
       project.actual_limits.limit_for(:ci_daily_pipeline_schedule_triggers)
     end
 
+    def ref_for_display
+      return unless ref.present?
+
+      ref.gsub(%r{^refs/(heads|tags)/}, '')
+    end
+
+    def for_tag?
+      return false unless ref.present?
+
+      ref.start_with? 'refs/tags/'
+    end
+
     private
 
     def worker_cron_expression

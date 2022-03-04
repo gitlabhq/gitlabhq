@@ -135,8 +135,8 @@ RSpec.describe 'Pipeline Schedules', :js do
         end
 
         it 'shows the pipeline schedule with default ref' do
-          page.within('.js-target-branch-dropdown') do
-            expect(first('.dropdown-toggle-text').text).to eq('master')
+          page.within('[data-testid="schedule-target-ref"]') do
+            expect(first('.gl-new-dropdown-button-text').text).to eq('master')
           end
         end
       end
@@ -148,8 +148,8 @@ RSpec.describe 'Pipeline Schedules', :js do
         end
 
         it 'shows the pipeline schedule with default ref' do
-          page.within('.js-target-branch-dropdown') do
-            expect(first('.dropdown-toggle-text').text).to eq('master')
+          page.within('[data-testid="schedule-target-ref"]') do
+            expect(first('.gl-new-dropdown-button-text').text).to eq('master')
           end
         end
       end
@@ -293,8 +293,8 @@ RSpec.describe 'Pipeline Schedules', :js do
   end
 
   def select_target_branch
-    find('.js-target-branch-dropdown').click
-    click_link 'master'
+    find('[data-testid="schedule-target-ref"] .dropdown-toggle').click
+    click_button 'master'
   end
 
   def save_pipeline_schedule

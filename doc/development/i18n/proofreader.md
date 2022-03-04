@@ -98,6 +98,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [Crowdin](https://crowdin.com/profile/paulogomes.rep)
   - André Gama - [GitLab](https://gitlab.com/andregamma), [Crowdin](https://crowdin.com/profile/ToeOficial)
   - Eduardo Addad de Oliveira - [GitLab](https://gitlab.com/eduardoaddad), [Crowdin](https://crowdin.com/profile/eduardoaddad)
+  - Horberlan Brito - [GitLab](https://gitlab.com/horberlan), [Crowdin](https://crowdin.com/profile/horberlan)
 - Romanian
   - Mircea Pop - [GitLab](https://gitlab.com/eeex), [Crowdin](https://crowdin.com/profile/eex)
   - Rareș Pița - [GitLab](https://gitlab.com/dlphin), [Crowdin](https://crowdin.com/profile/dlphin)
@@ -110,6 +111,8 @@ are very appreciative of the work done by translators and proofreaders!
   - Iaroslav Postovalov - [GitLab](https://gitlab.com/CMDR_Tvis), [Crowdin](https://crowdin.com/profile/CMDR_Tvis)
 - Serbian (Latin and Cyrillic)
   - Proofreaders needed.
+- Sinhalese/Sinhala සිංහල
+  - හෙළබස (HelaBasa) - [GitLab](https://gitlab.com/helabasa), [Crowdin](https://crowdin.com/profile/helabasa)
 - Slovak
   - Proofreaders needed.
 - Spanish

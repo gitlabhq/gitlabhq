@@ -132,3 +132,25 @@ migrated:
   - image URL
 - Boards
 - Board Lists
+
+## Troubleshooting Group Migration
+
+In a [rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
+you can find the failure or error messages for the group import attempt using:
+
+```shell
+# Get relevant import records
+import = BulkImports::Entity.where(namespace_id: Group.id).bulk_import
+
+# Alternative lookup by user
+import = BulkImport.where(user_id: User.find(...)).last
+
+# Get list of import entities. Each entity represents either a group or a project
+entities = import.entities
+
+# Get a list of entity failures
+entities.map(&:failures).flatten
+
+# Alternative failure lookup by status
+entities.where(status: [-1]).pluck(:destination_name, :destination_namespace, :status)
+```

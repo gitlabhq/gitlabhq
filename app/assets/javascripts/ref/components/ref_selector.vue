@@ -58,6 +58,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    useSymbolicRefNames: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
 
     /** The validation state of this component. */
     state: {
@@ -121,8 +126,15 @@ export default {
         query: this.lastQuery,
       };
     },
+    selectedRefForDisplay() {
+      if (this.useSymbolicRefNames && this.selectedRef) {
+        return this.selectedRef.replace(/^refs\/(tags|heads)\//, '');
+      }
+
+      return this.selectedRef;
+    },
     buttonText() {
-      return this.selectedRef || this.i18n.noRefSelected;
+      return this.selectedRefForDisplay || this.i18n.noRefSelected;
     },
   },
   watch: {
@@ -164,9 +176,20 @@ export default {
       },
       { immediate: true },
     );
+
+    this.$watch(
+      'useSymbolicRefNames',
+      () => this.setUseSymbolicRefNames(this.useSymbolicRefNames),
+      { immediate: true },
+    );
   },
   methods: {
-    ...mapActions(['setEnabledRefTypes', 'setProjectId', 'setSelectedRef']),
+    ...mapActions([
+      'setEnabledRefTypes',
+      'setUseSymbolicRefNames',
+      'setProjectId',
+      'setSelectedRef',
+    ]),
     ...mapActions({ storeSearch: 'search' }),
     focusSearchBox() {
       this.$refs.searchBox.$el.querySelector('input').focus();

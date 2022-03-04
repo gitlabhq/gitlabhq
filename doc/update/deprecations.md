@@ -36,6 +36,20 @@ For deprecation reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
 
+## 14.9
+
+### GitLab self-monitoring
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+GitLab self-monitoring gives administrators of self-hosted GitLab instances the tools to monitor the health of their instances. This feature is deprecated in GitLab 14.9, and is scheduled for removal in 15.0.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ## 14.8
 
 ### Changes to the `CI_JOB_JWT`

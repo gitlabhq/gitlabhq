@@ -163,6 +163,11 @@ namespace :gitlab do
     end
 
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      # We'll temporarily skip this enhancement for geo, since in some situations we
+      # wish to setup the geo database before the other databases have been setup,
+      # and partition management attempts to connect to the main database.
+      next if name == 'geo'
+
       Rake::Task["db:migrate:#{name}"].enhance do
         Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
       end
@@ -181,6 +186,11 @@ namespace :gitlab do
     end
 
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      # We'll temporarily skip this enhancement for geo, since in some situations we
+      # wish to setup the geo database before the other databases have been setup,
+      # and partition management attempts to connect to the main database.
+      next if name == 'geo'
+
       Rake::Task["db:schema:load:#{name}"].enhance do
         Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
       end
