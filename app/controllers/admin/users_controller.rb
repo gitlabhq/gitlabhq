@@ -2,6 +2,7 @@
 
 class Admin::UsersController < Admin::ApplicationController
   include RoutableActions
+  include SortingHelper
 
   before_action :user, except: [:index, :new, :create]
   before_action :check_impersonation_availability, only: :impersonate
@@ -18,7 +19,8 @@ class Admin::UsersController < Admin::ApplicationController
     @users = User.filter_items(params[:filter]).order_name_asc
     @users = @users.search(params[:search_query], with_private_emails: true) if params[:search_query].present?
     @users = users_with_included_associations(@users)
-    @users = @users.sort_by_attribute(@sort = params[:sort])
+    @sort = params[:sort].presence || sort_value_name
+    @users = @users.sort_by_attribute(@sort)
     @users = @users.page(params[:page])
     @users = @users.without_count if paginate_without_count?
   end

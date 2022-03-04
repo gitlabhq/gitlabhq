@@ -10,6 +10,18 @@ RSpec.describe SortingHelper do
     allow(self).to receive(:request).and_return(double(path: 'http://test.com', query_parameters: { label_name: option }))
   end
 
+  describe '#admin_users_sort_options' do
+    it 'returns correct link attributes in array' do
+      options = admin_users_sort_options(filter: 'filter', search_query: 'search')
+
+      expect(options[0][:href]).to include('filter')
+      expect(options[0][:href]).to include('search')
+      options.each do |option|
+        expect(option[:href]).to include(option[:value])
+      end
+    end
+  end
+
   describe '#issuable_sort_option_title' do
     it 'returns correct title for issuable_sort_option_overrides key' do
       expect(issuable_sort_option_title('created_asc')).to eq('Created date')

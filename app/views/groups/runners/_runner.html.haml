@@ -33,7 +33,7 @@
     .table-mobile-header{ role: 'rowheader' }= _('Projects')
     .table-mobile-content
       - if runner.group_type?
-        = _('n/a')
+        \-
       - else
         = runner.runner_projects.count(:all)
 

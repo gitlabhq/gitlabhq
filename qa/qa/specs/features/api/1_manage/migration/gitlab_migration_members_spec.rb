@@ -35,7 +35,10 @@ module QA
           source_group.add_member(member, Resource::Members::AccessLevel::DEVELOPER)
         end
 
-        it 'member retains indirect membership in imported project' do
+        it(
+          'member retains indirect membership in imported project',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354416'
+        ) do
           expect_import_finished
 
           aggregate_failures do
@@ -52,7 +55,10 @@ module QA
           source_project.add_member(member, Resource::Members::AccessLevel::DEVELOPER)
         end
 
-        it 'member retains direct membership in imported project' do
+        it(
+          'member retains direct membership in imported project',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354417'
+        ) do
           expect_import_finished
 
           aggregate_failures do

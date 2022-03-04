@@ -53,6 +53,16 @@ RSpec.describe Gitlab::Utils do
       expect(check_path_traversal!('dir/.foo.rb')).to eq('dir/.foo.rb')
     end
 
+    it 'logs potential path traversal attempts' do
+      expect(Gitlab::AppLogger).to receive(:warn).with(message: "Potential path traversal attempt detected", path: "..")
+      expect { check_path_traversal!('..') }.to raise_error(/Invalid path/)
+    end
+
+    it 'logs does nothing for a safe string' do
+      expect(Gitlab::AppLogger).not_to receive(:warn).with(message: "Potential path traversal attempt detected", path: "dir/.foo.rb")
+      expect(check_path_traversal!('dir/.foo.rb')).to eq('dir/.foo.rb')
+    end
+
     it 'does nothing for a non-string' do
       expect(check_path_traversal!(nil)).to be_nil
     end

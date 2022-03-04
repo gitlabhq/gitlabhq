@@ -132,7 +132,7 @@ RSpec.describe 'Admin::Users' do
       end
 
       it 'searches with respect of sorting' do
-        visit admin_users_path(sort: 'Name')
+        visit admin_users_path(sort: 'name_asc')
 
         fill_in :search_query, with: 'Foo'
         click_button('Search users')
@@ -604,8 +604,8 @@ RSpec.describe 'Admin::Users' do
 
   def sort_by(option)
     page.within('.filtered-search-block') do
-      find('.dropdown-menu-toggle').click
-      click_link option
+      find('.gl-new-dropdown').click
+      find('.gl-new-dropdown-item', text: option).click
     end
   end
 end
