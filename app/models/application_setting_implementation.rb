@@ -220,6 +220,7 @@ module ApplicationSettingImplementation
         container_registry_delete_tags_service_timeout: 250,
         container_registry_expiration_policies_worker_capacity: 4,
         container_registry_cleanup_tags_service_max_list_size: 200,
+        container_registry_expiration_policies_caching: true,
         container_registry_import_max_tags_count: 100,
         container_registry_import_max_retries: 3,
         container_registry_import_start_max_retries: 50,

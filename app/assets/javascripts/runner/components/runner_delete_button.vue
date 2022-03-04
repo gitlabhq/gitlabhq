@@ -2,13 +2,11 @@
 import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import runnerDeleteMutation from '~/runner/graphql/shared/runner_delete.mutation.graphql';
 import { createAlert } from '~/flash';
-import { s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { I18N_DELETE_RUNNER } from '../constants';
+import { I18N_DELETE_RUNNER, I18N_DELETED_TOAST } from '../constants';
 import RunnerDeleteModal from './runner_delete_modal.vue';
-
-const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
 export default {
   name: 'RunnerDeleteButton',
@@ -34,6 +32,7 @@ export default {
       default: false,
     },
   },
+  emits: ['deleted'],
   data() {
     return {
       deleting: false,
@@ -102,12 +101,13 @@ export default {
               id: this.runner.id,
             },
           },
-          refetchQueries: ['getRunners', 'getGroupRunners'],
         });
         if (errors && errors.length) {
           throw new Error(errors.join(' '));
         } else {
-          this.$root.$toast?.show(sprintf(I18N_DELETED_TOAST, { name: this.runnerName }));
+          this.$emit('deleted', {
+            message: sprintf(I18N_DELETED_TOAST, { name: this.runnerName }),
+          });
         }
       } catch (e) {
         this.deleting = false;

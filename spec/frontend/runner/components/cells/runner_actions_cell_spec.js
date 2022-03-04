@@ -92,6 +92,18 @@ describe('RunnerActionsCell', () => {
       expect(findDeleteBtn().props('compact')).toBe(true);
     });
 
+    it('Emits delete events', () => {
+      const value = { name: 'Runner' };
+
+      createComponent();
+
+      expect(wrapper.emitted('deleted')).toBe(undefined);
+
+      findDeleteBtn().vm.$emit('deleted', value);
+
+      expect(wrapper.emitted('deleted')).toEqual([[value]]);
+    });
+
     it('Does not render the runner delete button when user cannot delete', () => {
       createComponent({
         runner: {

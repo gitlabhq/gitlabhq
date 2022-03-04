@@ -105,10 +105,7 @@ module Ci
     end
 
     def refspec_for_persistent_ref
-      # Use persistent_ref.sha because it sometimes causes 'git fetch' to do
-      # less work. See
-      # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/746.
-      "+#{pipeline.persistent_ref.sha}:#{pipeline.persistent_ref.path}"
+      "+#{pipeline.persistent_ref.path}:#{pipeline.persistent_ref.path}"
     end
 
     def persistent_ref_exist?

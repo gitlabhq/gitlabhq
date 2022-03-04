@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlLink } from '@gitlab/ui';
+import { GlToast, GlLink } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -18,8 +18,8 @@ import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
-import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
+import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
 import {
@@ -52,6 +52,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 Vue.use(VueApollo);
+Vue.use(GlToast);
 
 describe('AdminRunnersApp', () => {
   let wrapper;
@@ -59,6 +60,7 @@ describe('AdminRunnersApp', () => {
   let mockRunnersCountQuery;
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
+  const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
@@ -95,6 +97,7 @@ describe('AdminRunnersApp', () => {
 
   afterEach(() => {
     mockRunnersQuery.mockReset();
+    mockRunnersCountQuery.mockReset();
     wrapper.destroy();
   });
 
@@ -226,6 +229,41 @@ describe('AdminRunnersApp', () => {
         recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
       }),
     ]);
+  });
+
+  describe('Single runner row', () => {
+    let showToast;
+
+    const mockRunner = runnersData.data.runners.nodes[0];
+    const { id: graphqlId, shortSha } = mockRunner;
+    const id = getIdFromGraphQLId(graphqlId);
+
+    beforeEach(async () => {
+      mockRunnersQuery.mockClear();
+
+      createComponent({ mountFn: mountExtended });
+      showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
+
+      await waitForPromises();
+    });
+
+    it('Links to the runner page', async () => {
+      const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
+
+      expect(runnerLink.text()).toBe(`#${id} (${shortSha})`);
+      expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${id}`);
+    });
+
+    it('When runner is deleted, data is refetched and a toast message is shown', async () => {
+      expect(mockRunnersQuery).toHaveBeenCalledTimes(1);
+
+      findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
+
+      expect(mockRunnersQuery).toHaveBeenCalledTimes(2);
+
+      expect(showToast).toHaveBeenCalledTimes(1);
+      expect(showToast).toHaveBeenCalledWith('Runner deleted');
+    });
   });
 
   describe('when a filter is preselected', () => {

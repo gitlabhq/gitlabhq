@@ -53,6 +53,10 @@ Example response:
   "gravatar_enabled" : true,
   "sign_in_text" : null,
   "container_expiration_policies_enable_historic_entries": true,
+  "container_registry_cleanup_tags_service_max_list_size": 200,
+  "container_registry_delete_tags_service_timeout": 250,
+  "container_registry_expiration_policies_caching": true,
+  "container_registry_expiration_policies_worker_capacity": 4,
   "container_registry_token_expire_delay": 5,
   "repository_storages_weighted": {"default": 100},
   "plantuml_enabled": false,
@@ -158,6 +162,11 @@ Example response:
   "external_authorization_service_timeout": 0.5,
   "user_oauth_applications": true,
   "after_sign_out_path": "",
+  "container_expiration_policies_enable_historic_entries": true,
+  "container_registry_cleanup_tags_service_max_list_size": 200,
+  "container_registry_delete_tags_service_timeout": 250,
+  "container_registry_expiration_policies_caching": true,
+  "container_registry_expiration_policies_worker_capacity": 4,
   "container_registry_token_expire_delay": 5,
   "repository_storages": ["default"],
   "plantuml_enabled": false,
@@ -248,6 +257,11 @@ listed in the descriptions of the relevant settings.
 | `automatic_purchased_storage_allocation` | boolean          | no                                   | Enabling this permits automatic allocation of purchased storage in a namespace. |
 | `check_namespace_plan` **(PREMIUM)**     | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
 | `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
+| `container_expiration_policies_enable_historic_entries`  | boolean | no                            | Enable [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#enable-the-cleanup-policy) for all projects. |
+| `container_registry_cleanup_tags_service_max_list_size`  | integer | no                            | The maximum number of tags that can be deleted in a single execution of [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
+| `container_registry_delete_tags_service_timeout`  | integer | no                                   | The maximum time, in seconds, that the cleanup process can take to delete a batch of tags for [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
+| `container_registry_expiration_policies_caching`  | boolean | no                                   | Caching during the execution of [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
+| `container_registry_expiration_policies_worker_capacity`  | integer          | no                  | Number of workers for [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
 | `deactivate_dormant_users`               | boolean          | no                                   | Enable [automatic deactivation of dormant users](../user/admin_area/moderate_users.md#automatically-deactivate-dormant-users). |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |

@@ -68,7 +68,10 @@ export default {
       data-toggle="dropdown"
     >
       <span class="dropdown-toggle-text">{{ __('Choose a template') }}</span>
-      <gl-icon name="chevron-down" class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500" />
+      <gl-icon
+        name="chevron-down"
+        class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500 dropdown-menu-toggle-icon"
+      />
     </button>
     <div class="dropdown-menu dropdown-select">
       <div class="dropdown-title gl-display-flex gl-justify-content-center">

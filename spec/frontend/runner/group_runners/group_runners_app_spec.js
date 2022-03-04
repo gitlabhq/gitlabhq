@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlButton, GlLink } from '@gitlab/ui';
+import { GlButton, GlLink, GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -17,6 +17,7 @@ import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
+import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
@@ -40,6 +41,7 @@ import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered
 import { groupRunnersData, groupRunnersDataPaginated, groupRunnersCountData } from '../mock_data';
 
 Vue.use(VueApollo);
+Vue.use(GlToast);
 
 const mockGroupFullPath = 'group1';
 const mockRegistrationToken = 'AABBCC';
@@ -59,6 +61,7 @@ describe('GroupRunnersApp', () => {
   let mockGroupRunnersCountQuery;
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
+  const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
@@ -187,12 +190,17 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('Single runner row', () => {
+    let showToast;
+
     const { webUrl, editUrl, node } = mockGroupRunnersEdges[0];
     const { id: graphqlId, shortSha } = node;
     const id = getIdFromGraphQLId(graphqlId);
 
     beforeEach(async () => {
+      mockGroupRunnersQuery.mockClear();
+
       createComponent({ mountFn: mountExtended });
+      showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
 
       await waitForPromises();
     });
@@ -211,6 +219,17 @@ describe('GroupRunnersApp', () => {
         'aria-label': I18N_EDIT,
         href: editUrl,
       });
+    });
+
+    it('When runner is deleted, data is refetched and a toast is shown', async () => {
+      expect(mockGroupRunnersQuery).toHaveBeenCalledTimes(1);
+
+      findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
+
+      expect(mockGroupRunnersQuery).toHaveBeenCalledTimes(2);
+
+      expect(showToast).toHaveBeenCalledTimes(1);
+      expect(showToast).toHaveBeenCalledWith('Runner deleted');
     });
   });
 

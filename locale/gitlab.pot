@@ -13562,6 +13562,9 @@ msgstr ""
 msgid "Enable container expiration and retention policies for projects created earlier than GitLab 12.7."
 msgstr ""
 
+msgid "Enable container expiration caching."
+msgstr ""
+
 msgid "Enable delayed project deletion by default for newly-created groups."
 msgstr ""
 
@@ -41390,6 +41393,9 @@ msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
 msgid "When enabled, SSH keys with no expiry date or an invalid expiration date are no longer accepted. Leave blank for no limit."
+msgstr ""
+
+msgid "When enabled, cleanup polices execute faster but put more load on Redis."
 msgstr ""
 
 msgid "When enabled, existing personal access tokens may be revoked. Leave blank for no limit."

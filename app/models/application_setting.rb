@@ -362,6 +362,9 @@ class ApplicationSetting < ApplicationRecord
             :container_registry_expiration_policies_worker_capacity,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :container_registry_expiration_policies_caching,
+            inclusion: { in: [true, false], message: _('must be a boolean value') }
+
   validates :container_registry_import_max_tags_count,
             :container_registry_import_max_retries,
             :container_registry_import_start_max_retries,

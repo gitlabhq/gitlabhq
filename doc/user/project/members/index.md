@@ -99,6 +99,7 @@ Each user's access is based on:
 Prerequisite:
 
 - You must have the Maintainer or Owner role.
+- Sharing the project with other groups must not be [prevented](../../group/index.md#prevent-a-project-from-being-shared-with-groups).
 
 To add groups to a project:
 

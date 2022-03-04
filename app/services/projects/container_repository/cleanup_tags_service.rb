@@ -145,8 +145,10 @@ module Projects
       end
 
       def caching_enabled?
-        container_expiration_policy &&
-          older_than.present?
+        result = ::Gitlab::CurrentSettings.current_application_settings.container_registry_expiration_policies_caching &&
+                 container_expiration_policy &&
+                 older_than.present?
+        !!result
       end
 
       def throttling_enabled?

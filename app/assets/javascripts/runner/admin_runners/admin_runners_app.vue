@@ -224,6 +224,10 @@ export default {
       }
       return '';
     },
+    onDeleted({ message }) {
+      this.$root.$toast?.show(message);
+      this.$apollo.queries.runners.refetch();
+    },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
     },
@@ -282,7 +286,11 @@ export default {
           </gl-link>
         </template>
         <template #runner-actions-cell="{ runner }">
-          <runner-actions-cell :runner="runner" :edit-url="runner.editAdminUrl" />
+          <runner-actions-cell
+            :runner="runner"
+            :edit-url="runner.editAdminUrl"
+            @deleted="onDeleted"
+          />
         </template>
       </runner-list>
       <runner-pagination

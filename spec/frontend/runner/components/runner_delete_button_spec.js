@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlButton, GlToast } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -19,7 +19,6 @@ const mockRunner = runnersData.data.runners.nodes[0];
 const mockRunnerId = getIdFromGraphQLId(mockRunner.id);
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -27,7 +26,6 @@ jest.mock('~/runner/sentry_utils');
 describe('RunnerDeleteButton', () => {
   let wrapper;
   let runnerDeleteHandler;
-  let showToast;
 
   const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
   const getModal = () => getBinding(wrapper.element, 'gl-modal').value;
@@ -52,8 +50,6 @@ describe('RunnerDeleteButton', () => {
         GlModal: createMockDirective(),
       },
     });
-
-    showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show').mockImplementation(() => {});
   };
 
   const clickOkAndWait = async () => {
@@ -128,7 +124,7 @@ describe('RunnerDeleteButton', () => {
       await clickOkAndWait();
     });
 
-    it('The mutation to delete is called', async () => {
+    it('The mutation to delete is called', () => {
       expect(runnerDeleteHandler).toHaveBeenCalledTimes(1);
       expect(runnerDeleteHandler).toHaveBeenCalledWith({
         input: {
@@ -137,8 +133,12 @@ describe('RunnerDeleteButton', () => {
       });
     });
 
-    it('The user is notified', async () => {
-      expect(showToast).toHaveBeenCalledTimes(1);
+    it('The user can be notified with an event', () => {
+      const deleted = wrapper.emitted('deleted');
+
+      expect(deleted).toHaveLength(1);
+      expect(deleted[0][0].message).toMatch(`#${mockRunnerId}`);
+      expect(deleted[0][0].message).toMatch(`${mockRunner.shortSha}`);
     });
   });
 

@@ -192,6 +192,9 @@ To prevent server resource starvation, the following application settings are av
   deleted in a single execution. Additional tags must be deleted in another execution. We recommend
   starting with a low number and increasing it after monitoring that container images are properly
   deleted. The default value is `200`.
+- `container_registry_expiration_policies_caching`: enable or disable tag creation timestamp caching
+  during execution of policies. Cached timestamps are stored in [Redis](../../../development/architecture.md#redis).
+  Enabled by default.
 
 For self-managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 

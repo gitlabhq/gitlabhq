@@ -16,13 +16,13 @@ import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
 
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import {
-  I18N_FETCH_ERROR,
   GROUP_FILTERED_SEARCH_NAMESPACE,
   GROUP_TYPE,
   PROJECT_TYPE,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_STALE,
+  I18N_FETCH_ERROR,
 } from '../constants';
 import groupRunnersQuery from '../graphql/list/group_runners.query.graphql';
 import groupRunnersCountQuery from '../graphql/list/group_runners_count.query.graphql';
@@ -241,6 +241,10 @@ export default {
     editUrl(runner) {
       return this.runners.urlsById[runner.id]?.edit;
     },
+    onDeleted({ message }) {
+      this.$root.$toast?.show(message);
+      this.$apollo.queries.runners.refetch();
+    },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
     },
@@ -298,7 +302,7 @@ export default {
           </gl-link>
         </template>
         <template #runner-actions-cell="{ runner }">
-          <runner-actions-cell :runner="runner" :edit-url="editUrl(runner)" />
+          <runner-actions-cell :runner="runner" :edit-url="editUrl(runner)" @deleted="onDeleted" />
         </template>
       </runner-list>
       <runner-pagination
