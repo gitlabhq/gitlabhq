@@ -1305,6 +1305,7 @@ To configure the Praefect nodes, on each one:
    alertmanager['enable'] = false
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
    nginx['enable'] = false
 
    # Praefect Configuration
@@ -1445,6 +1446,7 @@ On each node:
    alertmanager['enable'] = false
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
    nginx['enable'] = false
 
    # Prevent database migrations from running on upgrade automatically
@@ -1622,6 +1624,7 @@ To configure the Sidekiq nodes, one each one:
    alertmanager['enable'] = false
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
    nginx['enable'] = false
 
    # External URL

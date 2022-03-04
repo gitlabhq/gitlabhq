@@ -9,6 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Depending on how you installed GitLab, there are different methods to restart
 its services.
 
+NOTE:
+A short downtime is expected for all methods.
+
 ## Omnibus installations
 
 If you have used the [Omnibus packages](https://about.gitlab.com/install/) to install GitLab, then
@@ -90,8 +93,8 @@ application that powers Omnibus GitLab, makes sure that all things like director
 permissions, and services are in place and in the same shape that they were
 initially shipped.
 
-It also restarts GitLab components where needed, if any of their
-configuration files have changed.
+It also [restarts GitLab components](#how-to-restart-gitlab)
+where needed, if any of their configuration files have changed.
 
 If you manually edit any files in `/var/opt/gitlab` that are managed by Chef,
 running reconfigure reverts the changes AND restarts the services that

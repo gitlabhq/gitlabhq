@@ -12,6 +12,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 developed by GitLab originally to combat rising amount of spam in GitLab.com,
 and later made public to be used in self-managed GitLab instances.
 
+Spamcheck [contains obfuscated, non-free code](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6259#note_726605397), which is only available in GitLab Enterprise Edition. You can [migrate from GitLab Community Edition](../../../update/package/convert_to_ee.md), and use the Free tier. 
+
 ## Enable Spamcheck
 
 Spamcheck is only available for package-based installations:
@@ -47,7 +49,7 @@ Spamcheck is only available for package-based installations:
 1. Select **Save changes**.
 
 NOTE:
-In single-node instances, Spamcehck runs over `localhost`, and hence is running
+In single-node instances, Spamcheck runs over `localhost`, and hence is running
 in an unauthenticated mode. If on multi-node instances where GitLab runs on one
 server and Spamcheck runs on another server listening over a public endpoint, it
 is recommended to enforce some sort of authentication using a reverse proxy in

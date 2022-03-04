@@ -334,6 +334,28 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 14.8.0
+
+- The agent server for Kubernetes [is enabled by default](https://about.gitlab.com/releases/2022/02/22/gitlab-14-8-released/#the-agent-server-for-kubernetes-is-enabled-by-default)
+  on Omnibus installations. If you run GitLab at scale,
+  such as [the reference architectures](../administration/reference_architectures/index.md),
+  you must disable the agent on the following server types, **if the agent is not required**.
+
+  - Praefect
+  - Gitaly
+  - Sidekiq
+  - Redis (if configured using `redis['enable'] = true` and not via `roles`)
+  - Container registry
+  - Any other server types based on `roles(['application_role'])`, such as the GitLab Rails nodes
+
+  [The reference architectures](../administration/reference_architectures/index.md) have been updated
+  with this configuration change and a specific role for standalone Redis servers.
+
+  Steps to disable the agent:
+
+  1. Add `gitlab_kas['enable'] = false` to `gitlab.rb`.
+  1. If the server is already upgraded to 14.8, run `gitlab-ctl reconfigure`.
+
 ### 14.7.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
