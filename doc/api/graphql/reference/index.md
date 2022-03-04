@@ -11104,7 +11104,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` | [`Boolean!`](#boolean) | Status of the temporary storage increase. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
-| <a id="groupmergerequestviolations"></a>`mergeRequestViolations` | [`ComplianceViolationConnection`](#complianceviolationconnection) | Compliance violations reported on merge requests merged within the group. Available only when feature flag `compliance_violations_graphql_type` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 | <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="grouporganizations"></a>`organizations` | [`CustomerRelationsOrganizationConnection`](#customerrelationsorganizationconnection) | Find organizations of this group. (see [Connections](#connections)) |
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -11448,6 +11447,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouplabelsincludedescendantgroups"></a>`includeDescendantGroups` | [`Boolean`](#boolean) | Include labels from descendant groups. |
 | <a id="grouplabelsonlygrouplabels"></a>`onlyGroupLabels` | [`Boolean`](#boolean) | Include only group level labels. |
 | <a id="grouplabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
+
+##### `Group.mergeRequestViolations`
+
+Compliance violations reported on merge requests merged within the group. Available only when feature flag `compliance_violations_graphql_type` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+Returns [`ComplianceViolationConnection`](#complianceviolationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupmergerequestviolationsfilters"></a>`filters` | [`ComplianceViolationInput`](#complianceviolationinput) | Filters applied when retrieving compliance violations. |
+| <a id="groupmergerequestviolationssort"></a>`sort` | [`ComplianceViolationSort`](#complianceviolationsort) | List compliance violations by sort order. |
 
 ##### `Group.mergeRequests`
 
@@ -17156,6 +17172,21 @@ Severity of the compliance violation.
 | <a id="complianceviolationseveritylow"></a>`LOW` | Low severity. |
 | <a id="complianceviolationseveritymedium"></a>`MEDIUM` | Medium severity. |
 
+### `ComplianceViolationSort`
+
+Compliance violation sort values.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="complianceviolationsortmerged_at_asc"></a>`MERGED_AT_ASC` | Date merged in ascending order, further sorted by ID in ascending order. |
+| <a id="complianceviolationsortmerged_at_desc"></a>`MERGED_AT_DESC` | Date merged in descending order, further sorted by ID in descending order. |
+| <a id="complianceviolationsortmerge_request_title_asc"></a>`MERGE_REQUEST_TITLE_ASC` | Merge request title in ascending order, further sorted by ID in ascending order. |
+| <a id="complianceviolationsortmerge_request_title_desc"></a>`MERGE_REQUEST_TITLE_DESC` | Merge request title in descending order, further sorted by ID in descending order. |
+| <a id="complianceviolationsortseverity_level_asc"></a>`SEVERITY_LEVEL_ASC` | Severity in ascending order, further sorted by ID in ascending order. |
+| <a id="complianceviolationsortseverity_level_desc"></a>`SEVERITY_LEVEL_DESC` | Severity in descending order, further sorted by ID in descending order. |
+| <a id="complianceviolationsortviolation_reason_asc"></a>`VIOLATION_REASON_ASC` | Violation reason in ascending order, further sorted by ID in ascending order. |
+| <a id="complianceviolationsortviolation_reason_desc"></a>`VIOLATION_REASON_DESC` | Violation reason in descending order, further sorted by ID in descending order. |
+
 ### `ConanMetadatumFileTypeEnum`
 
 Conan file types.
@@ -19743,6 +19774,16 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="complianceframeworkinputdescription"></a>`description` | [`String`](#string) | New description for the compliance framework. |
 | <a id="complianceframeworkinputname"></a>`name` | [`String`](#string) | New name for the compliance framework. |
 | <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` | [`String`](#string) | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE)**. |
+
+### `ComplianceViolationInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceviolationinputmergedafter"></a>`mergedAfter` | [`Date`](#date) | Merged date of merge requests merged after a compliance violation was created. |
+| <a id="complianceviolationinputmergedbefore"></a>`mergedBefore` | [`Date`](#date) | Merged date of merge requests merged before a compliance violation was created. |
+| <a id="complianceviolationinputprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter compliance violations by project. |
 
 ### `DastProfileCadenceInput`
 

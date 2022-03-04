@@ -649,20 +649,6 @@ RSpec.describe API::Users do
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(rate_limit_user_by_id_endpoint: false)
-        end
-
-        it 'does not throttle the request' do
-          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
-
-          get api("/users/#{user.id}", user)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
     end
 
     context 'when job title is present' do

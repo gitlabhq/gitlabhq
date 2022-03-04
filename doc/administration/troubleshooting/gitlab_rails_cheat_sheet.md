@@ -771,6 +771,26 @@ group.require_two_factor_authentication=false
 group.save
 ```
 
+### Check and toggle a feature for all projects in a group
+
+```ruby
+projects = Group.find_by_name('_group_name').projects
+projects.each do |p|
+  state = p.<feature-name>?
+
+  if state
+    puts "#{p.name} has <feature-name> already enabled. Skipping..."
+  else
+    puts "#{p.name} didn't have <feature-name> enabled. Enabling..."
+    p.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
+  end
+end
+```
+
+To find features that can be toggled, run `pp p.project_feature`.
+Available permission levels are listed in
+[concerns/featurable.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/featurable.rb).
+
 ## Authentication
 
 ### Re-enable standard web sign-in form

@@ -48,54 +48,48 @@ import Video from './nodes/video';
 // from GFM should have a node or mark here.
 // The GFM-to-HTML-to-GFM cycle is tested in spec/features/markdown/copy_as_gfm_spec.rb.
 
-export default [
-  new Doc(),
-  new Paragraph(),
-  new Text(),
+export default {
+  nodes: [
+    Doc(),
+    Paragraph(),
+    Text(),
 
-  new Blockquote(),
-  new CodeBlock(),
-  new HardBreak(),
-  new Heading({ maxLevel: 6 }),
-  new HorizontalRule(),
-  new Image(),
+    Blockquote(),
+    CodeBlock(),
+    HardBreak(),
+    Heading(),
+    HorizontalRule(),
+    Image(),
 
-  new Table(),
-  new TableHead(),
-  new TableBody(),
-  new TableHeaderRow(),
-  new TableRow(),
-  new TableCell(),
+    Table(),
+    TableHead(),
+    TableBody(),
+    TableHeaderRow(),
+    TableRow(),
+    TableCell(),
 
-  new Emoji(),
-  new Reference(),
+    Emoji(),
+    Reference(),
 
-  new TableOfContents(),
-  new Video(),
-  new Audio(),
+    TableOfContents(),
+    Video(),
+    Audio(),
 
-  new BulletList(),
-  new OrderedList(),
-  new ListItem(),
+    BulletList(),
+    OrderedList(),
+    ListItem(),
 
-  new DescriptionList(),
-  new DescriptionTerm(),
-  new DescriptionDetails(),
+    DescriptionList(),
+    DescriptionTerm(),
+    DescriptionDetails(),
 
-  new TaskList(),
-  new OrderedTaskList(),
-  new TaskListItem(),
+    TaskList(),
+    OrderedTaskList(),
+    TaskListItem(),
 
-  new Summary(),
-  new Details(),
+    Summary(),
+    Details(),
+  ],
 
-  new Bold(),
-  new Italic(),
-  new Strike(),
-  new InlineDiff(),
-
-  new Link(),
-  new Code(),
-  new MathMark(),
-  new InlineHTML(),
-];
+  marks: [Bold(), Italic(), Strike(), InlineDiff(), Link(), Code(), MathMark(), InlineHTML()],
+};

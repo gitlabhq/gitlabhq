@@ -50,7 +50,7 @@
           // Fallback while content is loading
           .title.hide-collapsed
             = _('Time tracking')
-            = loading_icon(css_class: 'gl-vertical-align-text-bottom')
+            = gl_loading_icon(inline: true)
       - if issuable_sidebar.has_key?(:due_date)
         #js-due-date-entry-point
 
@@ -109,8 +109,8 @@
               = dropdown_loading
               = dropdown_footer add_content_class: true do
                 %button.gl-button.btn.btn-confirm.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ type: 'button', disabled: true }
+                  = gl_loading_icon(inline: true, css_class: 'sidebar-move-issue-confirmation-loading-icon gl-mr-2')
                   = _('Move')
-                  = loading_icon(css_class: 'gl-vertical-align-text-bottom sidebar-move-issue-confirmation-loading-icon')
 
     -# haml-lint:disable InlineJavaScript
     %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar).to_json.html_safe

@@ -23,5 +23,4 @@
               = _('There are no matching files')
             %p.text-secondary
               = _('Try using a different search term to find the file you are looking for.')
-      .text-center.gl-mt-3.loading
-        = loading_icon(size: 'md')
+      = gl_loading_icon(size: 'md', css_class: 'gl-mt-3 loading')

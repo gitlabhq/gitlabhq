@@ -1,10 +1,14 @@
-/* eslint-disable class-methods-use-this */
-
-import { HardBreak as BaseHardBreak } from 'tiptap-extensions';
-
 // Transforms generated HTML back to GFM for Banzai::Filter::MarkdownFilter
-export default class HardBreak extends BaseHardBreak {
+export default () => ({
+  name: 'hard_break',
+  schema: {
+    inline: true,
+    group: 'inline',
+    selectable: false,
+    parseDOM: [{ tag: 'br' }],
+    toDOM: () => ['br'],
+  },
   toMarkdown(state) {
     if (!state.atBlank()) state.write('  \n');
-  }
-}
+  },
+});

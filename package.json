@@ -175,8 +175,6 @@
     "three-orbit-controls": "^82.1.0",
     "three-stl-loader": "^1.0.4",
     "timeago.js": "^4.0.2",
-    "tiptap": "^1.32.2",
-    "tiptap-extensions": "^1.35.2",
     "url-loader": "^4.1.1",
     "uuid": "8.1.0",
     "visibilityjs": "^1.2.4",
