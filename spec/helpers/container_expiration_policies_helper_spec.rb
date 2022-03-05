@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe ContainerExpirationPoliciesHelper do
-  using RSpec::Parameterized::TableSyntax
-
   describe '#keep_n_options' do
     it 'returns keep_n options formatted for dropdown usage' do
       expected_result = [
@@ -51,23 +49,22 @@ RSpec.describe ContainerExpirationPoliciesHelper do
   describe '#container_expiration_policies_historic_entry_enabled?' do
     let_it_be(:project) { build_stubbed(:project) }
 
-    subject { helper.container_expiration_policies_historic_entry_enabled?(project) }
+    subject { helper.container_expiration_policies_historic_entry_enabled? }
 
-    where(:application_setting, :feature_flag, :expected_result) do
-      true  | true  | true
-      true  | false | true
-      false | true  | true
-      false | false | false
-    end
-
-    with_them do
+    context 'when the application setting is enabled' do
       before do
-        stub_feature_flags(container_expiration_policies_historic_entry: false)
-        stub_application_setting(container_expiration_policies_enable_historic_entries: application_setting)
-        stub_feature_flags(container_expiration_policies_historic_entry: project) if feature_flag
+        stub_application_setting(container_expiration_policies_enable_historic_entries: true)
       end
 
-      it { is_expected.to eq(expected_result) }
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when the application setting is disabled' do
+      before do
+        stub_application_setting(container_expiration_policies_enable_historic_entries: false)
+      end
+
+      it { is_expected.to be_falsey }
     end
   end
 end

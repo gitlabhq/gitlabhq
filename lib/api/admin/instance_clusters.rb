@@ -9,6 +9,7 @@ module API
 
       before do
         authenticated_as_admin!
+        ensure_feature_enabled!
       end
 
       namespace 'admin' do
@@ -132,6 +133,10 @@ module API
 
         def update_cluster_params
           declared_params(include_missing: false).without(:cluster_id)
+        end
+
+        def ensure_feature_enabled!
+          not_found! unless Feature.enabled?(:certificate_based_clusters, clusterable_instance, default_enabled: :yaml, type: :ops)
         end
       end
     end

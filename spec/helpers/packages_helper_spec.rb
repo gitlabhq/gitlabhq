@@ -71,135 +71,39 @@ RSpec.describe PackagesHelper do
 
     subject { helper.show_cleanup_policy_on_alert(project.reload) }
 
-    where(:com, :config_registry, :project_registry, :historic_entries, :historic_entry, :nil_policy, :container_repositories_exist, :expected_result) do
-      false | false | false | false | false | false | false | false
-      false | false | false | false | false | false | true  | false
-      false | false | false | false | false | true  | false | false
-      false | false | false | false | false | true  | true  | false
-      false | false | false | false | true  | false | false | false
-      false | false | false | false | true  | false | true  | false
-      false | false | false | false | true  | true  | false | false
-      false | false | false | false | true  | true  | true  | false
-      false | false | false | true  | false | false | false | false
-      false | false | false | true  | false | false | true  | false
-      false | false | false | true  | false | true  | false | false
-      false | false | false | true  | false | true  | true  | false
-      false | false | false | true  | true  | false | false | false
-      false | false | false | true  | true  | false | true  | false
-      false | false | false | true  | true  | true  | false | false
-      false | false | false | true  | true  | true  | true  | false
-      false | false | true  | false | false | false | false | false
-      false | false | true  | false | false | false | true  | false
-      false | false | true  | false | false | true  | false | false
-      false | false | true  | false | false | true  | true  | false
-      false | false | true  | false | true  | false | false | false
-      false | false | true  | false | true  | false | true  | false
-      false | false | true  | false | true  | true  | false | false
-      false | false | true  | false | true  | true  | true  | false
-      false | false | true  | true  | false | false | false | false
-      false | false | true  | true  | false | false | true  | false
-      false | false | true  | true  | false | true  | false | false
-      false | false | true  | true  | false | true  | true  | false
-      false | false | true  | true  | true  | false | false | false
-      false | false | true  | true  | true  | false | true  | false
-      false | false | true  | true  | true  | true  | false | false
-      false | false | true  | true  | true  | true  | true  | false
-      false | true  | false | false | false | false | false | false
-      false | true  | false | false | false | false | true  | false
-      false | true  | false | false | false | true  | false | false
-      false | true  | false | false | false | true  | true  | false
-      false | true  | false | false | true  | false | false | false
-      false | true  | false | false | true  | false | true  | false
-      false | true  | false | false | true  | true  | false | false
-      false | true  | false | false | true  | true  | true  | false
-      false | true  | false | true  | false | false | false | false
-      false | true  | false | true  | false | false | true  | false
-      false | true  | false | true  | false | true  | false | false
-      false | true  | false | true  | false | true  | true  | false
-      false | true  | false | true  | true  | false | false | false
-      false | true  | false | true  | true  | false | true  | false
-      false | true  | false | true  | true  | true  | false | false
-      false | true  | false | true  | true  | true  | true  | false
-      false | true  | true  | false | false | false | false | false
-      false | true  | true  | false | false | false | true  | false
-      false | true  | true  | false | false | true  | false | false
-      false | true  | true  | false | false | true  | true  | false
-      false | true  | true  | false | true  | false | false | false
-      false | true  | true  | false | true  | false | true  | false
-      false | true  | true  | false | true  | true  | false | false
-      false | true  | true  | false | true  | true  | true  | false
-      false | true  | true  | true  | false | false | false | false
-      false | true  | true  | true  | false | false | true  | false
-      false | true  | true  | true  | false | true  | false | false
-      false | true  | true  | true  | false | true  | true  | false
-      false | true  | true  | true  | true  | false | false | false
-      false | true  | true  | true  | true  | false | true  | false
-      false | true  | true  | true  | true  | true  | false | false
-      false | true  | true  | true  | true  | true  | true  | false
-      true  | false | false | false | false | false | false | false
-      true  | false | false | false | false | false | true  | false
-      true  | false | false | false | false | true  | false | false
-      true  | false | false | false | false | true  | true  | false
-      true  | false | false | false | true  | false | false | false
-      true  | false | false | false | true  | false | true  | false
-      true  | false | false | false | true  | true  | false | false
-      true  | false | false | false | true  | true  | true  | false
-      true  | false | false | true  | false | false | false | false
-      true  | false | false | true  | false | false | true  | false
-      true  | false | false | true  | false | true  | false | false
-      true  | false | false | true  | false | true  | true  | false
-      true  | false | false | true  | true  | false | false | false
-      true  | false | false | true  | true  | false | true  | false
-      true  | false | false | true  | true  | true  | false | false
-      true  | false | false | true  | true  | true  | true  | false
-      true  | false | true  | false | false | false | false | false
-      true  | false | true  | false | false | false | true  | false
-      true  | false | true  | false | false | true  | false | false
-      true  | false | true  | false | false | true  | true  | false
-      true  | false | true  | false | true  | false | false | false
-      true  | false | true  | false | true  | false | true  | false
-      true  | false | true  | false | true  | true  | false | false
-      true  | false | true  | false | true  | true  | true  | false
-      true  | false | true  | true  | false | false | false | false
-      true  | false | true  | true  | false | false | true  | false
-      true  | false | true  | true  | false | true  | false | false
-      true  | false | true  | true  | false | true  | true  | false
-      true  | false | true  | true  | true  | false | false | false
-      true  | false | true  | true  | true  | false | true  | false
-      true  | false | true  | true  | true  | true  | false | false
-      true  | false | true  | true  | true  | true  | true  | false
-      true  | true  | false | false | false | false | false | false
-      true  | true  | false | false | false | false | true  | false
-      true  | true  | false | false | false | true  | false | false
-      true  | true  | false | false | false | true  | true  | false
-      true  | true  | false | false | true  | false | false | false
-      true  | true  | false | false | true  | false | true  | false
-      true  | true  | false | false | true  | true  | false | false
-      true  | true  | false | false | true  | true  | true  | false
-      true  | true  | false | true  | false | false | false | false
-      true  | true  | false | true  | false | false | true  | false
-      true  | true  | false | true  | false | true  | false | false
-      true  | true  | false | true  | false | true  | true  | false
-      true  | true  | false | true  | true  | false | false | false
-      true  | true  | false | true  | true  | false | true  | false
-      true  | true  | false | true  | true  | true  | false | false
-      true  | true  | false | true  | true  | true  | true  | false
-      true  | true  | true  | false | false | false | false | false
-      true  | true  | true  | false | false | false | true  | false
-      true  | true  | true  | false | false | true  | false | false
-      true  | true  | true  | false | false | true  | true  | false
-      true  | true  | true  | false | true  | false | false | false
-      true  | true  | true  | false | true  | false | true  | false
-      true  | true  | true  | false | true  | true  | false | false
-      true  | true  | true  | false | true  | true  | true  | true
-      true  | true  | true  | true  | false | false | false | false
-      true  | true  | true  | true  | false | false | true  | false
-      true  | true  | true  | true  | false | true  | false | false
-      true  | true  | true  | true  | false | true  | true  | false
-      true  | true  | true  | true  | true  | false | false | false
-      true  | true  | true  | true  | true  | false | true  | false
-      true  | true  | true  | true  | true  | true  | false | false
-      true  | true  | true  | true  | true  | true  | true  | false
+    where(:com, :config_registry, :project_registry, :nil_policy, :container_repositories_exist, :expected_result) do
+      false | false | false | false | false | false
+      false | false | false | false | true  | false
+      false | false | false | true  | false | false
+      false | false | false | true  | true  | false
+      false | false | true  | false | false | false
+      false | false | true  | false | true  | false
+      false | false | true  | true  | false | false
+      false | false | true  | true  | true  | false
+      false | true  | false | false | false | false
+      false | true  | false | false | true  | false
+      false | true  | false | true  | false | false
+      false | true  | false | true  | true  | false
+      false | true  | true  | false | false | false
+      false | true  | true  | false | true  | false
+      false | true  | true  | true  | false | false
+      false | true  | true  | true  | true  | false
+      true  | false | false | false | false | false
+      true  | false | false | false | true  | false
+      true  | false | false | true  | false | false
+      true  | false | false | true  | true  | false
+      true  | false | true  | false | false | false
+      true  | false | true  | false | true  | false
+      true  | false | true  | true  | false | false
+      true  | false | true  | true  | true  | false
+      true  | true  | false | false | false | false
+      true  | true  | false | false | true  | false
+      true  | true  | false | true  | false | false
+      true  | true  | false | true  | true  | false
+      true  | true  | true  | false | false | false
+      true  | true  | true  | false | true  | false
+      true  | true  | true  | true  | false | false
+      true  | true  | true  | true  | true  | true
     end
 
     with_them do
@@ -208,9 +112,6 @@ RSpec.describe PackagesHelper do
         allow(Gitlab).to receive(:com?).and_return(com)
         stub_config(registry: { enabled: config_registry })
         allow(project).to receive(:feature_available?).with(:container_registry, user).and_return(project_registry)
-        stub_application_setting(container_expiration_policies_enable_historic_entries: historic_entries)
-        stub_feature_flags(container_expiration_policies_historic_entry: false)
-        stub_feature_flags(container_expiration_policies_historic_entry: project) if historic_entry
 
         project.container_expiration_policy.destroy! if nil_policy
         container_repository.update!(project_id: project.id) if container_repositories_exist

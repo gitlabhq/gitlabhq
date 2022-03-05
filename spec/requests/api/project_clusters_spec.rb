@@ -24,6 +24,10 @@ RSpec.describe API::ProjectClusters do
                   projects: [project])
     end
 
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { get api("/projects/#{project.id}/clusters", developer_user) }
+    end
+
     context 'non-authorized user' do
       it 'responds with 403' do
         get api("/projects/#{project.id}/clusters", reporter_user)
@@ -65,6 +69,10 @@ RSpec.describe API::ProjectClusters do
              platform_kubernetes: platform_kubernetes,
              user: maintainer_user,
              projects: [project])
+    end
+
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { get api("/projects/#{project.id}/clusters/#{cluster_id}", developer_user) }
     end
 
     context 'non-authorized user' do
@@ -180,6 +188,10 @@ RSpec.describe API::ProjectClusters do
         platform_kubernetes_attributes: platform_kubernetes_attributes,
         management_project_id: management_project_id
       }
+    end
+
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { post api("/projects/#{project.id}/clusters/user", maintainer_user), params: cluster_params }
     end
 
     context 'non-authorized user' do
@@ -361,6 +373,10 @@ RSpec.describe API::ProjectClusters do
              projects: [project])
     end
 
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { put api("/projects/#{project.id}/clusters/#{cluster.id}", maintainer_user), params: update_params }
+    end
+
     context 'non-authorized user' do
       it 'responds with 403' do
         put api("/projects/#{project.id}/clusters/#{cluster.id}", developer_user), params: update_params
@@ -491,6 +507,10 @@ RSpec.describe API::ProjectClusters do
     let_it_be(:cluster) do
       create(:cluster, :project, :provided_by_gcp,
              projects: [project])
+    end
+
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { delete api("/projects/#{project.id}/clusters/#{cluster.id}", maintainer_user), params: cluster_params }
     end
 
     context 'non-authorized user' do

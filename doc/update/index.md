@@ -394,7 +394,7 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 
 ### 14.4.4
 
-- For [zero-downtime upgrades](zero_downtime.md) on a GitLab cluster with separate Web and API nodes, you need to enable the `paginated_tree_graphql_query` [feature flag](../api/feature_flags.md) _before_ upgrading GitLab Web nodes to 14.4.
+- For [zero-downtime upgrades](zero_downtime.md) on a GitLab cluster with separate Web and API nodes, you need to enable the `paginated_tree_graphql_query` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) _before_ upgrading GitLab Web nodes to 14.4.
   This is because we [enabled `paginated_tree_graphql_query by default in 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70913/diffs), so if GitLab UI is on 14.4 and its API is on 14.3, the frontend will have this feature enabled but the backend will have it disabled. This will result in the following error:
 
   ```shell

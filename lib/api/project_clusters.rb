@@ -4,7 +4,10 @@ module API
   class ProjectClusters < ::API::Base
     include PaginationParams
 
-    before { authenticate! }
+    before do
+      authenticate!
+      ensure_feature_enabled!
+    end
 
     feature_category :kubernetes_management
 
@@ -137,6 +140,10 @@ module API
 
       def update_cluster_params
         declared_params(include_missing: false).without(:cluster_id)
+      end
+
+      def ensure_feature_enabled!
+        not_found! unless Feature.enabled?(:certificate_based_clusters, user_project, default_enabled: :yaml, type: :ops)
       end
     end
   end
