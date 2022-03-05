@@ -25,8 +25,8 @@
         #{ s_('PipelineSchedules|Variables') }
       %ul.ci-variable-list
         - @schedule.variables.each do |variable|
-          = render 'ci/variables/variable_row', form_field: 'schedule', variable: variable, only_key_value: true
-        = render 'ci/variables/variable_row', form_field: 'schedule', only_key_value: true
+          = render 'ci/variables/variable_row', form_field: 'schedule', variable: variable
+        = render 'ci/variables/variable_row', form_field: 'schedule'
       - if @schedule.variables.size > 0
         %button.gl-button.btn.btn-confirm-secondary.gl-mt-3.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@schedule.variables.size == 0}" } }
           - if @schedule.variables.size == 0

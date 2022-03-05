@@ -7393,22 +7393,10 @@ msgstr ""
 msgid "CiVariable|Create wildcard"
 msgstr ""
 
-msgid "CiVariable|Masked"
-msgstr ""
-
 msgid "CiVariable|New environment"
 msgstr ""
 
-msgid "CiVariable|Protected"
-msgstr ""
-
 msgid "CiVariable|Search environments"
-msgstr ""
-
-msgid "CiVariable|Toggle masked"
-msgstr ""
-
-msgid "CiVariable|Toggle protected"
 msgstr ""
 
 msgid "Classification Label (optional)"
@@ -34371,9 +34359,6 @@ msgid "Something went wrong trying to load issue contacts."
 msgstr ""
 
 msgid "Something went wrong when reordering designs. Please try again"
-msgstr ""
-
-msgid "Something went wrong when toggling the button"
 msgstr ""
 
 msgid "Something went wrong while adding your award. Please try again."
