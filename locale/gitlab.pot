@@ -17794,6 +17794,9 @@ msgstr ""
 msgid "GroupsNew|Create new group"
 msgstr ""
 
+msgid "GroupsNew|Create this in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, use a short expiration date when creating the token."
+msgstr ""
+
 msgid "GroupsNew|Export groups with all their related data and move to a new GitLab instance."
 msgstr ""
 
@@ -17810,9 +17813,6 @@ msgid "GroupsNew|Import groups from another instance of GitLab"
 msgstr ""
 
 msgid "GroupsNew|My Awesome Group"
-msgstr ""
-
-msgid "GroupsNew|Navigate to user settings to find your %{link_start}personal access token%{link_end}."
 msgstr ""
 
 msgid "GroupsNew|No import options available"
