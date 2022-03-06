@@ -59,7 +59,7 @@ disable this privilege for group owners, enforcing the instance-level protection
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
-1. Deselect the **Allow owners to manage default branch protection per group** checkbox.
+1. Clear the **Allow owners to manage default branch protection per group** checkbox.
 1. Select **Save changes**.
 
 NOTE:

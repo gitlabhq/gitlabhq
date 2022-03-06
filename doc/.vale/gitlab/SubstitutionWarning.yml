@@ -14,6 +14,8 @@ swap:
   click: select
   code base: codebase
   config: configuration
+  deselect: clear
+  deselected: cleared
   distro: distribution
   file name: filename
   filesystem: file system

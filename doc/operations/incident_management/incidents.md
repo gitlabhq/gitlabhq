@@ -226,7 +226,7 @@ There are different actions available to help triage and respond to incidents.
 ### Assign incidents
 
 Assign incidents to users that are actively responding. Select **Edit** in the
-right-hand side bar to select or deselect assignees.
+right-hand side bar to select or clear assignees.
 
 ### Associate a milestone
 

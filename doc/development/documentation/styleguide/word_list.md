@@ -174,8 +174,7 @@ See also [contractions](index.md#contractions).
 
 Use one word for **checkbox**. Do not use **check box**.
 
-You **select** (not **check** or **enable**) and **clear** (not **deselect** or **disable**) checkboxes.
-For example:
+You **select** (not **check** or **enable**) and **clear** (not **deselect** or **disable**) checkboxes. For example:
 
 - Select the **Protect environment** checkbox.
 - Clear the **Protect environment** checkbox.
@@ -184,6 +183,8 @@ If you must refer to the checkbox, you can say it is selected or cleared. For ex
 
 - Ensure the **Protect environment** checkbox is cleared.
 - Ensure the **Protect environment** checkbox is selected.
+
+(For `deselect`, [Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## checkout, check out
 

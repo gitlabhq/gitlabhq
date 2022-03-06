@@ -196,7 +196,7 @@ To assign an alert:
 
 After completing their portion of investigating or fixing the alert, users can
 unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown menu
-and deselect the user from the list of assignees, or select **Unassigned**.
+and clear the user from the list of assignees, or select **Unassigned**.
 
 ### Create a to-do item from an alert
 

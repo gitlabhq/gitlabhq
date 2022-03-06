@@ -161,7 +161,7 @@ enabled by default for all new merge requests, enable it in the
 [project's settings](../settings/index.md#merge-request-settings).
 
 This option is also visible in an existing merge request next to
-the merge request button and can be selected or deselected before merging.
+the merge request button and can be selected or cleared before merging.
 It is only visible to users with the Maintainer role
 in the source project.
 

@@ -143,6 +143,6 @@ Reasons for failure include:
 
 NOTE:
 Project-level clusters upgraded from GitLab 12.0 or older may be configured
-in a way that causes this error. Ensure you deselect the
+in a way that causes this error. Ensure you clear the
 [GitLab-managed cluster](gitlab_managed_clusters.md) option if you want to manage
 namespaces and service accounts yourself.
