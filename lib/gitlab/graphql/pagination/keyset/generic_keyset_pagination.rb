@@ -17,21 +17,13 @@ module Gitlab
 
             strong_memoize(:generic_keyset_pagination_has_next_page) do
               if before
-                # If `before` is specified, that points to a specific record,
-                # even if it's the last one.  Since we're asking for `before`,
-                # then the specific record we're pointing to is in the
-                # next page
                 true
               elsif first
                 case sliced_nodes
                 when Array
                   sliced_nodes.size > limit_value
                 else
-                  # If we count the number of requested items plus one (`limit_value + 1`),
-                  # then if we get `limit_value + 1` then we know there is a next page
                   sliced_nodes.limit(1).offset(limit_value).exists?
-                  # replacing relation count
-                  # relation_count(set_limit(sliced_nodes, limit_value + 1)) == limit_value + 1
                 end
               else
                 false

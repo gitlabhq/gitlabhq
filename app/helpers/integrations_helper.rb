@@ -104,7 +104,8 @@ module IntegrationsHelper
     form_data = {
       id: integration.id,
       show_active: integration.show_active_box?.to_s,
-      activated: (integration.active || integration.new_record?).to_s,
+      activated: (integration.active || (integration.new_record? && integration.activate_disabled_reason.nil?)).to_s,
+      activate_disabled: integration.activate_disabled_reason.present?.to_s,
       type: integration.to_param,
       merge_request_events: integration.merge_requests_events.to_s,
       commit_events: integration.commit_events.to_s,

@@ -39,6 +39,7 @@ function parseDatasetToProps(data) {
   const {
     showActive,
     activated,
+    activateDisabled,
     editable,
     canTest,
     commitEvents,
@@ -54,6 +55,7 @@ function parseDatasetToProps(data) {
   return {
     initialActivated: activated,
     showActive,
+    activateDisabled,
     type,
     cancelPath,
     editable,

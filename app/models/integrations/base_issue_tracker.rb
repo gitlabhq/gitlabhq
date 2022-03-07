@@ -132,7 +132,17 @@ module Integrations
       # implement inside child
     end
 
+    def activate_disabled_reason
+      { trackers: other_external_issue_trackers } if other_external_issue_trackers.any?
+    end
+
     private
+
+    def other_external_issue_trackers
+      return [] unless project_level?
+
+      @other_external_issue_trackers ||= project.integrations.external_issue_trackers.where.not(id: id)
+    end
 
     def enabled_in_gitlab_config
       Gitlab.config.issues_tracker &&
@@ -148,7 +158,7 @@ module Integrations
       return if instance?
       return if project.blank?
 
-      if project.integrations.external_issue_trackers.where.not(id: id).any?
+      if other_external_issue_trackers.any?
         errors.add(:base, _('Another issue tracker is already in use. Only one issue tracker service can be active at a time'))
       end
     end

@@ -32,7 +32,7 @@ If you are using GDK, you can follow the following steps:
 1. On the GDK root directory, run:
 
    ```shell
-   gdk config set gitlab.rails.multiple_databases true
+   gdk config set gitlab.rails.databases.ci.enabled true
    ```
 
 1. Open your `gdk.yml`, and confirm that it has the following lines:

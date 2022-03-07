@@ -50,34 +50,41 @@ module Gitlab
         Gitlab::Database::SharedModel.using_connection(connection, &block)
       end
 
-      def steal(steal_class, retry_dead_jobs: false)
-        with_shared_connection do
+      def pending_jobs(include_dead_jobs: false)
+        Enumerator.new do |y|
           queues = [
             Sidekiq::ScheduledSet.new,
             Sidekiq::Queue.new(self.queue)
           ]
 
-          if retry_dead_jobs
+          if include_dead_jobs
             queues << Sidekiq::RetrySet.new
             queues << Sidekiq::DeadSet.new
           end
 
           queues.each do |queue|
             queue.each do |job|
-              migration_class, migration_args = job.args
+              y << job if job.klass == worker_class.name
+            end
+          end
+        end
+      end
 
-              next unless job.klass == worker_class.name
-              next unless migration_class == steal_class
-              next if block_given? && !(yield job)
+      def steal(steal_class, retry_dead_jobs: false)
+        with_shared_connection do
+          pending_jobs(include_dead_jobs: retry_dead_jobs).each do |job|
+            migration_class, migration_args = job.args
 
-              begin
-                perform(migration_class, migration_args) if job.delete
-              rescue Exception # rubocop:disable Lint/RescueException
-                worker_class # enqueue this migration again
-                  .perform_async(migration_class, migration_args)
+            next unless migration_class == steal_class
+            next if block_given? && !(yield job)
 
-                raise
-              end
+            begin
+              perform(migration_class, migration_args) if job.delete
+            rescue Exception # rubocop:disable Lint/RescueException
+              worker_class # enqueue this migration again
+                .perform_async(migration_class, migration_args)
+
+              raise
             end
           end
         end

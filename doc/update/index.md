@@ -148,9 +148,22 @@ If you get this error, [check the batched background migration options](../user/
 ### What do I do if my background migrations are stuck?
 
 WARNING:
-The following operations can disrupt your GitLab performance.
+The following operations can disrupt your GitLab performance. They run a number of Sidekiq jobs that perform various database or file updates.
 
-It is safe to re-execute these commands, especially if you have 1000+ pending jobs which would likely overflow your runtime memory.
+#### Background migrations remain in the Sidekiq queue
+
+Run the following check. If it returns non-zero and the count does not decrease over time, follow the rest of the steps in this section.
+
+```shell
+# For Omnibus installations:
+sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+
+# For installations from source:
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+```
+
+It is safe to re-execute the following commands, especially if you have 1000+ pending jobs which would likely overflow your runtime memory.
 
 **For Omnibus installations**
 
@@ -176,7 +189,52 @@ pending_job_classes = scheduled_queue.select { |job| job["class"] == "Background
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 
-**Batched migrations (GitLab 14.0 and newer):**
+#### Background migrations stuck in 'pending' state
+
+GitLab 13.6 introduced an issue where a background migration named `BackfillJiraTrackerDeploymentType2` can be permanently stuck in a **pending** state across upgrades. To clean up this stuck migration, see the [13.6.0 version-specific instructions](#1360).
+
+For other background migrations stuck in pending, run the following check. If it returns non-zero and the count does not decrease over time, follow the rest of the steps in this section.
+
+```shell
+# For Omnibus installations:
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
+
+# For installations from source:
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
+```
+
+It is safe to re-attempt these migrations to clear them out from a pending status:
+
+**For Omnibus installations**
+
+```shell
+# Start the rails console
+sudo gitlab-rails c
+
+# Execute the following in the rails console
+Gitlab::Database::BackgroundMigrationJob.pending.find_each do |job|
+  puts "Running pending job '#{job.class_name}' with arguments #{job.arguments}"
+  result = Gitlab::BackgroundMigration.perform(job.class_name, job.arguments)
+  puts "Result: #{result}"
+end
+```
+
+**For installations from source**
+
+```shell
+# Start the rails console
+sudo -u git -H bundle exec rails RAILS_ENV=production
+
+# Execute the following in the rails console
+Gitlab::Database::BackgroundMigrationJob.pending.find_each do |job|
+  puts "Running pending job '#{job.class_name}' with arguments #{job.arguments}"
+  result = Gitlab::BackgroundMigration.perform(job.class_name, job.arguments)
+  puts "Result: #{result}"
+end
+```
+
+#### Batched migrations (GitLab 14.0 and later)
 
 See [troubleshooting batched background migrations](../user/admin_area/monitoring/background_migrations.md#troubleshooting).
 
@@ -621,6 +679,19 @@ DETAIL:  Key (project_id, type)=(NNN, ServiceName) is duplicated.
 Ruby 2.7.2 is required. GitLab does not start with Ruby 2.6.6 or older versions.
 
 The required Git version is Git v2.29 or higher.
+
+GitLab 13.6 includes a
+[background migration `BackfillJiraTrackerDeploymentType2`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46368)
+that may remain stuck permanently in a **pending** state despite completion of work
+due to a bug.
+
+To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+
+```ruby
+Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "BackfillJiraTrackerDeploymentType2").find_each do |job|
+  puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("BackfillJiraTrackerDeploymentType2", job.arguments)
+end
+```
 
 ### 13.4.0
 

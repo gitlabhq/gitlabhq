@@ -50,6 +50,12 @@ GitLab self-monitoring gives administrators of self-hosted GitLab instances the 
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### Move `custom_hooks_dir` setting from GitLab Shell to Gitaly
+
+The [`custom_hooks_dir`](https://docs.gitlab.com/ee/administration/server_hooks.html#create-a-global-server-hook-for-all-repositories) setting is now configured in Gitaly, and will be removed from GitLab Shell in GitLab 15.0.
+
+**Planned removal milestone: 15.0 ()**
+
 ## 14.8
 
 ### Changes to the `CI_JOB_JWT`

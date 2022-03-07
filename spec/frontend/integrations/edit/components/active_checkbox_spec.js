@@ -35,6 +35,15 @@ describe('ActiveCheckbox', () => {
       });
     });
 
+    describe('when activateDisabled is true', () => {
+      it('renders GlFormCheckbox as disabled', () => {
+        createComponent({ activateDisabled: true });
+
+        expect(findGlFormCheckbox().exists()).toBe(true);
+        expect(findInputInCheckbox().attributes('disabled')).toBe('disabled');
+      });
+    });
+
     describe('initialActivated is `false`', () => {
       beforeEach(() => {
         createComponent({

@@ -55,8 +55,8 @@ Users with the at least the Maintainer role on a group can create subgroups imme
 
 To create a subgroup:
 
-1. On the top bar, select **Menu > Groups** and find the parent group.
-1. In the top right, select **New subgroup**.
+1. On the top bar, select **Menu > Groups** and find and select the parent group to add a subgroup to.
+1. On the parent group's overview page, in the top right, select **New subgroup**.
 1. Select **Create group**.
 1. Fill in the fields. View a list of [reserved names](../../reserved_names.md) that cannot be used as group names.
 1. Select **Create group**.

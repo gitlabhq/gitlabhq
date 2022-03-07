@@ -204,6 +204,25 @@ RSpec.describe EnvironmentSerializer do
 
       json
     end
+
+    # Validates possible bug that can arise when order_by is not honoured in the preloader.
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/353966#note_861381504
+    it 'fetches the last and upcoming deployment correctly' do
+      last_deployment = nil
+      upcoming_deployment = nil
+      create(:environment, project: project).tap do |environment|
+        create(:deployment, :success, environment: environment, project: project)
+        last_deployment = create(:deployment, :success, environment: environment, project: project)
+
+        create(:deployment, :running, environment: environment, project: project)
+        upcoming_deployment = create(:deployment, :running, environment: environment, project: project)
+      end
+
+      response_json = json
+
+      expect(response_json.last[:last_deployment][:id]).to eq(last_deployment.id)
+      expect(response_json.last[:upcoming_deployment][:id]).to eq(upcoming_deployment.id)
+    end
   end
 
   def create_environment_with_associations(project)

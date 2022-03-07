@@ -3225,52 +3225,44 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when failed' do
-      shared_examples 'failed skip_ci_check' do
-        context 'when #mergeable_ci_state? is false' do
-          before do
-            allow(subject).to receive(:mergeable_ci_state?) { false }
-          end
-
-          it 'returns false' do
-            expect(subject.mergeable_state?).to be_falsey
-          end
-
-          it 'returns true when skipping ci check' do
-            expect(subject.mergeable_state?(skip_ci_check: true)).to be(true)
-          end
-        end
-
-        context 'when #mergeable_discussions_state? is false' do
-          before do
-            allow(subject).to receive(:mergeable_discussions_state?) { false }
-          end
-
-          it 'returns false' do
-            expect(subject.mergeable_state?).to be_falsey
-          end
-
-          it 'returns true when skipping discussions check' do
-            expect(subject.mergeable_state?(skip_discussions_check: true)).to be(true)
-          end
-        end
-      end
-
-      context 'when improved_mergeability_checks is on' do
-        it_behaves_like 'failed skip_ci_check'
-      end
-
-      context 'when improved_mergeability_checks is off' do
+      context 'when #mergeable_ci_state? is false' do
         before do
-          stub_feature_flags(improved_mergeability_checks: false)
+          allow(subject).to receive(:mergeable_ci_state?) { false }
         end
 
-        it_behaves_like 'failed skip_ci_check'
+        it 'returns false' do
+          expect(subject.mergeable_state?).to be_falsey
+        end
+
+        it 'returns true when skipping ci check' do
+          expect(subject.mergeable_state?(skip_ci_check: true)).to be(true)
+        end
+      end
+
+      context 'when #mergeable_discussions_state? is false' do
+        before do
+          allow(subject).to receive(:mergeable_discussions_state?) { false }
+        end
+
+        it 'returns false' do
+          expect(subject.mergeable_state?).to be_falsey
+        end
+
+        it 'returns true when skipping discussions check' do
+          expect(subject.mergeable_state?(skip_discussions_check: true)).to be(true)
+        end
       end
     end
   end
 
   describe '#mergeable_state?' do
-    context 'when merge state caching is on' do
+    it_behaves_like 'for mergeable_state'
+
+    context 'when improved_mergeability_checks is off' do
+      before do
+        stub_feature_flags(improved_mergeability_checks: false)
+      end
+
       it_behaves_like 'for mergeable_state'
     end
 

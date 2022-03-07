@@ -14955,7 +14955,13 @@ msgstr ""
 msgid "ExternalAuthorization|URL to which the projects make authorization requests. If the URL is blank, cross-project features are available and can still specify classification labels for projects."
 msgstr ""
 
+msgid "ExternalIssueIntegration|Another issue tracker is already in use"
+msgstr ""
+
 msgid "ExternalIssueIntegration|Not all data may be displayed here. To view more details or make changes to this issue, go to %{linkStart}%{trackerName}%{linkEnd}."
+msgstr ""
+
+msgid "ExternalIssueIntegration|Only one issue tracker integration can be active at a time. Please disable the active tracker first and try again."
 msgstr ""
 
 msgid "ExternalIssueIntegration|This issue is synchronized with %{trackerName}"

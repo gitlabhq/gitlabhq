@@ -6,7 +6,7 @@ RSpec.describe Projects::EnvironmentsController do
   include MetricsDashboardHelpers
   include KubernetesHelpers
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :repository) }
   let_it_be(:maintainer) { create(:user, name: 'main-dos').tap { |u| project.add_maintainer(u) } }
   let_it_be(:reporter) { create(:user, name: 'repo-dos').tap { |u| project.add_reporter(u) } }
 
@@ -55,11 +55,11 @@ RSpec.describe Projects::EnvironmentsController do
       let(:environments) { json_response['environments'] }
 
       context 'with default parameters' do
-        before do
-          get :index, params: environment_params(format: :json)
-        end
+        subject { get :index, params: environment_params(format: :json) }
 
         it 'responds with a flat payload describing available environments' do
+          subject
+
           expect(environments.count).to eq 3
           expect(environments.first).to include('name' => 'production', 'name_without_type' => 'production')
           expect(environments.second).to include('name' => 'staging/review-1', 'name_without_type' => 'review-1')
@@ -69,8 +69,27 @@ RSpec.describe Projects::EnvironmentsController do
         end
 
         it 'sets the polling interval header' do
+          subject
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers['Poll-Interval']).to eq("3000")
+        end
+
+        context 'validates latest deployment' do
+          let_it_be(:test_environment) do
+            create(:environment, project: project, name: 'staging/review-4', state: :available)
+          end
+
+          before do
+            create_list(:deployment, 2, :success, environment: test_environment, project: project)
+          end
+
+          it 'responds with the latest deployment for the environment' do
+            subject
+
+            environment = environments.find { |env| env['id'] == test_environment.id }
+            expect(environment['last_deployment']['id']).to eq(test_environment.deployments.last.id)
+          end
         end
       end
 

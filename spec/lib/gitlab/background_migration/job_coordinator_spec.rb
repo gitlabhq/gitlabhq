@@ -38,13 +38,67 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
     end
   end
 
+  describe '#pending_jobs' do
+    context 'when there are enqueued jobs' do
+      let(:queue) do
+        [
+          instance_double(Sidekiq::JobRecord, args: [1, 'queue'], klass: worker_class.name),
+          instance_double(Sidekiq::JobRecord, args: [2, 'queue'], klass: worker_class.name)
+        ]
+      end
+
+      let(:queue_incorrect_job_class) do
+        [
+          instance_double(Sidekiq::JobRecord, args: [1, 'queue'], klass: 'SomeOtherClass')
+        ]
+      end
+
+      let(:scheduled_set) do
+        [instance_double(Sidekiq::JobRecord, args: [3, 'scheduled'], klass: worker_class.name)]
+      end
+
+      let(:retry_set) do
+        [instance_double(Sidekiq::JobRecord, args: [4, 'retry'], klass: worker_class.name)]
+      end
+
+      let(:dead_set) do
+        [instance_double(Sidekiq::JobRecord, args: [5, 'dead'], klass: worker_class.name)]
+      end
+
+      before do
+        allow(Sidekiq::Queue).to receive(:new)
+                                   .with(coordinator.queue)
+                                   .and_return(queue + queue_incorrect_job_class)
+        allow(Sidekiq::ScheduledSet).to receive(:new).and_return(scheduled_set)
+        allow(Sidekiq::RetrySet).to receive(:new).and_return(retry_set)
+        allow(Sidekiq::DeadSet).to receive(:new).and_return(dead_set)
+      end
+
+      it 'does not include jobs for other workers' do
+        expect(coordinator.pending_jobs).not_to include(queue_incorrect_job_class.first)
+      end
+
+      context 'when not including dead jobs' do
+        it 'includes current and future jobs' do
+          expect(coordinator.pending_jobs(include_dead_jobs: false).to_a).to match_array(queue + scheduled_set)
+        end
+      end
+
+      context 'when including dead jobs' do
+        it 'includes current and future jobs, and also dead and retry jobs' do
+          expect(coordinator.pending_jobs(include_dead_jobs: true).to_a).to match_array(queue + scheduled_set + retry_set + dead_set)
+        end
+      end
+    end
+  end
+
   describe '#steal' do
     context 'when there are enqueued jobs present' do
       let(:queue) do
         [
-          double(args: ['Foo', [10, 20]], klass: worker_class.name),
-          double(args: ['Bar', [20, 30]], klass: worker_class.name),
-          double(args: ['Foo', [20, 30]], klass: 'MergeWorker')
+          instance_double(Sidekiq::JobRecord, args: ['Foo', [10, 20]], klass: worker_class.name),
+          instance_double(Sidekiq::JobRecord, args: ['Bar', [20, 30]], klass: worker_class.name),
+          instance_double(Sidekiq::JobRecord, args: ['Foo', [20, 30]], klass: 'MergeWorker')
         ]
       end
 

@@ -47,7 +47,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
           expect(service).not_to receive(:execute)
         end
 
-        expect(execute).to match_array([success_result])
+        expect(execute).to match_array([success_result, success_result])
       end
     end
 

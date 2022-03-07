@@ -55,6 +55,7 @@ RSpec.describe IntegrationsHelper do
         :id,
         :show_active,
         :activated,
+        :activate_disabled,
         :type,
         :merge_request_events,
         :commit_events,
