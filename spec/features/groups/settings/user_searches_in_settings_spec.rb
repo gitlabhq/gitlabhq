@@ -32,7 +32,7 @@ RSpec.describe 'User searches group settings', :js do
       visit group_settings_repository_path(group)
     end
 
-    it_behaves_like 'can search settings', 'Deploy tokens', 'Default initial branch name'
+    it_behaves_like 'can search settings', 'Deploy tokens', 'Default branch'
   end
 
   context 'in CI/CD page' do

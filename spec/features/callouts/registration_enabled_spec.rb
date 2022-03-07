@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Registration enabled callout' do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_admin) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:callout_title) { _('Anyone can register for an account.') }
 
   context 'when "Sign-up enabled" setting is `true`' do
     before do
@@ -14,23 +16,42 @@ RSpec.describe 'Registration enabled callout' do
     context 'when an admin is logged in' do
       before do
         sign_in(admin)
-        visit root_dashboard_path
       end
 
-      it 'displays callout' do
-        expect(page).to have_content 'Open registration is enabled on your instance.'
-        expect(page).to have_link 'View setting', href: general_admin_application_settings_path(anchor: 'js-signup-settings')
+      it 'displays callout on admin and dashboard pages and root page' do
+        visit root_path
+
+        expect(page).to have_content callout_title
+        expect(page).to have_link _('Turn off'), href: general_admin_application_settings_path(anchor: 'js-signup-settings')
+
+        visit root_dashboard_path
+
+        expect(page).to have_content callout_title
+
+        visit admin_root_path
+
+        expect(page).to have_content callout_title
+      end
+
+      it 'does not display callout on pages other than root, admin, or dashboard' do
+        visit project_issues_path(project)
+
+        expect(page).not_to have_content callout_title
       end
 
       context 'when callout is dismissed', :js do
         before do
+          visit admin_root_path
+
           find('[data-testid="close-registration-enabled-callout"]').click
+
+          wait_for_requests
 
           visit root_dashboard_path
         end
 
         it 'does not display callout' do
-          expect(page).not_to have_content 'Open registration is enabled on your instance.'
+          expect(page).not_to have_content callout_title
         end
       end
     end
@@ -42,7 +63,7 @@ RSpec.describe 'Registration enabled callout' do
       end
 
       it 'does not display callout' do
-        expect(page).not_to have_content 'Open registration is enabled on your instance.'
+        expect(page).not_to have_content callout_title
       end
     end
   end

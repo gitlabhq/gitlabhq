@@ -204,24 +204,17 @@ A to-do item is created for all the group and subgroup members.
 
 ## Change the default branch protection of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
+> - [Settings moved and renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/340403) in GitLab 14.9.
 
 By default, every group inherits the branch protection set at the global level.
 
-To change this setting for a specific group:
+To change this setting for a specific group, see [group level default branch protection](../project/repository/branches/default.md#group-level-default-branch-protection).
 
-1. On the top bar, select **Menu > Groups**.
-1. Select **Your Groups**.
-1. Find the group and select it.
-1. From the left menu, select **Settings > General**.
-1. Expand the **Permissions and group features** section.
-1. Select the desired option in the **Default branch protection** dropdown list.
-1. Select **Save changes**.
-
-To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#protect-default-branches).
+To change this setting globally, see [initial default branch protection](../project/repository/branches/default.md#instance-level-default-branch-protection).
 
 NOTE:
-In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#prevent-overrides-of-default-branch-protection).
+In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../project/repository/branches/default.md#prevent-overrides-of-default-branch-protection).
 
 ## Add projects to a group
 

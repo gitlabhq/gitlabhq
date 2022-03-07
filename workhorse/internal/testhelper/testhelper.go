@@ -167,3 +167,16 @@ func Retry(t testing.TB, timeout time.Duration, fn func() error) {
 	}
 	t.Fatalf("test timeout after %v; last error: %v", timeout, err)
 }
+
+func SetupStaticFileHelper(t *testing.T, fpath, content, directory string) string {
+	cwd, err := os.Getwd()
+	require.NoError(t, err, "get working directory")
+
+	absDocumentRoot := path.Join(cwd, directory)
+	require.NoError(t, os.MkdirAll(path.Join(absDocumentRoot, path.Dir(fpath)), 0755), "create document root")
+
+	staticFile := path.Join(absDocumentRoot, fpath)
+	require.NoError(t, ioutil.WriteFile(staticFile, []byte(content), 0666), "write file content")
+
+	return absDocumentRoot
+}

@@ -1,19 +1,17 @@
 import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { getBaseURL } from '~/lib/utils/url_utility';
+import { mockTracking } from 'helpers/tracking_helper';
 import {
-  EXPERIMENT_NAME,
   CF_BASE_URL,
   TEMPLATES_BASE_URL,
   EASY_BUTTONS,
 } from '~/vue_shared/components/runner_aws_deployments/constants';
 import RunnerAwsDeploymentsModal from '~/vue_shared/components/runner_aws_deployments/runner_aws_deployments_modal.vue';
 
-jest.mock('~/experimentation/experiment_tracking');
-
 describe('RunnerAwsDeploymentsModal', () => {
   let wrapper;
+  let trackingSpy;
 
   const findEasyButtons = () => wrapper.findAllComponents(GlLink);
 
@@ -65,12 +63,14 @@ describe('RunnerAwsDeploymentsModal', () => {
     });
 
     it('should track an event when clicked', () => {
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
       findFirstButton().vm.$emit('click');
 
-      expect(ExperimentTracking).toHaveBeenCalledWith(EXPERIMENT_NAME);
-      expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
-        `template_clicked_${EASY_BUTTONS[0].stackName}`,
-      );
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'template_clicked', {
+        label: EASY_BUTTONS[0].stackName,
+      });
     });
   });
 });

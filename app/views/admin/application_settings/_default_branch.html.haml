@@ -1,13 +1,17 @@
-= form_for @application_setting, url: repository_admin_application_settings_path(anchor: 'js-default-branch-name'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: repository_admin_application_settings_path(anchor: 'js-default-branch-name'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   - fallback_branch_name = "<code>#{Gitlab::DefaultBranch.value}</code>"
 
   %fieldset
     .form-group
-      = f.label :default_branch_name, _('Default initial branch name'), class: 'label-light'
+      = f.label :default_branch_name, _('Initial default branch name'), class: 'label-light'
       = f.text_field :default_branch_name, placeholder: Gitlab::DefaultBranch.value, class: 'form-control gl-form-input'
       %span.form-text.text-muted
         = (s_("AdminSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories.") % { default_initial_branch_name: fallback_branch_name } ).html_safe
+
+    = render 'shared/default_branch_protection', f: f
+
+    = render_if_exists 'admin/application_settings/group_owners_can_manage_default_branch_protection_setting', form: f
 
   = f.submit _('Save changes'), class: 'gl-button btn-confirm'

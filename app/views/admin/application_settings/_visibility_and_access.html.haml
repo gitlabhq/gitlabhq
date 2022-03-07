@@ -2,9 +2,6 @@
   = form_errors(@application_setting)
 
   %fieldset
-    = render 'shared/default_branch_protection', f: f
-    = render_if_exists 'admin/application_settings/group_owners_can_manage_default_branch_protection_setting', form: f
-
     = render 'shared/project_creation_levels', f: f, method: :default_project_creation, legend: s_('ProjectCreationLevel|Default project creation protection')
     = render_if_exists 'admin/application_settings/default_project_deletion_protection_setting', form: f
     = render_if_exists 'admin/application_settings/default_delayed_project_deletion_setting', form: f

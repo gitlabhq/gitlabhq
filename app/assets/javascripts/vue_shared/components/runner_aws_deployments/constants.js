@@ -1,7 +1,5 @@
 import { s__, sprintf } from '~/locale';
 
-export const EXPERIMENT_NAME = 'ci_runner_templates';
-
 export const README_URL =
   'https://gitlab.com/guided-explorations/aws/gitlab-runner-autoscaling-aws-asg/-/blob/main/easybuttons.md';
 

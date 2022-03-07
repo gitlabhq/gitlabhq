@@ -219,14 +219,14 @@ To update the Emoji aliases file (used for Emoji autocomplete), run the
 following:
 
 ```shell
-bundle exec rake gemojione:aliases
+bundle exec rake tanuki_emoji:aliases
 ```
 
 To update the Emoji digests file (used for Emoji autocomplete), run the
 following:
 
 ```shell
-bundle exec rake gemojione:digests
+bundle exec rake tanuki_emoji:digests
 ```
 
 This updates the file `fixtures/emojis/digests.json` based on the currently
@@ -235,7 +235,7 @@ available Emoji.
 To generate a sprite file containing all the Emoji, run:
 
 ```shell
-bundle exec rake gemojione:sprite
+bundle exec rake tanuki_emoji:sprite
 ```
 
 If new emoji are added, the sprite sheet may change size. To compensate for

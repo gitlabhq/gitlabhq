@@ -586,44 +586,6 @@ describe('Pipelines', () => {
         });
       });
 
-      describe('when the ci_runner_templates experiment is active', () => {
-        beforeAll(() => {
-          getExperimentData.mockImplementation((name) => name === 'ci_runner_templates');
-        });
-
-        describe('the control state', () => {
-          beforeAll(() => {
-            getExperimentVariant.mockReturnValue('control');
-          });
-
-          it('renders the CI/CD templates', () => {
-            expect(wrapper.findComponent(PipelinesCiTemplates).exists()).toBe(true);
-          });
-        });
-
-        describe('the candidate state', () => {
-          beforeAll(() => {
-            getExperimentVariant.mockReturnValue('candidate');
-          });
-
-          it('renders two buttons', () => {
-            expect(findEmptyState().findAllComponents(GlButton).length).toBe(2);
-            expect(findEmptyState().findAllComponents(GlButton).at(0).text()).toBe(
-              'Install GitLab Runners',
-            );
-            expect(findEmptyState().findAllComponents(GlButton).at(0).attributes('href')).toBe(
-              paths.ciRunnerSettingsPath,
-            );
-            expect(findEmptyState().findAllComponents(GlButton).at(1).text()).toBe(
-              'Learn about Runners',
-            );
-            expect(findEmptyState().findAllComponents(GlButton).at(1).attributes('href')).toBe(
-              '/help/ci/quick_start/index.md',
-            );
-          });
-        });
-      });
-
       it('does not render filtered search', () => {
         expect(findFilteredSearch().exists()).toBe(false);
       });

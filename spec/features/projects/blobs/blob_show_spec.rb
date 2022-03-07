@@ -1009,6 +1009,29 @@ RSpec.describe 'File blob', :js do
         stub_application_setting(static_objects_external_storage_url: 'https://cdn.gitlab.com')
       end
 
+      context 'private project' do
+        let_it_be(:project) { create(:project, :repository, :private) }
+        let_it_be(:user) { create(:user, static_object_token: 'ABCD1234') }
+
+        before do
+          project.add_developer(user)
+
+          sign_in(user)
+          visit_blob('README.md')
+        end
+
+        it 'shows open raw and download buttons with external storage URL prepended and user token appended to their href' do
+          path = project_raw_path(project, 'master/README.md')
+          raw_uri = "https://cdn.gitlab.com#{path}?token=#{user.static_object_token}"
+          download_uri = "https://cdn.gitlab.com#{path}?token=#{user.static_object_token}&inline=false"
+
+          aggregate_failures do
+            expect(page).to have_link 'Open raw', href: raw_uri
+            expect(page).to have_link 'Download', href: download_uri
+          end
+        end
+      end
+
       context 'public project' do
         before do
           visit_blob('README.md')
@@ -1058,38 +1081,6 @@ RSpec.describe 'File blob', :js do
           expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
           # shows a raw button, incorrectly
           expect(page).to have_link('Open raw')
-        end
-      end
-    end
-
-    context 'when static objects external storage is enabled' do
-      # We need to unsre that this test runs with the refactor_blob_viewer feature flag enabled
-      # This will be addressed in https://gitlab.com/gitlab-org/gitlab/-/issues/351555
-
-      before do
-        stub_application_setting(static_objects_external_storage_url: 'https://cdn.gitlab.com')
-      end
-
-      context 'private project' do
-        let_it_be(:project) { create(:project, :repository, :private) }
-        let_it_be(:user) { create(:user) }
-
-        before do
-          project.add_developer(user)
-
-          sign_in(user)
-          visit_blob('README.md')
-        end
-
-        it 'shows open raw and download buttons with external storage URL prepended and user token appended to their href' do
-          path = project_raw_path(project, 'master/README.md')
-          raw_uri = "https://cdn.gitlab.com#{path}?token=#{user.static_object_token}"
-          download_uri = "https://cdn.gitlab.com#{path}?inline=false&token=#{user.static_object_token}"
-
-          aggregate_failures do
-            expect(page).to have_link 'Open raw', href: raw_uri
-            expect(page).to have_link 'Download', href: download_uri
-          end
         end
       end
     end

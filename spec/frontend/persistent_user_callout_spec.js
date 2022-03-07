@@ -21,7 +21,8 @@ describe('PersistentUserCallout', () => {
         data-feature-id="${featureName}"
         data-group-id="${groupId}"
       >
-        <button type="button" class="js-close"></button>
+        <button type="button" class="js-close js-close-primary"></button>
+        <button type="button" class="js-close js-close-secondary"></button>
       </div>
     `;
 
@@ -64,14 +65,15 @@ describe('PersistentUserCallout', () => {
   }
 
   describe('dismiss', () => {
-    let button;
+    const buttons = {};
     let mockAxios;
     let persistentUserCallout;
 
     beforeEach(() => {
       const fixture = createFixture();
       const container = fixture.querySelector('.container');
-      button = fixture.querySelector('.js-close');
+      buttons.primary = fixture.querySelector('.js-close-primary');
+      buttons.secondary = fixture.querySelector('.js-close-secondary');
       mockAxios = new MockAdapter(axios);
       persistentUserCallout = new PersistentUserCallout(container);
       jest.spyOn(persistentUserCallout.container, 'remove').mockImplementation(() => {});
@@ -81,29 +83,33 @@ describe('PersistentUserCallout', () => {
       mockAxios.restore();
     });
 
-    it('POSTs endpoint and removes container when clicking close', () => {
+    it.each`
+      button
+      ${'primary'}
+      ${'secondary'}
+    `('POSTs endpoint and removes container when clicking $button close', async ({ button }) => {
       mockAxios.onPost(dismissEndpoint).replyOnce(200);
 
-      button.click();
+      buttons[button].click();
 
-      return waitForPromises().then(() => {
-        expect(persistentUserCallout.container.remove).toHaveBeenCalled();
-        expect(mockAxios.history.post[0].data).toBe(
-          JSON.stringify({ feature_name: featureName, group_id: groupId }),
-        );
-      });
+      await waitForPromises();
+
+      expect(persistentUserCallout.container.remove).toHaveBeenCalled();
+      expect(mockAxios.history.post[0].data).toBe(
+        JSON.stringify({ feature_name: featureName, group_id: groupId }),
+      );
     });
 
-    it('invokes Flash when the dismiss request fails', () => {
+    it('invokes Flash when the dismiss request fails', async () => {
       mockAxios.onPost(dismissEndpoint).replyOnce(500);
 
-      button.click();
+      buttons.primary.click();
 
-      return waitForPromises().then(() => {
-        expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledWith({
-          message: 'An error occurred while dismissing the alert. Refresh the page and try again.',
-        });
+      await waitForPromises();
+
+      expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
+      expect(createFlash).toHaveBeenCalledWith({
+        message: 'An error occurred while dismissing the alert. Refresh the page and try again.',
       });
     });
   });
@@ -132,37 +138,37 @@ describe('PersistentUserCallout', () => {
       mockAxios.restore();
     });
 
-    it('defers loading of a link until callout is dismissed', () => {
+    it('defers loading of a link until callout is dismissed', async () => {
       const { href, target } = deferredLink;
       mockAxios.onPost(dismissEndpoint).replyOnce(200);
 
       deferredLink.click();
 
-      return waitForPromises().then(() => {
-        expect(windowSpy).toHaveBeenCalledWith(href, target);
-        expect(persistentUserCallout.container.remove).toHaveBeenCalled();
-        expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
-      });
+      await waitForPromises();
+
+      expect(windowSpy).toHaveBeenCalledWith(href, target);
+      expect(persistentUserCallout.container.remove).toHaveBeenCalled();
+      expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
     });
 
-    it('does not dismiss callout on non-deferred links', () => {
+    it('does not dismiss callout on non-deferred links', async () => {
       normalLink.click();
 
-      return waitForPromises().then(() => {
-        expect(windowSpy).not.toHaveBeenCalled();
-        expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
-      });
+      await waitForPromises();
+
+      expect(windowSpy).not.toHaveBeenCalled();
+      expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
     });
 
-    it('does not follow link when notification is closed', () => {
+    it('does not follow link when notification is closed', async () => {
       mockAxios.onPost(dismissEndpoint).replyOnce(200);
 
       button.click();
 
-      return waitForPromises().then(() => {
-        expect(windowSpy).not.toHaveBeenCalled();
-        expect(persistentUserCallout.container.remove).toHaveBeenCalled();
-      });
+      await waitForPromises();
+
+      expect(windowSpy).not.toHaveBeenCalled();
+      expect(persistentUserCallout.container.remove).toHaveBeenCalled();
     });
   });
 
@@ -187,30 +193,30 @@ describe('PersistentUserCallout', () => {
       mockAxios.restore();
     });
 
-    it('uses a link to trigger callout and defers following until callout is finished', () => {
+    it('uses a link to trigger callout and defers following until callout is finished', async () => {
       const { href } = link;
       mockAxios.onPost(dismissEndpoint).replyOnce(200);
 
       link.click();
 
-      return waitForPromises().then(() => {
-        expect(window.location.assign).toBeCalledWith(href);
-        expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
-        expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
-      });
+      await waitForPromises();
+
+      expect(window.location.assign).toBeCalledWith(href);
+      expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
+      expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
     });
 
-    it('invokes Flash when the dismiss request fails', () => {
+    it('invokes Flash when the dismiss request fails', async () => {
       mockAxios.onPost(dismissEndpoint).replyOnce(500);
 
       link.click();
 
-      return waitForPromises().then(() => {
-        expect(window.location.assign).not.toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledWith({
-          message:
-            'An error occurred while acknowledging the notification. Refresh the page and try again.',
-        });
+      await waitForPromises();
+
+      expect(window.location.assign).not.toHaveBeenCalled();
+      expect(createFlash).toHaveBeenCalledWith({
+        message:
+          'An error occurred while acknowledging the notification. Refresh the page and try again.',
       });
     });
   });

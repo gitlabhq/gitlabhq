@@ -29,7 +29,7 @@ When a branch is protected, the default behavior enforces these restrictions on 
 ### Set the default branch protection level
 
 Administrators can set a default branch protection level in the
-[Admin Area](../admin_area/settings/visibility_and_access_controls.md#protect-default-branches).
+[Admin Area](../project/repository/branches/default.md#instance-level-default-branch-protection).
 
 ## Configure a protected branch
 

@@ -54,6 +54,51 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `options`           | no       | `object`: options information needed to calculate the metric value. |
 | `skip_validation`   | no       | This should **not** be set. [Used for imported metrics until we review, update and make them valid](https://gitlab.com/groups/gitlab-org/-/epics/5425). |
 
+### Metric key_path
+
+The `key_path` of the metric is the location in the JSON Service Ping payload.
+
+The `key_path` could be composed from multiple parts separated by `.` and it must be unique.
+
+We recommend to add the metric in one of the top-level keys:
+
+- `settings`: for settings related metrics.
+- `counts_weekly`: for counters that have data for the most recent 7 days.
+- `counts_monthly`: for counters that have data for the most recent 28 days.
+- `counts`: for counters that have data for all time.
+
+NOTE:
+We can't control what the metric's `key_path` is, because some of them are generated dynamically in `usage_data.rb`.
+For example, see [Redis HLL metrics](implement.md#redis-hll-counters).
+
+### Metric name
+
+To improve metric discoverability by a wider audience, each metric with
+instrumentation added at an appointed `key_path` receives a `name` attribute
+filled with the name suggestion, corresponding to the metric `data_source` and instrumentation.
+Metric name suggestions can contain two types of elements:
+
+1. **User input prompts**: enclosed by angle brackets (`< >`), these pieces should be replaced or
+   removed when you create a metrics YAML file.
+1. **Fixed suggestion**: plaintext parts generated according to well-defined algorithms.
+   They are based on underlying instrumentation, and must not be changed.
+
+For a metric name to be valid, it must not include any prompt, and fixed suggestions
+must not be changed.
+
+#### Generate a metric name suggestion
+
+The metric YAML generator can suggest a metric name for you.
+To generate a metric name suggestion, first instrument the metric at the provided `key_path`.
+Then, generate the metric's YAML definition and
+return to the instrumentation and update it.
+
+1. Add the metric instrumentation class to `lib/gitlab/usage/metrics/instrumentations/`.
+1. Add the metric logic in the instrumentation class.
+1. Run the [metrics YAML generator](metrics_dictionary.md#metrics-definition-and-validation).
+1. Use the metric name suggestion to select a suitable metric name.
+1. Update the metric's YAML definition with the correct `key_path`.
+
 ### Metric statuses
 
 Metric definitions can have one of the following statuses:
@@ -80,21 +125,6 @@ which has a related schema in `/config/metrics/objects_schemas/topology_schema.j
 - `28d`: The metric data applies to the most recent 28-day interval. For example, the following metric counts the number of unique users that create issues over a 28-day interval: `config/metrics/counts_28d/20210216181139_issues.yml`.
 - `all`: The metric data applies for the whole time the metric has been active (all-time interval). For example, the following metric counts all users that create issues: `/config/metrics/counts_all/20210216181115_issues.yml`.
 - `none`: The metric collects a type of data that's not tracked over time, such as settings and configuration information. Therefore, a time interval is not applicable. For example, `uuid` has no time interval applicable: `config/metrics/license/20210201124933_uuid.yml`.
-
-### Metric name
-
-To improve metric discoverability by a wider audience, each metric with
-instrumentation added at an appointed `key_path` receives a `name` attribute
-filled with the name suggestion, corresponding to the metric `data_source` and instrumentation.
-Metric name suggestions can contain two types of elements:
-
-1. **User input prompts**: Enclosed by `<>`, these pieces should be replaced or
-   removed when you create a metrics YAML file.
-1. **Fixed suggestion**: Plaintext parts generated according to well-defined algorithms.
-   They are based on underlying instrumentation, and should not be changed.
-
-For a metric name to be valid, it must not include any prompt, and no fixed suggestions
-should be changed.
 
 ### Data category
 

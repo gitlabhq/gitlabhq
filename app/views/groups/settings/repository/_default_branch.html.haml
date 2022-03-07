@@ -1,22 +1,24 @@
 %section.settings.as-default-branch-name.no-animate#js-default-branch-name{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Default initial branch name')
+      = _('Default branch')
     %button.gl-button.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = s_('GroupSettings|The default name for the initial branch of new repositories created in the group.')
+      = s_('GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group.')
   .settings-content
-    = form_for @group, url: group_path(@group, anchor: 'js-default-branch-name'), html: { class: 'fieldset-form' } do |f|
+    = gitlab_ui_form_for @group, url: group_path(@group, anchor: 'js-default-branch-name'), html: { class: 'fieldset-form' } do |f|
       = form_errors(@group)
       - fallback_branch_name = "<code>#{Gitlab::DefaultBranch.value(object: @group)}</code>"
 
       %fieldset
         .form-group
-          = f.label :default_branch_name, _('Default initial branch name'), class: 'label-light'
+          = f.label :default_branch_name, _('Initial default branch name'), class: 'label-light'
           = f.text_field :default_branch_name, value: group.namespace_settings&.default_branch_name, placeholder: Gitlab::DefaultBranch.value(object: @group), class: 'form-control'
           %span.form-text.text-muted
             = (s_("GroupSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories.") % { default_initial_branch_name: fallback_branch_name }).html_safe
 
-      = f.hidden_field :redirect_target, value: "repository_settings"
-      = f.submit _('Save changes'), class: 'btn gl-button btn-confirm'
+        = render 'groups/settings/default_branch_protection', f: f, group: @group
+
+        = f.hidden_field :redirect_target, value: "repository_settings"
+        = f.submit _('Save changes'), class: 'btn gl-button btn-confirm'

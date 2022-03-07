@@ -52,7 +52,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         enable_code_quality_walkthrough_experiment
-        enable_ci_runner_templates_experiment
         enable_runners_availability_section_experiment
       end
       format.json do
@@ -311,19 +310,6 @@ class Projects::PipelinesController < Projects::ApplicationController
       e.exclude! unless current_user
       e.exclude! unless can?(current_user, :create_pipeline, project)
       e.exclude! unless project.root_ancestor.recent?
-      e.exclude! if @pipelines_count.to_i > 0
-      e.exclude! if helpers.has_gitlab_ci?(project)
-
-      e.control {}
-      e.candidate {}
-      e.publish_to_database
-    end
-  end
-
-  def enable_ci_runner_templates_experiment
-    experiment(:ci_runner_templates, namespace: project.root_ancestor) do |e|
-      e.exclude! unless current_user
-      e.exclude! unless can?(current_user, :create_pipeline, project)
       e.exclude! if @pipelines_count.to_i > 0
       e.exclude! if helpers.has_gitlab_ci?(project)
 

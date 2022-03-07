@@ -1,16 +1,10 @@
 <script>
 import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
 import awsCloudFormationImageUrl from 'images/aws-cloud-formation.png';
-import ExperimentTracking from '~/experimentation/experiment_tracking';
+import Tracking from '~/tracking';
 import { getBaseURL, objectToQuery } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
-import {
-  EXPERIMENT_NAME,
-  README_URL,
-  CF_BASE_URL,
-  TEMPLATES_BASE_URL,
-  EASY_BUTTONS,
-} from './constants';
+import { README_URL, CF_BASE_URL, TEMPLATES_BASE_URL, EASY_BUTTONS } from './constants';
 
 export default {
   components: {
@@ -18,6 +12,7 @@ export default {
     GlSprintf,
     GlLink,
   },
+  mixins: [Tracking.mixin()],
   props: {
     modalId: {
       type: String,
@@ -39,8 +34,9 @@ export default {
       return CF_BASE_URL + objectToQuery(params);
     },
     trackCiRunnerTemplatesClick(stackName) {
-      const tracking = new ExperimentTracking(EXPERIMENT_NAME);
-      tracking.event(`template_clicked_${stackName}`);
+      this.track('template_clicked', {
+        label: stackName,
+      });
     },
   },
   i18n: {

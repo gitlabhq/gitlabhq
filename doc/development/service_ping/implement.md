@@ -16,7 +16,7 @@ Service Ping consists of two kinds of data:
 To implement a new metric in Service Ping, follow these steps:
 
 1. [Implement the required counter](#types-of-counters)
-1. [Name and place the metric](#name-and-place-the-metric)
+1. [Name and place the metric](metrics_dictionary.md#metric-key_path)
 1. [Test counters manually using your Rails console](#test-counters-manually-using-your-rails-console)
 1. [Generate the SQL query](#generate-the-sql-query)
 1. [Optimize queries with `#database-lab`](#optimize-queries-with-database-lab)
@@ -659,29 +659,6 @@ We return fallback values in these cases:
 | Deprecated Metric           | -1000 |
 | Timeouts, general failures  | -1    |
 | Standard errors in counters | -2    |
-
-## Name and place the metric
-
-Add the metric in one of the top-level keys:
-
-- `settings`: for settings related metrics.
-- `counts_weekly`: for counters that have data for the most recent 7 days.
-- `counts_monthly`: for counters that have data for the most recent 28 days.
-- `counts`: for counters that have data for all time.
-
-### How to get a metric name suggestion
-
-The metric YAML generator can suggest a metric name for you.
-To generate a metric name suggestion, first instrument the metric at the provided `key_path`.
-Then, generate the metric's YAML definition and
-return to the instrumentation and update it.
-
-1. Add the metric instrumentation to `lib/gitlab/usage_data.rb` inside one
-   of the [top-level keys](#name-and-place-the-metric), using any name you choose.
-1. Run the [metrics YAML generator](metrics_dictionary.md#metrics-definition-and-validation).
-1. Use the metric name suggestion to select a suitable metric name.
-1. Update the instrumentation you created in the first step and change the metric name to the suggested name.
-1. Update the metric's YAML definition with the correct `key_path`.
 
 ## Test counters manually using your Rails console
 

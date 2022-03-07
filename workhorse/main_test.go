@@ -138,7 +138,7 @@ func TestDeniedXSendfileDownload(t *testing.T) {
 
 func TestAllowedStaticFile(t *testing.T) {
 	content := "PUBLIC"
-	require.NoError(t, setupStaticFile("static file.txt", content))
+	setupStaticFile(t, "static file.txt", content)
 
 	proxied := false
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
@@ -164,7 +164,7 @@ func TestAllowedStaticFile(t *testing.T) {
 
 func TestStaticFileRelativeURL(t *testing.T) {
 	content := "PUBLIC"
-	require.NoError(t, setupStaticFile("static.txt", content), "create public/static.txt")
+	setupStaticFile(t, "static.txt", content)
 
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(http.NotFound))
 	defer ts.Close()
@@ -182,7 +182,7 @@ func TestStaticFileRelativeURL(t *testing.T) {
 
 func TestAllowedPublicUploadsFile(t *testing.T) {
 	content := "PRIVATE but allowed"
-	require.NoError(t, setupStaticFile("uploads/static file.txt", content), "create public/uploads/static file.txt")
+	setupStaticFile(t, "uploads/static file.txt", content)
 
 	proxied := false
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
@@ -208,7 +208,7 @@ func TestAllowedPublicUploadsFile(t *testing.T) {
 
 func TestDeniedPublicUploadsFile(t *testing.T) {
 	content := "PRIVATE"
-	require.NoError(t, setupStaticFile("uploads/static.txt", content), "create public/uploads/static.txt")
+	setupStaticFile(t, "uploads/static.txt", content)
 
 	proxied := false
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
@@ -241,7 +241,7 @@ This is a static error page for code 499
 </body>
 </html>
 `
-	require.NoError(t, setupStaticFile("499.html", errorPageBody))
+	setupStaticFile(t, "499.html", errorPageBody)
 	ts := testhelper.TestServerWithHandler(nil, func(w http.ResponseWriter, _ *http.Request) {
 		upstreamError := "499"
 		// This is the point of the test: the size of the upstream response body
@@ -266,7 +266,7 @@ This is a static error page for code 499
 func TestGzipAssets(t *testing.T) {
 	path := "/assets/static.txt"
 	content := "asset"
-	require.NoError(t, setupStaticFile(path, content))
+	setupStaticFile(t, path, content)
 
 	buf := &bytes.Buffer{}
 	gzipWriter := gzip.NewWriter(buf)
@@ -274,7 +274,7 @@ func TestGzipAssets(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, gzipWriter.Close())
 	contentGzip := buf.String()
-	require.NoError(t, setupStaticFile(path+".gz", contentGzip))
+	setupStaticFile(t, path+".gz", contentGzip)
 
 	proxied := false
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
@@ -319,7 +319,7 @@ func TestGzipAssets(t *testing.T) {
 func TestAltDocumentAssets(t *testing.T) {
 	path := "/assets/static.txt"
 	content := "asset"
-	require.NoError(t, setupAltStaticFile(path, content))
+	setupAltStaticFile(t, path, content)
 
 	buf := &bytes.Buffer{}
 	gzipWriter := gzip.NewWriter(buf)
@@ -327,7 +327,7 @@ func TestAltDocumentAssets(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, gzipWriter.Close())
 	contentGzip := buf.String()
-	require.NoError(t, setupAltStaticFile(path+".gz", contentGzip))
+	setupAltStaticFile(t, path+".gz", contentGzip)
 
 	proxied := false
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
@@ -712,25 +712,12 @@ func TestRejectUnknownMethod(t *testing.T) {
 	require.Equal(t, http.StatusMethodNotAllowed, resp.StatusCode)
 }
 
-func setupStaticFile(fpath, content string) error {
-	return setupStaticFileHelper(fpath, content, testDocumentRoot)
+func setupStaticFile(t *testing.T, fpath, content string) {
+	absDocumentRoot = testhelper.SetupStaticFileHelper(t, fpath, content, testDocumentRoot)
 }
 
-func setupAltStaticFile(fpath, content string) error {
-	return setupStaticFileHelper(fpath, content, testAltDocumentRoot)
-}
-
-func setupStaticFileHelper(fpath, content, directory string) error {
-	cwd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	absDocumentRoot = path.Join(cwd, directory)
-	if err := os.MkdirAll(path.Join(absDocumentRoot, path.Dir(fpath)), 0755); err != nil {
-		return err
-	}
-	staticFile := path.Join(absDocumentRoot, fpath)
-	return ioutil.WriteFile(staticFile, []byte(content), 0666)
+func setupAltStaticFile(t *testing.T, fpath, content string) {
+	absDocumentRoot = testhelper.SetupStaticFileHelper(t, fpath, content, testAltDocumentRoot)
 }
 
 func prepareDownloadDir(t *testing.T) {
@@ -896,7 +883,7 @@ This is a static error page for code 503
 </body>
 </html>
 `
-	require.NoError(t, setupStaticFile("503.html", errorPageBody))
+	setupStaticFile(t, "503.html", errorPageBody)
 
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("X-Gitlab-Custom-Error", "1")

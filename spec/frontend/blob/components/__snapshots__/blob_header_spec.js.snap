@@ -27,7 +27,7 @@ exports[`Blob Header Default Actions rendering matches the snapshot 1`] = `
       
     <default-actions-stub
       activeviewer="simple"
-      rawpath="/flightjs/flight/snippets/51/raw"
+      rawpath="https://testing.com/flightjs/flight/snippets/51/raw"
     />
   </div>
 </div>

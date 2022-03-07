@@ -81,12 +81,82 @@ overrides it.
 Users with at least the Owner role of groups and subgroups can configure the default branch name for a group:
 
 1. Go to the group **Settings > Repository**.
-1. Expand **Default initial branch name**.
+1. Expand **Default branch**.
 1. Change the default initial branch to a custom name of your choice.
 1. Select **Save changes**.
 
 Projects created in this group after you change the setting use the custom branch name,
 unless a subgroup configuration overrides it.
+
+## Protect initial default branches **(FREE SELF)**
+
+GitLab administrators and group owners can define [branch protections](../../../project/protected_branches.md)
+to apply to every repository's [default branch](#default-branch)
+at the [instance level](#instance-level-default-branch-protection) and
+[group level](#group-level-default-branch-protection) with one of the following options:
+
+- **Not protected** - Both developers and maintainers can push new commits
+   and force push.
+- **Protected against pushes** - Developers cannot push new commits, but are
+   allowed to accept merge requests to the branch. Maintainers can push to the branch.
+- **Partially protected** - Both developers and maintainers can push new commits,
+   but cannot force push.
+- **Fully protected** - Developers cannot push new commits, but maintainers can.
+   No one can force push.
+
+### Instance-level default branch protection **(FREE SELF)**
+
+This setting applies only to each repository's default branch. To protect other branches,
+you must either:
+
+- Configure [branch protection in the repository](../../../project/protected_branches.md).
+- Configure [branch protection for groups](../../../group/index.md#change-the-default-branch-protection-of-a-group).
+
+Administrators of self-managed instances can customize the initial default branch protection for projects hosted on that instance. Individual
+groups and subgroups can override this instance-wide setting for their projects.
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Default branch**.
+1. Select [**Initial default branch protection**](#protect-initial-default-branches).
+1. To allow group owners to override the instance's default branch protection, select
+   [**Allow owners to manage default branch protection per group**](#prevent-overrides-of-default-branch-protection).
+1. Select **Save changes**.
+
+#### Prevent overrides of default branch protection **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211944) in GitLab 13.0.
+
+Instance-level protections for default branches
+can be overridden on a per-group basis by the group's owner. In
+[GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can
+disable this privilege for group owners, enforcing the instance-level protection rule:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand the **Default branch** section.
+1. Clear the **Allow owners to manage default branch protection per group** checkbox.
+1. Select **Save changes**.
+
+NOTE:
+GitLab administrators can still update the default branch protection of a group.
+
+### Group-level default branch protection **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
+> - [Settings moved and renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/340403) in GitLab 14.9.
+
+Instance-level protections for [default branch](#default-branch)
+can be overridden on a per-group basis by the group's owner. In
+[GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can
+[enforce protection of initial default branches](#prevent-overrides-of-default-branch-protection)
+which locks this setting for group owners.
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Default branch**.
+1. Select [**Initial default branch protection**](#protect-initial-default-branches).
+1. Select **Save changes**.
 
 ## Update the default branch name in your repository
 

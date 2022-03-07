@@ -26,7 +26,7 @@ RSpec.describe 'Group Repository settings' do
     end
   end
 
-  context 'Default initial branch name' do
+  context 'Default branch' do
     before do
       visit group_settings_repository_path(group)
     end
@@ -37,8 +37,8 @@ RSpec.describe 'Group Repository settings' do
 
     it 'renders the correct setting section content' do
       within("#js-default-branch-name") do
-        expect(page).to have_content("Default initial branch name")
-        expect(page).to have_content("The default name for the initial branch of new repositories created in the group.")
+        expect(page).to have_content("Default branch")
+        expect(page).to have_content("Set the initial name and protections for the default branch of new repositories created in the group.")
       end
     end
   end

@@ -210,6 +210,18 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 
 There is a complete list of all GitLab [data types](replication/datatypes.md) and [existing support for replication and verification](replication/datatypes.md#limitations-on-replicationverification).
 
+### View replication data on the primary site
+
+If you try to view replication data on the primary site, you receive a warning that this may be inconsistent:
+
+> Viewing projects and designs data from a primary site is not possible when using a unified URL. Visit the secondary site directly.
+
+The only way to view projects replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/projects`.
+An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4623) to fix this limitation.
+
+The only way to view designs replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/designs`.
+An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4624) to fix this limitation.
+
 ## Setup instructions
 
 For setup instructions, see [Setting up Geo](setup/index.md).

@@ -5,13 +5,13 @@
 %section.settings.as-default-branch-name.no-animate#js-default-branch-name{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
-      = _('Default initial branch name')
+      = _('Default branch')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = s_('AdminSettings|The default name for the initial branch of new repositories created in the instance.')
+      = s_('AdminSettings|Set the initial name and protections for the default branch of new repositories created in the instance.')
   .settings-content
-    = render 'initial_branch_name'
+    = render 'default_branch'
 
 %section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
