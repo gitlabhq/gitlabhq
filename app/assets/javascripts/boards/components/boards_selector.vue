@@ -315,9 +315,7 @@ export default {
 
           <gl-dropdown-item v-if="hasMissingBoards" class="no-pointer-events">
             {{
-              s__(
-                'IssueBoards|Some of your boards are hidden, activate a license to see them again.',
-              )
+              s__('IssueBoards|Some of your boards are hidden, add a license to see them again.')
             }}
           </gl-dropdown-item>
         </div>

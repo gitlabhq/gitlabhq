@@ -45,33 +45,18 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity do
   describe 'environment type' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:env_name, :env_type) do
-      'PRODUCTION'     | 'production'
-      'prod'           | 'production'
-      'prod-east-2'    | 'production'
-      'us-prod-east'   | 'production'
-      'fe-production'  | 'production'
-      'test'           | 'testing'
-      'qa-env-2'       | 'testing'
-      'staging'        | 'staging'
-      'pre-prod'       | 'staging'
-      'blue-kit-stage' | 'staging'
-      'pre-prod'       | 'staging'
-      'dev'            | 'development'
-      'review/app'     | 'development'
-      'something-else' | 'unmapped'
-      'store-produce'  | 'unmapped'
-      'unproductive'   | 'unmapped'
+    where(:tier, :env_type) do
+      'other' | 'unmapped'
     end
 
     with_them do
       before do
-        environment.update!(name: env_name)
+        subject.environment.update!(tier: tier)
       end
 
       let(:exposed_type) { subject.send(:environment_entity).send(:type) }
 
-      it 'has the correct environment type' do
+      it 'has the same type as the environment tier' do
         expect(exposed_type).to eq(env_type)
       end
     end

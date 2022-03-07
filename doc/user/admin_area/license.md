@@ -39,26 +39,24 @@ To activate your instance with an activation code:
 1. On the left sidebar, select **Subscription**.
 1. Enter the activation code in **Activation code**.
 1. Read and accept the terms of service.
-1. Select **Activate**.
+1. Select **Add license**.
 
-## Activate GitLab EE with a license file
+## Activate GitLab EE with a license file or key
 
 If you receive a license file from GitLab (for example, for a trial), you can
 upload it to your instance or add it during installation. The license file is
 a base64-encoded ASCII text file with a `.gitlab-license` extension.
 
-## Upload your license
-
 The first time you sign in to your GitLab instance, a note with a
-link to the **Upload license** page should be displayed.
+link to the **Add license** page should be displayed.
 
-Otherwise, to upload your license:
+Otherwise, to add your license:
 
 1. Sign in to GitLab as an administrator.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
-1. In the **License file** area, select **Upload a license**.
-1. Upload a license:
+1. In the **License file** area, select **Add a license**.
+1. Add a license:
    - For a file, either:
      - Select **Upload `.gitlab-license` file**, then **Choose File** and
        select the license file from your local machine.
@@ -66,7 +64,7 @@ Otherwise, to upload your license:
    - For plain text, select **Enter license key** and paste the contents in
      **License key**.
 1. Select the **Terms of Service** checkbox.
-1. Select **Upload License**.
+1. Select **Add license**.
 
 ## Add your license during installation
 
@@ -91,7 +89,7 @@ You can import a license file when you install GitLab.
 
 WARNING:
 These methods only add a license at the time of installation. To renew or upgrade
-a license, upload the license in the **Admin Area** in the web user interface.
+a license, add the license in the **Admin Area** in the web user interface.
 
 ## What happens when your license expires
 
@@ -103,13 +101,13 @@ and issue creation. Your instance becomes read-only and
 an expiration message displays to all administrators. You have a 14-day grace period
 before this occurs.
 
-To resume functionality, [upload a new license](#upload-your-license).
+To resume functionality, [activate a new license](#activate-gitlab-ee-with-an-activation-code).
 
-To go back to Free features, [delete all expired licenses](#remove-a-license-file).
+To go back to Free features, [delete all expired licenses](#remove-a-license).
 
-## Remove a license file
+## Remove a license
 
-To remove a license file from a self-managed instance:
+To remove a license from a self-managed instance:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Subscription**.
@@ -124,17 +122,17 @@ To view your license details:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Subscription**.
 
-You can upload and view more than one license, but only the latest license in
+You can add and view more than one license, but only the latest license in
 the current date range is the active license.
 
-When you upload a future-dated license, it doesn't take effect until its applicable date.
+When you add a future-dated license, it doesn't take effect until its applicable date.
 You can view all active subscriptions in the **Subscription history** table.
 
 You can also [export](../../subscriptions/self_managed/index.md) your license usage information to a CSV file.
 
 NOTE:
 In GitLab 13.6 and earlier, a banner about an expiring license may continue to display
-when you upload a new license. This happens when the start date of the new license
+when you add a new license. This happens when the start date of the new license
 is in the future and the expiring one is still active.
 The banner disappears after the new license becomes active.
 
@@ -142,18 +140,18 @@ The banner disappears after the new license becomes active.
 
 ### No Subscription area in the Admin Area
 
-You cannot upload your license because there is no **Subscription** area.
+You cannot add your license because there is no **Subscription** area.
 This issue might occur if:
 
-- You're running GitLab Community Edition. Before you upload your license, you
+- You're running GitLab Community Edition. Before you add your license, you
   must [upgrade to Enterprise Edition](../../update/index.md#community-to-enterprise-edition).
-- You're using GitLab.com. You cannot upload a self-managed license to GitLab.com.
+- You're using GitLab.com. You cannot add a self-managed license to GitLab.com.
   To use paid features on GitLab.com, [purchase a separate subscription](../../subscriptions/gitlab_com/index.md).
 
 ### Users exceed license limit upon renewal
 
 GitLab displays a message prompting you to purchase
-additional users. This issue occurs if you upload a license that does not have enough
+additional users. This issue occurs if you add a license that does not have enough
 users to cover the number of users in your instance.
 
 To fix this issue, purchase additional seats to cover those users.
@@ -167,8 +165,8 @@ rules apply:
 - If the users over license are more than 10% of the users in the license file,
   you cannot apply the license without purchasing more users.
 
-For example, if you purchase a license for 100 users, you can have 110 users when you activate
-your license. However, if you have 111 users, you must purchase more users before you can activate
+For example, if you purchase a license for 100 users, you can have 110 users when you add
+your license. However, if you have 111 users, you must purchase more users before you can add
 the license.
 
 ### Cannot activate instance due to connectivity error
@@ -177,7 +175,7 @@ In GitLab 14.1 and later, to activate your subscription with an activation code,
 your GitLab instance must be connected to the internet.
 
 If you have an offline or airgapped environment,
-[upload a license file](license.md#activate-gitlab-ee-with-a-license-file) instead.
+[activate GitLab EE with a license file or key](license.md#activate-gitlab-ee-with-a-license-file-or-key) instead.
 
 If you have questions or need assistance activating your instance,
 [contact GitLab Support](https://about.gitlab.com/support/#contact-support).

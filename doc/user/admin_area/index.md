@@ -30,7 +30,7 @@ The Admin Area is made up of the following sections:
 | **{hook}** System Hooks                        | Configure [system hooks](../../system_hooks/system_hooks.md) for many events. |
 | **{applications}** Applications                | Create system [OAuth applications](../../integration/oauth_provider.md) for integrations with other services. |
 | **{slight-frown}** Abuse Reports               | Manage [abuse reports](review_abuse_reports.md) submitted by your users. |
-| **{license}** License                          | Upload, display, and remove [licenses](license.md). |
+| **{license}** License                          | Add, display, and remove [licenses](license.md). |
 | **{cloud-gear}** Kubernetes                    | Create and manage instance-level [Kubernetes clusters](../instance/clusters/index.md). |
 | **{push-rules}** Push rules | Configure pre-defined Git [push rules](../project/repository/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). |
 | **{location-dot}** Geo                         | Configure and maintain [Geo nodes](geo_nodes.md). |

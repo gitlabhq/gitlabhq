@@ -827,7 +827,7 @@ to request additional material:
   Geo is the solution for widely distributed development teams.
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/) - Everything you need to know
   about administering your GitLab instance.
-- [Upload a license](../../user/admin_area/license.md):
+- [Add a license](../../user/admin_area/license.md):
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 

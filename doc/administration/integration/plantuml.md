@@ -21,7 +21,7 @@ blocks to an HTML image tag, with the source pointing to the PlantUML instance. 
 diagram delimiters `@startuml`/`@enduml` aren't required, as these are replaced
 by the `plantuml` block:
 
-- **Markdown**
+- **Markdown** files with the extension `.md`:
 
   ````markdown
   ```plantuml
@@ -30,7 +30,10 @@ by the `plantuml` block:
   ```
   ````
 
-- **AsciiDoc**
+  For additional acceptable extensions, review the
+  [`languages.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/languages.yml#L3174) file.
+
+- **AsciiDoc** files with the extension `.asciidoc`, `.adoc`, or `.asc`:
 
   ```plaintext
   [plantuml, format="png", id="myDiagram", width="200px"]

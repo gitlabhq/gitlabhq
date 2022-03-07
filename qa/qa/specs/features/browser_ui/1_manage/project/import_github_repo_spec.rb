@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Manage', :github, :requires_admin do
     describe 'Project import' do
-      let(:github_repo) { 'gitlab-qa-github/test-project' }
+      let(:github_repo) { 'gitlab-qa-github/import-test' }
       let(:api_client) { Runtime::API::Client.as_admin }
       let(:group) { Resource::Group.fabricate_via_api! { |resource| resource.api_client = api_client } }
       let(:user) do
@@ -55,7 +55,7 @@ module QA
         Page::Project::Show.perform do |project|
           aggregate_failures do
             expect(project).to have_content(imported_project.name)
-            expect(project).to have_content('This test project is used for automated GitHub import by GitLab QA.')
+            expect(project).to have_content('Project for github import test')
           end
         end
       end

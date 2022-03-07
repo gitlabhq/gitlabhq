@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', :github, :requires_admin, :reliable do
-    describe 'Project import' do
+    describe 'Project import', issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/353583' do
       let!(:api_client) { Runtime::API::Client.as_admin }
       let!(:group) { Resource::Group.fabricate_via_api! { |resource| resource.api_client = api_client } }
       let!(:user) do
@@ -17,7 +17,7 @@ module QA
           project.name = 'imported-project'
           project.group = group
           project.github_personal_access_token = Runtime::Env.github_access_token
-          project.github_repository_path = 'gitlab-qa-github/test-project'
+          project.github_repository_path = 'gitlab-qa-github/import-test'
           project.api_client = api_client
         end
       end
@@ -50,26 +50,27 @@ module QA
 
       def verify_status_data
         stats = imported_project.project_import_status.dig(:stats, :imported)
-        expect(stats).to eq(
-          label: 10,
+        expect(stats).to include(
+          # issue: 2,
+          label: 9,
           milestone: 1,
-          issue: 2,
-          note: 2,
+          note: 3,
           pull_request: 1,
-          pull_request_review: 2,
-          diff_note: 2
+          pull_request_review: 1,
+          diff_note: 1,
+          release: 1
         )
       end
 
       def verify_repository_import
         expect(imported_project.api_response).to include(
-          description: 'A new repo for test',
+          description: 'Project for github import test',
           import_error: nil
         )
       end
 
       def verify_commits_import
-        expect(imported_project.commits.length).to eq(20)
+        expect(imported_project.commits.length).to eq(2)
       end
 
       def verify_labels_import
@@ -77,7 +78,6 @@ module QA
 
         expect(labels).to include(
           { name: 'bug', color: '#d73a4a' },
-          { name: 'custom new label', color: '#fc8f91' },
           { name: 'documentation', color: '#0075ca' },
           { name: 'duplicate', color: '#cfd3d7' },
           { name: 'enhancement', color: '#a2eeef' },
@@ -94,10 +94,10 @@ module QA
 
         expect(issues.length).to eq(1)
         expect(issues.first).to include(
-          title: 'This is a sample issue',
-          description: "*Created by: gitlab-qa-github*\n\nThis is a sample first comment",
-          labels: ['custom new label', 'good first issue', 'help wanted'],
-          user_notes_count: 1
+          title: 'Test issue',
+          description: "*Created by: gitlab-qa-github*\n\nTest issue description",
+          labels: ['good first issue', 'help wanted', 'question'],
+          user_notes_count: 2
         )
       end
 
@@ -105,7 +105,7 @@ module QA
         milestones = imported_project.milestones
 
         expect(milestones.length).to eq(1)
-        expect(milestones.first).to include(title: 'v1.0', description: nil, state: 'active')
+        expect(milestones.first).to include(title: '0.0.1', description: nil, state: 'active')
       end
 
       def verify_wikis_import
@@ -126,20 +126,20 @@ module QA
 
         expect(merge_requests.length).to eq(1)
         expect(merge_request.api_resource).to include(
-          title: 'Improve readme',
+          title: 'Test pull request',
           state: 'opened',
           target_branch: 'main',
-          source_branch: 'improve-readme',
-          labels: %w[bug documentation],
+          source_branch: 'gitlab-qa-github-patch-1',
+          labels: %w[documentation],
           description: <<~DSC.strip
-            *Created by: gitlab-qa-github*\n\nThis improves the README file a bit.\r\n\r\nTODO:\r\n\r\n \r\n\r\n- [ ] Do foo\r\n- [ ]  Make bar\r\n  - [ ]  Think about baz
+            *Created by: gitlab-qa-github*\n\nTest pull request body
           DSC
         )
-        expect(mr_comments).to eq(
+        expect(mr_comments).to match_array(
           [
-            "*Created by: gitlab-qa-github*\n\n[PR comment by @sliaquat] Nice work! ",
-            "*Created by: gitlab-qa-github*\n\n[Single diff comment] Nice addition",
-            "*Created by: gitlab-qa-github*\n\n[Single diff comment] Good riddance"
+            "*Created by: gitlab-qa-github*\n\n**Review:** Commented\n\nGood but needs some improvement",
+            "*Created by: gitlab-qa-github*\n\n```suggestion:-0+0\nProject for GitHub import test to GitLab\r\n```",
+            "*Created by: gitlab-qa-github*\n\nSome test PR comment"
           ]
         )
       end

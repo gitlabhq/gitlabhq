@@ -295,13 +295,6 @@ export default {
 
       return enableSquashBeforeMerge;
     },
-    shouldShowMergeControls() {
-      if (this.glFeatures.restructuredMrWidget) {
-        return this.restructuredWidgetShowMergeButtons;
-      }
-
-      return this.isMergeAllowed || this.isAutoMergeAvailable;
-    },
     shouldShowSquashEdit() {
       return this.squashBeforeMerge && this.shouldShowSquashBeforeMerge;
     },

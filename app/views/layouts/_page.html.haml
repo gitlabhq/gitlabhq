@@ -3,23 +3,23 @@
     = render "layouts/nav/sidebar/#{nav}"
   .content-wrapper.content-wrapper-margin{ class: "#{@content_wrapper_class}" }
     .mobile-overlay
-    = render_if_exists 'layouts/header/verification_reminder'
+    = dispensable_render_if_exists 'layouts/header/verification_reminder'
     .alert-wrapper.gl-force-block-formatting-context
-      = render 'shared/outdated_browser'
-      = render_if_exists "layouts/header/licensed_user_count_threshold"
-      = render_if_exists "layouts/header/token_expiry_notification"
-      = render "layouts/broadcast"
-      = render "layouts/header/read_only_banner"
-      = render "layouts/header/registration_enabled_callout"
-      = render "layouts/nav/classification_level_banner"
+      = dispensable_render 'shared/outdated_browser'
+      = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold"
+      = dispensable_render_if_exists "layouts/header/token_expiry_notification"
+      = dispensable_render "layouts/broadcast"
+      = dispensable_render "layouts/header/read_only_banner"
+      = dispensable_render "layouts/header/registration_enabled_callout"
+      = dispensable_render "layouts/nav/classification_level_banner"
       = yield :flash_message
-      = render "shared/service_ping_consent"
+      = dispensable_render "shared/service_ping_consent"
       = render_two_factor_auth_recovery_settings_check
-      = render_if_exists "layouts/header/ee_subscribable_banner"
-      = render_if_exists "layouts/header/seats_count_alert"
-      = render_if_exists "shared/namespace_storage_limit_alert"
-      = render_if_exists "shared/namespace_user_cap_reached_alert"
-      = render_if_exists "shared/new_user_signups_cap_reached_alert"
+      = dispensable_render_if_exists "layouts/header/ee_subscribable_banner"
+      = dispensable_render_if_exists "layouts/header/seats_count_alert"
+      = dispensable_render_if_exists "shared/namespace_storage_limit_alert"
+      = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"
+      = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
       = yield :page_level_alert
       = yield :group_invite_members_banner
       - unless @hide_breadcrumbs

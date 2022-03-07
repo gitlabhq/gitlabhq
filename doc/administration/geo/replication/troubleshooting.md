@@ -268,7 +268,7 @@ sudo gitlab-rake gitlab:geo:check
 
   GitLab Geo is available ... no
     Try fixing it:
-    Upload a new license that includes the GitLab Geo feature
+    Add a new license that includes the GitLab Geo feature
     For more information see:
     https://about.gitlab.com/features/gitlab-geo/
   GitLab Geo is enabled ... Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist

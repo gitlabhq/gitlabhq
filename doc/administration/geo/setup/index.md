@@ -20,7 +20,7 @@ The steps below should be followed in the order they appear. **Make sure the Git
 If you installed GitLab using the Omnibus packages (highly recommended):
 
 1. [Install GitLab Enterprise Edition](https://about.gitlab.com/install/) on the nodes that will serve as the **secondary** site. Do not create an account or log in to the new **secondary** site.
-1. [Upload the GitLab License](../../../user/admin_area/license.md) on the **primary** site to unlock Geo. The license must be for [GitLab Premium](https://about.gitlab.com/pricing/) or higher.
+1. [Add the GitLab License](../../../user/admin_area/license.md) on the **primary** site to unlock Geo. The license must be for [GitLab Premium](https://about.gitlab.com/pricing/) or higher.
 1. [Set up the database replication](database.md) (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md). This step is required and needs to be done on **both** the **primary** and **secondary** sites.
 1. [Configure GitLab](../replication/configuration.md) to set the **primary** and **secondary** sites.

@@ -461,11 +461,16 @@ class Environment < ApplicationRecord
   # See https://en.wikipedia.org/wiki/Deployment_environment for industry standard deployment environments
   def guess_tier
     case name
-    when %r{dev|review|trunk}i then self.class.tiers[:development]
-    when %r{test|qc}i then self.class.tiers[:testing]
-    when %r{st(a|)g|mod(e|)l|pre|demo}i then self.class.tiers[:staging]
-    when %r{pr(o|)d|live}i then self.class.tiers[:production]
-    else self.class.tiers[:other]
+    when /(dev|review|trunk)/i
+      self.class.tiers[:development]
+    when /(test|tst|int|ac(ce|)pt|qa|qc|control|quality)/i
+      self.class.tiers[:testing]
+    when /(st(a|)g|mod(e|)l|pre|demo)/i
+      self.class.tiers[:staging]
+    when /(pr(o|)d|live)/i
+      self.class.tiers[:production]
+    else
+      self.class.tiers[:other]
     end
   end
 end

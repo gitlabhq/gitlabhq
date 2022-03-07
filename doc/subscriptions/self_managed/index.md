@@ -153,13 +153,13 @@ See the [quarterly subscription reconciliation section](../quarterly_reconciliat
 
 ### How cloud licensing works
 
-#### Activate your license
+#### Add your license
 
 1. When you purchase a GitLab self-managed plan, an activation code is generated.
    This activation code is sent to the email address associated with the Customers Portal account.
 1. In GitLab, on the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Subscription** and paste the activation code in the text field.
-1. Select **Activate**.
+1. Select **Add license**.
 
 The page displays the details of the subscription.
 
@@ -256,7 +256,7 @@ To subscribe to GitLab through a GitLab self-managed installation:
 
 1. Go to the [Customers Portal](https://customers.gitlab.com/) and purchase a GitLab self-managed plan.
 1. After purchase, a license file is sent to the email address associated to the Customers Portal account,
-   which must be [uploaded to your GitLab instance](../../user/admin_area/license.md#upload-your-license).
+   which must be [add to your GitLab instance](../../user/admin_area/license.md#activate-gitlab-ee-with-a-license-file-or-key).
 
 NOTE:
 If you're purchasing a subscription for an existing **Free** GitLab self-managed
@@ -380,7 +380,7 @@ To add seats to a subscription:
 The following items are emailed to you:
 
 - A payment receipt. You can also access this information in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
-- A new license. [Upload this license](../../user/admin_area/license.md#upload-your-license) to your instance to use it.
+- A new license. [Add this license](../../user/admin_area/license.md#activate-gitlab-ee-with-an-activation-code) to your instance to use it.
 
 ### Renew a subscription
 
@@ -400,8 +400,8 @@ You can hover your mouse on the **Renew** button to see the date when it will be
 1. In the first box, enter the total number of user licenses you'll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 1. Review your renewal details and complete the payment process.
-1. A license for the renewal term is available for download on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy license to clipboard** or **Download license** to get a copy.
-1. [Upload](../../user/admin_area/license.md#upload-your-license) your new license to your instance.
+1. An activation code for the renewal term is available on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy activation code** to get a copy.
+1. [Add your new license](../../user/admin_area/license.md#activate-gitlab-ee-with-an-activation-code) to your instance.
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
@@ -421,10 +421,10 @@ The following is emailed to you:
 
 - A payment receipt. You can also access this information in the Customers Portal under
   [**View invoices**](https://customers.gitlab.com/receipts).
-- A new license.
+- A new activation code for your license.
 
-[Upload the new license](../../user/admin_area/license.md#upload-your-license) to your instance.
-The new tier takes effect when the new license is uploaded.
+[Add the new license](../../user/admin_area/license.md#activate-gitlab-ee-with-an-activation-code) to your instance.
+The new tier takes effect when the new license is activated.
 
 ## Add or change the contacts for your subscription
 
@@ -447,7 +447,7 @@ an expiration message is displayed to all administrators.
 For GitLab self-managed instances, you have a 14-day grace period
 before this occurs.
 
-- To resume functionality, upload a new license.
+- To resume functionality, acticate a new license.
 - To fall back to Free features, delete the expired license.
 
 ## Contact Support

@@ -32,6 +32,10 @@ RSpec.describe Groups::ClustersController do
           create(:cluster, :disabled, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
         end
 
+        include_examples ':certificate_based_clusters feature flag index responses' do
+          let(:subject) { go }
+        end
+
         it 'lists available clusters and renders html' do
           go
 
@@ -114,6 +118,10 @@ RSpec.describe Groups::ClustersController do
   describe 'GET new' do
     def go(provider: 'gcp')
       get :new, params: { group_id: group, provider: provider }
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality for new cluster' do
@@ -255,6 +263,10 @@ RSpec.describe Groups::ClustersController do
       post :create_gcp, params: params.merge(group_id: group)
     end
 
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
+    end
+
     describe 'functionality' do
       context 'when access token is valid' do
         before do
@@ -347,6 +359,10 @@ RSpec.describe Groups::ClustersController do
 
     def go
       post :create_user, params: params.merge(group_id: group)
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality' do
@@ -457,6 +473,10 @@ RSpec.describe Groups::ClustersController do
       post :create_aws, params: params.merge(group_id: group)
     end
 
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { post_create_aws }
+    end
+
     it 'creates a new cluster' do
       expect(ClusterProvisionWorker).to receive(:perform_async)
       expect { post_create_aws }.to change { Clusters::Cluster.count }
@@ -519,6 +539,10 @@ RSpec.describe Groups::ClustersController do
       post :authorize_aws_role, params: params.merge(group_id: group)
     end
 
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
+    end
+
     before do
       allow(Clusters::Aws::FetchCredentialsService).to receive(:new)
         .and_return(double(execute: double))
@@ -579,6 +603,10 @@ RSpec.describe Groups::ClustersController do
         }
     end
 
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
+    end
+
     it 'deletes the namespaces associated with the cluster' do
       expect { go }.to change { Clusters::KubernetesNamespace.count }
 
@@ -609,6 +637,10 @@ RSpec.describe Groups::ClustersController do
           id: cluster
         },
         format: :json
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality' do
@@ -649,6 +681,10 @@ RSpec.describe Groups::ClustersController do
           id: cluster,
           tab: tab
         }
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality' do
@@ -703,6 +739,10 @@ RSpec.describe Groups::ClustersController do
           base_domain: domain
         }
       }
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     it 'updates and redirects back to show page' do
@@ -800,6 +840,10 @@ RSpec.describe Groups::ClustersController do
           group_id: group,
           id: cluster
         }
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality' do

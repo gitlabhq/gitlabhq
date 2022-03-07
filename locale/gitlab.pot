@@ -777,6 +777,9 @@ msgstr ""
 msgid "%{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
+msgid "%{link_start}Add a license%{link_end} that you have received from GitLab Inc."
+msgstr ""
+
 msgid "%{link_start}Learn more%{link_end} about roles."
 msgstr ""
 
@@ -784,9 +787,6 @@ msgid "%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title
 msgstr ""
 
 msgid "%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request draft from merging before it's ready."
-msgstr ""
-
-msgid "%{link_start}Upload a license%{link_end} file or enter the license key you have received from GitLab Inc."
 msgstr ""
 
 msgid "%{link_start}What information does GitLab Inc. collect?%{link_end}"
@@ -2041,6 +2041,9 @@ msgid "Add Kubernetes cluster"
 msgstr ""
 
 msgid "Add LICENSE"
+msgstr ""
+
+msgid "Add License"
 msgstr ""
 
 msgid "Add New Site"
@@ -20461,7 +20464,7 @@ msgstr ""
 msgid "IssueBoards|No matching boards found"
 msgstr ""
 
-msgid "IssueBoards|Some of your boards are hidden, activate a license to see them again."
+msgid "IssueBoards|Some of your boards are hidden, add a license to see them again."
 msgstr ""
 
 msgid "IssueBoards|Switch board"
@@ -35354,10 +35357,10 @@ msgstr ""
 msgid "Subscription successfully deleted."
 msgstr ""
 
-msgid "SubscriptionBanner|Export license usage file"
+msgid "SubscriptionBanner|Add new license"
 msgstr ""
 
-msgid "SubscriptionBanner|Upload new license"
+msgid "SubscriptionBanner|Export license usage file"
 msgstr ""
 
 msgid "SubscriptionEmail|%{doc_link_start}Please reach out if you have questions%{doc_link_end}, and we'll be happy to assist."
@@ -35736,9 +35739,6 @@ msgid "SuperSonics|This is the number of %{billableUsersLinkStart}billable users
 msgstr ""
 
 msgid "SuperSonics|To activate your subscription, connect to GitLab servers through the %{linkStart}Cloud Licensing%{linkEnd} service, a hassle-free way to manage your subscription."
-msgstr ""
-
-msgid "SuperSonics|Upload a license file"
 msgstr ""
 
 msgid "SuperSonics|Users in subscription"
@@ -38443,7 +38443,7 @@ msgstr ""
 msgid "To receive alerts from manually configured Prometheus services, add the following URL and Authorization key to your Prometheus webhook config file. Learn more about %{linkStart}configuring Prometheus%{linkEnd} to send alerts to GitLab."
 msgstr ""
 
-msgid "To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can upload this license to your instance."
+msgid "To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance."
 msgstr ""
 
 msgid "To resolve this, try to:"
@@ -39469,9 +39469,6 @@ msgstr ""
 msgid "Upload File"
 msgstr ""
 
-msgid "Upload License"
-msgstr ""
-
 msgid "Upload New File"
 msgstr ""
 
@@ -39488,9 +39485,6 @@ msgid "Upload file"
 msgstr ""
 
 msgid "Upload image"
-msgstr ""
-
-msgid "Upload license"
 msgstr ""
 
 msgid "Upload new file"
@@ -42284,10 +42278,10 @@ msgstr ""
 msgid "You have insufficient permissions to view shifts for this rotation"
 msgstr ""
 
-msgid "You have more active users than are allowed by your license. Before %{date} GitLab must reconcile your subscription. To complete this process, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can upload this license to your instance."
+msgid "You have more active users than are allowed by your license. Before %{date} GitLab must reconcile your subscription. To complete this process, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance."
 msgstr ""
 
-msgid "You have more active users than are allowed by your license. GitLab must now reconcile your subscription. To complete this process, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can upload this license to your instance."
+msgid "You have more active users than are allowed by your license. GitLab must now reconcile your subscription. To complete this process, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance."
 msgstr ""
 
 msgid "You have no permissions"
@@ -42773,7 +42767,7 @@ msgstr ""
 msgid "Your subscription has %{remaining_seats_count} out of %{total_seats_count} seats remaining. Even if you reach the number of seats in your subscription, you can continue to add users, and GitLab will bill you for the overage."
 msgstr ""
 
-msgid "Your subscription is now expired. To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can upload this license to your instance. To use Free tier, remove your current license."
+msgid "Your subscription is now expired. To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance. To use Free tier, remove your current license."
 msgstr ""
 
 msgid "Your subscription will expire in %{remaining_days} day."
