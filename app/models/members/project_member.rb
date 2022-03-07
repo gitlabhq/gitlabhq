@@ -94,14 +94,7 @@ class ProjectMember < Member
 
   override :access_level_inclusion
   def access_level_inclusion
-    allowed_values = if ::Feature.enabled?(:personal_project_owner_with_owner_access,
-                                           default_enabled: :yaml)
-                       Gitlab::Access.all_values
-                     else
-                       Gitlab::Access.values
-                     end
-
-    unless access_level.in?(allowed_values)
+    unless access_level.in?(Gitlab::Access.all_values)
       errors.add(:access_level, "is not included in the list")
     end
   end

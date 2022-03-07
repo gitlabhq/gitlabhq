@@ -15,7 +15,7 @@ module QA
         super
 
         @add_name_uuid = false
-        @name = @path = 'reusable_project'
+        @name = @path = QA::Runtime::Env.reusable_project_path
         @reuse_as = :default_project
         @initialize_with_readme = true
       end

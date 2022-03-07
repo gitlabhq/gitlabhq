@@ -40735,9 +40735,6 @@ msgstr ""
 msgid "VulnerabilityManagement|An unverified non-confirmed finding"
 msgstr ""
 
-msgid "VulnerabilityManagement|At least one identifier is required"
-msgstr ""
-
 msgid "VulnerabilityManagement|Change status"
 msgstr ""
 
@@ -40757,6 +40754,9 @@ msgid "VulnerabilityManagement|Enter the CVE or CWE identifier URL"
 msgstr ""
 
 msgid "VulnerabilityManagement|Fetching linked Jira issues"
+msgstr ""
+
+msgid "VulnerabilityManagement|Identifier code and URL are required fields"
 msgstr ""
 
 msgid "VulnerabilityManagement|Manually add a vulnerability entry into the vulnerability report."

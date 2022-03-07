@@ -89,11 +89,7 @@ module Projects
       # OWNER access level
       def project_owner
         user_id = project.namespace.owner.id
-        access_level = if ::Feature.enabled?(:personal_project_owner_with_owner_access, default_enabled: :yaml)
-                         Gitlab::Access::OWNER
-                       else
-                         Gitlab::Access::MAINTAINER
-                       end
+        access_level = Gitlab::Access::OWNER
 
         Member
           .from(generate_from_statement([[user_id, access_level]])) # rubocop: disable CodeReuse/ActiveRecord

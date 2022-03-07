@@ -13,3 +13,5 @@ module Projects
     end
   end
 end
+
+Projects::DeployTokens::CreateService.prepend_mod

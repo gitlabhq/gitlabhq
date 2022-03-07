@@ -12,3 +12,5 @@ class Projects::DeployTokensController < Projects::ApplicationController
     redirect_to project_settings_repository_path(project, anchor: 'js-deploy-tokens')
   end
 end
+
+Projects::DeployTokensController.prepend_mod

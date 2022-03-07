@@ -40,7 +40,9 @@ If you are using GDK, you can follow the following steps:
    ```yaml
    gitlab:
      rails:
-       multiple_databases: true
+       databases:
+         ci:
+           enabled: true
    ```
 
 1. Reconfigure GDK:

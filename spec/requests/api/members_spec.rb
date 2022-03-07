@@ -675,30 +675,13 @@ RSpec.describe API::Members do
     end
 
     context 'adding owner to project' do
-      context 'when personal_project_owner_with_owner_access feature flag is enabled' do
-        it 'returns created status' do
-          expect do
-            post api("/projects/#{project.id}/members", maintainer),
-                 params: { user_id: stranger.id, access_level: Member::OWNER }
+      it 'returns created status' do
+        expect do
+          post api("/projects/#{project.id}/members", maintainer),
+               params: { user_id: stranger.id, access_level: Member::OWNER }
 
-            expect(response).to have_gitlab_http_status(:created)
-          end.to change { project.members.count }.by(1)
-        end
-      end
-
-      context 'when personal_project_owner_with_owner_access feature flag is disabled' do
-        before do
-          stub_feature_flags(personal_project_owner_with_owner_access: false)
-        end
-
-        it 'returns created status' do
-          expect do
-            post api("/projects/#{project.id}/members", maintainer),
-                 params: { user_id: stranger.id, access_level: Member::OWNER }
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end.not_to change { project.members.count }
-        end
+          expect(response).to have_gitlab_http_status(:created)
+        end.to change { project.members.count }.by(1)
       end
     end
 

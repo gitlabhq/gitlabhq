@@ -160,6 +160,8 @@ From there, you can see the following actions:
 - Allowing force push to protected branch changed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
 - Code owner approval requirement on merge requests targeting protected branch changed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
 - Users and groups allowed to merge and push to protected branch added or removed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
+- Project deploy token was successfully created, revoked or deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9)
+- Failed attempt to create a project deploy token ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 

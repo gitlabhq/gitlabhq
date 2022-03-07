@@ -76,7 +76,8 @@ RSpec.configure do |config|
     QA::Resource::ReusableCollection.validate_resource_reuse if QA::Runtime::Env.validate_resource_reuse?
 
     # If any tests failed, leave the resources behind to help troubleshoot, otherwise remove them.
-    QA::Resource::ReusableCollection.remove_all_via_api! unless suite.reporter.failed_examples.present?
+    # Do not remove the shared resource on live environments
+    QA::Resource::ReusableCollection.remove_all_via_api! if !suite.reporter.failed_examples.present? && !QA::Runtime::Env.running_on_dot_com?
   end
 
   config.append_after(:suite) do

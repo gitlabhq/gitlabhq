@@ -12,34 +12,15 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
     let_it_be(:project) { create(:project) }
 
     shared_examples_for 'includes access level of the owner of the project' do
-      context 'when personal_project_owner_with_owner_access feature flag is enabled' do
-        it 'includes access level of the owner of the project as Owner' do
-          expect(subject).to(
-            contain_exactly(
-              hash_including(
-                'user_id' => project.namespace.owner.id,
-                'access_level' => Gitlab::Access::OWNER
-              )
+      it 'includes access level of the owner of the project as Owner' do
+        expect(subject).to(
+          contain_exactly(
+            hash_including(
+              'user_id' => project.namespace.owner.id,
+              'access_level' => Gitlab::Access::OWNER
             )
           )
-        end
-      end
-
-      context 'when personal_project_owner_with_owner_access feature flag is disabled' do
-        before do
-          stub_feature_flags(personal_project_owner_with_owner_access: false)
-        end
-
-        it 'includes access level of the owner of the project as Maintainer' do
-          expect(subject).to(
-            contain_exactly(
-              hash_including(
-                'user_id' => project.namespace.owner.id,
-                'access_level' => Gitlab::Access::MAINTAINER
-              )
-            )
-          )
-        end
+        )
       end
     end
 

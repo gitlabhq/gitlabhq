@@ -1,8 +1,0 @@
----
-name: personal_project_owner_with_owner_access
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78193
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351919
-milestone: '14.8'
-type: development
-group: group::workspace
-default_enabled: false
