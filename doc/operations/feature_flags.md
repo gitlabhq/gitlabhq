@@ -163,21 +163,6 @@ WARNING:
 The Unleash client **must** be given a user ID for the feature to be enabled for
 target users. See the [Ruby example](#ruby-application-example) below.
 
-## Search for Code References **(PREMIUM)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
-
-Search your project and find any references of a feature flag in your
-code so that you can clean it up when it's time to remove the feature flag.
-
-To search for code references of a feature flag:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
-1. Edit the feature flag you want to remove.
-1. Select **More actions** (**{ellipsis_v}**).
-1. Select **Search code references**.
-
 ### User List
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
@@ -234,6 +219,21 @@ To remove users from a user list:
 1. On the left sidebar, select **Deployments > Feature Flags**.
 1. Select **Edit** (**{pencil}**) next to the list you want to change.
 1. Select **Remove** (**{remove}**) next to the ID you want to remove.
+
+## Search for Code References **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
+
+Search your project and find any references of a feature flag in your
+code so that you can clean it up when it's time to remove the feature flag.
+
+To search for code references of a feature flag:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Feature Flags**.
+1. Edit the feature flag you want to remove.
+1. Select **More actions** (**{ellipsis_v}**).
+1. Select **Search code references**.
 
 ## Rollout strategy (legacy)
 

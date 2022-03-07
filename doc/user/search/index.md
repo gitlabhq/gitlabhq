@@ -113,7 +113,7 @@ You can filter the **Issues** list to individual instances by their ID. For exam
 
 > Moved to GitLab Premium in 13.9.
 
-To filter merge requests by an individual approver, you can type (or select from
+To filter merge requests by an individual eligible approver ([Codeowner](../project/code_owners.md)), you can type (or select from
 the dropdown list) **Approver** and select the user.
 
 ![Filter MRs by an approver](img/filter_approver_merge_requests_v14_6.png)

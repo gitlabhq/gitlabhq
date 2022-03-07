@@ -352,15 +352,15 @@ class Project < ApplicationRecord
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project
   has_many :processables, class_name: 'Ci::Processable', inverse_of: :project
-  has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
+  has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks, dependent: :restrict_with_error
   has_many :build_report_results, class_name: 'Ci::BuildReportResult', inverse_of: :project
-  has_many :job_artifacts, class_name: 'Ci::JobArtifact'
-  has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :project
+  has_many :job_artifacts, class_name: 'Ci::JobArtifact', dependent: :restrict_with_error
+  has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :project, dependent: :restrict_with_error
   has_many :runner_projects, class_name: 'Ci::RunnerProject', inverse_of: :project
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
-  has_many :secure_files, class_name: 'Ci::SecureFile'
+  has_many :secure_files, class_name: 'Ci::SecureFile', dependent: :restrict_with_error
   has_many :environments
   has_many :environments_for_dashboard, -> { from(with_rank.unfoldered.available, :environments).where('rank <= 3') }, class_name: 'Environment'
   has_many :deployments

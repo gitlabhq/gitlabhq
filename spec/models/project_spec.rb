@@ -134,7 +134,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
-    it { is_expected.to have_many(:pipeline_artifacts) }
+    it { is_expected.to have_many(:pipeline_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
     it { is_expected.to have_many(:timelogs) }
     it { is_expected.to have_many(:error_tracking_errors).class_name('ErrorTracking::Error') }
@@ -142,6 +142,9 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:pending_builds).class_name('Ci::PendingBuild') }
     it { is_expected.to have_many(:ci_feature_usages).class_name('Projects::CiFeatureUsage') }
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
+    it { is_expected.to have_many(:job_artifacts).dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:build_trace_chunks).through(:builds).dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:secure_files).class_name('Ci::SecureFile').dependent(:restrict_with_error) }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -199,6 +202,35 @@ RSpec.describe Project, factory_default: :keep do
 
         expect { project.reload }.to raise_error(ActiveRecord::RecordNotFound)
         expect { project_namespace.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'when project has object storage attached to it' do
+      let_it_be(:project) { create(:project) }
+
+      before do
+        create(:ci_job_artifact, project: project)
+      end
+
+      context 'when associated object storage object is not deleted before the project' do
+        it 'adds an error to project', :aggregate_failures do
+          expect { project.destroy! }.to raise_error(ActiveRecord::RecordNotDestroyed)
+
+          expect(project.errors).not_to be_empty
+          expect(project.errors.first.message).to eq("Cannot delete record because dependent job artifacts exist")
+        end
+      end
+
+      context 'when associated object storage object is deleted before the project' do
+        before do
+          project.job_artifacts.first.destroy!
+        end
+
+        it 'deletes the project' do
+          project.destroy!
+
+          expect { project.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
       end
     end
 
