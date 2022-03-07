@@ -4,18 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/golang-jwt/jwt/v4"
-
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
-
-const RewrittenFieldsHeader = "Gitlab-Workhorse-Multipart-Fields"
-
-type MultipartClaims struct {
-	RewrittenFields map[string]string `json:"rewritten_fields"`
-	jwt.StandardClaims
-}
 
 // Multipart is a request middleware. If the request has a MIME multipart
 // request body, the middleware will iterate through the multipart parts.
@@ -32,6 +23,6 @@ func Multipart(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 			return
 		}
 
-		InterceptMultipartFiles(w, r, h, a, s, opts)
+		interceptMultipartFiles(w, r, h, a, s, opts)
 	}, "/authorize")
 }

@@ -588,10 +588,37 @@ RSpec.describe IssuesFinder do
       end
 
       context 'filtering by issue term' do
-        let(:params) { { search: 'git' } }
+        let(:params) { { search: search_term } }
 
-        it 'returns issues with title and description match for search term' do
-          expect(issues).to contain_exactly(issue1, issue2)
+        let_it_be(:english) { create(:issue, project: project1, title: 'title', description: 'something english') }
+        let_it_be(:japanese) { create(:issue, project: project1, title: '日本語 title', description: 'another english description') }
+
+        context 'with latin search term' do
+          let(:search_term) { 'title english' }
+
+          it 'returns matching issues' do
+            expect(issues).to contain_exactly(english, japanese)
+          end
+        end
+
+        context 'with non-latin search term' do
+          let(:search_term) { '日本語' }
+
+          it 'returns matching issues' do
+            expect(issues).to contain_exactly(japanese)
+          end
+        end
+
+        context 'when full-text search is disabled' do
+          let(:search_term) { 'somet' }
+
+          before do
+            stub_feature_flags(issues_full_text_search: false)
+          end
+
+          it 'allows partial word matches' do
+            expect(issues).to contain_exactly(english)
+          end
         end
 
         context 'with anonymous user' do
@@ -629,29 +656,6 @@ RSpec.describe IssuesFinder do
 
         it 'returns issues with title match for search term' do
           expect(issues).to contain_exactly(issue1)
-        end
-      end
-
-      context 'filtering by issue term using full-text search' do
-        let(:params) { { search: search_term, attempt_full_text_search: true } }
-
-        let_it_be(:english) { create(:issue, project: project1, title: 'title', description: 'something english') }
-        let_it_be(:japanese) { create(:issue, project: project1, title: '日本語 title', description: 'another english description') }
-
-        context 'with latin search term' do
-          let(:search_term) { 'title english' }
-
-          it 'returns matching issues' do
-            expect(issues).to contain_exactly(english, japanese)
-          end
-        end
-
-        context 'with non-latin search term' do
-          let(:search_term) { '日本語' }
-
-          it 'returns matching issues' do
-            expect(issues).to contain_exactly(japanese)
-          end
         end
       end
 
@@ -1280,7 +1284,7 @@ RSpec.describe IssuesFinder do
     end
 
     context 'when the force_cte param is falsey' do
-      let(:params) { { search: 'foo' } }
+      let(:params) { { search: '日本語' } }
 
       it 'returns false' do
         expect(finder.use_cte_for_search?).to be_falsey
@@ -1288,7 +1292,7 @@ RSpec.describe IssuesFinder do
     end
 
     context 'when a non-simple sort is given' do
-      let(:params) { { search: 'foo', attempt_project_search_optimizations: true, sort: 'popularity' } }
+      let(:params) { { search: '日本語', attempt_project_search_optimizations: true, sort: 'popularity' } }
 
       it 'returns false' do
         expect(finder.use_cte_for_search?).to be_falsey
@@ -1297,7 +1301,7 @@ RSpec.describe IssuesFinder do
 
     context 'when all conditions are met' do
       context "uses group search optimization" do
-        let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+        let(:params) { { search: '日本語', attempt_group_search_optimizations: true } }
 
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
@@ -1306,7 +1310,7 @@ RSpec.describe IssuesFinder do
       end
 
       context "uses project search optimization" do
-        let(:params) { { search: 'foo', attempt_project_search_optimizations: true } }
+        let(:params) { { search: '日本語', attempt_project_search_optimizations: true } }
 
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
@@ -1315,7 +1319,7 @@ RSpec.describe IssuesFinder do
       end
 
       context 'with simple sort' do
-        let(:params) { { search: 'foo', attempt_project_search_optimizations: true, sort: 'updated_desc' } }
+        let(:params) { { search: '日本語', attempt_project_search_optimizations: true, sort: 'updated_desc' } }
 
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
@@ -1324,7 +1328,7 @@ RSpec.describe IssuesFinder do
       end
 
       context 'with simple sort as a symbol' do
-        let(:params) { { search: 'foo', attempt_project_search_optimizations: true, sort: :updated_desc } }
+        let(:params) { { search: '日本語', attempt_project_search_optimizations: true, sort: :updated_desc } }
 
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy

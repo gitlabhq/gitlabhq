@@ -71,6 +71,40 @@ RSpec.describe BlobPresenter do
     end
   end
 
+  context 'Gitpod' do
+    let(:gitpod_url) { "https://gitpod.io" }
+    let(:gitpod_application_enabled) { true }
+    let(:gitpod_user_enabled) { true }
+
+    before do
+      allow(user).to receive(:gitpod_enabled).and_return(gitpod_user_enabled)
+      allow(Gitlab::CurrentSettings).to receive(:gitpod_enabled).and_return(gitpod_application_enabled)
+      allow(Gitlab::CurrentSettings).to receive(:gitpod_url).and_return(gitpod_url)
+    end
+
+    context 'Gitpod enabled for application and user' do
+      describe '#gitpod_blob_url' do
+        it { expect(presenter.gitpod_blob_url).to eq("#{gitpod_url}##{"http://localhost/#{project.full_path}/-/tree/#{blob.commit_id}/#{blob.path}"}") }
+      end
+    end
+
+    context 'Gitpod disabled at application level' do
+      let(:gitpod_application_enabled) { false }
+
+      describe '#gitpod_blob_url' do
+        it { expect(presenter.gitpod_blob_url).to eq(nil) }
+      end
+    end
+
+    context 'Gitpod disabled at user level' do
+      let(:gitpod_user_enabled) { false }
+
+      describe '#gitpod_blob_url' do
+        it { expect(presenter.gitpod_blob_url).to eq(nil) }
+      end
+    end
+  end
+
   describe '#find_file_path' do
     it { expect(presenter.find_file_path).to eq("/#{project.full_path}/-/find_file/HEAD/files/ruby/regex.rb") }
   end

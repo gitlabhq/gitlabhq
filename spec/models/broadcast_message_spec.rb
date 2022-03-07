@@ -23,6 +23,8 @@ RSpec.describe BroadcastMessage do
 
     it { is_expected.to allow_value(1).for(:broadcast_type) }
     it { is_expected.not_to allow_value(nil).for(:broadcast_type) }
+    it { is_expected.not_to allow_value(nil).for(:target_access_levels) }
+    it { is_expected.to validate_inclusion_of(:target_access_levels).in_array(described_class::ALLOWED_TARGET_ACCESS_LEVELS) }
   end
 
   shared_examples 'time constrainted' do |broadcast_type|
@@ -175,12 +177,112 @@ RSpec.describe BroadcastMessage do
     end
   end
 
+  shared_examples "matches with user access level" do |broadcast_type|
+    let_it_be(:target_access_levels) { [Gitlab::Access::GUEST] }
+
+    let(:feature_flag_state) { true }
+
+    before do
+      stub_feature_flags(role_targeted_broadcast_messages: feature_flag_state)
+    end
+
+    context 'when feature flag is disabled' do
+      let(:feature_flag_state) { false }
+
+      context 'when message is role-targeted' do
+        let_it_be(:message) { create(:broadcast_message, target_access_levels: target_access_levels, broadcast_type: broadcast_type) }
+
+        it 'does not return the message' do
+          expect(subject.call(nil, Gitlab::Access::GUEST)).to be_empty
+        end
+      end
+
+      context 'when message is not role-targeted' do
+        let_it_be(:message) { create(:broadcast_message, target_access_levels: [], broadcast_type: broadcast_type) }
+
+        it 'returns the message' do
+          expect(subject.call(nil, Gitlab::Access::GUEST)).to include(message)
+        end
+      end
+    end
+
+    context 'when target_access_levels is empty' do
+      let_it_be(:message) { create(:broadcast_message, target_access_levels: [], broadcast_type: broadcast_type) }
+
+      it 'returns the message if user access level is not nil' do
+        expect(subject.call(nil, Gitlab::Access::MINIMAL_ACCESS)).to include(message)
+      end
+
+      it 'returns the message if user access level is nil' do
+        expect(subject.call).to include(message)
+      end
+    end
+
+    context 'when target_access_levels is not empty' do
+      let_it_be(:message) { create(:broadcast_message, target_access_levels: target_access_levels, broadcast_type: broadcast_type) }
+
+      it "does not return the message if user access level is nil" do
+        expect(subject.call).to be_empty
+      end
+
+      it "returns the message if user access level is in target_access_levels" do
+        expect(subject.call(nil, Gitlab::Access::GUEST)).to include(message)
+      end
+
+      it "does not return the message if user access level is not in target_access_levels" do
+        expect(subject.call(nil, Gitlab::Access::MINIMAL_ACCESS)).to be_empty
+      end
+    end
+  end
+
+  shared_examples "handles stale cache data gracefully" do
+    # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/353076
+    context 'when cache returns stale data (e.g. nil target_access_levels)' do
+      let(:message) { build(:broadcast_message, :banner, target_access_levels: nil) }
+      let(:cache) { Gitlab::JsonCache.new }
+
+      before do
+        cache.write(described_class::BANNER_CACHE_KEY, [message])
+        allow(BroadcastMessage).to receive(:cache) { cache }
+      end
+
+      it 'does not raise error (e.g. NoMethodError from nil.empty?)' do
+        expect { subject.call }.not_to raise_error
+      end
+
+      context 'when feature flag is disabled' do
+        it 'does not raise error (e.g. NoMethodError from nil.empty?)' do
+          stub_feature_flags(role_targeted_broadcast_messages: false)
+
+          expect { subject.call }.not_to raise_error
+        end
+      end
+    end
+  end
+
   describe '.current', :use_clean_rails_memory_store_caching do
-    subject { -> (path = nil) { described_class.current(path) } }
+    subject do
+      -> (path = nil, user_access_level = nil) do
+        described_class.current(current_path: path, user_access_level: user_access_level)
+      end
+    end
 
     it_behaves_like 'time constrainted', :banner
     it_behaves_like 'message cache', :banner
     it_behaves_like 'matches with current path', :banner
+    it_behaves_like 'matches with user access level', :banner
+    it_behaves_like 'handles stale cache data gracefully'
+
+    context 'when message is from cache' do
+      before do
+        subject.call
+      end
+
+      it_behaves_like 'matches with current path', :banner
+      it_behaves_like 'matches with user access level', :banner
+      it_behaves_like 'matches with current path', :notification
+      it_behaves_like 'matches with user access level', :notification
+    end
 
     it 'returns both types' do
       banner_message = create(:broadcast_message, broadcast_type: :banner)
@@ -191,11 +293,26 @@ RSpec.describe BroadcastMessage do
   end
 
   describe '.current_banner_messages', :use_clean_rails_memory_store_caching do
-    subject { -> (path = nil) { described_class.current_banner_messages(path) } }
+    subject do
+      -> (path = nil, user_access_level = nil) do
+        described_class.current_banner_messages(current_path: path, user_access_level: user_access_level)
+      end
+    end
 
     it_behaves_like 'time constrainted', :banner
     it_behaves_like 'message cache', :banner
     it_behaves_like 'matches with current path', :banner
+    it_behaves_like 'matches with user access level', :banner
+    it_behaves_like 'handles stale cache data gracefully'
+
+    context 'when message is from cache' do
+      before do
+        subject.call
+      end
+
+      it_behaves_like 'matches with current path', :banner
+      it_behaves_like 'matches with user access level', :banner
+    end
 
     it 'only returns banners' do
       banner_message = create(:broadcast_message, broadcast_type: :banner)
@@ -206,11 +323,26 @@ RSpec.describe BroadcastMessage do
   end
 
   describe '.current_notification_messages', :use_clean_rails_memory_store_caching do
-    subject { -> (path = nil) { described_class.current_notification_messages(path) } }
+    subject do
+      -> (path = nil, user_access_level = nil) do
+        described_class.current_notification_messages(current_path: path, user_access_level: user_access_level)
+      end
+    end
 
     it_behaves_like 'time constrainted', :notification
     it_behaves_like 'message cache', :notification
     it_behaves_like 'matches with current path', :notification
+    it_behaves_like 'matches with user access level', :notification
+    it_behaves_like 'handles stale cache data gracefully'
+
+    context 'when message is from cache' do
+      before do
+        subject.call
+      end
+
+      it_behaves_like 'matches with current path', :notification
+      it_behaves_like 'matches with user access level', :notification
+    end
 
     it 'only returns notifications' do
       notification_message = create(:broadcast_message, broadcast_type: :notification)

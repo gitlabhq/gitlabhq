@@ -29,8 +29,6 @@
   - 1
 - - analytics_code_review_metrics
   - 1
-- - analytics_cycle_analytics_group_data_loader
-  - 1
 - - analytics_devops_adoption_create_snapshot
   - 1
 - - analytics_usage_trends_counter_job

@@ -1,4 +1,4 @@
-package artifacts
+package upload
 
 import (
 	"archive/zip"

@@ -24,7 +24,7 @@ class UsersController < ApplicationController
   before_action :authorize_read_user_profile!,
                 only: [:calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following]
   before_action only: [:exists] do
-    check_rate_limit!(:username_exists, scope: request.ip) if Feature.enabled?(:rate_limit_username_exists_endpoint, default_enabled: :yaml)
+    check_rate_limit!(:username_exists, scope: request.ip)
   end
 
   feature_category :users

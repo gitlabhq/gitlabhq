@@ -12,10 +12,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
-type PreAuthorizer interface {
-	PreAuthorizeHandler(next api.HandleFunc, suffix string) http.Handler
-}
-
 // RequestBody is a request middleware. It will store the request body to
 // a location by determined an api.Response value. It then forwards the
 // request to gitlab-rails without the original request body.

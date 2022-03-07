@@ -62,6 +62,12 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     project_ci_pipeline_editor_path(project, branch_name: blob.commit_id) if can_collaborate_with_project?(project) && blob.path == project.ci_config_path_or_default
   end
 
+  def gitpod_blob_url
+    return unless Gitlab::CurrentSettings.gitpod_enabled && !current_user.nil? && current_user.gitpod_enabled
+
+    "#{Gitlab::CurrentSettings.gitpod_url}##{url_helpers.project_tree_url(project, tree_join(blob.commit_id, blob.path || ''))}"
+  end
+
   def find_file_path
     url_helpers.project_find_file_path(project, ref_qualified_path)
   end

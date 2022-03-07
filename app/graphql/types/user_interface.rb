@@ -116,6 +116,15 @@ module Types
           complexity: 5,
           resolver: ::Resolvers::TimelogResolver
 
+    field :gitpod_enabled, GraphQL::Types::Boolean, null: true,
+          description: 'Whether Gitpod is enabled at the user level.'
+
+    field :preferences_gitpod_path, GraphQL::Types::String, null: true,
+          description: 'Web path to the Gitpod section within user preferences.'
+
+    field :profile_enable_gitpod_path, GraphQL::Types::String, null: true,
+          description: 'Web path to enable Gitpod for the user.'
+
     definition_methods do
       def resolve_type(object, context)
         # in the absense of other information, we cannot tell - just default to

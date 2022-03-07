@@ -4,19 +4,19 @@ type: index, dev
 stage: none
 group: Development
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
-description: "Development Guidelines: learn about workspaces when developing GitLab."
+description: "Development Guidelines: learn about workspace when developing GitLab."
 ---
 
-# Workspaces
+# Workspace
 
-The [Workspaces initiative](../../user/workspace/index.md) focuses on reaching feature parity between
+The [Workspace initiative](../../user/workspace/index.md) focuses on reaching feature parity between
 SaaS and self-managed installations.
 
 ## Consolidate groups and projects
 
 - [Architecture blueprint](../../architecture/blueprints/consolidating_groups_and_projects/index.md)
 
-One facet of the workspaces initiative is to consolidate groups and projects,
+One facet of the workspace initiative is to consolidate groups and projects,
 addressing the feature disparity between them. Some features, such as epics, are
 only available at the group level. Some features, such as issues, are only available
 at the project level. Other features, such as milestones, are available to both groups

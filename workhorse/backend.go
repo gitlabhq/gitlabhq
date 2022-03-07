@@ -18,8 +18,8 @@ func parseAuthBackend(authBackend string) (*url.URL, error) {
 		}
 	}
 
-	if backendURL.Scheme != "http" {
-		return nil, fmt.Errorf("invalid scheme, only 'http' is allowed: %q", authBackend)
+	if backendURL.Scheme != "http" && backendURL.Scheme != "https" {
+		return nil, fmt.Errorf("invalid scheme, only 'http' and 'https' are allowed: %q", authBackend)
 	}
 
 	if backendURL.Host == "" {

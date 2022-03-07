@@ -11,6 +11,30 @@ RSpec.describe 'Query' do
 
   let(:current_user) { developer }
 
+  describe 'gitpodEnabled field' do
+    let(:gitpod_enabled) { true }
+    let(:gitpod_enabled_query) do
+      <<~GRAPHQL
+        { gitpodEnabled }
+      GRAPHQL
+    end
+
+    before do
+      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:gitpod_enabled).and_return(gitpod_enabled)
+      post_graphql(gitpod_enabled_query)
+    end
+
+    context 'When Gitpod is enabled for the application' do
+      it { expect(graphql_data).to include('gitpodEnabled' => true) }
+    end
+
+    context 'When Gitpod is disabled for the application' do
+      let(:gitpod_enabled) { false }
+
+      it { expect(graphql_data).to include('gitpodEnabled' => false) }
+    end
+  end
+
   describe '.designManagement' do
     include DesignManagementTestHelpers
 

@@ -28,13 +28,7 @@ msgstr ""
 msgid " Please sign in."
 msgstr ""
 
-msgid " Target Path"
-msgstr ""
-
 msgid " Try to %{action} this file again."
-msgstr ""
-
-msgid " Type"
 msgstr ""
 
 msgid " You need to do this before %{grace_period_deadline}."
@@ -6149,9 +6143,6 @@ msgid "Broadcast Message was successfully updated."
 msgstr ""
 
 msgid "Broadcast Messages"
-msgstr ""
-
-msgid "Broadcast messages are displayed for every user and can be used to notify users about scheduled maintenance, recent upgrades and more."
 msgstr ""
 
 msgid "Browse Directory"
@@ -36056,6 +36047,9 @@ msgstr ""
 msgid "Target branch or tag"
 msgstr ""
 
+msgid "Target roles"
+msgstr ""
+
 msgid "Target-Branch"
 msgstr ""
 
@@ -36542,6 +36536,9 @@ msgid "The branch for this project has no active pipeline configuration."
 msgstr ""
 
 msgid "The branch or tag does not exist"
+msgstr ""
+
+msgid "The broadcast message displays only to users in projects and groups who have these roles."
 msgstr ""
 
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
@@ -39806,6 +39803,9 @@ msgid "Use an AWS CloudFormation Template (CFT) to install and configure GitLab 
 msgstr ""
 
 msgid "Use authorized_keys file to authenticate SSH keys"
+msgstr ""
+
+msgid "Use banners and notifications to notify your users about scheduled maintenance, recent upgrades, and more."
 msgstr ""
 
 msgid "Use cURL"

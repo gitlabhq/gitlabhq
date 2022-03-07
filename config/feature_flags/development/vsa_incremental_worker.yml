@@ -1,0 +1,8 @@
+---
+name: vsa_incremental_worker
+introduced_by_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353453
+milestone: '14.9'
+type: development
+group: group::optimize
+default_enabled: false

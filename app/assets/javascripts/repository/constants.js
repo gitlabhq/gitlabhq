@@ -27,6 +27,12 @@ export const PDF_MAX_PAGE_LIMIT = 50;
 export const ROW_APPEAR_DELAY = 150;
 
 export const DEFAULT_BLOB_INFO = {
+  gitpodEnabled: false,
+  currentUser: {
+    gitpodEnabled: false,
+    preferencesGitpodPath: null,
+    profileEnableGitpodPath: null,
+  },
   userPermissions: {
     pushCode: false,
     downloadCode: false,
@@ -49,6 +55,7 @@ export const DEFAULT_BLOB_INFO = {
           tooLarge: false,
           path: '',
           editBlobPath: '',
+          gitpodBlobUrl: '',
           ideEditPath: '',
           forkAndEditPath: '',
           ideForkAndEditPath: '',

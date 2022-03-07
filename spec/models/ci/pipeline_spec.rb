@@ -438,15 +438,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it { expect(pipeline).not_to be_merge_request }
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_merge_request_presence_check: false)
-        pipeline.update!(merge_request_id: non_existing_record_id)
-      end
-
-      it { expect(pipeline).to be_merge_request }
-    end
   end
 
   describe '#detached_merge_request_pipeline?' do

@@ -1,4 +1,4 @@
-package artifacts
+package upload
 
 import (
 	"context"
@@ -18,7 +18,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
@@ -39,7 +38,23 @@ type artifactsUploadProcessor struct {
 	opts   *filestore.SaveFileOpts
 	format string
 
-	upload.SavedFileTracker
+	SavedFileTracker
+}
+
+// Artifacts is like a Multipart but specific for artifacts upload.
+func Artifacts(myAPI *api.API, h http.Handler, p Preparer) http.Handler {
+	return myAPI.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
+		opts, _, err := p.Prepare(a)
+		if err != nil {
+			helper.Fail500(w, r, fmt.Errorf("UploadArtifacts: error preparing file storage options"))
+			return
+		}
+
+		format := r.URL.Query().Get(ArtifactFormatKey)
+
+		mg := &artifactsUploadProcessor{opts: opts, format: format, SavedFileTracker: SavedFileTracker{Request: r}}
+		interceptMultipartFiles(w, r, h, a, mg, opts)
+	}, "/authorize")
 }
 
 func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *filestore.FileHandler) (*filestore.FileHandler, error) {
@@ -149,19 +164,4 @@ func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName str
 
 func (a *artifactsUploadProcessor) Name() string {
 	return "artifacts"
-}
-
-func UploadArtifacts(myAPI *api.API, h http.Handler, p upload.Preparer) http.Handler {
-	return myAPI.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
-		opts, _, err := p.Prepare(a)
-		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("UploadArtifacts: error preparing file storage options"))
-			return
-		}
-
-		format := r.URL.Query().Get(ArtifactFormatKey)
-
-		mg := &artifactsUploadProcessor{opts: opts, format: format, SavedFileTracker: upload.SavedFileTracker{Request: r}}
-		upload.InterceptMultipartFiles(w, r, h, a, mg, opts)
-	}, "/authorize")
 }

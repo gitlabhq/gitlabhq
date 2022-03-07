@@ -14,6 +14,8 @@ import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
+import userInfoQuery from '../queries/user_info.query.graphql';
+import applicationInfoQuery from '../queries/application_info.query.graphql';
 import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE } from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
@@ -40,6 +42,18 @@ export default {
     },
   },
   apollo: {
+    gitpodEnabled: {
+      query: applicationInfoQuery,
+      error() {
+        this.displayError();
+      },
+    },
+    currentUser: {
+      query: userInfoQuery,
+      error() {
+        this.displayError();
+      },
+    },
     project: {
       query: blobInfoQuery,
       variables() {
@@ -81,7 +95,9 @@ export default {
       isBinary: false,
       isLoadingLegacyViewer: false,
       activeViewerType: SIMPLE_BLOB_VIEWER,
-      project: DEFAULT_BLOB_INFO,
+      project: DEFAULT_BLOB_INFO.project,
+      gitpodEnabled: DEFAULT_BLOB_INFO.gitpodEnabled,
+      currentUser: DEFAULT_BLOB_INFO.currentUser,
     };
   },
   computed: {
@@ -226,21 +242,17 @@ export default {
             :edit-url="blobInfo.editBlobPath"
             :web-ide-url="blobInfo.ideEditPath"
             :needs-to-fork="showForkSuggestion"
+            :show-pipeline-editor-button="Boolean(blobInfo.pipelineEditorPath)"
+            :pipeline-editor-url="blobInfo.pipelineEditorPath"
+            :gitpod-url="blobInfo.gitpodBlobUrl"
+            :show-gitpod-button="gitpodEnabled"
+            :gitpod-enabled="currentUser && currentUser.gitpodEnabled"
+            :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"
+            :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
             is-blob
             disable-fork-modal
             @edit="editBlob"
           />
-
-          <gl-button
-            v-if="blobInfo.pipelineEditorPath"
-            class="gl-mr-3"
-            category="secondary"
-            variant="confirm"
-            data-testid="pipeline-editor"
-            :href="blobInfo.pipelineEditorPath"
-          >
-            {{ $options.i18n.pipelineEditor }}
-          </gl-button>
 
           <blob-button-group
             v-if="isLoggedIn && !blobInfo.archived"

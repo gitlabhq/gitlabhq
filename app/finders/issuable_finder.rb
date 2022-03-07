@@ -37,7 +37,6 @@
 #     attempt_project_search_optimizations: boolean
 #     crm_contact_id: integer
 #     crm_organization_id: integer
-#     attempt_full_text_search: boolean
 #
 class IssuableFinder
   prepend FinderWithCrossProjectAccess
@@ -346,7 +345,10 @@ class IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def use_full_text_search?
-    params[:attempt_full_text_search] && params[:search] =~ FULL_TEXT_SEARCH_TERM_REGEX
+    params[:in].blank? &&
+      klass.try(:pg_full_text_searchable_columns).present? &&
+      params[:search] =~ FULL_TEXT_SEARCH_TERM_REGEX &&
+      Feature.enabled?(:issues_full_text_search, params.project || params.group, default_enabled: :yaml)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -77,6 +77,9 @@ module Types
       field :pipeline_editor_path, GraphQL::Types::String, null: true,
             description: 'Web path to edit .gitlab-ci.yml file.'
 
+      field :gitpod_blob_url, GraphQL::Types::String, null: true,
+            description: 'URL to the blob within Gitpod.'
+
       field :find_file_path, GraphQL::Types::String, null: true,
             description: 'Web path to find file.'
 

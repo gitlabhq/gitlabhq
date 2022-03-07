@@ -150,6 +150,10 @@ module Types
           resolver: Resolvers::TopicsResolver,
           description: "Find project topics."
 
+    field :gitpod_enabled, GraphQL::Types::Boolean,
+          null: true,
+          description: "Whether Gitpod is enabled in application settings."
+
     def design_management
       DesignManagementObject.new(nil)
     end
@@ -192,6 +196,10 @@ module Types
 
     def application_settings
       Gitlab::CurrentSettings.current_application_settings
+    end
+
+    def gitpod_enabled
+      application_settings.gitpod_enabled
     end
 
     def query_complexity

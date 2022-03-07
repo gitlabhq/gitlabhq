@@ -39,6 +39,9 @@ RSpec.describe GitlabSchema.types['User'] do
       namespace
       timelogs
       groups
+      gitpodEnabled
+      preferencesGitpodPath
+      profileEnableGitpodPath
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

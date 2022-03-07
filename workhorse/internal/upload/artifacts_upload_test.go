@@ -1,4 +1,4 @@
-package artifacts
+package upload
 
 import (
 	"archive/zip"
@@ -16,12 +16,13 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 
+	"gitlab.com/gitlab-org/labkit/log"
+
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 
@@ -34,6 +35,14 @@ const (
 	MetadataHeaderMissing = "missing"
 	Path                  = "/url/path"
 )
+
+func TestMain(m *testing.M) {
+	if err := testhelper.BuildExecutables(); err != nil {
+		log.WithError(err).Fatal()
+	}
+
+	os.Exit(m.Run())
+}
 
 func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyProcessor func(w http.ResponseWriter, r *http.Request)) *httptest.Server {
 	mux := http.NewServeMux()
@@ -162,7 +171,7 @@ func testUploadArtifacts(t *testing.T, contentType, url string, body io.Reader) 
 	testhelper.ConfigureSecret()
 	apiClient := api.NewAPI(parsedURL, "123", roundTripper)
 	proxyClient := proxy.NewProxy(parsedURL, "123", roundTripper)
-	UploadArtifacts(apiClient, proxyClient, &upload.DefaultPreparer{}).ServeHTTP(response, httpRequest)
+	Artifacts(apiClient, proxyClient, &DefaultPreparer{}).ServeHTTP(response, httpRequest)
 	return response
 }
 
@@ -193,10 +202,10 @@ func TestUploadHandlerAddingMetadata(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			s := setupWithTmpPath(t, "file", tc.includeFormat, tc.format, nil,
 				func(w http.ResponseWriter, r *http.Request) {
-					token, err := jwt.ParseWithClaims(r.Header.Get(upload.RewrittenFieldsHeader), &upload.MultipartClaims{}, testhelper.ParseJWT)
+					token, err := jwt.ParseWithClaims(r.Header.Get(RewrittenFieldsHeader), &MultipartClaims{}, testhelper.ParseJWT)
 					require.NoError(t, err)
 
-					rewrittenFields := token.Claims.(*upload.MultipartClaims).RewrittenFields
+					rewrittenFields := token.Claims.(*MultipartClaims).RewrittenFields
 					require.Equal(t, 2, len(rewrittenFields))
 
 					require.Contains(t, rewrittenFields, "file")
@@ -225,10 +234,10 @@ func TestUploadHandlerAddingMetadata(t *testing.T) {
 func TestUploadHandlerTarArtifact(t *testing.T) {
 	s := setupWithTmpPath(t, "file", true, "tar", nil,
 		func(w http.ResponseWriter, r *http.Request) {
-			token, err := jwt.ParseWithClaims(r.Header.Get(upload.RewrittenFieldsHeader), &upload.MultipartClaims{}, testhelper.ParseJWT)
+			token, err := jwt.ParseWithClaims(r.Header.Get(RewrittenFieldsHeader), &MultipartClaims{}, testhelper.ParseJWT)
 			require.NoError(t, err)
 
-			rewrittenFields := token.Claims.(*upload.MultipartClaims).RewrittenFields
+			rewrittenFields := token.Claims.(*MultipartClaims).RewrittenFields
 			require.Equal(t, 1, len(rewrittenFields))
 
 			require.Contains(t, rewrittenFields, "file")

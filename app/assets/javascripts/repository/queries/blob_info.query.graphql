@@ -28,6 +28,7 @@ query getBlobInfo(
           language
           path
           editBlobPath
+          gitpodBlobUrl
           ideEditPath
           forkAndEditPath
           ideForkAndEditPath

@@ -58,17 +58,17 @@ RSpec.describe 'search/_results' do
 
   context 'rendering all types of search results' do
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }
-    let_it_be(:issue) { create(:issue, project: project, title: '*') }
-    let_it_be(:merge_request) { create(:merge_request, title: '*', source_project: project, target_project: project) }
-    let_it_be(:milestone) { create(:milestone, title: '*', project: project) }
-    let_it_be(:note) { create(:discussion_note_on_issue, project: project, note: '*') }
-    let_it_be(:wiki_blob) { create(:wiki_page, wiki: project.wiki, content: '*') }
+    let_it_be(:issue) { create(:issue, project: project, title: 'testing') }
+    let_it_be(:merge_request) { create(:merge_request, title: 'testing', source_project: project, target_project: project) }
+    let_it_be(:milestone) { create(:milestone, title: 'testing', project: project) }
+    let_it_be(:note) { create(:discussion_note_on_issue, project: project, note: 'testing') }
+    let_it_be(:wiki_blob) { create(:wiki_page, wiki: project.wiki, content: 'testing') }
     let_it_be(:user) { create(:admin) }
 
     %w[issues merge_requests].each do |search_scope|
       context "when scope is #{search_scope}" do
         let(:scope) { search_scope }
-        let(:search_objects) { Gitlab::ProjectSearchResults.new(user, '*', project: project).objects(scope) }
+        let(:search_objects) { Gitlab::ProjectSearchResults.new(user, 'testing', project: project).objects(scope) }
 
         context 'when admin mode is enabled', :enable_admin_mode do
           it 'renders the click text event tracking attributes' do
@@ -99,7 +99,7 @@ RSpec.describe 'search/_results' do
     %w[blobs notes wiki_blobs milestones].each do |search_scope|
       context "when scope is #{search_scope}" do
         let(:scope) { search_scope }
-        let(:search_objects) { Gitlab::ProjectSearchResults.new(user, '*', project: project).objects(scope) }
+        let(:search_objects) { Gitlab::ProjectSearchResults.new(user, 'testing', project: project).objects(scope) }
 
         context 'when admin mode is enabled', :enable_admin_mode do
           it 'renders the click text event tracking attributes' do

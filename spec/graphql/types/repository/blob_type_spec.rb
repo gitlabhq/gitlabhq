@@ -25,6 +25,7 @@ RSpec.describe Types::Repository::BlobType do
       :raw_path,
       :replace_path,
       :pipeline_editor_path,
+      :gitpod_blob_url,
       :find_file_path,
       :blame_path,
       :history_path,

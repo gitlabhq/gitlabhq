@@ -625,6 +625,9 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['job_class'] = 'Analytics::DevopsAdoption::CreateAllSnapshotsWorker'
+  Settings.cron_jobs['analytics_cycle_analytics_incremental_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['analytics_cycle_analytics_incremental_worker']['cron'] ||= '*/10 * * * *'
+  Settings.cron_jobs['analytics_cycle_analytics_incremental_worker']['job_class'] = 'Analytics::CycleAnalytics::IncrementalWorker'
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['active_user_count_threshold_worker']['job_class'] = 'ActiveUserCountThresholdWorker'
