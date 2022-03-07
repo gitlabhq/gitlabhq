@@ -117,6 +117,7 @@ class Namespace < ApplicationRecord
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
+  after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
 
   # Legacy Storage specific hooks
 
@@ -401,7 +402,11 @@ class Namespace < ApplicationRecord
     return { scope: :group, status: auto_devops_enabled } unless auto_devops_enabled.nil?
 
     strong_memoize(:first_auto_devops_config) do
-      if has_parent?
+      if has_parent? && cache_first_auto_devops_config?
+        Rails.cache.fetch(first_auto_devops_config_cache_key_for(id), expires_in: 1.day) do
+          parent.first_auto_devops_config
+        end
+      elsif has_parent?
         parent.first_auto_devops_config
       else
         { scope: :instance, status: Gitlab::CurrentSettings.auto_devops_enabled? }
@@ -617,6 +622,20 @@ class Namespace < ApplicationRecord
       .update_all(share_with_group_lock: true)
   end
 
+  def expire_first_auto_devops_config_cache
+    return unless cache_first_auto_devops_config?
+
+    descendants_to_expire = self_and_descendants.as_ids
+    return if descendants_to_expire.load.empty?
+
+    keys = descendants_to_expire.map { |group| first_auto_devops_config_cache_key_for(group.id) }
+    Rails.cache.delete_multi(keys)
+  end
+
+  def cache_first_auto_devops_config?
+    ::Feature.enabled?(:namespaces_cache_first_auto_devops_config, default_enabled: :yaml)
+  end
+
   def write_projects_repository_config
     all_projects.find_each do |project|
       project.set_full_path
@@ -633,6 +652,13 @@ class Namespace < ApplicationRecord
     run_after_commit do
       Namespaces::SyncEvent.enqueue_worker
     end
+  end
+
+  def first_auto_devops_config_cache_key_for(group_id)
+    return "namespaces:{first_auto_devops_config}:#{group_id}" unless sync_traversal_ids?
+
+    # Use SHA2 of `traversal_ids` to account for moving a namespace within the same root ancestor hierarchy.
+    "namespaces:{#{traversal_ids.first}}:first_auto_devops_config:#{group_id}:#{Digest::SHA2.hexdigest(traversal_ids.join(' '))}"
   end
 end
 

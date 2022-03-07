@@ -3,9 +3,9 @@
 module Ci
   module Runners
     class AssignRunnerService
-      # @param [Ci::Runner] runner the runner to assign to a project
-      # @param [Project] project the new project to assign the runner to
-      # @param [User] user the user performing the operation
+      # @param [Ci::Runner] runner: the runner to assign to a project
+      # @param [Project] project: the new project to assign the runner to
+      # @param [User] user: the user performing the operation
       def initialize(runner, project, user)
         @runner = runner
         @project = project
@@ -17,6 +17,12 @@ module Ci
 
         @runner.assign_to(@project, @user)
       end
+
+      private
+
+      attr_reader :runner, :project, :user
     end
   end
 end
+
+Ci::Runners::AssignRunnerService.prepend_mod

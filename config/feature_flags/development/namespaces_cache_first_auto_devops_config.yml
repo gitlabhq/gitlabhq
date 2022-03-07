@@ -1,0 +1,8 @@
+---
+name: namespaces_cache_first_auto_devops_config
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80937
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353503
+milestone: '14.9'
+type: development
+group: group::authentication and authorization
+default_enabled: false

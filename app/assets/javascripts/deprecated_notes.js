@@ -17,6 +17,7 @@ import { escape, uniqueId } from 'lodash';
 import Vue from 'vue';
 import '~/lib/utils/jquery_at_who';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import syntaxHighlight from '~/syntax_highlight';
 import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
 import * as constants from '~/notes/constants';
@@ -1761,9 +1762,11 @@ export default class Notes {
     // Show updated comment content temporarily
     $noteBodyText.html(formContent);
     $editingNote.removeClass('is-editing fade-in-full').addClass('being-posted fade-in-half');
-    $editingNote
-      .find('.note-headline-meta a')
-      .html('<span class="spinner align-text-bottom"></span>');
+
+    const $timeAgo = $editingNote.find('.note-headline-meta a');
+
+    $timeAgo.empty();
+    $timeAgo.append(loadingIconForLegacyJS({ inline: true, size: 'sm' }));
 
     // Make request to update comment on server
     axios

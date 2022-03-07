@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute' do
   subject { described_class.new(runner, project, user).execute }
 
-  let_it_be(:runner) { build(:ci_runner) }
-  let_it_be(:project) { build(:project) }
+  let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+  let_it_be(:project) { create(:project) }
 
   context 'without user' do
     let(:user) { nil }

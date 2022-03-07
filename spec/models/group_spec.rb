@@ -2191,7 +2191,7 @@ RSpec.describe Group do
 
     let(:group) { create(:group) }
 
-    subject { group.first_auto_devops_config }
+    subject(:fetch_config) { group.first_auto_devops_config }
 
     where(:instance_value, :group_value, :config) do
       # Instance level enabled
@@ -2216,6 +2216,8 @@ RSpec.describe Group do
     end
 
     context 'with parent groups' do
+      let(:parent) { create(:group) }
+
       where(:instance_value, :parent_value, :group_value, :config) do
         # Instance level enabled
         true | nil   | nil    | { status: true, scope: :instance }
@@ -2245,17 +2247,82 @@ RSpec.describe Group do
       end
 
       with_them do
+        def define_cache_expectations(cache_key)
+          if group_value.nil?
+            expect(Rails.cache).to receive(:fetch).with(start_with(cache_key), expires_in: 1.day)
+          else
+            expect(Rails.cache).not_to receive(:fetch).with(start_with(cache_key), expires_in: 1.day)
+          end
+        end
+
         before do
           stub_application_setting(auto_devops_enabled: instance_value)
-          parent = create(:group, auto_devops_enabled: parent_value)
 
           group.update!(
             auto_devops_enabled: group_value,
             parent: parent
           )
+          parent.update!(auto_devops_enabled: parent_value)
+
+          group.reload # Reload so we get the populated traversal IDs
         end
 
         it { is_expected.to eq(config) }
+
+        it 'caches the parent config when group auto_devops_enabled is nil' do
+          cache_key = "namespaces:{#{group.traversal_ids.first}}:first_auto_devops_config:#{group.id}"
+          define_cache_expectations(cache_key)
+
+          fetch_config
+        end
+
+        context 'when traversal ID feature flags are disabled' do
+          before do
+            stub_feature_flags(sync_traversal_ids: false)
+          end
+
+          it 'caches the parent config when group auto_devops_enabled is nil' do
+            cache_key = "namespaces:{first_auto_devops_config}:#{group.id}"
+            define_cache_expectations(cache_key)
+
+            fetch_config
+          end
+        end
+      end
+
+      context 'cache expiration' do
+        before do
+          group.update!(parent: parent)
+
+          reload_models(parent)
+        end
+
+        it 'clears both self and descendant cache when the parent value is updated' do
+          expect(Rails.cache).to receive(:delete_multi)
+            .with(
+              match_array([
+                start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{parent.id}"),
+                start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{group.id}")
+              ])
+            )
+
+          parent.update!(auto_devops_enabled: true)
+        end
+
+        it 'only clears self cache when there are no dependents' do
+          expect(Rails.cache).to receive(:delete_multi)
+            .with([start_with("namespaces:{#{group.traversal_ids.first}}:first_auto_devops_config:#{group.id}")])
+
+          group.update!(auto_devops_enabled: true)
+        end
+
+        it 'does not clear cache when the feature is disabled' do
+          stub_feature_flags(namespaces_cache_first_auto_devops_config: false)
+
+          expect(Rails.cache).not_to receive(:delete_multi)
+
+          parent.update!(auto_devops_enabled: true)
+        end
       end
     end
   end
