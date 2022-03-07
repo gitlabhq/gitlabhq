@@ -5,9 +5,6 @@ Database/MultipleDatabases:
   - ee/lib/gitlab/geo/geo_tasks.rb
   - ee/lib/gitlab/geo/health_check.rb
   - ee/lib/gitlab/geo/log_cursor/daemon.rb
-  - ee/lib/pseudonymizer/dumper.rb
-  - ee/lib/pseudonymizer/pager.rb
-  - ee/spec/lib/pseudonymizer/dumper_spec.rb
   - ee/spec/services/ee/merge_requests/update_service_spec.rb
   - lib/backup/database.rb
   - lib/backup/manager.rb

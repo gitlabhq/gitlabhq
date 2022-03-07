@@ -154,6 +154,7 @@ RSpec.describe API::Ci::SecureFiles do
           Digest::SHA256.hexdigest(fixture_file('ci_secure_files/upload-keystore.jks'))
         )
         expect(json_response['id']).to eq(secure_file.id)
+        expect(Time.parse(json_response['created_at'])).to be_like_time(secure_file.created_at)
       end
 
       it 'creates a secure file with read_only permissions by default' do

@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Plan', :reliable do
     let!(:user) do
       Resource::User.fabricate_via_api! do |user|
-        user.name = "eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;"
+        user.name = "QA User <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;"
         user.password = "test1234"
         user.api_client = Runtime::API::Client.as_admin
       end

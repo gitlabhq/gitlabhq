@@ -376,4 +376,10 @@ RSpec.describe Types::GlobalIDType do
       expect(described_class.model_name_to_graphql_name('DesignManagement::Design')).to eq('DesignManagementDesignID')
     end
   end
+
+  describe '.[]' do
+    it 'returns a custom class for work items' do
+      expect(described_class[::WorkItem]).to eq(::Types::WorkItemIdType)
+    end
+  end
 end

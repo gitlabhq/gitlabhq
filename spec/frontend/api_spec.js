@@ -1619,6 +1619,28 @@ describe('Api', () => {
     });
   });
 
+  describe('projectSecureFiles', () => {
+    it('fetches secure files for a project', async () => {
+      const projectId = 1;
+      const secureFiles = [
+        {
+          id: projectId,
+          title: 'File Name',
+          permissions: 'read_only',
+          checksum: '12345',
+          checksum_algorithm: 'sha256',
+          created_at: '2022-02-21T15:27:18',
+        },
+      ];
+
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/secure_files`;
+      mock.onGet(expectedUrl).reply(httpStatus.OK, secureFiles);
+      const { data } = await Api.projectSecureFiles(projectId, {});
+
+      expect(data).toEqual(secureFiles);
+    });
+  });
+
   describe('Feature Flag User List', () => {
     let expectedUrl;
     let projectId;

@@ -32383,6 +32383,9 @@ msgstr ""
 msgid "Secret token"
 msgstr ""
 
+msgid "Secure Files"
+msgstr ""
+
 msgid "Secure token that identifies an external storage request."
 msgstr ""
 
@@ -39496,6 +39499,9 @@ msgstr ""
 msgid "UploadLink|click to upload"
 msgstr ""
 
+msgid "Uploaded"
+msgstr ""
+
 msgid "Uploading changes to terminal"
 msgstr ""
 
@@ -39788,6 +39794,9 @@ msgid "Use .gitlab-ci.yml"
 msgstr ""
 
 msgid "Use GitLab Runner in AWS"
+msgstr ""
+
+msgid "Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates."
 msgstr ""
 
 msgid "Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."

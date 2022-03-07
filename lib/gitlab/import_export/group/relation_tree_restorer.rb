@@ -79,16 +79,30 @@ module Gitlab
 
           relation_object.assign_attributes(importable_class_sym => @importable)
 
-          import_failure_service.with_retry(action: 'relation_object.save!', relation_key: relation_key, relation_index: relation_index) do
-            relation_object.save!
-            log_relation_creation(@importable, relation_key, relation_object)
-          end
+          save_relation_object(relation_object, relation_key, relation_definition, relation_index)
         rescue StandardError => e
           import_failure_service.log_import_failure(
             source: 'process_relation_item!',
             relation_key: relation_key,
             relation_index: relation_index,
             exception: e)
+        end
+
+        def save_relation_object(relation_object, relation_key, relation_definition, relation_index)
+          if Feature.enabled?(:import_relation_object_persistence, default_enabled: :yaml) && relation_object.new_record?
+            Gitlab::ImportExport::Base::RelationObjectSaver.new(
+              relation_object: relation_object,
+              relation_key: relation_key,
+              relation_definition: relation_definition,
+              importable: @importable
+            ).execute
+          else
+            import_failure_service.with_retry(action: 'relation_object.save!', relation_key: relation_key, relation_index: relation_index) do
+              relation_object.save!
+            end
+          end
+
+          log_relation_creation(@importable, relation_key, relation_object)
         end
 
         def import_failure_service

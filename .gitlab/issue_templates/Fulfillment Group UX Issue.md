@@ -2,7 +2,7 @@
 
 The goal of this template is to ensure we have captured all the information available to the product designer so they can approach the problem creatively and efficiently. Please add links to SSOT if this informatin exists elsewhere. -->
 
-### Who will use this solution? 
+### Who will use this solution?
 
 <!-- If known, include any of the following: types of users (e.g. Developer), personas, or specific company roles (e.g. Release Manager). It's okay to write "Unknown" and fill this field in later.
 
@@ -54,5 +54,5 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 
 
 
-/label ~"group::" ~"section::"  ~"Category::"  ~UX 
+/label ~"group::" ~"section::"  ~"Category:"  ~UX
 

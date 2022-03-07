@@ -53,6 +53,11 @@ module QA
         # When we reach the last page, the x-next-page header is a blank string
         @page_no = response.headers[:x_next_page].to_s
 
+        if @page_no.to_i > 1000
+          puts "Finishing early to avoid timing out the CI job"
+          exit
+        end
+
         JSON.parse(response.body).select do |user|
           user['username'].start_with?('qa-user-', 'test-user-') \
             && (user['name'] == 'QA Tests' || user['name'].start_with?('QA User')) \

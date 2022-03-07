@@ -49,7 +49,11 @@ module Types
     # Construct a restricted type, that can only be inhabited by an ID of
     # a given model class.
     def self.[](model_class)
-      @id_types ||= {}
+      @id_types ||= {
+        # WorkItem has a special class as we want to allow IssueID
+        # on WorkItemID while we transition into work items
+        ::WorkItem => ::Types::WorkItemIdType
+      }
 
       @id_types[model_class] ||= Class.new(self) do
         model_name = model_class.name

@@ -12,9 +12,10 @@ RSpec.describe 'Query.work_item(id)' do
   let(:current_user) { developer }
   let(:work_item_data) { graphql_data['workItem'] }
   let(:work_item_fields) { all_graphql_fields_for('WorkItem') }
+  let(:global_id) { work_item.to_gid.to_s }
 
   let(:query) do
-    graphql_query_for('workItem', { 'id' => work_item.to_gid.to_s }, work_item_fields)
+    graphql_query_for('workItem', { 'id' => global_id }, work_item_fields)
   end
 
   context 'when the user can read the work item' do
@@ -34,6 +35,14 @@ RSpec.describe 'Query.work_item(id)' do
         'title' => work_item.title,
         'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s)
       )
+    end
+
+    context 'when an Issue Global ID is provided' do
+      let(:global_id) { Issue.find(work_item.id).to_gid.to_s }
+
+      it 'allows an Issue GID as input' do
+        expect(work_item_data).to include('id' => work_item.to_gid.to_s)
+      end
     end
   end
 

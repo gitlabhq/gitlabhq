@@ -19145,6 +19145,9 @@ A `WorkItemID` is a global ID. It is encoded as a string.
 
 An example `WorkItemID` is: `"gid://gitlab/WorkItem/1"`.
 
+While we transition from Issues into Work Items this type will temporarily support
+`IssueID` like: `"gid://gitlab/Issue/1"`. This behavior will be removed without notice in the future.
+
 ### `WorkItemsTypeID`
 
 A `WorkItemsTypeID` is a global ID. It is encoded as a string.

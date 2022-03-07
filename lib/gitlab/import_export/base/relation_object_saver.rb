@@ -1,0 +1,109 @@
+# frozen_string_literal: true
+
+# RelationObjectSaver allows for an alternative approach to persisting
+# objects during Project/Group Import which persists object's
+# nested collection subrelations separately, in batches.
+#
+# Instead of the regular `relation_object.save!` that opens one db
+# transaction for the object itself and all of its subrelations we
+# separate collection subrelations from the object and save them
+# in batches in smaller more frequent db transactions.
+module Gitlab
+  module ImportExport
+    module Base
+      class RelationObjectSaver
+        include Gitlab::Utils::StrongMemoize
+
+        BATCH_SIZE = 100
+        MIN_RECORDS_SIZE = 5
+
+        # @param relation_object [Object] Object of a project/group, e.g. an issue
+        # @param relation_key [String] Name of the object association to group/project, e.g. :issues
+        # @param relation_definition [Hash] Object subrelations as defined in import_export.yml
+        # @param importable [Project|Group] Project or group where relation object is getting saved to
+        #
+        # @example
+        #   Gitlab::ImportExport::Base::RelationObjectSaver.new(
+        #     relation_key: 'merge_requests',
+        #     relation_object: #<MergeRequest id: root/mrs!1, notes: [#<Note id: nil, note: 'test', ...>, #<Note id: nil, noteL 'another note'>]>,
+        #     relation_definition: {"metrics"=>{}, "award_emoji"=>{}, "notes"=>{"author"=>{}, ... }}
+        #     importable: @importable
+        #   ).execute
+        def initialize(relation_object:, relation_key:, relation_definition:, importable:)
+          @relation_object = relation_object
+          @relation_key = relation_key
+          @relation_definition = relation_definition
+          @importable = importable
+          @invalid_subrelations = []
+        end
+
+        def execute
+          move_subrelations
+
+          relation_object.save!
+
+          save_subrelations
+        ensure
+          log_invalid_subrelations
+        end
+
+        private
+
+        attr_reader :relation_object, :relation_key, :relation_definition,
+                    :importable, :collection_subrelations, :invalid_subrelations
+
+        # rubocop:disable GitlabSecurity/PublicSend
+        def save_subrelations
+          collection_subrelations.each_pair do |relation_name, records|
+            records.each_slice(BATCH_SIZE) do |batch|
+              valid_records, invalid_records = batch.partition { |record| record.valid? }
+
+              invalid_subrelations << invalid_records
+              relation_object.public_send(relation_name) << valid_records
+            end
+          end
+        end
+
+        def move_subrelations
+          strong_memoize(:collection_subrelations) do
+            relation_definition.each_key.each_with_object({}) do |definition, collection_subrelations|
+              subrelation = relation_object.public_send(definition)
+              association = relation_object.class.reflect_on_association(definition)
+
+              if association&.collection? && subrelation.size > MIN_RECORDS_SIZE
+                collection_subrelations[definition] = subrelation.records
+
+                subrelation.clear
+              end
+            end
+          end
+        end
+        # rubocop:enable GitlabSecurity/PublicSend
+
+        def log_invalid_subrelations
+          invalid_subrelations.flatten.each do |record|
+            Gitlab::Import::Logger.info(
+              message: '[Project/Group Import] Invalid subrelation',
+              importable_column_name => importable.id,
+              relation_key: relation_key,
+              error_messages: record.errors.full_messages.to_sentence
+            )
+
+            ImportFailure.create(
+              source: 'RelationObjectSaver#save!',
+              relation_key: relation_key,
+              exception_class: 'RecordInvalid',
+              exception_message: record.errors.full_messages.to_sentence,
+              correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
+              importable_column_name => importable.id
+            )
+          end
+        end
+
+        def importable_column_name
+          @column_name ||= importable.class.reflect_on_association(:import_failures).foreign_key.to_sym
+        end
+      end
+    end
+  end
+end
