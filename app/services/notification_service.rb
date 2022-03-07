@@ -65,6 +65,13 @@ class NotificationService
     end
   end
 
+  # Notify the owner of the account when a new personal access token is created
+  def access_token_created(user, token_name)
+    return unless user.can?(:receive_notifications)
+
+    mailer.access_token_created_email(user, token_name).deliver_later
+  end
+
   # Notify the owner of the personal access token, when it is about to expire
   # And mark the token with about_to_expire_delivered
   def access_token_about_to_expire(user, token_names)

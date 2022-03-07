@@ -24,6 +24,3 @@ Explore our features to monitor your GitLab instance:
     provide health check information when probed.
 - [`nginx_status`](https://docs.gitlab.com/omnibus/settings/nginx.html#enablingdisabling-nginx_status):
   Monitor your NGINX server status.
-- [Auto Monitoring](../../topics/autodevops/stages.md#auto-monitoring): Automated
-  monitoring for your application's server and response metrics, provided by
-  [Auto DevOps](../../topics/autodevops/index.md).

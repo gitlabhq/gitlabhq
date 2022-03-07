@@ -72,9 +72,17 @@ module Gitlab
         import_export_upload = @importable.import_export_upload
 
         if import_export_upload.remote_import_url.present?
-          download(import_export_upload.remote_import_url, @archive_file)
+          download(
+            import_export_upload.remote_import_url,
+            @archive_file,
+            size_limit: ::Import::GitlabProjects::RemoteFileValidator::FILE_SIZE_LIMIT
+          )
         else
-          download_or_copy_upload(import_export_upload.import_file, @archive_file)
+          download_or_copy_upload(
+            import_export_upload.import_file,
+            @archive_file,
+            size_limit: ::Import::GitlabProjects::RemoteFileValidator::FILE_SIZE_LIMIT
+          )
         end
       end
 

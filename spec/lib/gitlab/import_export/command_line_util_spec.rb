@@ -17,6 +17,9 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
       def initialize
         @shared = Gitlab::ImportExport::Shared.new(nil)
       end
+
+      # Make the included methods public for testing
+      public :download_or_copy_upload, :download
     end.new
   end
 
@@ -36,6 +39,61 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
 
   it 'has the right mask for uploads' do
     expect(file_permissions("#{path}/uploads")).to eq(0755) # originally 555
+  end
+
+  describe '#download_or_copy_upload' do
+    let(:upload) { instance_double(Upload, local?: local) }
+    let(:uploader) { instance_double(ImportExportUploader, path: :path, url: :url, upload: upload) }
+    let(:upload_path) { '/some/path' }
+
+    context 'when the upload is local' do
+      let(:local) { true }
+
+      it 'copies the file' do
+        expect(subject).to receive(:copy_files).with(:path, upload_path)
+
+        subject.download_or_copy_upload(uploader, upload_path)
+      end
+    end
+
+    context 'when the upload is remote' do
+      let(:local) { false }
+
+      it 'downloads the file' do
+        expect(subject).to receive(:download).with(:url, upload_path, size_limit: nil)
+
+        subject.download_or_copy_upload(uploader, upload_path)
+      end
+    end
+  end
+
+  describe '#download' do
+    before do
+      stub_request(:get, 'http://localhost:3000/file')
+        .to_return(
+          status: 200,
+          body: File.open(archive),
+          headers: {
+            'Content-Type' => 'application/x-tar'
+          }
+        )
+    end
+
+    let(:tempfile) { Tempfile.new('test', path) }
+
+    it 'downloads the file in the given path' do
+      subject.download('http://localhost:3000/file', tempfile)
+
+      expect(File.exist?(tempfile)).to eq(true)
+      expect(tempfile.size).to eq(File.size(archive))
+    end
+
+    it 'limit the size of the downloaded file' do
+      subject.download('http://localhost:3000/file', tempfile, size_limit: 1.byte)
+
+      expect(File.exist?(tempfile)).to eq(true)
+      expect(tempfile.size).to eq(0)
+    end
   end
 
   describe '#gzip' do

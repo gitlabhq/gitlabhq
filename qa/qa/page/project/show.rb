@@ -121,6 +121,8 @@ module QA
         end
 
         def has_file?(name)
+          return false unless has_element?(:file_tree_table)
+
           within_element(:file_tree_table) do
             has_element?(:file_name_link, text: name)
           end

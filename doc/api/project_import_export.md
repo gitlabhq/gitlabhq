@@ -246,6 +246,61 @@ curl --request POST \
 The `Content-Length` header must return a valid number. The maximum file size is 10 gigabytes.
 The `Content-Type` header must be `application/gzip`.
 
+## Import a file from AWS S3
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.9 in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta), [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. Disabled by default.
+
+FLAG:
+On self-managed GitLab and GitLab.com, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. This feature is not ready for production use.
+
+```plaintext
+POST /projects/remote-import-s3
+```
+
+| Attribute           | Type           | Required | Description                              |
+| ------------------- | -------------- | -------- | ---------------------------------------- |
+| `namespace`         | integer/string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
+| `name`              | string         | no       | The name of the project to import. If not provided, defaults to the path of the project. |
+| `region`            | string         | yes      | [AWS S3 region name where the file is stored.](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) |
+| `bucket_name`       | string         | yes      | [AWS S3 bucket name where the file is stored.](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) |
+| `file_key`          | string         | yes      | [AWS S3 file key to identify the file.](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingObjects.html) |
+| `access_key_id`     | string         | yes      | [AWS S3 access key ID.](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys). |
+| `secret_access_key` | string         | yes      | [AWS S3 secret access key.](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) |
+
+The passed override parameters take precedence over all values defined in the export file.
+
+```shell
+curl --request POST \
+  --url "http://localhost:3000/api/v4/projects/remote-import-s3" \
+  --header "PRIVATE-TOKEN: <your gitlab access key>" \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "name": "Sample Project",
+  "path": "sample-project",
+  "region": "<Your S3 region name>",
+  "bucket_name": "<Your S3 bucket name>",
+  "file_key": "<Your S3 file key>",
+  "access_key_id": "<Your AWS access key id>",
+  "secret_access_key": "<Your AWS secret access key>"
+}'
+```
+
+```json
+{
+  "id": 1,
+  "description": null,
+  "name": "Sample project",
+  "name_with_namespace": "Administrator / sample-project",
+  "path": "sample-project",
+  "path_with_namespace": "root/sample-project",
+  "created_at": "2018-02-13T09:05:58.023Z",
+  "import_status": "scheduled",
+  "correlation_id": "mezklWso3Za",
+  "failed_relations": [],
+  "import_error": null
+}
+```
+
 ## Import status
 
 Get the status of an import.

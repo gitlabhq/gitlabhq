@@ -41,9 +41,19 @@ module Gitlab
       end
 
       def maximum_id(model, column = nil)
+        # no-op: shadowing super for performance reasons
       end
 
       def minimum_id(model, column = nil)
+        # no-op: shadowing super for performance reasons
+      end
+
+      def alt_usage_data(value = nil, fallback: FALLBACK, &block)
+        if block_given?
+          { alt_usage_data_block: block.to_s }
+        else
+          { alt_usage_data_value: value }
+        end
       end
 
       def redis_usage_data(counter = nil, &block)

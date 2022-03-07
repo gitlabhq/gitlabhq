@@ -38,7 +38,7 @@ module QA
         # Check that the target project has the commit from the source
         target_project.visit!
         Page::Project::Show.perform do |project_page|
-          expect { project_page.has_file?('README.md') }.to eventually_be_truthy.within(max_duration: 60), "Expected a file named README.md but it did not appear."
+          expect { project_page.has_file?('README.md') }.to eventually_be_truthy.within(max_duration: 60, reload_page: page), "Expected a file named README.md but it did not appear."
           expect(project_page).to have_readme_content('The rendered file could not be displayed because it is stored in LFS')
         end
       end

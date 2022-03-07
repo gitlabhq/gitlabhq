@@ -7,7 +7,8 @@ type: howto
 
 # Credentials inventory **(ULTIMATE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20912) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20912) in GitLab 12.6.
+> - [Bot-created access tokens not displayed in personal access token list](https://gitlab.com/gitlab-org/gitlab/-/issues/351759) in GitLab 14.9.
 
 GitLab administrators are responsible for the overall security of their instance. To assist, GitLab
 provides a Credentials inventory to keep track of all the credentials that can be used to access

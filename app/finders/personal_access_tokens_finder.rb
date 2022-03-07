@@ -17,6 +17,7 @@ class PersonalAccessTokensFinder
     tokens = by_users(tokens)
     tokens = by_impersonation(tokens)
     tokens = by_state(tokens)
+    tokens = by_owner_type(tokens)
 
     sort(tokens)
   end
@@ -30,6 +31,15 @@ class PersonalAccessTokensFinder
     return PersonalAccessToken.none unless Ability.allowed?(current_user, :read_user_personal_access_tokens, params[:user])
 
     tokens
+  end
+
+  def by_owner_type(tokens)
+    case @params[:owner_type]
+    when 'human'
+      tokens.owner_is_human
+    else
+      tokens
+    end
   end
 
   def by_user(tokens)

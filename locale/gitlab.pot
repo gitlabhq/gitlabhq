@@ -1608,6 +1608,12 @@ msgstr ""
 msgid "A new impersonation token has been created."
 msgstr ""
 
+msgid "A new personal access token has been created"
+msgstr ""
+
+msgid "A new personal access token, named %{token_name}, has been created."
+msgstr ""
+
 msgid "A non-confidential epic cannot be assigned to a confidential parent epic"
 msgstr ""
 
@@ -41977,6 +41983,12 @@ msgid "You can always change your URL later"
 msgstr ""
 
 msgid "You can always edit this later"
+msgstr ""
+
+msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
+msgstr ""
+
+msgid "You can check it in your in your personal access tokens settings %{pat_link}."
 msgstr ""
 
 msgid "You can create a new %{link}."

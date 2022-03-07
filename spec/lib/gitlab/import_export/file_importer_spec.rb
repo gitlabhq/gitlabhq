@@ -72,6 +72,25 @@ RSpec.describe Gitlab::ImportExport::FileImporter do
       expect(shared.export_path).to include('test/abcd')
     end
 
+    context 'when the import file is not remote' do
+      include AfterNextHelpers
+
+      it 'downloads the file from a remote object storage' do
+        import_export_upload = build(:import_export_upload)
+        project = build( :project, import_export_upload: import_export_upload)
+
+        expect_next(described_class)
+          .to receive(:download_or_copy_upload)
+          .with(
+            import_export_upload.import_file,
+            kind_of(String),
+            size_limit: ::Import::GitlabProjects::RemoteFileValidator::FILE_SIZE_LIMIT
+          )
+
+        described_class.import(importable: project, archive_file: nil, shared: shared)
+      end
+    end
+
     context 'when the import file is remote' do
       include AfterNextHelpers
 
@@ -82,7 +101,11 @@ RSpec.describe Gitlab::ImportExport::FileImporter do
 
         expect_next(described_class)
           .to receive(:download)
-          .with(file_url, kind_of(String))
+          .with(
+            file_url,
+            kind_of(String),
+            size_limit: ::Import::GitlabProjects::RemoteFileValidator::FILE_SIZE_LIMIT
+          )
 
         described_class.import(importable: project, archive_file: nil, shared: shared)
       end

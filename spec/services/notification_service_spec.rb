@@ -258,6 +258,27 @@ RSpec.describe NotificationService, :mailer do
   end
 
   describe 'AccessToken' do
+    describe '#access_token_created' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:pat) { create(:personal_access_token, user: user) }
+
+      subject(:notification_service) { notification.access_token_created(user, pat.name) }
+
+      it 'sends email to the token owner' do
+        expect { notification_service }.to have_enqueued_email(user, pat.name, mail: "access_token_created_email")
+      end
+
+      context 'when user is not allowed to receive notifications' do
+        before do
+          user.block!
+        end
+
+        it 'does not send email to the token owner' do
+          expect { notification_service }.not_to have_enqueued_email(user, pat.name, mail: "access_token_created_email")
+        end
+      end
+    end
+
     describe '#access_token_about_to_expire' do
       let_it_be(:user) { create(:user) }
       let_it_be(:pat) { create(:personal_access_token, user: user, expires_at: 5.days.from_now) }

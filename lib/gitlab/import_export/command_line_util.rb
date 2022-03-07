@@ -6,6 +6,8 @@ module Gitlab
       UNTAR_MASK = 'u+rwX,go+rX,go-w'
       DEFAULT_DIR_MODE = 0700
 
+      FileOversizedError = Class.new(StandardError)
+
       def tar_czf(archive:, dir:)
         tar_with_options(archive: archive, dir: dir, options: 'czf')
       end
@@ -51,19 +53,30 @@ module Gitlab
 
       private
 
-      def download_or_copy_upload(uploader, upload_path)
+      def download_or_copy_upload(uploader, upload_path, size_limit: nil)
         if uploader.upload.local?
           copy_files(uploader.path, upload_path)
         else
-          download(uploader.url, upload_path)
+          download(uploader.url, upload_path, size_limit: size_limit)
         end
       end
 
-      def download(url, upload_path)
+      def download(url, upload_path, size_limit: nil)
         File.open(upload_path, 'w') do |file|
           # Download (stream) file from the uploader's location
-          IO.copy_stream(URI.parse(url).open, file)
+          IO.copy_stream(
+            URI.parse(url).open(progress_proc: file_size_limiter(size_limit)),
+            file
+          )
         end
+      rescue FileOversizedError
+        nil
+      end
+
+      def file_size_limiter(limit)
+        return if limit.blank?
+
+        -> (current_size) { raise FileOversizedError if current_size > limit }
       end
 
       def tar_with_options(archive:, dir:, options:)

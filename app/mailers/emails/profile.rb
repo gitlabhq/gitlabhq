@@ -58,6 +58,18 @@ module Emails
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    def access_token_created_email(user, token_name)
+      return unless user&.active?
+
+      @user = user
+      @target_url = profile_personal_access_tokens_url
+      @token_name = token_name
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        mail(to: @user.notification_email_or_default, subject: subject(_("A new personal access token has been created")))
+      end
+    end
+
     def access_token_about_to_expire_email(user, token_names)
       return unless user
 

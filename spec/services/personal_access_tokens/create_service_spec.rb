@@ -18,6 +18,14 @@ RSpec.describe PersonalAccessTokens::CreateService do
 
       subject
     end
+
+    it 'notifies the user' do
+      expect_next_instance_of(NotificationService) do |notification_service|
+        expect(notification_service).to receive(:access_token_created).with(user, params[:name])
+      end
+
+      subject
+    end
   end
 
   shared_examples_for 'an unsuccessfully created token' do

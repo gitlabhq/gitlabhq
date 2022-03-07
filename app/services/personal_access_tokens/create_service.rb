@@ -16,6 +16,7 @@ module PersonalAccessTokens
 
       if token.persisted?
         log_event(token)
+        notification_service.access_token_created(target_user, token.name)
         ServiceResponse.success(payload: { personal_access_token: token })
       else
         ServiceResponse.error(message: token.errors.full_messages.to_sentence, payload: { personal_access_token: token })
