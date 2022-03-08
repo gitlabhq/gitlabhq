@@ -28,7 +28,6 @@ module QA
       end
 
       before(:context) do
-        Runtime::Feature.enable(:invite_members_group_modal)
         @user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
       end
 
@@ -78,10 +77,6 @@ module QA
       after do
         project&.remove_via_api!
         group&.remove_via_api!
-      end
-
-      after(:context) do
-        Runtime::Feature.disable(:invite_members_group_modal)
       end
     end
   end

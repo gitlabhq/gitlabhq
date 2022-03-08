@@ -23,12 +23,6 @@ RSpec.describe Gitlab::Graphql::Loaders::BatchCommitLoader do
       expect(result.force).to eq(first_commit)
     end
 
-    before do
-      ActiveSupport::Notifications.subscribe('sql.active_record') do |event|
-        raise "no!" if event.payload[:sql].include?('SELECT "namespaces".')
-      end
-    end
-
     it 'only queries once' do
       expect do
         [

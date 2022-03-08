@@ -17,8 +17,12 @@ members.
 
 ## Share a project with a group of users
 
-NOTE:
-In GitLab 13.11, you can [replace this form with a modal window](#share-a-project-modal-window).
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal
+    window [with a flag](../../feature_flags.md). Disabled by default.
+> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208)
+    in GitLab 14.8.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
+    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 The primary mechanism to give a group of users, say 'Engineering', access to a project,
 say 'Project Acme', in GitLab is to make the 'Engineering' group the owner of 'Project
@@ -28,9 +32,9 @@ This is where the group sharing feature can be of use.
 To share 'Project Acme' with the 'Engineering' group:
 
 1. For 'Project Acme' use the left navigation menu to go to **Project information > Members**.
-1. Select the **Invite group** tab.
+1. Select **Invite a group**.
 1. Add the 'Engineering' group with the maximum access level of your choice.
-1. Optional. Select an expiration date.
+1. Optional. Select an **Access expiration date**.
 1. Select **Invite**.
 
 After sharing 'Project Acme' with 'Engineering':
@@ -44,46 +48,6 @@ You can share a project only with:
 - Groups that contain a nested subgroup or project for which you have an explicitly defined role.
 
 Administrators can share projects with any group in the system.
-
-### Share a project modal window
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11.
-> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - Replaces the existing form with buttons to open a modal window.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-modal-window).
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-In GitLab 13.11, you can optionally replace the sharing form with a modal window.
-To share a project after enabling this feature:
-
-1. Go to your project's page.
-1. On the left sidebar, go to **Project information > Members**, and then select **Invite a group**.
-1. Select a group, and select a **Max role**.
-1. Optional. Select an **Access expiration date**.
-1. Select **Invite**.
-
-### Enable or disable modal window **(FREE SELF)**
-
-The modal window for sharing a project is under development and is ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:invite_members_group_modal)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:invite_members_group_modal)
-```
 
 ## Maximum access level
 

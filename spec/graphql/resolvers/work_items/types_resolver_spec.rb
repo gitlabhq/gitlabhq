@@ -20,6 +20,14 @@ RSpec.describe Resolvers::WorkItems::TypesResolver do
       expect(result.to_a).to match(WorkItems::Type.default.order_by_name_asc)
     end
 
+    context 'when requesting taskable types' do
+      it 'returns only taskable types' do
+        result = resolve(described_class, obj: group, args: { taskable: true })
+
+        expect(result.to_a).to contain_exactly(WorkItems::Type.default_by_type(:task))
+      end
+    end
+
     context 'when work_items feature flag is disabled' do
       before do
         stub_feature_flags(work_items: false)

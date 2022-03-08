@@ -9,10 +9,6 @@ module Groups::GroupMembersHelper
     { multiple: true, class: 'input-clamp qa-member-select-field ', scope: :all, email_user: true }
   end
 
-  def render_invite_member_for_group(group, default_access_level)
-    render 'shared/members/invite_member', submit_url: group_group_members_path(group), access_levels: group.access_level_roles, default_access_level: default_access_level
-  end
-
   def group_members_app_data(group, members:, invited:, access_requests:)
     {
       user: group_members_list_data(group, members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }),

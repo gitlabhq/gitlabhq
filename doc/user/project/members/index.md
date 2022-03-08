@@ -45,12 +45,8 @@ flowchart RL
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-
-FLAG:
-On self-managed GitLab, by default the modal window feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md)
-named `invite_members_group_modal`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
+    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Add users to a project so they become members and have permission
 to perform actions.
@@ -83,12 +79,8 @@ using the email address the invitation was sent to.
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-
-FLAG:
-On self-managed GitLab, by default the modal window feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md)
-named `invite_members_group_modal`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
+    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 When you add a group to a project, each user in the group gets access to the project.
 Each user's access is based on:

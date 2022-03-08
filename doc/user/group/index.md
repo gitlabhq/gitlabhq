@@ -84,6 +84,7 @@ You can give a user access to all projects in a group.
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
+1. Select **Invite members**.
 1. Fill in the fields.
    - The role applies to all projects in the group. [Learn more about permissions](../permissions.md).
    - On the **Access expiration date**, the user can no longer access projects in the group.
@@ -273,12 +274,8 @@ To view the activity feed in Atom format, select the
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-
-FLAG:
-On self-managed GitLab, by default the modal window feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md)
-named `invite_members_group_modal`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
+    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group. Members get direct access

@@ -13,8 +13,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
 
-    @skip_groups = @project.related_group_ids
-
     @group_links = @project.project_group_links
     @group_links = @group_links.search(params[:search_groups]) if params[:search_groups].present?
 
@@ -24,8 +22,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
 
     @project_members = present_members(non_invited_members.page(params[:page]))
-
-    @project_member = @project.project_members.new
   end
 
   def import

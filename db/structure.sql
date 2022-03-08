@@ -20651,7 +20651,7 @@ CREATE TABLE sprints (
     group_id bigint,
     iid integer NOT NULL,
     cached_markdown_version integer,
-    title text NOT NULL,
+    title text,
     title_html text,
     description text,
     description_html text,
@@ -29065,11 +29065,7 @@ CREATE INDEX index_sprints_on_due_date ON sprints USING btree (due_date);
 
 CREATE INDEX index_sprints_on_group_id ON sprints USING btree (group_id);
 
-CREATE UNIQUE INDEX index_sprints_on_iterations_cadence_id_and_title ON sprints USING btree (iterations_cadence_id, title);
-
 CREATE UNIQUE INDEX index_sprints_on_project_id_and_iid ON sprints USING btree (project_id, iid);
-
-CREATE UNIQUE INDEX index_sprints_on_project_id_and_title ON sprints USING btree (project_id, title) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_sprints_on_title ON sprints USING btree (title);
 

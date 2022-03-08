@@ -11,10 +11,6 @@ module QA
         end
       end
 
-      before do
-        Runtime::Feature.enable(:invite_members_group_modal, project: project)
-      end
-
       let(:developer_user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
       let(:maintainer_user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2) }
       let(:tag_name) { 'v0.0.1' }

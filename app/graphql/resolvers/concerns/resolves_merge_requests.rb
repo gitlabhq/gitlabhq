@@ -51,7 +51,8 @@ module ResolvesMergeRequests
       milestone: [:milestone],
       security_auto_fix: [:author],
       head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }],
-      timelogs: [:timelogs]
+      timelogs: [:timelogs],
+      committers: [merge_request_diff: [:merge_request_diff_commits]]
     }
   end
 end

@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe "Admin::Projects" do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
-  include Select2Helper
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create :user }
@@ -117,18 +116,6 @@ RSpec.describe "Admin::Projects" do
 
       expect(find_member_row(current_user)).to have_content('Developer')
     end
-
-    context 'with the invite_members_group_modal feature flag disabled' do
-      it 'adds admin to the project as developer' do
-        stub_feature_flags(invite_members_group_modal: false)
-
-        visit project_project_members_path(project)
-
-        add_member_using_form(current_user.id, role: 'Developer')
-
-        expect(find_member_row(current_user)).to have_content('Developer')
-      end
-    end
   end
 
   describe 'admin removes themselves from the project', :js do
@@ -151,21 +138,6 @@ RSpec.describe "Admin::Projects" do
       end
 
       expect(page).to have_current_path(dashboard_projects_path, ignore_query: true, url: false)
-    end
-  end
-
-  # temporary method for the form until the :invite_members_group_modal feature flag is
-  # enabled: https://gitlab.com/gitlab-org/gitlab/-/issues/247208
-  def add_member_using_form(id, role: 'Developer')
-    page.within '.invite-users-form' do
-      select2(id, from: '#user_ids', multiple: true)
-
-      fill_in 'expires_at', with: 5.days.from_now.to_date
-      find_field('expires_at').native.send_keys :enter
-
-      select(role, from: "access_level")
-
-      click_on 'Invite'
     end
   end
 end

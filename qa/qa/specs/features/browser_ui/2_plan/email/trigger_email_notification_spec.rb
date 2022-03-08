@@ -16,7 +16,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:invite_members_group_modal)
         Flow::Login.sign_in
       end
 

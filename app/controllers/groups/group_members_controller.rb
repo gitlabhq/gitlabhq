@@ -26,8 +26,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @sort = params[:sort].presence || sort_value_name
 
     if can?(current_user, :admin_group_member, @group)
-      @skip_groups = @group.related_group_ids
-
       @invited_members = invited_members
       @invited_members = @invited_members.search_invite_email(params[:search_invited]) if params[:search_invited].present?
       @invited_members = present_invited_members(@invited_members)
@@ -38,8 +36,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @requesters = present_members(
       AccessRequestsFinder.new(@group).execute(current_user)
     )
-
-    @group_member = @group.group_members.new
   end
 
   # MembershipActions concern

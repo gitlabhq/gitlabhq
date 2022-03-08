@@ -777,9 +777,6 @@ msgstr ""
 msgid "%{link_start}Add a license%{link_end} that you have received from GitLab Inc."
 msgstr ""
 
-msgid "%{link_start}Learn more%{link_end} about roles."
-msgstr ""
-
 msgid "%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it's ready."
 msgstr ""
 
@@ -1825,9 +1822,6 @@ msgid "Access denied for your LDAP account."
 msgstr ""
 
 msgid "Access denied: %{error}"
-msgstr ""
-
-msgid "Access expiration date"
 msgstr ""
 
 msgid "Access expires"
@@ -16606,9 +16600,6 @@ msgstr ""
 msgid "GitLab logo"
 msgstr ""
 
-msgid "GitLab member or Email address"
-msgstr ""
-
 msgid "GitLab metadata URL"
 msgstr ""
 
@@ -17243,9 +17234,6 @@ msgid "Group runners"
 msgstr ""
 
 msgid "Group runners can be managed with the %{link}."
-msgstr ""
-
-msgid "Group sharing provides access to all group members (including members who inherited group membership from a parent group)."
 msgstr ""
 
 msgid "Group variables (inherited)"
@@ -20077,9 +20065,6 @@ msgstr ""
 msgid "Invitation declined"
 msgstr ""
 
-msgid "Invite"
-msgstr ""
-
 msgid "Invite \"%{email}\" by email"
 msgstr ""
 
@@ -20093,12 +20078,6 @@ msgid "Invite a group"
 msgstr ""
 
 msgid "Invite email has already been taken"
-msgstr ""
-
-msgid "Invite group"
-msgstr ""
-
-msgid "Invite member"
 msgstr ""
 
 msgid "Invite members"
@@ -26915,6 +26894,9 @@ msgstr ""
 msgid "PipelineWizard|There was a problem while checking whether your file already exists in the specified branch."
 msgstr ""
 
+msgid "PipelineWizard|There was an unexpected error trying to set up the template. The error has been logged."
+msgstr ""
+
 msgid "Pipelines"
 msgstr ""
 
@@ -33140,9 +33122,6 @@ msgid "Select a compliance framework to apply to this project. %{linkStart}Learn
 msgstr ""
 
 msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."
-msgstr ""
-
-msgid "Select a group to invite"
 msgstr ""
 
 msgid "Select a label"

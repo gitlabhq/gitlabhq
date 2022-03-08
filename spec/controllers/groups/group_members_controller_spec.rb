@@ -38,12 +38,6 @@ RSpec.describe Groups::GroupMembersController do
         expect(assigns(:invited_members).map(&:invite_email)).to match_array(invited.map(&:invite_email))
       end
 
-      it 'assigns skip groups' do
-        get :index, params: { group_id: group }
-
-        expect(assigns(:skip_groups)).to match_array(group.related_group_ids)
-      end
-
       it 'restricts search to one email' do
         get :index, params: { group_id: group, search_invited: invited.first.invite_email }
 
@@ -68,11 +62,10 @@ RSpec.describe Groups::GroupMembersController do
         sign_in(user)
       end
 
-      it 'does not assign invited members or skip_groups', :aggregate_failures do
+      it 'does not assign invited members' do
         get :index, params: { group_id: group }
 
         expect(assigns(:invited_members)).to be_nil
-        expect(assigns(:skip_groups)).to be_nil
       end
     end
 

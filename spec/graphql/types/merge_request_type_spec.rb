@@ -35,7 +35,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       total_time_spent human_time_estimate human_total_time_spent reference author merged_at
       commit_count current_user_todos conflicts auto_merge_enabled approved_by source_branch_protected
       default_merge_commit_message_with_description squash_on_merge available_auto_merge_strategies
-      has_ci mergeable commits commits_without_merge_commits squash security_auto_fix default_squash_commit_message
+      has_ci mergeable commits committers commits_without_merge_commits squash security_auto_fix default_squash_commit_message
       auto_merge_strategy merge_user
     ]
 

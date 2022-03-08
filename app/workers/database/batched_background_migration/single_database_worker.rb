@@ -31,6 +31,15 @@ module Database
       end
 
       def perform
+        unless base_model
+          Sidekiq.logger.info(
+            class: self.class.name,
+            database: self.class.tracking_database,
+            message: 'skipping migration execution for unconfigured database')
+
+          return
+        end
+
         Gitlab::Database::SharedModel.using_connection(base_model.connection) do
           break unless Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops, default_enabled: :yaml) && active_migration
 

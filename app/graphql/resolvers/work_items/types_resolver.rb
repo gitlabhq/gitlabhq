@@ -5,12 +5,20 @@ module Resolvers
     class TypesResolver < BaseResolver
       type Types::WorkItems::TypeType.connection_type, null: true
 
-      def resolve
+      argument :taskable, ::GraphQL::Types::Boolean,
+               required: false,
+               description: 'If `true`, only taskable work item types will be returned.' \
+                            ' Argument is experimental and can be removed in the future without notice.'
+
+      def resolve(taskable: nil)
         return unless Feature.enabled?(:work_items, object)
 
         # This will require a finder in the future when groups/projects get their work item types
         # All groups/projects use the default types for now
-        ::WorkItems::Type.default.order_by_name_asc
+        base_scope = ::WorkItems::Type.default
+        base_scope = base_scope.by_type(:task) if taskable
+
+        base_scope.order_by_name_asc
       end
     end
   end
