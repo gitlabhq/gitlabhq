@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Project wikis API **(FREE)**
 
-> The `encoding` field was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81150) in GitLab 14.9.
+> - The `encoding` field was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81150) in GitLab 14.9.
+> - The `render_html` attribute was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/336792) in GitLab 14.9.
 
 The project [wikis](../user/project/wiki/index.md) API is available only in APIv4.
 An API for [group wikis](group_wikis.md) is also available.
@@ -67,6 +68,7 @@ GET /projects/:id/wikis/:slug
 | --------- | ------- | -------- | --------------------- |
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `slug` | string  | yes       | URLencoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`  |
+| `render_html`      | boolean    | no      | Return the rendered HTML of the wiki page  |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis/home"

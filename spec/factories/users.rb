@@ -151,7 +151,7 @@ FactoryBot.define do
 
       transient do
         extern_uid { '123456' }
-        provider { 'ldapmain' }
+        provider { 'twitter' }
       end
 
       after(:create) do |user, evaluator|
@@ -165,6 +165,12 @@ FactoryBot.define do
         end
 
         user.identities << create(:identity, identity_attrs)
+      end
+
+      trait :ldap do
+        transient do
+          provider { 'ldapmain' }
+        end
       end
     end
 

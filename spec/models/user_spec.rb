@@ -3090,7 +3090,7 @@ RSpec.describe User do
 
     describe '#ldap_identity' do
       it 'returns ldap identity' do
-        user = create :omniauth_user
+        user = create(:omniauth_user, :ldap)
 
         expect(user.ldap_identity.provider).not_to be_empty
       end

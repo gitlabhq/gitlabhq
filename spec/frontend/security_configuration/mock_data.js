@@ -1,8 +1,8 @@
 export const testProjectPath = 'foo/bar';
 
-export const testProviderIds = [101, 102];
+export const testProviderIds = [101, 102, 103];
 
-export const securityTrainingProviders = [
+const createSecurityTrainingProviders = ({ providerOverrides = {} }) => [
   {
     id: testProviderIds[0],
     name: 'Vendor Name 1',
@@ -10,33 +10,43 @@ export const securityTrainingProviders = [
     url: 'https://www.example.org/security/training',
     isEnabled: false,
     isPrimary: false,
+    ...providerOverrides.first,
   },
   {
     id: testProviderIds[1],
     name: 'Vendor Name 2',
     description: 'Security training with guide and learning pathways.',
     url: 'https://www.vendornametwo.com/',
-    isEnabled: true,
+    isEnabled: false,
     isPrimary: false,
+    ...providerOverrides.second,
+  },
+  {
+    id: testProviderIds[2],
+    name: 'Vendor Name 3',
+    description: 'Security training for the everyday developer.',
+    url: 'https://www.vendornamethree.com/',
+    isEnabled: false,
+    isPrimary: false,
+    ...providerOverrides.third,
   },
 ];
 
-export const securityTrainingProvidersResponse = {
-  data: {
-    project: {
-      id: 1,
-      securityTrainingProviders,
+export const getSecurityTrainingProvidersData = (providerOverrides = {}) => {
+  const securityTrainingProviders = createSecurityTrainingProviders(providerOverrides);
+  const response = {
+    data: {
+      project: {
+        id: 1,
+        securityTrainingProviders,
+      },
     },
-  },
-};
+  };
 
-export const disabledSecurityTrainingProvidersResponse = {
-  data: {
-    project: {
-      id: 1,
-      securityTrainingProviders: [securityTrainingProviders[0]],
-    },
-  },
+  return {
+    response,
+    data: securityTrainingProviders,
+  };
 };
 
 export const dismissUserCalloutResponse = {

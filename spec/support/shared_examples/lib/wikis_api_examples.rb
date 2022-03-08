@@ -44,14 +44,32 @@ RSpec.shared_examples_for 'wikis API returns list of wiki pages' do
 end
 
 RSpec.shared_examples_for 'wikis API returns wiki page' do
-  it 'returns the wiki page' do
-    expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response.size).to eq(5)
-    expect(json_response.keys).to match_array(expected_keys_with_content)
-    expect(json_response['content']).to eq(page.content)
-    expect(json_response['slug']).to eq(page.slug)
-    expect(json_response['title']).to eq(page.title)
-    expect(json_response['encoding']).to eq('UTF-8')
+  shared_examples 'returns wiki page' do
+    specify do
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(5)
+      expect(json_response.keys).to match_array(expected_keys_with_content)
+      expect(json_response['content']).to eq(expected_content)
+      expect(json_response['slug']).to eq(page.slug)
+      expect(json_response['title']).to eq(page.title)
+    end
+  end
+
+  let(:expected_content) { page.content }
+
+  it_behaves_like 'returns wiki page'
+
+  context 'when render param is false' do
+    let(:params) { { render_html: false } }
+
+    it_behaves_like 'returns wiki page'
+  end
+
+  context 'when render param is true' do
+    let(:params) { { render_html: true } }
+    let(:expected_content) { '<p data-sourcepos="1:1-1:21" dir="auto">Content for wiki page</p>' }
+
+    it_behaves_like 'returns wiki page'
   end
 end
 

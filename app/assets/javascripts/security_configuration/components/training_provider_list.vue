@@ -2,7 +2,7 @@
 import { GlAlert, GlCard, GlToggle, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import {
   TRACK_TOGGLE_TRAINING_PROVIDER_ACTION,
   TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
@@ -10,9 +10,12 @@ import {
   TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
 } from '~/security_configuration/constants';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
-import { updateSecurityTrainingOptimisticResponse } from '~/security_configuration/graphql/utils/optimistic_response';
-import securityTrainingProvidersQuery from '../graphql/security_training_providers.query.graphql';
-import configureSecurityTrainingProvidersMutation from '../graphql/configure_security_training_providers.mutation.graphql';
+import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
+import configureSecurityTrainingProvidersMutation from '~/security_configuration/graphql/configure_security_training_providers.mutation.graphql';
+import {
+  updateSecurityTrainingCache,
+  updateSecurityTrainingOptimisticResponse,
+} from '~/security_configuration/graphql/cache_utils';
 
 const i18n = {
   providerQueryErrorMessage: __(
@@ -21,6 +24,7 @@ const i18n = {
   configMutationErrorMessage: __(
     'Could not save configuration. Please refresh the page, or try again later.',
   ),
+  primaryTraining: s__('SecurityTraining|Primary Training'),
 };
 
 export default {
@@ -57,6 +61,9 @@ export default {
     };
   },
   computed: {
+    enabledProviders() {
+      return this.securityTrainingProviders.filter(({ isEnabled }) => isEnabled);
+    },
     isLoading() {
       return this.$apollo.queries.securityTrainingProviders.loading;
     },
@@ -91,14 +98,42 @@ export default {
         Sentry.captureException(e);
       }
     },
-    toggleProvider(provider) {
-      const { isEnabled } = provider;
+    async toggleProvider(provider) {
+      const { isEnabled, isPrimary } = provider;
       const toggledIsEnabled = !isEnabled;
 
       this.trackProviderToggle(provider.id, toggledIsEnabled);
-      this.storeProvider({ ...provider, isEnabled: toggledIsEnabled });
+
+      // when the current primary provider gets disabled then set the first enabled to be the new primary
+      if (!toggledIsEnabled && isPrimary && this.enabledProviders.length > 1) {
+        const firstOtherEnabledProvider = this.enabledProviders.find(
+          ({ id }) => id !== provider.id,
+        );
+        this.setPrimaryProvider(firstOtherEnabledProvider);
+      }
+
+      this.storeProvider({
+        ...provider,
+        isEnabled: toggledIsEnabled,
+      });
     },
-    async storeProvider({ id, isEnabled, isPrimary }) {
+    setPrimaryProvider(provider) {
+      this.storeProvider({ ...provider, isPrimary: true });
+    },
+    async storeProvider(provider) {
+      const { id, isEnabled, isPrimary } = provider;
+      let nextIsPrimary = isPrimary;
+
+      // if the current provider has been disabled it can't be primary
+      if (!isEnabled) {
+        nextIsPrimary = false;
+      }
+
+      // if the current provider is the only enabled provider it should be primary
+      if (isEnabled && !this.enabledProviders.length) {
+        nextIsPrimary = true;
+      }
+
       try {
         const {
           data: {
@@ -111,13 +146,17 @@ export default {
               projectPath: this.projectFullPath,
               providerId: id,
               isEnabled,
-              isPrimary,
+              isPrimary: nextIsPrimary,
             },
           },
           optimisticResponse: updateSecurityTrainingOptimisticResponse({
             id,
             isEnabled,
-            isPrimary,
+            isPrimary: nextIsPrimary,
+          }),
+          update: updateSecurityTrainingCache({
+            query: securityTrainingProvidersQuery,
+            variables: { fullPath: this.projectFullPath },
           }),
         });
 
@@ -188,6 +227,27 @@ export default {
                   {{ __('Learn more.') }}
                 </gl-link>
               </p>
+              <!-- Note: The following `div` and it's content will be replaced by 'GlFormRadio' once https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1720#note_857342988 is resolved -->
+              <div
+                class="gl-form-radio custom-control custom-radio"
+                data-testid="primary-provider-radio"
+              >
+                <input
+                  :id="`security-training-provider-${provider.id}`"
+                  type="radio"
+                  :checked="provider.isPrimary"
+                  name="radio-group-name"
+                  class="custom-control-input"
+                  :disabled="!provider.isEnabled"
+                  @change="setPrimaryProvider(provider)"
+                />
+                <label
+                  class="custom-control-label"
+                  :for="`security-training-provider-${provider.id}`"
+                >
+                  {{ $options.i18n.primaryTraining }}
+                </label>
+              </div>
             </div>
           </div>
         </gl-card>

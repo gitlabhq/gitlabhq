@@ -130,41 +130,42 @@ RSpec.describe API::Wikis do
   describe 'GET /projects/:id/wikis/:slug' do
     let(:page) { create(:wiki_page, wiki: project.wiki) }
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
+    let(:params) { {} }
+
+    subject(:request) { get api(url, user), params: params }
 
     context 'when wiki is disabled' do
       let(:project) { project_wiki_disabled }
 
+      before do
+        request
+      end
+
       context 'when user is guest' do
-        before do
-          get api(url)
-        end
+        let(:user) { nil }
 
         include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
-        before do
-          get api(url, developer)
-        end
+        let(:user) { developer }
 
         include_examples 'wiki API 403 Forbidden'
       end
 
       context 'when user is maintainer' do
-        before do
-          get api(url, maintainer)
-        end
+        let(:user) { maintainer }
 
         include_examples 'wiki API 403 Forbidden'
       end
     end
 
     context 'when wiki is available only for team members' do
-      let(:project) { create(:project, :wiki_repo, :wiki_private) }
+      let_it_be_with_reload(:project) { create(:project, :wiki_repo, :wiki_private) }
 
       context 'when user is guest' do
         before do
-          get api(url)
+          request
         end
 
         include_examples 'wiki API 404 Project Not Found'
@@ -173,7 +174,8 @@ RSpec.describe API::Wikis do
       context 'when user is developer' do
         before do
           project.add_developer(user)
-          get api(url, user)
+
+          request
         end
 
         include_examples 'wikis API returns wiki page'
@@ -189,7 +191,7 @@ RSpec.describe API::Wikis do
         before do
           project.add_maintainer(user)
 
-          get api(url, user)
+          request
         end
 
         include_examples 'wikis API returns wiki page'
@@ -203,11 +205,13 @@ RSpec.describe API::Wikis do
     end
 
     context 'when wiki is available for everyone with access' do
-      let(:project) { create(:project, :wiki_repo) }
+      let_it_be_with_reload(:project) { create(:project, :wiki_repo) }
 
       context 'when user is guest' do
+        let(:user) { nil }
+
         before do
-          get api(url)
+          request
         end
 
         include_examples 'wiki API 404 Project Not Found'
@@ -217,7 +221,7 @@ RSpec.describe API::Wikis do
         before do
           project.add_developer(user)
 
-          get api(url, user)
+          request
         end
 
         include_examples 'wikis API returns wiki page'
@@ -233,7 +237,7 @@ RSpec.describe API::Wikis do
         before do
           project.add_maintainer(user)
 
-          get api(url, user)
+          request
         end
 
         include_examples 'wikis API returns wiki page'

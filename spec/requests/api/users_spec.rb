@@ -11,6 +11,7 @@ RSpec.describe API::Users do
 
   let(:blocked_user) { create(:user, :blocked) }
   let(:omniauth_user) { create(:omniauth_user) }
+  let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:private_user) { create(:user, private_profile: true) }
   let(:deactivated_user) { create(:user, state: 'deactivated') }
@@ -1293,10 +1294,10 @@ RSpec.describe API::Users do
     end
 
     it "updates user's existing identity" do
-      put api("/users/#{omniauth_user.id}", admin), params: { provider: 'ldapmain', extern_uid: '654321' }
+      put api("/users/#{ldap_user.id}", admin), params: { provider: 'ldapmain', extern_uid: '654321' }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(omniauth_user.reload.identities.first.extern_uid).to eq('654321')
+      expect(ldap_user.reload.identities.first.extern_uid).to eq('654321')
     end
 
     it 'updates user with new identity' do

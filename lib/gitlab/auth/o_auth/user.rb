@@ -46,7 +46,7 @@ module Gitlab
           valid? && persisted?
         end
 
-        def save(provider = 'OAuth')
+        def save(provider = protocol_name)
           raise SigninDisabledForProviderError if oauth_provider_disabled?
           raise SignupDisabledError unless gl_user
 
@@ -94,6 +94,10 @@ module Gitlab
           else
             providers
           end
+        end
+
+        def protocol_name
+          'OAuth'
         end
 
         protected

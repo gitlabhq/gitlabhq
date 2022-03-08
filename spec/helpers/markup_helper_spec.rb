@@ -315,24 +315,17 @@ RSpec.describe MarkupHelper do
   end
 
   describe '#render_wiki_content' do
-    let(:wiki) { double('WikiPage', path: "file.#{extension}") }
-    let(:wiki_repository) { double('Repository') }
+    let(:wiki) { build(:wiki, container: project) }
     let(:content) { 'wiki content' }
+    let(:slug) { 'nested/page' }
+    let(:wiki_page) { double('WikiPage', path: "file.#{extension}", content: content, slug: slug, wiki: wiki) }
+
     let(:context) do
       {
         pipeline: :wiki, project: project, wiki: wiki,
-        page_slug: 'nested/page', issuable_reference_expansion_enabled: true,
-        repository: wiki_repository
+        page_slug: slug, issuable_reference_expansion_enabled: true,
+        repository: wiki.repository
       }
-    end
-
-    before do
-      expect(wiki).to receive(:content).and_return(content)
-      expect(wiki).to receive(:slug).and_return('nested/page')
-      expect(wiki).to receive(:repository).and_return(wiki_repository)
-      allow(wiki).to receive(:container).and_return(project)
-
-      helper.instance_variable_set(:@wiki, wiki)
     end
 
     context 'when file is Markdown' do
@@ -341,7 +334,7 @@ RSpec.describe MarkupHelper do
       it 'renders using #markdown_unsafe helper method' do
         expect(helper).to receive(:markdown_unsafe).with('wiki content', context)
 
-        helper.render_wiki_content(wiki)
+        helper.render_wiki_content(wiki_page)
       end
 
       context 'when context has labels' do
@@ -350,7 +343,7 @@ RSpec.describe MarkupHelper do
         let(:content) { '~Bug' }
 
         it 'renders label' do
-          result = helper.render_wiki_content(wiki)
+          result = helper.render_wiki_content(wiki_page)
           doc = Nokogiri::HTML.parse(result)
 
           expect(doc.css('.gl-label-link')).not_to be_empty
@@ -366,7 +359,7 @@ RSpec.describe MarkupHelper do
         end
 
         it 'renders uploads relative to project' do
-          result = helper.render_wiki_content(wiki)
+          result = helper.render_wiki_content(wiki_page)
 
           expect(result).to include("#{project.full_path}#{upload_link}")
         end
@@ -379,7 +372,7 @@ RSpec.describe MarkupHelper do
       it 'renders using Gitlab::Asciidoc' do
         expect(Gitlab::Asciidoc).to receive(:render)
 
-        helper.render_wiki_content(wiki)
+        helper.render_wiki_content(wiki_page)
       end
     end
 
@@ -398,7 +391,7 @@ FooBar
       it 'renders using #markdown_unsafe helper method' do
         expect(helper).to receive(:markdown_unsafe).with(content, context)
 
-        result = helper.render_wiki_content(wiki)
+        result = helper.render_wiki_content(wiki_page)
 
         expect(result).to be_empty
       end
@@ -410,7 +403,7 @@ FooBar
       it 'renders all other formats using Gitlab::OtherMarkup' do
         expect(Gitlab::OtherMarkup).to receive(:render)
 
-        helper.render_wiki_content(wiki)
+        helper.render_wiki_content(wiki_page)
       end
     end
   end

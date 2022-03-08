@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/browser';
 import { GlAlert, GlLink, GlToggle, GlCard, GlSkeletonLoader } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import {
@@ -12,7 +12,7 @@ import {
   TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
 } from '~/security_configuration/constants';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
-import { updateSecurityTrainingOptimisticResponse } from '~/security_configuration/graphql/utils/optimistic_response';
+import { updateSecurityTrainingOptimisticResponse } from '~/security_configuration/graphql/cache_utils';
 import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
 import configureSecurityTrainingProvidersMutation from '~/security_configuration/graphql/configure_security_training_providers.mutation.graphql';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
@@ -20,8 +20,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import {
   dismissUserCalloutResponse,
   dismissUserCalloutErrorResponse,
-  securityTrainingProviders,
-  securityTrainingProvidersResponse,
+  getSecurityTrainingProvidersData,
   updateSecurityTrainingProvidersResponse,
   updateSecurityTrainingProvidersErrorResponse,
   testProjectPath,
@@ -29,6 +28,19 @@ import {
 } from '../mock_data';
 
 Vue.use(VueApollo);
+
+const TEST_TRAINING_PROVIDERS_ALL_DISABLED = getSecurityTrainingProvidersData();
+const TEST_TRAINING_PROVIDERS_FIRST_ENABLED = getSecurityTrainingProvidersData({
+  providerOverrides: { first: { isEnabled: true, isPrimary: true } },
+});
+const TEST_TRAINING_PROVIDERS_ALL_ENABLED = getSecurityTrainingProvidersData({
+  providerOverrides: {
+    first: { isEnabled: true, isPrimary: true },
+    second: { isEnabled: true, isPrimary: false },
+    third: { isEnabled: true, isPrimary: false },
+  },
+});
+const TEST_TRAINING_PROVIDERS_DEFAULT = TEST_TRAINING_PROVIDERS_ALL_DISABLED;
 
 describe('TrainingProviderList component', () => {
   let wrapper;
@@ -38,7 +50,7 @@ describe('TrainingProviderList component', () => {
     const defaultHandlers = [
       [
         securityTrainingProvidersQuery,
-        jest.fn().mockResolvedValue(securityTrainingProvidersResponse),
+        jest.fn().mockResolvedValue(TEST_TRAINING_PROVIDERS_DEFAULT.response),
       ],
       [
         configureSecurityTrainingProvidersMutation,
@@ -53,7 +65,7 @@ describe('TrainingProviderList component', () => {
   };
 
   const createComponent = () => {
-    wrapper = shallowMount(TrainingProviderList, {
+    wrapper = shallowMountExtended(TrainingProviderList, {
       provide: {
         projectFullPath: testProjectPath,
       },
@@ -68,6 +80,7 @@ describe('TrainingProviderList component', () => {
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findToggles = () => wrapper.findAllComponents(GlToggle);
   const findFirstToggle = () => findToggles().at(0);
+  const findPrimaryProviderRadios = () => wrapper.findAllByTestId('primary-provider-radio');
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
 
@@ -107,7 +120,7 @@ describe('TrainingProviderList component', () => {
           Mutation: {
             configureSecurityTrainingProviders: () => ({
               errors: [],
-              securityTrainingProviders: [],
+              TEST_TRAINING_PROVIDERS_DEFAULT: [],
             }),
           },
         },
@@ -122,33 +135,48 @@ describe('TrainingProviderList component', () => {
       });
 
       it('renders correct amount of cards', () => {
-        expect(findCards()).toHaveLength(securityTrainingProviders.length);
+        expect(findCards()).toHaveLength(TEST_TRAINING_PROVIDERS_DEFAULT.data.length);
       });
 
-      securityTrainingProviders.forEach(({ name, description, url, isEnabled }, index) => {
-        it(`shows the name for card ${index}`, () => {
-          expect(findCards().at(index).text()).toContain(name);
-        });
-
-        it(`shows the description for card ${index}`, () => {
-          expect(findCards().at(index).text()).toContain(description);
-        });
-
-        it(`shows the learn more link for card ${index}`, () => {
-          expect(findLinks().at(index).attributes()).toEqual({
-            target: '_blank',
-            href: url,
+      TEST_TRAINING_PROVIDERS_DEFAULT.data.forEach(
+        ({ name, description, url, isEnabled }, index) => {
+          it(`shows the name for card ${index}`, () => {
+            expect(findCards().at(index).text()).toContain(name);
           });
-        });
 
-        it(`shows the toggle with the correct value for card ${index}`, () => {
-          expect(findToggles().at(index).props('value')).toEqual(isEnabled);
-        });
+          it(`shows the description for card ${index}`, () => {
+            expect(findCards().at(index).text()).toContain(description);
+          });
 
-        it('does not show loader when query is populated', () => {
-          expect(findLoader().exists()).toBe(false);
-        });
-      });
+          it(`shows the learn more link for card ${index}`, () => {
+            expect(findLinks().at(index).attributes()).toEqual({
+              target: '_blank',
+              href: url,
+            });
+          });
+
+          it(`shows the toggle with the correct value for card ${index}`, () => {
+            expect(findToggles().at(index).props('value')).toEqual(isEnabled);
+          });
+
+          it(`shows a radio button to select the provider as primary within card ${index}`, () => {
+            const primaryProviderRadioForCurrentCard = findPrimaryProviderRadios().at(index);
+
+            // if the given provider is not enabled it should not be possible select it as primary
+            expect(primaryProviderRadioForCurrentCard.find('input').attributes('disabled')).toBe(
+              isEnabled ? undefined : 'disabled',
+            );
+
+            expect(primaryProviderRadioForCurrentCard.text()).toBe(
+              TrainingProviderList.i18n.primaryTraining,
+            );
+          });
+
+          it('does not show loader when query is populated', () => {
+            expect(findLoader().exists()).toBe(false);
+          });
+        },
+      );
     });
 
     describe('storing training provider settings', () => {
@@ -168,7 +196,7 @@ describe('TrainingProviderList component', () => {
               input: {
                 providerId: testProviderIds[0],
                 isEnabled: true,
-                isPrimary: false,
+                isPrimary: true,
                 projectPath: testProjectPath,
               },
             },
@@ -178,9 +206,9 @@ describe('TrainingProviderList component', () => {
 
       it('returns an optimistic response when calling the mutation', () => {
         const optimisticResponse = updateSecurityTrainingOptimisticResponse({
-          id: securityTrainingProviders[0].id,
+          id: TEST_TRAINING_PROVIDERS_DEFAULT.data[0].id,
           isEnabled: true,
-          isPrimary: false,
+          isPrimary: true,
         });
 
         expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
@@ -243,7 +271,7 @@ describe('TrainingProviderList component', () => {
         // Once https://gitlab.com/gitlab-org/gitlab/-/issues/348985 and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79492
         // are merged this will be much easer to do and should be tackled then.
         expect(trackingSpy).toHaveBeenCalledWith(undefined, TRACK_TOGGLE_TRAINING_PROVIDER_ACTION, {
-          property: securityTrainingProviders[0].id,
+          property: TEST_TRAINING_PROVIDERS_DEFAULT.data[0].id,
           label: TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
           extra: {
             providerIsEnabled: true,
@@ -253,7 +281,7 @@ describe('TrainingProviderList component', () => {
 
       it(`tracks when a provider's "Learn more" link is clicked`, () => {
         const firstProviderLink = findLinks().at(0);
-        const [{ id: firstProviderId }] = securityTrainingProviders;
+        const [{ id: firstProviderId }] = TEST_TRAINING_PROVIDERS_DEFAULT.data;
 
         expect(trackingSpy).not.toHaveBeenCalled();
 
@@ -268,6 +296,37 @@ describe('TrainingProviderList component', () => {
           },
         );
       });
+    });
+  });
+
+  describe('primary provider settings', () => {
+    it.each`
+      description                                                                                 | initialProviderData                               | expectedMutationInput
+      ${'sets the provider to be non-primary when it gets disabled'}                              | ${TEST_TRAINING_PROVIDERS_FIRST_ENABLED.response} | ${{ providerId: TEST_TRAINING_PROVIDERS_FIRST_ENABLED.data[0].id, isEnabled: false, isPrimary: false }}
+      ${'sets a provider to be primary when it is the only one enabled'}                          | ${TEST_TRAINING_PROVIDERS_ALL_DISABLED.response}  | ${{ providerId: TEST_TRAINING_PROVIDERS_ALL_DISABLED.data[0].id, isEnabled: true, isPrimary: true }}
+      ${'sets the first other enabled provider to be primary when the primary one gets disabled'} | ${TEST_TRAINING_PROVIDERS_ALL_ENABLED.response}   | ${{ providerId: TEST_TRAINING_PROVIDERS_ALL_ENABLED.data[1].id, isEnabled: true, isPrimary: true }}
+    `('$description', async ({ initialProviderData, expectedMutationInput }) => {
+      createApolloProvider({
+        handlers: [
+          [securityTrainingProvidersQuery, jest.fn().mockResolvedValue(initialProviderData)],
+        ],
+      });
+      jest.spyOn(apolloProvider.defaultClient, 'mutate');
+      createComponent();
+
+      await waitForQueryToBeLoaded();
+      await toggleFirstProvider();
+
+      expect(apolloProvider.defaultClient.mutate).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          variables: {
+            input: expect.objectContaining({
+              ...expectedMutationInput,
+            }),
+          },
+        }),
+      );
     });
   });
 

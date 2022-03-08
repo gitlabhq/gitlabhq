@@ -127,7 +127,7 @@ module MarkupHelper
     text = wiki_page.content
     return '' unless text.present?
 
-    context = render_wiki_content_context(@wiki, wiki_page, context)
+    context = render_wiki_content_context(wiki_page.wiki, wiki_page, context)
     html = markup_unsafe(wiki_page.path, text, context)
 
     prepare_for_rendering(html, context)

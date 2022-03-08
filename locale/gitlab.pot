@@ -32827,6 +32827,9 @@ msgstr ""
 msgid "SecurityReports|Change status"
 msgstr ""
 
+msgid "SecurityReports|Check the messages generated while parsing the following security reports, as they may prevent the results from being ingested by GitLab. Ensure the security report conforms to a supported %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
+msgstr ""
+
 msgid "SecurityReports|Comment added to '%{vulnerabilityName}'"
 msgstr ""
 
@@ -33013,7 +33016,7 @@ msgstr ""
 msgid "SecurityReports|The Vulnerability Report shows the results of the latest successful pipeline on your project's default branch, as well as vulnerabilities from your latest container scan. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
-msgid "SecurityReports|The security reports below contain one or more vulnerability findings that could not be parsed and were not recorded. Download the artifacts in the job output to investigate. Ensure any security report created conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
+msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
 msgstr ""
 
 msgid "SecurityReports|There was an error adding the comment."
@@ -33073,6 +33076,9 @@ msgstr ""
 msgid "SecurityReports|Vulnerability Report"
 msgstr ""
 
+msgid "SecurityReports|Warning parsing security reports"
+msgstr ""
+
 msgid "SecurityReports|While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."
 msgstr ""
 
@@ -33092,6 +33098,9 @@ msgid "SecurityReports|Your feedback is important to us! We will ask again in a 
 msgstr ""
 
 msgid "SecurityReports|scanned resources"
+msgstr ""
+
+msgid "SecurityTraining|Primary Training"
 msgstr ""
 
 msgid "See example DevOps Score page in our documentation."
