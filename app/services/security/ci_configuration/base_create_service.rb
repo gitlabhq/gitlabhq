@@ -41,7 +41,7 @@ module Security
       end
 
       def existing_gitlab_ci_content
-        @gitlab_ci_yml ||= project.repository.gitlab_ci_yml_for(project.repository.root_ref_sha)
+        @gitlab_ci_yml ||= project.ci_config_for(project.repository.root_ref_sha)
         YAML.safe_load(@gitlab_ci_yml) if @gitlab_ci_yml
       end
 

@@ -3,9 +3,10 @@
 module Security
   module CiConfiguration
     class BaseBuildAction
-      def initialize(auto_devops_enabled, existing_gitlab_ci_content)
+      def initialize(auto_devops_enabled, existing_gitlab_ci_content, ci_config_path = ::Ci::Pipeline::DEFAULT_CONFIG_PATH)
         @auto_devops_enabled = auto_devops_enabled
         @existing_gitlab_ci_content = existing_gitlab_ci_content || {}
+        @ci_config_path = ci_config_path || ::Ci::Pipeline::DEFAULT_CONFIG_PATH
       end
 
       def generate
@@ -13,7 +14,7 @@ module Security
 
         update_existing_content!
 
-        { action: action, file_path: '.gitlab-ci.yml', content: prepare_existing_content, default_values_overwritten: @default_values_overwritten }
+        { action: action, file_path: @ci_config_path, content: prepare_existing_content, default_values_overwritten: @default_values_overwritten }
       end
 
       private

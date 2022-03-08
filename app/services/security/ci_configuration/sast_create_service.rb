@@ -26,7 +26,7 @@ module Security
           nil
         end
 
-        Security::CiConfiguration::SastBuildAction.new(project.auto_devops_enabled?, params, existing_content).generate
+        Security::CiConfiguration::SastBuildAction.new(project.auto_devops_enabled?, params, existing_content, project.ci_config_path).generate
       end
 
       def next_branch

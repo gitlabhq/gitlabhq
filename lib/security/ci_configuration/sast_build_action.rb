@@ -3,8 +3,8 @@
 module Security
   module CiConfiguration
     class SastBuildAction < BaseBuildAction
-      def initialize(auto_devops_enabled, params, existing_gitlab_ci_content)
-        super(auto_devops_enabled, existing_gitlab_ci_content)
+      def initialize(auto_devops_enabled, params, existing_gitlab_ci_content, ci_config_path = ::Ci::Pipeline::DEFAULT_CONFIG_PATH)
+        super(auto_devops_enabled, existing_gitlab_ci_content, ci_config_path)
         @variables = variables(params)
         @default_sast_values = default_sast_values(params)
         @default_values_overwritten = false
