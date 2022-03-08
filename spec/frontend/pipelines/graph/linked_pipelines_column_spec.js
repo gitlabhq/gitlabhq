@@ -26,7 +26,6 @@ const processedPipeline = pipelineWithUpstreamDownstream(mockPipelineResponse);
 describe('Linked Pipelines Column', () => {
   const defaultProps = {
     columnTitle: 'Downstream',
-    isMultiProjectVizAvailable: true,
     linkedPipelines: processedPipeline.downstream,
     showLinks: false,
     type: DOWNSTREAM,
@@ -52,9 +51,6 @@ describe('Linked Pipelines Column', () => {
         ...defaultProps,
         ...props,
       },
-      provide: {
-        multiProjectHelpPath: 'ci/pipelines/multi-project-pipeline',
-      },
     });
   };
 
@@ -71,6 +67,7 @@ describe('Linked Pipelines Column', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('it renders correctly', () => {

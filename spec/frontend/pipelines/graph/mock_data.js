@@ -13,15 +13,6 @@ export const mockPipelineResponse = {
         usesNeeds: true,
         downstream: null,
         upstream: null,
-        user: {
-          __typename: 'UserCore',
-          id: 'gid://gitlab/User/1',
-          namespace: {
-            __typename: 'Namespace',
-            id: 'gid://gitlab/Namespaces::UserNamespace/1',
-            crossProjectPipelineAvailable: true,
-          },
-        },
         userPermissions: {
           __typename: 'PipelinePermissions',
           updatePipeline: true,
@@ -789,15 +780,6 @@ export const wrappedPipelineReturn = {
         id: 'gid://gitlab/Ci::Pipeline/175',
         iid: '38',
         complete: true,
-        user: {
-          __typename: 'UserCore',
-          id: 'gid://gitlab/User/1',
-          namespace: {
-            __typename: 'Namespace',
-            id: 'gid://gitlab/Namespaces::UserNamespace/1',
-            crossProjectPipelineAvailable: true,
-          },
-        },
         usesNeeds: true,
         userPermissions: {
           __typename: 'PipelinePermissions',

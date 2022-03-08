@@ -66,6 +66,7 @@ describe('graph component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('with data', () => {

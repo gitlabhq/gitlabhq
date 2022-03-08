@@ -1,5 +1,5 @@
-import { GlButton, GlLoadingIcon, GlPopover } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
@@ -9,20 +9,15 @@ import mockPipeline from './linked_pipelines_mock_data';
 describe('Linked pipeline', () => {
   let wrapper;
 
-  const defaultProps = {
-    pipeline: mockPipeline,
-    columnTitle: 'Downstream',
-    type: DOWNSTREAM,
-    expanded: false,
-    isLoading: false,
-    isMultiProjectVizAvailable: true,
-  };
-
   const downstreamProps = {
     pipeline: {
       ...mockPipeline,
       multiproject: false,
     },
+    columnTitle: 'Downstream',
+    type: DOWNSTREAM,
+    expanded: false,
+    isLoading: false,
   };
 
   const upstreamProps = {
@@ -32,28 +27,20 @@ describe('Linked pipeline', () => {
   };
 
   const findButton = () => wrapper.find(GlButton);
-  const findDownstreamPipelineTitle = () => wrapper.findByTestId('downstream-title');
-  const findPipelineLabel = () => wrapper.findByTestId('downstream-pipeline-label');
-  const findLinkedPipeline = () => wrapper.findByTestId('linkedPipeline');
-  const findLinkedPipelineBody = () => wrapper.findByTestId('linkedPipelineBody');
+  const findDownstreamPipelineTitle = () => wrapper.find('[data-testid="downstream-title"]');
+  const findPipelineLabel = () => wrapper.find('[data-testid="downstream-pipeline-label"]');
+  const findLinkedPipeline = () => wrapper.find({ ref: 'linkedPipeline' });
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
-  const findPipelineLink = () => wrapper.findByTestId('pipelineLink');
-  const findExpandButton = () => wrapper.findByTestId('expand-pipeline-button');
-  const findPopover = () => wrapper.find(GlPopover);
+  const findPipelineLink = () => wrapper.find('[data-testid="pipelineLink"]');
+  const findExpandButton = () => wrapper.find('[data-testid="expand-pipeline-button"]');
 
   const createWrapper = (propsData, data = []) => {
-    wrapper = mountExtended(LinkedPipelineComponent, {
-      propsData: {
-        ...defaultProps,
-        ...propsData,
-      },
+    wrapper = mount(LinkedPipelineComponent, {
+      propsData,
       data() {
         return {
           ...data,
         };
-      },
-      provide: {
-        multiProjectHelpPath: '/ci/pipelines/multi-project-pipelines',
       },
     });
   };
@@ -105,7 +92,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should render the tooltip text as the title attribute', () => {
-      const titleAttr = findLinkedPipelineBody().attributes('title');
+      const titleAttr = findLinkedPipeline().attributes('title');
 
       expect(titleAttr).toContain(mockPipeline.project.name);
       expect(titleAttr).toContain(mockPipeline.status.label);
@@ -181,6 +168,10 @@ describe('Linked pipeline', () => {
 
   describe('when isLoading is true', () => {
     const props = {
+      pipeline: mockPipeline,
+      columnTitle: 'Downstream',
+      type: DOWNSTREAM,
+      expanded: false,
       isLoading: true,
     };
 
@@ -193,41 +184,17 @@ describe('Linked pipeline', () => {
     });
   });
 
-  describe('when the user does not have access to the multi-project pipeline viz feature', () => {
-    beforeEach(() => {
-      const props = { isMultiProjectVizAvailable: false };
-      createWrapper(props);
-    });
-
-    it('the multi-project expand button is disabled', () => {
-      expect(findExpandButton().props('disabled')).toBe(true);
-    });
-
-    it('it adds the popover text inside the DOM', () => {
-      expect(findPopover().exists()).toBe(true);
-      expect(findPopover().text()).toContain(
-        'Gitlab Premium users have access to the multi-project pipeline graph to improve the visualization of these pipelines.',
-      );
-    });
-  });
-
-  describe('when the user has access to the multi-project pipeline viz feature', () => {
-    beforeEach(() => {
-      createWrapper();
-    });
-
-    it('the multi-project expand button is enabled', () => {
-      expect(findExpandButton().props('disabled')).toBe(false);
-    });
-
-    it('does not add the popover text inside the DOM', () => {
-      expect(findPopover().exists()).toBe(false);
-    });
-  });
-
   describe('on click/hover', () => {
+    const props = {
+      pipeline: mockPipeline,
+      columnTitle: 'Downstream',
+      type: DOWNSTREAM,
+      expanded: false,
+      isLoading: false,
+    };
+
     beforeEach(() => {
-      createWrapper();
+      createWrapper(props);
     });
 
     it('emits `pipelineClicked` event', () => {

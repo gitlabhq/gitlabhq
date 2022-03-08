@@ -405,3 +405,5 @@ class WikiPage
     })
   end
 end
+
+WikiPage.prepend_mod

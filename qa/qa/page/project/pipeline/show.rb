@@ -24,7 +24,6 @@ module QA
           view 'app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue' do
             element :expand_pipeline_button
             element :child_pipeline
-            element :linked_pipeline_body
           end
 
           view 'app/assets/javascripts/reports/components/report_section.vue' do
@@ -94,7 +93,7 @@ module QA
           end
 
           def find_child_pipeline_by_title(title)
-            find_element(:child_pipeline, text: title)
+            child_pipelines.find { |pipeline| pipeline[:title].include?(title) }
           end
 
           def expand_child_pipeline(title: nil)

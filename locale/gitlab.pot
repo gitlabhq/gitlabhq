@@ -16774,15 +16774,6 @@ msgstr ""
 msgid "GithubIntegration|This requires mirroring your GitHub repository to this project. %{docs_link}"
 msgstr ""
 
-msgid "GitlabTiers|Free"
-msgstr ""
-
-msgid "GitlabTiers|Premium"
-msgstr ""
-
-msgid "GitlabTiers|Ultimate"
-msgstr ""
-
 msgid "Gitpod"
 msgstr ""
 
@@ -27002,9 +26993,6 @@ msgstr ""
 msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. There are active runners available to run your jobs right now. If you prefer, you can %{settingsLinkStart}configure your runners%{settingsLinkEnd} or %{docsLinkStart}learn more%{docsLinkEnd} about runners."
 msgstr ""
 
-msgid "Pipelines|Gitlab Premium users have access to the multi-project pipeline graph to improve the visualization of these pipelines. %{linkStart}Learn More%{linkEnd}"
-msgstr ""
-
 msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
 msgstr ""
 
@@ -27036,9 +27024,6 @@ msgid "Pipelines|Merged YAML is view only"
 msgstr ""
 
 msgid "Pipelines|More Information"
-msgstr ""
-
-msgid "Pipelines|Multi-project pipeline graphs"
 msgstr ""
 
 msgid "Pipelines|No runners detected"
