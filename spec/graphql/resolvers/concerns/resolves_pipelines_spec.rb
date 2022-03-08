@@ -39,7 +39,7 @@ RSpec.describe ResolvesPipelines do
     project.add_developer(current_user)
   end
 
-  it { is_expected.to have_graphql_arguments(:status, :scope, :ref, :sha, :source, :username) }
+  it { is_expected.to have_graphql_arguments(:status, :scope, :ref, :sha, :source, :updated_after, :updated_before, :username) }
 
   it 'finds all pipelines' do
     expect(resolve_pipelines).to contain_exactly(*all_pipelines)
@@ -75,6 +75,28 @@ RSpec.describe ResolvesPipelines do
 
   it 'allows filtering by username' do
     expect(resolve_pipelines(username: current_user.username)).to contain_exactly(username_pipeline)
+  end
+
+  context 'filtering by updated_at' do
+    let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, updated_at: 2.days.ago) }
+    let_it_be(:older_pipeline) { create(:ci_pipeline, project: project, updated_at: 5.days.ago) }
+
+    it 'filters by updated_after' do
+      expect(resolve_pipelines(updated_after: 3.days.ago)).to contain_exactly(old_pipeline, *all_pipelines)
+    end
+
+    it 'filters by updated_before' do
+      expect(resolve_pipelines(updated_before: 3.days.ago)).to contain_exactly(older_pipeline)
+    end
+
+    it 'filters by both updated_after and updated_before with valid date range' do
+      expect(resolve_pipelines(updated_after: 10.days.ago, updated_before: 3.days.ago)).to contain_exactly(older_pipeline)
+    end
+
+    it 'filters by both updated_after and updated_before with invalid date range' do
+      # updated_after is before updated_before so result set is empty - impossible
+      expect(resolve_pipelines(updated_after: 3.days.ago, updated_before: 10.days.ago)).to be_empty
+    end
   end
 
   it 'does not return any pipelines if the user does not have access' do

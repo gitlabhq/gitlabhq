@@ -10,6 +10,7 @@ import {
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   integrationLevels,
+  integrationFormSectionComponents,
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
@@ -34,6 +35,10 @@ export default {
     DynamicField,
     ConfirmationModal,
     ResetConfirmationModal,
+    IntegrationSectionConnection: () =>
+      import(
+        /* webpackChunkName: 'integrationSectionConnection' */ '~/integrations/edit/components/sections/connection.vue'
+      ),
     GlButton,
     GlForm,
   },
@@ -80,9 +85,23 @@ export default {
     disableButtons() {
       return Boolean(this.isSaving || this.isResetting || this.isTesting);
     },
+    sectionsEnabled() {
+      return this.glFeatures.integrationFormSections;
+    },
+    hasSections() {
+      return this.sectionsEnabled && this.customState.sections.length !== 0;
+    },
+    fieldsWithoutSection() {
+      return this.sectionsEnabled
+        ? this.propsSource.fields.filter((field) => !field.section)
+        : this.propsSource.fields;
+    },
   },
   methods: {
     ...mapActions(['setOverride', 'requestJiraIssueTypes']),
+    fieldsForSection(section) {
+      return this.propsSource.fields.filter((field) => field.section === section.type);
+    },
     form() {
       return this.$refs.integrationForm.$el;
     },
@@ -158,6 +177,7 @@ export default {
     FORBID_ATTR: [], // This is trusted input so we can override the default config to allow data-* attributes
   },
   csrf,
+  integrationFormSectionComponents,
 };
 </script>
 
@@ -186,15 +206,40 @@ export default {
       @change="setOverride"
     />
 
+    <template v-if="hasSections">
+      <div
+        v-for="section in customState.sections"
+        :key="section.type"
+        class="gl-border-b gl-mb-5"
+        data-testid="integration-section"
+      >
+        <div class="row">
+          <div class="col-lg-4">
+            <h4 class="gl-mt-0">{{ section.title }}</h4>
+            <p v-safe-html="section.description"></p>
+          </div>
+
+          <div class="col-lg-8">
+            <component
+              :is="$options.integrationFormSectionComponents[section.type]"
+              :fields="fieldsForSection(section)"
+              :is-validated="isValidated"
+              @toggle-integration-active="onToggleIntegrationState"
+            />
+          </div>
+        </div>
+      </div>
+    </template>
+
     <div class="row">
       <div class="col-lg-4"></div>
 
       <div class="col-lg-8">
         <!-- helpHtml is trusted input -->
-        <div v-if="helpHtml" v-safe-html:[$options.helpHtmlConfig]="helpHtml"></div>
+        <div v-if="helpHtml && !hasSections" v-safe-html:[$options.helpHtmlConfig]="helpHtml"></div>
 
         <active-checkbox
-          v-if="propsSource.showActive"
+          v-if="propsSource.showActive && !hasSections"
           :key="`${currentKey}-active-checkbox`"
           @toggle-integration-active="onToggleIntegrationState"
         />
@@ -211,7 +256,7 @@ export default {
           :type="propsSource.type"
         />
         <dynamic-field
-          v-for="field in propsSource.fields"
+          v-for="field in fieldsWithoutSection"
           :key="`${currentKey}-${field.name}`"
           v-bind="field"
           :is-validated="isValidated"

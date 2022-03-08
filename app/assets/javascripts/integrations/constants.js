@@ -25,3 +25,11 @@ export const I18N_SUCCESSFUL_CONNECTION_MESSAGE = s__('Integrations|Connection s
 
 export const settingsTabTitle = __('Settings');
 export const overridesTabTitle = s__('Integrations|Projects using custom settings');
+
+export const integrationFormSections = {
+  CONNECTION: 'connection',
+};
+
+export const integrationFormSectionComponents = {
+  [integrationFormSections.CONNECTION]: 'IntegrationSectionConnection',
+};

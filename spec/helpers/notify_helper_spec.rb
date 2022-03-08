@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe NotifyHelper do
-  include ActionView::Helpers::UrlHelper
   using RSpec::Parameterized::TableSyntax
 
   describe 'merge_request_reference_link' do

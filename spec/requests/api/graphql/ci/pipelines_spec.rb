@@ -528,4 +528,37 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
       end.not_to exceed_query_limit(control_count)
     end
   end
+
+  describe 'filtering' do
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipelines(updatedAfter: "#{updated_after_arg}", updatedBefore: "#{updated_before_arg}") {
+              nodes {
+                id
+              }}}}
+      )
+    end
+
+    context 'when filtered by updated_at' do
+      let_it_be(:oldish_pipeline) { create(:ci_empty_pipeline, project: project, updated_at: 3.days.ago) }
+      let_it_be(:older_pipeline) { create(:ci_empty_pipeline, project: project, updated_at: 10.days.ago) }
+
+      let(:updated_after_arg) { 5.days.ago }
+      let(:updated_before_arg) { 1.day.ago }
+
+      before do
+        post_graphql(query, current_user: user)
+      end
+
+      it_behaves_like 'a working graphql query'
+
+      it 'accepts filter params' do
+        pipeline_ids = graphql_data.dig('project', 'pipelines', 'nodes').map { |pipeline| pipeline.fetch('id') }
+
+        expect(pipeline_ids).to match_array(oldish_pipeline.to_global_id.to_s)
+      end
+    end
+  end
 end

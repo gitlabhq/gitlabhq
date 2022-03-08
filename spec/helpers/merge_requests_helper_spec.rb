@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestsHelper do
-  include ActionView::Helpers::UrlHelper
   include ProjectForksHelper
 
   describe '#state_name_with_icon' do

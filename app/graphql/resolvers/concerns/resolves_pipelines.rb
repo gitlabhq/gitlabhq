@@ -24,6 +24,14 @@ module ResolvesPipelines
              GraphQL::Types::String,
              required: false,
              description: "Filter pipelines by their source."
+
+    argument :updated_after, Types::TimeType,
+             required: false,
+             description: 'Pipelines updated after this date.'
+    argument :updated_before, Types::TimeType,
+             required: false,
+             description: 'Pipelines updated before this date.'
+
     argument :username,
              GraphQL::Types::String,
              required: false,

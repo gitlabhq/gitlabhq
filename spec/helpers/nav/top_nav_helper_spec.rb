@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Nav::TopNavHelper do
-  include ActionView::Helpers::UrlHelper
-
   let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:admin) { build_stubbed(:user, :admin) }
   let_it_be(:external_user) { build_stubbed(:user, :external, can_create_group: false) }

@@ -79,7 +79,7 @@ module Gitlab
       end
 
       def mark_jobs_as_succeeded(*arguments)
-        Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(self.class.name, arguments)
+        Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(self.class.name.demodulize, arguments)
       end
     end
   end

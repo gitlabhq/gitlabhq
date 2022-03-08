@@ -655,52 +655,39 @@ This is overridden by the [documentation-specific punctuation rules](#punctuatio
 
 ## Headings
 
-- Add only one H1 in each document, by adding `#` at the beginning of
-  it (when using Markdown). The `h1` becomes the document `<title>`.
-- Start with an `h2` (`##`), and respect the order `h2` > `h3` > `h4` > `h5` > `h6`.
-  Never skip the hierarchy level, such as `h2` > `h4`
-- Avoid putting numbers in headings. Numbers shift, hence documentation anchor
-  links shift too, which eventually leads to dead links. If you think it is
-  compelling to add numbers in headings, make sure to at least discuss it with
-  someone in the merge request.
-- [Avoid using symbols and special characters](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/84)
-  in headers. Whenever possible, they should be plain and short text.
-- When possible, avoid including words that might change in the future. Changing
+In the Markdown document:
+
+- Add one H1 (`#`) at the start of the page. The `h1` becomes the document `<title>`.
+- After the H1, follow the order `h2` > `h3` > `h4` > `h5` > `h6`.
+- Do not skip a level. For example: `h2` > `h4`.
+- Leave one blank line before and after the heading.
+
+For the heading text, **do**:
+
+- Be clear and direct. Make every word count.
+- Use active verbs for tasks. For example, `Configure GDK` instead of `Configuring GDK`.
+- Talk about what the product does, realistically but from a positive perspective. Instead of
+  `Limitations`, move the content near other similar information. If you must, you can
+  use the title `Known issues`.
+- Use articles and prepositions.
+- Add the [product badge](#product-tier-badges) that corresponds to the license tier.
+- Follow [capitalization](#capitalization) guidelines.
+
+For the heading text, **do not**:
+
+- Use generic words like `Overview` or `Use cases`. Instead, incorporate
+  the information under a concept heading.
+- Use `How it works`. Incorporate this information under a concept, or use a
+  noun followed by `workflow`. For example, `Merge request workflow`.
+- Use `Important Notes`. Incorporate this information closer to where it belongs.
+- Use numbers to indicate steps. If the numbers change, the anchor links changes,
+  which eventually leads to dead links. If you think you must add numbers in headings,
+  at least discuss it with a writer in the merge request.
+- Use words that might change in the future. Changing
   a heading changes its anchor URL, which affects other linked pages.
-- When introducing a new document, be careful for the headings to be
-  grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
-  for review, based upon the [product category](https://about.gitlab.com/handbook/product/categories/).
-  This is to ensure that no document with wrong heading is going live without an
-  audit, thus preventing dead links and redirection issues when corrected.
-- Use the context provided by parent section headings. That is, don't repeat the parent heading's text in each
-  subsection's heading.
-- Use articles and prepositions in headings where it would make sense in regular text.
-- Leave exactly one blank line before and after a heading.
-- Do not use links in headings.
-- Add the corresponding [product badge](#product-tier-badges) according to the tier the
-  feature belongs.
-- Our documentation site search engine prioritizes words used in headings and
-  subheadings. Make your subheading titles clear, descriptive, and complete to help
-  users find the right example, as shown in the section on [heading titles](#heading-titles).
-- See [Capitalization](#capitalization) for guidelines on capitalizing headings.
-
-### Heading titles
-
-Keep heading titles clear and direct. Make every word count. To accommodate
-search engine optimization (SEO), use the imperative, where possible.
-
-| Do                                    | Don't                                                       |
-|:--------------------------------------|:------------------------------------------------------------|
-| Configure GDK                         | Configuring GDK                                             |
-| GitLab Release and Maintenance Policy | This section covers the GitLab Release and Maintenance Policy |
-| Backport to older releases            | Backporting to older releases                               |
-| GitLab Pages examples                 | Examples                                                    |
-
-For guidelines on capitalizing headings, see the section on [capitalization](#capitalization).
-
-NOTE:
-If you change an existing title, be careful. In-page [anchor links](#anchor-links),
-links in the GitLab application, and links from external sites can break.
+- Repeat text from earlier headings. For example, instead of `Troubleshooting merge requests`,
+  use `Troubleshooting`. 
+- Use links.
 
 ### Anchor links
 

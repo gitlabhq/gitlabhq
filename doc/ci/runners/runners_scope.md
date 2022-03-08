@@ -236,6 +236,10 @@ To enable or disable a specific runner for a project:
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Click **Enable for this project** or **Disable for this project**.
 
+You can edit a specific runner from any of the projects it's enabled for.
+The modifications, which include unlocking, editing tags and the description,
+affect all projects that use the runner.
+
 ### Prevent a specific runner from being enabled for other projects
 
 You can configure a specific runner so it is "locked" and cannot be enabled for other projects.

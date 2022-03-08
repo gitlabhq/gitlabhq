@@ -32,7 +32,7 @@ function getMD5HashFromFile(data) {
     if (err.name === 'CredentialsProviderError' || err.name === 'AuthorizationHeaderMalformed')
       console.log('Could not upload the report. Are AWS credentials configured in ~/.aws/credentials?')
     else 
-      console.log('Unexpected error during upload.')
+      console.log('Unexpected error during upload: ', err.message)
       process.exit(1)
   }
 })()
