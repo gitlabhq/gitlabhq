@@ -8,7 +8,7 @@ MockGoogleOAuth2Credentials = Struct.new(:app_id, :app_secret)
 RSpec.describe Projects::GoogleCloudController do
   let_it_be(:project) { create(:project, :public) }
 
-  describe 'GET index' do
+  describe 'GET index', :snowplow do
     let_it_be(:url) { "#{project_google_cloud_index_path(project)}" }
 
     context 'when a public request is made' do
@@ -16,6 +16,13 @@ RSpec.describe Projects::GoogleCloudController do
         get url
 
         expect(response).to have_gitlab_http_status(:not_found)
+        expect_snowplow_event(
+          category: 'Projects::GoogleCloud',
+          action: 'admin_project_google_cloud!',
+          label: 'access_denied',
+          property: 'invalid_user',
+          project: project,
+          user: nil)
       end
     end
 
@@ -29,6 +36,14 @@ RSpec.describe Projects::GoogleCloudController do
         get url
 
         expect(response).to have_gitlab_http_status(:not_found)
+        expect_snowplow_event(
+          category: 'Projects::GoogleCloud',
+          action: 'admin_project_google_cloud!',
+          label: 'access_denied',
+          property: 'invalid_user',
+          project: project,
+          user: user
+        )
       end
     end
 
@@ -42,6 +57,14 @@ RSpec.describe Projects::GoogleCloudController do
         get url
 
         expect(response).to have_gitlab_http_status(:not_found)
+        expect_snowplow_event(
+          category: 'Projects::GoogleCloud',
+          action: 'admin_project_google_cloud!',
+          label: 'access_denied',
+          property: 'invalid_user',
+          project: project,
+          user: user
+        )
       end
     end
 
@@ -74,19 +97,26 @@ RSpec.describe Projects::GoogleCloudController do
       let(:user) { project.creator }
 
       context 'but gitlab instance is not configured for google oauth2' do
-        before do
+        it 'returns forbidden' do
           unconfigured_google_oauth2 = MockGoogleOAuth2Credentials.new('', '')
           allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for)
                                                     .with('google_oauth2')
                                                     .and_return(unconfigured_google_oauth2)
-        end
 
-        it 'returns forbidden' do
           sign_in(user)
 
           get url
 
           expect(response).to have_gitlab_http_status(:forbidden)
+          expect_snowplow_event(
+            category: 'Projects::GoogleCloud',
+            action: 'google_oauth2_enabled!',
+            label: 'access_denied',
+            extra: { reason: 'google_oauth2_not_configured',
+                     config: unconfigured_google_oauth2 },
+            project: project,
+            user: user
+          )
         end
       end
 
@@ -101,6 +131,14 @@ RSpec.describe Projects::GoogleCloudController do
           get url
 
           expect(response).to have_gitlab_http_status(:not_found)
+          expect_snowplow_event(
+            category: 'Projects::GoogleCloud',
+            action: 'feature_flag_enabled!',
+            label: 'access_denied',
+            property: 'feature_flag_not_enabled',
+            project: project,
+            user: user
+          )
         end
       end
     end

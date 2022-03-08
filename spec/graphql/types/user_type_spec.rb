@@ -52,10 +52,13 @@ RSpec.describe GitlabSchema.types['User'] do
     let_it_be(:user) { create(:user) }
     let_it_be(:requested_user) { create(:user, name: 'John Smith') }
     let_it_be(:requested_project_bot) { create(:user, :project_bot, name: 'Project bot') }
+    let_it_be(:requested_group_bot) { create(:user, :project_bot, name: 'Group bot') }
     let_it_be(:project) { create(:project, :public) }
+    let_it_be(:group) { create(:group, :public) }
 
     before do
       project.add_maintainer(requested_project_bot)
+      group.add_maintainer(requested_group_bot)
     end
 
     let(:username) { requested_user.username }
@@ -123,6 +126,50 @@ RSpec.describe GitlabSchema.types['User'] do
             end
           end
         end
+
+        context 'a group bot' do
+          let(:username) { requested_group_bot.username }
+
+          context 'when requester is nil' do
+            let(:current_user) { nil }
+
+            it 'returns `****`' do
+              expect(user_name).to eq('****')
+            end
+          end
+
+          context 'when the requester is not a group member' do
+            it 'returns `Group bot` for a non group member in a public group' do
+              expect(user_name).to eq('Group bot')
+            end
+
+            context 'in a private group' do
+              let(:group) { create(:group, :private) }
+
+              it 'returns `****` for a non group member in a private group' do
+                expect(user_name).to eq('****')
+              end
+            end
+          end
+
+          context 'with a group member' do
+            before do
+              group.add_guest(user)
+            end
+
+            it 'returns `Group bot` for a group member' do
+              expect(user_name).to eq('Group bot')
+            end
+
+            context 'in a private group' do
+              let(:group) { create(:group, :private) }
+
+              it 'returns `Group bot` for a group member in a private group' do
+                expect(user_name).to eq('Group bot')
+              end
+            end
+          end
+        end
       end
     end
 
@@ -140,6 +187,14 @@ RSpec.describe GitlabSchema.types['User'] do
 
         it 'returns name' do
           expect(subject).to eq('Project bot')
+        end
+      end
+
+      context 'a group bot' do
+        let(:username) { requested_group_bot.username }
+
+        it 'returns name' do
+          expect(subject).to eq('Group bot')
         end
       end
     end

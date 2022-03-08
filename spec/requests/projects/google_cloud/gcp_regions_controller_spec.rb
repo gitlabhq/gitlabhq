@@ -6,6 +6,65 @@ RSpec.describe Projects::GoogleCloud::GcpRegionsController do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:repository) { project.repository }
 
+  let(:user_guest) { create(:user) }
+  let(:user_maintainer) { create(:user) }
+
+  RSpec.shared_examples "should track not_found event" do
+    it "tracks event" do
+      is_expected.to be(404)
+      expect_snowplow_event(
+        category: 'Projects::GoogleCloud',
+        action: 'admin_project_google_cloud!',
+        label: 'access_denied',
+        property: 'invalid_user',
+        project: project,
+        user: nil
+      )
+    end
+  end
+
+  RSpec.shared_examples "should track access_denied event" do
+    it "tracks event" do
+      is_expected.to be(404)
+      expect_snowplow_event(
+        category: 'Projects::GoogleCloud',
+        action: 'admin_project_google_cloud!',
+        label: 'access_denied',
+        property: 'invalid_user',
+        project: project,
+        user: nil
+      )
+    end
+  end
+
+  RSpec.shared_examples "should track feature_flag_disabled event" do |user|
+    it "tracks event" do
+      is_expected.to be(404)
+      expect_snowplow_event(
+        category: 'Projects::GoogleCloud',
+        action: 'feature_flag_enabled!',
+        label: 'access_denied',
+        property: 'feature_flag_not_enabled',
+        project: project,
+        user: user_maintainer
+      )
+    end
+  end
+
+  RSpec.shared_examples "should track gcp_error event" do |config|
+    it "tracks event" do
+      is_expected.to be(403)
+      expect_snowplow_event(
+        category: 'Projects::GoogleCloud',
+        action: 'google_oauth2_enabled!',
+        label: 'access_denied',
+        extra: { reason: 'google_oauth2_not_configured', config: config },
+        project: project,
+        user: user_maintainer
+      )
+    end
+  end
+
   RSpec.shared_examples "should be not found" do
     it 'returns not found' do
       is_expected.to be(404)
@@ -20,27 +79,25 @@ RSpec.describe Projects::GoogleCloud::GcpRegionsController do
 
   RSpec.shared_examples "public request should 404" do
     it_behaves_like "should be not found"
+    it_behaves_like "should track not_found event"
   end
 
   RSpec.shared_examples "unauthorized access should 404" do
-    let(:user_guest) { create(:user) }
-
     before do
       project.add_guest(user_guest)
     end
 
     it_behaves_like "should be not found"
+    it_behaves_like "should track access_denied event"
   end
 
-  describe 'GET #index' do
+  describe 'GET #index', :snowplow do
     subject { get project_google_cloud_gcp_regions_path(project) }
 
     it_behaves_like "public request should 404"
     it_behaves_like "unauthorized access should 404"
 
     context 'when authorized members make requests' do
-      let(:user_maintainer) { create(:user) }
-
       before do
         project.add_maintainer(user_maintainer)
         sign_in(user_maintainer)
@@ -51,15 +108,17 @@ RSpec.describe Projects::GoogleCloud::GcpRegionsController do
       end
 
       context 'but gitlab instance is not configured for google oauth2' do
+        unconfigured_google_oauth2 = Struct.new(:app_id, :app_secret)
+                                           .new('', '')
+
         before do
-          unconfigured_google_oauth2 = Struct.new(:app_id, :app_secret)
-                                             .new('', '')
           allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for)
                                                     .with('google_oauth2')
                                                     .and_return(unconfigured_google_oauth2)
         end
 
         it_behaves_like "should be forbidden"
+        it_behaves_like "should track gcp_error event", unconfigured_google_oauth2
       end
 
       context 'but feature flag is disabled' do
@@ -68,19 +127,18 @@ RSpec.describe Projects::GoogleCloud::GcpRegionsController do
         end
 
         it_behaves_like "should be not found"
+        it_behaves_like "should track feature_flag_disabled event"
       end
     end
   end
 
-  describe 'POST #index' do
+  describe 'POST #index', :snowplow do
     subject { post project_google_cloud_gcp_regions_path(project), params: { gcp_region: 'region1', environment: 'env1' } }
 
     it_behaves_like "public request should 404"
     it_behaves_like "unauthorized access should 404"
 
     context 'when authorized members make requests' do
-      let(:user_maintainer) { create(:user) }
-
       before do
         project.add_maintainer(user_maintainer)
         sign_in(user_maintainer)

@@ -70,6 +70,103 @@ const FAST_DELAY_FOR_RERENDER = 75;
 // Store the `location` object, allowing for easier stubbing in tests
 let { location } = window;
 
+function scrollToContainer(container) {
+  if (location.hash) {
+    const $el = $(`${container} ${location.hash}:not(.match)`);
+
+    if ($el.length) {
+      scrollToElement($el[0]);
+    }
+  }
+}
+
+function computeTopOffset(tabs) {
+  const navbar = document.querySelector('.navbar-gitlab');
+  const peek = document.getElementById('js-peek');
+  let stickyTop;
+
+  stickyTop = navbar ? navbar.offsetHeight : 0;
+  stickyTop = peek ? stickyTop + peek.offsetHeight : stickyTop;
+  stickyTop = tabs ? stickyTop + tabs.offsetHeight : stickyTop;
+
+  return stickyTop;
+}
+
+function mountPipelines() {
+  const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
+  const { mrWidgetData } = gl;
+  const table = new Vue({
+    components: {
+      CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
+    },
+    provide: {
+      artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
+      artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
+      targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
+    },
+    render(createElement) {
+      return createElement('commit-pipelines-table', {
+        props: {
+          endpoint: pipelineTableViewEl.dataset.endpoint,
+          emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
+          errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
+          canCreatePipelineInTargetProject: Boolean(
+            mrWidgetData?.can_create_pipeline_in_target_project,
+          ),
+          sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
+          targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
+          projectId: pipelineTableViewEl.dataset.projectId,
+          mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
+        },
+      });
+    },
+  }).$mount();
+
+  // $mount(el) replaces the el with the new rendered component. We need it in order to mount
+  // it everytime this tab is clicked - https://vuejs.org/v2/api/#vm-mount
+  pipelineTableViewEl.appendChild(table.$el);
+
+  return table;
+}
+
+function destroyPipelines(app) {
+  if (app && app.$destroy) {
+    app.$destroy();
+
+    document.querySelector('#commit-pipeline-table-view').innerHTML = '';
+  }
+
+  return null;
+}
+
+function loadDiffs({ url, sticky }) {
+  return axios.get(`${url}.json${location.search}`).then(({ data }) => {
+    const $container = $('#diffs');
+    $container.html(data.html);
+    initDiffStatsDropdown(sticky);
+
+    localTimeAgo(document.querySelectorAll('#diffs .js-timeago'));
+    syntaxHighlight($('#diffs .js-syntax-highlight'));
+
+    new Diff();
+    scrollToContainer('#diffs');
+
+    $('.diff-file').each((i, el) => {
+      new BlobForkSuggestion({
+        openButtons: $(el).find('.js-edit-blob-link-fork-toggler'),
+        forkButtons: $(el).find('.js-fork-suggestion-button'),
+        cancelButtons: $(el).find('.js-cancel-fork-suggestion-button'),
+        suggestionSections: $(el).find('.js-file-fork-suggestion-section'),
+        actionTextPieces: $(el).find('.js-file-fork-suggestion-section-action'),
+      }).init();
+    });
+  });
+}
+
+function toggleLoader(state) {
+  $('.mr-loading-status .loading').toggleClass('hide', !state);
+}
+
 export default class MergeRequestTabs {
   constructor({ action, setUrl, stubLocation } = {}) {
     this.mergeRequestTabs = document.querySelector('.merge-request-tabs-container');
@@ -107,13 +204,7 @@ export default class MergeRequestTabs {
     }
 
     this.bindEvents();
-    if (
-      this.mergeRequestTabs &&
-      this.mergeRequestTabs.querySelector(`a[data-action='${action}']`) &&
-      this.mergeRequestTabs.querySelector(`a[data-action='${action}']`).click
-    ) {
-      this.mergeRequestTabs.querySelector(`a[data-action='${action}']`).click();
-    }
+    this.mergeRequestTabs?.querySelector(`a[data-action='${action}']`)?.click?.();
   }
 
   bindEvents() {
@@ -130,15 +221,6 @@ export default class MergeRequestTabs {
   // Used in tests
   unbindEvents() {
     $('.merge-request-tabs a[data-toggle="tabvue"]').off('click', this.clickTab);
-  }
-
-  destroyPipelinesView() {
-    if (this.commitPipelinesTable) {
-      this.commitPipelinesTable.$destroy();
-      this.commitPipelinesTable = null;
-
-      document.querySelector('#commit-pipeline-table-view').innerHTML = '';
-    }
   }
 
   storeScroll() {
@@ -207,11 +289,11 @@ export default class MergeRequestTabs {
         this.loadCommits(href);
         this.expandView();
         this.resetViewContainer();
-        this.destroyPipelinesView();
+        this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
       } else if (action === 'new') {
         this.expandView();
         this.resetViewContainer();
-        this.destroyPipelinesView();
+        this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
       } else if (this.isDiffAction(action)) {
         if (!isInVueNoteablePage()) {
           /*
@@ -228,7 +310,7 @@ export default class MergeRequestTabs {
           this.shrinkView();
         }
         this.expandViewContainer();
-        this.destroyPipelinesView();
+        this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
         this.commitsTab.classList.remove('active');
       } else if (action === 'pipelines') {
         this.resetViewContainer();
@@ -247,7 +329,7 @@ export default class MergeRequestTabs {
           this.expandView();
         }
         this.resetViewContainer();
-        this.destroyPipelinesView();
+        this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
       }
 
       $('.detail-page-description').renderGFM();
@@ -278,16 +360,6 @@ export default class MergeRequestTabs {
     }
 
     this.eventHub.$emit('MergeRequestTabChange', action);
-  }
-
-  scrollToContainerElement(container) {
-    if (location.hash) {
-      const $el = $(`${container} ${location.hash}:not(.match)`);
-
-      if ($el.length) {
-        scrollToElement($el[0]);
-      }
-    }
   }
 
   // Replaces the current merge request-specific action in the URL with a new one
@@ -356,7 +428,7 @@ export default class MergeRequestTabs {
       return;
     }
 
-    this.toggleLoading(true);
+    toggleLoader(true);
 
     axios
       .get(`${source}.json`)
@@ -365,15 +437,15 @@ export default class MergeRequestTabs {
         commitsDiv.innerHTML = data.html;
         localTimeAgo(commitsDiv.querySelectorAll('.js-timeago'));
         this.commitsLoaded = true;
-        this.scrollToContainerElement('#commits');
+        scrollToContainer('#commits');
 
-        this.toggleLoading(false);
+        toggleLoader(false);
 
         return import('./add_context_commits_modal');
       })
       .then((m) => m.default())
       .catch(() => {
-        this.toggleLoading(false);
+        toggleLoader(false);
         createFlash({
           message: __('An error occurred while fetching this tab.'),
         });
@@ -381,39 +453,7 @@ export default class MergeRequestTabs {
   }
 
   mountPipelinesView() {
-    const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-    const { mrWidgetData } = gl;
-
-    this.commitPipelinesTable = new Vue({
-      components: {
-        CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
-      },
-      provide: {
-        artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
-        artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
-        targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
-      },
-      render(createElement) {
-        return createElement('commit-pipelines-table', {
-          props: {
-            endpoint: pipelineTableViewEl.dataset.endpoint,
-            emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
-            errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
-            canCreatePipelineInTargetProject: Boolean(
-              mrWidgetData?.can_create_pipeline_in_target_project,
-            ),
-            sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
-            targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
-            projectId: pipelineTableViewEl.dataset.projectId,
-            mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
-          },
-        });
-      },
-    }).$mount();
-
-    // $mount(el) replaces the el with the new rendered component. We need it in order to mount
-    // it everytime this tab is clicked - https://vuejs.org/v2/api/#vm-mount
-    pipelineTableViewEl.appendChild(this.commitPipelinesTable.$el);
+    this.commitPipelinesTable = mountPipelines();
   }
 
   // load the diff tab content from the backend
@@ -423,55 +463,29 @@ export default class MergeRequestTabs {
       return;
     }
 
-    // We extract pathname for the current Changes tab anchor href
-    // some pages like MergeRequestsController#new has query parameters on that anchor
-    const urlPathname = parseUrlPathname(source);
+    toggleLoader(true);
 
-    this.toggleLoading(true);
-
-    axios
-      .get(`${urlPathname}.json${location.search}`)
-      .then(({ data }) => {
-        const $container = $('#diffs');
-        $container.html(data.html);
-        initDiffStatsDropdown(this.stickyTop);
-
-        localTimeAgo(document.querySelectorAll('#diffs .js-timeago'));
-        syntaxHighlight($('#diffs .js-syntax-highlight'));
-
+    loadDiffs({
+      // We extract pathname for the current Changes tab anchor href
+      // some pages like MergeRequestsController#new has query parameters on that anchor
+      url: parseUrlPathname(source),
+      sticky: computeTopOffset(this.mergeRequestTabs),
+    })
+      .then(() => {
         if (this.isDiffAction(this.currentAction)) {
           this.expandViewContainer();
         }
+
         this.diffsLoaded = true;
-
-        new Diff();
-        this.scrollToContainerElement('#diffs');
-
-        $('.diff-file').each((i, el) => {
-          new BlobForkSuggestion({
-            openButtons: $(el).find('.js-edit-blob-link-fork-toggler'),
-            forkButtons: $(el).find('.js-fork-suggestion-button'),
-            cancelButtons: $(el).find('.js-cancel-fork-suggestion-button'),
-            suggestionSections: $(el).find('.js-file-fork-suggestion-section'),
-            actionTextPieces: $(el).find('.js-file-fork-suggestion-section-action'),
-          }).init();
-        });
-
-        this.toggleLoading(false);
       })
       .catch(() => {
-        this.toggleLoading(false);
         createFlash({
           message: __('An error occurred while fetching this tab.'),
         });
+      })
+      .finally(() => {
+        toggleLoader(false);
       });
-  }
-
-  // Show or hide the loading spinner
-  //
-  // status - Boolean, true to show, false to hide
-  toggleLoading(status) {
-    $('.mr-loading-status .loading').toggleClass('hide', !status);
   }
 
   diffViewType() {
@@ -528,19 +542,5 @@ export default class MergeRequestTabs {
         $gutterBtn.trigger('click', [true]);
       }
     }, 0);
-  }
-
-  get stickyTop() {
-    let stickyTop = this.navbar ? this.navbar.offsetHeight : 0;
-
-    if (this.peek) {
-      stickyTop += this.peek.offsetHeight;
-    }
-
-    if (this.mergeRequestTabs) {
-      stickyTop += this.mergeRequestTabs.offsetHeight;
-    }
-
-    return stickyTop;
   }
 }

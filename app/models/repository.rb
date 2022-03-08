@@ -15,6 +15,7 @@ class Repository
     heads
     tags
     replace
+    #{REF_MERGE_REQUEST}
     #{REF_ENVIRONMENTS}
     #{REF_KEEP_AROUND}
     #{REF_PIPELINES}

@@ -1,7 +1,9 @@
-const getFullSource = (element) => {
+import { isString } from 'lodash';
+
+export const getFullSource = (element) => {
   const commentNode = element.ownerDocument.body.lastChild;
 
-  if (commentNode.nodeName === '#comment') {
+  if (commentNode?.nodeName === '#comment' && isString(commentNode.textContent)) {
     return commentNode.textContent.split('\n');
   }
 

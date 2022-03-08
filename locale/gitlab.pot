@@ -9098,10 +9098,22 @@ msgstr ""
 msgid "ComplianceFrameworks|You are about to permanently delete the compliance framework %{framework} from all projects which currently have it applied, which may remove other functionality. This cannot be undone."
 msgstr ""
 
+msgid "ComplianceFramework|Add a framework to %{linkStart}%{groupName}%{linkEnd} and it will appear here."
+msgstr ""
+
+msgid "ComplianceFramework|Add framework in %{groupName}"
+msgstr ""
+
+msgid "ComplianceFramework|After a framework is added to %{linkStart}%{groupName}%{linkEnd}, it will appear here."
+msgstr ""
+
 msgid "ComplianceFramework|Edit compliance framework"
 msgstr ""
 
 msgid "ComplianceFramework|New compliance framework"
+msgstr ""
+
+msgid "ComplianceFramework|No compliance frameworks are set up yet"
 msgstr ""
 
 msgid "ComplianceReport|Approved by author"
@@ -10770,9 +10782,6 @@ msgid "Customer experience improvement and third-party offers"
 msgstr ""
 
 msgid "Customer relations"
-msgstr ""
-
-msgid "Customizable by owners."
 msgstr ""
 
 msgid "Customize CI/CD settings, including Auto DevOps, shared runners, and job artifacts."
@@ -24639,12 +24648,6 @@ msgstr ""
 msgid "No committers"
 msgstr ""
 
-msgid "No compliance frameworks are in use."
-msgstr ""
-
-msgid "No compliance frameworks are in use. Create one from the %{link} section in Group Settings."
-msgstr ""
-
 msgid "No confirmation email received? Check your spam folder or %{request_link_start}request new confirmation email%{request_link_end}."
 msgstr ""
 
@@ -25849,6 +25852,9 @@ msgid "Owned by:"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "Owners can modify this selection."
 msgstr ""
 
 msgid "PQL|An error occurred while sending hand raise lead."
@@ -33139,7 +33145,7 @@ msgstr ""
 msgid "Select a branch"
 msgstr ""
 
-msgid "Select a compliance framework to apply to this project. %{linkStart}Learn more.%{linkEnd}"
+msgid "Select a compliance framework to apply to this project. %{linkStart}How are these added?%{linkEnd}"
 msgstr ""
 
 msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."

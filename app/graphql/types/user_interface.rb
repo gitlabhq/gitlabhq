@@ -134,14 +134,7 @@ module Types
     end
 
     def redacted_name
-      return object.name unless object.project_bot?
-
-      return object.name if context[:current_user]&.can?(:read_project, object.projects.first)
-
-      # If the requester does not have permission to read the project bot name,
-      # the API returns an arbitrary string. UI changes will be addressed in a follow up issue:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/346058
-      '****'
+      object.redacted_name(context[:current_user])
     end
   end
 end

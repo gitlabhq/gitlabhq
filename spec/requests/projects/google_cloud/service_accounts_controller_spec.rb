@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
   let_it_be(:project) { create(:project, :public) }
 
-  describe 'GET index' do
+  describe 'GET index', :snowplow do
     let_it_be(:url) { "#{project_google_cloud_service_accounts_path(project)}" }
 
     let(:user_guest) { create(:user) }
@@ -27,6 +27,14 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
         get url
 
         expect(response).to have_gitlab_http_status(:not_found)
+        expect_snowplow_event(
+          category: 'Projects::GoogleCloud',
+          action: 'admin_project_google_cloud!',
+          label: 'access_denied',
+          property: 'invalid_user',
+          project: project,
+          user: nil
+        )
       end
 
       it 'returns not found on POST request' do
@@ -42,6 +50,14 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
           sign_in(unauthorized_member)
 
           get url
+          expect_snowplow_event(
+            category: 'Projects::GoogleCloud',
+            action: 'admin_project_google_cloud!',
+            label: 'access_denied',
+            property: 'invalid_user',
+            project: project,
+            user: unauthorized_member
+          )
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -52,6 +68,14 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
           sign_in(unauthorized_member)
 
           post url
+          expect_snowplow_event(
+            category: 'Projects::GoogleCloud',
+            action: 'admin_project_google_cloud!',
+            label: 'access_denied',
+            property: 'invalid_user',
+            project: project,
+            user: unauthorized_member
+          )
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -80,42 +104,75 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
       end
 
       context 'and user has successfully completed the google oauth2 flow' do
-        before do
-          allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
-            mock_service_account = Struct.new(:project_id, :unique_id, :email).new(123, 456, 'em@ai.l')
-            allow(client).to receive(:validate_token).and_return(true)
-            allow(client).to receive(:list_projects).and_return([{}, {}, {}])
-            allow(client).to receive(:create_service_account).and_return(mock_service_account)
-            allow(client).to receive(:create_service_account_key).and_return({})
-            allow(client).to receive(:grant_service_account_roles)
+        context 'but the user does not have gcp projects' do
+          before do
+            allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
+              mock_service_account = Struct.new(:project_id, :unique_id, :email).new(123, 456, 'em@ai.l')
+              allow(client).to receive(:list_projects).and_return([])
+              allow(client).to receive(:validate_token).and_return(true)
+              allow(client).to receive(:create_service_account).and_return(mock_service_account)
+              allow(client).to receive(:create_service_account_key).and_return({})
+              allow(client).to receive(:grant_service_account_roles)
+            end
+          end
+
+          it 'renders no_gcp_projects' do
+            authorized_members.each do |authorized_member|
+              allow_next_instance_of(BranchesFinder) do |branches_finder|
+                allow(branches_finder).to receive(:execute).and_return([])
+              end
+
+              allow_next_instance_of(TagsFinder) do |branches_finder|
+                allow(branches_finder).to receive(:execute).and_return([])
+              end
+
+              sign_in(authorized_member)
+
+              get url
+
+              expect(response).to render_template('projects/google_cloud/errors/no_gcp_projects')
+            end
           end
         end
 
-        it 'returns success on GET' do
-          authorized_members.each do |authorized_member|
-            allow_next_instance_of(BranchesFinder) do |branches_finder|
-              allow(branches_finder).to receive(:execute).and_return([])
+        context 'user has three gcp_projects' do
+          before do
+            allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
+              mock_service_account = Struct.new(:project_id, :unique_id, :email).new(123, 456, 'em@ai.l')
+              allow(client).to receive(:list_projects).and_return([{}, {}, {}])
+              allow(client).to receive(:validate_token).and_return(true)
+              allow(client).to receive(:create_service_account).and_return(mock_service_account)
+              allow(client).to receive(:create_service_account_key).and_return({})
+              allow(client).to receive(:grant_service_account_roles)
             end
-
-            allow_next_instance_of(TagsFinder) do |branches_finder|
-              allow(branches_finder).to receive(:execute).and_return([])
-            end
-
-            sign_in(authorized_member)
-
-            get url
-
-            expect(response).to have_gitlab_http_status(:ok)
           end
-        end
 
-        it 'returns success on POST' do
-          authorized_members.each do |authorized_member|
-            sign_in(authorized_member)
+          it 'returns success on GET' do
+            authorized_members.each do |authorized_member|
+              allow_next_instance_of(BranchesFinder) do |branches_finder|
+                allow(branches_finder).to receive(:execute).and_return([])
+              end
 
-            post url, params: { gcp_project: 'prj1', ref: 'env1' }
+              allow_next_instance_of(TagsFinder) do |branches_finder|
+                allow(branches_finder).to receive(:execute).and_return([])
+              end
 
-            expect(response).to redirect_to(project_google_cloud_index_path(project))
+              sign_in(authorized_member)
+
+              get url
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+
+          it 'returns success on POST' do
+            authorized_members.each do |authorized_member|
+              sign_in(authorized_member)
+
+              post url, params: { gcp_project: 'prj1', ref: 'env1' }
+
+              expect(response).to redirect_to(project_google_cloud_index_path(project))
+            end
           end
         end
       end

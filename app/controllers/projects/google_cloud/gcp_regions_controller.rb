@@ -18,13 +18,13 @@ class Projects::GoogleCloud::GcpRegionsController < Projects::GoogleCloud::BaseC
       refs: refs,
       cancelPath: project_google_cloud_index_path(project)
     }.to_json
+    track_event('gcp_regions#index', 'form_render', @js_data)
   end
 
   def create
     permitted_params = params.permit(:ref, :gcp_region)
-
-    GoogleCloud::GcpRegionAddOrReplaceService.new(project).execute(permitted_params[:ref], permitted_params[:gcp_region])
-
+    response = GoogleCloud::GcpRegionAddOrReplaceService.new(project).execute(permitted_params[:ref], permitted_params[:gcp_region])
+    track_event('gcp_regions#create', 'form_submit', response)
     redirect_to project_google_cloud_index_path(project), notice: _('GCP region configured')
   end
 end

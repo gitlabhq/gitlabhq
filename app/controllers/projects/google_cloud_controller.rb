@@ -14,6 +14,7 @@ class Projects::GoogleCloudController < Projects::GoogleCloud::BaseController
       configureGcpRegionsUrl: project_google_cloud_gcp_regions_path(project),
       gcpRegions: gcp_regions
     }.to_json
+    track_event('google_cloud#index', 'index', @js_data)
   end
 
   private

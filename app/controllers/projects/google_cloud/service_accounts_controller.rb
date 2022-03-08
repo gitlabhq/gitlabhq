@@ -10,6 +10,7 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
 
     if gcp_projects.empty?
       @js_data = { screen: 'no_gcp_projects' }.to_json
+      track_event('service_accounts#index', 'form_error', 'no_gcp_projects')
       render status: :unauthorized, template: 'projects/google_cloud/errors/no_gcp_projects'
     else
       params = { per_page: 50 }
@@ -22,9 +23,11 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
         refs: refs,
         cancelPath: project_google_cloud_index_path(project)
       }.to_json
+
+      track_event('service_accounts#index', 'form_success', @js_data)
     end
   rescue Google::Apis::ClientError => error
-    handle_gcp_error(error, project)
+    handle_gcp_error('service_accounts#index', error)
   end
 
   def create
@@ -38,8 +41,9 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
       environment_name: permitted_params[:ref]
     ).execute
 
+    track_event('service_accounts#create', 'form_submit', response)
     redirect_to project_google_cloud_index_path(project), notice: response.message
   rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => error
-    handle_gcp_error(error, project)
+    handle_gcp_error('service_accounts#create', error)
   end
 end

@@ -3,7 +3,7 @@ import BulletList from '~/content_editor/extensions/bullet_list';
 import ListItem from '~/content_editor/extensions/list_item';
 import Paragraph from '~/content_editor/extensions/paragraph';
 import markdownDeserializer from '~/content_editor/services/markdown_deserializer';
-import { getMarkdownSource } from '~/content_editor/services/markdown_sourcemap';
+import { getMarkdownSource, getFullSource } from '~/content_editor/services/markdown_sourcemap';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 
 const BULLET_LIST_MARKDOWN = `+ list item 1
@@ -52,6 +52,26 @@ const {
 });
 
 describe('content_editor/services/markdown_sourcemap', () => {
+  describe('getFullSource', () => {
+    it.each`
+      lastChild                                                                | expected
+      ${null}                                                                  | ${[]}
+      ${{ nodeName: 'paragraph' }}                                             | ${[]}
+      ${{ nodeName: '#comment', textContent: null }}                           | ${[]}
+      ${{ nodeName: '#comment', textContent: '+ list item 1\n+ list item 2' }} | ${['+ list item 1', '+ list item 2']}
+    `('with lastChild=$lastChild, returns $expected', ({ lastChild, expected }) => {
+      const element = {
+        ownerDocument: {
+          body: {
+            lastChild,
+          },
+        },
+      };
+
+      expect(getFullSource(element)).toEqual(expected);
+    });
+  });
+
   it('gets markdown source for a rendered HTML element', async () => {
     const deserialized = await markdownDeserializer({
       render: () => BULLET_LIST_HTML,

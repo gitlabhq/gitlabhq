@@ -26,7 +26,7 @@ GitLab supports the following OmniAuth providers.
 | [Auth0](auth0.md)                                                   | `auth0`                    |
 | [Authentiq](../administration/auth/authentiq.md)                    | `authentiq`                |
 | [AWS Cognito](../administration/auth/cognito.md)                    | `cognito`                  |
-| [Azure v2](azure.md#microsoft-azure-oauth-20-omniauth-provider-v2) | `azure_activedirectory_v2` |
+| [Azure v2](azure.md)                                                | `azure_activedirectory_v2` |
 | [Azure v1](azure.md)                                                | `azure_oauth2`             |
 | [Bitbucket Cloud](bitbucket.md)                                     | `bitbucket`                |
 | [CAS](cas.md)                                                       | `cas3`                     |
@@ -326,7 +326,7 @@ configuration to redirect login requests to your OmniAuth provider for
 authentication. This removes the need to select the provider before signing in.
 
 For example, to enable automatic sign-in for the
-[Azure v2 integration](azure.md#microsoft-azure-oauth-20-omniauth-provider-v2):
+[Azure v2 integration](azure.md):
 
 - **For Omnibus package**
 
