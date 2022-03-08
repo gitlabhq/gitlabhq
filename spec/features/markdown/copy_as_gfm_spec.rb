@@ -7,10 +7,6 @@ RSpec.describe 'Copy as GFM', :js do
   include RepoHelpers
   include ActionView::Helpers::JavaScriptHelper
 
-  before do
-    stub_feature_flags(refactor_blob_viewer: false) # This stub will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/350454
-  end
-
   describe 'Copying rendered GFM' do
     before do
       @feat = MarkdownFeature.new
@@ -764,8 +760,8 @@ RSpec.describe 'Copy as GFM', :js do
       context 'selecting one word of text' do
         it 'copies as inline code' do
           verify(
-            '.line[id="LC9"] .no',
-            '`RuntimeError`'
+            '.line[id="LC10"]',
+            '`end`'
           )
         end
       end
@@ -834,6 +830,7 @@ RSpec.describe 'Copy as GFM', :js do
     end
 
     def verify(selector, gfm, target: nil)
+      expect(page).to have_selector('.js-syntax-highlight')
       html = html_for_selector(selector)
       output_gfm = html_to_gfm(html, 'transformCodeSelection', target: target)
       wait_for_requests

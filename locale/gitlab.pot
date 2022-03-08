@@ -5885,6 +5885,9 @@ msgstr ""
 msgid "Boards|An error occurred while fetching the board swimlanes. Please reload the page."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching the board. Please reload the page."
+msgstr ""
+
 msgid "Boards|An error occurred while generating lists. Please reload the page."
 msgstr ""
 

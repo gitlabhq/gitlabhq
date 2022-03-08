@@ -2,6 +2,10 @@
 
 module TokenAuthenticatableStrategies
   class Digest < Base
+    def token_fields
+      super + [token_field_name]
+    end
+
     def find_token_authenticatable(token, unscoped = false)
       return unless token
 

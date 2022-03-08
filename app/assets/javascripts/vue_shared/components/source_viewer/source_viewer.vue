@@ -35,16 +35,20 @@ export default {
     },
     highlightedContent() {
       let highlightedContent;
+      let { language } = this;
 
       if (this.hljs) {
-        if (!this.language) {
-          highlightedContent = this.hljs.highlightAuto(this.content).value;
+        if (!language) {
+          const hljsHighlightAuto = this.hljs.highlightAuto(this.content);
+
+          highlightedContent = hljsHighlightAuto.value;
+          language = hljsHighlightAuto.language;
         } else if (this.languageDefinition) {
           highlightedContent = this.hljs.highlight(this.content, { language: this.language }).value;
         }
       }
 
-      return wrapLines(highlightedContent);
+      return wrapLines(highlightedContent, language);
     },
   },
   watch: {
@@ -110,7 +114,7 @@ export default {
     data-qa-selector="blob_viewer_file_content"
   >
     <line-numbers :lines="lineNumbers" />
-    <pre class="code gl-pb-0!"><code v-safe-html="highlightedContent"></code>
+    <pre class="code highlight gl-pb-0!"><code v-safe-html="highlightedContent"></code>
     </pre>
   </div>
 </template>

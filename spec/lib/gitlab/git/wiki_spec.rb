@@ -48,13 +48,25 @@ RSpec.describe Gitlab::Git::Wiki do
     end
 
     it 'returns the right page' do
-      expect(subject.page(title: 'page1', dir: '').url_path).to eq 'page1'
-      expect(subject.page(title: 'page1', dir: 'foo').url_path).to eq 'foo/page1'
+      page = subject.page(title: 'page1', dir: '')
+      expect(page.url_path).to eq 'page1'
+      expect(page.raw_data).to eq 'content'
+
+      page = subject.page(title: 'page1', dir: 'foo')
+      expect(page.url_path).to eq 'foo/page1'
+      expect(page.raw_data).to eq 'content foo/page1'
     end
 
     it 'returns nil for invalid arguments' do
       expect(subject.page(title: '')).to be_nil
       expect(subject.page(title: 'foo', version: ':')).to be_nil
+    end
+
+    it 'does not return content if load_content param is set to false' do
+      page = subject.page(title: 'page1', dir: '', load_content: false)
+
+      expect(page.url_path).to eq 'page1'
+      expect(page.raw_data).to be_empty
     end
   end
 

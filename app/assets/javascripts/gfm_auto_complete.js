@@ -3,6 +3,7 @@ import '~/lib/utils/jquery_at_who';
 import { escape as lodashEscape, sortBy, template, escapeRegExp } from 'lodash';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
@@ -957,9 +958,14 @@ GfmAutoComplete.Contacts = {
     return `<li><small>${firstName} ${lastName}</small> ${escape(email)}</li>`;
   },
 };
+
+const loadingSpinner = loadingIconForLegacyJS({
+  inline: true,
+  classes: ['gl-mr-2'],
+}).outerHTML;
+
 GfmAutoComplete.Loading = {
-  template:
-    '<li style="pointer-events: none;"><span class="spinner align-text-bottom mr-1"></span>Loading...</li>',
+  template: `<li style="pointer-events: none;">${loadingSpinner}Loading...</li>`,
 };
 
 export default GfmAutoComplete;

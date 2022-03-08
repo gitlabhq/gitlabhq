@@ -6,6 +6,24 @@ RSpec.describe TokenAuthenticatableStrategies::Base do
   let(:instance) { double(:instance) }
   let(:field) { double(:field) }
 
+  describe '#token_fields' do
+    let(:strategy) { described_class.new(instance, field, options) }
+    let(:field) { 'some_token' }
+    let(:options) { {} }
+
+    it 'includes the token field' do
+      expect(strategy.token_fields).to contain_exactly(field)
+    end
+
+    context 'with expires_at option' do
+      let(:options) { { expires_at: true } }
+
+      it 'includes the token_expires_at field' do
+        expect(strategy.token_fields).to contain_exactly(field, 'some_token_expires_at')
+      end
+    end
+  end
+
   describe '.fabricate' do
     context 'when digest stragegy is specified' do
       it 'fabricates digest strategy object' do

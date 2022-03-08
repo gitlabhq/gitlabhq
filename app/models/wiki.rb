@@ -150,10 +150,10 @@ class Wiki
   #         the page.
   #
   # Returns an initialized WikiPage instance or nil
-  def find_page(title, version = nil)
+  def find_page(title, version = nil, load_content: true)
     page_title, page_dir = page_title_and_dir(title)
 
-    if page = wiki.page(title: page_title, version: version, dir: page_dir)
+    if page = wiki.page(title: page_title, version: version, dir: page_dir, load_content: load_content)
       WikiPage.new(self, page)
     end
   end

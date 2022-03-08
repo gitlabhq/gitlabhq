@@ -33,10 +33,20 @@ export const addItemToList = ({ state, listId, itemId, moveBeforeId, moveAfterId
 };
 
 export default {
+  [mutationTypes.RECEIVE_BOARD_SUCCESS]: (state, board) => {
+    state.board = {
+      ...board,
+      labels: board?.labels?.nodes || [],
+    };
+  },
+
+  [mutationTypes.RECEIVE_BOARD_FAILURE]: (state) => {
+    state.error = s__('Boards|An error occurred while fetching the board. Please reload the page.');
+  },
+
   [mutationTypes.SET_INITIAL_BOARD_DATA](state, data) {
     const {
       allowSubEpics,
-      boardConfig,
       boardId,
       boardType,
       disabled,
@@ -45,13 +55,16 @@ export default {
       issuableType,
     } = data;
     state.allowSubEpics = allowSubEpics;
-    state.boardConfig = boardConfig;
     state.boardId = boardId;
     state.boardType = boardType;
     state.disabled = disabled;
     state.fullBoardId = fullBoardId;
     state.fullPath = fullPath;
     state.issuableType = issuableType;
+  },
+
+  [mutationTypes.SET_BOARD_CONFIG](state, boardConfig) {
+    state.boardConfig = boardConfig;
   },
 
   [mutationTypes.RECEIVE_BOARD_LISTS_SUCCESS]: (state, lists) => {

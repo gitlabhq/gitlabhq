@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 
 import $ from 'jquery';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import FilesCommentButton from './files_comment_button';
 import createFlash from './flash';
@@ -10,7 +11,7 @@ import { __ } from './locale';
 import syntaxHighlight from './syntax_highlight';
 
 const WRAPPER = '<div class="diff-content"></div>';
-const LOADING_HTML = '<span class="spinner"></span>';
+const LOADING_HTML = loadingIconForLegacyJS().outerHTML;
 const ERROR_HTML = `<div class="nothing-here-block">${spriteIcon(
   'warning-solid',
   's16',

@@ -1,5 +1,6 @@
 import { sortBy, cloneDeep } from 'lodash';
-import { isGid } from '~/graphql_shared/utils';
+import { TYPE_BOARD, TYPE_ITERATION, TYPE_MILESTONE, TYPE_USER } from '~/graphql_shared/constants';
+import { isGid, convertToGraphQLId } from '~/graphql_shared/utils';
 import { ListType, MilestoneIDs, AssigneeFilterType, MilestoneFilterType } from './constants';
 
 export function getMilestone() {
@@ -80,19 +81,22 @@ export function formatListsPageInfo(lists) {
 }
 
 export function fullBoardId(boardId) {
-  return `gid://gitlab/Board/${boardId}`;
+  if (!boardId) {
+    return null;
+  }
+  return convertToGraphQLId(TYPE_BOARD, boardId);
 }
 
 export function fullIterationId(id) {
-  return `gid://gitlab/Iteration/${id}`;
+  return convertToGraphQLId(TYPE_ITERATION, id);
 }
 
 export function fullUserId(id) {
-  return `gid://gitlab/User/${id}`;
+  return convertToGraphQLId(TYPE_USER, id);
 }
 
 export function fullMilestoneId(id) {
-  return `gid://gitlab/Milestone/${id}`;
+  return convertToGraphQLId(TYPE_MILESTONE, id);
 }
 
 export function fullLabelId(label) {

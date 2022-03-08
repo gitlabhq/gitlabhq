@@ -8,6 +8,10 @@ module TokenAuthenticatable
       @encrypted_token_authenticatable_fields ||= []
     end
 
+    def token_authenticatable_fields
+      @token_authenticatable_fields ||= []
+    end
+
     private
 
     def add_authentication_token_field(token_field, options = {})
@@ -22,6 +26,8 @@ module TokenAuthenticatable
 
       strategy = TokenAuthenticatableStrategies::Base
         .fabricate(self, token_field, options)
+
+      prevent_from_serialization(*strategy.token_fields) if respond_to?(:prevent_from_serialization)
 
       if options.fetch(:unique, true)
         define_singleton_method("find_by_#{token_field}") do |token|
@@ -81,10 +87,6 @@ module TokenAuthenticatable
     def token_authenticatable_module
       @token_authenticatable_module ||=
         const_set(:TokenAuthenticatable, Module.new).tap(&method(:include))
-    end
-
-    def token_authenticatable_fields
-      @token_authenticatable_fields ||= []
     end
   end
 end

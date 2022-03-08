@@ -32,6 +32,8 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import projectBoardMilestones from '~/boards/graphql/project_board_milestones.query.graphql';
 import groupBoardMilestones from '~/boards/graphql/group_board_milestones.query.graphql';
 import {
+  mockBoard,
+  mockBoardConfig,
   mockLists,
   mockListsById,
   mockIssue,
@@ -60,6 +62,52 @@ beforeEach(() => {
   window.gon = { features: {} };
 });
 
+describe('fetchBoard', () => {
+  const payload = {
+    fullPath: 'gitlab-org',
+    fullBoardId: 'gid://gitlab/Board/1',
+    boardType: 'project',
+  };
+
+  const queryResponse = {
+    data: {
+      workspace: {
+        board: mockBoard,
+      },
+    },
+  };
+
+  it('should commit mutation RECEIVE_BOARD_SUCCESS and dispatch setBoardConfig on success', async () => {
+    jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+    await testAction({
+      action: actions.fetchBoard,
+      payload,
+      expectedMutations: [
+        {
+          type: types.RECEIVE_BOARD_SUCCESS,
+          payload: mockBoard,
+        },
+      ],
+      expectedActions: [{ type: 'setBoardConfig', payload: mockBoard }],
+    });
+  });
+
+  it('should commit mutation RECEIVE_BOARD_FAILURE on failure', async () => {
+    jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
+
+    await testAction({
+      action: actions.fetchBoard,
+      payload,
+      expectedMutations: [
+        {
+          type: types.RECEIVE_BOARD_FAILURE,
+        },
+      ],
+    });
+  });
+});
+
 describe('setInitialBoardData', () => {
   it('sets data object', () => {
     const mockData = {
@@ -67,13 +115,21 @@ describe('setInitialBoardData', () => {
       bar: 'baz',
     };
 
-    return testAction(
-      actions.setInitialBoardData,
-      mockData,
-      {},
-      [{ type: types.SET_INITIAL_BOARD_DATA, payload: mockData }],
-      [],
-    );
+    return testAction({
+      action: actions.setInitialBoardData,
+      payload: mockData,
+      expectedMutations: [{ type: types.SET_INITIAL_BOARD_DATA, payload: mockData }],
+    });
+  });
+});
+
+describe('setBoardConfig', () => {
+  it('sets board config object from board object', () => {
+    return testAction({
+      action: actions.setBoardConfig,
+      payload: mockBoard,
+      expectedMutations: [{ type: types.SET_BOARD_CONFIG, payload: mockBoardConfig }],
+    });
   });
 });
 
@@ -87,7 +143,7 @@ describe('setFilters', () => {
       },
     ],
     [
-      "and use 'assigneeWildcardId' as filter variable for 'assigneId' param",
+      "and use 'assigneeWildcardId' as filter variable for 'assigneeId' param",
       {
         filters: { assigneeId: 'None' },
         filterVariables: { assigneeWildcardId: 'NONE', not: {} },

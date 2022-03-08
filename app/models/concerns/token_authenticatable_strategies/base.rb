@@ -23,6 +23,14 @@ module TokenAuthenticatableStrategies
       raise NotImplementedError
     end
 
+    def token_fields
+      result = [token_field]
+
+      result << @expires_at_field if expirable?
+
+      result
+    end
+
     # Default implementation returns the token as-is
     def format_token(instance, token)
       instance.send("format_#{@token_field}", token) # rubocop:disable GitlabSecurity/PublicSend

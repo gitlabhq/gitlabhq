@@ -64,12 +64,13 @@ module Gitlab
         GitalyClient.call(@repository.storage, :wiki_service, :wiki_update_page, enum, timeout: GitalyClient.medium_timeout)
       end
 
-      def find_page(title:, version: nil, dir: nil)
+      def find_page(title:, version: nil, dir: nil, load_content: true)
         request = Gitaly::WikiFindPageRequest.new(
           repository: @gitaly_repo,
           title: encode_binary(title),
           revision: encode_binary(version),
-          directory: encode_binary(dir)
+          directory: encode_binary(dir),
+          skip_content: !load_content
         )
 
         response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_page, request, timeout: GitalyClient.fast_timeout)

@@ -8,6 +8,37 @@ import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
 
+export const mockBoard = {
+  milestone: {
+    id: 'gid://gitlab/Milestone/114',
+    title: '14.9',
+  },
+  iteration: {
+    id: 'gid://gitlab/Iteration/124',
+    title: 'Iteration 9',
+  },
+  assignee: {
+    id: 'gid://gitlab/User/1',
+    username: 'admin',
+  },
+  labels: {
+    nodes: [{ id: 'gid://gitlab/Label/32', title: 'Deliverable' }],
+  },
+  weight: 2,
+};
+
+export const mockBoardConfig = {
+  milestoneId: 'gid://gitlab/Milestone/114',
+  milestoneTitle: '14.9',
+  iterationId: 'gid://gitlab/Iteration/124',
+  iterationTitle: 'Iteration 9',
+  assigneeId: 'gid://gitlab/User/1',
+  assigneeUsername: 'admin',
+  labels: [{ id: 'gid://gitlab/Label/32', title: 'Deliverable' }],
+  labelIds: ['gid://gitlab/Label/32'],
+  weight: 2,
+};
+
 export const boardObj = {
   id: 1,
   name: 'test',

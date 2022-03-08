@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  # Disable on staging until bulk_import_projects toggle is on by default
+  # Disable on live envs until bulk_import_projects toggle is on by default
   # Otherwise tests running in parallel can disable feature in the middle of other test
-  RSpec.shared_context 'with gitlab project migration', :requires_admin, except: { subdomain: :staging } do
+  RSpec.shared_context 'with gitlab project migration', :requires_admin, :skip_live_env do
     let(:source_project_with_readme) { false }
     let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }
     let(:admin_api_client) { Runtime::API::Client.as_admin }
@@ -79,8 +79,6 @@ module QA
       # Log failures for easier debugging
       Runtime::Logger.warn("Import failures: #{import_failures}") if example.exception && !import_failures.empty?
     ensure
-      Runtime::Feature.disable(:bulk_import_projects)
-
       user.remove_via_api!
     end
   end

@@ -181,12 +181,13 @@ describe('init markdown', () => {
           ${'- [ ] item'}                | ${'- [ ] item\n- [ ] '}
           ${'- [x] item'}                | ${'- [x] item\n- [x] '}
           ${'- item\n  - second'}        | ${'- item\n  - second\n  - '}
-          ${'1. item'}                   | ${'1. item\n1. '}
-          ${'1. [ ] item'}               | ${'1. [ ] item\n1. [ ] '}
-          ${'1. [x] item'}               | ${'1. [x] item\n1. [x] '}
-          ${'108. item'}                 | ${'108. item\n108. '}
+          ${'1. item'}                   | ${'1. item\n2. '}
+          ${'1. [ ] item'}               | ${'1. [ ] item\n2. [ ] '}
+          ${'1. [x] item'}               | ${'1. [x] item\n2. [x] '}
+          ${'108. item'}                 | ${'108. item\n109. '}
           ${'108. item\n     - second'}  | ${'108. item\n     - second\n     - '}
-          ${'108. item\n     1. second'} | ${'108. item\n     1. second\n     1. '}
+          ${'108. item\n     1. second'} | ${'108. item\n     1. second\n     2. '}
+          ${'non-item, will not change'} | ${'non-item, will not change'}
         `('adds correct list continuation characters', ({ text, expected }) => {
           textArea.value = text;
           textArea.setSelectionRange(text.length, text.length);
@@ -207,10 +208,10 @@ describe('init markdown', () => {
           ${'- [ ] item\n- [ ] '}                  | ${'- [ ] item\n'}
           ${'- [x] item\n- [x] '}                  | ${'- [x] item\n'}
           ${'- item\n  - second\n  - '}            | ${'- item\n  - second\n'}
-          ${'1. item\n1. '}                        | ${'1. item\n'}
-          ${'1. [ ] item\n1. [ ] '}                | ${'1. [ ] item\n'}
-          ${'1. [x] item\n1. [x] '}                | ${'1. [x] item\n'}
-          ${'108. item\n108. '}                    | ${'108. item\n'}
+          ${'1. item\n2. '}                        | ${'1. item\n'}
+          ${'1. [ ] item\n2. [ ] '}                | ${'1. [ ] item\n'}
+          ${'1. [x] item\n2. [x] '}                | ${'1. [x] item\n'}
+          ${'108. item\n109. '}                    | ${'108. item\n'}
           ${'108. item\n     - second\n     - '}   | ${'108. item\n     - second\n'}
           ${'108. item\n     1. second\n     1. '} | ${'108. item\n     1. second\n'}
         `('adds correct list continuation characters', ({ text, expected }) => {
@@ -243,6 +244,23 @@ describe('init markdown', () => {
           expect(textArea.value).toEqual(expected);
         });
 
+        it.each`
+          text                                                       | add_at | expected
+          ${'1. one\n2. two\n3. three'}                              | ${13}  | ${'1. one\n2. two\n2. \n3. three'}
+          ${'108. item\n     5. second\n     6. six\n     7. seven'} | ${36}  | ${'108. item\n     5. second\n     6. six\n     6. \n     7. seven'}
+        `(
+          'adds correct numbered continuation characters when in middle of list',
+          ({ text, add_at, expected }) => {
+            textArea.value = text;
+            textArea.setSelectionRange(add_at, add_at);
+
+            textArea.addEventListener('keydown', keypressNoteText);
+            textArea.dispatchEvent(enterEvent);
+
+            expect(textArea.value).toEqual(expected);
+          },
+        );
+
         it('does nothing if feature flag disabled', () => {
           gon.features = { markdownContinueLists: false };
 
@@ -262,8 +280,8 @@ describe('init markdown', () => {
     });
 
     describe('with selection', () => {
-      const text = 'initial selected value';
-      const selected = 'selected';
+      let text = 'initial selected value';
+      let selected = 'selected';
       let selectedIndex;
 
       beforeEach(() => {
@@ -409,6 +427,46 @@ describe('init markdown', () => {
             expectedText.indexOf(expectedSelectionText, 1) + expectedSelectionText.length,
           );
         });
+
+        it('adds block tags on line above and below selection', () => {
+          selected = 'this text\nis multiple\nlines';
+          text = `before \n${selected}\nafter `;
+
+          textArea.value = text;
+          selectedIndex = text.indexOf(selected);
+          textArea.setSelectionRange(selectedIndex, selectedIndex + selected.length);
+
+          insertMarkdownText({
+            textArea,
+            text,
+            tag: '',
+            blockTag: '***',
+            selected,
+            wrap: true,
+          });
+
+          expect(textArea.value).toEqual(`before \n***\n${selected}\n***\nafter `);
+        });
+
+        it('removes block tags on line above and below selection', () => {
+          selected = 'this text\nis multiple\nlines';
+          text = `before \n***\n${selected}\n***\nafter `;
+
+          textArea.value = text;
+          selectedIndex = text.indexOf(selected);
+          textArea.setSelectionRange(selectedIndex, selectedIndex + selected.length);
+
+          insertMarkdownText({
+            textArea,
+            text,
+            tag: '',
+            blockTag: '***',
+            selected,
+            wrap: true,
+          });
+
+          expect(textArea.value).toEqual(`before \n${selected}\nafter `);
+        });
       });
     });
   });
@@ -460,7 +518,31 @@ describe('init markdown', () => {
       expect(editor.replaceSelectedText).toHaveBeenCalledWith(`***\n${selected}\n***\n`, undefined);
     });
 
-    it('uses ace editor to navigate back tag length when nothing is selected', () => {
+    it('removes block tags on line above and below selection', () => {
+      const selected = 'this text\nis multiple\nlines';
+      const text = `before\n***\n${selected}\n***\nafter`;
+
+      editor.getSelection = jest.fn().mockReturnValue({
+        startLineNumber: 2,
+        startColumn: 1,
+        endLineNumber: 4,
+        endColumn: 2,
+        setSelectionRange: jest.fn(),
+      });
+
+      insertMarkdownText({
+        text,
+        tag: '',
+        blockTag: '***',
+        selected,
+        wrap: true,
+        editor,
+      });
+
+      expect(editor.replaceSelectedText).toHaveBeenCalledWith(`${selected}\n`, undefined);
+    });
+
+    it('uses editor to navigate back tag length when nothing is selected', () => {
       editor.getSelection = jest.fn().mockReturnValue({
         startLineNumber: 1,
         startColumn: 1,
@@ -480,7 +562,7 @@ describe('init markdown', () => {
       expect(editor.moveCursor).toHaveBeenCalledWith(-1);
     });
 
-    it('ace editor does not navigate back when there is selected text', () => {
+    it('editor does not navigate back when there is selected text', () => {
       insertMarkdownText({
         text: editor.getValue,
         tag: '*',

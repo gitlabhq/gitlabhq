@@ -101,6 +101,7 @@ export default {
       },
       update(data) {
         const board = data.workspace?.board;
+        this.setBoardConfig(board);
         return {
           ...board,
           labels: board?.labels?.nodes,
@@ -170,7 +171,7 @@ export default {
     eventHub.$off('showBoardModal', this.showPage);
   },
   methods: {
-    ...mapActions(['setError']),
+    ...mapActions(['setError', 'setBoardConfig']),
     showPage(page) {
       this.currentPage = page;
     },

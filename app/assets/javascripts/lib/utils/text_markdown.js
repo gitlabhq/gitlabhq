@@ -9,7 +9,7 @@ const LINK_TAG_PATTERN = '[{text}](url)';
 // a bullet point character (*+-) and an optional checkbox ([ ] [x])
 // OR a number with a . after it and an optional checkbox ([ ] [x])
 // followed by one or more whitespace characters
-const LIST_LINE_HEAD_PATTERN = /^(?<indent>\s*)(?<leader>((?<isOl>[*+-])|(?<isUl>\d+\.))( \[([x ])\])?\s)(?<content>.)?/;
+const LIST_LINE_HEAD_PATTERN = /^(?<indent>\s*)(?<leader>((?<isUl>[*+-])|(?<isOl>\d+\.))( \[([x ])\])?\s)(?<content>.)?/;
 
 function selectedText(text, textarea) {
   return text.substring(textarea.selectionStart, textarea.selectionEnd);
@@ -31,8 +31,19 @@ function lineBefore(text, textarea, trimNewlines = true) {
   return split[split.length - 1];
 }
 
-function lineAfter(text, textarea) {
-  return text.substring(textarea.selectionEnd).trim().split('\n')[0];
+function lineAfter(text, textarea, trimNewlines = true) {
+  let split = text.substring(textarea.selectionEnd);
+
+  if (trimNewlines) {
+    split = split.trim();
+  } else {
+    // remove possible leading newline to get at the real line
+    split = split.replace(/^\n/, '');
+  }
+
+  split = split.split('\n');
+
+  return split[0];
 }
 
 function convertMonacoSelectionToAceFormat(sel) {
@@ -329,6 +340,25 @@ function handleSurroundSelectedText(e, textArea) {
 }
 /* eslint-enable @gitlab/require-i18n-strings */
 
+/**
+ * Returns the content for a new line following a list item.
+ *
+ * @param {Object} result - regex match of the current line
+ * @param {Object?} nextLineResult - regex match of the next line
+ * @returns string with the new list item
+ */
+function continueOlText(result, nextLineResult) {
+  const { indent, leader } = result.groups;
+  const { indent: nextIndent, isOl: nextIsOl } = nextLineResult?.groups ?? {};
+
+  const [numStr, postfix = ''] = leader.split('.');
+
+  const incrementBy = nextIsOl && nextIndent === indent ? 0 : 1;
+  const num = parseInt(numStr, 10) + incrementBy;
+
+  return `${indent}${num}.${postfix}`;
+}
+
 function handleContinueList(e, textArea) {
   if (!gon.features?.markdownContinueLists) return;
   if (!(e.key === 'Enter')) return;
@@ -339,7 +369,7 @@ function handleContinueList(e, textArea) {
   const result = currentLine.match(LIST_LINE_HEAD_PATTERN);
 
   if (result) {
-    const { indent, content, leader } = result.groups;
+    const { leader, indent, content, isOl } = result.groups;
     const prevLineEmpty = !content;
 
     if (prevLineEmpty) {
@@ -349,12 +379,22 @@ function handleContinueList(e, textArea) {
       return;
     }
 
-    const itemInsert = `${indent}${leader}`;
+    let itemToInsert;
+
+    if (isOl) {
+      const nextLine = lineAfter(textArea.value, textArea, false);
+      const nextLineResult = nextLine.match(LIST_LINE_HEAD_PATTERN);
+
+      itemToInsert = continueOlText(result, nextLineResult);
+    } else {
+      // isUl
+      itemToInsert = `${indent}${leader}`;
+    }
 
     e.preventDefault();
 
     updateText({
-      tag: itemInsert,
+      tag: itemToInsert,
       textArea,
       blockTag: '',
       wrap: false,

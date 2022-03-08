@@ -5,6 +5,7 @@ class ApplicationRecord < ActiveRecord::Base
   include Transactions
   include LegacyBulkInsert
   include CrossDatabaseModification
+  include SensitiveSerializableHash
 
   self.abstract_class = true
 

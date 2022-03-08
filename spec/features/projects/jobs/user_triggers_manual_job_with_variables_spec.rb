@@ -28,7 +28,7 @@ RSpec.describe 'User triggers manual job with variables', :js do
 
     wait_for_requests
 
-    expect(build.job_variables.as_json).to contain_exactly(
+    expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
       hash_including('key' => 'key_name', 'value' => 'key_value'))
   end
 end

@@ -43,7 +43,9 @@ module Gitlab
     end
 
     def write(key, value, options = nil)
-      backend.write(cache_key(key), value.to_json, options)
+      # As we use json as the serialization format, return everything from
+      # ActiveModel objects included encrypted values.
+      backend.write(cache_key(key), value.to_json(unsafe_serialization_hash: true), options)
     end
 
     def fetch(key, options = {}, &block)

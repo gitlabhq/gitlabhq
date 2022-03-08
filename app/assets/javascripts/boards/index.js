@@ -28,6 +28,12 @@ const apolloProvider = new VueApollo({
 function mountBoardApp(el) {
   const { boardId, groupId, fullPath, rootPath } = el.dataset;
 
+  store.dispatch('fetchBoard', {
+    fullPath,
+    fullBoardId: fullBoardId(boardId),
+    boardType: el.dataset.parent,
+  });
+
   store.dispatch('setInitialBoardData', {
     boardId,
     fullBoardId: fullBoardId(boardId),
@@ -35,17 +41,6 @@ function mountBoardApp(el) {
     boardType: el.dataset.parent,
     disabled: parseBoolean(el.dataset.disabled) || true,
     issuableType: issuableTypes.issue,
-    boardConfig: {
-      milestoneId: parseInt(el.dataset.boardMilestoneId, 10),
-      milestoneTitle: el.dataset.boardMilestoneTitle || '',
-      iterationId: parseInt(el.dataset.boardIterationId, 10),
-      iterationTitle: el.dataset.boardIterationTitle || '',
-      assigneeId: el.dataset.boardAssigneeId,
-      assigneeUsername: el.dataset.boardAssigneeUsername,
-      labels: el.dataset.labels ? JSON.parse(el.dataset.labels) : [],
-      labelIds: el.dataset.labelIds ? JSON.parse(el.dataset.labelIds) : [],
-      weight: el.dataset.boardWeight ? parseInt(el.dataset.boardWeight, 10) : null,
-    },
   });
 
   // eslint-disable-next-line no-new
