@@ -89,7 +89,7 @@ Using the [Deployments API](../../api/deployments.md#approve-or-reject-a-blocked
 Example:
 
 ```shell
-curl --data "status=approved" \
+curl --data "status=approved&comment=Looks good to me" \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1/approval"
 ```
 

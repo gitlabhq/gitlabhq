@@ -58,6 +58,7 @@ module Gitlab
       push_frontend_feature_flag(:new_header_search, default_enabled: :yaml)
       push_frontend_feature_flag(:bootstrap_confirmation_modals, default_enabled: :yaml)
       push_frontend_feature_flag(:sandboxed_mermaid, default_enabled: :yaml)
+      push_frontend_feature_flag(:source_editor_toolbar, default_enabled: :yaml)
     end
 
     # Exposes the state of a feature flag to the frontend code.

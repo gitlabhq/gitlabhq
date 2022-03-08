@@ -47,10 +47,7 @@ To implement tracking for HAML or Vue templates, add a [`data-track` attribute](
 The following example shows `data-track-*` attributes assigned to a button:
 
 ```haml
-%button.btn{ data: { track: { action: "click_button", label: "template_preview", property: "my-template" } } }
-
-// or
-// %button.btn{ data: { track_action: "click_button", track_label: "template_preview", track_property: "my-template" } }
+%button.btn{ data: { track_action: "click_button", track_label: "template_preview", track_property: "my-template" } }
 ```
 
 ```html

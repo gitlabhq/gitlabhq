@@ -1,0 +1,17 @@
+# frozen_string_literal: true
+
+require 'pact/tasks/verification_task'
+
+Pact::VerificationTask.new(:metadata) do |pact|
+  pact.uri '../contracts/merge_request_page-merge_request_metadata_endpoint.json', pact_helper: './spec/metadata_helper.rb'
+end
+
+Pact::VerificationTask.new(:discussions) do |pact|
+  pact.uri '../contracts/merge_request_page-merge_request_discussions_endpoint.json', pact_helper: './spec/discussions_helper.rb'
+end
+
+Pact::VerificationTask.new(:diffs) do |pact|
+  pact.uri '../contracts/merge_request_page-merge_request_diffs_endpoint.json', pact_helper: './spec/diffs_helper.rb'
+end
+
+task 'test:merge_request' => ['pact:verify:metadata', 'pact:verify:discussions', 'pact:verify:diffs']

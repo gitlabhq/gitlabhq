@@ -980,7 +980,7 @@ podAnnotations:
 
 The only information to be changed here is the profile name which is `profile-one`
 in this example. Refer to the
-[AppArmor tutorial](https://kubernetes.io/docs/tutorials/clusters/apparmor/#securing-a-pod)
+[AppArmor tutorial](https://kubernetes.io/docs/tutorials/security/apparmor/#securing-a-pod)
 for more information on how AppArmor is integrated in Kubernetes.
 
 #### Using PodSecurityPolicy in your deployments
@@ -1017,7 +1017,7 @@ securityPolicies:
 ```
 
 This example creates a single policy named `example` with the provided specification,
-and enables [AppArmor annotations](https://kubernetes.io/docs/tutorials/clusters/apparmor/#podsecuritypolicy-annotations) on it.
+and enables [AppArmor annotations](https://kubernetes.io/docs/tutorials/security/apparmor/#podsecuritypolicy-annotations) on it.
 
 Support for installing the AppArmor managed application is provided by the
 GitLab Container Security group. If you run into unknown issues,

@@ -11,12 +11,14 @@ RSpec.describe 'projects/runners/specific_runners.html.haml' do
       @project = project
       @assignable_runners = []
       @project_runners = []
+      allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:reset_registration_token_namespace_project_settings_ci_cd_path).and_return('banana_url')
     end
 
     context 'when project runner registration is allowed' do
       before do
         stub_application_setting(valid_runner_registrars: ['project'])
+        allow(view).to receive(:can?).with(user, :register_project_runners, project).and_return(true)
       end
 
       it 'enables the Remove project button for a project' do
@@ -32,7 +34,7 @@ RSpec.describe 'projects/runners/specific_runners.html.haml' do
         stub_application_setting(valid_runner_registrars: ['group'])
       end
 
-      it 'does not enable the  the Remove project button for a project' do
+      it 'does not enable the Remove project button for a project' do
         render 'projects/runners/specific_runners', project: project
 
         expect(rendered).to have_content 'Please contact an admin to register runners.'

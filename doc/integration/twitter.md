@@ -9,9 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To enable the Twitter OmniAuth provider you must register your application with
 Twitter. Twitter generates a client ID and secret key for you to use.
 
-1. Sign in to [Twitter Application Management](https://developer.twitter.com/apps).
+1. Sign in to [Twitter Application Management](https://apps.twitter.com).
 
-1. Select "Create new app"
+1. Select "Create new app".
 
 1. Fill in the application details.
    - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or

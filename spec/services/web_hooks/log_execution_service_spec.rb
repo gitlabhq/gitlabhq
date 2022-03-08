@@ -95,11 +95,36 @@ RSpec.describe WebHooks::LogExecutionService do
         it 'resets the failure count' do
           expect { service.execute }.to change(project_hook, :recent_failures).to(0)
         end
+
+        it 'sends a message to AuthLogger if the hook as not previously enabled' do
+          project_hook.update!(recent_failures: ::WebHook::FAILURE_THRESHOLD + 1)
+
+          expect(Gitlab::AuthLogger).to receive(:info).with include(
+            message: 'WebHook change active_state',
+            # identification
+            hook_id: project_hook.id,
+            hook_type: project_hook.type,
+            project_id: project_hook.project_id,
+            group_id: nil,
+            # relevant data
+            prev_state: :permanently_disabled,
+            new_state: :enabled,
+            duration: 1.2,
+            response_status: '200',
+            recent_hook_failures: 0
+          )
+
+          service.execute
+        end
       end
     end
 
     context 'when response_category is :failed' do
       let(:response_category) { :failed }
+
+      before do
+        data[:response_status] = '400'
+      end
 
       it 'increments the failure count' do
         expect { service.execute }.to change(project_hook, :recent_failures).by(1)
@@ -127,10 +152,35 @@ RSpec.describe WebHooks::LogExecutionService do
           expect { service.execute }.not_to change(project_hook, :recent_failures)
         end
       end
+
+      it 'sends a message to AuthLogger if the state would change' do
+        project_hook.update!(recent_failures: ::WebHook::FAILURE_THRESHOLD)
+
+        expect(Gitlab::AuthLogger).to receive(:info).with include(
+          message: 'WebHook change active_state',
+          # identification
+          hook_id: project_hook.id,
+          hook_type: project_hook.type,
+          project_id: project_hook.project_id,
+          group_id: nil,
+          # relevant data
+          prev_state: :enabled,
+          new_state: :permanently_disabled,
+          duration: (be > 0),
+          response_status: data[:response_status],
+          recent_hook_failures: ::WebHook::FAILURE_THRESHOLD + 1
+        )
+
+        service.execute
+      end
     end
 
     context 'when response_category is :error' do
       let(:response_category) { :error }
+
+      before do
+        data[:response_status] = '500'
+      end
 
       it 'does not increment the failure count' do
         expect { service.execute }.not_to change(project_hook, :recent_failures)
@@ -142,6 +192,25 @@ RSpec.describe WebHooks::LogExecutionService do
 
       it 'increases the backoff count' do
         expect { service.execute }.to change(project_hook, :backoff_count).by(1)
+      end
+
+      it 'sends a message to AuthLogger if the state would change' do
+        expect(Gitlab::AuthLogger).to receive(:info).with include(
+          message: 'WebHook change active_state',
+          # identification
+          hook_id: project_hook.id,
+          hook_type: project_hook.type,
+          project_id: project_hook.project_id,
+          group_id: nil,
+          # relevant data
+          prev_state: :enabled,
+          new_state: :temporarily_disabled,
+          duration: (be > 0),
+          response_status: data[:response_status],
+          recent_hook_failures: 0
+        )
+
+        service.execute
       end
 
       context 'when the previous cool-off was near the maximum' do

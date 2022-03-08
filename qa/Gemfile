@@ -35,6 +35,8 @@ gem 'confiner', '~> 0.2'
 gem 'chemlab', '~> 0.9'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1'
 
+gem "pact", "~> 1.12"
+
 gem 'deprecation_toolkit', '~> 1.5.1', require: false
 
 group :development do

@@ -80,7 +80,7 @@ provided can manage resources in the `database.crossplane.io` API group:
 
 ## Configure Crossplane with a cloud provider
 
-See [Configure Your Cloud Provider Account](https://crossplane.github.io/docs/v0.4/cloud-providers.html)
+See [Configure Your Cloud Provider Account](https://crossplane.github.io/docs/v1.6/)
 to configure the installed cloud provider stack with a user account.
 
 The Secret, and the Provider resource referencing the Secret, must be

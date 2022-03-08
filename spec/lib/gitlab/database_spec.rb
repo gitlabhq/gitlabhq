@@ -279,6 +279,46 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.all_uncached' do
+    let(:base_model) do
+      Class.new do
+        def self.uncached
+          @uncached = true
+
+          yield
+        end
+      end
+    end
+
+    let(:model1) { Class.new(base_model) }
+    let(:model2) { Class.new(base_model) }
+
+    before do
+      allow(described_class).to receive(:database_base_models)
+        .and_return({ model1: model1, model2: model2 }.with_indifferent_access)
+    end
+
+    it 'wraps the given block in uncached calls for each primary connection', :aggregate_failures do
+      expect(model1.instance_variable_get(:@uncached)).to be_nil
+      expect(model2.instance_variable_get(:@uncached)).to be_nil
+
+      expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary).and_yield
+
+      expect(model2).to receive(:uncached).and_call_original
+      expect(model1).to receive(:uncached).and_call_original
+
+      yielded_to_block = false
+      described_class.all_uncached do
+        expect(model1.instance_variable_get(:@uncached)).to be(true)
+        expect(model2.instance_variable_get(:@uncached)).to be(true)
+
+        yielded_to_block = true
+      end
+
+      expect(yielded_to_block).to be(true)
+    end
+  end
+
   describe '.read_only?' do
     it 'returns false' do
       expect(described_class.read_only?).to eq(false)

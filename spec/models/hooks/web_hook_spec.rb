@@ -432,6 +432,12 @@ RSpec.describe WebHook do
 
         expect(hook).not_to be_temporarily_disabled
       end
+
+      it 'can ignore the feature flag' do
+        stub_feature_flags(web_hooks_disable_failed: false)
+
+        expect(hook).to be_temporarily_disabled(ignore_flag: true)
+      end
     end
   end
 
@@ -453,6 +459,12 @@ RSpec.describe WebHook do
         stub_feature_flags(web_hooks_disable_failed: false)
 
         expect(hook).not_to be_permanently_disabled
+      end
+
+      it 'can ignore the feature flag' do
+        stub_feature_flags(web_hooks_disable_failed: false)
+
+        expect(hook).to be_permanently_disabled(ignore_flag: true)
       end
     end
   end

@@ -120,7 +120,7 @@ you want to manage with the Cluster Management Project.
 
 ## Backup and uninstall cert-manager v0.10
 
-1. Follow the [official docs](https://docs.cert-manager.io/en/release-0.10/tasks/backup-restore-crds.html) on how to
+1. Follow the [official docs](https://cert-manager.io/docs/tutorials/backup/) on how to
    backup your cert-manager v0.10 data.
 1. Uninstall cert-manager by editing the setting all the occurrences of `installed: true` to `installed: false` in the
    `applications/cert-manager/helmfile.yaml` file.

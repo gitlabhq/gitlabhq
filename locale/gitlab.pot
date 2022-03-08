@@ -13229,9 +13229,6 @@ msgstr ""
 msgid "Edit identity for %{user_name}"
 msgstr ""
 
-msgid "Edit in Web IDE"
-msgstr ""
-
 msgid "Edit in pipeline editor"
 msgstr ""
 
@@ -31671,6 +31668,9 @@ msgstr ""
 msgid "Runners|Never contacted"
 msgstr ""
 
+msgid "Runners|New group runners view"
+msgstr ""
+
 msgid "Runners|New registration token generated!"
 msgstr ""
 
@@ -31737,6 +31737,9 @@ msgstr ""
 msgid "Runners|Revision"
 msgstr ""
 
+msgid "Runners|Rocket launch illustration"
+msgstr ""
+
 msgid "Runners|Runner"
 msgstr ""
 
@@ -31801,6 +31804,12 @@ msgid "Runners|Stop the runner from accepting new jobs."
 msgstr ""
 
 msgid "Runners|Tags"
+msgstr ""
+
+msgid "Runners|Take me there!"
+msgstr ""
+
+msgid "Runners|The new view gives you more space and better visibility into your fleet of runners."
 msgstr ""
 
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"

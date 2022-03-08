@@ -14264,7 +14264,9 @@ CREATE TABLE deployment_approvals (
     user_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    status smallint NOT NULL
+    status smallint NOT NULL,
+    comment text,
+    CONSTRAINT check_e2eb6a17d8 CHECK ((char_length(comment) <= 255))
 );
 
 CREATE SEQUENCE deployment_approvals_id_seq

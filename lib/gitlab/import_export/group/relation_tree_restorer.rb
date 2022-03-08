@@ -29,7 +29,7 @@ module Gitlab
         end
 
         def restore
-          ActiveRecord::Base.uncached do
+          Gitlab::Database.all_uncached do
             ActiveRecord::Base.no_touching do
               update_params!
 

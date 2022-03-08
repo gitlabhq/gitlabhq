@@ -194,6 +194,10 @@ class ProjectPolicy < BasePolicy
     condition(:"#{f}_disabled", score: 32) { !access_allowed_to?(f.to_sym) }
   end
 
+  condition(:project_runner_registration_allowed) do
+    Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin }.enable :read_project_for_iids
@@ -230,6 +234,8 @@ class ProjectPolicy < BasePolicy
     enable :set_emails_disabled
     enable :set_show_default_award_emojis
     enable :set_warn_about_potentially_unwanted_characters
+
+    enable :register_project_runners
   end
 
   rule { can?(:guest_access) }.policy do
@@ -453,6 +459,7 @@ class ProjectPolicy < BasePolicy
     enable :update_freeze_period
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
+    enable :register_project_runners
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
   end
@@ -725,6 +732,10 @@ class ProjectPolicy < BasePolicy
 
   rule { ~security_and_compliance_disabled & can?(:developer_access) }.policy do
     enable :access_security_and_compliance
+  end
+
+  rule { ~admin & ~project_runner_registration_allowed }.policy do
+    prevent :register_project_runners
   end
 
   private

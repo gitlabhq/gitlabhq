@@ -408,7 +408,7 @@ If you are using [EGit](https://www.eclipse.org/egit/), you can [add your SSH ke
 ## Use SSH on Microsoft Windows
 
 If you're running Windows 10, you can either use the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install)
-with [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2) which
+with [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install#update-to-wsl-2) which
 has both `git` and `ssh` preinstalled, or install [Git for Windows](https://gitforwindows.org) to
 use SSH through Powershell.
 

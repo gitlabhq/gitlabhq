@@ -17,16 +17,16 @@ You can also open the Web IDE when viewing a file, from the repository file list
 and from merge requests:
 
 - *When viewing a file, or the repository file list* -
-  1. In the upper right corner of the page, select **Edit in Web IDE** if it is visible.
-  1. If **Edit in Web IDE** is not visible:
+  1. In the upper right corner of the page, select **Open in Web IDE** if it is visible.
+  1. If **Open in Web IDE** is not visible:
      1. Select the **(angle-down)** next to **Edit** or **Gitpod**, depending on your configuration.
-     1. Select **Edit in Web IDE** from the list to display it as the editing option.
-     1. Select **Edit in Web IDE** to open the editor.
+     1. Select **Open in Web IDE** from the list to display it as the editing option.
+     1. Select **Open in Web IDE** to open the editor.
 - *When viewing a merge request* -
   1. Go to your merge request, and select the **Overview** tab.
   1. Scroll to the widgets section, after the merge request description.
-  1. Select **Edit in Web IDE** if it is visible.
-  1. If **Edit in Web IDE** is not visible:
+  1. Select **Open in Web IDE** if it is visible.
+  1. If **Open in Web IDE** is not visible:
      1. Select the **(angle-down)** next to **Open in Gitpod**.
      1. Select **Open in Web IDE** from the list to display it as the editing option.
      1. Select **Open in Web IDE** to open the editor.
@@ -221,7 +221,7 @@ different branch.
 To edit Markdown files in the Web IDE:
 
 1. Go to your repository, and navigate to the Markdown page you want to edit.
-1. Select **Edit in Web IDE**, and GitLab loads the page in a tab in the editor.
+1. Select **Open in Web IDE**, and GitLab loads the page in a tab in the editor.
 1. Make your changes to the file. GitLab supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
 1. When your changes are complete, select **Commit** in the left sidebar.
 1. Add a commit message, select the branch you want to commit to, and select **Commit**.

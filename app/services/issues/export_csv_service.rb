@@ -23,11 +23,11 @@ module Issues
 
     def header_to_value_hash
       {
+        'Title' => 'title',
+        'Description' => 'description',
        'Issue ID' => 'iid',
        'URL' => -> (issue) { issue_url(issue) },
-       'Title' => 'title',
        'State' => -> (issue) { issue.closed? ? 'Closed' : 'Open' },
-       'Description' => 'description',
        'Author' => 'author_name',
        'Author Username' => -> (issue) { issue.author&.username },
        'Assignee' => -> (issue) { issue.assignees.map(&:name).join(', ') },

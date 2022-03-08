@@ -112,7 +112,7 @@ Herokuish, with the following caveats:
   converted to a Cloud Native Buildpack using Heroku's
   [`cnb-shim`](https://github.com/heroku/cnb-shim).
 - `BUILDPACK_URL` must be in a format
-  [supported by `pack`](https://buildpacks.io/docs/app-developer-guide/specific-buildpacks/).
+  [supported by `pack`](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/).
 - The `/bin/herokuish` command is not present in the built image, and prefixing
   commands with `/bin/herokuish procfile exec` is no longer required (nor possible).
   Instead, custom commands should be prefixed with `/cnb/lifecycle/launcher`

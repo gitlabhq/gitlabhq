@@ -52,7 +52,7 @@ export, after which the email is prepared.
 
 ## Sorting
 
-Exported issues are always sorted by `Issue ID`.
+Exported issues are always sorted by `Title`.
 
 ## Format
 
@@ -63,11 +63,11 @@ the values:
 
 | Column                                   | Description                                               |
 |------------------------------------------|-----------------------------------------------------------|
+| Title                                    | Issue `title`                                             |
+| Description                              | Issue `description`                                       |
 | Issue ID                                 | Issue `iid`                                               |
 | URL                                      | A link to the issue on GitLab                             |
-| Title                                    | Issue `title`                                             |
 | State                                    | `Open` or `Closed`                                        |
-| Description                              | Issue `description`                                       |
 | Author                                   | Full name of the issue author                             |
 | Author Username                          | Username of the author, with the `@` symbol omitted       |
 | Assignee                                 | Full name of the issue assignee                           |
@@ -84,6 +84,10 @@ the values:
 | Time Spent                               | [Time spent](../time_tracking.md#time-spent) in seconds   |
 | [Epic](../../group/epics/index.md) ID    | ID of the parent epic, introduced in 12.7                 |
 | [Epic](../../group/epics/index.md) Title | Title of the parent epic, introduced in 12.7              |
+
+In GitLab 14.7 and earlier, the first two columns were `Issue ID` and `URL`,
+which [caused an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/34769)
+when importing back into GitLab.
 
 ## Limitations
 

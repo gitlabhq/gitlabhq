@@ -190,7 +190,7 @@ By doing this, you minimize the length of time during which you have to apply bu
 After announcing a release branch, only add serious bug fixes to the branch.
 If possible, first merge these bug fixes into `main`, and then cherry-pick them into the release branch.
 If you start by merging into the release branch, you might forget to cherry-pick them into `main`, and then you'd encounter the same bug in subsequent releases.
-Merging into `main` and then cherry-picking into release is called an "upstream first" policy, which is also practiced by [Google](https://www.chromium.org/chromium-os/chromiumos-design-docs/upstream-first) and [Red Hat](https://www.redhat.com/en/blog/a-community-for-using-openstack-with-red-hat-rdo).
+Merging into `main` and then cherry-picking into release is called an "upstream first" policy, which is also practiced by [Google](https://www.chromium.org/chromium-os/chromiumos-design-docs/upstream-first/) and [Red Hat](https://www.redhat.com/en/blog/a-community-for-using-openstack-with-red-hat-rdo).
 Every time you include a bug fix in a release branch, increase the patch version (to comply with [Semantic Versioning](https://semver.org/)) by setting a new tag.
 Some projects also have a stable branch that points to the same commit as the latest released branch.
 In this flow, it is not common to have a production branch (or Git flow `main` branch).

@@ -113,9 +113,9 @@ To use this integration:
    `gitlab-managed-apps` namespace.
 1. The `Service` resource must be called `elastic-stack-elasticsearch-master`
    and expose the Elasticsearch API on port `9200`.
-1. The logs are expected to be [Filebeat container logs](https://www.elastic.co/guide/en/beats/filebeat/7.x/filebeat-input-container.html)
-   following the [7.x log structure](https://www.elastic.co/guide/en/beats/filebeat/7.x/exported-fields-log.html)
-   and include [Kubernetes metadata](https://www.elastic.co/guide/en/beats/filebeat/7.x/add-kubernetes-metadata.html).
+1. The logs are expected to be [Filebeat container logs](https://www.elastic.co/guide/en/beats/filebeat/7.16/filebeat-input-container.html)
+   following the [7.x log structure](https://www.elastic.co/guide/en/beats/filebeat/7.16/exported-fields-log.html)
+   and include [Kubernetes metadata](https://www.elastic.co/guide/en/beats/filebeat/7.16/add-kubernetes-metadata.html).
 
 You can manage your Elastic Stack however you like, but as an example, you can
 use [this Elastic Stack chart](https://gitlab.com/gitlab-org/charts/elastic-stack) to get up and
