@@ -17,6 +17,13 @@ under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists
 - `PROJECT_WILDCARD_ROUTES`: are names that are reserved for child groups or projects.
 - `GROUP_ROUTES`: are names that are reserved for all groups or projects.
 
+## Limitations on project and group names
+
+- Special characters are not permitted at the start or end of project or group names. They are permitted in any other location of the name. 
+- Project or group names cannot end in `.git` or `.atom`.
+- Project or group names can only contain letters, digits, emojis, "_", ".", "+", dashes, or spaces.
+- Paths can only contain letters, digits, "_", "-", and "."
+
 ## Reserved project names
 
 It is currently not possible to create a project with the following names:

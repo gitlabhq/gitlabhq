@@ -26,6 +26,47 @@ export default {
     PipelineTriggerer,
     PipelineUrl,
   },
+  tableFields: [
+    {
+      key: 'status',
+      label: s__('Pipeline|Status'),
+      thClass: DEFAULT_TH_CLASSES,
+      columnClass: 'gl-w-15p',
+      tdClass: DEFAULT_TD_CLASS,
+      thAttr: { 'data-testid': 'status-th' },
+    },
+    {
+      key: 'pipeline',
+      label: __('Pipeline'),
+      thClass: DEFAULT_TH_CLASSES,
+      tdClass: `${DEFAULT_TD_CLASS}`,
+      columnClass: 'gl-w-30p',
+      thAttr: { 'data-testid': 'pipeline-th' },
+    },
+    {
+      key: 'triggerer',
+      label: s__('Pipeline|Triggerer'),
+      thClass: DEFAULT_TH_CLASSES,
+      tdClass: `${DEFAULT_TD_CLASS} ${HIDE_TD_ON_MOBILE}`,
+      columnClass: 'gl-w-10p',
+      thAttr: { 'data-testid': 'triggerer-th' },
+    },
+    {
+      key: 'stages',
+      label: s__('Pipeline|Stages'),
+      thClass: DEFAULT_TH_CLASSES,
+      tdClass: DEFAULT_TD_CLASS,
+      columnClass: 'gl-w-quarter',
+      thAttr: { 'data-testid': 'stages-th' },
+    },
+    {
+      key: 'actions',
+      thClass: DEFAULT_TH_CLASSES,
+      tdClass: DEFAULT_TD_CLASS,
+      columnClass: 'gl-w-15p',
+      thAttr: { 'data-testid': 'actions-th' },
+    },
+  ],
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -61,53 +102,6 @@ export default {
       cancelingPipeline: null,
     };
   },
-  computed: {
-    tableFields() {
-      const fields = [
-        {
-          key: 'status',
-          label: s__('Pipeline|Status'),
-          thClass: DEFAULT_TH_CLASSES,
-          columnClass: 'gl-w-15p',
-          tdClass: DEFAULT_TD_CLASS,
-          thAttr: { 'data-testid': 'status-th' },
-        },
-        {
-          key: 'pipeline',
-          label: __('Pipeline'),
-          thClass: DEFAULT_TH_CLASSES,
-          tdClass: `${DEFAULT_TD_CLASS}`,
-          columnClass: 'gl-w-30p',
-          thAttr: { 'data-testid': 'pipeline-th' },
-        },
-        {
-          key: 'triggerer',
-          label: s__('Pipeline|Triggerer'),
-          thClass: DEFAULT_TH_CLASSES,
-          tdClass: `${DEFAULT_TD_CLASS} ${HIDE_TD_ON_MOBILE}`,
-          columnClass: 'gl-w-10p',
-          thAttr: { 'data-testid': 'triggerer-th' },
-        },
-        {
-          key: 'stages',
-          label: s__('Pipeline|Stages'),
-          thClass: DEFAULT_TH_CLASSES,
-          tdClass: DEFAULT_TD_CLASS,
-          columnClass: 'gl-w-quarter',
-          thAttr: { 'data-testid': 'stages-th' },
-        },
-        {
-          key: 'actions',
-          thClass: DEFAULT_TH_CLASSES,
-          tdClass: DEFAULT_TD_CLASS,
-          columnClass: 'gl-w-15p',
-          thAttr: { 'data-testid': 'actions-th' },
-        },
-      ];
-
-      return fields;
-    },
-  },
   watch: {
     pipelines() {
       this.cancelingPipeline = null;
@@ -138,7 +132,7 @@ export default {
 <template>
   <div class="ci-table">
     <gl-table-lite
-      :fields="tableFields"
+      :fields="$options.tableFields"
       :items="pipelines"
       tbody-tr-class="commit"
       :tbody-tr-attr="{ 'data-testid': 'pipeline-table-row' }"
@@ -163,7 +157,6 @@ export default {
           :pipeline="item"
           :pipeline-schedule-url="pipelineScheduleUrl"
           :pipeline-key="pipelineKeyOption.key"
-          :view-type="viewType"
         />
       </template>
 

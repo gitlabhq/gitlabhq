@@ -151,7 +151,7 @@ graph LR
         NGINX -- TCP 8150 --> GitLabKas
         NGINX --> Registry
         %% inbound from GitLabShell
-        GitLabShell --TCP 8080 -->Puma
+        GitLabShell --> GitLabWorkhorse
 
         %% services
         Puma["Puma (GitLab Rails)"]

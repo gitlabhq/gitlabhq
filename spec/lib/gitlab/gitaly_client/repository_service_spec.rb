@@ -54,6 +54,28 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
+  describe '#optimize_repository' do
+    it 'sends a optimize_repository message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:optimize_repository)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(:optimize_repository))
+
+      client.optimize_repository
+    end
+  end
+
+  describe '#prune_unreachable_objects' do
+    it 'sends a prune_unreachable_objects message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:prune_unreachable_objects)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(:prune_unreachable_objects))
+
+      client.prune_unreachable_objects
+    end
+  end
+
   describe '#repository_size' do
     it 'sends a repository_size message' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)

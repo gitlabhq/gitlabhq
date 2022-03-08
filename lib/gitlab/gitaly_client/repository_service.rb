@@ -21,6 +21,16 @@ module Gitlab
         response.exists
       end
 
+      def optimize_repository
+        request = Gitaly::OptimizeRepositoryRequest.new(repository: @gitaly_repo)
+        GitalyClient.call(@storage, :repository_service, :optimize_repository, request, timeout: GitalyClient.long_timeout)
+      end
+
+      def prune_unreachable_objects
+        request = Gitaly::PruneUnreachableObjectsRequest.new(repository: @gitaly_repo)
+        GitalyClient.call(@storage, :repository_service, :prune_unreachable_objects, request, timeout: GitalyClient.long_timeout)
+      end
+
       def garbage_collect(create_bitmap, prune:)
         request = Gitaly::GarbageCollectRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap, prune: prune)
         GitalyClient.call(@storage, :repository_service, :garbage_collect, request, timeout: GitalyClient.long_timeout)

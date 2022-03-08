@@ -58,6 +58,30 @@ RSpec.describe Gitlab::Profiler do
 
       described_class.profile('/', user: user, private_token: private_token)
     end
+
+    context 'with sampling profiler' do
+      it 'generates sampling data' do
+        user = double(:user)
+        temp_data = Tempfile.new
+
+        expect(described_class).to receive(:with_user).with(user).and_call_original
+        described_class.profile('/', user: user, sampling_mode: true, profiler_options: { out: temp_data.path })
+
+        expect(File.stat(temp_data).size).to be > 0
+        File.unlink(temp_data)
+      end
+
+      it 'saves sampling data with a randomly-generated filename' do
+        user = double(:user)
+
+        expect(described_class).to receive(:with_user).with(user).and_call_original
+        result = described_class.profile('/', user: user, sampling_mode: true)
+
+        expect(result).to be_a(File)
+        expect(File.stat(result.path).size).to be > 0
+        File.unlink(result.path)
+      end
+    end
   end
 
   describe '.create_custom_logger' do

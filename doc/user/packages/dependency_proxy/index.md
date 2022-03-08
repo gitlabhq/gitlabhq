@@ -312,3 +312,14 @@ services:
     - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:18.09.7-dind
       alias: docker
 ```
+
+### "Not Found" error when pulling image
+
+Docker errors similar to the following may indicate that the user running the build job doesn't have
+a minimum of the Guest role in the specified Dependency Proxy group:
+
+```plaintext
+ERROR: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found
+
+failed to solve with frontend dockerfile.v0: failed to create LLB definition: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found
+```

@@ -28,10 +28,7 @@ the bottom of the editor.
 All scan result policy changes are applied through a background job that runs once every 10 minutes.
 Allow up to 10 minutes for any policy changes committed to this project to take effect.
 
-The policy editor only supports YAML mode. To follow work on Rule mode, see the epic
-[Allow Users to Edit Rule-mode scan result policies in the Policy UI](https://gitlab.com/groups/gitlab-org/-/epics/5363).
-
-![Scan Result Policy Editor YAML Mode](img/scan_result_policy_yaml_mode_v14_6.png)
+The [policy editor](index.md#policy-editor) supports YAML mode and rule mode.
 
 ## Scan result policies schema
 

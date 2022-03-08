@@ -4,6 +4,8 @@ module QA
   module Page
     module Main
       class Login < Page::Base
+        include Layout::Flash
+
         view 'app/views/devise/passwords/edit.html.haml' do
           element :password_field
           element :password_confirmation_field
@@ -175,6 +177,9 @@ module QA
           click_element :sign_in_button
 
           Support::WaitForRequests.wait_for_requests
+
+          # For debugging invalid login attempts
+          has_notice?('Invalid login or password')
 
           Page::Main::Terms.perform do |terms|
             terms.accept_terms if terms.visible?

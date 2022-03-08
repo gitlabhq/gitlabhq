@@ -15,11 +15,6 @@ Gitlab/PolicyRuleBoolean:
   Exclude:
     - 'ee/app/policies/ee/identity_provider_policy.rb'
 
-# Offense count: 5
-Graphql/IDType:
-  Exclude:
-    - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
-
 # Offense count: 2270
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -112,24 +107,12 @@ Lint/BinaryOperatorWithIdenticalOperands:
 Lint/ConstantDefinitionInBlock:
   Enabled: false
 
-# Offense count: 1
-Lint/DuplicateRequire:
-  Exclude:
-    - 'ee/spec/lib/gitlab/auth/group_saml/user_spec.rb'
-
 # Offense count: 2
 # Configuration parameters: AllowComments.
 Lint/EmptyFile:
   Exclude:
     - 'db/seeds.rb'
     - 'ee/db/geo/seeds.rb'
-
-# Offense count: 8
-# Cop supports --auto-correct.
-Lint/IdentityComparison:
-  Exclude:
-    - 'spec/tooling/danger/weightage/maintainers_spec.rb'
-    - 'spec/tooling/danger/weightage/reviewers_spec.rb'
 
 # Offense count: 208
 # Configuration parameters: MaximumRangeSize.
@@ -170,11 +153,6 @@ Lint/StructNewOverride:
     - 'app/serializers/environment_serializer.rb'
     - 'lib/gitlab/ci/pipeline/duration.rb'
 
-# Offense count: 1
-Lint/UnreachableLoop:
-  Exclude:
-    - 'qa/qa/runtime/feature.rb'
-
 # Offense count: 22
 # Cop supports --auto-correct.
 # Configuration parameters: AllowComments.
@@ -212,13 +190,6 @@ Naming/HeredocDelimiterCase:
 # ForbiddenDelimiters: (?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))
 Naming/HeredocDelimiterNaming:
   Enabled: false
-
-# Offense count: 5
-# Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
-# AllowedNames: at, by, db, id, in, io, ip, of, on, os, pp, to
-Naming/MethodParameterName:
-  Exclude:
-    - 'lib/gitlab/diff/inline_diff.rb'
 
 # Offense count: 218
 # Cop supports --auto-correct.
@@ -340,11 +311,6 @@ RSpec/ReturnFromStub:
 RSpec/ScatteredLet:
   Enabled: false
 
-# Offense count: 4
-RSpec/ScatteredSetup:
-  Exclude:
-    - 'spec/requests/api/jobs_spec.rb'
-
 # Offense count: 10
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: symbols, strings
@@ -393,13 +359,6 @@ Rails/BelongsTo:
   Exclude:
     - 'app/models/deployment.rb'
     - 'app/models/environment.rb'
-
-# Offense count: 93
-# Configuration parameters: Database, Include.
-# SupportedDatabases: mysql, postgresql
-# Include: db/migrate/*.rb
-Rails/BulkChangeTable:
-  Enabled: false
 
 # Offense count: 155
 # Cop supports --auto-correct.
@@ -582,14 +541,6 @@ Style/CombinableLoops:
     - 'spec/migrations/cleanup_optimistic_locking_nulls_spec.rb'
     - 'spec/requests/api/members_spec.rb'
     - 'spec/support/shared_examples/features/protected_branches_access_control_ce_shared_examples.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SingleLineConditionsOnly, IncludeTernaryExpressions.
-# SupportedStyles: assign_to_condition, assign_inside_condition
-Style/ConditionalAssignment:
-  Exclude:
-    - 'lib/gitlab/database.rb'
 
 # Offense count: 5
 # Cop supports --auto-correct.

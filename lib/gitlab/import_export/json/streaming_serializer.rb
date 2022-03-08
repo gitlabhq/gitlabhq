@@ -166,8 +166,6 @@ module Gitlab
         end
 
         def read_from_replica_if_available(&block)
-          return yield unless ::Feature.enabled?(:load_balancing_for_export_workers, type: :development, default_enabled: :yaml)
-
           ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries(&block)
         end
       end

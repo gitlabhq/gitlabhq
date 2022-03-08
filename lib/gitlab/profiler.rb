@@ -28,7 +28,7 @@ module Gitlab
     ].freeze
 
     # Takes a URL to profile (can be a fully-qualified URL, or an absolute path)
-    # and returns the ruby-prof profile result. Formatting that result is the
+    # and returns the profiler result. Formatting that result is the
     # caller's responsibility. Requests are GET requests unless post_data is
     # passed.
     #
@@ -43,7 +43,13 @@ module Gitlab
     #
     # - private_token: instead of providing a user instance, the token can be
     #   given as a string. Takes precedence over the user option.
-    def self.profile(url, logger: nil, post_data: nil, user: nil, private_token: nil)
+    #
+    # - sampling_mode: When true, uses a sampling profiler (StackProf) instead of a tracing profiler (RubyProf).
+    #
+    # - profiler_options: A keyword Hash of arguments passed to the profiler. Defaults by profiler type:
+    #     RubyProf - {}
+    #     StackProf - { mode: :wall, out: <some temporary file>, interval: 1000, raw: true }
+    def self.profile(url, logger: nil, post_data: nil, user: nil, private_token: nil, sampling_mode: false, profiler_options: {})
       app = ActionDispatch::Integration::Session.new(Rails.application)
       verb = :get
       headers = {}
@@ -75,7 +81,9 @@ module Gitlab
 
         with_custom_logger(logger) do
           with_user(user) do
-            RubyProf.profile { app.public_send(verb, url, params: post_data, headers: headers) } # rubocop:disable GitlabSecurity/PublicSend
+            with_profiler(sampling_mode, profiler_options) do
+              app.public_send(verb, url, params: post_data, headers: headers) # rubocop:disable GitlabSecurity/PublicSend
+            end
           end
         end
       end
@@ -171,6 +179,17 @@ module Gitlab
       default_options = { sort_method: :total_time, filter_by: :total_time }
 
       RubyProf::FlatPrinter.new(result).print($stdout, default_options.merge(options))
+    end
+
+    def self.with_profiler(sampling_mode, profiler_options)
+      if sampling_mode
+        require 'stackprof'
+        args = { mode: :wall, interval: 1000, raw: true }.merge!(profiler_options)
+        args[:out] ||= ::Tempfile.new(["profile-#{Time.now.to_i}-", ".dump"]).path
+        ::StackProf.run(**args) { yield }
+      else
+        RubyProf.profile(**profiler_options) { yield }
+      end
     end
   end
 end

@@ -269,7 +269,7 @@ When bulk editing issues in a project, you can edit the following attributes:
 - [Notification](../../profile/notifications.md) subscription
 - [Iteration](../../group/iterations/index.md)
 
-### Bulk edit issues from a group
+### Bulk edit issues from a group **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
 > - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
