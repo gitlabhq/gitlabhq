@@ -105,6 +105,56 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
     end
   end
 
+  context 'source position mapping' do
+    it 'keeps spaces before and after' do
+      content = <<~MD
+
+
+        ---
+
+        foo: :foo_symbol
+
+        ---  
+
+
+        # Header
+      MD
+
+      output = filter(content)
+
+      expect(output).to eq <<~MD
+
+
+        ```yaml:frontmatter
+
+        foo: :foo_symbol
+
+        ```
+
+
+        # Header
+      MD
+    end
+
+    it 'keeps an empty line in place of the encoding' do
+      content = <<~MD
+        # encoding: UTF-8
+        ---
+        foo: :foo_symbol
+        ---
+      MD
+
+      output = filter(content)
+
+      expect(output).to eq <<~MD
+
+        ```yaml:frontmatter
+        foo: :foo_symbol
+        ```
+      MD
+    end
+  end
+
   context 'on content without front matter' do
     it 'returns the content unmodified' do
       content = <<~MD
@@ -119,7 +169,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
 
   context 'on front matter without content' do
     it 'converts YAML front matter to a fenced code block' do
-      content = <<~MD
+      content = <<~MD.rstrip
         ---
         foo: :foo_symbol
         bar: :bar_symbol
@@ -134,7 +184,6 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
           foo: :foo_symbol
           bar: :bar_symbol
           ```
-
         MD
       end
     end

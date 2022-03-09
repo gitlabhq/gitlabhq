@@ -9,7 +9,10 @@ module Banzai
         html.sub(Gitlab::FrontMatter::PATTERN) do |_match|
           lang = $~[:lang].presence || lang_mapping[$~[:delim]]
 
-          ["```#{lang}:frontmatter", $~[:front_matter].strip!, "```", "\n"].join("\n")
+          before = $~[:before]
+          before = "\n#{before}" if $~[:encoding].presence
+
+          "#{before}```#{lang}:frontmatter\n#{$~[:front_matter]}```\n"
         end
       end
     end

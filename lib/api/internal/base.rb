@@ -92,12 +92,18 @@ module API
               payload[:git_config_options] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
             end
 
+            send_git_audit_streaming_event(protocol: params[:protocol], action: params[:action])
+
             response_with_status(**payload)
           when ::Gitlab::GitAccessResult::CustomAction
             response_with_status(code: 300, payload: check_result.payload, gl_console_messages: check_result.console_messages)
           else
             response_with_status(code: 500, success: false, message: UNKNOWN_CHECK_RESULT_ERROR)
           end
+        end
+
+        def send_git_audit_streaming_event(msg)
+          # Defined in EE
         end
 
         def access_check!(actor, params)

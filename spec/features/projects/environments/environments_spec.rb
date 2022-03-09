@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Environments page', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }
@@ -346,7 +348,9 @@ RSpec.describe 'Environments page', :js do
         context 'when user played a delayed job immediately' do
           before do
             find(actions_button_selector).click
-            accept_confirm { find(action_link_selector).click }
+            accept_gl_confirm do
+              find(action_link_selector).click
+            end
             wait_for_requests
           end
 

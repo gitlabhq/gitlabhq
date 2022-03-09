@@ -19,9 +19,9 @@
       .text-secondary
         = s_('ProjectSettings|Every merge creates a merge commit.')
         %br
-        = s_('ProjectSettings|Fast-forward merges only.')
+        = s_('ProjectSettings|Merging is only allowed when the source branch is up-to-date with its target.')
         %br
-        = s_('ProjectSettings|When there is a merge conflict, the user is given the option to rebase.')
+        = s_('ProjectSettings|When semi-linear merge is not possible, the user is given the option to rebase.')
 
   .form-check.mb-2
     = form.radio_button :merge_method, :ff, class: "js-merge-method-radio form-check-input", data: { qa_selector: 'merge_ff_radio' }

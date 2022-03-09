@@ -43,12 +43,7 @@ To create and enable a feature flag:
 1. Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`),
    or dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
 1. Optional. Enter a description (255 characters maximum).
-1. Enter details about how the flag should be applied:
-   - In GitLab 13.0 and earlier, add **Environment specs**. For each environment,
-     include the **Status** (default enabled) and [**Rollout strategy**](#rollout-strategy-legacy)
-     (defaults to **All users**).
-   - In GitLab 13.1 and later, add Feature Flag [**Strategies**](#feature-flag-strategies).
-     For each strategy, include the **Type** (defaults to [**All users**](#all-users))
+1. Add Feature Flag [**Strategies**](#feature-flag-strategies) to define how the flag should be applied. For each strategy, include the **Type** (defaults to [**All users**](#all-users))
      and **Environments** (defaults to all environments).
 1. Select **Create feature flag**.
 
@@ -234,35 +229,6 @@ To search for code references of a feature flag:
 1. Edit the feature flag you want to remove.
 1. Select **More actions** (**{ellipsis_v}**).
 1. Select **Search code references**.
-
-## Rollout strategy (legacy)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
-> - [Made read-only](https://gitlab.com/gitlab-org/gitlab/-/issues/220228) in GitLab 13.4.
-
-In GitLab 13.0 and earlier, the **Rollout strategy** setting affects which users experience
-the feature as enabled. Choose the percentage of users that the feature is enabled
-for. The rollout strategy has no effect if the environment spec is disabled.
-
-It can be set to:
-
-- All users
-- [Percent of users](#percent-of-users)
-  - Optionally, you can click the **Include additional user IDs** checkbox and add a list
-    of specific users IDs to enable the feature for.
-- [User IDs](#user-ids)
-
-## Legacy feature flag migration
-
-Legacy feature flags became read-only in GitLab 13.4. GitLab 14.0 removes support for legacy feature
-flags. You must migrate your legacy feature flags to the new version. To do so, follow these steps:
-
-1. Take a screenshot of the legacy flag for tracking.
-1. Delete the flag through the API or UI (you don't need to alter the code).
-1. Create a new feature flag with the same name as the legacy flag you deleted. Make sure the
-   strategies and environments match the deleted flag.
-
-See [this video tutorial](https://www.youtube.com/watch?v=CAJY2IGep7Y) for help with this migration.
 
 ## Disable a feature flag for a specific environment
 

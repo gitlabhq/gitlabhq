@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Pypi::CreatePackageService do
+RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures do
   include PackagesManagerApiSpecHelpers
 
   let_it_be(:project) { create(:project) }
@@ -39,6 +39,18 @@ RSpec.describe Packages::Pypi::CreatePackageService do
       end
     end
 
+    context 'without required_python' do
+      before do
+        params.delete(:requires_python)
+      end
+
+      it 'creates the package' do
+        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+
+        expect(created_package.pypi_metadatum.required_python).to eq ''
+      end
+    end
+
     context 'with an invalid metadata' do
       let(:requires_python) { 'x' * 256 }
 
@@ -73,7 +85,7 @@ RSpec.describe Packages::Pypi::CreatePackageService do
             .and raise_error(/File name has already been taken/)
         end
 
-        context 'with a pending_destruction package', :aggregate_failures do
+        context 'with a pending_destruction package' do
           before do
             Packages::Package.pypi.last.pending_destruction!
           end

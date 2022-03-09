@@ -7,7 +7,14 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentActions from '~/environments/components/environment_actions.vue';
 import eventHub from '~/environments/event_hub';
 import actionMutation from '~/environments/graphql/mutations/action.mutation.graphql';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import createMockApollo from 'helpers/mock_apollo_helper';
+
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
+  return {
+    confirmAction: jest.fn(),
+  };
+});
 
 const scheduledJobAction = {
   name: 'scheduled action',
@@ -50,7 +57,7 @@ describe('EnvironmentActions Component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
+    confirmAction.mockReset();
   });
 
   it('should render a dropdown button with 2 icons', () => {
@@ -105,7 +112,7 @@ describe('EnvironmentActions Component', () => {
     let emitSpy;
 
     const clickAndConfirm = async ({ confirm = true } = {}) => {
-      jest.spyOn(window, 'confirm').mockImplementation(() => confirm);
+      confirmAction.mockResolvedValueOnce(confirm);
 
       findDropdownItem(scheduledJobAction).vm.$emit('click');
       await nextTick();
@@ -124,7 +131,7 @@ describe('EnvironmentActions Component', () => {
       });
 
       it('emits postAction event', () => {
-        expect(window.confirm).toHaveBeenCalled();
+        expect(confirmAction).toHaveBeenCalled();
         expect(emitSpy).toHaveBeenCalledWith({ endpoint: scheduledJobAction.playPath });
       });
 
@@ -134,13 +141,13 @@ describe('EnvironmentActions Component', () => {
     });
 
     describe('when postAction event is denied', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         createComponentWithScheduledJobs({ mountFn: mount });
         clickAndConfirm({ confirm: false });
       });
 
       it('does not emit postAction event if confirmation is cancelled', () => {
-        expect(window.confirm).toHaveBeenCalled();
+        expect(confirmAction).toHaveBeenCalled();
         expect(emitSpy).not.toHaveBeenCalled();
       });
     });

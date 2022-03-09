@@ -65,7 +65,7 @@ module QA
       end
 
       def marked_for_deletion?
-        !parse_body(api_get_from(api_get_path.to_s))[:marked_for_deletion_on].nil?
+        reload!.api_response[:marked_for_deletion_on].present?
       end
 
       # Get group badges

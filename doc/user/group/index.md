@@ -371,7 +371,7 @@ create a new group and transfer projects to it instead.
 To change your group path (group URL):
 
 1. Go to your group's **Settings > General** page.
-1. Expand the **Path, transfer, remove** section.
+1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter a new name.
 1. Select **Change group URL**.
 

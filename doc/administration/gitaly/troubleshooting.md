@@ -610,3 +610,45 @@ Possible solutions:
 
 - Provision larger VMs to gain access to larger network traffic allowances.
 - Use your cloud service's monitoring and logging to check that the Praefect nodes are not exhausting their traffic allowances.
+
+## Profiling Gitaly
+
+Gitaly exposes several of Golang's built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening
+on port `9236` of the GitLab server: 
+
+- Get a list of running `goroutines` and their backtraces:
+
+  ```shell
+  curl --output goroutines.txt "http://<gitaly_server>:9236/debug/pprof/goroutine?debug=2"
+  ```
+
+- Run a CPU profile for 30 seconds:
+
+  ```shell
+  curl --output cpu.bin "http://<gitaly_server>:9236/debug/pprof/profile"
+  ```
+
+- Profile heap memory usage:
+
+  ```shell
+  curl --output heap.bin "http://<gitaly_server>:9236/debug/pprof/heap"
+  ```
+
+- Record a 5 second execution trace. This will impact Gitaly's performance while running:
+
+  ```shell
+  curl --output trace.bin "http://<gitaly_server>:9236/debug/pprof/trace?seconds=5"
+  ```
+
+On a host with `go` installed, the CPU profile and heap profile can be viewed in a browser:
+
+```shell
+go tool pprof -http=:8001 cpu.bin
+go tool pprof -http=:8001 heap.bin
+```
+
+Execution traces can be viewed by running:
+
+```shell
+go tool trace heap.bin
+```

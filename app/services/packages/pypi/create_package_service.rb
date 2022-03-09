@@ -9,7 +9,7 @@ module Packages
         ::Packages::Package.transaction do
           meta = Packages::Pypi::Metadatum.new(
             package: created_package,
-            required_python: params[:requires_python]
+            required_python: params[:requires_python] || ''
           )
 
           unless meta.valid?

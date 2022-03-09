@@ -109,7 +109,7 @@ module Gitlab
       end
 
       def parse_front_matter_block
-        wiki_content.match(Gitlab::FrontMatter::PATTERN) { |m| Block.new(*m.captures) } || Block.new
+        wiki_content.match(Gitlab::FrontMatter::PATTERN) { |m| Block.new(m[:delim], m[:lang], m[:front_matter]) } || Block.new
       end
 
       def strip_front_matter_block
