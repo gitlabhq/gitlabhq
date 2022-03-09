@@ -329,6 +329,10 @@ See [database guidelines](database/index.md).
 - [CI/CD development documentation](cicd/index.md)
 - [AppSec development documentation](appsec/index.md)
 
+## Technical Reference by Group
+
+- [Create: Source Code BE](backend/create_source_code_be/index.md)
+
 ## Other Development guides
 
 - [Defining relations between files using projections](projections.md)

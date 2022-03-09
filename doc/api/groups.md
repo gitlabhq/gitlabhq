@@ -484,7 +484,9 @@ Example response:
 ## Details of a group
 
 Get all details of a group. This endpoint can be accessed without authentication
-if the group is publicly accessible. In case the user that requests is administrator of the group, it returns the `runners_token` for the group too.
+if the group is publicly accessible. In case the user that requests is an administrator
+if the group is publicly accessible. With authentication, it returns the `runners_token`
+for the group too, if the user is an administrator or group owner.
 
 ```plaintext
 GET /groups/:id
@@ -505,6 +507,11 @@ To get the details of all projects within a group, use either the [list a group'
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4"
 ```
+
+NOTE:
+There is [a known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/345200) that can
+prevent `runners_token` from being returned when the call has the `with_projects=false`
+parameter.
 
 This endpoint returns:
 

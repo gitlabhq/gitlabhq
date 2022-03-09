@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deleting a User account **(FREE)**
+# Deleting a user account **(FREE)**
 
 Users can be deleted from a GitLab instance, either by:
 
@@ -15,7 +15,7 @@ Users can be deleted from a GitLab instance, either by:
 NOTE:
 Deleting a user deletes all projects in that user namespace.
 
-## As a user
+## Delete your own account
 
 As a user, to delete your own account:
 
@@ -24,7 +24,7 @@ As a user, to delete your own account:
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
 
-## As an administrator **(FREE SELF)**
+## Delete users and user contributions **(FREE SELF)**
 
 As an administrator, to delete a user account:
 
@@ -32,55 +32,38 @@ As an administrator, to delete a user account:
 1. On the left sidebar, select **Overview > Users**.
 1. Select a user.
 1. Under the **Account** tab, select:
-   - **Delete user** to delete only the user but maintain their
-     [associated records](#associated-records).
-   - **Delete user and contributions** to delete the user and
-     their associated records.
+   - **Delete user** to delete only the user but maintain their [associated records](#associated-records).
+   - **Delete user and contributions** to delete the user and their associated records.
 
 WARNING:
-Using the **Delete user and contributions** option may result
-in removing more data than intended. Please see [associated records](#associated-records)
-below for additional details.
+Using the **Delete user and contributions** option may result in removing more data than intended. See
+[associated records](#associated-records) for additional details.
 
 ### Associated records
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7393) for issues in GitLab 9.0.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10467) for merge requests, award emoji, notes, and abuse reports in GitLab 9.1.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10273) hard deletion from abuse reports and spam logs in GitLab 9.1.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11853) hard deletion from the API in GitLab 9.3.
+When deleting users, you can either:
 
-There are two options for deleting users:
+- Delete just the user. Not all associated records are deleted with the user. Instead of being deleted, these records
+  are moved to a system-wide user with the username Ghost User. The Ghost User's purpose is to act as a container for
+  such records. Any commits made by a deleted user still display the username of the original user.
+- Delete the user and their contributions, including:
+  - Abuse reports.
+  - Award emojis.
+  - Epics.
+  - Groups of which the user is the only user with the Owner role.
+  - Issues.
+  - Merge requests.
+  - Notes and comments.
+  - Personal access tokens.
+  - Snippets.
 
-- **Delete user**
-- **Delete user and contributions**
+An alternative to deleting is [blocking a user](../../admin_area/moderate_users.md#block-a-user).
 
-When using the **Delete user** option, not all associated records are deleted with the user.
-Here's a list of things created by the user that are **not** deleted:
+When a user is deleted from an [abuse report](../../admin_area/review_abuse_reports.md) or spam log, these associated
+records are always removed. This includes any groups of which the user is the only user with the Owner role.
 
-- Abuse reports
-- Award emoji
-- Epics
-- Issues
-- Merge requests
-- Notes
-
-Instead of being deleted, these records are moved to a system-wide
-user with the username Ghost User, whose sole purpose is to act as a container
-for such records. Any commits made by a deleted user still display the
-username of the original user.
-
-When using the **Delete user and contributions** option, **all** associated records
-are removed. This includes all of the items mentioned above including issues,
-merge requests, notes/comments, and more. Consider
-[blocking a user](../../admin_area/moderate_users.md#block-a-user)
-or using the **Delete user** option instead.
-
-When a user is deleted from an [abuse report](../../admin_area/review_abuse_reports.md)
-or spam log, these associated
-records are not ghosted and are removed, along with any groups the user
-is a sole owner of. Administrators can also request this behavior when
-deleting users from the [API](../../../api/users.md#user-deletion) or the
-Admin Area.
+The deleting associated records option can be requested in the [API](../../../api/users.md#user-deletion) as well as
+the Admin Area.
 
 ## Troubleshooting
 

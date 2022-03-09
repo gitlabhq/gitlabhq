@@ -69,28 +69,38 @@ RSpec.describe Repositories::DestroyService do
     expect(repository).to receive(:disk_path).and_return('foo')
     expect(repository).not_to receive(:before_delete)
 
-    result = subject
+    expect(subject[:status]).to eq :success
+  end
 
-    expect(result[:status]).to eq :success
+  it 'gracefully handles exception if the repository does not exist on disk' do
+    expect(repository).to receive(:before_delete).and_raise(Gitlab::Git::Repository::NoRepository)
+    expect(subject[:status]).to eq :success
   end
 
   context 'when move operation cannot be performed' do
     let(:service) { described_class.new(repository) }
 
     before do
-      allow(service).to receive(:mv_repository).and_return(false)
+      expect(service).to receive(:mv_repository).and_return(false)
     end
 
     it 'returns error' do
-      result = service.execute
-
-      expect(result[:status]).to eq :error
+      expect(service.execute[:status]).to eq :error
     end
 
     it 'logs the error' do
       expect(Gitlab::AppLogger).to receive(:error)
 
       service.execute
+    end
+
+    context 'when repository does not exist' do
+      it 'returns success' do
+        allow(service).to receive(:repo_exists?).and_return(true, false)
+
+        expect(Repositories::ShellDestroyService).not_to receive(:new)
+        expect(service.execute[:status]).to eq :success
+      end
     end
   end
 

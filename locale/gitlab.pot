@@ -25716,6 +25716,9 @@ msgstr ""
 msgid "Opens in a new window"
 msgstr ""
 
+msgid "Opens new window"
+msgstr ""
+
 msgid "Operation failed. Check pod logs for %{pod_name} for more details."
 msgstr ""
 
@@ -34329,6 +34332,9 @@ msgid "Some child epics may be hidden due to applied filters"
 msgstr ""
 
 msgid "Some common domains are not allowed. %{learn_more_link}."
+msgstr ""
+
+msgid "Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
 msgid "Someone edited the issue at the same time you did. Please check out %{linkStart}the issue%{linkEnd} and make sure your changes will not unintentionally remove theirs."
@@ -44577,9 +44583,6 @@ msgid "terraform states"
 msgstr ""
 
 msgid "the correct format."
-msgstr ""
-
-msgid "the file"
 msgstr ""
 
 msgid "the following epic(s)"

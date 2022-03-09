@@ -15,7 +15,7 @@
       = f.text_field :cron_timezone, value: @schedule.cron_timezone, id: 'schedule_cron_timezone', class: 'hidden', name: 'schedule[cron_timezone]', required: true
   .form-group.row
     .col-md-9
-      = f.label :ref, Feature.enabled?(:pipeline_schedules_with_tags) ? _('Target branch or tag') : _('Target branch'), class: 'label-bold'
+      = f.label :ref, Feature.enabled?(:pipeline_schedules_with_tags, default_enabled: :yaml) ? _('Target branch or tag') : _('Target branch'), class: 'label-bold'
       %div{ data: { testid: 'schedule-target-ref' } }
         .js-target-ref-dropdown{ data: { project_id: @project.id, default_branch: @project.default_branch } }
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true

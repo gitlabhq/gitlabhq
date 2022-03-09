@@ -30,8 +30,12 @@ class Repositories::DestroyService < Repositories::BaseService
       log_info("Repository \"#{full_path}\" was removed")
 
       success
-    else
+    elsif repo_exists?(disk_path)
       move_error(disk_path)
+    else
+      success
     end
+  rescue Gitlab::Git::Repository::NoRepository
+    success
   end
 end
