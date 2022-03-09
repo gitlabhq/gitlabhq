@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.7.5 (2022-03-09)
+
+### Fixed (1 change)
+
+- [Ensure cleanup job artifacts task does not include pipeline artifacts](gitlab-org/gitlab@7b5e91bc78c46109e48537b20239d4ab649a971a) ([merge request](gitlab-org/gitlab!82430))
+
+### Other (1 change)
+
+- [Change to truncate table before adding finding_link_url_idx](gitlab-org/gitlab@6411ec61f40cb8648cea24ed26c1d69c8b910891) ([merge request](gitlab-org/gitlab!82430))
+
 ## 14.7.4 (2022-02-25)
 
 ### Security (8 changes)
