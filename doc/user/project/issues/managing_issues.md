@@ -578,13 +578,11 @@ To copy the issue's email address:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3413) in GitLab 13.9.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.5.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to
-[disable the feature flags](../../../administration/feature_flags.md) named `real_time_issue_sidebar` and `broadcast_issue_updates`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.9. Feature flags `real_time_issue_sidebar` and `broadcast_issue_updates` removed.
 
 Assignees in the sidebar are updated in real time.
+When you're viewing an issue and somebody changes its assignee,
+you can see the change without having to refresh the page.
 
 ## Assignee
 

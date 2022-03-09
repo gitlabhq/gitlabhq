@@ -8,7 +8,7 @@
   .form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
+    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { qa_selector: 'project_name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= _('Project URL')
@@ -29,7 +29,7 @@
   .form-group.project-path.col-sm-6
     = f.label :path, class: 'label-bold' do
       %span= _("Project slug")
-    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }, data: { username: current_user.username }
+    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }, data: { qa_selector: 'project_path', username: current_user.username }
 - if current_user.can_create_group?
   .form-text.text-muted
     - link_start_group_path = '<a href="%{path}">' % { path: new_group_path }
@@ -44,14 +44,14 @@
 .form-group
   = f.label :description, class: 'label-bold' do
     = s_('ProjectsNew|Project description %{tag_start}(optional)%{tag_end}').html_safe % { tag_start: '<span>'.html_safe, tag_end: '</span>'.html_safe }
-  = f.text_area :description, placeholder: s_('ProjectsNew|Description format'), class: "form-control gl-form-input", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_description", track_value: "" }
+  = f.text_area :description, placeholder: s_('ProjectsNew|Description format'), class: "form-control gl-form-input", rows: 3, maxlength: 250, data: { qa_selector: 'project_description', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_description", track_value: "" }
 
 .js-deployment-target-select
 
 = f.label :visibility_level, class: 'label-bold' do
   = s_('ProjectsNew|Visibility Level')
   = link_to sprite_icon('question-o'), help_page_path('public_access/public_access'), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
-= render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false
+= render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false, data: { qa_selector: 'visibility_radios'}
 
 - if !hide_init_with_readme
   = f.label :project_configuration, class: 'label-bold' do
@@ -74,5 +74,5 @@
     - e.variant(:unchecked_free_indicator) do
       = render 'new_project_initialize_with_sast', experiment_name: e.name, track_label: track_label, checked: false, with_free_badge: true
 
-= f.submit _('Create project'), class: "btn gl-button btn-confirm", data: { track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }
+= f.submit _('Create project'), class: "btn gl-button btn-confirm", data: { qa_selector: 'project_create_button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }
 = link_to _('Cancel'), dashboard_projects_path, class: 'btn gl-button btn-default btn-cancel', data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }

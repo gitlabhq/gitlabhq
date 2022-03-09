@@ -340,20 +340,8 @@ describe('Sidebar assignees widget', () => {
     });
   });
 
-  it('when realtime feature flag is disabled', async () => {
+  it('includes the real-time assignees component', async () => {
     createComponent();
-    await waitForPromises();
-    expect(findRealtimeAssignees().exists()).toBe(false);
-  });
-
-  it('when realtime feature flag is enabled', async () => {
-    createComponent({
-      provide: {
-        glFeatures: {
-          realTimeIssueSidebar: true,
-        },
-      },
-    });
     await waitForPromises();
     expect(findRealtimeAssignees().exists()).toBe(true);
   });

@@ -1332,32 +1332,14 @@ RSpec.describe Issues::UpdateService, :mailer do
     context 'broadcasting issue assignee updates' do
       let(:update_params) { { assignee_ids: [user2.id] } }
 
-      context 'when feature flag is enabled' do
-        before do
-          stub_feature_flags(broadcast_issue_updates: true)
-        end
+      it 'triggers the GraphQL subscription' do
+        expect(GraphqlTriggers).to receive(:issuable_assignees_updated).with(issue)
 
-        it 'triggers the GraphQL subscription' do
-          expect(GraphqlTriggers).to receive(:issuable_assignees_updated).with(issue)
-
-          update_issue(update_params)
-        end
-
-        context 'when assignee is not updated' do
-          let(:update_params) { { title: 'Some other title' } }
-
-          it 'does not trigger the GraphQL subscription' do
-            expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)
-
-            update_issue(update_params)
-          end
-        end
+        update_issue(update_params)
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(broadcast_issue_updates: false)
-        end
+      context 'when assignee is not updated' do
+        let(:update_params) { { title: 'Some other title' } }
 
         it 'does not trigger the GraphQL subscription' do
           expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)

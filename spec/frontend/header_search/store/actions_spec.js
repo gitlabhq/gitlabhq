@@ -1,6 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
 import * as actions from '~/header_search/store/actions';
 import * as types from '~/header_search/store/mutation_types';
 import createState from '~/header_search/store/state';
@@ -13,11 +12,6 @@ describe('Header Search Store Actions', () => {
   let state;
   let mock;
 
-  const flashCallback = (callCount) => {
-    expect(createFlash).toHaveBeenCalledTimes(callCount);
-    createFlash.mockClear();
-  };
-
   beforeEach(() => {
     state = createState({});
     mock = new MockAdapter(axios);
@@ -29,10 +23,10 @@ describe('Header Search Store Actions', () => {
   });
 
   describe.each`
-    axiosMock                                                             | type         | expectedMutations                                                                                                               | flashCallCount
-    ${{ method: 'onGet', code: 200, res: MOCK_AUTOCOMPLETE_OPTIONS_RES }} | ${'success'} | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }]} | ${0}
-    ${{ method: 'onGet', code: 500, res: null }}                          | ${'error'}   | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }]}                                           | ${1}
-  `('fetchAutocompleteOptions', ({ axiosMock, type, expectedMutations, flashCallCount }) => {
+    axiosMock                                                             | type         | expectedMutations
+    ${{ method: 'onGet', code: 200, res: MOCK_AUTOCOMPLETE_OPTIONS_RES }} | ${'success'} | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }]}
+    ${{ method: 'onGet', code: 500, res: null }}                          | ${'error'}   | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }]}
+  `('fetchAutocompleteOptions', ({ axiosMock, type, expectedMutations }) => {
     describe(`on ${type}`, () => {
       beforeEach(() => {
         mock[axiosMock.method]().replyOnce(axiosMock.code, axiosMock.res);
@@ -42,7 +36,7 @@ describe('Header Search Store Actions', () => {
           action: actions.fetchAutocompleteOptions,
           state,
           expectedMutations,
-        }).then(() => flashCallback(flashCallCount));
+        });
       });
     });
   });

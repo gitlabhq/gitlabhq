@@ -1065,35 +1065,6 @@ RSpec.describe Projects::IssuesController do
           .not_to exceed_query_limit(control_count + 2 * labels.count)
       end
 
-      context 'real-time sidebar feature flag' do
-        let_it_be(:project) { create(:project, :public) }
-        let_it_be(:issue) { create(:issue, project: project) }
-
-        context 'when enabled' do
-          before do
-            stub_feature_flags(real_time_issue_sidebar: true)
-          end
-
-          it 'pushes the correct value to the frontend' do
-            go(id: issue.to_param)
-
-            expect(Gon.features).to include('realTimeIssueSidebar' => true)
-          end
-        end
-
-        context 'when disabled' do
-          before do
-            stub_feature_flags(real_time_issue_sidebar: false)
-          end
-
-          it 'pushes the correct value to the frontend' do
-            go(id: issue.to_param)
-
-            expect(Gon.features).to include('realTimeIssueSidebar' => false)
-          end
-        end
-      end
-
       it 'logs the view with Gitlab::Search::RecentIssues' do
         sign_in(user)
         recent_issues_double = instance_double(::Gitlab::Search::RecentIssues, log_view: nil)

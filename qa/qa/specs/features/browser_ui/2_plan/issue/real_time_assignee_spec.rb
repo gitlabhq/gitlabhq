@@ -12,18 +12,10 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable('real_time_issue_sidebar', project: project)
-        Runtime::Feature.enable('broadcast_issue_updates', project: project)
-
         Flow::Login.sign_in
 
         project.add_member(user1)
         project.add_member(user2)
-      end
-
-      after do
-        Runtime::Feature.disable('real_time_issue_sidebar', project: project)
-        Runtime::Feature.disable('broadcast_issue_updates', project: project)
       end
 
       it 'update without refresh', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347941' do

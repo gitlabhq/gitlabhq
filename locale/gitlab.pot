@@ -16837,6 +16837,9 @@ msgstr ""
 msgid "GlobalSearch|Search results are loading"
 msgstr ""
 
+msgid "GlobalSearch|There was an error fetching search autocomplete suggestions."
+msgstr ""
+
 msgid "GlobalSearch|Type and press the enter key to submit search."
 msgstr ""
 
@@ -37198,9 +37201,6 @@ msgid "There was an error fetching median data for stages"
 msgstr ""
 
 msgid "There was an error fetching projects"
-msgstr ""
-
-msgid "There was an error fetching search autocomplete suggestions"
 msgstr ""
 
 msgid "There was an error fetching stage total counts"

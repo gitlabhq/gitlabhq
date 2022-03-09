@@ -1810,6 +1810,9 @@ body.gl-dark .navbar-gitlab .navbar-sub-nav {
 body.gl-dark .navbar-gitlab .nav > li {
   color: #fafafa;
 }
+body.gl-dark .navbar-gitlab .nav > li.header-search-new {
+  color: #fafafa;
+}
 body.gl-dark .navbar-gitlab .nav > li > a .notification-dot {
   border: 2px solid #fafafa;
 }
@@ -1847,8 +1850,8 @@ body.gl-dark
 body.gl-dark .header-search {
   background-color: rgba(250, 250, 250, 0.2) !important;
 }
-body.gl-dark .header-search svg {
-  color: rgba(250, 250, 250, 0.8) !important;
+body.gl-dark .header-search svg.gl-search-box-by-type-search-icon {
+  color: rgba(250, 250, 250, 0.8);
 }
 body.gl-dark .header-search input {
   background-color: transparent;

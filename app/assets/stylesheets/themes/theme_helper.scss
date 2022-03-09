@@ -64,6 +64,10 @@
       > li {
         color: $search-and-nav-links;
 
+        &.header-search-new {
+          color: $sidebar-text;
+        }
+
         > a {
           .notification-dot {
             border: 2px solid $nav-svg-color;
@@ -151,9 +155,10 @@
       background-color: rgba($search-and-nav-links, 0.3) !important;
     }
 
-    svg {
-      color: rgba($search-and-nav-links, 0.8) !important;
+    svg.gl-search-box-by-type-search-icon {
+      color: rgba($search-and-nav-links, 0.8);
     }
+
 
     input {
       background-color: transparent;

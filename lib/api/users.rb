@@ -702,6 +702,8 @@ module API
 
         if user.ldap_blocked?
           forbidden!('LDAP blocked users cannot be modified by the API')
+        elsif current_user == user
+          forbidden!('The API initiating user cannot be blocked by the API')
         end
 
         break if user.blocked?

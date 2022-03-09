@@ -6,6 +6,7 @@ const createState = ({ searchPath, issuesPath, mrPath, autocompletePath, searchC
   searchContext,
   search: '',
   autocompleteOptions: [],
+  autocompleteError: false,
   loading: false,
 });
 export default createState;

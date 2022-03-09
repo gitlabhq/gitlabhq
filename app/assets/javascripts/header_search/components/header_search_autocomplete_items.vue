@@ -4,20 +4,28 @@ import {
   GlDropdownSectionHeader,
   GlDropdownDivider,
   GlAvatar,
+  GlAlert,
   GlLoadingIcon,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
+import { s__ } from '~/locale';
 import highlight from '~/lib/utils/highlight';
 import { GROUPS_CATEGORY, PROJECTS_CATEGORY, LARGE_AVATAR_PX, SMALL_AVATAR_PX } from '../constants';
 
 export default {
   name: 'HeaderSearchAutocompleteItems',
+  i18n: {
+    autocompleteErrorMessage: s__(
+      'GlobalSearch|There was an error fetching search autocomplete suggestions.',
+    ),
+  },
   components: {
     GlDropdownItem,
     GlDropdownSectionHeader,
     GlDropdownDivider,
     GlAvatar,
+    GlAlert,
     GlLoadingIcon,
   },
   directives: {
@@ -31,7 +39,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['search', 'loading']),
+    ...mapState(['search', 'loading', 'autocompleteError']),
     ...mapGetters(['autocompleteGroupedSearchOptions']),
   },
   watch: {
@@ -93,5 +101,13 @@ export default {
       </div>
     </template>
     <gl-loading-icon v-else size="lg" class="my-4" />
+    <gl-alert
+      v-if="autocompleteError"
+      class="gl-text-body gl-mt-2"
+      :dismissible="false"
+      variant="danger"
+    >
+      {{ $options.i18n.autocompleteErrorMessage }}
+    </gl-alert>
   </div>
 </template>

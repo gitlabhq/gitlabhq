@@ -20,6 +20,7 @@ describe('Header Search Store Mutations', () => {
 
       expect(state.loading).toBe(true);
       expect(state.autocompleteOptions).toStrictEqual([]);
+      expect(state.autocompleteError).toBe(false);
     });
   });
 
@@ -29,6 +30,7 @@ describe('Header Search Store Mutations', () => {
 
       expect(state.loading).toBe(false);
       expect(state.autocompleteOptions).toStrictEqual(MOCK_AUTOCOMPLETE_OPTIONS);
+      expect(state.autocompleteError).toBe(false);
     });
   });
 
@@ -38,6 +40,7 @@ describe('Header Search Store Mutations', () => {
 
       expect(state.loading).toBe(false);
       expect(state.autocompleteOptions).toStrictEqual([]);
+      expect(state.autocompleteError).toBe(true);
     });
   });
 
@@ -46,6 +49,7 @@ describe('Header Search Store Mutations', () => {
       mutations[types.CLEAR_AUTOCOMPLETE](state);
 
       expect(state.autocompleteOptions).toStrictEqual([]);
+      expect(state.autocompleteError).toBe(false);
     });
   });
 

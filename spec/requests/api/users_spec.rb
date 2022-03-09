@@ -3117,6 +3117,18 @@ RSpec.describe API::Users do
           expect(response.body).to eq('null')
         end
       end
+
+      context 'with the API initiating user' do
+        let(:user_id) { admin.id }
+
+        it 'does not block the API initiating user, returns 403' do
+          block_user
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('403 Forbidden - The API initiating user cannot be blocked by the API')
+          expect(admin.reload.state).to eq('active')
+        end
+      end
     end
 
     it 'is not available for non admin users' do

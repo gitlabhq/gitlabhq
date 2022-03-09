@@ -1059,15 +1059,25 @@ RSpec.describe ApplicationController do
   describe 'setting permissions-policy header' do
     controller do
       skip_before_action :authenticate_user!
+      before_action :redirect_to_example, only: [:redirect]
 
       def index
         render html: 'It is a flock of sheep, not a floc of sheep.'
+      end
+
+      def redirect
+        raise 'Should not be reached'
+      end
+
+      def redirect_to_example
+        redirect_to('https://example.com')
       end
     end
 
     before do
       routes.draw do
         get 'index' => 'anonymous#index'
+        get 'redirect' => 'anonymous#redirect'
       end
     end
 
@@ -1091,6 +1101,13 @@ RSpec.describe ApplicationController do
       it 'sets the Permissions-Policy header' do
         get :index
 
+        expect(response.headers['Permissions-Policy']).to eq('interest-cohort=()')
+      end
+
+      it 'sets the Permissions-Policy header even when redirected before_action' do
+        get :redirect
+
+        expect(response).to have_gitlab_http_status(:redirect)
         expect(response.headers['Permissions-Policy']).to eq('interest-cohort=()')
       end
     end
