@@ -99,6 +99,9 @@ module Gitlab
           #                  ^--+--+- components of hashed storage project path
           cmd += %w[-mindepth 6 -maxdepth 6]
 
+          # Intentionally exclude pipeline artifacts which match the same path
+          cmd += %w[-not -path */pipelines/*]
+
           # Artifact directories are named on their ID
           cmd += %w[-type d]
 
