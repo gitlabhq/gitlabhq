@@ -22,6 +22,10 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
       def collection_method
         :issues
       end
+
+      def parallel_import_batch
+        { size: 10, delay: 1.minute }
+      end
     end
   end
 
@@ -254,35 +258,61 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
 
   describe '#parallel_import' do
     let(:importer) { importer_class.new(project, client) }
+    let(:repr_class) { double(:representation) }
+    let(:worker_class) { double(:worker) }
+    let(:object) { double(:object) }
+    let(:batch_size) { 200 }
+    let(:batch_delay) { 1.minute }
 
-    it 'imports data in parallel' do
-      repr_class = double(:representation)
-      worker_class = double(:worker)
-      object = double(:object)
-
-      expect(importer)
-        .to receive(:each_object_to_import)
-        .and_yield(object)
-
-      expect(importer)
+    before do
+      allow(importer)
         .to receive(:representation_class)
         .and_return(repr_class)
 
-      expect(importer)
+      allow(importer)
         .to receive(:sidekiq_worker_class)
         .and_return(worker_class)
 
-      expect(repr_class)
+      allow(repr_class)
         .to receive(:from_api_response)
         .with(object)
         .and_return({ title: 'Foo' })
+    end
 
-      expect(worker_class)
-        .to receive(:perform_async)
-        .with(project.id, { title: 'Foo' }, an_instance_of(String))
+    context 'with multiple objects' do
+      before do
+        allow(importer).to receive(:parallel_import_batch) { { size: batch_size, delay: batch_delay } }
+        expect(importer).to receive(:each_object_to_import).and_yield(object).and_yield(object).and_yield(object)
+      end
 
-      expect(importer.parallel_import)
-        .to be_an_instance_of(Gitlab::JobWaiter)
+      it 'imports data in parallel batches with delays' do
+        expect(worker_class).to receive(:bulk_perform_in).with(1.second, [
+          [project.id, { title: 'Foo' }, an_instance_of(String)],
+          [project.id, { title: 'Foo' }, an_instance_of(String)],
+          [project.id, { title: 'Foo' }, an_instance_of(String)]
+        ], batch_size: batch_size, batch_delay: batch_delay)
+
+        importer.parallel_import
+      end
+    end
+
+    context 'when FF is disabled' do
+      before do
+        stub_feature_flags(spread_parallel_import: false)
+      end
+
+      it 'imports data in parallel' do
+        expect(importer)
+          .to receive(:each_object_to_import)
+          .and_yield(object)
+
+        expect(worker_class)
+          .to receive(:perform_async)
+          .with(project.id, { title: 'Foo' }, an_instance_of(String))
+
+        expect(importer.parallel_import)
+          .to be_an_instance_of(Gitlab::JobWaiter)
+      end
     end
   end
 

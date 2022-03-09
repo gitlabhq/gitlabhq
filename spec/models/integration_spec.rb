@@ -719,34 +719,63 @@ RSpec.describe Integration do
   end
 
   describe '#api_field_names' do
-    let(:fake_integration) do
-      Class.new(Integration) do
-        def fields
-          [
-            { name: 'token' },
-            { name: 'api_token' },
-            { name: 'token_api' },
-            { name: 'safe_token' },
-            { name: 'key' },
-            { name: 'api_key' },
-            { name: 'password' },
-            { name: 'password_field' },
-            { name: 'some_safe_field' },
-            { name: 'safe_field' },
-            { name: 'url' },
-            { name: 'trojan_horse', type: 'password' },
-            { name: 'trojan_gift', type: 'gift' }
-          ].shuffle
-        end
+    shared_examples 'api field names' do
+      it 'filters out sensitive fields' do
+        safe_fields = %w[some_safe_field safe_field url trojan_gift]
+
+        expect(fake_integration.new).to have_attributes(
+          api_field_names: match_array(safe_fields)
+        )
       end
     end
 
-    it 'filters out sensitive fields' do
-      safe_fields = %w[some_safe_field safe_field url trojan_gift]
+    context 'when the class overrides #fields' do
+      let(:fake_integration) do
+        Class.new(Integration) do
+          def fields
+            [
+              { name: 'token' },
+              { name: 'api_token' },
+              { name: 'token_api' },
+              { name: 'safe_token' },
+              { name: 'key' },
+              { name: 'api_key' },
+              { name: 'password' },
+              { name: 'password_field' },
+              { name: 'some_safe_field' },
+              { name: 'safe_field' },
+              { name: 'url' },
+              { name: 'trojan_horse', type: 'password' },
+              { name: 'trojan_gift', type: 'gift' }
+            ].shuffle
+          end
+        end
+      end
 
-      expect(fake_integration.new).to have_attributes(
-        api_field_names: match_array(safe_fields)
-      )
+      it_behaves_like 'api field names'
+    end
+
+    context 'when the class uses the field DSL' do
+      let(:fake_integration) do
+        Class.new(described_class) do
+          field :token
+          field :token
+          field :api_token
+          field :token_api
+          field :safe_token
+          field :key
+          field :api_key
+          field :password
+          field :password_field
+          field :some_safe_field
+          field :safe_field
+          field :url
+          field :trojan_horse, type: 'password'
+          field :trojan_gift, type: 'gift'
+        end
+      end
+
+      it_behaves_like 'api field names'
     end
   end
 
@@ -919,6 +948,77 @@ RSpec.describe Integration do
         expect(described_class.last).not_to eq record
         expect(described_class.last).to have_attributes(encrypted_properties_tmp: db_props)
       end
+    end
+  end
+
+  describe 'field DSL' do
+    let(:integration_type) do
+      Class.new(described_class) do
+        field :foo
+        field :foo_p, storage: :properties
+        field :foo_dt, storage: :data_fields
+
+        field :bar, type: 'password'
+        field :password
+
+        field :with_help,
+              help: -> { 'help' }
+
+        field :a_number,
+              type: 'number'
+      end
+    end
+
+    before do
+      allow(integration).to receive(:data_fields).and_return(data_fields)
+    end
+
+    let(:integration) { integration_type.new }
+    let(:data_fields) { Struct.new(:foo_dt).new }
+
+    it 'checks the value of storage' do
+      expect do
+        Class.new(described_class) { field(:foo, storage: 'bar') }
+      end.to raise_error(ArgumentError, /Unknown field storage/)
+    end
+
+    it 'provides prop_accessors' do
+      integration.foo = 1
+      expect(integration.foo).to eq 1
+      expect(integration.properties['foo']).to eq 1
+      expect(integration).to be_foo_changed
+
+      integration.foo_p = 2
+      expect(integration.foo_p).to eq 2
+      expect(integration.properties['foo_p']).to eq 2
+      expect(integration).to be_foo_p_changed
+    end
+
+    it 'provides data fields' do
+      integration.foo_dt = 3
+      expect(integration.foo_dt).to eq 3
+      expect(data_fields.foo_dt).to eq 3
+      expect(integration).to be_foo_dt_changed
+    end
+
+    it 'registers fields in the fields list' do
+      expect(integration.fields.pluck(:name)).to match_array %w[
+        foo foo_p foo_dt bar password with_help a_number
+      ]
+
+      expect(integration.api_field_names).to match_array %w[
+        foo foo_p foo_dt with_help a_number
+      ]
+    end
+
+    specify 'fields have expected attributes' do
+      expect(integration.fields).to include(
+        have_attributes(name: 'foo', type: 'text'),
+        have_attributes(name: 'bar', type: 'password'),
+        have_attributes(name: 'password', type: 'password'),
+        have_attributes(name: 'a_number', type: 'number'),
+        have_attributes(name: 'with_help', help: 'help')
+      )
     end
   end
 end

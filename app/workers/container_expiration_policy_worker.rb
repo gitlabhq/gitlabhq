@@ -99,7 +99,7 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
   end
 
   def throttling_enabled?
-    Feature.enabled?(:container_registry_expiration_policies_throttling)
+    Feature.enabled?(:container_registry_expiration_policies_throttling, default_enabled: :yaml)
   end
 
   def lease_timeout

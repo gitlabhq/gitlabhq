@@ -2,6 +2,8 @@
 
 module Integrations
   class Bugzilla < BaseIssueTracker
+    include Integrations::HasIssueTrackerFields
+
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
 
     def title

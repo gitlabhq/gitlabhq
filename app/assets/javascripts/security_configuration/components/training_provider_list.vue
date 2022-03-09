@@ -27,6 +27,17 @@ const i18n = {
   primaryTraining: s__('SecurityTraining|Primary Training'),
 };
 
+// Fetch the svg path from the GraphQL query once this issue is resolved
+// https://gitlab.com/gitlab-org/gitlab/-/issues/346899
+const TEMP_PROVIDER_LOGOS = {
+  'gid://gitlab/Security::TrainingProvider/1': {
+    svg: '/assets/illustrations/vulnerability/kontra-logo.svg',
+  },
+  'gid://gitlab/Security::TrainingProvider/2': {
+    svg: '/assets/illustrations/vulnerability/scw-logo.svg',
+  },
+};
+
 export default {
   components: {
     GlAlert,
@@ -187,6 +198,7 @@ export default {
     },
   },
   i18n,
+  TEMP_PROVIDER_LOGOS,
 };
 </script>
 
@@ -215,7 +227,10 @@ export default {
               label-position="hidden"
               @change="toggleProvider(provider)"
             />
-            <div class="gl-ml-5">
+            <div v-if="$options.TEMP_PROVIDER_LOGOS[provider.id]" class="gl-ml-4">
+              <img :src="$options.TEMP_PROVIDER_LOGOS[provider.id].svg" width="18" />
+            </div>
+            <div class="gl-ml-3">
               <h3 class="gl-font-lg gl-m-0 gl-mb-2">{{ provider.name }}</h3>
               <p>
                 {{ provider.description }}

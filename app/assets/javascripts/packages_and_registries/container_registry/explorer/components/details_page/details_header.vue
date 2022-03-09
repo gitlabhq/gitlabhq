@@ -4,6 +4,7 @@ import { sprintf, n__, s__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import {
   UPDATED_AT,
   CLEANUP_UNSCHEDULED_TEXT,
@@ -23,7 +24,7 @@ import {
   ROOT_IMAGE_TOOLTIP,
 } from '../../constants/index';
 
-import getContainerRepositoryTagsCountQuery from '../../graphql/queries/get_container_repository_tags_count.query.graphql';
+import getContainerRepositoryMetadata from '../../graphql/queries/get_container_repository_metadata.query.graphql';
 
 export default {
   name: 'DetailsHeader',
@@ -50,7 +51,7 @@ export default {
   },
   apollo: {
     containerRepository: {
-      query: getContainerRepositoryTagsCountQuery,
+      query: getContainerRepositoryMetadata,
       variables() {
         return {
           id: this.image.id,
@@ -101,6 +102,10 @@ export default {
     imageName() {
       return this.imageDetails.name || ROOT_IMAGE_TEXT;
     },
+    formattedSize() {
+      const { size } = this.imageDetails;
+      return size ? numberToHumanSize(Number(size)) : null;
+    },
   },
 };
 </script>
@@ -119,8 +124,13 @@ export default {
         :aria-label="rootImageTooltip"
       />
     </template>
+
     <template #metadata-tags-count>
       <metadata-item icon="tag" :text="tagCountText" data-testid="tags-count" />
+    </template>
+
+    <template v-if="formattedSize" #metadata-size>
+      <metadata-item icon="disk" :text="formattedSize" data-testid="image-size" />
     </template>
 
     <template #metadata-cleanup>

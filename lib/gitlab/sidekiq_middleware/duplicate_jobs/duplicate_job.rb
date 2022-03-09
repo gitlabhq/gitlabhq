@@ -167,7 +167,6 @@ module Gitlab
         def idempotent?
           return false unless worker_klass
           return false unless worker_klass.respond_to?(:idempotent?)
-          return false unless preserve_wal_location? || !worker_klass.utilizes_load_balancing_capabilities?
 
           worker_klass.idempotent?
         end
@@ -206,8 +205,6 @@ module Gitlab
         end
 
         def job_wal_locations
-          return {} unless preserve_wal_location?
-
           job['wal_locations'] || {}
         end
 
@@ -270,10 +267,6 @@ module Gitlab
 
         def existing_wal_locations
           @existing_wal_locations ||= {}
-        end
-
-        def preserve_wal_location?
-          Feature.enabled?(:preserve_latest_wal_locations_for_idempotent_jobs, default_enabled: :yaml)
         end
 
         def reschedulable?

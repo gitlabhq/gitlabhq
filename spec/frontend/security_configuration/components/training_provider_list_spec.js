@@ -25,6 +25,7 @@ import {
   updateSecurityTrainingProvidersErrorResponse,
   testProjectPath,
   testProviderIds,
+  tempProviderLogos,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -83,6 +84,7 @@ describe('TrainingProviderList component', () => {
   const findPrimaryProviderRadios = () => wrapper.findAllByTestId('primary-provider-radio');
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
+  const findLogos = () => wrapper.findAll('img');
 
   const toggleFirstProvider = () => findFirstToggle().vm.$emit('change', testProviderIds[0]);
 
@@ -177,6 +179,25 @@ describe('TrainingProviderList component', () => {
           });
         },
       );
+    });
+
+    describe('provider logo', () => {
+      beforeEach(async () => {
+        wrapper.vm.$options.TEMP_PROVIDER_LOGOS = tempProviderLogos;
+        await waitForQueryToBeLoaded();
+      });
+
+      const providerIndexArray = [0, 1];
+
+      it.each(providerIndexArray)('displays the correct width for provider %s', (provider) => {
+        expect(findLogos().at(provider).attributes('width')).toBe('18');
+      });
+
+      it.each(providerIndexArray)('displays the correct svg path for provider %s', (provider) => {
+        expect(findLogos().at(provider).attributes('src')).toBe(
+          tempProviderLogos[testProviderIds[provider]].svg,
+        );
+      });
     });
 
     describe('storing training provider settings', () => {

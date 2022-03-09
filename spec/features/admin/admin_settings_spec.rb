@@ -394,26 +394,16 @@ RSpec.describe 'Admin updates settings' do
 
         %i[container_registry_delete_tags_service_timeout container_registry_expiration_policies_worker_capacity container_registry_cleanup_tags_service_max_list_size].each do |setting|
           context "for container registry setting #{setting}" do
-            context 'with feature flag enabled' do
-              context 'with client supporting tag delete' do
-                it 'changes the setting' do
-                  visit ci_cd_admin_application_settings_path
+            it 'changes the setting' do
+              visit ci_cd_admin_application_settings_path
 
-                  page.within('.as-registry') do
-                    fill_in "application_setting_#{setting}", with: 400
-                    click_button 'Save changes'
-                  end
-
-                  expect(current_settings.public_send(setting)).to eq(400)
-                  expect(page).to have_content "Application settings saved successfully"
-                end
+              page.within('.as-registry') do
+                fill_in "application_setting_#{setting}", with: 400
+                click_button 'Save changes'
               end
 
-              context 'with client not supporting tag delete' do
-                let(:client_support) { false }
-
-                it_behaves_like 'not having container registry setting', setting
-              end
+              expect(current_settings.public_send(setting)).to eq(400)
+              expect(page).to have_content "Application settings saved successfully"
             end
 
             context 'with feature flag disabled' do
@@ -425,28 +415,18 @@ RSpec.describe 'Admin updates settings' do
         end
 
         context 'for container registry setting container_registry_expiration_policies_caching' do
-          context 'with feature flag enabled' do
-            context 'with client supporting tag delete' do
-              it 'updates container_registry_expiration_policies_caching' do
-                old_value = current_settings.container_registry_expiration_policies_caching
+          it 'updates container_registry_expiration_policies_caching' do
+            old_value = current_settings.container_registry_expiration_policies_caching
 
-                visit ci_cd_admin_application_settings_path
+            visit ci_cd_admin_application_settings_path
 
-                page.within('.as-registry') do
-                  find('#application_setting_container_registry_expiration_policies_caching.form-check-input').click
-                  click_button 'Save changes'
-                end
-
-                expect(current_settings.container_registry_expiration_policies_caching).to eq(!old_value)
-                expect(page).to have_content "Application settings saved successfully"
-              end
+            page.within('.as-registry') do
+              find('#application_setting_container_registry_expiration_policies_caching.form-check-input').click
+              click_button 'Save changes'
             end
 
-            context 'with client not supporting tag delete' do
-              let(:client_support) { false }
-
-              it_behaves_like 'not having container registry setting', :container_registry_expiration_policies_caching
-            end
+            expect(current_settings.container_registry_expiration_policies_caching).to eq(!old_value)
+            expect(page).to have_content "Application settings saved successfully"
           end
 
           context 'with feature flag disabled' do

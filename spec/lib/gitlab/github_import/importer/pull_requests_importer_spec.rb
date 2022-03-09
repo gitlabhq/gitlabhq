@@ -104,8 +104,13 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter do
         .and_yield(pull_request)
 
       expect(Gitlab::GithubImport::ImportPullRequestWorker)
-        .to receive(:perform_async)
-        .with(project.id, an_instance_of(Hash), an_instance_of(String))
+        .to receive(:bulk_perform_in)
+        .with(
+          1.second,
+          [[project.id, an_instance_of(Hash), an_instance_of(String)]],
+          batch_delay: 1.minute,
+          batch_size: 200
+        )
 
       waiter = importer.parallel_import
 

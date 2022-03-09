@@ -13,6 +13,24 @@ def prometheus_default_multiproc_dir
   end
 end
 
+def puma_metrics_server_process?
+  Prometheus::PidProvider.worker_id == 'puma_master'
+end
+
+def sidekiq_metrics_server_process?
+  Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0')
+end
+
+if puma_metrics_server_process? || sidekiq_metrics_server_process?
+  # The following is necessary to ensure stale Prometheus metrics don't accumulate over time.
+  # It needs to be done as early as here to ensure metrics files aren't deleted.
+  # After we hit our app in `warmup`, first metrics and corresponding files already being created,
+  # for example in `lib/gitlab/metrics/requests_rack_middleware.rb`.
+  Prometheus::CleanupMultiprocDirService.new.execute
+
+  ::Prometheus::Client.reinitialize_on_pid_change(force: true)
+end
+
 ::Prometheus::Client.configure do |config|
   config.logger = Gitlab::AppLogger
 
@@ -49,15 +67,9 @@ if Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER
 end
 
 Gitlab::Cluster::LifecycleEvents.on_master_start do
-  # When running Puma in a Single mode, `on_master_start` and `on_worker_start` are the same.
-  # Thus, we order these events to run `reinitialize_on_pid_change` with `force: true` first.
-  ::Prometheus::Client.reinitialize_on_pid_change(force: true)
-
   Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION, revision: Gitlab.revision }, 1)
 
   if Gitlab::Runtime.puma?
-    Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
-
     Gitlab::Metrics::Samplers::PumaSampler.instance.start
 
     # Starts a metrics server to export metrics from the Puma primary.

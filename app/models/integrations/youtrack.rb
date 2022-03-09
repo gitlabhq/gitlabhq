@@ -2,6 +2,8 @@
 
 module Integrations
   class Youtrack < BaseIssueTracker
+    include Integrations::HasIssueTrackerFields
+
     validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?
 
     # {PROJECT-KEY}-{NUMBER} Examples: YT-1, PRJ-1, gl-030

@@ -7,9 +7,10 @@ type: index, concepts, howto
 
 # CI/CD development documentation **(FREE)**
 
-Development guides that are specific to CI/CD are listed here.
+Development guides that are specific to CI/CD are listed here:
 
-If you are creating new CI/CD templates, please read [the development guide for GitLab CI/CD templates](templates.md).
+- If you are creating new CI/CD templates, please read [the development guide for GitLab CI/CD templates](templates.md).
+- If you are adding a new keyword or changing the CI schema, check the [CI schema guide](schema.md)
 
 See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)
 to learn how to update the [reference page](../../ci/yaml/index.md).

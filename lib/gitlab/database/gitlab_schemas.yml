@@ -381,7 +381,6 @@ pages_deployments: :gitlab_main
 pages_deployment_states: :gitlab_main
 pages_domain_acme_orders: :gitlab_main
 pages_domains: :gitlab_main
-partitioned_foreign_keys: :gitlab_main
 path_locks: :gitlab_main
 personal_access_tokens: :gitlab_main
 plan_limits: :gitlab_main

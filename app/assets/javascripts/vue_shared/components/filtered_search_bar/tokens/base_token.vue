@@ -78,7 +78,7 @@ export default {
     return {
       searchKey: '',
       recentSuggestions: this.config.recentSuggestionsStorageKey
-        ? getRecentlyUsedSuggestions(this.config.recentSuggestionsStorageKey)
+        ? getRecentlyUsedSuggestions(this.config.recentSuggestionsStorageKey) ?? []
         : [],
     };
   },

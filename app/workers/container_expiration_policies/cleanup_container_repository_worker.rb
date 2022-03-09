@@ -123,7 +123,7 @@ module ContainerExpirationPolicies
     end
 
     def throttling_enabled?
-      Feature.enabled?(:container_registry_expiration_policies_throttling)
+      Feature.enabled?(:container_registry_expiration_policies_throttling, default_enabled: :yaml)
     end
 
     def max_cleanup_execution_time

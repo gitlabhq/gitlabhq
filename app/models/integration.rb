@@ -122,6 +122,39 @@ class Integration < ApplicationRecord
   scope :alert_hooks, -> { where(alert_events: true, active: true) }
   scope :deployment, -> { where(category: 'deployment') }
 
+  class << self
+    private
+
+    attr_writer :field_storage
+
+    def field_storage
+      @field_storage || :properties
+    end
+  end
+
+  # :nocov: Tested on subclasses.
+  def self.field(name, storage: field_storage, **attrs)
+    fields << ::Integrations::Field.new(name: name, **attrs)
+
+    case storage
+    when :properties
+      prop_accessor(name)
+    when :data_fields
+      data_field(name)
+    else
+      raise ArgumentError, "Unknown field storage: #{storage}"
+    end
+  end
+  # :nocov:
+
+  def self.fields
+    @fields ||= []
+  end
+
+  def fields
+    self.class.fields
+  end
+
   # Provide convenient accessor methods for each serialized property.
   # Also keep track of updated properties in a similar way as ActiveModel::Dirty
   def self.prop_accessor(*args)
@@ -393,11 +426,6 @@ class Integration < ApplicationRecord
   def to_param
     # implement inside child
     self.class.to_param
-  end
-
-  def fields
-    # implement inside child
-    []
   end
 
   def sections

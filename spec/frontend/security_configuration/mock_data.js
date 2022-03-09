@@ -95,3 +95,14 @@ export const updateSecurityTrainingProvidersErrorResponse = {
     },
   },
 };
+
+// Will remove once this issue is resolved where the svg path will be available in the GraphQL query
+// https://gitlab.com/gitlab-org/gitlab/-/issues/346899
+export const tempProviderLogos = {
+  [testProviderIds[0]]: {
+    svg: '/assets/illustrations/vulnerability/vendor-1.svg',
+  },
+  [testProviderIds[1]]: {
+    svg: '/assets/illustrations/vulnerability/vendor-2.svg',
+  },
+};

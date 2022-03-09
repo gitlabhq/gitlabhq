@@ -157,11 +157,13 @@ Here are examples of regex patterns you may want to use:
 
 ### Set cleanup limits to conserve resources
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/288812) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's enabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cleanup-policy-limits).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/288812) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `container_registry_expiration_policies_throttling`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80815) in GitLab 14.9.
+
+FLAG:
+By default this feature is available in GitLab 14.9. To disable the feature, an administrator can
+[disable the feature flag](../../../administration/feature_flags.md)
+named `container_registry_expiration_policies_throttling`.
 
 Cleanup policies are executed as a background process. This process is complex, and depending on the number of tags to delete,
 the process can take time to finish.
@@ -188,30 +190,10 @@ For self-managed instances, those settings can be updated in the [Rails console]
   ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
   ```
 
-Alternatively, once the limits are [enabled](#enable-or-disable-cleanup-policy-limits),
-they are available in the [administrator area](../../admin_area/index.md):
+They are also available in the [administrator area](../../admin_area/index.md):
 
 1. On the top bar, select **Menu > Admin**.
 1. Go to **Settings > CI/CD > Container Registry**.
-
-#### Enable or disable cleanup policy limits
-
-The cleanup policies limits are under development and not ready for production use. They are
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:container_registry_expiration_policies_throttling)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:container_registry_expiration_policies_throttling)
-```
 
 ### Use the cleanup policy API
 

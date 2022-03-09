@@ -28,11 +28,6 @@ module Integrations
     # We should use username/password for Jira Server and email/api_token for Jira Cloud,
     # for more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/49936.
 
-    # TODO: we can probably just delegate as part of
-    # https://gitlab.com/gitlab-org/gitlab/issues/29404
-    data_field :username, :password, :url, :api_url, :jira_issue_transition_automatic, :jira_issue_transition_id, :project_key, :issues_enabled,
-      :vulnerabilities_enabled, :vulnerabilities_issuetype
-
     before_validation :reset_password
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
@@ -40,6 +35,44 @@ module Integrations
       standard: 1,
       all_details: 2
     }
+
+    self.field_storage = :data_fields
+
+    field :url,
+          section: SECTION_TYPE_CONNECTION,
+          required: true,
+          title: -> { s_('JiraService|Web URL') },
+          help: -> { s_('JiraService|Base URL of the Jira instance.') },
+          placeholder: 'https://jira.example.com'
+
+    field :api_url,
+          section: SECTION_TYPE_CONNECTION,
+          title: -> { s_('JiraService|Jira API URL') },
+          help: -> { s_('JiraService|If different from Web URL.') }
+
+    field :username,
+          section: SECTION_TYPE_CONNECTION,
+          required: true,
+          title: -> { s_('JiraService|Username or Email') },
+          help: -> { s_('JiraService|Use a username for server version and an email for cloud version.') }
+
+    field :password,
+          section: SECTION_TYPE_CONNECTION,
+          required: true,
+          title: -> { s_('JiraService|Password or API token') },
+          non_empty_password_title: -> { s_('JiraService|Enter new password or API token') },
+          non_empty_password_help: -> { s_('JiraService|Leave blank to use your current password or API token.') },
+          help: -> { s_('JiraService|Use a password for server version and an API token for cloud version.') }
+
+    # TODO: we can probably just delegate as part of
+    # https://gitlab.com/gitlab-org/gitlab/issues/29404
+    # These fields are API only, so no field definition is required.
+    data_field :jira_issue_transition_automatic
+    data_field :jira_issue_transition_id
+    data_field :project_key
+    data_field :issues_enabled
+    data_field :vulnerabilities_enabled
+    data_field :vulnerabilities_issuetype
 
     # When these are false GitLab does not create cross reference
     # comments on Jira except when an issue gets transitioned.
@@ -127,45 +160,6 @@ module Integrations
       'jira'
     end
 
-    def fields
-      [
-        {
-          section: SECTION_TYPE_CONNECTION,
-          type: 'text',
-          name: 'url',
-          title: s_('JiraService|Web URL'),
-          placeholder: 'https://jira.example.com',
-          help: s_('JiraService|Base URL of the Jira instance.'),
-          required: true
-        },
-        {
-          section: SECTION_TYPE_CONNECTION,
-          type: 'text',
-          name: 'api_url',
-          title: s_('JiraService|Jira API URL'),
-          help: s_('JiraService|If different from Web URL.')
-        },
-        {
-          section: SECTION_TYPE_CONNECTION,
-          type: 'text',
-          name: 'username',
-          title: s_('JiraService|Username or Email'),
-          help: s_('JiraService|Use a username for server version and an email for cloud version.'),
-          required: true
-        },
-        {
-          section: SECTION_TYPE_CONNECTION,
-          type: 'password',
-          name: 'password',
-          title: s_('JiraService|Password or API token'),
-          non_empty_password_title: s_('JiraService|Enter new password or API token'),
-          non_empty_password_help: s_('JiraService|Leave blank to use your current password or API token.'),
-          help: s_('JiraService|Use a password for server version and an API token for cloud version.'),
-          required: true
-        }
-      ]
-    end
-
     def sections
       [
         {
@@ -194,17 +188,12 @@ module Integrations
       url.to_s
     end
 
-    override :project_url
-    def project_url
-      web_url
-    end
+    alias_method :project_url, :web_url
 
-    override :issues_url
     def issues_url
       web_url('browse/:id')
     end
 
-    override :new_issue_url
     def new_issue_url
       web_url('secure/CreateIssue!default.jspa')
     end

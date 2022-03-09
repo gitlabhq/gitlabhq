@@ -2,6 +2,8 @@
 
 module Integrations
   class Ewm < BaseIssueTracker
+    include HasIssueTrackerFields
+
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
 
     def self.reference_pattern(only_long: true)

@@ -187,6 +187,7 @@ export const imageTagsCountMock = (override) => ({
     containerRepository: {
       id: containerRepositoryMock.id,
       tagsCount: 13,
+      size: null,
       ...override,
     },
   },

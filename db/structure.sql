@@ -18497,28 +18497,6 @@ CREATE SEQUENCE pages_domains_id_seq
 
 ALTER SEQUENCE pages_domains_id_seq OWNED BY pages_domains.id;
 
-CREATE TABLE partitioned_foreign_keys (
-    id bigint NOT NULL,
-    cascade_delete boolean DEFAULT true NOT NULL,
-    from_table text NOT NULL,
-    from_column text NOT NULL,
-    to_table text NOT NULL,
-    to_column text NOT NULL,
-    CONSTRAINT check_2c2e02a62b CHECK ((char_length(from_column) <= 63)),
-    CONSTRAINT check_40738efb57 CHECK ((char_length(to_table) <= 63)),
-    CONSTRAINT check_741676d405 CHECK ((char_length(from_table) <= 63)),
-    CONSTRAINT check_7e98be694f CHECK ((char_length(to_column) <= 63))
-);
-
-CREATE SEQUENCE partitioned_foreign_keys_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE partitioned_foreign_keys_id_seq OWNED BY partitioned_foreign_keys.id;
-
 CREATE TABLE path_locks (
     id integer NOT NULL,
     path character varying NOT NULL,
@@ -22862,8 +22840,6 @@ ALTER TABLE ONLY pages_domain_acme_orders ALTER COLUMN id SET DEFAULT nextval('p
 
 ALTER TABLE ONLY pages_domains ALTER COLUMN id SET DEFAULT nextval('pages_domains_id_seq'::regclass);
 
-ALTER TABLE ONLY partitioned_foreign_keys ALTER COLUMN id SET DEFAULT nextval('partitioned_foreign_keys_id_seq'::regclass);
-
 ALTER TABLE ONLY path_locks ALTER COLUMN id SET DEFAULT nextval('path_locks_id_seq'::regclass);
 
 ALTER TABLE ONLY personal_access_tokens ALTER COLUMN id SET DEFAULT nextval('personal_access_tokens_id_seq'::regclass);
@@ -24915,9 +24891,6 @@ ALTER TABLE ONLY pages_domain_acme_orders
 
 ALTER TABLE ONLY pages_domains
     ADD CONSTRAINT pages_domains_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY partitioned_foreign_keys
-    ADD CONSTRAINT partitioned_foreign_keys_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT path_locks_pkey PRIMARY KEY (id);
@@ -28508,8 +28481,6 @@ CREATE INDEX index_pages_domains_on_wildcard ON pages_domains USING btree (wildc
 CREATE UNIQUE INDEX index_partial_am_alerts_on_project_id_and_fingerprint ON alert_management_alerts USING btree (project_id, fingerprint) WHERE (status <> 2);
 
 CREATE INDEX index_partial_ci_builds_on_user_id_name_parser_features ON ci_builds USING btree (user_id, name) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('secret_detection'::character varying)::text])));
-
-CREATE UNIQUE INDEX index_partitioned_foreign_keys_unique_index ON partitioned_foreign_keys USING btree (to_table, from_table, from_column);
 
 CREATE INDEX index_pat_on_user_id_and_expires_at ON personal_access_tokens USING btree (user_id, expires_at);
 

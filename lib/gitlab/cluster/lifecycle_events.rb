@@ -70,7 +70,7 @@ module Gitlab
         # Hook registration methods (called from initializers)
         #
         def on_worker_start(&block)
-          if in_clustered_environment?
+          if in_clustered_puma?
             # Defer block execution
             (@worker_start_hooks ||= []) << block
           else
@@ -101,7 +101,7 @@ module Gitlab
         end
 
         def on_master_start(&block)
-          if in_clustered_environment?
+          if in_clustered_puma?
             on_before_fork(&block)
           else
             on_worker_start(&block)
@@ -158,21 +158,8 @@ module Gitlab
           end
         end
 
-        def in_clustered_environment?
-          # Sidekiq doesn't fork
-          return false if Gitlab::Runtime.sidekiq?
-
-          # Puma sometimes forks
-          return true if in_clustered_puma?
-
-          # Default assumption is that we don't fork
-          false
-        end
-
         def in_clustered_puma?
-          return false unless Gitlab::Runtime.puma?
-
-          @puma_options && @puma_options[:workers] && @puma_options[:workers] > 0
+          Gitlab::Runtime.puma? && @puma_options && @puma_options[:workers] && @puma_options[:workers] > 0
         end
       end
     end

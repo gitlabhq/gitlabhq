@@ -62,10 +62,6 @@ module Gitlab
     end
 
     def self.quiet
-      # Disable database insertion logs so speed isn't limited by ability to print to console
-      old_logger = ActiveRecord::Base.logger
-      ActiveRecord::Base.logger = nil
-
       # Additional seed logic for models.
       Project.include(ProjectSeed)
       User.include(UserSeed)
@@ -75,9 +71,11 @@ module Gitlab
 
       SeedFu.quiet = true
 
-      without_statement_timeout do
-        without_new_note_notifications do
-          yield
+      without_database_logging do
+        without_statement_timeout do
+          without_new_note_notifications do
+            yield
+          end
         end
       end
 
@@ -85,7 +83,6 @@ module Gitlab
     ensure
       SeedFu.quiet = false
       ActionMailer::Base.perform_deliveries = old_perform_deliveries
-      ActiveRecord::Base.logger = old_logger
     end
 
     def self.without_gitaly_timeout
@@ -112,10 +109,30 @@ module Gitlab
     end
 
     def self.without_statement_timeout
-      ActiveRecord::Base.connection.execute('SET statement_timeout=0')
+      Gitlab::Database::EachDatabase.each_database_connection do |connection|
+        connection.execute('SET statement_timeout=0')
+      end
       yield
     ensure
-      ActiveRecord::Base.connection.execute('RESET statement_timeout')
+      Gitlab::Database::EachDatabase.each_database_connection do |connection|
+        connection.execute('RESET statement_timeout')
+      end
+    end
+
+    def self.without_database_logging
+      old_loggers = Gitlab::Database.database_base_models.transform_values do |model|
+        model.logger
+      end
+
+      Gitlab::Database.database_base_models.each do |_, model|
+        model.logger = nil
+      end
+
+      yield
+    ensure
+      Gitlab::Database.database_base_models.each do |connection_name, model|
+        model.logger = old_loggers[connection_name]
+      end
     end
   end
 end

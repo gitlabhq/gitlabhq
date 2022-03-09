@@ -72,6 +72,14 @@ module Gitlab
       # Imports all objects in parallel by scheduling a Sidekiq job for every
       # individual object.
       def parallel_import
+        if Feature.enabled?(:spread_parallel_import, default_enabled: :yaml) && parallel_import_batch.present?
+          spread_parallel_import
+        else
+          parallel_import_deprecated
+        end
+      end
+
+      def parallel_import_deprecated
         waiter = JobWaiter.new
 
         each_object_to_import do |object|
@@ -82,6 +90,33 @@ module Gitlab
 
           waiter.jobs_remaining += 1
         end
+
+        waiter
+      end
+
+      def spread_parallel_import
+        waiter = JobWaiter.new
+
+        import_arguments = []
+
+        each_object_to_import do |object|
+          repr = representation_class.from_api_response(object)
+
+          import_arguments << [project.id, repr.to_hash, waiter.key]
+
+          waiter.jobs_remaining += 1
+        end
+
+        # rubocop:disable Scalability/BulkPerformWithContext
+        Gitlab::ApplicationContext.with_context(project: project) do
+          sidekiq_worker_class.bulk_perform_in(
+            1.second,
+            import_arguments,
+            batch_size: parallel_import_batch[:size],
+            batch_delay: parallel_import_batch[:delay]
+          )
+        end
+        # rubocop:enable Scalability/BulkPerformWithContext
 
         waiter
       end
@@ -169,6 +204,12 @@ module Gitlab
       # The name of the method to call to retrieve the data to import.
       def collection_method
         raise NotImplementedError
+      end
+
+      # Default batch settings for parallel import (can be redefined in Importer classes)
+      # Example: { size: 100, delay: 1.minute }
+      def parallel_import_batch
+        {}
       end
 
       def abort_on_failure
