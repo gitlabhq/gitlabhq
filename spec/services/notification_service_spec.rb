@@ -7,7 +7,7 @@ RSpec.describe NotificationService, :mailer do
   include ExternalAuthorizationServiceHelpers
   include NotificationHelpers
 
-  let_it_be_with_refind(:project) { create(:project, :public) }
+  let_it_be_with_refind(:project, reload: true) { create(:project, :public) }
   let_it_be_with_refind(:assignee) { create(:user) }
 
   let(:notification) { described_class.new }

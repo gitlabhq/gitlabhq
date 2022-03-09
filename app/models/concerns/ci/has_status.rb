@@ -7,6 +7,9 @@ module Ci
     DEFAULT_STATUS = 'created'
     BLOCKED_STATUS = %w[manual scheduled].freeze
     AVAILABLE_STATUSES = %w[created waiting_for_resource preparing pending running success failed canceled skipped manual scheduled].freeze
+    # TODO: replace STARTED_STATUSES with data from BUILD_STARTED_RUNNING_STATUSES in https://gitlab.com/gitlab-org/gitlab/-/issues/273378
+    # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82149#note_865508501
+    BUILD_STARTED_RUNNING_STATUSES = %w[running success failed].freeze
     STARTED_STATUSES = %w[running success failed skipped manual scheduled].freeze
     ACTIVE_STATUSES = %w[waiting_for_resource preparing pending running].freeze
     COMPLETED_STATUSES = %w[success failed canceled skipped].freeze

@@ -14,16 +14,18 @@ RSpec.describe Resolvers::WorkItems::TypesResolver do
   end
 
   shared_examples 'a work item type resolver' do
-    subject(:result) { resolve(described_class, obj: object) }
+    let(:args) { {} }
+
+    subject(:result) { resolve(described_class, obj: object, args: args) }
 
     it 'returns all default work item types' do
       expect(result.to_a).to match(WorkItems::Type.default.order_by_name_asc)
     end
 
     context 'when requesting taskable types' do
-      it 'returns only taskable types' do
-        result = resolve(described_class, obj: group, args: { taskable: true })
+      let(:args) { { taskable: true } }
 
+      it 'returns only taskable types' do
         expect(result.to_a).to contain_exactly(WorkItems::Type.default_by_type(:task))
       end
     end

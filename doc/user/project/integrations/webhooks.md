@@ -147,7 +147,7 @@ GitLab webhooks, keep in mind the following:
   Most HTTP libraries take care of the response for you automatically but if
   you are writing a low-level hook, this is important to remember.
 - GitLab usually ignores the HTTP status code returned by your endpoint,
-  unless the `web_hooks_disable_failed` feature flag is set.
+  unless the [`web_hooks_disable_failed` feature flag is set](#failing-webhooks).
 
 ### Failing webhooks
 
@@ -251,8 +251,8 @@ If the endpoint doesn't send an HTTP response in those 10 seconds,
 GitLab may assume the webhook failed and retry it.
 
 If your webhooks are failing or you are receiving multiple requests,
-you can try changing the default timeout value.
-In your `/etc/gitlab/gitlab.rb` file, uncomment or add the following setting:
+an administrator can try changing the default timeout value
+by uncommenting or adding the following setting in `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 gitlab_rails['webhook_timeout'] = 10

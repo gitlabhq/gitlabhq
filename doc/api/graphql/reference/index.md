@@ -11097,7 +11097,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
-| <a id="groupbillablememberscount"></a>`billableMembersCount` | [`Int`](#int) | Number of billable users in the group. |
 | <a id="groupcontacts"></a>`contacts` | [`CustomerRelationsContactConnection`](#customerrelationscontactconnection) | Find contacts of this group. (see [Connections](#connections)) |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
@@ -11150,6 +11149,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
 
 #### Fields with arguments
+
+##### `Group.billableMembersCount`
+
+Number of billable users in the group.
+
+Returns [`Int`](#int).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupbillablememberscountrequestedhostedplan"></a>`requestedHostedPlan` | [`String`](#string) | Plan from which to get billable members. |
 
 ##### `Group.board`
 

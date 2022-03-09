@@ -437,40 +437,92 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       end
     end
 
-    describe '#user_commit_files' do
-      subject do
-        client.user_commit_files(
-          gitaly_user, 'my-branch', 'Commit files message', [], 'janedoe@example.com', 'Jane Doe',
-          'master', repository)
-      end
-
-      before do
+    shared_examples '#user_squash with an error' do
+      it 'raises a GitError exception' do
         expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
-          .and_return(response)
+          .to receive(:user_squash).with(request, kind_of(Hash))
+          .and_raise(raised_error)
+
+        expect { subject }.to raise_error(expected_error)
+      end
+    end
+
+    context 'when ResolveRevisionError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::INVALID_ARGUMENT,
+          'something failed',
+          Gitaly::UserSquashError.new(
+            resolve_revision: Gitaly::ResolveRevisionError.new(
+              revision: start_sha
+            )))
       end
 
-      context 'when a pre_receive_error is present' do
-        let(:response) { Gitaly::UserCommitFilesResponse.new(pre_receive_error: "GitLab: something failed") }
+      let(:expected_error) { Gitlab::Git::Repository::GitError }
 
-        it 'raises a PreReceiveError' do
-          expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
-        end
+      it_behaves_like '#user_squash with an error'
+    end
+
+    context 'when RebaseConflictError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::INTERNAL,
+          'something failed',
+          Gitaly::UserSquashError.new(
+            rebase_conflict: Gitaly::MergeConflictError.new(
+              conflicting_files: ['conflicting-file']
+            )))
       end
 
-      context 'when an index_error is present' do
-        let(:response) { Gitaly::UserCommitFilesResponse.new(index_error: "something failed") }
+      let(:expected_error) { Gitlab::Git::Repository::GitError }
 
-        it 'raises a PreReceiveError' do
-          expect { subject }.to raise_error(Gitlab::Git::Index::IndexError, "something failed")
-        end
+      it_behaves_like '#user_squash with an error'
+    end
+
+    context 'when non-detailed gRPC error is raised' do
+      let(:raised_error) do
+        GRPC::Internal.new('non-detailed error')
       end
 
-      context 'when branch_update is nil' do
-        let(:response) { Gitaly::UserCommitFilesResponse.new }
+      let(:expected_error) { GRPC::Internal }
 
-        it { expect(subject).to be_nil }
+      it_behaves_like '#user_squash with an error'
+    end
+  end
+
+  describe '#user_commit_files' do
+    subject do
+      client.user_commit_files(
+        gitaly_user, 'my-branch', 'Commit files message', [], 'janedoe@example.com', 'Jane Doe',
+        'master', repository)
+    end
+
+    before do
+      expect_any_instance_of(Gitaly::OperationService::Stub)
+        .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
+        .and_return(response)
+    end
+
+    context 'when a pre_receive_error is present' do
+      let(:response) { Gitaly::UserCommitFilesResponse.new(pre_receive_error: "GitLab: something failed") }
+
+      it 'raises a PreReceiveError' do
+        expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
       end
+    end
+
+    context 'when an index_error is present' do
+      let(:response) { Gitaly::UserCommitFilesResponse.new(index_error: "something failed") }
+
+      it 'raises a PreReceiveError' do
+        expect { subject }.to raise_error(Gitlab::Git::Index::IndexError, "something failed")
+      end
+    end
+
+    context 'when branch_update is nil' do
+      let(:response) { Gitaly::UserCommitFilesResponse.new }
+
+      it { expect(subject).to be_nil }
     end
   end
 

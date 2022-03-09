@@ -10,7 +10,7 @@ RSpec.describe API::Invitations do
   let(:email) { 'email1@example.com' }
   let(:email2) { 'email2@example.com' }
 
-  let_it_be(:project) do
+  let_it_be(:project, reload: true) do
     create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
       project.add_developer(developer)
       project.add_maintainer(maintainer)

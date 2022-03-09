@@ -158,8 +158,8 @@
   }
 
   hr {
-    // Darken 'whitesmoke' a bit to make it more visible in note bodies
-    border-color: darken($gray-normal, 8%);
+    border-color: rgba($black, 0.15);
+
     margin: 10px 0;
   }
 

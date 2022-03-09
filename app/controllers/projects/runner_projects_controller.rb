@@ -26,7 +26,8 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
 
   def destroy
     runner_project = project.runner_projects.find(params[:id])
-    runner_project.destroy
+
+    ::Ci::Runners::UnassignRunnerService.new(runner_project, current_user).execute
 
     redirect_to project_runners_path(project), status: :found, notice: s_('Runners|Runner unassigned from project.')
   end

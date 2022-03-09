@@ -13,7 +13,7 @@ RSpec.describe Admin::RunnerProjectsController do
   describe '#create' do
     let(:project_id) { project.path }
 
-    subject do
+    subject(:send_create) do
       post :create, params: {
         namespace_id: group.path,
         project_id: project_id,
@@ -25,7 +25,7 @@ RSpec.describe Admin::RunnerProjectsController do
       let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
       it 'redirects to the admin runner edit page' do
-        subject
+        send_create
 
         expect(response).to have_gitlab_http_status(:redirect)
         expect(response).to redirect_to edit_admin_runner_url(project_runner)
@@ -37,7 +37,7 @@ RSpec.describe Admin::RunnerProjectsController do
       let(:source_project) { create(:project) }
 
       it 'redirects to the admin runner edit page' do
-        subject
+        send_create
 
         expect(response).to have_gitlab_http_status(:redirect)
         expect(response).to redirect_to edit_admin_runner_url(project_runner)
@@ -50,7 +50,42 @@ RSpec.describe Admin::RunnerProjectsController do
       let(:project_id) { 0 }
 
       it 'shows 404 for unknown project' do
-        subject
+        send_create
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe '#destroy' do
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+
+    let(:project_id) { project.path }
+
+    subject(:send_destroy) do
+      delete :destroy, params: {
+        namespace_id: group.path,
+        project_id: project_id,
+        id: runner_project_id
+      }
+    end
+
+    context 'unassigning runner from project' do
+      let(:runner_project_id) { project_runner.runner_projects.last.id }
+
+      it 'redirects to the admin runner edit page' do
+        send_destroy
+
+        expect(response).to have_gitlab_http_status(:redirect)
+        expect(response).to redirect_to edit_admin_runner_url(project_runner)
+      end
+    end
+
+    context 'for unknown project runner relationship' do
+      let(:runner_project_id) { 0 }
+
+      it 'shows 404 for unknown project runner relationship' do
+        send_destroy
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DestroyService, :aggregate_failures do
+RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publisher do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }
@@ -15,7 +15,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
-    allow(Gitlab::EventStore).to receive(:publish)
   end
 
   shared_examples 'deleting the project' do
@@ -30,11 +29,8 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
 
     it 'publishes a ProjectDeleted event with project id and namespace id' do
       expected_data = { project_id: project.id, namespace_id: project.namespace_id }
-      expect(Gitlab::EventStore)
-        .to receive(:publish)
-        .with(event_type(Projects::ProjectDeletedEvent).containing(expected_data))
 
-      destroy_project(project, user, {})
+      expect { destroy_project(project, user, {}) }.to publish_event(Projects::ProjectDeletedEvent).with(expected_data)
     end
   end
 

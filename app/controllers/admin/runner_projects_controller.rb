@@ -18,7 +18,8 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
   def destroy
     rp = Ci::RunnerProject.find(params[:id])
     runner = rp.runner
-    rp.destroy
+
+    ::Ci::Runners::UnassignRunnerService.new(rp, current_user).execute
 
     redirect_to edit_admin_runner_url(runner), status: :found, notice: s_('Runners|Runner unassigned from project.')
   end

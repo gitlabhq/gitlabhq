@@ -3,7 +3,7 @@
 .row.d-none.d-sm-flex
   .col-12.calendar-block.gl-my-3
     .user-calendar.light{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: local_timezone_instance(@user.timezone).now.utc_offset } }
-      .gl-spinner.gl-spinner-md.gl-my-8
+      = gl_loading_icon(size: 'md', css_class: 'gl-my-8')
       .user-calendar-error.invisible
         = _('There was an error loading users activity calendar.')
         %a.js-retry-load{ href: '#' }
@@ -35,8 +35,7 @@
               = Feature.enabled?(:security_auto_fix) && @user.bot? ? s_('UserProfile|Bot activity') : s_('UserProfile|Activity')
             = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
           .overview-content-list{ data: { href: user_activity_path, qa_selector: 'user_activity_content' } }
-            .center.light.loading
-              .gl-spinner.gl-spinner-md
+            = gl_loading_icon(size: 'md', css_class: 'loading')
 
   - unless Feature.enabled?(:security_auto_fix) && @user.bot?
     .col-md-12.col-lg-6
@@ -47,5 +46,4 @@
               = s_('UserProfile|Personal projects')
             = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all"
           .overview-content-list{ data: { href: user_projects_path } }
-            .center.light.loading
-              .gl-spinner.gl-spinner-md
+            = gl_loading_icon(size: 'md', css_class: 'loading')
