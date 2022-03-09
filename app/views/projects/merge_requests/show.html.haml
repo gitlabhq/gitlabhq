@@ -76,9 +76,7 @@
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if @number_of_pipelines.nonzero?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      - params = request.query_parameters
-      - if Feature.enabled?(:default_merge_ref_for_diffs, @project, default_enabled: :yaml)
-        - params = params.merge(diff_head: true)
+      - params = request.query_parameters.merge(diff_head: true)
       = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 
     .mr-loading-status

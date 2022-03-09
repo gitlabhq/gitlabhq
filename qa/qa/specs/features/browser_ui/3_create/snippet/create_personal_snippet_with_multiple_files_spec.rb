@@ -27,7 +27,7 @@ module QA
       end
 
       it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347723' do
-        snippet.visit!
+        snippet
 
         Page::Dashboard::Snippet::Show.perform do |snippet|
           expect(snippet).to have_snippet_title('Personal snippet with multiple files')

@@ -109,7 +109,7 @@ RSpec.describe 'Merge requests > User lists merge requests' do
     expect(count_merge_requests).to eq(4)
   end
 
-  it 'sorts by milestone' do
+  it 'sorts by milestone due date' do
     visit_merge_requests(project, sort: sort_value_milestone)
 
     expect(first_merge_request).to include('fix')
@@ -130,12 +130,12 @@ RSpec.describe 'Merge requests > User lists merge requests' do
     expect(count_merge_requests).to eq(4)
   end
 
-  it 'filters on one label and sorts by due date' do
+  it 'filters on one label and sorts by milestone due date' do
     label = create(:label, project: project)
     create(:label_link, label: label, target: @fix)
 
     visit_merge_requests(project, label_name: [label.name],
-                                  sort: sort_value_due_date)
+                                  sort: sort_value_milestone)
 
     expect(first_merge_request).to include('fix')
     expect(count_merge_requests).to eq(1)
@@ -150,19 +150,19 @@ RSpec.describe 'Merge requests > User lists merge requests' do
       create(:label_link, label: label2, target: @fix)
     end
 
-    it 'sorts by due date' do
+    it 'sorts by milestone due date' do
       visit_merge_requests(project, label_name: [label.name, label2.name],
-                                    sort: sort_value_due_date)
+                                    sort: sort_value_milestone)
 
       expect(first_merge_request).to include('fix')
       expect(count_merge_requests).to eq(1)
     end
 
     context 'filter on assignee and' do
-      it 'sorts by due soon' do
+      it 'sorts by milestone due date' do
         visit_merge_requests(project, label_name: [label.name, label2.name],
                                       assignee_id: user.id,
-                                      sort: sort_value_due_date)
+                                      sort: sort_value_milestone)
 
         expect(first_merge_request).to include('fix')
         expect(count_merge_requests).to eq(1)

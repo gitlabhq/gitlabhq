@@ -40,6 +40,11 @@ pre.commit-message {
   color: $gl-text-color;
 }
 
+.gl-label-text-scoped {
+  padding: 0 5px;
+  color: $gl-text-color;
+}
+
 .content {
   .markdown-code-block pre.code {
     padding: $gl-padding-8 $input-horizontal-padding;

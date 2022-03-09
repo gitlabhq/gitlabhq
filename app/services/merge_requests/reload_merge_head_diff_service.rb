@@ -9,7 +9,6 @@ module MergeRequests
     end
 
     def execute
-      return error("default_merge_ref_for_diffs feature flag is disabled") unless enabled?
       return error("Merge request has no merge ref head.") unless merge_request.merge_ref_head.present?
 
       error_msg = recreate_merge_head_diff
@@ -22,10 +21,6 @@ module MergeRequests
     private
 
     attr_reader :merge_request
-
-    def enabled?
-      Feature.enabled?(:default_merge_ref_for_diffs, merge_request.project, default_enabled: :yaml)
-    end
 
     def recreate_merge_head_diff
       merge_request.merge_head_diff&.destroy!

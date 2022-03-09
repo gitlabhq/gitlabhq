@@ -115,6 +115,9 @@ RSpec.describe 'Dashboard Merge Requests' do
       within("span[aria-label='#{n_("%d merge request", "%d merge requests", 3) % 3}']") do
         expect(page).to have_content('3')
       end
+
+      find('.dashboard-shortcuts-merge_requests').click
+
       expect(find('.js-assigned-mr-count')).to have_content('2')
       expect(find('.js-reviewer-mr-count')).to have_content('1')
     end
@@ -165,16 +168,16 @@ RSpec.describe 'Dashboard Merge Requests' do
       expect(page).to have_content('Please select at least one filter to see results')
     end
 
-    it 'shows sorted merge requests' do
-      sort_by('Created date')
+    it 'shows sorted merge requests', :js do
+      pajamas_sort_by(s_('SortOptions|Created date'))
 
       visit merge_requests_dashboard_path(assignee_username: current_user.username)
 
       expect(find('.issues-filters')).to have_content('Created date')
     end
 
-    it 'keeps sorting merge requests after visiting Projects MR page' do
-      sort_by('Created date')
+    it 'keeps sorting merge requests after visiting Projects MR page', :js do
+      pajamas_sort_by(s_('SortOptions|Created date'))
 
       visit project_merge_requests_path(project)
 

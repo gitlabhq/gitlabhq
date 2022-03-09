@@ -299,11 +299,7 @@ To delete a project:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
 > - [Available to all users](https://gitlab.com/gitlab-org/gitlab/-/issues/346976) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `project_owners_list_project_pending_deletion`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available to all users. To make it available for administrators only,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `project_owners_list_project_pending_deletion`.
-On GitLab.com, this feature is available to all users.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) in GitLab 14.9. [Feature flag `project_owners_list_project_pending_deletion`](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) removed.
 
 When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
 projects within that group are not deleted immediately, but only after a delay. To access a list of all projects that are pending deletion:

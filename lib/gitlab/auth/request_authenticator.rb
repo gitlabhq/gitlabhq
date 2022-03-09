@@ -42,6 +42,10 @@ module Gitlab
         nil
       end
 
+      def can_sign_in_bot?(user)
+        user&.project_bot? && api_request?
+      end
+
       # To prevent Rack Attack from incorrectly rate limiting
       # authenticated Git activity, we need to authenticate the user
       # from other means (e.g. HTTP Basic Authentication) only if the

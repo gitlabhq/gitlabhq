@@ -10,7 +10,7 @@ module QA
           super
 
           base.view 'app/assets/javascripts/snippets/components/snippet_title.vue' do
-            element :snippet_title_content, required: true
+            element :snippet_title_content
           end
 
           base.view 'app/assets/javascripts/snippets/components/snippet_description_view.vue' do
@@ -87,7 +87,7 @@ module QA
         end
 
         def has_snippet_title?(snippet_title)
-          has_element? :snippet_title_content, text: snippet_title
+          has_element?(:snippet_title_content, text: snippet_title, wait: 10)
         end
 
         def has_snippet_description?(snippet_description)

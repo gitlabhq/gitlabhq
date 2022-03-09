@@ -9,6 +9,7 @@ type: concepts, howto
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218746) in GitLab 13.4 and GitLab Runner 13.4.
 > - `file` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
+> - `VAULT_NAMESPACE` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255619) in GitLab 14.9 and GitLab Runner 14.9.
 
 Secrets represent sensitive information your CI job needs to complete work. This
 sensitive information can be items like API tokens, database credentials, or private keys.
@@ -90,6 +91,9 @@ To configure your Vault server:
      If no role is specified, Vault uses the [default role](https://www.vaultproject.io/api/auth/jwt#default_role)
      specified when the authentication method was configured.
    - `VAULT_AUTH_PATH` - Optional. The path where the authentication method is mounted, default is `jwt`.
+   - `VAULT_NAMESPACE` - Optional. The [Vault Enterprise namespace](https://www.vaultproject.io/docs/enterprise/namespaces) to use for reading secrets and authentication.
+     If no namespace is specified, Vault uses the `root` ("`/`") namespace. 
+     The setting is ignored by Vault Open Source. 
 
    NOTE:
    Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).

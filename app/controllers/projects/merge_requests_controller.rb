@@ -37,7 +37,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action only: [:show] do
     push_frontend_feature_flag(:file_identifier_hash)
     push_frontend_feature_flag(:merge_request_widget_graphql, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:default_merge_ref_for_diffs, project, default_enabled: :yaml)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:paginated_notes, project, default_enabled: :yaml)
     push_frontend_feature_flag(:confidential_notes, project, default_enabled: :yaml)
@@ -553,12 +552,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def endpoint_metadata_url(project, merge_request)
-    params = request.query_parameters
-    params[:view] = "inline"
-
-    if Feature.enabled?(:default_merge_ref_for_diffs, project, default_enabled: :yaml)
-      params = params.merge(diff_head: true)
-    end
+    params = request.query_parameters.merge(view: 'inline', diff_head: true)
 
     diffs_metadata_project_json_merge_request_path(project, merge_request, 'json', params)
   end

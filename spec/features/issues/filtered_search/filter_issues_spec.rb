@@ -556,7 +556,7 @@ RSpec.describe 'Filter issues', :js do
         sort_toggle = find('.filter-dropdown-container .dropdown')
         sort_toggle.click
 
-        find('.filter-dropdown-container .dropdown-menu li a', text: 'Created date').click
+        find('.dropdown-item', text: 'Created date').click
         wait_for_requests
 
         expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(new_issue.title)

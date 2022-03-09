@@ -1,9 +1,10 @@
 code_quality:
   stage: test
-  image: docker:19.03.12
+  image: docker:20.10.12
   allow_failure: true
   services:
-    - docker:19.03.12-dind
+    - name: 'docker:20.10.12-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""

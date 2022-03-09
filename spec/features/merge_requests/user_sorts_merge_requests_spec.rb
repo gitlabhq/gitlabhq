@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User sorts merge requests' do
+RSpec.describe 'User sorts merge requests', :js do
   include CookieHelper
+  include Spec::Support::Helpers::Features::SortingHelpers
 
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let!(:merge_request2) do
@@ -22,23 +23,19 @@ RSpec.describe 'User sorts merge requests' do
   end
 
   it 'keeps the sort option' do
-    find('.filter-dropdown-container .dropdown').click
-
-    page.within('ul.dropdown-menu.dropdown-menu-right li') do
-      click_link('Milestone')
-    end
+    pajamas_sort_by(s_('SortOptions|Milestone'))
 
     visit(merge_requests_dashboard_path(assignee_username: user.username))
 
-    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
+    expect(find('.filter-dropdown-container button.dropdown-toggle')).to have_content('Milestone')
 
     visit(project_merge_requests_path(project))
 
-    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
+    expect(find('.filter-dropdown-container button.dropdown-toggle')).to have_content('Milestone')
 
     visit(merge_requests_group_path(group))
 
-    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
+    expect(find('.filter-dropdown-container button.dropdown-toggle')).to have_content('Milestone')
   end
 
   it 'fallbacks to issuable_sort cookie key when remembering the sorting option' do
@@ -46,17 +43,13 @@ RSpec.describe 'User sorts merge requests' do
 
     visit(merge_requests_dashboard_path(assignee_username: user.username))
 
-    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
+    expect(find('.filter-dropdown-container button.dropdown-toggle')).to have_content('Milestone')
   end
 
   it 'separates remember sorting with issues' do
     create(:issue, project: project)
 
-    find('.filter-dropdown-container .dropdown').click
-
-    page.within('ul.dropdown-menu.dropdown-menu-right li') do
-      click_link('Milestone')
-    end
+    pajamas_sort_by(s_('SortOptions|Milestone'))
 
     visit(project_issues_path(project))
 
@@ -73,11 +66,7 @@ RSpec.describe 'User sorts merge requests' do
     end
 
     it 'sorts by popularity' do
-      find('.filter-dropdown-container .dropdown').click
-
-      page.within('ul.dropdown-menu.dropdown-menu-right li') do
-        click_link('Popularity')
-      end
+      pajamas_sort_by(s_('SortOptions|Popularity'))
 
       page.within('.mr-list') do
         page.within('li.merge-request:nth-child(1)') do

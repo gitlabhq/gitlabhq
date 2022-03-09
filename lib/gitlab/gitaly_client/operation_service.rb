@@ -119,10 +119,6 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :operation_service,
                                      :user_merge_to_ref, request, timeout: GitalyClient.long_timeout)
 
-        if pre_receive_error = response.pre_receive_error.presence
-          raise Gitlab::Git::PreReceiveError, pre_receive_error
-        end
-
         response.commit_id
       end
 
@@ -152,10 +148,6 @@ module Gitlab
         request_enum.push(Gitaly::UserMergeBranchRequest.new(apply: true))
 
         second_response = response_enum.next
-
-        if second_response.pre_receive_error.present?
-          raise Gitlab::Git::PreReceiveError, second_response.pre_receive_error
-        end
 
         branch_update = second_response.branch_update
         return if branch_update.nil?

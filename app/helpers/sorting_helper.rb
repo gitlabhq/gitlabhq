@@ -243,6 +243,51 @@ module SortingHelper
     sort_options_hash[sort_value]
   end
 
+  def issuable_sort_options(viewing_issues, viewing_merge_requests)
+    options = [
+      { value: sort_value_priority, text: sort_title_priority, href: page_filter_path(sort: sort_value_priority) },
+      { value: sort_value_created_date, text: sort_title_created_date, href: page_filter_path(sort: sort_value_created_date) },
+      { value: sort_value_recently_updated, text: sort_title_recently_updated, href: page_filter_path(sort: sort_value_recently_updated) },
+      { value: sort_value_milestone, text: sort_title_milestone, href: page_filter_path(sort: sort_value_milestone) }
+    ]
+
+    options.concat([due_date_option]) if viewing_issues
+
+    options.concat([popularity_option, label_priority_option])
+    options.concat([merged_option, closed_option]) if viewing_merge_requests
+    options.concat([relative_position_option]) if viewing_issues
+
+    options.concat([title_option])
+  end
+
+  def due_date_option
+    { value: sort_value_due_date, text: sort_title_due_date, href: page_filter_path(sort: sort_value_due_date) }
+  end
+
+  def popularity_option
+    { value: sort_value_popularity, text: sort_title_popularity, href: page_filter_path(sort: sort_value_popularity) }
+  end
+
+  def label_priority_option
+    { value: sort_value_label_priority, text: sort_title_label_priority, href: page_filter_path(sort: sort_value_label_priority) }
+  end
+
+  def merged_option
+    { value: sort_value_merged_date, text: sort_title_merged_date, href: page_filter_path(sort: sort_value_merged_date) }
+  end
+
+  def closed_option
+    { value: sort_value_closed_date, text: sort_title_closed_date, href: page_filter_path(sort: sort_value_closed_date) }
+  end
+
+  def relative_position_option
+    { value: sort_value_relative_position, text: sort_title_relative_position, href: page_filter_path(sort: sort_value_relative_position) }
+  end
+
+  def title_option
+    { value: sort_value_title, text: sort_title_title, href: page_filter_path(sort: sort_value_title) }
+  end
+
   def sort_direction_icon(sort_value)
     case sort_value
     when sort_value_milestone, sort_value_due_date, sort_value_merged_date, sort_value_closed_date, /_asc\z/
