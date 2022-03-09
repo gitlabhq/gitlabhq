@@ -10,6 +10,7 @@ module QA
     end
 
     before do
+      set_kube_ingress_base_domain(project)
       disable_optional_jobs(project)
     end
 
@@ -72,6 +73,15 @@ module QA
     end
 
     private
+
+    def set_kube_ingress_base_domain(project)
+      Resource::CiVariable.fabricate_via_api! do |resource|
+        resource.project = project
+        resource.key = 'KUBE_INGRESS_BASE_DOMAIN'
+        resource.value = 'example.com'
+        resource.masked = false
+      end
+    end
 
     def disable_optional_jobs(project)
       %w[
