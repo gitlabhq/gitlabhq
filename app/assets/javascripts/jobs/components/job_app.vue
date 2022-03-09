@@ -3,7 +3,6 @@ import { GlLoadingIcon, GlIcon, GlSafeHtmlDirective as SafeHtml, GlAlert } from 
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { throttle, isEmpty } from 'lodash';
 import { mapGetters, mapState, mapActions } from 'vuex';
-import CodeQualityWalkthrough from '~/code_quality_walkthrough/components/step.vue';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { __, sprintf } from '~/locale';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
@@ -33,7 +32,6 @@ export default {
     GlLoadingIcon,
     SharedRunner: () => import('ee_component/jobs/components/shared_runner_limit_block.vue'),
     GlAlert,
-    CodeQualityWalkthrough,
   },
   directives: {
     SafeHtml,
@@ -65,11 +63,6 @@ export default {
       required: true,
     },
     subscriptionsMoreMinutesUrl: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    codeQualityHelpUrl: {
       type: String,
       required: false,
       default: null,
@@ -123,9 +116,6 @@ export default {
       return this.shouldRenderCalloutMessage && !this.hasUnmetPrerequisitesFailure;
     },
 
-    shouldRenderCodeQualityWalkthrough() {
-      return this.job.status.group === 'failed-with-warnings';
-    },
     itemName() {
       return sprintf(__('Job %{jobName}'), { jobName: this.job.name });
     },
@@ -224,11 +214,6 @@ export default {
           >
             <div v-safe-html="job.callout_message"></div>
           </gl-alert>
-          <code-quality-walkthrough
-            v-if="shouldRenderCodeQualityWalkthrough"
-            step="troubleshoot_job"
-            :link="codeQualityHelpUrl"
-          />
         </header>
         <!-- EO Header Section -->
 

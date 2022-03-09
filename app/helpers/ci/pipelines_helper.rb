@@ -98,7 +98,6 @@ module Ci
         has_gitlab_ci: has_gitlab_ci?(project).to_s,
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
         suggested_ci_templates: suggested_ci_templates.to_json,
-        code_quality_page_path: project.present(current_user: current_user).add_code_quality_ci_yml_path,
         ci_runner_settings_path: project_settings_ci_cd_path(project, ci_runner_templates: true, anchor: 'js-runners-settings')
       }
 

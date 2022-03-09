@@ -2,7 +2,7 @@
 
 module IncidentManagement
   module PagerDuty
-    class ProcessWebhookService
+    class ProcessWebhookService < ::BaseProjectService
       include Gitlab::Utils::StrongMemoize
       include IncidentManagement::Settings
 
@@ -13,7 +13,8 @@ module IncidentManagement
       PAGER_DUTY_PROCESSABLE_EVENT_TYPES = %w(incident.trigger).freeze
 
       def initialize(project, payload)
-        @project = project
+        super(project: project)
+
         @payload = payload
       end
 
@@ -29,7 +30,7 @@ module IncidentManagement
 
       private
 
-      attr_reader :project, :payload
+      attr_reader :payload
 
       def process_incidents
         pager_duty_processable_events.each do |event|

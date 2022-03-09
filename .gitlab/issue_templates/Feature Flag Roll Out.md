@@ -89,7 +89,8 @@ _Consider adding links to check for Sentry errors, Production logs for 5xx, 302s
 - [ ] Ensure that you or a representative in development can be available for at least 2 hours after feature flag updates in production.
   If a different developer will be covering, or an exception is needed, please inform the oncall SRE by using the `@sre-oncall` Slack alias.
 - [ ] Ensure that documentation has been updated ([More info](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#features-that-became-enabled-by-default)).
-- [ ] Announce on [the feature issue](ISSUE LINK) an estimated time this will be enabled on GitLab.com.
+- [ ] Announce on [the feature issue](ISSUE LINK) an estimated time this will be enabled on GitLab.com. 
+- [ ] Ensure that any breaking changes have been announced following the [release post process](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes) to ensure GitLab customers are aware.
 - [ ] Notify `#support_gitlab-com` and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
 
 ### Global rollout on production

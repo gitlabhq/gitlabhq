@@ -34,7 +34,6 @@ describe('Job App', () => {
   const props = {
     artifactHelpUrl: 'help/artifact',
     deploymentHelpUrl: 'help/deployment',
-    codeQualityHelpPath: '/help/code_quality',
     runnerSettingsUrl: 'settings/ci-cd/runners',
     terminalPath: 'jobs/123/terminal',
     projectPath: 'user-name/project-name',

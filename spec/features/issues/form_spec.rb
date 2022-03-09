@@ -187,6 +187,14 @@ RSpec.describe 'New/edit issue', :js do
       end
     end
 
+    it 'displays an error message when submitting an invalid form' do
+      click_button 'Create issue'
+
+      page.within('[data-testid="issue-title-input-field"]') do
+        expect(page).to have_text(_('This field is required.'))
+      end
+    end
+
     it 'correctly updates the dropdown toggle when removing a label' do
       click_button 'Labels'
 

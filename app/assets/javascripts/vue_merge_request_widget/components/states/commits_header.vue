@@ -77,7 +77,7 @@ export default {
             :target-branch="targetBranch"
           />
         </span>
-        <gl-button variant="link" class="modify-message-button">
+        <gl-button category="tertiary" variant="confirm" size="small" class="modify-message-button">
           {{ modifyLinkMessage }}
         </gl-button>
       </span>

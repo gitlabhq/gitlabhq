@@ -12,8 +12,8 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import getAlertsQuery from '~/graphql_shared/queries/get_alerts.query.graphql';
+import { sortObjectToString } from '~/lib/utils/table_utility';
 import { fetchPolicies } from '~/lib/graphql';
-import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
 import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
@@ -213,11 +213,8 @@ export default {
   },
   methods: {
     fetchSortedData({ sortBy, sortDesc }) {
-      const sortingDirection = sortDesc ? 'DESC' : 'ASC';
-      const sortingColumn = convertToSnakeCase(sortBy).toUpperCase();
-
       this.pagination = initialPaginationState;
-      this.sort = `${sortingColumn}_${sortingDirection}`;
+      this.sort = sortObjectToString({ sortBy, sortDesc });
     },
     navigateToAlertDetails({ iid }, index, { metaKey }) {
       return visitUrl(joinPaths(window.location.pathname, iid, 'details'), metaKey);

@@ -8891,9 +8891,6 @@ msgstr ""
 msgid "CommitMessage|Add %{file_name}"
 msgstr ""
 
-msgid "CommitMessage|Add %{file_name} and create a code quality job"
-msgstr ""
-
 msgid "CommitWidget|authored"
 msgstr ""
 
@@ -26927,9 +26924,6 @@ msgstr ""
 msgid "Pipelines|API"
 msgstr ""
 
-msgid "Pipelines|Add a code quality job"
-msgstr ""
-
 msgid "Pipelines|Are you sure you want to run this pipeline?"
 msgstr ""
 
@@ -26988,9 +26982,6 @@ msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to
 msgstr ""
 
 msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
-msgstr ""
-
-msgid "Pipelines|Improve code quality with GitLab CI/CD"
 msgstr ""
 
 msgid "Pipelines|Install GitLab Runner"
@@ -27096,9 +27087,6 @@ msgid "Pipelines|This pipeline will run code originating from a forked project m
 msgstr ""
 
 msgid "Pipelines|This project is not currently set up to run pipelines."
-msgstr ""
-
-msgid "Pipelines|To keep your codebase simple, readable, and accessible to contributors, use GitLab CI/CD to analyze your code quality with every push to your project."
 msgstr ""
 
 msgid "Pipelines|Token"
@@ -33023,6 +33011,9 @@ msgid "SecurityReports|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "SecurityReports|Status"
+msgstr ""
+
+msgid "SecurityReports|Submit vulnerability"
 msgstr ""
 
 msgid "SecurityReports|Take survey"
@@ -43324,45 +43315,6 @@ msgid "closed"
 msgstr ""
 
 msgid "closed issue"
-msgstr ""
-
-msgid "codeQualityWalkthrough|A code quality job will now run every time you or your team members commit changes to your project. You can view the results of the code quality job in the job logs."
-msgstr ""
-
-msgid "codeQualityWalkthrough|Congrats! Your first pipeline is running %{emojiStart}zap%{emojiEnd}"
-msgstr ""
-
-msgid "codeQualityWalkthrough|Got it"
-msgstr ""
-
-msgid "codeQualityWalkthrough|Let's start by creating a new CI file."
-msgstr ""
-
-msgid "codeQualityWalkthrough|Not sure how to fix your failed job? We have compiled some tips on how to troubleshoot code quality jobs in the documentation."
-msgstr ""
-
-msgid "codeQualityWalkthrough|Read the documentation"
-msgstr ""
-
-msgid "codeQualityWalkthrough|Something went wrong. %{emojiStart}thinking%{emojiEnd} Let's fix it."
-msgstr ""
-
-msgid "codeQualityWalkthrough|To begin with code quality, we first need to create a new CI file using our code editor. We added a code quality template in the code editor to help you get started %{emojiStart}wink%{emojiEnd} .%{lineBreak}Take some time to review the template, when you are ready, use the %{strongStart}commit changes%{strongEnd} button at the bottom of the page."
-msgstr ""
-
-msgid "codeQualityWalkthrough|Troubleshoot your code quality job"
-msgstr ""
-
-msgid "codeQualityWalkthrough|View the logs"
-msgstr ""
-
-msgid "codeQualityWalkthrough|Well done! You've just automated your code quality review. %{emojiStart}raised_hands%{emojiEnd}"
-msgstr ""
-
-msgid "codeQualityWalkthrough|Your job failed. No worries - this happens. Let's view the logs, and see how we can fix it."
-msgstr ""
-
-msgid "codeQualityWalkthrough|Your pipeline can take a few minutes to run. If you enabled email notifications, you'll receive an email with your pipeline status. In the meantime, why don't you get some coffee? You earned it!"
 msgstr ""
 
 msgid "collect usage information"

@@ -51,7 +51,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        enable_code_quality_walkthrough_experiment
         enable_runners_availability_section_experiment
       end
       format.json do
@@ -220,7 +219,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     PipelineSerializer
       .new(project: @project, current_user: @current_user)
       .with_pagination(request, response)
-      .represent(@pipelines, disable_coverage: true, preload: true, code_quality_walkthrough: params[:code_quality_walkthrough].present?)
+      .represent(@pipelines, disable_coverage: true, preload: true)
   end
 
   def render_show
@@ -303,20 +302,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index_params
     params.permit(:scope, :username, :ref, :status, :source)
-  end
-
-  def enable_code_quality_walkthrough_experiment
-    experiment(:code_quality_walkthrough, namespace: project.root_ancestor) do |e|
-      e.exclude! unless current_user
-      e.exclude! unless can?(current_user, :create_pipeline, project)
-      e.exclude! unless project.root_ancestor.recent?
-      e.exclude! if @pipelines_count.to_i > 0
-      e.exclude! if helpers.has_gitlab_ci?(project)
-
-      e.control {}
-      e.candidate {}
-      e.publish_to_database
-    end
   end
 
   def enable_runners_availability_section_experiment

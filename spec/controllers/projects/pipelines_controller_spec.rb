@@ -292,10 +292,6 @@ RSpec.describe Projects::PipelinesController do
 
     subject { project.namespace }
 
-    context 'code_quality_walkthrough experiment' do
-      it_behaves_like 'tracks assignment and records the subject', :code_quality_walkthrough, :namespace
-    end
-
     context 'runners_availability_section experiment' do
       it_behaves_like 'tracks assignment and records the subject', :runners_availability_section, :namespace
     end

@@ -120,7 +120,6 @@ RSpec.describe Ci::PipelinesHelper do
                                            :has_gitlab_ci,
                                            :pipeline_editor_path,
                                            :suggested_ci_templates,
-                                           :code_quality_page_path,
                                            :ci_runner_settings_path])
     end
 

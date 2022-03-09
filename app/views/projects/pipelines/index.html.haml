@@ -4,7 +4,7 @@
 
 = render_if_exists "shared/shared_runners_minutes_limit_flash_message"
 
-- list_url = project_pipelines_path(@project, format: :json, code_quality_walkthrough: params[:code_quality_walkthrough])
+- list_url = project_pipelines_path(@project, format: :json)
 - add_page_startup_api_call list_url
 
 #pipelines-list-vue{ data: pipelines_list_data(@project, list_url) }

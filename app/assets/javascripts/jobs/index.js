@@ -14,7 +14,6 @@ const initializeJobPage = (element) => {
   const {
     artifactHelpUrl,
     deploymentHelpUrl,
-    codeQualityHelpUrl,
     runnerSettingsUrl,
     subscriptionsMoreMinutesUrl,
     endpoint,
@@ -39,7 +38,6 @@ const initializeJobPage = (element) => {
         props: {
           artifactHelpUrl,
           deploymentHelpUrl,
-          codeQualityHelpUrl,
           runnerSettingsUrl,
           subscriptionsMoreMinutesUrl,
           endpoint,

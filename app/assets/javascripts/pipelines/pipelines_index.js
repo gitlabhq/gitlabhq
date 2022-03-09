@@ -37,7 +37,6 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     resetCachePath,
     projectId,
     params,
-    codeQualityPagePath,
     ciRunnerSettingsPath,
     anyRunnersAvailable,
   } = el.dataset;
@@ -77,7 +76,6 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
           resetCachePath,
           projectId,
           params: JSON.parse(params),
-          codeQualityPagePath,
           ciRunnerSettingsPath,
           anyRunnersAvailable: parseBoolean(anyRunnersAvailable),
         },
