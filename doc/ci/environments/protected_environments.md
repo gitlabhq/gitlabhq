@@ -163,9 +163,8 @@ For more information, see [Deployment safety](deployment_safety.md).
 Typically, large enterprise organizations have an explicit permission boundary
 between [developers and operators](https://about.gitlab.com/topics/devops/).
 Developers build and test their code, and operators deploy and monitor the
-application. With group-level protected environments, the permission of each
-group is carefully configured in order to prevent unauthorized access and
-maintain proper separation of duty. Group-level protected environments
+application. With group-level protected environments, operators can
+restrict access to critical environments from developers. Group-level protected environments
 extend the [project-level protected environments](#protecting-environments)
 to the group-level.
 
@@ -193,12 +192,6 @@ By using deployment tiers, both are recognized as `production` deployment tier
 and are protected at the same time.
 
 ### Configure group-level memberships
-
-In an enterprise organization, with thousands of projects under a single group,
-ensuring that all of the [project-level protected environments](#protecting-environments)
-are properly configured is not a scalable solution. For example, a developer
-might gain privileged access to a higher environment when they are given the Maintainer role
-for a new project. Group-level protected environments can be a solution in this situation.
 
 To maximize the effectiveness of group-level protected environments,
 [group-level memberships](../../user/group/index.md) must be correctly
@@ -237,7 +230,7 @@ Having this configuration in place:
 - If a user is about to run a deployment job in a project but disallowed to
   deploy to the environment, the deployment job fails with an error message.
 
-### Protect a group-level environment
+### Protect critical environments under a group
 
 To protect a group-level environment:
 

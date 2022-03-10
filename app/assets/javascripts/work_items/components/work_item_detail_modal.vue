@@ -34,7 +34,10 @@ export default {
         };
       },
       update(data) {
-        return data.localWorkItem;
+        return data.workItem;
+      },
+      skip() {
+        return !this.workItemId;
       },
       error() {
         this.$emit(
@@ -46,10 +49,7 @@ export default {
   },
   computed: {
     workItemTitle() {
-      return this.workItem?.widgets?.nodes.find(
-        // eslint-disable-next-line no-underscore-dangle
-        (widget) => widget.__typename === 'LocalTitleWidget',
-      )?.contentText;
+      return this.workItem?.title;
     },
   },
 };

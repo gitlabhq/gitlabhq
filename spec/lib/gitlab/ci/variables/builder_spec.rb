@@ -158,7 +158,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
         allow(pipeline).to receive(:predefined_variables) { [var('C', 3), var('D', 3)] }
         allow(job).to receive(:runner) { double(predefined_variables: [var('D', 4), var('E', 4)]) }
         allow(builder).to receive(:kubernetes_variables) { [var('E', 5), var('F', 5)] }
-        allow(builder).to receive(:deployment_variables) { [var('F', 6), var('G', 6)] }
         allow(job).to receive(:yaml_variables) { [var('G', 7), var('H', 7)] }
         allow(builder).to receive(:user_variables) { [var('H', 8), var('I', 8)] }
         allow(job).to receive(:dependency_variables) { [var('I', 9), var('J', 9)] }
@@ -177,7 +176,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
            var('C', 3), var('D', 3),
            var('D', 4), var('E', 4),
            var('E', 5), var('F', 5),
-           var('F', 6), var('G', 6),
            var('G', 7), var('H', 7),
            var('H', 8), var('I', 8),
            var('I', 9), var('J', 9),
@@ -193,7 +191,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
         expect(subject.to_hash).to match(
           'A' => '1', 'B' => '2',
           'C' => '3', 'D' => '4',
-          'E' => '5', 'F' => '6',
+          'E' => '5', 'F' => '5',
           'G' => '7', 'H' => '8',
           'I' => '9', 'J' => '10',
           'K' => '11', 'L' => '12',
@@ -231,7 +229,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
     let(:template) { double(to_yaml: 'example-kubeconfig', valid?: template_valid) }
     let(:template_valid) { true }
 
-    subject { builder.kubernetes_variables(job) }
+    subject { builder.kubernetes_variables(environment: nil, job: job) }
 
     before do
       allow(Ci::GenerateKubeconfigService).to receive(:new).with(job).and_return(service)
@@ -243,6 +241,16 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
       let(:template_valid) { false }
 
       it { is_expected.not_to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }
+    end
+
+    it 'includes #deployment_variables and merges the KUBECONFIG values', :aggregate_failures do
+      expect(builder).to receive(:deployment_variables).and_return([
+        { key: 'KUBECONFIG', value: 'deployment-kubeconfig' },
+        { key: 'OTHER', value: 'some value' }
+      ])
+      expect(template).to receive(:merge_yaml).with('deployment-kubeconfig')
+      expect(subject['KUBECONFIG'].value).to eq('example-kubeconfig')
+      expect(subject['OTHER'].value).to eq('some value')
     end
   end
 

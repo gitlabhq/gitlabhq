@@ -5,7 +5,6 @@ require "spec_helper"
 RSpec.describe "User sorts issues" do
   include SortingHelper
   include IssueHelpers
-  include Spec::Support::Helpers::Features::SortingHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
@@ -25,22 +24,26 @@ RSpec.describe "User sorts issues" do
     sign_in(user)
   end
 
-  it 'keeps the sort option', :js do
+  it 'keeps the sort option' do
     visit(project_issues_path(project))
 
-    pajamas_sort_by(s_('SortOptions|Milestone'))
+    find('.filter-dropdown-container .dropdown').click
+
+    page.within('ul.dropdown-menu.dropdown-menu-right li') do
+      click_link('Milestone')
+    end
 
     visit(issues_dashboard_path(assignee_username: user.username))
 
-    expect(find('.filter-dropdown-container button.dropdown-toggle')).to have_content('Milestone')
+    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
 
     visit(project_issues_path(project))
 
-    expect(find('.filter-dropdown-container button.dropdown-toggle')).to have_content('Milestone')
+    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
 
     visit(issues_group_path(group))
 
-    expect(find('.filter-dropdown-container button.dropdown-toggle')).to have_content('Milestone')
+    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
   end
 
   it 'sorts by popularity', :js do

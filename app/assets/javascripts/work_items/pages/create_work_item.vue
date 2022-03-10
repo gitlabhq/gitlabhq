@@ -1,6 +1,8 @@
 <script>
 import { GlButton, GlAlert, GlLoadingIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import workItemQuery from '../graphql/work_item.query.graphql';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
 
@@ -67,19 +69,43 @@ export default {
           variables: {
             input: {
               title: this.title,
+              projectPath: this.fullPath,
+              workItemTypeId: this.selectedWorkItemType?.id,
             },
+          },
+          update(store, { data: { workItemCreate } }) {
+            const { id, title, workItemType } = workItemCreate.workItem;
+
+            store.writeQuery({
+              query: workItemQuery,
+              variables: {
+                id,
+              },
+              data: {
+                workItem: {
+                  __typename: 'WorkItem',
+                  id,
+                  title,
+                  workItemType,
+                  widgets: {
+                    __typename: 'LocalWorkItemWidgetConnection',
+                    nodes: [],
+                  },
+                },
+              },
+            });
           },
         });
 
         const {
           data: {
-            localCreateWorkItem: {
+            workItemCreate: {
               workItem: { id, type },
             },
           },
         } = response;
         if (!this.isModal) {
-          this.$router.push({ name: 'workItem', params: { id } });
+          this.$router.push({ name: 'workItem', params: { id: `${getIdFromGraphQLId(id)}` } });
         } else {
           this.$emit('onCreate', { id, title: this.title, type });
         }

@@ -1,9 +1,10 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import { widgetTypes, WI_TITLE_TRACK_LABEL } from '../constants';
+import { WI_TITLE_TRACK_LABEL } from '../constants';
 
 import ItemTitle from '../components/item_title.vue';
 
@@ -14,6 +15,7 @@ export default {
   components: {
     ItemTitle,
     GlAlert,
+    GlLoadingIcon,
   },
   mixins: [trackingMixin],
   props: {
@@ -24,7 +26,7 @@ export default {
   },
   data() {
     return {
-      workItem: null,
+      workItem: {},
       error: false,
     };
   },
@@ -33,11 +35,8 @@ export default {
       query: workItemQuery,
       variables() {
         return {
-          id: this.id,
+          id: this.gid,
         };
-      },
-      update(data) {
-        return data.localWorkItem;
       },
     },
   },
@@ -50,19 +49,19 @@ export default {
         property: '[type_work_item]',
       };
     },
-    titleWidgetData() {
-      return this.workItem?.widgets?.nodes?.find((widget) => widget.type === widgetTypes.title);
+    gid() {
+      return convertToGraphQLId('WorkItem', this.id);
     },
   },
   methods: {
-    async updateWorkItem(title) {
+    async updateWorkItem(updatedTitle) {
       try {
         await this.$apollo.mutate({
           mutation: updateWorkItemMutation,
           variables: {
             input: {
-              id: this.id,
-              title,
+              id: this.gid,
+              title: updatedTitle,
             },
           },
         });
@@ -82,12 +81,18 @@ export default {
     }}</gl-alert>
     <!-- Title widget placeholder -->
     <div>
-      <item-title
-        v-if="titleWidgetData"
-        :initial-title="titleWidgetData.contentText"
-        data-testid="title"
-        @title-changed="updateWorkItem"
+      <gl-loading-icon
+        v-if="$apollo.queries.workItem.loading"
+        size="md"
+        data-testid="loading-types"
       />
+      <template v-else>
+        <item-title
+          :initial-title="workItem.title"
+          data-testid="title"
+          @title-changed="updateWorkItem"
+        />
+      </template>
     </div>
   </section>
 </template>

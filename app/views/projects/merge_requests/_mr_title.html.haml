@@ -6,12 +6,12 @@
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
-    .gl-alert.gl-alert-danger.gl-mb-5
-      .gl-alert-container
-        = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-        .gl-alert-content
-          .gl-alert-body
-            The source project of this merge request has been removed.
+    = render 'shared/global_alert',
+      alert_class: 'gl-mb-5',
+      variant: :danger,
+      dismissible: false do
+      .gl-alert-body
+        = _('The source project of this merge request has been removed.')
 
   .detail-page-header.border-bottom-0.pt-0.pb-0
     .detail-page-header-body
@@ -45,9 +45,9 @@
               %li= link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
 
         - if can_update_merge_request
-          = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "d-none d-md-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
+          = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "gl-display-none gl-md-display-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
 
         - if can_update_merge_request && !are_close_and_open_buttons_hidden
           = render 'projects/merge_requests/close_reopen_draft_report_toggle'
         - elsif !@merge_request.merged?
-          = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-md-display-block gl-button btn btn-default float-right gl-ml-3', title: _('Report abuse')
+          = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-md-display-block gl-button btn btn-default gl-float-right gl-ml-3', title: _('Report abuse')

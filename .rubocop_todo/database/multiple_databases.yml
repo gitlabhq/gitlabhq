@@ -1,10 +1,6 @@
 ---
 Database/MultipleDatabases:
   Exclude:
-  - ee/lib/gitlab/geo/database_tasks.rb
-  - ee/lib/gitlab/geo/geo_tasks.rb
-  - ee/lib/gitlab/geo/health_check.rb
-  - ee/lib/gitlab/geo/log_cursor/daemon.rb
   - ee/spec/services/ee/merge_requests/update_service_spec.rb
   - lib/backup/database.rb
   - lib/backup/manager.rb

@@ -1,16 +1,16 @@
 #import './widget.fragment.graphql'
 
-mutation createWorkItem($input: LocalCreateWorkItemInput) {
-  localCreateWorkItem(input: $input) @client {
+mutation createWorkItem($input: WorkItemCreateInput!) {
+  workItemCreate(input: $input) {
     workItem {
       id
-      type
-      widgets {
+      title
+      workItemType {
+        id
+      }
+      widgets @client {
         nodes {
           ...WidgetBase
-          ... on LocalTitleWidget {
-            contentText
-          }
         }
       }
     }

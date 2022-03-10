@@ -36924,6 +36924,9 @@ msgstr ""
 msgid "The snippet is visible to any logged in user except external users."
 msgstr ""
 
+msgid "The source project of this merge request has been removed."
+msgstr ""
+
 msgid "The specified tab is invalid, please select another"
 msgstr ""
 

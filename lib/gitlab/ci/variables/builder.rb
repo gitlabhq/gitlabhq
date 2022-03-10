@@ -19,8 +19,7 @@ module Gitlab
             variables.concat(project.predefined_variables)
             variables.concat(pipeline.predefined_variables)
             variables.concat(job.runner.predefined_variables) if job.runnable? && job.runner
-            variables.concat(kubernetes_variables(job))
-            variables.concat(deployment_variables(environment: environment, job: job))
+            variables.concat(kubernetes_variables(environment: environment, job: job))
             variables.concat(job.yaml_variables)
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
@@ -33,11 +32,15 @@ module Gitlab
           end
         end
 
-        def kubernetes_variables(job)
+        def kubernetes_variables(environment:, job:)
           ::Gitlab::Ci::Variables::Collection.new.tap do |collection|
-            # Should get merged with the cluster kubeconfig in deployment_variables, see
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/335089
+            # NOTE: deployment_variables will be removed as part of cleanup for
+            # https://gitlab.com/groups/gitlab-org/configure/-/epics/8
+            # Until then, we need to make both the old and the new KUBECONFIG contexts available
+            collection.concat(deployment_variables(environment: environment, job: job))
             template = ::Ci::GenerateKubeconfigService.new(job).execute
+            kubeconfig_yaml = collection['KUBECONFIG']&.value
+            template.merge_yaml(kubeconfig_yaml) if kubeconfig_yaml.present?
 
             if template.valid?
               collection.append(key: 'KUBECONFIG', value: template.to_yaml, public: false, file: true)

@@ -9,11 +9,12 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import ItemTitle from '~/work_items/components/item_title.vue';
 import { resolvers } from '~/work_items/graphql/resolvers';
-import { workItemQueryResponse } from '../mock_data';
+import { workItemQueryResponse, updateWorkItemMutationResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
 const WORK_ITEM_ID = '1';
+const WORK_ITEM_GID = `gid://gitlab/WorkItem/${WORK_ITEM_ID}`;
 
 describe('Work items root component', () => {
   const mockUpdatedTitle = 'Updated title';
@@ -23,15 +24,19 @@ describe('Work items root component', () => {
   const findTitle = () => wrapper.findComponent(ItemTitle);
 
   const createComponent = ({ queryResponse = workItemQueryResponse } = {}) => {
-    fakeApollo = createMockApollo([], resolvers, {
-      possibleTypes: {
-        LocalWorkItemWidget: ['LocalTitleWidget'],
+    fakeApollo = createMockApollo(
+      [[updateWorkItemMutation, jest.fn().mockResolvedValue(updateWorkItemMutationResponse)]],
+      resolvers,
+      {
+        possibleTypes: {
+          LocalWorkItemWidget: ['LocalTitleWidget'],
+        },
       },
-    });
+    );
     fakeApollo.clients.defaultClient.cache.writeQuery({
       query: workItemQuery,
       variables: {
-        id: WORK_ITEM_ID,
+        id: WORK_ITEM_GID,
       },
       data: queryResponse,
     });
@@ -49,7 +54,7 @@ describe('Work items root component', () => {
     fakeApollo = null;
   });
 
-  it('renders the title if title is in the widgets list', () => {
+  it('renders the title', () => {
     createComponent();
 
     expect(findTitle().exists()).toBe(true);
@@ -66,35 +71,11 @@ describe('Work items root component', () => {
       mutation: updateWorkItemMutation,
       variables: {
         input: {
-          id: WORK_ITEM_ID,
+          id: WORK_ITEM_GID,
           title: mockUpdatedTitle,
         },
       },
     });
-
-    await waitForPromises();
-    expect(findTitle().props('initialTitle')).toBe(mockUpdatedTitle);
-  });
-
-  it('does not render the title if title is not in the widgets list', () => {
-    const queryResponse = {
-      workItem: {
-        ...workItemQueryResponse.workItem,
-        widgets: {
-          __typename: 'WorkItemWidgetConnection',
-          nodes: [
-            {
-              __typename: 'SomeOtherWidget',
-              type: 'OTHER',
-              contentText: 'Test',
-            },
-          ],
-        },
-      },
-    };
-    createComponent({ queryResponse });
-
-    expect(findTitle().exists()).toBe(false);
   });
 
   describe('tracking', () => {

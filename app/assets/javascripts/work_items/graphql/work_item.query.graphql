@@ -1,15 +1,15 @@
 #import './widget.fragment.graphql'
 
 query WorkItem($id: ID!) {
-  localWorkItem(id: $id) @client {
+  workItem(id: $id) {
     id
-    type
-    widgets {
+    title
+    workItemType {
+      id
+    }
+    widgets @client {
       nodes {
         ...WidgetBase
-        ... on LocalTitleWidget {
-          contentText
-        }
       }
     }
   }
