@@ -137,7 +137,7 @@ export default {
         <gl-form-input
           data-qa-selector="githubish_import_filter_field"
           name="filter"
-          :placeholder="__('Filter your repositories by name')"
+          :placeholder="__('Filter by name')"
           autofocus
           size="lg"
           @keyup.enter="setFilter($event.target.value)"

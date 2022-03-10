@@ -19,6 +19,14 @@ class UserPresenter < Gitlab::View::Presenter::Delegated
     profile_path(user: { gitpod_enabled: true }) if application_gitpod_enabled?
   end
 
+  delegator_override :saved_replies
+  def saved_replies
+    return ::Users::SavedReply.none unless Feature.enabled?(:saved_replies, current_user, default_enabled: :yaml)
+    return ::Users::SavedReply.none unless current_user.can?(:read_saved_replies, user)
+
+    user.saved_replies
+  end
+
   private
 
   def can?(*args)

@@ -67,8 +67,6 @@ describe('GroupRunnersApp', () => {
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerRow = (id) => extendedWrapper(wrapper.findByTestId(`runner-row-${id}`));
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
-  const findRunnerPaginationPrev = () =>
-    findRunnerPagination().findByLabelText('Go to previous page');
   const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
@@ -338,14 +336,6 @@ describe('GroupRunnersApp', () => {
 
       createComponent({ mountFn: mountExtended });
       await waitForPromises();
-    });
-
-    it('more pages can be selected', () => {
-      expect(findRunnerPagination().text()).toMatchInterpolatedText('Previous Next');
-    });
-
-    it('cannot navigate to the previous page', () => {
-      expect(findRunnerPaginationPrev().attributes('aria-disabled')).toBe('true');
     });
 
     it('navigates to the next page', async () => {

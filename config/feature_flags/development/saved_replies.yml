@@ -1,0 +1,8 @@
+---
+name: saved_replies
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80811
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352956
+milestone: '14.9'
+type: development
+group: group::project management
+default_enabled: false

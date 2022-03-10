@@ -37,6 +37,7 @@ RSpec.describe GitlabSchema.types['MergeRequestReviewer'] do
       gitpodEnabled
       preferencesGitpodPath
       profileEnableGitpodPath
+      savedReplies
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

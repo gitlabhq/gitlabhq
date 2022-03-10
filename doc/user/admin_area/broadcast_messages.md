@@ -7,7 +7,9 @@ type: reference, howto
 
 # Broadcast messages **(FREE SELF)**
 
-GitLab can display broadcast messages to all users of a GitLab instance. There are two types of broadcast messages:
+> Target roles [introduced](https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/461) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `role_targeted_broadcast_messages`. Disabled by default.
+
+GitLab can display broadcast messages to users of a GitLab instance. There are two types of broadcast messages:
 
 - Banners
 - Notifications
@@ -66,6 +68,7 @@ To add a broadcast message:
     - `text-decoration`
 1. Select one of the suggested background colors, or add the hex code of a different color. The default color is orange.
 1. Select the **Dismissable** checkbox to enable users to dismiss the broadcast message.
+1. Optional. Select **Target roles** to only show the broadcast message to users with the selected roles. The message displays on group, subgroup, and project pages, and does not display in Git remote responses.
 1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path. You can use the wildcard character `*` to match multiple URLs, for example `mygroup/myproject*`.
 1. Select a date for the message to start and end.
 1. Select **Add broadcast message**.

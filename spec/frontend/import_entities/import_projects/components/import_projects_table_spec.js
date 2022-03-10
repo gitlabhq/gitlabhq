@@ -16,7 +16,7 @@ describe('ImportProjectsTable', () => {
   const findFilterField = () =>
     wrapper
       .findAllComponents(GlFormInput)
-      .wrappers.find((w) => w.attributes('placeholder') === 'Filter your repositories by name');
+      .wrappers.find((w) => w.attributes('placeholder') === 'Filter by name');
 
   const providerTitle = 'THE PROVIDER';
   const providerRepo = {

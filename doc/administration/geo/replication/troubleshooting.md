@@ -1043,6 +1043,25 @@ To resolve this issue:
   the **primary** node using IPv4 in the `/etc/hosts` file. Alternatively, you should
   [enable IPv6 on the **primary** node](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).
 
+### Secondary site returns 502 errors with Geo proxying
+
+When [Geo proxying for secondary sites](../secondary_proxy/index.md) is enabled, and the secondary site user interface returns
+502 errors, it is possible that the response header proxied from the primary site is too large.
+
+Check the NGINX logs for errors similar to this example:
+
+```plaintext
+2022/01/26 00:02:13 [error] 26641#0: *829148 upstream sent too big header while reading response header from upstream, client: 1.2.3.4, server: geo.staging.gitlab.com, request: "POST /users/sign_in HTTP/2.0", upstream: "http://unix:/var/opt/gitlab/gitlab-workhorse/sockets/socket:/users/sign_in", host: "geo.staging.gitlab.com", referrer: "https://geo.staging.gitlab.com/users/sign_in"
+```
+
+To resolve this issue:
+
+1. Set `nginx['proxy_custom_buffer_size'] = '8k'` in `/etc/gitlab.rb` on all web nodes on the secondary site.
+1. Reconfigure the **secondary** using `sudo gitlab-ctl reconfigure`.
+
+If you still get this error, you can further increase the buffer size by repeating the steps above
+and changing the `8k` size, for example by doubling it to `16k`.
+
 ### Geo Admin Area shows 'Unknown' for health status and 'Request failed with status code 401'
 
 If using a load balancer, ensure that the load balancer's URL is set as the `external_url` in the

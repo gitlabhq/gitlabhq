@@ -398,21 +398,6 @@ describe('ErrorTrackingList', () => {
   });
 
   describe('When pagination is required', () => {
-    describe('and the user is on the first page', () => {
-      beforeEach(() => {
-        store.state.list.loading = false;
-        mountComponent({
-          stubs: {
-            GlPagination: false,
-          },
-        });
-      });
-
-      it('shows a disabled Prev button', () => {
-        expect(wrapper.find('.prev-page-item').attributes('aria-disabled')).toBe('true');
-      });
-    });
-
     describe('and the user is not on the first page', () => {
       describe('and the previous button is clicked', () => {
         beforeEach(async () => {

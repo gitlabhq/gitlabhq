@@ -199,15 +199,17 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
   end
 
   describe '#split_and_retry!' do
-    let!(:job) { create(:batched_background_migration_job, :failed, batch_size: 10, min_value: 6, max_value: 15, attempts: 3) }
+    let_it_be(:migration) { create(:batched_background_migration, table_name: :events) }
+    let_it_be(:job) { create(:batched_background_migration_job, :failed, batched_migration: migration, batch_size: 10, min_value: 6, max_value: 15, attempts: 3) }
+    let_it_be(:project) { create(:project) }
+
+    before_all do
+      (6..16).each do |id|
+        create(:event, id: id, project: project)
+      end
+    end
 
     context 'when job can be split' do
-      before do
-        allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
-          allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 10])
-        end
-      end
-
       it 'sets the correct attributes' do
         expect { job.split_and_retry! }.to change { described_class.count }.by(1)
 
@@ -263,9 +265,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
 
     context 'when computed midpoint is larger than the max value of the batch' do
       before do
-        allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
-          allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 16])
-        end
+        Event.where(id: 6..12).delete_all
       end
 
       it 'lowers the batch size and resets the number of attempts' do

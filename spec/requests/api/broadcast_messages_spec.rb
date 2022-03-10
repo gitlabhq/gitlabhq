@@ -17,7 +17,7 @@ RSpec.describe API::BroadcastMessages do
       expect(response).to include_pagination_headers
       expect(json_response).to be_kind_of(Array)
       expect(json_response.first.keys)
-        .to match_array(%w(id message starts_at ends_at color font active target_path broadcast_type dismissable))
+        .to match_array(%w(id message starts_at ends_at color font active target_access_levels target_path broadcast_type dismissable))
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe API::BroadcastMessages do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq message.id
       expect(json_response.keys)
-        .to match_array(%w(id message starts_at ends_at color font active target_path broadcast_type dismissable))
+        .to match_array(%w(id message starts_at ends_at color font active target_access_levels target_path broadcast_type dismissable))
     end
   end
 
@@ -75,6 +75,16 @@ RSpec.describe API::BroadcastMessages do
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['color']).to eq attrs[:color]
         expect(json_response['font']).to eq attrs[:font]
+      end
+
+      it 'accepts target access levels' do
+        target_access_levels = [Gitlab::Access::GUEST, Gitlab::Access::DEVELOPER]
+        attrs = attributes_for(:broadcast_message, target_access_levels: target_access_levels)
+
+        post api('/broadcast_messages', admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['target_access_levels']).to eq attrs[:target_access_levels]
       end
 
       it 'accepts a target path' do
@@ -169,6 +179,15 @@ RSpec.describe API::BroadcastMessages do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect { message.reload }.to change { message.message }.to('new message')
+      end
+
+      it 'accepts a new target_access_levels' do
+        attrs = { target_access_levels: [Gitlab::Access::MAINTAINER] }
+
+        put api("/broadcast_messages/#{message.id}", admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['target_access_levels']).to eq attrs[:target_access_levels]
       end
 
       it 'accepts a new target_path' do

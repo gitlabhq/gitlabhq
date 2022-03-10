@@ -9269,6 +9269,9 @@ msgstr ""
 msgid "Configure which lists are shown for anyone who visits this board"
 msgstr ""
 
+msgid "Configure with a merge request"
+msgstr ""
+
 msgid "Configure your environments to be deployed to specific geographical regions"
 msgstr ""
 
@@ -10350,9 +10353,6 @@ msgid "Create topic"
 msgstr ""
 
 msgid "Create user"
-msgstr ""
-
-msgid "Create via merge request"
 msgstr ""
 
 msgid "Create wildcard: %{searchTerm}"
@@ -15644,9 +15644,6 @@ msgid "Filter results..."
 msgstr ""
 
 msgid "Filter users"
-msgstr ""
-
-msgid "Filter your repositories by name"
 msgstr ""
 
 msgid "Filter..."
@@ -32756,6 +32753,9 @@ msgid "SecurityOrchestration|Unlinking a security project removes all policies s
 msgstr ""
 
 msgid "SecurityOrchestration|Update scan policies"
+msgstr ""
+
+msgid "SecurityOrchestration|View policy project"
 msgstr ""
 
 msgid "SecurityOrchestration|a"

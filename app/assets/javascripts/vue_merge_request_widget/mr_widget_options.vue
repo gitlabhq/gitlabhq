@@ -352,6 +352,8 @@ export default {
       return Promise.resolve();
     },
     initPolling() {
+      if (this.startingPollInterval <= 0) return;
+
       this.pollingInterval = new SmartInterval({
         callback: this.checkStatus,
         startingInterval: this.startingPollInterval,
@@ -435,10 +437,10 @@ export default {
       notify.notifyMe(title, message, this.mr.gitlabLogo);
     },
     resumePolling() {
-      this.pollingInterval.resume();
+      this.pollingInterval?.resume();
     },
     stopPolling() {
-      this.pollingInterval.stopTimer();
+      this.pollingInterval?.stopTimer();
     },
     bindEventHubListeners() {
       eventHub.$on('MRWidgetUpdateRequested', (cb) => {

@@ -7,18 +7,26 @@ module Gitlab
 
       # SIDEKIQ_LATENCY_BUCKETS are latency histogram buckets better suited to Sidekiq
       # timeframes than the DEFAULT_BUCKET definition. Defined in seconds.
-      SIDEKIQ_LATENCY_BUCKETS = [0.1, 0.25, 0.5, 1, 2.5, 5, 10, 60, 300, 600].freeze
+      # This information is better viewed in logs, but these buckets cover
+      # most of the durations for cpu, gitaly, db and elasticsearch
+      SIDEKIQ_LATENCY_BUCKETS = [0.1, 0.5, 1, 2.5].freeze
+
+      # These are the buckets we currently use for alerting, we will likely
+      # replace these histograms with Application SLIs
+      # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1313
+      SIDEKIQ_JOB_DURATION_BUCKETS = [10, 300].freeze
+      SIDEKIQ_QUEUE_DURATION_BUCKETS = [10, 60].freeze
 
       class << self
         include ::Gitlab::SidekiqMiddleware::MetricsHelper
 
         def metrics
           {
-            sidekiq_jobs_cpu_seconds:                ::Gitlab::Metrics.histogram(:sidekiq_jobs_cpu_seconds, 'Seconds of cpu time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
-            sidekiq_jobs_completion_seconds:         ::Gitlab::Metrics.histogram(:sidekiq_jobs_completion_seconds, 'Seconds to complete Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
+            sidekiq_jobs_cpu_seconds:                ::Gitlab::Metrics.histogram(:sidekiq_jobs_cpu_seconds, 'Seconds this Sidekiq job spent on the CPU', {}, SIDEKIQ_LATENCY_BUCKETS),
+            sidekiq_jobs_completion_seconds:         ::Gitlab::Metrics.histogram(:sidekiq_jobs_completion_seconds, 'Seconds to complete Sidekiq job', {}, SIDEKIQ_JOB_DURATION_BUCKETS),
             sidekiq_jobs_db_seconds:                 ::Gitlab::Metrics.histogram(:sidekiq_jobs_db_seconds, 'Seconds of database time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
             sidekiq_jobs_gitaly_seconds:             ::Gitlab::Metrics.histogram(:sidekiq_jobs_gitaly_seconds, 'Seconds of Gitaly time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
-            sidekiq_jobs_queue_duration_seconds:     ::Gitlab::Metrics.histogram(:sidekiq_jobs_queue_duration_seconds, 'Duration in seconds that a Sidekiq job was queued before being executed', {}, SIDEKIQ_LATENCY_BUCKETS),
+            sidekiq_jobs_queue_duration_seconds:     ::Gitlab::Metrics.histogram(:sidekiq_jobs_queue_duration_seconds, 'Duration in seconds that a Sidekiq job was queued before being executed', {}, SIDEKIQ_QUEUE_DURATION_BUCKETS),
             sidekiq_redis_requests_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_redis_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent requests a Redis server', {}, Gitlab::Instrumentation::Redis::QUERY_TIME_BUCKETS),
             sidekiq_elasticsearch_requests_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_elasticsearch_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent in requests to an Elasticsearch server', {}, SIDEKIQ_LATENCY_BUCKETS),
             sidekiq_jobs_failed_total:               ::Gitlab::Metrics.counter(:sidekiq_jobs_failed_total, 'Sidekiq jobs failed'),

@@ -45,14 +45,6 @@ describe('RunnerPagination', () => {
       expect(findPagination().props('nextPage')).toBe(2);
     });
 
-    it('Shows prev page disabled', () => {
-      expect(findPagination().find('[aria-disabled]').text()).toBe('Previous');
-    });
-
-    it('Shows next page link', () => {
-      expect(findPagination().find('a').text()).toBe('Next');
-    });
-
     it('Goes to the second page', () => {
       findPagination().vm.$emit('input', 2);
 
@@ -123,14 +115,6 @@ describe('RunnerPagination', () => {
       expect(findPagination().props('value')).toBe(3);
       expect(findPagination().props('prevPage')).toBe(2);
       expect(findPagination().props('nextPage')).toBe(null);
-    });
-
-    it('Shows previous page link', () => {
-      expect(findPagination().find('a').text()).toBe('Previous');
-    });
-
-    it('Shows next page disabled', () => {
-      expect(findPagination().find('[aria-disabled]').text()).toBe('Next');
     });
   });
 

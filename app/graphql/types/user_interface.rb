@@ -115,6 +115,10 @@ module Types
           extras: [:lookahead],
           complexity: 5,
           resolver: ::Resolvers::TimelogResolver
+    field :saved_replies,
+          Types::SavedReplyType.connection_type,
+          null: true,
+          description: 'Saved replies authored by the user.'
 
     field :gitpod_enabled, GraphQL::Types::Boolean, null: true,
           description: 'Whether Gitpod is enabled at the user level.'
