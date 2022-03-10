@@ -1365,23 +1365,10 @@ input {
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
-.sidebar-top-level-items > li .badge.badge-pill:not(.gl-badge) {
-  border-radius: 0.5rem;
-  padding-top: 0.125rem;
-  padding-bottom: 0.125rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  background-color: #cbe2f9;
-  color: #0b5cad;
-}
 .sidebar-top-level-items
   > li.active
   .sidebar-sub-level-items:not(.is-fly-out-only) {
   display: block;
-}
-.sidebar-top-level-items > li.active .badge.badge-pill:not(.gl-badge) {
-  font-weight: 400;
-  color: #0b5cad;
 }
 .sidebar-top-level-items li > a.gl-link {
   color: #303030;

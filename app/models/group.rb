@@ -22,11 +22,6 @@ class Group < Namespace
 
   extend ::Gitlab::Utils::Override
 
-  # Prefix for runners_token which can be used to invalidate existing tokens.
-  # The value chosen here is GR (for Gitlab Runner) combined with the rotation
-  # date (20220225) decimal to hex encoded.
-  RUNNERS_TOKEN_PREFIX = 'GR1348941'
-
   def self.sti_name
     'Group'
   end
@@ -124,7 +119,7 @@ class Group < Namespace
 
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption, default_enabled: true) ? :optional : :required },
-                                 prefix: ->(instance) { instance.runners_token_prefix }
+                                prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -678,13 +673,9 @@ class Group < Namespace
     ensure_runners_token!
   end
 
-  def runners_token_prefix
-    Feature.enabled?(:groups_runners_token_prefix, self, default_enabled: :yaml) ? RUNNERS_TOKEN_PREFIX : ''
-  end
-
   override :format_runners_token
   def format_runners_token(token)
-    "#{runners_token_prefix}#{token}"
+    "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}#{token}"
   end
 
   def project_creation_level

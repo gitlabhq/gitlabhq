@@ -290,6 +290,7 @@ export default {
       class="gl-display-none gl-sm-display-inline-flex! gl-ml-3"
       icon="ellipsis_v"
       category="tertiary"
+      data-qa-selector="issue_actions_ellipsis_dropdown"
       :text="dropdownText"
       :text-sr-only="true"
       data-testid="desktop-dropdown"
@@ -323,6 +324,7 @@ export default {
         <gl-dropdown-item
           v-gl-modal="$options.deleteModalId"
           variant="danger"
+          data-qa-selector="delete_issue_button"
           @click="track('click_dropdown')"
         >
           {{ deleteButtonText }}

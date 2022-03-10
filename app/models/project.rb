@@ -90,11 +90,6 @@ class Project < ApplicationRecord
 
   DEFAULT_SQUASH_COMMIT_TEMPLATE = '%{title}'
 
-  # Prefix for runners_token which can be used to invalidate existing tokens.
-  # The value chosen here is GR (for Gitlab Runner) combined with the rotation
-  # date (20220225) decimal to hex encoded.
-  RUNNERS_TOKEN_PREFIX = 'GR1348941'
-
   cache_markdown_field :description, pipeline: :description
 
   default_value_for :packages_enabled, true
@@ -117,7 +112,7 @@ class Project < ApplicationRecord
 
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption, default_enabled: true) ? :optional : :required },
-                                 prefix: ->(instance) { instance.runners_token_prefix }
+                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
@@ -1887,13 +1882,9 @@ class Project < ApplicationRecord
     ensure_runners_token!
   end
 
-  def runners_token_prefix
-    Feature.enabled?(:projects_runners_token_prefix, self, default_enabled: :yaml) ? RUNNERS_TOKEN_PREFIX : ''
-  end
-
   override :format_runners_token
   def format_runners_token(token)
-    "#{runners_token_prefix}#{token}"
+    "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}#{token}"
   end
 
   def pages_deployed?

@@ -441,7 +441,7 @@ RSpec.shared_examples 'prefixed token rotation' do
 
     context 'token is not set' do
       it 'generates a new token' do
-        expect(subject).to match(/^#{instance.class::RUNNERS_TOKEN_PREFIX}/)
+        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/)
         expect(instance).not_to be_persisted
       end
     end
@@ -452,26 +452,14 @@ RSpec.shared_examples 'prefixed token rotation' do
       end
 
       it 'generates a new token' do
-        expect(subject).to match(/^#{instance.class::RUNNERS_TOKEN_PREFIX}/)
+        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/)
         expect(instance).not_to be_persisted
-      end
-
-      context 'feature flag is disabled' do
-        before do
-          flag = "#{described_class.name.downcase.pluralize}_runners_token_prefix"
-          stub_feature_flags(flag => false)
-        end
-
-        it 'leaves the token unchanged' do
-          expect { subject }.not_to change(instance, :runners_token)
-          expect(instance).not_to be_persisted
-        end
       end
     end
 
     context 'token is set and matches prefix' do
       before do
-        instance.set_runners_token(instance.class::RUNNERS_TOKEN_PREFIX + '-abcdef')
+        instance.set_runners_token(RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX + '-abcdef')
       end
 
       it 'leaves the token unchanged' do
@@ -486,7 +474,7 @@ RSpec.shared_examples 'prefixed token rotation' do
 
     context 'token is not set' do
       it 'generates a new token' do
-        expect(subject).to match(/^#{instance.class::RUNNERS_TOKEN_PREFIX}/)
+        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/)
         expect(instance).to be_persisted
       end
     end
@@ -497,25 +485,14 @@ RSpec.shared_examples 'prefixed token rotation' do
       end
 
       it 'generates a new token' do
-        expect(subject).to match(/^#{instance.class::RUNNERS_TOKEN_PREFIX}/)
+        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/)
         expect(instance).to be_persisted
-      end
-
-      context 'feature flag is disabled' do
-        before do
-          flag = "#{described_class.name.downcase.pluralize}_runners_token_prefix"
-          stub_feature_flags(flag => false)
-        end
-
-        it 'leaves the token unchanged' do
-          expect { subject }.not_to change(instance, :runners_token)
-        end
       end
     end
 
     context 'token is set and matches prefix' do
       before do
-        instance.set_runners_token(instance.class::RUNNERS_TOKEN_PREFIX + '-abcdef')
+        instance.set_runners_token(RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX + '-abcdef')
         instance.save!
       end
 

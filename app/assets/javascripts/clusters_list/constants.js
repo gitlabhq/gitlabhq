@@ -232,6 +232,12 @@ export const CERTIFICATE_BASED_CARD_INFO = {
 
 export const MAX_CLUSTERS_LIST = 6;
 
+export const CERTIFICATE_TAB = {
+  title: s__('ClusterAgents|Certificate'),
+  component: 'clusters',
+  queryParamValue: 'certificate_based',
+};
+
 export const CLUSTERS_TABS = [
   {
     title: s__('ClusterAgents|All'),
@@ -243,11 +249,7 @@ export const CLUSTERS_TABS = [
     component: 'agents',
     queryParamValue: 'agent',
   },
-  {
-    title: s__('ClusterAgents|Certificate'),
-    component: 'clusters',
-    queryParamValue: 'certificate_based',
-  },
+  CERTIFICATE_TAB,
 ];
 
 export const CLUSTERS_ACTIONS = {

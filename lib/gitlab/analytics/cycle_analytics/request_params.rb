@@ -86,6 +86,7 @@ module Gitlab
 
         def to_data_attributes
           {}.tap do |attrs|
+            attrs[:aggregation] = aggregation_attributes if group
             attrs[:group] = group_data_attributes if group
             attrs[:value_stream] = value_stream_data_attributes.to_json if value_stream
             attrs[:created_after] = created_after.to_date.iso8601
@@ -102,6 +103,15 @@ module Gitlab
         end
 
         private
+
+        def aggregation_attributes
+          aggregation = ::Analytics::CycleAnalytics::Aggregation.safe_create_for_group(group)
+          {
+            enabled: aggregation.enabled.to_s,
+            last_run_at: aggregation.last_incremental_run_at,
+            next_run_at: aggregation.estimated_next_run_at
+          }
+        end
 
         def group_data_attributes
           {

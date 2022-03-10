@@ -3,6 +3,7 @@ import { GlTabs, GlTab } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import {
   CLUSTERS_TABS,
+  CERTIFICATE_TAB,
   MAX_CLUSTERS_LIST,
   MAX_LIST_COUNT,
   AGENT,
@@ -29,6 +30,7 @@ export default {
   },
   CLUSTERS_TABS,
   mixins: [trackingMixin],
+  inject: ['displayClusterAgents'],
   props: {
     defaultBranchName: {
       default: '.noBranch',
@@ -42,6 +44,11 @@ export default {
       maxAgents: MAX_CLUSTERS_LIST,
     };
   },
+  computed: {
+    clusterTabs() {
+      return this.displayClusterAgents ? CLUSTERS_TABS : [CERTIFICATE_TAB];
+    },
+  },
   watch: {
     selectedTabIndex(val) {
       this.onTabChange(val);
@@ -49,10 +56,10 @@ export default {
   },
   methods: {
     setSelectedTab(tabName) {
-      this.selectedTabIndex = CLUSTERS_TABS.findIndex((tab) => tab.queryParamValue === tabName);
+      this.selectedTabIndex = this.clusterTabs.findIndex((tab) => tab.queryParamValue === tabName);
     },
     onTabChange(tab) {
-      const tabName = CLUSTERS_TABS[tab].queryParamValue;
+      const tabName = this.clusterTabs[tab].queryParamValue;
 
       this.maxAgents = tabName === AGENT ? MAX_LIST_COUNT : MAX_CLUSTERS_LIST;
       this.track(EVENT_ACTIONS_CHANGE, { property: tabName });
@@ -69,7 +76,7 @@ export default {
       lazy
     >
       <gl-tab
-        v-for="(tab, idx) in $options.CLUSTERS_TABS"
+        v-for="(tab, idx) in clusterTabs"
         :key="idx"
         :title="tab.title"
         :query-param-value="tab.queryParamValue"

@@ -18,6 +18,9 @@ require_relative '../config/settings'
 require_relative 'support/rspec'
 require 'active_support/all'
 
+require_relative 'simplecov_env'
+SimpleCovEnv.start!
+
 unless ActiveSupport::Dependencies.autoload_paths.frozen?
   ActiveSupport::Dependencies.autoload_paths << 'lib'
   ActiveSupport::Dependencies.autoload_paths << 'ee/lib'

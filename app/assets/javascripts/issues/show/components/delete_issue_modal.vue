@@ -31,7 +31,10 @@ export default {
   computed: {
     actionPrimary() {
       return {
-        attributes: { variant: 'danger' },
+        attributes: {
+          variant: 'danger',
+          'data-qa-selector': 'confirm_delete_issue_button',
+        },
         text: this.title,
       };
     },

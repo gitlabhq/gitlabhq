@@ -25,18 +25,16 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
     let_it_be(:subgroup) { create(:group, parent: group) }
 
     it 'creates the aggregation record' do
-      described_class.safe_create_for_group(group)
+      record = described_class.safe_create_for_group(group)
 
-      record = described_class.find_by(group_id: group)
-      expect(record).to be_present
+      expect(record).to be_persisted
     end
 
     context 'when non top-level group is given' do
       it 'creates the aggregation record for the top-level group' do
-        described_class.safe_create_for_group(subgroup)
+        record = described_class.safe_create_for_group(subgroup)
 
-        record = described_class.find_by(group_id: group)
-        expect(record).to be_present
+        expect(record).to be_persisted
       end
     end
 
@@ -73,6 +71,58 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
       # Using match_array because the order can be undeterministic for nil values.
       expect(first_two).to match_array([aggregation1, aggregation3])
       expect(last_two).to eq([aggregation5, aggregation2])
+    end
+  end
+
+  describe '#estimated_next_run_at' do
+    around do |example|
+      freeze_time { example.run }
+    end
+
+    context 'when aggregation was not yet executed for the given group' do
+      let(:aggregation) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil) }
+
+      it { expect(aggregation.estimated_next_run_at).to eq(nil) }
+    end
+
+    context 'when aggregation was already run' do
+      let!(:other_aggregation1) { create(:cycle_analytics_aggregation, last_incremental_run_at: 10.minutes.ago) }
+      let!(:other_aggregation2) { create(:cycle_analytics_aggregation, last_incremental_run_at: 15.minutes.ago) }
+      let!(:aggregation) { create(:cycle_analytics_aggregation, last_incremental_run_at: 5.minutes.ago) }
+
+      it 'returns the duration between the previous run timestamp and the earliest last_incremental_run_at' do
+        expect(aggregation.estimated_next_run_at).to eq(10.minutes.from_now)
+      end
+
+      context 'when the aggregation has persisted previous runtimes' do
+        before do
+          aggregation.update!(incremental_runtimes_in_seconds: [30, 60, 90])
+        end
+
+        it 'adds the runtime to the estimation' do
+          expect(aggregation.estimated_next_run_at).to eq((10.minutes.seconds + 60.seconds).from_now)
+        end
+      end
+    end
+
+    context 'when no records are present in the DB' do
+      it 'returns nil' do
+        expect(described_class.new.estimated_next_run_at).to eq(nil)
+      end
+    end
+
+    context 'when only one aggregation record present' do
+      let!(:aggregation) { create(:cycle_analytics_aggregation, last_incremental_run_at: 5.minutes.ago) }
+
+      it 'returns nil' do
+        expect(aggregation.estimated_next_run_at).to eq(nil)
+      end
+    end
+
+    context 'when the aggregation is disabled' do
+      it 'returns nil' do
+        expect(described_class.new(enabled: false).estimated_next_run_at).to eq(nil)
+      end
     end
   end
 end

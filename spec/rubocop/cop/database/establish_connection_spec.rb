@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require_relative '../../../../rubocop/cop/database/establish_connection'
 
 RSpec.describe RuboCop::Cop::Database::EstablishConnection do

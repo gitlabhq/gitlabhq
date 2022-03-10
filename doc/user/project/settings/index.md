@@ -217,7 +217,11 @@ cannot change them:
   This ensures that your job uses the settings you intend and that they are not overridden by
   project-level pipelines.
 
-##### Avoid parent and child pipelines
+##### Avoid parent and child pipelines in GitLab 14.7 and earlier
+
+NOTE:
+This advice does not apply to GitLab 14.8 and later because [a fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78878) added
+compatibility for combining compliance pipelines, and parent and child pipelines.
 
 Compliance pipelines start on the run of _every_ pipeline in a relevant project. This means that if a pipeline in the relevant project
 triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.

@@ -92,6 +92,10 @@ RSpec.describe ClustersHelper do
       expect(subject[:new_cluster_path]).to eq("#{project_path(project)}/-/clusters/new?tab=create")
     end
 
+    it 'displays add cluster using certificate path' do
+      expect(subject[:add_cluster_path]).to eq("#{project_path(project)}/-/clusters/new?tab=add")
+    end
+
     context 'user has no permissions to create a cluster' do
       it 'displays that user can\'t add cluster' do
         expect(subject[:can_add_cluster]).to eq("false")
@@ -114,6 +118,10 @@ RSpec.describe ClustersHelper do
       it 'doesn\'t display empty state help text' do
         expect(subject[:empty_state_help_text]).to be_nil
       end
+
+      it 'displays display_cluster_agents as true' do
+        expect(subject[:display_cluster_agents]).to eq("true")
+      end
     end
 
     context 'group cluster' do
@@ -122,6 +130,10 @@ RSpec.describe ClustersHelper do
 
       it 'displays empty state help text' do
         expect(subject[:empty_state_help_text]).to eq(s_('ClusterIntegration|Adding an integration to your group will share the cluster across all your projects.'))
+      end
+
+      it 'displays display_cluster_agents as false' do
+        expect(subject[:display_cluster_agents]).to eq("false")
       end
     end
   end
@@ -143,10 +155,6 @@ RSpec.describe ClustersHelper do
 
     it 'displays project path' do
       expect(subject[:project_path]).to eq(project.full_path)
-    end
-
-    it 'displays add cluster using certificate path' do
-      expect(subject[:add_cluster_path]).to eq("#{project_path(project)}/-/clusters/new?tab=add")
     end
 
     it 'displays kas address' do

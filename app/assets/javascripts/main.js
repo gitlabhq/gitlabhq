@@ -116,16 +116,18 @@ function deferredInitialisation() {
     );
   }
 
-  const search = document.querySelector('#search');
-  if (search) {
-    search.addEventListener(
+  const searchInputBox = document.querySelector('#search');
+  if (searchInputBox) {
+    searchInputBox.addEventListener(
       'focus',
       () => {
         if (gon.features?.newHeaderSearch) {
           import(/* webpackChunkName: 'globalSearch' */ '~/header_search')
             .then(async ({ initHeaderSearchApp }) => {
-              await initHeaderSearchApp();
-              document.querySelector('#search').focus();
+              // In case the user started searching before we bootstrapped, let's pass the search along.
+              const initialSearchValue = searchInputBox.value;
+              await initHeaderSearchApp(initialSearchValue);
+              searchInputBox.focus();
             })
             .catch(() => {});
         } else {

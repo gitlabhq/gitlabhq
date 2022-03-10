@@ -77,6 +77,12 @@ describe('AdminUserActions component', () => {
         expect(findActionsDropdown().exists()).toBe(true);
       });
 
+      it('renders the tooltip', () => {
+        const tooltip = getBinding(findActionsDropdown().element, 'gl-tooltip');
+
+        expect(tooltip.value).toBe(I18N_USER_ACTIONS.userAdministration);
+      });
+
       describe('when there are actions that require confirmation', () => {
         beforeEach(() => {
           initComponent({ actions: CONFIRMATION_ACTIONS });
@@ -152,7 +158,7 @@ describe('AdminUserActions component', () => {
 
   describe('when `showButtonLabels` prop is `false`', () => {
     beforeEach(() => {
-      initComponent({ actions: [EDIT, ...CONFIRMATION_ACTIONS] });
+      initComponent({ actions: [EDIT] });
     });
 
     it('does not render "Edit" button label', () => {
@@ -163,16 +169,11 @@ describe('AdminUserActions component', () => {
       expect(tooltip).toBeDefined();
       expect(tooltip.value).toBe(I18N_USER_ACTIONS.edit);
     });
-
-    it('does not render "User administration" dropdown button label', () => {
-      expect(findActionsDropdown().props('text')).toBe(I18N_USER_ACTIONS.userAdministration);
-      expect(findActionsDropdown().props('textSrOnly')).toBe(true);
-    });
   });
 
   describe('when `showButtonLabels` prop is `true`', () => {
     beforeEach(() => {
-      initComponent({ actions: [EDIT, ...CONFIRMATION_ACTIONS], showButtonLabels: true });
+      initComponent({ actions: [EDIT], showButtonLabels: true });
     });
 
     it('renders "Edit" button label', () => {
@@ -180,11 +181,6 @@ describe('AdminUserActions component', () => {
 
       expect(findEditButton().text()).toBe(I18N_USER_ACTIONS.edit);
       expect(tooltip).not.toBeDefined();
-    });
-
-    it('renders "User administration" dropdown button label', () => {
-      expect(findActionsDropdown().props('text')).toBe(I18N_USER_ACTIONS.userAdministration);
-      expect(findActionsDropdown().props('textSrOnly')).toBe(false);
     });
   });
 });

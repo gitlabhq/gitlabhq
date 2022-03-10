@@ -377,7 +377,7 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 The `track-repository` Praefect sub-command adds repositories on disk to the Praefect database to be tracked.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repository -virtual-storage <virtual-storage> -repository <repository> -replicate-immediately
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repository -virtual-storage <virtual-storage> -authoritative-storage <storage-name> -repository <repository> -replicate-immediately
 ```
 
 - `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['virtual_storages]` and looks like the following:

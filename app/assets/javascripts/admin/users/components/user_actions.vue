@@ -69,7 +69,6 @@ export default {
     editButtonAttrs() {
       return {
         'data-testid': 'edit',
-        icon: 'pencil-square',
         href: this.userPaths.edit,
       };
     },
@@ -101,6 +100,7 @@ export default {
       <gl-button
         v-else
         v-gl-tooltip="$options.i18n.edit"
+        icon="pencil-square"
         v-bind="editButtonAttrs"
         :aria-label="$options.i18n.edit"
       />
@@ -108,10 +108,9 @@ export default {
 
     <div v-if="hasDropdownActions" class="gl-p-2">
       <gl-dropdown
+        v-gl-tooltip="$options.i18n.userAdministration"
         data-testid="dropdown-toggle"
-        :text="$options.i18n.userAdministration"
-        :text-sr-only="!showButtonLabels"
-        icon="ellipsis_h"
+        icon="ellipsis_v"
         data-qa-selector="user_actions_dropdown_toggle"
         :data-qa-username="user.username"
         no-caret
