@@ -6,7 +6,7 @@ module API
       module JobRequest
         class Artifacts < Grape::Entity
           expose :name
-          expose :untracked, expose_nil: false
+          expose :untracked
           expose :paths
           expose :exclude, expose_nil: false
           expose :when

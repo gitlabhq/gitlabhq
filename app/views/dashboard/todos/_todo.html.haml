@@ -50,12 +50,12 @@
     .todo-actions.gl-ml-3
       - if todo.pending?
         = link_to dashboard_todo_path(todo), method: :delete, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-done-todo', data: { href: dashboard_todo_path(todo) } do
+          = gl_loading_icon(inline: true, css_class: 'gl-mr-2')
           Done
-          %span.gl-spinner.ml-1
         = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-undo-todo hidden', data: { href: restore_dashboard_todo_path(todo) } do
+          = gl_loading_icon(inline: true, css_class: 'gl-mr-2')
           Undo
-          %span.gl-spinner.ml-1
       - else
         = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-add-todo', data: { href: restore_dashboard_todo_path(todo) } do
+          = gl_loading_icon(inline: true, css_class: 'gl-mr-2')
           Add a to do
-          %span.gl-spinner.ml-1

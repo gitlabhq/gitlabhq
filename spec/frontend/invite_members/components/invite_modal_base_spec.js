@@ -10,6 +10,7 @@ import {
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
+import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import { CANCEL_BUTTON_TEXT, INVITE_BUTTON_TEXT } from '~/invite_members/constants';
 import { propsData } from '../mock_data/modal_base';
 
@@ -23,6 +24,7 @@ describe('InviteModalBase', () => {
         ...props,
       },
       stubs: {
+        ContentTransition,
         GlModal: stubComponent(GlModal, {
           template:
             '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-footer"></slot></div>',

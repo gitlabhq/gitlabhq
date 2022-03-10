@@ -17932,6 +17932,9 @@ msgstr ""
 msgid "HTTP Basic: Access denied\\nYou must use a personal access token with 'api' scope for Git over HTTP.\\nYou can generate one at %{profile_personal_access_tokens_url}"
 msgstr ""
 
+msgid "Harbor Registry"
+msgstr ""
+
 msgid "Hashed Storage must be enabled to use Geo"
 msgstr ""
 

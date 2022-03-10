@@ -77,6 +77,14 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_harbor_registry_nav(within)
+    insert_after_sub_nav_item(
+      within,
+      within: _('Packages & Registries'),
+      new_sub_nav_item_name: _('Harbor Registry')
+    )
+  end
+
   def insert_infrastructure_google_cloud_nav
     insert_after_sub_nav_item(
       _('Terraform'),

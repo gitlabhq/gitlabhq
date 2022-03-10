@@ -438,3 +438,7 @@ docker rm -f -v build service-mysql service-postgres
 This forcefully (`-f`) removes the `build` container, the two service
 containers, and all volumes (`-v`) that were created with the container
 creation.
+
+## Security when using services containers
+
+Docker privileged mode applies to services. This means that the service image container can access the host system. You should use container images from trusted sources only.

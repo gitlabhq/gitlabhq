@@ -33,6 +33,7 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
     before do
       stub_container_registry_config(enabled: registry_enabled)
       stub_config(packages: { enabled: packages_enabled })
+      stub_feature_flags(harbor_registry_integration: false)
     end
 
     context 'when Packages Registry is visible' do
@@ -141,6 +142,26 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
 
         it 'does not add the menu item to the list' do
           is_expected.to be_nil
+        end
+      end
+    end
+
+    describe 'Harbor Registry' do
+      let(:item_id) { :harbor_registry }
+
+      context 'when config harbor registry setting is disabled' do
+        it 'does not add the menu item to the list' do
+          stub_feature_flags(harbor_registry_integration: false)
+
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when config harbor registry setting is enabled' do
+        it 'the menu item is added to list of menu items' do
+          stub_feature_flags(harbor_registry_integration: true)
+
+          is_expected.not_to be_nil
         end
       end
     end

@@ -54,7 +54,7 @@ module Users
 
       yield(user) if block_given?
 
-      MigrateToGhostUserService.new(user).execute unless options[:hard_delete]
+      MigrateToGhostUserService.new(user).execute(hard_delete: options[:hard_delete])
 
       response = Snippets::BulkDestroyService.new(current_user, user.snippets).execute(options)
       raise DestroyError, response.message if response.error?

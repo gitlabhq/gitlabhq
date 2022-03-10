@@ -17,7 +17,7 @@ module Gitlab
         end
 
         def missing_instrumented_metrics_key_paths
-          @missing_key_paths ||= metrics_with_instrumentation.map(&:key_path) - key_paths
+          @missing_key_paths ||= metrics_with_instrumentation.map(&:key) - key_paths
         end
 
         private
@@ -50,3 +50,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Usage::ServicePing::PayloadKeysProcessor.prepend_mod_with('Gitlab::Usage::ServicePing::PayloadKeysProcessor')

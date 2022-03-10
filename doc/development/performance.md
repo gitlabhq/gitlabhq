@@ -522,6 +522,32 @@ Fragmented Ruby heap snapshot could look like this:
 
 Memory fragmentation could be reduced by tuning GC parameters [as described in this post](https://www.speedshop.co/2017/12/04/malloc-doubles-ruby-memory.html). This should be considered as a tradeoff, as it may affect overall performance of memory allocation and GC cycles.
 
+### Derailed Benchmarks
+
+`derailed_benchmarks` is a [gem](https://github.com/zombocom/derailed_benchmarks)
+described as "A series of things you can use to benchmark a Rails or Ruby app."
+We include `derailed_benchmarks` in our `Gemfile`.
+
+We run `derailed exec perf:mem` in every pipeline with a `test` stage, in a job
+called `memory-on-boot`. ([Read an example job.](https://gitlab.com/gitlab-org/gitlab/-/jobs/2144695684).)
+You may find the results:
+
+- On the merge request **Overview** tab, in the merge request reports area, in the
+  **Metrics Reports** [dropdown list](../ci/metrics_reports.md).
+- In the `memory-on-boot` artifacts for a full report and a dependency breakdown.
+
+`derailed_benchmarks` also provides other methods to investigate memory. To learn more,
+refer to the [gem documentation](https://github.com/zombocom/derailed_benchmarks#running-derailed-exec).
+Most of the methods (`derailed exec perf:*`) attempt to boot your Rails app in a
+`production` environment and run benchmarks against it.
+It is possible both in GDK and GCK:
+
+- For GDK, follow the
+  [the instructions](https://github.com/zombocom/derailed_benchmarks#running-in-production-locally)
+  on the gem page. You must do similar for Redis configurations to avoid errors.
+- GCK includes `production` configuration sections
+  [out of the box](https://gitlab.com/gitlab-org/gitlab-compose-kit#running-production-like).
+
 ## Importance of Changes
 
 When working on performance improvements, it's important to always ask yourself

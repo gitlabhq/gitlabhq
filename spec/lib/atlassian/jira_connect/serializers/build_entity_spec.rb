@@ -31,7 +31,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::BuildEntity do
   context 'when the pipeline does belong to a Jira issue' do
     let(:pipeline) { create(:ci_pipeline, merge_request: merge_request) }
 
-    %i[jira_branch jira_title].each do |trait|
+    %i[jira_branch jira_title jira_description].each do |trait|
       context "because it belongs to an MR with a #{trait}" do
         let(:merge_request) { create(:merge_request, trait) }
 

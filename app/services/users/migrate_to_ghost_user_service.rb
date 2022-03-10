@@ -10,14 +10,21 @@ module Users
   class MigrateToGhostUserService
     extend ActiveSupport::Concern
 
-    attr_reader :ghost_user, :user
+    attr_reader :ghost_user, :user, :hard_delete
 
     def initialize(user)
       @user = user
       @ghost_user = User.ghost
     end
 
-    def execute
+    # If an admin attempts to hard delete a user, in some cases associated
+    # records may have a NOT NULL constraint on the user ID that prevent that record
+    # from being destroyed. In such situations we must assign the record to the ghost user.
+    # Passing in `hard_delete: true` will ensure these records get assigned to
+    # the ghost user before the user is destroyed. Other associated records will be destroyed.
+    # letting the other associated records be destroyed.
+    def execute(hard_delete: false)
+      @hard_delete = hard_delete
       transition = user.block_transition
 
       # Block the user before moving records to prevent a data race.
@@ -46,6 +53,8 @@ module Users
     private
 
     def migrate_records
+      return if hard_delete
+
       migrate_issues
       migrate_merge_requests
       migrate_notes

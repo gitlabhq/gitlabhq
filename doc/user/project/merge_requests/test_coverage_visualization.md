@@ -28,7 +28,7 @@ between pipeline completion and the visualization loading on the page.
 
 For the coverage analysis to work, you have to provide a properly formatted
 [Cobertura XML](https://cobertura.github.io/cobertura/) report to
-[`artifacts:reports:cobertura`](../../../ci/yaml/artifacts_reports.md#artifactsreportscobertura-deprecated).
+[`artifacts:reports:cobertura`](../../../ci/yaml/artifacts_reports.md#artifactsreportscobertura).
 This format was originally developed for Java, but most coverage analysis frameworks
 for other languages have plugins to add support for it, like:
 

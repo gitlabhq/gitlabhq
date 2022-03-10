@@ -39,17 +39,6 @@ module Gitlab
           end
         end
 
-        class MutuallyExclusiveKeysValidator < ActiveModel::EachValidator
-          def validate_each(record, attribute, value)
-            mutually_exclusive_keys = value.try(:keys).to_a & options[:in]
-
-            if mutually_exclusive_keys.length > 1
-              record.errors.add(attribute, "please use only one the following keys: " +
-                mutually_exclusive_keys.join(', '))
-            end
-          end
-        end
-
         class AllowedValuesValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
             unless options[:in].include?(value.to_s)

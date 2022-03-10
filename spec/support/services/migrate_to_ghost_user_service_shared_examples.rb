@@ -42,6 +42,18 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
       end
     end
 
+    it 'will only migrate specific records during a hard_delete' do
+      service.execute(hard_delete: true)
+
+      migrated_record = record_class.find_by_id(record.id)
+
+      check_user = always_ghost ? User.ghost : user
+
+      migrated_fields.each do |field|
+        expect(migrated_record.public_send(field)).to eq(check_user)
+      end
+    end
+
     context "race conditions" do
       context "when #{record_class_name} migration fails and is rolled back" do
         before do

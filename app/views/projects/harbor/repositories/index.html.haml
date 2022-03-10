@@ -1,0 +1,9 @@
+- page_title _("Harbor Registry")
+- @content_class = "limit-container-width" unless fluid_layout
+
+#js-harbor-registry-list-project{ data: { endpoint: project_harbor_registry_index_path(@project),
+  "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
+  "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
+  "help_page_path" => help_page_path('user/packages/container_registry/index'),
+  connection_error: (!!@connection_error).to_s,
+  invalid_path_error: (!!@invalid_path_error).to_s, } }

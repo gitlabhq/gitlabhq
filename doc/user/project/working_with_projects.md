@@ -191,7 +191,7 @@ To create a project from the HIPAA Audit Protocol template:
       change the **Visibility Level**.
 1. Select **Create project**.
 
-## Push to create a new project
+## Create a new project with Git push
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
@@ -294,7 +294,7 @@ To delete a project:
 1. Select **Delete project**.
 1. Confirm this action by completing the field.
 
-## Projects pending deletion **(PREMIUM)**
+## View projects pending deletion **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
@@ -302,12 +302,16 @@ To delete a project:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) in GitLab 14.9. [Feature flag `project_owners_list_project_pending_deletion`](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) removed.
 
 When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
-projects within that group are not deleted immediately, but only after a delay. To access a list of all projects that are pending deletion:
+projects within that group are not deleted immediately, but only after a delay. 
+
+To view a list of all projects that are pending deletion:
 
 1. On the top bar, select **Menu > Projects > Explore projects**.
-1. Select the **Pending deletion** tab (in GitLab 14.6 and later) or the **Deleted projects** tab (GitLab 14.5 and earlier).
+1. Based on your GitLab version:
+   - GitLab 14.6 and later: select the **Pending deletion** tab.
+   - GitLab 14.5 and earlier: select the **Deleted projects** tab.
 
-Listed for each project is:
+Each project in the list shows:
 
 - The time the project was marked for deletion.
 - The time the project is scheduled for final deletion.
@@ -325,7 +329,7 @@ To view the activity of a project:
 
 ## Leave a project
 
-If you leave a project you are no longer a project
+If you leave a project, you are no longer a project
 member and cannot contribute.
 
 To leave a project:

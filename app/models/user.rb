@@ -391,7 +391,7 @@ class User < ApplicationRecord
 
     # rubocop: disable CodeReuse/ServiceClass
     # Ideally we should not call a service object here but user.block
-    # is also bcalled by Users::MigrateToGhostUserService which references
+    # is also called by Users::MigrateToGhostUserService which references
     # this state transition object in order to do a rollback.
     # For this reason the tradeoff is to disable this cop.
     after_transition any => :blocked do |user|

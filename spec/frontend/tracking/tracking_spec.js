@@ -255,6 +255,23 @@ describe('Tracking', () => {
       expect(snowplowSpy).toHaveBeenCalledWith('setCustomUrl', TEST_HOST);
     });
 
+    describe('allowed hashes/fragments', () => {
+      it.each`
+        hash                  | appends  | description
+        ${'note_abc_123'}     | ${true}  | ${'appends'}
+        ${'diff-content-819'} | ${true}  | ${'appends'}
+        ${'first_heading'}    | ${false} | ${'does not append'}
+      `('$description `$hash` hash', ({ hash, appends }) => {
+        window.gl.snowplowPseudonymizedPageUrl = TEST_HOST;
+        window.location.hash = hash;
+
+        Tracking.setAnonymousUrls();
+
+        const url = appends ? `${TEST_HOST}#${hash}` : TEST_HOST;
+        expect(snowplowSpy).toHaveBeenCalledWith('setCustomUrl', url);
+      });
+    });
+
     it('does not set the referrer URL by default', () => {
       window.gl.snowplowPseudonymizedPageUrl = TEST_HOST;
 

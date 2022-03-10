@@ -78,69 +78,13 @@ RSpec.describe Ci::BuildRunnerPresenter do
               artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(file_type),
               paths: [filename],
               when: 'always'
-            }.compact
+            }
           end
 
           it 'presents correct hash' do
-            expect(presenter.artifacts).to contain_exactly(report_expectation)
+            expect(presenter.artifacts.first).to include(report_expectation)
           end
         end
-      end
-    end
-
-    context 'when a specific coverage_report type is given' do
-      let(:coverage_format) { :cobertura }
-      let(:filename) { 'cobertura-coverage.xml' }
-      let(:coverage_report) { { path: filename, coverage_format: coverage_format } }
-      let(:report) { { coverage_report: coverage_report } }
-      let(:build) { create(:ci_build, options: { artifacts: { reports: report } }) }
-
-      let(:expected_coverage_report) do
-        {
-          name: filename,
-          artifact_type: coverage_format,
-          artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(coverage_format),
-          paths: [filename],
-          when: 'always'
-        }
-      end
-
-      it 'presents the coverage report hash with the coverage format' do
-        expect(presenter.artifacts).to contain_exactly(expected_coverage_report)
-      end
-    end
-
-    context 'when a specific coverage_report type is given with another report type' do
-      let(:coverage_format) { :cobertura }
-      let(:coverage_filename) { 'cobertura-coverage.xml' }
-      let(:coverage_report) { { path: coverage_filename, coverage_format: coverage_format } }
-      let(:ds_filename) { 'gl-dependency-scanning-report.json' }
-
-      let(:report) { { coverage_report: coverage_report, dependency_scanning: [ds_filename] } }
-      let(:build) { create(:ci_build, options: { artifacts: { reports: report } }) }
-
-      let(:expected_coverage_report) do
-        {
-          name: coverage_filename,
-          artifact_type: coverage_format,
-          artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(coverage_format),
-          paths: [coverage_filename],
-          when: 'always'
-        }
-      end
-
-      let(:expected_ds_report) do
-        {
-          name: ds_filename,
-          artifact_type: :dependency_scanning,
-          artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(:dependency_scanning),
-          paths: [ds_filename],
-          when: 'always'
-        }
-      end
-
-      it 'presents both reports' do
-        expect(presenter.artifacts).to contain_exactly(expected_coverage_report, expected_ds_report)
       end
     end
 

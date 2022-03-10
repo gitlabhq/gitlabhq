@@ -4,6 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Api from '~/api';
 import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.vue';
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
+import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import GroupSelect from '~/invite_members/components/group_select.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { propsData, sharedGroup } from '../mock_data/group_modal';
@@ -19,6 +20,7 @@ describe('InviteGroupsModal', () => {
       },
       stubs: {
         InviteModalBase,
+        ContentTransition,
         GlSprintf,
         GlModal: stubComponent(GlModal, {
           template: '<div><slot></slot><slot name="modal-footer"></slot></div>',

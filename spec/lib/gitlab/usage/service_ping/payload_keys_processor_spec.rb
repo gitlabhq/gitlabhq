@@ -38,10 +38,10 @@ RSpec.describe Gitlab::Usage::ServicePing::PayloadKeysProcessor do
 
     let(:metrics_definitions) do
       [
-        double(:issues, key_path: 'counts.issues'),
-        double(:topology, key_path: 'topology'),
-        double(:i_search_total_monthly, key_path: 'redis_hll_counters.search.i_search_total_monthly'),
-        double(:collected_data_categories, key_path: 'settings.collected_data_categories')
+        instance_double(::Gitlab::Usage::MetricDefinition, key: 'counts.issues'),
+        instance_double(::Gitlab::Usage::MetricDefinition, key: 'topology'),
+        instance_double(::Gitlab::Usage::MetricDefinition, key: 'redis_hll_counters.search.i_search_total_monthly'),
+        instance_double(::Gitlab::Usage::MetricDefinition, key: 'settings.collected_data_categories')
       ]
     end
 

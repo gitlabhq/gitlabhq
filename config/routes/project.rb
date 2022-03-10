@@ -545,6 +545,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       resources :container_registry, only: [:index, :destroy, :show], # rubocop: disable Cop/PutProjectRoutesUnderScope
                                      controller: 'registry/repositories'
 
+      resources :harbor_registry, only: [:index, :show], # rubocop: disable Cop/PutProjectRoutesUnderScope
+                                  controller: 'harbor/repositories'
+
       namespace :registry do
         resources :repository, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           # We default to JSON format in the controller to avoid ambiguity.

@@ -18,6 +18,7 @@ FactoryBot.define do
   sequence(:draft_title) { |n| "Draft: #{n}" }
   sequence(:wip_title) { |n| "WIP: #{n}" }
   sequence(:jira_title) { |n| "[PROJ-#{n}]: fix bug" }
+  sequence(:jira_description) { |n| "This is a description\n here is the description\n Related to: PROJ-#{n}" }
   sequence(:jira_branch) { |n| "feature/PROJ-#{n}" }
   sequence(:job_name) { |n| "job #{n}" }
   sequence(:work_item_type_name) { |n| "bug#{n}" }

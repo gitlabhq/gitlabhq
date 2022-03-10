@@ -80,14 +80,9 @@ GitLab can display the results of one or more reports in:
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
-## `artifacts:reports:cobertura` (DEPRECATED)
+## `artifacts:reports:cobertura`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.9.
-
-WARNING:
-This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) for use in GitLab
-14.8 and replaced with `artifacts:reports:coverage_report`.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 
 The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).
 The collected Cobertura coverage reports upload to GitLab as an artifact.
@@ -97,28 +92,6 @@ GitLab can display the results of one or more reports in the merge request
 
 Cobertura was originally developed for Java, but there are many third-party ports for other languages such as
 JavaScript, Python, and Ruby.
-
-## `artifacts:reports:coverage_report`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) in GitLab 14.9.
-
-Use `coverage_report` to collect coverage report in Cobertura format, similar to `artifacts:reports:cobertura`.
-
-NOTE:
-`artifacts:reports:coverage_report` cannot be used at the same time with `artifacts:reports:cobertura`.
-
-```yaml
-artifacts:
-  reports:
-    coverage_report:
-      coverage_format: cobertura
-      path: coverage/cobertura-coverage.xml
-```
-
-The collected coverage report is uploaded to GitLab as an artifact.
-
-GitLab can display the results of coverage report in the merge request
-[diff annotations](../../user/project/merge_requests/test_coverage_visualization.md).
 
 ## `artifacts:reports:codequality`
 

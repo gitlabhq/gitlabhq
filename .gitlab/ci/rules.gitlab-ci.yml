@@ -167,6 +167,7 @@
 .yaml-lint-patterns: &yaml-lint-patterns
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*.yml"
+  - "data/**/*.yml"
   - "lib/gitlab/ci/templates/**/*.yml"
 
 .docs-patterns: &docs-patterns

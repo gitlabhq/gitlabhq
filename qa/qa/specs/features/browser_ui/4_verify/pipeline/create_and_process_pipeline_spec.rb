@@ -58,16 +58,6 @@ module QA
                     artifacts:
                       paths:
                       - my-artifacts/
-
-                  test-coverage-report:
-                    tags:
-                      - #{executor}
-                    script: mkdir coverage; echo "CONTENTS" > coverage/cobertura.xml
-                    artifacts:
-                      reports:
-                        coverage_report:
-                          coverage_format: cobertura
-                          path: coverage/cobertura.xml
                 YAML
               }
             ]
@@ -81,8 +71,7 @@ module QA
             'test-success': 'passed',
             'test-failure': 'failed',
             'test-tags-mismatch': 'pending',
-            'test-artifacts': 'passed',
-            'test-coverage-report': 'passed'
+            'test-artifacts': 'passed'
           }.each do |job, status|
             Page::Project::Pipeline::Show.perform do |pipeline|
               pipeline.click_job(job)
