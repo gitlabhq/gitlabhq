@@ -108,14 +108,7 @@ is available as part of the official Terraform provider documentation.
 ## Create a new cluster through IaC
 
 - Learn how to [create a new cluster on Amazon Elastic Kubernetes Service (EKS)](../clusters/connect/new_eks_cluster.md).
-- Learn how to [create a new cluster on Google Kubernetes Engine (GKE)](../clusters/connect/new_gke_cluster.md) (DEPRECATED).
-
-NOTE:
-The linked GKE tutorial connects the cluster to GitLab through cluster certificates,
-and this method was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
-in GitLab 14.5. You can still create a cluster through IaC and then connect it to GitLab
-through the [agent](../../clusters/agent/index.md), the default and fully supported
-method to connect clusters to GitLab.
+- Learn how to [create a new cluster on Google Kubernetes Engine (GKE)](../clusters/connect/new_gke_cluster.md).
 
 ## Troubleshooting
 

@@ -1,5 +1,5 @@
 variables:
-  AUTO_BUILD_IMAGE_VERSION: 'v1.5.0'
+  AUTO_BUILD_IMAGE_VERSION: 'v1.9.1'
 
 build:
   stage: build
@@ -7,7 +7,7 @@ build:
   variables:
     DOCKER_TLS_CERTDIR: ''
   services:
-    - name: 'docker:20.10.6-dind'
+    - name: 'docker:20.10.12-dind'
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
   script:
     - |

@@ -4,15 +4,15 @@ import { updateContainerExpirationPolicy } from '~/packages_and_registries/setti
 describe('Registry settings cache update', () => {
   let client;
 
-  const payload = {
+  const payload = (value) => ({
     data: {
       updateContainerExpirationPolicy: {
         containerExpirationPolicy: {
-          enabled: true,
+          ...value,
         },
       },
     },
-  };
+  });
 
   const cacheMock = {
     project: {
@@ -35,18 +35,33 @@ describe('Registry settings cache update', () => {
   });
   describe('Registry settings cache update', () => {
     it('calls readQuery', () => {
-      updateContainerExpirationPolicy('foo')(client, payload);
+      updateContainerExpirationPolicy('foo')(client, payload({ enabled: true }));
       expect(client.readQuery).toHaveBeenCalledWith(queryAndVariables);
     });
 
     it('writes the correct result in the cache', () => {
-      updateContainerExpirationPolicy('foo')(client, payload);
+      updateContainerExpirationPolicy('foo')(client, payload({ enabled: true }));
       expect(client.writeQuery).toHaveBeenCalledWith({
         ...queryAndVariables,
         data: {
           project: {
             containerExpirationPolicy: {
               enabled: true,
+            },
+          },
+        },
+      });
+    });
+
+    it('with an empty update preserves the state', () => {
+      updateContainerExpirationPolicy('foo')(client, payload());
+
+      expect(client.writeQuery).toHaveBeenCalledWith({
+        ...queryAndVariables,
+        data: {
+          project: {
+            containerExpirationPolicy: {
+              enabled: false,
             },
           },
         },

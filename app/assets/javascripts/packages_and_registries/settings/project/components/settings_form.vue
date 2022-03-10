@@ -13,7 +13,6 @@ import {
   REMOVE_INFO_TEXT,
   EXPIRATION_SCHEDULE_LABEL,
   NAME_REGEX_LABEL,
-  NAME_REGEX_PLACEHOLDER,
   NAME_REGEX_DESCRIPTION,
   CADENCE_LABEL,
   EXPIRATION_POLICY_FOOTER_NOTE,
@@ -68,7 +67,6 @@ export default {
     REMOVE_INFO_TEXT,
     EXPIRATION_SCHEDULE_LABEL,
     NAME_REGEX_LABEL,
-    NAME_REGEX_PLACEHOLDER,
     NAME_REGEX_DESCRIPTION,
     CADENCE_LABEL,
     EXPIRATION_POLICY_FOOTER_NOTE,
@@ -141,6 +139,17 @@ export default {
         [model]: state,
       };
     },
+    encapsulateError(path, message) {
+      return {
+        graphQLErrors: [
+          {
+            extensions: {
+              problems: [{ path: [path], message }],
+            },
+          },
+        ],
+      };
+    },
     submit() {
       this.track('submit_form');
       this.apiErrors = {};
@@ -156,7 +165,8 @@ export default {
         .then(({ data }) => {
           const errorMessage = data?.updateContainerExpirationPolicy?.errors[0];
           if (errorMessage) {
-            this.$toast.show(errorMessage);
+            const customError = this.encapsulateError('nameRegex', errorMessage);
+            throw customError;
           } else {
             this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE);
           }
@@ -273,7 +283,6 @@ export default {
             :error="apiErrors.nameRegex"
             :disabled="isFieldDisabled"
             :label="$options.i18n.NAME_REGEX_LABEL"
-            :placeholder="$options.i18n.NAME_REGEX_PLACEHOLDER"
             :description="$options.i18n.NAME_REGEX_DESCRIPTION"
             name="remove-regex"
             data-testid="remove-regex-input"

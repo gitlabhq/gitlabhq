@@ -302,6 +302,9 @@ gem 'rack-attack', '~> 6.3.0'
 
 # Sentry integration
 gem 'sentry-raven', '~> 3.1'
+gem 'sentry-ruby', '~> 5.1.1'
+gem 'sentry-rails', '~> 5.1.1'
+gem 'sentry-sidekiq', '~> 5.1.1'
 
 # PostgreSQL query parsing
 #

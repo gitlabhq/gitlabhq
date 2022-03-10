@@ -16840,6 +16840,9 @@ msgstr ""
 msgid "GlobalSearch|Search GitLab"
 msgstr ""
 
+msgid "GlobalSearch|Search for projects, issues, etc."
+msgstr ""
+
 msgid "GlobalSearch|Search results are loading"
 msgstr ""
 
@@ -16850,6 +16853,9 @@ msgid "GlobalSearch|Type and press the enter key to submit search."
 msgstr ""
 
 msgid "GlobalSearch|Type for new suggestions to appear below."
+msgstr ""
+
+msgid "GlobalSearch|What are you searching for?"
 msgstr ""
 
 msgid "GlobalSearch|in all GitLab"
@@ -32377,6 +32383,9 @@ msgstr ""
 msgid "Secret token"
 msgstr ""
 
+msgid "Secure Code Warrior"
+msgstr ""
+
 msgid "Secure Files"
 msgstr ""
 
@@ -41414,9 +41423,6 @@ msgid "What are instance audit events?"
 msgstr ""
 
 msgid "What are project audit events?"
-msgstr ""
-
-msgid "What are you searching for?"
 msgstr ""
 
 msgid "What does this command do?"

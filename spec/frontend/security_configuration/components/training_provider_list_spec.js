@@ -26,6 +26,7 @@ import {
   updateSecurityTrainingProvidersErrorResponse,
   testProjectPath,
   testProviderIds,
+  testProviderName,
   tempProviderLogos,
 } from '../mock_data';
 
@@ -207,9 +208,13 @@ describe('TrainingProviderList component', () => {
         expect(findLogos().at(provider).attributes('width')).toBe('18');
       });
 
+      it.each(providerIndexArray)('has a11y decorative attribute for provider %s', (provider) => {
+        expect(findLogos().at(provider).attributes('role')).toBe('presentation');
+      });
+
       it.each(providerIndexArray)('displays the correct svg path for provider %s', (provider) => {
         expect(findLogos().at(provider).attributes('src')).toBe(
-          tempProviderLogos[testProviderIds[provider]].svg,
+          tempProviderLogos[testProviderName[provider]].svg,
         );
       });
     });

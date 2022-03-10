@@ -1,11 +1,11 @@
 export const testProjectPath = 'foo/bar';
-
 export const testProviderIds = [101, 102, 103];
+export const testProviderName = ['Vendor Name 1', 'Vendor Name 2', 'Vendor Name 3'];
 
 const createSecurityTrainingProviders = ({ providerOverrides = {} }) => [
   {
     id: testProviderIds[0],
-    name: 'Vendor Name 1',
+    name: testProviderName[0],
     description: 'Interactive developer security education',
     url: 'https://www.example.org/security/training',
     isEnabled: false,
@@ -14,7 +14,7 @@ const createSecurityTrainingProviders = ({ providerOverrides = {} }) => [
   },
   {
     id: testProviderIds[1],
-    name: 'Vendor Name 2',
+    name: testProviderName[1],
     description: 'Security training with guide and learning pathways.',
     url: 'https://www.vendornametwo.com/',
     isEnabled: false,
@@ -23,7 +23,7 @@ const createSecurityTrainingProviders = ({ providerOverrides = {} }) => [
   },
   {
     id: testProviderIds[2],
-    name: 'Vendor Name 3',
+    name: testProviderName[2],
     description: 'Security training for the everyday developer.',
     url: 'https://www.vendornamethree.com/',
     isEnabled: false,
@@ -99,10 +99,10 @@ export const updateSecurityTrainingProvidersErrorResponse = {
 // Will remove once this issue is resolved where the svg path will be available in the GraphQL query
 // https://gitlab.com/gitlab-org/gitlab/-/issues/346899
 export const tempProviderLogos = {
-  [testProviderIds[0]]: {
+  [testProviderName[0]]: {
     svg: '/assets/illustrations/vulnerability/vendor-1.svg',
   },
-  [testProviderIds[1]]: {
+  [testProviderName[1]]: {
     svg: '/assets/illustrations/vulnerability/vendor-2.svg',
   },
 };

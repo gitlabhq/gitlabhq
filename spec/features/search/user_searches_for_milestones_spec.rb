@@ -20,7 +20,7 @@ RSpec.describe 'User searches for milestones', :js do
 
   it 'finds a milestone' do
     fill_in('dashboard_search', with: milestone1.title)
-    find('.btn-search').click
+    find('.gl-search-box-by-click-search-button').click
     select_search_scope('Milestones')
 
     page.within('.results') do
@@ -40,7 +40,7 @@ RSpec.describe 'User searches for milestones', :js do
       end
 
       fill_in('dashboard_search', with: milestone1.title)
-      find('.btn-search').click
+      find('.gl-search-box-by-click-search-button').click
       select_search_scope('Milestones')
 
       page.within('.results') do

@@ -10,7 +10,13 @@ module Gitlab
       #
       # @return [Boolean]
       def enabled?
-        Feature.enabled?(:fips_mode, default_enabled: :yaml)
+        # Attempt to auto-detect FIPS mode from OpenSSL
+        return true if OpenSSL.fips_mode
+
+        # Otherwise allow it to be set manually via the env vars
+        return true if ENV["FIPS_MODE"] == "true"
+
+        false
       end
     end
   end

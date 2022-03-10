@@ -5,8 +5,4 @@
 
 = render 'projects/invite_members_modal', project: @project
 
-- experiment(:confetti_post_signup, actor: current_user) do |e|
-  - e.control do
-    #js-learn-gitlab-app{ data: data }
-  - e.candidate do
-    #js-learn-gitlab-app{ data: data.merge(invite_members: 'true') }
+#js-learn-gitlab-app{ data: data }

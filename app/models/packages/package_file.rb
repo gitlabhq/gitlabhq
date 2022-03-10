@@ -49,6 +49,7 @@ class Packages::PackageFile < ApplicationRecord
   scope :preload_conan_file_metadata, -> { preload(:conan_file_metadatum) }
   scope :preload_debian_file_metadata, -> { preload(:debian_file_metadatum) }
   scope :preload_helm_file_metadata, -> { preload(:helm_file_metadatum) }
+  scope :order_id_asc, -> { order(id: :asc) }
 
   scope :for_rubygem_with_file_name, ->(project, file_name) do
     joins(:package).merge(project.packages.rubygems).with_file_name(file_name)

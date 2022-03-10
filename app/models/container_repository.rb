@@ -66,7 +66,7 @@ class ContainerRepository < ApplicationRecord
     # feature flag since it is only accessed in this query.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/350543 tracks the rollout and
     # removal of this feature flag.
-    joins(:project).where(
+    joins(project: [:namespace]).where(
       migration_state: [:default],
       created_at: ...ContainerRegistry::Migration.created_before
     ).with_target_import_tier
@@ -76,7 +76,7 @@ class ContainerRepository < ApplicationRecord
         FROM feature_gates
         WHERE feature_gates.feature_key = 'container_registry_phase_2_deny_list'
         AND feature_gates.key = 'actors'
-        AND feature_gates.value = concat('Group:', projects.namespace_id)
+        AND feature_gates.value = concat('Group:', namespaces.traversal_ids[1])
       )"
     )
   end

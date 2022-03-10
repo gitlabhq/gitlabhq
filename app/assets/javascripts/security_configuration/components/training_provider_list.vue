@@ -24,6 +24,7 @@ import {
   updateSecurityTrainingCache,
   updateSecurityTrainingOptimisticResponse,
 } from '~/security_configuration/graphql/cache_utils';
+import { TEMP_PROVIDER_LOGOS } from './constants';
 
 const i18n = {
   providerQueryErrorMessage: __(
@@ -36,17 +37,6 @@ const i18n = {
   primaryTrainingDescription: s__(
     'SecurityTraining|Training from this partner takes precedence when more than one training partner is enabled.',
   ),
-};
-
-// Fetch the svg path from the GraphQL query once this issue is resolved
-// https://gitlab.com/gitlab-org/gitlab/-/issues/346899
-const TEMP_PROVIDER_LOGOS = {
-  'gid://gitlab/Security::TrainingProvider/1': {
-    svg: '/assets/illustrations/vulnerability/kontra-logo.svg',
-  },
-  'gid://gitlab/Security::TrainingProvider/2': {
-    svg: '/assets/illustrations/vulnerability/scw-logo.svg',
-  },
 };
 
 export default {
@@ -242,8 +232,12 @@ export default {
               label-position="hidden"
               @change="toggleProvider(provider)"
             />
-            <div v-if="$options.TEMP_PROVIDER_LOGOS[provider.id]" class="gl-ml-4">
-              <img :src="$options.TEMP_PROVIDER_LOGOS[provider.id].svg" width="18" />
+            <div v-if="$options.TEMP_PROVIDER_LOGOS[provider.name]" class="gl-ml-4">
+              <img
+                :src="$options.TEMP_PROVIDER_LOGOS[provider.name].svg"
+                width="18"
+                role="presentation"
+              />
             </div>
             <div class="gl-ml-3">
               <h3 class="gl-font-lg gl-m-0 gl-mb-2">{{ provider.name }}</h3>

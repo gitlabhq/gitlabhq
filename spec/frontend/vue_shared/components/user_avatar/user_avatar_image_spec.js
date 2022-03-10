@@ -1,17 +1,22 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlAvatar, GlTooltip } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '~/lazy_loader';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 jest.mock('images/no_avatar.png', () => 'default-avatar-url');
 
-const DEFAULT_PROPS = {
-  size: 99,
+const PROVIDED_PROPS = {
+  size: 32,
   imgSrc: 'myavatarurl.com',
   imgAlt: 'mydisplayname',
   cssClasses: 'myextraavatarclass',
   tooltipText: 'tooltip text',
   tooltipPlacement: 'bottom',
+};
+
+const DEFAULT_PROPS = {
+  size: 20,
 };
 
 describe('User Avatar Image Component', () => {
@@ -21,64 +26,149 @@ describe('User Avatar Image Component', () => {
     wrapper.destroy();
   });
 
-  describe('Initialization', () => {
-    beforeEach(() => {
-      wrapper = shallowMount(UserAvatarImage, {
-        propsData: {
-          ...DEFAULT_PROPS,
-        },
+  describe('`glAvatarForAllUserAvatars` feature flag enabled', () => {
+    describe('Initialization', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage, {
+          propsData: {
+            ...PROVIDED_PROPS,
+          },
+          provide: {
+            glFeatures: {
+              glAvatarForAllUserAvatars: true,
+            },
+          },
+        });
+      });
+
+      it('should render `GlAvatar` and provide correct properties to it', () => {
+        const avatar = wrapper.findComponent(GlAvatar);
+
+        expect(avatar.attributes('data-src')).toBe(
+          `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+        );
+        expect(avatar.props()).toMatchObject({
+          src: `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+          alt: PROVIDED_PROPS.imgAlt,
+        });
+      });
+
+      it('should add correct CSS classes', () => {
+        const classes = wrapper.findComponent(GlAvatar).classes();
+        expect(classes).toContain(PROVIDED_PROPS.cssClasses);
+        expect(classes).not.toContain('lazy');
       });
     });
 
-    it('should have <img> as a child element', () => {
-      const imageElement = wrapper.find('img');
+    describe('Initialization when lazy', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage, {
+          propsData: {
+            ...PROVIDED_PROPS,
+            lazy: true,
+          },
+          provide: {
+            glFeatures: {
+              glAvatarForAllUserAvatars: true,
+            },
+          },
+        });
+      });
 
-      expect(imageElement.exists()).toBe(true);
-      expect(imageElement.attributes('src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
-      expect(imageElement.attributes('data-src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
-      expect(imageElement.attributes('alt')).toBe(DEFAULT_PROPS.imgAlt);
-    });
+      it('should add lazy attributes', () => {
+        const avatar = wrapper.findComponent(GlAvatar);
 
-    it('should properly render img css', () => {
-      const classes = wrapper.find('img').classes();
-      expect(classes).toEqual(expect.arrayContaining(['avatar', 's99', DEFAULT_PROPS.cssClasses]));
-      expect(classes).not.toContain('lazy');
-    });
-  });
-
-  describe('Initialization when lazy', () => {
-    beforeEach(() => {
-      wrapper = shallowMount(UserAvatarImage, {
-        propsData: {
-          ...DEFAULT_PROPS,
-          lazy: true,
-        },
+        expect(avatar.classes()).toContain('lazy');
+        expect(avatar.attributes()).toMatchObject({
+          src: placeholderImage,
+          'data-src': `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+        });
       });
     });
 
-    it('should add lazy attributes', () => {
-      const imageElement = wrapper.find('img');
+    describe('Initialization without src', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage);
+      });
 
-      expect(imageElement.classes()).toContain('lazy');
-      expect(imageElement.attributes('src')).toBe(placeholderImage);
-      expect(imageElement.attributes('data-src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
+      it('should have default avatar image', () => {
+        const imageElement = wrapper.find('img');
+
+        expect(imageElement.attributes('src')).toBe(
+          `${defaultAvatarUrl}?width=${DEFAULT_PROPS.size}`,
+        );
+      });
     });
   });
 
-  describe('Initialization without src', () => {
-    beforeEach(() => {
-      wrapper = shallowMount(UserAvatarImage);
+  describe('`glAvatarForAllUserAvatars` feature flag disabled', () => {
+    describe('Initialization', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage, {
+          propsData: {
+            ...PROVIDED_PROPS,
+          },
+        });
+      });
+
+      it('should have <img> as a child element', () => {
+        const imageElement = wrapper.find('img');
+
+        expect(imageElement.exists()).toBe(true);
+        expect(imageElement.attributes('src')).toBe(
+          `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+        );
+        expect(imageElement.attributes('data-src')).toBe(
+          `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+        );
+        expect(imageElement.attributes('alt')).toBe(PROVIDED_PROPS.imgAlt);
+      });
+
+      it('should properly render img css', () => {
+        const classes = wrapper.find('img').classes();
+        expect(classes).toEqual(['avatar', 's32', PROVIDED_PROPS.cssClasses]);
+        expect(classes).not.toContain('lazy');
+      });
     });
 
-    it('should have default avatar image', () => {
-      const imageElement = wrapper.find('img');
+    describe('Initialization when lazy', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage, {
+          propsData: {
+            ...PROVIDED_PROPS,
+            lazy: true,
+          },
+        });
+      });
 
-      expect(imageElement.attributes('src')).toBe(`${defaultAvatarUrl}?width=20`);
+      it('should add lazy attributes', () => {
+        const imageElement = wrapper.find('img');
+
+        expect(imageElement.classes()).toContain('lazy');
+        expect(imageElement.attributes('src')).toBe(placeholderImage);
+        expect(imageElement.attributes('data-src')).toBe(
+          `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+        );
+      });
+    });
+
+    describe('Initialization without src', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage);
+      });
+
+      it('should have default avatar image', () => {
+        const imageElement = wrapper.find('img');
+
+        expect(imageElement.attributes('src')).toBe(
+          `${defaultAvatarUrl}?width=${DEFAULT_PROPS.size}`,
+        );
+      });
     });
   });
 
   describe('dynamic tooltip content', () => {
-    const props = DEFAULT_PROPS;
+    const props = PROVIDED_PROPS;
     const slots = {
       default: ['Action!'],
     };
@@ -91,11 +181,11 @@ describe('User Avatar Image Component', () => {
     });
 
     it('renders the tooltip slot', () => {
-      expect(wrapper.find('.js-user-avatar-image-tooltip').exists()).toBe(true);
+      expect(wrapper.findComponent(GlTooltip).exists()).toBe(true);
     });
 
     it('renders the tooltip content', () => {
-      expect(wrapper.find('.js-user-avatar-image-tooltip').text()).toContain(slots.default[0]);
+      expect(wrapper.findComponent(GlTooltip).text()).toContain(slots.default[0]);
     });
 
     it('does not render tooltip data attributes for on avatar image', () => {

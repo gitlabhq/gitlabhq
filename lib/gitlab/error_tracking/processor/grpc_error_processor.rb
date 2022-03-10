@@ -18,7 +18,7 @@ module Gitlab
           # only the first one since that's what is used for grouping.
           def process_first_exception_value(event)
             # Better in new version, will be event.exception.values
-            exceptions = event.instance_variable_get(:@interfaces)[:exception]&.values
+            exceptions = extract_exceptions_from(event)
 
             return unless exceptions.is_a?(Array)
 
@@ -37,7 +37,13 @@ module Gitlab
             # instance variable
             if message.present?
               exceptions.each do |exception|
-                exception.value = message if valid_exception?(exception)
+                next unless valid_exception?(exception)
+
+                if exception.respond_to?(:value=)
+                  exception.value = message
+                else
+                  exception.instance_variable_set(:@value, message)
+                end
               end
             end
 
@@ -55,6 +61,14 @@ module Gitlab
 
           private
 
+          def extract_exceptions_from(event)
+            if event.is_a?(Raven::Event)
+              event.instance_variable_get(:@interfaces)[:exception]&.values
+            else
+              event.exception&.instance_variable_get(:@values)
+            end
+          end
+
           def custom_grpc_fingerprint?(fingerprint)
             fingerprint.is_a?(Array) && fingerprint.length == 2 && fingerprint[0].start_with?('GRPC::')
           end
@@ -71,7 +85,7 @@ module Gitlab
 
           def valid_exception?(exception)
             case exception
-            when Raven::SingleExceptionInterface
+            when Raven::SingleExceptionInterface, Sentry::SingleExceptionInterface
               exception&.value
             else
               false

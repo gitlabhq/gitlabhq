@@ -25,6 +25,21 @@ RSpec.describe 'projects/empty' do
 
       expect(rendered).to have_content("git clone")
     end
+
+    context 'when default branch name contains special shell characters' do
+      let(:branch_name) { ';rm -rf /' }
+
+      before do
+        allow(project).to receive(:default_branch_or_main).and_return(branch_name)
+      end
+
+      it 'escapes the default branch name' do
+        render
+
+        expect(rendered).not_to have_content(branch_name)
+        expect(rendered).to have_content(branch_name.shellescape)
+      end
+    end
   end
 
   context 'when user can not push code on the project' do

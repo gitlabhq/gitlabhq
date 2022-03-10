@@ -29,7 +29,7 @@ module API
           .new(user_project, params[:package_id]).execute
 
         package_files = package.installable_package_files
-                               .preload_pipelines
+                               .preload_pipelines.order_id_asc
 
         present paginate(package_files), with: ::API::Entities::PackageFile
       end

@@ -42,7 +42,7 @@ RSpec.describe 'User searches for code' do
 
       it 'finds code and links to blob' do
         fill_in('dashboard_search', with: 'rspec')
-        find('.btn-search').click
+        find('.gl-search-box-by-click-search-button').click
 
         expect(page).to have_selector('.results', text: 'Update capybara, rspec-rails, poltergeist to recent versions')
 
@@ -52,7 +52,7 @@ RSpec.describe 'User searches for code' do
 
       it 'finds code and links to blame' do
         fill_in('dashboard_search', with: 'rspec')
-        find('.btn-search').click
+        find('.gl-search-box-by-click-search-button').click
 
         expect(page).to have_selector('.results', text: 'Update capybara, rspec-rails, poltergeist to recent versions')
 
@@ -65,7 +65,7 @@ RSpec.describe 'User searches for code' do
         search = 'for naming files'
 
         fill_in('dashboard_search', with: search)
-        find('.btn-search').click
+        find('.gl-search-box-by-click-search-button').click
 
         expect(page).to have_selector('.results', text: expected_result)
 
@@ -94,7 +94,7 @@ RSpec.describe 'User searches for code' do
         expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
       end
       it 'persists branch name across search' do
-        find('.btn-search').click
+        find('.gl-search-box-by-click-search-button').click
         expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
       end
 

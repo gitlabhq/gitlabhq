@@ -23,6 +23,7 @@ RSpec.describe 'Project issue boards', :js do
       project.add_maintainer(user2)
 
       sign_in(user)
+      stub_feature_flags(gl_avatar_for_all_user_avatars: false)
 
       set_cookie('sidebar_collapsed', 'true')
     end

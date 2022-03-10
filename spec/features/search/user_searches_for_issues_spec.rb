@@ -10,7 +10,7 @@ RSpec.describe 'User searches for issues', :js do
 
   def search_for_issue(search)
     fill_in('dashboard_search', with: search)
-    find('.btn-search').click
+    find('.gl-search-box-by-click-search-button').click
     select_search_scope('Issues')
   end
 

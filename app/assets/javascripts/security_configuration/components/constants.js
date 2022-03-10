@@ -281,3 +281,14 @@ export const featureToMutationMap = {
 
 export const AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY =
   'security_configuration_auto_devops_enabled_dismissed_projects';
+
+// Fetch the svg path from the GraphQL query once this issue is resolved
+// https://gitlab.com/gitlab-org/gitlab/-/issues/346899
+export const TEMP_PROVIDER_LOGOS = {
+  Kontra: {
+    svg: '/assets/illustrations/vulnerability/kontra-logo.svg',
+  },
+  [__('Secure Code Warrior')]: {
+    svg: '/assets/illustrations/vulnerability/scw-logo.svg',
+  },
+};
