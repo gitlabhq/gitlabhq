@@ -159,25 +159,22 @@ When the number of RuboCop exceptions exceed the default [`exclude-limit` of 15]
 we may want to resolve exceptions over multiple commits. To minimize confusion,
 we should track our progress through the exception list.
 
-When auto-generating the `.rubocop_todo.yml` exception list for a particular Cop,
-and more than 15 files are affected, we should add the exception list to
-a different file in the directory `.rubocop_todo/`. For example, the configuration for the cop
-`Gitlab/NamespacedClass` is in `.rubocop_todo/gitlab/namespaced_class.yml`.
-
-This ensures that our list isn't mistakenly removed by another auto generation of
-the `.rubocop_todo.yml`. This also allows us greater visibility into the exceptions
-which are currently being resolved.
-
-One way to generate the initial list is to run the Rake task `rubocop:todo:generate`:
+The preferred way to [generate the initial list or a list for specific RuboCop rules](../rake_tasks.md#generate-initial-rubocop-todo-list)
+is to run the Rake task `rubocop:todo:generate`:
 
 ```shell
+# Initial list
 bundle exec rake rubocop:todo:generate
+
+# List for specific RuboCop rules
+bundle exec rake 'rubocop:todo:generate[Gitlab/NamespacedClass,Lint/Syntax]'
 ```
 
-You can then move the list from the freshly generated `.rubocop_todo.yml` for the Cop being actively
-resolved and place it in the directory `.rubocop_todo/`. In this scenario, do not commit
-auto-generated changes to the `.rubocop_todo.yml`, as an `exclude limit` that is higher than 15
-makes the `.rubocop_todo.yml` hard to parse.
+This Rake task creates or updates the exception list in `.rubocop_todo/`. For
+example, the configuration for the RuboCop rule `Gitlab/NamespacedClass` is
+located in `.rubocop_todo/gitlab/namespaced_class.yml`.
+
+Make sure to commit any changes in `.rubocop_todo/` after running the Rake task.
 
 ### Reveal existing RuboCop exceptions
 

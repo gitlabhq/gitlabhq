@@ -48,10 +48,6 @@ module Integrations
       %w()
     end
 
-    def self.supported_event_actions
-      %w()
-    end
-
     def fields
       [
         {

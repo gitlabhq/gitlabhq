@@ -395,7 +395,7 @@ RSpec.describe 'project routing' do
   #                          DELETE /:project_id/project_members/:id(.:format)      project_members#destroy
   describe Projects::ProjectMembersController, 'routing' do
     it_behaves_like 'resource routing' do
-      let(:actions) { %i[index create update destroy] }
+      let(:actions) { %i[index update destroy] }
       let(:base_path) { '/gitlab/gitlabhq/-/project_members' }
     end
   end

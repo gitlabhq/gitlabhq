@@ -14443,6 +14443,12 @@ msgstr ""
 msgid "ErrorTracking|If you self-host Sentry, enter your Sentry instance's full URL. If you use Sentry's hosted solution, enter https://sentry.io"
 msgstr ""
 
+msgid "ErrorTracking|Integrated error tracking is %{epicLinkStart}turned off by default%{epicLinkEnd} and no longer active for this project. To re-enable error tracking on self-hosted instances, you can either %{flagLinkStart}turn on the feature flag%{flagLinkEnd} for integrated error tracking, or provide a %{settingsLinkStart}Sentry API URL and Auth Token%{settingsLinkEnd} on your project settings page. However, error tracking is not ready for production use and cannot be enabled on GitLab.com."
+msgstr ""
+
+msgid "ErrorTracking|Integrated error tracking is %{epicLinkStart}turned off by default%{epicLinkEnd} and no longer active for this project. To re-enable error tracking on self-hosted instances, you can either %{flagLinkStart}turn on the feature flag%{flagLinkEnd} for integrated error tracking, or provide a Sentry API URL and Auth Token below. However, error tracking is not ready for production use and cannot be enabled on GitLab.com."
+msgstr ""
+
 msgid "ErrorTracking|No projects available"
 msgstr ""
 
@@ -14450,6 +14456,9 @@ msgid "ErrorTracking|Select project"
 msgstr ""
 
 msgid "ErrorTracking|To enable project selection, enter a valid Auth Token."
+msgstr ""
+
+msgid "ErrorTracking|View project settings"
 msgstr ""
 
 msgid "Errors"

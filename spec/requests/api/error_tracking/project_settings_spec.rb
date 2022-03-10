@@ -23,6 +23,21 @@ RSpec.describe API::ErrorTracking::ProjectSettings do
     end
   end
 
+  shared_examples 'returns project settings with false for integrated' do
+    specify do
+      make_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq(
+        'active' => setting.reload.enabled,
+        'project_name' => setting.project_name,
+        'sentry_external_url' => setting.sentry_external_url,
+        'api_url' => setting.api_url,
+        'integrated' => false
+      )
+    end
+  end
+
   shared_examples 'returns 404' do
     it 'returns no project settings' do
       make_request
@@ -46,7 +61,17 @@ RSpec.describe API::ErrorTracking::ProjectSettings do
       end
 
       context 'patch settings' do
-        it_behaves_like 'returns project settings'
+        context 'integrated_error_tracking feature enabled' do
+          it_behaves_like 'returns project settings'
+        end
+
+        context 'integrated_error_tracking feature disabled' do
+          before do
+            stub_feature_flags(integrated_error_tracking: false)
+          end
+
+          it_behaves_like 'returns project settings with false for integrated'
+        end
 
         it 'updates enabled flag' do
           expect(setting).to be_enabled
@@ -84,13 +109,19 @@ RSpec.describe API::ErrorTracking::ProjectSettings do
         context 'with integrated param' do
           let(:params) { { active: true, integrated: true } }
 
-          it 'updates the integrated flag' do
-            expect(setting.integrated).to be_falsey
+          context 'integrated_error_tracking feature enabled' do
+            before do
+              stub_feature_flags(integrated_error_tracking: true)
+            end
 
-            make_request
+            it 'updates the integrated flag' do
+              expect(setting.integrated).to be_falsey
 
-            expect(json_response).to include('integrated' => true)
-            expect(setting.reload.integrated).to be_truthy
+              make_request
+
+              expect(json_response).to include('integrated' => true)
+              expect(setting.reload.integrated).to be_truthy
+            end
           end
         end
       end
@@ -170,7 +201,21 @@ RSpec.describe API::ErrorTracking::ProjectSettings do
       end
 
       context 'get settings' do
-        it_behaves_like 'returns project settings'
+        context 'integrated_error_tracking feature enabled' do
+          before do
+            stub_feature_flags(integrated_error_tracking: true)
+          end
+
+          it_behaves_like 'returns project settings'
+        end
+
+        context 'integrated_error_tracking feature disabled' do
+          before do
+            stub_feature_flags(integrated_error_tracking: false)
+          end
+
+          it_behaves_like 'returns project settings with false for integrated'
+        end
       end
     end
 

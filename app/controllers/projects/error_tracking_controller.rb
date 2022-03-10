@@ -6,6 +6,10 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   before_action :authorize_read_sentry_issue!
   before_action :set_issue_id, only: :details
 
+  before_action only: [:index] do
+    push_frontend_feature_flag(:integrated_error_tracking, project)
+  end
+
   def index
     respond_to do |format|
       format.html

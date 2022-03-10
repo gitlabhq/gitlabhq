@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlEmptyState,
   GlButton,
   GlIcon,
@@ -10,6 +11,7 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlDropdownDivider,
+  GlSprintf,
   GlTooltipDirective,
   GlPagination,
 } from '@gitlab/ui';
@@ -21,6 +23,7 @@ import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '../utils';
+import { I18N_ERROR_TRACKING_LIST } from '../constants';
 import ErrorTrackingActions from './error_tracking_actions.vue';
 
 export const tableDataClass = 'table-col d-flex d-md-table-cell align-items-center';
@@ -29,6 +32,7 @@ export default {
   FIRST_PAGE: 1,
   PREV_PAGE: 1,
   NEXT_PAGE: 2,
+  i18n: I18N_ERROR_TRACKING_LIST,
   fields: [
     {
       key: 'error',
@@ -71,6 +75,7 @@ export default {
     frequency: __('Frequency'),
   },
   components: {
+    GlAlert,
     GlEmptyState,
     GlButton,
     GlDropdown,
@@ -81,6 +86,7 @@ export default {
     GlLoadingIcon,
     GlTable,
     GlFormInput,
+    GlSprintf,
     GlPagination,
     TimeAgo,
     ErrorTrackingActions,
@@ -117,12 +123,17 @@ export default {
       type: String,
       required: true,
     },
+    showIntegratedTrackingDisabledAlert: {
+      type: Boolean,
+      required: false,
+    },
   },
   hasLocalStorage: AccessorUtils.canUseLocalStorage(),
   data() {
     return {
       errorSearchQuery: '',
       pageValue: this.$options.FIRST_PAGE,
+      isAlertDismissed: false,
     };
   },
   computed: {
@@ -142,6 +153,9 @@ export default {
     errorTrackingHelpUrl() {
       return helpPagePath('operations/error_tracking');
     },
+    showIntegratedDisabledAlert() {
+      return !this.isAlertDismissed && this.showIntegratedTrackingDisabledAlert;
+    },
   },
   watch: {
     pagination() {
@@ -150,6 +164,8 @@ export default {
       }
     },
   },
+  epicLink: 'https://gitlab.com/gitlab-org/gitlab/-/issues/353639',
+  featureFlagLink: helpPagePath('operations/error_tracking'),
   created() {
     if (this.errorTrackingEnabled) {
       this.setEndpoint(this.indexPath);
@@ -232,6 +248,34 @@ export default {
 <template>
   <div class="error-list">
     <div v-if="errorTrackingEnabled">
+      <gl-alert
+        v-if="showIntegratedDisabledAlert"
+        variant="danger"
+        data-testid="integrated-disabled-alert"
+        @dismiss="isAlertDismissed = true"
+      >
+        <gl-sprintf :message="this.$options.i18n.integratedErrorTrackingDisabledText">
+          <template #epicLink="{ content }">
+            <gl-link :href="$options.epicLink" target="_blank">{{ content }}</gl-link>
+          </template>
+          <template #flagLink="{ content }">
+            <gl-link :href="$options.featureFlagLink" target="_blank">{{ content }}</gl-link>
+          </template>
+          <template #settingsLink="{ content }">
+            <gl-link :href="enableErrorTrackingLink" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+        <div>
+          <gl-button
+            category="primary"
+            variant="confirm"
+            :href="enableErrorTrackingLink"
+            class="gl-mr-auto gl-mt-3"
+          >
+            {{ $options.i18n.viewProjectSettingsButton }}
+          </gl-button>
+        </div>
+      </gl-alert>
       <div
         class="row flex-column flex-md-row align-items-md-center m-0 mt-sm-2 p-3 p-sm-3 bg-secondary border"
       >

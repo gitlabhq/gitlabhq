@@ -80,10 +80,6 @@ module Integrations
       %w(commit merge_request)
     end
 
-    def self.supported_event_actions
-      %w(comment)
-    end
-
     # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
     def self.reference_pattern(only_long: true)
       @reference_pattern ||= /(?<issue>\b#{Gitlab::Regex.jira_issue_key_regex})/

@@ -34,7 +34,8 @@ RSpec.describe Projects::ErrorTrackingHelper do
           'error-tracking-enabled' => 'false',
           'list-path' => list_path,
           'project-path' => project_path,
-          'illustration-path' => match_asset_path('/assets/illustrations/cluster_popover.svg')
+          'illustration-path' => match_asset_path('/assets/illustrations/cluster_popover.svg'),
+          'show-integrated-tracking-disabled-alert' => 'false'
         )
       end
     end
@@ -65,6 +66,37 @@ RSpec.describe Projects::ErrorTrackingHelper do
           expect(helper.error_tracking_data(current_user, project)).to include(
             'error-tracking-enabled' => 'false'
           )
+        end
+      end
+
+      context 'with integrated error tracking feature' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:feature_flag, :enabled, :integrated, :show_alert) do
+          false | true  | true  | true
+          false | true  | false | false
+          false | false | true  | false
+          false | false | false | false
+          true  | true  | true  | false
+          true  | true  | false | false
+          true  | false | true  | false
+          true  | false | false | false
+        end
+
+        with_them do
+          before do
+            stub_feature_flags(integrated_error_tracking: feature_flag)
+            error_tracking_setting.update_columns(
+              enabled: enabled,
+              integrated: integrated
+            )
+          end
+
+          specify do
+            expect(helper.error_tracking_data(current_user, project)).to include(
+              'show-integrated-tracking-disabled-alert' => show_alert.to_s
+            )
+          end
         end
       end
     end

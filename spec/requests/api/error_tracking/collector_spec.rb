@@ -26,7 +26,6 @@ RSpec.describe API::ErrorTracking::Collector do
   RSpec.shared_examples 'successful request' do
     it 'writes to the database and returns OK', :aggregate_failures do
       expect { subject }.to change { ErrorTracking::ErrorEvent.count }.by(1)
-
       expect(response).to have_gitlab_http_status(:ok)
     end
   end
@@ -41,6 +40,14 @@ RSpec.describe API::ErrorTracking::Collector do
     subject { post api(url), params: params, headers: headers }
 
     it_behaves_like 'successful request'
+
+    context 'intergrated error tracking feature flag is disabled' do
+      before do
+        stub_feature_flags(integrated_error_tracking: false)
+      end
+
+      it_behaves_like 'not found'
+    end
 
     context 'error tracking feature is disabled' do
       before do

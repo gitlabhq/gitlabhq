@@ -7,6 +7,7 @@ import ErrorTrackingActions from '~/error_tracking/components/error_tracking_act
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '~/error_tracking/utils';
 import Tracking from '~/tracking';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import errorsList from './list_mock.json';
 
 Vue.use(Vuex);
@@ -25,28 +26,33 @@ describe('ErrorTrackingList', () => {
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findPagination = () => wrapper.find(GlPagination);
   const findErrorActions = () => wrapper.find(ErrorTrackingActions);
+  const findIntegratedDisabledAlert = () => wrapper.findByTestId('integrated-disabled-alert');
 
   function mountComponent({
     errorTrackingEnabled = true,
     userCanEnableErrorTracking = true,
+    showIntegratedTrackingDisabledAlert = false,
     stubs = {},
   } = {}) {
-    wrapper = mount(ErrorTrackingList, {
-      store,
-      propsData: {
-        indexPath: '/path',
-        listPath: '/error_tracking',
-        projectPath: 'project/test',
-        enableErrorTrackingLink: '/link',
-        userCanEnableErrorTracking,
-        errorTrackingEnabled,
-        illustrationPath: 'illustration/path',
-      },
-      stubs: {
-        ...stubChildren(ErrorTrackingList),
-        ...stubs,
-      },
-    });
+    wrapper = extendedWrapper(
+      mount(ErrorTrackingList, {
+        store,
+        propsData: {
+          indexPath: '/path',
+          listPath: '/error_tracking',
+          projectPath: 'project/test',
+          enableErrorTrackingLink: '/link',
+          userCanEnableErrorTracking,
+          errorTrackingEnabled,
+          showIntegratedTrackingDisabledAlert,
+          illustrationPath: 'illustration/path',
+        },
+        stubs: {
+          ...stubChildren(ErrorTrackingList),
+          ...stubs,
+        },
+      }),
+    );
   }
 
   beforeEach(() => {
@@ -220,6 +226,31 @@ describe('ErrorTrackingList', () => {
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findErrorListTable().exists()).toBe(false);
       expect(dropdownsArray().length).toBe(0);
+    });
+  });
+
+  describe('When the integrated tracking diabled alert should be shown', () => {
+    beforeEach(() => {
+      mountComponent({
+        showIntegratedTrackingDisabledAlert: true,
+        stubs: {
+          GlAlert: false,
+        },
+      });
+    });
+
+    it('shows the alert box', () => {
+      expect(findIntegratedDisabledAlert().exists()).toBe(true);
+    });
+
+    describe('when alert is dismissed', () => {
+      it('hides the alert box', async () => {
+        findIntegratedDisabledAlert().vm.$emit('dismiss');
+
+        await nextTick();
+
+        expect(findIntegratedDisabledAlert().exists()).toBe(false);
+      });
     });
   });
 

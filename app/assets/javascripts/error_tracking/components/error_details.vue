@@ -26,7 +26,7 @@ import {
   trackErrorStatusUpdateOptions,
 } from '../utils';
 
-import { severityLevel, severityLevelVariant, errorStatus } from './constants';
+import { severityLevel, severityLevelVariant, errorStatus } from '../constants';
 import Stacktrace from './stacktrace.vue';
 
 const SENTRY_TIMEOUT = 10000;

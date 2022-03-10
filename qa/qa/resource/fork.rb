@@ -95,7 +95,7 @@ module QA
       def wait_until_forked
         Runtime::Logger.debug("Waiting for the fork process to complete...")
         forked = wait_until do
-          project.import_status == "finished"
+          project.reload!.import_status == "finished"
         end
 
         raise "Timed out while waiting for the fork process to complete." unless forked

@@ -94,7 +94,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     concerns :clusterable
 
-    resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
+    resources :group_members, only: [:index, :update, :destroy], concerns: :access_requestable do
       post :resend_invite, on: :member
       delete :leave, on: :collection
     end

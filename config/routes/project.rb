@@ -163,7 +163,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+:]+} }, concerns: :access_requestable do
+        resources :project_members, except: [:show, :new, :create, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+:]+} }, concerns: :access_requestable do
           collection do
             delete :leave
 

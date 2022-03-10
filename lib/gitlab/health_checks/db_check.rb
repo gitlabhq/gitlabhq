@@ -13,12 +13,14 @@ module Gitlab
         end
 
         def successful?(result)
-          result == '1'
+          result == Gitlab::Database.database_base_models.size
         end
 
         def check
           catch_timeout 10.seconds do
-            ActiveRecord::Base.connection.execute('SELECT 1 as ping')&.first&.[]('ping')&.to_s
+            Gitlab::Database.database_base_models.sum do |_, base|
+              base.connection.select_value('SELECT 1')
+            end
           end
         end
       end

@@ -208,6 +208,25 @@ RSpec.describe API::Invitations do
         end
       end
 
+      context 'when adding project bot' do
+        let_it_be(:project_bot) { create(:user, :project_bot) }
+
+        before do
+          unrelated_project = create(:project)
+          unrelated_project.add_maintainer(project_bot)
+        end
+
+        it 'returns error' do
+          expect do
+            post invitations_url(source, maintainer),
+                 params: { email: project_bot.email, access_level: Member::DEVELOPER }
+
+            expect(json_response['status']).to eq 'error'
+            expect(json_response['message'][project_bot.email]).to include('User project bots cannot be added to other groups / projects')
+          end.not_to change { source.members.count }
+        end
+      end
+
       it "returns a message if member already exists" do
         post invitations_url(source, maintainer),
              params: { email: developer.email, access_level: Member::MAINTAINER }

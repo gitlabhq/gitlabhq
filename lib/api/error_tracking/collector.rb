@@ -28,8 +28,8 @@ module API
       end
 
       def feature_enabled?
-        project.error_tracking_setting&.enabled? &&
-          project.error_tracking_setting&.integrated_client?
+        Feature.enabled?(:integrated_error_tracking, project) &&
+          project.error_tracking_setting&.integrated_enabled?
       end
 
       def find_client_key(public_key)

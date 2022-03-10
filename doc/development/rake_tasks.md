@@ -196,6 +196,16 @@ One way to generate the initial list is to run the Rake task `rubocop:todo:gener
 bundle exec rake rubocop:todo:generate
 ```
 
+To generate TODO list for specific RuboCop rules, pass them comma-seperated as
+argument to the Rake task:
+
+```shell
+bundle exec rake 'rubocop:todo:generate[Gitlab/NamespacedClass,Lint/Syntax]'
+bundle exec rake rubocop:todo:generate\[Gitlab/NamespacedClass,Lint/Syntax\]
+```
+
+Some shells require brackets to be escaped or quoted.
+
 See [Resolving RuboCop exceptions](contributing/style_guides.md#resolving-rubocop-exceptions)
 on how to proceed from here.
 

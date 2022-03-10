@@ -12,7 +12,8 @@ module Projects::ErrorTrackingHelper
       'error-tracking-enabled' => error_tracking_enabled.to_s,
       'project-path' => project.full_path,
       'list-path' => project_error_tracking_index_path(project),
-      'illustration-path' => image_path('illustrations/cluster_popover.svg')
+      'illustration-path' => image_path('illustrations/cluster_popover.svg'),
+      'show-integrated-tracking-disabled-alert' => show_integrated_tracking_disabled_alert?(project).to_s
     }
   end
 
@@ -26,5 +27,16 @@ module Projects::ErrorTrackingHelper
       'project-issues-path' => project_issues_path(project),
       'issue-stack-trace-path' => stack_trace_project_error_tracking_index_path(*opts)
     }
+  end
+
+  private
+
+  def show_integrated_tracking_disabled_alert?(project)
+    return false if ::Feature.enabled?(:integrated_error_tracking, project)
+
+    setting ||= project.error_tracking_setting ||
+      project.build_error_tracking_setting
+
+    setting.integrated_enabled?
   end
 end

@@ -14,10 +14,15 @@ export default () => {
     projectPath,
     listPath,
   } = domEl.dataset;
-  let { errorTrackingEnabled, userCanEnableErrorTracking } = domEl.dataset;
+  let {
+    errorTrackingEnabled,
+    userCanEnableErrorTracking,
+    showIntegratedTrackingDisabledAlert,
+  } = domEl.dataset;
 
   errorTrackingEnabled = parseBoolean(errorTrackingEnabled);
   userCanEnableErrorTracking = parseBoolean(userCanEnableErrorTracking);
+  showIntegratedTrackingDisabledAlert = parseBoolean(showIntegratedTrackingDisabledAlert);
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -36,6 +41,7 @@ export default () => {
           userCanEnableErrorTracking,
           projectPath,
           listPath,
+          showIntegratedTrackingDisabledAlert,
         },
       });
     },

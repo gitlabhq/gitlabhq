@@ -27,10 +27,9 @@ On the vulnerability's page, you can:
 - [Change the vulnerability's status](#change-vulnerability-status).
 - [Create an issue](#create-an-issue-for-a-vulnerability).
 - [Link issues to the vulnerability](#linked-issues).
-- [Resolve a vulnerability](#resolve-a-vulnerability), if a solution is
-  available.
-
-In GitLab 14.9 and later, if security training is enabled, the vulnerability page includes a training link relevant to the detected vulnerability.
+- [Resolve a vulnerability](#resolve-a-vulnerability) if a solution is
+  available. 
+- [View security training specific to the detected vulnerability](#view-security-training-for-a-vulnerability).
 
 ## Vulnerability status values
 
@@ -177,9 +176,13 @@ To enable security training for vulnerabilities in your project:
 
 ## View security training for a vulnerability
 
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
+
+If security training is enabled, the vulnerability page includes a training link relevant to the detected vulnerability.
+
 To view the security training for a vulnerability:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
-1. If the security training provider supports training for the vulnerability, select **View training**.
+1. Select **View training**.

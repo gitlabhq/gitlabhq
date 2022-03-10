@@ -4,17 +4,6 @@ module MembershipActions
   include MembersPresentation
   extend ActiveSupport::Concern
 
-  def create
-    create_params = params.permit(:user_ids, :access_level, :expires_at)
-    result = Members::CreateService.new(current_user, create_params.merge({ source: membershipable, invite_source: "#{plain_source_type}-members-page" })).execute
-
-    if result[:status] == :success
-      redirect_to members_page_url, notice: _('Users were successfully added.')
-    else
-      redirect_to members_page_url, alert: result[:message]
-    end
-  end
-
   def update
     update_params = params.require(root_params_key).permit(:access_level, :expires_at)
     member = membershipable.members_and_requesters.find(params[:id])

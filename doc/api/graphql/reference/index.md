@@ -14416,6 +14416,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Network Policies of the project.
 
+WARNING:
+**Deprecated** in 14.8.
+Network policies are deprecated and will be removed in GitLab 15.0.
+
 Returns [`NetworkPolicyConnection`](#networkpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
