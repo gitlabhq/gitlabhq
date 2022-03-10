@@ -69,7 +69,7 @@ class Admin::ProjectsFinder
   end
 
   def sort(items)
-    sort = params.fetch(:sort) { 'latest_activity_desc' }
+    sort = params.fetch(:sort, 'latest_activity_desc')
     items.sort_by_attribute(sort)
   end
 end

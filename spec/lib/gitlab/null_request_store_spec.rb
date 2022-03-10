@@ -49,7 +49,7 @@ RSpec.describe Gitlab::NullRequestStore do
 
   describe '#fetch' do
     it 'returns the block result' do
-      expect(null_store.fetch('key') { 'block result' }).to eq('block result')
+      expect(null_store.fetch('key') { 'block result' }).to eq('block result') # rubocop:disable Style/RedundantFetchBlock
     end
   end
 

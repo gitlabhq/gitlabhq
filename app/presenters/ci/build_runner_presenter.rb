@@ -64,35 +64,50 @@ module Ci
     def create_archive(artifacts)
       return unless artifacts[:untracked] || artifacts[:paths]
 
-      archive = {
-        artifact_type: :archive,
-        artifact_format: :zip,
-        name: artifacts[:name],
-        untracked: artifacts[:untracked],
-        paths: artifacts[:paths],
-        when: artifacts[:when],
-        expire_in: artifacts[:expire_in]
-      }
-
-      if artifacts.dig(:exclude).present?
-        archive.merge(exclude: artifacts[:exclude])
-      else
-        archive
+      BuildArtifact.for_archive(artifacts).to_h.tap do |artifact|
+        artifact.delete(:exclude) unless artifact[:exclude].present?
       end
     end
 
     def create_reports(reports, expire_in:)
       return unless reports&.any?
 
-      reports.map do |report_type, report_paths|
-        {
-          artifact_type: report_type.to_sym,
-          artifact_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(report_type.to_sym),
-          name: ::Ci::JobArtifact::DEFAULT_FILE_NAMES.fetch(report_type.to_sym),
-          paths: report_paths,
+      reports.map { |report| BuildArtifact.for_report(report, expire_in).to_h.compact }
+    end
+
+    BuildArtifact = Struct.new(:name, :untracked, :paths, :exclude, :when, :expire_in, :artifact_type, :artifact_format, keyword_init: true) do
+      def self.for_archive(artifacts)
+        self.new(
+          artifact_type: :archive,
+          artifact_format: :zip,
+          name: artifacts[:name],
+          untracked: artifacts[:untracked],
+          paths: artifacts[:paths],
+          when: artifacts[:when],
+          expire_in: artifacts[:expire_in],
+          exclude: artifacts[:exclude]
+        )
+      end
+
+      def self.for_report(report, expire_in)
+        type, params = report
+
+        if type == :coverage_report
+          artifact_type = params[:coverage_format].to_sym
+          paths = [params[:path]]
+        else
+          artifact_type = type
+          paths = params
+        end
+
+        self.new(
+          artifact_type: artifact_type,
+          artifact_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(artifact_type),
+          name: ::Ci::JobArtifact::DEFAULT_FILE_NAMES.fetch(artifact_type),
+          paths: paths,
           when: 'always',
           expire_in: expire_in
-        }
+        )
       end
     end
 

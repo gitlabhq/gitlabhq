@@ -383,7 +383,7 @@ module Gitlab
       private
 
       def diffable_by_attribute?
-        repository.attributes(file_path).fetch('diff') { true }
+        repository.attributes(file_path).fetch('diff', true)
       end
 
       # NOTE: Files with unsupported encodings (e.g. UTF-16) are treated as binary by git, but they are recognized as text files during encoding detection. These files have `Binary files a/filename and b/filename differ' as their raw diff content which cannot be used. We need to handle this special case and avoid displaying incorrect diff.

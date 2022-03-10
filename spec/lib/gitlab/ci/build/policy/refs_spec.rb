@@ -149,26 +149,9 @@ RSpec.describe Gitlab::Ci::Build::Policy::Refs do
       context 'when unsafe regexp is used' do
         let(:subject) { described_class.new(['/^(?!master).+/']) }
 
-        context 'when allow_unsafe_ruby_regexp is disabled' do
-          before do
-            stub_feature_flags(allow_unsafe_ruby_regexp: false)
-          end
-
-          it 'ignores invalid regexp' do
-            expect(subject)
-              .not_to be_satisfied_by(pipeline)
-          end
-        end
-
-        context 'when allow_unsafe_ruby_regexp is enabled' do
-          before do
-            stub_feature_flags(allow_unsafe_ruby_regexp: true)
-          end
-
-          it 'is satisfied by regexp' do
-            expect(subject)
-              .to be_satisfied_by(pipeline)
-          end
+        it 'ignores invalid regexp' do
+          expect(subject)
+            .not_to be_satisfied_by(pipeline)
         end
       end
     end

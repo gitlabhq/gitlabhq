@@ -497,6 +497,22 @@ FactoryBot.define do
       options { {} }
     end
 
+    trait :coverage_report_cobertura do
+      options do
+        {
+          artifacts: {
+            expire_in: '7d',
+            reports: {
+              coverage_report: {
+                coverage_format: 'cobertura',
+                path: 'cobertura.xml'
+              }
+            }
+          }
+        }
+      end
+    end
+
     # TODO: move Security traits to ee_ci_build
     # https://gitlab.com/gitlab-org/gitlab/-/issues/210486
     trait :dast do

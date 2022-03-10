@@ -59,9 +59,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule do
     context 'when using an if: clause with lookahead regex character "?"' do
       let(:config) { { if: '$CI_COMMIT_REF =~ /^(?!master).+/' } }
 
-      context 'when allow_unsafe_ruby_regexp is disabled' do
-        it_behaves_like 'an invalid config', /invalid expression syntax/
-      end
+      it_behaves_like 'an invalid config', /invalid expression syntax/
     end
 
     context 'when specifying unknown policy' do

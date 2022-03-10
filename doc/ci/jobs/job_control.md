@@ -834,13 +834,9 @@ due to computational complexity, and some features, like negative lookaheads, be
 Only a subset of features provided by [Ruby Regexp](https://ruby-doc.org/core/Regexp.html)
 are now supported.
 
-From GitLab 11.9.7 to GitLab 12.0, GitLab provided a feature flag to
-let you use unsafe regexp syntax. After migrating to safe syntax, you should disable
-this feature flag again:
-
-```ruby
-Feature.enable(:allow_unsafe_ruby_regexp)
-```
+From GitLab 11.9.7 to GitLab 14.9, GitLab provided a feature flag to let you
+use unsafe regexp syntax. We've fully migrated to RE2 now, and that feature
+flag is no longer available.
 
 ## CI/CD variable expressions
 

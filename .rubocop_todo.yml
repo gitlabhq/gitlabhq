@@ -657,18 +657,6 @@ Style/NumericLiteralPrefix:
 Style/PercentLiteralDelimiters:
   Enabled: false
 
-# Offense count: 26
-# Cop supports --auto-correct.
-# Configuration parameters: SafeForConstants.
-Style/RedundantFetchBlock:
-  Exclude:
-    - 'app/finders/admin/projects_finder.rb'
-    - 'lib/gitlab/diff/file.rb'
-    - 'spec/lib/gitlab/json_cache_spec.rb'
-    - 'spec/lib/gitlab/metrics/dashboard/cache_spec.rb'
-    - 'spec/lib/gitlab/null_request_store_spec.rb'
-    - 'spec/lib/gitlab/safe_request_store_spec.rb'
-
 # Offense count: 206
 # Cop supports --auto-correct.
 Style/RedundantInterpolation:

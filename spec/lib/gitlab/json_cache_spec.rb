@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Style/RedundantFetchBlock
 
 require 'spec_helper'
 
@@ -547,3 +548,4 @@ RSpec.describe Gitlab::JsonCache do
     end
   end
 end
+# rubocop:enable Style/RedundantFetchBlock

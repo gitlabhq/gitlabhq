@@ -249,6 +249,67 @@ end
 At this point, the setup phase is concluded. The deleted `projects` records should be automatically
 picked up by the scheduled cleanup worker job.
 
+### Remove the loose foreign key
+
+When the loose foreign key definition is no longer needed (parent table is removed, or FK is restored),
+we need to remove the definition from the YAML file and ensure that we don't leave pending deleted
+records in the database.
+
+1. Remove the loose foreign key definition from the config (`config/gitlab_loose_foreign_keys.yml`).
+1. Remove the deletion tracking trigger from the parent table (if the parent table is still there).
+1. Remove leftover deleted records from the `loose_foreign_keys_deleted_records` table.
+
+Migration for removing the trigger:
+
+```ruby
+class UnTrackProjectRecordChanges < Gitlab::Database::Migration[1.0]
+  include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
+
+  enable_lock_retries!
+
+  def up
+    untrack_record_deletions(:projects)
+  end
+
+  def down
+    track_record_deletions(:projects)
+  end
+end
+```
+
+With the trigger removal, we prevent further records to be inserted in the `loose_foreign_keys_deleted_records`
+table however, there is still a chance for having leftover pending records in the table. These records
+must be removed with an inline data migration.
+
+```ruby
+class RemoveLeftoverProjectDeletions < Gitlab::Database::Migration[1.0]
+  disable_ddl_transaction!
+
+  def up
+    loop do
+      result = execute <<~SQL
+      DELETE FROM "loose_foreign_keys_deleted_records"
+      WHERE
+      ("loose_foreign_keys_deleted_records"."partition", "loose_foreign_keys_deleted_records"."id") IN (
+        SELECT "loose_foreign_keys_deleted_records"."partition", "loose_foreign_keys_deleted_records"."id"
+        FROM "loose_foreign_keys_deleted_records"
+        WHERE
+        "loose_foreign_keys_deleted_records"."fully_qualified_table_name" = 'public.projects' AND
+        "loose_foreign_keys_deleted_records"."status" = 1
+        LIMIT 100
+      )
+      SQL
+
+      break if result.cmd_tuples == 0
+    end
+  end
+
+  def down
+    # no-op
+  end
+end
+```
+
 ## Testing
 
 The "`it has loose foreign keys`" shared example can be used to test the presence of the `ON DELETE` trigger and the

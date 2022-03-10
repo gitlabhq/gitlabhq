@@ -611,6 +611,40 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             end
           end
 
+          context 'when job has code coverage report' do
+            let(:job) do
+              create(:ci_build, :pending, :queued, :coverage_report_cobertura,
+                     pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
+            end
+
+            let(:expected_artifacts) do
+              [
+                {
+                  'name' => 'cobertura-coverage.xml',
+                  'paths' => ['cobertura.xml'],
+                  'when' => 'always',
+                  'expire_in' => '7d',
+                  "artifact_type" => "cobertura",
+                  "artifact_format" => "gzip"
+                }
+              ]
+            end
+
+            it 'returns job with the correct artifact specification' do
+              request_job info: { platform: :darwin, features: { upload_multiple_artifacts: true } }
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(response.headers['Content-Type']).to eq('application/json')
+              expect(response.headers).not_to have_key('X-GitLab-Last-Update')
+              expect(runner.reload.platform).to eq('darwin')
+              expect(json_response['id']).to eq(job.id)
+              expect(json_response['token']).to eq(job.token)
+              expect(json_response['job_info']).to eq(expected_job_info)
+              expect(json_response['git_info']).to eq(expected_git_info)
+              expect(json_response['artifacts']).to eq(expected_artifacts)
+            end
+          end
+
           context 'when triggered job is available' do
             let(:expected_variables) do
               [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true, 'masked' => false },

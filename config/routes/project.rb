@@ -241,6 +241,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        get 'releases/permalink/latest(/)(*suffix_path)', to: 'releases#latest_permalink', as: :latest_release_permalink, format: false
+
         resources :logs, only: [:index] do
           collection do
             get :k8s

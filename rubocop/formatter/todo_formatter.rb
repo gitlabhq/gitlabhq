@@ -21,16 +21,19 @@ module RuboCop
       # via `Enabled: false` in .rubocop_todo.yml or .rubocop_todo/.
       MAX_OFFENSE_COUNT = 15
 
-      Todo = Struct.new(:cop_name, :files, :offense_count) do
-        def initialize(cop_name)
-          super(cop_name, Set.new, 0)
+      class Todo
+        attr_reader :cop_name, :files, :offense_count
 
+        def initialize(cop_name)
+          @cop_name = cop_name
+          @files = Set.new
+          @offense_count = 0
           @cop_class = RuboCop::Cop::Registry.global.find_by_cop_name(cop_name)
         end
 
         def record(file, offense_count)
-          files << file
-          self.offense_count += offense_count
+          @files << file
+          @offense_count += offense_count
         end
 
         def autocorrectable?

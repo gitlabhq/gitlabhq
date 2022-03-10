@@ -23,6 +23,8 @@ Otherwise, the pipeline is not created. No error message is displayed.
 
 ## Add a pipeline schedule
 
+> Scheduled pipelines for tags [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23292) in GitLab 14.9.
+
 To add a pipeline schedule:
 
 1. On the top bar, select **Menu > Projects** and find your project.
@@ -32,6 +34,7 @@ To add a pipeline schedule:
      interval in [cron notation](../../topics/cron/index.md). You can use any cron value,
      but scheduled pipelines cannot run more frequently than the instance's
      [maximum scheduled pipeline frequency](../../administration/cicd.md#change-maximum-scheduled-pipeline-frequency).
+   - **Target branch or tag**: Select the branch or tag for the pipeline.
    - **Variables**: Add any number of [CI/CD variables](../variables/index.md) to the schedule.
      These variables are available only when the scheduled pipeline runs,
      and not in any other pipeline run.

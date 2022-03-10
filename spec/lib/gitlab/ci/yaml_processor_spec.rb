@@ -9,10 +9,6 @@ module Gitlab
 
       subject { described_class.new(config, user: nil).execute }
 
-      before do
-        stub_feature_flags(allow_unsafe_ruby_regexp: false)
-      end
-
       shared_examples 'returns errors' do |error_message|
         it 'adds a message when an error is encountered' do
           expect(subject.errors).to include(error_message)

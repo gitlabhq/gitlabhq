@@ -680,6 +680,32 @@ RSpec.describe 'project routing' do
     end
   end
 
+  describe Projects::ReleasesController, 'routing' do
+    it 'to #latest_permalink with a valid permalink path' do
+      expect(get('/gitlab/gitlabhq/-/releases/permalink/latest/downloads/release-binary.zip')).to route_to(
+        'projects/releases#latest_permalink',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        suffix_path: 'downloads/release-binary.zip'
+      )
+
+      expect(get('/gitlab/gitlabhq/-/releases/permalink/latest')).to route_to(
+        'projects/releases#latest_permalink',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq'
+      )
+    end
+
+    it 'to #show for the release with tag named permalink' do
+      expect(get('/gitlab/gitlabhq/-/releases/permalink')).to route_to(
+        'projects/releases#show',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        tag: 'permalink'
+      )
+    end
+  end
+
   describe Projects::Registry::TagsController, 'routing' do
     describe '#destroy' do
       it 'correctly routes to a destroy action' do

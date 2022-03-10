@@ -222,6 +222,166 @@ RSpec.describe Projects::ReleasesController do
     end
   end
 
+  describe 'GET #latest_permalink' do
+    # Uses default order_by=released_at parameter.
+    subject do
+      get :latest_permalink, params: { namespace_id: project.namespace, project_id: project }
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    let(:release) { create(:release, project: project) }
+    let(:tag) { CGI.escape(release.tag) }
+
+    context 'when user is a guest' do
+      let(:project) { private_project }
+      let(:user) { guest }
+
+      it 'proceeds with the redirect' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:redirect)
+      end
+    end
+
+    context 'when user is an external user for the project' do
+      let(:project) { private_project }
+      let(:user) { create(:user) }
+
+      it 'behaves like not found' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when there are no releases for the project' do
+      let(:project) { create(:project, :repository, :public) }
+      let(:user) { developer }
+
+      before do
+        project.releases.destroy_all # rubocop: disable Cop/DestroyAll
+      end
+
+      it 'behaves like not found' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'multiple releases' do
+      let(:user) { developer }
+
+      it 'redirects to the latest release' do
+        create(:release, project: project, released_at: 1.day.ago)
+        latest_release = create(:release, project: project, released_at: Time.current)
+
+        subject
+
+        expect(response).to redirect_to("#{project_releases_path(project)}/#{latest_release.tag}")
+      end
+    end
+
+    context 'suffix path redirection' do
+      let(:user) { developer }
+      let(:suffix_path) { 'downloads/zips/helm-hello-world.zip' }
+      let!(:latest_release) { create(:release, project: project, released_at: Time.current) }
+
+      subject do
+        get :latest_permalink, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          suffix_path: suffix_path
+        }
+      end
+
+      it 'redirects to the latest release with suffix path and format' do
+        subject
+
+        expect(response).to redirect_to(
+          "#{project_releases_path(project)}/#{latest_release.tag}/#{suffix_path}")
+      end
+
+      context 'suffix path abuse' do
+        let(:suffix_path) { 'downloads/zips/../../../../../../../robots.txt'}
+
+        it 'raises attack error' do
+          expect do
+            subject
+          end.to raise_error(Gitlab::Utils::PathTraversalAttackError)
+        end
+      end
+
+      context 'url parameters' do
+        let(:suffix_path) { 'downloads/zips/helm-hello-world.zip' }
+
+        subject do
+          get :latest_permalink, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            suffix_path: suffix_path,
+            order_by: 'released_at',
+            param_1: 1,
+            param_2: 2
+          }
+        end
+
+        it 'carries over query parameters without order_by parameter in the redirect' do
+          subject
+
+          expect(response).to redirect_to(
+            "#{project_releases_path(project)}/#{latest_release.tag}/#{suffix_path}?param_1=1&param_2=2")
+        end
+      end
+    end
+
+    context 'order_by parameter' do
+      let!(:latest_release) { create(:release, project: project, released_at: Time.current) }
+
+      shared_examples_for 'redirects to latest release ordered by using released_at' do
+        it do
+          subject
+
+          expect(response).to redirect_to("#{project_releases_path(project)}/#{latest_release.tag}")
+        end
+      end
+
+      before do
+        create(:release, project: project, released_at: 1.day.ago)
+        create(:release, project: project, released_at: 2.days.ago)
+      end
+
+      context 'invalid parameter' do
+        let(:user) { developer }
+
+        subject do
+          get :latest_permalink, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            order_by: 'unsupported'
+          }
+        end
+
+        it_behaves_like 'redirects to latest release ordered by using released_at'
+      end
+
+      context 'valid parameter' do
+        subject do
+          get :latest_permalink, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            order_by: 'released_at'
+          }
+        end
+
+        it_behaves_like 'redirects to latest release ordered by using released_at'
+      end
+    end
+  end
+
   # `GET #downloads` is addressed in spec/requests/projects/releases_controller_spec.rb
 
   private

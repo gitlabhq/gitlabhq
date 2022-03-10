@@ -92,12 +92,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
     context 'when using an if: clause with lookahead regex character "?"' do
       let(:config) { { if: '$CI_COMMIT_REF =~ /^(?!master).+/' } }
 
-      context 'when allow_unsafe_ruby_regexp is disabled' do
-        it { is_expected.not_to be_valid }
+      it { is_expected.not_to be_valid }
 
-        it 'reports an error about invalid expression syntax' do
-          expect(subject.errors).to include(/invalid expression syntax/)
-        end
+      it 'reports an error about invalid expression syntax' do
+        expect(subject.errors).to include(/invalid expression syntax/)
       end
     end
 

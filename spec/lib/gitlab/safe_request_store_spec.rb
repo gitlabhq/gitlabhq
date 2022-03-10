@@ -183,7 +183,7 @@ RSpec.describe Gitlab::SafeRequestStore do
     context 'when RequestStore is active', :request_store do
       it 'uses RequestStore' do
         expect do
-          described_class.fetch('foo') { 'block result' }
+          described_class.fetch('foo') { 'block result' } # rubocop:disable Style/RedundantFetchBlock
         end.to change { described_class.read('foo') }.from(nil).to('block result')
       end
     end
@@ -193,7 +193,7 @@ RSpec.describe Gitlab::SafeRequestStore do
         RequestStore.clear! # Ensure clean
 
         expect do
-          described_class.fetch('foo') { 'block result' }
+          described_class.fetch('foo') { 'block result' } # rubocop:disable Style/RedundantFetchBlock
         end.not_to change { described_class.read('foo') }.from(nil)
 
         RequestStore.clear! # Clean up
