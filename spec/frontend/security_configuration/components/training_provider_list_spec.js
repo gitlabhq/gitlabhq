@@ -1,10 +1,11 @@
 import * as Sentry from '@sentry/browser';
-import { GlAlert, GlLink, GlToggle, GlCard, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlLink, GlToggle, GlCard, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import {
   TRACK_TOGGLE_TRAINING_PROVIDER_ACTION,
   TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
@@ -69,6 +70,9 @@ describe('TrainingProviderList component', () => {
     wrapper = shallowMountExtended(TrainingProviderList, {
       provide: {
         projectFullPath: testProjectPath,
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
       },
       apolloProvider,
     });
@@ -172,6 +176,16 @@ describe('TrainingProviderList component', () => {
             expect(primaryProviderRadioForCurrentCard.text()).toBe(
               TrainingProviderList.i18n.primaryTraining,
             );
+          });
+
+          it('shows a info-tooltip that describes the purpose of a primary provider', () => {
+            const infoIcon = findPrimaryProviderRadios().at(index).find(GlIcon);
+            const tooltip = getBinding(infoIcon.element, 'gl-tooltip');
+
+            expect(infoIcon.props()).toMatchObject({
+              name: 'information-o',
+            });
+            expect(tooltip.value).toBe(TrainingProviderList.i18n.primaryTrainingDescription);
           });
 
           it('does not show loader when query is populated', () => {

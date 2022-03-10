@@ -568,7 +568,7 @@ Returns [`Vulnerability`](#vulnerability).
 
 ### `Query.workItem`
 
-Find a work item. Returns `null` if `work_items` feature flag is disabled.
+Find a work item. Returns `null` if `work_items` feature flag is disabled. The feature is experimental and is subject to change without notice.
 
 Returns [`WorkItem`](#workitem).
 

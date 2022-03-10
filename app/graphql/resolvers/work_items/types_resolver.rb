@@ -11,7 +11,7 @@ module Resolvers
                             ' Argument is experimental and can be removed in the future without notice.'
 
       def resolve(taskable: nil)
-        return unless Feature.enabled?(:work_items, object)
+        return unless Feature.enabled?(:work_items, object, default_enabled: :yaml)
 
         # This will require a finder in the future when groups/projects get their work item types
         # All groups/projects use the default types for now

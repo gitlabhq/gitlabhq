@@ -33,6 +33,12 @@ module Gitlab
               @metric_relation = block
             end
 
+            def metric_options(&block)
+              return @metric_options&.call.to_h unless block_given?
+
+              @metric_options = block
+            end
+
             def operation(symbol, column: nil, &block)
               @metric_operation = symbol
               @column = column
@@ -54,6 +60,7 @@ module Gitlab
                     self.class.column,
                     start: start,
                     finish: finish,
+                    **self.class.metric_options,
                     &self.class.metric_operation_block)
           end
 

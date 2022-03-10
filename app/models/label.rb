@@ -217,11 +217,19 @@ class Label < ApplicationRecord
   end
 
   def title=(value)
-    write_attribute(:title, sanitize_value(value)) if value.present?
+    if value.blank?
+      super
+    else
+      write_attribute(:title, sanitize_value(value))
+    end
   end
 
   def description=(value)
-    write_attribute(:description, sanitize_value(value)) if value.present?
+    if value.blank?
+      super
+    else
+      write_attribute(:description, sanitize_value(value))
+    end
   end
 
   ##

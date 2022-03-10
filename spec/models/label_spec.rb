@@ -104,6 +104,12 @@ RSpec.describe Label do
       label = described_class.new(description: '<b>foo & bar?</b>')
       expect(label.description).to eq('foo & bar?')
     end
+
+    it 'accepts an empty string' do
+      label = described_class.new(title: 'foo', description: 'bar')
+      label.update!(description: '')
+      expect(label.description).to eq('')
+    end
   end
 
   describe 'priorization' do

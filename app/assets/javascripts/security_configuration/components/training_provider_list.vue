@@ -1,5 +1,13 @@
 <script>
-import { GlAlert, GlCard, GlToggle, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlTooltipDirective,
+  GlCard,
+  GlToggle,
+  GlLink,
+  GlSkeletonLoader,
+  GlIcon,
+} from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
 import { __, s__ } from '~/locale';
@@ -25,6 +33,9 @@ const i18n = {
     'Could not save configuration. Please refresh the page, or try again later.',
   ),
   primaryTraining: s__('SecurityTraining|Primary Training'),
+  primaryTrainingDescription: s__(
+    'SecurityTraining|Training from this partner takes precedence when more than one training partner is enabled.',
+  ),
 };
 
 // Fetch the svg path from the GraphQL query once this issue is resolved
@@ -45,6 +56,10 @@ export default {
     GlToggle,
     GlLink,
     GlSkeletonLoader,
+    GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
   inject: ['projectFullPath'],
@@ -251,7 +266,6 @@ export default {
                   :id="`security-training-provider-${provider.id}`"
                   type="radio"
                   :checked="provider.isPrimary"
-                  name="radio-group-name"
                   class="custom-control-input"
                   :disabled="!provider.isEnabled"
                   @change="setPrimaryProvider(provider)"
@@ -262,6 +276,11 @@ export default {
                 >
                   {{ $options.i18n.primaryTraining }}
                 </label>
+                <gl-icon
+                  v-gl-tooltip="$options.i18n.primaryTrainingDescription"
+                  name="information-o"
+                  class="gl-ml-2 gl-cursor-help"
+                />
               </div>
             </div>
           </div>

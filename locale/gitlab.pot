@@ -9050,9 +9050,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Configuration not found"
 msgstr ""
 
-msgid "ComplianceFrameworks|Configured compliance frameworks appear here."
-msgstr ""
-
 msgid "ComplianceFrameworks|Delete compliance framework %{framework}"
 msgstr ""
 
@@ -9077,6 +9074,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|Frameworks that have been added will appear here."
+msgstr ""
+
 msgid "ComplianceFrameworks|Invalid format"
 msgstr ""
 
@@ -9086,7 +9086,7 @@ msgstr ""
 msgid "ComplianceFrameworks|Name is required"
 msgstr ""
 
-msgid "ComplianceFrameworks|No compliance frameworks are configured"
+msgid "ComplianceFrameworks|No compliance frameworks are set up yet"
 msgstr ""
 
 msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}Learn more.%{linkEnd}"
@@ -33119,6 +33119,9 @@ msgid "SecurityReports|scanned resources"
 msgstr ""
 
 msgid "SecurityTraining|Primary Training"
+msgstr ""
+
+msgid "SecurityTraining|Training from this partner takes precedence when more than one training partner is enabled."
 msgstr ""
 
 msgid "See example DevOps Score page in our documentation."
