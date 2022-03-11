@@ -13,6 +13,7 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers Helpers::SnippetsHelpers
+      helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
       helpers do
         def check_snippets_enabled
           forbidden! unless user_project.feature_available?(:snippets, current_user)
@@ -82,9 +83,9 @@ module API
         if service_response.success?
           present snippet, with: Entities::ProjectSnippet, current_user: current_user
         else
-          render_spam_error! if snippet.spam?
-
-          render_api_error!({ error: service_response.message }, service_response.http_status)
+          with_captcha_check_rest_api(spammable: snippet) do
+            render_api_error!({ error: service_response.message }, service_response.http_status)
+          end
         end
       end
 
@@ -124,9 +125,9 @@ module API
         if service_response.success?
           present snippet, with: Entities::ProjectSnippet, current_user: current_user
         else
-          render_spam_error! if snippet.spam?
-
-          render_api_error!({ error: service_response.message }, service_response.http_status)
+          with_captcha_check_rest_api(spammable: snippet) do
+            render_api_error!({ error: service_response.message }, service_response.http_status)
+          end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

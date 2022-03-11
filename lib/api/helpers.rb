@@ -474,17 +474,22 @@ module API
       model.errors.messages
     end
 
-    def render_spam_error!
-      render_api_error!({ error: 'Spam detected' }, 400)
+    def render_api_error!(message, status)
+      render_structured_api_error!({ 'message' => message }, status)
     end
 
-    def render_api_error!(message, status)
+    def render_structured_api_error!(hash, status)
+      # Use this method instead of `render_api_error!` when you have additional top-level
+      # hash entries in addition to 'message' which need to be passed to `#error!`
+      set_status_code_in_env(status)
+      error!(hash, status, header)
+    end
+
+    def set_status_code_in_env(status)
       # grape-logging doesn't pass the status code, so this is a
       # workaround for getting that information in the loggers:
       # https://github.com/aserafin/grape_logging/issues/71
       env[API_RESPONSE_STATUS_CODE] = Rack::Utils.status_code(status)
-
-      error!({ 'message' => message }, status, header)
     end
 
     def handle_api_exception(exception)

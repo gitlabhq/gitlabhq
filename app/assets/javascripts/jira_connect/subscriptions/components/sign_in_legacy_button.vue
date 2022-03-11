@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { getGitlabSignInURL } from '~/jira_connect/subscriptions/utils';
-import { s__ } from '~/locale';
+import { I18N_DEFAULT_SIGN_IN_BUTTON_TEXT } from '~/jira_connect/subscriptions/constants';
 
 export default {
   components: {
@@ -27,7 +27,7 @@ export default {
     },
   },
   i18n: {
-    defaultButtonText: s__('Integrations|Sign in to GitLab'),
+    defaultButtonText: I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
   },
 };
 </script>

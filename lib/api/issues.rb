@@ -4,6 +4,7 @@ module API
   class Issues < ::API::Base
     include PaginationParams
     helpers Helpers::IssuesHelpers
+    helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
 
     before { authenticate_non_get! }
 
@@ -275,14 +276,12 @@ module API
                                               params: issue_params,
                                               spam_params: spam_params).execute
 
-          if issue.spam?
-            render_api_error!({ error: 'Spam detected' }, 400)
-          end
-
           if issue.valid?
             present issue, with: Entities::Issue, current_user: current_user, project: user_project
           else
-            render_validation_error!(issue)
+            with_captcha_check_rest_api(spammable: issue) do
+              render_validation_error!(issue)
+            end
           end
         rescue ::ActiveRecord::RecordNotUnique
           render_api_error!('Duplicated issue', 409)
@@ -320,12 +319,12 @@ module API
                                             params: update_params,
                                             spam_params: spam_params).execute(issue)
 
-        render_spam_error! if issue.spam?
-
         if issue.valid?
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         else
-          render_validation_error!(issue)
+          with_captcha_check_rest_api(spammable: issue) do
+            render_validation_error!(issue)
+          end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

@@ -88,12 +88,8 @@ module Gitlab
     Gitlab::Saas.subdomain_regex === Gitlab.config.gitlab.url
   end
 
-  def self.dev_env_org_or_com?
-    dev_env_or_com? || org?
-  end
-
-  def self.dev_env_or_com?
-    com?
+  def self.org_or_com?
+    org? || com?
   end
 
   def self.dev_or_test_env?

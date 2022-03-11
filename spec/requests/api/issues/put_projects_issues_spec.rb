@@ -217,7 +217,7 @@ RSpec.describe API::Issues do
         update_issue
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to include('message' => { 'error' => 'Spam detected' })
+        expect(json_response['message']['base']).to match_array([/issue has been recognized as spam/])
       end
 
       it 'creates a new spam log entry' do

@@ -8,6 +8,7 @@ import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions.
 import UserLink from '~/jira_connect/subscriptions/components/user_link.vue';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
+import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '~/jira_connect/subscriptions/constants';
 import { __ } from '~/locale';
 import { mockSubscription } from '../mock_data';
 
@@ -24,6 +25,7 @@ describe('JiraConnectApp', () => {
   const findAlertLink = () => findAlert().findComponent(GlLink);
   const findSignInPage = () => wrapper.findComponent(SignInPage);
   const findSubscriptionsPage = () => wrapper.findComponent(SubscriptionsPage);
+  const findUserLink = () => wrapper.findComponent(UserLink);
 
   const createComponent = ({ provide, mountFn = shallowMountExtended } = {}) => {
     store = createStore();
@@ -78,10 +80,11 @@ describe('JiraConnectApp', () => {
         },
       });
 
-      const userLink = wrapper.findComponent(UserLink);
+      const userLink = findUserLink();
       expect(userLink.exists()).toBe(true);
       expect(userLink.props()).toEqual({
         hasSubscriptions: false,
+        user: null,
         userSignedIn: false,
       });
     });
@@ -150,6 +153,57 @@ describe('JiraConnectApp', () => {
 
         expect(alert.exists()).toBe(true);
         expect(alert.html()).toContain('error message');
+      });
+    });
+  });
+
+  describe('when user signed out', () => {
+    describe('when sign in page emits `sign-in-oauth` event', () => {
+      const mockUser = { name: 'test' };
+      beforeEach(async () => {
+        createComponent({
+          provide: {
+            usersPath: '/mock',
+            subscriptions: [],
+          },
+        });
+        findSignInPage().vm.$emit('sign-in-oauth', mockUser);
+
+        await nextTick();
+      });
+
+      it('hides sign in page and renders subscriptions page', () => {
+        expect(findSignInPage().exists()).toBe(false);
+        expect(findSubscriptionsPage().exists()).toBe(true);
+      });
+
+      it('sets correct UserLink props', () => {
+        expect(findUserLink().props()).toMatchObject({
+          user: mockUser,
+          userSignedIn: true,
+        });
+      });
+    });
+
+    describe('when sign in page emits `error` event', () => {
+      beforeEach(async () => {
+        createComponent({
+          provide: {
+            usersPath: '/mock',
+            subscriptions: [],
+          },
+        });
+        findSignInPage().vm.$emit('error');
+
+        await nextTick();
+      });
+
+      it('displays alert', () => {
+        const alert = findAlert();
+
+        expect(alert.exists()).toBe(true);
+        expect(alert.html()).toContain(I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE);
+        expect(alert.props('variant')).toBe('danger');
       });
     });
   });

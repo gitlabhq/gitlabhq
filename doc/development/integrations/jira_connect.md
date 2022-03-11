@@ -74,3 +74,45 @@ If you use Gitpod and you get an error about Jira not being able to access the d
 1. When the GDK is running, select **Ports** in the bottom-right corner.
 1. On the left sidebar, select the port the GDK is listening to (typically `3000`).
 1. If the port is marked as private, select the lock icon to make it public.
+
+## Test the GitLab OAuth authentication flow
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81126) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `jira_connect_oauth`. Disabled by default.
+
+GitLab for Jira users can authenticate with GitLab using GitLab OAuth. 
+
+FLAG:
+By default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `jira_connect_oauth`.
+The feature is not ready for production use.
+
+The following steps describe setting up an environment to test the GitLab OAuth flow:
+
+1. Start a Gitpod session and open the rails console.
+
+    ```shell
+    bundle exec rails console
+    ```
+
+1. Enable the feature flag.
+
+    ```shell
+    Feature.enable(:jira_connect_oauth)
+    ```
+
+1. On your GitLab instance, go to **Admin > Applications**.
+1. Create a new application with the following settings:
+    - Name: `Jira Connect`
+    - Redirect URI: `YOUR_GITPOD_INSTANCE/-/jira_connect/oauth_callbacks`
+    - Scopes: `api`
+    - Trusted: **No**
+    - Confidential: **No**
+1. Copy the Application ID.
+1. Go to [gitpod.io/variables](https://gitpod.io/variables).
+1. Create a new variable named `JIRA_CONNECT_OAUTH_CLIENT_ID`, with a scope of `*/*`, and paste the Application ID as the value.
+
+If you already have an active Gitpod instance, use the following command in the Gitpod terminal to set the environment variable:
+
+```shell
+eval $(gp env -e JIRA_CONNECT_OAUTH_CLIENT_ID=$YOUR_APPLICATION_ID)
+```

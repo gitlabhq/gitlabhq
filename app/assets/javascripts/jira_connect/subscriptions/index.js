@@ -21,7 +21,14 @@ export function initJiraConnect() {
   Vue.use(Translate);
   Vue.use(GlFeatureFlagsPlugin);
 
-  const { groupsPath, subscriptions, subscriptionsPath, usersPath, gitlabUserPath } = el.dataset;
+  const {
+    groupsPath,
+    subscriptions,
+    subscriptionsPath,
+    usersPath,
+    gitlabUserPath,
+    oauthMetadata,
+  } = el.dataset;
   sizeToParent();
 
   return new Vue({
@@ -33,6 +40,7 @@ export function initJiraConnect() {
       subscriptionsPath,
       usersPath,
       gitlabUserPath,
+      oauthMetadata: oauthMetadata ? JSON.parse(oauthMetadata) : null,
     },
     render(createElement) {
       return createElement(JiraConnectApp);

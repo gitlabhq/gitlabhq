@@ -46,6 +46,17 @@ export const bufferToBase64 = (input) => {
 };
 
 /**
+ * Return a URL-safe base64 string.
+ *
+ * RFC: https://datatracker.ietf.org/doc/html/rfc4648#section-5
+ * @param {String} base64Str
+ * @returns {String}
+ */
+export const base64ToBase64Url = (base64Str) => {
+  return base64Str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+
+/**
  * Returns a copy of the given object with the id property converted to buffer
  *
  * @param {Object} param

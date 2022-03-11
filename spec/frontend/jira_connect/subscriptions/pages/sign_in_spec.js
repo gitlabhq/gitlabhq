@@ -1,26 +1,44 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 
 import SignInPage from '~/jira_connect/subscriptions/pages/sign_in.vue';
-import SignInButton from '~/jira_connect/subscriptions/components/sign_in_button.vue';
+import SignInLegacyButton from '~/jira_connect/subscriptions/components/sign_in_legacy_button.vue';
+import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
 import createStore from '~/jira_connect/subscriptions/store';
+import { I18N_DEFAULT_SIGN_IN_BUTTON_TEXT } from '../../../../../app/assets/javascripts/jira_connect/subscriptions/constants';
 
 jest.mock('~/jira_connect/subscriptions/utils');
+
+const mockUsersPath = '/test';
+const defaultProvide = {
+  oauthMetadata: {},
+  usersPath: mockUsersPath,
+};
 
 describe('SignInPage', () => {
   let wrapper;
   let store;
 
-  const findSignInButton = () => wrapper.findComponent(SignInButton);
+  const findSignInLegacyButton = () => wrapper.findComponent(SignInLegacyButton);
+  const findSignInOauthButton = () => wrapper.findComponent(SignInOauthButton);
   const findSubscriptionsList = () => wrapper.findComponent(SubscriptionsList);
 
-  const createComponent = ({ provide, props } = {}) => {
+  const createComponent = ({ props, jiraConnectOauthEnabled } = {}) => {
     store = createStore();
 
-    wrapper = mount(SignInPage, {
+    wrapper = shallowMount(SignInPage, {
       store,
-      provide,
+      provide: {
+        ...defaultProvide,
+        glFeatures: {
+          jiraConnectOauth: jiraConnectOauthEnabled,
+        },
+      },
       propsData: props,
+      stubs: {
+        SignInLegacyButton,
+        SignInOauthButton,
+      },
     });
   };
 
@@ -29,33 +47,74 @@ describe('SignInPage', () => {
   });
 
   describe('template', () => {
-    const mockUsersPath = '/test';
     describe.each`
-      scenario                   | expectSubscriptionsList | signInButtonText
-      ${'with subscriptions'}    | ${true}                 | ${SignInPage.i18n.signinButtonTextWithSubscriptions}
-      ${'without subscriptions'} | ${false}                | ${SignInButton.i18n.defaultButtonText}
-    `('$scenario', ({ expectSubscriptionsList, signInButtonText }) => {
-      beforeEach(() => {
-        createComponent({
-          provide: {
-            usersPath: mockUsersPath,
-          },
-          props: {
-            hasSubscriptions: expectSubscriptionsList,
-          },
+      scenario                   | hasSubscriptions | signInButtonText
+      ${'with subscriptions'}    | ${true}          | ${SignInPage.i18n.signInButtonTextWithSubscriptions}
+      ${'without subscriptions'} | ${false}         | ${I18N_DEFAULT_SIGN_IN_BUTTON_TEXT}
+    `('$scenario', ({ hasSubscriptions, signInButtonText }) => {
+      describe('when `jiraConnectOauthEnabled` feature flag is disabled', () => {
+        beforeEach(() => {
+          createComponent({
+            jiraConnectOauthEnabled: false,
+            props: {
+              hasSubscriptions,
+            },
+          });
+        });
+
+        it('renders legacy sign in button', () => {
+          const button = findSignInLegacyButton();
+          expect(button.props('usersPath')).toBe(mockUsersPath);
+          expect(button.text()).toMatchInterpolatedText(signInButtonText);
         });
       });
 
-      it(`renders sign in button with text ${signInButtonText}`, () => {
-        expect(findSignInButton().text()).toMatchInterpolatedText(signInButtonText);
+      describe('when `jiraConnectOauthEnabled` feature flag is enabled', () => {
+        beforeEach(() => {
+          createComponent({
+            jiraConnectOauthEnabled: true,
+            props: {
+              hasSubscriptions,
+            },
+          });
+        });
+
+        describe('oauth sign in button', () => {
+          it('renders oauth sign in button', () => {
+            const button = findSignInOauthButton();
+            expect(button.text()).toMatchInterpolatedText(signInButtonText);
+          });
+
+          describe('when button emits `sign-in` event', () => {
+            it('emits `sign-in-oauth` event', () => {
+              const button = findSignInOauthButton();
+
+              const mockUser = { name: 'test' };
+              button.vm.$emit('sign-in', mockUser);
+
+              expect(wrapper.emitted('sign-in-oauth')[0]).toEqual([mockUser]);
+            });
+          });
+
+          describe('when button emits `error` event', () => {
+            it('emits `error` event', () => {
+              const button = findSignInOauthButton();
+              button.vm.$emit('error');
+
+              expect(wrapper.emitted('error')).toBeTruthy();
+            });
+          });
+        });
       });
 
-      it('renders sign in button with `usersPath` prop', () => {
-        expect(findSignInButton().props('usersPath')).toBe(mockUsersPath);
-      });
+      it(`${hasSubscriptions ? 'renders' : 'does not render'} subscriptions list`, () => {
+        createComponent({
+          props: {
+            hasSubscriptions,
+          },
+        });
 
-      it(`${expectSubscriptionsList ? 'renders' : 'does not render'} subscriptions list`, () => {
-        expect(findSubscriptionsList().exists()).toBe(expectSubscriptionsList);
+        expect(findSubscriptionsList().exists()).toBe(hasSubscriptions);
       });
     });
   });

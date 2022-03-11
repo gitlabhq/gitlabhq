@@ -93,6 +93,21 @@ module API
         end
       end
 
+      desc 'Get a project deploy token' do
+        detail 'This feature was introduced in GitLab 14.9'
+        success Entities::DeployToken
+      end
+      params do
+        requires :token_id, type: Integer, desc: 'The deploy token ID'
+      end
+      get ':id/deploy_tokens/:token_id' do
+        authorize!(:read_deploy_token, user_project)
+
+        deploy_token = user_project.deploy_tokens.find(params[:token_id])
+
+        present deploy_token, with: Entities::DeployToken
+      end
+
       desc 'Delete a project deploy token' do
         detail 'This feature was introduced in GitLab 12.9'
       end
@@ -157,6 +172,21 @@ module API
         else
           render_api_error!(result[:message], result[:http_status])
         end
+      end
+
+      desc 'Get a group deploy token' do
+        detail 'This feature was introduced in GitLab 14.9'
+        success Entities::DeployToken
+      end
+      params do
+        requires :token_id, type: Integer, desc: 'The deploy token ID'
+      end
+      get ':id/deploy_tokens/:token_id' do
+        authorize!(:read_deploy_token, user_group)
+
+        deploy_token = user_group.deploy_tokens.find(params[:token_id])
+
+        present deploy_token, with: Entities::DeployToken
       end
 
       desc 'Delete a group deploy token' do

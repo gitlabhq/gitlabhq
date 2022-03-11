@@ -243,12 +243,12 @@ RSpec.describe ApplicationExperiment, :experiment do
 
     with_them do
       it "returns the url or nil if invalid" do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+        allow(Gitlab).to receive(:com?).and_return(true)
         expect(application_experiment.process_redirect_url(url)).to eq(processed_url)
       end
 
       it "considers all urls invalid when not on dev or com" do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+        allow(Gitlab).to receive(:com?).and_return(false)
         expect(application_experiment.process_redirect_url(url)).to be_nil
       end
     end

@@ -325,7 +325,7 @@ RSpec.describe API::Snippets, factory_default: :keep do
           expect { subject }.not_to change { Snippet.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq({ "error" => "Spam detected" })
+          expect(json_response['message']['error']).to match(/snippet has been recognized as spam/)
         end
 
         it 'creates a spam log' do
@@ -392,7 +392,7 @@ RSpec.describe API::Snippets, factory_default: :keep do
             .not_to change { snippet.reload.title }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq({ "error" => "Spam detected" })
+          expect(json_response['message']['error']).to match(/snippet has been recognized as spam/)
         end
 
         it 'creates a spam log' do

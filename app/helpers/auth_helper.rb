@@ -178,7 +178,7 @@ module AuthHelper
   end
 
   def google_tag_manager_enabled?
-    return false unless Gitlab.dev_env_or_com?
+    return false unless Gitlab.com?
 
     if Feature.enabled?(:gtm_nonce, type: :ops)
       extra_config.has_key?('google_tag_manager_nonce_id') &&

@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment do
     before do
       stub_feature_flags(gitlab_experiment: true)
       allow(subject).to receive(:feature_flag_defined?).and_return(true)
-      allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+      allow(Gitlab).to receive(:com?).and_return(true)
       allow(subject).to receive(:feature_flag_instance).and_return(double(state: :on))
     end
 
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment do
     end
 
     it "isn't enabled if we're not in dev or dotcom environments" do
-      expect(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+      expect(Gitlab).to receive(:com?).and_return(false)
 
       expect(subject).not_to be_enabled
     end

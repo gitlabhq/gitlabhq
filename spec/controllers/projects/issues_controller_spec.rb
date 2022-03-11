@@ -1018,6 +1018,7 @@ RSpec.describe Projects::IssuesController do
             end
 
             it 'returns 200 status' do
+              update_verified_issue
               expect(response).to have_gitlab_http_status(:ok)
             end
 

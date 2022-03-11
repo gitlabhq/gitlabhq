@@ -18,7 +18,7 @@ module Gitlab
         # Temporary change, we will change `experiment_percentage` in future to `Feature.enabled?
         Feature.enabled?(feature_flag_name, type: :experiment, default_enabled: :yaml)
 
-        ::Gitlab.dev_env_or_com? && experiment_percentage > 0
+        ::Gitlab.com? && experiment_percentage > 0
       end
 
       def enabled_for_index?(index)

@@ -24,7 +24,7 @@ class AddOpenSourcePlan < Gitlab::Database::Migration[1.0]
   end
 
   def up
-    return unless Gitlab.dev_env_or_com?
+    return unless Gitlab.com?
 
     opensource = Plan.create!(name: 'opensource', title: 'Open Source Program')
 
@@ -32,7 +32,7 @@ class AddOpenSourcePlan < Gitlab::Database::Migration[1.0]
   end
 
   def down
-    return unless Gitlab.dev_env_or_com?
+    return unless Gitlab.com?
 
     Plan.where(name: 'opensource').delete_all
   end

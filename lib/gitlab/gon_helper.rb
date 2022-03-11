@@ -40,7 +40,6 @@ module Gitlab
       gon.ee                     = Gitlab.ee?
       gon.jh                     = Gitlab.jh?
       gon.dot_com                = Gitlab.com?
-      gon.dev_env_or_com         = Gitlab.dev_env_or_com?
 
       if current_user
         gon.current_user_id = current_user.id

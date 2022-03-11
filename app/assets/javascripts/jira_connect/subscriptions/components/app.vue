@@ -3,6 +3,7 @@ import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { mapState, mapMutations } from 'vuex';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
+import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '../constants';
 import { SET_ALERT } from '../store/mutation_types';
 import SignInPage from '../pages/sign_in.vue';
 import SubscriptionsPage from '../pages/subscriptions.vue';
@@ -28,6 +29,11 @@ export default {
       default: [],
     },
   },
+  data() {
+    return {
+      user: null,
+    };
+  },
   computed: {
     ...mapState(['alert']),
     shouldShowAlert() {
@@ -37,7 +43,7 @@ export default {
       return !isEmpty(this.subscriptions);
     },
     userSignedIn() {
-      return Boolean(!this.usersPath);
+      return Boolean(!this.usersPath || this.user);
     },
   },
   created() {
@@ -50,6 +56,15 @@ export default {
     setInitialAlert() {
       const { linkUrl, title, message, variant } = retrieveAlert() || {};
       this.setAlert({ linkUrl, title, message, variant });
+    },
+    onSignInOauth(user) {
+      this.user = user;
+    },
+    onSignInError() {
+      this.setAlert({
+        message: I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE,
+        variant: 'danger',
+      });
     },
   },
 };
@@ -78,11 +93,16 @@ export default {
       </template>
     </gl-alert>
 
-    <user-link :user-signed-in="userSignedIn" :has-subscriptions="hasSubscriptions" />
+    <user-link :user-signed-in="userSignedIn" :has-subscriptions="hasSubscriptions" :user="user" />
 
     <h2 class="gl-text-center gl-mb-7">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
     <div class="gl-layout-w-limited gl-mx-auto gl-px-5 gl-mb-7">
-      <sign-in-page v-if="!userSignedIn" :has-subscriptions="hasSubscriptions" />
+      <sign-in-page
+        v-if="!userSignedIn"
+        :has-subscriptions="hasSubscriptions"
+        @sign-in-oauth="onSignInOauth"
+        @error="onSignInError"
+      />
       <subscriptions-page v-else :has-subscriptions="hasSubscriptions" />
     </div>
   </div>

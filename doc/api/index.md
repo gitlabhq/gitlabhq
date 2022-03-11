@@ -767,3 +767,35 @@ some API endpoints also support `text/plain`.
 
 In [GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/250342),
 API endpoints do not support `text/plain` by default, unless it's explicitly documented.
+
+## Resolve requests detected as spam
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352913) in GitLab 14.9.
+
+REST API requests can be detected as spam. If a request is detected as spam and:
+
+- A CAPTCHA service is not configured, an error response is returned. For example:
+
+  ```json
+  {"message":{"error":"Your snippet has been recognized as spam and has been discarded."}}
+  ```
+
+- A CAPTCHA service is configured, you receive a response with:
+  - `needs_captcha_response` set to `true`.
+  - The `spam_log_id` and `captcha_site_key` fields set.
+
+  For example:
+
+  ```json
+  {"needs_captcha_response":true,"spam_log_id":42,"captcha_site_key":"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI","message":{"error":"Your snippet has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."}}
+  ```
+
+- Use the `captcha_site_key` to obtain a CAPTCHA response value using the appropriate CAPTCHA API.
+  Only [Google reCAPTCHA v2](https://developers.google.com/recaptcha/docs/display) is supported.
+- Resubmit the request with the `X-GitLab-Captcha-Response` and `X-GitLab-Spam-Log-Id` headers set.
+
+```shell
+export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"
+export SPAM_LOG_ID="<spam_log_id obtained from initial REST response>"
+curl --request POST --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" --header "X-GitLab-Captcha-Response: $CAPTCHA_RESPONSE" --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID" "https://gitlab.example.com/api/v4/snippets?title=Title&file_name=FileName&content=Content&visibility=public"
+```

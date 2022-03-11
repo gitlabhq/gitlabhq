@@ -25,6 +25,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    user: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -32,8 +37,19 @@ export default {
     };
   },
   computed: {
+    gitlabUserName() {
+      return gon.current_username ?? this.user?.username;
+    },
     gitlabUserHandle() {
-      return `@${gon.current_username}`;
+      return this.gitlabUserName ? `@${this.gitlabUserName}` : undefined;
+    },
+    gitlabUserLink() {
+      return this.gitlabUserPath ?? `${gon.relative_root_url}/${this.gitlabUserName}`;
+    },
+    signedInText() {
+      return this.gitlabUserHandle
+        ? this.$options.i18n.signedInAsUserText
+        : this.$options.i18n.signedInText;
     },
   },
   async created() {
@@ -42,14 +58,15 @@ export default {
   i18n: {
     signInText: __('Sign in to GitLab'),
     signedInAsUserText: __('Signed in to GitLab as %{user_link}'),
+    signedInText: __('Signed in to GitLab'),
   },
 };
 </script>
 <template>
   <div class="jira-connect-user gl-font-base">
-    <gl-sprintf v-if="userSignedIn" :message="$options.i18n.signedInAsUserText">
+    <gl-sprintf v-if="userSignedIn" :message="signedInText">
       <template #user_link>
-        <gl-link data-testid="gitlab-user-link" :href="gitlabUserPath" target="_blank">
+        <gl-link data-testid="gitlab-user-link" :href="gitlabUserLink" target="_blank">
           {{ gitlabUserHandle }}
         </gl-link>
       </template>

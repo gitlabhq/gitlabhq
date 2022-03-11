@@ -7,7 +7,7 @@ require_migration!
 RSpec.describe AddOpenSourcePlan, :migration do
   describe '#up' do
     before do
-      allow(Gitlab).to receive(:dev_env_or_com?).and_return true
+      allow(Gitlab).to receive(:com?).and_return true
     end
 
     it 'creates 1 entry within the plans table' do
@@ -35,7 +35,7 @@ RSpec.describe AddOpenSourcePlan, :migration do
 
     context 'when the instance is not SaaS' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return false
+        allow(Gitlab).to receive(:com?).and_return false
       end
 
       it 'does not create plans and plan limits and returns' do
@@ -52,7 +52,7 @@ RSpec.describe AddOpenSourcePlan, :migration do
 
     context 'when the instance is SaaS' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return true
+        allow(Gitlab).to receive(:com?).and_return true
       end
 
       it 'removes the newly added opensource entry' do
@@ -70,7 +70,7 @@ RSpec.describe AddOpenSourcePlan, :migration do
 
     context 'when the instance is not SaaS' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return false
+        allow(Gitlab).to receive(:com?).and_return false
         table(:plans).create!(id: 1, name: 'opensource', title: 'Open Source Program')
         table(:plan_limits).create!(id: 1, plan_id: 1)
       end

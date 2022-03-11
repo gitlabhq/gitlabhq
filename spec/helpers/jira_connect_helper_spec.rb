@@ -7,6 +7,11 @@ RSpec.describe JiraConnectHelper do
     let_it_be(:subscription) { create(:jira_connect_subscription) }
 
     let(:user) { create(:user) }
+    let(:client_id) { '123' }
+
+    before do
+      stub_env('JIRA_CONNECT_OAUTH_CLIENT_ID', client_id)
+    end
 
     subject { helper.jira_connect_app_data([subscription]) }
 
@@ -27,6 +32,47 @@ RSpec.describe JiraConnectHelper do
 
       it 'assigns users_path with value' do
         expect(subject[:users_path]).to eq(jira_connect_users_path)
+      end
+
+      context 'with oauth_metadata' do
+        let(:oauth_metadata) { helper.jira_connect_app_data([subscription])[:oauth_metadata] }
+
+        subject(:parsed_oauth_metadata) { Gitlab::Json.parse(oauth_metadata).deep_symbolize_keys }
+
+        it 'assigns oauth_metadata' do
+          expect(parsed_oauth_metadata).to include(
+            oauth_authorize_url: start_with('http://test.host/oauth/authorize?'),
+            oauth_token_url: 'http://test.host/oauth/token',
+            state: %r/[a-z0-9.]{32}/,
+            oauth_token_payload: hash_including(
+              grant_type: 'authorization_code',
+              client_id: client_id,
+              redirect_uri: 'http://test.host/-/jira_connect/oauth_callbacks'
+            )
+          )
+        end
+
+        it 'includes oauth_authorize_url with all params' do
+          params = Rack::Utils.parse_nested_query(URI.parse(parsed_oauth_metadata[:oauth_authorize_url]).query)
+
+          expect(params).to include(
+            'client_id' => client_id,
+            'response_type' => 'code',
+            'scope' => 'api',
+            'redirect_uri' => 'http://test.host/-/jira_connect/oauth_callbacks',
+            'state' => parsed_oauth_metadata[:state]
+          )
+        end
+
+        context 'jira_connect_oauth feature is disabled' do
+          before do
+            stub_feature_flags(jira_connect_oauth: false)
+          end
+
+          it 'does not assign oauth_metadata' do
+            expect(oauth_metadata).to be_nil
+          end
+        end
       end
 
       it 'passes group as "skip_groups" param' do

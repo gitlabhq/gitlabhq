@@ -5,7 +5,7 @@ module SessionsHelper
 
   def recently_confirmed_com?
     strong_memoize(:recently_confirmed_com) do
-      ::Gitlab.dev_env_or_com? &&
+      ::Gitlab.com? &&
         !!flash[:notice]&.include?(t(:confirmed, scope: [:devise, :confirmations]))
     end
   end

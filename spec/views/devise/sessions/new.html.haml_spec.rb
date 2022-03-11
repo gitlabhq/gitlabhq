@@ -9,7 +9,7 @@ RSpec.describe 'devise/sessions/new' do
     before do
       stub_devise
       disable_captcha
-      allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+      allow(Gitlab).to receive(:com?).and_return(true)
     end
 
     it 'when flash is anything it renders marketing text' do

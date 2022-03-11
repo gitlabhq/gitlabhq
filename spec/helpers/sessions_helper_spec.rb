@@ -8,7 +8,7 @@ RSpec.describe SessionsHelper do
 
     context 'when on .com' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+        allow(Gitlab).to receive(:com?).and_return(true)
       end
 
       it 'when flash notice is empty it is false' do
@@ -29,7 +29,7 @@ RSpec.describe SessionsHelper do
 
     context 'when not on .com' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+        allow(Gitlab).to receive(:com?).and_return(false)
       end
 
       it 'when flash notice is devise confirmed message it is false' do

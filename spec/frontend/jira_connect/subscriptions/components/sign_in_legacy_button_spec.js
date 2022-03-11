@@ -1,18 +1,18 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { getGitlabSignInURL } from '~/jira_connect/subscriptions/utils';
-import SignInButton from '~/jira_connect/subscriptions/components/sign_in_button.vue';
+import SignInLegacyButton from '~/jira_connect/subscriptions/components/sign_in_legacy_button.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
 const MOCK_USERS_PATH = '/user';
 
 jest.mock('~/jira_connect/subscriptions/utils');
 
-describe('SignInButton', () => {
+describe('SignInLegacyButton', () => {
   let wrapper;
 
   const createComponent = ({ slots } = {}) => {
-    wrapper = shallowMount(SignInButton, {
+    wrapper = shallowMount(SignInLegacyButton, {
       propsData: {
         usersPath: MOCK_USERS_PATH,
       },
@@ -30,7 +30,7 @@ describe('SignInButton', () => {
     createComponent();
 
     expect(findButton().exists()).toBe(true);
-    expect(findButton().text()).toBe(SignInButton.i18n.defaultButtonText);
+    expect(findButton().text()).toBe(SignInLegacyButton.i18n.defaultButtonText);
   });
 
   describe.each`

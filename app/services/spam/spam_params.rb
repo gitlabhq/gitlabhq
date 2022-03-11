@@ -25,6 +25,7 @@ module Spam
   #      then the spam check may fail, or the SpamLog or UserAgentDetail may have missing fields.
   class SpamParams
     def self.new_from_request(request:)
+      self.normalize_grape_request_headers(request: request)
       self.new(
         captcha_response: request.headers['X-GitLab-Captcha-Response'],
         spam_log_id: request.headers['X-GitLab-Spam-Log-Id'],
@@ -51,6 +52,15 @@ module Spam
         other.ip_address == ip_address &&
         other.user_agent == user_agent &&
         other.referer == referer
+    end
+
+    def self.normalize_grape_request_headers(request:)
+      # If needed, make a normalized copy of Grape headers with the case of 'GitLab' (with an
+      # uppercase 'L') instead of 'Gitlab' (with a lowercase 'l'), because Grape header helper keys
+      # are "coerced into a capitalized kebab case". See https://github.com/ruby-grape/grape#request
+      %w[X-Gitlab-Captcha-Response X-Gitlab-Spam-Log-Id].each do |header|
+        request.headers[header.gsub('Gitlab', 'GitLab')] = request.headers[header] if request.headers.key?(header)
+      end
     end
   end
 end

@@ -13,7 +13,7 @@ module Gitlab
         #   no inclusions, etc.)
         def enabled?
           return false unless feature_flag_defined?
-          return false unless Gitlab.dev_env_or_com?
+          return false unless Gitlab.com?
           return false unless ::Feature.enabled?(:gitlab_experiment, type: :ops, default_enabled: :yaml)
 
           feature_flag_instance.state != :off
