@@ -384,7 +384,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
   <li>
     <a id="exported-dependency-information-notes-3"></a>
     <p>
-      These tests confirms that if a <code>gradlew</code> file does not exist, the version of <code>Gradle</code> pre-installed in the analyzer image is used.
+      These tests confirm that if a <code>gradlew</code> file does not exist, the version of <code>Gradle</code> pre-installed in the analyzer image is used.
     </p>
   </li>
   <li>

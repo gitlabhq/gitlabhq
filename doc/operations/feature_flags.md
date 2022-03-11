@@ -407,3 +407,49 @@ click the `+` button and input the issue reference number or the full URL of the
 The issues then appear in the related feature flag and the other way round.
 
 This feature is similar to the [linked issues](../user/project/issues/related_issues.md) feature.
+
+## Performance factors
+
+In general, GitLab Feature Flags can be used in any applications,
+however, if it's a large application, it could require an additional configuration in advance.
+This section explains the performance factors to help your organization to identify
+what's needed to be done before using the feature.
+Please read [How it works](#how-it-works) section before diving into the details.
+
+### Maximum supported clients in application nodes
+
+GitLab accepts client requests as much as possible until it hits the [rate limiting](../security/rate_limits.md).
+At the moment, the Feature Flag API falls into **Unauthenticated traffic (from a given IP address)**
+in the [GitLab.com specific limits](../user/gitlab_com/index.md),
+so it's **500 requests per minute**.
+
+Please note that the polling rate is configurable in SDKs. Provided that all clients are requesting from the same IP:
+
+- Request once per minute ... 500 clients can be supported.
+- Request once per 15 sec ... 125 clients can be supported.
+
+For applications looking for more scalable solution, we recommend to use [Unleash Proxy](#unleash-proxy-example).
+This proxy server sits between the server and clients. It requests to the server as a behalf of the client groups,
+so the nubmer of outbound requests can be greatly reduced.
+
+There is also an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295472) to give more
+capacity to the current rate limit.
+
+### Recovering from network errors
+
+In general, [Unleash clients](https://github.com/Unleash/unleash#unleash-sdks) have
+a fall-back mechanism when the server returns an error code.
+For example, `unleash-ruby-client` reads flag data from the local backup so that
+application can keep running in the current state.
+
+Please reads the documentation in a SDK project for more information.
+
+### Self-managed GitLab
+
+Functionality-wise, there are no differences. Both SaaS and self-managed behave the same.
+
+In terms of scalability, it's up to the spec of the GitLab instance.
+For example, GitLab.com runs on HA architecture so that it can handle a lot of requests concurrently,
+however, a self-managed instance runs on a low spec machine can't expect the same result.
+Please see [Reference architectures](../administration/reference_architectures/index.md)
+for more information.

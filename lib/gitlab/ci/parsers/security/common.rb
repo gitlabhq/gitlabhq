@@ -43,7 +43,7 @@ module Gitlab
           attr_reader :json_data, :report, :validate
 
           def valid?
-            if Feature.enabled?(:show_report_validation_warnings)
+            if Feature.enabled?(:show_report_validation_warnings, default_enabled: :yaml)
               # We want validation to happen regardless of VALIDATE_SCHEMA CI variable
               schema_validation_passed = schema_validator.valid?
 
