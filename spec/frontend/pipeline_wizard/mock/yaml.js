@@ -43,3 +43,43 @@ pages:
   only:
     - bar
 `;
+
+export const steps = `
+- inputs:
+    - label: foo
+      target: $FOO
+      widget: text
+  template:
+    foo: $FOO
+- inputs:
+    - label: bar
+      target: $BAR
+      widget: text
+  template:
+    bar: $BAR
+`;
+
+export const fullTemplate = `
+title: some title
+description: some description
+filename: foo.yml
+steps:
+  - inputs:
+     - widget: text
+       label: foo
+       target: $BAR
+    template:
+      foo: $BAR
+`;
+
+export const fullTemplateWithoutFilename = `
+title: some title
+description: some description
+steps:
+  - inputs:
+     - widget: text
+       label: foo
+       target: $BAR
+    template:
+      foo: $BAR
+`;

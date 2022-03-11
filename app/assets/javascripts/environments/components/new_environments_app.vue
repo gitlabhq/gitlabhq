@@ -16,12 +16,14 @@ import EnvironmentItem from './new_environment_item.vue';
 import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
 import CanaryUpdateModal from './canary_update_modal.vue';
+import EmptyState from './empty_state.vue';
 
 export default {
   components: {
     DeleteEnvironmentModal,
     CanaryUpdateModal,
     ConfirmRollbackModal,
+    EmptyState,
     EnvironmentFolder,
     EnableReviewAppModal,
     EnvironmentItem,
@@ -66,7 +68,7 @@ export default {
       query: environmentToChangeCanaryQuery,
     },
   },
-  inject: ['newEnvironmentPath', 'canCreateEnvironment'],
+  inject: ['newEnvironmentPath', 'canCreateEnvironment', 'helpPagePath'],
   i18n: {
     newEnvironmentButtonLabel: s__('Environments|New environment'),
     reviewAppButtonLabel: s__('Environments|Enable review app'),
@@ -102,6 +104,9 @@ export default {
     },
     environments() {
       return this.environmentApp?.environments?.filter((e) => e.size === 1) ?? [];
+    },
+    hasEnvironments() {
+      return this.environments.length > 0 || this.folders.length > 0;
     },
     availableCount() {
       return this.environmentApp?.availableCount;
@@ -221,19 +226,23 @@ export default {
         </template>
       </gl-tab>
     </gl-tabs>
-    <environment-folder
-      v-for="folder in folders"
-      :key="folder.name"
-      class="gl-mb-3"
-      :nested-environment="folder"
-    />
-    <environment-item
-      v-for="environment in environments"
-      :key="environment.name"
-      class="gl-mb-3 gl-border-gray-100 gl-border-1 gl-border-b-solid"
-      :environment="environment.latest"
-      @change="resetPolling"
-    />
+    <template v-if="hasEnvironments">
+      <environment-folder
+        v-for="folder in folders"
+        :key="folder.name"
+        class="gl-mb-3"
+        :scope="scope"
+        :nested-environment="folder"
+      />
+      <environment-item
+        v-for="environment in environments"
+        :key="environment.name"
+        class="gl-mb-3 gl-border-gray-100 gl-border-1 gl-border-b-solid"
+        :environment="environment.latest"
+        @change="resetPolling"
+      />
+    </template>
+    <empty-state v-else :help-path="helpPagePath" />
     <gl-pagination
       align="center"
       :total-items="totalItems"

@@ -16,8 +16,6 @@ describe('~/environments/components/new_environments_folder.vue', () => {
   let wrapper;
   let environmentFolderMock;
   let nestedEnvironment;
-  let folderName;
-  let button;
 
   const findLink = () => wrapper.findByRole('link', { name: s__('Environments|Show all') });
 
@@ -30,7 +28,10 @@ describe('~/environments/components/new_environments_folder.vue', () => {
   const createWrapper = (propsData, apolloProvider) =>
     mountExtended(EnvironmentsFolder, {
       apolloProvider,
-      propsData,
+      propsData: {
+        scope: 'available',
+        ...propsData,
+      },
       stubs: { transition: stubTransition() },
       provide: { helpPagePath: '/help' },
     });
@@ -39,62 +40,93 @@ describe('~/environments/components/new_environments_folder.vue', () => {
     environmentFolderMock = jest.fn();
     [nestedEnvironment] = resolvedEnvironmentsApp.environments;
     environmentFolderMock.mockReturnValue(resolvedFolder);
-    wrapper = createWrapper({ nestedEnvironment }, createApolloProvider());
-
-    await nextTick();
-    await waitForPromises();
-    folderName = wrapper.findByText(nestedEnvironment.name);
-    button = wrapper.findByRole('button', { name: __('Expand') });
   });
 
   afterEach(() => {
     wrapper?.destroy();
   });
 
-  it('displays the name of the folder', () => {
-    expect(folderName.text()).toBe(nestedEnvironment.name);
+  describe('default', () => {
+    let folderName;
+    let button;
+
+    beforeEach(async () => {
+      wrapper = createWrapper({ nestedEnvironment }, createApolloProvider());
+
+      await nextTick();
+      await waitForPromises();
+      folderName = wrapper.findByText(nestedEnvironment.name);
+      button = wrapper.findByRole('button', { name: __('Expand') });
+    });
+
+    it('displays the name of the folder', () => {
+      expect(folderName.text()).toBe(nestedEnvironment.name);
+    });
+
+    describe('collapse', () => {
+      let icons;
+      let collapse;
+
+      beforeEach(() => {
+        collapse = wrapper.findComponent(GlCollapse);
+        icons = wrapper.findAllComponents(GlIcon);
+      });
+
+      it('is collapsed by default', () => {
+        const link = findLink();
+
+        expect(collapse.attributes('visible')).toBeUndefined();
+        const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
+        expect(iconNames).toEqual(['angle-right', 'folder-o']);
+        expect(folderName.classes('gl-font-weight-bold')).toBe(false);
+        expect(link.exists()).toBe(false);
+      });
+
+      it('opens on click', async () => {
+        await button.trigger('click');
+
+        const link = findLink();
+
+        expect(button.attributes('aria-label')).toBe(__('Collapse'));
+        expect(collapse.attributes('visible')).toBe('visible');
+        const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
+        expect(iconNames).toEqual(['angle-down', 'folder-open']);
+        expect(folderName.classes('gl-font-weight-bold')).toBe(true);
+        expect(link.attributes('href')).toBe(nestedEnvironment.latest.folderPath);
+      });
+
+      it('displays all environments when opened', async () => {
+        await button.trigger('click');
+
+        const names = resolvedFolder.environments.map((e) =>
+          expect.stringMatching(e.nameWithoutType),
+        );
+        const environments = wrapper
+          .findAllComponents(EnvironmentItem)
+          .wrappers.map((w) => w.text());
+        expect(environments).toEqual(expect.arrayContaining(names));
+      });
+    });
   });
 
-  describe('collapse', () => {
-    let icons;
-    let collapse;
+  it.each(['available', 'stopped'])(
+    'with scope=%s, fetches environments with scope',
+    async (scope) => {
+      wrapper = createWrapper({ nestedEnvironment, scope }, createApolloProvider());
 
-    beforeEach(() => {
-      collapse = wrapper.findComponent(GlCollapse);
-      icons = wrapper.findAllComponents(GlIcon);
-    });
+      await nextTick();
+      await waitForPromises();
 
-    it('is collapsed by default', () => {
-      const link = findLink();
-
-      expect(collapse.attributes('visible')).toBeUndefined();
-      const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
-      expect(iconNames).toEqual(['angle-right', 'folder-o']);
-      expect(folderName.classes('gl-font-weight-bold')).toBe(false);
-      expect(link.exists()).toBe(false);
-    });
-
-    it('opens on click', async () => {
-      await button.trigger('click');
-
-      const link = findLink();
-
-      expect(button.attributes('aria-label')).toBe(__('Collapse'));
-      expect(collapse.attributes('visible')).toBe('visible');
-      const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
-      expect(iconNames).toEqual(['angle-down', 'folder-open']);
-      expect(folderName.classes('gl-font-weight-bold')).toBe(true);
-      expect(link.attributes('href')).toBe(nestedEnvironment.latest.folderPath);
-    });
-
-    it('displays all environments when opened', async () => {
-      await button.trigger('click');
-
-      const names = resolvedFolder.environments.map((e) =>
-        expect.stringMatching(e.nameWithoutType),
+      expect(environmentFolderMock).toHaveBeenCalledTimes(1);
+      expect(environmentFolderMock).toHaveBeenCalledWith(
+        {},
+        {
+          environment: nestedEnvironment.latest,
+          scope,
+        },
+        expect.anything(),
+        expect.anything(),
       );
-      const environments = wrapper.findAllComponents(EnvironmentItem).wrappers.map((w) => w.text());
-      expect(environments).toEqual(expect.arrayContaining(names));
-    });
-  });
+    },
+  );
 });

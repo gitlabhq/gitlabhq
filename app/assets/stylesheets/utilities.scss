@@ -342,4 +342,27 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
     margin-bottom: $gl-spacing-scale-12 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
   }
 }
+
 /* End gitlab-ui#1709 */
+
+/*
+ * The below two styles will be moved to @gitlab/ui by
+ * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1750
+ */
+.gl-max-w-34 {
+  max-width: 34 * $grid-size;
+}
+
+.gl-max-w-80 {
+  max-width: 80 * $grid-size;
+}
+
+/*
+ * The below style will be moved to @gitlab/ui by
+ * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1751
+ */
+.gl-filter-blur-1 {
+  backdrop-filter: blur(2px);
+  /* stylelint-disable property-no-vendor-prefix */
+  -webkit-backdrop-filter: blur(2px); // still required by Safari
+}

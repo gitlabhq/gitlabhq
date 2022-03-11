@@ -52,7 +52,7 @@ rails:
 # This deploy job uses a simple deploy flow to Heroku, other providers, e.g. AWS Elastic Beanstalk
 # are supported too: https://github.com/travis-ci/dpl
 deploy:
-  type: deploy
+  stage: deploy
   environment: production
   script:
     - gem install dpl

@@ -10,7 +10,6 @@ RSpec.describe 'Environments page', :js do
   let(:role) { :developer }
 
   before do
-    stub_feature_flags(new_environments_table: false)
     project.add_role(user, role)
     sign_in(user)
   end
@@ -35,24 +34,18 @@ RSpec.describe 'Environments page', :js do
     it 'shows "Available" and "Stopped" tab with links' do
       visit_environments(project)
 
-      expect(page).to have_selector('.js-environments-tab-available')
-      expect(page).to have_content('Available')
-      expect(page).to have_selector('.js-environments-tab-stopped')
-      expect(page).to have_content('Stopped')
+      expect(page).to have_link(_('Available'))
+      expect(page).to have_link(_('Stopped'))
     end
 
     describe 'with one available environment' do
-      before do
-        create(:environment, project: project, state: :available)
-      end
+      let!(:environment) { create(:environment, project: project, state: :available) }
 
       describe 'in available tab page' do
         it 'shows one environment' do
           visit_environments(project, scope: 'available')
 
-          expect(page).to have_css('.environments-container')
-          expect(page.all('.environment-name').length).to eq(1)
-          expect(page.all('[data-testid="stop-icon"]').length).to eq(1)
+          expect(page).to have_link(environment.name, href: project_environment_path(project, environment))
         end
       end
 
@@ -77,7 +70,6 @@ RSpec.describe 'Environments page', :js do
         it 'shows no environments' do
           visit_environments(project, scope: 'stopped')
 
-          expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
       end
@@ -95,22 +87,18 @@ RSpec.describe 'Environments page', :js do
         it 'shows one environment without error' do
           visit_environments(project, scope: 'available')
 
-          expect(page).to have_css('.environments-container')
-          expect(page.all('.environment-name').length).to eq(1)
+          expect(page).to have_link(environment.name, href: project_environment_path(project, environment))
         end
       end
     end
 
     describe 'with one stopped environment' do
-      before do
-        create(:environment, project: project, state: :stopped)
-      end
+      let!(:environment) { create(:environment, project: project, state: :stopped) }
 
       describe 'in available tab page' do
         it 'shows no environments' do
           visit_environments(project, scope: 'available')
 
-          expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
       end
@@ -119,8 +107,7 @@ RSpec.describe 'Environments page', :js do
         it 'shows one environment' do
           visit_environments(project, scope: 'stopped')
 
-          expect(page).to have_css('.environments-container')
-          expect(page.all('.environment-name').length).to eq(1)
+          expect(page).to have_link(environment.name, href: project_environment_path(project, environment))
           expect(page.all('[data-testid="stop-icon"]').length).to eq(0)
         end
       end
@@ -135,8 +122,8 @@ RSpec.describe 'Environments page', :js do
     it 'does not show environments and counters are set to zero' do
       expect(page).to have_content('You don\'t have any environments right now')
 
-      expect(page.find('.js-environments-tab-available .badge').text).to eq('0')
-      expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')
+      expect(page).to have_link("#{_('Available')} 0")
+      expect(page).to have_link("#{_('Stopped')} 0")
     end
   end
 
@@ -150,21 +137,23 @@ RSpec.describe 'Environments page', :js do
     context 'when there are no deployments' do
       before do
         visit_environments(project)
+
+        page.click_button _('Expand')
       end
 
       it 'shows environments names and counters' do
-        expect(page).to have_link(environment.name)
+        expect(page).to have_link(environment.name, href: project_environment_path(project, environment))
 
-        expect(page.find('.js-environments-tab-available .badge').text).to eq('1')
-        expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')
+        expect(page).to have_link("#{_('Available')} 1")
+        expect(page).to have_link("#{_('Stopped')} 0")
       end
 
       it 'does not show deployments' do
-        expect(page).to have_content('No deployments yet')
+        expect(page).to have_content(s_('Environments|There are no deployments for this environment yet. Learn more about setting up deployments.'))
       end
 
       it 'shows stop button when environment is not stoppable' do
-        expect(page).to have_selector(stop_button_selector)
+        expect(page).to have_button('Stop')
       end
     end
 
@@ -179,8 +168,10 @@ RSpec.describe 'Environments page', :js do
 
       it 'shows deployment SHA and internal ID' do
         visit_environments(project)
+        page.click_button _('Expand')
 
-        expect(page).to have_link(deployment.short_sha)
+        expect(page).to have_text(deployment.short_sha)
+        expect(page).to have_link(deployment.commit.full_title)
         expect(page).to have_content(deployment.iid)
       end
 
@@ -216,10 +207,6 @@ RSpec.describe 'Environments page', :js do
 
           expect { find(action_link_selector).click }
             .not_to change { Ci::Pipeline.count }
-        end
-
-        it 'shows build name and id' do
-          expect(page).to have_link("#{build.name} ##{build.id}")
         end
 
         it 'shows a stop button' do
@@ -373,7 +360,8 @@ RSpec.describe 'Environments page', :js do
       it 'does not show deployments' do
         visit_environments(project)
 
-        expect(page).to have_content('No deployments yet')
+        page.click_button _('Expand')
+        expect(page).to have_content(s_('Environments|There are no deployments for this environment yet. Learn more about setting up deployments.'))
       end
     end
 
@@ -389,9 +377,10 @@ RSpec.describe 'Environments page', :js do
       it "renders the upcoming deployment", :aggregate_failures do
         visit_environments(project)
 
+        page.click_button _('Expand')
+
         within(upcoming_deployment_content_selector) do
           expect(page).to have_content("##{deployment.iid}")
-          expect(page).to have_selector("a[href=\"#{project_job_path(project, deployment.deployable)}\"]")
           expect(page).to have_link(href: /#{deployment.user.username}/)
         end
       end
@@ -413,15 +402,15 @@ RSpec.describe 'Environments page', :js do
       let(:role) { :developer }
 
       it 'developer creates a new environment with a valid name' do
-        within(".environments-section") { click_link 'New environment' }
+        click_link 'New environment'
         fill_in('Name', with: 'production')
         click_on 'Save'
 
         expect(page).to have_content('production')
       end
 
-      it 'developer creates a new environmetn with invalid name' do
-        within(".environments-section") { click_link 'New environment' }
+      it 'developer creates a new environment with invalid name' do
+        click_link 'New environment'
         fill_in('Name', with: 'name,with,commas')
         click_on 'Save'
 
@@ -458,20 +447,11 @@ RSpec.describe 'Environments page', :js do
         expect(page).not_to have_content 'review-2'
         expect(page).to have_content 'staging 2'
 
-        within('.folder-row') do
-          find('.folder-name', text: 'staging').click
-        end
+        page.click_button _('Expand')
 
         expect(page).to have_content 'review-1'
         expect(page).to have_content 'review-2'
-        within('.ci-table') do
-          within('[data-qa-selector="environment_item"]', text: 'review-1') do # rubocop:disable QA/SelectorUsage
-            expect(find('.js-auto-stop').text).not_to be_empty
-          end
-          within('[data-qa-selector="environment_item"]', text: 'review-2') do # rubocop:disable QA/SelectorUsage
-            expect(find('.js-auto-stop').text).not_to be_empty
-          end
-        end
+        expect(page).to have_content 'Auto stop in'
       end
     end
 
@@ -494,9 +474,7 @@ RSpec.describe 'Environments page', :js do
         expect(page).not_to have_content 'review-2'
         expect(page).to have_content 'staging 2'
 
-        within('.folder-row') do
-          find('.folder-name', text: 'staging').click
-        end
+        page.click_button _('Expand')
 
         expect(page).to have_content 'review-1'
         expect(page).to have_content 'review-2'

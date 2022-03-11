@@ -126,7 +126,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
     end
 
     context 'with offset and limit' do
-      subject { described_class.where(id: [deep_nested_group_1, deep_nested_group_2]).offset(1).limit(1).self_and_ancestors }
+      subject { described_class.where(id: [deep_nested_group_1, deep_nested_group_2]).order(:traversal_ids).offset(1).limit(1).self_and_ancestors }
 
       it { is_expected.to contain_exactly(group_2, nested_group_2, deep_nested_group_2) }
     end
@@ -185,6 +185,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
       subject do
         described_class
           .where(id: [deep_nested_group_1, deep_nested_group_2])
+          .order(:traversal_ids)
           .limit(1)
           .offset(1)
           .self_and_ancestor_ids
@@ -240,7 +241,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
     end
 
     context 'with offset and limit' do
-      subject { described_class.where(id: [group_1, group_2]).offset(1).limit(1).self_and_descendants }
+      subject { described_class.where(id: [group_1, group_2]).order(:traversal_ids).offset(1).limit(1).self_and_descendants }
 
       it { is_expected.to contain_exactly(group_2, nested_group_2, deep_nested_group_2) }
     end
@@ -288,6 +289,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
       subject do
         described_class
           .where(id: [group_1, group_2])
+          .order(:traversal_ids)
           .limit(1)
           .offset(1)
           .self_and_descendant_ids

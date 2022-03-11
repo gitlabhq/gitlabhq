@@ -17,11 +17,16 @@ In case custom inflection logic is needed, custom inflectors are added in the [q
 ## Link a test to its test case
 
 Every test should have a corresponding test case in the [GitLab project Test Cases](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases) as well as a results issue in the [Quality Test Cases project](https://gitlab.com/gitlab-org/quality/testcases/-/issues).
-It's recommended that you reuse the issue created to plan the test as the results issue. If a test case or results issue does not already exist you
-can create them yourself by using this [end-to-end test issue template](https://gitlab.com/gitlab-org/quality/testcases/-/blob/master/.gitlab/issue_templates/End-to-end%20Test.md) to format the issue description. (Note you must copy/paste this for test cases as templates aren't currently available.) Alternatively, you can run the test in a pipeline that has reporting enabled and the test-case reporter will automatically create a new test case and/or results issue and link the results issue to it's corresponding test case.
+If a test case issue does not yet exist you can create one yourself. To do so, create a new
+issue in the [Test Cases](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases) GitLab project
+with a placeholder title. After the test case URL is linked to a test in the code, when the test is
+run in a pipeline that has reporting enabled, the `report-results` script automatically updates the
+test case and the results issue.
+If a results issue does not yet exist, the `report-results` script automatically creates one and
+links it to its corresponding test case.
 
-Whether you create a new test case or one is created automatically, you will need to manually add
-a `testcase` RSpec metadata tag. In most cases, a single test will be associated with a single test case.
+To link a test case to a test in the code, you must manually add a `testcase` RSpec metadata tag.
+In most cases, a single test is associated with a single test case.
 
 For example:
 
@@ -92,106 +97,7 @@ RSpec.describe 'Create' do
 end
 ```
 
-There would be four associated test cases, two for each shared example, with the following content for the first two:
-
-[Test 1 Test Case](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347774):
-
-````markdown
-```markdown
-Title: browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb | Create Restricted
-protected branch push and merge when only one user is allowed to merge and push to a protected
-branch behaves like only user with access pushes and merges selecte...
-
-Description:
-### Full description
-
-Create Restricted protected branch push and merge when only one user is allowed to merge and push
-to a protected branch behaves like only user with access pushes and merges selected developer user
-pushes and merges
-
-### File path
-
-./qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb
-
-### DO NOT EDIT BELOW THIS LINE
-
-Active and historical test results:
-
-https://gitlab.com/gitlab-org/quality/testcases/-/issues/2177
-
-```
-````
-
-[Test 1 Results Issue](https://gitlab.com/gitlab-org/quality/testcases/-/issues/2177):
-
-````markdown
-```markdown
-Title: browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb | Create Restricted
-protected branch push and merge when only one user is allowed to merge and push to a protected
-branch behaves like only user with access pushes and merges selecte...
-
-Description:
-### Full description
-
-Create Restricted protected branch push and merge when only one user is allowed to merge and push
-to a protected branch behaves like only user with access pushes and merges selected developer user
-pushes and merges
-
-### File path
-
-./qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb
-
-```
-````
-
-[Test 2 Test Case](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347775):
-
-````markdown
-```markdown
-Title: browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb | Create Restricted
-protected branch push and merge when only one user is allowed to merge and push to a protected
-branch behaves like only user with access pushes and merges unselec...
-
-Description:
-### Full description
-
-Create Restricted protected branch push and merge when only one user is allowed to merge and push
-to a protected branch behaves like only user with access pushes and merges unselected maintainer
-user fails to push
-
-### File path
-
-./qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb
-
-### DO NOT EDIT BELOW THIS LINE
-
-Active and historical test results:
-
-https://gitlab.com/gitlab-org/quality/testcases/-/issues/2176
-
-```
-````
-
-[Test 2 Results Issue](https://gitlab.com/gitlab-org/quality/testcases/-/issues/2176):
-
-````markdown
-```markdown
-Title: browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb | Create Restricted
-protected branch push and merge when only one user is allowed to merge and push to a protected
-branch behaves like only user with access pushes and merges unselec...
-
-Description:
-### Full description
-
-Create Restricted protected branch push and merge when only one user is allowed to merge and push
-to a protected branch behaves like only user with access pushes and merges unselected maintainer
-user fails to push
-
-### File path
-
-./qa/specs/features/ee/browser_ui/3_create/repository/restrict_push_protected_branch_spec.rb
-```
-````
+We recommend creating four associated test cases, two for each shared example.
 
 ## Prefer API over UI
 

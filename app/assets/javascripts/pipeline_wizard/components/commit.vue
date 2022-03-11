@@ -195,7 +195,7 @@ export default {
         data-testid="branch_selector_group"
         label-for="branch"
       >
-        <ref-selector id="branch" v-model="branch" data-testid="branch" :project-id="projectPath" />
+        <ref-selector id="branch" v-model="branch" :project-id="projectPath" data-testid="branch" />
       </gl-form-group>
       <gl-alert
         v-if="!!commitError"
@@ -206,7 +206,7 @@ export default {
       >
         {{ commitError }}
       </gl-alert>
-      <step-nav show-back-button v-bind="$props" @back="$emit('go-back')">
+      <step-nav show-back-button v-bind="$props" @back="$emit('back')">
         <template #after>
           <gl-button
             :disabled="isCommitButtonEnabled"

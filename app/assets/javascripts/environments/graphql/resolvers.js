@@ -59,8 +59,8 @@ export const resolvers = (endpoint) => ({
         };
       });
     },
-    folder(_, { environment: { folderPath } }) {
-      return axios.get(folderPath, { params: { per_page: 3 } }).then((res) => ({
+    folder(_, { environment: { folderPath }, scope }) {
+      return axios.get(folderPath, { params: { scope, per_page: 3 } }).then((res) => ({
         availableCount: res.data.available_count,
         environments: res.data.environments.map(mapEnvironment),
         stoppedCount: res.data.stopped_count,

@@ -1,21 +1,11 @@
 - page_title _("Environments")
 - add_page_specific_style 'page_bundles/environments'
 
-- if Feature.enabled?(:new_environments_table)
-  #environments-table{ data: { endpoint: project_environments_path(@project, format: :json),
-    "can-read-environment" => can?(current_user, :read_environment, @project).to_s,
-    "can-create-environment" => can?(current_user, :create_environment, @project).to_s,
-    "new-environment-path" => new_project_environment_path(@project),
-    "help-page-path" => help_page_path("ci/environments/index.md"),
-    "project-path" => @project.full_path,
-    "project-id" => @project.id,
-    "default-branch-name" => @project.default_branch_or_main } }
-- else
-  #environments-list-view{ data: { environments_data: environments_list_data,
-    "can-read-environment" => can?(current_user, :read_environment, @project).to_s,
-    "can-create-environment" => can?(current_user, :create_environment, @project).to_s,
-    "new-environment-path" => new_project_environment_path(@project),
-    "help-page-path" => help_page_path("ci/environments/index.md"),
-    "project-path" => @project.full_path,
-    "project-id" => @project.id,
-    "default-branch-name" => @project.default_branch_or_main } }
+#environments-table{ data: { endpoint: project_environments_path(@project, format: :json),
+  "can-read-environment" => can?(current_user, :read_environment, @project).to_s,
+  "can-create-environment" => can?(current_user, :create_environment, @project).to_s,
+  "new-environment-path" => new_project_environment_path(@project),
+  "help-page-path" => help_page_path("ci/environments/index.md"),
+  "project-path" => @project.full_path,
+  "project-id" => @project.id,
+  "default-branch-name" => @project.default_branch_or_main } }

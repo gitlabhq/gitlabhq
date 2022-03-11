@@ -19,6 +19,10 @@ export default {
       type: Object,
       required: true,
     },
+    scope: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return { visible: false, interval: undefined };
@@ -27,7 +31,7 @@ export default {
     folder: {
       query: folderQuery,
       variables() {
-        return { environment: this.nestedEnvironment.latest };
+        return { environment: this.nestedEnvironment.latest, scope: this.scope };
       },
       pollInterval() {
         return this.interval;
@@ -52,7 +56,7 @@ export default {
       return this.visible ? this.$options.i18n.collapse : this.$options.i18n.expand;
     },
     count() {
-      return this.folder?.availableCount ?? 0;
+      return this.folder?.[`${this.scope}Count`] ?? 0;
     },
     folderClass() {
       return { 'gl-font-weight-bold': this.visible };

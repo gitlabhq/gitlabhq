@@ -13130,6 +13130,9 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
+msgid "Draft: %{filename}"
+msgstr ""
+
 msgid "Drag your designs here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
@@ -35006,6 +35009,9 @@ msgstr ""
 msgid "Start free trial"
 msgstr ""
 
+msgid "Start inputting changes and we will generate a YAML-file for you to add to your repository"
+msgstr ""
+
 msgid "Start merge train"
 msgstr ""
 
@@ -35271,6 +35277,9 @@ msgid "StatusPage|your status page frontend."
 msgstr ""
 
 msgid "Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments."
+msgstr ""
+
+msgid "Step %{currentStep} of %{stepCount}"
 msgstr ""
 
 msgid "Step 1."

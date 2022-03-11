@@ -42,6 +42,7 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:requires_praefect`   | The test requires that the GitLab instance uses [Gitaly Cluster](../../../administration/gitaly/praefect.md) (a.k.a. Praefect) as the repository storage . It's assumed to be used by default but if not the test can be skipped by setting `QA_CAN_TEST_PRAEFECT` to `false`. |
 | `:runner`         | The test depends on and sets up a GitLab Runner instance, typically to run a pipeline. |
 | `:skip_live_env`  | The test is excluded when run against live deployed environments such as Staging, Canary, and Production. |
+| `:skip_fips_env`  | The test is excluded when run against an environment in FIPS mode. |
 | `:skip_signup_disabled` | The test uses UI to sign up a new user and is skipped in any environment that does not allow new user registration via the UI. |
 | `:smoke`          | The test belongs to the test suite which verifies basic functionality of a GitLab instance.|
 | `:smtp`           | The test requires a GitLab instance to be configured to use an SMTP server. Tests SMTP notification email delivery from GitLab by using MailHog. |

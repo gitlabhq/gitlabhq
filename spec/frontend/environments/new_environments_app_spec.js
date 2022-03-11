@@ -9,6 +9,7 @@ import { sprintf, __, s__ } from '~/locale';
 import EnvironmentsApp from '~/environments/components/new_environments_app.vue';
 import EnvironmentsFolder from '~/environments/components/new_environment_folder.vue';
 import EnvironmentsItem from '~/environments/components/new_environment_item.vue';
+import EmptyState from '~/environments/components/empty_state.vue';
 import StopEnvironmentModal from '~/environments/components/stop_environment_modal.vue';
 import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
 import { resolvedEnvironmentsApp, resolvedFolder, resolvedEnvironment } from './graphql/mock_data';
@@ -119,6 +120,14 @@ describe('~/environments/components/new_environments_app.vue', () => {
 
     expect(text).not.toContainEqual(expect.stringMatching('review'));
     expect(text).toContainEqual(expect.stringMatching('production'));
+  });
+
+  it('should show an empty state with no environments', async () => {
+    await createWrapperWithMocked({
+      environmentsApp: { ...resolvedEnvironmentsApp, environments: [] },
+    });
+
+    expect(wrapper.findComponent(EmptyState).exists()).toBe(true);
   });
 
   it('should show a button to create a new environment', async () => {

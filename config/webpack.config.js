@@ -363,6 +363,10 @@ module.exports = {
           name: '[name].[contenthash:8].[ext]',
         },
       },
+      {
+        test: /\.(yml|yaml)$/,
+        loader: 'raw-loader',
+      },
     ],
   },
 

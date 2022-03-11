@@ -124,10 +124,11 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
   describe('folder', () => {
     it('should fetch the folder url passed to it', async () => {
-      mock.onGet(ENDPOINT, { params: { per_page: 3 } }).reply(200, folder);
+      mock.onGet(ENDPOINT, { params: { per_page: 3, scope: 'available' } }).reply(200, folder);
 
       const environmentFolder = await mockResolvers.Query.folder(null, {
         environment: { folderPath: ENDPOINT },
+        scope: 'available',
       });
 
       expect(environmentFolder).toEqual(resolvedFolder);

@@ -302,7 +302,11 @@ export default {
             class="gl-pl-4"
           />
         </div>
-        <div v-if="upcomingDeployment" :class="$options.deploymentClasses">
+        <div
+          v-if="upcomingDeployment"
+          :class="$options.deploymentClasses"
+          data-testid="upcoming-deployment-content"
+        >
           <deployment
             :deployment="upcomingDeployment"
             :class="{ 'gl-ml-7': inFolder }"
