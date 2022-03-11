@@ -7991,47 +7991,6 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#context_commits_enabled?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, namespace: group) }
-
-    subject(:result) { project.context_commits_enabled? }
-
-    context 'when context_commits feature flag is enabled' do
-      before do
-        stub_feature_flags(context_commits: true)
-      end
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when context_commits feature flag is disabled' do
-      before do
-        stub_feature_flags(context_commits: false)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when context_commits feature flag is enabled on project group' do
-      before do
-        stub_feature_flags(context_commits: group)
-      end
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when context_commits feature flag is enabled on another group' do
-      let(:another_group) { create(:group) }
-
-      before do
-        stub_feature_flags(context_commits: another_group)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-  end
-
   describe '.not_hidden' do
     it 'lists projects that are not hidden' do
       project = create(:project)

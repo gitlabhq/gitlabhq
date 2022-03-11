@@ -108,7 +108,9 @@ module Types
     field :suggestion_commit_message, GraphQL::Types::String, null: true,
           description: 'Commit message used to apply merge request suggestions.'
 
-    field :group, Types::GroupType, null: true,
+    # No, the quotes are not a typo. Used to get around circular dependencies.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27536#note_871009675
+    field :group, 'Types::GroupType', null: true,
           description: 'Group of the project.'
     field :namespace, Types::NamespaceType, null: true,
           description: 'Namespace of the project.'

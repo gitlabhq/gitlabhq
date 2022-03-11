@@ -111,9 +111,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       allow_tree_conflicts: display_merge_conflicts_in_diff?
     )
 
-    if @merge_request.project.context_commits_enabled?
-      options[:context_commits] = @merge_request.recent_context_commits
-    end
+    options[:context_commits] = @merge_request.recent_context_commits
 
     render json: DiffsSerializer.new(request).represent(diffs, options)
   end

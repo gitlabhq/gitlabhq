@@ -18,7 +18,7 @@ module Types
           null: true,
           authorize: :read_project
 
-    field :group, Types::GroupType,
+    field :group, 'Types::GroupType',
           description: 'Group this to-do item is associated with.',
           null: true,
           authorize: :read_group

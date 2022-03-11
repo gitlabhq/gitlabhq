@@ -1012,10 +1012,6 @@ class Project < ApplicationRecord
     Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self, default_enabled: true)
   end
 
-  def context_commits_enabled?
-    Feature.enabled?(:context_commits, self.group, default_enabled: :yaml)
-  end
-
   # LFS and hashed repository storage are required for using Design Management.
   def design_management_enabled?
     lfs_enabled? && hashed_storage?(:repository)

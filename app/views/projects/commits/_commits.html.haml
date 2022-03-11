@@ -22,7 +22,7 @@
 - if context_commits.present?
   %li.commit-header.js-commit-header
     %span.font-weight-bold= n_("%d previously merged commit", "%d previously merged commits", context_commits.count) % context_commits.count
-    - if project.context_commits_enabled? && can_update_merge_request
+    - if can_update_merge_request
       %button.gl-button.btn.btn-default.ml-3.add-review-item-modal-trigger{ type: "button", data: { context_commits_empty: 'false' } }
         = _('Add/remove')
 
@@ -40,7 +40,7 @@
       .gl-alert-content
         = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
 
-- if project.context_commits_enabled? && can_update_merge_request && context_commits&.empty?
+- if can_update_merge_request && context_commits&.empty?
   %button.gl-button.btn.btn-default.mt-3.add-review-item-modal-trigger{ type: "button", data: { context_commits_empty: 'true' } }
     = _('Add previously merged commits')
 

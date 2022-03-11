@@ -31,15 +31,7 @@ To seamlessly navigate among commits in a merge request:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29274) in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `context_commits`. Enabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/320757) in GitLab 14.8.
-
-WARNING:
-This feature is in [beta](../../../policy/alpha-beta-support.md#beta-features)
-and is [incomplete](https://gitlab.com/groups/gitlab-org/-/epics/1192).
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `context_commits`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/320757) in GitLab 14.9. [Feature flag `context_commits`](https://gitlab.com/gitlab-org/gitlab/-/issues/320757) removed.
 
 When reviewing a merge request, it helps to have more context about the changes
 made. That includes unchanged lines in unchanged files, and previous commits

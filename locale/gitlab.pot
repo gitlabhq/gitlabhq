@@ -41056,9 +41056,6 @@ msgstr ""
 msgid "Vulnerability|Scanner Provider"
 msgstr ""
 
-msgid "Vulnerability|Secure Code Warrior"
-msgstr ""
-
 msgid "Vulnerability|Security Audit"
 msgstr ""
 
@@ -42154,6 +42151,9 @@ msgid "You can only add up to %{max_contacts} contacts at one time"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"
+msgstr ""
+
+msgid "You can only merge once the items above are resolved."
 msgstr ""
 
 msgid "You can only transfer the project to namespaces you manage."

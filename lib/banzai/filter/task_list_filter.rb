@@ -9,6 +9,9 @@ require 'task_list/filter'
 module Banzai
   module Filter
     class TaskListFilter < TaskList::Filter
+      def render_item_checkbox(item)
+        "<task-button></task-button>#{super}"
+      end
     end
   end
 end
