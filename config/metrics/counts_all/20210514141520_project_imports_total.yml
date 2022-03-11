@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage.manage.project_imports.total
-description: 'Count number of projects imported monthly'
+description: Number of projects imported
 product_section: dev
 product_stage: manage
 product_group: group::import

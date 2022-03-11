@@ -95,8 +95,13 @@ end
 This however leads to the question: how many iterations should we run to get
 meaningful statistics?
 
-The benchmark-ips Gem basically takes care of all this and much more, and as a
-result of this should be used instead of the `Benchmark` module.
+The [`benchmark-ips`](https://github.com/evanphx/benchmark-ips)
+gem takes care of all this and much more. You should therefore use it instead of the `Benchmark`
+module.
+
+The GitLab Gemfile also contains the [`benchmark-memory`](https://github.com/michaelherold/benchmark-memory)
+gem, which works similarly to the `benchmark` and `benchmark-ips` gems. However, `benchmark-memory`
+instead returns the memory size, objects, and strings allocated and retained during the benchmark.
 
 In short:
 
@@ -110,7 +115,7 @@ In short:
 - If you must write a benchmark use the benchmark-ips Gem instead of Ruby's
    `Benchmark` module.
 
-## Profiling
+## Profiling with Stackprof
 
 By collecting snapshots of process state at regular intervals, profiling allows
 you to see where time is spent in a process. The
@@ -124,15 +129,36 @@ frequency (for example, 100hz, that is 100 stacks per second). This type of prof
 has quite a low (albeit non-zero) overhead and is generally considered to be
 safe for production.
 
-### Development
-
 A profiler can be a very useful tool during development, even if it does run *in
 an unrepresentative environment*. In particular, a method is not necessarily
 troublesome just because it's executed many times, or takes a long time to
 execute. Profiles are tools you can use to better understand what is happening
 in an application - using that information wisely is up to you!
 
-Keeping that in mind, to create a profile, identify (or create) a spec that
+There are multiple ways to create a profile with Stackprof.
+
+### Wrapping a code block
+
+To profile a specific code block, you can wrap that block in a `Stackprof.run` call:
+
+```ruby
+StackProf.run(mode: :wall, out: 'tmp/stackprof-profiling.dump') do
+  #...
+end
+```
+
+This creates a `.dump` file that you can [read](#reading-a-stackprof-profile).
+For all available options, see the [Stackprof documentation](https://github.com/tmm1/stackprof#all-options).
+
+### Performance bar
+
+With the [Performance bar](../administration/monitoring/performance/performance_bar.md),
+you have the option to profile a request using Stackprof and immediately output the results to a
+[Speedscope flamegraph](profiling.md#speedscope-flamegraphs).
+
+### RSpec profiling with Stackprof 
+
+To create a profile from a spec, identify (or create) a spec that
 exercises the troublesome code path, then run it using the `bin/rspec-stackprof`
 helper, for example:
 
@@ -161,89 +187,10 @@ Finished in 18.19 seconds (files took 4.8 seconds to load)
       187   (1.1%)         187   (1.1%)     block (4 levels) in class_attribute
 ```
 
-You can limit the specs that are run by passing any arguments `rspec` would
+You can limit the specs that are run by passing any arguments `RSpec` would
 normally take.
 
-The output is sorted by the `Samples` column by default. This is the number of
-samples taken where the method is the one currently being executed. The `Total`
-column shows the number of samples taken where the method, or any of the methods
-it calls, were being executed.
-
-To create a graphical view of the call stack:
-
-```shell
-stackprof tmp/project_policy_spec.rb.dump --graphviz > project_policy_spec.dot
-dot -Tsvg project_policy_spec.dot > project_policy_spec.svg
-```
-
-To load the profile in [KCachegrind](https://kcachegrind.github.io/):
-
-```shell
-stackprof tmp/project_policy_spec.rb.dump --callgrind > project_policy_spec.callgrind
-kcachegrind project_policy_spec.callgrind # Linux
-qcachegrind project_policy_spec.callgrind # Mac
-```
-
-For flame graphs, enable raw collection first. Note that raw
-collection can generate a very large file, so increase the `INTERVAL`, or
-run on a smaller number of specs for smaller file size:
-
-```shell
-RAW=true bin/rspec-stackprof spec/policies/group_member_policy_spec.rb
-```
-
-You can then generate, and view the resultant flame graph. It might take a
-while to generate based on the output file size:
-
-```shell
-# Generate
-stackprof --flamegraph tmp/group_member_policy_spec.rb.dump > group_member_policy_spec.flame
-
-# View
-stackprof --flamegraph-viewer=group_member_policy_spec.flame
-```
-
-It may be useful to zoom in on a specific method, for example:
-
-```shell
-$ stackprof tmp/project_policy_spec.rb.dump --method warm_asset_cache
-
-TestEnv#warm_asset_cache (/Users/lupine/dev/gitlab.com/gitlab-org/gitlab-development-kit/gitlab/spec/support/test_env.rb:164)
-  samples:     0 self (0.0%)  /   6288 total (36.9%)
-  callers:
-    6288  (  100.0%)  block (2 levels) in <top (required)>
-  callees (6288 total):
-    6288  (  100.0%)  Capybara::RackTest::Driver#visit
-  code:
-                                  |   164  |   def warm_asset_cache
-                                  |   165  |     return if warm_asset_cache?
-                                  |   166  |     return unless defined?(Capybara)
-                                  |   167  |
- 6288   (36.9%)                   |   168  |     Capybara.current_session.driver.visit '/'
-                                  |   169  |   end
-$ stackprof tmp/project_policy_spec.rb.dump --method BasePolicy#abilities
-BasePolicy#abilities (/Users/lupine/dev/gitlab.com/gitlab-org/gitlab-development-kit/gitlab/app/policies/base_policy.rb:79)
-  samples:     0 self (0.0%)  /     50 total (0.3%)
-  callers:
-      25  (   50.0%)  BasePolicy.abilities
-      25  (   50.0%)  BasePolicy#collect_rules
-  callees (50 total):
-      25  (   50.0%)  ProjectPolicy#rules
-      25  (   50.0%)  BasePolicy#collect_rules
-  code:
-                                  |    79  |   def abilities
-                                  |    80  |     return RuleSet.empty if @user && @user.blocked?
-                                  |    81  |     return anonymous_abilities if @user.nil?
-   50    (0.3%)                   |    82  |     collect_rules { rules }
-                                  |    83  |   end
-```
-
-Since the profile includes the work done by the test suite as well as the
-application code, these profiles can be used to investigate slow tests as well.
-However, for smaller runs (like this example), this means that the cost of
-setting up the test suite tends to dominate.
-
-### Production
+### Using Stackprof in production
 
 Stackprof can also be used to profile production workloads.
 
@@ -274,8 +221,8 @@ the timeout.
 
 Once profiling stops, the profile is written out to disk at
 `$STACKPROF_FILE_PREFIX/stackprof.$PID.$RAND.profile`. It can then be inspected
-further via the `stackprof` command line tool, as described in the previous
-section.
+further through the `stackprof` command line tool, as described in the
+[Reading a Stackprof profile section](#reading-a-stackprof-profile).
 
 Currently supported profiling targets are:
 
@@ -295,13 +242,84 @@ For Sidekiq, the signal can be sent to the `sidekiq-cluster` process via `pkill
 -USR2 bin/sidekiq-cluster`, which forwards the signal to all Sidekiq
 children. Alternatively, you can also select a specific PID of interest.
 
-Production profiles can be especially noisy. It can be helpful to visualize them
-as a [flame graph](https://github.com/brendangregg/FlameGraph). This can be done
-via:
+### Reading a Stackprof profile
+
+The output is sorted by the `Samples` column by default. This is the number of samples taken where
+the method is the one currently executed. The `Total` column shows the number of samples taken where
+the method (or any of the methods it calls) is executed.
+
+To create a graphical view of the call stack:
 
 ```shell
-bundle exec stackprof --stackcollapse /tmp/stackprof.55769.c6c3906452.profile | flamegraph.pl > flamegraph.svg
+stackprof tmp/project_policy_spec.rb.dump --graphviz > project_policy_spec.dot
+dot -Tsvg project_policy_spec.dot > project_policy_spec.svg
 ```
+
+To load the profile in [KCachegrind](https://kcachegrind.github.io/):
+
+```shell
+stackprof tmp/project_policy_spec.rb.dump --callgrind > project_policy_spec.callgrind
+kcachegrind project_policy_spec.callgrind # Linux
+qcachegrind project_policy_spec.callgrind # Mac
+```
+
+You can also generate and view the resultant flame graph. To view a flame graph that
+`bin/rspec-stackprof` creates, you must set the `RAW` environment variable to `true` when running
+`bin/rspec-stackprof`.
+
+It might take a while to generate based on the output file size:
+
+```shell
+# Generate
+stackprof --flamegraph tmp/group_member_policy_spec.rb.dump > group_member_policy_spec.flame
+
+# View
+stackprof --flamegraph-viewer=group_member_policy_spec.flame
+```
+
+To export the flame graph to an SVG file, use [Brendan Gregg's FlameGraph tool](https://github.com/brendangregg/FlameGraph):
+
+```shell
+stackprof --stackcollapse  /tmp/group_member_policy_spec.rb.dump | flamegraph.pl > flamegraph.svg
+```
+
+It's also possible to view flame graphs through [speedscope](https://github.com/jlfwong/speedscope).
+You can do this when using the [performance bar](profiling.md#speedscope-flamegraphs)
+and when [profiling code blocks](https://github.com/jlfwong/speedscope/wiki/Importing-from-stackprof-(ruby)).
+This option isn't supported by `bin/rspec-stackprof`.
+
+You can profile speciific methods by using `--method method_name`:
+
+```shell
+$ stackprof tmp/project_policy_spec.rb.dump --method access_allowed_to
+
+ProjectPolicy#access_allowed_to? (/Users/royzwambag/work/gitlab-development-kit/gitlab/app/policies/project_policy.rb:793)
+  samples:     0 self (0.0%)  /    578 total (0.7%)
+  callers:
+     397  (   68.7%)  block (2 levels) in <class:ProjectPolicy>
+      95  (   16.4%)  block in <class:ProjectPolicy>
+      86  (   14.9%)  block in <class:ProjectPolicy>
+  callees (578 total):
+     399  (   69.0%)  ProjectPolicy#team_access_level
+     141  (   24.4%)  Project::GeneratedAssociationMethods#project_feature
+      30  (    5.2%)  DeclarativePolicy::Base#can?
+       8  (    1.4%)  Featurable#access_level
+  code:
+                                  |   793  |   def access_allowed_to?(feature)
+  141    (0.2%)                   |   794  |     return false unless project.project_feature
+                                  |   795  | 
+    8    (0.0%)                   |   796  |     case project.project_feature.access_level(feature)
+                                  |   797  |     when ProjectFeature::DISABLED
+                                  |   798  |       false
+                                  |   799  |     when ProjectFeature::PRIVATE
+  429    (0.5%)                   |   800  |       can?(:read_all_resources) || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
+                                  |   801  |     else
+```
+
+When using Stackprof to profile specs, the profile includes the work done by the test suite and the
+application code. You can therefore use these profiles to investigate slow tests as well. However,
+for smaller runs (like this example), this means that the cost of setting up the test suite tends to
+dominate.
 
 ## RSpec profiling
 
@@ -648,7 +666,7 @@ end
 
 ## String Freezing
 
-In recent Ruby versions calling `freeze` on a String leads to it being allocated
+In recent Ruby versions calling `.freeze` on a String leads to it being allocated
 only once and re-used. For example, on Ruby 2.3 or later this only allocates the
 "foo" String once:
 
@@ -661,6 +679,12 @@ end
 Depending on the size of the String and how frequently it would be allocated
 (before the `.freeze` call was added), this _may_ make things faster, but
 this isn't guaranteed.
+
+Freezing strings saves memory, as every allocated string uses at least one `RVALUE_SIZE` bytes (40
+bytes on x64) of memory.
+
+You can use the [memory profiler](#using-memory-profiler)
+to see which strings are allocated often and could potentially benefit from a `.freeze`.
 
 Strings are frozen by default in Ruby 3.0. To prepare our codebase for
 this eventuality, we are adding the following header to all Ruby files:

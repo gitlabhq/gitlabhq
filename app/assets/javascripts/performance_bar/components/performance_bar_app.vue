@@ -134,6 +134,7 @@ export default {
   methods: {
     changeCurrentRequest(newRequestId) {
       this.currentRequest = newRequestId;
+      this.$emit('change-request', newRequestId);
     },
     flamegraphPath(mode) {
       return mergeUrlParams(

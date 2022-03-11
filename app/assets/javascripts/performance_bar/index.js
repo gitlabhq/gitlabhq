@@ -1,5 +1,6 @@
 import '../webpack';
 
+import { isEmpty } from 'lodash';
 import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -37,9 +38,10 @@ const initPerformanceBar = (el) => {
       };
     },
     mounted() {
-      PerformanceBarService.registerInterceptor(this.peekUrl, this.loadRequestDetails);
+      PerformanceBarService.registerInterceptor(this.peekUrl, this.addRequest);
 
-      this.loadRequestDetails(this.requestId, window.location.href);
+      this.addRequest(this.requestId, window.location.href);
+      this.loadRequestDetails(this.requestId);
     },
     beforeDestroy() {
       PerformanceBarService.removeInterceptor();
@@ -51,26 +53,32 @@ const initPerformanceBar = (el) => {
           // want to trace the request.
           axios.get(urlOrRequestId);
         } else {
-          this.loadRequestDetails(urlOrRequestId, urlOrRequestId);
+          this.addRequest(urlOrRequestId, urlOrRequestId);
         }
       },
-      loadRequestDetails(requestId, requestUrl) {
+      addRequest(requestId, requestUrl) {
         if (!this.store.canTrackRequest(requestUrl)) {
           return;
         }
 
         this.store.addRequest(requestId, requestUrl);
+      },
+      loadRequestDetails(requestId) {
+        const request = this.store.findRequest(requestId);
 
-        PerformanceBarService.fetchRequestDetails(this.peekUrl, requestId)
-          .then((res) => {
-            this.store.addRequestDetails(requestId, res.data);
+        if (request && isEmpty(request.details)) {
+          return PerformanceBarService.fetchRequestDetails(this.peekUrl, requestId)
+            .then((res) => {
+              this.store.addRequestDetails(requestId, res.data);
+              if (this.requestId === requestId) this.collectFrontendPerformanceMetrics();
+            })
+            .catch(() =>
+              // eslint-disable-next-line no-console
+              console.warn(`Error getting performance bar results for ${requestId}`),
+            );
+        }
 
-            if (this.requestId === requestId) this.collectFrontendPerformanceMetrics();
-          })
-          .catch(() =>
-            // eslint-disable-next-line no-console
-            console.warn(`Error getting performance bar results for ${requestId}`),
-          );
+        return Promise.resolve();
       },
       collectFrontendPerformanceMetrics() {
         if (performance) {
@@ -143,6 +151,7 @@ const initPerformanceBar = (el) => {
         },
         on: {
           'add-request': this.addRequestManually,
+          'change-request': this.loadRequestDetails,
         },
       });
     },

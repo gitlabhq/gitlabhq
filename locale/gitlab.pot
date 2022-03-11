@@ -365,11 +365,6 @@ msgid_plural "%d projects selected"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d request with warnings"
-msgid_plural "%d requests with warnings"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] ""
@@ -986,7 +981,7 @@ msgstr ""
 msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
 msgstr ""
 
-msgid "%{strongStart}Tip:%{strongEnd} You can also checkout merge requests locally by %{linkStart}following these guidelines%{linkEnd}"
+msgid "%{strongStart}Tip:%{strongEnd} You can also check out merge requests locally. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "%{strong_start}%{branch_count}%{strong_end} Branch"
@@ -15547,7 +15542,7 @@ msgstr ""
 msgid "February"
 msgstr ""
 
-msgid "Fetch and check out the branch for this merge request"
+msgid "Fetch and check out this merge request's feature branch:"
 msgstr ""
 
 msgid "Fetching incoming email"
@@ -22978,9 +22973,6 @@ msgstr ""
 msgid "Member|Deny access"
 msgstr ""
 
-msgid "Member|Remove member"
-msgstr ""
-
 msgid "Member|Revoke invite"
 msgstr ""
 
@@ -23092,7 +23084,7 @@ msgstr ""
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
-msgid "Merge the branch and fix any conflicts that come up"
+msgid "Merge the feature branch into the target branch and fix any conflicts. %{linkStart}How do I fix them?%{linkEnd}"
 msgstr ""
 
 msgid "Merge unavailable: merge requests are read-only in a secondary Geo node."
@@ -29963,7 +29955,7 @@ msgstr ""
 msgid "Push rules"
 msgstr ""
 
-msgid "Push the result of the merge to GitLab"
+msgid "Push the target branch up to GitLab."
 msgstr ""
 
 msgid "Push to create a project"
@@ -31492,7 +31484,7 @@ msgstr ""
 msgid "Review requests for you"
 msgstr ""
 
-msgid "Review the changes locally"
+msgid "Review the changes locally."
 msgstr ""
 
 msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
@@ -44077,9 +44069,6 @@ msgstr ""
 msgid "mrWidget|Merge failed."
 msgstr ""
 
-msgid "mrWidget|Merge locally"
-msgstr ""
-
 msgid "mrWidget|Merge unavailable: merge requests are read-only on archived projects."
 msgstr ""
 
@@ -44150,6 +44139,9 @@ msgid "mrWidget|Request to merge"
 msgstr ""
 
 msgid "mrWidget|Resolve conflicts"
+msgstr ""
+
+msgid "mrWidget|Resolve locally"
 msgstr ""
 
 msgid "mrWidget|Revert"

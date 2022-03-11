@@ -254,7 +254,9 @@ Prerequisites:
 - The maximum allowed package size is 5 GB.
 - You can't upload the same version of a package multiple times. If you try,
   you receive the error `400 Bad Request`.
-- You cannot publish PyPI packages to a group, only to a project.
+- PyPI packages are published using your projectID.
+- If your project is in a group, PyPI packages published to your project registry are also available
+  at the group-level registry (see [Install from the group level](#install-from-the-group-level)).
 
 You can then [publish a package by using twine](#publish-a-pypi-package-by-using-twine).
 

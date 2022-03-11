@@ -144,7 +144,7 @@ export default {
           :size="glFeatures.restructuredMrWidget ? 'small' : 'medium'"
           data-testid="merge-locally-button"
         >
-          {{ s__('mrWidget|Merge locally') }}
+          {{ s__('mrWidget|Resolve locally') }}
         </gl-button>
       </template>
     </div>

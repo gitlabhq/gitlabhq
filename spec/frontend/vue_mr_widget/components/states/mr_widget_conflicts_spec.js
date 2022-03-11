@@ -19,7 +19,7 @@ describe('MRWidgetConflicts', () => {
   const userCannotMergeText =
     'Users who can write to the source or target branches can resolve the conflicts.';
   const resolveConflictsBtnText = 'Resolve conflicts';
-  const mergeLocallyBtnText = 'Merge locally';
+  const mergeLocallyBtnText = 'Resolve locally';
 
   async function createComponent(propsData = {}) {
     wrapper = extendedWrapper(

@@ -95,17 +95,13 @@ For non-administrators to display the performance bar, it must be
 
 ## Request warnings
 
+> [Warning icon in the request selector removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82187) in GitLab 14.9.
+
 Requests that exceed predefined limits display a warning **{warning}** icon and
 explanation next to the metric. In this example, the Gitaly call duration
 exceeded the threshold.
 
 ![Gitaly call duration exceeded threshold](img/performance_bar_gitaly_threshold.png)
-
-If any requests on the current page generated warnings, the warning icon displays
-next to the **Requests** selector menu. In this selector menu, an exclamation `(!)`
-appears next to requests with warnings.
-
-![Request selector showing two requests with warnings](img/performance_bar_request_selector_warning.png)
 
 ## Enable the performance bar for non-administrators
 

@@ -163,7 +163,7 @@ To remove a member from a project:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
-1. Next to the project member you want to remove, select **Remove member** **{remove}**.
+1. Next to the project member you want to remove, select **Remove member**.
 1. Optional. In the confirmation box, select the
    **Also unassign this user from related issues and merge requests** checkbox.
 1. To prevent leaks of sensitive information from private projects, verify the
