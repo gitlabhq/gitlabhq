@@ -102,6 +102,9 @@ export default {
     refPath() {
       return this.ref?.refPath;
     },
+    needsApproval() {
+      return this.deployment.pendingApprovalCount > 0;
+    },
   },
   methods: {
     toggleCollapse() {
@@ -116,6 +119,7 @@ export default {
     showDetails: __('Show details'),
     hideDetails: __('Hide details'),
     triggerer: s__('Deployment|Triggerer'),
+    needsApproval: s__('Deployment|Needs Approval'),
     job: __('Job'),
     api: __('API'),
     branch: __('Branch'),
@@ -153,6 +157,9 @@ export default {
       <div :class="$options.headerDetailsClasses">
         <div :class="$options.deploymentStatusClasses">
           <deployment-status-badge v-if="status" :status="status" />
+          <gl-badge v-if="needsApproval" variant="warning">
+            {{ $options.i18n.needsApproval }}
+          </gl-badge>
           <gl-badge v-if="latest" variant="info">{{ $options.i18n.latestBadge }}</gl-badge>
         </div>
         <div class="gl-display-flex gl-align-items-center gl-gap-x-5">
@@ -199,6 +206,7 @@ export default {
       </gl-button>
     </div>
     <commit v-if="commit" :commit="commit" class="gl-mt-3" />
+    <div class="gl-mt-3"><slot name="approval"></slot></div>
     <gl-collapse :visible="visible">
       <div
         class="gl-display-flex gl-md-align-items-center gl-mt-5 gl-flex-direction-column gl-md-flex-direction-row gl-pr-4 gl-md-pr-0"

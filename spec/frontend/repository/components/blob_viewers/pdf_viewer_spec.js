@@ -1,4 +1,5 @@
 import { GlButton } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import Component from '~/repository/components/blob_viewers/pdf_viewer.vue';
 import PdfViewer from '~/blob/pdf/pdf_viewer.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -8,9 +9,9 @@ describe('PDF Viewer', () => {
 
   const DEFAULT_BLOB_DATA = { rawPath: 'some/pdf_blob.pdf' };
 
-  const createComponent = (rawSize = 999) => {
+  const createComponent = (rawSize = 999, externalStorageUrl) => {
     wrapper = shallowMountExtended(Component, {
-      propsData: { blob: { ...DEFAULT_BLOB_DATA, rawSize } },
+      propsData: { blob: { ...DEFAULT_BLOB_DATA, rawSize, externalStorageUrl } },
     });
   };
 
@@ -45,10 +46,14 @@ describe('PDF Viewer', () => {
   });
 
   describe('Too many pages', () => {
-    beforeEach(() => {
-      createComponent();
-      findPDFViewer().vm.$emit('pdflabload', 100);
-    });
+    const loadComponent = (externalStorageUrl) => {
+      const rawSize = 999;
+      const totalPages = 100;
+      createComponent(rawSize, externalStorageUrl);
+      findPDFViewer().vm.$emit('pdflabload', totalPages);
+    };
+
+    beforeEach(() => loadComponent());
 
     it('does not a PDF Viewer component', () => {
       expect(findPDFViewer().exists()).toBe(false);
@@ -56,6 +61,15 @@ describe('PDF Viewer', () => {
 
     it('renders a download button', () => {
       expect(findDownLoadButton().exists()).toBe(true);
+      expect(findDownLoadButton().attributes('href')).toBe(DEFAULT_BLOB_DATA.rawPath);
+    });
+
+    it('renders the correct href when stored externally', async () => {
+      const externalStorageUrl = 'https://cdn.test.com/project/some/file.js?token=1234';
+      loadComponent(externalStorageUrl);
+      await nextTick();
+
+      expect(findDownLoadButton().attributes('href')).toBe(externalStorageUrl);
     });
   });
 });

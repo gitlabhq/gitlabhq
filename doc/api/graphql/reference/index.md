@@ -1485,6 +1485,11 @@ Input type: `CreateIterationInput`
 
 ### `Mutation.createNote`
 
+Creates a Note.
+If the body of the Note contains only quick actions,
+the Note will be destroyed during an update, and no Note will be
+returned.
+
 Input type: `CreateNoteInput`
 
 #### Arguments
@@ -1495,6 +1500,7 @@ Input type: `CreateNoteInput`
 | <a id="mutationcreatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
 | <a id="mutationcreatenotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the discussion this note is in reply to. |
+| <a id="mutationcreatenotemergerequestdiffheadsha"></a>`mergeRequestDiffHeadSha` | [`String`](#string) | SHA of the head commit which is used to ensure that the merge request has not been updated since the request was sent. |
 | <a id="mutationcreatenotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 
 #### Fields
@@ -4831,7 +4837,7 @@ Input type: `UpdateEpicBoardListInput`
 
 Updates a DiffNote on an image (a `Note` where the `position.positionType` is `"image"`).
 If the body of the Note contains only quick actions,
-the Note will be destroyed during the update, and no Note will be
+the Note will be destroyed during an update, and no Note will be
 returned.
 
 Input type: `UpdateImageDiffNoteInput`
@@ -4938,7 +4944,7 @@ Input type: `UpdateNamespacePackageSettingsInput`
 
 Updates a Note.
 If the body of the Note contains only quick actions,
-the Note will be destroyed during the update, and no Note will be
+the Note will be destroyed during an update, and no Note will be
 returned.
 
 Input type: `UpdateNoteInput`

@@ -15,6 +15,7 @@ export default (el) => {
       helpPagePath,
       projectPath,
       defaultBranchName,
+      projectId,
     } = el.dataset;
 
     return new Vue({
@@ -26,6 +27,7 @@ export default (el) => {
         endpoint,
         newEnvironmentPath,
         helpPagePath,
+        projectId,
         canCreateEnvironment: parseBoolean(canCreateEnvironment),
       },
       render(h) {

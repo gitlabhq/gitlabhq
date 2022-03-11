@@ -10,9 +10,9 @@ describe('LFS Viewer', () => {
     rawPath: '/some/file/path',
   };
 
-  const createComponent = () => {
+  const createComponent = (blobData = {}) => {
     wrapper = shallowMount(LfsViewer, {
-      propsData: { blob: { ...DEFAULT_BLOB_DATA } },
+      propsData: { blob: { ...DEFAULT_BLOB_DATA, ...blobData } },
       stubs: { GlSprintf },
     });
   };
@@ -37,5 +37,12 @@ describe('LFS Viewer', () => {
       href: rawPath,
       download: name,
     });
+  });
+
+  it('renders the correct link href when stored externally', () => {
+    const externalStorageUrl = 'https://cdn.test.com/project/some/file.js?token=1234';
+    createComponent({ externalStorageUrl });
+
+    expect(findLink().attributes('href')).toBe(externalStorageUrl);
   });
 });

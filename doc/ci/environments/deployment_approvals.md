@@ -84,7 +84,12 @@ This functionality is currently only available through the API. UI is planned fo
 
 A blocked deployment is enqueued as soon as it receives the required number of approvals. A single rejection causes the deployment to fail. The creator of a deployment cannot approve it, even if they have permission to deploy.
 
-Using the [Deployments API](../../api/deployments.md#approve-or-reject-a-blocked-deployment), users who are allowed to deploy to the protected environment can approve or reject a blocked deployment.
+There are two ways to approve or reject a deployment to a protected environment:
+
+1. Using the [UI](index.md#view-environments-and-deployments):
+   1. Select **Approval options** (**{thumb-up}**)
+   1. Select **Approve** or **Reject**
+1. Using the [Deployments API](../../api/deployments.md#approve-or-reject-a-blocked-deployment), users who are allowed to deploy to the protected environment can approve or reject a blocked deployment.
 
 Example:
 

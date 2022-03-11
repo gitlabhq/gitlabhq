@@ -175,11 +175,10 @@ export default {
     },
     resetPolling() {
       this.$apollo.queries.environmentApp.stopPolling();
+      this.$apollo.queries.environmentApp.refetch();
       this.$nextTick(() => {
         if (this.interval) {
           this.$apollo.queries.environmentApp.startPolling(this.interval);
-        } else {
-          this.$apollo.queries.environmentApp.refetch({ scope: this.scope, page: this.page });
         }
       });
     },
@@ -233,6 +232,7 @@ export default {
       :key="environment.name"
       class="gl-mb-3 gl-border-gray-100 gl-border-1 gl-border-b-solid"
       :environment="environment.latest"
+      @change="resetPolling"
     />
     <gl-pagination
       align="center"

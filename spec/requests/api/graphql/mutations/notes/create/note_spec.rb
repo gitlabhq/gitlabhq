@@ -8,13 +8,16 @@ RSpec.describe 'Adding a Note' do
   let_it_be(:current_user) { create(:user) }
 
   let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:discussion) { nil }
+  let(:head_sha) { nil }
+  let(:body) { 'Body text' }
   let(:mutation) do
     variables = {
       noteable_id: GitlabSchema.id_from_object(noteable).to_s,
       discussion_id: (GitlabSchema.id_from_object(discussion).to_s if discussion),
-      body: 'Body text',
+      merge_request_diff_head_sha: head_sha.presence,
+      body: body,
       confidential: true
     }
 
@@ -54,7 +57,7 @@ RSpec.describe 'Adding a Note' do
         let(:discussion) { create(:discussion_note).to_discussion }
 
         it_behaves_like 'a mutation that returns top-level errors',
-                  errors: ["The discussion does not exist or you don't have permission to perform this action"]
+          errors: ["The discussion does not exist or you don't have permission to perform this action"]
       end
 
       context 'when the user has permission to create notes on the discussion' do
@@ -73,6 +76,30 @@ RSpec.describe 'Adding a Note' do
             let(:match_errors) { include(/ does not represent an instance of Discussion/) }
           end
         end
+      end
+    end
+
+    context 'when body only contains quick actions' do
+      let(:head_sha) { noteable.diff_head_sha }
+      let(:body) { '/merge' }
+
+      before do
+        project.add_developer(current_user)
+      end
+
+      # NOTE: Known issue https://gitlab.com/gitlab-org/gitlab/-/issues/346557
+      it 'returns a nil note and info about the command in errors' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(mutation_response).to include(
+          'errors' => [/Merged this merge request/],
+          'note' => nil
+        )
+      end
+
+      it 'starts the merge process' do
+        expect { post_graphql_mutation(mutation, current_user: current_user) }
+          .to change { noteable.reload.merge_jid.present? }.from(false).to(true)
       end
     end
   end

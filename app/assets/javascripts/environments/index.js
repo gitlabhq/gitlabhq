@@ -22,6 +22,7 @@ export default (el) => {
       apolloProvider,
       provide: {
         projectPath: el.dataset.projectPath,
+        projectId: el.dataset.projectId,
         defaultBranchName: el.dataset.defaultBranchName,
       },
       data() {

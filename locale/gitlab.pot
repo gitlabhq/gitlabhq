@@ -12233,6 +12233,33 @@ msgstr ""
 msgid "Deployment frequency"
 msgstr ""
 
+msgid "DeploymentApproval| Current approvals: %{current}"
+msgstr ""
+
+msgid "DeploymentApproval|Approval options"
+msgstr ""
+
+msgid "DeploymentApproval|Approve or reject deployment #%{deploymentIid}"
+msgstr ""
+
+msgid "DeploymentApproval|Approved by %{user} %{time}"
+msgstr ""
+
+msgid "DeploymentApproval|Approved by you %{time}"
+msgstr ""
+
+msgid "DeploymentApproval|Approving will run the manual job from deployment #%{deploymentIid}. Rejecting will fail the manual job."
+msgstr ""
+
+msgid "DeploymentApproval|Deployment tier: %{tier}"
+msgstr ""
+
+msgid "DeploymentApproval|Environment: %{environment}"
+msgstr ""
+
+msgid "DeploymentApproval|Manual job: %{jobName}"
+msgstr ""
+
 msgid "DeploymentTarget|GitLab Pages"
 msgstr ""
 
@@ -12293,6 +12320,9 @@ msgid "Deployment|Failed"
 msgstr ""
 
 msgid "Deployment|Latest Deployed"
+msgstr ""
+
+msgid "Deployment|Needs Approval"
 msgstr ""
 
 msgid "Deployment|Running"
@@ -30341,6 +30371,9 @@ msgid "Registry setup"
 msgstr ""
 
 msgid "Reindexing Status: %{status} (Slice multiplier: %{multiplier}, Maximum running slices: %{max_slices})"
+msgstr ""
+
+msgid "Reject"
 msgstr ""
 
 msgid "Rejected (closed)"

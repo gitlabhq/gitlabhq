@@ -48,6 +48,7 @@ describe('~/environments/components/new_environments_app.vue', () => {
         canCreateEnvironment: true,
         defaultBranchName: 'main',
         helpPagePath: '/help',
+        projectId: '1',
         ...provide,
       },
       apolloProvider,

@@ -20239,11 +20239,13 @@ ALTER SEQUENCE security_findings_id_seq OWNED BY security_findings.id;
 
 CREATE TABLE security_orchestration_policy_configurations (
     id bigint NOT NULL,
-    project_id bigint NOT NULL,
+    project_id bigint,
     security_policy_management_project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    configured_at timestamp with time zone
+    configured_at timestamp with time zone,
+    namespace_id bigint,
+    CONSTRAINT cop_configs_project_or_namespace_existence CHECK (((project_id IS NULL) <> (namespace_id IS NULL)))
 );
 
 COMMENT ON TABLE security_orchestration_policy_configurations IS '{"owner":"group::container security","description":"Configuration used to store relationship between project and security policy repository"}';
@@ -29018,8 +29020,6 @@ CREATE INDEX index_software_licenses_on_spdx_identifier ON software_licenses USI
 
 CREATE UNIQUE INDEX index_software_licenses_on_unique_name ON software_licenses USING btree (name);
 
-CREATE UNIQUE INDEX index_sop_configs_on_project_id ON security_orchestration_policy_configurations USING btree (project_id);
-
 CREATE INDEX index_sop_configurations_project_id_policy_project_id ON security_orchestration_policy_configurations USING btree (security_policy_management_project_id, project_id);
 
 CREATE INDEX index_sop_schedules_on_sop_configuration_id ON security_orchestration_policy_rule_schedules USING btree (security_orchestration_policy_configuration_id);
@@ -29509,6 +29509,10 @@ CREATE INDEX partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs ON ci_b
 CREATE INDEX partial_index_deployments_for_legacy_successful_deployments ON deployments USING btree (id) WHERE ((finished_at IS NULL) AND (status = 2));
 
 CREATE INDEX partial_index_deployments_for_project_id_and_tag ON deployments USING btree (project_id) WHERE (tag IS TRUE);
+
+CREATE UNIQUE INDEX partial_index_sop_configs_on_namespace_id ON security_orchestration_policy_configurations USING btree (namespace_id) WHERE (namespace_id IS NOT NULL);
+
+CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestration_policy_configurations USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_and_note_id_index ON snippet_user_mentions USING btree (snippet_id, note_id);
 
@@ -31408,6 +31412,9 @@ ALTER TABLE ONLY bulk_import_entities
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT fk_a4b8fefe3e FOREIGN KEY (managing_group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY security_orchestration_policy_configurations
+    ADD CONSTRAINT fk_a50430b375 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY lfs_objects_projects
     ADD CONSTRAINT fk_a56e02279c FOREIGN KEY (lfs_object_id) REFERENCES lfs_objects(id) ON DELETE RESTRICT NOT VALID;

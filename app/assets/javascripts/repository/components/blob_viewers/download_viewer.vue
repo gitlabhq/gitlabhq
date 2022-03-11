@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       fileName: this.blob.name,
-      filePath: this.blob.rawPath,
+      filePath: this.blob.externalStorageUrl || this.blob.rawPath,
       fileSize: this.blob.rawSize || 0,
     };
   },
