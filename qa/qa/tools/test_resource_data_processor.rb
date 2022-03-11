@@ -49,10 +49,12 @@ module QA
       # Otherwise create file and write data hash to file for the first time
       #
       # @return [void]
-      def write_to_file
+      def write_to_file(suite_failed)
         return if resources.empty?
 
-        file = Pathname.new(Runtime::Env.test_resources_created_filepath)
+        start_str = suite_failed ? 'failed-test-resources' : 'test-resources'
+        file_name = Runtime::Env.running_in_ci? ? "#{start_str}-#{SecureRandom.hex(3)}.json" : "#{start_str}.json"
+        file = Pathname.new(File.join(Runtime::Path.qa_root, 'tmp', file_name))
         FileUtils.mkdir_p(file.dirname)
 
         data = resources.deep_dup

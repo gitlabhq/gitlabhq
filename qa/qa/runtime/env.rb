@@ -449,11 +449,6 @@ module QA
         running_in_ci? && enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: true)
       end
 
-      def test_resources_created_filepath
-        file_name = running_in_ci? ? "test-resources-#{SecureRandom.hex(3)}.json" : 'test-resources.json'
-        ENV.fetch('QA_TEST_RESOURCES_CREATED_FILEPATH', File.join(Path.qa_root, 'tmp', file_name))
-      end
-
       def ee_activation_code
         ENV['QA_EE_ACTIVATION_CODE']
       end

@@ -60,13 +60,26 @@ task :delete_projects do
   QA::Tools::DeleteProjects.new.run
 end
 
-desc "Deletes resources created during E2E test runs"
-task :delete_test_resources, :file_pattern do |t, args|
-  QA::Tools::DeleteTestResources.new(args[:file_pattern]).run
-end
-
 desc "Deletes test users"
 task :delete_test_users, [:delete_before, :dry_run, :exclude_users] do |t, args|
   QA::Tools::DeleteTestUsers.new(args).run
+end
+
+namespace :test_resources do
+  desc "Deletes resources created during E2E test runs"
+  task :delete, :file_pattern do |t, args|
+    args.with_defaults(file_pattern: QA::Runtime::Env.test_resources_created_filepath)
+    QA::Tools::TestResourcesHandler.new(args[:file_pattern]).run_delete
+  end
+
+  desc "Upload test resources JSON files to GCS"
+  task :upload, [:file_pattern, :environment_name] do |t, args|
+    QA::Tools::TestResourcesHandler.new(args[:file_pattern]).upload(args[:environment_name])
+  end
+
+  desc "Download test resources JSON files from GCS"
+  task :download, [:environment_name] do |t, args|
+    QA::Tools::TestResourcesHandler.new.download(args[:environment_name])
+  end
 end
 # rubocop:enable Rails/RakeEnvironment

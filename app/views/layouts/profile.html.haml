@@ -5,4 +5,8 @@
 - @left_sidebar = true
 
 - enable_search_settings locals: { container_class: 'gl-my-5' }
+
+- content_for :flash_message do
+  = render "layouts/header/storage_enforcement_banner", namespace: current_user.namespace
+
 = render template: "layouts/application"

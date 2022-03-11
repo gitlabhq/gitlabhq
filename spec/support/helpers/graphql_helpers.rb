@@ -552,6 +552,12 @@ module GraphqlHelpers
     expect(flattened_errors).to be_empty
   end
 
+  # Helps migrate to the new GraphQL interpreter,
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/210556
+  def expect_graphql_error_to_be_created(error_class, match_message = nil)
+    expect { yield }.to raise_error(error_class, match_message)
+  end
+
   def flattened_errors
     Array.wrap(graphql_errors).flatten.compact
   end

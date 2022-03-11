@@ -55,31 +55,28 @@ can be set at:
 - The instance level.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/21688), the project and group level.
 
-The value is:
+For the setting on GitLab.com, see [Artifacts maximum size](../../gitlab_com/index.md#gitlab-cicd).
 
-- In *MB* and the default is 100MB per job.
-- [Set to 1G](../../gitlab_com/index.md#gitlab-cicd) on GitLab.com.
-
-To change it at the:
+The value is in MB and the default is 100MB per job. To change it at the:
 
 - Instance level:
 
   1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Settings > CI/CD**.
   1. Change the value of maximum artifacts size (in MB).
-  1. Click **Save changes** for the changes to take effect.
+  1. Select **Save changes** for the changes to take effect.
 
 - Group level (this overrides the instance setting):
 
   1. Go to the group's **Settings > CI/CD > General Pipelines**.
   1. Change the value of **maximum artifacts size (in MB)**.
-  1. Click **Save changes** for the changes to take effect.
+  1. Select **Save changes** for the changes to take effect.
 
 - Project level (this overrides the instance and group settings):
 
   1. Go to the project's **Settings > CI/CD > General Pipelines**.
   1. Change the value of **maximum artifacts size (in MB)**.
-  1. Click **Save changes** for the changes to take effect.
+  1. Select **Save changes** for the changes to take effect.
 
 NOTE:
 The setting at all levels is only available to GitLab administrators.
@@ -94,7 +91,7 @@ and the default value is `30 days`.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Change the value of default expiration time.
-1. Click **Save changes** for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 
 This setting is set per job and can be overridden in
 [`.gitlab-ci.yml`](../../../ci/yaml/index.md#artifactsexpire_in).
@@ -126,7 +123,7 @@ To disable the setting:
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Clear the **Keep the latest artifacts for all jobs in the latest successful pipelines** checkbox.
-1. Click **Save changes**
+1. Select **Save changes**
 
 When you disable the feature, the latest artifacts do not immediately expire.
 A new pipeline must run before the latest artifacts can expire and be deleted.
@@ -156,7 +153,7 @@ After that time passes, the jobs are archived and no longer able to be
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
 for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 
-As of June 22, 2020 the [value is set](../../gitlab_com/index.md#gitlab-cicd) to 3 months on GitLab.com. Jobs created before that date were archived after September 22, 2020.
+For the value set for GitLab.com, see [Scheduled job archiving](../../gitlab_com/index.md#gitlab-cicd).
 
 ## Protect CI/CD variables by default
 
@@ -233,7 +230,7 @@ To select a CI/CD template for the required pipeline configuration:
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand the **Required pipeline configuration** section.
 1. Select a CI/CD template from the dropdown.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Package Registry configuration
 
@@ -272,7 +269,7 @@ To set the maximum file size:
 1. Expand the **Package Registry** section.
 1. Find the package type you would like to adjust.
 1. Enter the maximum file size, in bytes.
-1. Click **Save size limits**.
+1. Select **Save size limits**.
 
 ## Prevent users from registering runners
 

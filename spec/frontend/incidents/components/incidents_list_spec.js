@@ -1,6 +1,7 @@
 import { GlAlert, GlLoadingIcon, GlTable, GlAvatar, GlEmptyState } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
 import {
   I18N,
@@ -19,7 +20,7 @@ import mockIncidents from '../mocks/incidents.json';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn().mockName('visitUrlMock'),
-  joinPaths: jest.fn(),
+  joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
   mergeUrlParams: jest.fn(),
   setUrlParams: jest.fn(),
   updateHistory: jest.fn(),
@@ -49,48 +50,51 @@ describe('Incidents List', () => {
   const findEmptyState = () => wrapper.find(GlEmptyState);
   const findSeverity = () => wrapper.findAll(SeverityToken);
   const findEscalationStatus = () => wrapper.findAll('[data-testid="incident-escalation-status"]');
+  const findIncidentLink = () => wrapper.findByTestId('incident-link');
 
   function mountComponent({ data = {}, loading = false, provide = {} } = {}) {
-    wrapper = mount(IncidentsList, {
-      data() {
-        return {
-          incidents: [],
-          incidentsCount: {},
-          ...data,
-        };
-      },
-      mocks: {
-        $apollo: {
-          queries: {
-            incidents: {
-              loading,
+    wrapper = extendedWrapper(
+      mount(IncidentsList, {
+        data() {
+          return {
+            incidents: [],
+            incidentsCount: {},
+            ...data,
+          };
+        },
+        mocks: {
+          $apollo: {
+            queries: {
+              incidents: {
+                loading,
+              },
             },
           },
         },
-      },
-      provide: {
-        projectPath: '/project/path',
-        newIssuePath,
-        incidentTemplateName,
-        incidentType,
-        issuePath: '/project/issues',
-        publishedAvailable: true,
-        emptyListSvgPath,
-        textQuery: '',
-        authorUsernameQuery: '',
-        assigneeUsernameQuery: '',
-        slaFeatureAvailable: true,
-        canCreateIncident: true,
-        incidentEscalationsAvailable: true,
-        ...provide,
-      },
-      stubs: {
-        GlButton: true,
-        GlAvatar: true,
-        GlEmptyState: true,
-        ServiceLevelAgreementCell: true,
-      },
-    });
+        provide: {
+          projectPath: '/project/path',
+          newIssuePath,
+          incidentTemplateName,
+          incidentType,
+          issuePath: '/project/issues',
+          publishedAvailable: true,
+          emptyListSvgPath,
+          textQuery: '',
+          authorUsernameQuery: '',
+          assigneeUsernameQuery: '',
+          slaFeatureAvailable: true,
+          canCreateIncident: true,
+          incidentEscalationsAvailable: true,
+          ...provide,
+        },
+        stubs: {
+          GlButton: true,
+          GlAvatar: true,
+          GlEmptyState: true,
+          ServiceLevelAgreementCell: true,
+        },
+      }),
+    );
   }
 
   afterEach(() => {
@@ -158,6 +162,14 @@ describe('Incidents List', () => {
 
     it('renders a createdAt with timeAgo component per row', () => {
       expect(findTimeAgo().length).toBe(mockIncidents.length);
+    });
+
+    it('renders a link to the incident as the incident title', () => {
+      const { title, iid } = mockIncidents[0];
+      const link = findIncidentLink();
+
+      expect(link.text()).toBe(title);
+      expect(link.attributes('href')).toContain(`issues/incident/${iid}`);
     });
 
     describe('Assignees', () => {

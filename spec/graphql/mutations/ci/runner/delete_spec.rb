@@ -22,8 +22,10 @@ RSpec.describe Mutations::Ci::Runner::Delete do
     end
 
     context 'when the user cannot admin the runner' do
-      it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          subject
+        end
       end
     end
 

@@ -42,7 +42,11 @@ module Users
       security_newsletter_callout: 39,
       verification_reminder: 40, # EE-only
       ci_deprecation_warning_for_types_keyword: 41,
-      security_training_feature_promotion: 42 # EE-only
+      security_training_feature_promotion: 42, # EE-only
+      storage_enforcement_banner_first_enforcement_threshold: 43,
+      storage_enforcement_banner_second_enforcement_threshold: 44,
+      storage_enforcement_banner_third_enforcement_threshold: 45,
+      storage_enforcement_banner_fourth_enforcement_threshold: 46
     }
 
     validates :feature_name,

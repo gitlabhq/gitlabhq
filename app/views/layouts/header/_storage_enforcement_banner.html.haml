@@ -1,0 +1,9 @@
+- return unless current_user
+- namespace = local_assigns.fetch(:namespace)
+- banner_info = storage_enforcement_banner_info(namespace)
+- return unless banner_info.present?
+
+= render 'shared/global_alert', variant: :warning, alert_class: 'js-storage-enforcement-banner', alert_data: { feature_id: banner_info[:callouts_feature_name], dismiss_endpoint: banner_info[:callouts_path], group_id: namespace.id, defer_links: "true" } do
+  .gl-alert-body
+    = banner_info[:text]
+    = banner_info[:learn_more_link]

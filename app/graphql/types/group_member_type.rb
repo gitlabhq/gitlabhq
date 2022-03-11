@@ -13,6 +13,10 @@ module Types
     field :group, Types::GroupType, null: true,
           description: 'Group that a User is a member of.'
 
+    field :notification_email,
+          resolver: Resolvers::GroupMembers::NotificationEmailResolver,
+          description: "Group notification email for User. Only availble for admins."
+
     def group
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, object.source_id).find
     end

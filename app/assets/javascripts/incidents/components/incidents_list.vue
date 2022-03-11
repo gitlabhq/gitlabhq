@@ -1,5 +1,6 @@
 <script>
 import {
+  GlLink,
   GlLoadingIcon,
   GlTable,
   GlAvatarsInline,
@@ -106,6 +107,7 @@ export default {
   ],
   MAX_VISIBLE_ASSIGNEES,
   components: {
+    GlLink,
     GlLoadingIcon,
     GlTable,
     GlAvatarsInline,
@@ -271,7 +273,7 @@ export default {
       return Boolean(assignees.nodes?.length);
     },
     navigateToIncidentDetails({ iid }) {
-      return visitUrl(joinPaths(this.issuePath, INCIDENT_DETAILS_PATH, iid));
+      return visitUrl(this.showIncidentLink({ iid }));
     },
     navigateToCreateNewIncident() {
       const { category, action } = this.$options.trackIncidentCreateNewOptions;
@@ -296,6 +298,9 @@ export default {
     },
     getEscalationStatus(escalationStatus) {
       return ESCALATION_STATUSES[escalationStatus] || this.$options.i18n.noEscalationStatus;
+    },
+    showIncidentLink({ iid }) {
+      return joinPaths(this.issuePath, INCIDENT_DETAILS_PATH, iid);
     },
     pageChanged(pagination) {
       this.pagination = pagination;
@@ -384,12 +389,14 @@ export default {
 
           <template #cell(title)="{ item }">
             <div :class="{ 'gl-display-flex gl-align-items-center': item.state === 'closed' }">
-              <tooltip-on-truncate
+              <gl-link
+                v-gl-tooltip
                 :title="item.title"
-                class="gl-max-w-full gl-text-truncate gl-display-block"
+                data-testid="incident-link"
+                :href="showIncidentLink(item)"
               >
                 {{ item.title }}
-              </tooltip-on-truncate>
+              </gl-link>
               <gl-icon
                 v-if="item.state === 'closed'"
                 name="issue-close"

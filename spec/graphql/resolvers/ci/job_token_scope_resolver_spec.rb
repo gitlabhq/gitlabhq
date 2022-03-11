@@ -54,10 +54,8 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
         project.add_user(current_user, :developer)
       end
 
-      it 'raises error' do
-        expect do
-          resolve_scope
-        end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) { resolve_scope }
       end
     end
   end

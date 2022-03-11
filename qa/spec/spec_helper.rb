@@ -69,7 +69,7 @@ RSpec.configure do |config|
 
   config.after(:suite) do |suite|
     # Write all test created resources to JSON file
-    QA::Tools::TestResourceDataProcessor.write_to_file
+    QA::Tools::TestResourceDataProcessor.write_to_file(suite.reporter.failed_examples.any?)
 
     # If requested, confirm that resources were used appropriately (e.g., not left with changes that interfere with
     # further reuse)

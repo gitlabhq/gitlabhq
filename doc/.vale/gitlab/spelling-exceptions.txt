@@ -229,6 +229,7 @@ Gemfile
 Gemnasium
 Gemojione
 Getter
+getters
 Getters
 gettext
 Git
@@ -576,6 +577,7 @@ sharded
 sharding
 shfmt
 Shibboleth
+Shimo
 Shopify
 Sidekiq
 Silverlight

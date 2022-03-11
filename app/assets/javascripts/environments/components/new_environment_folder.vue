@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlCollapse, GlIcon, GlBadge, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
 import folderQuery from '../graphql/queries/folder.query.graphql';
 import EnvironmentItem from './new_environment_item.vue';
 
@@ -20,7 +21,7 @@ export default {
     },
   },
   data() {
-    return { visible: false };
+    return { visible: false, interval: undefined };
   },
   apollo: {
     folder: {
@@ -28,6 +29,12 @@ export default {
       variables() {
         return { environment: this.nestedEnvironment.latest };
       },
+      pollInterval() {
+        return this.interval;
+      },
+    },
+    interval: {
+      query: pollIntervalQuery,
     },
   },
   i18n: {

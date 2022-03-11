@@ -275,6 +275,7 @@ See [database guidelines](database/index.md).
 
 ## Integration guides
 
+- [Integrations development guide](integrations/index.md)
 - [Jira Connect app](integrations/jira_connect.md)
 - [Security Scanners](integrations/secure.md)
 - [Secure Partner Integration](integrations/secure_partner_integration.md)

@@ -63,7 +63,9 @@ RSpec.describe Mutations::ReleaseAssetLinks::Create do
         let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
 
         it 'has an access error' do
-          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+            subject
+          end
         end
       end
     end
@@ -71,16 +73,20 @@ RSpec.describe Mutations::ReleaseAssetLinks::Create do
     context "when the user doesn't have access to the project" do
       let(:current_user) { reporter }
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          subject
+        end
       end
     end
 
     context "when the project doesn't exist" do
       let(:project_path) { 'project/that/does/not/exist' }
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          subject
+        end
       end
     end
 

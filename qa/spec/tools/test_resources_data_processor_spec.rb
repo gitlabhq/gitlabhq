@@ -43,18 +43,30 @@ RSpec.describe QA::Tools::TestResourceDataProcessor do
   end
 
   describe '.write_to_file' do
-    let(:resources_file) { Pathname.new(Faker::File.file_name(dir: 'tmp', ext: 'json')) }
+    using RSpec::Parameterized::TableSyntax
 
-    before do
-      stub_env('QA_TEST_RESOURCES_CREATED_FILEPATH', resources_file)
-
-      allow(File).to receive(:write)
+    where(:ci, :suite_failed, :file_path) do
+      true  | true  | 'root/tmp/failed-test-resources-random.json'
+      true  | false | 'root/tmp/test-resources-random.json'
+      false | true  | 'root/tmp/failed-test-resources.json'
+      false | false | 'root/tmp/test-resources.json'
     end
 
-    it 'writes applicable resources to file' do
-      processor.write_to_file
+    with_them do
+      let(:resources_file) { Pathname.new(file_path) }
 
-      expect(File).to have_received(:write).with(resources_file, JSON.pretty_generate(result))
+      before do
+        allow(QA::Runtime::Env).to receive(:running_in_ci?).and_return(ci)
+        allow(File).to receive(:write)
+        allow(QA::Runtime::Path).to receive(:qa_root).and_return('root')
+        allow(SecureRandom).to receive(:hex).with(any_args).and_return('random')
+      end
+
+      it 'writes applicable resources to file' do
+        processor.write_to_file(suite_failed)
+
+        expect(File).to have_received(:write).with(resources_file, JSON.pretty_generate(result))
+      end
     end
   end
 end
