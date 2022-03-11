@@ -107,8 +107,8 @@ module Gitlab
       end
       # rubocop: enable Metrics/ParameterLists
 
-      def create_repository
-        request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo)
+      def create_repository(default_branch = nil)
+        request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo, default_branch: default_branch)
         GitalyClient.call(@storage, :repository_service, :create_repository, request, timeout: GitalyClient.fast_timeout)
       end
 

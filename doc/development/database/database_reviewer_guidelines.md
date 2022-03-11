@@ -26,18 +26,12 @@ For more information on the database review process, check the [database review 
 
 ## How to apply for becoming a database reviewer
 
-Team members are encouraged to self-identify as database domain experts and add it to their [team profile](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/team.yml)
+Team members are encouraged to self-identify as database domain experts, and add it to their profile YAML file:
 
 ```yaml
 projects:
   gitlab:
     - reviewer database
-```
-
-Assign the MR which adds your expertise to the `team.yml` file to a database maintainer
-or the [Database Team's Engineering Manager](https://about.gitlab.com/handbook/engineering/development/enablement/database/).
-
-Once the `team.yml` update is merged, the [Reviewer roulette](../code_review.md#reviewer-roulette)
 may recommend you as a database reviewer.
 
 ## Resources for database reviewers

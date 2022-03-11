@@ -218,6 +218,26 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
+  describe '#create_repository' do
+    it 'sends a create_repository message without arguments' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:create_repository)
+        .with(gitaly_request_with_path(storage_name, relative_path).and(gitaly_request_with_params(default_branch: '')), kind_of(Hash))
+        .and_return(double)
+
+      client.create_repository
+    end
+
+    it 'sends a create_repository message with default branch' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:create_repository)
+        .with(gitaly_request_with_path(storage_name, relative_path).and(gitaly_request_with_params(default_branch: 'default-branch-name')), kind_of(Hash))
+        .and_return(double)
+
+      client.create_repository('default-branch-name')
+    end
+  end
+
   describe '#create_from_snapshot' do
     it 'sends a create_repository_from_snapshot message' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)

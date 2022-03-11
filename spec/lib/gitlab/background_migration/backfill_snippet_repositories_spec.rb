@@ -78,6 +78,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
     end
 
     shared_examples 'migration_bot user commits files' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('main')
+      end
+
       it do
         subject
 
@@ -89,6 +93,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
     end
 
     shared_examples 'commits the file to the repository' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('main')
+      end
+
       context 'when author can update snippet and use git' do
         it 'creates the repository and commit the file' do
           subject
@@ -268,6 +276,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
       let!(:invalid_snippet) { snippets.create!(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: '.', content: content) }
       let!(:snippet) { snippets.create!(id: 5, type: 'PersonalSnippet', author_id: other_user.id, file_name: file_name, content: content) }
       let(:ids) { [4, 5] }
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('main')
+      end
 
       after do
         raw_repository(snippet).remove

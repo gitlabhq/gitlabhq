@@ -114,7 +114,7 @@ export default {
         class="gl-display-inline-block"
       >
         <attention-requested-toggle
-          v-if="showVerticalList && user.can_update_merge_request"
+          v-if="showVerticalList"
           :user="user"
           type="assignee"
           @toggle-attention-requested="toggleAttentionRequested"

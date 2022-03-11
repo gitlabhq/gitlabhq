@@ -1085,10 +1085,10 @@ class Repository
     blob.data
   end
 
-  def create_if_not_exists
+  def create_if_not_exists(default_branch = nil)
     return if exists?
 
-    raw.create_repository
+    raw.create_repository(default_branch)
     after_create
 
     true

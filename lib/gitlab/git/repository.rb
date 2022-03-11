@@ -99,9 +99,9 @@ module Gitlab
         gitaly_repository_client.exists?
       end
 
-      def create_repository
+      def create_repository(default_branch = nil)
         wrapped_gitaly_errors do
-          gitaly_repository_client.create_repository
+          gitaly_repository_client.create_repository(default_branch)
         rescue GRPC::AlreadyExists => e
           raise RepositoryExists, e.message
         end

@@ -8,6 +8,8 @@ export default {
     attentionRequestedReviewer: __('Request attention to review'),
     attentionRequestedAssignee: __('Request attention'),
     removeAttentionRequested: __('Remove attention request'),
+    attentionRequestedNoPermission: __('Attention requested'),
+    noAttentionRequestedNoPermission: __('No attention request'),
   },
   components: {
     GlButton,
@@ -33,17 +35,25 @@ export default {
   computed: {
     tooltipTitle() {
       if (this.user.attention_requested) {
-        return this.$options.i18n.removeAttentionRequested;
+        if (this.user.can_update_merge_request) {
+          return this.$options.i18n.removeAttentionRequested;
+        }
+
+        return this.$options.i18n.attentionRequestedNoPermission;
       }
 
-      return this.type === 'reviewer'
-        ? this.$options.i18n.attentionRequestedReviewer
-        : this.$options.i18n.attentionRequestedAssignee;
+      if (this.user.can_update_merge_request) {
+        return this.type === 'reviewer'
+          ? this.$options.i18n.attentionRequestedReviewer
+          : this.$options.i18n.attentionRequestedAssignee;
+      }
+
+      return this.$options.i18n.noAttentionRequestedNoPermission;
     },
   },
   methods: {
     toggleAttentionRequired() {
-      if (this.loading) return;
+      if (this.loading || !this.user.can_update_merge_request) return;
 
       this.$root.$emit(BV_HIDE_TOOLTIP);
       this.loading = true;
@@ -60,12 +70,13 @@ export default {
 </script>
 
 <template>
-  <span v-gl-tooltip.left.viewport="tooltipTitle">
+  <span v-gl-tooltip.left.viewport="tooltipTitle" class="gl-display-inline-block">
     <gl-button
       :loading="loading"
       :variant="user.attention_requested ? 'warning' : 'default'"
       :icon="user.attention_requested ? 'attention-solid' : 'attention'"
       :aria-label="tooltipTitle"
+      :class="{ 'gl-pointer-events-none': !user.can_update_merge_request }"
       size="small"
       category="tertiary"
       @click="toggleAttentionRequired"

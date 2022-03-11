@@ -98,7 +98,7 @@ export default {
       data-testid="reviewer"
     >
       <attention-requested-toggle
-        v-if="glFeatures.mrAttentionRequests && user.can_update_merge_request"
+        v-if="glFeatures.mrAttentionRequests"
         :user="user"
         type="reviewer"
         @toggle-attention-requested="toggleAttentionRequested"

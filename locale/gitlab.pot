@@ -4696,6 +4696,9 @@ msgstr ""
 msgid "Are you sure that you want to archive this project?"
 msgstr ""
 
+msgid "Are you sure that you want to destroy %{application}"
+msgstr ""
+
 msgid "Are you sure that you want to unarchive this project?"
 msgstr ""
 
@@ -5030,6 +5033,9 @@ msgid "Attaching the file failed."
 msgstr ""
 
 msgid "Attention"
+msgstr ""
+
+msgid "Attention requested"
 msgstr ""
 
 msgid "Audit Events"
@@ -9279,6 +9285,9 @@ msgid "Confirm"
 msgstr ""
 
 msgid "Confirm approval"
+msgstr ""
+
+msgid "Confirm destroy application"
 msgstr ""
 
 msgid "Confirm new password"
@@ -24670,6 +24679,9 @@ msgid "No artifacts found"
 msgstr ""
 
 msgid "No assignee"
+msgstr ""
+
+msgid "No attention request"
 msgstr ""
 
 msgid "No authentication methods configured."

@@ -222,14 +222,12 @@ export const securityFeatures = [
     helpPath: COVERAGE_FUZZING_HELP_PATH,
     configurationHelpPath: COVERAGE_FUZZING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_COVERAGE_FUZZING,
-    secondary: gon?.features?.corpusManagementUi
-      ? {
-          type: REPORT_TYPE_CORPUS_MANAGEMENT,
-          name: CORPUS_MANAGEMENT_NAME,
-          description: CORPUS_MANAGEMENT_DESCRIPTION,
-          configurationText: CORPUS_MANAGEMENT_CONFIG_TEXT,
-        }
-      : {},
+    secondary: {
+      type: REPORT_TYPE_CORPUS_MANAGEMENT,
+      name: CORPUS_MANAGEMENT_NAME,
+      description: CORPUS_MANAGEMENT_DESCRIPTION,
+      configurationText: CORPUS_MANAGEMENT_CONFIG_TEXT,
+    },
   },
 ];
 
