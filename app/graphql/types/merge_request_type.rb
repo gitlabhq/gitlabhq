@@ -179,7 +179,7 @@ module Types
           description: 'Total time reported as spent on the merge request.'
 
     field :approved_by, Types::UserType.connection_type, null: true,
-          description: 'Users who approved the merge request.'
+          description: 'Users who approved the merge request.', method: :approved_by_users
     field :auto_merge_strategy, GraphQL::Types::String, null: true,
           description: 'Selected auto merge strategy.'
     field :available_auto_merge_strategies, [GraphQL::Types::String], null: true, calls_gitaly: true,
@@ -207,10 +207,6 @@ module Types
 
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
-
-    def approved_by
-      object.approved_by_users
-    end
 
     def user_notes_count
       BatchLoader::GraphQL.for(object.id).batch(key: :merge_request_user_notes_count) do |ids, loader, args|

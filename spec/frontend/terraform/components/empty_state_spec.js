@@ -8,7 +8,7 @@ describe('EmptyStateComponent', () => {
   const propsData = {
     image: '/image/path',
   };
-  const docsUrl = '/help/user/infrastructure/terraform_state';
+  const docsUrl = '/help/user/infrastructure/iac/terraform_state';
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLink = () => wrapper.findComponent(GlLink);
 

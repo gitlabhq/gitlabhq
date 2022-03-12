@@ -13,7 +13,7 @@
     At every major release of GitLab, the "latest version" template becomes the "major version" template, inheriting the "latest template" setup.
     As we have added many new features to the Terraform integration, the new setup for the "major version" template can be considered a breaking change.
 
-    The latest template supports the [Terraform Merge Request widget](https://docs.gitlab.com/ee/user/infrastructure/mr_integration.html) and
-    doesn't need additional setup to work with the [GitLab managed Terraform state](https://docs.gitlab.com/ee/user/infrastructure/terraform_state.html).
+    The latest template supports the [Terraform Merge Request widget](https://docs.gitlab.com/ee/user/infrastructure/iac/mr_integration.html) and
+    doesn't need additional setup to work with the [GitLab managed Terraform state](https://docs.gitlab.com/ee/user/infrastructure/iac/terraform_state.html).
 
     To check the new changes, see the [new "major version" template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml).

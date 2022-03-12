@@ -799,10 +799,9 @@ RSpec.describe QuickActions::InterpretService do
         let(:project) { repository_project }
         let(:service) { described_class.new(project, developer, {}) }
 
-        it 'precheck passes and returns merge command' do
-          _, updates, _ = service.execute('/merge', merge_request)
-
-          expect(updates).to eq(merge: nil)
+        it_behaves_like 'failed command', 'Merge request diff sha parameter is required for the merge quick action.' do
+          let(:content) { "/merge" }
+          let(:issuable) { merge_request }
         end
       end
 

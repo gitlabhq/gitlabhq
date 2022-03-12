@@ -61,7 +61,7 @@ module Types
       field :coverage, GraphQL::Types::Float, null: true,
             description: 'Coverage level of the job.'
       field :created_by_tag, GraphQL::Types::Boolean, null: false,
-            description: 'Whether the job was created by a tag.'
+            description: 'Whether the job was created by a tag.', method: :tag?
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
             description: 'Detailed status of the job.'
       field :downstream_pipeline, Types::Ci::PipelineType, null: true,
@@ -171,10 +171,6 @@ module Types
 
       def coverage
         object&.coverage
-      end
-
-      def created_by_tag
-        object.tag?
       end
 
       def manual_job

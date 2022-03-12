@@ -24,10 +24,6 @@
 
 .decomposed-database-rspec:
   extends: .decomposed-database
-  variables:
-    # For decomposition phase 3, uncomment line below:
-    # GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: "main"
-    GITLAB_USE_MODEL_LOAD_BALANCING: "true"
 
 .rspec-base:
   extends:
@@ -381,6 +377,8 @@ db:migrate:reset decomposed:
     - db:migrate:reset
     - .decomposed-database
     - .rails:rules:decomposed-databases
+  variables:
+    GITLAB_USE_MODEL_LOAD_BALANCING: "false"
 
 db:migrate-from-previous-major-version:
   extends: .db-job-base
@@ -389,6 +387,7 @@ db:migrate-from-previous-major-version:
     SETUP_DB: "false"
     PROJECT_TO_CHECKOUT: "gitlab-foss"
     TAG_TO_CHECKOUT: "v13.12.9"
+    GITLAB_USE_MODEL_LOAD_BALANCING: "false"
   before_script:
     - !reference [.default-before_script, before_script]
     - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'

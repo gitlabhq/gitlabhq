@@ -56,6 +56,20 @@ The [`custom_hooks_dir`](https://docs.gitlab.com/ee/administration/server_hooks.
 
 **Planned removal milestone: 15.0 ()**
 
+### htpasswd Authentication for the Container Registry
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The Container Registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
+
+Since it isn't used in the context of GitLab (the product), `htpasswd` authentication will be deprecated in GitLab 14.9 and removed in GitLab 15.0.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ## 14.8
 
 ### Changes to the `CI_JOB_JWT`

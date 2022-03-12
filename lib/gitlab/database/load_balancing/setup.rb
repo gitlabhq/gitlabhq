@@ -90,7 +90,8 @@ module Gitlab
 
           def use_model_load_balancing?
             # Cache environment variable and return env variable first if defined
-            use_model_load_balancing_env = Gitlab::Utils.to_boolean(ENV["GITLAB_USE_MODEL_LOAD_BALANCING"])
+            default_use_model_load_balancing_env = Gitlab.dev_or_test_env? || nil
+            use_model_load_balancing_env = Gitlab::Utils.to_boolean(ENV.fetch('GITLAB_USE_MODEL_LOAD_BALANCING', default_use_model_load_balancing_env))
 
             unless use_model_load_balancing_env.nil?
               return use_model_load_balancing_env

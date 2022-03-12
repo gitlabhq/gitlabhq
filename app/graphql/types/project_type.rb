@@ -32,10 +32,10 @@ module Types
 
     field :tag_list, GraphQL::Types::String, null: true,
           deprecated: { reason: 'Use `topics`', milestone: '13.12' },
-          description: 'List of project topics (not Git tags).'
+          description: 'List of project topics (not Git tags).', method: :topic_list
 
     field :topics, [GraphQL::Types::String], null: true,
-          description: 'List of project topics.'
+          description: 'List of project topics.', method: :topic_list
 
     field :http_url_to_repo, GraphQL::Types::String, null: true,
           description: 'URL to connect to the project via HTTPS.'
@@ -459,14 +459,6 @@ module Types
       return unless Ability.allowed?(current_user, :admin_issue, project)
 
       object.service_desk_address
-    end
-
-    def tag_list
-      object.topic_list
-    end
-
-    def topics
-      object.topic_list
     end
 
     private

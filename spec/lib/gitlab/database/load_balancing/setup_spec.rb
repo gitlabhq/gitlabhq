@@ -274,6 +274,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
       end
 
       before do
+        allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+
         # Rewrite `class_attribute` to use rspec mocking and prevent modifying the objects
         allow_next_instance_of(described_class) do |setup|
           allow(setup).to receive(:configure_connection)
