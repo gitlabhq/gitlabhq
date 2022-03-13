@@ -104,6 +104,14 @@ module QA
           expect(response.headers[:content_disposition]).not_to include("inline")
           expect(response.headers[:content_type]).to include("image/svg+xml")
         end
+
+        delete_project_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}")
+        delete delete_project_request.url
+
+        expect_status(202)
+        expect(json_body).to match(
+          a_hash_including(message: '202 Accepted')
+        )
       end
     end
   end
