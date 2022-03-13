@@ -109,6 +109,20 @@ RSpec.describe Gitlab::Database::Partitioning do
           .and change { find_partitions(table_names.last).size }.from(0)
       end
     end
+
+    context 'when only a specific database is requested' do
+      before do
+        allow(models.first).to receive_message_chain('connection_db_config.name').and_return('main')
+        allow(models.last).to receive_message_chain('connection_db_config.name').and_return('ci')
+      end
+
+      it 'manages partitions for models for the given database', :aggregate_failures do
+        expect { described_class.sync_partitions(models, only_on: 'ci') }
+          .to change { find_partitions(table_names.last).size }.from(0)
+
+        expect(find_partitions(table_names.first).size).to eq(0)
+      end
+    end
   end
 
   describe '.report_metrics' do

@@ -105,8 +105,8 @@ RSpec.describe Gitlab::Database::EachDatabase do
         allow(main_model).to receive(:connection).and_return(main_connection)
         allow(ci_model).to receive(:connection).and_return(ci_connection)
 
-        allow(main_connection).to receive_message_chain('pool.db_config.name').and_return('main')
-        allow(ci_connection).to receive_message_chain('pool.db_config.name').and_return('ci')
+        allow(main_model).to receive_message_chain('connection_db_config.name').and_return('main')
+        allow(ci_model).to receive_message_chain('connection_db_config.name').and_return('ci')
       end
 
       it 'yields each model after connecting SharedModel' do
@@ -117,10 +117,44 @@ RSpec.describe Gitlab::Database::EachDatabase do
       end
     end
 
-    def expect_yielded_models(models_to_iterate, expected_values)
+    context 'when the database connections are limited by the only_on option' do
+      let(:shared_model) { Class.new(Gitlab::Database::SharedModel) }
+      let(:main_model) { Class.new(ActiveRecord::Base) }
+      let(:ci_model) { Class.new(Ci::ApplicationRecord) }
+
+      before do
+        allow(Gitlab::Database).to receive(:database_base_models)
+          .and_return({ main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access)
+
+        allow(main_model).to receive_message_chain('connection_db_config.name').and_return('main')
+        allow(ci_model).to receive_message_chain('connection_db_config.name').and_return('ci')
+      end
+
+      context 'when a single name is passed in' do
+        it 'yields models only connected to the given database' do
+          expect_yielded_models([main_model, ci_model, shared_model], [
+            { model: ci_model, connection: Ci::ApplicationRecord.connection, name: 'ci' },
+            { model: shared_model, connection: Ci::ApplicationRecord.connection, name: 'ci' }
+          ], only_on: 'ci')
+        end
+      end
+
+      context 'when a list of names are passed in' do
+        it 'yields models only connected to the given databases' do
+          expect_yielded_models([main_model, ci_model, shared_model], [
+            { model: main_model, connection: ActiveRecord::Base.connection, name: 'main' },
+            { model: ci_model, connection: Ci::ApplicationRecord.connection, name: 'ci' },
+            { model: shared_model, connection: ActiveRecord::Base.connection, name: 'main' },
+            { model: shared_model, connection: Ci::ApplicationRecord.connection, name: 'ci' }
+          ], only_on: %i[main ci])
+        end
+      end
+    end
+
+    def expect_yielded_models(models_to_iterate, expected_values, only_on: nil)
       times_yielded = 0
 
-      described_class.each_model_connection(models_to_iterate) do |model, name|
+      described_class.each_model_connection(models_to_iterate, only_on: only_on) do |model, name|
         expected = expected_values[times_yielded]
 
         expect(model).to be(expected[:model])
