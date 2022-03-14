@@ -36,6 +36,10 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
   end
 
+  if Gitlab::Runtime.puma?
+    Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
+  end
+
   GC::Profiler.enable
 
   module TrackNewRedisConnections

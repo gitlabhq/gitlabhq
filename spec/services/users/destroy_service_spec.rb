@@ -215,8 +215,8 @@ RSpec.describe Users::DestroyService do
       end
     end
 
-    context "migrating associated records" do
-      let!(:issue)     { create(:issue, author: user) }
+    context 'migrating associated records' do
+      let!(:issue) { create(:issue, author: user) }
 
       it 'delegates to the `MigrateToGhostUser` service to move associated records to the ghost user' do
         expect_any_instance_of(Users::MigrateToGhostUserService).to receive(:execute).once.and_call_original
@@ -226,12 +226,14 @@ RSpec.describe Users::DestroyService do
         expect(issue.reload.author).to be_ghost
       end
 
-      it 'does not run `MigrateToGhostUser` if hard_delete option is given' do
-        expect_any_instance_of(Users::MigrateToGhostUserService).not_to receive(:execute)
+      context 'when hard_delete option is given' do
+        it 'will not ghost certain records' do
+          expect_any_instance_of(Users::MigrateToGhostUserService).to receive(:execute).once.and_call_original
 
-        service.execute(user, hard_delete: true)
+          service.execute(user, hard_delete: true)
 
-        expect(Issue.exists?(issue.id)).to be_falsy
+          expect(Issue.exists?(issue.id)).to be_falsy
+        end
       end
     end
 
