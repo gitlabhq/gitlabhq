@@ -12164,7 +12164,7 @@ Represents an iteration object.
 | <a id="iterationsequence"></a>`sequence` | [`Int!`](#int) | Sequence number for the iteration when you sort the containing cadence's iterations by the start and end date. The earliest starting and ending iteration is assigned 1. |
 | <a id="iterationstartdate"></a>`startDate` | [`Time`](#time) | Timestamp of the iteration start date. |
 | <a id="iterationstate"></a>`state` | [`IterationState!`](#iterationstate) | State of the iteration. |
-| <a id="iterationtitle"></a>`title` | [`String!`](#string) | Title of the iteration. |
+| <a id="iterationtitle"></a>`title` | [`String`](#string) | Title of the iteration. Title must be specified unless iteration_cadences feature flag is enabled. |
 | <a id="iterationupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of last iteration update. |
 | <a id="iterationwebpath"></a>`webPath` | [`String!`](#string) | Web path of the iteration. |
 | <a id="iterationweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the iteration. |

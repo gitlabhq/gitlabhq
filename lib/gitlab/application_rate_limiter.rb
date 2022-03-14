@@ -39,7 +39,8 @@ module Gitlab
           profile_update_username:            { threshold: 10, interval: 1.minute },
           update_environment_canary_ingress:  { threshold: 1, interval: 1.minute },
           auto_rollback_deployment:           { threshold: 1, interval: 3.minutes },
-          user_email_lookup:            { threshold: -> { application_settings.user_email_lookup_limit }, interval: 1.minute },
+          search_rate_limit:                  { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
+          search_rate_limit_unauthenticated:  { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
           gitlab_shell_operation:       { threshold: 600, interval: 1.minute }
         }.freeze
       end

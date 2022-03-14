@@ -34,7 +34,7 @@
         "priority": { "type": ["integer", "null"] }
       }
     },
-    "title": { "type": "string" },
+    "title": { "type": ["string", "null"] },
     "position": { "type": ["integer", "null"] },
     "max_issue_count": { "type": "integer" },
     "max_issue_weight": { "type": "integer" },

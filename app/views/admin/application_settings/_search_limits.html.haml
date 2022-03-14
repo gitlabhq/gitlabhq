@@ -1,0 +1,16 @@
+= form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-search-limits-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :search_rate_limit, _('Maximum authenticated requests by a user per minute'), class: 'label-bold'
+      .form-text.gl-text-gray-600
+        = _("Set this number to 0 to disable the limit.")
+
+      = f.label :search_rate_limit, _('Maximum number of requests per minute for an authenticated user'), class: 'label-bold'
+    .form-group
+      = f.label :search_rate_limit_unauthenticated, _('Maximum number of requests per minute for an unauthenticated IP address'), class: 'label-bold'
+      = f.number_field :search_rate_limit_unauthenticated, class: 'form-control gl-form-input'
+
+
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

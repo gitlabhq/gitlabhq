@@ -7,7 +7,7 @@ module API
     before do
       authenticate!
 
-      check_rate_limit!(:user_email_lookup, scope: [current_user]) if search_service.params.email_lookup?
+      check_rate_limit!(:search_rate_limit, scope: [current_user])
     end
 
     feature_category :global_search

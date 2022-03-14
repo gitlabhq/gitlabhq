@@ -388,6 +388,10 @@ FactoryBot.define do
     service_desk_enabled { true }
   end
 
+  trait :with_error_tracking_setting do
+    error_tracking_setting { association :project_error_tracking_setting }
+  end
+
   # Project with empty repository
   #
   # This is a case when you just created a project

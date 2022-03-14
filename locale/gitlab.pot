@@ -22645,6 +22645,9 @@ msgstr ""
 msgid "Maximum authenticated API requests per rate limit period per user"
 msgstr ""
 
+msgid "Maximum authenticated requests by a user per minute"
+msgstr ""
+
 msgid "Maximum authenticated web requests per rate limit period per user"
 msgstr ""
 
@@ -22736,6 +22739,12 @@ msgid "Maximum number of mirrors that can be synchronizing at the same time."
 msgstr ""
 
 msgid "Maximum number of projects."
+msgstr ""
+
+msgid "Maximum number of requests per minute for an authenticated user"
+msgstr ""
+
+msgid "Maximum number of requests per minute for an unauthenticated IP address"
 msgstr ""
 
 msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
@@ -32287,6 +32296,9 @@ msgstr ""
 msgid "Search projects..."
 msgstr ""
 
+msgid "Search rate limits"
+msgstr ""
+
 msgid "Search refs"
 msgstr ""
 
@@ -33707,6 +33719,9 @@ msgstr ""
 msgid "Set rate limits for package registry API requests that supersede the general user and IP rate limits."
 msgstr ""
 
+msgid "Set rate limits for searches performed by web or API requests."
+msgstr ""
+
 msgid "Set severity"
 msgstr ""
 
@@ -33750,6 +33765,9 @@ msgid "Set the per-user rate limit for notes created by web or API requests."
 msgstr ""
 
 msgid "Set the timeout in seconds to send a secondary site status to the primary and IPs allowed for the secondary sites."
+msgstr ""
+
+msgid "Set this number to 0 to disable the limit."
 msgstr ""
 
 msgid "Set time estimate"

@@ -11,6 +11,7 @@ class ApplicationSetting < ApplicationRecord
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column %i[max_package_files_for_package_destruction], remove_with: '14.9', remove_after: '2022-03-22'
+  ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -519,8 +520,11 @@ class ApplicationSetting < ApplicationRecord
   validates :notes_create_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  validates :user_email_lookup_limit,
+  validates :search_rate_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :search_rate_limit_unauthenticated,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :notes_create_limit_allowlist,
             length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },

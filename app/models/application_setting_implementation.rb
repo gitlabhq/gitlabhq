@@ -233,7 +233,8 @@ module ApplicationSettingImplementation
         rate_limiting_response_text: nil,
         whats_new_variant: 0,
         user_deactivation_emails_enabled: true,
-        user_email_lookup_limit: 60,
+        search_rate_limit: 30,
+        search_rate_limit_unauthenticated: 10,
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: []
       }

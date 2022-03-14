@@ -32,8 +32,10 @@ As an administrator, to delete a user account:
 1. On the left sidebar, select **Overview > Users**.
 1. Select a user.
 1. Under the **Account** tab, select:
-   - **Delete user** to delete only the user but maintain their [associated records](#associated-records).
-   - **Delete user and contributions** to delete the user and their associated records.
+   - **Delete user** to delete only the user but maintain their [associated records](#associated-records). You can't use this option if
+     the selected user is the sole owner of any groups.
+   - **Delete user and contributions** to delete the user and their associated records. This option also removes all groups (and
+     projects within these groups) where the user is the sole direct Owner of a group. Inherited ownership doesn't apply.
 
 WARNING:
 Using the **Delete user and contributions** option may result in removing more data than intended. See
@@ -60,7 +62,7 @@ When deleting users, you can either:
 An alternative to deleting is [blocking a user](../../admin_area/moderate_users.md#block-a-user).
 
 When a user is deleted from an [abuse report](../../admin_area/review_abuse_reports.md) or spam log, these associated
-records are always removed. This includes any groups of which the user is the only user with the Owner role.
+records are always removed.
 
 The deleting associated records option can be requested in the [API](../../../api/users.md#user-deletion) as well as
 the Admin Area.

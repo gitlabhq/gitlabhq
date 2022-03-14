@@ -235,7 +235,7 @@ RSpec.describe AutocompleteController do
       end
     end
 
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
       let(:current_user) { user }
 
       def request

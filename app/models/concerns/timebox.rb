@@ -44,7 +44,6 @@ module Timebox
 
     validates :group, presence: true, unless: :project
     validates :project, presence: true, unless: :group
-    validates :title, presence: true
 
     validate :timebox_type_check
     validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }

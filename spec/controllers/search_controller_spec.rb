@@ -291,7 +291,7 @@ RSpec.describe SearchController do
         end
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
         let(:current_user) { user }
 
         def request
@@ -355,7 +355,7 @@ RSpec.describe SearchController do
         expect(json_response).to eq({ 'count' => '0' })
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
         let(:current_user) { user }
 
         def request
@@ -375,7 +375,7 @@ RSpec.describe SearchController do
         expect(json_response).to match_array([])
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
         let(:current_user) { user }
 
         def request
@@ -445,6 +445,26 @@ RSpec.describe SearchController do
   end
 
   context 'unauthorized user' do
+    describe 'search rate limits' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:project) { create(:project, :public) }
+
+      where(:endpoint, :params) do
+        :show         | { search: 'hello', scope: 'projects' }
+        :count        | { search: 'hello', scope: 'projects' }
+        :autocomplete | { term: 'hello', scope: 'projects' }
+      end
+
+      with_them do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated do
+          def request
+            get endpoint, params: params.merge(project_id: project.id)
+          end
+        end
+      end
+    end
+
     describe 'GET #opensearch' do
       render_views
 

@@ -48,6 +48,17 @@
   .settings-content
     = render partial: 'network_rate_limits', locals: { anchor: 'js-files-limits-settings', setting_fragment: 'files_api' }
 
+%section.settings.as-note-limits.no-animate#js-search-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Search rate limits')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Set rate limits for searches performed by web or API requests.')
+  .settings-content
+    = render 'search_limits'
+
 %section.settings.as-deprecated-limits.no-animate#js-deprecated-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4

@@ -4,6 +4,7 @@ class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include SearchHelper
   include RedisTracking
+  include SearchRateLimitable
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete].freeze
 
@@ -17,7 +18,7 @@ class SearchController < ApplicationController
     search_term_present = params[:search].present? || params[:term].present?
     search_term_present && !params[:project_id].present?
   end
-  before_action :check_email_search_rate_limit!, only: [:show, :count, :autocomplete]
+  before_action :check_search_rate_limit!, only: [:show, :count, :autocomplete]
 
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
 
@@ -201,12 +202,6 @@ class SearchController < ApplicationController
     else
       render status: :request_timeout
     end
-  end
-
-  def check_email_search_rate_limit!
-    return unless search_service.params.email_lookup?
-
-    check_rate_limit!(:user_email_lookup, scope: [current_user])
   end
 end
 

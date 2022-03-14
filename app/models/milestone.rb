@@ -35,6 +35,7 @@ class Milestone < ApplicationRecord
   scope :with_api_entity_associations, -> { preload(project: [:project_feature, :route, namespace: :route]) }
   scope :order_by_dates_and_title, -> { order(due_date: :asc, start_date: :asc, title: :asc) }
 
+  validates :title, presence: true
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
   validate :uniqueness_of_title, if: :title_changed?
 
