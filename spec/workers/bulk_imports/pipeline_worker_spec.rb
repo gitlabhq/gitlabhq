@@ -136,6 +136,34 @@ RSpec.describe BulkImports::PipelineWorker do
       expect(pipeline_tracker.jid).to eq('jid')
     end
 
+    context 'when entity is failed' do
+      it 'marks tracker as failed and logs the error' do
+        pipeline_tracker = create(
+          :bulk_import_tracker,
+          entity: entity,
+          pipeline_name: 'Pipeline',
+          status_event: 'enqueue'
+        )
+
+        entity.update!(status: -1)
+
+        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          expect(logger)
+            .to receive(:error)
+            .with(
+              worker: described_class.name,
+              pipeline_name: 'Pipeline',
+              entity_id: entity.id,
+              message: 'Failed entity status'
+            )
+        end
+
+        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+        expect(pipeline_tracker.reload.status_name).to eq(:failed)
+      end
+    end
+
     context 'when it is a network error' do
       it 'reenqueue on retriable network errors' do
         pipeline_tracker = create(

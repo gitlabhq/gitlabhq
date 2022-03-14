@@ -18,7 +18,7 @@ import {
   PAGINATION_SORT_DIRECTION_ASC,
   PAGINATION_SORT_DIRECTION_DESC,
 } from '../constants';
-import TotalTime from './total_time_component.vue';
+import TotalTime from './total_time.vue';
 
 const DEFAULT_WORKFLOW_TITLE_PROPERTIES = {
   thClass: 'gl-w-half',

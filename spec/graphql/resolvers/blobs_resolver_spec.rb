@@ -26,8 +26,10 @@ RSpec.describe Resolvers::BlobsResolver do
     subject(:resolve_blobs) { resolve(described_class, obj: repository, args: args, ctx: { current_user: user }) }
 
     context 'when unauthorized' do
-      it 'raises an exception' do
-        expect { resolve_blobs }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_blobs
+        end
       end
     end
 

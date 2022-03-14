@@ -55,6 +55,17 @@ RSpec.describe BulkImports::ExportStatus do
         expect(subject.failed?).to eq(false)
       end
     end
+
+    context 'when export status is not present' do
+      let(:response_double) do
+        double(parsed_response: [])
+      end
+
+      it 'returns true' do
+        expect(subject.failed?).to eq(true)
+        expect(subject.error).to eq('Empty export status response')
+      end
+    end
   end
 
   describe '#error' do

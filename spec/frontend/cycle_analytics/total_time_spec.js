@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils';
-import TotalTimeComponent from '~/cycle_analytics/components/total_time_component.vue';
+import TotalTime from '~/cycle_analytics/components/total_time.vue';
 
-describe('TotalTimeComponent', () => {
+describe('TotalTime', () => {
   let wrapper = null;
 
   const createComponent = (propsData) => {
-    return mount(TotalTimeComponent, {
+    return mount(TotalTime, {
       propsData,
     });
   };

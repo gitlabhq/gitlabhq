@@ -9611,7 +9611,7 @@ Represents a ComplianceFramework associated with a Project.
 
 ### `ComplianceViolation`
 
-Compliance violation associated with a merged merge request. Available only when feature flag `compliance_violations_graphql_type` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+Compliance violation associated with a merged merge request.
 
 #### Fields
 
@@ -11550,7 +11550,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Group.mergeRequestViolations`
 
-Compliance violations reported on merge requests merged within the group. Available only when feature flag `compliance_violations_graphql_type` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+Compliance violations reported on merge requests merged within the group.
 
 Returns [`ComplianceViolationConnection`](#complianceviolationconnection).
 

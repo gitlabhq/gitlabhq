@@ -14,10 +14,12 @@ RSpec.describe Resolvers::UsersResolver do
   end
 
   describe '#resolve' do
-    it 'raises an error when read_users_list is not authorized' do
+    it 'generates an error when read_users_list is not authorized' do
       expect(Ability).to receive(:allowed?).with(current_user, :read_users_list).and_return(false)
 
-      expect { resolve_users }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+        resolve_users
+      end
     end
 
     context 'when no arguments are passed' do
@@ -27,9 +29,10 @@ RSpec.describe Resolvers::UsersResolver do
     end
 
     context 'when both ids and usernames are passed ' do
-      it 'raises an error' do
-        expect { resolve_users( args: { ids: [user1.to_global_id.to_s], usernames: [user1.username] } ) }
-        .to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+          resolve_users( args: { ids: [user1.to_global_id.to_s], usernames: [user1.username] } )
+        end
       end
     end
 

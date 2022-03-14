@@ -108,15 +108,15 @@ RSpec.describe Resolvers::SnippetsResolver do
         end.to raise_error(GraphQL::CoercionError, '"foo" is not a valid Global ID')
       end
 
-      it 'returns an error if both project and author are provided' do
-        expect do
+      it 'generates an error if both project and author are provided' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
           args = {
             author_id: current_user.to_global_id,
             project_id: project.to_global_id
           }
 
           resolve_snippets(args: args)
-        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+        end
       end
     end
   end

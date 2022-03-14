@@ -43,7 +43,9 @@ RSpec.describe Resolvers::UserDiscussionsCountResolver do
       subject { batch_sync { resolve_user_discussions_count(private_issue) } }
 
       it 'returns no discussions' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          subject
+        end
       end
     end
   end

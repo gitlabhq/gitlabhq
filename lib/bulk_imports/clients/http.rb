@@ -123,7 +123,7 @@ module BulkImports
       def with_error_handling
         response = yield
 
-        raise ::BulkImports::NetworkError.new("Unsuccessful response #{response.code} from #{response.request.path.path}", response: response) unless response.success?
+        raise ::BulkImports::NetworkError.new("Unsuccessful response #{response.code} from #{response.request.path.path}. Body: #{response.parsed_response}", response: response) unless response.success?
 
         response
       rescue *Gitlab::HTTP::HTTP_ERRORS => e

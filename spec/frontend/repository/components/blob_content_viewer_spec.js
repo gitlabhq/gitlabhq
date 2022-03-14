@@ -121,6 +121,10 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
   await waitForPromises();
 };
 
+const execImmediately = (callback) => {
+  callback();
+};
+
 describe('Blob content viewer component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBlobHeader = () => wrapper.findComponent(BlobHeader);
@@ -131,6 +135,7 @@ describe('Blob content viewer component', () => {
   const findCodeIntelligence = () => wrapper.findComponent(CodeIntelligence);
 
   beforeEach(() => {
+    jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
     isLoggedIn.mockReturnValue(true);
   });
 

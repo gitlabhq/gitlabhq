@@ -37582,6 +37582,9 @@ msgstr ""
 msgid "This credential has expired"
 msgstr ""
 
+msgid "This deployment is not waiting for approvals."
+msgstr ""
+
 msgid "This device has already been registered with us."
 msgstr ""
 
@@ -37607,6 +37610,9 @@ msgid "This environment is being deployed"
 msgstr ""
 
 msgid "This environment is being re-deployed"
+msgstr ""
+
+msgid "This environment is not protected."
 msgstr ""
 
 msgid "This environment's canary ingress has been updated recently. Please retry later."
@@ -39390,6 +39396,9 @@ msgid "Unmarks this %{noun} as a draft."
 msgstr ""
 
 msgid "Unreachable"
+msgstr ""
+
+msgid "Unrecognized approval status."
 msgstr ""
 
 msgid "Unrecognized cluster type"
@@ -42220,6 +42229,9 @@ msgstr ""
 msgid "You cannot access the raw file. Please wait a minute."
 msgstr ""
 
+msgid "You cannot approve your own deployment."
+msgstr ""
+
 msgid "You cannot combine replace_ids with add_ids or remove_ids"
 msgstr ""
 
@@ -42302,6 +42314,9 @@ msgid "You don't have any projects available."
 msgstr ""
 
 msgid "You don't have any recent searches"
+msgstr ""
+
+msgid "You don't have permission to review this deployment. Contact the project or group owner for help."
 msgstr ""
 
 msgid "You don't have sufficient permission to perform this action."

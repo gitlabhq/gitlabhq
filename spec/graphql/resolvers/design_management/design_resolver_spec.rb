@@ -42,16 +42,20 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
     context 'when no argument has been passed' do
       let(:args) { {} }
 
-      it 'raises an error' do
-        expect { resolve_design }.to raise_error(::Gitlab::Graphql::Errors::ArgumentError, /must/)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(::Gitlab::Graphql::Errors::ArgumentError, /must/) do
+          resolve_design
+        end
       end
     end
 
     context 'when both arguments have been passed' do
       let(:args) { { filename: first_design.filename, id: GitlabSchema.id_from_object(first_design).to_s } }
 
-      it 'raises an error' do
-        expect { resolve_design }.to raise_error(::Gitlab::Graphql::Errors::ArgumentError, /may/)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(::Gitlab::Graphql::Errors::ArgumentError, /may/) do
+          resolve_design
+        end
       end
     end
 

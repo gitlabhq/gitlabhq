@@ -26,7 +26,7 @@ module MergeRequests
 
     def can_merge_immediately?(merge_request)
       merge_request.can_be_merged_by?(current_user) &&
-        merge_request.mergeable_state?
+        merge_request.mergeable?
     end
 
     def can_merge_automatically?(merge_request)

@@ -64,7 +64,7 @@ RSpec.describe MergeRequests::MergeOrchestrationService do
 
     context 'when merge request is not mergeable' do
       before do
-        allow(merge_request).to receive(:mergeable_state?) { false }
+        allow(merge_request).to receive(:mergeable?) { false }
       end
 
       it 'does nothing' do
@@ -87,7 +87,7 @@ RSpec.describe MergeRequests::MergeOrchestrationService do
 
     context 'when merge request is not mergeable' do
       before do
-        allow(merge_request).to receive(:mergeable_state?) { false }
+        allow(merge_request).to receive(:mergeable?) { false }
       end
 
       it { is_expected.to eq(false) }

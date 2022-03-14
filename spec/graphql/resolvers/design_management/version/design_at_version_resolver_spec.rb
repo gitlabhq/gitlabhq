@@ -24,8 +24,10 @@ RSpec.describe Resolvers::DesignManagement::Version::DesignAtVersionResolver do
   shared_examples 'a bad argument' do
     let(:err_class) { ::Gitlab::Graphql::Errors::ArgumentError }
 
-    it 'raises an appropriate error' do
-      expect { resolve_objects }.to raise_error(err_class)
+    it 'generates an error' do
+      expect_graphql_error_to_be_created(err_class) do
+        resolve_objects
+      end
     end
   end
 

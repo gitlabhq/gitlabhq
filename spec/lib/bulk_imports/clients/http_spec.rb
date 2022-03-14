@@ -38,11 +38,11 @@ RSpec.describe BulkImports::Clients::HTTP do
 
       context 'when response is not success' do
         it 'raises BulkImports::Error' do
-          response_double = double(code: 503, success?: false, request: double(path: double(path: '/test')))
+          response_double = double(code: 503, success?: false, parsed_response: 'Error', request: double(path: double(path: '/test')))
 
           allow(Gitlab::HTTP).to receive(method).and_return(response_double)
 
-          expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::NetworkError, 'Unsuccessful response 503 from /test')
+          expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::NetworkError, 'Unsuccessful response 503 from /test. Body: Error')
         end
       end
     end

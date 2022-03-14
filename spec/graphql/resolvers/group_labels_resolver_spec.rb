@@ -27,8 +27,10 @@ RSpec.describe Resolvers::GroupLabelsResolver do
 
   describe '#resolve' do
     context 'with unauthorized user' do
-      it 'raises error' do
-        expect { resolve_labels(subgroup) }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_labels(subgroup)
+        end
       end
     end
 

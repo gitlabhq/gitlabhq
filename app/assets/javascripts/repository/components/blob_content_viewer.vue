@@ -94,6 +94,7 @@ export default {
       legacySimpleViewer: null,
       isBinary: false,
       isLoadingLegacyViewer: false,
+      isRenderingLegacyTextViewer: false,
       activeViewerType: SIMPLE_BLOB_VIEWER,
       project: DEFAULT_BLOB_INFO.project,
       gitpodEnabled: DEFAULT_BLOB_INFO.gitpodEnabled,
@@ -185,7 +186,13 @@ export default {
         .get(`${this.blobInfo.webPath}?format=json&viewer=${type}`)
         .then(({ data: { html, binary } }) => {
           if (type === SIMPLE_BLOB_VIEWER) {
+            this.isRenderingLegacyTextViewer = true;
+
             this.legacySimpleViewer = html;
+
+            window.requestIdleCallback(() => {
+              this.isRenderingLegacyTextViewer = false;
+            });
           } else {
             this.legacyRichViewer = html;
           }
@@ -286,6 +293,7 @@ export default {
         :active-viewer="viewer"
         :hide-line-numbers="true"
         :loading="isLoadingLegacyViewer"
+        :data-loading="isRenderingLegacyTextViewer"
       />
       <component :is="blobViewer" v-else :blob="blobInfo" class="blob-viewer" />
       <code-intelligence

@@ -31,16 +31,20 @@ RSpec.describe Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver do
       context 'as a non-admin user' do
         let(:current_user) { user }
 
-        it 'raises ResourceNotAvailable error' do
-          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        it 'generates a ResourceNotAvailable error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+            subject
+          end
         end
       end
 
       context 'as an unauthenticated user' do
         let(:current_user) { nil }
 
-        it 'raises ResourceNotAvailable error' do
-          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        it 'generates a ResourceNotAvailable error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+            subject
+          end
         end
       end
 

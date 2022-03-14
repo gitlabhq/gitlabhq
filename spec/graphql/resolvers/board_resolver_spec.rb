@@ -23,9 +23,9 @@ RSpec.describe Resolvers::BoardResolver do
     end
 
     it 'requires an ID' do
-      expect do
+      expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
         resolve(described_class, obj: board_parent, args: {}, ctx: { current_user: user })
-      end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      end
     end
 
     context 'when querying for a single board' do
