@@ -58,12 +58,16 @@ RSpec.describe Atlassian::JiraConnect::Client do
         deployments: :q
       ).and_return(:deploys_stored)
 
-      expect(subject).to receive(:store_dev_info).with(
+      expect(Atlassian::JiraConnect::DevInfo).to receive(:new).with(
         project: project,
         update_sequence_id: :x,
         commits: :a,
         branches: :b,
         merge_requests: :c
+      ).and_call_original
+
+      expect(subject).to receive(:store_dev_info).with(
+        instance_of(Atlassian::JiraConnect::DevInfo)
       ).and_return(:dev_stored)
 
       args = {
@@ -83,9 +87,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
 
     it 'only calls methods that we need to call' do
       expect(subject).to receive(:store_dev_info).with(
-        project: project,
-        update_sequence_id: :x,
-        commits: :a
+        instance_of(Atlassian::JiraConnect::DevInfo)
       ).and_return(:dev_stored)
 
       args = {
@@ -402,15 +404,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
     end
 
     it "calls the API with auth headers" do
-      subject.send(:store_dev_info, project: project)
-    end
-
-    it 'avoids N+1 database queries' do
-      control_count = ActiveRecord::QueryRecorder.new { subject.send(:store_dev_info, project: project, merge_requests: merge_requests) }.count
-
-      merge_requests << create(:merge_request, :unique_branches)
-
-      expect { subject.send(:store_dev_info, project: project, merge_requests: merge_requests) }.not_to exceed_query_limit(control_count)
+      subject.send(:store_dev_info, Atlassian::JiraConnect::DevInfo.new(project: project))
     end
   end
 end

@@ -102,6 +102,10 @@ class ApplicationRecord < ActiveRecord::Base
     where('EXISTS (?)', query.select(1))
   end
 
+  def self.where_not_exists(query)
+    where('NOT EXISTS (?)', query.select(1))
+  end
+
   def self.declarative_enum(enum_mod)
     enum(enum_mod.key => enum_mod.values)
   end

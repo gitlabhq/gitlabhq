@@ -104,6 +104,18 @@ RSpec.describe ApplicationRecord do
     end
   end
 
+  describe '.where_not_exists' do
+    it 'produces a WHERE NOT EXISTS query' do
+      create(:user, :two_factor_via_u2f)
+      user_2 = create(:user)
+
+      expect(
+        User.where_not_exists(
+          U2fRegistration.where(U2fRegistration.arel_table[:user_id].eq(User.arel_table[:id])))
+      ).to match_array([user_2])
+    end
+  end
+
   describe '.transaction', :delete do
     it 'opens a new transaction' do
       expect(described_class.connection.transaction_open?).to be false

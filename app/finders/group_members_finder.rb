@@ -60,6 +60,8 @@ class GroupMembersFinder < UnionFinder
       members = members.filter_by_2fa(params[:two_factor])
     end
 
+    members = apply_additional_filters(members)
+
     by_created_at(members)
   end
 
@@ -83,6 +85,11 @@ class GroupMembersFinder < UnionFinder
     unless include_relations & RELATIONS == include_relations
       raise ArgumentError, "#{(include_relations - RELATIONS).first} #{INVALID_RELATION_TYPE_ERROR_MSG}"
     end
+  end
+
+  def apply_additional_filters(members)
+    # overridden in EE to include additional filtering conditions.
+    members
   end
 end
 

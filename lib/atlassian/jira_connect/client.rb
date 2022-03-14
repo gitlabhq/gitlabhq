@@ -14,14 +14,14 @@ module Atlassian
 
       def send_info(project:, update_sequence_id: nil, **args)
         common = { project: project, update_sequence_id: update_sequence_id }
-        dev_info = args.slice(:commits, :branches, :merge_requests)
+        dev_info = DevInfo.new(**common.merge(args.slice(:commits, :branches, :merge_requests)))
         build_info = args.slice(:pipelines)
         deploy_info = args.slice(:deployments)
         ff_info = args.slice(:feature_flags)
 
         responses = []
 
-        responses << store_dev_info(**common, **dev_info) if dev_info.present?
+        responses << store_dev_info(dev_info) if dev_info.present?
         responses << store_build_info(**common, **build_info) if build_info.present?
         responses << store_deploy_info(**common, **deploy_info) if deploy_info.present?
         responses << store_ff_info(**common, **ff_info) if ff_info.present?
@@ -93,17 +93,8 @@ module Atlassian
         handle_response(r, 'builds') { |data| errors(data, 'rejectedBuilds') }
       end
 
-      def store_dev_info(project:, commits: nil, branches: nil, merge_requests: nil, update_sequence_id: nil)
-        repo = ::Atlassian::JiraConnect::Serializers::RepositoryEntity.represent(
-          project,
-          commits: commits,
-          branches: branches,
-          merge_requests: merge_requests,
-          user_notes_count: user_notes_count(merge_requests),
-          update_sequence_id: update_sequence_id
-        )
-
-        post('/rest/devinfo/0.10/bulk', { repositories: [repo] })
+      def store_dev_info(dev_info)
+        post(dev_info.url, dev_info.body)
       end
 
       def post(path, payload)
@@ -155,14 +146,6 @@ module Atlassian
                    end
 
         { 'errorMessages' => messages }
-      end
-
-      def user_notes_count(merge_requests)
-        return unless merge_requests
-
-        Note.count_for_collection(merge_requests.map(&:id), 'MergeRequest').to_h do |count_group|
-          [count_group.noteable_id, count_group.count]
-        end
       end
 
       def jwt_token(http_method, uri)

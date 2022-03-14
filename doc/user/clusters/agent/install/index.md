@@ -21,6 +21,7 @@ Before you can install the agent in your cluster, you need:
   - [Amazon Elastic Kubernetes Service (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/quickstart/)
 - On self-managed GitLab instances, a GitLab administrator must set up the [agent server](../../../../administration/clusters/kas.md).
+  On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
 
 ## Installation steps
 
@@ -122,7 +123,7 @@ Flags:
       --agent-token string     Access token registered for agent
       --agent-version string   Version of the agentk image to use (default "v14.8.1")
   -h, --help                   help for generate
-      --kas-address string     GitLab Kubernetes Agent Server address
+      --kas-address string     GitLab agent server for Kubernetes address
       --name-prefix string     The prefix to use for names of Kubernetes objects
       --namespace string       Kubernetes namespace to create resources in (default "gitlab-agent")
       --no-rbac                Do not include corresponding Roles and RoleBindings for the agent service account
