@@ -179,7 +179,9 @@ class ProjectTeam
   #
   # Returns a Hash mapping user ID -> maximum access level.
   def max_member_access_for_user_ids(user_ids)
-    project.max_member_access_for_resource_ids(User, user_ids) do |user_ids|
+    Gitlab::SafeRequestLoader.execute(resource_key: project.max_member_access_for_resource_key(User),
+                                      resource_ids: user_ids,
+                                      default_value: Gitlab::Access::NO_ACCESS) do |user_ids|
       project.project_authorizations
              .where(user: user_ids)
              .group(:user_id)

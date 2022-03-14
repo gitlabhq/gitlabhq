@@ -34,15 +34,15 @@ export default Extension.create({
 
         deserializer
           .deserialize({ schema: editor.schema, content: markdown })
-          .then((doc) => {
-            if (!doc) {
+          .then(({ document }) => {
+            if (!document) {
               return;
             }
 
             const { state, view } = editor;
             const { tr, selection } = state;
 
-            tr.replaceWith(selection.from - 1, selection.to, doc.content);
+            tr.replaceWith(selection.from - 1, selection.to, document.content);
             view.dispatch(tr);
             eventHub.$emit(LOADING_SUCCESS_EVENT);
           })

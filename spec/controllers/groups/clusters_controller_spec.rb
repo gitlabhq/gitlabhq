@@ -32,7 +32,7 @@ RSpec.describe Groups::ClustersController do
           create(:cluster, :disabled, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
         end
 
-        include_examples ':certificate_based_clusters feature flag index responses' do
+        include_examples ':certificate_based_clusters feature flag controller responses' do
           let(:subject) { go }
         end
 

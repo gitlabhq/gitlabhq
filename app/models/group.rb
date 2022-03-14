@@ -816,7 +816,9 @@ class Group < Namespace
   private
 
   def max_member_access(user_ids)
-    max_member_access_for_resource_ids(User, user_ids) do |user_ids|
+    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(User),
+                                      resource_ids: user_ids,
+                                      default_value: Gitlab::Access::NO_ACCESS) do |user_ids|
       members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
     end
   end

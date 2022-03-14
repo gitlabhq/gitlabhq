@@ -108,8 +108,8 @@ module Gitlab
           aggregation = ::Analytics::CycleAnalytics::Aggregation.safe_create_for_group(group)
           {
             enabled: aggregation.enabled.to_s,
-            last_run_at: aggregation.last_incremental_run_at,
-            next_run_at: aggregation.estimated_next_run_at
+            last_run_at: aggregation.last_incremental_run_at&.iso8601,
+            next_run_at: aggregation.estimated_next_run_at&.iso8601
           }
         end
 

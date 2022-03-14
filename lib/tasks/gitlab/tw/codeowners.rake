@@ -22,7 +22,7 @@ namespace :tw do
       CodeOwnerRule.new('Container Security', '@ngaskill'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Conversion', '@kpaizee'),
-      CodeOwnerRule.new('Database', '@marcia'),
+      CodeOwnerRule.new('Database', '@aqualls'),
       CodeOwnerRule.new('Development', '@marcia'),
       CodeOwnerRule.new('Distribution', '@axil'),
       CodeOwnerRule.new('Distribution (Charts)', '@axil'),

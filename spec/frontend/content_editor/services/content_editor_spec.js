@@ -5,17 +5,25 @@ import {
 } from '~/content_editor/constants';
 import { ContentEditor } from '~/content_editor/services/content_editor';
 import eventHubFactory from '~/helpers/event_hub_factory';
-import { createTestEditor } from '../test_utils';
+import { createTestEditor, createDocBuilder } from '../test_utils';
 
 describe('content_editor/services/content_editor', () => {
   let contentEditor;
   let serializer;
   let deserializer;
   let eventHub;
+  let doc;
+  let p;
 
   beforeEach(() => {
     const tiptapEditor = createTestEditor();
     jest.spyOn(tiptapEditor, 'destroy');
+
+    ({
+      builders: { doc, p },
+    } = createDocBuilder({
+      tiptapEditor,
+    }));
 
     serializer = { deserialize: jest.fn() };
     deserializer = { deserialize: jest.fn() };
@@ -34,8 +42,11 @@ describe('content_editor/services/content_editor', () => {
   });
 
   describe('when setSerializedContent succeeds', () => {
+    let document;
+
     beforeEach(() => {
-      deserializer.deserialize.mockResolvedValueOnce('');
+      document = doc(p('document'));
+      deserializer.deserialize.mockResolvedValueOnce({ document });
     });
 
     it('emits loadingContent and loadingSuccess event in the eventHub', () => {
@@ -49,6 +60,12 @@ describe('content_editor/services/content_editor', () => {
       });
 
       contentEditor.setSerializedContent('**bold text**');
+    });
+
+    it('sets the deserialized document in the tiptap editor object', async () => {
+      await contentEditor.setSerializedContent('**bold text**');
+
+      expect(contentEditor.tiptapEditor.state.doc.toJSON()).toEqual(document.toJSON());
     });
   });
 

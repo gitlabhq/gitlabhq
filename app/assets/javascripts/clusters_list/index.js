@@ -31,6 +31,7 @@ export default () => {
     canAdminCluster,
     gitlabVersion,
     displayClusterAgents,
+    certificateBasedClustersEnabled,
   } = el.dataset;
 
   return new Vue({
@@ -48,6 +49,7 @@ export default () => {
       canAdminCluster: parseBoolean(canAdminCluster),
       gitlabVersion,
       displayClusterAgents: parseBoolean(displayClusterAgents),
+      certificateBasedClustersEnabled: parseBoolean(certificateBasedClustersEnabled),
     },
     store: createStore(el.dataset),
     render(createElement) {

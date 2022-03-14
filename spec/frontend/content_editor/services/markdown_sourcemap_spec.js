@@ -73,7 +73,7 @@ describe('content_editor/services/markdown_sourcemap', () => {
   });
 
   it('gets markdown source for a rendered HTML element', async () => {
-    const deserialized = await markdownDeserializer({
+    const { document } = await markdownDeserializer({
       render: () => BULLET_LIST_HTML,
     }).deserialize({
       schema: tiptapEditor.schema,
@@ -95,6 +95,6 @@ describe('content_editor/services/markdown_sourcemap', () => {
       ),
     );
 
-    expect(deserialized.toJSON()).toEqual(expected.toJSON());
+    expect(document.toJSON()).toEqual(expected.toJSON());
   });
 });

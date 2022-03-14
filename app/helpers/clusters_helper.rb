@@ -31,7 +31,8 @@ module ClustersHelper
       add_cluster_path: clusterable.new_path(tab: 'add'),
       can_add_cluster: clusterable.can_add_cluster?.to_s,
       can_admin_cluster: clusterable.can_admin_cluster?.to_s,
-      display_cluster_agents: display_cluster_agents?(clusterable).to_s
+      display_cluster_agents: display_cluster_agents?(clusterable).to_s,
+      certificate_based_clusters_enabled: Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops).to_s
     }
   end
 

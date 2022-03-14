@@ -1567,13 +1567,16 @@ class Project < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
-      hooks.hooks_for(hooks_scope).select_active(hooks_scope, data).each do |hook|
-        hook.async_execute(data, hooks_scope.to_s)
-      end
+      triggered_hooks(hooks_scope, data).execute
       SystemHooksService.new.execute_hooks(data, hooks_scope)
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
+
+  def triggered_hooks(hooks_scope, data)
+    triggered = ::Projects::TriggeredHooks.new(hooks_scope, data)
+    triggered.add_hooks(hooks)
+  end
 
   def execute_integrations(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope

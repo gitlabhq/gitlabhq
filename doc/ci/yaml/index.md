@@ -1863,7 +1863,7 @@ image:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207484) in GitLab 12.9.
 
-Use `inherit` to [control inheritance of globally-defined defaults and variables](../jobs/index.md#control-the-inheritance-of-default-keywords-and-global-variables).
+Use `inherit` to [control inheritance of default keywords and variables](../jobs/index.md#control-the-inheritance-of-default-keywords-and-global-variables).
 
 #### `inherit:default`
 

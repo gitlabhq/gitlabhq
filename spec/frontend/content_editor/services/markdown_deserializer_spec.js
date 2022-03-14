@@ -25,27 +25,38 @@ describe('content_editor/services/markdown_deserializer', () => {
     renderMarkdown = jest.fn();
   });
 
-  it('transforms HTML returned by render function to a ProseMirror document', async () => {
-    const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
-    const expectedDoc = doc(p(bold('Bold text')));
+  describe('when deserializing', () => {
+    let result;
+    const text = 'Bold text';
 
-    renderMarkdown.mockResolvedValueOnce('<p><strong>Bold text</strong></p>');
+    beforeEach(async () => {
+      const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-    const result = await deserializer.deserialize({
-      content: 'content',
-      schema: tiptapEditor.schema,
+      renderMarkdown.mockResolvedValueOnce(`<p><strong>${text}</strong></p>`);
+
+      result = await deserializer.deserialize({
+        content: 'content',
+        schema: tiptapEditor.schema,
+      });
+    });
+    it('transforms HTML returned by render function to a ProseMirror document', async () => {
+      const expectedDoc = doc(p(bold(text)));
+
+      expect(result.document.toJSON()).toEqual(expectedDoc.toJSON());
     });
 
-    expect(result.toJSON()).toEqual(expectedDoc.toJSON());
+    it('returns parsed HTML as a DOM object', () => {
+      expect(result.dom.innerHTML).toEqual(`<p><strong>${text}</strong></p><!--content-->`);
+    });
   });
 
   describe('when the render function returns an empty value', () => {
-    it('also returns null', async () => {
+    it('returns an empty object', async () => {
       const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
       renderMarkdown.mockResolvedValueOnce(null);
 
-      expect(await deserializer.deserialize({ content: 'content' })).toBe(null);
+      expect(await deserializer.deserialize({ content: 'content' })).toEqual({});
     });
   });
 });

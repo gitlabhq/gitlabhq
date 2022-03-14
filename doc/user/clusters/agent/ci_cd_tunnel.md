@@ -11,6 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - The ability to authorize groups was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
 > - Support for Omnibus installations was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5686) in GitLab 14.5.
+> - The ability to switch between certificate-based clusters and agents was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335089) in GitLab 14.9. The certificate-based cluster context is always called `gitlab-deploy`.
 
 You can use a GitLab CI/CD workflow to safely deploy to and update your Kubernetes clusters.
 
@@ -116,6 +117,37 @@ Use the format `path/to/agent/repository:agent-name`. For example:
 
 If you are not sure what your agent's context is, open a terminal and connect to your cluster.
 Run `kubectl config get-contexts`.
+
+### Environments with both certificate-based and agent-based connections
+
+When you deploy to an environment that has both a [certificate-based
+cluster](../../infrastructure/clusters/index.md) (deprecated) and an agent connection:
+
+- The certificate-based cluster's context is called `gitlab-deploy`. This context 
+  is always selected by default.
+- In GitLab 14.9 and later, agent contexts are included in the
+  `KUBECONFIG`. You can select them by using `kubectl config use-context
+  path/to/agent/repository:agent-name`.
+- In GitLab 14.8 and earlier, you can still use agent connections, but for environments that
+  already have a certificate-based cluster, the agent connections are not included in the `KUBECONFIG`.
+
+To use an agent connection when certificate-based connections are present, you can manually configure a new `kubectl`
+configuration context. For example:
+
+  ```yaml
+  deploy:
+    variables:
+      KUBE_CONTEXT: my-context # The name to use for the new context
+      AGENT_ID: 1234 # replace with your agent's numeric ID
+      K8S_PROXY_URL: wss://kas.gitlab.com/k8s-proxy/ # replace with your agent server (KAS) Kubernetes proxy URL
+      # ... any other variables you have configured
+    before_script:
+    - kubectl config set-credentials agent:$AGENT_ID --token="ci:${AGENT_ID}:${CI_JOB_TOKEN}"
+    - kubectl config set-cluster gitlab --server="${K8S_PROXY_URL}"
+    - kubectl config set-context "$KUBE_CONTEXT" --cluster=gitlab --user="agent:${AGENT_ID}"
+    - kubectl config use-context "$KUBE_CONTEXT"
+    # ... rest of your job configuration
+  ```
 
 ## Use impersonation to restrict project and group access **(PREMIUM)**
 

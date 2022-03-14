@@ -28,5 +28,15 @@ RSpec.describe Sidebars::Groups::Menus::KubernetesMenu do
         expect(menu.render?).to eq false
       end
     end
+
+    context ':certificate_based_clusters feature flag is disabled' do
+      before do
+        stub_feature_flags(certificate_based_clusters: false)
+      end
+
+      it 'returns false' do
+        expect(menu.render?).to eq false
+      end
+    end
   end
 end

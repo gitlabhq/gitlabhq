@@ -115,7 +115,6 @@ class GlobalPolicy < BasePolicy
     enable :approve_user
     enable :reject_user
     enable :read_usage_trends_measurement
-    enable :update_runners_registration_token
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

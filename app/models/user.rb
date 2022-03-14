@@ -1862,7 +1862,9 @@ class User < ApplicationRecord
   #
   # Returns a Hash mapping project ID -> maximum access level.
   def max_member_access_for_project_ids(project_ids)
-    max_member_access_for_resource_ids(Project, project_ids) do |project_ids|
+    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(Project),
+                                      resource_ids: project_ids,
+                                      default_value: Gitlab::Access::NO_ACCESS) do |project_ids|
       project_authorizations.where(project: project_ids)
                             .group(:project_id)
                             .maximum(:access_level)
@@ -1877,7 +1879,9 @@ class User < ApplicationRecord
   #
   # Returns a Hash mapping project ID -> maximum access level.
   def max_member_access_for_group_ids(group_ids)
-    max_member_access_for_resource_ids(Group, group_ids) do |group_ids|
+    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(Group),
+                                      resource_ids: group_ids,
+                                      default_value: Gitlab::Access::NO_ACCESS) do |group_ids|
       group_members.where(source: group_ids).group(:source_id).maximum(:access_level)
     end
   end

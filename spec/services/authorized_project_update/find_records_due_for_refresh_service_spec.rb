@@ -66,19 +66,6 @@ RSpec.describe AuthorizedProjectUpdate::FindRecordsDueForRefreshService do
           expect(service.execute).to eq([to_be_removed, to_be_added])
         end
 
-        it 'finds duplicate entries that has to be removed' do
-          [Gitlab::Access::OWNER, Gitlab::Access::REPORTER].each do |access_level|
-            user.project_authorizations.create!(project: project, access_level: access_level)
-          end
-
-          to_be_removed = [project.id]
-          to_be_added = [
-            { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::OWNER }
-          ]
-
-          expect(service.execute).to eq([to_be_removed, to_be_added])
-        end
-
         it 'finds entries with wrong access levels' do
           user.project_authorizations
             .create!(project: project, access_level: Gitlab::Access::DEVELOPER)

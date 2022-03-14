@@ -45,20 +45,19 @@ module Mutations
 
         def reset_token(type:, **args)
           id = args[:id]
+          scope = nil
 
           case type
           when 'instance_type'
             raise Gitlab::Graphql::Errors::ArgumentError, "id must not be specified for '#{type}' scope" if id.present?
 
-            authorize!(:global)
-
-            ApplicationSetting.current.reset_runners_registration_token!
-            ApplicationSetting.current_without_cache.runners_registration_token
+            scope = ApplicationSetting.current
+            authorize!(scope)
           when 'group_type', 'project_type'
-            project_or_group = authorized_find!(type: type, id: id)
-            project_or_group.reset_runners_token!
-            project_or_group.runners_token
+            scope = authorized_find!(type: type, id: id)
           end
+
+          ::Ci::Runners::ResetRegistrationTokenService.new(scope, current_user).execute if scope
         end
       end
     end

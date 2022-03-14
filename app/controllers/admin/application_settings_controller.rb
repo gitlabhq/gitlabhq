@@ -71,7 +71,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def reset_registration_token
-    @application_setting.reset_runners_registration_token!
+    ::Ci::Runners::ResetRegistrationTokenService.new(@application_setting, current_user).execute
 
     flash[:notice] = _('New runners registration token has been generated!')
     redirect_to admin_runners_path

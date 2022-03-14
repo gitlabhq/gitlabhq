@@ -798,7 +798,7 @@ RSpec.describe Issuable do
       it 'updates issues updated_at' do
         issue
 
-        Timecop.travel(1.minute.from_now) do
+        travel_to(2.minutes.from_now) do
           expect { spend_time(1800) }.to change { issue.updated_at }
         end
       end
@@ -823,7 +823,7 @@ RSpec.describe Issuable do
 
       context 'when time to subtract exceeds the total time spent' do
         it 'raise a validation error' do
-          Timecop.travel(1.minute.from_now) do
+          travel_to(1.minute.from_now) do
             expect do
               expect do
                 spend_time(-3600)

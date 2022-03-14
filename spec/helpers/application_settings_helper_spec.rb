@@ -293,4 +293,25 @@ RSpec.describe ApplicationSettingsHelper do
 
     it { is_expected.to eq([%w(Track track), %w(Compress compress)]) }
   end
+
+  describe '#instance_clusters_enabled?' do
+    let_it_be(:user) { create(:user) }
+
+    subject { helper.instance_clusters_enabled? }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).with(user, :read_cluster, instance_of(Clusters::Instance)).and_return(true)
+    end
+
+    it { is_expected.to be_truthy}
+
+    context ':certificate_based_clusters feature flag is disabled' do
+      before do
+        stub_feature_flags(certificate_based_clusters: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

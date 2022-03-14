@@ -43,7 +43,7 @@ export default {
 
 <template>
   <div
-    class="log-line collapsible-line d-flex justify-content-between ws-normal"
+    class="log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start"
     role="button"
     @click="handleOnClick"
   >

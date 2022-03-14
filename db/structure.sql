@@ -28522,8 +28522,6 @@ CREATE UNIQUE INDEX index_project_aliases_on_name ON project_aliases USING btree
 
 CREATE INDEX index_project_aliases_on_project_id ON project_aliases USING btree (project_id);
 
-CREATE INDEX index_project_authorizations_on_project_id_user_id ON project_authorizations USING btree (project_id, user_id);
-
 CREATE UNIQUE INDEX index_project_auto_devops_on_project_id ON project_auto_devops USING btree (project_id);
 
 CREATE UNIQUE INDEX index_project_ci_cd_settings_on_project_id ON project_ci_cd_settings USING btree (project_id);
@@ -29159,6 +29157,8 @@ CREATE UNIQUE INDEX index_uniq_im_issuable_escalation_statuses_on_issue_id ON in
 CREATE UNIQUE INDEX index_unique_ci_runner_projects_on_runner_id_and_project_id ON ci_runner_projects USING btree (runner_id, project_id);
 
 CREATE UNIQUE INDEX index_unique_issue_metrics_issue_id ON issue_metrics USING btree (issue_id);
+
+CREATE UNIQUE INDEX index_unique_project_authorizations_on_project_id_user_id ON project_authorizations USING btree (project_id, user_id);
 
 CREATE INDEX index_unit_test_failures_failed_at ON ci_unit_test_failures USING btree (failed_at DESC);
 

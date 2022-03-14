@@ -11448,6 +11448,9 @@ msgstr ""
 msgid "Data is still calculating..."
 msgstr ""
 
+msgid "Data refresh"
+msgstr ""
+
 msgid "Data type"
 msgstr ""
 
@@ -21580,6 +21583,9 @@ msgstr ""
 msgid "Last updated"
 msgstr ""
 
+msgid "Last updated %{time} ago"
+msgstr ""
+
 msgid "Last used"
 msgstr ""
 
@@ -24641,6 +24647,9 @@ msgid "Next scan"
 msgstr ""
 
 msgid "Next unresolved discussion"
+msgstr ""
+
+msgid "Next update"
 msgstr ""
 
 msgid "Nickname"

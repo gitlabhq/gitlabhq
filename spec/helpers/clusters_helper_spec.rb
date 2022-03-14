@@ -136,6 +136,28 @@ RSpec.describe ClustersHelper do
         expect(subject[:display_cluster_agents]).to eq("false")
       end
     end
+
+    describe 'certificate based clusters enabled' do
+      before do
+        stub_feature_flags(certificate_based_clusters: flag_enabled)
+      end
+
+      context 'feature flag is enabled' do
+        let(:flag_enabled) { true }
+
+        it do
+          expect(subject[:certificate_based_clusters_enabled]).to eq('true')
+        end
+      end
+
+      context 'feature flag is disabled' do
+        let(:flag_enabled) { false }
+
+        it do
+          expect(subject[:certificate_based_clusters_enabled]).to eq('false')
+        end
+      end
+    end
   end
 
   describe '#js_clusters_data' do

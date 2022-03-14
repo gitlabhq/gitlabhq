@@ -465,7 +465,10 @@ module ApplicationSettingsHelper
   end
 
   def instance_clusters_enabled?
-    can?(current_user, :read_cluster, Clusters::Instance.new)
+    clusterable = Clusters::Instance.new
+
+    Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops) &&
+      can?(current_user, :read_cluster, clusterable)
   end
 
   def omnibus_protected_paths_throttle?

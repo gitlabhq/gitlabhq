@@ -267,9 +267,12 @@ of these guidelines.
 
 #### Feature-specific mitigations
 
-For situations in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
-
 There are many tricks to bypass common SSRF validations. If feature-specific mitigations are necessary, they should be reviewed by the AppSec team, or a developer who has worked on SSRF mitigations previously.
+
+For situations in which you can't use an allowlist or GitLab:HTTP, you must implement mitigations
+directly in the feature. It's best to validate the destination IP addresses themselves, not just
+domain names, as the attacker can control DNS. Below is a list of mitigations that you should
+implement.
 
 - Block connections to all localhost addresses
   - `127.0.0.1/8` (IPv4 - note the subnet mask)
@@ -285,6 +288,33 @@ There are many tricks to bypass common SSRF validations. If feature-specific mit
 - To mitigate DNS rebinding attacks, validate and use the first IP address received.
 
 See [`url_blocker_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads. See [time of check to time of use bugs](#time-of-check-to-time-of-use-bugs) to learn more about DNS rebinding's class of bug.
+
+Don't rely on methods like `.start_with?` when validating a URL, or make assumptions about which
+part of a string maps to which part of a URL. Use the `URI` class to parse the string, and validate
+each component (scheme, host, port, path, and so on). Attackers can create valid URLs which look
+safe, but lead to malicious locations.
+
+```ruby
+user_supplied_url = "https://my-safe-site.com@my-evil-site.com" # Content before an @ in a URL is usually for basic authentication
+user_supplied_url.start_with?("https://my-safe-site.com")       # Don't trust with start_with? for URLs!
+=> true
+URI.parse(user_supplied_url).host
+=> "my-evil-site.com"
+
+user_supplied_url = "https://my-safe-site.com-my-evil-site.com"
+user_supplied_url.start_with?("https://my-safe-site.com")      # Don't trust with start_with? for URLs!
+=> true
+URI.parse(user_supplied_url).host
+=> "my-safe-site.com-my-evil-site.com"
+
+# Here's an example where we unsafely attempt to validate a host while allowing for
+# subdomains
+user_supplied_url = "https://my-evil-site-my-safe-site.com"
+user_supplied_host = URI.parse(user_supplied_url).host
+=> "my-evil-site-my-safe-site.com"
+user_supplied_host.end_with?("my-safe-site.com")      # Don't trust with end_with?
+=> true
+```
 
 ## XSS guidelines
 

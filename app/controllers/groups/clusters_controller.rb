@@ -3,6 +3,7 @@
 class Groups::ClustersController < Clusters::ClustersController
   include ControllerWithCrossProjectAccessCheck
 
+  before_action :ensure_feature_enabled!
   prepend_before_action :group
   requires_cross_project_access
 

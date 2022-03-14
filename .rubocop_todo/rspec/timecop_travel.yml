@@ -7,15 +7,5 @@ RSpec/TimecopTravel:
   - ee/spec/lib/gitlab/geo/log_cursor/daemon_spec.rb
   - ee/spec/models/broadcast_message_spec.rb
   - ee/spec/models/burndown_spec.rb
-  - qa/spec/support/repeater_spec.rb
-  - spec/features/users/terms_spec.rb
-  - spec/lib/feature_spec.rb
-  - spec/models/broadcast_message_spec.rb
-  - spec/models/concerns/issuable_spec.rb
-  - spec/requests/api/ci/runner/jobs_trace_spec.rb
-  - spec/requests/api/issues/put_projects_issues_spec.rb
-  - spec/support/shared_contexts/cache_allowed_users_in_namespace_shared_context.rb
-  - spec/support/shared_examples/requests/api/time_tracking_shared_examples.rb
-  - spec/support/shared_examples/workers/concerns/reenqueuer_shared_examples.rb
   - spec/workers/concerns/reenqueuer_spec.rb
-  - spec/lib/gitlab/analytics/cycle_analytics/median_spec.rb
+  - qa/spec/support/repeater_spec.rb

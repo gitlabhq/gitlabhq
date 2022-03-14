@@ -62,7 +62,7 @@ RSpec.describe BroadcastMessage do
 
       subject.call
 
-      Timecop.travel(3.weeks) do
+      travel_to(3.weeks.from_now) do
         subject.call
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe BroadcastMessage do
       expect(subject.call).to match_array([message])
       expect(described_class.cache).to receive(:expire).and_call_original
 
-      Timecop.travel(1.week) do
+      travel_to(1.week.from_now) do
         2.times { expect(subject.call).to be_empty }
       end
     end
@@ -96,7 +96,7 @@ RSpec.describe BroadcastMessage do
 
       expect(subject.call.length).to eq(1)
 
-      Timecop.travel(future.starts_at) do
+      travel_to(future.starts_at + 1.second) do
         expect(subject.call.length).to eq(2)
       end
     end

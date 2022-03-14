@@ -9,6 +9,7 @@ import {
   AGENT,
   EVENT_LABEL_TABS,
   EVENT_ACTIONS_CHANGE,
+  AGENT_TAB,
 } from '../constants';
 import Agents from './agents.vue';
 import InstallAgentModal from './install_agent_modal.vue';
@@ -28,9 +29,8 @@ export default {
     Agents,
     InstallAgentModal,
   },
-  CLUSTERS_TABS,
   mixins: [trackingMixin],
-  inject: ['displayClusterAgents'],
+  inject: ['displayClusterAgents', 'certificateBasedClustersEnabled'],
   props: {
     defaultBranchName: {
       default: '.noBranch',
@@ -45,21 +45,27 @@ export default {
     };
   },
   computed: {
-    clusterTabs() {
-      return this.displayClusterAgents ? CLUSTERS_TABS : [CERTIFICATE_TAB];
+    availableTabs() {
+      const clusterTabs = this.displayClusterAgents ? CLUSTERS_TABS : [CERTIFICATE_TAB];
+      return this.certificateBasedClustersEnabled ? clusterTabs : [AGENT_TAB];
     },
   },
   watch: {
-    selectedTabIndex(val) {
-      this.onTabChange(val);
+    selectedTabIndex: {
+      handler(val) {
+        this.onTabChange(val);
+      },
+      immediate: true,
     },
   },
   methods: {
     setSelectedTab(tabName) {
-      this.selectedTabIndex = this.clusterTabs.findIndex((tab) => tab.queryParamValue === tabName);
+      this.selectedTabIndex = this.availableTabs.findIndex(
+        (tab) => tab.queryParamValue === tabName,
+      );
     },
     onTabChange(tab) {
-      const tabName = this.clusterTabs[tab].queryParamValue;
+      const tabName = this.availableTabs[tab].queryParamValue;
 
       this.maxAgents = tabName === AGENT ? MAX_LIST_COUNT : MAX_CLUSTERS_LIST;
       this.track(EVENT_ACTIONS_CHANGE, { property: tabName });
@@ -76,7 +82,7 @@ export default {
       lazy
     >
       <gl-tab
-        v-for="(tab, idx) in clusterTabs"
+        v-for="(tab, idx) in availableTabs"
         :key="idx"
         :title="tab.title"
         :query-param-value="tab.queryParamValue"

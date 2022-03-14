@@ -3,6 +3,56 @@
 require 'spec_helper'
 
 RSpec.describe ProjectAuthorization do
+  describe 'unique user, project authorizations' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project_1) { create(:project) }
+
+    let!(:project_auth) do
+      create(
+        :project_authorization,
+        user: user,
+        project: project_1,
+        access_level: Gitlab::Access::DEVELOPER
+      )
+    end
+
+    context 'with duplicate user and project authorization' do
+      subject { project_auth.dup }
+
+      it { is_expected.to be_invalid }
+
+      context 'after validation' do
+        before do
+          subject.valid?
+        end
+
+        it 'contains duplicate error' do
+          expect(subject.errors[:user]).to include('has already been taken')
+        end
+      end
+    end
+
+    context 'with multiple access levels for the same user and project' do
+      subject do
+        project_auth.dup.tap do |auth|
+          auth.access_level = Gitlab::Access::MAINTAINER
+        end
+      end
+
+      it { is_expected.to be_invalid }
+
+      context 'after validation' do
+        before do
+          subject.valid?
+        end
+
+        it 'contains duplicate error' do
+          expect(subject.errors[:user]).to include('has already been taken')
+        end
+      end
+    end
+  end
+
   describe 'relations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:project) }

@@ -27,7 +27,7 @@ RSpec.describe Admin::ClustersController do
           create(:cluster, :disabled, :provided_by_gcp, :production_environment, :instance)
         end
 
-        include_examples ':certificate_based_clusters feature flag index responses' do
+        include_examples ':certificate_based_clusters feature flag controller responses' do
           let(:subject) { get_index }
         end
 

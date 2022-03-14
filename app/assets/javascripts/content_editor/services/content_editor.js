@@ -40,13 +40,14 @@ export class ContentEditor {
 
     try {
       eventHub.$emit(LOADING_CONTENT_EVENT);
-      const newDoc = await deserializer.deserialize({
+      const { document } = await deserializer.deserialize({
         schema: editor.schema,
         content: serializedContent,
       });
-      if (newDoc) {
+
+      if (document) {
         tr.setSelection(selection)
-          .replaceSelectionWith(newDoc, false)
+          .replaceSelectionWith(document, false)
           .setMeta('preventUpdate', true);
         editor.view.dispatch(tr);
       }

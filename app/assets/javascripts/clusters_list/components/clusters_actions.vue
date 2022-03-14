@@ -1,5 +1,6 @@
 <script>
 import {
+  GlButton,
   GlDropdown,
   GlDropdownItem,
   GlModalDirective,
@@ -14,6 +15,7 @@ export default {
   i18n: CLUSTERS_ACTIONS,
   INSTALL_AGENT_MODAL_ID,
   components: {
+    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlDropdownDivider,
@@ -23,7 +25,13 @@ export default {
     GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['newClusterPath', 'addClusterPath', 'canAddCluster', 'displayClusterAgents'],
+  inject: [
+    'newClusterPath',
+    'addClusterPath',
+    'canAddCluster',
+    'displayClusterAgents',
+    'certificateBasedClustersEnabled',
+  ],
   computed: {
     tooltip() {
       const { connectWithAgent, connectExistingCluster, dropdownDisabledHint } = this.$options.i18n;
@@ -46,6 +54,7 @@ export default {
 <template>
   <div class="nav-controls gl-ml-auto">
     <gl-dropdown
+      v-if="certificateBasedClustersEnabled"
       ref="dropdown"
       v-gl-modal-directive="shouldTriggerModal && $options.INSTALL_AGENT_MODAL_ID"
       v-gl-tooltip="tooltip"
@@ -75,5 +84,15 @@ export default {
         {{ $options.i18n.connectExistingCluster }}
       </gl-dropdown-item>
     </gl-dropdown>
+    <gl-button
+      v-else
+      v-gl-modal-directive="$options.INSTALL_AGENT_MODAL_ID"
+      v-gl-tooltip="tooltip"
+      :disabled="!canAddCluster"
+      category="primary"
+      variant="confirm"
+    >
+      {{ $options.i18n.connectWithAgent }}
+    </gl-button>
   </div>
 </template>
