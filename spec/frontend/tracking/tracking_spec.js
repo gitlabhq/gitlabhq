@@ -378,6 +378,16 @@ describe('Tracking', () => {
       expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'click_input2', {
         value: '0',
       });
+
+      expect(snowplowSpy).toHaveBeenCalledWith(
+        'trackStructEvent',
+        TEST_CATEGORY,
+        'click_input2',
+        undefined,
+        undefined,
+        0,
+        [standardContext],
+      );
     });
 
     it('handles checkbox values correctly', () => {

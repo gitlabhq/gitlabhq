@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.8.3 (2022-03-14)
+
+### Fixed (3 changes)
+
+- [Fix rake task to setup the Geo tracking database](gitlab-org/gitlab@5382a63c46b205bf49b096e834f7241d6bdd6814) ([merge request](gitlab-org/gitlab!82782)) **GitLab Enterprise Edition**
+- [Fix handling of resource iteration events when deleting a User](gitlab-org/gitlab@f26db84ae16d36186b70e630fcb6c3706976ce96) ([merge request](gitlab-org/gitlab!82782)) **GitLab Enterprise Edition**
+- [Ensure cleanup job artifacts task does not include pipeline artifacts](gitlab-org/gitlab@c75ecbaeb59be774d8f449b180b772bd0f611a8d) ([merge request](gitlab-org/gitlab!82782))
+
+### Changed (1 change)
+
+- [Remove runners token prefix feature flags](gitlab-org/gitlab@9f316b9a606df7751b56b4eb966c1c02f6d6b3a0) ([merge request](gitlab-org/gitlab!82119))
+
 ## 14.8.2 (2022-02-25)
 
 ### Security (8 changes)

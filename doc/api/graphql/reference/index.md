@@ -15148,6 +15148,18 @@ Returns [`[ProjectSecurityTraining!]`](#projectsecuritytraining).
 | ---- | ---- | ----------- |
 | <a id="projectsecuritytrainingprovidersonlyenabled"></a>`onlyEnabled` | [`Boolean`](#boolean) | Filter the list by only enabled security trainings. |
 
+##### `Project.securityTrainingUrls`
+
+Security training URLs for the enabled training providers of the project.
+
+Returns [`[SecurityTrainingUrl!]`](#securitytrainingurl).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecuritytrainingurlsidentifierexternalids"></a>`identifierExternalIds` | [`[String!]!`](#string) | List of external IDs of vulnerability identifiers. |
+
 ##### `Project.sentryDetailedError`
 
 Detailed version of a Sentry error on the project.
@@ -16961,7 +16973,6 @@ Represents a vulnerability.
 | <a id="vulnerabilityresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User that resolved the vulnerability. |
 | <a id="vulnerabilityresolvedondefaultbranch"></a>`resolvedOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is fixed on the default branch or not. |
 | <a id="vulnerabilityscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
-| <a id="vulnerabilitysecuritytrainingurls"></a>`securityTrainingUrls` | [`[SecurityTrainingUrl!]`](#securitytrainingurl) | Security training URLs for the vulnerability. |
 | <a id="vulnerabilityseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL). |
 | <a id="vulnerabilitystate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED). |
 | <a id="vulnerabilitytitle"></a>`title` | [`String`](#string) | Title of the vulnerability. |
