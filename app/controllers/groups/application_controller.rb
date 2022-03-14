@@ -82,6 +82,10 @@ class Groups::ApplicationController < ApplicationController
   def has_project_list?
     false
   end
+
+  def validate_root_group!
+    render_404 unless group.root?
+  end
 end
 
 Groups::ApplicationController.prepend_mod_with('Groups::ApplicationController')

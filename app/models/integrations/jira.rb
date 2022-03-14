@@ -15,6 +15,9 @@ module Integrations
     ATLASSIAN_REFERRER_GITLAB_COM = { atlOrigin: 'eyJpIjoiY2QyZTJiZDRkNGZhNGZlMWI3NzRkNTBmZmVlNzNiZTkiLCJwIjoianN3LWdpdGxhYi1pbnQifQ' }.freeze
     ATLASSIAN_REFERRER_SELF_MANAGED = { atlOrigin: 'eyJpIjoiYjM0MTA4MzUyYTYxNDVkY2IwMzVjOGQ3ZWQ3NzMwM2QiLCJwIjoianN3LWdpdGxhYlNNLWludCJ9' }.freeze
 
+    SECTION_TYPE_JIRA_TRIGGER = 'jira_trigger'
+    SECTION_TYPE_JIRA_ISSUES = 'jira_issues'
+
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
     validates :username, presence: true, if: :activated?
@@ -157,13 +160,31 @@ module Integrations
     end
 
     def sections
-      [
+      jira_issues_link_start = '<a href="%{url}">'.html_safe % { url: help_page_url('integration/jira/issues.html') }
+
+      sections = [
         {
           type: SECTION_TYPE_CONNECTION,
           title: s_('Integrations|Connection details'),
           description: help
+        },
+        {
+          type: SECTION_TYPE_JIRA_TRIGGER,
+          title: _('Trigger'),
+          description: s_('JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created.')
         }
-      ].freeze
+      ]
+
+      # Jira issues is currently only configurable on the project level.
+      if project_level?
+        sections.push({
+          type: SECTION_TYPE_JIRA_ISSUES,
+          title: _('Issues'),
+          description: s_('JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues. %{jira_issues_link_start}Learn more.%{link_end}') % { jira_issues_link_start: jira_issues_link_start, link_end: '</a>'.html_safe }
+        })
+      end
+
+      sections
     end
 
     def web_url(path = nil, **params)

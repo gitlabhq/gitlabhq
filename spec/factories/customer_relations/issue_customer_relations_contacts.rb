@@ -21,7 +21,7 @@ FactoryBot.define do
 
     trait :for_issue do
       issue { raise ArgumentError, '`issue` is manadatory' }
-      contact { association(:contact, group: issue.project.group) }
+      contact { association(:contact, group: issue.project.root_ancestor) }
     end
   end
 end

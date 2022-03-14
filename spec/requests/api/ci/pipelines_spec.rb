@@ -1075,6 +1075,23 @@ RSpec.describe API::Ci::Pipelines do
         expect(json_response['id']).to be nil
       end
     end
+
+    context 'handles errors' do
+      before do
+        service_response = ServiceResponse.error(http_status: 403, message: 'hello world')
+        allow_next_instance_of(::Ci::RetryPipelineService) do |service|
+          allow(service).to receive(:check_access).and_return(service_response)
+        end
+      end
+
+      it 'returns error' do
+        post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq 'hello world'
+        expect(json_response['id']).to be nil
+      end
+    end
   end
 
   describe 'POST /projects/:id/pipelines/:pipeline_id/cancel' do

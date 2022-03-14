@@ -610,6 +610,7 @@ project:
 - sync_events
 - secure_files
 - security_trainings
+- vulnerability_reads
 award_emoji:
 - awardable
 - user

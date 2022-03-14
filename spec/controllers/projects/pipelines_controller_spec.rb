@@ -932,6 +932,33 @@ RSpec.describe Projects::PipelinesController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'when access denied' do
+      it 'returns an error' do
+        sign_in(create(:user))
+
+        post_retry
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when service returns an error' do
+      before do
+        service_response = ServiceResponse.error(message: 'some error', http_status: 404)
+        allow_next_instance_of(::Ci::RetryPipelineService) do |service|
+          allow(service).to receive(:check_access).and_return(service_response)
+        end
+      end
+
+      it 'does not retry' do
+        post_retry
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response.body).to include('some error')
+        expect(::Ci::RetryPipelineWorker).not_to have_received(:perform_async).with(pipeline.id, user.id)
+      end
+    end
   end
 
   describe 'POST cancel.json' do

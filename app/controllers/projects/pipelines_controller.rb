@@ -161,14 +161,20 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def retry
-    ::Ci::RetryPipelineWorker.perform_async(pipeline.id, current_user.id) # rubocop:disable CodeReuse/Worker
+    # Check for access before execution to allow for async execution while still returning access results
+    access_response = ::Ci::RetryPipelineService.new(@project, current_user).check_access(pipeline)
+
+    if access_response.error?
+      response = { json: { errors: [access_response.message] }, status: access_response.http_status }
+    else
+      response = { json: {}, status: :no_content }
+      ::Ci::RetryPipelineWorker.perform_async(pipeline.id, current_user.id) # rubocop:disable CodeReuse/Worker
+    end
 
     respond_to do |format|
-      format.html do
-        redirect_back_or_default default: project_pipelines_path(project)
+      format.json do
+        render response
       end
-
-      format.json { head :no_content }
     end
   end
 

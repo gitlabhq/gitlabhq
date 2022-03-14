@@ -16,6 +16,11 @@ export default {
     JiraIssueCreationVulnerabilities: () =>
       import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
   },
+  inject: {
+    hasSections: {
+      default: false,
+    },
+  },
   props: {
     showJiraIssuesIntegration: {
       type: Boolean,
@@ -101,9 +106,12 @@ export default {
 
 <template>
   <div>
-    <gl-form-group :label="$options.i18n.sectionTitle" label-for="jira-issue-settings">
+    <gl-form-group
+      :label="hasSections ? null : $options.i18n.sectionTitle"
+      label-for="jira-issue-settings"
+    >
       <div id="jira-issue-settings">
-        <p>
+        <p v-if="!hasSections">
           {{ $options.i18n.sectionDescription }}
         </p>
         <template v-if="showJiraIssuesIntegration">

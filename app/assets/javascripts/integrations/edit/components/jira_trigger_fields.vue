@@ -62,6 +62,11 @@ export default {
     GlLink,
     GlSprintf,
   },
+  inject: {
+    hasSections: {
+      default: false,
+    },
+  },
   props: {
     initialTriggerCommit: {
       type: Boolean,
@@ -134,12 +139,14 @@ export default {
 <template>
   <div>
     <gl-form-group
-      :label="__('Trigger')"
+      :label="hasSections ? null : __('Trigger')"
       label-for="service[trigger]"
       :description="
-        s__(
-          'JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created.',
-        )
+        hasSections
+          ? null
+          : s__(
+              'JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created.',
+            )
       "
     >
       <input name="service[commit_events]" type="hidden" :value="triggerCommit || false" />

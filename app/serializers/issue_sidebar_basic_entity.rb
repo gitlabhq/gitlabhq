@@ -10,6 +10,11 @@ class IssueSidebarBasicEntity < IssuableSidebarBasicEntity
       can?(current_user, :update_escalation_status, issue.project)
     end
   end
+
+  expose :show_crm_contacts do |issuable|
+    current_user&.can?(:read_crm_contact, issuable.project.root_ancestor) &&
+      CustomerRelations::Contact.exists_for_group?(issuable.project.root_ancestor)
+  end
 end
 
 IssueSidebarBasicEntity.prepend_mod_with('IssueSidebarBasicEntity')

@@ -41,7 +41,7 @@
         .block{ class: 'gl-pt-0! gl-collapse-empty', data: { qa_selector: 'iteration_container', testid: 'iteration_container' } }<
           = render_if_exists 'shared/issuable/iteration_select', can_edit: can_edit_issuable.to_s, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
-      - if @show_crm_contacts
+      - if issuable_sidebar[:show_crm_contacts]
         .block.contact
           #js-issue-crm-contacts{ data: { issue_id: issuable_sidebar[:id] } }
 

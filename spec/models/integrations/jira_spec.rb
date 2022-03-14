@@ -109,6 +109,32 @@ RSpec.describe Integrations::Jira do
     end
   end
 
+  describe '#sections' do
+    let(:integration) { create(:jira_integration) }
+
+    subject(:sections) { integration.sections.map { |s| s[:type] } }
+
+    context 'when project_level? is true' do
+      before do
+        allow(integration).to receive(:project_level?).and_return(true)
+      end
+
+      it 'includes SECTION_TYPE_JIRA_ISSUES' do
+        expect(sections).to include(described_class::SECTION_TYPE_JIRA_ISSUES)
+      end
+    end
+
+    context 'when project_level? is false' do
+      before do
+        allow(integration).to receive(:project_level?).and_return(false)
+      end
+
+      it 'does not include SECTION_TYPE_JIRA_ISSUES' do
+        expect(sections).not_to include(described_class::SECTION_TYPE_JIRA_ISSUES)
+      end
+    end
+  end
+
   describe '.reference_pattern' do
     using RSpec::Parameterized::TableSyntax
 

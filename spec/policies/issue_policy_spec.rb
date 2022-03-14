@@ -396,4 +396,36 @@ RSpec.describe IssuePolicy do
       expect(policies).to be_allowed(:read_issue_iid)
     end
   end
+
+  describe 'set_issue_crm_contacts' do
+    let(:user) { create(:user) }
+    let(:subgroup) { create(:group, :crm_enabled, parent: create(:group, :crm_enabled)) }
+    let(:project) { create(:project, group: subgroup) }
+    let(:issue) { create(:issue, project: project) }
+    let(:policies) { described_class.new(user, issue) }
+
+    context 'when project reporter' do
+      it 'is disallowed' do
+        project.add_reporter(user)
+
+        expect(policies).to be_disallowed(:set_issue_crm_contacts)
+      end
+    end
+
+    context 'when subgroup reporter' do
+      it 'is allowed' do
+        subgroup.add_reporter(user)
+
+        expect(policies).to be_disallowed(:set_issue_crm_contacts)
+      end
+    end
+
+    context 'when root group reporter' do
+      it 'is allowed' do
+        subgroup.parent.add_reporter(user)
+
+        expect(policies).to be_allowed(:set_issue_crm_contacts)
+      end
+    end
+  end
 end

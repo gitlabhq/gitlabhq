@@ -9,12 +9,10 @@ RSpec.describe 'Setting issues crm contacts' do
   let_it_be(:group) { create(:group, :crm_enabled) }
   let_it_be(:subgroup) { create(:group, :crm_enabled, parent: group) }
   let_it_be(:project) { create(:project, group: subgroup) }
-  let_it_be(:group_contacts) { create_list(:contact, 4, group: group) }
-  let_it_be(:subgroup_contacts) { create_list(:contact, 4, group: subgroup) }
+  let_it_be(:contacts) { create_list(:contact, 4, group: group) }
 
   let(:issue) { create(:issue, project: project) }
   let(:operation_mode) { Types::MutationOperationModeEnum.default_mode }
-  let(:contacts) { subgroup_contacts }
   let(:initial_contacts) { contacts[0..1] }
   let(:mutation_contacts) { contacts[1..2] }
   let(:contact_ids) { contact_global_ids(mutation_contacts) }
@@ -116,15 +114,7 @@ RSpec.describe 'Setting issues crm contacts' do
       end
     end
 
-    context 'with issue group contacts' do
-      let(:contacts) { subgroup_contacts }
-
-      it_behaves_like 'successful mutation'
-    end
-
-    context 'with issue ancestor group contacts' do
-      it_behaves_like 'successful mutation'
-    end
+    it_behaves_like 'successful mutation'
 
     context 'when the contact does not exist' do
       let(:contact_ids) { ["gid://gitlab/CustomerRelations::Contact/#{non_existing_record_id}"] }

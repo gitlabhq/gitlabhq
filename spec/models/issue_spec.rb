@@ -1167,7 +1167,6 @@ RSpec.describe Issue do
   end
 
   describe '#check_for_spam?' do
-    using RSpec::Parameterized::TableSyntax
     let_it_be(:support_bot) { ::User.support_bot }
 
     where(:support_bot?, :visibility_level, :confidential, :new_attributes, :check_for_spam?) do

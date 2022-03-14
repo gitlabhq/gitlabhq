@@ -223,9 +223,13 @@ module API
         post ':id/pipelines/:pipeline_id/retry', feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
-          pipeline.retry_failed(current_user)
+          response = pipeline.retry_failed(current_user)
 
-          present pipeline, with: Entities::Ci::Pipeline
+          if response.success?
+            present pipeline, with: Entities::Ci::Pipeline
+          else
+            render_api_error!(response.errors.join(', '), response.http_status)
+          end
         end
 
         desc 'Cancel all builds in the pipeline' do

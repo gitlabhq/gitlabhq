@@ -137,7 +137,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
       end
     end
 
-    context 'when the last stage was skipepd' do
+    context 'when the last stage was skipped' do
       before do
         create_build('build 1', :success, 0)
         create_build('test 2', :failed, 1)
@@ -336,12 +336,32 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
         expect(pipeline.reload).to be_running
       end
     end
+
+    context 'when user is not allowed to retry build' do
+      before do
+        build = create(:ci_build, pipeline: pipeline, status: :failed)
+        allow_next_instance_of(Ci::RetryBuildService) do |service|
+          allow(service).to receive(:can?).with(user, :update_build, build).and_return(false)
+        end
+      end
+
+      it 'returns an error' do
+        response = service.execute(pipeline)
+
+        expect(response.http_status).to eq(:forbidden)
+        expect(response.errors).to include('403 Forbidden')
+        expect(pipeline.reload).not_to be_running
+      end
+    end
   end
 
   context 'when user is not allowed to retry pipeline' do
-    it 'raises an error' do
-      expect { service.execute(pipeline) }
-        .to raise_error Gitlab::Access::AccessDeniedError
+    it 'returns an error' do
+      response = service.execute(pipeline)
+
+      expect(response.http_status).to eq(:forbidden)
+      expect(response.errors).to include('403 Forbidden')
+      expect(pipeline.reload).not_to be_running
     end
   end
 
@@ -359,9 +379,12 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
         create_build('verify', :canceled, 1)
       end
 
-      it 'raises an error' do
-        expect { service.execute(pipeline) }
-          .to raise_error Gitlab::Access::AccessDeniedError
+      it 'returns an error' do
+        response = service.execute(pipeline)
+
+        expect(response.http_status).to eq(:forbidden)
+        expect(response.errors).to include('403 Forbidden')
+        expect(pipeline.reload).not_to be_running
       end
     end
 
@@ -372,9 +395,12 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
         create_build('verify', :canceled, 2)
       end
 
-      it 'raises an error' do
-        expect { service.execute(pipeline) }
-          .to raise_error Gitlab::Access::AccessDeniedError
+      it 'returns an error' do
+        response = service.execute(pipeline)
+
+        expect(response.http_status).to eq(:forbidden)
+        expect(response.errors).to include('403 Forbidden')
+        expect(pipeline.reload).not_to be_running
       end
     end
   end

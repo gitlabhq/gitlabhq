@@ -435,6 +435,29 @@ describe('IntegrationForm', () => {
         });
       },
     );
+
+    describe('when IntegrationSectionConnection emits `request-jira-issue-types` event', () => {
+      beforeEach(() => {
+        jest.spyOn(document, 'querySelector').mockReturnValue(document.createElement('form'));
+
+        createComponent({
+          provide: {
+            glFeatures: { integrationFormSections: true },
+          },
+          customStateProps: {
+            sections: [mockSectionConnection],
+            testPath: '/test',
+          },
+          mountFn: mountExtended,
+        });
+
+        findConnectionSectionComponent().vm.$emit('request-jira-issue-types');
+      });
+
+      it('dispatches `requestJiraIssueTypes` action', () => {
+        expect(dispatch).toHaveBeenCalledWith('requestJiraIssueTypes', expect.any(FormData));
+      });
+    });
   });
 
   describe('ActiveCheckbox', () => {

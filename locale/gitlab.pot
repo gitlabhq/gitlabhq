@@ -847,6 +847,9 @@ msgstr ""
 msgid "%{name}, confirm your email address now!"
 msgstr ""
 
+msgid "%{name}: %{resultsString}"
+msgstr ""
+
 msgid "%{no_of_days} day"
 msgid_plural "%{no_of_days} days"
 msgstr[0] ""
@@ -21059,6 +21062,9 @@ msgstr ""
 msgid "JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues."
 msgstr ""
 
+msgid "JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues. %{jira_issues_link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "JiraService|You must configure Jira before enabling this integration. %{jira_doc_link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -30941,6 +30947,9 @@ msgstr ""
 msgid "Reports|Filename"
 msgstr ""
 
+msgid "Reports|Full report"
+msgstr ""
+
 msgid "Reports|Head report parsing error:"
 msgstr ""
 
@@ -30983,7 +30992,13 @@ msgstr ""
 msgid "Reports|Test summary failed loading results"
 msgstr ""
 
+msgid "Reports|Test summary failed to load results"
+msgstr ""
+
 msgid "Reports|Test summary results are being parsed"
+msgstr ""
+
+msgid "Reports|Test summary results are loading"
 msgstr ""
 
 msgid "Reports|Tool"
@@ -36665,7 +36680,7 @@ msgstr ""
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
-msgid "The contact does not belong to the issue group or an ancestor"
+msgid "The contact does not belong to the issue group's root ancestor"
 msgstr ""
 
 msgid "The content editor may change the markdown formatting style of the document, which may not match your original markdown style."
@@ -43453,7 +43468,7 @@ msgstr ""
 msgid "compliance violation has already been recorded"
 msgstr ""
 
-msgid "contact with same email already exists in group hierarchy"
+msgid "contacts can only be added to root groups"
 msgstr ""
 
 msgid "container registry images"
@@ -44361,6 +44376,9 @@ msgid "open issue"
 msgstr ""
 
 msgid "or"
+msgstr ""
+
+msgid "organizations can only be added to root groups"
 msgstr ""
 
 msgid "other card matches"

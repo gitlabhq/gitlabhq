@@ -2950,7 +2950,14 @@ RSpec.describe Group do
 
       expect(group.crm_enabled?).to be_truthy
     end
+
+    it 'returns true where crm_settings.state is enabled for subgroup' do
+      subgroup = create(:group, :crm_enabled, parent: group)
+
+      expect(subgroup.crm_enabled?).to be_truthy
+    end
   end
+
   describe '.get_ids_by_ids_or_paths' do
     let(:group_path) { 'group_path' }
     let!(:group) { create(:group, path: group_path) }

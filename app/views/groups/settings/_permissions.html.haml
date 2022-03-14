@@ -42,7 +42,7 @@
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
 
-    - if crm_feature_flag_enabled?(@group)
+    - if crm_feature_available?(@group)
       %h5= _('Customer relations')
       .form-group.gl-mb-3
         = f.gitlab_ui_checkbox_component :crm_enabled,

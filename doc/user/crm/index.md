@@ -6,14 +6,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Customer relations management (CRM) **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
-
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `customer_relations`.
 On GitLab.com, this feature is not available.
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
+> - In GitLab 14.8 and later, you can [create contacts and organizations only in root groups](https://gitlab.com/gitlab-org/gitlab/-/issues/350634).
+
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.
+
+Contacts and organizations can only be created for root groups.
 
 You can use contacts and organizations to tie work to customers for billing and reporting purposes.
 To read more about what is planned for the future, see [issue 2256](https://gitlab.com/gitlab-org/gitlab/-/issues/2256).

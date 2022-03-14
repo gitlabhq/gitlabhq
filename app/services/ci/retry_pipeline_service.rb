@@ -5,9 +5,8 @@ module Ci
     include Gitlab::OptimisticLocking
 
     def execute(pipeline)
-      unless can?(current_user, :update_pipeline, pipeline)
-        raise Gitlab::Access::AccessDeniedError
-      end
+      access_response = check_access(pipeline)
+      return access_response if access_response.error?
 
       pipeline.ensure_scheduling_type!
 
@@ -30,6 +29,18 @@ module Ci
       Ci::ProcessPipelineService
         .new(pipeline)
         .execute
+
+      ServiceResponse.success
+    rescue Gitlab::Access::AccessDeniedError => e
+      ServiceResponse.error(message: e.message, http_status: :forbidden)
+    end
+
+    def check_access(pipeline)
+      if can?(current_user, :update_pipeline, pipeline)
+        ServiceResponse.success
+      else
+        ServiceResponse.error(message: '403 Forbidden', http_status: :forbidden)
+      end
     end
 
     private

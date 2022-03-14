@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :github, :requires_admin do
+  RSpec.describe 'Manage', :reliable, :github, :requires_admin do
     describe 'Project import' do
       let(:github_repo) { 'gitlab-qa-github/import-test' }
       let(:api_client) { Runtime::API::Client.as_admin }

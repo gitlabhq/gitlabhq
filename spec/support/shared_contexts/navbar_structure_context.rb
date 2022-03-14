@@ -203,7 +203,7 @@ RSpec.shared_context 'group navbar structure' do
         nav_sub_items: []
       },
       {
-        nav_item: _('Group information'),
+        nav_item: group.root? ? _('Group information') : _('Subgroup information'),
         nav_sub_items: [
           _('Activity'),
           _('Labels'),
