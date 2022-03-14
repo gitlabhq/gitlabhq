@@ -1,8 +1,0 @@
----
-name: projects_runners_token_prefix
-introduced_by_url: 
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353805
-milestone: '14.9'
-type: development
-group: group::database
-default_enabled: true
