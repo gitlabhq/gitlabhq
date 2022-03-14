@@ -149,7 +149,11 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     )
   end
 
-  def assign_to_closing_issues_link
+  def assign_to_closing_issues_path
+    assign_related_issues_project_merge_request_path(project, merge_request)
+  end
+
+  def assign_to_closing_issues_count
     # rubocop: disable CodeReuse/ServiceClass
     issues = MergeRequests::AssignIssuesService.new(project: project,
                                                     current_user: current_user,
@@ -157,14 +161,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
                                                       merge_request: merge_request,
                                                       closes_issues: closing_issues
                                                     }).assignable_issues
-    path = assign_related_issues_project_merge_request_path(project, merge_request)
-    if issues.present?
-      if issues.count > 1
-        link_to _('Assign yourself to these issues'), path, method: :post
-      else
-        link_to _('Assign yourself to this issue'), path, method: :post
-      end
-    end
+    issues.count
     # rubocop: enable CodeReuse/ServiceClass
   end
 

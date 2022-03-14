@@ -59,7 +59,7 @@ RSpec.describe MergeRequestWidgetEntity do
       data = described_class.new(resource, request: request, issues_links: true).as_json
 
       expect(data).to include(:issues_links)
-      expect(data[:issues_links]).to include(:assign_to_closing, :closing, :mentioned_but_not_closing, :closing_count, :mentioned_count)
+      expect(data[:issues_links]).to include(:assign_to_closing, :assign_to_closing_count, :closing, :mentioned_but_not_closing, :closing_count, :mentioned_count)
     end
 
     it 'omits issue links by default' do

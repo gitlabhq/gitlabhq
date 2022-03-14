@@ -4,15 +4,16 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Spamcheck anti-spam service **(PREMIUM SELF)**
+# Spamcheck anti-spam service **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6259) in GitLab 14.8.
+
+WARNING:
+Spamcheck is available to all tiers, but only on instances using GitLab Enterprise Edition (EE). For [licensing reasons](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6259#note_726605397), it is not included in the GitLab Community Edition (CE) package. You can [migrate from CE to EE](../../../update/package/convert_to_ee.md).
 
 [Spamcheck](https://gitlab.com/gitlab-org/spamcheck) is an anti-spam engine
 developed by GitLab originally to combat rising amount of spam in GitLab.com,
 and later made public to be used in self-managed GitLab instances.
-
-Spamcheck [contains obfuscated, non-free code](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6259#note_726605397), which is only available in GitLab Enterprise Edition. You can [migrate from GitLab Community Edition](../../../update/package/convert_to_ee.md), and use the Free tier. 
 
 ## Enable Spamcheck
 

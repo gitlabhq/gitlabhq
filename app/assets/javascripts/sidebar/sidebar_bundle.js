@@ -3,7 +3,17 @@ import Mediator from './sidebar_mediator';
 
 export default (store) => {
   const mediator = new Mediator(getSidebarOptions());
-  mediator.fetch();
+  mediator
+    .fetch()
+    .then(() => {
+      if (window.gon?.features?.mrAttentionRequests) {
+        return import('~/attention_requests');
+      }
+
+      return null;
+    })
+    .then((module) => module?.initSideNavPopover())
+    .catch(() => {});
 
   mountSidebar(mediator, store);
 };

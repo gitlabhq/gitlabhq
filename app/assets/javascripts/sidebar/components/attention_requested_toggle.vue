@@ -70,7 +70,10 @@ export default {
 </script>
 
 <template>
-  <span v-gl-tooltip.left.viewport="tooltipTitle" class="gl-display-inline-block">
+  <span
+    v-gl-tooltip.left.viewport="tooltipTitle"
+    class="gl-display-inline-block js-attention-request-toggle"
+  >
     <gl-button
       :loading="loading"
       :variant="user.attention_requested ? 'warning' : 'default'"

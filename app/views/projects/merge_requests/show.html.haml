@@ -92,5 +92,8 @@
 
 #js-review-bar
 
+- if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+  #js-need-attention-sidebar-onboarding
+
 = render 'projects/invite_members_modal', project: @project
 = render 'shared/web_ide_path'

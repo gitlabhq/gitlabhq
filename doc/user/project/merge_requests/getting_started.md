@@ -7,7 +7,7 @@ description: "Getting started with merge requests."
 
 # Getting started with merge requests **(FREE)**
 
-A merge request (**MR**) is the basis of GitLab as a code
+A merge request (**MR**) is the basis of GitLab as a tool for code
 collaboration and version control.
 
 When working in a Git-based platform, you can use branching

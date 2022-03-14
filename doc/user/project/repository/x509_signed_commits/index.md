@@ -20,7 +20,7 @@ The main difference is the way GitLab determines whether or not the developer's 
   (A trust store is a repository of trusted security certificates.) Combined with
   any required intermediate certificates in the signature, the developer's certificate
   can be chained back to a trusted root certificate.
-- For GPG, developers [add their GPG key](../gpg_signed_commits/index.md#adding-a-gpg-key-to-your-account)
+- For GPG, developers [add their GPG key](../gpg_signed_commits/index.md#add-a-gpg-key-to-your-account)
   to their account.
 
 GitLab uses its own certificate store and therefore defines the

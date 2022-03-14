@@ -797,6 +797,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
 
     context 'when 2FA is required for the user' do
       before do
+        stub_feature_flags(mr_attention_requests: false)
         group = create(:group, require_two_factor_authentication: true)
         group.add_developer(user)
       end

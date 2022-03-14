@@ -79,7 +79,8 @@
                   %li.dropdown-header
                     = _('Merge requests')
                   - if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
-                    %li
+                    %li#js-need-attention-nav
+                      #js-need-attention-nav-onboarding
                       = link_to attention_requested_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
                         = _('Need your attention')
                         = gl_badge_tag user_merge_requests_counts[:attention_requested_count], { size: :sm, variant: user_merge_requests_counts[:attention_requested_count] == 0 ? :neutral : :warning }, { class: 'merge-request-badge gl-ml-auto js-attention-count' }

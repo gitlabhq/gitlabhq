@@ -59,6 +59,7 @@ module Gitlab
       push_frontend_feature_flag(:sandboxed_mermaid, default_enabled: :yaml)
       push_frontend_feature_flag(:source_editor_toolbar, default_enabled: :yaml)
       push_frontend_feature_flag(:gl_avatar_for_all_user_avatars, default_enabled: :yaml)
+      push_frontend_feature_flag(:mr_attention_requests, default_enabled: :yaml)
     end
 
     # Exposes the state of a feature flag to the frontend code.

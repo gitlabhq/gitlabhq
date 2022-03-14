@@ -757,3 +757,7 @@ $tabs-holder-z-index: 250;
     background: linear-gradient(to bottom, rgba(#333, 0), rgba(#333, 1));
   }
 }
+
+.attention-request-sidebar-popover {
+  z-index: 999;
+}

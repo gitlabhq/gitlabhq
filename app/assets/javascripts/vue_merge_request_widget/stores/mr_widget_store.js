@@ -82,14 +82,16 @@ export default class MergeRequestStore {
       const { closing } = links;
       const mentioned = links.mentioned_but_not_closing;
       const assignToMe = links.assign_to_closing;
+      const unassignedCount = links.assign_to_closing_count;
 
-      if (closing || mentioned || assignToMe) {
+      if (closing || mentioned || unassignedCount) {
         this.relatedLinks = {
           closing,
           mentioned,
           assignToMe,
           closingCount: links.closing_count,
           mentionedCount: links.mentioned_count,
+          unassignedCount: links.assign_to_closing_count,
         };
       }
     }

@@ -161,6 +161,12 @@ function deferredInitialisation() {
 
   // Adding a helper class to activate animations only after all is rendered
   setTimeout(() => $body.addClass('page-initialised'), 1000);
+
+  if (window.gon?.features?.mrAttentionRequests) {
+    import('~/attention_requests')
+      .then((module) => module.default())
+      .catch(() => {});
+  }
 }
 
 const $body = $('body');

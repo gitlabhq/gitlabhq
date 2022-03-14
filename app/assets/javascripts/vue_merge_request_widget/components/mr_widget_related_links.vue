@@ -1,5 +1,5 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlSafeHtmlDirective as SafeHtml, GlLink } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -7,6 +7,9 @@ export default {
   name: 'MRWidgetRelatedLinks',
   directives: {
     SafeHtml,
+  },
+  components: {
+    GlLink,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -37,6 +40,17 @@ export default {
 
       return n__('mrWidget|Closes issue', 'mrWidget|Closes issues', this.relatedLinks.closingCount);
     },
+    assignIssueText() {
+      if (this.relatedLinks.unassignedCount > 1) {
+        return s__('mrWidget|Assign yourself to these issues');
+      }
+      return s__('mrWidget|Assign yourself to this issue');
+    },
+    shouldShowAssignToMeLink() {
+      return (
+        this.relatedLinks.unassignedCount && this.relatedLinks.assignToMe && this.showAssignToMe
+      );
+    },
   },
 };
 </script>
@@ -57,10 +71,14 @@ export default {
       <span v-safe-html="relatedLinks.mentioned"></span>
     </p>
     <p
-      v-if="relatedLinks.assignToMe && showAssignToMe"
+      v-if="shouldShowAssignToMeLink"
       :class="{ 'gl-display-line gl-m-0': glFeatures.restructuredMrWidget }"
     >
-      <span v-html="relatedLinks.assignToMe /* eslint-disable-line vue/no-v-html */"></span>
+      <span>
+        <gl-link rel="nofollow" data-method="post" :href="relatedLinks.assignToMe">{{
+          assignIssueText
+        }}</gl-link>
+      </span>
     </p>
   </section>
 </template>

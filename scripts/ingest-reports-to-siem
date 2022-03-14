@@ -19,15 +19,22 @@ function getMD5HashFromFile(data) {
   try {
     const file = 'gl-dependency-scanning-report.json'
     const data = fs.readFileSync(file)
+
+    const [filename, fileext] = path.basename(file).split('.')
+    const uniqueId = process.env['CI_PIPELINE_ID'] && process.env['CI_JOB_ID'] ?
+                  process.env['CI_PIPELINE_ID'] + '-' + process.env['CI_JOB_ID'] :
+                  Date.now()
+    const key = path.join('package_hunter_test', filename + '-' + uniqueId + '.' + fileext)
+
     const responseData = await s3Client.send(
       new PutObjectCommand({
         Bucket: 'gl-logs-for-panther-test',
-        Key: path.join('package_hunter_test', path.basename(file)),
+        Key: key,
         Body: data,
         ContentMD5: getMD5HashFromFile(data),
       }),
     )
-    console.log('Successfully uploaded %s', file)
+    console.log('Successfully uploaded %s to %s', file, key)
   } catch (err) {
     if (err.name === 'CredentialsProviderError' || err.name === 'AuthorizationHeaderMalformed')
       console.log('Could not upload the report. Are AWS credentials configured in ~/.aws/credentials?')
