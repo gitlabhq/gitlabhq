@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "google/cloud/storage"
+require "fog/google"
 
 # This script handles resources created during E2E test runs
 #
@@ -67,7 +67,7 @@ module QA
         files.each do |file|
           file_name = "#{environment_name}/#{file.split('/').last}"
           Runtime::Logger.info("Uploading #{file_name}...")
-          gcs_bucket.create_file(file, file_name)
+          gcs_storage.put_object(BUCKET, file_name, File.read(file))
         end
 
         puts "\nDone"
@@ -76,17 +76,20 @@ module QA
       # Download files from GCS bucket by environment name
       # Delete the files afterward
       def download(environment_name)
-        files_list = gcs_bucket.files(prefix: "#{environment_name}")
+        files_list = gcs_storage.list_objects(BUCKET, prefix: environment_name).items.each_with_object([]) do |obj, arr|
+          arr << obj.name
+        end
 
         return puts "\nNothing to download!" if files_list.empty?
 
-        files_list.each do |file|
-          local_path = "tmp/#{file.name.split('/').last}"
-          Runtime::Logger.info("Downloading #{file.name} to #{local_path}")
-          file.download(local_path)
+        files_list.each do |file_name|
+          local_path = "tmp/#{file_name.split('/').last}"
+          Runtime::Logger.info("Downloading #{file_name} to #{local_path}")
+          file = gcs_storage.get_object(BUCKET, file_name)
+          File.write(local_path, file[:body])
 
-          Runtime::Logger.info("Deleting #{file.name} from bucket")
-          file.delete
+          Runtime::Logger.info("Deleting #{file_name} from bucket")
+          gcs_storage.delete_object(BUCKET, file_name)
         end
 
         puts "\nDone"
@@ -158,16 +161,12 @@ module QA
       end
 
       def gcs_storage
-        @gcs_storage ||= Google::Cloud::Storage.new(
-          project_id: PROJECT,
-          credentials: json_key
+        @gcs_storage ||= Fog::Storage::Google.new(
+          google_project: PROJECT,
+          **(File.exist?(json_key) ? { google_json_key_location: json_key } : { google_json_key_string: json_key })
         )
       rescue StandardError => e
         abort("\nThere might be something wrong with the JSON key file - [ERROR] #{e}")
-      end
-
-      def gcs_bucket
-        @gcs_bucket ||= gcs_storage.bucket(BUCKET, skip_lookup: true)
       end
 
       # Path to GCS service account json key file

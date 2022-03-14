@@ -7113,6 +7113,29 @@ The edge type for [`MergeRequest`](#mergerequest).
 | <a id="mergerequestedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mergerequestedgenode"></a>`node` | [`MergeRequest`](#mergerequest) | The item at the end of the edge. |
 
+#### `MergeRequestParticipantConnection`
+
+The connection type for [`MergeRequestParticipant`](#mergerequestparticipant).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantconnectionedges"></a>`edges` | [`[MergeRequestParticipantEdge]`](#mergerequestparticipantedge) | A list of edges. |
+| <a id="mergerequestparticipantconnectionnodes"></a>`nodes` | [`[MergeRequestParticipant]`](#mergerequestparticipant) | A list of nodes. |
+| <a id="mergerequestparticipantconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MergeRequestParticipantEdge`
+
+The edge type for [`MergeRequestParticipant`](#mergerequestparticipant).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mergerequestparticipantedgenode"></a>`node` | [`MergeRequestParticipant`](#mergerequestparticipant) | The item at the end of the edge. |
+
 #### `MergeRequestReviewerConnection`
 
 The connection type for [`MergeRequestReviewer`](#mergerequestreviewer).
@@ -12362,7 +12385,7 @@ Maven metadata.
 | <a id="mergerequestapproved"></a>`approved` | [`Boolean!`](#boolean) | Indicates if the merge request has all the required approvals. Returns true if no required approvals are configured. |
 | <a id="mergerequestapprovedby"></a>`approvedBy` | [`UserCoreConnection`](#usercoreconnection) | Users who approved the merge request. (see [Connections](#connections)) |
 | <a id="mergerequestassignees"></a>`assignees` | [`MergeRequestAssigneeConnection`](#mergerequestassigneeconnection) | Assignees of the merge request. (see [Connections](#connections)) |
-| <a id="mergerequestauthor"></a>`author` | [`UserCore`](#usercore) | User who created this merge request. |
+| <a id="mergerequestauthor"></a>`author` | [`MergeRequestAuthor`](#mergerequestauthor) | User who created this merge request. |
 | <a id="mergerequestautomergeenabled"></a>`autoMergeEnabled` | [`Boolean!`](#boolean) | Indicates if auto merge is enabled for the merge request. |
 | <a id="mergerequestautomergestrategy"></a>`autoMergeStrategy` | [`String`](#string) | Selected auto merge strategy. |
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
@@ -12408,7 +12431,7 @@ Maven metadata.
 | <a id="mergerequestmergedat"></a>`mergedAt` | [`Time`](#time) | Timestamp of when the merge request was merged, null if not merged. |
 | <a id="mergerequestmilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the merge request. |
 | <a id="mergerequestnotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
-| <a id="mergerequestparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes. (see [Connections](#connections)) |
+| <a id="mergerequestparticipants"></a>`participants` | [`MergeRequestParticipantConnection`](#mergerequestparticipantconnection) | Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes. (see [Connections](#connections)) |
 | <a id="mergerequestproject"></a>`project` | [`Project!`](#project) | Alias for target_project. |
 | <a id="mergerequestprojectid"></a>`projectId` | [`Int!`](#int) | ID of the merge request project. |
 | <a id="mergerequestrebasecommitsha"></a>`rebaseCommitSha` | [`String`](#string) | Rebase commit SHA of the merge request. |
@@ -12750,6 +12773,236 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="mergerequestassigneetodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="mergerequestassigneetodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
+### `MergeRequestAuthor`
+
+The author of the merge request.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthoravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="mergerequestauthorbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
+| <a id="mergerequestauthorcallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
+| <a id="mergerequestauthoremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="mergerequestauthorgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="mergerequestauthorgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
+| <a id="mergerequestauthorgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="mergerequestauthorid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestauthorlocation"></a>`location` | [`String`](#string) | Location of the user. |
+| <a id="mergerequestauthormergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
+| <a id="mergerequestauthorname"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
+| <a id="mergerequestauthornamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
+| <a id="mergerequestauthorpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
+| <a id="mergerequestauthorprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="mergerequestauthorprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
+| <a id="mergerequestauthorpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
+| <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
+| <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
+| <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="mergerequestauthorusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
+| <a id="mergerequestauthorwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
+| <a id="mergerequestauthorweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
+
+#### Fields with arguments
+
+##### `MergeRequestAuthor.assignedMergeRequests`
+
+Merge requests assigned to the user.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthorassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mergerequestauthorassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestauthorassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestauthorassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="mergerequestauthorassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="mergerequestauthorassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
+| <a id="mergerequestauthorassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
+| <a id="mergerequestauthorassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestauthorassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="mergerequestauthorassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="mergerequestauthorassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
+| <a id="mergerequestauthorassignedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
+| <a id="mergerequestauthorassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestauthorassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestauthorassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="mergerequestauthorassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestauthorassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="mergerequestauthorassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
+| <a id="mergerequestauthorassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `MergeRequestAuthor.authoredMergeRequests`
+
+Merge requests authored by the user.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthorauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="mergerequestauthorauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="mergerequestauthorauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="mergerequestauthorauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
+| <a id="mergerequestauthorauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
+| <a id="mergerequestauthorauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestauthorauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="mergerequestauthorauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="mergerequestauthorauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
+| <a id="mergerequestauthorauthoredmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
+| <a id="mergerequestauthorauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestauthorauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestauthorauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="mergerequestauthorauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestauthorauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="mergerequestauthorauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `MergeRequestAuthor.groups`
+
+Groups where the user has access.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthorgroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
+| <a id="mergerequestauthorgroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+
+##### `MergeRequestAuthor.reviewRequestedMergeRequests`
+
+Merge requests assigned to the user for review.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthorreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mergerequestauthorreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="mergerequestauthorreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
+| <a id="mergerequestauthorreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestauthorreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestauthorreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `MergeRequestAuthor.snippets`
+
+Snippets authored by the user.
+
+Returns [`SnippetConnection`](#snippetconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthorsnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
+| <a id="mergerequestauthorsnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | Type of snippet. |
+| <a id="mergerequestauthorsnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
+
+##### `MergeRequestAuthor.starredProjects`
+
+Projects starred by the user.
+
+Returns [`ProjectConnection`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthorstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+##### `MergeRequestAuthor.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthortimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="mergerequestauthortimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="mergerequestauthortimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="mergerequestauthortimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="mergerequestauthortimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="mergerequestauthortimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="mergerequestauthortimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
+
+##### `MergeRequestAuthor.todos`
+
+To-do items of the user.
+
+Returns [`TodoConnection`](#todoconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthortodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
+| <a id="mergerequestauthortodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
+| <a id="mergerequestauthortodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="mergerequestauthortodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="mergerequestauthortodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
+| <a id="mergerequestauthortodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
+
 ### `MergeRequestDiffRegistry`
 
 Represents the Geo sync and verification state of a Merge Request diff.
@@ -12766,6 +13019,236 @@ Represents the Geo sync and verification state of a Merge Request diff.
 | <a id="mergerequestdiffregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry should be resynced. |
 | <a id="mergerequestdiffregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the MergeRequestDiffRegistry. |
+
+### `MergeRequestParticipant`
+
+A user participating in a merge request.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantavatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="mergerequestparticipantbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
+| <a id="mergerequestparticipantcallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
+| <a id="mergerequestparticipantemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="mergerequestparticipantgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="mergerequestparticipantgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
+| <a id="mergerequestparticipantgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="mergerequestparticipantid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestparticipantlocation"></a>`location` | [`String`](#string) | Location of the user. |
+| <a id="mergerequestparticipantmergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
+| <a id="mergerequestparticipantname"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
+| <a id="mergerequestparticipantnamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
+| <a id="mergerequestparticipantpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
+| <a id="mergerequestparticipantprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="mergerequestparticipantprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
+| <a id="mergerequestparticipantpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
+| <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
+| <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
+| <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="mergerequestparticipantusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
+| <a id="mergerequestparticipantwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
+| <a id="mergerequestparticipantweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
+
+#### Fields with arguments
+
+##### `MergeRequestParticipant.assignedMergeRequests`
+
+Merge requests assigned to the user.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mergerequestparticipantassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="mergerequestparticipantassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="mergerequestparticipantassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
+| <a id="mergerequestparticipantassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
+| <a id="mergerequestparticipantassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestparticipantassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="mergerequestparticipantassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="mergerequestparticipantassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
+| <a id="mergerequestparticipantassignedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
+| <a id="mergerequestparticipantassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestparticipantassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestparticipantassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="mergerequestparticipantassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestparticipantassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="mergerequestparticipantassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `MergeRequestParticipant.authoredMergeRequests`
+
+Merge requests authored by the user.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="mergerequestparticipantauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="mergerequestparticipantauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="mergerequestparticipantauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
+| <a id="mergerequestparticipantauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
+| <a id="mergerequestparticipantauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestparticipantauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="mergerequestparticipantauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="mergerequestparticipantauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
+| <a id="mergerequestparticipantauthoredmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
+| <a id="mergerequestparticipantauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestparticipantauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestparticipantauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="mergerequestparticipantauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestparticipantauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="mergerequestparticipantauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `MergeRequestParticipant.groups`
+
+Groups where the user has access.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantgroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
+| <a id="mergerequestparticipantgroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+
+##### `MergeRequestParticipant.reviewRequestedMergeRequests`
+
+Merge requests assigned to the user for review.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestparticipantreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `MergeRequestParticipant.snippets`
+
+Snippets authored by the user.
+
+Returns [`SnippetConnection`](#snippetconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantsnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
+| <a id="mergerequestparticipantsnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | Type of snippet. |
+| <a id="mergerequestparticipantsnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
+
+##### `MergeRequestParticipant.starredProjects`
+
+Projects starred by the user.
+
+Returns [`ProjectConnection`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+##### `MergeRequestParticipant.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipanttimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="mergerequestparticipanttimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="mergerequestparticipanttimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="mergerequestparticipanttimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="mergerequestparticipanttimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="mergerequestparticipanttimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="mergerequestparticipanttimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
+
+##### `MergeRequestParticipant.todos`
+
+To-do items of the user.
+
+Returns [`TodoConnection`](#todoconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipanttodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
+| <a id="mergerequestparticipanttodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
+| <a id="mergerequestparticipanttodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="mergerequestparticipanttodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="mergerequestparticipanttodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
+| <a id="mergerequestparticipanttodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
 ### `MergeRequestPermissions`
 
@@ -19668,6 +20151,8 @@ Representation of a GitLab user.
 Implementations:
 
 - [`MergeRequestAssignee`](#mergerequestassignee)
+- [`MergeRequestAuthor`](#mergerequestauthor)
+- [`MergeRequestParticipant`](#mergerequestparticipant)
 - [`MergeRequestReviewer`](#mergerequestreviewer)
 - [`UserCore`](#usercore)
 

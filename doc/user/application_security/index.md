@@ -395,6 +395,8 @@ any report artifacts that failed validation.
 
 ### Enable security report validation
 
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9, and planned for removal in GitLab 15.0.
+
 To enable report artifacts validation, set the `VALIDATE_SCHEMA` environment variable to `"true"`
 for the desired jobs in the `.gitlab-ci.yml` file.
 

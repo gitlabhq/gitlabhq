@@ -1,8 +1,8 @@
 ---
 name: api_kaminari_count_with_limit
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23931
-rollout_issue_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353077
 milestone: '11.8'
 type: ops
 group: group::integrations
-default_enabled: false
+default_enabled: true

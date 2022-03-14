@@ -95,7 +95,7 @@ Example response:
     "milestone": "11.8",
     "type": "ops",
     "group": "group::ecosystem",
-    "default_enabled": false
+    "default_enabled": true
   },
   {
     "name": "marginalia",

@@ -2,9 +2,9 @@
 
 module Types
   module MergeRequests
-    class AssigneeType < ::Types::UserType
-      graphql_name 'MergeRequestAssignee'
-      description 'A user assigned to a merge request.'
+    class ParticipantType < ::Types::UserType
+      graphql_name 'MergeRequestParticipant'
+      description 'A user participating in a merge request.'
 
       include ::Types::MergeRequests::InteractsWithMergeRequest
 

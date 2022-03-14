@@ -137,7 +137,7 @@ module Types
           null: true,
           complexity: 5,
           description: 'Assignees of the merge request.'
-    field :author, Types::UserType, null: true,
+    field :author, Types::MergeRequests::AuthorType, null: true,
           description: 'User who created this merge request.'
     field :discussion_locked, GraphQL::Types::Boolean,
           description: 'Indicates if comments on the merge request are locked to members only.',
@@ -150,7 +150,7 @@ module Types
           description: 'Labels of the merge request.'
     field :milestone, Types::MilestoneType, null: true,
           description: 'Milestone of the merge request.'
-    field :participants, Types::UserType.connection_type, null: true, complexity: 15,
+    field :participants, Types::MergeRequests::ParticipantType.connection_type, null: true, complexity: 15,
           description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.',
           resolver: Resolvers::Users::ParticipantsResolver
     field :reference, GraphQL::Types::String, null: false, method: :to_reference,

@@ -995,7 +995,13 @@ BUNDLER_AUDIT_ADVISORY_DB_REF_NAME: "master"
 BUNDLER_AUDIT_ADVISORY_DB_URL: "gitlab.example.com/ruby-advisory-db.git"
 ```
 
-#### Python (setup tools)
+#### Python (pip)
+
+If you need to install Python packages before the analyzer runs, you should use `pip install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
+
+#### Python (setuptools)
+
+If you need to install Python packages before the analyzer runs, you should use `python setup.py install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
 
 When using self-signed certificates for your private PyPi repository, no extra job configuration (aside
 from the template `.gitlab-ci.yml` above) is needed. However, you must update your `setup.py` to

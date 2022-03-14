@@ -575,7 +575,7 @@ To prevent members from being added to projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Under **Member lock**, select **Prevent adding new members to project membership within this group**.
+1. Under **Membership**, select **Prevent adding new members to projects within this group**.
 1. Select **Save changes**.
 
 All users who previously had permissions can no longer add members to a group.
