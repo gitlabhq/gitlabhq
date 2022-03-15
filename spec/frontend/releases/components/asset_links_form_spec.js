@@ -256,9 +256,7 @@ describe('Release edit component', () => {
         },
       });
 
-      expect(findUrlValidationMessage().text()).toBe(
-        'This URL is already used for another link; duplicate URLs are not allowed',
-      );
+      expect(findUrlValidationMessage().text()).toBe('This URL already exists.');
     });
 
     it('shows a validation error message when a URL has a bad format', () => {

@@ -8,13 +8,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Project owners can use scan execution policies to require that security scans run on a specified
 schedule or with the project pipeline. Required scans are injected into the CI pipeline as new jobs
-with a long, random job name. In the unlikely event of a job name collision, the security policy job
-overwrites any pre-existing job in the pipeline.
+with a long, random job name. In the unlikely event of a job name collision, the security policy job overwrites
+any pre-existing job in the pipeline.
 
 This feature has some overlap with [compliance framework pipelines](../../project/settings/#compliance-pipeline-configuration),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../#enforce-scan-execution).
+
+NOTE:
+Policy jobs are created in the `test` stage of the pipeline. If you modify the default pipeline
+[`stages`](../../../ci/yaml/index.md#stages),
+you must ensure that the `test` stage exists in the list. Otherwise, the pipeline fails to run and
+an error appears that states `chosen stage does not exist`.
 
 ## Scan execution policy editor
 

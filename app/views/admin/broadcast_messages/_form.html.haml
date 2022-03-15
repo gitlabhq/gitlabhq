@@ -16,7 +16,7 @@
       - else
         = _('Your message here')
 
-= form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form js-quick-submit js-requires-input'} do |f|
+= gitlab_ui_form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form js-quick-submit js-requires-input'} do |f|
   = form_errors(@broadcast_message)
 
   .form-group.row.mt-4
@@ -52,15 +52,14 @@
     .col-sm-2.col-form-label.pt-0
       = f.label :starts_at, _("Dismissable")
     .col-sm-10
-      = f.check_box :dismissable
-      = f.label :dismissable do
-        = _('Allow users to dismiss the broadcast message')
+      = f.gitlab_ui_checkbox_component :dismissable, _('Allow users to dismiss the broadcast message')
   - if Feature.enabled?(:role_targeted_broadcast_messages, default_enabled: :yaml)
     .form-group.row
       .col-sm-2.col-form-label
         = f.label :target_access_levels, _('Target roles')
       .col-sm-10
-        = f.select :target_access_levels, target_access_level_options, { include_hidden: false }, multiple: true, class: 'form-control'
+        - target_access_level_options.each do |human_access_level, access_level|
+          = f.gitlab_ui_checkbox_component :target_access_levels, human_access_level, checked_value: access_level, unchecked_value: false, checkbox_options: { multiple: true }
         .form-text.text-muted
           = _('The broadcast message displays only to users in projects and groups who have these roles.')
   .form-group.row.js-toggle-colors-container.toggle-colors.hide

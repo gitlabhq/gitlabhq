@@ -162,7 +162,7 @@ const createReleaseLink = async ({ state, link }) => {
       input: {
         projectPath: state.projectPath,
         tagName: state.tagName,
-        name: link.name,
+        name: link.name.trim(),
         url: link.url,
         linkType: link.linkType.toUpperCase(),
         directAssetPath: link.directAssetPath,

@@ -16,6 +16,8 @@ import {
   REPORT_TYPE_LICENSE_COMPLIANCE,
 } from '~/vue_shared/security_reports/constants';
 
+import kontraLogo from 'images/vulnerability/kontra-logo.svg';
+import scwLogo from 'images/vulnerability/scw-logo.svg';
 import configureSastMutation from '../graphql/configure_sast.mutation.graphql';
 import configureSastIacMutation from '../graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from '../graphql/configure_secret_detection.mutation.graphql';
@@ -284,9 +286,9 @@ export const AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY =
 // https://gitlab.com/gitlab-org/gitlab/-/issues/346899
 export const TEMP_PROVIDER_LOGOS = {
   Kontra: {
-    svg: '/assets/vulnerability/kontra-logo.svg',
+    svg: kontraLogo,
   },
   [__('Secure Code Warrior')]: {
-    svg: '/assets/vulnerability/scw-logo.svg',
+    svg: scwLogo,
   },
 };

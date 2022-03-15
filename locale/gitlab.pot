@@ -2164,6 +2164,9 @@ msgstr ""
 msgid "Add comment to design"
 msgstr ""
 
+msgid "Add comment..."
+msgstr ""
+
 msgid "Add commit messages as comments to Asana tasks. %{docs_link}"
 msgstr ""
 
@@ -6878,6 +6881,12 @@ msgid "Changes to the title have not been saved"
 msgstr ""
 
 msgid "Changing any setting here requires an application restart"
+msgstr ""
+
+msgid "Characters left"
+msgstr ""
+
+msgid "Characters over limit"
 msgstr ""
 
 msgid "Charts can't be displayed as the request for data has timed out. %{documentationLink}"
@@ -18163,6 +18172,9 @@ msgstr ""
 msgid "Hide shared projects"
 msgstr ""
 
+msgid "Hide thread"
+msgstr ""
+
 msgid "Hide tooltips or popovers"
 msgstr ""
 
@@ -27708,7 +27720,7 @@ msgstr ""
 msgid "Pods in use"
 msgstr ""
 
-msgid "Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance. Duplicate URLs are not allowed."
+msgid "Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance. Each URL and link title must be unique."
 msgstr ""
 
 msgid "Policies"
@@ -34147,6 +34159,9 @@ msgstr ""
 msgid "Show the Open list"
 msgstr ""
 
+msgid "Show thread"
+msgstr ""
+
 msgid "Show whitespace changes"
 msgstr ""
 
@@ -37564,7 +37579,7 @@ msgstr ""
 msgid "This Project is currently archived and read-only. Please unarchive the project first if you want to resume Pull mirroring"
 msgstr ""
 
-msgid "This URL is already used for another link; duplicate URLs are not allowed"
+msgid "This URL already exists."
 msgstr ""
 
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
@@ -38057,6 +38072,9 @@ msgid "This subscription is for"
 msgstr ""
 
 msgid "This suggestion already matches its content."
+msgstr ""
+
+msgid "This title already exists."
 msgstr ""
 
 msgid "This user cannot be unlocked manually from GitLab"
@@ -38781,9 +38799,6 @@ msgid "Toggle sidebar"
 msgstr ""
 
 msgid "Toggle the Performance Bar"
-msgstr ""
-
-msgid "Toggle thread"
 msgstr ""
 
 msgid "Toggled :%{name}: emoji award."

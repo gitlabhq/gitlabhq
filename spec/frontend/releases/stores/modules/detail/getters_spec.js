@@ -134,6 +134,14 @@ describe('Release edit/new getters', () => {
                 // Missing title
                 { id: 7, url: 'https://example.com/valid/1', name: '' },
                 { id: 8, url: 'https://example.com/valid/2', name: '  ' },
+
+                // Duplicate title
+                { id: 9, url: 'https://example.com/1', name: 'Link 7' },
+                { id: 10, url: 'https://example.com/2', name: 'Link 7' },
+
+                // title validation ignores leading/trailing whitespace
+                { id: 11, url: 'https://example.com/3', name: '  Link 7\t  ' },
+                { id: 12, url: 'https://example.com/4', name: ' Link 7\n\r\n ' },
               ],
             },
           },
@@ -195,6 +203,21 @@ describe('Release edit/new getters', () => {
             links: {
               7: { isNameEmpty: true },
               8: { isNameEmpty: true },
+            },
+          },
+        };
+
+        expect(actualErrors).toMatchObject(expectedErrors);
+      });
+
+      it('returns a validation error if links share a title', () => {
+        const expectedErrors = {
+          assets: {
+            links: {
+              9: { isTitleDuplicate: true },
+              10: { isTitleDuplicate: true },
+              11: { isTitleDuplicate: true },
+              12: { isTitleDuplicate: true },
             },
           },
         };

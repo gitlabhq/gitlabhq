@@ -105,9 +105,9 @@ export const updateSecurityTrainingProvidersErrorResponse = {
 // https://gitlab.com/gitlab-org/gitlab/-/issues/346899
 export const tempProviderLogos = {
   [testProviderName[0]]: {
-    svg: '/assets/illustrations/vulnerability/vendor-1.svg',
+    svg: `<svg>${[testProviderName[0]]}</svg>`,
   },
   [testProviderName[1]]: {
-    svg: '/assets/illustrations/vulnerability/vendor-2.svg',
+    svg: `<svg>${[testProviderName[1]]}</svg>`,
   },
 };

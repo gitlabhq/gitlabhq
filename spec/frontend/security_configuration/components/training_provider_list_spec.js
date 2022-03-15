@@ -89,7 +89,7 @@ describe('TrainingProviderList component', () => {
   const findPrimaryProviderRadios = () => wrapper.findAllByTestId('primary-provider-radio');
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
-  const findLogos = () => wrapper.findAll('img');
+  const findLogos = () => wrapper.findAllByTestId('provider-logo');
 
   const toggleFirstProvider = () => findFirstToggle().vm.$emit('change', testProviderIds[0]);
 
@@ -205,15 +205,15 @@ describe('TrainingProviderList component', () => {
       const providerIndexArray = [0, 1];
 
       it.each(providerIndexArray)('displays the correct width for provider %s', (provider) => {
-        expect(findLogos().at(provider).attributes('width')).toBe('18');
+        expect(findLogos().at(provider).attributes('style')).toBe('width: 18px;');
       });
 
       it.each(providerIndexArray)('has a11y decorative attribute for provider %s', (provider) => {
         expect(findLogos().at(provider).attributes('role')).toBe('presentation');
       });
 
-      it.each(providerIndexArray)('displays the correct svg path for provider %s', (provider) => {
-        expect(findLogos().at(provider).attributes('src')).toBe(
+      it.each(providerIndexArray)('renders the svg content for provider %s', (provider) => {
+        expect(findLogos().at(provider).html()).toContain(
           tempProviderLogos[testProviderName[provider]].svg,
         );
       });

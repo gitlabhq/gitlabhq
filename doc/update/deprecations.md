@@ -75,6 +75,20 @@ The [`custom_hooks_dir`](https://docs.gitlab.com/ee/administration/server_hooks.
 
 **Planned removal milestone: 15.0 ()**
 
+### Permissions change for downloading Composer dependencies
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The GitLab Composer repository can be used to push, search, fetch metadata about, and download PHP dependencies. All these actions require authentication, except for downloading dependencies.
+
+Downloading Composer dependencies without authentication is deprecated in GitLab 14.9, and will be removed in GitLab 15.0. Starting with GitLab 15.0, you must authenticate to download Composer dependencies.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### htpasswd Authentication for the Container Registry
 
 WARNING:

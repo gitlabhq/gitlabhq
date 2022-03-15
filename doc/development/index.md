@@ -343,6 +343,7 @@ See [database guidelines](database/index.md).
 - [Dashboards for stage groups](stage_group_dashboards.md)
 - [Preventing transient bugs](transient/prevention-patterns.md)
 - [GitLab Application SLIs](application_slis/index.md)
+- [Spam protection and CAPTCHA development guide](spam_protection_and_captcha/index.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

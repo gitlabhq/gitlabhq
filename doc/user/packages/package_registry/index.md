@@ -60,6 +60,12 @@ For most package types, the following credential types are valid:
   allows access to packages in the project running the job for the users running the pipeline.
   Access to other external projects can be configured.
 
+  NOTE:
+  There's an open issue,
+  [GitLab-#333444](https://gitlab.com/gitlab-org/gitlab/-/issues/333444),
+  which prevents you from using a job token with internal projects. This bug only impacts self-managed
+  GitLab instances.
+  
 ## Use GitLab CI/CD to build packages
 
 You can use [GitLab CI/CD](../../../ci/index.md) to build packages.

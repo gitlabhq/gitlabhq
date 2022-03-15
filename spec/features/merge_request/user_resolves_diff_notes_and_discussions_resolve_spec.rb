@@ -140,7 +140,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
 
         describe 'reply form' do
           before do
-            click_button 'Toggle thread'
+            click_button _('Show thread')
           end
 
           it 'allows user to comment' do
@@ -362,7 +362,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
       it 'displays next thread even if hidden' do
         page.all('.note-discussion', count: 2).each do |discussion|
           page.within discussion do
-            click_button 'Toggle thread'
+            click_button _('Hide thread')
           end
         end
 
@@ -549,13 +549,13 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
       it 'shows resolved icon' do
         expect(page).to have_content 'All threads resolved'
 
-        click_button 'Toggle thread'
+        click_button _('Show thread')
         expect(page).to have_selector('.line-resolve-btn.is-active')
       end
 
       it 'does not allow user to click resolve button' do
         expect(page).to have_selector('.line-resolve-btn.is-active')
-        click_button 'Toggle thread'
+        click_button _('Show thread')
 
         expect(page).to have_selector('.line-resolve-btn.is-active')
       end

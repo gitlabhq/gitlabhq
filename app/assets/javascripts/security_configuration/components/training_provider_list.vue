@@ -7,6 +7,7 @@ import {
   GlLink,
   GlSkeletonLoader,
   GlIcon,
+  GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
@@ -50,6 +51,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [Tracking.mixin()],
   inject: ['projectFullPath'],
@@ -233,11 +235,12 @@ export default {
               @change="toggleProvider(provider)"
             />
             <div v-if="$options.TEMP_PROVIDER_LOGOS[provider.name]" class="gl-ml-4">
-              <img
-                :src="$options.TEMP_PROVIDER_LOGOS[provider.name].svg"
-                width="18"
+              <div
+                v-safe-html="$options.TEMP_PROVIDER_LOGOS[provider.name].svg"
+                data-testid="provider-logo"
+                style="width: 18px"
                 role="presentation"
-              />
+              ></div>
             </div>
             <div class="gl-ml-3">
               <h3 class="gl-font-lg gl-m-0 gl-mb-2">{{ provider.name }}</h3>
