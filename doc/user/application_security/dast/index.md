@@ -51,7 +51,7 @@ results. On failure, the analyzer outputs an
 ## Prerequisites
 
 - [GitLab Runner](../../../ci/runners/index.md) available, with the
-[`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
+[`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
 - Target application deployed. For more details, read [Deployment options](#deployment-options).
 - DAST runs in the `dast` stage, which must be added manually to your `.gitlab-ci.yml`.
 

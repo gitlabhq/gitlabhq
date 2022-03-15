@@ -2,14 +2,11 @@
 
 module Backup
   class Packages < Backup::Files
-    attr_reader :progress
-
     def initialize(progress)
-      @progress = progress
-
-      super('packages', Settings.packages.storage_path, excludes: ['tmp'])
+      super(progress, 'packages', Settings.packages.storage_path, excludes: ['tmp'])
     end
 
+    override :human_name
     def human_name
       _('packages')
     end

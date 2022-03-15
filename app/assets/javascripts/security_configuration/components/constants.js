@@ -284,9 +284,9 @@ export const AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY =
 // https://gitlab.com/gitlab-org/gitlab/-/issues/346899
 export const TEMP_PROVIDER_LOGOS = {
   Kontra: {
-    svg: '/assets/illustrations/vulnerability/kontra-logo.svg',
+    svg: '/assets/vulnerability/kontra-logo.svg',
   },
   [__('Secure Code Warrior')]: {
-    svg: '/assets/illustrations/vulnerability/scw-logo.svg',
+    svg: '/assets/vulnerability/scw-logo.svg',
   },
 };

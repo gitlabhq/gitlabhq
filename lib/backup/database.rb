@@ -3,10 +3,10 @@
 require 'yaml'
 
 module Backup
-  class Database
+  class Database < Task
+    extend ::Gitlab::Utils::Override
     include Backup::Helper
-    attr_reader :progress
-    attr_reader :config, :db_file_name
+    attr_reader :force, :config
 
     IGNORED_ERRORS = [
       # Ignore warnings
@@ -18,13 +18,14 @@ module Backup
     ].freeze
     IGNORED_ERRORS_REGEXP = Regexp.union(IGNORED_ERRORS).freeze
 
-    def initialize(progress, filename: nil)
-      @progress = progress
+    def initialize(progress, force:)
+      super(progress)
       @config = ActiveRecord::Base.configurations.find_db_config(Rails.env).configuration_hash
-      @db_file_name = filename || File.join(Gitlab.config.backup.path, 'db', 'database.sql.gz')
+      @force = force
     end
 
-    def dump
+    override :dump
+    def dump(db_file_name)
       FileUtils.mkdir_p(File.dirname(db_file_name))
       FileUtils.rm_f(db_file_name)
       compress_rd, compress_wr = IO.pipe
@@ -64,12 +65,24 @@ module Backup
       raise DatabaseBackupError.new(config, db_file_name) unless success
     end
 
-    def restore
+    override :restore
+    def restore(db_file_name)
+      unless force
+        progress.puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
+        sleep(5)
+      end
+
+      # Drop all tables Load the schema to ensure we don't have any newer tables
+      # hanging out from a failed upgrade
+      puts_time 'Cleaning the database ... '.color(:blue)
+      Rake::Task['gitlab:db:drop_tables'].invoke
+      puts_time 'done'.color(:green)
+
       decompress_rd, decompress_wr = IO.pipe
       decompress_pid = spawn(*%w(gzip -cd), out: decompress_wr, in: db_file_name)
       decompress_wr.close
 
-      status, errors =
+      status, @errors =
         case config[:adapter]
         when "postgresql" then
           progress.print "Restoring PostgreSQL database #{database} ... "
@@ -81,33 +94,47 @@ module Backup
       Process.waitpid(decompress_pid)
       success = $?.success? && status.success?
 
-      if errors.present?
+      if @errors.present?
         progress.print "------ BEGIN ERRORS -----\n".color(:yellow)
-        progress.print errors.join.color(:yellow)
+        progress.print @errors.join.color(:yellow)
         progress.print "------ END ERRORS -------\n".color(:yellow)
       end
 
       report_success(success)
       raise Backup::Error, 'Restore failed' unless success
-
-      if errors.present?
-        warning = <<~MSG
-            There were errors in restoring the schema. This may cause
-            issues if this results in missing indexes, constraints, or
-            columns. Please record the errors above and contact GitLab
-            Support if you have questions:
-            https://about.gitlab.com/support/
-        MSG
-
-        warn warning.color(:red)
-        Gitlab::TaskHelpers.ask_to_continue
-      end
     end
 
-    def enabled
-      true
+    override :pre_restore_warning
+    def pre_restore_warning
+      return if force
+
+      <<-MSG.strip_heredoc
+        Be sure to stop Puma, Sidekiq, and any other process that
+        connects to the database before proceeding. For Omnibus
+        installs, see the following link for more information:
+        https://docs.gitlab.com/ee/raketasks/backup_restore.html#restore-for-omnibus-gitlab-installations
+
+        Before restoring the database, we will remove all existing
+        tables to avoid future upgrade problems. Be aware that if you have
+        custom tables in the GitLab database these tables and all data will be
+        removed.
+      MSG
     end
 
+    override :post_restore_warning
+    def post_restore_warning
+      return unless @errors.present?
+
+      <<-MSG.strip_heredoc
+        There were errors in restoring the schema. This may cause
+        issues if this results in missing indexes, constraints, or
+        columns. Please record the errors above and contact GitLab
+        Support if you have questions:
+        https://about.gitlab.com/support/
+      MSG
+    end
+
+    override :human_name
     def human_name
       _('database')
     end

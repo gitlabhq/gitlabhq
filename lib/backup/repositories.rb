@@ -3,16 +3,20 @@
 require 'yaml'
 
 module Backup
-  class Repositories
+  class Repositories < Task
+    extend ::Gitlab::Utils::Override
+
     def initialize(progress, strategy:, max_concurrency: 1, max_storage_concurrency: 1)
-      @progress = progress
+      super(progress)
+
       @strategy = strategy
       @max_concurrency = max_concurrency
       @max_storage_concurrency = max_storage_concurrency
     end
 
-    def dump
-      strategy.start(:create)
+    override :dump
+    def dump(path)
+      strategy.start(:create, path)
 
       # gitaly-backup is designed to handle concurrency on its own. So we want
       # to avoid entering the buggy concurrency code here when gitaly-backup
@@ -50,8 +54,9 @@ module Backup
       strategy.finish!
     end
 
-    def restore
-      strategy.start(:restore)
+    override :restore
+    def restore(path)
+      strategy.start(:restore, path)
       enqueue_consecutive
 
     ensure
@@ -61,17 +66,14 @@ module Backup
       restore_object_pools
     end
 
-    def enabled
-      true
-    end
-
+    override :human_name
     def human_name
       _('repositories')
     end
 
     private
 
-    attr_reader :progress, :strategy, :max_concurrency, :max_storage_concurrency
+    attr_reader :strategy, :max_concurrency, :max_storage_concurrency
 
     def check_valid_storages!
       repository_storage_klasses.each do |klass|

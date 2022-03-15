@@ -6,14 +6,11 @@ module Backup
     # if some of these files are still there, we don't need them in the backup
     LEGACY_PAGES_TMP_PATH = '@pages.tmp'
 
-    attr_reader :progress
-
     def initialize(progress)
-      @progress = progress
-
-      super('pages', Gitlab.config.pages.path, excludes: [LEGACY_PAGES_TMP_PATH])
+      super(progress, 'pages', Gitlab.config.pages.path, excludes: [LEGACY_PAGES_TMP_PATH])
     end
 
+    override :human_name
     def human_name
       _('pages')
     end

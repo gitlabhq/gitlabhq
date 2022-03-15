@@ -749,6 +749,38 @@ deploystacks:
     - ${PROVIDER}-${STACK}
 ```
 
+#### Fetch artifacts from a `parallel:matrix` job
+
+You can fetch artifacts from a job created with [`parallel:matrix`](../yaml/index.md#parallelmatrix)
+by using the [`dependencies`](../yaml/index.md#dependencies) keyword. Use the job name
+as the value for `dependencies` as a string in the form:
+
+```plaintext
+<job_name> [<matrix argument 1>, <matrix argument 2>, ... <matrix argument N>]
+```
+
+For example, to fetch the artifacts from the job with a `RUBY_VERSION` of `2.7` and
+a `PROVIDER` of `aws`:
+
+```yaml
+ruby:
+  image: ruby:${RUBY_VERSION}
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["2.5", "2.6", "2.7", "3.0", "3.1"]
+        PROVIDER: [aws, gcp]
+  script: bundle install
+
+deploy:
+  image: ruby:2.7
+  stage: deploy
+  dependencies:
+    - "ruby: [2.7, aws]"
+  script: echo hello
+```
+
+Quotes around the `dependencies` entry are required.
+
 ## Use predefined CI/CD variables to run jobs only in specific pipeline types
 
 You can use [predefined CI/CD variables](../variables/predefined_variables.md) to choose

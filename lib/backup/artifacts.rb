@@ -2,14 +2,11 @@
 
 module Backup
   class Artifacts < Backup::Files
-    attr_reader :progress
-
     def initialize(progress)
-      @progress = progress
-
-      super('artifacts', JobArtifactUploader.root, excludes: ['tmp'])
+      super(progress, 'artifacts', JobArtifactUploader.root, excludes: ['tmp'])
     end
 
+    override :human_name
     def human_name
       _('artifacts')
     end

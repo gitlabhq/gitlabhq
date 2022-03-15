@@ -41,7 +41,8 @@ export const getSecurityTrainingProvidersData = (providerOverrides = {}) => {
   const response = {
     data: {
       project: {
-        id: 1,
+        id: 'gid://gitlab/Project/1',
+        __typename: 'Project',
         securityTrainingProviders,
       },
     },

@@ -6,16 +6,149 @@ RSpec.describe Backup::Manager do
   include StubENV
 
   let(:progress) { StringIO.new }
+  let(:definitions) { nil }
 
-  subject { described_class.new(progress) }
+  subject { described_class.new(progress, definitions: definitions) }
 
   before do
+    # Rspec fails with `uninitialized constant RSpec::Support::Differ` when it
+    # is trying to display a diff and `File.exist?` is stubbed. Adding a
+    # default stub fixes this.
+    allow(File).to receive(:exist?).and_call_original
+
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)
   end
 
-  describe '#pack' do
-    let(:expected_backup_contents) { %w(repositories db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz terraform_state.tar.gz packages.tar.gz backup_information.yml) }
+  describe '#run_create_task' do
+    let(:enabled) { true }
+    let(:task) { instance_double(Backup::Task, human_name: 'my task', enabled: enabled) }
+    let(:definitions) { { 'my_task' => Backup::Manager::TaskDefinition.new(task: task, destination_path: 'my_task.tar.gz') } }
+
+    it 'calls the named task' do
+      expect(task).to receive(:dump)
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... ')
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done')
+
+      subject.run_create_task('my_task')
+    end
+
+    describe 'disabled' do
+      let(:enabled) { false }
+
+      it 'informs the user' do
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... ')
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: '[DISABLED]')
+
+        subject.run_create_task('my_task')
+      end
+    end
+
+    describe 'skipped' do
+      it 'informs the user' do
+        stub_env('SKIP', 'my_task')
+
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... ')
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: '[SKIPPED]')
+
+        subject.run_create_task('my_task')
+      end
+    end
+  end
+
+  describe '#run_restore_task' do
+    let(:enabled) { true }
+    let(:pre_restore_warning) { nil }
+    let(:post_restore_warning) { nil }
+    let(:definitions) { { 'my_task' => Backup::Manager::TaskDefinition.new(task: task, destination_path: 'my_task.tar.gz') } }
+    let(:backup_information) { {} }
+    let(:task) do
+      instance_double(Backup::Task,
+             human_name: 'my task',
+             enabled: enabled,
+             pre_restore_warning: pre_restore_warning,
+             post_restore_warning: post_restore_warning)
+    end
+
+    before do
+      allow(YAML).to receive(:load_file).with('backup_information.yml')
+        .and_return(backup_information)
+    end
+
+    it 'calls the named task' do
+      expect(task).to receive(:restore)
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done').ordered
+
+      subject.run_restore_task('my_task')
+    end
+
+    describe 'disabled' do
+      let(:enabled) { false }
+
+      it 'informs the user' do
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: '[DISABLED]').ordered
+
+        subject.run_restore_task('my_task')
+      end
+    end
+
+    describe 'pre_restore_warning' do
+      let(:pre_restore_warning) { 'Watch out!' }
+
+      it 'displays and waits for the user' do
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Watch out!').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done').ordered
+        expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
+        expect(task).to receive(:restore)
+
+        subject.run_restore_task('my_task')
+      end
+
+      it 'does not continue when the user quits' do
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Watch out!').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Quitting...').ordered
+        expect(Gitlab::TaskHelpers).to receive(:ask_to_continue).and_raise(Gitlab::TaskAbortedByUserError)
+
+        expect do
+          subject.run_restore_task('my_task')
+        end.to raise_error(SystemExit)
+      end
+    end
+
+    describe 'post_restore_warning' do
+      let(:post_restore_warning) { 'Watch out!' }
+
+      it 'displays and waits for the user' do
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Watch out!').ordered
+        expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
+        expect(task).to receive(:restore)
+
+        subject.run_restore_task('my_task')
+      end
+
+      it 'does not continue when the user quits' do
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Watch out!').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Quitting...').ordered
+        expect(task).to receive(:restore)
+        expect(Gitlab::TaskHelpers).to receive(:ask_to_continue).and_raise(Gitlab::TaskAbortedByUserError)
+
+        expect do
+          subject.run_restore_task('my_task')
+        end.to raise_error(SystemExit)
+      end
+    end
+  end
+
+  describe '#create' do
+    let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz task2.tar.gz} }
     let(:tar_file) { '1546300800_2019_01_01_12.3_gitlab_backup.tar' }
     let(:tar_system_options) { { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
     let(:tar_cmdline) { ['tar', '-cf', '-', *expected_backup_contents, tar_system_options] }
@@ -26,21 +159,27 @@ RSpec.describe Backup::Manager do
       }
     end
 
+    let(:task1) { instance_double(Backup::Task, human_name: 'task 1', enabled: true) }
+    let(:task2) { instance_double(Backup::Task, human_name: 'task 2', enabled: true) }
+    let(:definitions) do
+      {
+        'task1' => Backup::Manager::TaskDefinition.new(task: task1, destination_path: 'task1.tar.gz'),
+        'task2' => Backup::Manager::TaskDefinition.new(task: task2, destination_path: 'task2.tar.gz')
+      }
+    end
+
     before do
       allow(ActiveRecord::Base.connection).to receive(:reconnect!)
       allow(Kernel).to receive(:system).and_return(true)
       allow(YAML).to receive(:load_file).and_return(backup_information)
 
-      ::Backup::Manager::FOLDERS_TO_BACKUP.each do |folder|
-        allow(Dir).to receive(:exist?).with(File.join(Gitlab.config.backup.path, folder)).and_return(true)
-      end
-
       allow(subject).to receive(:backup_information).and_return(backup_information)
-      allow(subject).to receive(:upload)
+      allow(task1).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'))
+      allow(task2).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'))
     end
 
     it 'executes tar' do
-      subject.pack
+      subject.create # rubocop:disable Rails/SaveBang
 
       expect(Kernel).to have_received(:system).with(*tar_cmdline)
     end
@@ -50,247 +189,400 @@ RSpec.describe Backup::Manager do
 
       it 'uses the given value as tar file name' do
         stub_env('BACKUP', '/ignored/path/custom')
-        subject.pack
+        subject.create # rubocop:disable Rails/SaveBang
 
         expect(Kernel).to have_received(:system).with(*tar_cmdline)
       end
     end
 
     context 'when skipped is set in backup_information.yml' do
-      let(:expected_backup_contents) { %w{db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz terraform_state.tar.gz packages.tar.gz backup_information.yml} }
+      let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz} }
       let(:backup_information) do
         {
           backup_created_at: Time.zone.parse('2019-01-01'),
           gitlab_version: '12.3',
-          skipped: ['repositories']
+          skipped: ['task2']
         }
       end
 
       it 'executes tar' do
-        subject.pack
+        subject.create # rubocop:disable Rails/SaveBang
 
         expect(Kernel).to have_received(:system).with(*tar_cmdline)
       end
     end
 
-    context 'when a directory does not exist' do
-      let(:expected_backup_contents) { %w{db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz terraform_state.tar.gz packages.tar.gz backup_information.yml} }
-
-      before do
-        expect(Dir).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'repositories')).and_return(false)
+    context 'when the destination is optional' do
+      let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz} }
+      let(:definitions) do
+        {
+          'task1' => Backup::Manager::TaskDefinition.new(task: task1, destination_path: 'task1.tar.gz'),
+          'task2' => Backup::Manager::TaskDefinition.new(task: task2, destination_path: 'task2.tar.gz', destination_optional: true)
+        }
       end
 
       it 'executes tar' do
-        subject.pack
+        expect(File).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz')).and_return(false)
+
+        subject.create # rubocop:disable Rails/SaveBang
 
         expect(Kernel).to have_received(:system).with(*tar_cmdline)
       end
     end
-  end
 
-  describe '#remove_tmp' do
-    let(:path) { File.join(Gitlab.config.backup.path, 'tmp') }
-
-    before do
-      allow(FileUtils).to receive(:rm_rf).and_return(true)
-    end
-
-    it 'removes backups/tmp dir' do
-      subject.remove_tmp
-
-      expect(FileUtils).to have_received(:rm_rf).with(path)
-    end
-
-    it 'prints running task with a done confirmation' do
-      subject.remove_tmp
-
-      expect(progress).to have_received(:print).with('Deleting backups/tmp ... ')
-      expect(progress).to have_received(:puts).with('done')
-    end
-  end
-
-  describe '#remove_old' do
-    let(:files) do
-      [
-        '1451606400_2016_01_01_1.2.3_gitlab_backup.tar',
-        '1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
-        '1451520000_2015_12_31_4.5.6-pre_gitlab_backup.tar',
-        '1451520000_2015_12_31_4.5.6-rc1_gitlab_backup.tar',
-        '1451520000_2015_12_31_4.5.6-pre-ee_gitlab_backup.tar',
-        '1451510000_2015_12_30_gitlab_backup.tar',
-        '1450742400_2015_12_22_gitlab_backup.tar',
-        '1449878400_gitlab_backup.tar',
-        '1449014400_gitlab_backup.tar',
-        'manual_gitlab_backup.tar'
-      ]
-    end
-
-    before do
-      allow(Dir).to receive(:chdir).and_yield
-      allow(Dir).to receive(:glob).and_return(files)
-      allow(FileUtils).to receive(:rm)
-      allow(Time).to receive(:now).and_return(Time.utc(2016))
-    end
-
-    context 'when keep_time is zero' do
-      before do
-        allow(Gitlab.config.backup).to receive(:keep_time).and_return(0)
-
-        subject.remove_old
-      end
-
-      it 'removes no files' do
-        expect(FileUtils).not_to have_received(:rm)
-      end
-
-      it 'prints a skipped message' do
-        expect(progress).to have_received(:puts).with('skipping')
-      end
-    end
-
-    context 'when no valid file is found' do
+    context 'many backup files' do
       let(:files) do
         [
-          '14516064000_2016_01_01_1.2.3_gitlab_backup.tar',
-          'foo_1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
-          '1451520000_2015_12_31_4.5.6-foo_gitlab_backup.tar'
+          '1451606400_2016_01_01_1.2.3_gitlab_backup.tar',
+          '1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
+          '1451520000_2015_12_31_4.5.6-pre_gitlab_backup.tar',
+          '1451520000_2015_12_31_4.5.6-rc1_gitlab_backup.tar',
+          '1451520000_2015_12_31_4.5.6-pre-ee_gitlab_backup.tar',
+          '1451510000_2015_12_30_gitlab_backup.tar',
+          '1450742400_2015_12_22_gitlab_backup.tar',
+          '1449878400_gitlab_backup.tar',
+          '1449014400_gitlab_backup.tar',
+          'manual_gitlab_backup.tar'
         ]
       end
 
       before do
-        allow(Gitlab.config.backup).to receive(:keep_time).and_return(1)
-
-        subject.remove_old
+        allow(Dir).to receive(:chdir).and_yield
+        allow(Dir).to receive(:glob).and_return(files)
+        allow(FileUtils).to receive(:rm)
+        allow(Time).to receive(:now).and_return(Time.utc(2016))
       end
 
-      it 'removes no files' do
-        expect(FileUtils).not_to have_received(:rm)
+      context 'when keep_time is zero' do
+        before do
+          allow(Gitlab.config.backup).to receive(:keep_time).and_return(0)
+
+          subject.create # rubocop:disable Rails/SaveBang
+        end
+
+        it 'removes no files' do
+          expect(FileUtils).not_to have_received(:rm)
+        end
+
+        it 'prints a skipped message' do
+          expect(progress).to have_received(:puts).with('skipping')
+        end
       end
 
-      it 'prints a done message' do
-        expect(progress).to have_received(:puts).with('done. (0 removed)')
+      context 'when no valid file is found' do
+        let(:files) do
+          [
+            '14516064000_2016_01_01_1.2.3_gitlab_backup.tar',
+            'foo_1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
+            '1451520000_2015_12_31_4.5.6-foo_gitlab_backup.tar'
+          ]
+        end
+
+        before do
+          allow(Gitlab.config.backup).to receive(:keep_time).and_return(1)
+
+          subject.create # rubocop:disable Rails/SaveBang
+        end
+
+        it 'removes no files' do
+          expect(FileUtils).not_to have_received(:rm)
+        end
+
+        it 'prints a done message' do
+          expect(progress).to have_received(:puts).with('done. (0 removed)')
+        end
+      end
+
+      context 'when there are no files older than keep_time' do
+        before do
+          # Set to 30 days
+          allow(Gitlab.config.backup).to receive(:keep_time).and_return(2592000)
+
+          subject.create # rubocop:disable Rails/SaveBang
+        end
+
+        it 'removes no files' do
+          expect(FileUtils).not_to have_received(:rm)
+        end
+
+        it 'prints a done message' do
+          expect(progress).to have_received(:puts).with('done. (0 removed)')
+        end
+      end
+
+      context 'when keep_time is set to remove files' do
+        before do
+          # Set to 1 second
+          allow(Gitlab.config.backup).to receive(:keep_time).and_return(1)
+
+          subject.create # rubocop:disable Rails/SaveBang
+        end
+
+        it 'removes matching files with a human-readable versioned timestamp' do
+          expect(FileUtils).to have_received(:rm).with(files[1])
+          expect(FileUtils).to have_received(:rm).with(files[2])
+          expect(FileUtils).to have_received(:rm).with(files[3])
+        end
+
+        it 'removes matching files with a human-readable versioned timestamp with tagged EE' do
+          expect(FileUtils).to have_received(:rm).with(files[4])
+        end
+
+        it 'removes matching files with a human-readable non-versioned timestamp' do
+          expect(FileUtils).to have_received(:rm).with(files[5])
+          expect(FileUtils).to have_received(:rm).with(files[6])
+        end
+
+        it 'removes matching files without a human-readable timestamp' do
+          expect(FileUtils).to have_received(:rm).with(files[7])
+          expect(FileUtils).to have_received(:rm).with(files[8])
+        end
+
+        it 'does not remove files that are not old enough' do
+          expect(FileUtils).not_to have_received(:rm).with(files[0])
+        end
+
+        it 'does not remove non-matching files' do
+          expect(FileUtils).not_to have_received(:rm).with(files[9])
+        end
+
+        it 'prints a done message' do
+          expect(progress).to have_received(:puts).with('done. (8 removed)')
+        end
+      end
+
+      context 'when removing a file fails' do
+        let(:file) { files[1] }
+        let(:message) { "Permission denied @ unlink_internal - #{file}" }
+
+        before do
+          allow(Gitlab.config.backup).to receive(:keep_time).and_return(1)
+          allow(FileUtils).to receive(:rm).with(file).and_raise(Errno::EACCES, message)
+
+          subject.create # rubocop:disable Rails/SaveBang
+        end
+
+        it 'removes the remaining expected files' do
+          expect(FileUtils).to have_received(:rm).with(files[4])
+          expect(FileUtils).to have_received(:rm).with(files[5])
+          expect(FileUtils).to have_received(:rm).with(files[6])
+          expect(FileUtils).to have_received(:rm).with(files[7])
+          expect(FileUtils).to have_received(:rm).with(files[8])
+        end
+
+        it 'sets the correct removed count' do
+          expect(progress).to have_received(:puts).with('done. (7 removed)')
+        end
+
+        it 'prints the error from file that could not be removed' do
+          expect(progress).to have_received(:puts).with(a_string_matching(message))
+        end
       end
     end
 
-    context 'when there are no files older than keep_time' do
-      before do
-        # Set to 30 days
-        allow(Gitlab.config.backup).to receive(:keep_time).and_return(2592000)
-
-        subject.remove_old
-      end
-
-      it 'removes no files' do
-        expect(FileUtils).not_to have_received(:rm)
-      end
-
-      it 'prints a done message' do
-        expect(progress).to have_received(:puts).with('done. (0 removed)')
-      end
-    end
-
-    context 'when keep_time is set to remove files' do
-      before do
-        # Set to 1 second
-        allow(Gitlab.config.backup).to receive(:keep_time).and_return(1)
-
-        subject.remove_old
-      end
-
-      it 'removes matching files with a human-readable versioned timestamp' do
-        expect(FileUtils).to have_received(:rm).with(files[1])
-        expect(FileUtils).to have_received(:rm).with(files[2])
-        expect(FileUtils).to have_received(:rm).with(files[3])
-      end
-
-      it 'removes matching files with a human-readable versioned timestamp with tagged EE' do
-        expect(FileUtils).to have_received(:rm).with(files[4])
-      end
-
-      it 'removes matching files with a human-readable non-versioned timestamp' do
-        expect(FileUtils).to have_received(:rm).with(files[5])
-        expect(FileUtils).to have_received(:rm).with(files[6])
-      end
-
-      it 'removes matching files without a human-readable timestamp' do
-        expect(FileUtils).to have_received(:rm).with(files[7])
-        expect(FileUtils).to have_received(:rm).with(files[8])
-      end
-
-      it 'does not remove files that are not old enough' do
-        expect(FileUtils).not_to have_received(:rm).with(files[0])
-      end
-
-      it 'does not remove non-matching files' do
-        expect(FileUtils).not_to have_received(:rm).with(files[9])
-      end
-
-      it 'prints a done message' do
-        expect(progress).to have_received(:puts).with('done. (8 removed)')
-      end
-    end
-
-    context 'when removing a file fails' do
-      let(:file) { files[1] }
-      let(:message) { "Permission denied @ unlink_internal - #{file}" }
+    describe 'cloud storage' do
+      let(:backup_file) { Tempfile.new('backup', Gitlab.config.backup.path) }
+      let(:backup_filename) { File.basename(backup_file.path) }
 
       before do
-        allow(Gitlab.config.backup).to receive(:keep_time).and_return(1)
-        allow(FileUtils).to receive(:rm).with(file).and_raise(Errno::EACCES, message)
+        allow(subject).to receive(:tar_file).and_return(backup_filename)
 
-        subject.remove_old
+        stub_backup_setting(
+          upload: {
+            connection: {
+              provider: 'AWS',
+              aws_access_key_id: 'id',
+              aws_secret_access_key: 'secret'
+            },
+            remote_directory: 'directory',
+            multipart_chunk_size: 104857600,
+            encryption: nil,
+            encryption_key: nil,
+            storage_class: nil
+          }
+        )
+
+        Fog.mock!
+
+        # the Fog mock only knows about directories we create explicitly
+        connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
+        connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
       end
 
-      it 'removes the remaining expected files' do
-        expect(FileUtils).to have_received(:rm).with(files[4])
-        expect(FileUtils).to have_received(:rm).with(files[5])
-        expect(FileUtils).to have_received(:rm).with(files[6])
-        expect(FileUtils).to have_received(:rm).with(files[7])
-        expect(FileUtils).to have_received(:rm).with(files[8])
+      context 'target path' do
+        it 'uses the tar filename by default' do
+          expect_any_instance_of(Fog::Collection).to receive(:create)
+            .with(hash_including(key: backup_filename, public: false))
+            .and_call_original
+
+          subject.create # rubocop:disable Rails/SaveBang
+        end
+
+        it 'adds the DIRECTORY environment variable if present' do
+          stub_env('DIRECTORY', 'daily')
+
+          expect_any_instance_of(Fog::Collection).to receive(:create)
+            .with(hash_including(key: "daily/#{backup_filename}", public: false))
+            .and_call_original
+
+          subject.create # rubocop:disable Rails/SaveBang
+        end
       end
 
-      it 'sets the correct removed count' do
-        expect(progress).to have_received(:puts).with('done. (7 removed)')
+      context 'with AWS with server side encryption' do
+        let(:connection) { ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys) }
+        let(:encryption_key) { nil }
+        let(:encryption) { nil }
+        let(:storage_options) { nil }
+
+        before do
+          stub_backup_setting(
+            upload: {
+              connection: {
+                provider: 'AWS',
+                aws_access_key_id: 'AWS_ACCESS_KEY_ID',
+                aws_secret_access_key: 'AWS_SECRET_ACCESS_KEY'
+              },
+              remote_directory: 'directory',
+              multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
+              encryption: encryption,
+              encryption_key: encryption_key,
+              storage_options: storage_options,
+              storage_class: nil
+            }
+          )
+
+          connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
+        end
+
+        context 'with SSE-S3 without using storage_options' do
+          let(:encryption) { 'AES256' }
+
+          it 'sets encryption attributes' do
+            subject.create # rubocop:disable Rails/SaveBang
+
+            expect(progress).to have_received(:puts).with("done (encrypted with AES256)")
+          end
+        end
+
+        context 'with SSE-C (customer-provided keys) options' do
+          let(:encryption) { 'AES256' }
+          let(:encryption_key) { SecureRandom.hex }
+
+          it 'sets encryption attributes' do
+            subject.create # rubocop:disable Rails/SaveBang
+
+            expect(progress).to have_received(:puts).with("done (encrypted with AES256)")
+          end
+        end
+
+        context 'with SSE-KMS options' do
+          let(:storage_options) do
+            {
+              server_side_encryption: 'aws:kms',
+              server_side_encryption_kms_key_id: 'arn:aws:kms:12345'
+            }
+          end
+
+          it 'sets encryption attributes' do
+            subject.create # rubocop:disable Rails/SaveBang
+
+            expect(progress).to have_received(:puts).with("done (encrypted with aws:kms)")
+          end
+        end
       end
 
-      it 'prints the error from file that could not be removed' do
-        expect(progress).to have_received(:puts).with(a_string_matching(message))
+      context 'with Google provider' do
+        before do
+          stub_backup_setting(
+            upload: {
+              connection: {
+                provider: 'Google',
+                google_storage_access_key_id: 'test-access-id',
+                google_storage_secret_access_key: 'secret'
+              },
+              remote_directory: 'directory',
+              multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
+              encryption: nil,
+              encryption_key: nil,
+              storage_class: nil
+            }
+          )
+
+          connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
+          connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
+        end
+
+        it 'does not attempt to set ACL' do
+          expect_any_instance_of(Fog::Collection).to receive(:create)
+            .with(hash_excluding(public: false))
+            .and_call_original
+
+          subject.create # rubocop:disable Rails/SaveBang
+        end
+      end
+
+      context 'with AzureRM provider' do
+        before do
+          stub_backup_setting(
+            upload: {
+              connection: {
+                provider: 'AzureRM',
+                azure_storage_account_name: 'test-access-id',
+                azure_storage_access_key: 'secret'
+              },
+              remote_directory: 'directory',
+              multipart_chunk_size: nil,
+              encryption: nil,
+              encryption_key: nil,
+              storage_class: nil
+            }
+          )
+        end
+
+        it 'loads the provider' do
+          expect { subject.create }.not_to raise_error # rubocop:disable Rails/SaveBang
+        end
       end
     end
   end
 
-  describe 'verify_backup_version' do
-    context 'on version mismatch' do
-      let(:gitlab_version) { Gitlab::VERSION }
-
-      it 'stops the process' do
-        allow(YAML).to receive(:load_file)
-          .and_return({ gitlab_version: "not #{gitlab_version}" })
-
-        expect { subject.verify_backup_version }.to raise_error SystemExit
-      end
+  describe '#restore' do
+    let(:task1) { instance_double(Backup::Task, human_name: 'task 1', enabled: true, pre_restore_warning: nil, post_restore_warning: nil) }
+    let(:task2) { instance_double(Backup::Task, human_name: 'task 2', enabled: true, pre_restore_warning: nil, post_restore_warning: nil) }
+    let(:definitions) do
+      {
+        'task1' => Backup::Manager::TaskDefinition.new(task: task1, destination_path: 'task1.tar.gz'),
+        'task2' => Backup::Manager::TaskDefinition.new(task: task2, destination_path: 'task2.tar.gz')
+      }
     end
 
-    context 'on version match' do
-      let(:gitlab_version) { Gitlab::VERSION }
-
-      it 'does nothing' do
-        allow(YAML).to receive(:load_file)
-          .and_return({ gitlab_version: "#{gitlab_version}" })
-
-        expect { subject.verify_backup_version }.not_to raise_error
-      end
+    let(:gitlab_version) { Gitlab::VERSION }
+    let(:backup_information) do
+      {
+        backup_created_at: Time.zone.parse('2019-01-01'),
+        gitlab_version: gitlab_version
+      }
     end
-  end
 
-  describe '#unpack' do
+    before do
+      Rake.application.rake_require 'tasks/gitlab/shell'
+      Rake.application.rake_require 'tasks/cache'
+
+      allow(task1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'))
+      allow(task2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'))
+      allow(YAML).to receive(:load_file).and_return(backup_information)
+      allow(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
+      allow(Rake::Task['cache:clear']).to receive(:invoke)
+    end
+
     context 'when there are no backup files in the directory' do
       before do
         allow(Dir).to receive(:glob).and_return([])
       end
 
       it 'fails the operation and prints an error' do
-        expect { subject.unpack }.to raise_error SystemExit
+        expect { subject.restore }.to raise_error SystemExit
         expect(progress).to have_received(:puts)
           .with(a_string_matching('No backups found'))
       end
@@ -307,13 +599,13 @@ RSpec.describe Backup::Manager do
       end
 
       it 'prints the list of available backups' do
-        expect { subject.unpack }.to raise_error SystemExit
+        expect { subject.restore }.to raise_error SystemExit
         expect(progress).to have_received(:puts)
           .with(a_string_matching('1451606400_2016_01_01_1.2.3\n 1451520000_2015_12_31'))
       end
 
       it 'fails the operation and prints an error' do
-        expect { subject.unpack }.to raise_error SystemExit
+        expect { subject.restore }.to raise_error SystemExit
         expect(progress).to have_received(:puts)
           .with(a_string_matching('Found more than one backup'))
       end
@@ -332,7 +624,7 @@ RSpec.describe Backup::Manager do
       end
 
       it 'fails the operation and prints an error' do
-        expect { subject.unpack }.to raise_error SystemExit
+        expect { subject.restore }.to raise_error SystemExit
         expect(File).to have_received(:exist?).with('wrong_gitlab_backup.tar')
         expect(progress).to have_received(:puts)
           .with(a_string_matching('The backup file wrong_gitlab_backup.tar does not exist'))
@@ -348,17 +640,46 @@ RSpec.describe Backup::Manager do
         )
         allow(File).to receive(:exist?).and_return(true)
         allow(Kernel).to receive(:system).and_return(true)
-        allow(YAML).to receive(:load_file).and_return(gitlab_version: Gitlab::VERSION)
 
         stub_env('BACKUP', '/ignored/path/1451606400_2016_01_01_1.2.3')
       end
 
       it 'unpacks the file' do
-        subject.unpack
+        subject.restore
 
         expect(Kernel).to have_received(:system)
           .with("tar", "-xf", "1451606400_2016_01_01_1.2.3_gitlab_backup.tar")
-        expect(progress).to have_received(:puts).with(a_string_matching('done'))
+      end
+
+      context 'on version mismatch' do
+        let(:backup_information) do
+          {
+            backup_created_at: Time.zone.parse('2019-01-01'),
+            gitlab_version: "not #{gitlab_version}"
+          }
+        end
+
+        it 'stops the process' do
+          expect { subject.restore }.to raise_error SystemExit
+          expect(progress).to have_received(:puts)
+            .with(a_string_matching('GitLab version mismatch'))
+        end
+      end
+
+      describe 'tmp files' do
+        let(:path) { File.join(Gitlab.config.backup.path, 'tmp') }
+
+        before do
+          allow(FileUtils).to receive(:rm_rf).and_call_original
+        end
+
+        it 'removes backups/tmp dir' do
+          expect(FileUtils).to receive(:rm_rf).with(path).and_call_original
+
+          subject.restore
+
+          expect(progress).to have_received(:print).with('Deleting backups/tmp ... ')
+        end
       end
     end
 
@@ -375,184 +696,41 @@ RSpec.describe Backup::Manager do
       it 'selects the non-tarred backup to restore from' do
         expect(Kernel).not_to receive(:system)
 
-        subject.unpack
+        subject.restore
 
         expect(progress).to have_received(:puts)
           .with(a_string_matching('Non tarred backup found '))
       end
-    end
-  end
 
-  describe '#upload' do
-    let(:backup_file) { Tempfile.new('backup', Gitlab.config.backup.path) }
-    let(:backup_filename) { File.basename(backup_file.path) }
-
-    before do
-      allow(subject).to receive(:tar_file).and_return(backup_filename)
-
-      stub_backup_setting(
-        upload: {
-          connection: {
-            provider: 'AWS',
-            aws_access_key_id: 'id',
-            aws_secret_access_key: 'secret'
-          },
-          remote_directory: 'directory',
-          multipart_chunk_size: 104857600,
-          encryption: nil,
-          encryption_key: nil,
-          storage_class: nil
-        }
-      )
-
-      Fog.mock!
-
-      # the Fog mock only knows about directories we create explicitly
-      connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
-      connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
-    end
-
-    context 'target path' do
-      it 'uses the tar filename by default' do
-        expect_any_instance_of(Fog::Collection).to receive(:create)
-          .with(hash_including(key: backup_filename, public: false))
-          .and_return(true)
-
-        subject.upload
-      end
-
-      it 'adds the DIRECTORY environment variable if present' do
-        stub_env('DIRECTORY', 'daily')
-
-        expect_any_instance_of(Fog::Collection).to receive(:create)
-          .with(hash_including(key: "daily/#{backup_filename}", public: false))
-          .and_return(true)
-
-        subject.upload
-      end
-    end
-
-    context 'with AWS with server side encryption' do
-      let(:connection) { ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys) }
-      let(:encryption_key) { nil }
-      let(:encryption) { nil }
-      let(:storage_options) { nil }
-
-      before do
-        stub_backup_setting(
-          upload: {
-            connection: {
-              provider: 'AWS',
-              aws_access_key_id: 'AWS_ACCESS_KEY_ID',
-              aws_secret_access_key: 'AWS_SECRET_ACCESS_KEY'
-            },
-            remote_directory: 'directory',
-            multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
-            encryption: encryption,
-            encryption_key: encryption_key,
-            storage_options: storage_options,
-            storage_class: nil
-          }
-        )
-
-        connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
-      end
-
-      context 'with SSE-S3 without using storage_options' do
-        let(:encryption) { 'AES256' }
-
-        it 'sets encryption attributes' do
-          result = subject.upload
-
-          expect(result.key).to be_present
-          expect(result.encryption).to eq('AES256')
-          expect(result.encryption_key).to be_nil
-          expect(result.kms_key_id).to be_nil
-        end
-      end
-
-      context 'with SSE-C (customer-provided keys) options' do
-        let(:encryption) { 'AES256' }
-        let(:encryption_key) { SecureRandom.hex }
-
-        it 'sets encryption attributes' do
-          result = subject.upload
-
-          expect(result.key).to be_present
-          expect(result.encryption).to eq(encryption)
-          expect(result.encryption_key).to eq(encryption_key)
-          expect(result.kms_key_id).to be_nil
-        end
-      end
-
-      context 'with SSE-KMS options' do
-        let(:storage_options) do
+      context 'on version mismatch' do
+        let(:backup_information) do
           {
-            server_side_encryption: 'aws:kms',
-            server_side_encryption_kms_key_id: 'arn:aws:kms:12345'
+            backup_created_at: Time.zone.parse('2019-01-01'),
+            gitlab_version: "not #{gitlab_version}"
           }
         end
 
-        it 'sets encryption attributes' do
-          result = subject.upload
-
-          expect(result.key).to be_present
-          expect(result.encryption).to eq('aws:kms')
-          expect(result.kms_key_id).to eq('arn:aws:kms:12345')
+        it 'stops the process' do
+          expect { subject.restore }.to raise_error SystemExit
+          expect(progress).to have_received(:puts)
+            .with(a_string_matching('GitLab version mismatch'))
         end
       end
-    end
 
-    context 'with Google provider' do
-      before do
-        stub_backup_setting(
-          upload: {
-            connection: {
-              provider: 'Google',
-              google_storage_access_key_id: 'test-access-id',
-              google_storage_secret_access_key: 'secret'
-            },
-            remote_directory: 'directory',
-            multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
-            encryption: nil,
-            encryption_key: nil,
-            storage_class: nil
-          }
-        )
+      describe 'tmp files' do
+        let(:path) { File.join(Gitlab.config.backup.path, 'tmp') }
 
-        connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
-        connection.directories.create(key: Gitlab.config.backup.upload.remote_directory) # rubocop:disable Rails/SaveBang
-      end
+        before do
+          allow(FileUtils).to receive(:rm_rf).and_call_original
+        end
 
-      it 'does not attempt to set ACL' do
-        expect_any_instance_of(Fog::Collection).to receive(:create)
-          .with(hash_excluding(public: false))
-          .and_return(true)
+        it 'removes backups/tmp dir' do
+          expect(FileUtils).to receive(:rm_rf).with(path).and_call_original
 
-        subject.upload
-      end
-    end
+          subject.restore
 
-    context 'with AzureRM provider' do
-      before do
-        stub_backup_setting(
-          upload: {
-            connection: {
-              provider: 'AzureRM',
-              azure_storage_account_name: 'test-access-id',
-              azure_storage_access_key: 'secret'
-            },
-            remote_directory: 'directory',
-            multipart_chunk_size: nil,
-            encryption: nil,
-            encryption_key: nil,
-            storage_class: nil
-          }
-        )
-      end
-
-      it 'loads the provider' do
-        expect { subject.upload }.not_to raise_error
+          expect(progress).to have_received(:print).with('Deleting backups/tmp ... ')
+        end
       end
     end
   end

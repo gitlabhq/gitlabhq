@@ -57,7 +57,7 @@ To run SAST jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 WARNING:
-Our SAST jobs require a Linux container type. Windows containers are not yet supported.
+Our SAST jobs require a Linux/amd64 container type. Windows containers are not yet supported.
 
 WARNING:
 If you use your own runners, make sure the Docker version installed

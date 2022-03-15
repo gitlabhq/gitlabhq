@@ -15,7 +15,7 @@ module Backup
       @storage_parallelism = storage_parallelism
     end
 
-    def start(type)
+    def start(type, backup_repos_path)
       raise Error, 'already started' if started?
 
       command = case type
@@ -91,10 +91,6 @@ module Backup
 
     def started?
       @thread.present?
-    end
-
-    def backup_repos_path
-      File.absolute_path(File.join(Gitlab.config.backup.path, 'repositories'))
     end
 
     def bin_path

@@ -8,6 +8,7 @@ RSpec.describe Backup::Repositories do
   let(:strategy) { spy(:strategy, parallel_enqueue?: parallel_enqueue) }
   let(:max_concurrency) { 1 }
   let(:max_storage_concurrency) { 1 }
+  let(:destination) { 'repositories' }
 
   subject do
     described_class.new(
@@ -26,9 +27,9 @@ RSpec.describe Backup::Repositories do
         project_snippet = create(:project_snippet, :repository, project: project)
         personal_snippet = create(:personal_snippet, :repository, author: project.first_owner)
 
-        subject.dump
+        subject.dump(destination)
 
-        expect(strategy).to have_received(:start).with(:create)
+        expect(strategy).to have_received(:start).with(:create, destination)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
@@ -54,38 +55,38 @@ RSpec.describe Backup::Repositories do
       it 'creates the expected number of threads' do
         expect(Thread).not_to receive(:new)
 
-        expect(strategy).to receive(:start).with(:create)
+        expect(strategy).to receive(:start).with(:create, destination)
         projects.each do |project|
           expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
         end
         expect(strategy).to receive(:finish!)
 
-        subject.dump
+        subject.dump(destination)
       end
 
       describe 'command failure' do
         it 'enqueue_project raises an error' do
           allow(strategy).to receive(:enqueue).with(anything, Gitlab::GlRepository::PROJECT).and_raise(IOError)
 
-          expect { subject.dump }.to raise_error(IOError)
+          expect { subject.dump(destination) }.to raise_error(IOError)
         end
 
         it 'project query raises an error' do
           allow(Project).to receive_message_chain(:includes, :find_each).and_raise(ActiveRecord::StatementTimeout)
 
-          expect { subject.dump }.to raise_error(ActiveRecord::StatementTimeout)
+          expect { subject.dump(destination) }.to raise_error(ActiveRecord::StatementTimeout)
         end
       end
 
       it 'avoids N+1 database queries' do
         control_count = ActiveRecord::QueryRecorder.new do
-          subject.dump
+          subject.dump(destination)
         end.count
 
         create_list(:project, 2, :repository)
 
         expect do
-          subject.dump
+          subject.dump(destination)
         end.not_to exceed_query_limit(control_count)
       end
     end
@@ -98,13 +99,13 @@ RSpec.describe Backup::Repositories do
       it 'enqueues all projects sequentially' do
         expect(Thread).not_to receive(:new)
 
-        expect(strategy).to receive(:start).with(:create)
+        expect(strategy).to receive(:start).with(:create, destination)
         projects.each do |project|
           expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
         end
         expect(strategy).to receive(:finish!)
 
-        subject.dump
+        subject.dump(destination)
       end
     end
 
@@ -122,13 +123,13 @@ RSpec.describe Backup::Repositories do
             .exactly(storage_keys.length * (max_storage_concurrency + 1)).times
             .and_call_original
 
-          expect(strategy).to receive(:start).with(:create)
+          expect(strategy).to receive(:start).with(:create, destination)
           projects.each do |project|
             expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           end
           expect(strategy).to receive(:finish!)
 
-          subject.dump
+          subject.dump(destination)
         end
 
         context 'with extra max concurrency' do
@@ -139,13 +140,13 @@ RSpec.describe Backup::Repositories do
               .exactly(storage_keys.length * (max_storage_concurrency + 1)).times
               .and_call_original
 
-            expect(strategy).to receive(:start).with(:create)
+            expect(strategy).to receive(:start).with(:create, destination)
             projects.each do |project|
               expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
             end
             expect(strategy).to receive(:finish!)
 
-            subject.dump
+            subject.dump(destination)
           end
         end
 
@@ -153,33 +154,33 @@ RSpec.describe Backup::Repositories do
           it 'enqueue_project raises an error' do
             allow(strategy).to receive(:enqueue).and_raise(IOError)
 
-            expect { subject.dump }.to raise_error(IOError)
+            expect { subject.dump(destination) }.to raise_error(IOError)
           end
 
           it 'project query raises an error' do
             allow(Project).to receive_message_chain(:for_repository_storage, :includes, :find_each).and_raise(ActiveRecord::StatementTimeout)
 
-            expect { subject.dump }.to raise_error(ActiveRecord::StatementTimeout)
+            expect { subject.dump(destination) }.to raise_error(ActiveRecord::StatementTimeout)
           end
 
           context 'misconfigured storages' do
             let(:storage_keys) { %w[test_second_storage] }
 
             it 'raises an error' do
-              expect { subject.dump }.to raise_error(Backup::Error, 'repositories.storages in gitlab.yml is misconfigured')
+              expect { subject.dump(destination) }.to raise_error(Backup::Error, 'repositories.storages in gitlab.yml is misconfigured')
             end
           end
         end
 
         it 'avoids N+1 database queries' do
           control_count = ActiveRecord::QueryRecorder.new do
-            subject.dump
+            subject.dump(destination)
           end.count
 
           create_list(:project, 2, :repository)
 
           expect do
-            subject.dump
+            subject.dump(destination)
           end.not_to exceed_query_limit(control_count)
         end
       end
@@ -192,9 +193,9 @@ RSpec.describe Backup::Repositories do
     let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
 
     it 'calls enqueue for each repository type', :aggregate_failures do
-      subject.restore
+      subject.restore(destination)
 
-      expect(strategy).to have_received(:start).with(:restore)
+      expect(strategy).to have_received(:start).with(:restore, destination)
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
@@ -208,7 +209,7 @@ RSpec.describe Backup::Repositories do
         pool_repository = create(:pool_repository, :failed)
         pool_repository.delete_object_pool
 
-        subject.restore
+        subject.restore(destination)
 
         pool_repository.reload
         expect(pool_repository).not_to be_failed
@@ -219,7 +220,7 @@ RSpec.describe Backup::Repositories do
         pool_repository = create(:pool_repository, state: :obsolete)
         pool_repository.update_column(:source_project_id, nil)
 
-        subject.restore
+        subject.restore(destination)
 
         pool_repository.reload
         expect(pool_repository).to be_obsolete
@@ -236,14 +237,14 @@ RSpec.describe Backup::Repositories do
       end
 
       it 'shows the appropriate error' do
-        subject.restore
+        subject.restore(destination)
 
         expect(progress).to have_received(:puts).with("Snippet #{personal_snippet.full_path} can't be restored: Repository has more than one branch")
         expect(progress).to have_received(:puts).with("Snippet #{project_snippet.full_path} can't be restored: Repository has more than one branch")
       end
 
       it 'removes the snippets from the DB' do
-        expect { subject.restore }.to change(PersonalSnippet, :count).by(-1)
+        expect { subject.restore(destination) }.to change(PersonalSnippet, :count).by(-1)
           .and change(ProjectSnippet, :count).by(-1)
           .and change(SnippetRepository, :count).by(-2)
       end
@@ -253,7 +254,7 @@ RSpec.describe Backup::Repositories do
         shard_name = personal_snippet.repository.shard
         path = personal_snippet.disk_path + '.git'
 
-        subject.restore
+        subject.restore(destination)
 
         expect(gitlab_shell.repository_exists?(shard_name, path)).to eq false
       end

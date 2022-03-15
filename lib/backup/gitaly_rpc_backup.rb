@@ -7,10 +7,11 @@ module Backup
       @progress = progress
     end
 
-    def start(type)
+    def start(type, backup_repos_path)
       raise Error, 'already started' if @type
 
       @type = type
+      @backup_repos_path = backup_repos_path
       case type
       when :create
         FileUtils.rm_rf(backup_repos_path)
@@ -31,7 +32,7 @@ module Backup
       backup_restore = BackupRestore.new(
         progress,
         repository_type.repository_for(container),
-        backup_repos_path
+        @backup_repos_path
       )
 
       case @type
@@ -51,10 +52,6 @@ module Backup
     private
 
     attr_reader :progress
-
-    def backup_repos_path
-      @backup_repos_path ||= File.join(Gitlab.config.backup.path, 'repositories')
-    end
 
     class BackupRestore
       attr_accessor :progress, :repository, :backup_repos_path

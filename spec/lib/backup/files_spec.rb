@@ -39,7 +39,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#restore' do
-    subject { described_class.new('registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
 
     let(:timestamp) { Time.utc(2017, 3, 22) }
 
@@ -58,11 +58,11 @@ RSpec.describe Backup::Files do
       it 'moves all necessary files' do
         allow(subject).to receive(:backup_existing_files).and_call_original
         expect(FileUtils).to receive(:mv).with(["/var/gitlab-registry/sample1"], File.join(Gitlab.config.backup.path, "tmp", "registry.#{Time.now.to_i}"))
-        subject.restore
+        subject.restore('registry.tar.gz')
       end
 
       it 'raises no errors' do
-        expect { subject.restore }.not_to raise_error
+        expect { subject.restore('registry.tar.gz') }.not_to raise_error
       end
 
       it 'calls tar command with unlink' do
@@ -70,13 +70,13 @@ RSpec.describe Backup::Files do
 
         expect(subject).to receive(:run_pipeline!).with([%w(gzip -cd), %w(blabla-tar --unlink-first --recursive-unlink -C /var/gitlab-registry -xf -)], any_args)
         expect(subject).to receive(:pipeline_succeeded?).and_return(true)
-        subject.restore
+        subject.restore('registry.tar.gz')
       end
 
       it 'raises an error on failure' do
         expect(subject).to receive(:pipeline_succeeded?).and_return(false)
 
-        expect { subject.restore }.to raise_error(/Restore operation failed:/)
+        expect { subject.restore('registry.tar.gz') }.to raise_error(/Restore operation failed:/)
       end
     end
 
@@ -89,7 +89,7 @@ RSpec.describe Backup::Files do
 
       it 'shows error message' do
         expect(subject).to receive(:access_denied_error).with("/var/gitlab-registry")
-        subject.restore
+        subject.restore('registry.tar.gz')
       end
     end
 
@@ -104,13 +104,13 @@ RSpec.describe Backup::Files do
         expect(subject).to receive(:resource_busy_error).with("/var/gitlab-registry")
                              .and_call_original
 
-        expect { subject.restore }.to raise_error(/is a mountpoint/)
+        expect { subject.restore('registry.tar.gz') }.to raise_error(/is a mountpoint/)
       end
     end
   end
 
   describe '#dump' do
-    subject { described_class.new('pages', '/var/gitlab-pages', excludes: ['@pages.tmp']) }
+    subject { described_class.new(progress, 'pages', '/var/gitlab-pages', excludes: ['@pages.tmp']) }
 
     before do
       allow(subject).to receive(:run_pipeline!).and_return([[true, true], ''])
@@ -118,14 +118,14 @@ RSpec.describe Backup::Files do
     end
 
     it 'raises no errors' do
-      expect { subject.dump }.not_to raise_error
+      expect { subject.dump('registry.tar.gz') }.not_to raise_error
     end
 
     it 'excludes tmp dirs from archive' do
       expect(subject).to receive(:tar).and_return('blabla-tar')
 
       expect(subject).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found --exclude=./@pages.tmp -C /var/gitlab-pages -cf - .), 'gzip -c -1'], any_args)
-      subject.dump
+      subject.dump('registry.tar.gz')
     end
 
     it 'raises an error on failure' do
@@ -133,7 +133,7 @@ RSpec.describe Backup::Files do
       expect(subject).to receive(:pipeline_succeeded?).and_return(false)
 
       expect do
-        subject.dump
+        subject.dump('registry.tar.gz')
       end.to raise_error(/Failed to create compressed file/)
     end
 
@@ -149,7 +149,7 @@ RSpec.describe Backup::Files do
           .with(%w(rsync -a --delete --exclude=lost+found --exclude=/gitlab-pages/@pages.tmp /var/gitlab-pages /var/gitlab-backup))
           .and_return(['', 0])
 
-        subject.dump
+        subject.dump('registry.tar.gz')
       end
 
       it 'retries if rsync fails due to vanishing files' do
@@ -158,7 +158,7 @@ RSpec.describe Backup::Files do
           .and_return(['rsync failed', 24], ['', 0])
 
         expect do
-          subject.dump
+          subject.dump('registry.tar.gz')
         end.to output(/files vanished during rsync, retrying/).to_stdout
       end
 
@@ -168,7 +168,7 @@ RSpec.describe Backup::Files do
           .and_return(['rsync failed', 1])
 
         expect do
-          subject.dump
+          subject.dump('registry.tar.gz')
         end.to output(/rsync failed/).to_stdout
            .and raise_error(/Failed to create compressed file/)
       end
@@ -176,7 +176,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#exclude_dirs' do
-    subject { described_class.new('pages', '/var/gitlab-pages', excludes: ['@pages.tmp']) }
+    subject { described_class.new(progress, 'pages', '/var/gitlab-pages', excludes: ['@pages.tmp']) }
 
     it 'prepends a leading dot slash to tar excludes' do
       expect(subject.exclude_dirs(:tar)).to eq(['--exclude=lost+found', '--exclude=./@pages.tmp'])
@@ -188,7 +188,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#run_pipeline!' do
-    subject { described_class.new('registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
 
     it 'executes an Open3.pipeline for cmd_list' do
       expect(Open3).to receive(:pipeline).with(%w[whew command], %w[another cmd], any_args)
@@ -222,7 +222,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#pipeline_succeeded?' do
-    subject { described_class.new('registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
 
     it 'returns true if both tar and gzip succeeeded' do
       expect(
@@ -262,7 +262,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#tar_ignore_non_success?' do
-    subject { described_class.new('registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
 
     context 'if `tar` command exits with 1 exitstatus' do
       it 'returns true' do
@@ -310,7 +310,7 @@ RSpec.describe Backup::Files do
   end
 
   describe '#noncritical_warning?' do
-    subject { described_class.new('registry', '/var/gitlab-registry') }
+    subject { described_class.new(progress, 'registry', '/var/gitlab-registry') }
 
     it 'returns true if given text matches noncritical warnings list' do
       expect(
