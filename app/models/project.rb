@@ -3046,10 +3046,6 @@ class Project < ApplicationRecord
       Projects::SyncEvent.enqueue_worker
     end
   end
-
-  def allow_serialization?(options = nil)
-    Feature.disabled?(:block_project_serialization, self, default_enabled: :yaml) || super
-  end
 end
 
 Project.prepend_mod_with('Project')

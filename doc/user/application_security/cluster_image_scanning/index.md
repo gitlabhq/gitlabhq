@@ -46,7 +46,7 @@ To enable cluster image scanning in your pipeline, you need the following:
 - [GitLab Runner](https://docs.gitlab.com/runner/)
   with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html)
   or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html)
-  executor.
+  executor on Linux/amd64.
 - Docker `18.09.03` or later installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
 - [Starboard Operator](https://aquasecurity.github.io/starboard/v0.10.3/operator/installation/kubectl/)

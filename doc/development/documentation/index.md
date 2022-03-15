@@ -7,7 +7,7 @@ description: Learn how to contribute to GitLab Documentation.
 
 # GitLab Documentation guidelines
 
-The GitLab documentation is [intended as the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions for every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, and the use of GitLab with other applications.
+The GitLab documentation is [intended as the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions for every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features and the use of GitLab with other applications.
 
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
@@ -55,9 +55,9 @@ docs-only merge requests using the following guide:
 
 [Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community.
 
-To ensure that GitLab docs are current, there are special processes and responsibilities for all [feature changes](workflow.md), that is development work that impacts the appearance, usage, or administration of a feature.
+To ensure that the GitLab docs are current, there are special processes and responsibilities for all [feature changes](workflow.md), that is development work that impacts the appearance, usage, or administration of a feature.
 
-However, anyone can contribute [documentation improvements](workflow.md) that are not associated with a feature change. For example, adding a new doc on how to accomplish a use case that's already possible with GitLab or with third-party tools and GitLab.
+However, anyone can contribute [documentation improvements](workflow.md) that are not associated with a feature change. For example, adding a new document on how to accomplish a use case that's already possible with GitLab or with third-party tools and GitLab.
 
 ## Markdown and styles
 
@@ -87,8 +87,8 @@ belongs to, as well as an information block as described below:
 - `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
   to which the majority of the page's content belongs.
 - `info`: The following line, which provides direction to contributors regarding
-  how to contact the Technical Writer associated with the page's Stage and
-  Group:
+  how to contact the Technical Writer associated with the page's stage and
+  group:
 
   ```plaintext
   To determine the technical writer assigned to the Stage/Group
@@ -116,7 +116,7 @@ The following metadata should be added when a page is moved to another location:
   location to which visitors should be redirected for a moved page.
   [Learn more](redirects.md).
 - `disqus_identifier`: Identifier for Disqus commenting system. Used to keep
-  comments with a page that's been moved to a new URL.
+  comments with a page that has been moved to a new URL.
   [Learn more](redirects.md#redirections-for-pages-with-disqus-comments).
 
 ### Comments metadata
@@ -192,8 +192,8 @@ For example:
 1. The change shows up in the 14.5 self-managed release, due to missing the release cutoff
    for 14.4.
 
-The exact cutoff date for each release is flexible, and can be earlier or later
-than expected due to holidays, weekends, or other events. In general, MRs merged
+The exact cutoff date for each release is flexible, and can be sooner or later
+than expected due to holidays, weekends or other events. In general, MRs merged
 by the 17th should be present in the release on the 22nd, though it is not guaranteed.
 If it is important that a documentation update is present in that month's release,
 merge it as early as possible.
@@ -209,7 +209,7 @@ with the following conventions:
 
 - It's relative to the `doc/` directory in the GitLab repository.
 - It omits the `.md` extension.
-- It doesn't end with a slash (`/`).
+- It doesn't end with a forward slash (`/`).
 
 The help text follows the [Pajamas guidelines](https://design.gitlab.com/usability/helping-users/#formatting-help-content).
 
@@ -316,7 +316,7 @@ process. This is configured in the `Dangerfile` in the GitLab repository under
 
 ## Automatic screenshot generator
 
-You can now set up an automatic screenshot generator to take and compress screenshots, with the
+You can now set up an automatic screenshot generator to take and compress screenshots with the
 help of a configuration file known as **screenshot generator**.
 
 ### Use the tool

@@ -3,7 +3,10 @@
     %meta{ content: "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
     %title
       GitLab
-    = stylesheet_link_tag 'notify'
+    - if Feature.enabled?(:enhanced_notify_css)
+      = stylesheet_link_tag 'notify_enhanced'
+    - else
+      = stylesheet_link_tag 'notify'
     = yield :head
   %body
     .content

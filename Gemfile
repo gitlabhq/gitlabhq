@@ -153,7 +153,7 @@ gem 'html-pipeline', '~> 2.13.2'
 gem 'deckar01-task_list', '2.3.1'
 gem 'gitlab-markup', '~> 1.8.0'
 gem 'github-markup', '~> 1.7.0', require: 'github/markup'
-gem 'commonmarker', '~> 0.23.2'
+gem 'commonmarker', '~> 0.23.4'
 gem 'kramdown', '~> 2.3.1'
 gem 'RedCloth', '~> 4.3.2'
 gem 'rdoc', '~> 6.3.2'
@@ -405,7 +405,7 @@ group :development, :test, :danger do
 end
 
 group :development, :test, :coverage do
-  gem 'simplecov', '~> 0.18.5', require: false
+  gem 'simplecov', '~> 0.21', require: false
   gem 'simplecov-lcov', '~> 0.8.0', require: false
   gem 'simplecov-cobertura', '~> 1.3.1', require: false
   gem 'undercover', '~> 0.4.4', require: false

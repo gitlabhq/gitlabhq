@@ -172,6 +172,7 @@ Filter a group to find members. By default, all members in the group and subgrou
    - To view members in the group only, select **Membership = Direct**.
    - To view members of the group and its subgroups, select **Membership = Inherited**.
    - To view members with two-factor authentication enabled or disabled, select **2FA = Enabled** or **Disabled**.
+   - [In GitLab 14.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/349887), to view GitLab users created by [SAML SSO](saml_sso/index.md) or [SCIM provisioning](saml_sso/scim_setup.md) select **Enterprise = true**.
 
 ### Search a group
 

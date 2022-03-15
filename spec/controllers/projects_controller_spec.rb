@@ -1602,59 +1602,6 @@ RSpec.describe ProjectsController do
     end
   end
 
-  describe 'GET resolve' do
-    shared_examples 'resolvable endpoint' do
-      it 'redirects to the project page' do
-        get :resolve, params: { id: project.id }
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(project_path(project))
-      end
-    end
-
-    context 'with an authenticated user' do
-      before do
-        sign_in(user)
-      end
-
-      context 'when user has access to the project' do
-        before do
-          project.add_developer(user)
-        end
-
-        it_behaves_like 'resolvable endpoint'
-      end
-
-      context 'when user has no access to the project' do
-        it 'gives 404 for existing project' do
-          get :resolve, params: { id: project.id }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      it 'gives 404 for non-existing project' do
-        get :resolve, params: { id: '0' }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'non authenticated user' do
-      context 'with a public project' do
-        let(:project) { public_project }
-
-        it_behaves_like 'resolvable endpoint'
-      end
-
-      it 'gives 404 for private project' do
-        get :resolve, params: { id: project.id }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
   it 'updates Service Desk attributes' do
     project.add_maintainer(user)
     sign_in(user)

@@ -49,7 +49,7 @@ Ties are broken arbitrarily. Only the highest prioritized label is checked,
 and labels with a lower priority are ignored.
 For more information, see [issue 14523](https://gitlab.com/gitlab-org/gitlab/-/issues/14523).
 
-To learn more about priority labels, read the [Labels](../labels.md#label-priority) documentation.
+To learn how to change label priority, see [Label priority](../labels.md#set-label-priority).
 
 ## Sorting by last updated
 
@@ -98,7 +98,9 @@ When you sort by **Priority**, the issue order changes to sort in this order:
 1. Issues with a higher priority label.
 1. Issues without a prioritized label.
 
-To learn more about priority, read the [Labels](../labels.md#label-priority) documentation.
+Ties are broken arbitrarily.
+
+To learn how to change label priority, see [Label priority](../labels.md#set-label-priority).
 
 ## Sorting by title
 

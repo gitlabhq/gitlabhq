@@ -19,7 +19,7 @@ RSpec.describe Types::BaseField do
     it 'defaults to 1' do
       field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true)
 
-      expect(field.to_graphql.complexity).to eq 1
+      expect(field.complexity).to eq 1
     end
 
     describe '#base_complexity' do
@@ -43,7 +43,7 @@ RSpec.describe Types::BaseField do
     it 'has specified value' do
       field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, complexity: 12)
 
-      expect(field.to_graphql.complexity).to eq 12
+      expect(field.complexity).to eq 12
     end
 
     context 'when field has a resolver' do
@@ -51,7 +51,7 @@ RSpec.describe Types::BaseField do
         let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: resolver, complexity: 2, max_page_size: 100, null: true) }
 
         it 'uses this complexity' do
-          expect(field.to_graphql.complexity).to eq 2
+          expect(field.complexity).to eq 2
         end
       end
 
@@ -59,13 +59,13 @@ RSpec.describe Types::BaseField do
         let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: resolver, max_page_size: 100, null: true) }
 
         it 'sets complexity depending on arguments for resolvers' do
-          expect(field.to_graphql.complexity.call({}, {}, 2)).to eq 4
-          expect(field.to_graphql.complexity.call({}, { first: 50 }, 2)).to eq 3
+          expect(field.complexity.call({}, {}, 2)).to eq 4
+          expect(field.complexity.call({}, { first: 50 }, 2)).to eq 3
         end
 
         it 'sets complexity depending on number load limits for resolvers' do
-          expect(field.to_graphql.complexity.call({}, { first: 1 }, 2)).to eq 2
-          expect(field.to_graphql.complexity.call({}, { first: 1, foo: true }, 2)).to eq 4
+          expect(field.complexity.call({}, { first: 1 }, 2)).to eq 2
+          expect(field.complexity.call({}, { first: 1, foo: true }, 2)).to eq 4
         end
       end
 
@@ -73,8 +73,8 @@ RSpec.describe Types::BaseField do
         it 'sets complexity as normal' do
           field = described_class.new(name: 'test', type: GraphQL::Types::String, resolver_class: resolver, max_page_size: 100, null: true)
 
-          expect(field.to_graphql.complexity.call({}, {}, 2)).to eq 2
-          expect(field.to_graphql.complexity.call({}, { first: 50 }, 2)).to eq 2
+          expect(field.complexity.call({}, {}, 2)).to eq 2
+          expect(field.complexity.call({}, { first: 50 }, 2)).to eq 2
         end
       end
     end
@@ -84,9 +84,9 @@ RSpec.describe Types::BaseField do
         it 'adds 1 if true' do
           with_gitaly_field = described_class.new(name: 'test', type: GraphQL::Types::String, resolver_class: resolver, null: true, calls_gitaly: true)
           without_gitaly_field = described_class.new(name: 'test', type: GraphQL::Types::String, resolver_class: resolver, null: true)
-          base_result = without_gitaly_field.to_graphql.complexity.call({}, {}, 2)
+          base_result = without_gitaly_field.complexity.call({}, {}, 2)
 
-          expect(with_gitaly_field.to_graphql.complexity.call({}, {}, 2)).to eq base_result + 1
+          expect(with_gitaly_field.complexity.call({}, {}, 2)).to eq base_result + 1
         end
       end
 
@@ -94,7 +94,7 @@ RSpec.describe Types::BaseField do
         it 'adds 1 if true' do
           field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, calls_gitaly: true)
 
-          expect(field.to_graphql.complexity).to eq 2
+          expect(field.complexity).to eq 2
         end
       end
 
@@ -108,14 +108,14 @@ RSpec.describe Types::BaseField do
         it 'has complexity set to that constant' do
           field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, complexity: 12)
 
-          expect(field.to_graphql.complexity).to eq 12
+          expect(field.complexity).to eq 12
         end
 
         it 'does not raise an error even with Gitaly calls' do
           allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return([0, 1])
           field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, complexity: 12)
 
-          expect(field.to_graphql.complexity).to eq 12
+          expect(field.complexity).to eq 12
         end
       end
     end

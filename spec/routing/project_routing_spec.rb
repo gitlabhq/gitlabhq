@@ -70,9 +70,11 @@ RSpec.describe 'project routing' do
         route_to('projects#preview_markdown', namespace_id: 'gitlab', id: 'gitlabhq')
       )
     end
+  end
 
-    it 'to #resolve' do
-      expect(get('/projects/1')).to route_to('projects#resolve', id: '1')
+  describe Projects::RedirectController, 'routing' do
+    it 'to #redirect_from_id' do
+      expect(get('/projects/1')).to route_to('projects/redirect#redirect_from_id', id: '1')
     end
   end
 

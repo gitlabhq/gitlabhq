@@ -76,9 +76,9 @@ module Backup
         run_create_task(task_name)
       end
 
-      write_info
+      write_backup_information
 
-      if ENV['SKIP'] && ENV['SKIP'].include?('tar')
+      if skipped?('tar')
         upload
       else
         pack
@@ -96,6 +96,7 @@ module Backup
     def run_create_task(task_name)
       definition = @definitions[task_name]
 
+      build_backup_information
       puts_time "Dumping #{definition.task.human_name} ... ".color(:blue)
 
       unless definition.task.enabled
@@ -103,7 +104,7 @@ module Backup
         return
       end
 
-      if ENV["SKIP"] && ENV["SKIP"].include?(task_name)
+      if skipped?(task_name)
         puts_time "[SKIPPED]".color(:cyan)
         return
       end
@@ -118,10 +119,11 @@ module Backup
 
     def restore
       cleanup_required = unpack
+      read_backup_information
       verify_backup_version
 
       @definitions.keys.each do |task_name|
-        run_restore_task(task_name) unless skipped?(task_name)
+        run_restore_task(task_name) if !skipped?(task_name) && enabled_task?(task_name)
       end
 
       Rake::Task['gitlab:shell:setup'].invoke
@@ -141,6 +143,7 @@ module Backup
     def run_restore_task(task_name)
       definition = @definitions[task_name]
 
+      read_backup_information
       puts_time "Restoring #{definition.task.human_name} ... ".color(:blue)
 
       unless definition.task.enabled
@@ -171,7 +174,11 @@ module Backup
 
     private
 
-    def write_info
+    def read_backup_information
+      @backup_information ||= YAML.load_file(File.join(backup_path, MANIFEST_NAME))
+    end
+
+    def write_backup_information
       # Make sure there is a connection
       ActiveRecord::Base.connection.reconnect!
 
@@ -180,6 +187,23 @@ module Backup
           file << backup_information.to_yaml.gsub(/^---\n/, '')
         end
       end
+    end
+
+    def build_backup_information
+      @backup_information ||= {
+        db_version: ActiveRecord::Migrator.current_version.to_s,
+        backup_created_at: Time.now,
+        gitlab_version: Gitlab::VERSION,
+        tar_version: tar_version,
+        installation_type: Gitlab::INSTALLATION_TYPE,
+        skipped: ENV["SKIP"]
+      }
+    end
+
+    def backup_information
+      raise Backup::Error, "#{MANIFEST_NAME} not yet loaded" unless @backup_information
+
+      @backup_information
     end
 
     def pack
@@ -287,15 +311,15 @@ module Backup
     def verify_backup_version
       Dir.chdir(backup_path) do
         # restoring mismatching backups can lead to unexpected problems
-        if settings[:gitlab_version] != Gitlab::VERSION
+        if backup_information[:gitlab_version] != Gitlab::VERSION
           progress.puts(<<~HEREDOC.color(:red))
             GitLab version mismatch:
               Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!
               Please switch to the following version and try again:
-              version: #{settings[:gitlab_version]}
+              version: #{backup_information[:gitlab_version]}
           HEREDOC
           progress.puts
-          progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
+          progress.puts "Hint: git checkout v#{backup_information[:gitlab_version]}"
           exit 1
         end
       end
@@ -351,7 +375,7 @@ module Backup
     end
 
     def skipped?(item)
-      settings[:skipped] && settings[:skipped].include?(item) || !enabled_task?(item)
+      backup_information[:skipped] && backup_information[:skipped].include?(item)
     end
 
     def enabled_task?(task_name)
@@ -411,13 +435,9 @@ module Backup
 
     def backup_contents
       [MANIFEST_NAME] + @definitions.reject do |name, definition|
-        skipped?(name) ||
+        skipped?(name) || !enabled_task?(name) ||
           (definition.destination_optional && !File.exist?(File.join(backup_path, definition.destination_path)))
       end.values.map(&:destination_path)
-    end
-
-    def settings
-      @settings ||= YAML.load_file(MANIFEST_NAME)
     end
 
     def tar_file
@@ -426,17 +446,6 @@ module Backup
                     else
                       "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}#{FILE_NAME_SUFFIX}"
                     end
-    end
-
-    def backup_information
-      @backup_information ||= {
-        db_version: ActiveRecord::Migrator.current_version.to_s,
-        backup_created_at: Time.now,
-        gitlab_version: Gitlab::VERSION,
-        tar_version: tar_version,
-        installation_type: Gitlab::INSTALLATION_TYPE,
-        skipped: ENV["SKIP"]
-      }
     end
 
     def create_attributes

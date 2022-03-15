@@ -21,7 +21,7 @@ initMembersApp(document.querySelector('.js-group-members-list-app'), {
     requestFormatter: groupMemberRequestFormatter,
     filteredSearchBar: {
       show: true,
-      tokens: ['two_factor', 'with_inherited_permissions'],
+      tokens: ['two_factor', 'with_inherited_permissions', 'enterprise'],
       searchParam: 'search',
       placeholder: s__('Members|Filter members'),
       recentSearchesStorageKey: 'group_members',

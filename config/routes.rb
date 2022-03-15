@@ -269,7 +269,7 @@ Rails.application.routes.draw do
 
   resources :projects, only: [:index, :new, :create]
 
-  get '/projects/:id' => 'projects#resolve'
+  get '/projects/:id' => 'projects/redirect#redirect_from_id'
 
   draw :git_http
   draw :api

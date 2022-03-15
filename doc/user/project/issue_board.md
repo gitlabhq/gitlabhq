@@ -536,7 +536,7 @@ changing a label.
 
 A typical workflow of using an issue board would be:
 
-1. You have [created](labels.md#label-management) and [prioritized](labels.md#label-priority)
+1. You [create](labels.md#create-a-label) and [prioritize](labels.md#set-label-priority)
    labels to categorize your issues.
 1. You have a bunch of issues (ideally labeled).
 1. You visit the issue board and start [creating lists](#create-a-new-list) to

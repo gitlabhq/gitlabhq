@@ -68,7 +68,10 @@ Because of these limitations we recommend you:
 
 > Introduced in GitLab 14.1.
 
-In GitLab versions 14.1 and later, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data through Service Ping. Features introduced here do not remove the feature from its paid tier. Users can continue to access the features in a paid tier without sharing usage data.
+In GitLab versions 14.1 and later, GitLab Free customers with a self-managed instance running
+[GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us
+activity data through Service Ping. Features introduced here do not remove the feature from its paid
+tier. Users can continue to access the features in a paid tier without sharing usage data.
 
 #### Features available in 14.1 and later
 

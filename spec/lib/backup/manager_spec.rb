@@ -71,7 +71,7 @@ RSpec.describe Backup::Manager do
     end
 
     before do
-      allow(YAML).to receive(:load_file).with('backup_information.yml')
+      allow(YAML).to receive(:load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
         .and_return(backup_information)
     end
 
@@ -171,7 +171,8 @@ RSpec.describe Backup::Manager do
     before do
       allow(ActiveRecord::Base.connection).to receive(:reconnect!)
       allow(Kernel).to receive(:system).and_return(true)
-      allow(YAML).to receive(:load_file).and_return(backup_information)
+      allow(YAML).to receive(:load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+        .and_return(backup_information)
 
       allow(subject).to receive(:backup_information).and_return(backup_information)
       allow(task1).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'))
@@ -571,7 +572,8 @@ RSpec.describe Backup::Manager do
 
       allow(task1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'))
       allow(task2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'))
-      allow(YAML).to receive(:load_file).and_return(backup_information)
+      allow(YAML).to receive(:load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+        .and_return(backup_information)
       allow(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
       allow(Rake::Task['cache:clear']).to receive(:invoke)
     end

@@ -44,6 +44,31 @@ RSpec.describe 'getting an issue list for a group' do
     end
   end
 
+  context 'when there are archived projects' do
+    let_it_be(:archived_project) { create(:project, :archived, group: group1) }
+    let_it_be(:archived_issue)   { create(:issue, project: archived_project) }
+
+    before_all do
+      group1.add_developer(current_user)
+    end
+
+    it 'excludes issues from archived projects by default' do
+      post_graphql(query, current_user: current_user)
+
+      expect(issues_ids).to contain_exactly(issue1_gid, issue2_gid)
+    end
+
+    context 'when include_archived is true' do
+      let(:issue_filter_params) { { include_archived: true } }
+
+      it 'includes issues from archived projects' do
+        post_graphql(query, current_user: current_user)
+
+        expect(issues_ids).to contain_exactly(issue1_gid, issue2_gid, archived_issue.to_global_id.to_s)
+      end
+    end
+  end
+
   context 'when there is a confidential issue' do
     let_it_be(:confidential_issue1) { create(:issue, :confidential, project: project1) }
     let_it_be(:confidential_issue2) { create(:issue, :confidential, project: project2) }

@@ -9,6 +9,7 @@ import environmentToDeleteQuery from '../graphql/queries/environment_to_delete.q
 import environmentToRollbackQuery from '../graphql/queries/environment_to_rollback.query.graphql';
 import environmentToStopQuery from '../graphql/queries/environment_to_stop.query.graphql';
 import environmentToChangeCanaryQuery from '../graphql/queries/environment_to_change_canary.query.graphql';
+import { ENVIRONMENTS_SCOPE } from '../constants';
 import EnvironmentFolder from './new_environment_folder.vue';
 import EnableReviewAppModal from './enable_review_app_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
@@ -82,12 +83,14 @@ export default {
   },
   modalId: 'enable-review-app-info',
   data() {
-    const { page = '1', scope = 'available' } = queryToObject(window.location.search);
+    const { page = '1', scope } = queryToObject(window.location.search);
     return {
       interval: undefined,
       isReviewAppModalVisible: false,
       page: parseInt(page, 10),
-      scope,
+      scope: Object.values(ENVIRONMENTS_SCOPE).includes(scope)
+        ? scope
+        : ENVIRONMENTS_SCOPE.AVAILABLE,
       environmentToDelete: {},
       environmentToRollback: {},
       environmentToStop: {},
@@ -188,6 +191,7 @@ export default {
       });
     },
   },
+  ENVIRONMENTS_SCOPE,
 };
 </script>
 <template>
@@ -209,7 +213,10 @@ export default {
       query-param-name="scope"
       @primary="showReviewAppModal"
     >
-      <gl-tab query-param-value="available" @click="setScope('available')">
+      <gl-tab
+        :query-param-value="$options.ENVIRONMENTS_SCOPE.AVAILABLE"
+        @click="setScope($options.ENVIRONMENTS_SCOPE.AVAILABLE)"
+      >
         <template #title>
           <span>{{ $options.i18n.available }}</span>
           <gl-badge size="sm" class="gl-tab-counter-badge">
@@ -217,7 +224,10 @@ export default {
           </gl-badge>
         </template>
       </gl-tab>
-      <gl-tab query-param-value="stopped" @click="setScope('stopped')">
+      <gl-tab
+        :query-param-value="$options.ENVIRONMENTS_SCOPE.STOPPED"
+        @click="setScope($options.ENVIRONMENTS_SCOPE.STOPPED)"
+      >
         <template #title>
           <span>{{ $options.i18n.stopped }}</span>
           <gl-badge size="sm" class="gl-tab-counter-badge">

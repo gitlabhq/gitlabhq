@@ -50,7 +50,7 @@ To enable container scanning in your pipeline, you need the following:
 
 - Container Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 - [GitLab Runner](https://docs.gitlab.com/runner/) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html)
-  or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+  or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor on Linux/amd64.
 - Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
 - An image matching the [supported distributions](#supported-distributions).

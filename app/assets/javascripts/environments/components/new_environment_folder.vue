@@ -3,6 +3,7 @@ import { GlButton, GlCollapse, GlIcon, GlBadge, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
 import folderQuery from '../graphql/queries/folder.query.graphql';
+import { ENVIRONMENT_COUNT_BY_SCOPE } from '../constants';
 import EnvironmentItem from './new_environment_item.vue';
 
 export default {
@@ -56,7 +57,8 @@ export default {
       return this.visible ? this.$options.i18n.collapse : this.$options.i18n.expand;
     },
     count() {
-      return this.folder?.[`${this.scope}Count`] ?? 0;
+      const count = ENVIRONMENT_COUNT_BY_SCOPE[this.scope];
+      return this.folder?.[count] ?? 0;
     },
     folderClass() {
       return { 'gl-font-weight-bold': this.visible };

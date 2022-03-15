@@ -136,7 +136,7 @@ RSpec.describe Types::BaseEnum do
         value 'TEST_VALUE', **args
       end
 
-      enum.to_graphql.values['TEST_VALUE']
+      enum.values['TEST_VALUE']
     end
   end
 end

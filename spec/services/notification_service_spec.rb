@@ -1072,6 +1072,7 @@ RSpec.describe NotificationService, :mailer do
     end
 
     before do
+      project.reload
       add_user_subscriptions(issue)
       reset_delivered_emails!
       update_custom_notification(:new_issue, @u_guest_custom, resource: project)

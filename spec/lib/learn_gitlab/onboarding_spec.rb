@@ -9,7 +9,7 @@ RSpec.describe LearnGitlab::Onboarding do
     let(:namespace) { build(:namespace) }
 
     let_it_be(:tracked_action_columns) do
-      tracked_actions = described_class::ACTION_ISSUE_IDS.keys + described_class::ACTION_DOC_URLS.keys
+      tracked_actions = described_class::ACTION_ISSUE_IDS.keys + described_class::ACTION_PATHS
       tracked_actions.map { |key| OnboardingProgress.column_name(key) }
     end
 

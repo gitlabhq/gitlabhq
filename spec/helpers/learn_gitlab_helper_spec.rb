@@ -97,20 +97,8 @@ RSpec.describe LearnGitlabHelper do
                                                  trial_started: a_hash_including(
                                                    url: a_string_matching(%r{/learn_gitlab/-/issues/2\z})
                                                  ),
-                                                 issue_created: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/4\z})
-                                                 ),
-                                                 git_write: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/6\z})
-                                                 ),
                                                  pipeline_created: a_hash_including(
                                                    url: a_string_matching(%r{/learn_gitlab/-/issues/7\z})
-                                                 ),
-                                                 user_added: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/8\z})
-                                                 ),
-                                                 merge_request_created: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/9\z})
                                                  ),
                                                  code_owners_enabled: a_hash_including(
                                                    url: a_string_matching(%r{/learn_gitlab/-/issues/10\z})
@@ -118,8 +106,20 @@ RSpec.describe LearnGitlabHelper do
                                                  required_mr_approvals_enabled: a_hash_including(
                                                    url: a_string_matching(%r{/learn_gitlab/-/issues/11\z})
                                                  ),
+                                                 issue_created: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/issues\z})
+                                                 ),
+                                                 git_write: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab\z})
+                                                 ),
+                                                 user_added: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/project_members\z})
+                                                 ),
+                                                 merge_request_created: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/merge_requests\z})
+                                                 ),
                                                  security_scan_enabled: a_hash_including(
-                                                   url: a_string_matching(%r{docs\.gitlab\.com/ee/user/application_security/security_dashboard/#gitlab-security-dashboard-security-center-and-vulnerability-reports\z})
+                                                   url: a_string_matching(%r{/learn_gitlab/-/security/configuration\z})
                                                  )
                                                })
     end
@@ -136,59 +136,6 @@ RSpec.describe LearnGitlabHelper do
                                                  code_owners_enabled: a_hash_including(completed: false),
                                                  security_scan_enabled: a_hash_including(completed: false)
                                                })
-    end
-
-    context 'when in the new action URLs experiment' do
-      before do
-        stub_experiments(change_continuous_onboarding_link_urls: :candidate)
-      end
-
-      it_behaves_like 'has all data'
-
-      it 'sets mostly new paths' do
-        expect(onboarding_actions_data).to match({
-                                                   trial_started: a_hash_including(
-                                                     url: a_string_matching(%r{/learn_gitlab/-/issues/2\z})
-                                                   ),
-                                                   issue_created: a_hash_including(
-                                                     url: a_string_matching(%r{/learn_gitlab/-/issues\z})
-                                                   ),
-                                                   git_write: a_hash_including(
-                                                     url: a_string_matching(%r{/learn_gitlab\z})
-                                                   ),
-                                                   pipeline_created: a_hash_including(
-                                                     url: a_string_matching(%r{/learn_gitlab/-/pipelines\z})
-                                                   ),
-                                                   user_added: a_hash_including(
-                                                     url: a_string_matching(%r{/learn_gitlab/-/project_members\z})
-                                                   ),
-                                                   merge_request_created: a_hash_including(
-                                                     url: a_string_matching(%r{/learn_gitlab/-/merge_requests\z})
-                                                   ),
-                                                   code_owners_enabled: a_hash_including(
-                                                     url: a_string_matching(%r{/learn_gitlab/-/issues/10\z})
-                                                   ),
-                                                   required_mr_approvals_enabled: a_hash_including(
-                                                     url: a_string_matching(%r{/learn_gitlab/-/issues/11\z})
-                                                   ),
-                                                   security_scan_enabled: a_hash_including(
-                                                     url: a_string_matching(%r{/learn_gitlab/-/security/configuration\z})
-                                                   )
-                                                 })
-      end
-
-      it 'calls experiment with expected context & options' do
-        allow(helper).to receive(:current_user).and_return(user)
-
-        expect(helper).to receive(:experiment).with(
-          :change_continuous_onboarding_link_urls,
-          namespace: namespace,
-          actor: user,
-          sticky_to: namespace
-        )
-
-        learn_gitlab_data
-      end
     end
   end
 end

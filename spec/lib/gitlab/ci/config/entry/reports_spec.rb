@@ -6,12 +6,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports do
   let(:entry) { described_class.new(config) }
 
   describe 'validates ALLOWED_KEYS' do
-    let(:artifact_file_types) { Ci::JobArtifact.file_types }
-
-    described_class::ALLOWED_KEYS.each do |keyword, _|
-      it "expects #{keyword} to be an artifact file_type" do
-        expect(artifact_file_types).to include(keyword)
-      end
+    it "expects ALLOWED_KEYS to be an artifact file_type or coverage_report" do
+      expect(Ci::JobArtifact.file_types.keys.map(&:to_sym) + [:coverage_report]).to include(*described_class::ALLOWED_KEYS)
     end
   end
 
@@ -66,6 +62,45 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports do
           let(:config) { { "#{keyword}": file } }
 
           it_behaves_like 'a valid entry', params[:keyword], params[:file]
+        end
+      end
+
+      context 'when coverage_report is specified' do
+        let(:coverage_format) { :cobertura }
+        let(:filename) { 'cobertura-coverage.xml' }
+        let(:coverage_report) { { path: filename, coverage_format: coverage_format } }
+        let(:config) { { coverage_report: coverage_report } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+
+        it 'returns artifacts configuration' do
+          expect(entry.value).to eq(config)
+        end
+
+        context 'and another report is specified' do
+          let(:config) { { coverage_report: coverage_report, dast: 'gl-dast-report.json' } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+
+          it 'returns artifacts configuration' do
+            expect(entry.value).to eq({ coverage_report: coverage_report, dast: ['gl-dast-report.json'] })
+          end
+        end
+
+        context 'and a direct coverage report format is specified' do
+          let(:config) { { coverage_report: coverage_report, cobertura: 'cobertura-coverage.xml' } }
+
+          it 'is not valid' do
+            expect(entry).not_to be_valid
+          end
+
+          it 'reports error' do
+            expect(entry.errors).to include /please use only one the following keys: coverage_report, cobertura/
+          end
         end
       end
     end

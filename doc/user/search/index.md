@@ -194,7 +194,7 @@ Some filters can be added multiple times. These include but are not limited to a
 
 You can search your [To-Do List](../todos.md) by "to do" and "done".
 You can filter to-do items per project, author, type, and action.
-Also, you can sort them by [**Label priority**](../../user/project/labels.md#label-priority),
+Also, you can sort them by [**Label priority**](../../user/project/labels.md#set-label-priority),
 **Last created**, and **Oldest created**.
 
 ## Projects

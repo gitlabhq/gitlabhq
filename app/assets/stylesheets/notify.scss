@@ -1,24 +1,4 @@
-@import 'framework/mixins';
-@import 'framework/variables';
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-p.details {
-  font-style: italic;
-  color: $gray-500;
-}
-
-.footer > p {
-  font-size: small;
-  color: $gray-500;
-}
-
-pre.commit-message {
-  white-space: pre-wrap;
-}
+@import 'notify_base';
 
 .gl-label-scoped {
   border: 2px solid currentColor;
@@ -52,6 +32,4 @@ pre.commit-message {
     border: 1px solid $gray-100;
     border-radius: $border-radius-small;
   }
-
-  @include email-code-block;
 }

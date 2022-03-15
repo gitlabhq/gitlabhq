@@ -1,12 +1,14 @@
-import { GlFilteredSearchToken } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { redirectTo } from '~/lib/utils/url_utility';
 import MembersFilteredSearchBar from '~/members/components/filter_sort/members_filtered_search_bar.vue';
-import { MEMBER_TYPES } from '~/members/constants';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  MEMBER_TYPES,
+  FILTERED_SEARCH_TOKEN_TWO_FACTOR,
+  FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
+} from '~/members/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 jest.mock('~/lib/utils/url_utility', () => {
@@ -32,7 +34,7 @@ describe('MembersFilteredSearchBar', () => {
           state: {
             filteredSearchBar: {
               show: true,
-              tokens: ['two_factor'],
+              tokens: [FILTERED_SEARCH_TOKEN_TWO_FACTOR.type],
               searchParam: 'search',
               placeholder: 'Filter members',
               recentSearchesStorageKey: 'group_members',
@@ -70,21 +72,7 @@ describe('MembersFilteredSearchBar', () => {
     it('includes tokens set in `filteredSearchBar.tokens`', () => {
       createComponent();
 
-      expect(findFilteredSearchBar().props('tokens')).toEqual([
-        {
-          type: 'two_factor',
-          icon: 'lock',
-          title: '2FA',
-          token: GlFilteredSearchToken,
-          unique: true,
-          operators: OPERATOR_IS_ONLY,
-          options: [
-            { value: 'enabled', title: 'Enabled' },
-            { value: 'disabled', title: 'Disabled' },
-          ],
-          requiredPermissions: 'canManageMembers',
-        },
-      ]);
+      expect(findFilteredSearchBar().props('tokens')).toEqual([FILTERED_SEARCH_TOKEN_TWO_FACTOR]);
     });
 
     describe('when `canManageMembers` is false', () => {
@@ -93,7 +81,10 @@ describe('MembersFilteredSearchBar', () => {
           state: {
             filteredSearchBar: {
               show: true,
-              tokens: ['two_factor', 'with_inherited_permissions'],
+              tokens: [
+                FILTERED_SEARCH_TOKEN_TWO_FACTOR.type,
+                FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS.type,
+              ],
               searchParam: 'search',
               placeholder: 'Filter members',
               recentSearchesStorageKey: 'group_members',
@@ -105,18 +96,7 @@ describe('MembersFilteredSearchBar', () => {
         });
 
         expect(findFilteredSearchBar().props('tokens')).toEqual([
-          {
-            type: 'with_inherited_permissions',
-            icon: 'group',
-            title: 'Membership',
-            token: GlFilteredSearchToken,
-            unique: true,
-            operators: OPERATOR_IS_ONLY,
-            options: [
-              { value: 'exclude', title: 'Direct' },
-              { value: 'only', title: 'Inherited' },
-            ],
-          },
+          FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
         ]);
       });
     });
@@ -134,7 +114,7 @@ describe('MembersFilteredSearchBar', () => {
 
       expect(findFilteredSearchBar().props('initialFilterValue')).toEqual([
         {
-          type: 'two_factor',
+          type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type,
           value: {
             data: 'enabled',
             operator: '=',
@@ -183,7 +163,7 @@ describe('MembersFilteredSearchBar', () => {
       createComponent();
 
       findFilteredSearchBar().vm.$emit('onFilter', [
-        { type: 'two_factor', value: { data: 'enabled', operator: '=' } },
+        { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
       ]);
 
       expect(redirectTo).toHaveBeenCalledWith('https://localhost/?two_factor=enabled');
@@ -193,7 +173,7 @@ describe('MembersFilteredSearchBar', () => {
       createComponent();
 
       findFilteredSearchBar().vm.$emit('onFilter', [
-        { type: 'two_factor', value: { data: 'enabled', operator: '=' } },
+        { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
         { type: 'filtered-search-term', value: { data: 'foobar' } },
       ]);
 
@@ -206,7 +186,7 @@ describe('MembersFilteredSearchBar', () => {
       createComponent();
 
       findFilteredSearchBar().vm.$emit('onFilter', [
-        { type: 'two_factor', value: { data: 'enabled', operator: '=' } },
+        { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
         { type: 'filtered-search-term', value: { data: 'foo bar baz' } },
       ]);
 
@@ -221,7 +201,7 @@ describe('MembersFilteredSearchBar', () => {
       createComponent();
 
       findFilteredSearchBar().vm.$emit('onFilter', [
-        { type: 'two_factor', value: { data: 'enabled', operator: '=' } },
+        { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
         { type: 'filtered-search-term', value: { data: 'foobar' } },
       ]);
 

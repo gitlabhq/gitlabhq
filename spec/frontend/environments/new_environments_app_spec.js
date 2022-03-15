@@ -70,8 +70,9 @@ describe('~/environments/components/new_environments_app.vue', () => {
       previousPage: 1,
       __typename: 'LocalPageInfo',
     },
+    location = '?scope=available&page=2',
   }) => {
-    setWindowLocation('?scope=available&page=2');
+    setWindowLocation(location);
     environmentAppMock.mockReturnValue(environmentsApp);
     environmentFolderMock.mockReturnValue(folder);
     paginationMock.mockReturnValue(pageInfo);
@@ -96,6 +97,21 @@ describe('~/environments/components/new_environments_app.vue', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  it('should request available environments if the scope is invalid', async () => {
+    await createWrapperWithMocked({
+      environmentsApp: resolvedEnvironmentsApp,
+      folder: resolvedFolder,
+      location: '?scope=bad&page=2',
+    });
+
+    expect(environmentAppMock).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ scope: 'available', page: 2 }),
+      expect.anything(),
+      expect.anything(),
+    );
   });
 
   it('should show all the folders that are fetched', async () => {

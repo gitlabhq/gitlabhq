@@ -247,6 +247,7 @@ module Gitlab
     config.assets.precompile << "mailer.css"
     config.assets.precompile << "mailer_client_specific.css"
     config.assets.precompile << "notify.css"
+    config.assets.precompile << "notify_enhanced.css"
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
     config.assets.precompile << "page_bundles/admin/application_settings_metrics_and_profiling.css"
