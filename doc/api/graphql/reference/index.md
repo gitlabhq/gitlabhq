@@ -4263,6 +4263,27 @@ Input type: `SavedReplyCreateInput`
 | <a id="mutationsavedreplycreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationsavedreplycreatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Updated saved reply. |
 
+### `Mutation.savedReplyUpdate`
+
+Input type: `SavedReplyUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsavedreplyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsavedreplyupdatecontent"></a>`content` | [`String!`](#string) | Content of the saved reply. |
+| <a id="mutationsavedreplyupdateid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the saved reply. |
+| <a id="mutationsavedreplyupdatename"></a>`name` | [`String!`](#string) | Name of the saved reply. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsavedreplyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsavedreplyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsavedreplyupdatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Updated saved reply. |
+
 ### `Mutation.scanExecutionPolicyCommit`
 
 Commits the `policy_yaml` content to the assigned security policy project for the given project(`project_path`).

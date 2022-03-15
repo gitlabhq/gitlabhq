@@ -77,6 +77,7 @@ module QA
           end
 
           def submit_changes
+            Support::Waiter.wait_until { !find_element(:commit_changes_button).disabled? }
             click_element(:commit_changes_button)
 
             wait_for_requests
