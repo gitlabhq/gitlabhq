@@ -69,6 +69,7 @@ GitLab creates a squash commit message with this template:
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/346805) `first_commit` and `first_multiline_commit` variables in GitLab 14.6.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75639) `url`, `approved_by`, and `merged_by` variables in GitLab 14.7.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/20421) `co_authored_by` variable in GitLab 14.7.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/26303) `all_commits` variable in GitLab 14.9.
 
 Commit message templates support these variables:
 
@@ -86,6 +87,7 @@ Commit message templates support these variables:
 | `%{approved_by}`   | Line-separated list of the merge request approvers. This value is not updated until the first page refresh after an approval. | `Approved-by: Sidney Jones <sjones@example.com>` <br> `Approved-by: Zhang Wei <zwei@example.com>` |
 | `%{merged_by}`     | User who merged the merge request. | `Alex Garcia <agarcia@example.com>` |
 | `%{co_authored_by}` | Names and emails of commit authors in a `Co-authored-by` Git commit trailer format. Limited to authors of 100 most recent commits in merge request. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
+| `%{all_commits}`   | Messages from all commits in the merge request. Limited to 100 most recent commits. Skips commit bodies exceeding 100KiB and merge commit messages. | `* Feature introduced` <br><br> `This commit implements feature` <br> `Changelog:added` <br><br> `* Bug fixed` <br><br> `* Documentation improved` <br><br>`This commit introduced better docs.`|
 
 Any line containing only an empty variable is removed. If the line to be removed is both
 preceded and followed by an empty line, the preceding empty line is also removed.

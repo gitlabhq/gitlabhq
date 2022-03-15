@@ -50,6 +50,19 @@ module Gitlab
                        .except(commit_author&.commit_email_or_default)
                        .map { |author_email, author_name| "Co-authored-by: #{author_name} <#{author_email}>" }
                        .join("\n")
+        end,
+        'all_commits' => -> (merge_request, _, _) do
+          merge_request
+            .recent_commits
+            .without_merge_commits
+            .map do |commit|
+              if commit.safe_message&.bytesize&.>(100.kilobytes)
+                "* #{commit.title}\n\n-- Skipped commit body exceeding 100KiB in size."
+              else
+                "* #{commit.safe_message&.strip}"
+              end
+            end
+            .join("\n\n")
         end
       }.freeze
 

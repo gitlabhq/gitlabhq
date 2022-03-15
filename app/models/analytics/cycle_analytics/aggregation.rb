@@ -14,7 +14,10 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
     return unless enabled
     return if last_incremental_run_at.nil?
 
-    estimation = (last_incremental_run_at - earliest_last_run_at) + average_aggregation_duration
+    estimation = duration_until_the_next_aggregation_job +
+      average_aggregation_duration +
+      (last_incremental_run_at - earliest_last_run_at)
+
     estimation < 1 ? nil : estimation.from_now
   end
 
@@ -28,6 +31,11 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
   end
 
   private
+
+  # The aggregation job is scheduled every 10 minutes: */10 * * * *
+  def duration_until_the_next_aggregation_job
+    (10 - (DateTime.current.minute % 10)).minutes.seconds
+  end
 
   def average_aggregation_duration
     return 0.seconds if incremental_runtimes_in_seconds.empty?

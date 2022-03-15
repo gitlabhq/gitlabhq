@@ -57,7 +57,7 @@
 
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
 
-  = javascript_include_tag locale_path unless I18n.locale == :en
+  = render_if_exists 'layouts/header/translations'
   = webpack_bundle_tag "sentry" if Gitlab.config.sentry.enabled
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 

@@ -76,8 +76,11 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
 
   describe '#estimated_next_run_at' do
     around do |example|
-      freeze_time { example.run }
+      travel_to(Time.utc(2019, 3, 17, 13, 3)) { example.run }
     end
+
+    # aggregation runs on every 10 minutes
+    let(:minutes_until_next_aggregation) { 7.minutes }
 
     context 'when aggregation was not yet executed for the given group' do
       let(:aggregation) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil) }
@@ -91,7 +94,7 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
       let!(:aggregation) { create(:cycle_analytics_aggregation, last_incremental_run_at: 5.minutes.ago) }
 
       it 'returns the duration between the previous run timestamp and the earliest last_incremental_run_at' do
-        expect(aggregation.estimated_next_run_at).to eq(10.minutes.from_now)
+        expect(aggregation.estimated_next_run_at).to eq((10.minutes + minutes_until_next_aggregation).from_now)
       end
 
       context 'when the aggregation has persisted previous runtimes' do
@@ -100,7 +103,7 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
         end
 
         it 'adds the runtime to the estimation' do
-          expect(aggregation.estimated_next_run_at).to eq((10.minutes.seconds + 60.seconds).from_now)
+          expect(aggregation.estimated_next_run_at).to eq((10.minutes.seconds + 60.seconds + minutes_until_next_aggregation).from_now)
         end
       end
     end
@@ -114,14 +117,8 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
     context 'when only one aggregation record present' do
       let!(:aggregation) { create(:cycle_analytics_aggregation, last_incremental_run_at: 5.minutes.ago) }
 
-      it 'returns nil' do
-        expect(aggregation.estimated_next_run_at).to eq(nil)
-      end
-    end
-
-    context 'when the aggregation is disabled' do
-      it 'returns nil' do
-        expect(described_class.new(enabled: false).estimated_next_run_at).to eq(nil)
+      it 'returns the minutes until the next aggregation' do
+        expect(aggregation.estimated_next_run_at).to eq(minutes_until_next_aggregation.from_now)
       end
     end
   end

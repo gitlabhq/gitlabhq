@@ -28,9 +28,14 @@ describe('RelatedIssuesList', () => {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           issuableType: 'issue',
+          listLinkType: 'relates_to',
           heading,
         },
       });
+    });
+
+    it('assigns value of listLinkType prop to data attribute', () => {
+      expect(wrapper.attributes('data-link-type')).toBe('relates_to');
     });
 
     it('shows a heading', () => {

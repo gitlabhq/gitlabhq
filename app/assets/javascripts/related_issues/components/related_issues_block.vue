@@ -210,6 +210,7 @@ export default {
           <related-issues-list
             v-for="category in categorisedIssues"
             :key="category.linkType"
+            :list-link-type="category.linkType"
             :heading="$options.linkedIssueTypesTextMap[category.linkType]"
             :can-admin="canAdmin"
             :can-reorder="canReorder"

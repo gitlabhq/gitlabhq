@@ -21,6 +21,11 @@ export default {
       required: false,
       default: false,
     },
+    listLinkType: {
+      type: String,
+      required: false,
+      default: '',
+    },
     heading: {
       type: String,
       required: false,
@@ -91,7 +96,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div :data-link-type="listLinkType">
     <h4 v-if="heading" class="gl-font-base mt-0">{{ heading }}</h4>
     <div
       class="related-issues-token-body bordered-box bg-white"
