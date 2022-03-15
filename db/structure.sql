@@ -20660,7 +20660,8 @@ CREATE TABLE status_check_responses (
     merge_request_id bigint NOT NULL,
     external_approval_rule_id bigint,
     sha bytea NOT NULL,
-    external_status_check_id bigint NOT NULL
+    external_status_check_id bigint NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE status_check_responses_id_seq

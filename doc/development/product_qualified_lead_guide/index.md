@@ -92,6 +92,36 @@ The flow of a PQL lead is as follows:
 1. Marketo does scoring and sends the form to Salesforce.
 1. Our Sales team uses Salesforce to connect to the leads.
 
+### Lead flow on GitLab.com
+
+```mermaid
+sequenceDiagram
+    HandRaiseForm Vue Component->>TrialsController#create_hand_raise_lead: GitLab.com frontend sends [lead] to backend
+    TrialsController#create_hand_raise_lead->>CreateHandRaiseLeadService: [lead]
+    CreateHandRaiseLeadService->>SubscriptionPortalClient: [lead]
+    SubscriptionPortalClient->>CustomersDot|TrialsController#create_hand_raise_lead: GitLab.com sends [lead] to CustomersDot
+```      
+
+### Lead flow on CustomersDot and later
+
+```mermaid
+sequenceDiagram
+    CustomersDot|TrialsController#create_hand_raise_lead->>PlatypusLogLeadService: Save [lead] to leads table for monitoring purposes
+    CustomersDot|TrialsController#create_hand_raise_lead->>Platypus|CreateLeadWorker: Async worker to submit [lead] to Platypus
+    Platypus|CreateLeadWorker->>Platypus|CreateLeadService: [lead]
+    Platypus|CreateLeadService->>PlatypusApp#post: [lead]
+    PlatypusApp#post->>Platypus: [lead] is sent to Platypus
+```      
+
+### Lead flow after Platypus
+
+```mermaid
+sequenceDiagram
+    Platypus->>Workato: [lead]
+    Workato->>Marketo: [lead]
+    Marketo->>Salesforce(SFDC): [lead]
+```      
+
 ## Monitor and manually test leads
 
 - Check the application and Sidekiq logs on `gitlab.com` and CustomersDot to monitor leads.

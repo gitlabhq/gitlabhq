@@ -18,6 +18,7 @@ export const ICON_WARNING = 'warning';
 export const ICON_SUCCESS = 'success';
 export const ICON_NOTFOUND = 'notfound';
 export const ICON_PENDING = 'pending';
+export const ICON_FAILED = 'failed';
 
 export const status = {
   LOADING,

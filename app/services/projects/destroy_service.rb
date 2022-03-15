@@ -200,6 +200,10 @@ module Projects
         ::Ci::DestroyPipelineService.new(project, current_user).execute(pipeline)
       end
 
+      project.secure_files.find_each(batch_size: BATCH_SIZE) do |secure_file| # rubocop: disable CodeReuse/ActiveRecord
+        ::Ci::DestroySecureFileService.new(project, current_user).execute(secure_file)
+      end
+
       deleted_count = ::CommitStatus.for_project(project).delete_all
 
       Gitlab::AppLogger.info(

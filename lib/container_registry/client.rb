@@ -152,7 +152,7 @@ module ContainerRegistry
       @faraday_blob ||= faraday_base do |conn|
         initialize_connection(conn, @options)
 
-        if Feature.enabled?(:container_registry_follow_redirects_middleware)
+        if Feature.enabled?(:container_registry_follow_redirects_middleware, default_enabled: :yaml)
           conn.use ::FaradayMiddleware::FollowRedirects, REDIRECT_OPTIONS
         end
       end

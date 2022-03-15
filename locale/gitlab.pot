@@ -847,9 +847,6 @@ msgstr ""
 msgid "%{name}, confirm your email address now!"
 msgstr ""
 
-msgid "%{name}: %{resultsString}"
-msgstr ""
-
 msgid "%{no_of_days} day"
 msgid_plural "%{no_of_days} days"
 msgstr[0] ""
@@ -1280,7 +1277,7 @@ msgstr ""
 msgid "+%{tags} more"
 msgstr ""
 
-msgid ", and "
+msgid ", "
 msgstr ""
 
 msgid ", or "
@@ -10915,6 +10912,15 @@ msgid "CycleAnalytics|%{selectedLabelsCount} selected (%{maxLabels} max)"
 msgstr ""
 
 msgid "CycleAnalytics|Average time to completion"
+msgstr ""
+
+msgid "CycleAnalytics|Create a custom value stream to view metrics about stages specific to your development process. Use your value stream to visualize your DevSecOps lifecycle, determine the velocity of your group, and identify inefficient processes."
+msgstr ""
+
+msgid "CycleAnalytics|Create a custom value stream…"
+msgstr ""
+
+msgid "CycleAnalytics|Custom value streams to measure your DevSecOps lifecycle"
 msgstr ""
 
 msgid "CycleAnalytics|Date"
@@ -30953,9 +30959,6 @@ msgstr ""
 msgid "Reports|Filename"
 msgstr ""
 
-msgid "Reports|Full report"
-msgstr ""
-
 msgid "Reports|Head report parsing error:"
 msgstr ""
 
@@ -30998,13 +31001,7 @@ msgstr ""
 msgid "Reports|Test summary failed loading results"
 msgstr ""
 
-msgid "Reports|Test summary failed to load results"
-msgstr ""
-
 msgid "Reports|Test summary results are being parsed"
-msgstr ""
-
-msgid "Reports|Test summary results are loading"
 msgstr ""
 
 msgid "Reports|Tool"
@@ -35193,6 +35190,9 @@ msgstr ""
 msgid "Status: %{title}"
 msgstr ""
 
+msgid "StatusCheck| %{failed} failed, and %{pending} pending"
+msgstr ""
+
 msgid "StatusCheck|%{failed} failed"
 msgstr ""
 
@@ -35263,9 +35263,6 @@ msgid "StatusCheck|Target branch"
 msgstr ""
 
 msgid "StatusCheck|Update status check"
-msgstr ""
-
-msgid "StatusCheck|When this merge request is updated, a call is sent to the following APIs to confirm their status. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "StatusCheck|You are about to remove the %{name} status check."
@@ -41028,6 +41025,9 @@ msgid "Vulnerability|CVSS v3"
 msgstr ""
 
 msgid "Vulnerability|Class"
+msgstr ""
+
+msgid "Vulnerability|Cluster"
 msgstr ""
 
 msgid "Vulnerability|Code Review"

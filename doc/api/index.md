@@ -8,6 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the GitLab APIs to automate GitLab.
 
+NOTE:
+We've launched our first API user survey! Do you use GitLab APIs? How can we improve? [Contribute your feedback today](https://gitlab.fra1.qualtrics.com/jfe/form/SV_cD9wcDYMcVDruSy) and make sure your voice is heard!
+
 ## REST API
 
 A REST API is available in GitLab.

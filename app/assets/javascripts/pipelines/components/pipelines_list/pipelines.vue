@@ -98,6 +98,11 @@ export default {
       type: String,
       required: true,
     },
+    defaultBranchName: {
+      type: String,
+      required: false,
+      default: null,
+    },
     params: {
       type: Object,
       required: true,
@@ -347,6 +352,7 @@ export default {
         <pipelines-filtered-search
           class="gl-display-flex gl-flex-grow-1 gl-mr-4"
           :project-id="projectId"
+          :default-branch-name="defaultBranchName"
           :params="validatedParams"
           @filterPipelines="filterPipelines"
         />

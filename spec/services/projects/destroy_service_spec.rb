@@ -43,6 +43,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       let!(:report_result) { create(:ci_build_report_result, build: build) }
       let!(:pending_state) { create(:ci_build_pending_state, build: build) }
       let!(:pipeline_artifact) { create(:ci_pipeline_artifact, pipeline: pipeline) }
+      let!(:secure_file) { create(:ci_secure_file, project: project) }
 
       it 'deletes build and pipeline related records' do
         expect { destroy_project(project, user, {}) }
@@ -56,6 +57,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
           .and change { Ci::BuildReportResult.count }.by(-1)
           .and change { Ci::BuildRunnerSession.count }.by(-1)
           .and change { Ci::Pipeline.count }.by(-1)
+          .and change { Ci::SecureFile.count }.by(-1)
       end
 
       it 'avoids N+1 queries' do

@@ -27,6 +27,7 @@ jest.mock('~/flash');
 
 const mockProjectPath = 'twitter/flight';
 const mockProjectId = '21';
+const mockDefaultBranchName = 'main';
 const mockPipelinesEndpoint = `/${mockProjectPath}/pipelines.json`;
 const mockPipelinesIds = mockPipelinesResponse.pipelines.map(({ id }) => id);
 const mockPipelineWithStages = mockPipelinesResponse.pipelines.find(
@@ -85,6 +86,7 @@ describe('Pipelines', () => {
         propsData: {
           store: new Store(),
           projectId: mockProjectId,
+          defaultBranchName: mockDefaultBranchName,
           endpoint: mockPipelinesEndpoint,
           params: {},
           ...props,

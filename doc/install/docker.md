@@ -513,6 +513,22 @@ To update GitLab that was [installed using Docker Compose](#install-gitlab-using
    If you have used [tags](#use-tagged-versions-of-gitlab) instead, you'll need
    to first edit `docker-compose.yml`.
 
+### Convert Community Edition to Enterprise Edition
+
+You can convert an existing Docker-based GitLab Community Edition (CE) container
+to a GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) (EE) container
+using the same approach as [updating the version](#update).
+
+We recommend you convert from the same version of CE to EE (for example, CE 14.1 to EE 14.1).
+This is not explicitly necessary, and any standard upgrade (for example, CE 14.0 to EE 14.1) should work.
+The following steps assume that you are upgrading the same version.
+
+1. Take a [backup](#back-up-gitlab).
+1. Stop the current CE container, and remove or rename it.
+1. To create a new container with GitLab EE,
+   replace `ce` with `ee` in your `docker run` command or `docker-compose.yml` file.
+   However, reuse the CE container name, port and file mappings, and version.
+
 ## Back up GitLab
 
 You can create a GitLab backup with:

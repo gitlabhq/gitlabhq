@@ -1,5 +1,7 @@
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import PipelineBranchNameToken from '~/pipelines/components/pipelines_list/tokens/pipeline_branch_name_token.vue';
 import { branches, mockBranchesAfterMap } from '../mock_data';
@@ -10,6 +12,8 @@ describe('Pipeline Branch Name Token', () => {
   const findFilteredSearchToken = () => wrapper.find(GlFilteredSearchToken);
   const findAllFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const getBranchSuggestions = () =>
+    findAllFilteredSearchSuggestions().wrappers.map((w) => w.text());
 
   const stubs = {
     GlFilteredSearchToken: {
@@ -24,11 +28,25 @@ describe('Pipeline Branch Name Token', () => {
       title: 'Branch name',
       unique: true,
       projectId: '21',
+      defaultBranchName: null,
       disabled: false,
     },
     value: {
       data: '',
     },
+  };
+
+  const optionsWithDefaultBranchName = (options) => {
+    return {
+      propsData: {
+        ...defaultProps,
+        config: {
+          ...defaultProps.config,
+          defaultBranchName: 'main',
+        },
+      },
+      ...options,
+    };
   };
 
   const createComponent = (options, data) => {
@@ -93,6 +111,35 @@ describe('Pipeline Branch Name Token', () => {
       createComponent({ stubs }, { branches: mockBranches, loading: false });
 
       expect(findAllFilteredSearchSuggestions()).toHaveLength(mockBranches.length);
+    });
+
+    it('shows the default branch first if no branch was searched for', async () => {
+      const mockBranches = [{ name: 'branch-1' }];
+      jest.spyOn(Api, 'branches').mockResolvedValue({ data: mockBranches });
+
+      createComponent(optionsWithDefaultBranchName({ stubs }), { loading: false });
+      await nextTick();
+      expect(getBranchSuggestions()).toEqual(['main', 'branch-1']);
+    });
+
+    it('does not show the default branch if a search term was provided', async () => {
+      const mockBranches = [{ name: 'branch-1' }];
+      jest.spyOn(Api, 'branches').mockResolvedValue({ data: mockBranches });
+
+      createComponent(optionsWithDefaultBranchName(), { loading: false });
+
+      findFilteredSearchToken().vm.$emit('input', { data: 'branch-1' });
+      await waitForPromises();
+      expect(getBranchSuggestions()).toEqual(['branch-1']);
+    });
+
+    it('shows the default branch only once if it appears in the results', async () => {
+      const mockBranches = [{ name: 'main' }];
+      jest.spyOn(Api, 'branches').mockResolvedValue({ data: mockBranches });
+
+      createComponent(optionsWithDefaultBranchName({ stubs }), { loading: false });
+      await nextTick();
+      expect(getBranchSuggestions()).toEqual(['main']);
     });
   });
 });

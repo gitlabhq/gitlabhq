@@ -106,6 +106,7 @@ RSpec.describe Ci::PipelinesHelper do
     it 'has the expected keys' do
       expect(subject.keys).to match_array([:endpoint,
                                            :project_id,
+                                           :default_branch_name,
                                            :params,
                                            :artifacts_endpoint,
                                            :artifacts_endpoint_placeholder,

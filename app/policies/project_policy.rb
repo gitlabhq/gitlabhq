@@ -413,6 +413,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_feature_flag
     enable :admin_feature_flags_user_lists
     enable :update_escalation_status
+    enable :read_secure_files
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -462,6 +463,7 @@ class ProjectPolicy < BasePolicy
     enable :register_project_runners
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
+    enable :admin_secure_files
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do

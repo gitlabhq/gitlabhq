@@ -79,17 +79,25 @@ Maintainer role.
 
 ## Approve or reject a deployment
 
-NOTE:
-This functionality is currently only available through the API. UI is planned for the near future. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
 
-A blocked deployment is enqueued as soon as it receives the required number of approvals. A single rejection causes the deployment to fail. The creator of a deployment cannot approve it, even if they have permission to deploy.
+A blocked deployment is enqueued as soon as it receives the required number of approvals. A single
+rejection causes the deployment to fail. The creator of a deployment cannot approve it, even if they
+have permission to deploy.
 
-There are two ways to approve or reject a deployment to a protected environment:
+You can approve or reject a deployment to a protected environment either in the UI or using the API:
 
-1. Using the [UI](index.md#view-environments-and-deployments):
-   1. Select **Approval options** (**{thumb-up}**)
-   1. Select **Approve** or **Reject**
-1. Using the [Deployments API](../../api/deployments.md#approve-or-reject-a-blocked-deployment), users who are allowed to deploy to the protected environment can approve or reject a blocked deployment.
+### Using the UI
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. In the deployment's row, select **Approval options** (**{thumb-up}**).
+1. Select **Approve** or **Reject**.
+
+### Using the API
+
+Users who are allowed to deploy to the protected environment can approve or reject a blocked
+deployment using the [Deployments API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
 
 Example:
 
@@ -98,16 +106,16 @@ curl --data "status=approved&comment=Looks good to me" \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1/approval"
 ```
 
-### How to see blocked deployments
+## How to see blocked deployments
 
-#### Using the UI
+### Using the UI
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the environment being deployed to.
 1. Look for the `blocked` label.
 
-#### Using the API
+### Using the API
 
 Use the [Deployments API](../../api/deployments.md) to see deployments.
 

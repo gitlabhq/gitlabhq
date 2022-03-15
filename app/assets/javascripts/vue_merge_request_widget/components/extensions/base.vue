@@ -86,7 +86,7 @@ export default {
       );
     },
     statusIconName() {
-      if (this.hasFetchError) return EXTENSION_ICONS.failed;
+      if (this.hasFetchError) return EXTENSION_ICONS.error;
       if (this.isLoadingSummary) return null;
 
       return this.statusIcon(this.collapsedData);

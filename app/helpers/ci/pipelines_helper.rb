@@ -84,6 +84,7 @@ module Ci
       data = {
         endpoint: list_url,
         project_id: project.id,
+        default_branch_name: project.default_branch,
         params: params.to_json,
         artifacts_endpoint: downloadable_artifacts_project_pipeline_path(project, artifacts_endpoint_placeholder, format: :json),
         artifacts_endpoint_placeholder: artifacts_endpoint_placeholder,
