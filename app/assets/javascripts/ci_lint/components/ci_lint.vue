@@ -103,7 +103,7 @@ export default {
           class="gl-mr-4"
           :loading="loading"
           category="primary"
-          variant="success"
+          variant="confirm"
           data-testid="ci-lint-validate"
           @click="lint"
           >{{ __('Validate') }}</gl-button

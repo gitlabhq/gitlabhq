@@ -37519,7 +37519,7 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key"
 msgstr ""
 
-msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this project contains. %{strongOpen}There is no going back%{strongClose}"
+msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this project contains. %{strongOpen}There is no going back.%{strongClose}"
 msgstr ""
 
 msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} on %{date} and everything this project contains."

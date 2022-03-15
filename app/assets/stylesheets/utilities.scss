@@ -366,3 +366,8 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   /* stylelint-disable property-no-vendor-prefix */
   -webkit-backdrop-filter: blur(2px); // still required by Safari
 }
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2708
+.gl-inset-border-l-3-red-600 {
+  box-shadow: inset $gl-border-size-3 0 0 0 $red-600;
+}

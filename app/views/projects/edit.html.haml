@@ -66,6 +66,8 @@
     %p= s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
 
   .settings-content
+    = render_if_exists 'projects/settings/restore', project: @project
+
     .sub-section
       %h4= _('Housekeeping')
       %p

@@ -440,7 +440,7 @@ stop_review:
       when: manual
 ```
 
-Both jobs must have the same [`rules`](../yaml/index.md#only--except)
+Both jobs must have the same [`rules`](../yaml/index.md#rules)
 or [`only/except`](../yaml/index.md#only--except) configuration. Otherwise,
 the `stop_review` job might not be included in all pipelines that include the
 `deploy_review` job, and you cannot trigger `action: stop` to stop the environment automatically.
