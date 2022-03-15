@@ -1,4 +1,4 @@
-import { GlSearchBoxByType, GlDropdown } from '@gitlab/ui';
+import { GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 
@@ -76,7 +76,16 @@ describe('Sidebar assignees widget', () => {
         SidebarEditableItem,
         UserSelect,
         GlSearchBoxByType,
-        GlDropdown,
+        GlDropdown: {
+          template: `
+            <div>
+              <slot name="footer"></slot>
+            </div>
+          `,
+          methods: {
+            show: jest.fn(),
+          },
+        },
       },
     });
   };

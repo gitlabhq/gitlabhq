@@ -135,4 +135,24 @@ RSpec.describe Gitlab::Database::Transaction::Context do
 
     it_behaves_like 'logs transaction data'
   end
+
+  context 'when there are too many external HTTP requests' do
+    before do
+      allow(::Gitlab::Metrics::Subscribers::ExternalHttp)
+        .to receive(:request_count)
+        .and_return(100)
+    end
+
+    it_behaves_like 'logs transaction data'
+  end
+
+  context 'when there are too many too long external HTTP requests' do
+    before do
+      allow(::Gitlab::Metrics::Subscribers::ExternalHttp)
+        .to receive(:duration)
+        .and_return(5.5)
+    end
+
+    it_behaves_like 'logs transaction data'
+  end
 end

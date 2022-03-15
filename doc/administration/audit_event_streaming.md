@@ -259,3 +259,47 @@ Fetch:
   "target_id": 29
 }
 ```
+
+## Audit event streaming on merge request approval actions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271162) in GitLab 14.9.
+
+Stream audit events that relate to merge approval actions performed within a project.
+
+### Request headers
+
+Request headers are formatted as follows:
+
+```plaintext
+POST /logs HTTP/1.1
+Host: <DESTINATION_HOST>
+Content-Type: application/x-www-form-urlencoded
+X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
+```
+
+### Example request body 
+
+```json
+{
+  "id": 1,
+  "author_id": 1,
+  "entity_id": 6,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "example_username",
+    "target_id": 20,
+    "target_type": "MergeRequest",
+    "target_details": "merge request title",
+    "custom_message": "Approved merge request",
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "example_username",
+  "entity_path": "example-group/example-project",
+  "target_details": "merge request title",
+  "created_at": "2022-03-09T06:53:11.181Z",
+  "target_type": "MergeRequest",
+  "target_id": 20
+}
+```

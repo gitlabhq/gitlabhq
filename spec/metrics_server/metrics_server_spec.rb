@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 require_relative '../../metrics_server/metrics_server'
-require_relative '../support/helpers/next_instance_of'
 
 RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
-  include NextInstanceOf
-
   let(:prometheus_config) { ::Prometheus::Client.configuration }
   let(:metrics_dir) { Dir.mktmpdir }
 
@@ -204,5 +201,48 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     end
 
     it_behaves_like 'a metrics exporter', 'sidekiq', 'sidekiq_exporter'
+  end
+
+  describe '.start_for_puma' do
+    let(:supervisor) { instance_double(Gitlab::ProcessSupervisor) }
+
+    before do
+      allow(Gitlab::ProcessSupervisor).to receive(:instance).and_return(supervisor)
+    end
+
+    it 'spawns a server process and supervises it' do
+      expect(Process).to receive(:spawn).with(
+        include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
+      ).once.and_return(42)
+      expect(supervisor).to receive(:supervise).with(42)
+
+      described_class.start_for_puma
+    end
+
+    context 'when the supervisor callback is invoked' do
+      context 'and the supervisor is alive' do
+        it 'restarts the metrics server' do
+          expect(supervisor).to receive(:alive).and_return(true)
+          expect(supervisor).to receive(:supervise).and_yield
+          expect(Process).to receive(:spawn).with(
+            include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
+          ).twice.and_return(42)
+
+          described_class.start_for_puma
+        end
+      end
+
+      context 'and the supervisor is not alive' do
+        it 'does not restart the server' do
+          expect(supervisor).to receive(:alive).and_return(false)
+          expect(supervisor).to receive(:supervise).and_yield
+          expect(Process).to receive(:spawn).with(
+            include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
+          ).once.and_return(42)
+
+          described_class.start_for_puma
+        end
+      end
+    end
   end
 end

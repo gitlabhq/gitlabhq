@@ -195,7 +195,7 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:project_runner_registration_allowed) do
-    Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
+    Feature.disabled?(:runner_registration_control, default_enabled: :yaml) || Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
   end
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should

@@ -189,7 +189,7 @@ services:
         external_url 'http://gitlab.example.com:8929'
         gitlab_rails['gitlab_shell_ssh_port'] = 2224
     ports:
-      - '8929:8929'
+      - '8929:80'
       - '2224:22'
     volumes:
       - '$GITLAB_HOME/config:/etc/gitlab'
@@ -198,7 +198,7 @@ services:
     shm_size: '256m'
 ```
 
-This is the same as using `--publish 8929:8929 --publish 2224:22`.
+This is the same as using `--publish 8929:80 --publish 2224:22`.
 
 ### Install GitLab using Docker swarm mode
 

@@ -11,8 +11,8 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
@@ -31,7 +31,7 @@ type MultipartClaims struct {
 // MultipartFormProcessor abstracts away implementation differences
 // between generic MIME multipart file uploads and CI artifact uploads.
 type MultipartFormProcessor interface {
-	ProcessFile(ctx context.Context, formName string, file *filestore.FileHandler, writer *multipart.Writer) error
+	ProcessFile(ctx context.Context, formName string, file *destination.FileHandler, writer *multipart.Writer) error
 	ProcessField(ctx context.Context, formName string, writer *multipart.Writer) error
 	Finalize(ctx context.Context) error
 	Name() string
@@ -40,7 +40,7 @@ type MultipartFormProcessor interface {
 
 // interceptMultipartFiles is the core of the implementation of
 // Multipart.
-func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, preauth *api.Response, filter MultipartFormProcessor, opts *filestore.SaveFileOpts) {
+func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, preauth *api.Response, filter MultipartFormProcessor, opts *destination.UploadOpts) {
 	var body bytes.Buffer
 	writer := multipart.NewWriter(&body)
 	defer writer.Close()
@@ -55,7 +55,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 			helper.CaptureAndFail(w, r, err, err.Error(), http.StatusBadRequest)
 		case http.ErrNotMultipart:
 			h.ServeHTTP(w, r)
-		case filestore.ErrEntityTooLarge:
+		case destination.ErrEntityTooLarge:
 			helper.RequestEntityTooLarge(w, r, err)
 		case zipartifacts.ErrBadMetadata:
 			helper.RequestEntityTooLarge(w, r, err)

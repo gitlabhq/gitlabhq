@@ -10,8 +10,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 )
 
 func TestSavedFileTracking(t *testing.T) {
@@ -23,7 +23,7 @@ func TestSavedFileTracking(t *testing.T) {
 	tracker := SavedFileTracker{Request: r}
 	require.Equal(t, "accelerate", tracker.Name())
 
-	file := &filestore.FileHandler{}
+	file := &destination.FileHandler{}
 	ctx := context.Background()
 	tracker.ProcessFile(ctx, "test", file, nil)
 	require.Equal(t, 1, tracker.Count())
@@ -40,7 +40,7 @@ func TestSavedFileTracking(t *testing.T) {
 
 func TestDuplicatedFileProcessing(t *testing.T) {
 	tracker := SavedFileTracker{}
-	file := &filestore.FileHandler{}
+	file := &destination.FileHandler{}
 
 	require.NoError(t, tracker.ProcessFile(context.Background(), "file", file, nil))
 

@@ -49,8 +49,8 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).change_issuable_contacts(added_count, removed_count)
   end
 
-  def relate_issue(noteable, noteable_ref, user)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, project: noteable.project, author: user).relate_issue(noteable_ref)
+  def relate_issuable(noteable, noteable_ref, user)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: noteable.project, author: user).relate_issuable(noteable_ref)
   end
 
   def unrelate_issuable(noteable, noteable_ref, user)

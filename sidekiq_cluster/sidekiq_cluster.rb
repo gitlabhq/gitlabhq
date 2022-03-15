@@ -16,6 +16,9 @@ module Gitlab
     # before we kill the process.
     TIMEOUT_GRACE_PERIOD_SECONDS = 5
 
+    # The singleton instance used to supervise cluster processes.
+    SidekiqProcessSupervisor = Class.new(Gitlab::ProcessSupervisor)
+
     # Starts Sidekiq workers for the pairs of processes.
     #
     # Example:

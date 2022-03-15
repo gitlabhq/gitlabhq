@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+PUMA_EXTERNAL_METRICS_SERVER = Gitlab::Utils.to_boolean(ENV['PUMA_EXTERNAL_METRICS_SERVER'])
+
 # Keep separate directories for separate processes
 def prometheus_default_multiproc_dir
   return unless Rails.env.development? || Rails.env.test?
@@ -72,8 +74,12 @@ Gitlab::Cluster::LifecycleEvents.on_master_start do
   if Gitlab::Runtime.puma?
     Gitlab::Metrics::Samplers::PumaSampler.instance.start
 
-    # Starts a metrics server to export metrics from the Puma primary.
-    Gitlab::Metrics::Exporter::WebExporter.instance.start
+    if Settings.monitoring.web_exporter.enabled && PUMA_EXTERNAL_METRICS_SERVER
+      require_relative '../../metrics_server/metrics_server'
+      MetricsServer.start_for_puma
+    else
+      Gitlab::Metrics::Exporter::WebExporter.instance.start
+    end
   end
 
   Gitlab::Ci::Parsers.instrument!
@@ -90,11 +96,13 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
   Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance(logger: logger).start
 
   if Gitlab::Runtime.puma?
-    # Since we are running a metrics server on the Puma primary, we would inherit
-    # this thread after forking into workers, so we need to explicitly stop it here.
-    # NOTE: This will not be necessary anymore after moving to an external server
-    # process via https://gitlab.com/gitlab-org/gitlab/-/issues/350548
-    Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    # Since we are observing a metrics server from the Puma primary, we would inherit
+    # this supervision thread after forking into workers, so we need to explicitly stop it here.
+    if PUMA_EXTERNAL_METRICS_SERVER
+      ::MetricsServer::PumaProcessSupervisor.instance.stop
+    else
+      Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    end
 
     Gitlab::Metrics::Samplers::ActionCableSampler.instance(logger: logger).start
   end
@@ -112,16 +120,24 @@ end
 if Gitlab::Runtime.puma?
   Gitlab::Cluster::LifecycleEvents.on_before_graceful_shutdown do
     # We need to ensure that before we re-exec or shutdown server
-    # we do stop the exporter
-    Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    # we also stop the metrics server
+    if PUMA_EXTERNAL_METRICS_SERVER
+      ::MetricsServer::PumaProcessSupervisor.instance.shutdown
+    else
+      Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    end
   end
 
   Gitlab::Cluster::LifecycleEvents.on_before_master_restart do
     # We need to ensure that before we re-exec server
-    # we do stop the exporter
+    # we also stop the metrics server
     #
     # We do it again, for being extra safe,
     # but it should not be needed
-    Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    if PUMA_EXTERNAL_METRICS_SERVER
+      ::MetricsServer::PumaProcessSupervisor.instance.shutdown
+    else
+      Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    end
   end
 end

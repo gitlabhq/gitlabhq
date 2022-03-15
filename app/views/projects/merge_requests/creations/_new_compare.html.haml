@@ -29,8 +29,7 @@
               = dropdown_content
               = dropdown_loading
         .card-footer
-          .text-center
-            .js-source-loading.mt-1.gl-spinner
+          = gl_loading_icon(css_class: 'js-source-loading gl-my-3')
           %ul.list-unstyled.mr_source_commit
 
     .col-lg-6
@@ -58,8 +57,7 @@
               = dropdown_content
               = dropdown_loading
         .card-footer
-          .text-center
-            .js-target-loading.mt-1.gl-spinner
+          = gl_loading_icon(css_class: 'js-target-loading gl-my-3')
           %ul.list-unstyled.mr_target_commit
 
   - if @merge_request.errors.any?

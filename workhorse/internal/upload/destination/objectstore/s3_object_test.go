@@ -18,9 +18,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore/test"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
 type failedReader struct {

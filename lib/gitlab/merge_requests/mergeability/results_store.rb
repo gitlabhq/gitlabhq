@@ -9,7 +9,11 @@ module Gitlab
         end
 
         def read(merge_check:)
-          interface.retrieve_check(merge_check: merge_check)
+          result_hash = interface.retrieve_check(merge_check: merge_check)
+
+          return if result_hash.blank?
+
+          CheckResult.from_hash(result_hash)
         end
 
         def write(merge_check:, result_hash:)

@@ -40,6 +40,8 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
     }
   end
 
+  let(:supervisor) { instance_double(Gitlab::SidekiqCluster::SidekiqProcessSupervisor) }
+
   before do
     stub_env('RAILS_ENV', 'test')
 
@@ -47,8 +49,11 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
     config_file.close
 
     allow(::Settings).to receive(:source).and_return(config_file.path)
-
     ::Settings.reload!
+
+    allow(Gitlab::ProcessManagement).to receive(:write_pid)
+    allow(Gitlab::SidekiqCluster::SidekiqProcessSupervisor).to receive(:instance).and_return(supervisor)
+    allow(supervisor).to receive(:supervise)
   end
 
   after do
@@ -63,11 +68,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
     end
 
     context 'with arguments' do
-      before do
-        allow(Gitlab::ProcessManagement).to receive(:write_pid)
-        allow_next_instance_of(Gitlab::ProcessSupervisor) { |it| allow(it).to receive(:supervise) }
-      end
-
       it 'starts the Sidekiq workers' do
         expect(Gitlab::SidekiqCluster).to receive(:start)
                                             .with([['foo']], default_options)
@@ -298,8 +298,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
         context 'without --dryrun' do
           before do
             allow(Gitlab::SidekiqCluster).to receive(:start).and_return([])
-            allow(Gitlab::ProcessManagement).to receive(:write_pid)
-            allow_next_instance_of(Gitlab::ProcessSupervisor) { |it| allow(it).to receive(:supervise) }
           end
 
           context 'when there are no sidekiq_health_checks settings set' do
@@ -429,14 +427,11 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
 
       before do
         allow(Gitlab::SidekiqCluster).to receive(:start).and_return(sidekiq_worker_pids)
-        allow(Gitlab::ProcessManagement).to receive(:write_pid)
       end
 
       it 'stops the entire process cluster if one of the workers has been terminated' do
-        allow_next_instance_of(Gitlab::ProcessSupervisor) do |it|
-          allow(it).to receive(:supervise).and_yield([2])
-        end
-
+        expect(supervisor).to receive(:alive).and_return(true)
+        expect(supervisor).to receive(:supervise).and_yield([2])
         expect(MetricsServer).to receive(:fork).once.and_return(metrics_server_pid)
         expect(Gitlab::ProcessManagement).to receive(:signal_processes).with([42, 99], :TERM)
 
@@ -445,11 +440,8 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
 
       context 'when the supervisor is alive' do
         it 'restarts the metrics server when it is down' do
-          allow_next_instance_of(Gitlab::ProcessSupervisor) do |it|
-            allow(it).to receive(:alive).and_return(true)
-            allow(it).to receive(:supervise).and_yield([metrics_server_pid])
-          end
-
+          expect(supervisor).to receive(:alive).and_return(true)
+          expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
           expect(MetricsServer).to receive(:fork).twice.and_return(metrics_server_pid)
 
           cli.run(%w(foo))
@@ -458,11 +450,8 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
 
       context 'when the supervisor is shutting down' do
         it 'does not restart the metrics server' do
-          allow_next_instance_of(Gitlab::ProcessSupervisor) do |it|
-            allow(it).to receive(:alive).and_return(false)
-            allow(it).to receive(:supervise).and_yield([metrics_server_pid])
-          end
-
+          expect(supervisor).to receive(:alive).and_return(false)
+          expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
           expect(MetricsServer).to receive(:fork).once.and_return(metrics_server_pid)
 
           cli.run(%w(foo))

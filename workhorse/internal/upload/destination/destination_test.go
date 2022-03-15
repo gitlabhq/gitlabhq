@@ -1,4 +1,4 @@
-package filestore_test
+package destination_test
 
 import (
 	"context"
@@ -17,13 +17,13 @@ import (
 	"gocloud.dev/blob"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore/test"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
 func testDeadline() time.Time {
-	return time.Now().Add(filestore.DefaultObjectStoreTimeout)
+	return time.Now().Add(destination.DefaultObjectStoreTimeout)
 }
 
 func requireFileGetsRemovedAsync(t *testing.T, filePath string) {
@@ -39,7 +39,7 @@ func requireObjectStoreDeletedAsync(t *testing.T, expectedDeletes int, osStub *t
 	require.Eventually(t, func() bool { return osStub.DeletesCnt() == expectedDeletes }, time.Second, time.Millisecond, "Object not deleted")
 }
 
-func TestSaveFileWrongSize(t *testing.T) {
+func TestUploadWrongSize(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -47,15 +47,15 @@ func TestSaveFileWrongSize(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tmpFolder)
 
-	opts := &filestore.SaveFileOpts{LocalTempPath: tmpFolder, TempFilePrefix: "test-file"}
-	fh, err := filestore.SaveFileFromReader(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize+1, opts)
+	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, TempFilePrefix: "test-file"}
+	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize+1, opts)
 	require.Error(t, err)
-	_, isSizeError := err.(filestore.SizeError)
+	_, isSizeError := err.(destination.SizeError)
 	require.True(t, isSizeError, "Should fail with SizeError")
 	require.Nil(t, fh)
 }
 
-func TestSaveFileWithKnownSizeExceedLimit(t *testing.T) {
+func TestUploadWithKnownSizeExceedLimit(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -63,15 +63,15 @@ func TestSaveFileWithKnownSizeExceedLimit(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tmpFolder)
 
-	opts := &filestore.SaveFileOpts{LocalTempPath: tmpFolder, TempFilePrefix: "test-file", MaximumSize: test.ObjectSize - 1}
-	fh, err := filestore.SaveFileFromReader(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, opts)
+	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, TempFilePrefix: "test-file", MaximumSize: test.ObjectSize - 1}
+	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, opts)
 	require.Error(t, err)
-	_, isSizeError := err.(filestore.SizeError)
+	_, isSizeError := err.(destination.SizeError)
 	require.True(t, isSizeError, "Should fail with SizeError")
 	require.Nil(t, fh)
 }
 
-func TestSaveFileWithUnknownSizeExceedLimit(t *testing.T) {
+func TestUploadWithUnknownSizeExceedLimit(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -79,22 +79,13 @@ func TestSaveFileWithUnknownSizeExceedLimit(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tmpFolder)
 
-	opts := &filestore.SaveFileOpts{LocalTempPath: tmpFolder, TempFilePrefix: "test-file", MaximumSize: test.ObjectSize - 1}
-	fh, err := filestore.SaveFileFromReader(ctx, strings.NewReader(test.ObjectContent), -1, opts)
-	require.Equal(t, err, filestore.ErrEntityTooLarge)
+	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, TempFilePrefix: "test-file", MaximumSize: test.ObjectSize - 1}
+	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), -1, opts)
+	require.Equal(t, err, destination.ErrEntityTooLarge)
 	require.Nil(t, fh)
 }
 
-func TestSaveFromDiskNotExistingFile(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	fh, err := filestore.SaveFileFromDisk(ctx, "/I/do/not/exist", &filestore.SaveFileOpts{})
-	require.Error(t, err, "SaveFileFromDisk should fail")
-	require.True(t, os.IsNotExist(err), "Provided file should not exists")
-	require.Nil(t, fh, "On error FileHandler should be nil")
-}
-
-func TestSaveFileWrongETag(t *testing.T) {
+func TestUploadWrongETag(t *testing.T) {
 	tests := []struct {
 		name      string
 		multipart bool
@@ -110,7 +101,7 @@ func TestSaveFileWrongETag(t *testing.T) {
 
 			objectURL := ts.URL + test.ObjectPath
 
-			opts := &filestore.SaveFileOpts{
+			opts := &destination.UploadOpts{
 				RemoteID:        "test-file",
 				RemoteURL:       objectURL,
 				PresignedPut:    objectURL + "?Signature=ASignature",
@@ -126,7 +117,7 @@ func TestSaveFileWrongETag(t *testing.T) {
 				osStub.InitiateMultipartUpload(test.ObjectPath)
 			}
 			ctx, cancel := context.WithCancel(context.Background())
-			fh, err := filestore.SaveFileFromReader(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, opts)
+			fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, opts)
 			require.Nil(t, fh)
 			require.Error(t, err)
 			require.Equal(t, 1, osStub.PutsCnt(), "File not uploaded")
@@ -138,32 +129,7 @@ func TestSaveFileWrongETag(t *testing.T) {
 	}
 }
 
-func TestSaveFileFromDiskToLocalPath(t *testing.T) {
-	f, err := ioutil.TempFile("", "workhorse-test")
-	require.NoError(t, err)
-	defer os.Remove(f.Name())
-
-	_, err = fmt.Fprint(f, test.ObjectContent)
-	require.NoError(t, err)
-
-	tmpFolder, err := ioutil.TempDir("", "workhorse-test-tmp")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpFolder)
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	opts := &filestore.SaveFileOpts{LocalTempPath: tmpFolder}
-	fh, err := filestore.SaveFileFromDisk(ctx, f.Name(), opts)
-	require.NoError(t, err)
-	require.NotNil(t, fh)
-
-	require.NotEmpty(t, fh.LocalPath, "File not persisted on disk")
-	_, err = os.Stat(fh.LocalPath)
-	require.NoError(t, err)
-}
-
-func TestSaveFile(t *testing.T) {
+func TestUpload(t *testing.T) {
 	testhelper.ConfigureSecret()
 
 	type remote int
@@ -189,7 +155,7 @@ func TestSaveFile(t *testing.T) {
 
 	for _, spec := range tests {
 		t.Run(spec.name, func(t *testing.T) {
-			var opts filestore.SaveFileOpts
+			var opts destination.UploadOpts
 			var expectedDeletes, expectedPuts int
 
 			osStub, ts := test.StartObjectStore()
@@ -231,7 +197,7 @@ func TestSaveFile(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			fh, err := filestore.SaveFileFromReader(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
+			fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
 			require.NoError(t, err)
 			require.NotNil(t, fh)
 
@@ -279,7 +245,7 @@ func TestSaveFile(t *testing.T) {
 	}
 }
 
-func TestSaveFileWithS3WorkhorseClient(t *testing.T) {
+func TestUploadWithS3WorkhorseClient(t *testing.T) {
 	tests := []struct {
 		name        string
 		objectSize  int64
@@ -298,7 +264,7 @@ func TestSaveFileWithS3WorkhorseClient(t *testing.T) {
 			name:        "unknown object size with limit",
 			objectSize:  -1,
 			maxSize:     test.ObjectSize - 1,
-			expectedErr: filestore.ErrEntityTooLarge,
+			expectedErr: destination.ErrEntityTooLarge,
 		},
 	}
 
@@ -312,12 +278,12 @@ func TestSaveFileWithS3WorkhorseClient(t *testing.T) {
 			defer cancel()
 
 			remoteObject := "tmp/test-file/1"
-			opts := filestore.SaveFileOpts{
+			opts := destination.UploadOpts{
 				RemoteID:           "test-file",
 				Deadline:           testDeadline(),
 				UseWorkhorseClient: true,
 				RemoteTempObjectID: remoteObject,
-				ObjectStorageConfig: filestore.ObjectStorageConfig{
+				ObjectStorageConfig: destination.ObjectStorageConfig{
 					Provider:      "AWS",
 					S3Credentials: s3Creds,
 					S3Config:      s3Config,
@@ -325,7 +291,7 @@ func TestSaveFileWithS3WorkhorseClient(t *testing.T) {
 				MaximumSize: tc.maxSize,
 			}
 
-			_, err := filestore.SaveFileFromReader(ctx, strings.NewReader(test.ObjectContent), tc.objectSize, &opts)
+			_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), tc.objectSize, &opts)
 
 			if tc.expectedErr == nil {
 				require.NoError(t, err)
@@ -338,7 +304,7 @@ func TestSaveFileWithS3WorkhorseClient(t *testing.T) {
 	}
 }
 
-func TestSaveFileWithAzureWorkhorseClient(t *testing.T) {
+func TestUploadWithAzureWorkhorseClient(t *testing.T) {
 	mux, bucketDir, cleanup := test.SetupGoCloudFileBucket(t, "azblob")
 	defer cleanup()
 
@@ -346,48 +312,48 @@ func TestSaveFileWithAzureWorkhorseClient(t *testing.T) {
 	defer cancel()
 
 	remoteObject := "tmp/test-file/1"
-	opts := filestore.SaveFileOpts{
+	opts := destination.UploadOpts{
 		RemoteID:           "test-file",
 		Deadline:           testDeadline(),
 		UseWorkhorseClient: true,
 		RemoteTempObjectID: remoteObject,
-		ObjectStorageConfig: filestore.ObjectStorageConfig{
+		ObjectStorageConfig: destination.ObjectStorageConfig{
 			Provider:      "AzureRM",
 			URLMux:        mux,
 			GoCloudConfig: config.GoCloudConfig{URL: "azblob://test-container"},
 		},
 	}
 
-	_, err := filestore.SaveFileFromReader(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
+	_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
 	require.NoError(t, err)
 
 	test.GoCloudObjectExists(t, bucketDir, remoteObject)
 }
 
-func TestSaveFileWithUnknownGoCloudScheme(t *testing.T) {
+func TestUploadWithUnknownGoCloudScheme(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	mux := new(blob.URLMux)
 
 	remoteObject := "tmp/test-file/1"
-	opts := filestore.SaveFileOpts{
+	opts := destination.UploadOpts{
 		RemoteID:           "test-file",
 		Deadline:           testDeadline(),
 		UseWorkhorseClient: true,
 		RemoteTempObjectID: remoteObject,
-		ObjectStorageConfig: filestore.ObjectStorageConfig{
+		ObjectStorageConfig: destination.ObjectStorageConfig{
 			Provider:      "SomeCloud",
 			URLMux:        mux,
 			GoCloudConfig: config.GoCloudConfig{URL: "foo://test-container"},
 		},
 	}
 
-	_, err := filestore.SaveFileFromReader(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
+	_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
 	require.Error(t, err)
 }
 
-func TestSaveMultipartInBodyFailure(t *testing.T) {
+func TestUploadMultipartInBodyFailure(t *testing.T) {
 	osStub, ts := test.StartObjectStore()
 	defer ts.Close()
 
@@ -395,7 +361,7 @@ func TestSaveMultipartInBodyFailure(t *testing.T) {
 	// this is the only way to get an in-body failure from our ObjectStoreStub
 	objectPath := "/bucket-but-no-object-key"
 	objectURL := ts.URL + objectPath
-	opts := filestore.SaveFileOpts{
+	opts := destination.UploadOpts{
 		RemoteID:                   "test-file",
 		RemoteURL:                  objectURL,
 		PartSize:                   test.ObjectSize,
@@ -409,13 +375,13 @@ func TestSaveMultipartInBodyFailure(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	fh, err := filestore.SaveFileFromReader(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
+	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
 	require.Nil(t, fh)
 	require.Error(t, err)
 	require.EqualError(t, err, test.MultipartUploadInternalError().Error())
 }
 
-func TestSaveRemoteFileWithLimit(t *testing.T) {
+func TestUploadRemoteFileWithLimit(t *testing.T) {
 	testhelper.ConfigureSecret()
 
 	type remote int
@@ -449,20 +415,20 @@ func TestSaveRemoteFileWithLimit(t *testing.T) {
 			testData:    test.ObjectContent,
 			objectSize:  -1,
 			maxSize:     test.ObjectSize - 1,
-			expectedErr: filestore.ErrEntityTooLarge,
+			expectedErr: destination.ErrEntityTooLarge,
 		},
 		{
 			name:        "large object with unknown size with limit",
 			testData:    string(make([]byte, 20000)),
 			objectSize:  -1,
 			maxSize:     19000,
-			expectedErr: filestore.ErrEntityTooLarge,
+			expectedErr: destination.ErrEntityTooLarge,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			var opts filestore.SaveFileOpts
+			var opts destination.UploadOpts
 
 			for _, remoteType := range remoteTypes {
 				tmpFolder, err := ioutil.TempDir("", "workhorse-test-tmp")
@@ -502,7 +468,7 @@ func TestSaveRemoteFileWithLimit(t *testing.T) {
 				ctx, cancel := context.WithCancel(context.Background())
 				defer cancel()
 
-				fh, err := filestore.SaveFileFromReader(ctx, strings.NewReader(tc.testData), tc.objectSize, &opts)
+				fh, err := destination.Upload(ctx, strings.NewReader(tc.testData), tc.objectSize, &opts)
 
 				if tc.expectedErr == nil {
 					require.NoError(t, err)
@@ -516,7 +482,7 @@ func TestSaveRemoteFileWithLimit(t *testing.T) {
 	}
 }
 
-func checkFileHandlerWithFields(t *testing.T, fh *filestore.FileHandler, fields map[string]string, prefix string) {
+func checkFileHandlerWithFields(t *testing.T, fh *destination.FileHandler, fields map[string]string, prefix string) {
 	key := func(field string) string {
 		if prefix == "" {
 			return field

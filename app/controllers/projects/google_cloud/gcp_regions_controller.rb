@@ -12,13 +12,14 @@ class Projects::GoogleCloud::GcpRegionsController < Projects::GoogleCloud::BaseC
     branches = BranchesFinder.new(project.repository, params).execute(gitaly_pagination: true)
     tags = TagsFinder.new(project.repository, params).execute(gitaly_pagination: true)
     refs = (branches + tags).map(&:name)
-    @js_data = {
+    js_data = {
       screen: 'gcp_regions_form',
       availableRegions: AVAILABLE_REGIONS,
       refs: refs,
       cancelPath: project_google_cloud_index_path(project)
-    }.to_json
-    track_event('gcp_regions#index', 'form_render', @js_data)
+    }
+    @js_data = js_data.to_json
+    track_event('gcp_regions#index', 'form_render', js_data)
   end
 
   def create

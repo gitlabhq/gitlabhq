@@ -1,4 +1,4 @@
-package filestore
+package destination
 
 import (
 	"context"
@@ -14,8 +14,9 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/filestore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore"
 )
 
 type SizeError error
@@ -107,9 +108,9 @@ type consumer interface {
 	Consume(context.Context, io.Reader, time.Time) (int64, error)
 }
 
-// SaveFileFromReader persists the provided reader content to all the location specified in opts. A cleanup will be performed once ctx is Done
+// Upload persists the provided reader content to all the location specified in opts. A cleanup will be performed once ctx is Done
 // Make sure the provided context will not expire before finalizing upload with GitLab Rails.
-func SaveFileFromReader(ctx context.Context, reader io.Reader, size int64, opts *SaveFileOpts) (*FileHandler, error) {
+func Upload(ctx context.Context, reader io.Reader, size int64, opts *UploadOpts) (*FileHandler, error) {
 	fh := &FileHandler{
 		Name:      opts.TempFilePrefix,
 		RemoteID:  opts.RemoteID,
@@ -126,7 +127,7 @@ func SaveFileFromReader(ctx context.Context, reader io.Reader, size int64, opts 
 	switch {
 	case opts.IsLocal():
 		clientMode = "local"
-		uploadDestination, err = fh.uploadLocalFile(ctx, opts)
+		uploadDestination, err = fh.newLocalFile(ctx, opts)
 	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsGoCloud():
 		clientMode = fmt.Sprintf("go_cloud:%s", opts.ObjectStorageConfig.Provider)
 		p := &objectstore.GoCloudObjectParams{
@@ -210,16 +211,16 @@ func SaveFileFromReader(ctx context.Context, reader io.Reader, size int64, opts 
 	return fh, nil
 }
 
-func (fh *FileHandler) uploadLocalFile(ctx context.Context, opts *SaveFileOpts) (consumer, error) {
+func (fh *FileHandler) newLocalFile(ctx context.Context, opts *UploadOpts) (consumer, error) {
 	// make sure TempFolder exists
 	err := os.MkdirAll(opts.LocalTempPath, 0700)
 	if err != nil {
-		return nil, fmt.Errorf("uploadLocalFile: mkdir %q: %v", opts.LocalTempPath, err)
+		return nil, fmt.Errorf("newLocalFile: mkdir %q: %v", opts.LocalTempPath, err)
 	}
 
 	file, err := ioutil.TempFile(opts.LocalTempPath, opts.TempFilePrefix)
 	if err != nil {
-		return nil, fmt.Errorf("uploadLocalFile: create file: %v", err)
+		return nil, fmt.Errorf("newLocalFile: create file: %v", err)
 	}
 
 	go func() {
@@ -228,32 +229,5 @@ func (fh *FileHandler) uploadLocalFile(ctx context.Context, opts *SaveFileOpts) 
 	}()
 
 	fh.LocalPath = file.Name()
-	return &localUpload{file}, nil
-}
-
-type localUpload struct{ io.WriteCloser }
-
-func (loc *localUpload) Consume(_ context.Context, r io.Reader, _ time.Time) (int64, error) {
-	n, err := io.Copy(loc.WriteCloser, r)
-	errClose := loc.Close()
-	if err == nil {
-		err = errClose
-	}
-	return n, err
-}
-
-// SaveFileFromDisk open the local file fileName and calls SaveFileFromReader
-func SaveFileFromDisk(ctx context.Context, fileName string, opts *SaveFileOpts) (fh *FileHandler, err error) {
-	file, err := os.Open(fileName)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	fi, err := file.Stat()
-	if err != nil {
-		return nil, err
-	}
-
-	return SaveFileFromReader(ctx, file, fi.Size(), opts)
+	return &filestore.LocalFile{File: file}, nil
 }

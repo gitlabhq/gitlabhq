@@ -7,7 +7,6 @@ import WalkthroughPopover from '~/pipeline_editor/components/walkthrough_popover
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
-import { stubExperiments } from 'helpers/experimentation_helper';
 import {
   CREATE_TAB,
   EDITOR_APP_STATUS_EMPTY,
@@ -245,50 +244,30 @@ describe('Pipeline editor tabs component', () => {
     });
   });
 
-  describe('pipeline_editor_walkthrough experiment', () => {
-    describe('when in control path', () => {
-      beforeEach(() => {
-        stubExperiments({ pipeline_editor_walkthrough: 'control' });
+  describe('pipeline editor walkthrough', () => {
+    describe('when isNewCiConfigFile prop is true (default)', () => {
+      beforeEach(async () => {
+        createComponent({
+          mountFn: mount,
+        });
+        await nextTick();
       });
 
-      it('does not show walkthrough popover', async () => {
-        createComponent({ mountFn: mount });
-        await nextTick();
-        expect(findWalkthroughPopover().exists()).toBe(false);
+      it('shows walkthrough popover', async () => {
+        expect(findWalkthroughPopover().exists()).toBe(true);
       });
     });
 
-    describe('when in candidate path', () => {
-      beforeEach(() => {
-        stubExperiments({ pipeline_editor_walkthrough: 'candidate' });
-      });
-
-      describe('when isNewCiConfigFile prop is true (default)', () => {
-        beforeEach(async () => {
-          createComponent({
-            mountFn: mount,
-          });
-          await nextTick();
-        });
-
-        it('shows walkthrough popover', async () => {
-          expect(findWalkthroughPopover().exists()).toBe(true);
-        });
-      });
-
-      describe('when isNewCiConfigFile prop is false', () => {
-        it('does not show walkthrough popover', async () => {
-          createComponent({ props: { isNewCiConfigFile: false }, mountFn: mount });
-          await nextTick();
-          expect(findWalkthroughPopover().exists()).toBe(false);
-        });
+    describe('when isNewCiConfigFile prop is false', () => {
+      it('does not show walkthrough popover', async () => {
+        createComponent({ props: { isNewCiConfigFile: false }, mountFn: mount });
+        await nextTick();
+        expect(findWalkthroughPopover().exists()).toBe(false);
       });
     });
   });
 
   it('sets listeners on walkthrough popover', async () => {
-    stubExperiments({ pipeline_editor_walkthrough: 'candidate' });
-
     const handler = jest.fn();
 
     createComponent({

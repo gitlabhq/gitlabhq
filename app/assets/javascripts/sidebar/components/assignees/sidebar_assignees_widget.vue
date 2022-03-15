@@ -1,6 +1,5 @@
 <script>
 import { GlDropdownItem } from '@gitlab/ui';
-import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import createFlash from '~/flash';
 import { IssuableType } from '~/issues/constants';
@@ -101,7 +100,10 @@ export default {
         }
         const issuable = data.workspace?.issuable;
         if (issuable) {
-          this.selected = cloneDeep(issuable.assignees.nodes);
+          this.selected = issuable.assignees.nodes.map((node) => ({
+            ...node,
+            canMerge: node.mergeRequestInteraction?.canMerge || false,
+          }));
         }
       },
       error() {
@@ -141,6 +143,7 @@ export default {
         username: gon?.current_username,
         name: gon?.current_user_fullname,
         avatarUrl: gon?.current_user_avatar_url,
+        canMerge: this.issuable?.userPermissions?.canMerge || false,
       };
     },
     signedIn() {
@@ -206,8 +209,8 @@ export default {
     expandWidget() {
       this.$refs.toggle.expand();
     },
-    focusSearch() {
-      this.$refs.userSelect.focusSearch();
+    showDropdown() {
+      this.$refs.userSelect.showDropdown();
     },
     showError() {
       createFlash({ message: __('An error occurred while fetching participants.') });
@@ -236,11 +239,11 @@ export default {
       :initial-loading="isAssigneesLoading"
       :title="assigneeText"
       :is-dirty="isDirty"
-      @open="focusSearch"
+      @open="showDropdown"
       @close="saveAssignees"
     >
       <template #collapsed>
-        <slot name="collapsed" :users="assignees" :on-click="expandWidget"></slot>
+        <slot name="collapsed" :users="assignees"></slot>
         <issuable-assignees
           :users="assignees"
           :issuable-type="issuableType"
@@ -256,12 +259,13 @@ export default {
           :text="$options.i18n.assignees"
           :header-text="$options.i18n.assignTo"
           :iid="iid"
+          :issuable-id="issuableId"
           :full-path="fullPath"
           :allow-multiple-assignees="allowMultipleAssignees"
           :current-user="currentUser"
           :issuable-type="issuableType"
           :is-editing="edit"
-          class="gl-w-full dropdown-menu-user"
+          class="gl-w-full dropdown-menu-user gl-mt-n3"
           @toggle="collapseWidget"
           @error="showError"
           @input="setDirtyState"

@@ -36,17 +36,5 @@ RSpec.describe Projects::Ci::PipelineEditorController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
-
-    describe 'pipeline_editor_walkthrough experiment' do
-      before do
-        project.add_developer(user)
-      end
-
-      subject(:action) { show_request }
-
-      it_behaves_like 'tracks assignment and records the subject', :pipeline_editor_walkthrough, :namespace do
-        subject { project.namespace }
-      end
-    end
   end
 end

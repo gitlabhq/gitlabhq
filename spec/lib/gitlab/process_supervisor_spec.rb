@@ -6,7 +6,9 @@ RSpec.describe Gitlab::ProcessSupervisor do
   let(:health_check_interval_seconds) { 0.1 }
   let(:check_terminate_interval_seconds) { 1 }
   let(:forwarded_signals) { [] }
-  let(:process_id) do
+  let(:process_ids) { [spawn_process, spawn_process] }
+
+  def spawn_process
     Process.spawn('while true; do sleep 1; done').tap do |pid|
       Process.detach(pid)
     end
@@ -22,54 +24,52 @@ RSpec.describe Gitlab::ProcessSupervisor do
   end
 
   after do
-    if Gitlab::ProcessManagement.process_alive?(process_id)
-      Process.kill('KILL', process_id)
+    process_ids.each do |pid|
+      Process.kill('KILL', pid)
+    rescue Errno::ESRCH
+      # Ignore if a process wasn't actually alive.
     end
   end
 
   describe '#supervise' do
-    context 'while supervised process is alive' do
+    context 'while supervised processes are alive' do
       it 'does not invoke callback' do
-        expect(Gitlab::ProcessManagement.process_alive?(process_id)).to be(true)
+        expect(Gitlab::ProcessManagement.all_alive?(process_ids)).to be(true)
         pids_killed = []
 
-        thread = Thread.new do
-          supervisor.supervise(process_id) do |dead_pids|
-            pids_killed = dead_pids
-            []
-          end
+        supervisor.supervise(process_ids) do |dead_pids|
+          pids_killed = dead_pids
+          []
         end
 
         # Wait several times the poll frequency of the supervisor.
         sleep health_check_interval_seconds * 10
-        thread.terminate
 
         expect(pids_killed).to be_empty
-        expect(Gitlab::ProcessManagement.process_alive?(process_id)).to be(true)
+        expect(Gitlab::ProcessManagement.all_alive?(process_ids)).to be(true)
       end
     end
 
-    context 'when supervised process dies' do
-      it 'triggers callback with the dead PIDs' do
-        expect(Gitlab::ProcessManagement.process_alive?(process_id)).to be(true)
+    context 'when a supervised process dies' do
+      it 'triggers callback with the dead PIDs and adds new PIDs to supervised PIDs' do
+        expect(Gitlab::ProcessManagement.all_alive?(process_ids)).to be(true)
         pids_killed = []
 
-        thread = Thread.new do
-          supervisor.supervise(process_id) do |dead_pids|
-            pids_killed = dead_pids
-            []
-          end
+        supervisor.supervise(process_ids) do |dead_pids|
+          pids_killed = dead_pids
+          [42] # Fake starting a new process in place of the terminated one.
         end
 
         # Terminate the supervised process.
-        Process.kill('TERM', process_id)
+        Process.kill('TERM', process_ids.first)
 
         await_condition(sleep_sec: health_check_interval_seconds) do
-          pids_killed == [process_id]
+          pids_killed == [process_ids.first]
         end
-        thread.terminate
 
-        expect(Gitlab::ProcessManagement.process_alive?(process_id)).to be(false)
+        expect(Gitlab::ProcessManagement.process_alive?(process_ids.first)).to be(false)
+        expect(Gitlab::ProcessManagement.process_alive?(process_ids.last)).to be(true)
+        expect(supervisor.supervised_pids).to match_array([process_ids.last, 42])
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::ProcessSupervisor do
         allow(supervisor).to receive(:sleep)
         allow(Gitlab::ProcessManagement).to receive(:trap_signals)
         allow(Gitlab::ProcessManagement).to receive(:all_alive?).and_return(false)
-        allow(Gitlab::ProcessManagement).to receive(:signal_processes).with([process_id], anything)
+        allow(Gitlab::ProcessManagement).to receive(:signal_processes).with(process_ids, anything)
       end
 
       context 'termination signals' do
@@ -87,21 +87,21 @@ RSpec.describe Gitlab::ProcessSupervisor do
             allow(Gitlab::ProcessManagement).to receive(:any_alive?).and_return(false)
 
             expect(Gitlab::ProcessManagement).to receive(:trap_signals).ordered.with(%i(INT TERM)).and_yield(:TERM)
-            expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with([process_id], :TERM)
+            expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, :TERM)
             expect(supervisor).not_to receive(:sleep).with(check_terminate_interval_seconds)
 
-            supervisor.supervise(process_id) { [] }
+            supervisor.supervise(process_ids) { [] }
           end
         end
 
         context 'when TERM does not result in timely shutdown of processes' do
           it 'issues a KILL signal after the grace period expires' do
             expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i(INT TERM)).and_yield(:TERM)
-            expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with([process_id], :TERM)
+            expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, :TERM)
             expect(supervisor).to receive(:sleep).ordered.with(check_terminate_interval_seconds).at_least(:once)
-            expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with([process_id], '-KILL')
+            expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, '-KILL')
 
-            supervisor.supervise(process_id) { [] }
+            supervisor.supervise(process_ids) { [] }
           end
         end
       end
@@ -111,10 +111,53 @@ RSpec.describe Gitlab::ProcessSupervisor do
 
         it 'forwards given signals to the observed processes' do
           expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i(USR1)).and_yield(:USR1)
-          expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with([process_id], :USR1)
+          expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, :USR1)
 
-          supervisor.supervise(process_id) { [] }
+          supervisor.supervise(process_ids) { [] }
         end
+      end
+    end
+  end
+
+  describe '#shutdown' do
+    context 'when supervisor is supervising processes' do
+      before do
+        supervisor.supervise(process_ids)
+      end
+
+      context 'when supervisor is alive' do
+        it 'signals TERM then KILL to all supervised processes' do
+          expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, :TERM)
+          expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, '-KILL')
+
+          supervisor.shutdown
+        end
+
+        it 'stops the supervisor' do
+          expect { supervisor.shutdown }.to change { supervisor.alive }.from(true).to(false)
+        end
+      end
+
+      context 'when supervisor has already shut down' do
+        before do
+          supervisor.shutdown
+        end
+
+        it 'does nothing' do
+          expect(supervisor.alive).to be(false)
+          expect(Gitlab::ProcessManagement).not_to receive(:signal_processes)
+
+          supervisor.shutdown
+        end
+      end
+    end
+
+    context 'when supervisor never started' do
+      it 'does nothing' do
+        expect(supervisor.alive).to be(false)
+        expect(Gitlab::ProcessManagement).not_to receive(:signal_processes)
+
+        supervisor.shutdown
       end
     end
   end

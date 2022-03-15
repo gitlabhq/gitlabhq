@@ -21,6 +21,8 @@ export const searchQuery = (state) => {
       group_id: state.searchContext?.group?.id,
       scope: state.searchContext?.scope,
       snippets: state.searchContext?.for_snippets ? true : null,
+      search_code: state.searchContext?.code_search ? true : null,
+      repository_ref: state.searchContext?.ref,
     },
     isNil,
   );
@@ -98,6 +100,8 @@ export const projectUrl = (state) => {
       group_id: state.searchContext?.group?.id,
       scope: state.searchContext?.scope,
       snippets: state.searchContext?.for_snippets ? true : null,
+      search_code: state.searchContext?.code_search ? true : null,
+      repository_ref: state.searchContext?.ref,
     },
     isNil,
   );
@@ -113,6 +117,8 @@ export const groupUrl = (state) => {
       group_id: state.searchContext?.group?.id,
       scope: state.searchContext?.scope,
       snippets: state.searchContext?.for_snippets ? true : null,
+      search_code: state.searchContext?.code_search ? true : null,
+      repository_ref: state.searchContext?.ref,
     },
     isNil,
   );
@@ -127,6 +133,8 @@ export const allUrl = (state) => {
       nav_source: 'navbar',
       scope: state.searchContext?.scope,
       snippets: state.searchContext?.for_snippets ? true : null,
+      search_code: state.searchContext?.code_search ? true : null,
+      repository_ref: state.searchContext?.ref,
     },
     isNil,
   );
@@ -140,7 +148,7 @@ export const scopedSearchOptions = (state, getters) => {
   if (state.searchContext?.project) {
     options.push({
       html_id: 'scoped-in-project',
-      scope: state.searchContext?.project.name,
+      scope: state.searchContext.project?.name || '',
       description: MSG_IN_PROJECT,
       url: getters.projectUrl,
     });
@@ -149,7 +157,7 @@ export const scopedSearchOptions = (state, getters) => {
   if (state.searchContext?.group) {
     options.push({
       html_id: 'scoped-in-group',
-      scope: state.searchContext?.group.name,
+      scope: state.searchContext.group?.name || '',
       description: MSG_IN_GROUP,
       url: getters.groupUrl,
     });

@@ -4,7 +4,6 @@ import { s__ } from '~/locale';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
-import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import {
   CREATE_TAB,
   EDITOR_APP_STATUS_EMPTY,
@@ -66,7 +65,6 @@ export default {
     GlTabs,
     PipelineGraph,
     TextEditor,
-    GitlabExperiment,
     WalkthroughPopover,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -158,11 +156,7 @@ export default {
       data-testid="editor-tab"
       @click="setCurrentTab($options.tabConstants.CREATE_TAB)"
     >
-      <gitlab-experiment name="pipeline_editor_walkthrough">
-        <template #candidate>
-          <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
-        </template>
-      </gitlab-experiment>
+      <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
       <ci-editor-header />
       <text-editor :commit-sha="commitSha" :value="ciFileContent" v-on="$listeners" />
     </editor-tab>

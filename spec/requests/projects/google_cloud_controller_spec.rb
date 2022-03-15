@@ -141,6 +141,38 @@ RSpec.describe Projects::GoogleCloudController do
           )
         end
       end
+
+      context 'but google oauth2 token is not valid' do
+        it 'does not return revoke oauth url' do
+          allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
+            allow(client).to receive(:validate_token).and_return(false)
+          end
+
+          sign_in(user)
+
+          get url
+
+          expect(response).to be_successful
+          expect_snowplow_event(
+            category: 'Projects::GoogleCloud',
+            action: 'google_cloud#index',
+            label: 'index',
+            extra: {
+              screen: 'home',
+              serviceAccounts: [],
+              createServiceAccountUrl: project_google_cloud_service_accounts_path(project),
+              enableCloudRunUrl: project_google_cloud_deployments_cloud_run_path(project),
+              enableCloudStorageUrl: project_google_cloud_deployments_cloud_storage_path(project),
+              emptyIllustrationUrl: ActionController::Base.helpers.image_path('illustrations/pipelines_empty.svg'),
+              configureGcpRegionsUrl: project_google_cloud_gcp_regions_path(project),
+              gcpRegions: [],
+              revokeOauthUrl: nil
+            },
+            project: project,
+            user: user
+          )
+        end
+      end
     end
   end
 end

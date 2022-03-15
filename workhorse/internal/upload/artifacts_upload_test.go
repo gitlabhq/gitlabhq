@@ -19,10 +19,10 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 
@@ -60,7 +60,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 		w.Write(data)
 	})
 	mux.HandleFunc(Path, func(w http.ResponseWriter, r *http.Request) {
-		opts, err := filestore.GetOpts(authResponse)
+		opts, err := destination.GetOpts(authResponse)
 		require.NoError(t, err)
 
 		if r.Method != "POST" {

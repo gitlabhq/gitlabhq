@@ -48,3 +48,5 @@ class Projects::IncidentsController < Projects::ApplicationController
     IssueSerializer.new(current_user: current_user, project: incident.project)
   end
 end
+
+Projects::IncidentsController.prepend_mod

@@ -227,6 +227,16 @@ these steps:
    gitlab_rails['env'] = { 'PLANTUML_ENCODING' => 'deflate' }
    ```
 
+  In GitLab Helm chart, you can set it by adding a variable to the
+  [global.extraEnv](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/charts/globals.md#extraenv)
+  section, like this:
+
+  ```yaml
+  global:
+  extraEnv:
+    PLANTUML_ENCODING: deflate
+  ```
+
 - For GitLab versions 13.1 and later, PlantUML integration now
   [requires a header prefix in the URL](https://github.com/plantuml/plantuml/issues/117#issuecomment-6235450160)
   to distinguish different encoding types.

@@ -30,8 +30,6 @@ Sidekiq.configure_server do |config|
   config.options[:strict] = false
   config.options[:queues] = Gitlab::SidekiqConfig.expand_queues(config.options[:queues])
 
-  Sidekiq.logger.info "Listening on queues #{config.options[:queues].uniq.sort}"
-
   if enable_json_logs
     config.log_formatter = Gitlab::SidekiqLogging::JSONFormatter.new
     config.options[:job_logger] = Gitlab::SidekiqLogging::StructuredLogger
@@ -40,6 +38,8 @@ Sidekiq.configure_server do |config|
     # Gitlab::SidekiqLogging::StructuredLogger
     config.error_handlers.reject! { |handler| handler.is_a?(Sidekiq::ExceptionHandler::Logger) }
   end
+
+  Sidekiq.logger.info "Listening on queues #{config.options[:queues].uniq.sort}"
 
   config.redis = queues_config_hash
 

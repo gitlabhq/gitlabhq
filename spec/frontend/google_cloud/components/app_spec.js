@@ -28,6 +28,7 @@ const HOME_PROPS = {
   emptyIllustrationUrl: '#url-empty-illustration',
   enableCloudRunUrl: '#url-enable-cloud-run',
   enableCloudStorageUrl: '#enableCloudStorageUrl',
+  revokeOauthUrl: '#revokeOauthUrl',
 };
 
 describe('google_cloud App component', () => {

@@ -198,31 +198,15 @@ class ProjectTeam
   end
 
   def contribution_check_for_user_ids(user_ids)
-    user_ids = user_ids.uniq
-    key = "contribution_check_for_users:#{project.id}"
-
-    Gitlab::SafeRequestStore[key] ||= {}
-    contributors = Gitlab::SafeRequestStore[key] || {}
-
-    user_ids -= contributors.keys
-
-    return contributors if user_ids.empty?
-
-    resource_contributors = project.merge_requests
-                                   .merged
-                                   .where(author_id: user_ids, target_branch: project.default_branch.to_s)
-                                   .pluck(:author_id)
-                                   .product([true]).to_h
-
-    contributors.merge!(resource_contributors)
-
-    missing_resource_ids = user_ids - resource_contributors.keys
-
-    missing_resource_ids.each do |resource_id|
-      contributors[resource_id] = false
+    Gitlab::SafeRequestLoader.execute(resource_key: "contribution_check_for_users:#{project.id}",
+                                      resource_ids: user_ids,
+                                      default_value: false) do |user_ids|
+      project.merge_requests
+             .merged
+             .where(author_id: user_ids, target_branch: project.default_branch.to_s)
+             .pluck(:author_id)
+             .product([true]).to_h
     end
-
-    contributors
   end
 
   def contributor?(user_id)

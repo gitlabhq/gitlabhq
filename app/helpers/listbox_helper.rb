@@ -16,8 +16,10 @@ module ListboxHelper
   # the sort key), `text` is the user-facing string for the item, and `href` is
   # the path to redirect to when that item is selected.
   #
-  # The `selected` parameter is the currently selected `value`, and must
-  # correspond to one of the `items`, or be `nil`. When `selected.nil?`, the first item is selected.
+  # The `selected` parameter is the currently selected `value`, and should
+  # correspond to one of the `items`, or be `nil`. When `selected.nil?` or
+  # a value which does not correspond to one of the items, the first item is
+  # selected.
   #
   # The final parameter `html_options` applies arbitrary attributes to the
   # returned tag. Some of these are passed to the underlying Vue component as
@@ -37,9 +39,12 @@ module ListboxHelper
       webpack_bundle_tag 'redirect_listbox'
     end
 
-    selected ||= items.first[:value]
     selected_option = items.find { |opt| opt[:value] == selected }
-    raise ArgumentError, "cannot find #{selected} in #{items}" unless selected_option
+
+    unless selected_option
+      selected_option = items.first
+      selected = selected_option[:value]
+    end
 
     button = button_tag(type: :button, class: DROPDOWN_BUTTON_CLASSES) do
       content_tag(:span, selected_option[:text], class: DROPDOWN_INNER_CLASS) +

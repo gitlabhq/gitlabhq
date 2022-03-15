@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 )
 
 // RequestBody is a request middleware. It will store the request body to
@@ -23,7 +23,7 @@ func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 			return
 		}
 
-		fh, err := filestore.SaveFileFromReader(r.Context(), r.Body, r.ContentLength, opts)
+		fh, err := destination.Upload(r.Context(), r.Body, r.ContentLength, opts)
 		if err != nil {
 			helper.Fail500(w, r, fmt.Errorf("RequestBody: upload failed: %v", err))
 			return

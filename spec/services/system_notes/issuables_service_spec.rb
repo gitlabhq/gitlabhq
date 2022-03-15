@@ -14,10 +14,10 @@ RSpec.describe ::SystemNotes::IssuablesService do
 
   let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
 
-  describe '#relate_issue' do
+  describe '#relate_issuable' do
     let(:noteable_ref) { create(:issue) }
 
-    subject { service.relate_issue(noteable_ref) }
+    subject { service.relate_issuable(noteable_ref) }
 
     it_behaves_like 'a system note' do
       let(:action) { 'relate' }

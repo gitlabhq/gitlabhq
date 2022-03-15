@@ -43,6 +43,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:rebase_without_ci_ui, project, default_enabled: :yaml)
     push_frontend_feature_flag(:markdown_continue_lists, project, default_enabled: :yaml)
     push_frontend_feature_flag(:secure_vulnerability_training, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
     # Usage data feature flags
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)

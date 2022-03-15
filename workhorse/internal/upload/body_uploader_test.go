@@ -15,8 +15,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 )
 
 const (
@@ -169,8 +169,8 @@ type alwaysLocalPreparer struct {
 	prepareError error
 }
 
-func (a *alwaysLocalPreparer) Prepare(_ *api.Response) (*filestore.SaveFileOpts, Verifier, error) {
-	opts, err := filestore.GetOpts(&api.Response{TempPath: os.TempDir()})
+func (a *alwaysLocalPreparer) Prepare(_ *api.Response) (*destination.UploadOpts, Verifier, error) {
+	opts, err := destination.GetOpts(&api.Response{TempPath: os.TempDir()})
 	if err != nil {
 		return nil, nil, err
 	}
@@ -180,7 +180,7 @@ func (a *alwaysLocalPreparer) Prepare(_ *api.Response) (*filestore.SaveFileOpts,
 
 type alwaysFailsVerifier struct{}
 
-func (alwaysFailsVerifier) Verify(handler *filestore.FileHandler) error {
+func (alwaysFailsVerifier) Verify(handler *destination.FileHandler) error {
 	return fmt.Errorf("Verification failed")
 }
 
@@ -188,7 +188,7 @@ type mockVerifier struct {
 	invoked bool
 }
 
-func (m *mockVerifier) Verify(handler *filestore.FileHandler) error {
+func (m *mockVerifier) Verify(handler *destination.FileHandler) error {
 	m.invoked = true
 
 	return nil

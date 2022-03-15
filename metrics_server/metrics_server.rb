@@ -5,7 +5,28 @@ require_relative '../config/boot'
 require_relative 'dependencies'
 
 class MetricsServer # rubocop:disable Gitlab/NamespacedClass
+  # The singleton instance used to supervise the Puma metrics server.
+  PumaProcessSupervisor = Class.new(Gitlab::ProcessSupervisor)
+
   class << self
+    def start_for_puma
+      metrics_dir = ::Prometheus::Client.configuration.multiprocess_files_dir
+
+      start_server = proc do
+        MetricsServer.spawn('puma', metrics_dir: metrics_dir).tap do |pid|
+          Gitlab::AppLogger.info("Starting Puma metrics server with pid #{pid}")
+        end
+      end
+
+      supervisor = PumaProcessSupervisor.instance
+      supervisor.supervise(start_server.call) do
+        next unless supervisor.alive
+
+        Gitlab::AppLogger.info('Puma metrics server terminated, restarting...')
+        start_server.call
+      end
+    end
+
     def spawn(target, metrics_dir:, gitlab_config: nil, wipe_metrics_dir: false)
       ensure_valid_target!(target)
 

@@ -81,8 +81,6 @@ RSpec.describe 'Pipeline Editor', :js do
 
     context 'when a change is made' do
       before do
-        click_button 'Collapse'
-
         page.within('#source-editor-') do
           find('textarea').send_keys '123'
           # It takes some time after sending keys for the vue
@@ -127,8 +125,6 @@ RSpec.describe 'Pipeline Editor', :js do
 
   describe 'Editor content' do
     it 'user can reset their CI configuration' do
-      click_button 'Collapse'
-
       page.within('#source-editor-') do
         find('textarea').send_keys '123'
       end
@@ -151,8 +147,6 @@ RSpec.describe 'Pipeline Editor', :js do
     end
 
     it 'user can cancel reseting their CI configuration' do
-      click_button 'Collapse'
-
       page.within('#source-editor-') do
         find('textarea').send_keys '123'
       end

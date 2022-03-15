@@ -94,6 +94,8 @@ to roll back GitLab to a working state if there's a problem with the upgrade:
 
 ### Restore GitLab
 
+If you have a test environment that mimics your production one, we recommend testing the restoration to ensure that everything works as you expect.
+
 To restore your GitLab backup:
 
 - Before restoring, make sure to read about the

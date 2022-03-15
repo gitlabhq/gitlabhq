@@ -24,6 +24,7 @@ describe('google_cloud Home component', () => {
     emptyIllustrationUrl: '#url-empty-illustration',
     enableCloudRunUrl: '#url-enable-cloud-run',
     enableCloudStorageUrl: '#enableCloudStorageUrl',
+    revokeOauthUrl: '#revokeOauthUrl',
   };
 
   beforeEach(() => {

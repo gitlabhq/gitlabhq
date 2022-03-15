@@ -80,46 +80,103 @@ RSpec.describe 'User searches for code' do
       end
     end
 
-    context 'search code within refs', :js do
-      let(:ref_name) { 'v1.0.0' }
+    context 'when :new_header_search is true' do
+      context 'search code within refs', :js do
+        let(:ref_name) { 'v1.0.0' }
 
-      before do
-        visit(project_tree_path(project, ref_name))
+        before do
+          # This feature is diabled by default in spec_helper.rb.
+          # We missed a feature breaking bug, so to prevent this regression, testing both scenarios for this spec.
+          # This can be removed as part of closing https://gitlab.com/gitlab-org/gitlab/-/issues/339348.
+          stub_feature_flags(new_header_search: true)
+          visit(project_tree_path(project, ref_name))
 
-        submit_search('gitlab-grack')
-        select_search_scope('Code')
+          submit_search('gitlab-grack')
+          select_search_scope('Code')
+        end
+
+        it 'shows ref switcher in code result summary' do
+          expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
+        end
+
+        it 'persists branch name across search' do
+          find('.gl-search-box-by-click-search-button').click
+          expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
+        end
+
+        #  this example is use to test the desgine that the refs is not
+        #  only repersent the branch as well as the tags.
+        it 'ref swither list all the branchs and tags' do
+          find('.js-project-refs-dropdown').click
+          expect(find('.dropdown-page-one .dropdown-content')).to have_link('sha-starting-with-large-number')
+          expect(find('.dropdown-page-one .dropdown-content')).to have_link('v1.0.0')
+        end
+
+        it 'search result changes when refs switched' do
+          expect(find('.results')).not_to have_content('path = gitlab-grack')
+
+          find('.js-project-refs-dropdown').click
+          find('.dropdown-page-one .dropdown-content').click_link('master')
+
+          expect(page).to have_selector('.results', text: 'path = gitlab-grack')
+        end
+
+        it 'persist refs over browser tabs' do
+          ref = 'feature'
+          find('.js-project-refs-dropdown').click
+          link = find_link(ref)[:href]
+          expect(link.include?("repository_ref=" + ref)).to be(true)
+        end
       end
+    end
 
-      it 'shows ref switcher in code result summary' do
-        expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
-      end
-      it 'persists branch name across search' do
-        find('.gl-search-box-by-click-search-button').click
-        expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
-      end
+    context 'when :new_header_search is false' do
+      context 'search code within refs', :js do
+        let(:ref_name) { 'v1.0.0' }
 
-      #  this example is use to test the desgine that the refs is not
-      #  only repersent the branch as well as the tags.
-      it 'ref swither list all the branchs and tags' do
-        find('.js-project-refs-dropdown').click
-        expect(find('.dropdown-page-one .dropdown-content')).to have_link('sha-starting-with-large-number')
-        expect(find('.dropdown-page-one .dropdown-content')).to have_link('v1.0.0')
-      end
+        before do
+          # This feature is diabled by default in spec_helper.rb.
+          # We missed a feature breaking bug, so to prevent this regression, testing both scenarios for this spec.
+          # This can be removed as part of closing https://gitlab.com/gitlab-org/gitlab/-/issues/339348.
+          stub_feature_flags(new_header_search: false)
+          visit(project_tree_path(project, ref_name))
 
-      it 'search result changes when refs switched' do
-        expect(find('.results')).not_to have_content('path = gitlab-grack')
+          submit_search('gitlab-grack')
+          select_search_scope('Code')
+        end
 
-        find('.js-project-refs-dropdown').click
-        find('.dropdown-page-one .dropdown-content').click_link('master')
+        it 'shows ref switcher in code result summary' do
+          expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
+        end
 
-        expect(page).to have_selector('.results', text: 'path = gitlab-grack')
-      end
+        it 'persists branch name across search' do
+          find('.gl-search-box-by-click-search-button').click
+          expect(find('.js-project-refs-dropdown')).to have_text(ref_name)
+        end
 
-      it 'persist refs over browser tabs' do
-        ref = 'feature'
-        find('.js-project-refs-dropdown').click
-        link = find_link(ref)[:href]
-        expect(link.include?("repository_ref=" + ref)).to be(true)
+        #  this example is use to test the desgine that the refs is not
+        #  only repersent the branch as well as the tags.
+        it 'ref swither list all the branchs and tags' do
+          find('.js-project-refs-dropdown').click
+          expect(find('.dropdown-page-one .dropdown-content')).to have_link('sha-starting-with-large-number')
+          expect(find('.dropdown-page-one .dropdown-content')).to have_link('v1.0.0')
+        end
+
+        it 'search result changes when refs switched' do
+          expect(find('.results')).not_to have_content('path = gitlab-grack')
+
+          find('.js-project-refs-dropdown').click
+          find('.dropdown-page-one .dropdown-content').click_link('master')
+
+          expect(page).to have_selector('.results', text: 'path = gitlab-grack')
+        end
+
+        it 'persist refs over browser tabs' do
+          ref = 'feature'
+          find('.js-project-refs-dropdown').click
+          link = find_link(ref)[:href]
+          expect(link.include?("repository_ref=" + ref)).to be(true)
+        end
       end
     end
 

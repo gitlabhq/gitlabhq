@@ -322,6 +322,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :google_cloud, only: [:index]
 
         namespace :google_cloud do
+          resources :revoke_oauth, only: [:create]
           resources :service_accounts, only: [:index, :create]
           resources :gcp_regions, only: [:index, :create]
 

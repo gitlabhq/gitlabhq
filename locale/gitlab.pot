@@ -691,6 +691,9 @@ msgstr ""
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
+msgid "%{issuable}(s) already assigned"
+msgstr ""
+
 msgid "%{issueType} actions"
 msgstr ""
 
@@ -8066,9 +8069,6 @@ msgid "ClusterIntegration|Cluster name is required."
 msgstr ""
 
 msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters. %{linkStart}More information%{linkEnd}"
-msgstr ""
-
-msgid "ClusterIntegration|Connect cluster with certificate"
 msgstr ""
 
 msgid "ClusterIntegration|Connect existing cluster"
@@ -17093,6 +17093,12 @@ msgstr ""
 msgid "GoogleCloud|Google Cloud project"
 msgstr ""
 
+msgid "GoogleCloud|Google OAuth2 token revocation request failed"
+msgstr ""
+
+msgid "GoogleCloud|Google OAuth2 token revocation requested"
+msgstr ""
+
 msgid "GoogleCloud|I understand the responsibilities involved with managing service account keys"
 msgstr ""
 
@@ -17100,6 +17106,12 @@ msgid "GoogleCloud|New service account is generated for the selected Google Clou
 msgstr ""
 
 msgid "GoogleCloud|Refs"
+msgstr ""
+
+msgid "GoogleCloud|Revoke authorizations"
+msgstr ""
+
+msgid "GoogleCloud|Revoke authorizations granted to GitLab. This does not invalidate service accounts."
 msgstr ""
 
 msgid "Got it"
@@ -19344,6 +19356,9 @@ msgstr ""
 msgid "IncidentManagement|Achieved SLA"
 msgstr ""
 
+msgid "IncidentManagement|Acknowledged"
+msgstr ""
+
 msgid "IncidentManagement|All"
 msgstr ""
 
@@ -19351,6 +19366,15 @@ msgid "IncidentManagement|All alerts promoted to incidents are automatically dis
 msgstr ""
 
 msgid "IncidentManagement|All alerts promoted to incidents are automatically displayed within the list. You can also create a new incident using the button below."
+msgstr ""
+
+msgid "IncidentManagement|An error occurred while fetching the incident status. Please reload the page."
+msgstr ""
+
+msgid "IncidentManagement|An error occurred while updating the incident status. Please reload the page and try again."
+msgstr ""
+
+msgid "IncidentManagement|Assign paging status"
 msgstr ""
 
 msgid "IncidentManagement|Assignees"
@@ -19410,6 +19434,12 @@ msgstr ""
 msgid "IncidentManagement|Published to status page"
 msgstr ""
 
+msgid "IncidentManagement|Resolved"
+msgstr ""
+
+msgid "IncidentManagement|Setting the status to Acknowledged or Resolved stops paging when escalation policies are selected for the incident."
+msgstr ""
+
 msgid "IncidentManagement|Severity"
 msgstr ""
 
@@ -19423,6 +19453,9 @@ msgid "IncidentManagement|There was an error displaying the incidents."
 msgstr ""
 
 msgid "IncidentManagement|Time to SLA"
+msgstr ""
+
+msgid "IncidentManagement|Triggered"
 msgstr ""
 
 msgid "IncidentManagement|Unassigned"
@@ -20472,9 +20505,6 @@ msgid "Issue was closed by %{name} %{reason}"
 msgstr ""
 
 msgid "Issue weight"
-msgstr ""
-
-msgid "Issue(s) already assigned"
 msgstr ""
 
 msgid "IssueAnalytics|Age"
@@ -24158,6 +24188,33 @@ msgstr ""
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
 msgstr ""
 
+msgid "NamespaceStorage|%{name_with_link} namespace has %{percent} or less namespace storage space remaining."
+msgstr ""
+
+msgid "NamespaceStorage|%{name_with_link} namespace has exceeded its namespace storage limit."
+msgstr ""
+
+msgid "NamespaceStorage|%{name}(%{url}) namespace has %{percent} or less namespace storage space remaining."
+msgstr ""
+
+msgid "NamespaceStorage|%{name}(%{url}) namespace has exceeded its namespace storage limit."
+msgstr ""
+
+msgid "NamespaceStorage|Action required: Less than %{percentage_of_available_storage}%% of namespace storage remains for %{namespace_name}"
+msgstr ""
+
+msgid "NamespaceStorage|Action required: Storage has been exceeded for %{namespace_name}"
+msgstr ""
+
+msgid "NamespaceStorage|Buy more storage"
+msgstr ""
+
+msgid "NamespaceStorage|We recommend that you buy additional storage to ensure your service is not interrupted."
+msgstr ""
+
+msgid "NamespaceStorage|We recommend that you buy additional storage to resume normal service."
+msgstr ""
+
 msgid "NamespaceUserCap|Pending users must be reviewed and approved by a group owner. Learn more about %{user_caps_link_start}user caps%{link_end} and %{users_pending_approval_link_start}users pending approval%{link_end}."
 msgstr ""
 
@@ -24838,7 +24895,7 @@ msgstr ""
 msgid "No matches found"
 msgstr ""
 
-msgid "No matching issue found. Make sure that you are adding a valid issue URL."
+msgid "No matching %{issuable} found. Make sure that you are adding a valid %{issuable} URL."
 msgstr ""
 
 msgid "No matching labels"

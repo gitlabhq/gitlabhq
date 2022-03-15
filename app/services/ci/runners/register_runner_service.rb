@@ -47,7 +47,7 @@ module Ci
       end
 
       def runner_registrar_valid?(type)
-        Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?(type)
+        Feature.disabled?(:runner_registration_control, default_enabled: :yaml) || Gitlab::CurrentSettings.valid_runner_registrars.include?(type)
       end
 
       def token_scope

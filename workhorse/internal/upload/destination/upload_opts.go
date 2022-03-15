@@ -1,4 +1,4 @@
-package filestore
+package destination
 
 import (
 	"errors"
@@ -27,8 +27,8 @@ type ObjectStorageConfig struct {
 	GoCloudConfig config.GoCloudConfig
 }
 
-// SaveFileOpts represents all the options available for saving a file to object store
-type SaveFileOpts struct {
+// UploadOpts represents all the options available for saving a file to object store
+type UploadOpts struct {
 	// TempFilePrefix is the prefix used to create temporary local file
 	TempFilePrefix string
 	// LocalTempPath is the directory where to write a local copy of the file
@@ -66,28 +66,28 @@ type SaveFileOpts struct {
 }
 
 // UseWorkhorseClientEnabled checks if the options require direct access to object storage
-func (s *SaveFileOpts) UseWorkhorseClientEnabled() bool {
+func (s *UploadOpts) UseWorkhorseClientEnabled() bool {
 	return s.UseWorkhorseClient && s.ObjectStorageConfig.IsValid() && s.RemoteTempObjectID != ""
 }
 
 // IsLocal checks if the options require the writing of the file on disk
-func (s *SaveFileOpts) IsLocal() bool {
+func (s *UploadOpts) IsLocal() bool {
 	return s.LocalTempPath != ""
 }
 
 // IsMultipart checks if the options requires a Multipart upload
-func (s *SaveFileOpts) IsMultipart() bool {
+func (s *UploadOpts) IsMultipart() bool {
 	return s.PartSize > 0
 }
 
-// GetOpts converts GitLab api.Response to a proper SaveFileOpts
-func GetOpts(apiResponse *api.Response) (*SaveFileOpts, error) {
+// GetOpts converts GitLab api.Response to a proper UploadOpts
+func GetOpts(apiResponse *api.Response) (*UploadOpts, error) {
 	timeout := time.Duration(apiResponse.RemoteObject.Timeout) * time.Second
 	if timeout == 0 {
 		timeout = DefaultObjectStoreTimeout
 	}
 
-	opts := SaveFileOpts{
+	opts := UploadOpts{
 		LocalTempPath:      apiResponse.TempPath,
 		RemoteID:           apiResponse.RemoteObject.ID,
 		RemoteURL:          apiResponse.RemoteObject.GetURL,

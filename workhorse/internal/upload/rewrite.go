@@ -21,8 +21,8 @@ import (
 	"golang.org/x/image/tiff"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lsif_transformer/parser"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
 )
 
@@ -68,7 +68,7 @@ type rewriter struct {
 	finalizedFields map[string]bool
 }
 
-func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, preauth *api.Response, filter MultipartFormProcessor, opts *filestore.SaveFileOpts) error {
+func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, preauth *api.Response, filter MultipartFormProcessor, opts *destination.UploadOpts) error {
 	// Create multipart reader
 	reader, err := r.MultipartReader()
 	if err != nil {
@@ -128,7 +128,7 @@ func parseAndNormalizeContentDisposition(header textproto.MIMEHeader) (string, s
 	return params["name"], params["filename"]
 }
 
-func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipart.Part, opts *filestore.SaveFileOpts) error {
+func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipart.Part, opts *destination.UploadOpts) error {
 	if rew.filter.Count() >= maxFilesAllowed {
 		return ErrTooManyFilesUploaded
 	}
@@ -164,10 +164,10 @@ func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipa
 
 	defer inputReader.Close()
 
-	fh, err := filestore.SaveFileFromReader(ctx, inputReader, -1, opts)
+	fh, err := destination.Upload(ctx, inputReader, -1, opts)
 	if err != nil {
 		switch err {
-		case filestore.ErrEntityTooLarge, exif.ErrRemovingExif:
+		case destination.ErrEntityTooLarge, exif.ErrRemovingExif:
 			return err
 		default:
 			return fmt.Errorf("persisting multipart file: %v", err)

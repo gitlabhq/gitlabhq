@@ -17,14 +17,15 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
       branches = BranchesFinder.new(project.repository, params).execute(gitaly_pagination: true)
       tags = TagsFinder.new(project.repository, params).execute(gitaly_pagination: true)
       refs = (branches + tags).map(&:name)
-      @js_data = {
+      js_data = {
         screen: 'service_accounts_form',
         gcpProjects: gcp_projects,
         refs: refs,
         cancelPath: project_google_cloud_index_path(project)
-      }.to_json
+      }
+      @js_data = js_data.to_json
 
-      track_event('service_accounts#index', 'form_success', @js_data)
+      track_event('service_accounts#index', 'form_success', js_data)
     end
   rescue Google::Apis::ClientError => error
     handle_gcp_error('service_accounts#index', error)

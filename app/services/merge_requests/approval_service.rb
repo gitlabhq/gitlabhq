@@ -11,6 +11,7 @@ module MergeRequests
 
       reset_approvals_cache(merge_request)
       create_event(merge_request)
+      stream_audit_event(merge_request)
       create_approval_note(merge_request)
       mark_pending_todos_as_done(merge_request)
       execute_approval_hooks(merge_request, current_user)
@@ -51,6 +52,10 @@ module MergeRequests
 
     def create_event(merge_request)
       event_service.approve_mr(merge_request, current_user)
+    end
+
+    def stream_audit_event(merge_request)
+      # Defined in EE
     end
   end
 end

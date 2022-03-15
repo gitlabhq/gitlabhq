@@ -10,8 +10,9 @@ module SystemNotes
     #   "marked this issue as related to gitlab-foss#9001"
     #
     # Returns the created Note object
-    def relate_issue(noteable_ref)
-      body = "marked this issue as related to #{noteable_ref.to_reference(noteable.project)}"
+    def relate_issuable(noteable_ref)
+      issuable_type = noteable.to_ability_name.humanize(capitalize: false)
+      body = "marked this #{issuable_type} as related to #{noteable_ref.to_reference(noteable.resource_parent)}"
 
       issue_activity_counter.track_issue_related_action(author: author) if noteable.is_a?(Issue)
 

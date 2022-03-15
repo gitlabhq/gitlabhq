@@ -16,8 +16,8 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
@@ -35,7 +35,7 @@ var zipSubcommandsErrorsCounter = promauto.NewCounterVec(
 	}, []string{"error"})
 
 type artifactsUploadProcessor struct {
-	opts   *filestore.SaveFileOpts
+	opts   *destination.UploadOpts
 	format string
 
 	SavedFileTracker
@@ -57,11 +57,11 @@ func Artifacts(myAPI *api.API, h http.Handler, p Preparer) http.Handler {
 	}, "/authorize")
 }
 
-func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *filestore.FileHandler) (*filestore.FileHandler, error) {
+func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *destination.FileHandler) (*destination.FileHandler, error) {
 	metaReader, metaWriter := io.Pipe()
 	defer metaWriter.Close()
 
-	metaOpts := &filestore.SaveFileOpts{
+	metaOpts := &destination.UploadOpts{
 		LocalTempPath:  a.opts.LocalTempPath,
 		TempFilePrefix: "metadata.gz",
 	}
@@ -86,12 +86,12 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 
 	type saveResult struct {
 		error
-		*filestore.FileHandler
+		*destination.FileHandler
 	}
 	done := make(chan saveResult)
 	go func() {
 		var result saveResult
-		result.FileHandler, result.error = filestore.SaveFileFromReader(ctx, metaReader, -1, metaOpts)
+		result.FileHandler, result.error = destination.Upload(ctx, metaReader, -1, metaOpts)
 
 		done <- result
 	}()
@@ -119,7 +119,7 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 	return result.FileHandler, result.error
 }
 
-func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName string, file *filestore.FileHandler, writer *multipart.Writer) error {
+func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName string, file *destination.FileHandler, writer *multipart.Writer) error {
 	//  ProcessFile for artifacts requires file form-data field name to eq `file`
 
 	if formName != "file" {
