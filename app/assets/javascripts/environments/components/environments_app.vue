@@ -1,188 +1,272 @@
 <script>
-import { GlBadge, GlButton, GlModalDirective, GlTab, GlTabs } from '@gitlab/ui';
-import createFlash from '~/flash';
-import { s__ } from '~/locale';
-import eventHub from '../event_hub';
-import environmentsMixin from '../mixins/environments_mixin';
-import EnvironmentsPaginationApiMixin from '../mixins/environments_pagination_api_mixin';
-import ConfirmRollbackModal from './confirm_rollback_modal.vue';
-import DeleteEnvironmentModal from './delete_environment_modal.vue';
-import emptyState from './empty_state.vue';
+import { GlBadge, GlPagination, GlTab, GlTabs } from '@gitlab/ui';
+import { s__, __, sprintf } from '~/locale';
+import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
+import environmentAppQuery from '../graphql/queries/environment_app.query.graphql';
+import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
+import pageInfoQuery from '../graphql/queries/page_info.query.graphql';
+import environmentToDeleteQuery from '../graphql/queries/environment_to_delete.query.graphql';
+import environmentToRollbackQuery from '../graphql/queries/environment_to_rollback.query.graphql';
+import environmentToStopQuery from '../graphql/queries/environment_to_stop.query.graphql';
+import environmentToChangeCanaryQuery from '../graphql/queries/environment_to_change_canary.query.graphql';
+import { ENVIRONMENTS_SCOPE } from '../constants';
+import EnvironmentFolder from './environment_folder.vue';
 import EnableReviewAppModal from './enable_review_app_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
+import EnvironmentItem from './new_environment_item.vue';
+import ConfirmRollbackModal from './confirm_rollback_modal.vue';
+import DeleteEnvironmentModal from './delete_environment_modal.vue';
+import CanaryUpdateModal from './canary_update_modal.vue';
+import EmptyState from './empty_state.vue';
 
 export default {
+  components: {
+    DeleteEnvironmentModal,
+    CanaryUpdateModal,
+    ConfirmRollbackModal,
+    EmptyState,
+    EnvironmentFolder,
+    EnableReviewAppModal,
+    EnvironmentItem,
+    StopEnvironmentModal,
+    GlBadge,
+    GlPagination,
+    GlTab,
+    GlTabs,
+  },
+  apollo: {
+    environmentApp: {
+      query: environmentAppQuery,
+      variables() {
+        return {
+          scope: this.scope,
+          page: this.page ?? 1,
+        };
+      },
+      pollInterval() {
+        return this.interval;
+      },
+    },
+    interval: {
+      query: pollIntervalQuery,
+    },
+    pageInfo: {
+      query: pageInfoQuery,
+    },
+    environmentToDelete: {
+      query: environmentToDeleteQuery,
+    },
+    environmentToRollback: {
+      query: environmentToRollbackQuery,
+    },
+    environmentToStop: {
+      query: environmentToStopQuery,
+    },
+    environmentToChangeCanary: {
+      query: environmentToChangeCanaryQuery,
+    },
+    weight: {
+      query: environmentToChangeCanaryQuery,
+    },
+  },
+  inject: ['newEnvironmentPath', 'canCreateEnvironment', 'helpPagePath'],
   i18n: {
     newEnvironmentButtonLabel: s__('Environments|New environment'),
     reviewAppButtonLabel: s__('Environments|Enable review app'),
+    available: __('Available'),
+    stopped: __('Stopped'),
+    prevPage: __('Go to previous page'),
+    nextPage: __('Go to next page'),
+    next: __('Next'),
+    prev: __('Prev'),
+    goto: (page) => sprintf(__('Go to page %{page}'), { page }),
   },
-  modal: {
-    id: 'enable-review-app-info',
+  modalId: 'enable-review-app-info',
+  data() {
+    const { page = '1', scope } = queryToObject(window.location.search);
+    return {
+      interval: undefined,
+      isReviewAppModalVisible: false,
+      page: parseInt(page, 10),
+      pageInfo: {},
+      scope: Object.values(ENVIRONMENTS_SCOPE).includes(scope)
+        ? scope
+        : ENVIRONMENTS_SCOPE.AVAILABLE,
+      environmentToDelete: {},
+      environmentToRollback: {},
+      environmentToStop: {},
+      environmentToChangeCanary: {},
+      weight: 0,
+    };
   },
-  components: {
-    ConfirmRollbackModal,
-    emptyState,
-    EnableReviewAppModal,
-    GlBadge,
-    GlButton,
-    GlTab,
-    GlTabs,
-    StopEnvironmentModal,
-    DeleteEnvironmentModal,
-  },
-  directives: {
-    'gl-modal': GlModalDirective,
-  },
-  mixins: [EnvironmentsPaginationApiMixin, environmentsMixin],
-  props: {
-    endpoint: {
-      type: String,
-      required: true,
+  computed: {
+    canSetupReviewApp() {
+      return this.environmentApp?.reviewApp?.canSetupReviewApp;
     },
-    canCreateEnvironment: {
-      type: Boolean,
-      required: true,
+    folders() {
+      return this.environmentApp?.environments?.filter((e) => e.size > 1) ?? [];
     },
-    newEnvironmentPath: {
-      type: String,
-      required: true,
+    environments() {
+      return this.environmentApp?.environments?.filter((e) => e.size === 1) ?? [];
     },
-    helpPagePath: {
-      type: String,
-      required: true,
+    hasEnvironments() {
+      return this.environments.length > 0 || this.folders.length > 0;
     },
-  },
+    availableCount() {
+      return this.environmentApp?.availableCount;
+    },
+    addEnvironment() {
+      if (!this.canCreateEnvironment) {
+        return null;
+      }
 
-  created() {
-    eventHub.$on('toggleFolder', this.toggleFolder);
-    eventHub.$on('toggleDeployBoard', this.toggleDeployBoard);
-  },
+      return {
+        text: this.$options.i18n.newEnvironmentButtonLabel,
+        attributes: {
+          href: this.newEnvironmentPath,
+          category: 'primary',
+          variant: 'confirm',
+        },
+      };
+    },
+    openReviewAppModal() {
+      if (!this.canSetupReviewApp) {
+        return null;
+      }
 
-  beforeDestroy() {
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    eventHub.$off('toggleFolder');
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    eventHub.$off('toggleDeployBoard');
+      return {
+        text: this.$options.i18n.reviewAppButtonLabel,
+        attributes: {
+          category: 'secondary',
+          variant: 'confirm',
+        },
+      };
+    },
+    stoppedCount() {
+      return this.environmentApp?.stoppedCount;
+    },
+    totalItems() {
+      return this.pageInfo?.total;
+    },
+    itemsPerPage() {
+      return this.pageInfo?.perPage;
+    },
   },
-
+  mounted() {
+    window.addEventListener('popstate', this.syncPageFromQueryParams);
+  },
+  destroyed() {
+    window.removeEventListener('popstate', this.syncPageFromQueryParams);
+    this.$apollo.queries.environmentApp.stopPolling();
+  },
   methods: {
-    toggleDeployBoard(model) {
-      this.store.toggleDeployBoard(model.id);
+    showReviewAppModal() {
+      this.isReviewAppModalVisible = true;
     },
-    toggleFolder(folder) {
-      this.store.toggleFolder(folder);
-
-      if (!folder.isOpen) {
-        this.fetchChildEnvironments(folder, true);
-      }
+    setScope(scope) {
+      this.scope = scope;
+      this.moveToPage(1);
     },
-
-    fetchChildEnvironments(folder, showLoader = false) {
-      this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
-
-      this.service
-        .getFolderContent(folder.folder_path, folder.state)
-        .then((response) => this.store.setfolderContent(folder, response.data.environments))
-        .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
-        .catch(() => {
-          createFlash({
-            message: s__('Environments|An error occurred while fetching the environments.'),
-          });
-          this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false);
-        });
+    movePage(direction) {
+      this.moveToPage(this.pageInfo[`${direction}Page`]);
     },
-
-    successCallback(resp) {
-      this.saveData(resp);
-
-      // We need to verify if any folder is open to also update it
-      const openFolders = this.store.getOpenFolders();
-      if (openFolders.length) {
-        openFolders.forEach((folder) => this.fetchChildEnvironments(folder));
-      }
+    moveToPage(page) {
+      this.page = page;
+      updateHistory({
+        url: setUrlParams({ page: this.page }),
+        title: document.title,
+      });
+      this.resetPolling();
+    },
+    syncPageFromQueryParams() {
+      const { page = '1' } = queryToObject(window.location.search);
+      this.page = parseInt(page, 10);
+    },
+    resetPolling() {
+      this.$apollo.queries.environmentApp.stopPolling();
+      this.$apollo.queries.environmentApp.refetch();
+      this.$nextTick(() => {
+        if (this.interval) {
+          this.$apollo.queries.environmentApp.startPolling(this.interval);
+        }
+      });
     },
   },
+  ENVIRONMENTS_SCOPE,
 };
 </script>
 <template>
-  <div class="environments-section">
-    <stop-environment-modal :environment="environmentInStopModal" />
-    <delete-environment-modal :environment="environmentInDeleteModal" />
-    <confirm-rollback-modal :environment="environmentInRollbackModal" />
-
-    <div class="gl-w-full">
-      <div class="gl-display-flex gl-flex-direction-column gl-mt-3 gl-md-display-none!">
-        <gl-button
-          v-if="state.reviewAppDetails.can_setup_review_app"
-          v-gl-modal="$options.modal.id"
-          data-testid="enable-review-app"
-          variant="info"
-          category="secondary"
-          type="button"
-          class="gl-mb-3 gl-flex-grow-1"
-          >{{ $options.i18n.reviewAppButtonLabel }}</gl-button
-        >
-        <gl-button
-          v-if="canCreateEnvironment"
-          :href="newEnvironmentPath"
-          data-testid="new-environment"
-          category="primary"
-          variant="confirm"
-          >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
-        >
-      </div>
-      <gl-tabs :value="activeTab" content-class="gl-display-none">
-        <gl-tab
-          v-for="(tab, idx) in tabs"
-          :key="idx"
-          :title-item-class="`js-environments-tab-${tab.scope}`"
-          @click="onChangeTab(tab.scope)"
-        >
-          <template #title>
-            <span>{{ tab.name }}</span>
-            <gl-badge size="sm" class="gl-tab-counter-badge">{{ tab.count }}</gl-badge>
-          </template>
-        </gl-tab>
-        <template #tabs-end>
-          <div
-            class="gl-display-none gl-md-display-flex gl-lg-align-items-center gl-lg-flex-direction-row gl-lg-flex-fill-1 gl-lg-justify-content-end gl-lg-mt-0"
-          >
-            <gl-button
-              v-if="state.reviewAppDetails.can_setup_review_app"
-              v-gl-modal="$options.modal.id"
-              data-testid="enable-review-app"
-              variant="info"
-              category="secondary"
-              type="button"
-              class="gl-mb-3 gl-lg-mr-3 gl-lg-mb-0"
-              >{{ $options.i18n.reviewAppButtonLabel }}</gl-button
-            >
-            <gl-button
-              v-if="canCreateEnvironment"
-              :href="newEnvironmentPath"
-              data-testid="new-environment"
-              category="primary"
-              variant="confirm"
-              >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
-            >
-          </div>
-        </template>
-      </gl-tabs>
-      <container
-        :is-loading="isLoading"
-        :environments="state.environments"
-        :pagination="state.paginationInformation"
-        @onChangePage="onChangePage"
+  <div>
+    <enable-review-app-modal
+      v-if="canSetupReviewApp"
+      v-model="isReviewAppModalVisible"
+      :modal-id="$options.modalId"
+      data-testid="enable-review-app-modal"
+    />
+    <delete-environment-modal :environment="environmentToDelete" graphql />
+    <stop-environment-modal :environment="environmentToStop" graphql />
+    <confirm-rollback-modal :environment="environmentToRollback" graphql />
+    <canary-update-modal :environment="environmentToChangeCanary" :weight="weight" />
+    <gl-tabs
+      :action-secondary="addEnvironment"
+      :action-primary="openReviewAppModal"
+      sync-active-tab-with-query-params
+      query-param-name="scope"
+      @primary="showReviewAppModal"
+    >
+      <gl-tab
+        :query-param-value="$options.ENVIRONMENTS_SCOPE.AVAILABLE"
+        @click="setScope($options.ENVIRONMENTS_SCOPE.AVAILABLE)"
       >
-        <template v-if="!isLoading && state.environments.length === 0" #empty-state>
-          <empty-state :help-path="helpPagePath" />
+        <template #title>
+          <span>{{ $options.i18n.available }}</span>
+          <gl-badge size="sm" class="gl-tab-counter-badge">
+            {{ availableCount }}
+          </gl-badge>
         </template>
-      </container>
-      <enable-review-app-modal
-        v-if="state.reviewAppDetails.can_setup_review_app"
-        :modal-id="$options.modal.id"
-        data-testid="enable-review-app-modal"
+      </gl-tab>
+      <gl-tab
+        :query-param-value="$options.ENVIRONMENTS_SCOPE.STOPPED"
+        @click="setScope($options.ENVIRONMENTS_SCOPE.STOPPED)"
+      >
+        <template #title>
+          <span>{{ $options.i18n.stopped }}</span>
+          <gl-badge size="sm" class="gl-tab-counter-badge">
+            {{ stoppedCount }}
+          </gl-badge>
+        </template>
+      </gl-tab>
+    </gl-tabs>
+    <template v-if="hasEnvironments">
+      <environment-folder
+        v-for="folder in folders"
+        :key="folder.name"
+        class="gl-mb-3"
+        :scope="scope"
+        :nested-environment="folder"
       />
-    </div>
+      <environment-item
+        v-for="environment in environments"
+        :key="environment.name"
+        class="gl-mb-3 gl-border-gray-100 gl-border-1 gl-border-b-solid"
+        :environment="environment.latest"
+        @change="resetPolling"
+      />
+    </template>
+    <empty-state v-else :help-path="helpPagePath" />
+    <gl-pagination
+      align="center"
+      :total-items="totalItems"
+      :per-page="itemsPerPage"
+      :value="page"
+      :next="$options.i18n.next"
+      :prev="$options.i18n.prev"
+      :label-previous-page="$options.prevPage"
+      :label-next-page="$options.nextPage"
+      :label-page="$options.goto"
+      @next="movePage('next')"
+      @previous="movePage('previous')"
+      @input="moveToPage"
+    />
   </div>
 </template>

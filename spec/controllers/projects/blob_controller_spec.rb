@@ -366,8 +366,8 @@ RSpec.describe Projects::BlobController do
     it_behaves_like 'tracking unique hll events' do
       subject(:request) { put :update, params: default_params }
 
-      let(:target_id) { 'g_edit_by_sfe' }
-      let(:expected_type) { instance_of(Integer) }
+      let(:target_event) { 'g_edit_by_sfe' }
+      let(:expected_value) { instance_of(Integer) }
     end
   end
 
@@ -516,8 +516,8 @@ RSpec.describe Projects::BlobController do
     subject(:request) { post :create, params: default_params }
 
     it_behaves_like 'tracking unique hll events' do
-      let(:target_id) { 'g_edit_by_sfe' }
-      let(:expected_type) { instance_of(Integer) }
+      let(:target_event) { 'g_edit_by_sfe' }
+      let(:expected_value) { instance_of(Integer) }
     end
 
     it 'redirects to blob' do

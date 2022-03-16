@@ -116,9 +116,6 @@ export default {
     },
   },
   methods: {
-    reloadAgents() {
-      this.$apollo.queries.agents.refetch();
-    },
     nextPage() {
       this.cursor = {
         first: MAX_LIST_COUNT,

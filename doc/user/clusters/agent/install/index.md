@@ -27,18 +27,47 @@ Before you can install the agent in your cluster, you need:
 
 To install the agent in your cluster:
 
-1. [Create an agent configuration file called `config.yaml`](#create-an-agent-configuration-file).
 1. [Register the agent with GitLab](#register-the-agent-with-gitlab).
 1. [Install the agent in your cluster](#install-the-agent-in-the-cluster).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walk-through of this process](https://www.youtube.com/watch?v=XuBpKtsgGkE).
+
+### Register the agent with GitLab
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5786) in GitLab 14.1, you can create a new agent record directly from the GitLab UI.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347240) in GitLab 14.9, the agent can be registered without creating an agent configuration file.
+
+You must register an agent with GitLab.
+
+Prerequisites:
+
+- For a [GitLab CI/CD workflow](../ci_cd_tunnel.md), ensure that
+  [GitLab CI/CD is enabled](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
+
+To register an agent with GitLab:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. From the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select **Actions**.
+1. From the **Select an agent** dropdown list:
+   - If you want to create a configuration with CI/CD defaults, type a name for the agent.
+   - If you already have an [agent configuration file](#create-an-agent-configuration-file), select it from the list.
+1. Select **Register an agent**.
+1. GitLab generates a registration token for this agent. Securely store this secret token. You need it to install the agent in your cluster and to [update the agent](#update-the-agent-version) to another version.
+1. Copy the command under **Recommended installation method**. You need it when you use the one-liner installation method to install the agent in your cluster.
 
 ### Create an agent configuration file
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the agent configuration file can be added to multiple directories (or subdirectories) of the repository.
 > - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
-In a GitLab project, in the repository, create a file called `config.yaml` at this path:
+You can use an agent configuration file to specify details about your implementation.
+Creating a file is optional but is needed if:
+
+- You use [a GitOps workflow](../gitops.md#gitops-configuration-reference) and you want a more advanced configuration.
+- You use a GitLab CI/CD workflow. In that workflow, you must [authorize the agent](../ci_cd_tunnel.md#authorize-the-agent).
+
+To create an agent configuration file, go to the GitLab project. In the repository, create a file called `config.yaml` at this path:
 
 ```plaintext
 .gitlab/agents/<agent-name>/config.yaml
@@ -53,28 +82,6 @@ In a GitLab project, in the repository, create a file called `config.yaml` at th
 The agent bootstraps with the GitLab installation URL and an authentication token,
 and you provide the rest of the configuration in your repository, following
 Infrastructure as Code (IaaC) best practices.
-
-### Register the agent with GitLab
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5786) in GitLab 14.1, you can create a new agent record directly from the GitLab UI.
-
-Now that you've created your agent configuration file, register it
-with GitLab.
-When you register the agent, GitLab generates a token that you need to
-install the agent in your cluster.
-
-Prerequisite when using a [GitLab CI/CD workflow](../ci_cd_tunnel.md):
-
-- In the project that has the agent configuration file, ensure that [GitLab CI/CD is enabled](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
-
-To register the agent with GitLab:
-
-1. On the top bar, select **Menu > Projects** and find the project that has your agent configuration file.
-1. From the left sidebar, select **Infrastructure > Kubernetes clusters**.
-1. Select **Actions**.
-1. From the **Select an agent** dropdown list, select the agent you want to register and select **Register an agent**.
-1. GitLab generates a registration token for this agent. Securely store this secret token. You need it to install the agent in your cluster and to [update the agent](#update-the-agent-version) to another version.
-1. Copy the command under **Recommended installation method**. You need it when you use the one-liner installation method to install the agent in your cluster.
 
 ### Install the agent in the cluster
 

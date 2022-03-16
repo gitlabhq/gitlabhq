@@ -472,59 +472,6 @@ RSpec.describe Projects::ProjectMembersController do
     end
   end
 
-  describe 'POST apply_import' do
-    let_it_be(:another_project) { create(:project, :private) }
-    let_it_be(:member) { create(:user) }
-
-    before do
-      project.add_maintainer(user)
-      another_project.add_guest(member)
-      sign_in(user)
-    end
-
-    shared_context 'import applied' do
-      before do
-        post(:apply_import, params: {
-                              namespace_id: project.namespace,
-                              project_id: project,
-                              source_project_id: another_project.id
-                            })
-      end
-    end
-
-    context 'when user can admin source project members' do
-      before do
-        another_project.add_maintainer(user)
-      end
-
-      include_context 'import applied'
-
-      it 'imports source project members', :aggregate_failures do
-        expect(project.team_members).to include member
-        expect(controller).to set_flash.to 'Successfully imported'
-        expect(response).to redirect_to(
-          project_project_members_path(project)
-        )
-      end
-    end
-
-    context "when user can't admin source project members" do
-      before do
-        another_project.add_developer(user)
-      end
-
-      include_context 'import applied'
-
-      it 'does not import team members' do
-        expect(project.team_members).not_to include member
-      end
-
-      it 'responds with not found' do
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
   describe 'POST resend_invite' do
     let_it_be(:member) { create(:project_member, project: project) }
 

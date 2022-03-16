@@ -25,6 +25,24 @@ GitLab can stream a single event more than once to the same destination. Use the
 WARNING:
 Event streaming destinations will receive **all** audit event data, which could include sensitive information. Make sure you trust the destination endpoint.
 
+### Add event streaming destination using GitLab UI
+
+Users with at least the Owner role of a group can add event streaming destinations for it:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Audit events**
+1. On the main area, select **Streams** tab.
+    - When the destination list is empty, select **Add stream** activate edit mode and add a new destination.
+    - When the destination list is not empty, select **{plus}** under the **Streams** tab to activate edit mode.
+1. Enter the endpoint you wish to add and select **Add**.
+
+Event streaming is enabled if:
+
+- No warning is shown.
+- The added endpoint is displayed in the UI.
+
+### Add event streaming destination using the API
+
 To enable event streaming, a group owner must add a new event streaming destination using the `externalAuditEventDestinationCreate` mutation
 in the GraphQL API.
 
@@ -50,7 +68,17 @@ Event streaming is enabled if:
 
 ## List currently enabled streaming destinations
 
-Group owners can view a list of event streaming destinations at any time using the `externalAuditEventDesinations` query type.
+### List currently enabled streaming destination using GitLab UI
+
+Users with at least the Owner role of a group can list event streaming destinations:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Audit events**
+1. On the main area, select **Streams** tab.
+
+### List currently enabled streaming destinations using the API
+
+Group owners can view a list of event streaming destinations at any time using the `externalAuditEventDestinations` query type.
 
 ```graphql
 query {
@@ -68,6 +96,45 @@ query {
 ```
 
 If the resulting list is empty, then audit event streaming is not enabled for that group.
+
+## Delete currently enabled streaming destination
+
+Group Owners can delete event streaming destinations at any time using the `deleteAuditEventDestinations` mutation type.
+
+### Delete currently enabled streaming using GitLab UI
+
+Uses with at least the Owner role of a group can delete event streaming destination.
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Audit events**
+1. On the main area, select **Streams** tab.
+1. Select **{remove}** at the right side of each item.
+
+The external streaming destination is delete when:
+
+- No warning is shown.
+- The deleted endpoint is not displayed in the UI.
+
+### Delete currently enabled streaming using the API
+
+You can delete an event streaming destination by specifying an ID. Get the required ID by [listing the details](audit_event_streaming.md#list-currently-enabled-streaming-destinations-using-the-api) of event streaming destinations.
+
+```graphql
+
+mutation{ 
+  externalAuditEventDestinationDestroy(input: { id: destination }) {
+    errors
+  }
+}
+
+```
+
+Destination is deleted if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
+When the last destination is successfully deleted, event streaming is disabled for the group.
 
 ## Verify event authenticity
 

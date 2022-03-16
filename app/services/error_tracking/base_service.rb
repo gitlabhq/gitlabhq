@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 module ErrorTracking
-  class BaseService < ::BaseService
+  class BaseService < ::BaseProjectService
+    include Gitlab::Utils::UsageData
+
+    def initialize(project, user = nil, params = {})
+      super(project: project, current_user: user, params: params.dup)
+    end
+
     def execute
       return unauthorized if unauthorized
 
@@ -20,6 +26,8 @@ module ErrorTracking
       return errors if errors
 
       yield if block_given?
+
+      track_usage_event(params[:tracking_event], current_user.id) if params[:tracking_event]
 
       success(parse_response(response))
     end

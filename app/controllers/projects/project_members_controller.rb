@@ -24,23 +24,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_members = present_members(non_invited_members.page(params[:page]))
   end
 
-  def import
-    @projects = Project.visible_to_user_and_access_level(current_user, Gitlab::Access::MAINTAINER).order_id_desc
-  end
-
-  def apply_import
-    source_project = Project.find(params[:source_project_id])
-
-    if can?(current_user, :admin_project_member, source_project)
-      status = @project.team.import(source_project, current_user)
-      notice = status ? "Successfully imported" : "Import failed"
-    else
-      return render_404
-    end
-
-    redirect_to(project_project_members_path(project), notice: notice)
-  end
-
   # MembershipActions concern
   alias_method :membershipable, :project
 

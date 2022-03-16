@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     module BackgroundMigration
-      class BatchedJobTransitionLog < ApplicationRecord
+      class BatchedJobTransitionLog < SharedModel
         include PartitionedTable
 
         self.table_name = :batched_background_migration_job_transition_logs

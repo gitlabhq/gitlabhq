@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog, type: :model do
+  it { is_expected.to be_a Gitlab::Database::SharedModel }
+
   describe 'associations' do
     it { is_expected.to belong_to(:batched_job).with_foreign_key(:batched_background_migration_job_id) }
   end

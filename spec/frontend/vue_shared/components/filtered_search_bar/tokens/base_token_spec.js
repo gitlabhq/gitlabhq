@@ -4,6 +4,7 @@ import {
   GlFilteredSearchSuggestion,
   GlDropdownSectionHeader,
   GlDropdownDivider,
+  GlDropdownText,
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
@@ -81,6 +82,7 @@ const mockProps = {
 
 function createComponent({
   props = {},
+  data = {},
   stubs = defaultStubs,
   slots = defaultSlots,
   scopedSlots = defaultScopedSlots,
@@ -99,6 +101,9 @@ function createComponent({
         register: jest.fn(),
         unregister: jest.fn(),
       },
+    },
+    data() {
+      return data;
     },
     stubs,
     slots,
@@ -168,6 +173,24 @@ describe('BaseToken', () => {
   });
 
   describe('suggestions', () => {
+    describe('with suggestions disabled', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          props: {
+            config: {
+              suggestionsDisabled: true,
+            },
+            suggestions: [{ id: 'Foo' }],
+          },
+          mountFn: shallowMountExtended,
+        });
+      });
+
+      it('does not render suggestions', () => {
+        expect(findMockSuggestionList().exists()).toBe(false);
+      });
+    });
+
     describe('with available suggestions', () => {
       let mockSuggestions;
 
@@ -304,6 +327,28 @@ describe('BaseToken', () => {
             expect(filteredSearchSuggestions).toHaveLength(0);
           }
         });
+      });
+    });
+
+    describe('with no suggestions', () => {
+      it.each`
+        data                       | expected
+        ${{ searchKey: 'search' }} | ${'No matches found'}
+        ${{ hasFetched: true }}    | ${'No suggestions found'}
+      `('shows $expected text', ({ data, expected }) => {
+        wrapper = createComponent({
+          props: {
+            config: { recentSuggestionsStorageKey: null },
+            defaultSuggestions: [],
+            preloadedSuggestions: [],
+            suggestions: [],
+            suggestionsLoading: false,
+          },
+          data,
+          mountFn: shallowMountExtended,
+        });
+
+        expect(wrapper.findComponent(GlDropdownText).text()).toBe(expected);
       });
     });
   });

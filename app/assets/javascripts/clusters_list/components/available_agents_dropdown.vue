@@ -1,5 +1,11 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownDivider,
+  GlSearchBoxByType,
+  GlSprintf,
+} from '@gitlab/ui';
 import { I18N_AVAILABLE_AGENTS_DROPDOWN } from '../constants';
 
 export default {
@@ -8,6 +14,9 @@ export default {
   components: {
     GlDropdown,
     GlDropdownItem,
+    GlDropdownDivider,
+    GlSearchBoxByType,
+    GlSprintf,
   },
   props: {
     isRegistering: {
@@ -22,6 +31,7 @@ export default {
   data() {
     return {
       selectedAgent: null,
+      searchTerm: '',
     };
   },
   computed: {
@@ -34,22 +44,45 @@ export default {
 
       return this.selectedAgent;
     },
+    shouldRenderCreateButton() {
+      return this.searchTerm && !this.availableAgents.includes(this.searchTerm);
+    },
+    filteredResults() {
+      const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
+      return this.availableAgents.filter((resultString) =>
+        resultString.toLowerCase().includes(lowerCasedSearchTerm),
+      );
+    },
   },
   methods: {
     selectAgent(agent) {
       this.$emit('agentSelected', agent);
       this.selectedAgent = agent;
+      this.clearSearch();
     },
     isSelected(agent) {
       return this.selectedAgent === agent;
+    },
+    clearSearch() {
+      this.searchTerm = '';
+    },
+    focusSearch() {
+      this.$refs.searchInput.focusInput();
+    },
+    handleShow() {
+      this.clearSearch();
+      this.focusSearch();
     },
   },
 };
 </script>
 <template>
-  <gl-dropdown :text="dropdownText" :loading="isRegistering">
+  <gl-dropdown :text="dropdownText" :loading="isRegistering" @shown="handleShow">
+    <template #header>
+      <gl-search-box-by-type ref="searchInput" v-model.trim="searchTerm" />
+    </template>
     <gl-dropdown-item
-      v-for="agent in availableAgents"
+      v-for="agent in filteredResults"
       :key="agent"
       :is-checked="isSelected(agent)"
       is-check-item
@@ -57,5 +90,16 @@ export default {
     >
       {{ agent }}
     </gl-dropdown-item>
+    <gl-dropdown-item v-if="!filteredResults.length" ref="noMatchingResults">{{
+      $options.i18n.noResults
+    }}</gl-dropdown-item>
+    <template v-if="shouldRenderCreateButton">
+      <gl-dropdown-divider />
+      <gl-dropdown-item data-testid="create-config-button" @click="selectAgent(searchTerm)">
+        <gl-sprintf :message="$options.i18n.createButton">
+          <template #searchTerm>{{ searchTerm }}</template>
+        </gl-sprintf>
+      </gl-dropdown-item>
+    </template>
   </gl-dropdown>
 </template>

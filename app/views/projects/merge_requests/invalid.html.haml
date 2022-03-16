@@ -9,16 +9,15 @@
   = render "projects/merge_requests/mr_title"
   = render "projects/merge_requests/mr_box"
 
-  .gl-alert.gl-alert-danger
-    .gl-alert-container
-      = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-      .gl-alert-content{ role: 'alert' }
-        .gl-alert-body
-          - if @merge_request.for_fork? && !@merge_request.source_project
-            = err_fork_project_removed
-          - elsif !@merge_request.source_branch_exists?
-            = err_source_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.source_branch, variant: :info, size: :sm), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info, size: :sm) }
-          - elsif !@merge_request.target_branch_exists?
-            = err_target_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.target_branch, variant: :info, size: :sm), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info, size: :sm) }
-          - else
-            = err_internal
+  = render 'shared/global_alert',
+    variant: :danger,
+    dismissible: false do
+    .gl-alert-body
+      - if @merge_request.for_fork? && !@merge_request.source_project
+        = err_fork_project_removed
+      - elsif !@merge_request.source_branch_exists?
+        = err_source_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.source_branch, variant: :info, size: :sm), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info, size: :sm) }
+      - elsif !@merge_request.target_branch_exists?
+        = err_target_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.target_branch, variant: :info, size: :sm), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info, size: :sm) }
+      - else
+        = err_internal

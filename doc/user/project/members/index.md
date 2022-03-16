@@ -122,11 +122,11 @@ To import users:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
-1. On the **Invite member** tab, at the bottom of the panel, select **Import**.
+1. Select **Import from a project**.
 1. Select the project. You can view only the projects for which you're a maintainer.
 1. Select **Import project members**.
 
-A success message is displayed and the new members are now displayed in the list.
+After the success message displays, refresh the page to view the new members.
 
 ## Inherited membership
 

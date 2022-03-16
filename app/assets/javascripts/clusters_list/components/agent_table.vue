@@ -1,5 +1,13 @@
 <script>
-import { GlLink, GlTable, GlIcon, GlSprintf, GlTooltip, GlPopover } from '@gitlab/ui';
+import {
+  GlLink,
+  GlTable,
+  GlIcon,
+  GlSprintf,
+  GlTooltip,
+  GlTooltipDirective,
+  GlPopover,
+} from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -19,11 +27,17 @@ export default {
     TimeAgoTooltip,
     DeleteAgentButton,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   mixins: [timeagoMixin],
   AGENT_STATUSES,
   troubleshootingLink: helpPagePath('user/clusters/agent/troubleshooting'),
   versionUpdateLink: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'update-the-agent-version',
+  }),
+  configHelpLink: helpPagePath('user/clusters/agent/install/index', {
+    anchor: 'create-an-agent-without-configuration-file',
   }),
   inject: ['gitlabVersion'],
   props: {
@@ -256,7 +270,16 @@ export default {
           {{ getAgentConfigPath(item.name) }}
         </gl-link>
 
-        <span v-else>{{ getAgentConfigPath(item.name) }}</span>
+        <span v-else
+          >{{ $options.i18n.defaultConfigText }}
+          <gl-link
+            v-gl-tooltip
+            :href="$options.configHelpLink"
+            :title="$options.i18n.defaultConfigTooltip"
+            :aria-label="$options.i18n.defaultConfigTooltip"
+            class="gl-vertical-align-middle"
+            ><gl-icon name="question" :size="14" /></gl-link
+        ></span>
       </span>
     </template>
 

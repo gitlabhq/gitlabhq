@@ -39,6 +39,7 @@ const kasAddress = 'kas.example.com';
 const emptyStateImage = 'path/to/image';
 const defaultBranchName = 'default';
 const maxAgents = MAX_LIST_COUNT;
+const i18n = I18N_AGENT_MODAL;
 
 describe('InstallAgentModal', () => {
   let wrapper;
@@ -67,7 +68,7 @@ describe('InstallAgentModal', () => {
   const findActionButton = () => findButtonByVariant('confirm');
   const findCancelButton = () => findButtonByVariant('default');
   const findPrimaryButton = () => wrapper.findByTestId('agent-primary-button');
-  const findImage = () => wrapper.findByRole('img', { alt: I18N_AGENT_MODAL.empty_state.altText });
+  const findImage = () => wrapper.findByRole('img', { alt: i18n.altText });
 
   const expectDisabledAttribute = (element, disabled) => {
     if (disabled) {
@@ -140,12 +141,13 @@ describe('InstallAgentModal', () => {
     apolloProvider = null;
   });
 
-  describe('when agent configurations are present', () => {
-    const i18n = I18N_AGENT_MODAL.agent_registration;
-
+  describe('when KAS is enabled', () => {
     describe('initial state', () => {
       it('renders the dropdown for available agents', () => {
         expect(findAgentDropdown().isVisible()).toBe(true);
+      });
+
+      it("doesn't render agent installation instructions", () => {
         expect(findModal().text()).not.toContain(i18n.basicInstallTitle);
         expect(findModal().findComponent(GlFormInputGroup).exists()).toBe(false);
         expect(findModal().findComponent(GlAlert).exists()).toBe(false);
@@ -272,44 +274,7 @@ describe('InstallAgentModal', () => {
     });
   });
 
-  describe('when there are no agent configurations present', () => {
-    const i18n = I18N_AGENT_MODAL.empty_state;
-    const apolloQueryEmptyResponse = {
-      data: {
-        project: {
-          clusterAgents: { nodes: [] },
-          agentConfigurations: { nodes: [] },
-        },
-      },
-    };
-
-    beforeEach(() => {
-      apolloProvider = createMockApollo([
-        [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryEmptyResponse)],
-      ]);
-      createWrapper();
-    });
-
-    it('renders empty state image', () => {
-      expect(findImage().attributes('src')).toBe(emptyStateImage);
-    });
-
-    it('renders a primary button', () => {
-      expect(findPrimaryButton().isVisible()).toBe(true);
-      expect(findPrimaryButton().text()).toBe(i18n.primaryButton);
-    });
-
-    it('sends the event with the modalType', () => {
-      findModal().vm.$emit('show');
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, EVENT_ACTIONS_OPEN, {
-        label: EVENT_LABEL_MODAL,
-        property: MODAL_TYPE_EMPTY,
-      });
-    });
-  });
-
   describe('when KAS is disabled', () => {
-    const i18n = I18N_AGENT_MODAL.empty_state;
     beforeEach(async () => {
       apolloProvider = createMockApollo([
         [getAgentConfigurations, jest.fn().mockResolvedValue(kasDisabledErrorResponse)],
@@ -331,11 +296,19 @@ describe('InstallAgentModal', () => {
 
     it('renders a cancel button', () => {
       expect(findCancelButton().isVisible()).toBe(true);
-      expect(findCancelButton().text()).toBe(i18n.done);
+      expect(findCancelButton().text()).toBe(i18n.close);
     });
 
     it("doesn't render a secondary button", () => {
       expect(findPrimaryButton().exists()).toBe(false);
+    });
+
+    it('sends the event with the modalType', () => {
+      findModal().vm.$emit('show');
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, EVENT_ACTIONS_OPEN, {
+        label: EVENT_LABEL_MODAL,
+        property: MODAL_TYPE_EMPTY,
+      });
     });
   });
 });

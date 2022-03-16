@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ErrorTracking::BaseService do
   describe '#compose_response' do
     let(:project) { double('project') }
-    let(:user) { double('user') }
+    let(:user) { double('user', id: non_existing_record_id) }
     let(:service) { described_class.new(project, user) }
 
     it 'returns bad_request error when response has an error key' do
@@ -67,6 +67,16 @@ RSpec.describe ErrorTracking::BaseService do
 
           expect(result[:animal]).to eq(:fish)
           expect(result[:status]).to eq(:success)
+        end
+
+        context 'when tracking_event is provided' do
+          let(:service) { described_class.new(project, user, tracking_event: :error_tracking_view_list) }
+
+          it_behaves_like 'tracking unique hll events' do
+            let(:target_event) { 'error_tracking_view_list' }
+            let(:expected_value) { non_existing_record_id }
+            let(:request) { service.send(:compose_response, data) }
+          end
         end
       end
     end

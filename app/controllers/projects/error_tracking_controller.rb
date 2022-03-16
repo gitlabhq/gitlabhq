@@ -79,7 +79,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   end
 
   def list_issues_params
-    params.permit(:search_term, :sort, :cursor, :issue_status)
+    params.permit(:search_term, :sort, :cursor, :issue_status).merge(tracking_event: :error_tracking_view_list)
   end
 
   def issue_update_params
@@ -87,7 +87,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   end
 
   def issue_details_params
-    params.permit(:issue_id)
+    params.permit(:issue_id).merge(tracking_event: :error_tracking_view_details)
   end
 
   def set_issue_id

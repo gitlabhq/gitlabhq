@@ -377,8 +377,6 @@ db:migrate:reset decomposed:
     - db:migrate:reset
     - .decomposed-database
     - .rails:rules:decomposed-databases
-  variables:
-    GITLAB_USE_MODEL_LOAD_BALANCING: "false"
 
 db:migrate-from-previous-major-version:
   extends: .db-job-base

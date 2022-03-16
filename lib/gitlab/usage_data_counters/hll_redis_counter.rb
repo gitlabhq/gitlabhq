@@ -26,6 +26,7 @@ module Gitlab
         ecosystem
         epic_boards_usage
         epics_usage
+        error_tracking
         ide_edit
         incident_management
         issues_edit

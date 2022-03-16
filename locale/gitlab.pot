@@ -5066,6 +5066,9 @@ msgstr ""
 msgid "AuditLogs|IP Address"
 msgstr ""
 
+msgid "AuditLogs|Log"
+msgstr ""
+
 msgid "AuditLogs|Member Events"
 msgstr ""
 
@@ -5085,6 +5088,54 @@ msgid "AuditLogs|This month"
 msgstr ""
 
 msgid "AuditLogs|User Events"
+msgstr ""
+
+msgid "AuditStreams|Active"
+msgstr ""
+
+msgid "AuditStreams|Add an HTTP endpoint to manage audit logs in third-party systems."
+msgstr ""
+
+msgid "AuditStreams|Add external stream destination"
+msgstr ""
+
+msgid "AuditStreams|Add stream"
+msgstr ""
+
+msgid "AuditStreams|An error occurred when creating external audit event stream destination. Please try it again."
+msgstr ""
+
+msgid "AuditStreams|An error occurred when deleting external audit event stream destination. Please try it again."
+msgstr ""
+
+msgid "AuditStreams|An error occurred when fetching external audit event streams. Please try it again"
+msgstr ""
+
+msgid "AuditStreams|Cancel editing"
+msgstr ""
+
+msgid "AuditStreams|Delete %{link}"
+msgstr ""
+
+msgid "AuditStreams|Destination URL"
+msgstr ""
+
+msgid "AuditStreams|Destinations receive all audit event data"
+msgstr ""
+
+msgid "AuditStreams|Setup streaming for audit events"
+msgstr ""
+
+msgid "AuditStreams|Stream count icon"
+msgstr ""
+
+msgid "AuditStreams|Streams"
+msgstr ""
+
+msgid "AuditStreams|This could include sensitive information. Make sure you trust the destination endpoint."
+msgstr ""
+
+msgid "AuditStreams|This is great for keeping everything one place."
 msgstr ""
 
 msgid "Aug"
@@ -7670,6 +7721,9 @@ msgstr ""
 msgid "ClusterAgents|Actions"
 msgstr ""
 
+msgid "ClusterAgents|Add an agent configuration file to %{linkStart}this repository%{linkEnd} and select it, or create a new one to register with GitLab:"
+msgstr ""
+
 msgid "ClusterAgents|Advanced installation methods"
 msgstr ""
 
@@ -7736,9 +7790,6 @@ msgstr ""
 msgid "ClusterAgents|Connect with the GitLab Agent"
 msgstr ""
 
-msgid "ClusterAgents|Connect your cluster through an agent"
-msgstr ""
-
 msgid "ClusterAgents|Connected"
 msgstr ""
 
@@ -7751,6 +7802,9 @@ msgstr ""
 msgid "ClusterAgents|Create a new cluster"
 msgstr ""
 
+msgid "ClusterAgents|Create agent: %{searchTerm}"
+msgstr ""
+
 msgid "ClusterAgents|Created by"
 msgstr ""
 
@@ -7758,6 +7812,9 @@ msgid "ClusterAgents|Created by %{name} %{time}"
 msgstr ""
 
 msgid "ClusterAgents|Date created"
+msgstr ""
+
+msgid "ClusterAgents|Default configuration"
 msgstr ""
 
 msgid "ClusterAgents|Delete"
@@ -7790,10 +7847,7 @@ msgstr ""
 msgid "ClusterAgents|Give feedback"
 msgstr ""
 
-msgid "ClusterAgents|Go to the repository files"
-msgstr ""
-
-msgid "ClusterAgents|How to register an agent?"
+msgid "ClusterAgents|How do I register an agent?"
 msgstr ""
 
 msgid "ClusterAgents|How to update an agent?"
@@ -7844,10 +7898,7 @@ msgstr ""
 msgid "ClusterAgents|Register"
 msgstr ""
 
-msgid "ClusterAgents|Register an agent to generate a token that will be used to install the agent on your cluster in the next step."
-msgstr ""
-
-msgid "ClusterAgents|Registering Agent"
+msgid "ClusterAgents|Registering agent"
 msgstr ""
 
 msgid "ClusterAgents|Registration token"
@@ -7871,10 +7922,7 @@ msgstr ""
 msgid "ClusterAgents|See Agent activity updates such as tokens created or revoked and clusters connected or not connected."
 msgstr ""
 
-msgid "ClusterAgents|Select an agent"
-msgstr ""
-
-msgid "ClusterAgents|Select an agent to register with GitLab"
+msgid "ClusterAgents|Select an agent or enter a name to create new"
 msgstr ""
 
 msgid "ClusterAgents|Tell us what you think"
@@ -7906,9 +7954,6 @@ msgstr ""
 msgid "ClusterAgents|To delete the agent, type %{name} to confirm:"
 msgstr ""
 
-msgid "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}Learn more about installing GitLab Agent.%{linkEnd}"
-msgstr ""
-
 msgid "ClusterAgents|Token created by %{userName}"
 msgstr ""
 
@@ -7928,6 +7973,9 @@ msgid "ClusterAgents|We would love to learn more about your experience with the 
 msgstr ""
 
 msgid "ClusterAgents|What is GitLab Agent activity?"
+msgstr ""
+
+msgid "ClusterAgents|What is default configuration?"
 msgstr ""
 
 msgid "ClusterAgents|You cannot see this token again after you close this window."
@@ -10923,6 +10971,12 @@ msgstr ""
 msgid "CycleAnalytics|%{selectedLabelsCount} selected (%{maxLabels} max)"
 msgstr ""
 
+msgid "CycleAnalytics|Aggregation disabled"
+msgstr ""
+
+msgid "CycleAnalytics|Aggregation enabled"
+msgstr ""
+
 msgid "CycleAnalytics|Average time to completion"
 msgstr ""
 
@@ -10939,6 +10993,9 @@ msgid "CycleAnalytics|Date"
 msgstr ""
 
 msgid "CycleAnalytics|Display chart filters"
+msgstr ""
+
+msgid "CycleAnalytics|Filter by stop date"
 msgstr ""
 
 msgid "CycleAnalytics|Lead Time for Changes"
@@ -10993,10 +11050,16 @@ msgstr ""
 msgid "CycleAnalytics|There is no data for 'Total time' available. Adjust the current filters."
 msgstr ""
 
+msgid "CycleAnalytics|There was an error updating the aggregation status, please try again."
+msgstr ""
+
 msgid "CycleAnalytics|Total time"
 msgstr ""
 
 msgid "CycleAnalytics|Type of work"
+msgstr ""
+
+msgid "CycleAnalytics|When enabled, the results show items with a stop event within the date range. When disabled, the results show items with a start event within the date range."
 msgstr ""
 
 msgid "CycleAnalytics|group dropdown filter"
@@ -18637,12 +18700,6 @@ msgstr ""
 msgid "Import issues"
 msgstr ""
 
-msgid "Import members"
-msgstr ""
-
-msgid "Import members from another project"
-msgstr ""
-
 msgid "Import multiple repositories by uploading a manifest file."
 msgstr ""
 
@@ -18650,9 +18707,6 @@ msgid "Import project"
 msgstr ""
 
 msgid "Import project from"
-msgstr ""
-
-msgid "Import project members"
 msgstr ""
 
 msgid "Import projects from Bitbucket"
@@ -25030,6 +25084,9 @@ msgstr ""
 msgid "No start date"
 msgstr ""
 
+msgid "No suggestions found"
+msgstr ""
+
 msgid "No tag selected"
 msgstr ""
 
@@ -25793,9 +25850,6 @@ msgid "Only proceed if you trust %{idp_url} to control your GitLab account sign 
 msgstr ""
 
 msgid "Only project members can comment."
-msgstr ""
-
-msgid "Only project members will be imported. Group members will be skipped."
 msgstr ""
 
 msgid "Only projects created under a Ultimate license are available in Security Dashboards."

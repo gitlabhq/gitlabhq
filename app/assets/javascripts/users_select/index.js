@@ -210,7 +210,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
       return axios.put(issueURL, data).then(({ data }) => {
         let user = {};
-        let tooltipTitle = user.name;
+        let tooltipTitle;
         $dropdown.trigger('loaded.gl.dropdown');
         $loading.addClass('gl-display-none');
         if (data.assignee) {
@@ -806,7 +806,9 @@ UsersSelect.prototype.renderRow = function (
           </strong>
           ${
             username
-              ? `<span class="dropdown-menu-user-username gl-text-gray-400">${username}</span>`
+              ? `<span class="dropdown-menu-user-username gl-text-gray-400">${escape(
+                  username,
+                )}</span>`
               : ''
           }
           ${this.renderApprovalRules(elsClassName, user.applicable_approval_rules)}

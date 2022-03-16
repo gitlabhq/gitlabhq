@@ -350,20 +350,6 @@ class Snippet < ApplicationRecord
     snippet_repository&.shard_name || Repository.pick_storage_shard
   end
 
-  # Repositories are created with a default branch. This branch
-  # can be different from the default branch set in the platform.
-  # This method changes the `HEAD` file to point to the existing
-  # default branch in case it's different.
-  def change_head_to_default_branch
-    return unless repository.exists?
-    # All snippets must have at least 1 file. Therefore, if
-    # `HEAD` is empty is because it's pointing to the wrong
-    # default branch
-    return unless repository.empty? || list_files('HEAD').empty?
-
-    repository.raw_repository.write_ref('HEAD', "refs/heads/#{default_branch}")
-  end
-
   def create_repository
     return if repository_exists? && snippet_repository
 

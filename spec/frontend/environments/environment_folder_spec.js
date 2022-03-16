@@ -6,13 +6,13 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubTransition } from 'helpers/stub_transition';
 import { __, s__ } from '~/locale';
-import EnvironmentsFolder from '~/environments/components/new_environment_folder.vue';
+import EnvironmentsFolder from '~/environments/components/environment_folder.vue';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
 import { resolvedEnvironmentsApp, resolvedFolder } from './graphql/mock_data';
 
 Vue.use(VueApollo);
 
-describe('~/environments/components/new_environments_folder.vue', () => {
+describe('~/environments/components/environments_folder.vue', () => {
   let wrapper;
   let environmentFolderMock;
   let nestedEnvironment;

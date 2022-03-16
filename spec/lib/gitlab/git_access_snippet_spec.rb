@@ -397,38 +397,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
     end
   end
 
-  describe 'HEAD realignment' do
-    let_it_be(:snippet) { create(:project_snippet, :private, :repository, project: project) }
-
-    shared_examples 'HEAD is updated to the snippet default branch' do
-      let(:actor) { snippet.author }
-
-      specify do
-        expect(snippet).to receive(:change_head_to_default_branch).and_call_original
-
-        subject
-      end
-
-      context 'when an error is raised' do
-        let(:actor) { nil }
-
-        it 'does not realign HEAD' do
-          expect(snippet).not_to receive(:change_head_to_default_branch).and_call_original
-
-          expect { subject }.to raise_error(described_class::ForbiddenError)
-        end
-      end
-    end
-
-    it_behaves_like 'HEAD is updated to the snippet default branch' do
-      subject { push_access_check }
-    end
-
-    it_behaves_like 'HEAD is updated to the snippet default branch' do
-      subject { pull_access_check }
-    end
-  end
-
   private
 
   def raise_not_found(message_key)

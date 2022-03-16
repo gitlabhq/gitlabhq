@@ -143,9 +143,12 @@ describe('Value stream analytics component', () => {
     expect(findFilters().props()).toEqual({
       groupId,
       groupPath,
+      canToggleAggregation: false,
       endDate: createdBefore,
       hasDateRangeFilter: true,
       hasProjectFilter: false,
+      isAggregationEnabled: false,
+      isUpdatingAggregationData: false,
       selectedProjects: [],
       startDate: createdAfter,
     });
