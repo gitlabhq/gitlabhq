@@ -18,6 +18,8 @@ module Gitlab
   class Application < Rails::Application
     config.load_defaults 6.1
 
+    config.view_component.preview_route = "/-/view_component/previews"
+
     # This section contains configuration from Rails upgrades to override the new defaults so that we
     # keep existing behavior.
     #

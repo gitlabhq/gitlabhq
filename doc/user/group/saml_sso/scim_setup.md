@@ -100,12 +100,14 @@ Once synchronized, changing the field mapped to `id` and `externalId` may cause 
 
 ### Okta configuration steps
 
-Before you start this section, complete the [GitLab configuration](#gitlab-configuration) process.
-Make sure that you've also set up a SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/),
-as described in the [Okta setup notes](index.md#okta-setup-notes)
+Before you start this section:
 
-Make sure that the Okta setup matches our documentation exactly, especially the NameID
-configuration. Otherwise, the Okta SCIM app may not work properly.
+- Check that you are using Okta [Lifecycle Management](https://www.okta.com/products/lifecycle-management/) product. This product tier is required to use SCIM on Okta. To check which Okta product you are using, check your signed Okta contract, contact your Okta AE, CSM, or Okta support.
+- Complete the [GitLab configuration](#gitlab-configuration) process.
+- Complete the setup for SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/), as described in the [Okta setup notes](index.md#okta-setup-notes).
+- Check that your Okta SAML setup matches our documentation exactly, especially the NameID configuration. Otherwise, the Okta SCIM app may not work properly.
+
+After the above steps are complete:
 
 1. Sign in to Okta.
 1. Ensure you are in the Admin section by selecting the **Admin** button located in the top right. The admin button is not visible from the admin page.

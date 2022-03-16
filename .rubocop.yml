@@ -46,6 +46,10 @@ AllCops:
   CacheRootDirectory: <%= Dir.getwd %>/tmp
   MaxFilesInCache: 30000
 
+Metrics/ParameterLists:
+  Exclude:
+    - 'app/components/**/*'
+
 Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Enabled: true
   Include:

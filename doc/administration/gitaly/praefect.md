@@ -1196,6 +1196,9 @@ You can configure:
   current assignments: gitaly-1, gitaly-2
   ```
 
+If `default_replication_factor` is unset, the repositories are always replicated on every node defined in `virtual_storages`. If a new
+node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically. 
+
 ## Automatic failover and primary election strategies
 
 Praefect regularly checks the health of each Gitaly node. This is used to automatically fail over

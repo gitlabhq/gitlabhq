@@ -153,7 +153,7 @@ describe('SidebarEscalationStatus', () => {
         await selectAcknowledgedStatus();
       });
 
-      it('calls the mutation', async () => {
+      it('calls the mutation', () => {
         const mutationVariables = {
           iid: '1',
           projectPath: 'gitlab-org/gitlab',
@@ -163,12 +163,17 @@ describe('SidebarEscalationStatus', () => {
         expect(mutationResolverMock).toHaveBeenCalledWith(mutationVariables);
       });
 
-      it('closes the dropdown', async () => {
+      it('closes the dropdown', () => {
         expect(findStatusComponent().isVisible()).toBe(false);
       });
 
-      it('updates the status', async () => {
-        expect(findStatusComponent().attributes('value')).toBe(STATUS_ACKNOWLEDGED);
+      it('updates the status', () => {
+        // Sometimes status has a intermediate wrapping component. A quirk of vue-test-utils
+        // means that in that case 'value' is exposed as a prop. If no wrapping component
+        // exists it is exposed as an attribute.
+        const statusValue =
+          findStatusComponent().props('value') || findStatusComponent().attributes('value');
+        expect(statusValue).toBe(STATUS_ACKNOWLEDGED);
       });
     });
 

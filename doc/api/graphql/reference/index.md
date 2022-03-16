@@ -11024,7 +11024,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `GeoNode.jobArtifactRegistries`
 
-Find Job Artifact registries on this Geo node Available only when feature flag `geo_job_artifact_replication` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+Find Job Artifact registries on this Geo node.
 
 Returns [`JobArtifactRegistryConnection`](#jobartifactregistryconnection).
 

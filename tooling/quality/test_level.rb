@@ -55,6 +55,7 @@ module Quality
         views
         workers
         tooling
+        component
       ],
       integration: %w[
         commands

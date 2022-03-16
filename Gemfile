@@ -11,6 +11,8 @@ gem 'responders', '~> 3.0'
 
 gem 'sprockets', '~> 3.7.0'
 
+gem 'view_component', '~> 2.50.0'
+
 # Default values for AR models
 gem 'default_value_for', '~> 3.4.0'
 

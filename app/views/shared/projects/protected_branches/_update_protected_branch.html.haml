@@ -34,8 +34,7 @@
       = _('Members of %{group} can also push to this branch: %{branch}') % { group: (group_push_access_levels.size > 1 ? 'these groups' : 'this group'), branch: group_push_access_levels.map(&:humanize).to_sentence }
 
 %td
-  = render "shared/gl_toggle",
-    classes: 'js-force-push-toggle',
+  = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',
     label: s_("ProtectedBranch|Toggle allowed to force push"),
     is_checked: protected_branch.allow_force_push,
-    label_position: 'hidden'
+    label_position: :hidden)
