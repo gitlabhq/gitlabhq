@@ -423,37 +423,34 @@
       "description": "Defines secrets to be injected as environment variables",
       "additionalProperties": {
         "type": "object",
-        "additionalProperties": {
-          "type": "object",
-          "description": "Environment variable name",
-          "properties": {
-            "vault": {
-              "oneOf": [
-                {
-                  "type": "string",
-                  "description": "The secret to be fetched from Vault (e.g. 'production/db/password@ops' translates to secret 'ops/data/production/db', field `password`)"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "engine": {
-                      "type": "object",
-                      "properties": {
-                        "name": { "type": "string" },
-                        "path": { "type": "string" }
-                      },
-                      "required": ["name", "path"]
+        "description": "Environment variable name",
+        "properties": {
+          "vault": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "The secret to be fetched from Vault (e.g. 'production/db/password@ops' translates to secret 'ops/data/production/db', field `password`)"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "engine": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string" },
+                      "path": { "type": "string" }
                     },
-                    "path": { "type": "string" },
-                    "field": { "type": "string" }
+                    "required": ["name", "path"]
                   },
-                  "required": ["engine", "path", "field"]
-                }
-              ]
-            }
-          },
-          "required": ["vault"]
-        }
+                  "path": { "type": "string" },
+                  "field": { "type": "string" }
+                },
+                "required": ["engine", "path", "field"]
+              }
+            ]
+          }
+        },
+        "required": ["vault"]
       }
     },
     "before_script": {

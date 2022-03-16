@@ -1,3 +1,6 @@
+// The destination package handles uploading to a specific destination (delegates
+// to filestore or objectstore packages) based on options from the pre-authorization
+// API and finalizing the upload.
 package destination
 
 import (

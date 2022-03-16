@@ -9,7 +9,6 @@ SPECIALIZATIONS = {
   ux: 'UX',
   docs: 'documentation',
   qa: 'QA',
-  tooling: 'type::tooling',
   ci_template: 'ci::templates',
   feature_flag: 'feature flag'
 }.freeze

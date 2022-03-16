@@ -37,13 +37,18 @@ export const I18N_STALE_RUNNER_DESCRIPTION = s__(
 
 // Actions
 export const I18N_EDIT = __('Edit');
+
 export const I18N_PAUSE = __('Pause');
+export const I18N_PAUSE_TOOLTIP = s__('Runners|Pause from accepting jobs');
+export const I18N_PAUSED_DESCRIPTION = s__('Runners|Not accepting jobs');
+
 export const I18N_RESUME = __('Resume');
+export const I18N_RESUME_TOOLTIP = s__('Runners|Resume accepting jobs');
+
 export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
-export const I18N_PAUSED_RUNNER_DESCRIPTION = s__('Runners|Not available to run jobs');
 
 // Runner details
 

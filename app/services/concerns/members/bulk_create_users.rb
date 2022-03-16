@@ -47,15 +47,14 @@ module Members
             end
           end
 
-          if user_ids.present?
-            # we should handle the idea of existing members where users are passed as users - https://gitlab.com/gitlab-org/gitlab/-/issues/352617
-            # the below will automatically discard invalid user_ids
-            users.concat(User.id_in(user_ids))
-            # helps not have to perform another query per user id to see if the member exists later on when fetching
-            existing_members = source.members_and_requesters.where(user_id: user_ids).index_by(&:user_id) # rubocop:disable CodeReuse/ActiveRecord
-          end
-
+          # the below will automatically discard invalid user_ids
+          users.concat(User.id_in(user_ids)) if user_ids.present?
           users.uniq! # de-duplicate just in case as there is no controlling if user records and ids are sent multiple times
+
+          if users.present?
+            # helps not have to perform another query per user id to see if the member exists later on when fetching
+            existing_members = source.members_and_requesters.where(user_id: users).index_by(&:user_id) # rubocop:disable CodeReuse/ActiveRecord
+          end
 
           [emails, users, existing_members]
         end

@@ -17,9 +17,8 @@ feature such as [Related issues](../user/project/issues/related_issues.md) or
 [Service Desk](../user/project/service_desk.md),
 it should be restricted on namespace scope.
 
-1. Add the feature symbol on `EES_FEATURES`, `EEP_FEATURES`, or `EEU_FEATURES` constants in
-  `ee/app/models/license.rb`. Note that the prefix `EES` signifies Starter, `EEP` signifies
-  Premium, and `EEU` signifies Ultimate.
+1. Add the feature symbol on `STARTER_FEATURES`, `PREMIUM_FEATURES`, or `ULTIMATE_FEATURES` constants in
+  `ee/app/models/gitlab_subscriptions/features.rb`.
 1. Check using:
 
 ```ruby
@@ -33,8 +32,8 @@ However, for features such as [Geo](../administration/geo/index.md) and
 to only a subset of projects or namespaces, the check is made directly in
 the instance license.
 
-1. Add the feature symbol on `EES_FEATURES`, `EEP_FEATURES` or `EEU_FEATURES` constants in
-  `ee/app/models/license.rb`.
+1. Add the feature symbol to `STARTER_FEATURES`, `PREMIUM_FEATURES` or `ULTIMATE_FEATURES` constants in
+  `ee/app/models/gitlab_subscriptions/features.rb`.
 1. Add the same feature symbol to `GLOBAL_FEATURES`.
 1. Check using:
 

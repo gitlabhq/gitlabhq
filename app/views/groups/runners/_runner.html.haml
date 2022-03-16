@@ -9,7 +9,7 @@
       - if runner.locked?
         = gl_badge_tag s_('Runners|locked'), variant: :warning, size: :sm
       - unless runner.active?
-        = gl_badge_tag s_('Runners|paused'), variant: :danger, size: :sm
+        = gl_badge_tag s_('Runners|paused'), { variant: :danger, size: :sm }, { title: s_('Runners|Not accepting jobs'), data: { toggle: 'tooltip', container: 'body' } }
 
   .table-section.section-30
     .table-mobile-header{ role: 'rowheader' }= s_('Runners|Runner')
@@ -64,10 +64,10 @@
           = sprite_icon('pencil', css_class: 'gl-icon')
       .btn-group
         - if runner.active?
-          = link_to pause_group_runner_path(@group, runner), method: :post, class: 'gl-button btn btn-default btn-icon has-tooltip', title: _('Pause'), ref: 'tooltip', aria: { label: _('Pause') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
+          = link_to pause_group_runner_path(@group, runner), method: :post, class: 'gl-button btn btn-default btn-icon', title: s_('Runners|Pause from accepting jobs'), ref: 'tooltip', aria: { label: _('Pause') }, data: { toggle: 'tooltip', container: 'body', confirm: _('Are you sure?') } do
             = sprite_icon('pause', css_class: 'gl-icon')
         - else
-          = link_to resume_group_runner_path(@group, runner), method: :post, class: 'gl-button btn btn-default btn-icon has-tooltip', title: _('Resume'), ref: 'tooltip', aria: { label: _('Resume') }, data: { placement: 'top', container: 'body'} do
+          = link_to resume_group_runner_path(@group, runner), method: :post, class: 'gl-button btn btn-default btn-icon', title: s_('Runners|Resume accepting jobs'), ref: 'tooltip', aria: { label: _('Resume') }, data: { toggle: 'tooltip', container: 'body'} do
             = sprite_icon('play', css_class: 'gl-icon')
       - if runner.belongs_to_more_than_one_project?
         - delete_runner_tooltip = _('Multi-project Runners cannot be removed')

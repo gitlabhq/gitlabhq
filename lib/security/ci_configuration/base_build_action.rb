@@ -6,7 +6,7 @@ module Security
       def initialize(auto_devops_enabled, existing_gitlab_ci_content, ci_config_path = ::Ci::Pipeline::DEFAULT_CONFIG_PATH)
         @auto_devops_enabled = auto_devops_enabled
         @existing_gitlab_ci_content = existing_gitlab_ci_content || {}
-        @ci_config_path = ci_config_path || ::Ci::Pipeline::DEFAULT_CONFIG_PATH
+        @ci_config_path = ci_config_path.presence || ::Ci::Pipeline::DEFAULT_CONFIG_PATH
       end
 
       def generate

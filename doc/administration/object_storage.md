@@ -598,6 +598,7 @@ See the following additional guides:
 1. Configure [database lookup of SSH keys](operations/fast_ssh_key_lookup.md)
    to eliminate the need for a shared `authorized_keys` file.
 1. [Prevent local disk usage for job logs](job_logs.md#prevent-local-disk-usage).
+1. [Disable Pages local storage](pages/index.md#disable-pages-local-storage).
 
 ## Warnings, limitations, and known issues
 

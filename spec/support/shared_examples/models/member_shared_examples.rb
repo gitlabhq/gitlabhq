@@ -371,8 +371,7 @@ RSpec.shared_examples_for "bulk member creation" do
     it 'returns a Member objects' do
       members = described_class.add_users(source, [user1, user2], :maintainer)
 
-      expect(members).to be_a Array
-      expect(members.size).to eq(2)
+      expect(members.map(&:user)).to contain_exactly(user1, user2)
       expect(members).to all(be_a(member_type))
       expect(members).to all(be_persisted)
     end
@@ -394,20 +393,18 @@ RSpec.shared_examples_for "bulk member creation" do
     end
 
     context 'with de-duplication' do
-      it 'with the same user by id and user' do
+      it 'has the same user by id and user' do
         members = described_class.add_users(source, [user1.id, user1, user1.id, user2, user2.id, user2], :maintainer)
 
-        expect(members).to be_a Array
-        expect(members.size).to eq(2)
+        expect(members.map(&:user)).to contain_exactly(user1, user2)
         expect(members).to all(be_a(member_type))
         expect(members).to all(be_persisted)
       end
 
-      it 'with the same user sent more than once' do
+      it 'has the same user sent more than once' do
         members = described_class.add_users(source, [user1, user1], :maintainer)
 
-        expect(members).to be_a Array
-        expect(members.size).to eq(1)
+        expect(members.map(&:user)).to contain_exactly(user1)
         expect(members).to all(be_a(member_type))
         expect(members).to all(be_persisted)
       end
@@ -418,15 +415,35 @@ RSpec.shared_examples_for "bulk member creation" do
         source.add_user(user1, :developer)
       end
 
-      it 'supports existing users as expected' do
+      it 'has the same user sent more than once with the member already existing' do
+        expect do
+          members = described_class.add_users(source, [user1, user1, user2], :maintainer)
+          expect(members.map(&:user)).to contain_exactly(user1, user2)
+          expect(members).to all(be_a(member_type))
+          expect(members).to all(be_persisted)
+        end.to change { Member.count }.by(1)
+      end
+
+      it 'supports existing users as expected with user_ids passed' do
         user3 = create(:user)
 
-        members = described_class.add_users(source, [user1.id, user2, user3.id], :maintainer)
+        expect do
+          members = described_class.add_users(source, [user1.id, user2, user3.id], :maintainer)
+          expect(members.map(&:user)).to contain_exactly(user1, user2, user3)
+          expect(members).to all(be_a(member_type))
+          expect(members).to all(be_persisted)
+        end.to change { Member.count }.by(2)
+      end
 
-        expect(members).to be_a Array
-        expect(members.size).to eq(3)
-        expect(members).to all(be_a(member_type))
-        expect(members).to all(be_persisted)
+      it 'supports existing users as expected without user ids passed' do
+        user3 = create(:user)
+
+        expect do
+          members = described_class.add_users(source, [user1, user2, user3], :maintainer)
+          expect(members.map(&:user)).to contain_exactly(user1, user2, user3)
+          expect(members).to all(be_a(member_type))
+          expect(members).to all(be_persisted)
+        end.to change { Member.count }.by(2)
       end
     end
 

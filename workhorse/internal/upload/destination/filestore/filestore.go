@@ -1,3 +1,4 @@
+// The filestore package has a consumer specific to uploading to local disk storage.
 package filestore
 
 import (

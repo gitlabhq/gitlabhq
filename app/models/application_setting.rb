@@ -657,7 +657,17 @@ class ApplicationSetting < ApplicationRecord
     users_count >= INSTANCE_REVIEW_MIN_USERS
   end
 
+  Recursion = Class.new(RuntimeError)
+
   def self.create_from_defaults
+    # this is posssible if calls to create the record depend on application
+    # settings themselves. This was seen in the case of a feature flag called by
+    # `transaction` that ended up requiring application settings to determine metrics behavior.
+    # If something like that happens, we break the loop here, and let the caller decide how to manage it.
+    raise Recursion if Thread.current[:application_setting_create_from_defaults]
+
+    Thread.current[:application_setting_create_from_defaults] = true
+
     check_schema!
 
     transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
@@ -666,6 +676,8 @@ class ApplicationSetting < ApplicationRecord
   rescue ActiveRecord::RecordNotUnique
     # We already have an ApplicationSetting record, so just return it.
     current_without_cache
+  ensure
+    Thread.current[:application_setting_create_from_defaults] = nil
   end
 
   def self.find_or_create_without_cache

@@ -7,12 +7,13 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
 
   let(:params) { {} }
 
-  context 'with existing .gitlab-ci.yml' do
-    let(:auto_devops_enabled) { false }
+  shared_examples 'existing .gitlab-ci.yml tests' do
+    context 'with existing .gitlab-ci.yml' do
+      let(:auto_devops_enabled) { false }
 
-    context 'sast iac has not been included' do
-      let(:expected_yml) do
-        <<-CI_YML.strip_heredoc
+      context 'sast iac has not been included' do
+        let(:expected_yml) do
+          <<-CI_YML.strip_heredoc
           # You can override the included template(s) by including variable overrides
           # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
           # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
@@ -28,39 +29,39 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
           include:
           - template: existing.yml
           - template: Security/SAST-IaC.latest.gitlab-ci.yml
-        CI_YML
+          CI_YML
+        end
+
+        context 'template includes are an array' do
+          let(:gitlab_ci_content) do
+            { "stages" => %w(test security),
+              "variables" => { "RANDOM" => "make sure this persists" },
+              "include" => [{ "template" => "existing.yml" }] }
+          end
+
+          it 'generates the correct YML' do
+            expect(result[:action]).to eq('update')
+            expect(result[:content]).to eq(expected_yml)
+          end
+        end
+
+        context 'template include is not an array' do
+          let(:gitlab_ci_content) do
+            { "stages" => %w(test security),
+              "variables" => { "RANDOM" => "make sure this persists" },
+              "include" => { "template" => "existing.yml" } }
+          end
+
+          it 'generates the correct YML' do
+            expect(result[:action]).to eq('update')
+            expect(result[:content]).to eq(expected_yml)
+          end
+        end
       end
 
-      context 'template includes are an array' do
-        let(:gitlab_ci_content) do
-          { "stages" => %w(test security),
-            "variables" => { "RANDOM" => "make sure this persists" },
-            "include" => [{ "template" => "existing.yml" }] }
-        end
-
-        it 'generates the correct YML' do
-          expect(result[:action]).to eq('update')
-          expect(result[:content]).to eq(expected_yml)
-        end
-      end
-
-      context 'template include is not an array' do
-        let(:gitlab_ci_content) do
-          { "stages" => %w(test security),
-            "variables" => { "RANDOM" => "make sure this persists" },
-            "include" => { "template" => "existing.yml" } }
-        end
-
-        it 'generates the correct YML' do
-          expect(result[:action]).to eq('update')
-          expect(result[:content]).to eq(expected_yml)
-        end
-      end
-    end
-
-    context 'secret_detection has been included' do
-      let(:expected_yml) do
-        <<-CI_YML.strip_heredoc
+      context 'secret_detection has been included' do
+        let(:expected_yml) do
+          <<-CI_YML.strip_heredoc
           # You can override the included template(s) by including variable overrides
           # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
           # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
@@ -74,35 +75,48 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
             RANDOM: make sure this persists
           include:
           - template: Security/SAST-IaC.latest.gitlab-ci.yml
-        CI_YML
-      end
-
-      context 'secret_detection template include are an array' do
-        let(:gitlab_ci_content) do
-          { "stages" => %w(test),
-            "variables" => { "RANDOM" => "make sure this persists" },
-            "include" => [{ "template" => "Security/SAST-IaC.latest.gitlab-ci.yml" }] }
+          CI_YML
         end
 
-        it 'generates the correct YML' do
-          expect(result[:action]).to eq('update')
-          expect(result[:content]).to eq(expected_yml)
-        end
-      end
+        context 'secret_detection template include are an array' do
+          let(:gitlab_ci_content) do
+            { "stages" => %w(test),
+              "variables" => { "RANDOM" => "make sure this persists" },
+              "include" => [{ "template" => "Security/SAST-IaC.latest.gitlab-ci.yml" }] }
+          end
 
-      context 'secret_detection template include is not an array' do
-        let(:gitlab_ci_content) do
-          { "stages" => %w(test),
-            "variables" => { "RANDOM" => "make sure this persists" },
-            "include" => { "template" => "Security/SAST-IaC.latest.gitlab-ci.yml" } }
+          it 'generates the correct YML' do
+            expect(result[:action]).to eq('update')
+            expect(result[:content]).to eq(expected_yml)
+          end
         end
 
-        it 'generates the correct YML' do
-          expect(result[:action]).to eq('update')
-          expect(result[:content]).to eq(expected_yml)
+        context 'secret_detection template include is not an array' do
+          let(:gitlab_ci_content) do
+            { "stages" => %w(test),
+              "variables" => { "RANDOM" => "make sure this persists" },
+              "include" => { "template" => "Security/SAST-IaC.latest.gitlab-ci.yml" } }
+          end
+
+          it 'generates the correct YML' do
+            expect(result[:action]).to eq('update')
+            expect(result[:content]).to eq(expected_yml)
+          end
         end
       end
     end
+  end
+
+  context 'with existing .gitlab-ci.yml and when the ci config file configuration was not set' do
+    subject(:result) { described_class.new(auto_devops_enabled, gitlab_ci_content).generate }
+
+    it_behaves_like 'existing .gitlab-ci.yml tests'
+  end
+
+  context 'with existing .gitlab-ci.yml and when the ci config file configuration was deleted' do
+    subject(:result) { described_class.new(auto_devops_enabled, gitlab_ci_content, ci_config_path: '').generate }
+
+    it_behaves_like 'existing .gitlab-ci.yml tests'
   end
 
   context 'with no .gitlab-ci.yml' do

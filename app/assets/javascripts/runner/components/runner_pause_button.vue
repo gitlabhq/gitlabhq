@@ -3,7 +3,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import runnerToggleActiveMutation from '~/runner/graphql/shared/runner_toggle_active.mutation.graphql';
 import { createAlert } from '~/flash';
 import { captureException } from '~/runner/sentry_utils';
-import { I18N_PAUSE, I18N_RESUME } from '../constants';
+import { I18N_PAUSE, I18N_PAUSE_TOOLTIP, I18N_RESUME, I18N_RESUME_TOOLTIP } from '../constants';
 
 export default {
   name: 'RunnerPauseButton',
@@ -52,11 +52,10 @@ export default {
       return null;
     },
     tooltip() {
-      // Only show tooltip when compact.
-      // Also prevent a "sticky" tooltip: If this button is
-      // disabled, mouseout listeners don't run leaving the tooltip stuck
-      if (this.compact && !this.updating) {
-        return this.label;
+      // Prevent a "sticky" tooltip: If this button is disabled,
+      // mouseout listeners don't run leaving the tooltip stuck
+      if (!this.updating) {
+        return this.isActive ? I18N_PAUSE_TOOLTIP : I18N_RESUME_TOOLTIP;
       }
       return '';
     },
@@ -102,7 +101,7 @@ export default {
 
 <template>
   <gl-button
-    v-gl-tooltip.hover.viewport="tooltip"
+    v-gl-tooltip="tooltip"
     v-bind="$attrs"
     :aria-label="ariaLabel"
     :icon="icon"

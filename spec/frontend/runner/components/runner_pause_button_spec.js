@@ -8,6 +8,12 @@ import runnerToggleActiveMutation from '~/runner/graphql/shared/runner_toggle_ac
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/runner/sentry_utils';
 import { createAlert } from '~/flash';
+import {
+  I18N_PAUSE,
+  I18N_PAUSE_TOOLTIP,
+  I18N_RESUME,
+  I18N_RESUME_TOOLTIP,
+} from '~/runner/constants';
 
 import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import { runnersData } from '../mock_data';
@@ -74,10 +80,10 @@ describe('RunnerPauseButton', () => {
 
   describe('Pause/Resume action', () => {
     describe.each`
-      runnerState | icon       | content     | isActive | newActiveValue
-      ${'paused'} | ${'play'}  | ${'Resume'} | ${false} | ${true}
-      ${'active'} | ${'pause'} | ${'Pause'}  | ${true}  | ${false}
-    `('When the runner is $runnerState', ({ icon, content, isActive, newActiveValue }) => {
+      runnerState | icon       | content        | tooltip                | isActive | newActiveValue
+      ${'paused'} | ${'play'}  | ${I18N_RESUME} | ${I18N_RESUME_TOOLTIP} | ${false} | ${true}
+      ${'active'} | ${'pause'} | ${I18N_PAUSE}  | ${I18N_PAUSE_TOOLTIP}  | ${true}  | ${false}
+    `('When the runner is $runnerState', ({ icon, content, tooltip, isActive, newActiveValue }) => {
       beforeEach(() => {
         createComponent({
           props: {
@@ -91,7 +97,11 @@ describe('RunnerPauseButton', () => {
       it(`Displays a ${icon} button`, () => {
         expect(findBtn().props('loading')).toBe(false);
         expect(findBtn().props('icon')).toBe(icon);
+      });
+
+      it('Displays button content', () => {
         expect(findBtn().text()).toBe(content);
+        expect(getTooltip()).toBe(tooltip);
       });
 
       it('Does not display redundant text for screen readers', () => {
@@ -218,8 +228,8 @@ describe('RunnerPauseButton', () => {
     });
 
     it('Display correctly for screen readers', () => {
-      expect(findBtn().attributes('aria-label')).toBe('Pause');
-      expect(getTooltip()).toBe('Pause');
+      expect(findBtn().attributes('aria-label')).toBe(I18N_PAUSE);
+      expect(getTooltip()).toBe(I18N_PAUSE_TOOLTIP);
     });
 
     describe('Immediately after the button is clicked', () => {

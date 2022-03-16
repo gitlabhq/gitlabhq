@@ -62,28 +62,28 @@ RSpec.describe Tooling::Danger::Datateam do
         'with metric file changes and no performance indicator changes and other label' => {
           modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml),
           changed_lines: ['-product_stage: growth'],
-          mr_labels: ['type::tooling'],
+          mr_labels: ['type::maintenance'],
           impacted: false,
           impacted_files: []
         },
         'with performance indicator changes and other label' => {
           modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
           changed_lines: ['+-gmau'],
-          mr_labels: ['type::tooling'],
+          mr_labels: ['type::maintenance'],
           impacted: true,
           impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
         },
         'with performance indicator changes, Data Warehouse::Impact Check and other label' => {
           modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
           changed_lines: ['+-gmau'],
-          mr_labels: ['type::tooling', 'Data Warehouse::Impact Check'],
+          mr_labels: ['type::maintenance', 'Data Warehouse::Impact Check'],
           impacted: false,
           impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
         },
         'with performance indicator changes and other labels' => {
           modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
           changed_lines: ['+-gmau'],
-          mr_labels: ['type::tooling', 'Data Warehouse::Impacted'],
+          mr_labels: ['type::maintenance', 'Data Warehouse::Impacted'],
           impacted: false,
           impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
         }

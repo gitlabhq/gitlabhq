@@ -16,10 +16,10 @@
           = link_to edit_project_runner_path(@project, runner), class: 'btn gl-button btn-icon', title: _('Edit'), aria: { label: _('Edit') }, data: { testid: 'edit-runner-link', toggle: 'tooltip', placement: 'top', container: 'body' } do
             = sprite_icon('pencil')
           - if runner.active?
-            = link_to pause_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-icon', title: _('Pause'), aria: { label: _('Pause') }, data: { toggle: 'tooltip', placement: 'top', container: 'body', confirm: _("Are you sure?") } do
+            = link_to pause_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-icon', title: s_('Runners|Pause from accepting jobs'), aria: { label: _('Pause') }, data: { toggle: 'tooltip', container: 'body', confirm: _("Are you sure?") } do
               = sprite_icon('pause')
           - else
-            = link_to resume_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-icon', title: _('Resume'), aria: { label: _('Resume') }, data: { toggle: 'tooltip', placement: 'top', container: 'body' } do
+            = link_to resume_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-icon', title: s_('Runners|Resume accepting jobs'), aria: { label: _('Resume') }, data: { toggle: 'tooltip', container: 'body' } do
               = sprite_icon('play')
           - if runner.belongs_to_one_project?
             = link_to _('Remove runner'), project_runner_path(@project, runner), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn gl-button btn-danger'

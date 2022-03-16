@@ -313,6 +313,9 @@ To configure Vale in your editor, install one of the following as appropriate:
 - Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server).
   You can configure the plugin to [display only a subset of alerts](#show-subset-of-vale-alerts).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
+- Jetbrains IDEs - No plugin exists, but
+  [this issue comment](https://github.com/errata-ai/vale-server/issues/39#issuecomment-751714451)
+  contains tips for configuring an external tool.
 - Emacs [Flycheck extension](https://github.com/flycheck/flycheck).
   This requires some configuration:
 

@@ -45,7 +45,7 @@ scheduling into milestones. Labeling is a task for everyone. (For some projects,
 
 Most issues will have labels for at least one of the following:
 
-- Type. For example: `~"type::feature"`, `~"type::bug"`, or `~"type::tooling"`.
+- Type. For example: `~"type::feature"`, `~"type::bug"`, or `~"type::maintenance"`.
 - Stage. For example: `~"devops::plan"` or `~"devops::create"`.
 - Group. For example: `~"group::source code"`, `~"group::knowledge"`, or `~"group::editor"`.
 - Category. For example: `~"Category:Code Analytics"`, `~"Category:DevOps Reports"`, or `~"Category:Templates"`.
@@ -72,19 +72,7 @@ labels, you can _always_ add the type, stage, group, and often the category/feat
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one and only one.
 
-The current type labels are:
-
-- `~"type::feature"`
-  - `~"feature::addition"`
-  - `~"feature::enhancement"`
-- `~"type::maintenance"`
-- `~"type::bug"`
-- `~"type::tooling"`
-  - `~"tooling::pipelines"`
-  - `~"tooling::workflow"`
-- `~"support request"`
-- `~meta`
-- `~documentation`
+The current type labels are [available in the handbook](https://about.gitlab.com/handbook/engineering/metrics/#work-type-classification)
 
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.
