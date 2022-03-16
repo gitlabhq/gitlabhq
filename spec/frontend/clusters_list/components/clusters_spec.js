@@ -23,7 +23,7 @@ describe('Clusters', () => {
   const totalClustersNumber = 6;
   const clustersEmptyStateImage = 'path/to/svg';
   const emptyStateHelpText = null;
-  const newClusterPath = '/path/to/new/cluster';
+  const addClusterPath = '/path/to/new/cluster';
 
   const entryData = {
     endpoint,
@@ -36,7 +36,7 @@ describe('Clusters', () => {
   const provideData = {
     clustersEmptyStateImage,
     emptyStateHelpText,
-    newClusterPath,
+    addClusterPath,
   };
 
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);

@@ -67,6 +67,9 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 			notFoundHandler.ServeHTTP(w, r)
 			return
 		}
+
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+
 		defer content.Close()
 
 		switch cache {

@@ -34,17 +34,12 @@ RSpec.describe 'Clusters', :js do
       before do
         create(:cluster, :provided_by_user, name: 'default-cluster', environment_scope: '*', projects: [project])
         visit project_clusters_path(project)
-        click_link 'Certificate'
-        click_button(class: 'dropdown-toggle-split')
-      end
-
-      it 'user sees an add cluster button' do
-        expect(page).to have_content('Connect with a certificate')
       end
 
       context 'when user filled form with environment scope' do
         before do
-          click_link 'Connect with a certificate'
+          visit_connect_cluster_page
+
           fill_in 'cluster_name', with: 'staging-cluster'
           fill_in 'cluster_environment_scope', with: 'staging/*'
           click_button 'Add Kubernetes cluster'
@@ -72,7 +67,8 @@ RSpec.describe 'Clusters', :js do
 
       context 'when user updates duplicated environment scope' do
         before do
-          click_link 'Connect with a certificate'
+          visit_connect_cluster_page
+
           fill_in 'cluster_name', with: 'staging-cluster'
           fill_in 'cluster_environment_scope', with: '*'
           fill_in 'cluster_platform_kubernetes_attributes_api_url', with: 'https://0.0.0.0'
@@ -115,8 +111,7 @@ RSpec.describe 'Clusters', :js do
 
       context 'when user filled form with environment scope' do
         before do
-          click_button(class: 'dropdown-toggle-split')
-          click_link 'Create a new cluster'
+          visit_create_cluster_page
           click_link 'Google GKE'
 
           sleep 2 # wait for ajax
@@ -160,8 +155,7 @@ RSpec.describe 'Clusters', :js do
 
       context 'when user updates duplicated environment scope' do
         before do
-          click_button(class: 'dropdown-toggle-split')
-          click_link 'Create a new cluster'
+          visit_create_cluster_page
           click_link 'Google GKE'
 
           sleep 2 # wait for ajax
@@ -212,11 +206,7 @@ RSpec.describe 'Clusters', :js do
 
   context 'user visits create cluster page' do
     before do
-      visit project_clusters_path(project)
-
-      click_link 'Certificate'
-      click_link 'Connect with a certificate'
-      click_link 'Create new cluster'
+      visit_create_cluster_page
     end
 
     it 'user sees a link to create a GKE cluster' do
@@ -226,5 +216,17 @@ RSpec.describe 'Clusters', :js do
     it 'user sees a link to create an EKS cluster' do
       expect(page).to have_link('Amazon EKS')
     end
+  end
+
+  def visit_create_cluster_page
+    visit project_clusters_path(project)
+
+    click_button(class: 'dropdown-toggle-split')
+    click_link 'Create a new cluster'
+  end
+
+  def visit_connect_cluster_page
+    click_button(class: 'dropdown-toggle-split')
+    click_link 'Connect with a certificate'
   end
 end

@@ -17,18 +17,9 @@ module Mutations
         def resolve(id:, **runner_attrs)
           runner = authorized_find!(id)
 
-          error = authenticate_delete_runner!(runner)
-          return { errors: [error] } if error
-
           ::Ci::Runners::UnregisterRunnerService.new(runner, current_user).execute
 
           { errors: runner.errors.full_messages }
-        end
-
-        def authenticate_delete_runner!(runner)
-          return if current_user.can_admin_all_resources?
-
-          "Runner #{runner.to_global_id} associated with more than one project" if runner.runner_projects.count > 1
         end
 
         def find_object(id)

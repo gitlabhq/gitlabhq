@@ -3510,6 +3510,38 @@ RSpec.describe Ci::Build do
       end
     end
 
+    context 'for harbor integration' do
+      let(:harbor_integration) { create(:harbor_integration) }
+
+      let(:harbor_variables) do
+        [
+          { key: 'HARBOR_URL', value: harbor_integration.url, public: true, masked: false },
+          { key: 'HARBOR_PROJECT', value: harbor_integration.project_name, public: true, masked: false },
+          { key: 'HARBOR_USERNAME', value: harbor_integration.username, public: true, masked: false },
+          { key: 'HARBOR_PASSWORD', value: harbor_integration.password, public: false, masked: true }
+        ]
+      end
+
+      context 'when harbor_integration exists' do
+        before do
+          build.project.update!(harbor_integration: harbor_integration)
+        end
+
+        it 'includes harbor variables' do
+          is_expected.to include(*harbor_variables)
+        end
+      end
+
+      context 'when harbor_integration does not exist' do
+        it 'does not include harbor variables' do
+          expect(subject.find { |v| v[:key] == 'HARBOR_URL'}).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_PROJECT_NAME'}).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_USERNAME'}).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_PASSWORD'}).to be_nil
+        end
+      end
+    end
+
     context 'when build has dependency which has dotenv variable' do
       let!(:prepare) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
       let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: [prepare.name] }) }

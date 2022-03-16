@@ -343,6 +343,8 @@ RSpec.describe Projects::ReleasesController do
 
       shared_examples_for 'redirects to latest release ordered by using released_at' do
         it do
+          expect(Release).to receive(:order_released_desc).and_call_original
+
           subject
 
           expect(response).to redirect_to("#{project_releases_path(project)}/#{latest_release.tag}")

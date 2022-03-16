@@ -13,7 +13,7 @@ export default {
     GlSprintf,
     GlAlert,
   },
-  inject: ['emptyStateHelpText', 'clustersEmptyStateImage', 'newClusterPath'],
+  inject: ['emptyStateHelpText', 'clustersEmptyStateImage', 'addClusterPath'],
   props: {
     isChildComponent: {
       default: false,
@@ -57,7 +57,7 @@ export default {
           category="primary"
           variant="confirm"
           :disabled="!canAddCluster"
-          :href="newClusterPath"
+          :href="addClusterPath"
         >
           {{ $options.i18n.buttonText }}
         </gl-button>

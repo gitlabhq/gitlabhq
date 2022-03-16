@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin do
+  RSpec.describe 'Manage', :requires_admin, :reliable do
     describe 'Add project member' do
       it 'user adds project member', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347887' do
         Flow::Login.sign_in

@@ -8020,9 +8020,6 @@ msgstr ""
 msgid "ClusterIntegration|Add Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Add a Kubernetes cluster integration"
-msgstr ""
-
 msgid "ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
 msgstr ""
 
@@ -8131,7 +8128,7 @@ msgstr ""
 msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
-msgid "ClusterIntegration|Connect existing cluster"
+msgid "ClusterIntegration|Connect a Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Connect with a certificate"
@@ -8179,18 +8176,6 @@ msgstr ""
 msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Create cluster on"
-msgstr ""
-
-msgid "ClusterIntegration|Create new cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Create new cluster on EKS"
-msgstr ""
-
-msgid "ClusterIntegration|Create new cluster on GKE"
-msgstr ""
-
 msgid "ClusterIntegration|Creating Kubernetes cluster"
 msgstr ""
 
@@ -8224,6 +8209,9 @@ msgstr ""
 msgid "ClusterIntegration|Enable this setting if using role-based access control (RBAC)."
 msgstr ""
 
+msgid "ClusterIntegration|Enter details about your cluster. %{linkStart}How do I use a certificate to connect to my cluster?%{linkEnd}"
+msgstr ""
+
 msgid "ClusterIntegration|Enter new Service Token"
 msgstr ""
 
@@ -8231,6 +8219,9 @@ msgid "ClusterIntegration|Enter the details for your Amazon EKS Kubernetes clust
 msgstr ""
 
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Enter your Kubernetes cluster certificate details"
 msgstr ""
 
 msgid "ClusterIntegration|Environment scope"
@@ -8296,9 +8287,6 @@ msgstr ""
 msgid "ClusterIntegration|HTTP Error"
 msgstr ""
 
-msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
-msgstr ""
-
 msgid "ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration."
 msgstr ""
 
@@ -8344,7 +8332,7 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about Kubernetes"
+msgid "ClusterIntegration|Learn more about Kubernetes."
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about group Kubernetes clusters"
@@ -8435,9 +8423,6 @@ msgid "ClusterIntegration|Number of nodes"
 msgstr ""
 
 msgid "ClusterIntegration|Number of nodes must be a numerical value."
-msgstr ""
-
-msgid "ClusterIntegration|Please enter access information for your Kubernetes cluster. If you need help, you can read our %{linkStart}documentation%{linkEnd} on Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
@@ -8689,10 +8674,16 @@ msgstr ""
 msgid "ClusterIntegration|Unknown Error"
 msgstr ""
 
+msgid "ClusterIntegration|Use GitLab to deploy to your cluster, run jobs, use review apps, and more."
+msgstr ""
+
 msgid "ClusterIntegration|Use the %{linkStart}GitLab Agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more."
 msgstr ""
 
 msgid "ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster."
+msgstr ""
+
+msgid "ClusterIntegration|Using AutoDevOps with multiple clusters? %{help_link_start}Read this first.%{help_link_end}"
 msgstr ""
 
 msgid "ClusterIntegration|VPC"
@@ -8707,7 +8698,7 @@ msgstr ""
 msgid "ClusterIntegration|We were unable to fetch any projects. Ensure that you have a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}."
 msgstr ""
 
-msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
+msgid "ClusterIntegration|Where do you want to create a cluster?"
 msgstr ""
 
 msgid "ClusterIntegration|You are about to remove your cluster integration and all GitLab-created resources associated with this cluster."
@@ -9409,6 +9400,12 @@ msgid "Congratulations, your free trial is activated."
 msgstr ""
 
 msgid "Connect"
+msgstr ""
+
+msgid "Connect a Kubernetes Cluster"
+msgstr ""
+
+msgid "Connect a cluster"
 msgstr ""
 
 msgid "Connect all repositories"
@@ -10245,7 +10242,13 @@ msgstr ""
 msgid "Create a GitLab account first, and then connect it to your %{label} account."
 msgstr ""
 
+msgid "Create a Kubernetes cluster"
+msgstr ""
+
 msgid "Create a Mattermost team for this group"
+msgstr ""
+
+msgid "Create a cluster"
 msgstr ""
 
 msgid "Create a group"
@@ -18071,6 +18074,36 @@ msgstr ""
 msgid "Harbor Registry"
 msgstr ""
 
+msgid "HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use."
+msgstr ""
+
+msgid "HarborIntegration|Base URL of the Harbor instance."
+msgstr ""
+
+msgid "HarborIntegration|Enter Harbor password"
+msgstr ""
+
+msgid "HarborIntegration|Harbor URL"
+msgstr ""
+
+msgid "HarborIntegration|Harbor password"
+msgstr ""
+
+msgid "HarborIntegration|Harbor project name"
+msgstr ""
+
+msgid "HarborIntegration|Harbor username"
+msgstr ""
+
+msgid "HarborIntegration|Password for your Harbor username."
+msgstr ""
+
+msgid "HarborIntegration|The name of the project in Harbor."
+msgstr ""
+
+msgid "HarborIntegration|Use Harbor as this project's container registry."
+msgstr ""
+
 msgid "Hashed Storage must be enabled to use Geo"
 msgstr ""
 
@@ -21802,6 +21835,12 @@ msgstr ""
 msgid "Learn more about groups."
 msgstr ""
 
+msgid "Learn more about max seats used"
+msgstr ""
+
+msgid "Learn more about seats owed"
+msgstr ""
+
 msgid "Learn more about shards and replicas in the %{configuration_link_start}Advanced Search configuration%{configuration_link_end} documentation. Changes don't take place until you %{recreated_link_start}recreate%{recreated_link_end} the index."
 msgstr ""
 
@@ -21941,6 +21980,9 @@ msgid "Leaving this setting enabled is recommended."
 msgstr ""
 
 msgid "Legacy burndown chart"
+msgstr ""
+
+msgid "Less Details"
 msgstr ""
 
 msgid "Let's Encrypt does not accept emails on example.com"
@@ -22712,6 +22754,9 @@ msgid "Max file size is 200 KB."
 msgstr ""
 
 msgid "Max role"
+msgstr ""
+
+msgid "Max seats used"
 msgstr ""
 
 msgid "Max session time"
@@ -24046,6 +24091,9 @@ msgid "Month"
 msgstr ""
 
 msgid "Months"
+msgstr ""
+
+msgid "More Details"
 msgstr ""
 
 msgid "More Information"
@@ -31705,9 +31753,6 @@ msgstr ""
 msgid "RightSidebar|deleting the"
 msgstr ""
 
-msgid "Rnners|Don't see what you are looking for? See the full list of options, including a fully customizable option, %{linkStart}here%{linkEnd}."
-msgstr ""
-
 msgid "Roadmap"
 msgstr ""
 
@@ -31759,10 +31804,10 @@ msgstr ""
 msgid "Runner API"
 msgstr ""
 
-msgid "Runner tokens"
+msgid "Runner cannot be deleted, please contact your administrator."
 msgstr ""
 
-msgid "Runner was not deleted because it is assigned to multiple projects."
+msgid "Runner tokens"
 msgstr ""
 
 msgid "Runner was not updated."
@@ -31783,6 +31828,12 @@ msgstr ""
 msgid "Runners page."
 msgstr ""
 
+msgid "Runners|%{percentage} spot."
+msgstr ""
+
+msgid "Runners|A capacity of 1 enables warm HA through Auto Scaling group re-spawn. A capacity of 2 enables hot HA because the service is available even when a node is lost. A capacity of 3 or more enables hot HA and manual scaling of runner fleet."
+msgstr ""
+
 msgid "Runners|Active"
 msgstr ""
 
@@ -31792,7 +31843,7 @@ msgstr ""
 msgid "Runners|Amazon Linux 2 Docker HA with manual scaling and optional scheduling. %{percentage} spot."
 msgstr ""
 
-msgid "Runners|Amazon Linux 2 Docker HA with manual scaling and optional scheduling. Non-spot. Default choice for Linux Docker executor."
+msgid "Runners|Amazon Linux 2 Docker HA with manual scaling and optional scheduling. Non-spot."
 msgstr ""
 
 msgid "Runners|An error has occurred fetching instructions"
@@ -31819,7 +31870,13 @@ msgstr ""
 msgid "Runners|Can run untagged jobs"
 msgstr ""
 
+msgid "Runners|Capacity of 1 enables warm HA through Auto Scaling group re-spawn. Capacity of 2 enables hot HA because the service is available even when a node is lost. Capacity of 3 or more enables hot HA and manual scaling of runner fleet."
+msgstr ""
+
 msgid "Runners|Change to project runner"
+msgstr ""
+
+msgid "Runners|Choose your preferred GitLab Runner"
 msgstr ""
 
 msgid "Runners|Command to register runner"
@@ -31849,6 +31906,9 @@ msgstr ""
 msgid "Runners|Details"
 msgstr ""
 
+msgid "Runners|Don't see what you are looking for? See the full list of options, including a fully customizable option %{linkStart}here%{linkEnd}."
+msgstr ""
+
 msgid "Runners|Download and install binary"
 msgstr ""
 
@@ -31858,16 +31918,10 @@ msgstr ""
 msgid "Runners|Enter the number of seconds. This timeout takes precedence over lower timeouts set for the project."
 msgstr ""
 
-msgid "Runners|For each solution, you will choose a capacity. 1 enables warm HA through Auto Scaling group re-spawn. 2 enables hot HA because the service is available even when a node is lost. 3 or more enables hot HA and manual scaling of runner fleet."
-msgstr ""
-
 msgid "Runners|Group"
 msgstr ""
 
 msgid "Runners|IP Address"
-msgstr ""
-
-msgid "Runners|If you do not select an AWS VPC, the runner will deploy to the Default VPC in the AWS Region you select. Please consult with your AWS administrator to understand if there are any security risks to deploying into the Default VPC in any given region in your AWS account."
 msgstr ""
 
 msgid "Runners|Install a runner"
@@ -31910,6 +31964,12 @@ msgid "Runners|No contact from this runner in over 3 months"
 msgstr ""
 
 msgid "Runners|No recent contact from this runner; last contact was %{timeAgo}"
+msgstr ""
+
+msgid "Runners|No spot. Default choice for Windows Shell executor."
+msgstr ""
+
+msgid "Runners|No spot. This is the default choice for Linux Docker executor."
 msgstr ""
 
 msgid "Runners|Not accepting jobs"
@@ -32011,6 +32071,9 @@ msgstr ""
 msgid "Runners|Runs untagged jobs"
 msgstr ""
 
+msgid "Runners|Select your preferred option here. In the next step, you can choose the capacity for your runner in the AWS CloudFormation console."
+msgstr ""
+
 msgid "Runners|Shared runners are available to every project in a GitLab instance. If you want a runner to build only specific projects, restrict the project in the table below. After you restrict a runner to a project, you cannot change it back to a shared runner."
 msgstr ""
 
@@ -32092,7 +32155,7 @@ msgstr ""
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %{percentage} spot."
 msgstr ""
 
-msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot. Default choice for Windows Shell executor."
+msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot."
 msgstr ""
 
 msgid "Runners|You are about to change this instance runner to a project runner. This operation is not reversible. Are you sure you want to continue?"
@@ -32574,6 +32637,9 @@ msgid "Searching by both author and message is currently not supported."
 msgstr ""
 
 msgid "Seats"
+msgstr ""
+
+msgid "Seats owed"
 msgstr ""
 
 msgid "Seats usage data as of %{last_enqueue_time} (Updated daily)"

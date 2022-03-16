@@ -54,7 +54,7 @@ GitLab to create incident automatically whenever an alert is triggered:
 1. Check the **Create an incident** checkbox.
 1. To customize the incident, select an
    [issue template](../../user/project/description_templates.md#create-an-issue-template).
-1. To send [an email notification](paging.md#email-notifications) to users
+1. To send [an email notification](paging.md#email-notifications-for-alerts) to users
    with the Developer role, select
    **Send a separate email notification to Developers**. Email notifications are
    also sent to users with the **Maintainer** and **Owner** roles.
@@ -89,9 +89,9 @@ For users with at least Guest [permissions](../../user/permissions.md), the
 Incident list is available at **Monitor > Incidents**
 in your project's sidebar. The list contains the following metrics:
 
-![Incident List](img/incident_list_v13_5.png)
+![Incident List](img/incident_list_v14_9.png)
 
-- **Status** - To filter incidents by their status, click **Open**, **Closed**,
+- **State** - To filter incidents by their state, select **Open**, **Closed**,
   or **All** above the incident list.
 - **Search** - The Incident list supports a simple free text search, which filters
   on the **Title** and **Incident** fields.
@@ -108,6 +108,13 @@ in your project's sidebar. The list contains the following metrics:
 
 - **Incident** - The description of the incident, which attempts to capture the
   most meaningful data.
+- **Status** - The status of the incident, which can be one of the following values:
+  - **Triggered**
+  - **Acknowledged**
+  - **Resolved**
+
+  In GitLab Premium, this field is also linked to [on-call escalation](paging.md#escalating-an-incident) for the incident.
+
 - **Date created** - How long ago the incident was created. This field uses the
   standard GitLab pattern of `X time ago`, but is supported by a granular date/time
   tooltip depending on the user's locale.
@@ -245,6 +252,40 @@ You can also change the severity using the [`/severity` quick action](../../user
 
 Add a to-do for incidents that you want to track in your to-do list. Click the
 **Add a to do** button at the top of the right-hand side bar to add a to-do item.
+
+### Change incident status
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9.
+
+For users with the Developer role or higher, select **Edit** in the **Status** section of the
+right-hand side bar of an incident, then select a status. **Triggered** is the default status for
+new incidents.
+
+In projects with GitLab Premium, on-call responders can respond to [incident pages](paging.md#escalating-an-incident)
+by changing the status. Setting the status to:
+
+- **Resolved** silences on-call pages for the alert.
+- **Acknowledged** limits on-call pages based on the selected [escalation policy](#change-escalation-policy).
+- **Triggered** from **Resolved** restarts the incident escalating from the beginning.
+
+For [incidents created from alerts](alerts.md#create-an-incident-from-an-alert),
+updating the incident status also updates the alert status.
+
+## Change escalation policy **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9.
+
+For users with the Developer role or higher, select **Edit** in the **Escalation policy** section of
+the right-hand side bar of an incident, then select a policy. By default, new incidents do not have
+an escalation policy selected.
+
+Selecting an escalation policy updates the incident status to **Triggered** and begins
+[escalating the incident to on-call responders](paging.md#escalating-an-incident).
+Deselecting an escalation policy halts escalation. Refer to the [incident status](#change-incident-status)
+to manage on-call paging once escalation has begun.
+
+For [incidents created from alerts](alerts.md#create-an-incident-from-an-alert),
+the incident's escalation policy reflects the alert's escalation policy and cannot be changed.
 
 ### Manage incidents from Slack
 

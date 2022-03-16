@@ -305,6 +305,9 @@ reduce the repository size for another import attempt:
 
 #### Workaround option 2
 
+NOTE:
+This workaround requires access to the rails console, which isn't available to end-users on GitLab.com.
+
 Rather than attempting to push all changes at once, this workaround:
 
 - Separates the project import from the Git Repository import

@@ -31,9 +31,7 @@ describe('NewCluster', () => {
   });
 
   it('renders the correct information text', () => {
-    expect(findDescription().text()).toContain(
-      'Please enter access information for your Kubernetes cluster.',
-    );
+    expect(findDescription().text()).toContain('Enter details about your cluster.');
   });
 
   it('renders a valid help link set by the backend', () => {

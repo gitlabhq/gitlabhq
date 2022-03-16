@@ -8,16 +8,28 @@ RSpec.describe QA::Support::PageErrorChecker do
   describe '.report!' do
     context 'reports errors' do
       let(:expected_chrome_error) do
+        "Error Code 500\n\n"\
         "chrome errors\n\n"\
-        "Path: #{test_path}"
+        "Path: #{test_path}\n\n"\
+        "Logging: foo123"
       end
 
       let(:expected_basic_error) do
+        "Error Code 500\n\n"\
+        "foo status\n\n"\
+        "Path: #{test_path}\n\n"\
+        "Logging: foo123"
+      end
+
+      let(:expected_basic_404) do
+        "Error Code 404\n\n"\
         "foo status\n\n"\
         "Path: #{test_path}"
       end
 
       it 'reports error message on chrome browser' do
+        allow(QA::Support::PageErrorChecker).to receive(:parse_five_c_page_request_id).and_return('foo123')
+        allow(QA::Support::Loglinking).to receive(:failure_metadata).with('foo123').and_return('Logging: foo123')
         allow(QA::Support::PageErrorChecker).to receive(:return_chrome_errors).and_return('chrome errors')
         allow(page).to receive(:current_path).and_return(test_path)
         allow(QA::Runtime::Env).to receive(:browser).and_return(:chrome)
@@ -26,11 +38,63 @@ RSpec.describe QA::Support::PageErrorChecker do
       end
 
       it 'reports basic message on non-chrome browser' do
+        allow(QA::Support::PageErrorChecker).to receive(:parse_five_c_page_request_id).and_return('foo123')
+        allow(QA::Support::Loglinking).to receive(:failure_metadata).with('foo123').and_return('Logging: foo123')
         allow(QA::Support::PageErrorChecker).to receive(:status_code_report).and_return('foo status')
         allow(page).to receive(:current_path).and_return(test_path)
         allow(QA::Runtime::Env).to receive(:browser).and_return(:firefox)
 
         expect { QA::Support::PageErrorChecker.report!(page, 500) }.to raise_error(RuntimeError, expected_basic_error)
+      end
+
+      it 'does not report failure metadata on non 500 error' do
+        allow(QA::Support::PageErrorChecker).to receive(:parse_five_c_page_request_id).and_return('foo123')
+
+        expect(QA::Support::Loglinking).not_to receive(:failure_metadata)
+
+        allow(QA::Support::PageErrorChecker).to receive(:status_code_report).and_return('foo status')
+        allow(page).to receive(:current_path).and_return(test_path)
+        allow(QA::Runtime::Env).to receive(:browser).and_return(:firefox)
+
+        expect { QA::Support::PageErrorChecker.report!(page, 404) }.to raise_error(RuntimeError, expected_basic_404)
+      end
+    end
+  end
+
+  describe '.parse_five_c_page_request_id' do
+    context 'parse correlation ID' do
+      require 'nokogiri'
+      before do
+        nokogiri_parse = Class.new do
+          def self.parse(str)
+            Nokogiri::HTML.parse(str)
+          end
+        end
+        stub_const('NokogiriParse', nokogiri_parse)
+      end
+      let(:error_500_str) do
+        "<html><body><div><p><code>"\
+        "req678"\
+        "</code></p></div></body></html>"
+      end
+
+      let(:error_500_no_code_str) do
+        "<html><body>"\
+        "The code you are looking for is not here"\
+        "</body></html>"
+      end
+
+      it 'returns code is present' do
+        allow(page).to receive(:html).and_return(error_500_str)
+        allow(Nokogiri::HTML).to receive(:parse).with(error_500_str).and_return(NokogiriParse.parse(error_500_str))
+
+        expect(QA::Support::PageErrorChecker.parse_five_c_page_request_id(page).to_str).to eq('req678')
+      end
+      it 'returns nil if not present' do
+        allow(page).to receive(:html).and_return(error_500_no_code_str)
+        allow(Nokogiri::HTML).to receive(:parse).with(error_500_no_code_str).and_return(NokogiriParse.parse(error_500_no_code_str))
+
+        expect(QA::Support::PageErrorChecker.parse_five_c_page_request_id(page)).to be_nil
       end
     end
   end

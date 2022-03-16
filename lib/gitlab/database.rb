@@ -231,12 +231,26 @@ module Gitlab
       ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:name)
     end
 
+    # This returns all matching schemas that a given connection can use
+    # Since the `ActiveRecord::Base` might change the connection (from main to ci)
+    # This does not look at literal connection names, but rather compares
+    # models that are holders for a given db_config_name
+    def self.gitlab_schemas_for_connection(connection)
+      connection_name = self.db_config_name(connection)
+      primary_model = self.database_base_models.fetch(connection_name)
+
+      self.schemas_to_base_models
+        .select { |_, models| models.include?(primary_model) }
+        .keys
+        .map!(&:to_sym)
+    end
+
     def self.db_config_for_connection(connection)
       return unless connection
 
-      # The LB connection proxy does not have a direct db_config
-      # that can be referenced
-      return if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
+      if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
+        return connection.load_balancer.configuration.primary_db_config
+      end
 
       # During application init we might receive `NullPool`
       return unless connection.respond_to?(:pool) &&

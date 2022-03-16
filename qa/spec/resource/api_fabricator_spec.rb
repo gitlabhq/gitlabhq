@@ -108,14 +108,57 @@ RSpec.describe QA::Resource::ApiFabricator do
 
         context 'when the POST fails' do
           let(:post_response) { { error: "Name already taken." } }
-          let(:raw_post) { double('Raw POST response', code: 400, body: post_response.to_json) }
+          let(:raw_post) { double('Raw POST response', code: 400, body: post_response.to_json, headers: {}) }
 
           it 'raises a ResourceFabricationFailedError exception' do
             expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
             expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
+            allow(QA::Support::Loglinking).to receive(:logging_environment).and_return(nil)
 
-            expect { subject.fabricate_via_api! }.to raise_error(described_class::ResourceFabricationFailedError, "Fabrication of FooBarResource using the API failed (400) with `#{raw_post}`.")
+            expect { subject.fabricate_via_api! }.to raise_error do |error|
+              expect(error.class).to eql(described_class::ResourceFabricationFailedError)
+              expect(error.to_s).to eql(<<~ERROR.chomp)
+                Fabrication of FooBarResource using the API failed (400) with `#{raw_post}`.\n
+              ERROR
+            end
             expect(subject.api_resource).to be_nil
+          end
+
+          it 'logs a correlation id' do
+            response = double('Raw POST response', code: 400, body: post_response.to_json, headers: { x_request_id: 'foobar' })
+            allow(QA::Support::Loglinking).to receive(:logging_environment).and_return(nil)
+
+            expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
+            expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(response)
+
+            expect { subject.fabricate_via_api! }.to raise_error do |error|
+              expect(error.class).to eql(described_class::ResourceFabricationFailedError)
+              expect(error.to_s).to eql(<<~ERROR.chomp)
+                Fabrication of FooBarResource using the API failed (400) with `#{raw_post}`.
+                Correlation Id: foobar
+              ERROR
+            end
+          end
+
+          it 'logs a sentry url from staging' do
+            response = double('Raw POST response', code: 400, body: post_response.to_json, headers: { x_request_id: 'foobar' })
+            cookies = [{ name: 'Foo', value: 'Bar' }, { name: 'gitlab_canary', value: 'true' }]
+
+            allow(Capybara.current_session).to receive_message_chain(:driver, :browser, :manage, :all_cookies).and_return(cookies)
+            allow(QA::Runtime::Scenario).to receive(:attributes).and_return({ gitlab_address: 'https://staging.gitlab.com' })
+
+            expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
+            expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(response)
+
+            expect { subject.fabricate_via_api! }.to raise_error do |error|
+              expect(error.class).to eql(described_class::ResourceFabricationFailedError)
+              expect(error.to_s).to eql(<<~ERROR.chomp)
+                Fabrication of FooBarResource using the API failed (400) with `#{raw_post}`.
+                Correlation Id: foobar
+                Sentry Url: https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg-cny&query=correlation_id%3A%22foobar%22
+                Kibana Url: https://nonprod-log.gitlab.net/app/discover#/?_a=(query:(language:kuery,query:'json.correlation_id%20:%20foobar'))
+              ERROR
+            end
           end
         end
       end

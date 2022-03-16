@@ -26,7 +26,6 @@ RSpec.describe 'User Cluster', :js do
       visit group_clusters_path(group)
 
       click_link 'Connect with a certificate'
-      click_link 'Connect existing cluster'
     end
 
     context 'when user filled form with valid parameters' do

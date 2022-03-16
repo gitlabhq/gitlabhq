@@ -26,9 +26,6 @@ module QA
           Page::Project::Infrastructure::Kubernetes::Index.perform(
             &:connect_existing_cluster)
 
-          Page::Project::Infrastructure::Kubernetes::Add.perform(
-            &:add_existing_cluster)
-
           Page::Project::Infrastructure::Kubernetes::AddExisting.perform do |cluster_page|
             cluster_page.set_cluster_name(@cluster.cluster_name)
             cluster_page.set_api_url(@cluster.api_url)

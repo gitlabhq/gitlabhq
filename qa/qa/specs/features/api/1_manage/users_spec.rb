@@ -4,7 +4,7 @@ require 'airborne'
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Users API' do
+    describe 'Users API', :reliable do
       let(:api_client) { Runtime::API::Client.new(:gitlab) }
       let(:request) { Runtime::API::Request.new(api_client, '/users') }
 

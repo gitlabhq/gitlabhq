@@ -246,19 +246,19 @@ class ApplicationController < ActionController::Base
   end
 
   def git_not_found!
-    render "errors/git_not_found.html", layout: "errors", status: :not_found
+    render template: "errors/git_not_found", formats: :html, layout: "errors", status: :not_found
   end
 
   def render_403
     respond_to do |format|
-      format.html { render "errors/access_denied", layout: "errors", status: :forbidden }
+      format.html { render template: "errors/access_denied", formats: :html, layout: "errors", status: :forbidden }
       format.any { head :forbidden }
     end
   end
 
   def render_404
     respond_to do |format|
-      format.html { render "errors/not_found", layout: "errors", status: :not_found }
+      format.html { render template: "errors/not_found", formats: :html, layout: "errors", status: :not_found }
       # Prevent the Rails CSRF protector from thinking a missing .js file is a JavaScript file
       format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }

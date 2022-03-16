@@ -1,8 +1,15 @@
 <script>
-import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
-import awsCloudFormationImageUrl from 'images/aws-cloud-formation.png';
+import {
+  GlModal,
+  GlSprintf,
+  GlLink,
+  GlFormRadioGroup,
+  GlFormRadio,
+  GlAccordion,
+  GlAccordionItem,
+} from '@gitlab/ui';
 import Tracking from '~/tracking';
-import { getBaseURL, objectToQuery } from '~/lib/utils/url_utility';
+import { getBaseURL, objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { README_URL, CF_BASE_URL, TEMPLATES_BASE_URL, EASY_BUTTONS } from './constants';
 
@@ -11,6 +18,10 @@ export default {
     GlModal,
     GlSprintf,
     GlLink,
+    GlFormRadioGroup,
+    GlFormRadio,
+    GlAccordion,
+    GlAccordionItem,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -18,13 +29,16 @@ export default {
       type: String,
       required: true,
     },
-    imgSrc: {
-      type: String,
-      required: false,
-      default: awsCloudFormationImageUrl,
-    },
+  },
+  data() {
+    return {
+      selected: this.$options.easyButtons[0],
+    };
   },
   methods: {
+    borderBottom(idx) {
+      return idx < this.$options.easyButtons.length - 1;
+    },
     easyButtonUrl(easyButton) {
       const params = {
         templateURL: TEMPLATES_BASE_URL + easyButton.templateName,
@@ -38,18 +52,26 @@ export default {
         label: stackName,
       });
     },
+    handleModalPrimary() {
+      this.trackCiRunnerTemplatesClick(this.selected.stackName);
+      visitUrl(this.easyButtonUrl(this.selected), true);
+    },
   },
   i18n: {
     title: s__('Runners|Deploy GitLab Runner in AWS'),
     instructions: s__(
-      'Runners|For each solution, you will choose a capacity. 1 enables warm HA through Auto Scaling group re-spawn. 2 enables hot HA because the service is available even when a node is lost. 3 or more enables hot HA and manual scaling of runner fleet.',
+      'Runners|Select your preferred option here. In the next step, you can choose the capacity for your runner in the AWS CloudFormation console.',
     ),
-    dont_see_what_you_are_looking_for: s__(
-      "Rnners|Don't see what you are looking for? See the full list of options, including a fully customizable option, %{linkStart}here%{linkEnd}.",
+    chooseRunner: s__('Runners|Choose your preferred GitLab Runner'),
+    dontSeeWhatYouAreLookingFor: s__(
+      "Runners|Don't see what you are looking for? See the full list of options, including a fully customizable option %{linkStart}here%{linkEnd}.",
     ),
-    note: s__(
-      'Runners|If you do not select an AWS VPC, the runner will deploy to the Default VPC in the AWS Region you select. Please consult with your AWS administrator to understand if there are any security risks to deploying into the Default VPC in any given region in your AWS account.',
-    ),
+    moreDetails: __('More Details'),
+    lessDetails: __('Less Details'),
+  },
+  deployButton: {
+    text: s__('Runners|Deploy GitLab Runner in AWS'),
+    attributes: [{ variant: 'confirm' }],
   },
   closeButton: {
     text: __('Cancel'),
@@ -63,37 +85,41 @@ export default {
   <gl-modal
     :modal-id="modalId"
     :title="$options.i18n.title"
+    :action-primary="$options.deployButton"
     :action-secondary="$options.closeButton"
     size="sm"
+    @primary="handleModalPrimary"
   >
     <p>{{ $options.i18n.instructions }}</p>
-    <ul class="gl-list-style-none gl-p-0 gl-mb-0">
-      <li v-for="easyButton in $options.easyButtons" :key="easyButton.templateName">
-        <gl-link
-          :href="easyButtonUrl(easyButton)"
-          target="_blank"
-          class="gl-display-flex gl-font-weight-bold"
-          @click="trackCiRunnerTemplatesClick(easyButton.stackName)"
-        >
-          <img
-            :title="easyButton.stackName"
-            :alt="easyButton.stackName"
-            :src="imgSrc"
-            width="46"
-            height="46"
-            class="gl-mt-2 gl-mr-5 gl-mb-6"
-          />
+    <gl-form-radio-group v-model="selected" :label="$options.i18n.chooseRunner" label-sr-only>
+      <gl-form-radio
+        v-for="(easyButton, idx) in $options.easyButtons"
+        :key="easyButton.templateName"
+        :value="easyButton"
+        class="gl-py-5 gl-pl-8"
+        :class="{ 'gl-border-b': borderBottom(idx) }"
+      >
+        <div class="gl-mt-n1 gl-pl-4 gl-pb-2 gl-font-weight-bold">
           {{ easyButton.description }}
-        </gl-link>
-      </li>
-    </ul>
+          <gl-accordion :header-level="3" class="gl-pt-3">
+            <gl-accordion-item
+              :title="$options.i18n.moreDetails"
+              :title-visible="$options.i18n.lessDetails"
+              class="gl-font-weight-normal"
+            >
+              <p class="gl-pt-2">{{ easyButton.moreDetails1 }}</p>
+              <p class="gl-m-0">{{ easyButton.moreDetails2 }}</p>
+            </gl-accordion-item>
+          </gl-accordion>
+        </div>
+      </gl-form-radio>
+    </gl-form-radio-group>
     <p>
-      <gl-sprintf :message="$options.i18n.dont_see_what_you_are_looking_for">
+      <gl-sprintf :message="$options.i18n.dontSeeWhatYouAreLookingFor">
         <template #link="{ content }">
           <gl-link :href="$options.readmeUrl" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </p>
-    <p class="gl-font-sm gl-mb-0">{{ $options.i18n.note }}</p>
   </gl-modal>
 </template>

@@ -9,9 +9,9 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :generate_gcp_authorize_url, only: [:new]
   before_action :validate_gcp_token, only: [:new]
   before_action :gcp_cluster, only: [:new]
-  before_action :user_cluster, only: [:new]
+  before_action :user_cluster, only: [:new, :connect]
   before_action :authorize_read_cluster!, only: [:show, :index]
-  before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role]
+  before_action :authorize_create_cluster!, only: [:new, :connect, :authorize_aws_role]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :update_applications_status, only: [:cluster_status]
   before_action :ensure_feature_enabled!, except: :index
@@ -152,7 +152,7 @@ class Clusters::ClustersController < Clusters::BaseController
       validate_gcp_token
       gcp_cluster
 
-      render :new, locals: { active_tab: 'add' }
+      render :connect
     end
   end
 

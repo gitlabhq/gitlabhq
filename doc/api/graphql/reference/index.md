@@ -18891,6 +18891,7 @@ State of a Sentry error.
 | <a id="servicetypegithub_service"></a>`GITHUB_SERVICE` | GithubService type. |
 | <a id="servicetypegitlab_slack_application_service"></a>`GITLAB_SLACK_APPLICATION_SERVICE` | GitlabSlackApplicationService type (Gitlab.com only). |
 | <a id="servicetypehangouts_chat_service"></a>`HANGOUTS_CHAT_SERVICE` | HangoutsChatService type. |
+| <a id="servicetypeharbor_service"></a>`HARBOR_SERVICE` | HarborService type. |
 | <a id="servicetypeirker_service"></a>`IRKER_SERVICE` | IrkerService type. |
 | <a id="servicetypejenkins_service"></a>`JENKINS_SERVICE` | JenkinsService type. |
 | <a id="servicetypejira_service"></a>`JIRA_SERVICE` | JiraService type. |

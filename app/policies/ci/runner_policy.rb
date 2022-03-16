@@ -9,6 +9,10 @@ module Ci
       @user.owns_runner?(@subject)
     end
 
+    condition(:belongs_to_multiple_projects) do
+      @subject.belongs_to_more_than_one_project?
+    end
+
     rule { anonymous }.prevent_all
 
     rule { admin }.policy do
@@ -21,6 +25,8 @@ module Ci
       enable :update_runner
       enable :delete_runner
     end
+
+    rule { ~admin & belongs_to_multiple_projects }.prevent :delete_runner
 
     rule { ~admin & locked }.prevent :assign_runner
   end

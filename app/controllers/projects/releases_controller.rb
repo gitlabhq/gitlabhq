@@ -72,7 +72,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   def fetch_latest_tag
     allowed_values = ['released_at']
 
-    params.reject! { |key, value| key.to_sym == :order_by && allowed_values.any?(value) }
+    params.reject! { |key, value| key.to_sym == :order_by && !allowed_values.any?(value) }
 
     @latest_tag = releases(order_by: params[:order_by]).first&.tag
   end

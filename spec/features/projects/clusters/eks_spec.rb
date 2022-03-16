@@ -19,17 +19,13 @@ RSpec.describe 'AWS EKS Cluster', :js do
     before do
       visit project_clusters_path(project)
 
-      click_link 'Certificate'
-      click_link 'Connect with a certificate'
+      click_button(class: 'dropdown-toggle-split')
+      click_link 'Create a new cluster'
     end
 
     context 'when user creates a cluster on AWS EKS' do
       before do
         click_link 'Amazon EKS'
-      end
-
-      it 'user sees a form to create an EKS cluster' do
-        expect(page).to have_content('Create new cluster on EKS')
       end
 
       it 'highlights Amazon EKS logo' do

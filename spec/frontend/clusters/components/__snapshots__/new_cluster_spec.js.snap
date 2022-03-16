@@ -1,8 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`NewCluster renders the cluster component correctly 1`] = `
-"<div>
-  <h4>Enter the details for your Kubernetes cluster</h4>
-  <p>Please enter access information for your Kubernetes cluster. If you need help, you can read our <b-link-stub href=\\"/some/help/path\\" target=\\"_blank\\" event=\\"click\\" routertag=\\"a\\" class=\\"gl-link\\">documentation</b-link-stub> on Kubernetes</p>
+"<div class=\\"gl-pt-4\\">
+  <h4>Enter your Kubernetes cluster certificate details</h4>
+  <p>Enter details about your cluster. <b-link-stub href=\\"/some/help/path\\" target=\\"_blank\\" event=\\"click\\" routertag=\\"a\\" class=\\"gl-link\\">How do I use a certificate to connect to my cluster?</b-link-stub>
+  </p>
 </div>"
 `;

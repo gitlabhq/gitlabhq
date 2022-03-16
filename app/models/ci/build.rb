@@ -72,6 +72,7 @@ module Ci
     delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :service_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
+    delegate :harbor_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
 
     ##
@@ -583,6 +584,7 @@ module Ci
           .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
           .concat(deploy_token_variables)
+          .concat(harbor_variables)
       end
     end
 
@@ -617,6 +619,12 @@ module Ci
         variables.append(key: 'CI_DEPENDENCY_PROXY_USER', value: ::Gitlab::Auth::CI_JOB_USER)
         variables.append(key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: token.to_s, public: false, masked: true)
       end
+    end
+
+    def harbor_variables
+      return [] unless harbor_integration.try(:activated?)
+
+      Gitlab::Ci::Variables::Collection.new(harbor_integration.ci_variables)
     end
 
     def features

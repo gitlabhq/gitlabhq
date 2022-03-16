@@ -205,12 +205,12 @@ RSpec.describe Gitlab::Database do
     end
 
     context 'when the connection is LoadBalancing::ConnectionProxy' do
-      it 'returns nil' do
+      it 'returns primary_db_config' do
         lb_config = ::Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
         lb = ::Gitlab::Database::LoadBalancing::LoadBalancer.new(lb_config)
         proxy = ::Gitlab::Database::LoadBalancing::ConnectionProxy.new(lb)
 
-        expect(described_class.db_config_for_connection(proxy)).to be_nil
+        expect(described_class.db_config_for_connection(proxy)).to eq(lb_config.primary_db_config)
       end
     end
 
@@ -229,7 +229,7 @@ RSpec.describe Gitlab::Database do
 
       # This is a ConnectionProxy
       expect(described_class.db_config_name(model.connection))
-        .to eq('unknown')
+        .to eq('main')
 
       # This is an actual connection
       expect(described_class.db_config_name(model.retrieve_connection))
@@ -241,6 +241,31 @@ RSpec.describe Gitlab::Database do
         replica = ActiveRecord::Base.load_balancer.host
 
         expect(described_class.db_config_name(replica)).to eq('main_replica')
+      end
+    end
+  end
+
+  describe '.gitlab_schemas_for_connection' do
+    it 'does raise exception for invalid connection' do
+      expect { described_class.gitlab_schemas_for_connection(:invalid) }.to raise_error /key not found: "unknown"/
+    end
+
+    it 'does return a valid schema depending on a base model used', :request_store do
+      # This is currently required as otherwise the `Ci::Build.connection` == `Project.connection`
+      # ENV due to lib/gitlab/database/load_balancing/setup.rb:93
+      stub_env('GITLAB_USE_MODEL_LOAD_BALANCING', '1')
+      # FF due to lib/gitlab/database/load_balancing/configuration.rb:92
+      stub_feature_flags(force_no_sharing_primary_model: true)
+
+      expect(described_class.gitlab_schemas_for_connection(Project.connection)).to include(:gitlab_main, :gitlab_shared)
+      expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).to include(:gitlab_ci, :gitlab_shared)
+    end
+
+    it 'does return gitlab_ci when a ActiveRecord::Base is using CI connection' do
+      with_reestablished_active_record_base do
+        reconfigure_db_connection(model: ActiveRecord::Base, config_model: Ci::Build)
+
+        expect(described_class.gitlab_schemas_for_connection(ActiveRecord::Base.connection)).to include(:gitlab_ci, :gitlab_shared)
       end
     end
   end

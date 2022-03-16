@@ -1,9 +1,8 @@
-- breadcrumb_title _('Kubernetes')
-- page_title _('Kubernetes Cluster')
+- @content_class = 'limit-container-width' unless fluid_layout
+- add_to_breadcrumbs _('Kubernetes Clusters'), clusterable.index_path
+- breadcrumb_title _('Create a cluster')
+- page_title _('Create a Kubernetes cluster')
 - provider = params[:provider]
-- active_tab = params[:tab] || local_assigns.fetch(:active_tab, 'create')
-- is_active_tab_create = active_tab === 'create'
-- is_active_tab_add = active_tab === 'add'
 
 = render_gcp_signup_offer
 
@@ -11,21 +10,8 @@
   .col-md-3
     = render 'sidebar'
   .col-md-9
-    = gl_tabs_nav({ class: 'nav-justified' }) do
-      = gl_tab_link_to clusterable.new_path(tab: 'create'), { item_active: is_active_tab_create } do
-        %span= create_new_cluster_label(provider: params[:provider])
-      = gl_tab_link_to s_('ClusterIntegration|Connect existing cluster'), clusterable.new_path(tab: 'add'), { item_active: is_active_tab_add, qa_selector: 'add_existing_cluster_tab' }
+    = render 'clusters/clusters/cloud_providers/cloud_provider_selector'
 
-    .tab-content
-      - if is_active_tab_create
-        .tab-pane.active{ role: 'tabpanel' }
-          = render 'clusters/clusters/cloud_providers/cloud_provider_selector'
-
-          - if ['aws', 'gcp'].include?(provider)
-            .p-3.border-top
-              = render "clusters/clusters/#{provider}/new"
-
-      - if is_active_tab_add
-        .tab-pane.active.gl-p-5{ role: 'tabpanel' }
-          #js-cluster-new{ data: js_cluster_new }
-          = render 'clusters/clusters/user/form'
+    - if ['aws', 'gcp'].include?(provider)
+      .gl-p-5.gl-border-1.gl-border-t-solid.gl-border-gray-100
+        = render "clusters/clusters/#{provider}/new"

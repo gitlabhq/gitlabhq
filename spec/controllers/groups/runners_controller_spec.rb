@@ -208,21 +208,39 @@ RSpec.describe Groups::RunnersController do
       end
     end
 
-    context 'when user is an owner and runner in multiple projects' do
-      let(:project_2) { create(:project, group: group) }
+    context 'with runner associated with multiple projects' do
+      let_it_be(:project_2) { create(:project, group: group) }
+
       let(:runner_project_2) { create(:ci_runner, :project, projects: [project, project_2]) }
       let(:params_runner_project_2) { { group_id: group, id: runner_project_2 } }
 
-      before do
-        group.add_owner(user)
+      context 'when user is an admin', :enable_admin_mode do
+        let(:user) { create(:user, :admin) }
+
+        before do
+          sign_in(user)
+        end
+
+        it 'destroys the project runner and redirects' do
+          delete :destroy, params: params_runner_project_2
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(Ci::Runner.find_by(id: runner_project_2.id)).to be_nil
+        end
       end
 
-      it 'does not destroy the project runner' do
-        delete :destroy, params: params_runner_project_2
+      context 'when user is an owner' do
+        before do
+          group.add_owner(user)
+        end
 
-        expect(response).to have_gitlab_http_status(:found)
-        expect(flash[:alert]).to eq('Runner was not deleted because it is assigned to multiple projects.')
-        expect(Ci::Runner.find_by(id: runner_project_2.id)).to be_present
+        it 'does not destroy the project runner' do
+          delete :destroy, params: params_runner_project_2
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(flash[:alert]).to eq('Runner cannot be deleted, please contact your administrator.')
+          expect(Ci::Runner.find_by(id: runner_project_2.id)).to be_present
+        end
       end
     end
 

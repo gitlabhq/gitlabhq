@@ -202,6 +202,10 @@ The available values for `object_attributes.action` in the payload are:
 The `assignee` and `assignee_id` keys are deprecated
 and contain the first assignee only.
 
+The `escalation_status` and `escalation_policy` fields are
+only available for issue types which support escalations,
+such as incidents.
+
 Request header:
 
 ```plaintext
@@ -271,6 +275,12 @@ Payload example:
     "url": "http://example.com/diaspora/issues/23",
     "state": "opened",
     "action": "open",
+    "severity": "high",
+    "escalation_status": "triggered",
+    "escalation_policy": {
+      "id": 18,
+      "name": "Engineering On-call"
+    },
     "labels": [{
         "id": 206,
         "title": "API",

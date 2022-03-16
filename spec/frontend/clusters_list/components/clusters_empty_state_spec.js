@@ -4,7 +4,7 @@ import ClustersEmptyState from '~/clusters_list/components/clusters_empty_state.
 import ClusterStore from '~/clusters_list/store';
 
 const clustersEmptyStateImage = 'path/to/svg';
-const newClusterPath = '/path/to/connect/cluster';
+const addClusterPath = '/path/to/connect/cluster';
 const emptyStateHelpText = 'empty state text';
 
 describe('ClustersEmptyStateComponent', () => {
@@ -12,7 +12,7 @@ describe('ClustersEmptyStateComponent', () => {
 
   const defaultProvideData = {
     clustersEmptyStateImage,
-    newClusterPath,
+    addClusterPath,
   };
 
   const findButton = () => wrapper.findComponent(GlButton);

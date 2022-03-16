@@ -18,7 +18,6 @@ RSpec.describe 'Environment > Metrics' do
     stub_any_prometheus_request
 
     sign_in(user)
-    visit_environment(environment)
   end
 
   around do |example|
@@ -27,6 +26,7 @@ RSpec.describe 'Environment > Metrics' do
 
   shared_examples 'has environment selector' do
     it 'has a working environment selector', :js do
+      visit_environment(environment)
       click_link 'Monitoring'
 
       expect(page).to have_current_path(project_metrics_dashboard_path(project, environment: environment.id))
@@ -56,6 +56,7 @@ RSpec.describe 'Environment > Metrics' do
     end
 
     it 'shows metrics', :js do
+      visit_environment(environment)
       click_link 'Monitoring'
 
       expect(page).to have_css('[data-qa-selector="prometheus_graphs"]') # rubocop:disable QA/SelectorUsage

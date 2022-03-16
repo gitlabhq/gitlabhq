@@ -31,34 +31,6 @@ RSpec.describe ClustersHelper do
     end
   end
 
-  describe '#create_new_cluster_label' do
-    subject { helper.create_new_cluster_label(provider: provider) }
-
-    context 'GCP provider' do
-      let(:provider) { 'gcp' }
-
-      it { is_expected.to eq('Create new cluster on GKE') }
-    end
-
-    context 'AWS provider' do
-      let(:provider) { 'aws' }
-
-      it { is_expected.to eq('Create new cluster on EKS') }
-    end
-
-    context 'other provider' do
-      let(:provider) { 'other' }
-
-      it { is_expected.to eq('Create new cluster') }
-    end
-
-    context 'no provider' do
-      let(:provider) { nil }
-
-      it { is_expected.to eq('Create new cluster') }
-    end
-  end
-
   describe '#js_clusters_list_data' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:project) { build(:project) }
@@ -89,11 +61,11 @@ RSpec.describe ClustersHelper do
     end
 
     it 'displays create cluster using certificate path' do
-      expect(subject[:new_cluster_path]).to eq("#{project_path(project)}/-/clusters/new?tab=create")
+      expect(subject[:new_cluster_path]).to eq("#{project_path(project)}/-/clusters/new")
     end
 
     it 'displays add cluster using certificate path' do
-      expect(subject[:add_cluster_path]).to eq("#{project_path(project)}/-/clusters/new?tab=add")
+      expect(subject[:add_cluster_path]).to eq("#{project_path(project)}/-/clusters/connect")
     end
 
     context 'user has no permissions to create a cluster' do

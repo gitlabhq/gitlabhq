@@ -89,6 +89,14 @@ For example:
 
 Do not use title case **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
+## agent access token
+
+The token generated when you create an agent for Kubernetes. Use **agent access token**, not:
+
+- registration token
+- secret token
+- authentication token
+
 ## allow, enable
 
 Try to avoid **allow** and **enable**, unless you are talking about security-related features.

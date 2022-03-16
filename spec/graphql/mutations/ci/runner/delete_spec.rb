@@ -6,8 +6,9 @@ RSpec.describe Mutations::Ci::Runner::Delete do
   include GraphqlHelpers
 
   let_it_be(:runner) { create(:ci_runner) }
+  let_it_be(:admin_user) { create(:user, :admin) }
+  let_it_be(:user) { create(:user) }
 
-  let(:user) { create(:user) }
   let(:current_ctx) { { current_user: user } }
 
   let(:mutation_params) do
@@ -27,12 +28,24 @@ RSpec.describe Mutations::Ci::Runner::Delete do
           subject
         end
       end
+
+      context 'with more than one associated project' do
+        let!(:project) { create(:project, creator_id: user.id) }
+        let!(:project2) { create(:project, creator_id: user.id) }
+        let!(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
+
+        it 'raises an error' do
+          mutation_params[:id] = two_projects_runner.to_global_id
+
+          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
+      end
     end
 
     context 'with invalid params' do
-      it 'raises an error' do
-        mutation_params[:id] = "invalid-id"
+      let(:mutation_params) { { id: "invalid-id" } }
 
+      it 'raises an error' do
         expect { subject }.to raise_error(::GraphQL::CoercionError)
       end
     end
@@ -46,6 +59,8 @@ RSpec.describe Mutations::Ci::Runner::Delete do
     end
 
     context 'when user can delete owned runner' do
+      let_it_be(:user) { create(:user) }
+
       let!(:project) { create(:project, creator_id: user.id) }
       let!(:project_runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
 
@@ -54,9 +69,11 @@ RSpec.describe Mutations::Ci::Runner::Delete do
       end
 
       context 'with one associated project' do
-        it 'deletes runner' do
-          mutation_params[:id] = project_runner.to_global_id
+        let(:mutation_params) do
+          { id: project_runner.to_global_id }
+        end
 
+        it 'deletes runner' do
           expect_next_instance_of(::Ci::Runners::UnregisterRunnerService, project_runner, current_ctx[:current_user]) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
@@ -70,24 +87,41 @@ RSpec.describe Mutations::Ci::Runner::Delete do
         let!(:project2) { create(:project, creator_id: user.id) }
         let!(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
 
-        before do
-          project2.add_maintainer(user)
+        let(:mutation_params) do
+          { id: two_projects_runner.to_global_id }
         end
 
-        it 'does not delete project runner' do
-          mutation_params[:id] = two_projects_runner.to_global_id
+        context 'with user as admin', :enable_admin_mode do
+          let(:current_ctx) { { current_user: admin_user } }
 
-          allow_next_instance_of(::Ci::Runners::UnregisterRunnerService) do |service|
-            expect(service).not_to receive(:execute)
+          it 'deletes runner' do
+            expect_next_instance_of(::Ci::Runners::UnregisterRunnerService, two_projects_runner, current_ctx[:current_user]) do |service|
+              expect(service).to receive(:execute).once.and_call_original
+            end
+
+            expect { subject }.to change { Ci::Runner.count }.by(-1)
+            expect(subject[:errors]).to be_empty
           end
-          expect { subject }.not_to change { Ci::Runner.count }
-          expect(subject[:errors]).to contain_exactly("Runner #{two_projects_runner.to_global_id} associated with more than one project")
+        end
+
+        context 'with user as project maintainer' do
+          let_it_be(:user) { create(:user) }
+
+          before do
+            project2.add_maintainer(user)
+          end
+
+          it 'raises error' do
+            allow_next_instance_of(::Ci::Runners::UnregisterRunnerService) do |service|
+              expect(service).not_to receive(:execute)
+            end
+            expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+          end
         end
       end
     end
 
     context 'when admin can delete runner', :enable_admin_mode do
-      let(:admin_user) { create(:user, :admin) }
       let(:current_ctx) { { current_user: admin_user } }
 
       it 'deletes runner' do

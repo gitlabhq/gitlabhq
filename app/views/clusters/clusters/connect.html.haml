@@ -1,0 +1,11 @@
+- @content_class = 'limit-container-width' unless fluid_layout
+- add_to_breadcrumbs _('Kubernetes Clusters'), clusterable.index_path
+- breadcrumb_title _('Connect a cluster')
+- page_title _('Connect a Kubernetes Cluster')
+
+.row.gl-mt-3
+  .col-md-3
+    = render 'sidebar'
+  .col-md-9
+    #js-cluster-new{ data: js_cluster_new }
+    = render 'clusters/clusters/user/form'

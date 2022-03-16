@@ -54,7 +54,7 @@ module QA
           body)
 
         unless response.code == HTTP_STATUS_OK
-          raise ResourceFabricationFailedError, "Updating #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
+          raise ResourceFabricationFailedError, "Updating #{self.class.name} using the API failed (#{response.code}) with `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
         end
 
         process_api_response(parse_body(response))
@@ -91,9 +91,9 @@ module QA
         response = get(request.url)
 
         if response.code == HTTP_STATUS_SERVER_ERROR
-          raise InternalServerError, "Failed to GET #{request.mask_url} - (#{response.code}): `#{response}`."
+          raise InternalServerError, "Failed to GET #{request.mask_url} - (#{response.code}): `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
         elsif response.code != HTTP_STATUS_OK
-          raise ResourceNotFoundError, "Resource at #{request.mask_url} could not be found (#{response.code}): `#{response}`."
+          raise ResourceNotFoundError, "Resource at #{request.mask_url} could not be found (#{response.code}): `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
         end
 
         @api_fabrication_http_method = :get # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -114,6 +114,7 @@ module QA
           unless graphql_response.code == HTTP_STATUS_OK && (body[:errors].nil? || body[:errors].empty?)
             raise(ResourceFabricationFailedError, <<~MSG)
               Fabrication of #{self.class.name} using the API failed (#{graphql_response.code}) with `#{graphql_response}`.
+              #{QA::Support::Loglinking.failure_metadata(graphql_response.headers[:x_request_id])}
             MSG
           end
 
@@ -126,7 +127,7 @@ module QA
           unless response.code == HTTP_STATUS_CREATED
             raise(
               ResourceFabricationFailedError,
-              "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
+              "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
             )
           end
 
@@ -145,7 +146,7 @@ module QA
         response = delete(request.url)
 
         unless [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED].include? response.code
-          raise ResourceNotDeletedError, "Resource at #{request.mask_url} could not be deleted (#{response.code}): `#{response}`."
+          raise ResourceNotDeletedError, "Resource at #{request.mask_url} could not be deleted (#{response.code}): `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
         end
 
         response

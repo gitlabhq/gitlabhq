@@ -235,6 +235,7 @@ Rails.application.routes.draw do
   concern :clusterable do
     resources :clusters, only: [:index, :new, :show, :update, :destroy] do
       collection do
+        get  :connect
         post :create_user
         post :create_gcp
         post :create_aws

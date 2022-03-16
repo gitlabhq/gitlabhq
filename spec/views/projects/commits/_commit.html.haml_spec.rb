@@ -33,7 +33,7 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
     let(:ref) { GpgHelpers::SIGNED_COMMIT_SHA }
 
     it 'does not display a loading spinner for GPG status' do
-      render partial: template, locals: {
+      render partial: template, formats: :html, locals: {
         project: project,
         ref: ref,
         commit: commit
@@ -69,7 +69,7 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
       end
 
       it 'does not display a ci status icon' do
-        render partial: template, locals: {
+        render partial: template, formats: :html, locals: {
           project: project,
           ref: ref,
           commit: commit
@@ -85,7 +85,7 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
       end
 
       it 'does display a ci status icon when pipelines are enabled' do
-        render partial: template, locals: {
+        render partial: template, formats: :html, locals: {
           project: project,
           ref: ref,
           commit: commit

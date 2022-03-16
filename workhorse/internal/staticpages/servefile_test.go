@@ -78,6 +78,7 @@ func TestServingTheActualFile(t *testing.T) {
 	w := httptest.NewRecorder()
 	st := &Static{DocumentRoot: dir}
 	st.ServeExisting("/", CacheDisabled, nil).ServeHTTP(w, httpRequest)
+	testhelper.RequireResponseHeader(t, w, "X-Content-Type-Options", "nosniff")
 	require.Equal(t, 200, w.Code)
 	if w.Body.String() != fileContent {
 		t.Error("We should serve the file: ", w.Body.String())
@@ -109,6 +110,7 @@ func TestExcludedPaths(t *testing.T) {
 			st.ServeExisting("/", CacheDisabled, nil).ServeHTTP(w, httpRequest)
 
 			if tc.found {
+				testhelper.RequireResponseHeader(t, w, "X-Content-Type-Options", "nosniff")
 				require.Equal(t, 200, w.Code)
 				require.Equal(t, tc.contents, w.Body.String())
 			} else {
@@ -144,6 +146,7 @@ func testServingThePregzippedFile(t *testing.T, enableGzip bool) {
 	w := httptest.NewRecorder()
 	st := &Static{DocumentRoot: dir}
 	st.ServeExisting("/", CacheDisabled, nil).ServeHTTP(w, httpRequest)
+	testhelper.RequireResponseHeader(t, w, "X-Content-Type-Options", "nosniff")
 	require.Equal(t, 200, w.Code)
 	if enableGzip {
 		testhelper.RequireResponseHeader(t, w, "Content-Encoding", "gzip")

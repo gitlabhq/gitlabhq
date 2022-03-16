@@ -15,11 +15,10 @@ RSpec.describe 'User browses a job', :js do
     stub_feature_flags(bootstrap_confirmation_modals: false)
 
     sign_in(user)
-
-    visit(project_job_path(project, build))
   end
 
   it 'erases the job log', :js do
+    visit(project_job_path(project, build))
     wait_for_requests
 
     expect(page).to have_content("Job #{build.name}")
@@ -41,6 +40,7 @@ RSpec.describe 'User browses a job', :js do
     let!(:build) { create(:ci_build, :success, :unarchived_trace_artifact, :coverage, pipeline: pipeline) }
 
     it 'shows no trace message', :js do
+      visit(project_job_path(project, build))
       wait_for_requests
 
       expect(page).to have_content('This job does not have a trace.')
@@ -51,6 +51,7 @@ RSpec.describe 'User browses a job', :js do
     let!(:build) { create(:ci_build, :failed, :trace_live, pipeline: pipeline) }
 
     it 'displays the failure reason' do
+      visit(project_job_path(project, build))
       wait_for_all_requests
       within('.builds-container') do
         expect(page).to have_selector(
@@ -62,6 +63,7 @@ RSpec.describe 'User browses a job', :js do
       let!(:artifact) { create(:ci_job_artifact, :unarchived_trace_artifact, job: build) }
 
       it 'displays the failure reason from the live trace' do
+        visit(project_job_path(project, build))
         wait_for_all_requests
         within('.builds-container') do
           expect(page).to have_selector(
@@ -75,6 +77,7 @@ RSpec.describe 'User browses a job', :js do
     let!(:build_retried) { create(:ci_build, :failed, :retried, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason and retried label' do
+      visit(project_job_path(project, build))
       wait_for_all_requests
       within('.builds-container') do
         expect(page).to have_selector(

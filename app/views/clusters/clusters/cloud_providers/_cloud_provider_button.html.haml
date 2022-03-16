@@ -3,10 +3,10 @@
 - logo_path = local_assigns.fetch(:logo_path)
 - label = local_assigns.fetch(:label)
 - last = local_assigns.fetch(:last, false)
-- classes = ["btn btn-light btn-outline flex-fill d-inline-flex flex-column justify-content-center align-items-center w-50 js-create-#{provider}-cluster-button"]
-- conditional_classes = [('mr-3' unless last), ('active' if is_current_provider)]
+- classes = ["btn btn-confirm gl-button btn-confirm-secondary gl-flex-direction-column gl-w-half js-create-#{provider}-cluster-button"]
+- conditional_classes = [('gl-mr-5' unless last), ('active' if is_current_provider)]
 
 = link_to clusterable.new_path(provider: provider), class: classes + conditional_classes do
-  .svg-content.p-2= image_tag logo_path, alt: label, class: 'gl-w-64 gl-h-64'
+  .svg-content.gl-p-3= image_tag logo_path, alt: label, class: 'gl-w-64 gl-h-64'
   %span
     = label
