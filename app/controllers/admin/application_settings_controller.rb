@@ -66,7 +66,12 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
         render html: Gitlab::Highlight.highlight('payload.json', usage_data_json, language: 'json')
       end
-      format.json { render json: Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values, cached: true).to_json }
+
+      format.json do
+        Gitlab::UsageDataCounters::ServiceUsageDataCounter.count(:download_payload_click)
+
+        render json: Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values, cached: true).to_json
+      end
     end
   end
 

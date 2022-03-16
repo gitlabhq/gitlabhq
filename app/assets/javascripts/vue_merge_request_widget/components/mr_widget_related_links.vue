@@ -58,21 +58,22 @@ export default {
   <section>
     <p
       v-if="relatedLinks.closing"
-      :class="{ 'gl-display-line gl-m-0': glFeatures.restructuredMrWidget }"
+      :class="{ 'gl-display-inline gl-m-0': glFeatures.restructuredMrWidget }"
     >
       {{ closesText }}
       <span v-safe-html="relatedLinks.closing"></span>
     </p>
     <p
       v-if="relatedLinks.mentioned"
-      :class="{ 'gl-display-line gl-m-0': glFeatures.restructuredMrWidget }"
+      :class="{ 'gl-display-inline gl-m-0': glFeatures.restructuredMrWidget }"
     >
+      <span v-if="relatedLinks.closing && glFeatures.restructuredMrWidget">&middot;</span>
       {{ n__('mrWidget|Mentions issue', 'mrWidget|Mentions issues', relatedLinks.mentionedCount) }}
       <span v-safe-html="relatedLinks.mentioned"></span>
     </p>
     <p
       v-if="shouldShowAssignToMeLink"
-      :class="{ 'gl-display-line gl-m-0': glFeatures.restructuredMrWidget }"
+      :class="{ 'gl-display-inline gl-m-0': glFeatures.restructuredMrWidget }"
     >
       <span>
         <gl-link rel="nofollow" data-method="post" :href="relatedLinks.assignToMe">{{

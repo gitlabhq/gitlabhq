@@ -129,6 +129,7 @@ module UsageDataHelpers
       uploads
       web_hooks
       user_preferences_user_gitpod_enabled
+      service_usage_data_download_payload_click
     ).push(*SMAU_KEYS)
 
   USAGE_DATA_KEYS = %i(

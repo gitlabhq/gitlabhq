@@ -1,0 +1,22 @@
+---
+key_path: counts.service_usage_data_download_payload_click
+description: Count Download Payload button clicks
+data_category: optional
+name: count_promoted_issues
+product_section: growth
+product_stage: growth
+product_group: group::product intelligence
+product_category: collection
+value_type: number
+status: active
+time_frame: all
+data_source: redis
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate
+performance_indicator_type: []
+milestone: "14.9"

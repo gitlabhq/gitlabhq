@@ -58,6 +58,9 @@ source. You must [install it separately](https://www.elastic.co/guide/en/elastic
 
 You can install Elasticsearch yourself, or use a cloud hosted offering such as [Elasticsearch Service](https://www.elastic.co/elasticsearch/service) (available on AWS, GCP, or Azure) or the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gsg.html)
 service.
+
+If using the Amazon OpenSearch service, ensure that you select `Elasticsearch 7.10` when configuring Deployment type. As noted in [Versions not supported](#versions-not-supported), Amazon's non-Elasticsearch versions are not yet supported.
+
 You should install Elasticsearch on a separate server. Running Elasticsearch on the same server as GitLab is not recommended and can cause a degradation in GitLab instance performance.
 
 For a single node Elasticsearch cluster, the functional cluster health status is always yellow due to the allocation of the primary shard. Elasticsearch cannot assign replica shards to the same node as primary shards.

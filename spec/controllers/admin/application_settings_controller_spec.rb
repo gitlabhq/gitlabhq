@@ -81,6 +81,18 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       expect(body).to include('counts')
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    describe 'usage data counter' do
+      let(:counter) { Gitlab::UsageDataCounters::ServiceUsageDataCounter }
+
+      it 'incremented when json generated' do
+        expect { get :usage_data, format: :json }.to change { counter.read(:download_payload_click) }.by(1)
+      end
+
+      it 'not incremented when html format requested' do
+        expect { get :usage_data }.not_to change { counter.read(:download_payload_click) }
+      end
+    end
   end
 
   describe 'PUT #update' do
