@@ -75,5 +75,15 @@ RSpec.describe PendingTodosFinder do
 
       expect(todos).to contain_exactly(todo1, todo2)
     end
+
+    it 'supports retrieving of todos for a specific action' do
+      todo = create(:todo, :pending, user: user, target: issue, action: Todo::MENTIONED)
+
+      create(:todo, :pending, user: user, target: issue, action: Todo::ASSIGNED)
+
+      todos = described_class.new(users, action: Todo::MENTIONED).execute
+
+      expect(todos).to contain_exactly(todo)
+    end
   end
 end

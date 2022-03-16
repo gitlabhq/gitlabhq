@@ -34,6 +34,8 @@ class Todo < ApplicationRecord
     ATTENTION_REQUESTED => :attention_requested
   }.freeze
 
+  ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED].freeze
+
   belongs_to :author, class_name: "User"
   belongs_to :note
   belongs_to :project

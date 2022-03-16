@@ -1152,8 +1152,6 @@ class MergeRequest < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
-    return false unless open?
-
     if Feature.enabled?(:improved_mergeability_checks, self.project, default_enabled: :yaml)
       additional_checks = MergeRequests::Mergeability::RunChecksService.new(
         merge_request: self,
@@ -1164,6 +1162,7 @@ class MergeRequest < ApplicationRecord
       )
       additional_checks.execute.all?(&:success?)
     else
+      return false unless open?
       return false if draft?
       return false if broken?
       return false unless skip_discussions_check || mergeable_discussions_state?

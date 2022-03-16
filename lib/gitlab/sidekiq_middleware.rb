@@ -33,7 +33,7 @@ module Gitlab
         chain.add ::Gitlab::SidekiqMiddleware::BatchLoader
         chain.add ::Gitlab::SidekiqMiddleware::InstrumentationLogger
         chain.add ::Gitlab::SidekiqMiddleware::AdminMode::Server
-        chain.add ::Gitlab::SidekiqMiddleware::QueryAnalyzer if Gitlab.dev_or_test_env? || Gitlab::Utils.to_boolean(ENV['GITLAB_ENABLE_QUERY_ANALYZERS'], default: false)
+        chain.add ::Gitlab::SidekiqMiddleware::QueryAnalyzer
         chain.add ::Gitlab::SidekiqVersioning::Middleware
         chain.add ::Gitlab::SidekiqStatus::ServerMiddleware
         chain.add ::Gitlab::SidekiqMiddleware::WorkerContext::Server

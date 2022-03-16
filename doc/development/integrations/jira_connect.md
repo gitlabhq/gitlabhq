@@ -81,10 +81,8 @@ If you use Gitpod and you get an error about Jira not being able to access the d
 
 GitLab for Jira users can authenticate with GitLab using GitLab OAuth. 
 
-FLAG:
-By default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `jira_connect_oauth`.
-The feature is not ready for production use.
+WARNING:
+This feature is not ready for production use. The feature flag should only be enabled in development.
 
 The following steps describe setting up an environment to test the GitLab OAuth flow:
 

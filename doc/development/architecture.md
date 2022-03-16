@@ -101,11 +101,11 @@ understand the GitLab architecture.
 A complete architecture diagram is available in our
 [component diagram](#component-diagram) below.
 
-![Simplified Component Overview](img/architecture_simplified.png)
+![Simplified Component Overview](img/architecture_simplified_v14_9.png)
 
 <!--
-To update this diagram, GitLab team members can edit this source file:
-https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/edit.
+To update this diagram, use and update this source file:
+https://miro.com/app/board/uXjVOH3lzXo=/
  -->
 
 ### Component diagram

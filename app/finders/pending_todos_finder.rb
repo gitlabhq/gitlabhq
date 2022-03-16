@@ -27,7 +27,8 @@ class PendingTodosFinder
     todos = by_target_id(todos)
     todos = by_target_type(todos)
     todos = by_discussion(todos)
-    by_commit_id(todos)
+    todos = by_commit_id(todos)
+    by_action(todos)
   end
 
   def by_project(todos)
@@ -68,5 +69,11 @@ class PendingTodosFinder
     else
       todos
     end
+  end
+
+  def by_action(todos)
+    return todos if params[:action].blank?
+
+    todos.for_action(params[:action])
   end
 end

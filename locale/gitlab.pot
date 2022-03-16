@@ -16955,6 +16955,9 @@ msgstr ""
 msgid "Go to environments"
 msgstr ""
 
+msgid "Go to environments page to approve or reject"
+msgstr ""
+
 msgid "Go to epic"
 msgstr ""
 
@@ -37837,6 +37840,9 @@ msgstr ""
 msgid "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
 msgstr ""
 
+msgid "This job deploys to the protected environment \"%{environment}\" which requires approvals."
+msgstr ""
+
 msgid "This job does not have a trace."
 msgstr ""
 
@@ -41244,6 +41250,9 @@ msgid "WARNING: This snippet contains hidden files which might be used to mask m
 msgstr ""
 
 msgid "Wait for the file to load to copy its contents"
+msgstr ""
+
+msgid "Waiting for approval"
 msgstr ""
 
 msgid "Waiting for merge (open and assigned)"
