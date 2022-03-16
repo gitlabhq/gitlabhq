@@ -44,6 +44,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :task_num,
       :title,
       :discussion_locked,
+      :issue_iid,
       label_ids: [],
       assignee_ids: [],
       reviewer_ids: [],
