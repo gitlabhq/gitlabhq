@@ -5999,6 +5999,9 @@ msgstr ""
 msgid "Branch changed"
 msgstr ""
 
+msgid "Branch has been updated since the merge was requested."
+msgstr ""
+
 msgid "Branch is already taken"
 msgstr ""
 

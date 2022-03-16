@@ -759,6 +759,7 @@ RSpec.describe QuickActions::InterpretService do
 
     context 'merge command' do
       let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: merge_request.diff_head_sha }) }
+      let(:merge_request) { create(:merge_request, source_project: repository_project) }
 
       it_behaves_like 'merge immediately command' do
         let(:content) { '/merge' }
@@ -789,7 +790,7 @@ RSpec.describe QuickActions::InterpretService do
       context 'can not be merged when sha does not match' do
         let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: 'othersha' }) }
 
-        it_behaves_like 'failed command', 'Could not apply merge command.' do
+        it_behaves_like 'failed command', 'Branch has been updated since the merge was requested.' do
           let(:content) { "/merge" }
           let(:issuable) { merge_request }
         end

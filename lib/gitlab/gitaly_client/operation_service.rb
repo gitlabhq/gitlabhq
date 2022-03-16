@@ -263,6 +263,19 @@ module Gitlab
         perform_next_gitaly_rebase_request(response_enum)
 
         rebase_sha
+      rescue GRPC::BadStatus => e
+        detailed_error = decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :access_check
+          access_check_error = detailed_error.access_check
+          # These messages were returned from internal/allowed API calls
+          raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        when :rebase_conflict
+          raise Gitlab::Git::Repository::GitError, e.details
+        else
+          raise e
+        end
       ensure
         request_enum.close
       end

@@ -386,6 +386,73 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
     it_behaves_like 'cherry pick and revert errors'
   end
 
+  describe '#rebase' do
+    let(:response) { Gitaly::UserRebaseConfirmableResponse.new }
+
+    subject do
+      client.rebase(
+        user,
+        '',
+        branch: 'master',
+        branch_sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+        remote_repository: repository,
+        remote_branch: 'master'
+      )
+    end
+
+    shared_examples '#rebase with an error' do
+      it 'raises a GitError exception' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_rebase_confirmable)
+          .and_raise(raised_error)
+
+        expect { subject }.to raise_error(expected_error)
+      end
+    end
+
+    context 'when AccessError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::INTERNAL,
+          'something failed',
+          Gitaly::UserRebaseConfirmableError.new(
+            access_check: Gitaly::AccessCheckError.new(
+              error_message: 'something went wrong'
+            )))
+      end
+
+      let(:expected_error) { Gitlab::Git::PreReceiveError }
+
+      it_behaves_like '#rebase with an error'
+    end
+
+    context 'when RebaseConflictError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::INTERNAL,
+          'something failed',
+          Gitaly::UserSquashError.new(
+            rebase_conflict: Gitaly::MergeConflictError.new(
+              conflicting_files: ['conflicting-file']
+            )))
+      end
+
+      let(:expected_error) { Gitlab::Git::Repository::GitError }
+
+      it_behaves_like '#rebase with an error'
+    end
+
+    context 'when non-detailed gRPC error is raised' do
+      let(:raised_error) do
+        GRPC::Internal.new('non-detailed error')
+      end
+
+      let(:expected_error) { GRPC::Internal }
+
+      it_behaves_like '#rebase with an error'
+    end
+  end
+
   describe '#user_squash' do
     let(:start_sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
     let(:end_sha) { '54cec5282aa9f21856362fe321c800c236a61615' }

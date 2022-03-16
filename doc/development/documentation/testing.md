@@ -213,19 +213,19 @@ You can use Vale:
 
 #### Vale result types
 
-Vale returns three types of results: `suggestion`, `warning`, and `error`:
+Vale returns three types of results:
 
-- **Suggestion**-level results are writing tips and aren't displayed in CI
-  job output. Suggestions don't break CI. See a list of
-  [suggestion-level rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Suggestion%3A&group_id=9970&project_id=278964).
-- **Warning**-level results are [Style Guide](styleguide/index.md) violations, aren't displayed in CI
-  job output, and should contain clear explanations of how to resolve the warning.
-  Warnings may be technical debt, or can be future error-level test items
-  (after the Technical Writing team completes its cleanup). Warnings don't break CI. See a list of
-  [warning-level rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Warning%3A&group_id=9970&project_id=278964).
-- **Error**-level results are Style Guide violations, and should contain clear explanations
-  of how to resolve the error. Errors break CI and are displayed in CI job output. See a list of
-  [error-level rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Error%3A&group_id=9970&project_id=278964).
+- **Error** - For branding and trademark issues, and words or phrases with ambiguous meanings.
+- **Warning** - For Technical Writing team style preferences.
+- **Suggestion** - For basic technical writing tenets and best practices.
+
+The result types have these attributes:
+
+| Result type  | Displayed in CI/CD job output | Causes CI/CD jobs to fail | Vale rule link |
+|--------------|-------------------------------|---------------------------|----------------|
+| `error`      | **{check-circle}** Yes        | **{check-circle}** Yes    | [Error-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Error%3A&group_id=9970&project_id=278964) |
+| `warning`    | **{dotted-circle}** No        | **{dotted-circle}** No    | [Warning-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Warning%3A&group_id=9970&project_id=278964) |
+| `suggestion` | **{dotted-circle}** No        | **{dotted-circle}** No    | [Suggestion-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Suggestion%3A&group_id=9970&project_id=278964) |
 
 #### Vale spelling test
 
