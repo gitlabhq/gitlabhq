@@ -84,13 +84,17 @@ Commit message templates support these variables:
 | `%{first_commit}`  | Full message of the first commit in merge request diff. | `Update README.md` |
 | `%{first_multiline_commit}` | Full message of the first commit that's not a merge commit and has more than one line in message body. Merge request title if all commits aren't multiline. | `Update README.md`<br><br>`Improved project description in readme file.` |
 | `%{url}`           | Full URL to the merge request. | `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1` |
-| `%{approved_by}`   | Line-separated list of the merge request approvers. This value is not updated until the first page refresh after an approval. | `Approved-by: Sidney Jones <sjones@example.com>` <br> `Approved-by: Zhang Wei <zwei@example.com>` |
+| `%{approved_by}`   | Line-separated list of the merge request approvers. | `Approved-by: Sidney Jones <sjones@example.com>` <br> `Approved-by: Zhang Wei <zwei@example.com>` |
 | `%{merged_by}`     | User who merged the merge request. | `Alex Garcia <agarcia@example.com>` |
 | `%{co_authored_by}` | Names and emails of commit authors in a `Co-authored-by` Git commit trailer format. Limited to authors of 100 most recent commits in merge request. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
 | `%{all_commits}`   | Messages from all commits in the merge request. Limited to 100 most recent commits. Skips commit bodies exceeding 100KiB and merge commit messages. | `* Feature introduced` <br><br> `This commit implements feature` <br> `Changelog:added` <br><br> `* Bug fixed` <br><br> `* Documentation improved` <br><br>`This commit introduced better docs.`|
 
 Any line containing only an empty variable is removed. If the line to be removed is both
 preceded and followed by an empty line, the preceding empty line is also removed.
+
+After you edit a commit message on an open merge request, GitLab will
+not automatically update the commit message again.
+To restore the commit message to the project template, reload the page.
 
 ## Related topics
 

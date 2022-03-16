@@ -29,6 +29,20 @@ RSpec.describe API::Entities::WikiPage do
       it 'returns the wiki page content rendered' do
         expect(subject[:content]).to eq "<p data-sourcepos=\"1:1-1:#{wiki_page.content.size}\" dir=\"auto\">#{wiki_page.content}</p>"
       end
+
+      it 'includes the wiki page version in the render context' do
+        expect(entity).to receive(:render_wiki_content).with(anything, hash_including(ref: wiki_page.version.id)).and_call_original
+
+        subject[:content]
+      end
+
+      context 'when page is an Ascii document' do
+        let(:wiki_page) { create(:wiki_page, content: "*Test* _content_", format: :asciidoc) }
+
+        it 'renders the page without errors' do
+          expect(subject[:content]).to eq("<div>&#x000A;<p><strong>Test</strong> <em>content</em></p>&#x000A;</div>")
+        end
+      end
     end
 
     context 'when it is false' do

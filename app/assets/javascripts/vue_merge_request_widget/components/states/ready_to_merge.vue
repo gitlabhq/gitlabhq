@@ -82,6 +82,13 @@ export default {
         };
         this.loading = false;
 
+        if (!this.commitMessageIsTouched) {
+          this.commitMessage = this.state.defaultMergeCommitMessage;
+        }
+        if (!this.squashCommitMessageIsTouched) {
+          this.squashCommitMessage = this.state.defaultSquashCommitMessage;
+        }
+
         if (this.state.mergeTrainsCount !== null && this.state.mergeTrainsCount !== undefined) {
           this.initPolling();
         }
@@ -133,9 +140,11 @@ export default {
       isMakingRequest: false,
       isMergingImmediately: false,
       commitMessage: this.mr.commitMessage,
+      commitMessageIsTouched: false,
       squashBeforeMerge: this.mr.squashIsSelected,
       isSquashReadOnly: this.mr.squashIsReadonly,
       squashCommitMessage: this.mr.squashCommitMessage,
+      squashCommitMessageIsTouched: false,
       isPipelineFailedModalVisibleMergeTrain: false,
       isPipelineFailedModalVisibleNormalMerge: false,
       editCommitMessage: false,
@@ -465,6 +474,14 @@ export default {
           });
         });
     },
+    setCommitMessage(val) {
+      this.commitMessage = val;
+      this.commitMessageIsTouched = true;
+    },
+    setSquashCommitMessage(val) {
+      this.squashCommitMessage = val;
+      this.squashCommitMessageIsTouched = true;
+    },
   },
   i18n: {
     mergeCommitTemplateHintText: s__(
@@ -630,21 +647,23 @@ export default {
                 >
                   <commit-edit
                     v-if="shouldShowSquashEdit"
-                    v-model="squashCommitMessage"
+                    :value="squashCommitMessage"
                     :label="__('Squash commit message')"
                     input-id="squash-message-edit"
                     class="gl-m-0! gl-p-0!"
+                    @input="setSquashCommitMessage"
                   >
                     <template #header>
-                      <commit-message-dropdown v-model="squashCommitMessage" :commits="commits" />
+                      <commit-message-dropdown :commits="commits" @input="setSquashCommitMessage" />
                     </template>
                   </commit-edit>
                   <commit-edit
                     v-if="shouldShowMergeEdit"
-                    v-model="commitMessage"
+                    :value="commitMessage"
                     :label="__('Merge commit message')"
                     input-id="merge-message-edit"
                     class="gl-m-0! gl-p-0!"
+                    @input="setCommitMessage"
                   />
                   <li class="gl-m-0! gl-p-0!">
                     <p class="form-text text-muted">
@@ -748,20 +767,22 @@ export default {
           <ul class="border-top content-list commits-list flex-list">
             <commit-edit
               v-if="shouldShowSquashEdit"
-              v-model="squashCommitMessage"
+              :value="squashCommitMessage"
               :label="__('Squash commit message')"
               input-id="squash-message-edit"
               squash
+              @input="setSquashCommitMessage"
             >
               <template #header>
-                <commit-message-dropdown v-model="squashCommitMessage" :commits="commits" />
+                <commit-message-dropdown :commits="commits" @input="setSquashCommitMessage" />
               </template>
             </commit-edit>
             <commit-edit
               v-if="shouldShowMergeEdit"
-              v-model="commitMessage"
+              :value="commitMessage"
               :label="__('Merge commit message')"
               input-id="merge-message-edit"
+              @input="setCommitMessage"
             />
             <li>
               <p class="form-text text-muted">

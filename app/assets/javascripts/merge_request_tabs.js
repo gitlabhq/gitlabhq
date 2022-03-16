@@ -2,13 +2,8 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import Vue from 'vue';
-import {
-  getCookie,
-  parseUrlPathname,
-  isMetaClick,
-  parseBoolean,
-  scrollToElement,
-} from '~/lib/utils/common_utils';
+import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
+import { parseUrlPathname } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';

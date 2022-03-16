@@ -1,7 +1,11 @@
 <script>
 import { GlSprintf, GlAlert, GlLink } from '@gitlab/ui';
 
-import { ALERT_MESSAGES, ADMIN_GARBAGE_COLLECTION_TIP } from '../../constants/index';
+import {
+  ALERT_MESSAGES,
+  ADMIN_GARBAGE_COLLECTION_TIP,
+  ALERT_DANGER_IMPORTING,
+} from '../../constants/index';
 
 export default {
   components: {
@@ -23,6 +27,7 @@ export default {
       },
     },
     garbageCollectionHelpPagePath: { type: String, required: false, default: '' },
+    containerRegistryImportingHelpPagePath: { type: String, required: false, default: '' },
     isAdmin: {
       type: Boolean,
       default: false,
@@ -48,6 +53,11 @@ export default {
       }
       return config;
     },
+    alertHref() {
+      return this.deleteAlertType === ALERT_DANGER_IMPORTING
+        ? this.containerRegistryImportingHelpPagePath
+        : this.garbageCollectionHelpPagePath;
+    },
   },
 };
 </script>
@@ -61,7 +71,7 @@ export default {
   >
     <gl-sprintf :message="deleteAlertConfig.message">
       <template #docLink="{ content }">
-        <gl-link :href="garbageCollectionHelpPagePath" target="_blank">
+        <gl-link :href="alertHref" target="_blank">
           {{ content }}
         </gl-link>
       </template>

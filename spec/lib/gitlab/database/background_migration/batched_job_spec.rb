@@ -7,6 +7,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
 
   it { is_expected.to be_a Gitlab::Database::SharedModel }
 
+  it { expect(described_class::TIMEOUT_EXCEPTIONS).to match_array [ActiveRecord::StatementTimeout, ActiveRecord::ConnectionTimeoutError, ActiveRecord::AdapterTimeout, ActiveRecord::LockWaitTimeout] }
+
   describe 'associations' do
     it { is_expected.to belong_to(:batched_migration).with_foreign_key(:batched_background_migration_id) }
     it { is_expected.to have_many(:batched_job_transition_logs).with_foreign_key(:batched_background_migration_job_id) }
@@ -14,6 +16,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
 
   describe 'state machine' do
     let_it_be(:job) { create(:batched_background_migration_job, :failed) }
+
+    it { expect(described_class.state_machine.states.map(&:name)).to eql(%i(pending running failed succeeded)) }
 
     context 'when a job is running' do
       it 'logs the transition' do
@@ -44,6 +48,51 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
         expect(transition_log.next_status).to eq('succeeded')
         expect(transition_log.exception_class).to be_nil
         expect(transition_log.exception_message).to be_nil
+      end
+    end
+
+    context 'when a job fails the number of max times' do
+      let(:max_times) { described_class::MAX_ATTEMPTS }
+      let!(:job) { create(:batched_background_migration_job, :running, batch_size: 10, min_value: 6, max_value: 15, attempts: max_times) }
+
+      context 'when job can be split' do
+        let(:exception) { ActiveRecord::StatementTimeout.new('Timeout!') }
+
+        before do
+          allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
+            allow(batch_class).to receive(:next_batch).and_return([6, 10])
+          end
+        end
+
+        it 'splits the job into two retriable jobs' do
+          expect { job.failure!(error: exception) }.to change { job.batched_migration.batched_jobs.retriable.count }.from(0).to(2)
+        end
+      end
+
+      context 'when the job cannot be split' do
+        let(:exception) { ActiveRecord::StatementTimeout.new('Timeout!') }
+        let(:max_times) { described_class::MAX_ATTEMPTS }
+        let!(:job) { create(:batched_background_migration_job, :running, batch_size: 50, sub_batch_size: 20, min_value: 6, max_value: 15, attempts: max_times) }
+        let(:error_message) { 'Job cannot be split further' }
+        let(:split_and_retry_exception) { Gitlab::Database::BackgroundMigration::SplitAndRetryError.new(error_message) }
+
+        before do
+          allow(job).to receive(:split_and_retry!).and_raise(split_and_retry_exception)
+        end
+
+        it 'does not split the job' do
+          expect { job.failure!(error: exception) }.not_to change { job.batched_migration.batched_jobs.retriable.count }
+        end
+
+        it 'keeps the same job attributes' do
+          expect { job.failure!(error: exception) }.not_to change { job }
+        end
+
+        it 'logs the error' do
+          expect(Gitlab::AppLogger).to receive(:error).with( { message: error_message, batched_job_id: job.id } )
+
+          job.failure!(error: exception)
+        end
       end
     end
 
@@ -144,6 +193,49 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
       it 'returns the migration job_arguments' do
         expect(batched_job.migration_job_arguments).to eq(batched_migration.job_arguments)
       end
+    end
+  end
+
+  describe '#can_split?' do
+    subject { job.can_split?(exception) }
+
+    context 'when the number of attempts is greater than the limit and the batch_size is greater than the sub_batch_size' do
+      let(:job) { create(:batched_background_migration_job, :failed, batch_size: 4, sub_batch_size: 2, attempts: described_class::MAX_ATTEMPTS + 1) }
+
+      context 'when is a timeout exception' do
+        let(:exception) { ActiveRecord::StatementTimeout.new }
+
+        it { expect(subject).to be_truthy  }
+      end
+
+      context 'when is not a timeout exception' do
+        let(:exception) { RuntimeError.new }
+
+        it { expect(subject).to be_falsey }
+      end
+    end
+
+    context 'when the number of attempts is lower than the limit and the batch_size is greater than the sub_batch_size' do
+      let(:job) { create(:batched_background_migration_job, :failed, batch_size: 4, sub_batch_size: 2, attempts: described_class::MAX_ATTEMPTS - 1) }
+
+      context 'when is a timeout exception' do
+        let(:exception) { ActiveRecord::StatementTimeout.new }
+
+        it { expect(subject).to be_falsey }
+      end
+
+      context 'when is not a timeout exception' do
+        let(:exception) { RuntimeError.new }
+
+        it { expect(subject).to be_falsey }
+      end
+    end
+
+    context 'when the batch_size is lower than the sub_batch_size' do
+      let(:job) { create(:batched_background_migration_job, :failed, batch_size: 2, sub_batch_size: 4) }
+      let(:exception) { ActiveRecord::StatementTimeout.new }
+
+      it { expect(subject).to be_falsey }
     end
   end
 

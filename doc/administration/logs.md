@@ -1049,7 +1049,10 @@ For example:
 
 ## Mattermost Logs
 
-For Omnibus GitLab installations, Mattermost logs are in `/var/log/gitlab/mattermost/mattermost.log`.
+For Omnibus GitLab installations, Mattermost logs are in these locations:
+
+- `/var/log/gitlab/mattermost/mattermost.log`
+- `/var/log/gitlab/mattermost/current`
 
 ## Workhorse Logs
 

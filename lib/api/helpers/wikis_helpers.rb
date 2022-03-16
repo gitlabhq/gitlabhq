@@ -13,8 +13,8 @@ module API
         raise "Unknown wiki container #{kind}"
       end
 
-      def wiki_page
-        Wiki.for_container(container, current_user).find_page(params[:slug]) || not_found!('Wiki Page')
+      def wiki_page(version = nil)
+        Wiki.for_container(container, current_user).find_page(params[:slug], version.presence) || not_found!('Wiki Page')
       end
 
       def commit_params(attrs)

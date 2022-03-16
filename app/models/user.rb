@@ -277,7 +277,19 @@ class User < ApplicationRecord
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
-  after_create :add_primary_email_to_emails!, if: :confirmed?
+  after_save if: -> { saved_change_to_email? && confirmed? } do
+    email_to_confirm = self.emails.find_by(email: self.email)
+
+    if email_to_confirm.present?
+      if skip_confirmation_period_expiry_check
+        email_to_confirm.force_confirm
+      else
+        email_to_confirm.confirm
+      end
+    else
+      add_primary_email_to_emails!
+    end
+  end
   after_commit(on: :update) do
     if previous_changes.key?('email')
       # Add the old primary email to Emails if not added already - this should be removed
@@ -2011,29 +2023,6 @@ class User < ApplicationRecord
 
   def from_ci_job_token?
     ci_job_token_scope.present?
-  end
-
-  # override from Devise::Models::Confirmable
-  #
-  # Add the primary email to user.emails (or confirm it if it was already
-  # present) when the primary email is confirmed.
-  def confirm(args = {})
-    saved = super(args)
-    return false unless saved
-
-    email_to_confirm = self.emails.find_by(email: self.email)
-
-    if email_to_confirm.present?
-      if skip_confirmation_period_expiry_check
-        email_to_confirm.force_confirm(args)
-      else
-        email_to_confirm.confirm(args)
-      end
-    else
-      add_primary_email_to_emails!
-    end
-
-    saved
   end
 
   def user_project

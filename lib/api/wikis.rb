@@ -45,12 +45,13 @@ module API
         end
         params do
           requires :slug, type: String, desc: 'The slug of a wiki page'
+          optional :version, type: String, desc: 'The version hash of a wiki page'
           optional :render_html, type: Boolean, default: false, desc: 'Render content to HTML'
         end
         get ':id/wikis/:slug' do
           authorize! :read_wiki, container
 
-          present wiki_page, with: Entities::WikiPage, render_html: params[:render_html]
+          present wiki_page(params[:version]), with: Entities::WikiPage, render_html: params[:render_html]
         end
 
         desc 'Create a wiki page' do

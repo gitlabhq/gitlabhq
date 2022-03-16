@@ -40,12 +40,10 @@
                 = _('Time based: Yes')
         = form_tag profile_two_factor_auth_path, method: :post do |f|
           - if @error
-            .gl-alert.gl-alert-danger.gl-mb-5
-              .gl-alert-container
-                .gl-alert-content
-                  %p.gl-alert-body.gl-md-0
-                    = @error[:message]
-                    = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
+            = render 'shared/global_alert', title: @error[:message], variant: :danger, dismissible: false do
+              .gl-alert-body
+                = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
+
           .form-group
             = label_tag :pin_code, _('Pin code'), class: "label-bold"
             = text_field_tag :pin_code, nil, class: "form-control gl-form-input", required: true, data: { qa_selector: 'pin_code_field' }

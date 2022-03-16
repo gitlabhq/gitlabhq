@@ -20,6 +20,7 @@ import {
   ALERT_SUCCESS_TAGS,
   ALERT_DANGER_TAGS,
   ALERT_DANGER_IMAGE,
+  ALERT_DANGER_IMPORTING,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   UNFINISHED_STATUS,
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
@@ -31,6 +32,8 @@ import {
 import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
 import getContainerRepositoryTagsQuery from '../graphql/queries/get_container_repository_tags.query.graphql';
+
+const REPOSITORY_IMPORTING_ERROR_MESSAGE = 'repository importing';
 
 export default {
   name: 'RegistryDetailsPage',
@@ -147,12 +150,17 @@ export default {
         });
 
         if (data?.destroyContainerRepositoryTags?.errors[0]) {
-          throw new Error();
+          throw new Error(data.destroyContainerRepositoryTags.errors[0]);
         }
         this.deleteAlertType =
           itemsToBeDeleted.length === 0 ? ALERT_SUCCESS_TAG : ALERT_SUCCESS_TAGS;
       } catch (e) {
-        this.deleteAlertType = itemsToBeDeleted.length === 0 ? ALERT_DANGER_TAG : ALERT_DANGER_TAGS;
+        if (e.message === REPOSITORY_IMPORTING_ERROR_MESSAGE) {
+          this.deleteAlertType = ALERT_DANGER_IMPORTING;
+        } else {
+          this.deleteAlertType =
+            itemsToBeDeleted.length === 0 ? ALERT_DANGER_TAG : ALERT_DANGER_TAGS;
+        }
       }
 
       this.mutationLoading = false;
@@ -188,6 +196,7 @@ export default {
       <delete-alert
         v-model="deleteAlertType"
         :garbage-collection-help-page-path="config.garbageCollectionHelpPagePath"
+        :container-registry-importing-help-page-path="config.containerRegistryImportingHelpPagePath"
         :is-admin="config.isAdmin"
         class="gl-my-2"
       />

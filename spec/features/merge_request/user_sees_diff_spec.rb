@@ -45,8 +45,8 @@ RSpec.describe 'Merge request > User sees diff', :js do
 
       visit diffs_project_merge_request_path(project, merge_request)
 
-      page.within('.alert') do
-        expect(page).to have_text("Too many changes to show. Plain diff Email patch To preserve performance only 3 of 3+ files are displayed.")
+      page.within('.gl-alert') do
+        expect(page).to have_text("Too many changes to show. To preserve performance only 3 of 3+ files are displayed. Plain diff Email patch")
       end
     end
   end

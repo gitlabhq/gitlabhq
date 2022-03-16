@@ -695,3 +695,10 @@ There may be some errors not properly cached. Follow these steps to investigate 
    Once adjusted, trigger another tag deletion. You should be able to successfully delete tags.
 
 Follow [this issue](https://gitlab.com/gitlab-org/container-registry/-/issues/551) for details.
+
+### Tags temporarily cannot be marked for deletion
+
+GitLab is [migrating to the next generation of the Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/5523). 
+During the migration, you may encounter difficulty deleting tags. 
+If you encounter an error, it's likely that your image repository is in the process of being migrated. 
+Please wait a few minutes and try again.

@@ -174,14 +174,16 @@ RSpec.describe API::Wikis do
       context 'when user is developer' do
         before do
           project.add_developer(user)
-
-          request
         end
 
         include_examples 'wikis API returns wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
+
+          before do
+            request
+          end
 
           include_examples 'wiki API 404 Wiki Page Not Found'
         end
@@ -190,14 +192,16 @@ RSpec.describe API::Wikis do
       context 'when user is maintainer' do
         before do
           project.add_maintainer(user)
-
-          request
         end
 
         include_examples 'wikis API returns wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
+
+          before do
+            request
+          end
 
           include_examples 'wiki API 404 Wiki Page Not Found'
         end
@@ -220,14 +224,16 @@ RSpec.describe API::Wikis do
       context 'when user is developer' do
         before do
           project.add_developer(user)
-
-          request
         end
 
         include_examples 'wikis API returns wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
+
+          before do
+            request
+          end
 
           include_examples 'wiki API 404 Wiki Page Not Found'
         end
@@ -236,14 +242,16 @@ RSpec.describe API::Wikis do
       context 'when user is maintainer' do
         before do
           project.add_maintainer(user)
-
-          request
         end
 
         include_examples 'wikis API returns wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
+
+          before do
+            request
+          end
 
           include_examples 'wiki API 404 Wiki Page Not Found'
         end

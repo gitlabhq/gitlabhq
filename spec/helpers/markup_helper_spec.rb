@@ -318,13 +318,14 @@ RSpec.describe MarkupHelper do
     let(:wiki) { build(:wiki, container: project) }
     let(:content) { 'wiki content' }
     let(:slug) { 'nested/page' }
-    let(:wiki_page) { double('WikiPage', path: "file.#{extension}", content: content, slug: slug, wiki: wiki) }
+    let(:path) { "file.#{extension}" }
+    let(:wiki_page) { double('WikiPage', path: path, content: content, slug: slug, wiki: wiki) }
 
     let(:context) do
       {
         pipeline: :wiki, project: project, wiki: wiki,
         page_slug: slug, issuable_reference_expansion_enabled: true,
-        repository: wiki.repository
+        repository: wiki.repository, requested_path: path
       }
     end
 

@@ -181,7 +181,8 @@ module MarkupHelper
       wiki: wiki,
       repository: wiki.repository,
       page_slug: wiki_page.slug,
-      issuable_reference_expansion_enabled: true
+      issuable_reference_expansion_enabled: true,
+      requested_path: wiki_page.path
     ).merge(render_wiki_content_context_container(wiki))
   end
 
@@ -263,7 +264,7 @@ module MarkupHelper
   end
 
   def asciidoc_unsafe(text, context = {})
-    context.merge!(
+    context.reverse_merge!(
       commit:         @commit,
       ref:            @ref,
       requested_path: @path

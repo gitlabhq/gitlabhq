@@ -42,9 +42,6 @@
     expire_in: 7 days
     when: always
 
-.parallel-qa-base:
-  parallel: 5
-
 .allure-report-base:
   image:
     name: ${GITLAB_DEPENDENCY_PROXY}andrcuns/allure-report-publisher:0.4.2
@@ -82,7 +79,7 @@ review-qa-reliable:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-reliable
-    - .parallel-qa-base
+  parallel: 8
   retry: 1
   variables:
     QA_RUN_TYPE: review-qa-reliable
@@ -92,7 +89,7 @@ review-qa-all:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-all
-    - .parallel-qa-base
+  parallel: 5
   variables:
     QA_RUN_TYPE: review-qa-all
     QA_SCENARIO: Test::Instance::All

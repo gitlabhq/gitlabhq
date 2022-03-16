@@ -18,6 +18,20 @@ function resetRegExp(regex) {
   return regex;
 }
 
+/**
+ * Returns the absolute pathname for a relative or absolute URL string.
+ *
+ * A few examples of inputs and outputs:
+ * 1) 'http://a.com/b/c/d' => '/b/c/d'
+ * 2) '/b/c/d' => '/b/c/d'
+ * 3) 'b/c/d' => '/b/c/d' or '[path]/b/c/d' depending of the current path of the
+ *    document.location
+ */
+export const parseUrlPathname = (url) => {
+  const { pathname } = new URL(url, document.location.href);
+  return pathname;
+};
+
 // Returns a decoded url parameter value
 // - Treats '+' as '%20'
 function decodeUrlParameter(val) {

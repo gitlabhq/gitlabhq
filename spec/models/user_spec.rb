@@ -1172,8 +1172,8 @@ RSpec.describe User do
         @user.update!(email: 'new_primary@example.com')
         @user.reload
 
-        expect(@user.emails.count).to eq 2
-        expect(@user.emails.pluck(:email)).to match_array([@secondary.email, 'primary@example.com'])
+        expect(@user.emails.count).to eq 3
+        expect(@user.emails.pluck(:email)).to match_array([@secondary.email, 'primary@example.com', 'new_primary@example.com'])
       end
 
       context 'when the first email was unconfirmed and the second email gets confirmed' do
@@ -1590,6 +1590,66 @@ RSpec.describe User do
             expect(email.reload.confirmed?).to be_truthy
           end
         end
+      end
+    end
+  end
+
+  describe 'saving primary email to the emails table' do
+    context 'when calling skip_reconfirmation! while updating the primary email' do
+      let(:user) { create(:user, email: 'primary@example.com') }
+
+      it 'adds the new email to emails' do
+        user.skip_reconfirmation!
+        user.update!(email: 'new_primary@example.com')
+
+        expect(user.email).to eq('new_primary@example.com')
+        expect(user.unconfirmed_email).to be_nil
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).to include('new_primary@example.com')
+        expect(user.emails.find_by(email: 'new_primary@example.com')).to be_confirmed
+      end
+    end
+
+    context 'when the email is changed but not confirmed' do
+      let(:user) { create(:user, email: 'primary@example.com') }
+
+      it 'does not add the new email to emails yet' do
+        user.update!(email: 'new_primary@example.com')
+
+        expect(user.unconfirmed_email).to eq('new_primary@example.com')
+        expect(user.email).to eq('primary@example.com')
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).not_to include('new_primary@example.com')
+      end
+    end
+
+    context 'when the user is created as not confirmed' do
+      let(:user) { create(:user, :unconfirmed, email: 'primary@example.com') }
+
+      it 'does not add the email to emails yet' do
+        expect(user).not_to be_confirmed
+        expect(user.emails.pluck(:email)).not_to include('primary@example.com')
+      end
+    end
+
+    context 'when the user is created as confirmed' do
+      let(:user) { create(:user, email: 'primary@example.com', confirmed_at: DateTime.now.utc) }
+
+      it 'adds the email to emails' do
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).to include('primary@example.com')
+      end
+    end
+
+    context 'when skip_confirmation! is called' do
+      let(:user) { build(:user, :unconfirmed, email: 'primary@example.com') }
+
+      it 'adds the email to emails' do
+        user.skip_confirmation!
+        user.save!
+
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).to include('primary@example.com')
       end
     end
   end

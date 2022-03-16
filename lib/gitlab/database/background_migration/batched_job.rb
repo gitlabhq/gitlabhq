@@ -3,6 +3,8 @@
 module Gitlab
   module Database
     module BackgroundMigration
+      SplitAndRetryError = Class.new(StandardError)
+
       class BatchedJob < SharedModel
         include EachBatch
         include FromUnion
@@ -11,6 +13,8 @@ module Gitlab
 
         MAX_ATTEMPTS = 3
         STUCK_JOBS_TIMEOUT = 1.hour.freeze
+        TIMEOUT_EXCEPTIONS = [ActiveRecord::StatementTimeout, ActiveRecord::ConnectionTimeoutError,
+                              ActiveRecord::AdapterTimeout, ActiveRecord::LockWaitTimeout].freeze
 
         belongs_to :batched_migration, foreign_key: :batched_background_migration_id
         has_many :batched_job_transition_logs, foreign_key: :batched_background_migration_job_id
@@ -51,6 +55,16 @@ module Gitlab
             job.metrics = {}
           end
 
+          after_transition any => :failed do |job, transition|
+            error_hash = transition.args.find { |arg| arg[:error].present? }
+
+            exception = error_hash&.fetch(:error)
+
+            job.split_and_retry! if job.can_split?(exception)
+          rescue SplitAndRetryError => error
+            Gitlab::AppLogger.error(message: error.message, batched_job_id: job.id)
+          end
+
           after_transition do |job, transition|
             error_hash = transition.args.find { |arg| arg[:error].present? }
 
@@ -79,13 +93,17 @@ module Gitlab
           duration.to_f / batched_migration.interval
         end
 
+        def can_split?(exception)
+          attempts >= MAX_ATTEMPTS && TIMEOUT_EXCEPTIONS.include?(exception&.class) && batch_size > sub_batch_size
+        end
+
         def split_and_retry!
           with_lock do
-            raise 'Only failed jobs can be split' unless failed?
+            raise SplitAndRetryError, 'Only failed jobs can be split' unless failed?
 
             new_batch_size = batch_size / 2
 
-            raise 'Job cannot be split further' if new_batch_size < 1
+            raise SplitAndRetryError, 'Job cannot be split further' if new_batch_size < 1
 
             batching_strategy = batched_migration.batch_class.new(connection: self.class.connection)
             next_batch_bounds = batching_strategy.next_batch(

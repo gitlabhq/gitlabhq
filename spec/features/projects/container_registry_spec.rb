@@ -103,6 +103,8 @@ RSpec.describe 'Container Registry', :js do
         find('.modal .modal-footer .btn-danger').click
       end
 
+      it_behaves_like 'rejecting tags destruction for an importing repository on', tags: ['1']
+
       it('pagination navigate to the second page') do
         visit_next_page
 

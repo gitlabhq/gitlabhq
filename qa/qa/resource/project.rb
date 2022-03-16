@@ -385,6 +385,18 @@ module QA
         end
       end
 
+      def remove_via_api!
+        super
+
+        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 1, message: "Waiting for #{self.class.name} to be removed") do
+          !exists?
+        rescue InternalServerError
+          # Retry on transient errors that are likely to be due to race conditions between concurrent delete operations
+          # when parts of a resource are stored in multiple tables
+          false
+        end
+      end
+
       protected
 
       # Return subset of fields for comparing projects

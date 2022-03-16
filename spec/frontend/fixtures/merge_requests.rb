@@ -130,6 +130,25 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
     expect(response).to be_successful
   end
 
+  describe GraphQL::Query, type: :request do
+    include ApiHelpers
+    include GraphqlHelpers
+
+    context 'merge request in state readyToMerge query' do
+      base_input_path = 'vue_merge_request_widget/queries/states/'
+      base_output_path = 'graphql/merge_requests/states/'
+      query_name = 'ready_to_merge.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}", ee: true)
+
+        post_graphql(query, current_user: user, variables: { projectPath: project.full_path, iid: merge_request.iid.to_s })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+  end
+
   private
 
   def render_discussions_json(merge_request)
