@@ -30,6 +30,7 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 * [Dakota (Application Development Director)](https://about.gitlab.com/handbook/product/personas/#dakota-application-development-director)
 * [Dana (Data Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#dana-data-analyst)
 * [Eddie (Content Editor)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#eddie-content-editor)
+
 -->
 
 ### User experience goal

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::TagsController do
   let(:project) { create(:project, :public, :repository) }
-  let!(:release) { create(:release, project: project) }
+  let!(:release) { create(:release, project: project, tag: "v1.1.0") }
   let!(:invalid_release) { create(:release, project: project, tag: 'does-not-exist') }
   let(:user) { create(:user) }
 

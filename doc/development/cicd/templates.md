@@ -96,7 +96,7 @@ Additional points to keep in mind when authoring templates:
 |------------------------------------------------------|--------------------|---------------|
 | Can use global keywords, including `stages`.         | Yes                | No            |
 | Can define jobs.                                     | Yes                | Yes           |
-| Can be selected in the new file UI                   | Yes                | Yes           |
+| Can be selected in the new file UI                   | Yes                | No            |
 | Can include other job templates with `include`       | Yes                | No            |
 | Can include other pipeline templates with `include`. | No                 | No            |
 

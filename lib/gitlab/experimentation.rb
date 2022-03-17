@@ -10,9 +10,9 @@
 # The experiment is controlled by a Feature Flag (https://docs.gitlab.com/ee/development/feature_flags/controls.html),
 # which is named "#{experiment_key}_experiment_percentage" and *must* be set with a percentage and not be used for other purposes.
 #
-# To enable the experiment for 10% of the users:
+# To enable the experiment for 10% of the time:
 #
-# chatops: `/chatops run feature set experiment_key_experiment_percentage 10`
+# chatops: `/chatops run feature set experiment_key_experiment_percentage 10 --random`
 # console: `Feature.enable_percentage_of_time(:experiment_key_experiment_percentage, 10)`
 #
 # To disable the experiment:

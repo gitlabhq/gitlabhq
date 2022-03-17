@@ -1,8 +1,10 @@
-import { GlEmptyState, GlLink, GlTooltip, GlTruncate } from '@gitlab/ui';
+import { GlEmptyState, GlTooltip, GlTruncate } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import TokenTable from '~/clusters/agents/components/token_table.vue';
+import CreateTokenButton from '~/clusters/agents/components/create_token_button.vue';
 import { useFakeDate } from 'helpers/fake_date';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { MAX_LIST_COUNT } from '~/clusters/agents/constants';
 
 describe('ClusterAgentTokenTable', () => {
   let wrapper;
@@ -28,13 +30,26 @@ describe('ClusterAgentTokenTable', () => {
       name: 'token-2',
     },
   ];
-
-  const createComponent = (tokens) => {
-    wrapper = extendedWrapper(mount(TokenTable, { propsData: { tokens } }));
+  const clusterAgentId = 'cluster-agent-id';
+  const cursor = {
+    first: MAX_LIST_COUNT,
+    last: null,
   };
 
-  const findEmptyState = () => wrapper.find(GlEmptyState);
-  const findLink = () => wrapper.find(GlLink);
+  const provide = {
+    agentName: 'cluster-agent',
+    projectPath: 'path/to/project',
+    canAdminCluster: true,
+  };
+
+  const createComponent = (tokens) => {
+    wrapper = extendedWrapper(
+      mount(TokenTable, { propsData: { tokens, clusterAgentId, cursor }, provide }),
+    );
+  };
+
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findCreateTokenBtn = () => wrapper.findComponent(CreateTokenButton);
 
   beforeEach(() => {
     return createComponent(defaultTokens);
@@ -44,11 +59,15 @@ describe('ClusterAgentTokenTable', () => {
     wrapper.destroy();
   });
 
-  it('displays a learn more link', () => {
-    const learnMoreLink = findLink();
+  it('displays the create token button', () => {
+    expect(findCreateTokenBtn().exists()).toBe(true);
+  });
 
-    expect(learnMoreLink.exists()).toBe(true);
-    expect(learnMoreLink.text()).toBe(TokenTable.i18n.learnMore);
+  it('passes the correct params to the create token component', () => {
+    expect(findCreateTokenBtn().props()).toMatchObject({
+      clusterAgentId,
+      cursor,
+    });
   });
 
   it.each`
@@ -56,7 +75,7 @@ describe('ClusterAgentTokenTable', () => {
     ${'token-1'} | ${0}
     ${'token-2'} | ${1}
   `('displays token name "$name" for line "$lineNumber"', ({ name, lineNumber }) => {
-    const tokens = wrapper.findAll('[data-testid="agent-token-name"]');
+    const tokens = wrapper.findAllByTestId('agent-token-name');
     const token = tokens.at(lineNumber);
 
     expect(token.text()).toBe(name);
@@ -83,7 +102,7 @@ describe('ClusterAgentTokenTable', () => {
   `(
     'displays created information "$createdText" for line "$lineNumber"',
     ({ createdText, lineNumber }) => {
-      const tokens = wrapper.findAll('[data-testid="agent-token-created-time"]');
+      const tokens = wrapper.findAllByTestId('agent-token-created-time');
       const token = tokens.at(lineNumber);
 
       expect(token.text()).toBe(createdText);
@@ -97,7 +116,7 @@ describe('ClusterAgentTokenTable', () => {
   `(
     'displays creator information "$createdBy" for line "$lineNumber"',
     ({ createdBy, lineNumber }) => {
-      const tokens = wrapper.findAll('[data-testid="agent-token-created-user"]');
+      const tokens = wrapper.findAllByTestId('agent-token-created-user');
       const token = tokens.at(lineNumber);
 
       expect(token.text()).toBe(createdBy);
@@ -111,7 +130,7 @@ describe('ClusterAgentTokenTable', () => {
   `(
     'displays description information "$description" for line "$lineNumber"',
     ({ description, truncatesText, hasTooltip, lineNumber }) => {
-      const tokens = wrapper.findAll('[data-testid="agent-token-description"]');
+      const tokens = wrapper.findAllByTestId('agent-token-description');
       const token = tokens.at(lineNumber);
 
       expect(token.text()).toContain(description);

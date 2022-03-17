@@ -1,0 +1,18 @@
+---
+description: Create token modal opened from the agent's page
+category: default
+action: open_modal
+label_description: agent_token_creation_modal
+product_section: ops
+product_stage: configure
+product_group: group::configure
+milestone: "14.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82690
+distributions:
+- ce
+- ee
+tiers: 
+- free
+- premium
+- ultimate
+

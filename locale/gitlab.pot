@@ -4122,6 +4122,9 @@ msgstr ""
 msgid "An unauthenticated user"
 msgstr ""
 
+msgid "An unexpected error occurred"
+msgstr ""
+
 msgid "An unexpected error occurred while checking the project environment."
 msgstr ""
 
@@ -7106,6 +7109,9 @@ msgstr ""
 msgid "Checkout|CI minutes"
 msgstr ""
 
+msgid "Checkout|Calculating your subscription..."
+msgstr ""
+
 msgid "Checkout|Checkout"
 msgstr ""
 
@@ -7218,6 +7224,9 @@ msgid "Checkout|Subtotal"
 msgstr ""
 
 msgid "Checkout|Tax"
+msgstr ""
+
+msgid "Checkout|This number must be %{minimumNumberOfUsers} (your seats in use) or more."
 msgstr ""
 
 msgid "Checkout|Total"
@@ -7796,13 +7805,22 @@ msgstr ""
 msgid "ClusterAgents|Connection status"
 msgstr ""
 
+msgid "ClusterAgents|Copy command"
+msgstr ""
+
 msgid "ClusterAgents|Copy token"
 msgstr ""
 
 msgid "ClusterAgents|Create a new cluster"
 msgstr ""
 
+msgid "ClusterAgents|Create agent access token"
+msgstr ""
+
 msgid "ClusterAgents|Create agent: %{searchTerm}"
+msgstr ""
+
+msgid "ClusterAgents|Create token"
 msgstr ""
 
 msgid "ClusterAgents|Created by"
@@ -7830,6 +7848,9 @@ msgid "ClusterAgents|Description"
 msgstr ""
 
 msgid "ClusterAgents|Event occurred"
+msgstr ""
+
+msgid "ClusterAgents|Failed to create a token"
 msgstr ""
 
 msgid "ClusterAgents|Failed to register an agent"
@@ -7860,9 +7881,6 @@ msgid "ClusterAgents|Last connected %{timeAgo}."
 msgstr ""
 
 msgid "ClusterAgents|Last contact"
-msgstr ""
-
-msgid "ClusterAgents|Learn how to create an agent access token"
 msgstr ""
 
 msgid "ClusterAgents|Learn how to troubleshoot"

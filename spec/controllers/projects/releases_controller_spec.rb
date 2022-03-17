@@ -339,7 +339,7 @@ RSpec.describe Projects::ReleasesController do
     end
 
     context 'order_by parameter' do
-      let!(:latest_release) { create(:release, project: project, released_at: Time.current) }
+      let!(:latest_release) { create(:release, project: project, released_at: Time.current, tag: 'latest') }
 
       shared_examples_for 'redirects to latest release ordered by using released_at' do
         it do
@@ -352,8 +352,8 @@ RSpec.describe Projects::ReleasesController do
       end
 
       before do
-        create(:release, project: project, released_at: 1.day.ago)
-        create(:release, project: project, released_at: 2.days.ago)
+        create(:release, project: project, released_at: 1.day.ago, tag: 'alpha')
+        create(:release, project: project, released_at: 2.days.ago, tag: 'beta')
       end
 
       context 'invalid parameter' do

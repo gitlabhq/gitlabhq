@@ -4,12 +4,14 @@ require 'spec_helper'
 
 RSpec.describe 'Projects > Members > User requests access', :js do
   let_it_be(:user) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
 
-  let(:maintainer) { project.first_owner }
+  let(:owner) { project.first_owner }
 
   before do
     sign_in(user)
+    project.add_maintainer(maintainer)
     visit project_path(project)
     stub_feature_flags(bootstrap_confirmation_modals: false)
   end
@@ -24,7 +26,7 @@ RSpec.describe 'Projects > Members > User requests access', :js do
   it 'user can request access to a project' do
     perform_enqueued_jobs { click_link 'Request Access' }
 
-    expect(ActionMailer::Base.deliveries.last.to).to eq [maintainer.notification_email_or_default]
+    expect(ActionMailer::Base.deliveries.map(&:to)).to match_array([[owner.notification_email_or_default], [maintainer.notification_email_or_default]])
     expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.full_name} project"
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy

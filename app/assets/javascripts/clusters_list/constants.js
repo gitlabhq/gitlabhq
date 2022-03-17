@@ -87,6 +87,32 @@ export const I18N_AGENT_TABLE = {
   defaultConfigTooltip: s__('ClusterAgents|What is default configuration?'),
 };
 
+export const I18N_AGENT_TOKEN = {
+  copyToken: s__('ClusterAgents|Copy token'),
+  copyCommand: s__('ClusterAgents|Copy command'),
+  tokenTitle: s__('ClusterAgents|Registration token'),
+
+  tokenBody: s__(
+    `ClusterAgents|The registration token will be used to connect the agent on your cluster to GitLab. %{linkStart}What are registration tokens?%{linkEnd}`,
+  ),
+  tokenSingleUseWarningTitle: s__(
+    'ClusterAgents|You cannot see this token again after you close this window.',
+  ),
+  tokenSingleUseWarningBody: s__(
+    `ClusterAgents|The recommended installation method includes the token. If you want to follow the advanced installation method provided in the docs, make sure you save the token value before you close this window.`,
+  ),
+
+  basicInstallTitle: s__('ClusterAgents|Recommended installation method'),
+  basicInstallBody: __(
+    `Open a CLI and connect to the cluster you want to install the agent in. Use this installation method to minimize any manual steps. The token is already included in the command.`,
+  ),
+
+  advancedInstallTitle: s__('ClusterAgents|Advanced installation methods'),
+  advancedInstallBody: s__(
+    'ClusterAgents|For the advanced installation method %{linkStart}see the documentation%{linkEnd}.',
+  ),
+};
+
 export const I18N_AGENT_MODAL = {
   registerAgentButton: s__('ClusterAgents|Register'),
   close: __('Close'),
@@ -106,24 +132,6 @@ export const I18N_AGENT_MODAL = {
   tokenBody: s__(
     `ClusterAgents|The registration token will be used to connect the agent on your cluster to GitLab. %{linkStart}What are registration tokens?%{linkEnd}`,
   ),
-
-  tokenSingleUseWarningTitle: s__(
-    'ClusterAgents|You cannot see this token again after you close this window.',
-  ),
-  tokenSingleUseWarningBody: s__(
-    `ClusterAgents|The recommended installation method includes the token. If you want to follow the advanced installation method provided in the docs, make sure you save the token value before you close this window.`,
-  ),
-
-  basicInstallTitle: s__('ClusterAgents|Recommended installation method'),
-  basicInstallBody: __(
-    `Open a CLI and connect to the cluster you want to install the agent in. Use this installation method to minimize any manual steps. The token is already included in the command.`,
-  ),
-
-  advancedInstallTitle: s__('ClusterAgents|Advanced installation methods'),
-  advancedInstallBody: s__(
-    'ClusterAgents|For the advanced installation method %{linkStart}see the documentation%{linkEnd}.',
-  ),
-
   registrationErrorTitle: s__('ClusterAgents|Failed to register an agent'),
   unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
 };

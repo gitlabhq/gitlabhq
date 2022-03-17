@@ -1,18 +1,7 @@
 <script>
-import {
-  GlAlert,
-  GlButton,
-  GlFormGroup,
-  GlFormInputGroup,
-  GlLink,
-  GlModal,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormGroup, GlLink, GlModal, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
-import CodeBlock from '~/vue_shared/components/code_block.vue';
 import Tracking from '~/tracking';
-import { generateAgentRegistrationCommand } from '../clusters_util';
 import {
   INSTALL_AGENT_MODAL_ID,
   I18N_AGENT_MODAL,
@@ -30,6 +19,7 @@ import createAgentToken from '../graphql/mutations/create_agent_token.mutation.g
 import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import agentConfigurations from '../graphql/queries/agent_configurations.query.graphql';
 import AvailableAgentsDropdown from './available_agents_dropdown.vue';
+import AgentToken from './agent_token.vue';
 
 const trackingMixin = Tracking.mixin({ label: EVENT_LABEL_MODAL });
 
@@ -39,30 +29,22 @@ export default {
   EVENT_ACTIONS_OPEN,
   EVENT_ACTIONS_CLICK,
   EVENT_LABEL_MODAL,
-  basicInstallPath: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'install-the-agent-into-the-cluster',
-  }),
-  advancedInstallPath: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'advanced-installation',
-  }),
   enableKasPath: helpPagePath('administration/clusters/kas'),
   registerAgentPath: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'register-an-agent-with-gitlab',
   }),
   components: {
     AvailableAgentsDropdown,
-    CodeBlock,
+    AgentToken,
     GlAlert,
     GlButton,
     GlFormGroup,
-    GlFormInputGroup,
     GlLink,
     GlModal,
     GlSprintf,
-    ModalCopyButton,
   },
   mixins: [trackingMixin],
-  inject: ['projectPath', 'kasAddress', 'emptyStateImage'],
+  inject: ['projectPath', 'emptyStateImage'],
   props: {
     defaultBranchName: {
       default: '.noBranch',
@@ -113,9 +95,6 @@ export default {
     },
     canRegister() {
       return !this.registered && !this.kasDisabled;
-    },
-    agentRegistrationCommand() {
-      return generateAgentRegistrationCommand(this.agentToken, this.kasAddress);
     },
     getAgentsQueryVariables() {
       return {
@@ -289,65 +268,7 @@ export default {
         </p>
       </template>
 
-      <template v-else>
-        <p>
-          <strong>{{ $options.i18n.tokenTitle }}</strong>
-        </p>
-
-        <p>
-          <gl-sprintf :message="$options.i18n.tokenBody">
-            <template #link="{ content }">
-              <gl-link :href="$options.basicInstallPath" target="_blank"> {{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </p>
-
-        <p>
-          <gl-alert
-            :title="$options.i18n.tokenSingleUseWarningTitle"
-            variant="warning"
-            :dismissible="false"
-          >
-            {{ $options.i18n.tokenSingleUseWarningBody }}
-          </gl-alert>
-        </p>
-
-        <p>
-          <gl-form-input-group readonly :value="agentToken" :select-on-click="true">
-            <template #append>
-              <modal-copy-button
-                :text="agentToken"
-                :title="$options.i18n.copyToken"
-                :modal-id="$options.modalId"
-              />
-            </template>
-          </gl-form-input-group>
-        </p>
-
-        <p>
-          <strong>{{ $options.i18n.basicInstallTitle }}</strong>
-        </p>
-
-        <p>
-          {{ $options.i18n.basicInstallBody }}
-        </p>
-
-        <p>
-          <code-block :code="agentRegistrationCommand" />
-        </p>
-
-        <p>
-          <strong>{{ $options.i18n.advancedInstallTitle }}</strong>
-        </p>
-
-        <p>
-          <gl-sprintf :message="$options.i18n.advancedInstallBody">
-            <template #link="{ content }">
-              <gl-link :href="$options.advancedInstallPath" target="_blank"> {{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </p>
-      </template>
+      <agent-token v-else :agent-token="agentToken" :modal-id="$options.modalId" />
     </template>
 
     <template v-else>

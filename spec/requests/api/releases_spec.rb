@@ -160,7 +160,7 @@ RSpec.describe API::Releases do
         get api("/projects/#{project.id}/releases", maintainer)
       end.count
 
-      create_list(:release, 2, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
+      create_list(:release, 2, :with_evidence, project: project, author: maintainer)
       create_list(:release, 2, project: project)
       create_list(:release_link, 2, release: project.releases.first)
       create_list(:release_link, 2, release: project.releases.last)
@@ -467,10 +467,10 @@ RSpec.describe API::Releases do
           it "exposes tag and commit" do
             create(:release,
                    project: project,
-                   tag: 'v0.1',
+                   tag: 'v0.0.1',
                    author: maintainer,
                    created_at: 2.days.ago)
-            get api("/projects/#{project.id}/releases/v0.1", guest)
+            get api("/projects/#{project.id}/releases/v0.0.1", guest)
 
             expect(response).to match_response_schema('public_api/v4/release')
           end

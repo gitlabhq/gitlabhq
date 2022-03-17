@@ -6725,6 +6725,24 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#access_request_approvers_to_be_notified' do
+    context 'for a personal project' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:maintainer) { create(:user) }
+
+      let(:owner_membership) { project.members.owners.find_by(user_id: project.namespace.owner_id) }
+
+      it 'includes only the owner of the personal project' do
+        expect(project.access_request_approvers_to_be_notified.to_a).to eq([owner_membership])
+      end
+
+      it 'includes the maintainers of the personal project, if any' do
+        project.add_maintainer(maintainer)
+        maintainer_membership = project.members.maintainers.find_by(user_id: maintainer.id)
+
+        expect(project.access_request_approvers_to_be_notified.to_a).to match_array([owner_membership, maintainer_membership])
+      end
+    end
+
     let_it_be(:project) { create(:project, group: create(:group, :public)) }
 
     it 'returns a maximum of ten maintainers of the project in recent_sign_in descending order' do

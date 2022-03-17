@@ -1,17 +1,95 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../config/bundler_setup'
 require 'stackprof'
 require 'rspec'
+require 'optparse'
 
-filename = ARGV[0].split('/').last
-interval = ENV.fetch('INTERVAL', 1000).to_i
-limit = ENV.fetch('LIMIT', 20)
-raw = ENV.fetch('RAW', false) == 'true' # Set this to true if you want to generate a flamegraph
-output_file = "tmp/#{filename}.dump"
+defaults = {
+  mode: 'wall',
+  limit: 20,
+  raw: false,
+  mode_interval: 1000,
+  mode_object_interval: 1,
+  speedscope: false
+}
 
-StackProf.run(mode: :wall, out: output_file, interval: interval, raw: raw) do
-  RSpec::Core::Runner.run(ARGV, $stderr, $stdout)
+options = {
+  mode: ENV.fetch('MODE', defaults[:mode]) || defaults[:mode],
+  interval: ENV['INTERVAL'],
+  limit: ENV.fetch('LIMIT', nil) || defaults[:limit],
+  raw: ENV.fetch('RAW', false) === 'true' || defaults[:raw],
+  output: ENV.fetch('OUTPUT', nil),
+  speedscope: ENV.fetch('SPEEDSCOPE', false) === 'true' || defaults[:speedscope]
+}
+
+OptionParser.new do |opt|
+  opt.banner = <<DOCSTRING
+Run rspec with stackprof enabled.
+
+Usage:
+  #{__FILE__} [--mode=<wall|cpu|object>] [--interval=<interval>] [--limit=<limit>] [--raw=false|true] [--speedscope=false|true] [--output=filename] filename [rspec options]
+
+Examples:
+  #{__FILE__} --mode=wall --interval=#{defaults[:mode_interval]} --limit=#{defaults[:limit]} --raw=true --output=tmp/example.dump spec/controllers/help_controller_spec.rb
+  #{__FILE__} spec/policies/project_policy_spec.rb -e 'project visibility'
+  #{__FILE__} --speedscope=true spec/controllers/help_controller_spec.rb
+  MODE=cpu LIMIT=5 #{__FILE__} spec/controllers/help_controller_spec.rb
+DOCSTRING
+  opt.separator ''
+  opt.separator 'Options:'
+
+  opt.on('--mode wall|cpu|object', "sampling mode (default: #{defaults[:mode]}) [$MODE]")
+  opt.on('--interval integer', Integer, "sample interval for mode selected. wall/cpu: microseconds with a default of #{defaults[:mode_interval]}, object: seconds with a default of #{defaults[:mode_object_interval]} [$INTERVAL]")
+  opt.on('--limit integer', Integer, "limit output to N entries (default: #{defaults[:limit]}) [$LIMIT]")
+  opt.on('--raw true|false', FalseClass, 'collect extra data required for flamegraph [$RAW]')
+  opt.on('--output filename', String, 'output filename (default: tmp/rspec-filename.dump) [$OUTPUT]')
+  opt.on('--speedscope true|false', FalseClass, "output in speedscope format (default: #{defaults[:speedscope]}) [$SPEEDSCOPE]")
+end.order!(into: options)
+
+case options[:mode]
+when 'wall'
+  options[:interval] ||= defaults[:mode_interval]
+when 'cpu'
+  options[:interval] ||= defaults[:mode_interval]
+when 'object'
+  options[:interval] ||= defaults[:mode_object_interval]
+else
+  raise ArgumentError, "Invalid mode: #{options[:mode]}"
 end
 
-system("bundle exec stackprof #{output_file} --text --limit #{limit}")
+filename = ARGV[0].split('/').last
+extension = options[:speedscope] ? 'json' : 'dump'
+options[:output] ||= "tmp/#{filename}.#{extension}"
+options[:interval] = options[:interval].to_i
+
+if options[:speedscope]
+  profile = StackProf.run(mode: options[:mode].to_sym, interval: options[:interval], raw: true) do
+    RSpec::Core::Runner.run(ARGV, $stderr, $stdout)
+  end
+
+  File.write(options[:output].to_s, Gitlab::Json.generate(profile))
+
+  puts <<DOCSTRING
+Wrote speedscope profile to: #{options[:output]}
+
+If you have speedscope installed:
+  Run: speedscope #{options[:output]}
+
+On OSX:
+  Run: cat #{options[:output]} | pbcopy
+  Then paste it into https://www.speedscope.app/
+
+Alternatively:
+  Upload the file manually to https://www.speedscope.app/
+DOCSTRING
+else
+  StackProf.run(mode: options[:mode].to_sym, out: options[:output], interval: options[:interval], raw: options[:raw]) do
+    RSpec::Core::Runner.run(ARGV, $stderr, $stdout)
+  end
+
+  cmd = %W(bundle exec stackprof #{options[:output]} --text --limit #{options[:limit]})
+  puts '> ' + cmd.join(' ')
+  system(*cmd)
+end

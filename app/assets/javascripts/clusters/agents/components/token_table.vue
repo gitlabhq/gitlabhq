@@ -1,17 +1,17 @@
 <script>
-import { GlEmptyState, GlLink, GlTable, GlTooltip, GlTruncate } from '@gitlab/ui';
-import { helpPagePath } from '~/helpers/help_page_helper';
+import { GlEmptyState, GlTable, GlTooltip, GlTruncate } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import CreateTokenButton from './create_token_button.vue';
 
 export default {
   components: {
     GlEmptyState,
-    GlLink,
     GlTable,
     GlTooltip,
     GlTruncate,
     TimeAgoTooltip,
+    CreateTokenButton,
   },
   i18n: {
     createdBy: s__('ClusterAgents|Created by'),
@@ -19,7 +19,6 @@ export default {
     dateCreated: s__('ClusterAgents|Date created'),
     description: s__('ClusterAgents|Description'),
     lastUsed: s__('ClusterAgents|Last contact'),
-    learnMore: s__('ClusterAgents|Learn how to create an agent access token'),
     name: s__('ClusterAgents|Name'),
     neverUsed: s__('ClusterAgents|Never'),
     noTokens: s__('ClusterAgents|This agent has no tokens'),
@@ -29,6 +28,14 @@ export default {
     tokens: {
       required: true,
       type: Array,
+    },
+    clusterAgentId: {
+      required: true,
+      type: String,
+    },
+    cursor: {
+      required: true,
+      type: Object,
     },
   },
   computed: {
@@ -61,11 +68,6 @@ export default {
         },
       ];
     },
-    learnMoreUrl() {
-      return helpPagePath('user/clusters/agent/install/index', {
-        anchor: 'register-an-agent-with-gitlab',
-      });
-    },
   },
   methods: {
     createdByName(token) {
@@ -77,11 +79,11 @@ export default {
 
 <template>
   <div v-if="tokens.length">
-    <div class="gl-text-right gl-my-5">
-      <gl-link target="_blank" :href="learnMoreUrl">
-        {{ $options.i18n.learnMore }}
-      </gl-link>
-    </div>
+    <create-token-button
+      class="gl-text-right gl-my-5"
+      :cluster-agent-id="clusterAgentId"
+      :cursor="cursor"
+    />
 
     <gl-table
       :items="tokens"
@@ -120,10 +122,9 @@ export default {
     </gl-table>
   </div>
 
-  <gl-empty-state
-    v-else
-    :title="$options.i18n.noTokens"
-    :primary-button-link="learnMoreUrl"
-    :primary-button-text="$options.i18n.learnMore"
-  />
+  <gl-empty-state v-else :title="$options.i18n.noTokens">
+    <template #actions>
+      <create-token-button :cluster-agent-id="clusterAgentId" :cursor="cursor" />
+    </template>
+  </gl-empty-state>
 </template>

@@ -1,0 +1,11 @@
+#import "../fragments/cluster_agent_token.fragment.graphql"
+
+mutation createNewAgentToken($input: ClusterAgentTokenCreateInput!) {
+  clusterAgentTokenCreate(input: $input) {
+    secret
+    token {
+      ...Token
+    }
+    errors
+  }
+}

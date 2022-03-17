@@ -2546,9 +2546,11 @@ RSpec.describe API::Projects do
             get api("/projects", user)
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response.first['permissions']['project_access']['access_level'])
+            detail_of_project = json_response.find { |detail| detail['id'] == project.id }
+
+            expect(detail_of_project.dig('permissions', 'project_access', 'access_level'))
             .to eq(Gitlab::Access::MAINTAINER)
-            expect(json_response.first['permissions']['group_access']).to be_nil
+            expect(detail_of_project.dig('permissions', 'group_access')).to be_nil
           end
         end
 

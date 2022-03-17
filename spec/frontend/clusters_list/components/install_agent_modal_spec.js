@@ -6,6 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
 import InstallAgentModal from '~/clusters_list/components/install_agent_modal.vue';
+import AgentToken from '~/clusters_list/components/agent_token.vue';
 import {
   I18N_AGENT_MODAL,
   MAX_LIST_COUNT,
@@ -21,7 +22,6 @@ import createAgentMutation from '~/clusters_list/graphql/mutations/create_agent.
 import createAgentTokenMutation from '~/clusters_list/graphql/mutations/create_agent_token.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import CodeBlock from '~/vue_shared/components/code_block.vue';
 import {
   createAgentResponse,
   createAgentErrorResponse,
@@ -61,6 +61,7 @@ describe('InstallAgentModal', () => {
   const findModal = () => wrapper.findComponent(ModalStub);
   const findAgentDropdown = () => findModal().findComponent(AvailableAgentsDropdown);
   const findAlert = () => findModal().findComponent(GlAlert);
+  const findAgentInstructions = () => findModal().findComponent(AgentToken);
   const findButtonByVariant = (variant) =>
     findModal()
       .findAll(GlButton)
@@ -151,7 +152,6 @@ describe('InstallAgentModal', () => {
         expect(findModal().text()).not.toContain(i18n.basicInstallTitle);
         expect(findModal().findComponent(GlFormInputGroup).exists()).toBe(false);
         expect(findModal().findComponent(GlAlert).exists()).toBe(false);
-        expect(findModal().findComponent(CodeBlock).exists()).toBe(false);
       });
 
       it('renders a cancel button', () => {
@@ -222,19 +222,7 @@ describe('InstallAgentModal', () => {
       });
 
       it('shows agent instructions', () => {
-        const modalText = findModal().text();
-        expect(modalText).toContain(i18n.basicInstallTitle);
-        expect(modalText).toContain(i18n.basicInstallBody);
-
-        const token = findModal().findComponent(GlFormInputGroup);
-        expect(token.props('value')).toBe('mock-agent-token');
-
-        const alert = findModal().findComponent(GlAlert);
-        expect(alert.props('title')).toBe(i18n.tokenSingleUseWarningTitle);
-
-        const code = findModal().findComponent(CodeBlock).props('code');
-        expect(code).toContain('--agent-token=mock-agent-token');
-        expect(code).toContain('--kas-address=kas.example.com');
+        expect(findAgentInstructions().exists()).toBe(true);
       });
 
       describe('error creating agent', () => {
