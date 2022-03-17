@@ -134,11 +134,6 @@ describe('Pipelines CI Templates', () => {
         wrapper = createWrapper({ anyRunnersAvailable: true }, { GitlabExperiment, GlSprintf });
       });
 
-      it('renders the templates', () => {
-        expect(findTestTemplateLinks().exists()).toBe(true);
-        expect(findTemplateLinks().exists()).toBe(true);
-      });
-
       it('show the runners available section', () => {
         expect(wrapper.text()).toContain(I18N.runners.title);
       });
@@ -171,11 +166,6 @@ describe('Pipelines CI Templates', () => {
         wrapper = createWrapper({ anyRunnersAvailable: false }, { GitlabExperiment, GlButton });
       });
 
-      it('does not render the templates', () => {
-        expect(findTestTemplateLinks().exists()).toBe(false);
-        expect(findTemplateLinks().exists()).toBe(false);
-      });
-
       it('show the no runners available section', () => {
         expect(wrapper.text()).toContain(I18N.noRunners.title);
       });
@@ -192,4 +182,25 @@ describe('Pipelines CI Templates', () => {
       });
     });
   });
+
+  describe.each`
+    experimentVariant | anyRunnersAvailable | templatesRendered
+    ${'control'}      | ${true}             | ${true}
+    ${'control'}      | ${false}            | ${true}
+    ${'candidate'}    | ${true}             | ${true}
+    ${'candidate'}    | ${false}            | ${false}
+  `(
+    'when the runners_availability_section experiment variant is $experimentVariant and runners are available: $anyRunnersAvailable',
+    ({ experimentVariant, anyRunnersAvailable, templatesRendered }) => {
+      beforeEach(() => {
+        stubExperiments({ runners_availability_section: experimentVariant });
+        wrapper = createWrapper({ anyRunnersAvailable });
+      });
+
+      it(`renders the templates: ${templatesRendered}`, () => {
+        expect(findTestTemplateLinks().exists()).toBe(templatesRendered);
+        expect(findTemplateLinks().exists()).toBe(templatesRendered);
+      });
+    },
+  );
 });

@@ -10,12 +10,10 @@ require 'time'
 # we may run into "already initialized" warnings, hence the check.
 require_relative '../lib/gitlab' unless Object.const_defined?('Gitlab')
 require_relative '../lib/gitlab/utils'
-require_relative '../lib/gitlab/daemon'
 require_relative '../lib/gitlab/sidekiq_config/cli_methods'
 require_relative '../lib/gitlab/sidekiq_config/worker_matcher'
 require_relative '../lib/gitlab/sidekiq_logging/json_formatter'
-require_relative '../lib/gitlab/process_management'
-require_relative '../lib/gitlab/process_supervisor'
+require_relative '../metrics_server/dependencies'
 require_relative '../metrics_server/metrics_server'
 require_relative 'sidekiq_cluster'
 

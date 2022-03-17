@@ -2,8 +2,6 @@
 
 require_relative '../config/boot'
 
-require_relative 'dependencies'
-
 class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   # The singleton instance used to supervise the Puma metrics server.
   PumaProcessSupervisor = Class.new(Gitlab::ProcessSupervisor)

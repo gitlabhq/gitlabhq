@@ -13,7 +13,7 @@ import {
 import { helpPagePath } from '~/helpers/help_page_helper';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
-import { getExperimentData } from '~/experimentation/utils';
+import { isExperimentVariant } from '~/experimentation/utils';
 import Tracking from '~/tracking';
 
 export default {
@@ -70,7 +70,7 @@ export default {
       return helpPagePath('ci/runners/runners_scope', { anchor: 'shared-runners' });
     },
     runnersAvailabilitySectionExperimentEnabled() {
-      return Boolean(getExperimentData(RUNNERS_AVAILABILITY_SECTION_EXPERIMENT_NAME));
+      return isExperimentVariant(RUNNERS_AVAILABILITY_SECTION_EXPERIMENT_NAME);
     },
   },
   created() {

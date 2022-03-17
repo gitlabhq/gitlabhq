@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 PUMA_EXTERNAL_METRICS_SERVER = Gitlab::Utils.to_boolean(ENV['PUMA_EXTERNAL_METRICS_SERVER'])
+require Rails.root.join('metrics_server', 'metrics_server') if PUMA_EXTERNAL_METRICS_SERVER
 
 # Keep separate directories for separate processes
 def prometheus_default_multiproc_dir
@@ -74,8 +75,7 @@ Gitlab::Cluster::LifecycleEvents.on_master_start do
   if Gitlab::Runtime.puma?
     Gitlab::Metrics::Samplers::PumaSampler.instance.start
 
-    if Settings.monitoring.web_exporter.enabled && PUMA_EXTERNAL_METRICS_SERVER
-      require_relative '../../metrics_server/metrics_server'
+    if PUMA_EXTERNAL_METRICS_SERVER && Settings.monitoring.web_exporter.enabled
       MetricsServer.start_for_puma
     else
       Gitlab::Metrics::Exporter::WebExporter.instance.start
