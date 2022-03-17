@@ -7845,7 +7845,7 @@ RSpec.describe Project, factory_default: :keep do
 
     subject { project }
 
-    it_behaves_like 'it has a prefixable runners_token', :projects_runners_token_prefix
+    it_behaves_like 'it has a prefixable runners_token'
   end
 
   private
