@@ -48,7 +48,7 @@
   .settings-content
     = render partial: 'network_rate_limits', locals: { anchor: 'js-files-limits-settings', setting_fragment: 'files_api' }
 
-%section.settings.as-note-limits.no-animate#js-search-limits-settings{ class: ('expanded' if expanded_by_default?) }
+%section.settings.as-search-limits.no-animate#js-search-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
       = _('Search rate limits')

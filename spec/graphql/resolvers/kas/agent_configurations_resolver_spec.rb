@@ -34,8 +34,10 @@ RSpec.describe Resolvers::Kas::AgentConfigurationsResolver do
         allow(kas_client).to receive(:list_agent_config_files).and_raise(GRPC::DeadlineExceeded)
       end
 
-      it 'raises a graphql error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, 'GRPC::DeadlineExceeded')
+      it 'generates a graphql error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable, 'GRPC::DeadlineExceeded') do
+          subject
+        end
       end
     end
 

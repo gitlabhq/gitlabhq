@@ -783,6 +783,13 @@ RSpec.describe API::Repositories do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['notes']).to be_present
     end
+
+    context 'when previous tag version does not exist' do
+      it_behaves_like '422 response' do
+        let(:request) { get api("/projects/#{project.id}/repository/changelog", user), params: { version: 'v0.0.0' } }
+        let(:message) { 'Failed to generate the changelog: The commit start range is unspecified, and no previous tag could be found to use instead' }
+      end
+    end
   end
 
   describe 'POST /projects/:id/repository/changelog' do

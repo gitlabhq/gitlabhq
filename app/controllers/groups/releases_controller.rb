@@ -15,11 +15,17 @@ module Groups
     private
 
     def releases
-      ReleasesFinder
-        .new(@group, current_user, { include_subgroups: true })
-        .execute(preload: false)
-        .page(params[:page])
-        .per(30)
+      if Feature.enabled?(:group_releases_finder_inoperator)
+        Releases::GroupReleasesFinder
+          .new(@group, current_user, { include_subgroups: true, page: params[:page], per: 30 })
+          .execute(preload: false)
+      else
+        ReleasesFinder
+          .new(@group, current_user, { include_subgroups: true })
+          .execute(preload: false)
+          .page(params[:page])
+          .per(30)
+      end
     end
   end
 end

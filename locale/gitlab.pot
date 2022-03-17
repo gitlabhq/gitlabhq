@@ -22841,9 +22841,6 @@ msgstr ""
 msgid "Maximum authenticated API requests per rate limit period per user"
 msgstr ""
 
-msgid "Maximum authenticated requests by a user per minute"
-msgstr ""
-
 msgid "Maximum authenticated web requests per rate limit period per user"
 msgstr ""
 
@@ -23214,7 +23211,7 @@ msgstr ""
 msgid "Merge automatically (%{strategy})"
 msgstr ""
 
-msgid "Merge blocked: all merge request dependencies must be merged or closed."
+msgid "Merge blocked: all merge request dependencies must be merged."
 msgstr ""
 
 msgid "Merge blocked: merge request must be marked as ready. It's still marked as draft."
@@ -32351,7 +32348,7 @@ msgstr ""
 msgid "Saving project."
 msgstr ""
 
-msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{scanners} scan in an open merge request targeting the %{branches} branch(es) finds %{vulnerabilitiesAllowed} or more %{severities} vulnerabilities that are %{vulnerabilityStates}"
+msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
 msgstr ""
 
 msgid "ScanResultPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require approval from %{approvalsRequired} of the following approvers:"

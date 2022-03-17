@@ -707,6 +707,20 @@ RSpec.describe 'Admin updates settings' do
 
         include_examples 'regular throttle rate limit settings'
       end
+
+      it 'changes search rate limits' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-search-limits') do
+          fill_in 'Maximum number of requests per minute for an authenticated user', with: 98
+          fill_in 'Maximum number of requests per minute for an unauthenticated IP address', with: 76
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.search_rate_limit).to eq(98)
+        expect(current_settings.search_rate_limit_unauthenticated).to eq(76)
+      end
     end
 
     context 'Preferences page' do

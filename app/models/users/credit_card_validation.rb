@@ -8,7 +8,7 @@ module Users
 
     belongs_to :user
 
-    validates :holder_name, length: { maximum: 26 }
+    validates :holder_name, length: { maximum: 50 }
     validates :network, length: { maximum: 32 }
     validates :last_digits, allow_nil: true, numericality: {
       greater_than_or_equal_to: 0, less_than_or_equal_to: 9999

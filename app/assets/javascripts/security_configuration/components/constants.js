@@ -292,3 +292,10 @@ export const TEMP_PROVIDER_LOGOS = {
     svg: scwLogo,
   },
 };
+
+// Use the `url` field from the GraphQL query once this issue is resolved
+// https://gitlab.com/gitlab-org/gitlab/-/issues/356129
+export const TEMP_PROVIDER_URLS = {
+  Kontra: 'https://application.security/',
+  [__('Secure Code Warrior')]: 'https://www.securecodewarrior.com/',
+};

@@ -21129,7 +21129,7 @@ CREATE TABLE user_credit_card_validations (
     network text,
     CONSTRAINT check_1765e2b30f CHECK ((char_length(network) <= 32)),
     CONSTRAINT check_3eea080c91 CHECK (((last_digits >= 0) AND (last_digits <= 9999))),
-    CONSTRAINT check_eafe45d88b CHECK ((char_length(holder_name) <= 26))
+    CONSTRAINT check_cc0c8dc0fe CHECK ((char_length(holder_name) <= 50))
 );
 
 CREATE TABLE user_custom_attributes (
@@ -29550,6 +29550,10 @@ CREATE INDEX tmp_index_namespaces_empty_traversal_ids_with_root_namespaces ON na
 CREATE UNIQUE INDEX tmp_index_on_tmp_project_id_on_namespaces ON namespaces USING btree (tmp_project_id);
 
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
+
+CREATE INDEX tmp_index_projects_on_id_and_runners_token ON projects USING btree (id, runners_token) WHERE (runners_token IS NOT NULL);
+
+CREATE INDEX tmp_index_projects_on_id_and_runners_token_encrypted ON projects USING btree (id, runners_token_encrypted) WHERE (runners_token_encrypted IS NOT NULL);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 

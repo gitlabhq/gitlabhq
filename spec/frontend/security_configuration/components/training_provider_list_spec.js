@@ -12,6 +12,7 @@ import {
   TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION,
   TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
 } from '~/security_configuration/constants';
+import { TEMP_PROVIDER_URLS } from '~/security_configuration/components/constants';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
 import { updateSecurityTrainingOptimisticResponse } from '~/security_configuration/graphql/cache_utils';
 import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
@@ -145,55 +146,60 @@ describe('TrainingProviderList component', () => {
         expect(findCards()).toHaveLength(TEST_TRAINING_PROVIDERS_DEFAULT.data.length);
       });
 
-      TEST_TRAINING_PROVIDERS_DEFAULT.data.forEach(
-        ({ name, description, url, isEnabled }, index) => {
-          it(`shows the name for card ${index}`, () => {
-            expect(findCards().at(index).text()).toContain(name);
-          });
+      TEST_TRAINING_PROVIDERS_DEFAULT.data.forEach(({ name, description, isEnabled }, index) => {
+        it(`shows the name for card ${index}`, () => {
+          expect(findCards().at(index).text()).toContain(name);
+        });
 
-          it(`shows the description for card ${index}`, () => {
-            expect(findCards().at(index).text()).toContain(description);
-          });
+        it(`shows the description for card ${index}`, () => {
+          expect(findCards().at(index).text()).toContain(description);
+        });
 
-          it(`shows the learn more link for card ${index}`, () => {
-            expect(findLinks().at(index).attributes()).toEqual({
+        it(`shows the learn more link for enabled card ${index}`, () => {
+          const learnMoreLink = findCards().at(index).find(GlLink);
+          const tempLogo = TEMP_PROVIDER_URLS[name];
+
+          if (tempLogo) {
+            expect(learnMoreLink.attributes()).toEqual({
               target: '_blank',
-              href: url,
+              href: TEMP_PROVIDER_URLS[name],
             });
+          } else {
+            expect(learnMoreLink.exists()).toBe(false);
+          }
+        });
+
+        it(`shows the toggle with the correct value for card ${index}`, () => {
+          expect(findToggles().at(index).props('value')).toEqual(isEnabled);
+        });
+
+        it(`shows a radio button to select the provider as primary within card ${index}`, () => {
+          const primaryProviderRadioForCurrentCard = findPrimaryProviderRadios().at(index);
+
+          // if the given provider is not enabled it should not be possible select it as primary
+          expect(primaryProviderRadioForCurrentCard.find('input').attributes('disabled')).toBe(
+            isEnabled ? undefined : 'disabled',
+          );
+
+          expect(primaryProviderRadioForCurrentCard.text()).toBe(
+            TrainingProviderList.i18n.primaryTraining,
+          );
+        });
+
+        it('shows a info-tooltip that describes the purpose of a primary provider', () => {
+          const infoIcon = findPrimaryProviderRadios().at(index).find(GlIcon);
+          const tooltip = getBinding(infoIcon.element, 'gl-tooltip');
+
+          expect(infoIcon.props()).toMatchObject({
+            name: 'information-o',
           });
+          expect(tooltip.value).toBe(TrainingProviderList.i18n.primaryTrainingDescription);
+        });
 
-          it(`shows the toggle with the correct value for card ${index}`, () => {
-            expect(findToggles().at(index).props('value')).toEqual(isEnabled);
-          });
-
-          it(`shows a radio button to select the provider as primary within card ${index}`, () => {
-            const primaryProviderRadioForCurrentCard = findPrimaryProviderRadios().at(index);
-
-            // if the given provider is not enabled it should not be possible select it as primary
-            expect(primaryProviderRadioForCurrentCard.find('input').attributes('disabled')).toBe(
-              isEnabled ? undefined : 'disabled',
-            );
-
-            expect(primaryProviderRadioForCurrentCard.text()).toBe(
-              TrainingProviderList.i18n.primaryTraining,
-            );
-          });
-
-          it('shows a info-tooltip that describes the purpose of a primary provider', () => {
-            const infoIcon = findPrimaryProviderRadios().at(index).find(GlIcon);
-            const tooltip = getBinding(infoIcon.element, 'gl-tooltip');
-
-            expect(infoIcon.props()).toMatchObject({
-              name: 'information-o',
-            });
-            expect(tooltip.value).toBe(TrainingProviderList.i18n.primaryTrainingDescription);
-          });
-
-          it('does not show loader when query is populated', () => {
-            expect(findLoader().exists()).toBe(false);
-          });
-        },
-      );
+        it('does not show loader when query is populated', () => {
+          expect(findLoader().exists()).toBe(false);
+        });
+      });
     });
 
     describe('provider logo', () => {

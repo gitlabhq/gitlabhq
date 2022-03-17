@@ -78,10 +78,10 @@ RSpec.describe Resolvers::IssuesResolver do
           expect(resolve_issues(milestone_wildcard_id: wildcard_none)).to contain_exactly(issue2)
         end
 
-        it 'raises a mutually exclusive filter error when wildcard and title are provided' do
-          expect do
+        it 'generates a mutually exclusive filter error when wildcard and title are provided' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
             resolve_issues(milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started)
-          end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.')
+          end
         end
 
         context 'negated filtering' do
@@ -97,10 +97,10 @@ RSpec.describe Resolvers::IssuesResolver do
             expect(resolve_issues(not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue6)
           end
 
-          it 'raises a mutually exclusive filter error when wildcard and title are provided as negated filters' do
-            expect do
+          it 'generates a mutually exclusive filter error when wildcard and title are provided as negated filters' do
+            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
               resolve_issues(not: { milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started })
-            end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.')
+            end
           end
         end
       end
@@ -122,10 +122,10 @@ RSpec.describe Resolvers::IssuesResolver do
           end
 
           context 'when release_tag_wildcard_id is also provided' do
-            it 'raises a mutually eclusive argument error' do
-              expect do
+            it 'generates a mutually eclusive argument error' do
+              expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [releaseTag, releaseTagWildcardId] arguments is allowed at the same time.') do
                 resolve_issues(release_tag: [release1.tag], release_tag_wildcard_id: 'ANY')
-              end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'only one of [releaseTag, releaseTagWildcardId] arguments is allowed at the same time.')
+              end
             end
           end
         end
@@ -191,10 +191,10 @@ RSpec.describe Resolvers::IssuesResolver do
         end
 
         context 'when both assignee_username and assignee_usernames are provided' do
-          it 'raises a mutually exclusive filter error' do
-            expect do
+          it 'generates a mutually exclusive filter error' do
+            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [assigneeUsernames, assigneeUsername] arguments is allowed at the same time.') do
               resolve_issues(assignee_usernames: [assignee.username], assignee_username: assignee.username)
-            end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'only one of [assigneeUsernames, assigneeUsername] arguments is allowed at the same time.')
+            end
           end
         end
       end
@@ -331,11 +331,12 @@ RSpec.describe Resolvers::IssuesResolver do
               stub_feature_flags(disable_anonymous_search: true)
             end
 
-            it 'returns an error' do
+            it 'generates an error' do
               error_message = "User must be authenticated to include the `search` argument."
 
-              expect { resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil }) }
-                .to raise_error(Gitlab::Graphql::Errors::ArgumentError, error_message)
+              expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, error_message) do
+                resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil })
+              end
             end
           end
 

@@ -6,7 +6,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 description: "Writing styles, markup, formatting, and other standards for GraphQL API's GitLab Documentation."
 ---
 
-# GraphQL API
+# Creating a GraphQL example page
 
 GraphQL APIs are different from [RESTful APIs](restful_api_styleguide.md). Reference
 information is generated in our [GraphQL reference](../../api/graphql/reference/index.md).

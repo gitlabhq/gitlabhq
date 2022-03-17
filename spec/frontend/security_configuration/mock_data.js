@@ -1,6 +1,6 @@
 export const testProjectPath = 'foo/bar';
 export const testProviderIds = [101, 102, 103];
-export const testProviderName = ['Vendor Name 1', 'Vendor Name 2', 'Vendor Name 3'];
+export const testProviderName = ['Kontra', 'Secure Code Warrior', 'Other Vendor'];
 export const testTrainingUrls = [
   'https://www.vendornameone.com/url',
   'https://www.vendornametwo.com/url',

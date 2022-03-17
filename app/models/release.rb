@@ -6,6 +6,7 @@ class Release < ApplicationRecord
   include Importable
   include Gitlab::Utils::StrongMemoize
   include EachBatch
+  include FromUnion
 
   cache_markdown_field :description
 

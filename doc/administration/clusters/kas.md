@@ -9,8 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.10, the GitLab agent server (KAS) became available on GitLab.com at `wss://kas.gitlab.com`.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 
-The GitLab agent server for Kubernetes (KAS) is a service that
-manages the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+The agent server is a component you install together with GitLab. It is required to
+manage the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
 
 The KAS acronym refers to the former name, `Kubernetes agent server`.
 

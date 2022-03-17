@@ -28,7 +28,9 @@ RSpec.describe Resolvers::LabelsResolver do
   describe '#resolve' do
     context 'with unauthorized user' do
       it 'returns no labels' do
-        expect { resolve_labels(project) }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_labels(project)
+        end
       end
     end
 

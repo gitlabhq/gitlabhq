@@ -20,11 +20,11 @@ RSpec.describe Groups::ReleasesController do
     context 'as json' do
       let(:format) { :json }
 
-      subject { get :index, params: { group_id: group }, format: format }
+      subject(:index) { get :index, params: { group_id: group }, format: format }
 
       context 'json_response' do
         before do
-          subject
+          index
         end
 
         it 'returns an application/json content_type' do
@@ -38,7 +38,7 @@ RSpec.describe Groups::ReleasesController do
 
       context 'the user is not authorized' do
         before do
-          subject
+          index
         end
 
         it 'does not return any releases' do
@@ -54,9 +54,35 @@ RSpec.describe Groups::ReleasesController do
         it "returns all group's public and private project's releases as JSON, ordered by released_at" do
           sign_in(guest)
 
-          subject
+          index
 
           expect(json_response.map {|r| r['tag'] } ).to match_array(%w(p2 p1 v2 v1))
+        end
+      end
+
+      context 'group_releases_finder_inoperator feature flag' do
+        before do
+          sign_in(guest)
+        end
+
+        it 'calls old code when disabled' do
+          stub_feature_flags(group_releases_finder_inoperator: false)
+
+          allow(ReleasesFinder).to receive(:new).and_call_original
+
+          index
+
+          expect(ReleasesFinder).to have_received(:new)
+        end
+
+        it 'calls new code when enabled' do
+          stub_feature_flags(group_releases_finder_inoperator: true)
+
+          allow(Releases::GroupReleasesFinder).to receive(:new).and_call_original
+
+          index
+
+          expect(Releases::GroupReleasesFinder).to have_received(:new)
         end
       end
 

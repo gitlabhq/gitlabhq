@@ -3,11 +3,11 @@
 
   %fieldset
     .form-group
-      = f.label :search_rate_limit, _('Maximum authenticated requests by a user per minute'), class: 'label-bold'
+      = f.label :search_rate_limit, _('Maximum number of requests per minute for an authenticated user'), class: 'label-bold'
       .form-text.gl-text-gray-600
         = _("Set this number to 0 to disable the limit.")
+      = f.number_field :search_rate_limit, class: 'form-control gl-form-input'
 
-      = f.label :search_rate_limit, _('Maximum number of requests per minute for an authenticated user'), class: 'label-bold'
     .form-group
       = f.label :search_rate_limit_unauthenticated, _('Maximum number of requests per minute for an unauthenticated IP address'), class: 'label-bold'
       = f.number_field :search_rate_limit_unauthenticated, class: 'form-control gl-form-input'

@@ -130,6 +130,7 @@ The **Network** settings contain:
     Git LFS requests that supersede the user and IP rate limits.
   - [Files API Rate Limits](files_api_rate_limits.md) - Configure specific limits for
     Files API requests that supersede the user and IP rate limits.
+  - [Search rate limits](../../../administration/instance_limits.md#search-rate-limit) - Configure global search request rate limits for authenticated and unauthenticated users.
   - [Deprecated API Rate Limits](deprecated_api_rate_limits.md) - Configure specific limits
     for deprecated API requests that supersede the user and IP rate limits.
 - [Outbound requests](../../../security/webhooks.md) - Allow requests to the local network from hooks and services.

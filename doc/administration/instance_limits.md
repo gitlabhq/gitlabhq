@@ -153,6 +153,17 @@ Set the limit to `0` to disable it.
 
 - **Default rate limit**: Disabled (unlimited).
 
+### Search rate limit
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9
+
+This setting limits global search requests.
+
+| Limit                   | Default (requests per minute) |
+|-------------------------|-------------------------------|
+| Authenticated user      | 30 |
+| Unauthenticated user    | 10 |
+
 ## Gitaly concurrency limit
 
 Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly's configuration file.

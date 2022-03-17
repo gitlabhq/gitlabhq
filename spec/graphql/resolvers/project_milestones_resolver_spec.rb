@@ -103,27 +103,27 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
         end
 
         context 'when start date is after end_date' do
-          it 'raises error' do
-            expect do
+          it 'generates an error' do
+            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'startDate is after endDate') do
               resolve_project_milestones(start_date: Time.now, end_date: Time.now - 2.days)
-            end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, "startDate is after endDate")
+            end
           end
         end
       end
 
       context 'when only start_date is present' do
-        it 'raises error' do
-          expect do
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/) do
             resolve_project_milestones(start_date: Time.now)
-          end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/)
+          end
         end
       end
 
       context 'when only end_date is present' do
-        it 'raises error' do
-          expect do
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/) do
             resolve_project_milestones(end_date: Time.now)
-          end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/)
+          end
         end
       end
 
@@ -174,12 +174,12 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
     end
 
     context 'when user cannot read milestones' do
-      it 'raises error' do
+      it 'generates an error' do
         unauthorized_user = create(:user)
 
-        expect do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
           resolve_project_milestones({}, { current_user: unauthorized_user })
-        end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
       end
     end
   end

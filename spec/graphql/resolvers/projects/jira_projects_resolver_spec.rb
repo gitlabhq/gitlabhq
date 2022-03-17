@@ -14,10 +14,10 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
     let_it_be(:project) { create(:project) }
 
     shared_examples 'no project service access' do
-      it 'raises error' do
-        expect do
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
           resolve_jira_projects
-        end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
       end
     end
 
@@ -89,11 +89,14 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
               .to_raise(JIRA::HTTPError.new(double(message: '{"errorMessages":["Some failure"]}')))
           end
 
-          it 'raises failure error' do
+          it 'generates a failure error' do
             config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure')
             docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: config_docs_link_url }
             error_message = 'An error occurred while requesting data from Jira: Some failure. Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
-            expect { resolve_jira_projects }.to raise_error(error_message)
+
+            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::BaseError, error_message) do
+              resolve_jira_projects
+            end
           end
         end
       end

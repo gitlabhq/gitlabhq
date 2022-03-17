@@ -81,23 +81,34 @@ Maintainer role.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
 
-A blocked deployment is enqueued as soon as it receives the required number of approvals. A single
-rejection causes the deployment to fail. The creator of a deployment cannot approve it, even if they
-have permission to deploy.
+You can use the UI or API to take these actions on a deployment:
 
-You can approve or reject a deployment to a protected environment either in the UI or using the API:
+- Approve it
+- Allow it to proceed
+- Reject it
 
-### Using the UI
+### Approve or reject a deployment using the UI
+
+Prerequisites:
+
+- Permission to deploy to the protected environment.
+
+To approve or reject a deployment to a protected environment using the UI:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
 1. Select **Approve** or **Reject**.
 
-### Using the API
+### Approve or reject a deployment using the API
 
-Users who are allowed to deploy to the protected environment can approve or reject a blocked
-deployment using the [Deployments API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
+Prerequisites:
+
+- Permission to deploy to the protected environment.
+
+To approve or reject a deployment to a protected environment using the API, pass the
+required attributes. For more details, see
+[Approve or reject a blocked deployment](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
 
 Example:
 

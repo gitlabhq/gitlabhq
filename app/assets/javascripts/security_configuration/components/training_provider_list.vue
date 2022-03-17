@@ -25,7 +25,7 @@ import {
   updateSecurityTrainingCache,
   updateSecurityTrainingOptimisticResponse,
 } from '~/security_configuration/graphql/cache_utils';
-import { TEMP_PROVIDER_LOGOS } from './constants';
+import { TEMP_PROVIDER_LOGOS, TEMP_PROVIDER_URLS } from './constants';
 
 const i18n = {
   providerQueryErrorMessage: __(
@@ -206,6 +206,7 @@ export default {
   },
   i18n,
   TEMP_PROVIDER_LOGOS,
+  TEMP_PROVIDER_URLS,
 };
 </script>
 
@@ -247,7 +248,8 @@ export default {
               <p>
                 {{ provider.description }}
                 <gl-link
-                  :href="provider.url"
+                  v-if="$options.TEMP_PROVIDER_URLS[provider.name]"
+                  :href="$options.TEMP_PROVIDER_URLS[provider.name]"
                   target="_blank"
                   @click="trackProviderLearnMoreClick(provider.id)"
                 >

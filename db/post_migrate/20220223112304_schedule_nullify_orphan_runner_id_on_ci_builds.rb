@@ -3,9 +3,9 @@
 class ScheduleNullifyOrphanRunnerIdOnCiBuilds < Gitlab::Database::Migration[1.0]
   MIGRATION = 'NullifyOrphanRunnerIdOnCiBuilds'
   INTERVAL = 2.minutes
-  BATCH_SIZE = 100_000
-  MAX_BATCH_SIZE = 100_000 # 100k * 25k = 2.5B ci_builds
-  SUB_BATCH_SIZE = 1_000
+  BATCH_SIZE = 50_000
+  MAX_BATCH_SIZE = 150_000
+  SUB_BATCH_SIZE = 500
 
   def up
     queue_batched_background_migration(
