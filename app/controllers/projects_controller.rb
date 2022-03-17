@@ -173,7 +173,7 @@ class ProjectsController < Projects::ApplicationController
       format.atom do
         load_events
         @events = @events.select { |event| event.visible_to_user?(current_user) }
-        render layout: 'xml.atom'
+        render layout: 'xml'
       end
     end
   end

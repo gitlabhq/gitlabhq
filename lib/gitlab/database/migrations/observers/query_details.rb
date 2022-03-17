@@ -6,7 +6,7 @@ module Gitlab
       module Observers
         class QueryDetails < MigrationObserver
           def before
-            file_path = File.join(output_dir, "#{observation.version}_#{observation.name}-query-details.json")
+            file_path = File.join(output_dir, "query-details.json")
             @file = File.open(file_path, 'wb')
             @writer = Oj::StreamWriter.new(@file, {})
             @writer.push_array

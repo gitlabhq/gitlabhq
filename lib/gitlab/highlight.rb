@@ -11,11 +11,7 @@ module Gitlab
     end
 
     def self.too_large?(size)
-      return false unless size.to_i > self.file_size_limit
-
-      over_highlight_size_limit.increment(source: "file size: #{self.file_size_limit}") if Feature.enabled?(:track_file_size_over_highlight_limit)
-
-      true
+      size.to_i > self.file_size_limit
     end
 
     attr_reader :blob_name
@@ -74,14 +70,10 @@ module Gitlab
     end
 
     def highlight_rich(text, continue: true)
-      add_highlight_attempt_metric
-
       tag = lexer.tag
       tokens = lexer.lex(text, continue: continue)
       Timeout.timeout(timeout_time) { @formatter.format(tokens, **context, tag: tag).html_safe }
     rescue Timeout::Error => e
-      add_highlight_timeout_metric
-
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
       highlight_plain(text)
     rescue StandardError
@@ -94,39 +86,6 @@ module Gitlab
 
     def link_dependencies(text, highlighted_text)
       Gitlab::DependencyLinker.link(blob_name, text, highlighted_text)
-    end
-
-    def add_highlight_attempt_metric
-      return unless Feature.enabled?(:track_highlight_timeouts)
-
-      highlighting_attempt.increment(source: (@language || "undefined"))
-    end
-
-    def add_highlight_timeout_metric
-      return unless Feature.enabled?(:track_highlight_timeouts)
-
-      highlight_timeout.increment(source: Gitlab::Runtime.sidekiq? ? "background" : "foreground")
-    end
-
-    def highlighting_attempt
-      @highlight_attempt ||= Gitlab::Metrics.counter(
-        :file_highlighting_attempt,
-        'Counts the times highlighting has been attempted on a file'
-      )
-    end
-
-    def highlight_timeout
-      @highlight_timeout ||= Gitlab::Metrics.counter(
-        :highlight_timeout,
-        'Counts the times highlights have timed out'
-      )
-    end
-
-    def self.over_highlight_size_limit
-      @over_highlight_size_limit ||= Gitlab::Metrics.counter(
-        :over_highlight_size_limit,
-        'Count the times files have been over the highlight size limit'
-      )
     end
   end
 end

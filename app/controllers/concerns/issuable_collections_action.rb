@@ -17,7 +17,7 @@ module IssuableCollectionsAction
 
     respond_to do |format|
       format.html
-      format.atom { render layout: 'xml.atom' }
+      format.atom { render layout: 'xml' }
     end
   end
 

@@ -3692,6 +3692,61 @@ trigger_job:
 In this example, jobs from subsequent stages wait for the triggered pipeline to
 successfully complete before starting.
 
+#### `trigger:forward`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213729) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `ci_trigger_forward_variables`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_trigger_forward_variables`.
+The feature is not ready for production use.
+
+Use `trigger:forward` to specify what to forward to the downstream pipeline. You can control
+what is forwarded to both [parent-child pipelines](../pipelines/parent_child_pipelines.md)
+and [multi-project pipelines](../pipelines/multi_project_pipelines.md).
+
+**Possible inputs**:
+
+- `yaml_variables`: `true` (default), or `false`. When `true`, variables defined
+  in the trigger job are passed to downstream pipelines.
+- `pipeline_variables`: `true` or `false` (default). When `true`, [manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
+  are passed to downstream pipelines.
+
+**Example of `trigger:forward`**:
+
+[Run this pipeline manually](../pipelines/index.md#run-a-pipeline-manually), with
+the CI/CD variable `MYVAR = my value`:
+
+```yaml
+variables: # default variables for each job
+  VAR: value
+
+# Default behavior:
+# - VAR is passed to the child
+# - MYVAR is not passed to the child
+child1:
+  trigger:
+    include: .child-pipeline.yml
+
+# Forward pipeline variables:
+# - VAR is passed to the child
+# - MYVAR is passed to the child
+child2:
+  trigger:
+    include: .child-pipeline.yml
+    forward:
+      pipeline_variables: true
+
+# Do not forward YAML variables:
+# - VAR is not passed to the child
+# - MYVAR is not passed to the child
+child3:
+  trigger:
+    include: .child-pipeline.yml
+    forward:
+      yaml_variables: false
+```
+
 ### `variables`
 
 [CI/CD variables](../variables/index.md) are configurable values that are passed to jobs.

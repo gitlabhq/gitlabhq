@@ -1247,7 +1247,7 @@
           "oneOf": [
             {
               "type": "object",
-              "description": "Trigger a multi-project pipeline. Read more: https://docs.gitlab.com/ee/ci/yaml/README.html#simple-trigger-syntax-for-multi-project-pipelines",
+              "description": "Trigger a multi-project pipeline. Read more: https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#specify-a-downstream-pipeline-branch",
               "additionalProperties": false,
               "properties": {
                 "project": {
@@ -1263,6 +1263,23 @@
                   "description": "You can mirror the pipeline status from the triggered pipeline to the source bridge job by using strategy: depend",
                   "type": "string",
                   "enum": ["depend"]
+                },
+                "forward": {
+                  "description": "Specify what to forward to the downstream pipeline.",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "yaml_variables": {
+                      "type": "boolean",
+                      "description": "Variables defined in the trigger job are passed to downstream pipelines.",
+                      "default": true
+                    },
+                    "pipeline_variables": {
+                      "type": "boolean",
+                      "description": "Variables added for manual pipeline runs are passed to downstream pipelines.",
+                      "default": false
+                    }
+                  }
                 }
               },
               "required": ["project"],
@@ -1272,7 +1289,7 @@
             },
             {
               "type": "object",
-              "description": "Trigger a child pipeline. Read more: https://docs.gitlab.com/ee/ci/yaml/README.html#trigger-syntax-for-child-pipeline",
+              "description": "Trigger a child pipeline. Read more: https://docs.gitlab.com/ee/ci/pipelines/parent_child_pipelines.html",
               "additionalProperties": false,
               "properties": {
                 "include": {
@@ -1362,11 +1379,28 @@
                   "description": "You can mirror the pipeline status from the triggered pipeline to the source bridge job by using strategy: depend",
                   "type": "string",
                   "enum": ["depend"]
+                },
+                "forward": {
+                  "description": "Specify what to forward to the downstream pipeline.",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "yaml_variables": {
+                      "type": "boolean",
+                      "description": "Variables defined in the trigger job are passed to downstream pipelines.",
+                      "default": true
+                    },
+                    "pipeline_variables": {
+                      "type": "boolean",
+                      "description": "Variables added for manual pipeline runs are passed to downstream pipelines.",
+                      "default": false
+                    }
+                  }
                 }
               }
             },
             {
-              "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project`.",
+              "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project`. Read more: https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#define-multi-project-pipelines-in-your-gitlab-ciyml-file",
               "type": "string",
               "pattern": "\\S/\\S"
             }

@@ -9,8 +9,8 @@ import {
   urlParamsWithSpecialValues,
 } from 'jest/issues/list/mock_data';
 import {
-  defaultPageSizeParams,
-  largePageSizeParams,
+  PAGE_SIZE,
+  PAGE_SIZE_MANUAL,
   RELATIVE_POSITION_ASC,
   urlSortParams,
 } from '~/issues/list/constants';
@@ -29,10 +29,37 @@ describe('getInitialPageParams', () => {
   it.each(Object.keys(urlSortParams))(
     'returns the correct page params for sort key %s',
     (sortKey) => {
-      const expectedPageParams =
-        sortKey === RELATIVE_POSITION_ASC ? largePageSizeParams : defaultPageSizeParams;
+      const firstPageSize = sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE;
 
-      expect(getInitialPageParams(sortKey)).toBe(expectedPageParams);
+      expect(getInitialPageParams(sortKey)).toEqual({ firstPageSize });
+    },
+  );
+
+  it.each(Object.keys(urlSortParams))(
+    'returns the correct page params for sort key %s with afterCursor',
+    (sortKey) => {
+      const firstPageSize = sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE;
+      const afterCursor = 'randomCursorString';
+      const beforeCursor = undefined;
+
+      expect(getInitialPageParams(sortKey, afterCursor, beforeCursor)).toEqual({
+        firstPageSize,
+        afterCursor,
+      });
+    },
+  );
+
+  it.each(Object.keys(urlSortParams))(
+    'returns the correct page params for sort key %s with beforeCursor',
+    (sortKey) => {
+      const firstPageSize = sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE;
+      const afterCursor = undefined;
+      const beforeCursor = 'anotherRandomCursorString';
+
+      expect(getInitialPageParams(sortKey, afterCursor, beforeCursor)).toEqual({
+        firstPageSize,
+        beforeCursor,
+      });
     },
   );
 });

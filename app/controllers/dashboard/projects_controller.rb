@@ -23,7 +23,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
       end
       format.atom do
         load_events
-        render layout: 'xml.atom'
+        render layout: 'xml'
       end
       format.json do
         render json: {

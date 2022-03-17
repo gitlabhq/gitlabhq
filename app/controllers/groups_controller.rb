@@ -235,7 +235,7 @@ class GroupsController < Groups::ApplicationController
 
   def render_details_view_atom
     load_events
-    render layout: 'xml.atom', template: 'groups/show'
+    render layout: 'xml', template: 'groups/show'
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

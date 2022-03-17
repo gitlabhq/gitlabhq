@@ -18098,6 +18098,7 @@ All supported DORA metric types.
 | ----- | ----------- |
 | <a id="dorametrictypedeployment_frequency"></a>`DEPLOYMENT_FREQUENCY` | Deployment frequency. |
 | <a id="dorametrictypelead_time_for_changes"></a>`LEAD_TIME_FOR_CHANGES` | Lead time for changes. |
+| <a id="dorametrictypetime_to_restore_service"></a>`TIME_TO_RESTORE_SERVICE` | Time to restore service. |
 
 ### `EntryType`
 

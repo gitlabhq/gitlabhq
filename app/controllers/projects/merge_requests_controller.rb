@@ -93,7 +93,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     respond_to do |format|
       format.html
-      format.atom { render layout: 'xml.atom' }
+      format.atom { render layout: 'xml' }
       format.json do
         render json: {
           html: view_to_html_string("projects/merge_requests/_merge_requests")

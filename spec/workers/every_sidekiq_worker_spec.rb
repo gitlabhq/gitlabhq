@@ -395,6 +395,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Projects::PostCreationWorker' => 3,
         'Projects::ScheduleBulkRepositoryShardMovesWorker' => 3,
         'Projects::UpdateRepositoryStorageWorker' => 3,
+        'Projects::RefreshBuildArtifactsSizeStatisticsWorker' => 0,
         'Prometheus::CreateDefaultAlertsWorker' => 3,
         'PropagateIntegrationGroupWorker' => 3,
         'PropagateIntegrationInheritDescendantWorker' => 3,

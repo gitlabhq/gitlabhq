@@ -56,16 +56,10 @@ export const ISSUE_REFERENCE = /^#\d+$/;
 export const MAX_LIST_SIZE = 10;
 export const PAGE_SIZE = 20;
 export const PAGE_SIZE_MANUAL = 100;
+export const PARAM_PAGE_AFTER = 'page_after';
+export const PARAM_PAGE_BEFORE = 'page_before';
 export const PARAM_STATE = 'state';
 export const RELATIVE_POSITION = 'relative_position';
-
-export const defaultPageSizeParams = {
-  firstPageSize: PAGE_SIZE,
-};
-
-export const largePageSizeParams = {
-  firstPageSize: PAGE_SIZE_MANUAL,
-};
 
 export const BLOCKING_ISSUES_ASC = 'BLOCKING_ISSUES_ASC';
 export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';

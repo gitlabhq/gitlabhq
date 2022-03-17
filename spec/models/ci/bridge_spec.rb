@@ -7,6 +7,10 @@ RSpec.describe Ci::Bridge do
   let_it_be(:target_project) { create(:project, name: 'project', namespace: create(:namespace, name: 'my')) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
+  before_all do
+    create(:ci_pipeline_variable, pipeline: pipeline, key: 'PVAR1', value: 'PVAL1')
+  end
+
   let(:bridge) do
     create(:ci_bridge, :variables, status: :created,
                                    options: options,
@@ -213,6 +217,70 @@ RSpec.describe Ci::Bridge do
       it 'does not expand variable recursively' do
         expect(bridge.downstream_variables)
           .to include(key: 'EXPANDED', value: '$EXPANDED')
+      end
+    end
+
+    context 'forward variables' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:yaml_variables, :pipeline_variables, :ff, :variables) do
+        nil   | nil   | true  | %w[BRIDGE]
+        nil   | false | true  | %w[BRIDGE]
+        nil   | true  | true  | %w[BRIDGE PVAR1]
+        false | nil   | true  | %w[]
+        false | false | true  | %w[]
+        false | true  | true  | %w[PVAR1]
+        true  | nil   | true  | %w[BRIDGE]
+        true  | false | true  | %w[BRIDGE]
+        true  | true  | true  | %w[BRIDGE PVAR1]
+        nil   | nil   | false | %w[BRIDGE]
+        nil   | false | false | %w[BRIDGE]
+        nil   | true  | false | %w[BRIDGE]
+        false | nil   | false | %w[BRIDGE]
+        false | false | false | %w[BRIDGE]
+        false | true  | false | %w[BRIDGE]
+        true  | nil   | false | %w[BRIDGE]
+        true  | false | false | %w[BRIDGE]
+        true  | true  | false | %w[BRIDGE]
+      end
+
+      with_them do
+        let(:options) do
+          {
+            trigger: {
+              project: 'my/project',
+              branch: 'master',
+              forward: { yaml_variables: yaml_variables,
+                         pipeline_variables: pipeline_variables }.compact
+            }
+          }
+        end
+
+        before do
+          stub_feature_flags(ci_trigger_forward_variables: ff)
+        end
+
+        it 'returns variables according to the forward value' do
+          expect(bridge.downstream_variables.map { |v| v[:key] }).to contain_exactly(*variables)
+        end
+      end
+
+      context 'when sending a variable via both yaml and pipeline' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        let(:options) do
+          { trigger: { project: 'my/project', forward: { pipeline_variables: true } } }
+        end
+
+        before do
+          create(:ci_pipeline_variable, pipeline: pipeline, key: 'BRIDGE', value: 'new value')
+        end
+
+        it 'uses the pipeline variable' do
+          expect(bridge.downstream_variables).to contain_exactly(
+            { key: 'BRIDGE', value: 'new value' }
+          )
+        end
       end
     end
   end

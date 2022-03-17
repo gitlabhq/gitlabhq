@@ -561,6 +561,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:projects_schedule_refresh_build_artifacts_size_statistics
+  :worker_name: Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:prune_old_events
   :worker_name: PruneOldEventsWorker
   :feature_category: :users
@@ -2799,6 +2808,15 @@
   :feature_category: :sharding
   :has_external_dependencies:
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: projects_refresh_build_artifacts_size_statistics
+  :worker_name: Projects::RefreshBuildArtifactsSizeStatisticsWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies:
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

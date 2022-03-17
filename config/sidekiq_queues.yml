@@ -363,6 +363,8 @@
   - 1
 - - projects_process_sync_events
   - 1
+- - projects_refresh_build_artifacts_size_statistics
+  - 1
 - - projects_schedule_bulk_repository_shard_moves
   - 1
 - - projects_update_repository_storage

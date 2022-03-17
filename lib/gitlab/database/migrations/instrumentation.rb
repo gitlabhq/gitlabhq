@@ -17,7 +17,11 @@ module Gitlab
         def observe(version:, name:, connection:, &block)
           observation = Observation.new(version: version, name: name, success: false)
 
-          observers = observer_classes.map { |c| c.new(observation, @result_dir, connection) }
+          per_migration_result_dir = File.join(@result_dir, name)
+
+          FileUtils.mkdir_p(per_migration_result_dir)
+
+          observers = observer_classes.map { |c| c.new(observation, per_migration_result_dir, connection) }
 
           on_each_observer(observers) { |observer| observer.before }
 

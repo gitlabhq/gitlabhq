@@ -81,7 +81,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.atom { render layout: 'xml.atom' }
+      format.atom { render layout: 'xml' }
       format.json do
         render json: {
           html: view_to_html_string("projects/issues/_issues"),

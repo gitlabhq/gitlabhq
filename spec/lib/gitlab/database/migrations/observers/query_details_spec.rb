@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryDetails do
   let(:query) { "select date_trunc('day', $1::timestamptz) + $2 * (interval '1 hour')" }
   let(:query_binds) { [Time.current, 3] }
   let(:directory_path) { Dir.mktmpdir }
-  let(:log_file) { "#{directory_path}/#{migration_version}_#{migration_name}-query-details.json" }
+  let(:log_file) { "#{directory_path}/query-details.json" }
   let(:query_details) { Gitlab::Json.parse(File.read(log_file)) }
   let(:migration_version) { 20210422152437 }
   let(:migration_name) { 'test' }

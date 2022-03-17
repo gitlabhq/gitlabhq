@@ -325,6 +325,40 @@ module Gitlab
             end
           end
         end
+
+        describe 'bridge job' do
+          let(:config) do
+            YAML.dump(rspec: {
+              trigger: {
+                project: 'namespace/project',
+                branch: 'main'
+              }
+            })
+          end
+
+          it 'has the attributes' do
+            expect(subject[:options]).to eq(
+              trigger: { project: 'namespace/project', branch: 'main' }
+            )
+          end
+
+          context 'with forward' do
+            let(:config) do
+              YAML.dump(rspec: {
+                trigger: {
+                  project: 'namespace/project',
+                  forward: { pipeline_variables: true }
+                }
+              })
+            end
+
+            it 'has the attributes' do
+              expect(subject[:options]).to eq(
+                trigger: { project: 'namespace/project', forward: { pipeline_variables: true } }
+              )
+            end
+          end
+        end
       end
 
       describe '#stages_attributes' do

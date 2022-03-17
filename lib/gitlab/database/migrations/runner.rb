@@ -5,6 +5,8 @@ module Gitlab
     module Migrations
       class Runner
         BASE_RESULT_DIR = Rails.root.join('tmp', 'migration-testing').freeze
+        METADATA_FILENAME = 'metadata.json'
+        SCHEMA_VERSION = 2 # Version of the output format produced by the runner
 
         class << self
           def up
@@ -75,9 +77,11 @@ module Gitlab
           end
         ensure
           if instrumentation
-            File.open(File.join(result_dir, Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME), 'wb+') do |io|
-              io << instrumentation.observations.to_json
-            end
+            stats_filename = File.join(result_dir, Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME)
+            File.write(stats_filename, instrumentation.observations.to_json)
+
+            metadata_filename = File.join(result_dir, METADATA_FILENAME)
+            File.write(metadata_filename, { version: SCHEMA_VERSION }.to_json)
           end
 
           # We clear the cache here to mirror the cache clearing that happens at the end of `db:migrate` tasks

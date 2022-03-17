@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryLog do
   it 'writes a file with the query log' do
     observe
 
-    expect(File.read("#{directory_path}/#{migration_version}_#{migration_name}.log")).to include(query)
+    expect(File.read("#{directory_path}/migration.log")).to include(query)
   end
 
   it 'does not change the default logger' do

@@ -2,69 +2,236 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::AfterRequeueJobService do
-  let_it_be(:project) { create(:project) }
+RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
+  let_it_be(:project) { create(:project, :empty_repo) }
   let_it_be(:user) { project.first_owner }
 
-  let(:pipeline) { create(:ci_pipeline, project: project) }
-
-  let!(:build1) { create(:ci_build, name: 'build1', pipeline: pipeline, stage_idx: 0) }
-  let!(:test1) { create(:ci_build, :success, name: 'test1', pipeline: pipeline, stage_idx: 1) }
-  let!(:test2) { create(:ci_build, :skipped, name: 'test2', pipeline: pipeline, stage_idx: 1) }
-  let!(:test3) { create(:ci_build, :skipped, :dependent, name: 'test3', pipeline: pipeline, stage_idx: 1, needed: build1) }
-  let!(:deploy) { create(:ci_build, :skipped, :dependent, name: 'deploy', pipeline: pipeline, stage_idx: 2, needed: test3) }
-
-  subject(:execute_service) { described_class.new(project, user).execute(build1) }
-
-  shared_examples 'processing subsequent skipped jobs' do
-    it 'marks subsequent skipped jobs as processable' do
-      expect(test1.reload).to be_success
-      expect(test2.reload).to be_skipped
-      expect(test3.reload).to be_skipped
-      expect(deploy.reload).to be_skipped
-
-      execute_service
-
-      expect(test1.reload).to be_success
-      expect(test2.reload).to be_created
-      expect(test3.reload).to be_created
-      expect(deploy.reload).to be_created
-    end
+  before_all do
+    project.repository.create_file(user, 'init', 'init', message: 'init', branch_name: 'master')
   end
 
-  it_behaves_like 'processing subsequent skipped jobs'
+  subject(:service) { described_class.new(project, user) }
 
-  context 'when there is a job need from the same stage' do
-    let!(:build2) do
-      create(:ci_build,
-             :skipped,
-             :dependent,
-             name: 'build2',
-             pipeline: pipeline,
-             stage_idx: 0,
-             scheduling_type: :dag,
-             needed: build1)
+  context 'stage-dag mixed pipeline' do
+    let(:config) do
+      <<-EOY
+      stages: [a, b, c]
+
+      a1:
+        stage: a
+        script: exit $(($RANDOM % 2))
+
+      a2:
+        stage: a
+        script: exit 0
+        needs: [a1]
+
+      b1:
+        stage: b
+        script: exit 0
+        needs: []
+
+      b2:
+        stage: b
+        script: exit 0
+        needs: [a2]
+
+      c1:
+        stage: c
+        script: exit 0
+        needs: [b2]
+
+      c2:
+        stage: c
+        script: exit 0
+      EOY
     end
 
-    shared_examples 'processing the same stage job' do
-      it 'marks subsequent skipped jobs as processable' do
-        expect { execute_service }.to change { build2.reload.status }.from('skipped').to('created')
-      end
+    let(:pipeline) do
+      Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
     end
 
-    it_behaves_like 'processing subsequent skipped jobs'
-    it_behaves_like 'processing the same stage job'
-  end
-
-  context 'when the pipeline is a downstream pipeline and the bridge is depended' do
-    let!(:trigger_job) { create(:ci_bridge, :strategy_depend, name: 'trigger_job', status: 'success') }
+    let(:a1) { find_job('a1') }
+    let(:b1) { find_job('b1') }
 
     before do
-      create(:ci_sources_pipeline, pipeline: pipeline, source_job: trigger_job)
+      stub_ci_pipeline_yaml_file(config)
+      check_jobs_statuses(
+        a1: 'pending',
+        a2: 'created',
+        b1: 'pending',
+        b2: 'created',
+        c1: 'created',
+        c2: 'created'
+      )
+
+      b1.success!
+      check_jobs_statuses(
+        a1: 'pending',
+        a2: 'created',
+        b1: 'success',
+        b2: 'created',
+        c1: 'created',
+        c2: 'created'
+      )
+
+      a1.drop!
+      check_jobs_statuses(
+        a1: 'failed',
+        a2: 'skipped',
+        b1: 'success',
+        b2: 'skipped',
+        c1: 'skipped',
+        c2: 'skipped'
+      )
+
+      new_a1 = Ci::RetryBuildService.new(project, user).clone!(a1)
+      new_a1.enqueue!
+      check_jobs_statuses(
+        a1: 'pending',
+        a2: 'skipped',
+        b1: 'success',
+        b2: 'skipped',
+        c1: 'skipped',
+        c2: 'skipped'
+      )
     end
 
-    it 'marks source bridge as pending' do
-      expect { execute_service }.to change { trigger_job.reload.status }.from('success').to('pending')
+    it 'marks subsequent skipped jobs as processable' do
+      execute_after_requeue_service(a1)
+
+      check_jobs_statuses(
+        a1: 'pending',
+        a2: 'created',
+        b1: 'success',
+        b2: 'created',
+        c1: 'created',
+        c2: 'created'
+      )
     end
+  end
+
+  context 'stage-dag mixed pipeline with some same-stage needs' do
+    let(:config) do
+      <<-EOY
+      stages: [a, b, c]
+
+      a1:
+        stage: a
+        script: exit $(($RANDOM % 2))
+
+      a2:
+        stage: a
+        script: exit 0
+        needs: [a1]
+
+      b1:
+        stage: b
+        script: exit 0
+        needs: [b2]
+
+      b2:
+        stage: b
+        script: exit 0
+
+      c1:
+        stage: c
+        script: exit 0
+        needs: [b2]
+
+      c2:
+        stage: c
+        script: exit 0
+      EOY
+    end
+
+    let(:pipeline) do
+      Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
+    end
+
+    let(:a1) { find_job('a1') }
+
+    before do
+      stub_ci_pipeline_yaml_file(config)
+      check_jobs_statuses(
+        a1: 'pending',
+        a2: 'created',
+        b1: 'created',
+        b2: 'created',
+        c1: 'created',
+        c2: 'created'
+      )
+
+      a1.drop!
+      check_jobs_statuses(
+        a1: 'failed',
+        a2: 'skipped',
+        b1: 'skipped',
+        b2: 'skipped',
+        c1: 'skipped',
+        c2: 'skipped'
+      )
+
+      new_a1 = Ci::RetryBuildService.new(project, user).clone!(a1)
+      new_a1.enqueue!
+      check_jobs_statuses(
+        a1: 'pending',
+        a2: 'skipped',
+        b1: 'skipped',
+        b2: 'skipped',
+        c1: 'skipped',
+        c2: 'skipped'
+      )
+    end
+
+    it 'marks subsequent skipped jobs as processable' do
+      execute_after_requeue_service(a1)
+
+      check_jobs_statuses(
+        a1: 'pending',
+        a2: 'created',
+        b1: 'created',
+        b2: 'created',
+        c1: 'created',
+        c2: 'created'
+      )
+    end
+
+    context 'when the FF ci_fix_order_of_subsequent_jobs is disabled' do
+      before do
+        stub_feature_flags(ci_fix_order_of_subsequent_jobs: false)
+      end
+
+      it 'does not mark b1 as processable' do
+        execute_after_requeue_service(a1)
+
+        check_jobs_statuses(
+          a1: 'pending',
+          a2: 'created',
+          b1: 'skipped',
+          b2: 'created',
+          c1: 'created',
+          c2: 'created'
+        )
+      end
+    end
+  end
+
+  private
+
+  def find_job(name)
+    processables.find_by!(name: name)
+  end
+
+  def check_jobs_statuses(statuses)
+    expect(processables.order(:name).pluck(:name, :status)).to contain_exactly(*statuses.stringify_keys.to_a)
+  end
+
+  def processables
+    pipeline.processables.latest
+  end
+
+  def execute_after_requeue_service(processable)
+    service.execute(processable)
   end
 end

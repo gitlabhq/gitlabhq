@@ -401,6 +401,7 @@ project_alerting_settings: :gitlab_main
 project_aliases: :gitlab_main
 project_authorizations: :gitlab_main
 project_auto_devops: :gitlab_main
+project_build_artifacts_size_refreshes: :gitlab_main
 project_ci_cd_settings: :gitlab_main
 project_ci_feature_usages: :gitlab_main
 project_compliance_framework_settings: :gitlab_main

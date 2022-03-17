@@ -1590,14 +1590,18 @@ RSpec.describe ProjectsController do
 
       get :show, format: :atom, params: { id: public_project, namespace_id: public_project.namespace }
 
-      expect(response).to render_template('xml.atom')
+      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to render_template(:show)
+      expect(response).to render_template(layout: :xml)
       expect(assigns(:events)).to eq([event])
     end
 
     it 'filters by calling event.visible_to_user?' do
       get :show, format: :atom, params: { id: public_project, namespace_id: public_project.namespace }
 
-      expect(response).to render_template('xml.atom')
+      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to render_template(:show)
+      expect(response).to render_template(layout: :xml)
       expect(assigns(:events)).to eq([event])
     end
   end

@@ -42,7 +42,7 @@ class Projects::TagsController < Projects::ApplicationController
       status = @tags_loading_error ? :service_unavailable : :ok
 
       format.html { render status: status }
-      format.atom { render layout: 'xml.atom', status: status }
+      format.atom { render layout: 'xml', status: status }
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

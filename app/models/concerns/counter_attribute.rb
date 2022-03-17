@@ -102,9 +102,7 @@ module CounterAttribute
 
     run_after_commit_or_now do
       if counter_attribute_enabled?(attribute)
-        redis_state do |redis|
-          redis.incrby(counter_key(attribute), increment)
-        end
+        increment_counter(attribute, increment)
 
         FlushCounterIncrementsWorker.perform_in(WORKER_DELAY, self.class.name, self.id, attribute)
       else
@@ -113,6 +111,28 @@ module CounterAttribute
     end
 
     true
+  end
+
+  def increment_counter(attribute, increment)
+    if counter_attribute_enabled?(attribute)
+      redis_state do |redis|
+        redis.incrby(counter_key(attribute), increment)
+      end
+    end
+  end
+
+  def clear_counter!(attribute)
+    if counter_attribute_enabled?(attribute)
+      redis_state { |redis| redis.del(counter_key(attribute)) }
+    end
+  end
+
+  def get_counter_value(attribute)
+    if counter_attribute_enabled?(attribute)
+      redis_state do |redis|
+        redis.get(counter_key(attribute)).to_i
+      end
+    end
   end
 
   def counter_key(attribute)

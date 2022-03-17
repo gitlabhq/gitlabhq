@@ -45,7 +45,7 @@ module Gitlab
           validate_job!(name, job)
         end
 
-        YamlProcessor::Dag.check_circular_dependencies!(@jobs)
+        check_circular_dependencies
       end
 
       def validate_job!(name, job)
@@ -144,6 +144,17 @@ module Gitlab
         unless on_stop_job[:environment][:action] == 'stop'
           error!("#{name} job: on_stop job #{on_stop} needs to have action stop defined")
         end
+      end
+
+      def check_circular_dependencies
+        jobs = @jobs.values.to_h do |job|
+          name = job[:name].to_s
+          needs = job.dig(:needs, :job).to_a
+
+          [name, needs.map { |need| need[:name].to_s }]
+        end
+
+        Dag.check_circular_dependencies!(jobs)
       end
 
       def error!(message)
