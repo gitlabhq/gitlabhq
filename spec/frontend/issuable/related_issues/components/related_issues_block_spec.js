@@ -6,6 +6,7 @@ import {
   issuable3,
 } from 'jest/issuable/components/related_issuable_mock_data';
 import RelatedIssuesBlock from '~/related_issues/components/related_issues_block.vue';
+import AddIssuableForm from '~/related_issues/components/add_issuable_form.vue';
 import {
   issuableTypesMap,
   linkedIssueTypesMap,
@@ -139,12 +140,17 @@ describe('RelatedIssuesBlock', () => {
           pathIdSeparator: PathIdSeparator.Issue,
           isFormVisible: true,
           issuableType: 'issue',
+          autoCompleteEpics: false,
         },
       });
     });
 
     it('shows add related issues form', () => {
       expect(wrapper.find('.js-add-related-issues-form-area').exists()).toBe(true);
+    });
+
+    it('sets `autoCompleteEpics` to false for add-issuable-form', () => {
+      expect(wrapper.find(AddIssuableForm).props('autoCompleteEpics')).toBe(false);
     });
   });
 

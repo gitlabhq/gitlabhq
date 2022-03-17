@@ -96,6 +96,31 @@ RSpec.describe 'search/_results' do
       end
     end
 
+    describe 'git blame click tracking' do
+      let(:scope) { 'blobs' }
+      let(:search_objects) { Gitlab::ProjectSearchResults.new(user, 'testing', project: project).objects(scope) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'renders the click link event tracking attributes' do
+          render
+
+          expect(rendered).to have_selector('[data-track-action=click_link]')
+          expect(rendered).to have_selector('[data-track-label=git_blame]')
+          expect(rendered).to have_selector('[data-track-property=search_result]')
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'does not render the click link event tracking attributes' do
+          render
+
+          expect(rendered).not_to have_selector('[data-track-action=click_link]')
+          expect(rendered).not_to have_selector('[data-track-label=git_blame]')
+          expect(rendered).not_to have_selector('[data-track-property=search_result]')
+        end
+      end
+    end
+
     %w[blobs notes wiki_blobs milestones].each do |search_scope|
       context "when scope is #{search_scope}" do
         let(:scope) { search_scope }

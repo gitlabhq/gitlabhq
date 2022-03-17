@@ -38,6 +38,12 @@ For deprecation reviewers (Technical Writers only):
 
 ## 14.9
 
+### GitLab Pages running as daemon
+
+In 15.0, support for daemon mode for GitLab Pages will be removed.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### GitLab self-monitoring
 
 WARNING:

@@ -85,6 +85,16 @@ export default {
       required: false,
       default: true,
     },
+    autoCompleteEpics: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    autoCompleteIssues: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     hasRelatedIssues() {
@@ -198,6 +208,8 @@ export default {
             :input-value="inputValue"
             :pending-references="pendingReferences"
             :auto-complete-sources="autoCompleteSources"
+            :auto-complete-epics="autoCompleteEpics"
+            :auto-complete-issues="autoCompleteIssues"
             :path-id-separator="pathIdSeparator"
             @pendingIssuableRemoveRequest="$emit('pendingIssuableRemoveRequest', $event)"
             @addIssuableFormInput="$emit('addIssuableFormInput', $event)"

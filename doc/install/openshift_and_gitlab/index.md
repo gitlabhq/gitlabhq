@@ -29,6 +29,12 @@ The GitLab Operator does not include the GitLab Runner. To install and manage a 
 
 ## Unsupported GitLab features
 
+### Secure and Protect
+
+- License Compliance
+- Code Quality scanning
+- Cluster Image Scanning
+
 ### Docker-in-Docker
 
 When using OpenShift to run a GitLab Runner Fleet, we do not support some GitLab features given OpenShift's security model.

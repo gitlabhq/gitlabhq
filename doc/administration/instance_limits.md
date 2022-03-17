@@ -563,7 +563,7 @@ Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 
 ### Number of files per GitLab Pages web-site
 
-The total number of file entries (including directories and symlinks) is limited to `100000` per
+The total number of file entries (including directories and symlinks) is limited to `200,000` per
 GitLab Pages website.
 
 This is the default limit for all [GitLab self-managed and SaaS plans](https://about.gitlab.com/pricing/).

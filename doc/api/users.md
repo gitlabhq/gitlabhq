@@ -603,7 +603,7 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
+  "is_admin": true,
   "bio": "",
   "location": null,
   "public_email": "john@example.com",

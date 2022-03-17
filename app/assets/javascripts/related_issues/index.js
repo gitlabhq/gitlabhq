@@ -21,6 +21,7 @@ export default function initRelatedIssues() {
             showCategorizedIssues: parseBoolean(
               relatedIssuesRootElement.dataset.showCategorizedIssues,
             ),
+            autoCompleteEpics: false,
           },
         }),
     });
