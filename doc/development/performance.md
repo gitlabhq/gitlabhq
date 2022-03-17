@@ -7,7 +7,38 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Performance Guidelines
 
 This document describes various guidelines to follow to ensure good and
-consistent performance of GitLab.
+consistent performance of GitLab. Refer to the [Index](#performance-documentation) section below to navigate to Performance-related pages.
+
+## Performance Documentation
+
+- General:
+  - [Solving performance issues](#workflow)
+  - [Handbook performance page](https://about.gitlab.com/handbook/engineering/performance/)
+  - [Merge request performance guidelines](../development/merge_request_performance_guidelines.md)
+- Backend:
+  - [Tooling](#tooling)
+  - Database:
+    - [Query performance guidelines](../development/query_performance.md)
+    - [Pagination performance guidelines](../development/database/pagination_performance_guidelines.md)
+    - [Keyset pagination performance](../development/database/keyset_pagination.md#performance)
+  - [Troubleshooting import/export performance issues](../development/import_export.md#troubleshooting-performance-issues)
+  - [Pipelines performance in the `gitlab` project](../development/pipelines.md#performance)
+- Frontend:
+  - [Performance guidelines](../development/fe_guide/performance.md)
+  - [Performance dashboards and monitoring guidelines](../development/new_fe_guide/development/performance.md)
+  - [Browser performance testing guidelines](../user/project/merge_requests/browser_performance_testing.md)
+  - [`gdk measure` and `gdk measure-workflow`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_commands.md#measure-performance)
+- QA:
+  - [Load performance testing](../user/project/merge_requests/load_performance_testing.md)
+  - [GitLab Performance Tool project](https://gitlab.com/gitlab-org/quality/performance)
+  - [Review apps performance metrics](../development/testing_guide/review_apps.md#performance-metrics)
+- Monitoring & Overview:
+  - [GitLab performance monitoring](../administration/monitoring/performance/index.md)
+  - [Development department performance indicators](https://about.gitlab.com/handbook/engineering/development/performance-indicators/)
+  - [Service measurement](../development/service_measurement.md)
+- Self-managed administration and customer-focused:
+  - [File system performance benchmarking](../administration/operations/filesystem_benchmarking.md)
+  - [Sidekiq performance troubleshooting](../administration/troubleshooting/sidekiq.md)
 
 ## Workflow
 
@@ -156,7 +187,7 @@ With the [Performance bar](../administration/monitoring/performance/performance_
 you have the option to profile a request using Stackprof and immediately output the results to a
 [Speedscope flamegraph](profiling.md#speedscope-flamegraphs).
 
-### RSpec profiling with Stackprof 
+### RSpec profiling with Stackprof
 
 To create a profile from a spec, identify (or create) a spec that
 exercises the troublesome code path, then run it using the `bin/rspec-stackprof`
@@ -307,7 +338,7 @@ ProjectPolicy#access_allowed_to? (/Users/royzwambag/work/gitlab-development-kit/
   code:
                                   |   793  |   def access_allowed_to?(feature)
   141    (0.2%)                   |   794  |     return false unless project.project_feature
-                                  |   795  | 
+                                  |   795  |
     8    (0.0%)                   |   796  |     case project.project_feature.access_level(feature)
                                   |   797  |     when ProjectFeature::DISABLED
                                   |   798  |       false

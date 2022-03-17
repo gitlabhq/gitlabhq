@@ -291,21 +291,7 @@ class User < ApplicationRecord
     end
   end
   after_commit(on: :update) do
-    if previous_changes.key?('email')
-      # Add the old primary email to Emails if not added already - this should be removed
-      # after the background migration for MR https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70872/ has completed,
-      # as the primary email is now added to Emails upon confirmation
-      # Issue to remove that: https://gitlab.com/gitlab-org/gitlab/-/issues/344134
-      previous_confirmed_at = previous_changes.key?('confirmed_at') ? previous_changes['confirmed_at'][0] : confirmed_at
-      previous_email = previous_changes[:email][0]
-      if previous_confirmed_at && !emails.exists?(email: previous_email)
-        # rubocop: disable CodeReuse/ServiceClass
-        Emails::CreateService.new(self, user: self, email: previous_email).execute(confirmed_at: previous_confirmed_at)
-        # rubocop: enable CodeReuse/ServiceClass
-      end
-
-      update_invalid_gpg_signatures
-    end
+    update_invalid_gpg_signatures if previous_changes.key?('email')
   end
 
   after_initialize :set_projects_limit

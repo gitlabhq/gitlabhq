@@ -1,6 +1,6 @@
 = render 'shared/global_alert',
   variant: :warning,
-  alert_class: 'js-recovery-settings-callout',
+  alert_class: 'js-recovery-settings-callout gl-mt-5',
   alert_data: { feature_id: Users::CalloutsHelper::TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK, dismiss_endpoint: callouts_path, defer_links: 'true' },
   close_button_data: { testid: 'close-account-recovery-regular-check-callout' } do
   .gl-alert-body

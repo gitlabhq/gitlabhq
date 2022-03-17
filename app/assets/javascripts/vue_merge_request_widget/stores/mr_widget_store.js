@@ -32,7 +32,13 @@ export default class MergeRequestStore {
     this.setPaths(data);
 
     this.setData(data);
+    this.initCodeQualityReport(data);
     this.setGitpodData(data);
+  }
+
+  initCodeQualityReport(data) {
+    this.blobPath = data.blob_path;
+    this.codeQuality = data.codequality_reports_path;
   }
 
   setData(data, isRebased) {

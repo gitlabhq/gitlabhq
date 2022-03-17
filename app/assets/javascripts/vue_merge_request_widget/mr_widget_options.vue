@@ -46,6 +46,7 @@ import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variab
 import getStateQuery from './queries/get_state.query.graphql';
 import terraformExtension from './extensions/terraform';
 import accessibilityExtension from './extensions/accessibility';
+import codeQualityExtension from './extensions/code_quality';
 
 export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
@@ -239,6 +240,11 @@ export default {
     shouldRenderTerraformPlans(newVal) {
       if (newVal) {
         this.registerTerraformPlans();
+      }
+    },
+    shouldRenderCodeQuality(newVal) {
+      if (newVal) {
+        this.registerCodeQualityExtension();
       }
     },
     shouldShowAccessibilityReport(newVal) {
@@ -491,6 +497,11 @@ export default {
         registerExtension(accessibilityExtension);
       }
     },
+    registerCodeQualityExtension() {
+      if (this.shouldRenderCodeQuality && this.shouldShowExtension) {
+        registerExtension(codeQualityExtension);
+      }
+    },
   },
 };
 </script>
@@ -546,7 +557,7 @@ export default {
       </div>
       <extensions-container :mr="mr" />
       <grouped-codequality-reports-app
-        v-if="shouldRenderCodeQuality"
+        v-if="shouldRenderCodeQuality && !shouldShowExtension"
         :head-blob-path="mr.headBlobPath"
         :base-blob-path="mr.baseBlobPath"
         :codequality-reports-path="mr.codequalityReportsPath"

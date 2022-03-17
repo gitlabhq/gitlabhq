@@ -631,38 +631,6 @@ RSpec.describe Project, factory_default: :keep do
 
           expect(project).not_to be_valid
         end
-
-        context 'restrict_special_characters_in_project_path feature flag is disabled' do
-          before do
-            stub_feature_flags(restrict_special_characters_in_project_path: false)
-          end
-
-          it "allows a path ending in '#{special_character}'" do
-            project = build(:project, path: "foo#{special_character}")
-
-            expect(project).to be_valid
-          end
-        end
-      end
-
-      context 'restrict_special_characters_in_project_path feature flag is disabled' do
-        before do
-          stub_feature_flags(restrict_special_characters_in_project_path: false)
-        end
-
-        %w[. _].each do |special_character|
-          it "allows a path starting with '#{special_character}'" do
-            project = build(:project, path: "#{special_character}foo")
-
-            expect(project).to be_valid
-          end
-        end
-
-        it "rejects a path starting with '-'" do
-          project = build(:project, path: "-foo")
-
-          expect(project).not_to be_valid
-        end
       end
     end
   end

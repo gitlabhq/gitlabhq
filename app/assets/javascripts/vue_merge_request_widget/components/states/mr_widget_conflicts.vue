@@ -82,17 +82,8 @@ export default {
 
       return this.mr.shouldBeRebased;
     },
-    sourceBranchProtected() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.stateData.sourceBranchProtected;
-      }
-
-      return this.mr.sourceBranchProtected;
-    },
     showResolveButton() {
-      return (
-        this.mr.conflictResolutionPath && this.canPushToSourceBranch && !this.sourceBranchProtected
-      );
+      return this.mr.conflictResolutionPath && this.canPushToSourceBranch;
     },
   },
 };

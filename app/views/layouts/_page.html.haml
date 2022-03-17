@@ -14,7 +14,6 @@
       = dispensable_render "layouts/nav/classification_level_banner"
       = yield :flash_message
       = dispensable_render "shared/service_ping_consent"
-      = render_two_factor_auth_recovery_settings_check
       = dispensable_render_if_exists "layouts/header/ee_subscribable_banner"
       = dispensable_render_if_exists "layouts/header/seats_count_alert"
       = dispensable_render_if_exists "shared/namespace_storage_limit_alert"

@@ -224,8 +224,8 @@ describe('MRWidgetConflicts', () => {
           });
         });
 
-        it('should not allow you to resolve the conflicts', () => {
-          expect(findResolveButton().exists()).toBe(false);
+        it('should allow you to resolve the conflicts', () => {
+          expect(findResolveButton().exists()).toBe(true);
         });
       });
 

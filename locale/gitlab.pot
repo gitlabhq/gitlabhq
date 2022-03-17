@@ -350,6 +350,11 @@ msgid_plural "%d personal projects will be removed and cannot be restored."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d point"
+msgid_plural "%d points"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d previously merged commit"
 msgid_plural "%d previously merged commits"
 msgstr[0] ""
@@ -980,6 +985,11 @@ msgstr ""
 
 msgid "%{start} to %{end}"
 msgstr ""
+
+msgid "%{strongOpen}%{errors}%{strongClose} point"
+msgid_plural "%{strongOpen}%{errors}%{strongClose} points"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
 msgstr ""
@@ -43509,6 +43519,15 @@ msgstr ""
 msgid "ciReport|Cluster Image Scanning"
 msgstr ""
 
+msgid "ciReport|Code Quality"
+msgstr ""
+
+msgid "ciReport|Code Quality failed loading results"
+msgstr ""
+
+msgid "ciReport|Code Quality test metrics results are being parsed"
+msgstr ""
+
 msgid "ciReport|Code quality degraded"
 msgstr ""
 
@@ -43614,6 +43633,9 @@ msgid "ciReport|Manage licenses"
 msgstr ""
 
 msgid "ciReport|New"
+msgstr ""
+
+msgid "ciReport|No changes to Code Quality."
 msgstr ""
 
 msgid "ciReport|No changes to code quality"

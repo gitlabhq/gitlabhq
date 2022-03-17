@@ -43,14 +43,15 @@ RSpec.describe JiraConnect::EventsController do
   end
 
   describe '#installed' do
-    let(:client_key) { '1234' }
-    let(:shared_secret) { 'secret' }
+    let_it_be(:client_key) { '1234' }
+    let_it_be(:shared_secret) { 'secret' }
+    let_it_be(:base_url) { 'https://test.atlassian.net' }
 
     let(:params) do
       {
         clientKey: client_key,
         sharedSecret: shared_secret,
-        baseUrl: 'https://test.atlassian.net'
+        baseUrl: base_url
       }
     end
 
@@ -77,11 +78,11 @@ RSpec.describe JiraConnect::EventsController do
       expect(installation.base_url).to eq('https://test.atlassian.net')
     end
 
-    context 'when it is a version update and shared_secret is not sent' do
+    context 'when the shared_secret param is missing' do
       let(:params) do
         {
           clientKey: client_key,
-          baseUrl: 'https://test.atlassian.net'
+          baseUrl: base_url
         }
       end
 
@@ -90,13 +91,48 @@ RSpec.describe JiraConnect::EventsController do
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
+    end
 
-      context 'and an installation exists' do
-        let!(:installation) { create(:jira_connect_installation, client_key: client_key, shared_secret: shared_secret) }
+    context 'when an installation already exists' do
+      let_it_be(:installation) { create(:jira_connect_installation, base_url: base_url, client_key: client_key, shared_secret: shared_secret) }
 
-        it 'validates the JWT token in authorization header and returns 200 without creating a new installation' do
-          expect { subject }.not_to change { JiraConnectInstallation.count }
+      it 'validates the JWT token in authorization header and returns 200 without creating a new installation', :aggregate_failures do
+        expect { subject }.not_to change { JiraConnectInstallation.count }
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when parameters include a new shared secret and base_url' do
+        let(:shared_secret) { 'new_secret' }
+        let(:base_url) { 'https://new_test.atlassian.net' }
+
+        it 'updates the installation', :aggregate_failures do
+          subject
+
           expect(response).to have_gitlab_http_status(:ok)
+          expect(installation.reload).to have_attributes(
+            shared_secret: shared_secret,
+            base_url: base_url
+          )
+        end
+
+        context 'when the `jira_connect_installation_update` feature flag is disabled' do
+          before do
+            stub_feature_flags(jira_connect_installation_update: false)
+          end
+
+          it 'does not update the installation', :aggregate_failures do
+            expect { subject }.not_to change { installation.reload.attributes }
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
+
+      context 'when the new base_url is invalid' do
+        let(:base_url) { 'invalid' }
+
+        it 'renders 422', :aggregate_failures do
+          expect { subject }.not_to change { installation.reload.base_url }
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
       end
     end
