@@ -13,6 +13,7 @@ module Gitlab
       # ports - Raises error if the given URL port does is not between given ports.
       # allow_localhost - Raises error if URL resolves to a localhost IP address and argument is false.
       # allow_local_network - Raises error if URL resolves to a link-local address and argument is false.
+      # allow_object_storage - Avoid raising an error if URL resolves to an object storage endpoint and argument is true.
       # ascii_only - Raises error if URL has unicode characters and argument is true.
       # enforce_user - Raises error if URL user doesn't start with alphanumeric characters and argument is true.
       # enforce_sanitization - Raises error if URL includes any HTML/CSS/JS tags and argument is true.
@@ -25,6 +26,7 @@ module Gitlab
         schemes: [],
         allow_localhost: false,
         allow_local_network: true,
+        allow_object_storage: false,
         ascii_only: false,
         enforce_user: false,
         enforce_sanitization: false,
@@ -57,6 +59,8 @@ module Gitlab
 
         # Allow url from the GitLab instance itself but only for the configured hostname and ports
         return protected_uri_with_hostname if internal?(uri)
+
+        return protected_uri_with_hostname if allow_object_storage && object_storage_endpoint?(uri)
 
         validate_local_request(
           address_info: address_info,
@@ -267,6 +271,30 @@ module Gitlab
         uri.scheme == 'ssh' &&
           uri.hostname == config.gitlab_shell.ssh_host &&
           get_port(uri) == config.gitlab_shell.ssh_port
+      end
+
+      def enabled_object_storage_endpoints
+        ObjectStoreSettings::SUPPORTED_TYPES.collect do |type|
+          section_setting = config.try(type)
+
+          next unless section_setting
+
+          object_store_setting = section_setting['object_store']
+
+          next unless object_store_setting && object_store_setting['enabled']
+
+          object_store_setting.dig('connection', 'endpoint')
+        end.compact.uniq
+      end
+
+      def object_storage_endpoint?(uri)
+        enabled_object_storage_endpoints.any? do |endpoint|
+          endpoint_uri = URI(endpoint)
+
+          uri.scheme == endpoint_uri.scheme &&
+            uri.hostname == endpoint_uri.hostname &&
+            get_port(uri) == get_port(endpoint_uri)
+        end
       end
 
       def domain_allowed?(uri)

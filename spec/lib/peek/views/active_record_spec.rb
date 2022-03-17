@@ -119,16 +119,4 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
       )
     )
   end
-
-  context 'when the GITLAB_MULTIPLE_DATABASE_METRICS env var is disabled' do
-    before do
-      stub_env('GITLAB_MULTIPLE_DATABASE_METRICS', nil)
-    end
-
-    it 'does not include db_config_name field' do
-      ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
-
-      expect(subject.results[:details][0][:db_config_name]).to be_nil
-    end
-  end
 end

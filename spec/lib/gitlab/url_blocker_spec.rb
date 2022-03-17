@@ -39,6 +39,73 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
     end
 
+    context 'when URI is for a local object storage' do
+      let(:import_url) { "#{host}/external-diffs/merge_request_diffs/mr-1/diff-1" }
+      let(:enabled_object_storage_setting) do
+        {
+          'object_store' =>
+          {
+            'enabled' => true,
+            'connection' => {
+              'endpoint' => host
+            }
+          }
+        }
+      end
+
+      before do
+        allow(Settings).to receive(:external_diffs).and_return(enabled_object_storage_setting)
+      end
+
+      context 'when allow_object_storage is true' do
+        subject { described_class.validate!(import_url, allow_object_storage: true) }
+
+        context 'with a local domain name' do
+          let(:host) { 'http://review-minio-svc.svc:9000' }
+
+          before do
+            stub_dns(host, ip_address: '127.0.0.1')
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { 'http://127.0.0.1:9000/external-diffs/merge_request_diffs/mr-1/diff-1' }
+            let(:expected_hostname) { 'review-minio-svc.svc' }
+          end
+        end
+
+        context 'with an IP address' do
+          let(:host) { 'http://127.0.0.1:9000' }
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { 'http://127.0.0.1:9000/external-diffs/merge_request_diffs/mr-1/diff-1' }
+            let(:expected_hostname) { nil }
+          end
+        end
+      end
+
+      context 'when allow_object_storage is false' do
+        context 'with a local domain name' do
+          let(:host) { 'http://review-minio-svc.svc:9000' }
+
+          before do
+            stub_dns(host, ip_address: '127.0.0.1')
+          end
+
+          it 'raises an error' do
+            expect { subject }.to raise_error(described_class::BlockedUrlError)
+          end
+        end
+
+        context 'with an IP address' do
+          let(:host) { 'http://127.0.0.1:9000' }
+
+          it 'raises an error' do
+            expect { subject }.to raise_error(described_class::BlockedUrlError)
+          end
+        end
+      end
+    end
+
     context 'when the URL hostname is a domain' do
       context 'when domain can be resolved' do
         let(:import_url) { 'https://example.org' }

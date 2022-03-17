@@ -91,21 +91,6 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
       end
     end
   end
-
-  context 'when the GITLAB_MULTIPLE_DATABASE_METRICS env var is disabled' do
-    before do
-      stub_env('GITLAB_MULTIPLE_DATABASE_METRICS', nil)
-    end
-
-    it 'does not include per database metrics' do
-      Gitlab::WithRequestStore.with_request_store do
-        subscriber.sql(event)
-
-        expect(described_class.db_counter_payload).not_to include(:"db_replica_#{db_config_name}_duration_s")
-        expect(described_class.db_counter_payload).not_to include(:"db_replica_#{db_config_name}_count")
-      end
-    end
-  end
 end
 
 RSpec.shared_examples 'record ActiveRecord metrics in a metrics transaction' do |db_role|
@@ -159,26 +144,6 @@ RSpec.shared_examples 'record ActiveRecord metrics in a metrics transaction' do 
     end
 
     subscriber.sql(event)
-  end
-
-  context 'when the GITLAB_MULTIPLE_DATABASE_METRICS env var is disabled' do
-    before do
-      stub_env('GITLAB_MULTIPLE_DATABASE_METRICS', nil)
-    end
-
-    it 'does not include db_config_name label' do
-      allow(transaction).to receive(:increment) do |*args|
-        labels = args[2] || {}
-        expect(labels).not_to include(:db_config_name)
-      end
-
-      allow(transaction).to receive(:observe) do |*args|
-        labels = args[2] || {}
-        expect(labels).not_to include(:db_config_name)
-      end
-
-      subscriber.sql(event)
-    end
   end
 end
 

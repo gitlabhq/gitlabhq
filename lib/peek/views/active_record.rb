@@ -75,14 +75,6 @@ module Peek
 
         "Role: #{role.to_s.capitalize}"
       end
-
-      def format_call_details(call)
-        if ENV['GITLAB_MULTIPLE_DATABASE_METRICS']
-          super
-        else
-          super.except(:db_config_name)
-        end
-      end
     end
   end
 end

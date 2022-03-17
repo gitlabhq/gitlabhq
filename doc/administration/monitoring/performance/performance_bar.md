@@ -30,8 +30,7 @@ From left to right, the performance bar displays:
     is enabled. It shows which server role was used for the query.
     "Primary" means that the query was sent to the read/write primary server.
     "Replica" means it was sent to a read-only replica.
-  - **Configuration name**: shows up only when the
-    `GITLAB_MULTIPLE_DATABASE_METRICS` environment variable is set. This is
+  - **Configuration name**: this is
     used to distinguish between different databases configured for different
     GitLab features. The name shown is the same name used to configure database
     connections in GitLab.

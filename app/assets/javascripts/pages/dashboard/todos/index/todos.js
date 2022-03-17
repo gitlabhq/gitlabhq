@@ -96,6 +96,8 @@ export default class Todos {
     target.setAttribute('disabled', true);
     target.classList.add('disabled');
 
+    target.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
+
     axios[target.dataset.method](target.dataset.href)
       .then(({ data }) => {
         this.updateRowState(target);
@@ -117,6 +119,8 @@ export default class Todos {
     target.classList.add('hidden');
     target.removeAttribute('disabled');
     target.classList.remove('disabled');
+
+    target.querySelector('.gl-spinner-container').classList.remove('gl-mr-2');
 
     if (isInactive === true) {
       restoreBtn.classList.add('hidden');
@@ -140,6 +144,8 @@ export default class Todos {
     target.setAttribute('disabled', true);
     target.classList.add('disabled');
 
+    target.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
+
     axios[target.dataset.method](target.dataset.href, {
       ids: this.todo_ids,
     })
@@ -162,6 +168,8 @@ export default class Todos {
 
     target.removeAttribute('disabled');
     target.classList.remove('disabled');
+
+    target.querySelector('.gl-spinner-container').classList.remove('gl-mr-2');
 
     this.todo_ids = target === markAllDoneBtn ? data.updated_ids : [];
     undoAllBtn.classList.toggle('hidden');

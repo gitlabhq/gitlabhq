@@ -51,14 +51,14 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
   end
 
   describe '#load_batch' do
-    let!(:aggregation1) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil) }
+    let!(:aggregation1) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil, last_consistency_check_updated_at: 3.days.ago).reload }
     let!(:aggregation2) { create(:cycle_analytics_aggregation, last_incremental_run_at: 5.days.ago).reload }
-    let!(:aggregation3) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil) }
-    let!(:aggregation5) { create(:cycle_analytics_aggregation, last_incremental_run_at: 10.days.ago).reload }
+    let!(:aggregation3) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil, last_consistency_check_updated_at: 2.days.ago).reload }
+    let!(:aggregation4) { create(:cycle_analytics_aggregation, last_incremental_run_at: 10.days.ago).reload }
 
     before do
       create(:cycle_analytics_aggregation, :disabled) # disabled rows are skipped
-      create(:cycle_analytics_aggregation, last_incremental_run_at: 1.day.ago) # "early" rows are filtered out
+      create(:cycle_analytics_aggregation, last_incremental_run_at: 1.day.ago, last_consistency_check_updated_at: 1.hour.ago) # "early" rows are filtered out
     end
 
     it 'loads records in priority order' do
@@ -70,7 +70,20 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
 
       # Using match_array because the order can be undeterministic for nil values.
       expect(first_two).to match_array([aggregation1, aggregation3])
-      expect(last_two).to eq([aggregation5, aggregation2])
+      expect(last_two).to eq([aggregation4, aggregation2])
+    end
+
+    context 'when loading batch for last_consistency_check_updated_at' do
+      it 'loads records in priority order' do
+        batch = described_class.load_batch(1.day.ago, :last_consistency_check_updated_at).to_a
+
+        expect(batch.size).to eq(4)
+        first_two = batch.first(2)
+        last_two = batch.last(2)
+
+        expect(first_two).to match_array([aggregation2, aggregation4])
+        expect(last_two).to eq([aggregation1, aggregation3])
+      end
     end
   end
 

@@ -62,21 +62,25 @@ module Gitlab
       end
 
       def download(url, upload_path, size_limit: nil)
-        File.open(upload_path, 'w') do |file|
-          # Download (stream) file from the uploader's location
-          IO.copy_stream(
-            URI.parse(url).open(progress_proc: file_size_limiter(size_limit)),
-            file
-          )
+        File.open(upload_path, 'wb') do |file|
+          current_size = 0
+
+          Gitlab::HTTP.get(url, stream_body: true, allow_object_storage: true) do |fragment|
+            if [301, 302, 307].include?(fragment.code)
+              Gitlab::Import::Logger.warn(message: "received redirect fragment", fragment_code: fragment.code)
+            elsif fragment.code == 200
+              current_size += fragment.bytesize
+
+              raise FileOversizedError if size_limit.present? && current_size > size_limit
+
+              file.write(fragment)
+            else
+              raise Gitlab::ImportExport::Error, "unsupported response downloading fragment #{fragment.code}"
+            end
+          end
         end
       rescue FileOversizedError
         nil
-      end
-
-      def file_size_limiter(limit)
-        return if limit.blank?
-
-        -> (current_size) { raise FileOversizedError if current_size > limit }
       end
 
       def tar_with_options(archive:, dir:, options:)

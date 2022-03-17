@@ -270,12 +270,10 @@ build pipelines:
    [used (see `variables:` section)](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/.gitlab-ci.yml) when building
    the `image:docs-lint-markdown`.
 
-1. Install [`vale`](https://github.com/errata-ai/vale/releases). For example, to install using
-   `brew` for macOS, run:
+1. Install [`vale`](https://github.com/errata-ai/vale/releases). To install for:
 
-   ```shell
-   brew install vale
-   ```
+   - macOS using `brew`, run: `brew install vale`.
+   - Linux, use your distribution's package manager or a [released binary](https://github.com/errata-ai/vale/releases).
 
 These tools can be [integrated with your code editor](#configure-editors).
 

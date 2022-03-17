@@ -7,7 +7,7 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
 
   validates :incremental_runtimes_in_seconds, :incremental_processed_records, :last_full_run_runtimes_in_seconds, :last_full_run_processed_records, presence: true, length: { maximum: 10 }, allow_blank: true
 
-  scope :priority_order, -> { order('last_incremental_run_at ASC NULLS FIRST') }
+  scope :priority_order, -> (column_to_sort = :last_incremental_run_at) { order(arel_table[column_to_sort].asc.nulls_first) }
   scope :enabled, -> { where('enabled IS TRUE') }
 
   def estimated_next_run_at
@@ -55,17 +55,17 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
     connection.select_value("(#{max})")
   end
 
-  def self.load_batch(last_run_at, batch_size = 100)
+  def self.load_batch(last_run_at, column_to_query = :last_incremental_run_at, batch_size = 100)
     last_run_at_not_set = Analytics::CycleAnalytics::Aggregation
       .enabled
-      .where(last_incremental_run_at: nil)
-      .priority_order
+      .where(column_to_query => nil)
+      .priority_order(column_to_query)
       .limit(batch_size)
 
     last_run_at_before = Analytics::CycleAnalytics::Aggregation
       .enabled
-      .where('last_incremental_run_at < ?', last_run_at)
-      .priority_order
+      .where(arel_table[column_to_query].lt(last_run_at))
+      .priority_order(column_to_query)
       .limit(batch_size)
 
     Analytics::CycleAnalytics::Aggregation

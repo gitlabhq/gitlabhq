@@ -68,31 +68,126 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
   end
 
   describe '#download' do
-    before do
-      stub_request(:get, 'http://localhost:3000/file')
-        .to_return(
-          status: 200,
-          body: File.open(archive),
-          headers: {
-            'Content-Type' => 'application/x-tar'
+    let(:content) { File.open('spec/fixtures/rails_sample.tif') }
+
+    context 'a non-localhost uri' do
+      before do
+        stub_request(:get, url)
+          .to_return(
+            status: status,
+            body: content
+          )
+      end
+
+      let(:url) { 'https://gitlab.com/file' }
+
+      context 'with ok status code' do
+        let(:status) { HTTP::Status::OK }
+
+        it 'gets the contents' do
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path)
+            expect(file.read).to eq(File.open('spec/fixtures/rails_sample.tif').read)
+          end
+        end
+
+        it 'streams the contents via Gitlab::HTTP' do
+          expect(Gitlab::HTTP).to receive(:get).with(url, hash_including(stream_body: true))
+
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path)
+          end
+        end
+
+        it 'does not get the content over the size_limit' do
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path, size_limit: 300.kilobytes)
+            expect(file.read).to eq('')
+          end
+        end
+
+        it 'gets the content within the size_limit' do
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path, size_limit: 400.kilobytes)
+            expect(file.read).to eq(File.open('spec/fixtures/rails_sample.tif').read)
+          end
+        end
+      end
+
+      %w[MOVED_PERMANENTLY FOUND TEMPORARY_REDIRECT].each do |code|
+        context "with a redirect status code #{code}" do
+          let(:status) { HTTP::Status.const_get(code, false) }
+
+          it 'logs the redirect' do
+            expect(Gitlab::Import::Logger).to receive(:warn)
+
+            Tempfile.create('test') do |file|
+              subject.download(url, file.path)
+            end
+          end
+        end
+      end
+
+      %w[ACCEPTED UNAUTHORIZED BAD_REQUEST].each do |code|
+        context "with an invalid status code #{code}" do
+          let(:status) { HTTP::Status.const_get(code, false) }
+
+          it 'throws an error' do
+            Tempfile.create('test') do |file|
+              expect { subject.download(url, file.path) }.to raise_error(Gitlab::ImportExport::Error)
+            end
+          end
+        end
+      end
+    end
+
+    context 'a localhost uri' do
+      include StubRequests
+
+      let(:status) { HTTP::Status::OK }
+      let(:url) { "#{host}/foo/bar" }
+      let(:host) { 'http://localhost:8081' }
+
+      before do
+        # Note: the hostname gets changed to an ip address due to dns_rebind_protection
+        stub_dns(url, ip_address: '127.0.0.1')
+        stub_request(:get, 'http://127.0.0.1:8081/foo/bar')
+          .to_return(
+            status: status,
+            body: content
+          )
+      end
+
+      it 'throws a blocked url error' do
+        Tempfile.create('test') do |file|
+          expect { subject.download(url, file.path) }.to raise_error((Gitlab::HTTP::BlockedUrlError))
+        end
+      end
+
+      context 'for object_storage uri' do
+        let(:enabled_object_storage_setting) do
+          {
+            'object_store' =>
+            {
+              'enabled' => true,
+              'connection' => {
+                'endpoint' => host
+              }
+            }
           }
-        )
-    end
+        end
 
-    let(:tempfile) { Tempfile.new('test', path) }
+        before do
+          allow(Settings).to receive(:external_diffs).and_return(enabled_object_storage_setting)
+        end
 
-    it 'downloads the file in the given path' do
-      subject.download('http://localhost:3000/file', tempfile)
-
-      expect(File.exist?(tempfile)).to eq(true)
-      expect(tempfile.size).to eq(File.size(archive))
-    end
-
-    it 'limit the size of the downloaded file' do
-      subject.download('http://localhost:3000/file', tempfile, size_limit: 1.byte)
-
-      expect(File.exist?(tempfile)).to eq(true)
-      expect(tempfile.size).to eq(0)
+        it 'gets the content' do
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path)
+            expect(file.read).to eq(File.open('spec/fixtures/rails_sample.tif').read)
+          end
+        end
+      end
     end
   end
 

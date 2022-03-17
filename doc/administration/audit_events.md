@@ -44,6 +44,9 @@ There are two kinds of events logged:
 - Instance events scoped to the whole GitLab instance, used by your Compliance team to
   perform formal audits.
 
+NOTE:
+Some events are recorded and available only as [streaming audit events](audit_event_streaming.md).
+
 ### Impersonation data
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536) in GitLab 13.0.

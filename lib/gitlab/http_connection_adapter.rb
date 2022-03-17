@@ -47,6 +47,7 @@ module Gitlab
     def validate_url!(url)
       Gitlab::UrlBlocker.validate!(url, allow_local_network: allow_local_requests?,
                                         allow_localhost: allow_local_requests?,
+                                        allow_object_storage: allow_object_storage?,
                                         dns_rebind_protection: dns_rebind_protection?)
     rescue Gitlab::UrlBlocker::BlockedUrlError => e
       raise Gitlab::HTTP::BlockedUrlError, "URL '#{url}' is blocked: #{e.message}"
@@ -54,6 +55,10 @@ module Gitlab
 
     def allow_local_requests?
       options.fetch(:allow_local_requests, allow_settings_local_requests?)
+    end
+
+    def allow_object_storage?
+      options.fetch(:allow_object_storage, false)
     end
 
     def dns_rebind_protection?

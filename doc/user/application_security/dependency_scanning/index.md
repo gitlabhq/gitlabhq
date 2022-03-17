@@ -69,7 +69,8 @@ stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 To run dependency scanning jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
-If you're using the shared runners on GitLab.com, this is enabled by default.
+If you're using the shared runners on GitLab.com, this is enabled by default. The analyzer images
+provided are for the Linux/amd64 architecture.
 
 WARNING:
 If you use your own runners, make sure your installed version of Docker
