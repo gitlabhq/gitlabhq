@@ -277,9 +277,7 @@ RSpec.describe IssuesHelper do
 
   shared_examples 'issues list data' do
     it 'returns expected result' do
-      finder = double.as_null_object
       allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:finder).and_return(finder)
       allow(helper).to receive(:can?).and_return(true)
       allow(helper).to receive(:image_path).and_return('#')
       allow(helper).to receive(:import_csv_namespace_project_issues_path).and_return('#')
@@ -308,7 +306,7 @@ RSpec.describe IssuesHelper do
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
         markdown_help_path: help_page_path('user/markdown'),
         max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
-        new_issue_path: new_project_issue_path(project, issue: { milestone_id: finder.milestones.first.id }),
+        new_issue_path: new_project_issue_path(project),
         project_import_jira_path: project_import_jira_path(project),
         quick_actions_help_path: help_page_path('user/project/quick_actions'),
         releases_path: project_releases_path(project, format: :json),
@@ -318,7 +316,7 @@ RSpec.describe IssuesHelper do
         sign_in_path: new_user_session_path
       }
 
-      expect(helper.project_issues_list_data(project, current_user, finder)).to include(expected)
+      expect(helper.project_issues_list_data(project, current_user)).to include(expected)
     end
   end
 

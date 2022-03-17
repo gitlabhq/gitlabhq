@@ -255,8 +255,8 @@ to IP address `104.18.26.123:443` (`customers.gitlab.com`).
 To subscribe to GitLab through a GitLab self-managed installation:
 
 1. Go to the [Customers Portal](https://customers.gitlab.com/) and purchase a GitLab self-managed plan.
-1. After purchase, a license file is sent to the email address associated to the Customers Portal account,
-   which must be [add to your GitLab instance](../../user/admin_area/license.md#activate-gitlab-ee-with-a-license-file-or-key).
+1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
+   You must [add this code to your GitLab instance](../../user/admin_area/license.md).
 
 NOTE:
 If you're purchasing a subscription for an existing **Free** GitLab self-managed
@@ -380,7 +380,7 @@ To add seats to a subscription:
 The following items are emailed to you:
 
 - A payment receipt. You can also access this information in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
-- A new license. [Add this license](../../user/admin_area/license.md#activate-gitlab-ee-with-an-activation-code) to your instance to use it.
+- An activation code. [Add this code](../../user/admin_area/license.md) to your instance to use it.
 
 ### Renew a subscription
 
@@ -401,7 +401,7 @@ You can hover your mouse on the **Renew** button to see the date when it will be
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 1. Review your renewal details and complete the payment process.
 1. An activation code for the renewal term is available on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy activation code** to get a copy.
-1. [Add your new license](../../user/admin_area/license.md#activate-gitlab-ee-with-an-activation-code) to your instance.
+1. [Add the activation code](../../user/admin_area/license.md) to your instance.
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
@@ -423,7 +423,7 @@ The following is emailed to you:
   [**View invoices**](https://customers.gitlab.com/receipts).
 - A new activation code for your license.
 
-[Add the new license](../../user/admin_area/license.md#activate-gitlab-ee-with-an-activation-code) to your instance.
+[Add the activation code](../../user/admin_area/license.md) to your instance.
 The new tier takes effect when the new license is activated.
 
 ## Add or change the contacts for your subscription

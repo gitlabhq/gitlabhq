@@ -19,3 +19,5 @@ module TermsHelper
     expect(page).to have_content('Please accept the Terms of Service before continuing.')
   end
 end
+
+TermsHelper.prepend_mod

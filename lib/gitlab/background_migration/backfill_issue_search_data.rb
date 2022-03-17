@@ -29,7 +29,7 @@ module Gitlab
           SELECT
             project_id,
             id,
-            setweight(to_tsvector('english', LEFT(title, 255)), 'A') || setweight(to_tsvector('english', LEFT(REGEXP_REPLACE(description, '[A-Za-z0-9+/]{50,}', ' ', 'g'), 1048576)), 'B'),
+            setweight(to_tsvector('english', LEFT(title, 255)), 'A') || setweight(to_tsvector('english', LEFT(REGEXP_REPLACE(description, '[A-Za-z0-9+/@]{50,}', ' ', 'g'), 1048576)), 'B'),
             NOW(),
             NOW()
           FROM issues

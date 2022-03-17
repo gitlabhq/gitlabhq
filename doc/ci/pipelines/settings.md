@@ -190,6 +190,7 @@ You can define how long a job can run before it times out.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Timeout** field, enter the number of minutes, or a human-readable value like `2 hours`.
+   Must be 10 minutes or more, and less than one month. Default is 60 minutes.
 
 Jobs that exceed the timeout are marked as failed.
 

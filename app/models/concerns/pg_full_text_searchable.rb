@@ -21,7 +21,7 @@
 module PgFullTextSearchable
   extend ActiveSupport::Concern
 
-  LONG_WORDS_REGEX = %r([A-Za-z0-9+/]{50,}).freeze
+  LONG_WORDS_REGEX = %r([A-Za-z0-9+/@]{50,}).freeze
   TSVECTOR_MAX_LENGTH = 1.megabyte.freeze
   TEXT_SEARCH_DICTIONARY = 'english'
 

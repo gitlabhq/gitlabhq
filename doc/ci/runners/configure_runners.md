@@ -23,15 +23,15 @@ if smaller than the [project defined timeout](../pipelines/settings.md#set-a-lim
 This feature can be used to prevent your shared runner from being overwhelmed
 by a project that has jobs with a long timeout (for example, one week).
 
-When not configured, runners do not override the project timeout.
-
 On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run).
 
 To set the maximum job timeout:
 
 1. In a project, go to **Settings > CI/CD > Runners**.
 1. Select your specific runner to edit the settings.
-1. Enter a value under **Maximum job timeout**.
+1. Enter a value under **Maximum job timeout**. Must be 10 minutes or more. If not
+   defined, the [project's job timeout setting](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)
+   is used.
 1. Select **Save changes**.
 
 How this feature works:

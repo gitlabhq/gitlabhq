@@ -14,7 +14,7 @@
   project_path: @project.full_path } }
 
 - if Feature.enabled?(:vue_issues_list, @project&.group, default_enabled: :yaml)
-  .js-issues-list{ data: project_issues_list_data(@project, current_user, finder) }
+  .js-issues-list{ data: project_issues_list_data(@project, current_user) }
   - if @can_bulk_update
     = render 'shared/issuable/bulk_update_sidebar', type: :issues
 - elsif project_issues(@project).exists?

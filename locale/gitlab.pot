@@ -9354,6 +9354,9 @@ msgstr ""
 msgid "Confirm new password"
 msgstr ""
 
+msgid "Confirm remove avatar"
+msgstr ""
+
 msgid "Confirm user"
 msgstr ""
 

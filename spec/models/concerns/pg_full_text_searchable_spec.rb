@@ -115,6 +115,21 @@ RSpec.describe PgFullTextSearchable do
       end
     end
 
+    context 'with long words' do
+      let(:model) { model_class.create!(project: project, title: 'title ' + 'long/sequence+1' * 4, description: 'description ' + '@user1' * 20) }
+
+      it 'strips words that are 50 characters or longer' do
+        model.update_search_data!
+
+        expect(model.search_data.search_vector).to match(/'titl':1A/)
+        expect(model.search_data.search_vector).not_to match(/long/)
+        expect(model.search_data.search_vector).not_to match(/sequence/)
+
+        expect(model.search_data.search_vector).to match(/'descript':2B/)
+        expect(model.search_data.search_vector).not_to match(/@user1/)
+      end
+    end
+
     context 'when upsert times out' do
       it 're-raises the exception' do
         expect(Issues::SearchData).to receive(:upsert).once.and_raise(ActiveRecord::StatementTimeout)

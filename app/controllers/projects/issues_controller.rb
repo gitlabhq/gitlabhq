@@ -72,9 +72,12 @@ class Projects::IssuesController < Projects::ApplicationController
   attr_accessor :vulnerability_id
 
   def index
-    set_issuables_index if !html_request? || Feature.disabled?(:vue_issues_list, project&.group, default_enabled: :yaml)
-
-    @issues = @issuables
+    if html_request? && Feature.enabled?(:vue_issues_list, project&.group, default_enabled: :yaml)
+      set_sort_order
+    else
+      set_issuables_index
+      @issues = @issuables
+    end
 
     respond_to do |format|
       format.html
