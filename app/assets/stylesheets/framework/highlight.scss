@@ -87,7 +87,7 @@ td.line-numbers {
 }
 
 .project-highlight-puc .unicode-bidi::before {
-  content: '�';
+  content: '\FFFD';
   cursor: pointer;
   text-decoration: underline wavy $red-500;
 }

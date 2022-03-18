@@ -9,6 +9,7 @@ itself: # project
     - external_webhook_token
     - has_external_issue_tracker
     - has_external_wiki
+    - hidden
     - import_source
     - import_type
     - import_url
@@ -121,7 +122,6 @@ project_feature:
     - created_at
     - metrics_dashboard_access_level
     - project_id
-    - security_and_compliance_access_level
     - updated_at
   computed_attributes:
     - issues_enabled

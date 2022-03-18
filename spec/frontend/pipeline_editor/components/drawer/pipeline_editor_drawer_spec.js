@@ -1,7 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { stubExperiments } from 'helpers/experimentation_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import FirstPipelineCard from '~/pipeline_editor/components/drawer/cards/first_pipeline_card.vue';
 import GettingStartedCard from '~/pipeline_editor/components/drawer/cards/getting_started_card.vue';
@@ -38,7 +37,6 @@ describe('Pipeline editor drawer', () => {
 
   beforeEach(() => {
     originalObjects.push(window.gon, window.gl);
-    stubExperiments({ pipeline_editor_walkthrough: 'control' });
   });
 
   afterEach(() => {
@@ -48,33 +46,15 @@ describe('Pipeline editor drawer', () => {
   });
 
   describe('default expanded state', () => {
-    describe('when experiment control', () => {
-      it('sets the drawer to be opened by default', async () => {
-        createComponent();
-        expect(findDrawerContent().exists()).toBe(false);
-        await nextTick();
-        expect(findDrawerContent().exists()).toBe(true);
-      });
-    });
-
-    describe('when experiment candidate', () => {
-      beforeEach(() => {
-        stubExperiments({ pipeline_editor_walkthrough: 'candidate' });
-      });
-
-      it('sets the drawer to be closed by default', async () => {
-        createComponent();
-        expect(findDrawerContent().exists()).toBe(false);
-        await nextTick();
-        expect(findDrawerContent().exists()).toBe(false);
-      });
+    it('sets the drawer to be closed by default', async () => {
+      createComponent();
+      expect(findDrawerContent().exists()).toBe(false);
     });
   });
 
   describe('when the drawer is collapsed', () => {
     beforeEach(async () => {
       createComponent();
-      await clickToggleBtn();
     });
 
     it('shows the left facing arrow icon', () => {
@@ -101,6 +81,7 @@ describe('Pipeline editor drawer', () => {
   describe('when the drawer is expanded', () => {
     beforeEach(async () => {
       createComponent();
+      await clickToggleBtn();
     });
 
     it('shows the right facing arrow icon', () => {

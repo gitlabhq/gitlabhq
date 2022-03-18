@@ -23,11 +23,11 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
 
     it 'creates labels on project creation' do
-      created_label = project.labels.last
-
-      expect(created_label.type).to eq('ProjectLabel')
-      expect(created_label.project_id).to eq(project.id)
-      expect(created_label.title).to eq('bug')
+      expect(project.labels).to include have_attributes(
+        type: eq('ProjectLabel'),
+        project_id: eq(project.id),
+        title: eq('bug')
+      )
     end
 
     context 'using gitlab project import' do
@@ -121,7 +121,8 @@ RSpec.describe Projects::CreateService, '#execute' do
 
       expect(project).to be_valid
       expect(project.first_owner).to eq(user)
-      expect(project.team.maintainers).to include(user)
+      expect(project.team.maintainers).not_to include(user)
+      expect(project.team.owners).to contain_exactly(user)
       expect(project.namespace).to eq(user.namespace)
       expect(project.project_namespace).to be_in_sync_with_project(project)
     end
@@ -162,7 +163,7 @@ RSpec.describe Projects::CreateService, '#execute' do
         expect(project).to be_persisted
         expect(project.owner).to eq(user)
         expect(project.first_owner).to eq(user)
-        expect(project.team.maintainers).to contain_exactly(user)
+        expect(project.team.owners).to contain_exactly(user)
         expect(project.namespace).to eq(user.namespace)
         expect(project.project_namespace).to be_in_sync_with_project(project)
       end
@@ -205,17 +206,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(project.project_namespace).to be_in_sync_with_project(project)
     end
 
-    context 'with before_commit callback' do
-      it_behaves_like 'has sync-ed traversal_ids'
-    end
-
-    context 'with after_create callback' do
-      before do
-        stub_feature_flags(sync_traversal_ids_before_commit: false)
-      end
-
-      it_behaves_like 'has sync-ed traversal_ids'
-    end
+    it_behaves_like 'has sync-ed traversal_ids'
   end
 
   context 'group sharing', :sidekiq_inline do

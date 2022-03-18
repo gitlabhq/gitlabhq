@@ -21,6 +21,7 @@ module Gitlab
             context.set_start_time
             context.set_depth(0)
             context.track_sql(event.payload[:sql])
+            context.initialize_external_http_tracking
           elsif cmd.start_with?('SAVEPOINT', 'EXCEPTION')
             context.set_depth(manager.open_transactions)
             context.increment_savepoints

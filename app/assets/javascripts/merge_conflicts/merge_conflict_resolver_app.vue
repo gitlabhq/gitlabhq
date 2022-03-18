@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlButton, GlButtonGroup } from '@gitlab/ui';
+import { GlSprintf, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { __ } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -23,6 +23,7 @@ export default {
     GlButton,
     GlButtonGroup,
     GlSprintf,
+    GlLoadingIcon,
     FileIcon,
     DiffFileEditor,
     InlineConflictLines,
@@ -72,9 +73,7 @@ export default {
 </script>
 <template>
   <div id="conflicts">
-    <div v-if="isLoading" class="loading">
-      <div class="spinner spinner-md"></div>
-    </div>
+    <gl-loading-icon v-if="isLoading" size="md" data-testid="loading-spinner" />
     <div v-if="hasError" class="nothing-here-block">
       {{ conflictsData.errorMessage }}
     </div>

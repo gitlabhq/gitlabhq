@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`~/vue_shared/components/content_transition.vue default shows all transitions and only default is visible 1`] = `
+<div>
+  <transition-stub
+    name="test_transition_name"
+  >
+    <div
+      data-testval="default"
+    >
+      <p>
+        Default
+      </p>
+    </div>
+  </transition-stub>
+  <transition-stub
+    name="test_transition_name"
+  >
+    <div
+      data-testval="foo"
+      style="display: none;"
+    >
+      <p>
+        Foo
+      </p>
+    </div>
+  </transition-stub>
+  <transition-stub
+    name="test_transition_name"
+  >
+    <div
+      data-testval="bar"
+      style="display: none;"
+    >
+      <p>
+        Bar
+      </p>
+    </div>
+  </transition-stub>
+</div>
+`;

@@ -16,6 +16,9 @@ inherit_from:
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
+  <% Dir.glob('jh/rubocop/**/*.yml').each do |jh_rubocop_yaml| %>
+  - '<%= jh_rubocop_yaml %>'
+  <% end %>
 
 inherit_mode:
   merge:
@@ -42,6 +45,10 @@ AllCops:
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
   MaxFilesInCache: 30000
+
+Metrics/ParameterLists:
+  Exclude:
+    - 'app/components/**/*'
 
 Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Enabled: true
@@ -235,6 +242,10 @@ Rails/FindBy:
     - 'ee/lib/**/*.rb'
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
+
+Rails/IndexBy:
+  Exclude:
+    - 'tooling/danger/**/*.rb'
 
 # This is currently exiting with a rubocop exception error and should be
 # resolved hopefully a future update
@@ -604,8 +615,9 @@ Rails/TimeZone:
     - 'ee/spec/workers/**/*'
     - 'ee/lib/**/*'
     - 'ee/spec/lib/**/*'
+    - 'spec/features/**/*'
+    - 'ee/spec/features/**/*'
 
-# WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Enabled: true
   AllowImplicitReturn: false

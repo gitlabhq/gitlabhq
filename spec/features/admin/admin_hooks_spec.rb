@@ -18,7 +18,7 @@ RSpec.describe 'Admin::Hooks' do
         click_on 'System Hooks', match: :first
       end
 
-      expect(current_path).to eq(admin_hooks_path)
+      expect(page).to have_current_path(admin_hooks_path, ignore_query: true)
     end
 
     it 'has hooks list' do
@@ -49,7 +49,7 @@ RSpec.describe 'Admin::Hooks' do
 
       expect { click_button 'Add system hook' }.to change(SystemHook, :count).by(1)
       expect(page).to have_content 'SSL Verification: enabled'
-      expect(current_path).to eq(admin_hooks_path)
+      expect(page).to have_current_path(admin_hooks_path, ignore_query: true)
       expect(page).to have_content(url)
     end
   end
@@ -70,7 +70,7 @@ RSpec.describe 'Admin::Hooks' do
       click_button 'Save changes'
 
       expect(page).to have_content 'SSL Verification: enabled'
-      expect(current_path).to eq(admin_hooks_path)
+      expect(page).to have_current_path(admin_hooks_path, ignore_query: true)
       expect(page).to have_content(new_url)
     end
   end
@@ -111,7 +111,7 @@ RSpec.describe 'Admin::Hooks' do
       click_link 'Push events'
     end
 
-    it { expect(current_path).to eq(admin_hooks_path) }
+    it { expect(page).to have_current_path(admin_hooks_path, ignore_query: true) }
   end
 
   context 'Merge request hook' do
@@ -126,7 +126,7 @@ RSpec.describe 'Admin::Hooks' do
         check 'Merge request events'
 
         expect { click_button 'Add system hook' }.to change(SystemHook, :count).by(1)
-        expect(current_path).to eq(admin_hooks_path)
+        expect(page).to have_current_path(admin_hooks_path, ignore_query: true)
         expect(page).to have_content(url)
       end
     end

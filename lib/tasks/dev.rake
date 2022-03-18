@@ -8,8 +8,10 @@ namespace :dev do
     ENV['force'] = 'yes'
     Rake::Task["gitlab:setup"].invoke
 
-    # Make sure DB statistics are up to date.
-    ActiveRecord::Base.connection.execute('ANALYZE')
+    Gitlab::Database::EachDatabase.each_database_connection do |connection|
+      # Make sure DB statistics are up to date.
+      connection.execute('ANALYZE')
+    end
 
     Rake::Task["gitlab:shell:setup"].invoke
   end

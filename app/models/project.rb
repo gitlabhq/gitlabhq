@@ -38,7 +38,7 @@ class Project < ApplicationRecord
   include GitlabRoutingHelper
   include BulkMemberAccessLoad
   include RunnerTokenExpirationInterval
-  include RunnersTokenPrefixable
+  include BlocksUnsafeSerialization
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -196,6 +196,7 @@ class Project < ApplicationRecord
   has_one :external_wiki_integration, class_name: 'Integrations::ExternalWiki'
   has_one :flowdock_integration, class_name: 'Integrations::Flowdock'
   has_one :hangouts_chat_integration, class_name: 'Integrations::HangoutsChat'
+  has_one :harbor_integration, class_name: 'Integrations::Harbor'
   has_one :irker_integration, class_name: 'Integrations::Irker'
   has_one :jenkins_integration, class_name: 'Integrations::Jenkins'
   has_one :jira_integration, class_name: 'Integrations::Jira'
@@ -344,22 +345,18 @@ class Project < ApplicationRecord
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
   has_many :ci_refs, class_name: 'Ci::Ref', inverse_of: :project
 
-  # Ci::Build objects store data on the file system such as artifact files and
-  # build traces. Currently there's no efficient way of removing this data in
-  # bulk that doesn't involve loading the rows into memory. As a result we're
-  # still using `dependent: :destroy` here.
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
-  has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :builds, class_name: 'Ci::Build', inverse_of: :project
   has_many :processables, class_name: 'Ci::Processable', inverse_of: :project
-  has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
+  has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks, dependent: :restrict_with_error
   has_many :build_report_results, class_name: 'Ci::BuildReportResult', inverse_of: :project
-  has_many :job_artifacts, class_name: 'Ci::JobArtifact'
-  has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :project
+  has_many :job_artifacts, class_name: 'Ci::JobArtifact', dependent: :restrict_with_error
+  has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :project, dependent: :restrict_with_error
   has_many :runner_projects, class_name: 'Ci::RunnerProject', inverse_of: :project
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
-  has_many :secure_files, class_name: 'Ci::SecureFile'
+  has_many :secure_files, class_name: 'Ci::SecureFile', dependent: :restrict_with_error
   has_many :environments
   has_many :environments_for_dashboard, -> { from(with_rank.unfoldered.available, :environments).where('rank <= 3') }, class_name: 'Environment'
   has_many :deployments
@@ -462,7 +459,7 @@ class Project < ApplicationRecord
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
-  delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
+  delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role, to: :team
   delegate :group_runners_enabled, :group_runners_enabled=, to: :ci_cd_settings, allow_nil: true
   delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
@@ -501,11 +498,15 @@ class Project < ApplicationRecord
     presence: true,
     project_path: true,
     length: { maximum: 255 }
+  validates :path,
+    format: { with: Gitlab::Regex.oci_repository_path_regex,
+              message: Gitlab::Regex.oci_repository_path_regex_message },
+    if: :path_changed?
 
   validates :project_feature, presence: true
 
   validates :namespace, presence: true
-  validates :project_namespace, presence: true, on: :create, if: -> { self.namespace && self.root_namespace.project_namespace_creation_enabled? }
+  validates :project_namespace, presence: true, on: :create, if: -> { self.namespace }
   validates :project_namespace, presence: true, on: :update, if: -> { self.project_namespace_id_changed?(to: nil) }
   validates :name, uniqueness: { scope: :namespace_id }
   validates :import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
@@ -529,6 +530,7 @@ class Project < ApplicationRecord
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
+  scope :not_hidden, -> { where(hidden: false) }
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
 
   scope :with_storage_feature, ->(feature) do
@@ -1004,10 +1006,6 @@ class Project < ApplicationRecord
 
   def unlink_forks_upon_visibility_decrease_enabled?
     Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self, default_enabled: true)
-  end
-
-  def context_commits_enabled?
-    Feature.enabled?(:context_commits, self.group, default_enabled: :yaml)
   end
 
   # LFS and hashed repository storage are required for using Design Management.
@@ -1565,13 +1563,16 @@ class Project < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
-      hooks.hooks_for(hooks_scope).select_active(hooks_scope, data).each do |hook|
-        hook.async_execute(data, hooks_scope.to_s)
-      end
+      triggered_hooks(hooks_scope, data).execute
       SystemHooksService.new.execute_hooks(data, hooks_scope)
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
+
+  def triggered_hooks(hooks_scope, data)
+    triggered = ::Projects::TriggeredHooks.new(hooks_scope, data)
+    triggered.add_hooks(hooks)
+  end
 
   def execute_integrations(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
@@ -1876,13 +1877,9 @@ class Project < ApplicationRecord
     ensure_runners_token!
   end
 
-  def runners_token_prefix
-    RUNNERS_TOKEN_PREFIX
-  end
-
   override :format_runners_token
   def format_runners_token(token)
-    "#{runners_token_prefix}#{token}"
+    "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}#{token}"
   end
 
   def pages_deployed?
@@ -1938,12 +1935,12 @@ class Project < ApplicationRecord
                .delete_all
   end
 
-  def mark_pages_as_deployed(artifacts_archive: nil)
-    ensure_pages_metadatum.update!(deployed: true, artifacts_archive: artifacts_archive)
+  def mark_pages_as_deployed
+    ensure_pages_metadatum.update!(deployed: true)
   end
 
   def mark_pages_as_not_deployed
-    ensure_pages_metadatum.update!(deployed: false, artifacts_archive: nil, pages_deployment: nil)
+    ensure_pages_metadatum.update!(deployed: false)
   end
 
   def update_pages_deployment!(deployment)
@@ -2521,7 +2518,18 @@ class Project < ApplicationRecord
   end
 
   def access_request_approvers_to_be_notified
-    members.maintainers.connected_to_user.order_recent_sign_in.limit(Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
+    # For a personal project:
+    # The creator is added as a member with `Owner` access level, starting from GitLab 14.8
+    # The creator was added as a member with `Maintainer` access level, before GitLab 14.8
+    # So, to make sure access requests for all personal projects work as expected,
+    # we need to filter members with the scope `owners_and_maintainers`.
+    access_request_approvers = if personal?
+                                 members.owners_and_maintainers
+                               else
+                                 members.maintainers
+                               end
+
+    access_request_approvers.connected_to_user.order_recent_sign_in.limit(Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
 
   def pages_lookup_path(trim_prefix: nil, domain: nil)
@@ -2817,6 +2825,10 @@ class Project < ApplicationRecord
       end
   end
 
+  def pending_delete_or_hidden?
+    pending_delete? || hidden?
+  end
+
   private
 
   # overridden in EE
@@ -2838,7 +2850,9 @@ class Project < ApplicationRecord
 
     if @topic_list != self.topic_list
       self.topics.delete_all
-      self.topics = @topic_list.map { |topic| Projects::Topic.find_or_create_by(name: topic) }
+      self.topics = @topic_list.map do |topic|
+        Projects::Topic.where('lower(name) = ?', topic.downcase).order(total_projects_count: :desc).first_or_create(name: topic)
+      end
     end
 
     @topic_list = nil
@@ -3010,16 +3024,15 @@ class Project < ApplicationRecord
   end
 
   def ensure_project_namespace_in_sync
-    # create project_namespace when project is created if create_project_namespace_on_project_create FF is enabled
+    # create project_namespace when project is created
     build_project_namespace if project_namespace_creation_enabled?
 
-    # regardless of create_project_namespace_on_project_create FF we need
-    # to keep project and project namespace in sync if there is one
+    # we need to keep project and project namespace in sync if there is one
     sync_attributes(project_namespace) if sync_project_namespace?
   end
 
   def project_namespace_creation_enabled?
-    new_record? && !project_namespace && self.namespace && self.root_namespace.project_namespace_creation_enabled?
+    new_record? && !project_namespace && self.namespace
   end
 
   def sync_project_namespace?

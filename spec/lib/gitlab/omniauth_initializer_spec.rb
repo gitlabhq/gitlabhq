@@ -5,7 +5,161 @@ require 'spec_helper'
 RSpec.describe Gitlab::OmniauthInitializer do
   let(:devise_config) { class_double(Devise) }
 
-  subject { described_class.new(devise_config) }
+  subject(:initializer) { described_class.new(devise_config) }
+
+  describe '.arguments_for' do
+    let(:devise_config) { nil }
+
+    let(:arguments) { initializer.send(:arguments_for, provider) }
+
+    context 'when there are no args at all' do
+      let(:provider) { { 'name' => 'unknown' } }
+
+      it 'returns an empty array' do
+        expect(arguments).to eq []
+      end
+    end
+
+    context 'when there is an app_id and an app_secret' do
+      let(:provider) { { 'name' => 'unknown', 'app_id' => 1, 'app_secret' => 2 } }
+
+      it 'includes both of them, in positional order' do
+        expect(arguments).to eq [1, 2]
+      end
+    end
+
+    context 'when there is an app_id and an app_secret, and an array of args' do
+      let(:provider) do
+        {
+          'name' =>  'unknown',
+          'app_id' => 1,
+          'app_secret' => 2,
+          'args' => %w[one two three]
+        }
+      end
+
+      it 'concatenates the args on the end' do
+        expect(arguments).to eq [1, 2, 'one', 'two', 'three']
+      end
+    end
+
+    context 'when there is an app_id and an app_secret, and an array of args, and default values' do
+      let(:provider) do
+        {
+          'name' =>  'unknown',
+          'app_id' => 1,
+          'app_secret' => 2,
+          'args' => %w[one two three]
+        }
+      end
+
+      before do
+        expect(described_class)
+          .to receive(:default_arguments_for).with('unknown')
+          .and_return({ default_arg: :some_value })
+      end
+
+      it 'concatenates the args on the end' do
+        expect(arguments)
+          .to eq [1, 2, 'one', 'two', 'three', { default_arg: :some_value }]
+      end
+    end
+
+    context 'when there is an app_id and an app_secret, and a hash of args' do
+      let(:provider) do
+        {
+          'name' =>  'unknown',
+          'app_id' => 1,
+          'app_secret' => 2,
+          'args' => { 'foo' => 100, 'bar' => 200, 'nested' => { 'value' => 300 } }
+        }
+      end
+
+      it 'concatenates the args on the end' do
+        expect(arguments)
+          .to eq [1, 2, { foo: 100, bar: 200, nested: { value: 300 } }]
+      end
+    end
+
+    context 'when there is an app_id and an app_secret, and a hash of args, and default arguments' do
+      let(:provider) do
+        {
+          'name' =>  'unknown',
+          'app_id' => 1,
+          'app_secret' => 2,
+          'args' => { 'foo' => 100, 'bar' => 200, 'nested' => { 'value' => 300 } }
+        }
+      end
+
+      before do
+        expect(described_class)
+          .to receive(:default_arguments_for).with('unknown')
+          .and_return({ default_arg: :some_value })
+      end
+
+      it 'concatenates the args on the end' do
+        expect(arguments)
+          .to eq [1, 2, { default_arg: :some_value, foo: 100, bar: 200, nested: { value: 300 } }]
+      end
+    end
+
+    context 'when there is an app_id and an app_secret, no args, and default values' do
+      let(:provider) do
+        {
+          'name' =>  'unknown',
+          'app_id' => 1,
+          'app_secret' => 2
+        }
+      end
+
+      before do
+        expect(described_class)
+          .to receive(:default_arguments_for).with('unknown')
+          .and_return({ default_arg: :some_value })
+      end
+
+      it 'concatenates the args on the end' do
+        expect(arguments)
+          .to eq [1, 2, { default_arg: :some_value }]
+      end
+    end
+
+    context 'when there are args, of an unsupported type' do
+      let(:provider) do
+        {
+          'name' =>  'unknown',
+          'args' => 1
+        }
+      end
+
+      context 'when there are default arguments' do
+        before do
+          expect(described_class)
+            .to receive(:default_arguments_for).with('unknown')
+            .and_return({ default_arg: :some_value })
+        end
+
+        it 'tracks a configuration error' do
+          expect(::Gitlab::ErrorTracking)
+            .to receive(:track_and_raise_for_dev_exception)
+            .with(described_class::ConfigurationError, provider_name: 'unknown', arguments_type: 'Integer')
+
+          expect(arguments)
+            .to eq [{ default_arg: :some_value }]
+        end
+      end
+
+      context 'when there are no default arguments' do
+        it 'tracks a configuration error' do
+          expect(::Gitlab::ErrorTracking)
+            .to receive(:track_and_raise_for_dev_exception)
+            .with(described_class::ConfigurationError, provider_name: 'unknown', arguments_type: 'Integer')
+
+          expect(arguments).to be_empty
+        end
+      end
+    end
+  end
 
   describe '#execute' do
     it 'configures providers from array' do
@@ -105,8 +259,47 @@ RSpec.describe Gitlab::OmniauthInitializer do
     it 'configures defaults for gitlab' do
       conf = {
         'name' => 'gitlab',
-        "args" => {}
+        "args" => { 'client_options' => { 'site' => generate(:url) } }
       }
+
+      expect(devise_config).to receive(:omniauth).with(
+        :gitlab,
+        client_options: { site: conf.dig('args', 'client_options', 'site') },
+        authorize_params: { gl_auth_type: 'login' }
+      )
+
+      subject.execute([conf])
+    end
+
+    it 'configures defaults for gitlab, when arguments are not provided' do
+      conf = { 'name' => 'gitlab' }
+
+      expect(devise_config).to receive(:omniauth).with(
+        :gitlab,
+        authorize_params: { gl_auth_type: 'login' }
+      )
+
+      subject.execute([conf])
+    end
+
+    it 'configures defaults for gitlab, when array arguments are provided' do
+      conf = { 'name' => 'gitlab', 'args' => ['a'] }
+
+      expect(devise_config).to receive(:omniauth).with(
+        :gitlab,
+        'a',
+        authorize_params: { gl_auth_type: 'login' }
+      )
+
+      subject.execute([conf])
+    end
+
+    it 'tracks a configuration error if the arguments are neither a hash nor an array' do
+      conf = { 'name' => 'gitlab', 'args' => 17 }
+
+      expect(::Gitlab::ErrorTracking)
+        .to receive(:track_and_raise_for_dev_exception)
+        .with(described_class::ConfigurationError, provider_name: 'gitlab', arguments_type: 'Integer')
 
       expect(devise_config).to receive(:omniauth).with(
         :gitlab,

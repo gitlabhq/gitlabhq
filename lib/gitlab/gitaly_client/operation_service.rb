@@ -119,10 +119,6 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :operation_service,
                                      :user_merge_to_ref, request, timeout: GitalyClient.long_timeout)
 
-        if pre_receive_error = response.pre_receive_error.presence
-          raise Gitlab::Git::PreReceiveError, pre_receive_error
-        end
-
         response.commit_id
       end
 
@@ -153,10 +149,6 @@ module Gitlab
 
         second_response = response_enum.next
 
-        if second_response.pre_receive_error.present?
-          raise Gitlab::Git::PreReceiveError, second_response.pre_receive_error
-        end
-
         branch_update = second_response.branch_update
         return if branch_update.nil?
         raise Gitlab::Git::CommitError, 'failed to apply merge to branch' unless branch_update.commit_id.present?
@@ -164,16 +156,20 @@ module Gitlab
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
 
       rescue GRPC::BadStatus => e
-        decoded_error = decode_detailed_error(e)
+        detailed_error = decode_detailed_error(e)
 
-        raise unless decoded_error.present?
-
-        # We simply ignore any reference update errors which are typically an
-        # indicator of multiple RPC calls trying to update the same reference
-        # at the same point in time.
-        return if decoded_error.is_a?(Gitlab::Git::ReferenceUpdateError)
-
-        raise decoded_error
+        case detailed_error&.error
+        when :access_check
+          access_check_error = detailed_error.access_check
+          # These messages were returned from internal/allowed API calls
+          raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        when :reference_update
+          # We simply ignore any reference update errors which are typically an
+          # indicator of multiple RPC calls trying to update the same reference
+          # at the same point in time.
+        else
+          raise
+        end
       ensure
         request_enum.close
       end
@@ -267,6 +263,19 @@ module Gitlab
         perform_next_gitaly_rebase_request(response_enum)
 
         rebase_sha
+      rescue GRPC::BadStatus => e
+        detailed_error = decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :access_check
+          access_check_error = detailed_error.access_check
+          # These messages were returned from internal/allowed API calls
+          raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        when :rebase_conflict
+          raise Gitlab::Git::Repository::GitError, e.details
+        else
+          raise e
+        end
       ensure
         request_enum.close
       end
@@ -295,6 +304,26 @@ module Gitlab
         end
 
         response.squash_sha
+      rescue GRPC::BadStatus => e
+        detailed_error = decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :resolve_revision, :rebase_conflict
+          # Theoretically, we could now raise specific errors based on the type
+          # of the detailed error. Most importantly, we get error details when
+          # Gitaly was not able to resolve the `start_sha` or `end_sha` via a
+          # ResolveRevisionError, and we get information about which files are
+          # conflicting via a MergeConflictError.
+          #
+          # We don't do this now though such that we can maintain backwards
+          # compatibility with the minimum required set of changes during the
+          # transitory period where we're migrating UserSquash to use
+          # structured errors. We thus continue to just return a GitError, like
+          # we previously did.
+          raise Gitlab::Git::Repository::GitError, e.details
+        else
+          raise
+        end
       end
 
       def user_update_submodule(user:, submodule:, commit_sha:, branch:, message:)
@@ -492,23 +521,7 @@ module Gitlab
         prefix = %r{type\.googleapis\.com\/gitaly\.(?<error_type>.+)}
         error_type = prefix.match(detailed_error.type_url)[:error_type]
 
-        detailed_error = Gitaly.const_get(error_type, false).decode(detailed_error.value)
-
-        case detailed_error.error
-        when :access_check
-          access_check_error = detailed_error.access_check
-          # These messages were returned from internal/allowed API calls
-          Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
-        when :reference_update
-          reference_update_error = detailed_error.reference_update
-          Gitlab::Git::ReferenceUpdateError.new(err.details,
-                                                reference_update_error.reference_name,
-                                                reference_update_error.old_oid,
-                                                reference_update_error.new_oid)
-        else
-          # We're handling access_check only for now, but we'll add more detailed error types
-          nil
-        end
+        Gitaly.const_get(error_type, false).decode(detailed_error.value)
       rescue NameError, NoMethodError
         # Error Class might not be known to ruby yet
         nil

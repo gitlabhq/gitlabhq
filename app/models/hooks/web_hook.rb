@@ -37,14 +37,14 @@ class WebHook < ApplicationRecord
     !temporarily_disabled? && !permanently_disabled?
   end
 
-  def temporarily_disabled?
-    return false unless web_hooks_disable_failed?
+  def temporarily_disabled?(ignore_flag: false)
+    return false unless ignore_flag || web_hooks_disable_failed?
 
     disabled_until.present? && disabled_until >= Time.current
   end
 
-  def permanently_disabled?
-    return false unless web_hooks_disable_failed?
+  def permanently_disabled?(ignore_flag: false)
+    return false unless ignore_flag || web_hooks_disable_failed?
 
     recent_failures > FAILURE_THRESHOLD
   end
@@ -104,6 +104,13 @@ class WebHook < ApplicationRecord
 
     assign_attributes(recent_failures: recent_failures + 1)
     save(validate: false)
+  end
+
+  def active_state(ignore_flag: false)
+    return :permanently_disabled if permanently_disabled?(ignore_flag: ignore_flag)
+    return :temporarily_disabled if temporarily_disabled?(ignore_flag: ignore_flag)
+
+    :enabled
   end
 
   # @return [Boolean] Whether or not the WebHook is currently throttled.

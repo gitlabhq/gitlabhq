@@ -7,6 +7,23 @@ export default {
   components: {
     Popover,
   },
+  props: {
+    codeNavigationPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    blobPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    pathPrefix: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
   computed: {
     ...mapState([
       'currentDefinition',
@@ -16,6 +33,14 @@ export default {
     ]),
   },
   mounted() {
+    if (this.codeNavigationPath && this.blobPath && this.pathPrefix) {
+      const initialData = {
+        blobs: [{ path: this.blobPath, codeNavigationPath: this.codeNavigationPath }],
+        definitionPathPrefix: this.pathPrefix,
+      };
+      this.setInitialData(initialData);
+    }
+
     this.body = document.body;
 
     eventHub.$on('showBlobInteractionZones', this.showBlobInteractionZones);
@@ -28,7 +53,7 @@ export default {
     this.removeGlobalEventListeners();
   },
   methods: {
-    ...mapActions(['fetchData', 'showDefinition', 'showBlobInteractionZones']),
+    ...mapActions(['fetchData', 'showDefinition', 'showBlobInteractionZones', 'setInitialData']),
     addGlobalEventListeners() {
       if (this.body) {
         this.body.addEventListener('click', this.showDefinition);

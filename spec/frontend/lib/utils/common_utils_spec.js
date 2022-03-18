@@ -51,31 +51,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('parseUrl', () => {
-    it('returns an anchor tag with url', () => {
-      expect(commonUtils.parseUrl('/some/absolute/url').pathname).toContain('some/absolute/url');
-    });
-
-    it('url is escaped', () => {
-      // IE11 will return a relative pathname while other browsers will return a full pathname.
-      // parseUrl uses an anchor element for parsing an url. With relative urls, the anchor
-      // element will create an absolute url relative to the current execution context.
-      // The JavaScript test suite is executed at '/' which will lead to an absolute url
-      // starting with '/'.
-      expect(commonUtils.parseUrl('" test="asf"').pathname).toContain('/%22%20test=%22asf%22');
-    });
-  });
-
-  describe('parseUrlPathname', () => {
-    it('returns an absolute url when given an absolute url', () => {
-      expect(commonUtils.parseUrlPathname('/some/absolute/url')).toEqual('/some/absolute/url');
-    });
-
-    it('returns an absolute url when given a relative url', () => {
-      expect(commonUtils.parseUrlPathname('some/relative/url')).toEqual('/some/relative/url');
-    });
-  });
-
   describe('handleLocationHash', () => {
     beforeEach(() => {
       jest.spyOn(window.document, 'getElementById');

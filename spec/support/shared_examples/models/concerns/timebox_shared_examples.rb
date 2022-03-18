@@ -66,17 +66,6 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
       end
     end
 
-    describe 'title' do
-      it { is_expected.to validate_presence_of(:title) }
-
-      it 'is invalid if title would be empty after sanitation' do
-        timebox = build(timebox_type, *timebox_args, project: project, title: '<img src=x onerror=prompt(1)>')
-
-        expect(timebox).not_to be_valid
-        expect(timebox.errors[:title]).to include("can't be blank")
-      end
-    end
-
     describe '#timebox_type_check' do
       it 'is invalid if it has both project_id and group_id' do
         timebox = build(timebox_type, *timebox_args, group: group)

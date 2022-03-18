@@ -5,6 +5,7 @@ module Gitlab
     module Keyset
       class HeaderBuilder
         attr_reader :request_context
+
         delegate :params, :header, :request, to: :request_context
 
         def initialize(request_context)

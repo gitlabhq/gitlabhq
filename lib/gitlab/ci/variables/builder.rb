@@ -10,6 +10,7 @@ module Gitlab
           @pipeline = pipeline
           @instance_variables_builder = Builder::Instance.new
           @project_variables_builder = Builder::Project.new(project)
+          @group_variables_builder = Builder::Group.new(project.group)
         end
 
         def scoped_variables(job, environment:, dependencies:)
@@ -18,8 +19,7 @@ module Gitlab
             variables.concat(project.predefined_variables)
             variables.concat(pipeline.predefined_variables)
             variables.concat(job.runner.predefined_variables) if job.runnable? && job.runner
-            variables.concat(kubernetes_variables(job))
-            variables.concat(deployment_variables(environment: environment, job: job))
+            variables.concat(kubernetes_variables(environment: environment, job: job))
             variables.concat(job.yaml_variables)
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
@@ -32,11 +32,15 @@ module Gitlab
           end
         end
 
-        def kubernetes_variables(job)
+        def kubernetes_variables(environment:, job:)
           ::Gitlab::Ci::Variables::Collection.new.tap do |collection|
-            # Should get merged with the cluster kubeconfig in deployment_variables, see
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/335089
+            # NOTE: deployment_variables will be removed as part of cleanup for
+            # https://gitlab.com/groups/gitlab-org/configure/-/epics/8
+            # Until then, we need to make both the old and the new KUBECONFIG contexts available
+            collection.concat(deployment_variables(environment: environment, job: job))
             template = ::Ci::GenerateKubeconfigService.new(job).execute
+            kubeconfig_yaml = collection['KUBECONFIG']&.value
+            template.merge_yaml(kubeconfig_yaml) if kubeconfig_yaml.present?
 
             if template.valid?
               collection.append(key: 'KUBECONFIG', value: template.to_yaml, public: false, file: true)
@@ -72,9 +76,13 @@ module Gitlab
         end
 
         def secret_group_variables(environment:, ref:)
-          return [] unless project.group
+          if memoize_secret_variables?
+            memoized_secret_group_variables(environment: environment)
+          else
+            return [] unless project.group
 
-          project.group.ci_variables_for(ref, project, environment: environment)
+            project.group.ci_variables_for(ref, project, environment: environment)
+          end
         end
 
         def secret_project_variables(environment:, ref:)
@@ -90,6 +98,8 @@ module Gitlab
         attr_reader :pipeline
         attr_reader :instance_variables_builder
         attr_reader :project_variables_builder
+        attr_reader :group_variables_builder
+
         delegate :project, to: :pipeline
 
         def predefined_variables(job)
@@ -113,6 +123,15 @@ module Gitlab
         def memoized_secret_project_variables(environment:)
           strong_memoize_with(:secret_project_variables, environment) do
             project_variables_builder
+              .secret_variables(
+                environment: environment,
+                protected_ref: protected_ref?)
+          end
+        end
+
+        def memoized_secret_group_variables(environment:)
+          strong_memoize_with(:secret_group_variables, environment) do
+            group_variables_builder
               .secret_variables(
                 environment: environment,
                 protected_ref: protected_ref?)

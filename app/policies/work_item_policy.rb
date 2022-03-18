@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
-class WorkItemPolicy < BasePolicy
-  delegate { @subject.project }
+class WorkItemPolicy < IssuePolicy
+  rule { can?(:owner_access) | is_author }.enable :delete_work_item
 
-  desc 'User is author of the work item'
-  condition(:author) do
-    @user && @user == @subject.author
-  end
+  rule { can?(:update_issue) }.enable :update_work_item
 
-  rule { can?(:owner_access) | author }.enable :delete_work_item
+  rule { can?(:read_issue) }.enable :read_work_item
 end

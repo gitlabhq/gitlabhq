@@ -129,7 +129,7 @@ module DropdownsHelper
   end
 
   def dropdown_loading
-    spinner = loading_icon(container: true, size: "md", css_class: "gl-mt-7")
+    spinner = gl_loading_icon(size: "md", css_class: "gl-mt-7")
     content_tag(:div, spinner, class: "dropdown-loading")
   end
 end

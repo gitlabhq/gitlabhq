@@ -1,25 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`~/access_tokens/components/expires_at_field should render datepicker with input info 1`] = `
-<gl-datepicker-stub
-  ariallabel=""
-  autocomplete=""
-  container=""
-  displayfield="true"
-  firstday="0"
-  inputlabel="Enter date"
-  mindate="Mon Jul 06 2020 00:00:00 GMT+0000 (Greenwich Mean Time)"
-  placeholder="YYYY-MM-DD"
-  theme=""
+<gl-form-group-stub
+  label="Expiration date"
+  label-for="personal_access_token_expires_at"
+  labeldescription=""
+  optionaltext="(optional)"
 >
-  <gl-form-input-stub
-    autocomplete="off"
-    class="datepicker gl-datepicker-input"
-    data-qa-selector="expiry_date_field"
-    id="personal_access_token_expires_at"
-    inputmode="none"
-    name="personal_access_token[expires_at]"
+  <gl-datepicker-stub
+    ariallabel=""
+    autocomplete=""
+    container=""
+    displayfield="true"
+    firstday="0"
+    inputlabel="Enter date"
+    mindate="Mon Jul 06 2020 00:00:00 GMT+0000 (Greenwich Mean Time)"
     placeholder="YYYY-MM-DD"
-  />
-</gl-datepicker-stub>
+    theme=""
+  >
+    <gl-form-input-stub
+      autocomplete="off"
+      class="datepicker gl-datepicker-input"
+      data-qa-selector="expiry_date_field"
+      id="personal_access_token_expires_at"
+      inputmode="none"
+      name="personal_access_token[expires_at]"
+      placeholder="YYYY-MM-DD"
+    />
+  </gl-datepicker-stub>
+</gl-form-group-stub>
 `;

@@ -220,13 +220,13 @@ RSpec.describe 'Admin::Users::User' do
 
         context 'a user with an expired password' do
           before do
-            another_user.update!(password_expires_at: Time.now - 5.minutes)
+            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
           end
 
           it 'does not redirect to password change page' do
             subject
 
-            expect(current_path).to eq('/')
+            expect(page).to have_current_path('/')
           end
         end
       end
@@ -250,18 +250,18 @@ RSpec.describe 'Admin::Users::User' do
         it 'is redirected back to the impersonated users page in the admin after stopping' do
           subject
 
-          expect(current_path).to eq("/admin/users/#{another_user.username}")
+          expect(page).to have_current_path("/admin/users/#{another_user.username}", ignore_query: true)
         end
 
         context 'a user with an expired password' do
           before do
-            another_user.update!(password_expires_at: Time.now - 5.minutes)
+            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
           end
 
           it 'is redirected back to the impersonated users page in the admin after stopping' do
             subject
 
-            expect(current_path).to eq("/admin/users/#{another_user.username}")
+            expect(page).to have_current_path("/admin/users/#{another_user.username}", ignore_query: true)
           end
         end
       end

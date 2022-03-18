@@ -1,17 +1,20 @@
 <script>
-import { GlForm, GlSearchBoxByType, GlButton } from '@gitlab/ui';
+import { GlSearchBoxByClick } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
+import { s__ } from '~/locale';
 import GroupFilter from './group_filter.vue';
 import ProjectFilter from './project_filter.vue';
 
 export default {
   name: 'GlobalSearchTopbar',
+  i18n: {
+    searchPlaceholder: s__(`GlobalSearch|Search for projects, issues, etc.`),
+    searchLabel: s__(`GlobalSearch|What are you searching for?`),
+  },
   components: {
-    GlForm,
-    GlSearchBoxByType,
+    GlSearchBoxByClick,
     GroupFilter,
     ProjectFilter,
-    GlButton,
   },
   props: {
     groupInitialData: {
@@ -49,28 +52,24 @@ export default {
 </script>
 
 <template>
-  <gl-form class="search-page-form" @submit.prevent="applyQuery">
-    <section class="gl-lg-display-flex gl-align-items-flex-end">
-      <div class="gl-flex-grow-1 gl-mb-4 gl-lg-mb-0 gl-lg-mr-2">
-        <label>{{ __('What are you searching for?') }}</label>
-        <gl-search-box-by-type
-          id="dashboard_search"
-          v-model="search"
-          name="search"
-          :placeholder="__(`Search for projects, issues, etc.`)"
-        />
-      </div>
-      <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
-        <label class="gl-display-block">{{ __('Group') }}</label>
-        <group-filter :initial-data="groupInitialData" />
-      </div>
-      <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
-        <label class="gl-display-block">{{ __('Project') }}</label>
-        <project-filter :initial-data="projectInitialData" />
-      </div>
-      <gl-button class="btn-search gl-lg-ml-2" category="primary" variant="confirm" type="submit"
-        >{{ __('Search') }}
-      </gl-button>
-    </section>
-  </gl-form>
+  <section class="search-page-form gl-lg-display-flex gl-align-items-flex-end">
+    <div class="gl-flex-grow-1 gl-mb-4 gl-lg-mb-0 gl-lg-mr-2">
+      <label>{{ $options.i18n.searchLabel }}</label>
+      <gl-search-box-by-click
+        id="dashboard_search"
+        v-model="search"
+        name="search"
+        :placeholder="$options.i18n.searchPlaceholder"
+        @submit="applyQuery"
+      />
+    </div>
+    <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
+      <label class="gl-display-block">{{ __('Group') }}</label>
+      <group-filter :initial-data="groupInitialData" />
+    </div>
+    <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
+      <label class="gl-display-block">{{ __('Project') }}</label>
+      <project-filter :initial-data="projectInitialData" />
+    </div>
+  </section>
 </template>

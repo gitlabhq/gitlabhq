@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rspec-parameterized'
 
-RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
+RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor, :sentry do
   after do
     if described_class.instance_variable_defined?(:@permitted_arguments_for_worker)
       described_class.remove_instance_variable(:@permitted_arguments_for_worker)
@@ -95,7 +95,9 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
   end
 
   describe '.call' do
-    let(:required_options) do
+    let(:exception) { StandardError.new('Test exception') }
+
+    let(:raven_required_options) do
       {
         configuration: Raven.configuration,
         context: Raven.context,
@@ -103,8 +105,24 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
       }
     end
 
-    let(:event) { Raven::Event.new(required_options.merge(wrapped_value)) }
+    let(:raven_event) do
+      Raven::Event.new(raven_required_options.merge(wrapped_value))
+    end
+
+    let(:sentry_event) do
+      Sentry.get_current_client.event_from_exception(exception)
+    end
+
     let(:result_hash) { described_class.call(event).to_hash }
+
+    before do
+      Sentry.get_current_scope.update_from_options(**wrapped_value)
+      Sentry.get_current_scope.apply_to_event(sentry_event)
+    end
+
+    after do
+      Sentry.get_current_scope.clear
+    end
 
     context 'when there is Sidekiq data' do
       let(:wrapped_value) { { extra: { sidekiq: value } } }
@@ -140,32 +158,66 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
       end
 
       context 'when processing via the default error handler' do
-        include_examples 'Sidekiq arguments', args_in_job_hash: true
+        context 'with Raven events' do
+          let(:event) { raven_event}
+
+          include_examples 'Sidekiq arguments', args_in_job_hash: true
+        end
+
+        context 'with Sentry events' do
+          let(:event) { sentry_event}
+
+          include_examples 'Sidekiq arguments', args_in_job_hash: true
+        end
       end
 
       context 'when processing via Gitlab::ErrorTracking' do
-        include_examples 'Sidekiq arguments', args_in_job_hash: false
-      end
+        context 'with Raven events' do
+          let(:event) { raven_event}
 
-      context 'when a jobstr field is present' do
-        let(:value) do
-          {
-            job: { 'args' => [1] },
-            jobstr: { 'args' => [1] }.to_json
-          }
+          include_examples 'Sidekiq arguments', args_in_job_hash: false
         end
 
-        it 'removes the jobstr' do
-          expect(result_hash.dig(:extra, :sidekiq)).to eq(value.except(:jobstr))
+        context 'with Sentry events' do
+          let(:event) { sentry_event}
+
+          include_examples 'Sidekiq arguments', args_in_job_hash: false
         end
       end
 
-      context 'when no jobstr value is present' do
-        let(:value) { { job: { 'args' => [1] } } }
+      shared_examples 'handles jobstr fields' do
+        context 'when a jobstr field is present' do
+          let(:value) do
+            {
+              job: { 'args' => [1] },
+              jobstr: { 'args' => [1] }.to_json
+            }
+          end
 
-        it 'does nothing' do
-          expect(result_hash.dig(:extra, :sidekiq)).to eq(value)
+          it 'removes the jobstr' do
+            expect(result_hash.dig(:extra, :sidekiq)).to eq(value.except(:jobstr))
+          end
         end
+
+        context 'when no jobstr value is present' do
+          let(:value) { { job: { 'args' => [1] } } }
+
+          it 'does nothing' do
+            expect(result_hash.dig(:extra, :sidekiq)).to eq(value)
+          end
+        end
+      end
+
+      context 'with Raven events' do
+        let(:event) { raven_event}
+
+        it_behaves_like 'handles jobstr fields'
+      end
+
+      context 'with Sentry events' do
+        let(:event) { sentry_event}
+
+        it_behaves_like 'handles jobstr fields'
       end
     end
 
@@ -173,9 +225,23 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
       let(:value) { { tags: { foo: 'bar', baz: 'quux' } } }
       let(:wrapped_value) { value }
 
-      it 'does nothing' do
-        expect(result_hash).to include(value)
-        expect(result_hash.dig(:extra, :sidekiq)).to be_nil
+      shared_examples 'does nothing' do
+        it 'does nothing' do
+          expect(result_hash).to include(value)
+          expect(result_hash.dig(:extra, :sidekiq)).to be_nil
+        end
+      end
+
+      context 'with Raven events' do
+        let(:event) { raven_event}
+
+        it_behaves_like 'does nothing'
+      end
+
+      context 'with Sentry events' do
+        let(:event) { sentry_event}
+
+        it_behaves_like 'does nothing'
       end
     end
 
@@ -183,8 +249,22 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
       let(:value) { { other: 'foo' } }
       let(:wrapped_value) { { extra: { sidekiq: value } } }
 
-      it 'does nothing' do
-        expect(result_hash.dig(:extra, :sidekiq)).to eq(value)
+      shared_examples 'does nothing' do
+        it 'does nothing' do
+          expect(result_hash.dig(:extra, :sidekiq)).to eq(value)
+        end
+      end
+
+      context 'with Raven events' do
+        let(:event) { raven_event}
+
+        it_behaves_like 'does nothing'
+      end
+
+      context 'with Sentry events' do
+        let(:event) { sentry_event}
+
+        it_behaves_like 'does nothing'
       end
     end
   end

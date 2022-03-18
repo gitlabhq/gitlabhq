@@ -3,7 +3,7 @@
 #js-vue-sidebar-reviewers{ data: { field: issuable_type, signed_in: signed_in } }
   .title.hide-collapsed
     = _('Reviewer')
-    = loading_icon(css_class: 'gl-vertical-align-text-bottom')
+    = gl_loading_icon(inline: true)
 
 .selectbox.hide-collapsed
   - if reviewers.none?

@@ -77,9 +77,7 @@ export function initIssueApp(issueData, store) {
 
   const { fullPath } = el.dataset;
 
-  if (gon?.features?.fixCommentScroll) {
-    scrollToTargetOnResize();
-  }
+  scrollToTargetOnResize();
 
   bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
 

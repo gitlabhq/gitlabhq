@@ -35,7 +35,7 @@ To view a list of environments and deployments:
 1. On the left sidebar, select **Deployments > Environments**.
    The environments are displayed.
 
-   ![Environments list](img/environments_list_v14_3.png)
+   ![Environments list](img/environments_list_v14_8.png)
 
 1. To view a list of deployments for an environment, select the environment name,
    for example, `staging`.
@@ -440,7 +440,7 @@ stop_review:
       when: manual
 ```
 
-Both jobs must have the same [`rules`](../yaml/index.md#only--except)
+Both jobs must have the same [`rules`](../yaml/index.md#rules)
 or [`only/except`](../yaml/index.md#only--except) configuration. Otherwise,
 the `stop_review` job might not be included in all pipelines that include the
 `deploy_review` job, and you cannot trigger `action: stop` to stop the environment automatically.

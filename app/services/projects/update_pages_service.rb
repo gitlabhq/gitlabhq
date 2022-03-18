@@ -22,8 +22,8 @@ module Projects
       register_attempt
 
       # Create status notifying the deployment of pages
-      @status = build_commit_status
-      ::Ci::Pipelines::AddJobService.new(@build.pipeline).execute!(@status) do |job|
+      @commit_status = build_commit_status
+      ::Ci::Pipelines::AddJobService.new(@build.pipeline).execute!(@commit_status) do |job|
         job.enqueue!
         job.run!
       end
@@ -46,17 +46,17 @@ module Projects
     private
 
     def success
-      @status.success
-      @project.mark_pages_as_deployed(artifacts_archive: build.job_artifacts_archive)
+      @commit_status.success
+      @project.mark_pages_as_deployed
       super
     end
 
     def error(message)
       register_failure
       log_error("Projects::UpdatePagesService: #{message}")
-      @status.allow_failure = !latest?
-      @status.description = message
-      @status.drop(:script_failure)
+      @commit_status.allow_failure = !latest?
+      @commit_status.description = message
+      @commit_status.drop(:script_failure)
       super
     end
 

@@ -9,6 +9,12 @@ module API
         expose :sentry_external_url
         expose :api_url
         expose :integrated
+
+        def integrated
+          return false unless ::Feature.enabled?(:integrated_error_tracking, object.project)
+
+          object.integrated_client?
+        end
       end
 
       class ClientKey < Grape::Entity

@@ -3,6 +3,7 @@
 class Groups::Crm::OrganizationsController < Groups::ApplicationController
   feature_category :team_planning
 
+  before_action :validate_root_group!
   before_action :authorize_read_crm_organization!
 
   def new

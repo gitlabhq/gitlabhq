@@ -65,7 +65,7 @@ This restriction also applies to projects forked from or to those groups.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34648) in GitLab 12.9.
 
-Groups with group-managed accounts can disallow forking of projects to destinations outside the group.
+Groups with group-managed accounts can prevent forking of projects to destinations outside the group.
 To do so, enable the "Prohibit outer forks" option in **Settings > SAML SSO**.
 When enabled **at the parent group level**, projects within the group can be forked
 only to other destinations within the group (including its subgroups).

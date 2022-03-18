@@ -55,8 +55,8 @@ RSpec.describe 'Developer views tags' do
     it 'views a specific tag page' do
       click_on 'v1.0.0'
 
-      expect(current_path).to eq(
-        project_tag_path(project, 'v1.0.0'))
+      expect(page).to have_current_path(
+        project_tag_path(project, 'v1.0.0'), ignore_query: true)
       expect(page).to have_content 'v1.0.0'
       expect(page).to have_content 'This tag has no release notes.'
     end
@@ -65,25 +65,25 @@ RSpec.describe 'Developer views tags' do
       it 'has a button to browse files' do
         click_on 'v1.0.0'
 
-        expect(current_path).to eq(
-          project_tag_path(project, 'v1.0.0'))
+        expect(page).to have_current_path(
+          project_tag_path(project, 'v1.0.0'), ignore_query: true)
 
         click_on 'Browse files'
 
-        expect(current_path).to eq(
-          project_tree_path(project, 'v1.0.0'))
+        expect(page).to have_current_path(
+          project_tree_path(project, 'v1.0.0'), ignore_query: true)
       end
 
       it 'has a button to browse commits' do
         click_on 'v1.0.0'
 
-        expect(current_path).to eq(
-          project_tag_path(project, 'v1.0.0'))
+        expect(page).to have_current_path(
+          project_tag_path(project, 'v1.0.0'), ignore_query: true)
 
         click_on 'Browse commits'
 
-        expect(current_path).to eq(
-          project_commits_path(project, 'v1.0.0'))
+        expect(page).to have_current_path(
+          project_commits_path(project, 'v1.0.0'), ignore_query: true)
       end
     end
   end

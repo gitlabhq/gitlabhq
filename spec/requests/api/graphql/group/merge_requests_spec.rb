@@ -16,6 +16,9 @@ RSpec.describe 'Query.group.mergeRequests' do
   let_it_be(:project_x) { create(:project, :repository) }
   let_it_be(:user)      { create(:user, developer_projects: [project_x]) }
 
+  let_it_be(:archived_project) { create(:project, :archived, :repository, group: group) }
+  let_it_be(:archived_mr) { create(:merge_request, source_project: archived_project) }
+
   let_it_be(:mr_attrs) do
     { target_branch: 'master' }
   end
@@ -117,6 +120,24 @@ RSpec.describe 'Query.group.mergeRequests' do
       post_graphql(query, current_user: user, variables: { path: group.full_path })
 
       expect(mrs_data).to match_array(expected_mrs(mrs_a + mrs_b + mrs_c))
+    end
+  end
+
+  describe 'passing include_archived: true' do
+    let(:query) do
+      <<~GQL
+      query($path: ID!) {
+        group(fullPath: $path) {
+          mergeRequests(includeArchived: true) { nodes { id } }
+        }
+      }
+      GQL
+    end
+
+    it 'can find all merge requests in the group, including from archived projects' do
+      post_graphql(query, current_user: user, variables: { path: group.full_path })
+
+      expect(mrs_data).to match_array(expected_mrs(mrs_a + mrs_b + [archived_mr]))
     end
   end
 end

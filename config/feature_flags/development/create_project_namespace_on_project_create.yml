@@ -1,8 +1,0 @@
----
-name: create_project_namespace_on_project_create
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70972
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344954
-milestone: '14.5'
-type: development
-group: group::workspace
-default_enabled: true

@@ -2,8 +2,6 @@
 
 module Integrations
   class Campfire < Integration
-    include ActionView::Helpers::UrlHelper
-
     prop_accessor :token, :subdomain, :room
     validates :token, presence: true, if: :activated?
 
@@ -16,7 +14,7 @@ module Integrations
     end
 
     def help
-      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('api/services', anchor: 'campfire'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('api/services', anchor: 'campfire'), target: '_blank', rel: 'noopener noreferrer'
       s_('CampfireService|Send notifications about push events to Campfire chat rooms. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 

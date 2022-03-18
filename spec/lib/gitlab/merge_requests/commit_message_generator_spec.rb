@@ -403,6 +403,90 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
       end
     end
 
+    context 'when project has commit template with all_commits' do
+      let(message_template_name) { "All commits:\n%{all_commits}" }
+
+      it 'returns all commit messages' do
+        expect(result_message).to eq <<~MSG.rstrip
+          All commits:
+          * Feature added
+
+          Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+        MSG
+      end
+
+      context 'with 2 commits' do
+        let(:source_branch) { 'fix' }
+
+        it 'returns both messages' do
+          expect(result_message).to eq <<~MSG.rstrip
+            All commits:
+            * Test file for directories with a leading dot
+
+            * JS fix
+
+            Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          MSG
+        end
+      end
+
+      context 'with over 100 commits' do
+        let(:source_branch) { 'signed-commits' }
+
+        it 'returns first 100 commits skipping merge commit' do
+          expected_message = <<~MSG
+            All commits:
+            * Multiple signatures commit
+
+            * Add conflicting file
+
+            * Add conflicting file
+
+          MSG
+          expected_message += (5..100).to_a.reverse
+                                .map { |n| "* Unrelated signed commit #{n} to exceed page size of endpoint\n\n" }
+                                .join.rstrip
+          expect(result_message).to eq expected_message
+        end
+      end
+
+      context 'when branch has no unmerged commits' do
+        let(:source_branch) { 'v1.1.0' }
+
+        it 'is an empty string' do
+          expect(result_message).to eq "All commits:\n"
+        end
+      end
+
+      context 'when branch has commit with message over 100kb' do
+        let(:source_branch) { 'add_commit_with_5mb_subject' }
+
+        it 'skips commit body' do
+          expect(result_message).to eq <<~MSG.rstrip
+            All commits:
+            * Commit with 5MB text subject
+
+            -- Skipped commit body exceeding 100KiB in size.
+
+            * Correct test_env.rb path for adding branch
+
+            * Add file with a _flattable_ path
+
+
+            (cherry picked from commit ce369011c189f62c815f5971d096b26759bab0d1)
+
+            * Add file larger than 1 mb
+
+            In order to test Max File Size push rule we need a file larger than 1 MB
+
+            * LFS tracks "*.lfs" through .gitattributes
+
+            * Update README.md to include `Usage in testing and development`
+          MSG
+        end
+      end
+    end
+
     context 'user' do
       subject { described_class.new(merge_request: merge_request, current_user: nil) }
 
@@ -466,6 +550,7 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
         approved_by:%{approved_by}
         merged_by:%{merged_by}
         co_authored_by:%{co_authored_by}
+        all_commits:%{all_commits}
       MSG
 
       it 'uses custom template' do
@@ -486,6 +571,9 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
           approved_by:
           merged_by:#{current_user.name} <#{current_user.commit_email_or_default}>
           co_authored_by:Co-authored-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          all_commits:* Feature added
+
+          Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
         MSG
       end
     end

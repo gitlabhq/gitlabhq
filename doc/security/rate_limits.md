@@ -93,7 +93,7 @@ The **rate limit** is 5 requests per minute per user.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339151) in GitLab 14.7.
 
 There is a rate limit per IP address on the `/users/sign_up` endpoint. This is to mitigate attempts to misuse the endpoint. For example, to mass
-discover usernames or email addresses in use. 
+discover usernames or email addresses in use.
 
 The **rate limit** is 20 calls per minute per IP address.
 
@@ -113,7 +113,7 @@ The **rate limit** is 10 calls per minute per signed-in user.
 There is a rate limit for the internal endpoint `/users/:username/exists`, used upon sign up to check if a chosen username has already been taken.
 This is to mitigate the risk of misuses, such as mass discovery of usernames in use.
 
-The **rate limit** is 20 calls per minute per IP address. 
+The **rate limit** is 20 calls per minute per IP address.
 
 ## Troubleshooting
 

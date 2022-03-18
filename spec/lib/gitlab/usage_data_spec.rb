@@ -507,6 +507,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
 
     it 'gathers usage counts', :aggregate_failures do
+      stub_feature_flags(merge_service_ping_instrumented_metrics: false)
+
       count_data = subject[:counts]
       expect(count_data[:boards]).to eq(1)
       expect(count_data[:projects]).to eq(4)
@@ -1096,6 +1098,20 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       it 'gathers user_cap_feature_enabled' do
         expect(subject[:settings][:user_cap_feature_enabled]).to eq(Gitlab::CurrentSettings.new_user_signups_cap)
+      end
+
+      it 'reports status of the certificate_based_clusters feature flag as true' do
+        expect(subject[:settings][:certificate_based_clusters_ff]).to eq(true)
+      end
+
+      context 'with certificate_based_clusters disabled' do
+        before do
+          stub_feature_flags(certificate_based_clusters: false)
+        end
+
+        it 'reports status of the certificate_based_clusters feature flag as false' do
+          expect(subject[:settings][:certificate_based_clusters_ff]).to eq(false)
+        end
       end
 
       context 'snowplow stats' do

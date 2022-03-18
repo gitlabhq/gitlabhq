@@ -12,7 +12,7 @@ RSpec.describe 'User activates JetBrains TeamCity CI' do
   it 'activates integration', :js do
     visit_project_integration('JetBrains TeamCity')
     check('Push')
-    check('Merge Request')
+    check('Merge request')
     fill_in('TeamCity server URL', with: 'http://teamcity.example.com')
     fill_in('Build type', with: 'GitlabTest_Build')
     fill_in('Username', with: 'user')

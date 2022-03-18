@@ -14,6 +14,14 @@ module MergeRequestReviewerState
       presence: true,
       inclusion: { in: self.states.keys }
 
+    belongs_to :updated_state_by, class_name: 'User', foreign_key: :updated_state_by_user_id
+
     after_initialize :set_state, unless: :persisted?
+
+    def attention_requested_by
+      return unless attention_requested?
+
+      updated_state_by
+    end
   end
 end

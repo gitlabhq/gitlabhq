@@ -174,7 +174,8 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
 
     it "pushes route's feature category to the context" do
       expect(Gitlab::ApplicationContext).to receive(:push).with(
-        feature_category: 'team_planning'
+        feature_category: 'team_planning',
+        caller_id: 'Projects::NotesController#index'
       )
 
       _, _, _ = middleware.call(build_request(path, if_none_match))

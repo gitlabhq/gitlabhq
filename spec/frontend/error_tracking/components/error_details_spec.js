@@ -10,11 +10,7 @@ import {
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import {
-  severityLevel,
-  severityLevelVariant,
-  errorStatus,
-} from '~/error_tracking/components/constants';
+import { severityLevel, severityLevelVariant, errorStatus } from '~/error_tracking/constants';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import {

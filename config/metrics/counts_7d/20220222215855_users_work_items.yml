@@ -1,0 +1,21 @@
+---
+key_path: counts_weekly.aggregated_metrics.users_work_items
+description: Unique users interacting with work items
+product_category: team planning
+product_section: dev
+product_stage: plan
+product_group: group::product planning
+value_type: number
+status: active
+milestone: '14.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81336
+time_frame: 7d
+data_source: redis_hll
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

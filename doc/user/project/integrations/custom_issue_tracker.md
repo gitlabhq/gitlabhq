@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can integrate an [external issue tracker](../../../integration/external-issue-tracker.md)
 with GitLab. If your preferred issue tracker is not listed in the
-[integrations list](../../../integration/external-issue-tracker.md#integration),
+[integrations list](../../../integration/external-issue-tracker.md#configure-an-external-issue-tracker),
 you can enable a custom issue tracker.
 
 After you enable the custom issue tracker, a link to the issue tracker displays

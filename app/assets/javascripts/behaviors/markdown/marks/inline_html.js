@@ -1,46 +1,35 @@
-/* eslint-disable class-methods-use-this */
-
 import { escape } from 'lodash';
-import { Mark } from 'tiptap';
 
 // Transforms generated HTML back to GFM for Banzai::Filter::MarkdownFilter
-export default class InlineHTML extends Mark {
-  get name() {
-    return 'inline_html';
-  }
-
-  get schema() {
-    return {
-      excludes: '',
-      attrs: {
-        tag: {},
-        title: { default: null },
+export default () => ({
+  name: 'inline_html',
+  schema: {
+    excludes: '',
+    attrs: {
+      tag: {},
+      title: { default: null },
+    },
+    parseDOM: [
+      {
+        tag: 'sup, sub, kbd, q, samp, var',
+        getAttrs: (el) => ({ tag: el.nodeName.toLowerCase() }),
       },
-      parseDOM: [
-        {
-          tag: 'sup, sub, kbd, q, samp, var',
-          getAttrs: (el) => ({ tag: el.nodeName.toLowerCase() }),
-        },
-        {
-          tag: 'abbr',
-          getAttrs: (el) => ({ tag: 'abbr', title: el.getAttribute('title') }),
-        },
-      ],
-      toDOM: (node) => [node.attrs.tag, { title: node.attrs.title }, 0],
-    };
-  }
-
-  get toMarkdown() {
-    return {
-      mixable: true,
-      open(state, mark) {
-        return `<${mark.attrs.tag}${
-          mark.attrs.title ? ` title="${state.esc(escape(mark.attrs.title))}"` : ''
-        }>`;
+      {
+        tag: 'abbr',
+        getAttrs: (el) => ({ tag: 'abbr', title: el.getAttribute('title') }),
       },
-      close(state, mark) {
-        return `</${mark.attrs.tag}>`;
-      },
-    };
-  }
-}
+    ],
+    toDOM: (node) => [node.attrs.tag, { title: node.attrs.title }, 0],
+  },
+  toMarkdown: {
+    mixable: true,
+    open(state, mark) {
+      return `<${mark.attrs.tag}${
+        mark.attrs.title ? ` title="${state.esc(escape(mark.attrs.title))}"` : ''
+      }>`;
+    },
+    close(_, mark) {
+      return `</${mark.attrs.tag}>`;
+    },
+  },
+});

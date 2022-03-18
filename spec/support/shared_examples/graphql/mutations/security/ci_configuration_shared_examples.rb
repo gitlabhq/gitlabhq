@@ -29,8 +29,10 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
   describe '#resolve' do
     let(:result) { subject }
 
-    it 'raises an error if the resource is not accessible to the user' do
-      expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+    it 'generates an error if the resource is not accessible to the user' do
+      expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+        subject
+      end
     end
 
     context 'when user does not have enough permissions' do
@@ -38,8 +40,10 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
         project.add_guest(user)
       end
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          subject
+        end
       end
     end
 
@@ -48,8 +52,10 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
         create(:project_empty_repo).add_maintainer(user)
       end
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          subject
+        end
       end
     end
 

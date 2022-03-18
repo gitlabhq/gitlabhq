@@ -26,7 +26,7 @@ RSpec.describe 'Upload a user avatar', :js do
       expect(page).to have_content 'Profile was successfully updated'
       expect(user.reload.avatar.file).to be_present
       expect(user.avatar).to be_instance_of AvatarUploader
-      expect(current_path).to eq(profile_path)
+      expect(page).to have_current_path(profile_path, ignore_query: true)
     end
   end
 

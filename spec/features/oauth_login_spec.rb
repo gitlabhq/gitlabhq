@@ -45,7 +45,7 @@ RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
         it 'logs the user in' do
           login_with_provider(provider, additional_info: additional_info)
 
-          expect(current_path).to eq root_path
+          expect(page).to have_current_path root_path, ignore_query: true
         end
       end
 
@@ -55,19 +55,19 @@ RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
         it 'logs the user in' do
           login_with_provider(provider, additional_info: additional_info, enter_two_factor: true)
 
-          expect(current_path).to eq root_path
+          expect(page).to have_current_path root_path, ignore_query: true
         end
 
         it 'when bypass-two-factor is enabled' do
           allow(Gitlab.config.omniauth).to receive_messages(allow_bypass_two_factor: true)
           login_via(provider.to_s, user, uid, remember_me: false, additional_info: additional_info)
-          expect(current_path).to eq root_path
+          expect(page).to have_current_path root_path, ignore_query: true
         end
 
         it 'when bypass-two-factor is disabled' do
           allow(Gitlab.config.omniauth).to receive_messages(allow_bypass_two_factor: false)
           login_with_provider(provider, enter_two_factor: true, additional_info: additional_info)
-          expect(current_path).to eq root_path
+          expect(page).to have_current_path root_path, ignore_query: true
         end
       end
 
@@ -81,7 +81,7 @@ RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
             clear_browser_session
 
             visit(root_path)
-            expect(current_path).to eq root_path
+            expect(page).to have_current_path root_path, ignore_query: true
           end
         end
 
@@ -94,7 +94,7 @@ RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
             clear_browser_session
 
             visit(root_path)
-            expect(current_path).to eq root_path
+            expect(page).to have_current_path root_path, ignore_query: true
           end
         end
       end
@@ -107,7 +107,7 @@ RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
             clear_browser_session
 
             visit(root_path)
-            expect(current_path).to eq new_user_session_path
+            expect(page).to have_current_path new_user_session_path, ignore_query: true
           end
         end
 
@@ -120,7 +120,7 @@ RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
             clear_browser_session
 
             visit(root_path)
-            expect(current_path).to eq new_user_session_path
+            expect(page).to have_current_path new_user_session_path, ignore_query: true
           end
         end
       end

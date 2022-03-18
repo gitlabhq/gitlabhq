@@ -37,7 +37,7 @@ module Projects
       system_hook_service.execute_hooks_for(project, :destroy)
       log_info("Project \"#{project.full_path}\" was deleted")
 
-      publish_project_deleted_event_for(project) if Feature.enabled?(:publish_project_deleted_event, default_enabled: :yaml)
+      publish_project_deleted_event_for(project)
 
       current_user.invalidate_personal_projects_count
 
@@ -72,7 +72,13 @@ module Projects
     end
 
     def remove_snippets
-      response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute
+      # We're setting the hard_delete param because we dont need to perform the access checks within the service since
+      # the user has enough access rights to remove the project and its resources.
+      response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute(hard_delete: true)
+
+      if response.error?
+        log_error("Snippet deletion failed on #{project.full_path} with the following message: #{response.message}")
+      end
 
       response.success?
     end
@@ -192,6 +198,10 @@ module Projects
         # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71342#note_691523196
 
         ::Ci::DestroyPipelineService.new(project, current_user).execute(pipeline)
+      end
+
+      project.secure_files.find_each(batch_size: BATCH_SIZE) do |secure_file| # rubocop: disable CodeReuse/ActiveRecord
+        ::Ci::DestroySecureFileService.new(project, current_user).execute(secure_file)
       end
 
       deleted_count = ::CommitStatus.for_project(project).delete_all

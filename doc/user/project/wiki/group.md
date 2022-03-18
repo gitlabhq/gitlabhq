@@ -7,7 +7,7 @@ type: reference, how-to
 
 # Group wikis **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in GitLab 13.5.
 
 If you use GitLab groups to manage multiple projects, some of your documentation
 might span multiple groups. You can create group wikis, instead of [project wikis](index.md),
@@ -17,7 +17,7 @@ Group wikis are similar to [project wikis](index.md), with a few limitations:
 - [Git LFS](../../../topics/git/lfs/index.md) is not supported.
 - Group wikis are not included in [global search](../../search/advanced_search.md).
 - Changes to group wikis don't show up in the [group's activity feed](../../group/index.md#group-activity-analytics).
-- Group wikis are enabled by default for **(PREMIUM)** and higher tiers.
+- Group wikis are enabled by default for GitLab Premium and higher tiers.
   You [can't turn them off from the GitLab user interface](https://gitlab.com/gitlab-org/gitlab/-/issues/208413).
 
 For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
@@ -38,7 +38,7 @@ To access a group wiki:
 
 ## Export a group wiki
 
-> Introduced in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9.
 
 Users with the Owner role in a group can
 [import and export group wikis](../../group/settings/import_export.md) when importing

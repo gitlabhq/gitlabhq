@@ -26,7 +26,7 @@ used for the build.
 
 Specify either:
 
-- The CI/CD variable `BUILDPACK_URL` according to [`pack`'s specifications](https://buildpacks.io/docs/app-developer-guide/specific-buildpacks/).
+- The CI/CD variable `BUILDPACK_URL` according to [`pack`'s specifications](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/).
 - A [`project.toml` project descriptor](https://buildpacks.io/docs/app-developer-guide/using-project-descriptor/) with the buildpacks you would like to include.
 
 ### Custom buildpacks with Herokuish
@@ -190,7 +190,7 @@ You can override the default values in the `values.yaml` file in the
   `HELM_UPGRADE_VALUES_FILE` [CI/CD variable](#cicd-variables) with
   the path and name.
 
-Some values can not be overridden with the options above. Settings like `replicaCount` should instead be overridden with the `REPLICAS` 
+Some values can not be overridden with the options above. Settings like `replicaCount` should instead be overridden with the `REPLICAS`
 [build and deployment](#build-and-deployment) CI/CD variable. Follow [this issue](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/31) for more information.
 
 NOTE:
@@ -431,7 +431,7 @@ applications.
 | `HELM_UPGRADE_EXTRA_ARGS`               | Allows extra options in `helm upgrade` commands when deploying the application. Note that using quotes doesn't prevent word splitting. |
 | `INCREMENTAL_ROLLOUT_MODE`              | If present, can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
 | `K8S_SECRET_*`                          | Any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) is made available by Auto DevOps as environment variables to the deployed application. |
-| `KUBE_CONTEXT`                          | From GitLab 14.5, can be used to select which context to use from `KUBECONFIG`. When `KUBE_CONTEXT` is blank, the default context in `KUBECONFIG` (if any) will be used. A context must be selected when using the [CI/CD tunnel](../../user/clusters/agent/ci_cd_tunnel.md). |
+| `KUBE_CONTEXT`                          | From GitLab 14.5, can be used to select a context to use from `KUBECONFIG`. When `KUBE_CONTEXT` is blank, the default context in `KUBECONFIG` (if any) is used. A context must be selected when used [with the agent for Kubernetes](../../user/clusters/agent/ci_cd_tunnel.md). |
 | `KUBE_INGRESS_BASE_DOMAIN`              | Can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/gitlab_managed_clusters.md#base-domain) for more information. |
 | `KUBE_NAMESPACE`                        | The namespace used for deployments. When using certificate-based clusters, [this value should not be overwritten directly](../../user/project/clusters/deploy_to_cluster.md#custom-namespace). |
 | `KUBECONFIG`                            | The kubeconfig to use for deployments. User-provided values take priority over GitLab-provided values. |

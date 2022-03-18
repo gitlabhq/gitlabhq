@@ -76,7 +76,7 @@ through the [remote mirrors API](../../../../api/remote_mirrors.md).
 
 To configure a mirror from GitLab to GitHub:
 
-1. Create a [GitHub personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+1. Create a [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
    with `public_repo` selected.
 1. Enter a **Git repository URL** with this format:
    `https://<your_access_token>@github.com/<github_group>/<github_project>.git`.

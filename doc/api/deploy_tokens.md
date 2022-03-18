@@ -94,6 +94,46 @@ Example response:
 ]
 ```
 
+### Get a project deploy token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82467) in GitLab 14.9.
+
+Get a single project's deploy token by ID.
+
+```plaintext
+GET /projects/:id/deploy_tokens/:token_id
+```
+
+Parameters:
+
+| Attribute  | Type           | Required               | Description |
+| ---------- | -------------- | ---------------------- | ----------- |
+| `id`       | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id` | integer        | **{check-circle}** Yes | ID of the deploy token |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deploy_tokens/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "name": "MyToken",
+  "username": "gitlab+deploy-token-1",
+  "expires_at": "2020-02-14T00:00:00.000Z",
+  "revoked": false,
+  "expired": false,
+  "scopes": [
+    "read_repository",
+    "read_registry"
+  ]
+}
+```
+
 ### Create a project deploy token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
@@ -108,7 +148,7 @@ Parameters:
 
 | Attribute    | Type             | Required               | Description |
 | ------------ | ---------------- | ---------------------- | ----------- |
-| `id`         | integer/string   | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer/string   | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`       | string           | **{check-circle}** Yes | New deploy token's name |
 | `expires_at` | datetime         | **{dotted-circle}** No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `username`   | string           | **{dotted-circle}** No | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
@@ -153,8 +193,8 @@ Parameters:
 
 | Attribute  | Type           | Required               | Description |
 | ---------- | -------------- | ---------------------- | ----------- |
-| `id`       | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
-| `token_id` | integer        | **{check-circle}** Yes | The ID of the deploy token |
+| `id`       | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id` | integer        | **{check-circle}** Yes | ID of the deploy token |
 
 Example request:
 
@@ -210,6 +250,46 @@ Example response:
 ]
 ```
 
+### Get a group deploy token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82467) in GitLab 14.9.
+
+Get a single group's deploy token by ID.
+
+```plaintext
+GET /groups/:id/deploy_tokens/:token_id
+```
+
+Parameters:
+
+| Attribute   | Type           | Required               | Description |
+| ----------- | -------------- | ---------------------- | ----------- |
+| `id`        | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id`  | integer        | **{check-circle}** Yes | ID of the deploy token |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/deploy_tokens/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "name": "MyToken",
+  "username": "gitlab+deploy-token-1",
+  "expires_at": "2020-02-14T00:00:00.000Z",
+  "revoked": false,
+  "expired": false,
+  "scopes": [
+    "read_repository",
+    "read_registry"
+  ]
+}
+```
+
 ### Create a group deploy token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
@@ -224,7 +304,7 @@ Parameters:
 
 | Attribute    | Type | Required  | Description |
 | ------------ | ---- | --------- | ----------- |
-| `id`         | integer/string   | **{check-circle}** Yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer/string   | **{check-circle}** Yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`       | string           | **{check-circle}** Yes | New deploy token's name |
 | `expires_at` | datetime         | **{dotted-circle}** No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `username`   | string           | **{dotted-circle}** No | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
@@ -269,8 +349,8 @@ Parameters:
 
 | Attribute   | Type           | Required               | Description |
 | ----------- | -------------- | ---------------------- | ----------- |
-| `id`        | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
-| `token_id`  | integer        | **{check-circle}** Yes | The ID of the deploy token |
+| `id`        | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id`  | integer        | **{check-circle}** Yes | ID of the deploy token |
 
 Example request:
 

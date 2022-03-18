@@ -2,12 +2,6 @@
 
 require_relative '../qa'
 
-require 'securerandom'
-require 'pathname'
-require 'active_support/core_ext/hash'
-require 'active_support/core_ext/object/blank'
-require 'rainbow/refinement'
-
 require_relative 'qa_deprecation_toolkit_env'
 QaDeprecationToolkitEnv.configure!
 
@@ -36,7 +30,7 @@ RSpec.configure do |config|
   end
 
   config.prepend_before do |example|
-    QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n")
+    QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
     QA::Runtime::Example.current = example
 
     # Reset fabrication counters tracked in resource base
@@ -75,14 +69,15 @@ RSpec.configure do |config|
 
   config.after(:suite) do |suite|
     # Write all test created resources to JSON file
-    QA::Tools::TestResourceDataProcessor.write_to_file
+    QA::Tools::TestResourceDataProcessor.write_to_file(suite.reporter.failed_examples.any?)
 
     # If requested, confirm that resources were used appropriately (e.g., not left with changes that interfere with
     # further reuse)
     QA::Resource::ReusableCollection.validate_resource_reuse if QA::Runtime::Env.validate_resource_reuse?
 
     # If any tests failed, leave the resources behind to help troubleshoot, otherwise remove them.
-    QA::Resource::ReusableCollection.remove_all_via_api! unless suite.reporter.failed_examples.present?
+    # Do not remove the shared resource on live environments
+    QA::Resource::ReusableCollection.remove_all_via_api! if !suite.reporter.failed_examples.present? && !QA::Runtime::Env.running_on_dot_com?
   end
 
   config.append_after(:suite) do

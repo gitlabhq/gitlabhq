@@ -1,4 +1,7 @@
-import { __ } from '~/locale';
+import { GlFilteredSearchToken } from '@gitlab/ui';
+
+import { __, s__ } from '~/locale';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const FIELD_KEY_ACCOUNT = 'account';
 export const FIELD_KEY_SOURCE = 'source';
@@ -81,6 +84,38 @@ export const DEFAULT_SORT = {
   sortByKey: 'account',
   sortDesc: false,
 };
+
+export const FILTERED_SEARCH_TOKEN_TWO_FACTOR = {
+  type: 'two_factor',
+  icon: 'lock',
+  title: s__('Members|2FA'),
+  token: GlFilteredSearchToken,
+  unique: true,
+  operators: OPERATOR_IS_ONLY,
+  options: [
+    { value: 'enabled', title: s__('Members|Enabled') },
+    { value: 'disabled', title: s__('Members|Disabled') },
+  ],
+  requiredPermissions: 'canManageMembers',
+};
+
+export const FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS = {
+  type: 'with_inherited_permissions',
+  icon: 'group',
+  title: s__('Members|Membership'),
+  token: GlFilteredSearchToken,
+  unique: true,
+  operators: OPERATOR_IS_ONLY,
+  options: [
+    { value: 'exclude', title: s__('Members|Direct') },
+    { value: 'only', title: s__('Members|Inherited') },
+  ],
+};
+
+export const AVAILABLE_FILTERED_SEARCH_TOKENS = [
+  FILTERED_SEARCH_TOKEN_TWO_FACTOR,
+  FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
+];
 
 export const AVATAR_SIZE = 48;
 

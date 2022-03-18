@@ -11,6 +11,12 @@ require_relative 'lib/gitlab'
 require_relative '../config/bundler_setup'
 Bundler.require(:default)
 
+require 'securerandom'
+require 'pathname'
+require 'active_support/core_ext/hash'
+require 'active_support/core_ext/object/blank'
+require 'rainbow/refinement'
+
 module QA
   root = "#{__dir__}/qa"
 
@@ -53,7 +59,8 @@ module QA
     "jira_api" => "JiraAPI",
     "registry_tls" => "RegistryTLS",
     "jetbrains" => "JetBrains",
-    "vscode" => "VSCode"
+    "vscode" => "VSCode",
+    "registry_with_cdn" => "RegistryWithCDN"
   )
 
   loader.setup

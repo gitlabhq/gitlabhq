@@ -50,7 +50,7 @@ To enable container scanning in your pipeline, you need the following:
 
 - Container Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 - [GitLab Runner](https://docs.gitlab.com/runner/) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html)
-  or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+  or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor on Linux/amd64.
 - Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
 - An image matching the [supported distributions](#supported-distributions).
@@ -145,7 +145,7 @@ For example, to scan an image from AWS Elastic Container Registry:
 ```yaml
 container_scanning:
   before_script:
-    - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" --output "awscliv2.zip"
+    - ruby -r open-uri -e "IO.copy_stream(URI.open('https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip'), 'awscliv2.zip')"
     - unzip awscliv2.zip
     - ./aws/install
     - aws --version
@@ -252,6 +252,24 @@ images. To configure the images, set the `CS_ANALYZER_IMAGE` variable to the sta
 | Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:4-ubi` |
 | Grype           | `registry.gitlab.com/security-products/container-scanning/grype:4-ubi` |
 | Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:4-ubi` |
+
+### Enable Container Scanning through an automatic merge request
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6334) in GitLab 14.9.
+
+To enable Container Scanning in a project, create a merge request from the Security Configuration
+page:
+
+1. In the project where you want to enable Container Scanning, go to
+   **Security & Compliance > Configuration**.
+1. In the **Container Scanning** row, select **Configure with a merge request**.
+
+This automatically creates a merge request with the changes necessary to enable Container Scanning.
+To complete the configuration, review and merge this merge request.
+
+The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
+configuration file. If you have a complex GitLab configuration file, it may not be parsed
+successfully and an error may occur.
 
 ### Overriding the container scanning template
 

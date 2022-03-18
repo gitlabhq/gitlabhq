@@ -8,7 +8,7 @@ if Gitlab.config.gitlab.allowed_hosts.present?
 end
 
 if Rails.env.development?
-  Rails.application.config.hosts += [Gitlab.config.gitlab.host, 'unix', 'host.docker.internal']
+  Rails.application.config.hosts += [Gitlab.config.gitlab.host, 'unix', 'host.docker.internal', 'docker.for.mac.localhost']
 
   if ENV['RAILS_HOSTS']
     additional_hosts = ENV['RAILS_HOSTS'].split(',').select(&:presence)

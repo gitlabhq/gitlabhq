@@ -1,10 +1,11 @@
 - breadcrumb_title _("Messages")
 - page_title _("Broadcast Messages")
+- targeted_broadcast_messages_enabled = Feature.enabled?(:role_targeted_broadcast_messages, default_enabled: :yaml)
 
 %h3.page-title
   = _('Broadcast Messages')
 %p.light
-  = _('Broadcast messages are displayed for every user and can be used to notify users about scheduled maintenance, recent upgrades and more.')
+  = _('Use banners and notifications to notify your users about scheduled maintenance, recent upgrades, and more.')
 
 = render 'form'
 
@@ -19,8 +20,10 @@
           %th= _('Preview')
           %th= _('Starts')
           %th= _('Ends')
-          %th= _(' Target Path')
-          %th= _(' Type')
+          - if targeted_broadcast_messages_enabled
+            %th= _('Target roles')
+          %th= _('Target Path')
+          %th= _('Type')
           %th &nbsp;
       %tbody
         - @broadcast_messages.each do |message|
@@ -33,6 +36,9 @@
               = message.starts_at
             %td
               = message.ends_at
+            - if targeted_broadcast_messages_enabled
+              %td
+                = target_access_levels_display(message.target_access_levels)
             %td
               = message.target_path
             %td

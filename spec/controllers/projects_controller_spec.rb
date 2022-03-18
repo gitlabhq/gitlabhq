@@ -1211,16 +1211,6 @@ RSpec.describe ProjectsController do
 
         expect(response).to have_gitlab_http_status(:success)
       end
-
-      context 'when "strong_parameters_for_project_controller" FF is disabled' do
-        before do
-          stub_feature_flags(strong_parameters_for_project_controller: false)
-        end
-
-        it 'raises an exception' do
-          expect { request }.to raise_error(TypeError)
-        end
-      end
     end
   end
 
@@ -1600,68 +1590,19 @@ RSpec.describe ProjectsController do
 
       get :show, format: :atom, params: { id: public_project, namespace_id: public_project.namespace }
 
-      expect(response).to render_template('xml.atom')
+      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to render_template(:show)
+      expect(response).to render_template(layout: :xml)
       expect(assigns(:events)).to eq([event])
     end
 
     it 'filters by calling event.visible_to_user?' do
       get :show, format: :atom, params: { id: public_project, namespace_id: public_project.namespace }
 
-      expect(response).to render_template('xml.atom')
+      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to render_template(:show)
+      expect(response).to render_template(layout: :xml)
       expect(assigns(:events)).to eq([event])
-    end
-  end
-
-  describe 'GET resolve' do
-    shared_examples 'resolvable endpoint' do
-      it 'redirects to the project page' do
-        get :resolve, params: { id: project.id }
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(project_path(project))
-      end
-    end
-
-    context 'with an authenticated user' do
-      before do
-        sign_in(user)
-      end
-
-      context 'when user has access to the project' do
-        before do
-          project.add_developer(user)
-        end
-
-        it_behaves_like 'resolvable endpoint'
-      end
-
-      context 'when user has no access to the project' do
-        it 'gives 404 for existing project' do
-          get :resolve, params: { id: project.id }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      it 'gives 404 for non-existing project' do
-        get :resolve, params: { id: '0' }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'non authenticated user' do
-      context 'with a public project' do
-        let(:project) { public_project }
-
-        it_behaves_like 'resolvable endpoint'
-      end
-
-      it 'gives 404 for private project' do
-        get :resolve, params: { id: project.id }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
     end
   end
 

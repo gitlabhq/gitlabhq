@@ -175,7 +175,7 @@ RSpec.describe Ci::JobArtifacts::CreateService do
         end
 
         expect(subject[:status]).to eq(:success)
-        expect(job.job_variables.as_json).to contain_exactly(
+        expect(job.job_variables.as_json(only: [:key, :value, :source])).to contain_exactly(
           hash_including('key' => 'KEY1', 'value' => 'VAR1', 'source' => 'dotenv'),
           hash_including('key' => 'KEY2', 'value' => 'VAR2', 'source' => 'dotenv'))
       end

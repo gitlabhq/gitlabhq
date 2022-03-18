@@ -4,6 +4,26 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Seeder do
   describe '.quiet' do
+    let(:database_base_models) do
+      {
+        main: ApplicationRecord,
+        ci: Ci::ApplicationRecord
+      }
+    end
+
+    it 'disables database logging' do
+      allow(Gitlab::Database).to receive(:database_base_models)
+        .and_return(database_base_models.with_indifferent_access)
+
+      described_class.quiet do
+        expect(ApplicationRecord.logger).to be_nil
+        expect(Ci::ApplicationRecord.logger).to be_nil
+      end
+
+      expect(ApplicationRecord.logger).not_to be_nil
+      expect(Ci::ApplicationRecord.logger).not_to be_nil
+    end
+
     it 'disables mail deliveries' do
       expect(ActionMailer::Base.perform_deliveries).to eq(true)
 

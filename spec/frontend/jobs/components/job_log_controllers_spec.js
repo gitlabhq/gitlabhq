@@ -8,7 +8,6 @@ describe('Job log controllers', () => {
   afterEach(() => {
     if (wrapper?.destroy) {
       wrapper.destroy();
-      wrapper = null;
     }
   });
 
@@ -34,7 +33,6 @@ describe('Job log controllers', () => {
   const findTruncatedInfo = () => wrapper.find('[data-testid="log-truncated-info"]');
   const findRawLink = () => wrapper.find('[data-testid="raw-link"]');
   const findRawLinkController = () => wrapper.find('[data-testid="job-raw-link-controller"]');
-  const findEraseLink = () => wrapper.find('[data-testid="job-log-erase-link"]');
   const findScrollTop = () => wrapper.find('[data-testid="job-controller-scroll-top"]');
   const findScrollBottom = () => wrapper.find('[data-testid="job-controller-scroll-bottom"]');
 
@@ -74,28 +72,6 @@ describe('Job log controllers', () => {
 
       it('does not render raw job log link', () => {
         expect(findRawLinkController().exists()).toBe(false);
-      });
-    });
-
-    describe('when is erasable', () => {
-      beforeEach(() => {
-        createWrapper();
-      });
-
-      it('renders erase job link', () => {
-        expect(findEraseLink().exists()).toBe(true);
-      });
-    });
-
-    describe('when it is not erasable', () => {
-      beforeEach(() => {
-        createWrapper({
-          erasePath: null,
-        });
-      });
-
-      it('does not render erase button', () => {
-        expect(findEraseLink().exists()).toBe(false);
       });
     });
   });

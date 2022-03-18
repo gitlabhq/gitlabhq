@@ -8,10 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The [certificate-based Kubernetes integration with GitLab](../index.md)
 was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
-in GitLab 14.5. To connect your clusters, use the [GitLab Agent](../../../clusters/agent/index.md).
+in GitLab 14.5. To connect your clusters, use the [GitLab agent](../../../clusters/agent/index.md).
 
 <!-- TBA: (We need to resolve https://gitlab.com/gitlab-org/gitlab/-/issues/343660 before adding this line)
-If you don't have a cluster yet, create one and connect it to GitLab through the Agent.
+If you don't have a cluster yet, create one and connect it to GitLab through the agent.
 You can also create a new cluster from GitLab using [Infrastructure as Code](../../iac/index.md#create-a-new-cluster-through-iac).
 -->
 

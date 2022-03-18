@@ -454,7 +454,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when source and target projects are different' do
+    shared_examples 'when source and target projects are different' do
       let(:target_project) { fork_project(project, nil, repository: true) }
 
       let(:opts) do
@@ -497,9 +497,14 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
 
         it 'creates the merge request', :sidekiq_might_not_need_inline do
+          expect_next_instance_of(MergeRequest) do |instance|
+            expect(instance).to receive(:eager_fetch_ref!).and_call_original
+          end
+
           merge_request = described_class.new(project: project, current_user: user, params: opts).execute
 
           expect(merge_request).to be_persisted
+          expect(merge_request.iid).to be > 0
         end
 
         it 'does not create the merge request when the target project is archived' do
@@ -510,6 +515,8 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
       end
     end
+
+    it_behaves_like 'when source and target projects are different'
 
     context 'when user sets source project id' do
       let(:another_project) { create(:project) }

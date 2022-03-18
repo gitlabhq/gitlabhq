@@ -170,6 +170,14 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     end
   end
 
+  shared_examples 'namespace statistics refresh' do
+    it 'updates namespace statistics' do
+      expect(Groups::UpdateStatisticsWorker).to receive(:perform_async)
+
+      subject
+    end
+  end
+
   before do
     allow(Gitlab.config.dependency_proxy)
       .to receive(:enabled).and_return(true)
@@ -403,13 +411,15 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     context 'with a valid user' do
       before do
         group.add_guest(user)
-
-        expect_next_found_instance_of(Group) do |instance|
-          expect(instance).to receive_message_chain(:dependency_proxy_blobs, :create!)
-        end
       end
 
       it_behaves_like 'a package tracking event', described_class.name, 'pull_blob'
+
+      it 'creates a blob' do
+        expect { subject }.to change { group.dependency_proxy_blobs.count }.by(1)
+      end
+
+      it_behaves_like 'namespace statistics refresh'
     end
   end
 
@@ -473,6 +483,8 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           expect(manifest.digest).to eq(digest)
           expect(manifest.file_name).to eq(file_name)
         end
+
+        it_behaves_like 'namespace statistics refresh'
       end
 
       context 'with existing stale manifest' do
@@ -483,6 +495,8 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           expect { subject }.to change { group.dependency_proxy_manifests.count }.by(0)
             .and change { manifest.reload.digest }.from(old_digest).to(digest)
         end
+
+        it_behaves_like 'namespace statistics refresh'
       end
     end
   end

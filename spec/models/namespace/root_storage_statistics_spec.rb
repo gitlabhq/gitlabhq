@@ -178,7 +178,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
           snippets = create_list(:personal_snippet, 3, :repository, author: user)
           snippets.each { |s| s.statistics.refresh! }
 
-          total_personal_snippets_size = snippets.map { |s| s.statistics.repository_size }.sum
+          total_personal_snippets_size = snippets.sum { |s| s.statistics.repository_size }
 
           root_storage_statistics.recalculate!
 

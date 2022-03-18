@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::UntrustedRegexp::RubySyntax do
   describe '.matches_syntax?' do
@@ -67,44 +67,6 @@ RSpec.describe Gitlab::UntrustedRegexp::RubySyntax do
           regexp = described_class.fabricate!('/something/')
 
           expect(regexp).to eq Gitlab::UntrustedRegexp.new('something')
-        end
-      end
-    end
-
-    context 'when unsafe regexp is used' do
-      include StubFeatureFlags
-
-      before do
-        # When removed we could use `require 'fast_spec_helper'` again.
-        stub_feature_flags(allow_unsafe_ruby_regexp: true)
-
-        allow(Gitlab::UntrustedRegexp).to receive(:new).and_raise(RegexpError)
-      end
-
-      context 'when no fallback is enabled' do
-        it 'raises an exception' do
-          expect { described_class.fabricate!('/something/') }
-            .to raise_error(RegexpError)
-        end
-      end
-
-      context 'when fallback is used' do
-        it 'fabricates regexp with a single flag' do
-          regexp = described_class.fabricate!('/something/i', fallback: true)
-
-          expect(regexp).to eq Regexp.new('something', Regexp::IGNORECASE)
-        end
-
-        it 'fabricates regexp with multiple flags' do
-          regexp = described_class.fabricate!('/something/im', fallback: true)
-
-          expect(regexp).to eq Regexp.new('something', Regexp::IGNORECASE | Regexp::MULTILINE)
-        end
-
-        it 'fabricates regexp without flags' do
-          regexp = described_class.fabricate!('/something/', fallback: true)
-
-          expect(regexp).to eq Regexp.new('something')
         end
       end
     end

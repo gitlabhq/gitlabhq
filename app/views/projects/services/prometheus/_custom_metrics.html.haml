@@ -18,7 +18,7 @@
           .flash-text
       .loading-metrics.js-loading-custom-metrics
         %p.m-3
-          = loading_icon(css_class: 'metrics-load-spinner')
+          = gl_loading_icon(inline: true, css_class: 'metrics-load-spinner')
           = s_('PrometheusService|Finding custom metrics...')
       .empty-metrics.hidden.js-empty-custom-metrics
         %p.text-tertiary.m-3.js-no-active-integration-text.hidden

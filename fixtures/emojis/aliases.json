@@ -1,6 +1,4 @@
 {
-   ":) ":"smile",
-   ":( ":"disappointed",
    "small_airplane":"airplane_small",
    "right_anger_bubble":"anger_right",
    "keycap_asterisk":"asterisk",
@@ -54,6 +52,7 @@
    "passenger_ship":"cruise_ship",
    "dagger_knife":"dagger",
    "desktop_computer":"desktop",
+   ":( ":"disappointed",
    "card_index_dividers":"dividers",
    "dove_of_peace":"dove",
    "drool":"drooling_face",
@@ -488,6 +487,7 @@
    "skull_and_crossbones":"skull_crossbones",
    "slightly_frowning_face":"slight_frown",
    "slightly_smiling_face":"slight_smile",
+   ":) ":"smile",
    "sneeze":"sneezing_face",
    "speaking_head_in_silhouette":"speaking_head",
    "left_speech_bubble":"speech_left",

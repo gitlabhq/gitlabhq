@@ -18,19 +18,27 @@ describe('error tracking settings app', () => {
   let store;
   let wrapper;
 
-  function mountComponent() {
+  const defaultProps = {
+    initialEnabled: 'true',
+    initialIntegrated: 'false',
+    initialApiHost: TEST_HOST,
+    initialToken: 'someToken',
+    initialProject: null,
+    listProjectsEndpoint: TEST_HOST,
+    operationsSettingsEndpoint: TEST_HOST,
+    gitlabDsn: TEST_GITLAB_DSN,
+  };
+
+  function mountComponent({
+    glFeatures = { integratedErrorTracking: false },
+    props = defaultProps,
+  } = {}) {
     wrapper = extendedWrapper(
       shallowMount(ErrorTrackingSettings, {
         store, // Override the imported store
-        propsData: {
-          initialEnabled: 'true',
-          initialIntegrated: 'false',
-          initialApiHost: TEST_HOST,
-          initialToken: 'someToken',
-          initialProject: null,
-          listProjectsEndpoint: TEST_HOST,
-          operationsSettingsEndpoint: TEST_HOST,
-          gitlabDsn: TEST_GITLAB_DSN,
+        propsData: { ...props },
+        provide: {
+          glFeatures,
         },
         stubs: {
           GlFormInputGroup, // we need this non-shallow to query for a component within a slot
@@ -47,6 +55,7 @@ describe('error tracking settings app', () => {
   const findElementWithText = (wrappers, text) => wrappers.filter((item) => item.text() === text);
   const findSentrySettings = () => wrapper.findByTestId('sentry-setting-form');
   const findDsnSettings = () => wrapper.findByTestId('gitlab-dsn-setting-form');
+  const findEnabledCheckbox = () => wrapper.findByTestId('error-tracking-enabled');
 
   const enableGitLabErrorTracking = async () => {
     findBackendSettingsRadioGroup().vm.$emit('change', true);
@@ -88,62 +97,104 @@ describe('error tracking settings app', () => {
   });
 
   describe('tracking-backend settings', () => {
-    it('contains a form-group with the correct label', () => {
-      expect(findBackendSettingsSection().attributes('label')).toBe('Error tracking backend');
+    it('does not contain backend settings section', () => {
+      expect(findBackendSettingsSection().exists()).toBe(false);
     });
 
-    it('contains a radio group', () => {
-      expect(findBackendSettingsRadioGroup().exists()).toBe(true);
-    });
-
-    it('contains the correct radio buttons', () => {
-      expect(findBackendSettingsRadioButtons()).toHaveLength(2);
-
-      expect(findElementWithText(findBackendSettingsRadioButtons(), 'Sentry')).toHaveLength(1);
-      expect(findElementWithText(findBackendSettingsRadioButtons(), 'GitLab')).toHaveLength(1);
-    });
-
-    it('hides the Sentry settings when GitLab is selected as a tracking-backend', async () => {
+    it('shows the sentry form', () => {
       expect(findSentrySettings().exists()).toBe(true);
-
-      await enableGitLabErrorTracking();
-
-      expect(findSentrySettings().exists()).toBe(false);
     });
 
-    describe('GitLab DSN section', () => {
-      it('is visible when GitLab is selected as a tracking-backend and DSN is present', async () => {
-        expect(findDsnSettings().exists()).toBe(false);
+    describe('enabled setting is true', () => {
+      describe('integrated setting is true', () => {
+        beforeEach(() => {
+          mountComponent({
+            props: { ...defaultProps, initialEnabled: 'true', initialIntegrated: 'true' },
+          });
+        });
+
+        it('displays enabled as false', () => {
+          expect(findEnabledCheckbox().attributes('checked')).toBeUndefined();
+        });
+      });
+
+      describe('integrated setting is false', () => {
+        beforeEach(() => {
+          mountComponent({
+            props: { ...defaultProps, initialEnabled: 'true', initialIntegrated: 'false' },
+          });
+        });
+
+        it('displays enabled as true', () => {
+          expect(findEnabledCheckbox().attributes('checked')).toBe('true');
+        });
+      });
+    });
+
+    describe('integrated_error_tracking feature flag enabled', () => {
+      beforeEach(() => {
+        mountComponent({
+          glFeatures: { integratedErrorTracking: true },
+        });
+      });
+
+      it('contains a form-group with the correct label', () => {
+        expect(findBackendSettingsSection().attributes('label')).toBe('Error tracking backend');
+      });
+
+      it('contains a radio group', () => {
+        expect(findBackendSettingsRadioGroup().exists()).toBe(true);
+      });
+
+      it('contains the correct radio buttons', () => {
+        expect(findBackendSettingsRadioButtons()).toHaveLength(2);
+
+        expect(findElementWithText(findBackendSettingsRadioButtons(), 'Sentry')).toHaveLength(1);
+        expect(findElementWithText(findBackendSettingsRadioButtons(), 'GitLab')).toHaveLength(1);
+      });
+
+      it('hides the Sentry settings when GitLab is selected as a tracking-backend', async () => {
+        expect(findSentrySettings().exists()).toBe(true);
 
         await enableGitLabErrorTracking();
 
-        expect(findDsnSettings().exists()).toBe(true);
+        expect(findSentrySettings().exists()).toBe(false);
       });
 
-      it('contains copy-to-clipboard functionality for the GitLab DSN string', async () => {
-        await enableGitLabErrorTracking();
+      describe('GitLab DSN section', () => {
+        it('is visible when GitLab is selected as a tracking-backend and DSN is present', async () => {
+          expect(findDsnSettings().exists()).toBe(false);
 
-        const clipBoardInput = findDsnSettings().findComponent(GlFormInputGroup);
-        const clipBoardButton = findDsnSettings().findComponent(ClipboardButton);
+          await enableGitLabErrorTracking();
 
-        expect(clipBoardInput.props('value')).toBe(TEST_GITLAB_DSN);
-        expect(clipBoardInput.attributes('readonly')).toBeTruthy();
-        expect(clipBoardButton.props('text')).toBe(TEST_GITLAB_DSN);
+          expect(findDsnSettings().exists()).toBe(true);
+        });
+
+        it('contains copy-to-clipboard functionality for the GitLab DSN string', async () => {
+          await enableGitLabErrorTracking();
+
+          const clipBoardInput = findDsnSettings().findComponent(GlFormInputGroup);
+          const clipBoardButton = findDsnSettings().findComponent(ClipboardButton);
+
+          expect(clipBoardInput.props('value')).toBe(TEST_GITLAB_DSN);
+          expect(clipBoardInput.attributes('readonly')).toBeTruthy();
+          expect(clipBoardButton.props('text')).toBe(TEST_GITLAB_DSN);
+        });
       });
+
+      it.each([true, false])(
+        'calls the `updateIntegrated` action when the setting changes to `%s`',
+        (integrated) => {
+          jest.spyOn(store, 'dispatch').mockImplementation();
+
+          expect(store.dispatch).toHaveBeenCalledTimes(0);
+
+          findBackendSettingsRadioGroup().vm.$emit('change', integrated);
+
+          expect(store.dispatch).toHaveBeenCalledTimes(1);
+          expect(store.dispatch).toHaveBeenCalledWith('updateIntegrated', integrated);
+        },
+      );
     });
-
-    it.each([true, false])(
-      'calls the `updateIntegrated` action when the setting changes to `%s`',
-      (integrated) => {
-        jest.spyOn(store, 'dispatch').mockImplementation();
-
-        expect(store.dispatch).toHaveBeenCalledTimes(0);
-
-        findBackendSettingsRadioGroup().vm.$emit('change', integrated);
-
-        expect(store.dispatch).toHaveBeenCalledTimes(1);
-        expect(store.dispatch).toHaveBeenCalledWith('updateIntegrated', integrated);
-      },
-    );
   });
 });

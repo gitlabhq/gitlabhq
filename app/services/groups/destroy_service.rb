@@ -11,11 +11,15 @@ module Groups
 
     # rubocop: disable CodeReuse/ActiveRecord
     def execute
+      # TODO - add a policy check here https://gitlab.com/gitlab-org/gitlab/-/issues/353082
+      raise DestroyError, "You can't delete this group because you're blocked." if current_user.blocked?
+
       group.prepare_for_destroy
 
       group.projects.includes(:project_feature).each do |project|
         # Execute the destruction of the models immediately to ensure atomic cleanup.
         success = ::Projects::DestroyService.new(project, current_user).execute
+
         raise DestroyError, "Project #{project.id} can't be deleted" unless success
       end
 

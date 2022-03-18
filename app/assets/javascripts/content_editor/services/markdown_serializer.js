@@ -1,4 +1,3 @@
-import { DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
 import {
   MarkdownSerializer as ProseMirrorMarkdownSerializer,
   defaultMarkdownSerializer,
@@ -237,31 +236,7 @@ const defaultSerializerConfig = {
  * that parses the Markdown and converts it into HTML.
  * @returns a markdown serializer
  */
-export default ({ render = () => null, serializerConfig = {} } = {}) => ({
-  /**
-   * Converts a Markdown string into a ProseMirror JSONDocument based
-   * on a ProseMirror schema.
-   * @param {ProseMirror.Schema} params.schema A ProseMirror schema that defines
-   * the types of content supported in the document
-   * @param {String} params.content An arbitrary markdown string
-   * @returns A ProseMirror JSONDocument
-   */
-  deserialize: async ({ schema, content }) => {
-    const html = await render(content);
-
-    if (!html) return null;
-
-    const parser = new DOMParser();
-    const { body } = parser.parseFromString(html, 'text/html');
-
-    // append original source as a comment that nodes can access
-    body.append(document.createComment(content));
-
-    const state = ProseMirrorDOMParser.fromSchema(schema).parse(body);
-
-    return state.toJSON();
-  },
-
+export default ({ serializerConfig = {} } = {}) => ({
   /**
    * Converts a ProseMirror JSONDocument based
    * on a ProseMirror schema into Markdown

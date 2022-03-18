@@ -26,6 +26,7 @@ module SortingHelper
     include Comparable
 
     attr_reader :value
+
     delegate :==, :eql?, :hash, to: :value
 
     def initialize(value)

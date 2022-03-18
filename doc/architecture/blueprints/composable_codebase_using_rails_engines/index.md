@@ -383,7 +383,7 @@ What was done?
     ```ruby
     # config/engines.rb
     # Load only in case we are running web_server or rails console
-    if Gitlab::Runtime.web_server? || Gitlab::Runtime.console?
+    if Gitlab::Runtime.puma? || Gitlab::Runtime.console?
       require 'web_engine'
     end
     ```

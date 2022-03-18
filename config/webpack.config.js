@@ -44,7 +44,6 @@ const { DEV_SERVER_HOST, DEV_SERVER_PUBLIC_ADDR } = process.env;
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10);
 const DEV_SERVER_ALLOWED_HOSTS =
   process.env.DEV_SERVER_ALLOWED_HOSTS && process.env.DEV_SERVER_ALLOWED_HOSTS.split(',');
-const DEV_SERVER_HTTPS = process.env.DEV_SERVER_HTTPS && process.env.DEV_SERVER_HTTPS !== 'false';
 const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const INCREMENTAL_COMPILER_ENABLED =
   IS_DEV_SERVER &&
@@ -364,6 +363,10 @@ module.exports = {
           name: '[name].[contenthash:8].[ext]',
         },
       },
+      {
+        test: /\.(yml|yaml)$/,
+        loader: 'raw-loader',
+      },
     ],
   },
 
@@ -678,6 +681,7 @@ module.exports = {
       IS_JH: IS_JH ? 'window.gon && window.gon.jh' : JSON.stringify(false),
       // This is used by Sourcegraph because these assets are loaded dnamically
       'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
+      ...(IS_PRODUCTION ? {} : { LIVE_RELOAD: DEV_SERVER_LIVERELOAD }),
     }),
 
     /* Pikaday has a optional dependency to moment.
@@ -709,8 +713,14 @@ module.exports = {
     },
     host: DEV_SERVER_HOST || 'localhost',
     port: DEV_SERVER_PORT || 3808,
-    https: DEV_SERVER_HTTPS,
+    // Setting up hot module reloading
+    // HMR works by setting up a websocket server and injecting
+    // a client script which connects to that server.
+    // The server will push messages to the client to reload parts
+    // of the JavaScript or reload the page if necessary
+    webSocketServer: DEV_SERVER_LIVERELOAD ? 'ws' : false,
     hot: DEV_SERVER_LIVERELOAD,
+    liveReload: DEV_SERVER_LIVERELOAD,
     // The following settings are mainly needed for HMR support in gitpod.
     // Per default only local hosts are allowed, but here we could
     // allow different hosts (e.g. ['.gitpod'], all of gitpod),

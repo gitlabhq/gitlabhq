@@ -8,41 +8,68 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
-  before do
-    issue.assignees = [user]
-    merge_request.update!(assignees: [user])
-    sign_in(user)
-  end
+  describe 'feature flag mr_attention_requests is disabled' do
+    before do
+      stub_feature_flags(mr_attention_requests: false)
 
-  it 'reflects dashboard issues count' do
-    visit issues_path
+      issue.assignees = [user]
+      merge_request.update!(assignees: [user])
+      sign_in(user)
+    end
 
-    expect_counters('issues', '1', n_("%d assigned issue", "%d assigned issues", 1) % 1)
-
-    issue.assignees = []
-
-    user.invalidate_cache_counts
-
-    travel_to(3.minutes.from_now) do
+    it 'reflects dashboard issues count' do
       visit issues_path
 
-      expect_counters('issues', '0', n_("%d assigned issue", "%d assigned issues", 0) % 0)
+      expect_counters('issues', '1', n_("%d assigned issue", "%d assigned issues", 1) % 1)
+
+      issue.assignees = []
+
+      user.invalidate_cache_counts
+
+      travel_to(3.minutes.from_now) do
+        visit issues_path
+
+        expect_counters('issues', '0', n_("%d assigned issue", "%d assigned issues", 0) % 0)
+      end
+    end
+
+    it 'reflects dashboard merge requests count', :js do
+      visit merge_requests_path
+
+      expect_counters('merge_requests', '1', n_("%d merge request", "%d merge requests", 1) % 1)
+
+      merge_request.update!(assignees: [])
+
+      user.invalidate_cache_counts
+
+      travel_to(3.minutes.from_now) do
+        visit merge_requests_path
+
+        expect_counters('merge_requests', '0', n_("%d merge request", "%d merge requests", 0) % 0)
+      end
     end
   end
 
-  it 'reflects dashboard merge requests count' do
-    visit merge_requests_path
+  describe 'feature flag mr_attention_requests is enabled' do
+    before do
+      merge_request.update!(assignees: [user])
+      sign_in(user)
+    end
 
-    expect_counters('merge_requests', '1', n_("%d merge request", "%d merge requests", 1) % 1)
+    it 'reflects dashboard merge requests count', :js do
+      visit merge_requests_attention_path
 
-    merge_request.update!(assignees: [])
+      expect_counters('merge_requests', '1', n_("%d merge request", "%d merge requests", 1) % 1)
 
-    user.invalidate_cache_counts
+      merge_request.find_assignee(user).update!(state: :reviewed)
 
-    travel_to(3.minutes.from_now) do
-      visit merge_requests_path
+      user.invalidate_attention_requested_count
 
-      expect_counters('merge_requests', '0', n_("%d merge request", "%d merge requests", 0) % 0)
+      travel_to(3.minutes.from_now) do
+        visit merge_requests_attention_path
+
+        expect_counters('merge_requests', '0', n_("%d merge request", "%d merge requests", 0) % 0)
+      end
     end
   end
 
@@ -54,14 +81,15 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
     merge_requests_dashboard_path(assignee_username: user.username)
   end
 
+  def merge_requests_attention_path
+    merge_requests_dashboard_path(attention: user.username)
+  end
+
   def expect_counters(issuable_type, count, badge_label)
     dashboard_count = find('.gl-tabs-nav li a.active')
-    nav_count = find(".dashboard-shortcuts-#{issuable_type}")
 
     expect(dashboard_count).to have_content(count)
-    expect(nav_count).to have_content(count)
-    within("span[aria-label='#{badge_label}']") do
-      expect(page).to have_content(count)
-    end
+    expect(page).to have_css(".dashboard-shortcuts-#{issuable_type}", visible: :all, text: count)
+    expect(page).to have_css("span[aria-label='#{badge_label}']", visible: :all, text: count)
   end
 end

@@ -59,6 +59,13 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
         expect(reviewer.state).to eq 'attention_requested'
       end
 
+      it 'adds who toggled attention' do
+        service.execute
+        reviewer.reload
+
+        expect(reviewer.updated_state_by).to eq current_user
+      end
+
       it 'creates a new todo for the reviewer' do
         expect(todo_service).to receive(:create_attention_requested_todo).with(merge_request, current_user, user)
 
@@ -73,8 +80,18 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
       it 'removes attention requested state' do
         expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
-          .with(project: project, current_user: current_user, merge_request: merge_request, user: current_user)
+          .with(project: project, current_user: current_user, merge_request: merge_request)
           .and_call_original
+
+        service.execute
+      end
+
+      it 'invalidates cache' do
+        cache_mock = double
+
+        expect(cache_mock).to receive(:delete).with(['users', user.id, 'attention_requested_open_merge_requests_count'])
+
+        allow(Rails).to receive(:cache).and_return(cache_mock)
 
         service.execute
       end
@@ -112,10 +129,14 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
       it 'removes attention requested state' do
         expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
-          .with(project: project, current_user: current_user, merge_request: merge_request, user: current_user)
+          .with(project: project, current_user: current_user, merge_request: merge_request)
           .and_call_original
 
         service.execute
+      end
+
+      it_behaves_like 'invalidates attention request cache' do
+        let(:users) { [assignee_user] }
       end
     end
 

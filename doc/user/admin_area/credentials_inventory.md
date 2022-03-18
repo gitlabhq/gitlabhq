@@ -7,7 +7,8 @@ type: howto
 
 # Credentials inventory **(ULTIMATE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20912) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20912) in GitLab 12.6.
+> - [Bot-created access tokens not displayed in personal access token list](https://gitlab.com/gitlab-org/gitlab/-/issues/351759) in GitLab 14.9.
 
 GitLab administrators are responsible for the overall security of their instance. To assist, GitLab
 provides a Credentials inventory to keep track of all the credentials that can be used to access
@@ -50,6 +51,8 @@ If you see a **Revoke** button, you can revoke that user's PAT. Whether you see 
 
 When a PAT is revoked from the credentials inventory, the instance notifies the user by email.
 
+![Credentials inventory page - Personal access tokens](img/credentials_inventory_personal_access_tokens_v14_9.png)
+
 ## Revoke a user's project access token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243833) in GitLab 14.8.
@@ -59,6 +62,8 @@ The **Revoke** button next to a project access token can be selected to revoke t
 - Revoke the token project access token.
 - Enqueue a background worker to delete the project bot user.
 
+![Credentials inventory page - Project access tokens](img/credentials_inventory_project_access_tokens_v14_9.png)
+
 ## Delete a user's SSH key
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225248) in GitLab 13.5.
@@ -66,7 +71,7 @@ The **Revoke** button next to a project access token can be selected to revoke t
 You can **Delete** a user's SSH key by navigating to the credentials inventory's SSH Keys tab.
 The instance then notifies the user.
 
-![Credentials inventory page - SSH keys](img/credentials_inventory_ssh_keys_v13_5.png)
+![Credentials inventory page - SSH keys](img/credentials_inventory_ssh_keys_v14_9.png)
 
 ## Review existing GPG keys
 
@@ -80,4 +85,4 @@ credentials inventory GPG Keys tab, as well as the following properties:
 - The ID of the GPG key.
 - Whether the GPG key is [verified or unverified](../project/repository/gpg_signed_commits/index.md)
 
-![Credentials inventory page - GPG keys](img/credentials_inventory_gpg_keys_v13_10.png)
+![Credentials inventory page - GPG keys](img/credentials_inventory_gpg_keys_v14_9.png)

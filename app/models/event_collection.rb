@@ -44,31 +44,31 @@ class EventCollection
   private
 
   def project_events
-    relation_with_join_lateral('project_id', projects)
+    in_operator_optimized_relation('project_id', projects)
+  end
+
+  def group_events
+    in_operator_optimized_relation('group_id', groups)
   end
 
   def project_and_group_events
-    group_events = relation_with_join_lateral('group_id', groups)
-
     Event.from_union([project_events, group_events]).recent
   end
 
-  # This relation is built using JOIN LATERAL, producing faster queries than a
-  # regular LIMIT + OFFSET approach.
-  def relation_with_join_lateral(parent_column, parents)
-    parents_for_lateral = parents.select(:id).to_sql
+  def in_operator_optimized_relation(parent_column, parents)
+    scope = filtered_events
+    array_scope = parents.select(:id)
+    array_mapping_scope = -> (parent_id_expression) { Event.where(Event.arel_table[parent_column].eq(parent_id_expression)).reorder(id: :desc) }
+    finder_query = -> (id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
 
-    lateral = filtered_events
-      # Applying the limit here (before we filter (permissions) means we may get less than limit)
-      .limit(limit_for_join_lateral)
-      .where("events.#{parent_column} = parents_for_lateral.id") # rubocop:disable GitlabSecurity/SqlInjection
-      .to_sql
-
-    # The outer query does not need to re-apply the filters since the JOIN
-    # LATERAL body already takes care of this.
-    base_relation
-      .from("(#{parents_for_lateral}) parents_for_lateral")
-      .joins("JOIN LATERAL (#{lateral}) AS #{Event.table_name} ON true")
+    Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder
+      .new(
+        scope: scope,
+        array_scope: array_scope,
+        array_mapping_scope: array_mapping_scope,
+        finder_query: finder_query
+      )
+      .execute
   end
 
   def filtered_events
@@ -83,16 +83,6 @@ class EventCollection
     # We want to have absolute control over the event queries being built, thus
     # we're explicitly opting out of any default scopes that may be set.
     Event.unscoped.recent
-  end
-
-  def limit_for_join_lateral
-    # Applying the OFFSET on the inside of a JOIN LATERAL leads to incorrect
-    # results. To work around this we need to increase the inner limit for every
-    # page.
-    #
-    # This means that on page 1 we use LIMIT 20, and an outer OFFSET of 0. On
-    # page 2 we use LIMIT 40 and an outer OFFSET of 20.
-    @limit + @offset
   end
 
   def current_page

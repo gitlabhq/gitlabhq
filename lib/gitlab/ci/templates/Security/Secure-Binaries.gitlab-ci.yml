@@ -14,8 +14,11 @@
 # Docs: https://docs.gitlab.com/ee/topics/airgap/
 
 variables:
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec, semgrep,
+    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep,
     bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
     license-finder,
     dast, dast-runner-validation, api-fuzzing
@@ -40,7 +43,7 @@ variables:
   script:
     - docker info
     - env
-    - if [ -z "$SECURE_BINARIES_IMAGE" ]; then export SECURE_BINARIES_IMAGE=${SECURE_BINARIES_IMAGE:-"registry.gitlab.com/gitlab-org/security-products/analyzers/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"}; fi
+    - if [ -z "$SECURE_BINARIES_IMAGE" ]; then export SECURE_BINARIES_IMAGE=${SECURE_BINARIES_IMAGE:-"${SECURE_ANALYZERS_PREFIX}/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"}; fi
     - docker pull --quiet ${SECURE_BINARIES_IMAGE}
     - mkdir -p output/$(dirname ${CI_JOB_NAME})
     - |

@@ -70,6 +70,8 @@ module Gitlab
         else
           ::ApplicationSetting.create_from_defaults
         end
+      rescue ::ApplicationSetting::Recursion
+        in_memory_application_settings
       end
 
       def fake_application_settings(attributes = {})

@@ -24,7 +24,7 @@ Merged results pipelines can't run when:
 - The merge request is a [**Draft** merge request](../../user/project/merge_requests/drafts.md).
 
 In these cases, the pipeline runs as a [merge request pipeline](merge_request_pipelines.md)
-and is labeled as `detached`.
+and [is labeled as `merge request`](merge_request_pipelines.md#types-of-merge-request-pipelines).
 
 ## Prerequisites
 

@@ -7,6 +7,9 @@ export default {
   [types.SET_ENABLED_REF_TYPES](state, refTypes) {
     state.enabledRefTypes = refTypes;
   },
+  [types.SET_USE_SYMBOLIC_REF_NAMES](state, useSymbolicRefNames) {
+    state.useSymbolicRefNames = useSymbolicRefNames;
+  },
   [types.SET_PROJECT_ID](state, projectId) {
     state.projectId = projectId;
   },
@@ -28,6 +31,7 @@ export default {
     state.matches.branches = {
       list: convertObjectPropsToCamelCase(response.data).map((b) => ({
         name: b.name,
+        value: state.useSymbolicRefNames ? `refs/heads/${b.name}` : undefined,
         default: b.default,
       })),
       totalCount: parseInt(response.headers[X_TOTAL_HEADER], 10),
@@ -46,6 +50,7 @@ export default {
     state.matches.tags = {
       list: convertObjectPropsToCamelCase(response.data).map((b) => ({
         name: b.name,
+        value: state.useSymbolicRefNames ? `refs/tags/${b.name}` : undefined,
       })),
       totalCount: parseInt(response.headers[X_TOTAL_HEADER], 10),
       error: null,

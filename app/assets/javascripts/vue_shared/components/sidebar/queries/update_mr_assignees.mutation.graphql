@@ -2,21 +2,18 @@
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 mutation mergeRequestSetAssignees($iid: String!, $assigneeUsernames: [String!]!, $fullPath: ID!) {
-  mergeRequestSetAssignees(
+  issuableSetAssignees: mergeRequestSetAssignees(
     input: { iid: $iid, assigneeUsernames: $assigneeUsernames, projectPath: $fullPath }
   ) {
-    mergeRequest {
+    issuable: mergeRequest {
       id
       assignees {
         nodes {
           ...User
           ...UserAvailability
-        }
-      }
-      participants {
-        nodes {
-          ...User
-          ...UserAvailability
+          mergeRequestInteraction {
+            canMerge
+          }
         }
       }
     }

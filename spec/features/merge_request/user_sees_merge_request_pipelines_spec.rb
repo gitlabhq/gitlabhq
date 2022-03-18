@@ -25,6 +25,8 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
     }
   end
 
+  let(:expected_detached_mr_tag) {'merge request'}
+
   before do
     stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_yaml_file(YAML.dump(config))
@@ -118,16 +120,16 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       it 'sees detached tag for detached merge request pipelines' do
         page.within('.ci-table') do
           expect(all('.pipeline-tags')[0])
-            .to have_content("detached")
+            .to have_content(expected_detached_mr_tag)
 
           expect(all('.pipeline-tags')[1])
-            .to have_content("detached")
+            .to have_content(expected_detached_mr_tag)
 
           expect(all('.pipeline-tags')[2])
-            .not_to have_content("detached")
+            .not_to have_content(expected_detached_mr_tag)
 
           expect(all('.pipeline-tags')[3])
-            .not_to have_content("detached")
+            .not_to have_content(expected_detached_mr_tag)
         end
       end
 
@@ -312,16 +314,16 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       it 'sees detached tag for detached merge request pipelines' do
         page.within('.ci-table') do
           expect(all('.pipeline-tags')[0])
-            .to have_content("detached")
+            .to have_content(expected_detached_mr_tag)
 
           expect(all('.pipeline-tags')[1])
-            .to have_content("detached")
+            .to have_content(expected_detached_mr_tag)
 
           expect(all('.pipeline-tags')[2])
-            .not_to have_content("detached")
+            .not_to have_content(expected_detached_mr_tag)
 
           expect(all('.pipeline-tags')[3])
-            .not_to have_content("detached")
+            .not_to have_content(expected_detached_mr_tag)
         end
       end
 

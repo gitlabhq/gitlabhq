@@ -26,7 +26,7 @@ RSpec.describe "User views incident" do
     it 'shows the merge request and incident actions', :js, :aggregate_failures do
       click_button 'Incident actions'
 
-      expect(page).to have_link('New incident', href: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident', description: "Related to \##{incident.iid}.\n\n" } }))
+      expect(page).to have_link('New related incident', href: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident' }, add_related_issue: incident.iid }))
       expect(page).to have_button('Create merge request')
       expect(page).to have_button('Close incident')
     end
@@ -40,10 +40,8 @@ RSpec.describe "User views incident" do
         visit(project_issues_incident_path(project, incident))
       end
 
-      it 'does not show the incident action', :js, :aggregate_failures do
-        click_button 'Incident actions'
-
-        expect(page).not_to have_link('New incident')
+      it 'does not show the incident actions', :js, :aggregate_failures do
+        expect(page).not_to have_button('Incident actions')
       end
     end
   end

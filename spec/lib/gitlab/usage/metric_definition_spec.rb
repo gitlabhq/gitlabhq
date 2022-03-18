@@ -50,6 +50,28 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     expect { described_class.definitions }.not_to raise_error
   end
 
+  describe 'not_removed' do
+    let(:all_definitions) do
+      metrics_definitions = [
+        { key_path: 'metric1', instrumentation_class: 'RedisHLLMetric', status: 'active' },
+        { key_path: 'metric2', instrumentation_class: 'RedisHLLMetric', status: 'broken' },
+        { key_path: 'metric3', instrumentation_class: 'RedisHLLMetric', status: 'active' },
+        { key_path: 'metric4', instrumentation_class: 'RedisHLLMetric', status: 'removed' }
+      ]
+      metrics_definitions.map { |definition| described_class.new(definition[:key_path], definition.symbolize_keys) }
+    end
+
+    before do
+      allow(described_class).to receive(:all).and_return(all_definitions)
+    end
+
+    it 'includes metrics that are not removed' do
+      expect(described_class.not_removed.count).to eq(3)
+
+      expect(described_class.not_removed.keys).to match_array(%w(metric1 metric2 metric3))
+    end
+  end
+
   describe '#with_instrumentation_class' do
     let(:metric_status) { 'active' }
     let(:all_definitions) do

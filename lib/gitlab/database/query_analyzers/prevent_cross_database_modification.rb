@@ -94,7 +94,7 @@ module Gitlab
 
           if schemas.many?
             message = "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
-              "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables." \
+              "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables. " \
               "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions for details on how to resolve this exception."
 
             if schemas.any? { |s| s.to_s.start_with?("undefined") }

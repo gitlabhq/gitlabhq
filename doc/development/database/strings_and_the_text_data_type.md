@@ -253,6 +253,26 @@ class ValidateTextLimitMigration < Gitlab::Database::Migration[1.0]
 end
 ```
 
+## Increasing a text limit constraint on an existing column
+
+Increasing text limits on existing database columns can be safely achieved by first adding the new limit (with a different name),
+and then dropping the previous limit:
+
+```ruby
+class ChangeMaintainerNoteLimitInCiRunner < Gitlab::Database::Migration[1.0]
+  disable_ddl_transaction!
+
+  def up
+    add_text_limit :ci_runners, :maintainer_note, 1024, constraint_name: check_constraint_name(:ci_runners, :maintainer_note, 'max_length_1MB')
+    remove_text_limit :ci_runners, :maintainer_note, constraint_name: check_constraint_name(:ci_runners, :maintainer_note, 'max_length')
+  end
+
+  def down
+    # no-op: Danger of failing if there are records with length(maintainer_note) > 255
+  end
+end
+```
+
 ## Text limit constraints on large tables
 
 If you have to clean up a text column for a really [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3)

@@ -1,8 +1,0 @@
----
-name: pipeline_editor_walkthrough
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73050
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345558
-milestone: '14.5'
-type: experiment
-group: group::activation
-default_enabled: false

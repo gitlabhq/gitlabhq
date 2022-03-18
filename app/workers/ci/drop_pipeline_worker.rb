@@ -9,6 +9,8 @@ module Ci
     sidekiq_options retry: 3
     include PipelineQueue
 
+    urgency :high
+
     idempotent!
 
     def perform(pipeline_id, failure_reason)

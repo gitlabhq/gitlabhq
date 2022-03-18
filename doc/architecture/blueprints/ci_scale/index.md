@@ -174,15 +174,15 @@ Work required to achieve our next CI/CD scaling target is tracked in the
 
 1. ✓ Migrate primary keys to big integers on GitLab.com.
 1. ✓ Implement the new architecture of builds queuing on GitLab.com.
-1. Make the new builds queuing architecture generally available.
-1. Partition CI/CD data using time-decay pattern.
+1. [Make the new builds queuing architecture generally available](https://gitlab.com/groups/gitlab-org/-/epics/6954).
+1. [Partition CI/CD data using time-decay pattern](../ci_data_decay/).
 
 ## Status
 
 |-------------|--------------|
 | Created at  | 21.01.2021   |
 | Approved at | 26.04.2021   |
-| Updated at  | 06.12.2021   |
+| Updated at  | 28.02.2022   |
 
 Status: In progress.
 

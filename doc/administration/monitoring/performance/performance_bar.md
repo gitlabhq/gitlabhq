@@ -30,8 +30,7 @@ From left to right, the performance bar displays:
     is enabled. It shows which server role was used for the query.
     "Primary" means that the query was sent to the read/write primary server.
     "Replica" means it was sent to a read-only replica.
-  - **Config name**: shows up only when the
-    `GITLAB_MULTIPLE_DATABASE_METRICS` environment variable is set. This is
+  - **Configuration name**: this is
     used to distinguish between different databases configured for different
     GitLab features. The name shown is the same name used to configure database
     connections in GitLab.
@@ -48,12 +47,13 @@ From left to right, the performance bar displays:
 - **External HTTP calls**: the time taken (in milliseconds) and the total
   number of external calls to other systems. Click to display a modal window
   with more details.
-- **Load timings** of the page: if your browser supports load timings (Chromium
-  and Chrome) several values in milliseconds, separated by slashes.
+- **Load timings** of the page: if your browser supports load timings, several
+  values in milliseconds, separated by slashes.
   Click to display a modal window with more details. The values, from left to right:
   - **Backend**: time needed for the base page to load.
   - [**First Contentful Paint**](https://web.dev/first-contentful-paint/):
-    Time until something was visible to the user.
+    Time until something was visible to the user. Displays `NaN` if your browser does not
+    support this feature.
   - [**DomContentLoaded**](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp) Event.
   - **Total number of requests** the page loaded.
 - **Memory**: the amount of memory consumed and objects allocated during the selected request.
@@ -64,6 +64,9 @@ From left to right, the performance bar displays:
   can be added by its full URL (authenticated as the current user), or by the value of
   its `X-Request-Id` header.
 - **Download**: a link to download the raw JSON used to generate the Performance Bar reports.
+- **Memory Report**: a link that generates a
+  [memory profiling](../../../development/performance.md#using-memory-profiler)
+  report of the current URL.
 - **Flamegraph** with mode: a link to generate a [flamegraph](../../../development/profiling.md#speedscope-flamegraphs)
   of the current URL with the selected [Stackprof mode](https://github.com/tmm1/stackprof#sampling):
   - The **Wall** mode samples every *interval* of the time on a clock on a wall. The interval is set to `10100` microseconds.
@@ -91,17 +94,13 @@ For non-administrators to display the performance bar, it must be
 
 ## Request warnings
 
+> [Warning icon in the request selector removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82187) in GitLab 14.9.
+
 Requests that exceed predefined limits display a warning **{warning}** icon and
 explanation next to the metric. In this example, the Gitaly call duration
 exceeded the threshold.
 
 ![Gitaly call duration exceeded threshold](img/performance_bar_gitaly_threshold.png)
-
-If any requests on the current page generated warnings, the warning icon displays
-next to the **Requests** selector menu. In this selector menu, an exclamation `(!)`
-appears next to requests with warnings.
-
-![Request selector showing two requests with warnings](img/performance_bar_request_selector_warning.png)
 
 ## Enable the performance bar for non-administrators
 

@@ -6,17 +6,17 @@ module Types
       graphql_name 'CiStage'
       authorize :read_build
 
-      field :id, GraphQL::Types::ID, null: false,
-            description: 'ID of the stage.'
-      field :name, type: GraphQL::Types::String, null: true,
-            description: 'Name of the stage.'
+      field :detailed_status, Types::Ci::DetailedStatusType, null: true,
+            description: 'Detailed status of the stage.'
       field :groups, type: Ci::GroupType.connection_type, null: true,
             extras: [:lookahead],
             description: 'Group of jobs for the stage.'
-      field :detailed_status, Types::Ci::DetailedStatusType, null: true,
-            description: 'Detailed status of the stage.'
+      field :id, GraphQL::Types::ID, null: false,
+            description: 'ID of the stage.'
       field :jobs, Types::Ci::JobType.connection_type, null: true,
             description: 'Jobs for the stage.'
+      field :name, type: GraphQL::Types::String, null: true,
+            description: 'Name of the stage.'
       field :status, GraphQL::Types::String,
             null: true,
             description: 'Status of the pipeline stage.'

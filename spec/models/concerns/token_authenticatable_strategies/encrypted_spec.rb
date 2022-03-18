@@ -14,8 +14,16 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
     Gitlab::CryptoHelper.aes256_gcm_encrypt('my-value')
   end
 
-  subject do
+  subject(:strategy) do
     described_class.new(model, 'some_field', options)
+  end
+
+  describe '#token_fields' do
+    let(:options) { { encrypted: :required } }
+
+    it 'includes the encrypted field' do
+      expect(strategy.token_fields).to contain_exactly('some_field', 'some_field_encrypted')
+    end
   end
 
   describe '#find_token_authenticatable' do

@@ -2,12 +2,40 @@
 
 const { statSync } = require('fs');
 const path = require('path');
-const sass = require('node-sass'); // eslint-disable-line import/no-unresolved
-const { buildIncludePaths, resolveGlobUrl } = require('node-sass-magic-importer/dist/toolbox'); // eslint-disable-line import/no-unresolved
+const glob = require('glob');
+const sass = require('sass');
 const webpack = require('webpack');
 const IS_EE = require('../../config/helpers/is_ee_env');
 const IS_JH = require('../../config/helpers/is_jh_env');
 const gitlabWebpackConfig = require('../../config/webpack.config');
+
+const buildIncludePaths = (nodeSassIncludePaths, previouslyResolvedPath) => {
+  const includePaths = [];
+  if (path.isAbsolute(previouslyResolvedPath)) {
+    includePaths.push(path.dirname(previouslyResolvedPath));
+  }
+  return [...new Set([...includePaths, ...nodeSassIncludePaths.split(path.delimiter)])];
+};
+
+const resolveGlobUrl = (url, includePaths = []) => {
+  const filePaths = new Set();
+  if (glob.hasMagic(url)) {
+    includePaths.forEach((includePath) => {
+      const globPaths = glob.sync(url, { cwd: includePath });
+      globPaths.forEach((relativePath) => {
+        filePaths.add(
+          path
+            .resolve(includePath, relativePath)
+            // This fixes a problem with importing absolute paths on windows.
+            .split(`\\`)
+            .join(`/`),
+        );
+      });
+    });
+    return [...filePaths];
+  }
+  return null;
+};
 
 const ROOT = path.resolve(__dirname, '../../');
 const TRANSPARENT_1X1_PNG =

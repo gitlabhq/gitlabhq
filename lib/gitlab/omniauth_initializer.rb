@@ -3,6 +3,7 @@
 module Gitlab
   class OmniauthInitializer
     OAUTH2_TIMEOUT_SECONDS = 10
+    ConfigurationError = Class.new(StandardError)
 
     def initialize(devise_config)
       @devise_config = devise_config
@@ -75,16 +76,29 @@ module Gitlab
         provider_arguments << provider[argument] if provider[argument]
       end
 
-      case provider['args']
+      arguments = provider.fetch('args', {})
+      defaults = provider_defaults(provider)
+
+      case arguments
       when Array
-        # An Array from the configuration will be expanded.
-        provider_arguments.concat provider['args']
+        # An Array from the configuration will be expanded
+        provider_arguments.concat arguments
+        provider_arguments << defaults unless defaults.empty?
       when Hash
-        defaults = provider_defaults(provider)
-        hash_arguments = provider['args'].deep_symbolize_keys.deep_merge(defaults)
+        hash_arguments = arguments.deep_symbolize_keys.deep_merge(defaults)
+        normalized = normalize_hash_arguments(hash_arguments)
 
         # A Hash from the configuration will be passed as is.
-        provider_arguments << normalize_hash_arguments(hash_arguments)
+        provider_arguments << normalized unless normalized.empty?
+      else
+        # this will prevent the application from starting in development mode.
+        # we still set defaults, and let the application start in prod.
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+          ConfigurationError.new("Arguments were provided for #{provider['name']}, but not as an array or a hash"),
+          provider_name: provider['name'],
+          arguments_type: arguments.class.name
+        )
+        provider_arguments << defaults unless defaults.empty?
       end
 
       provider_arguments

@@ -29,8 +29,6 @@
   - 1
 - - analytics_code_review_metrics
   - 1
-- - analytics_cycle_analytics_group_data_loader
-  - 1
 - - analytics_devops_adoption_create_snapshot
   - 1
 - - analytics_usage_trends_counter_job
@@ -364,6 +362,8 @@
 - - projects_post_creation
   - 1
 - - projects_process_sync_events
+  - 1
+- - projects_refresh_build_artifacts_size_statistics
   - 1
 - - projects_schedule_bulk_repository_shard_moves
   - 1

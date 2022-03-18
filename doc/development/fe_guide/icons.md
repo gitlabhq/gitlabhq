@@ -88,50 +88,36 @@ Please use the following function inside JS to render an icon:
 
 ### Usage in HAML/Rails
 
-To insert a loading spinner in HAML or Rails use the `loading_icon` helper:
+To insert a loading spinner in HAML or Rails use the `gl_loading_icon` helper:
 
 ```haml
-= loading_icon
+= gl_loading_icon
 ```
 
-You can include one or more of the following properties with the `loading_icon` helper, as demonstrated
+You can include one or more of the following properties with the `gl_loading_icon` helper, as demonstrated
 by the examples that follow:
 
-- `container` (optional): wraps the loading icon in a container, which centers the loading icon using the `text-center` CSS property.
-- `color` (optional): either `orange` (default), `light`, or `dark`.
+- `inline` (optional): uses in an inline element if `true`, otherwise, a block element (default), with the spinner centered.
+- `color` (optional): either `dark` (default) or `light`.
 - `size` (optional): either `sm` (default), `md`, `lg`, or `xl`.
-- `css_class` (optional): defaults to an empty string, but can be used for utility classes to fine-tune alignment or spacing.
+- `css_class` (optional): defaults to nothing, but can be used for utility classes to fine-tune alignment or spacing.
 
 **Example 1:**
 
 The following HAML expression generates a loading icon's markup and
-centers the icon by wrapping it in a `gl-spinner-container` element.
+centers the icon.
 
 ```haml
-= loading_icon(container: true)
-```
-
-**Output from example 1:**
-
-```html
-<div class="gl-spinner-container">
-  <span class="gl-spinner gl-spinner-orange gl-spinner-sm" aria-label="Loading"></span>
-</div>
+= gl_loading_icon
 ```
 
 **Example 2:**
 
-The following HAML expression generates a loading icon's markup
+The following HAML expression generates an inline loading icon's markup
 with a custom size. It also appends a margin utility class.
 
 ```haml
-= loading_icon(size: 'lg', css_class: 'gl-mr-2')
-```
-
-**Output from example 2:**
-
-```html
-<span class="gl-spinner gl-spinner-orange gl-spinner-lg gl-mr-2" aria-label="Loading"></span>
+= gl_loading_icon(inline: true, size: 'lg', css_class: 'gl-mr-2')
 ```
 
 ### Usage in Vue

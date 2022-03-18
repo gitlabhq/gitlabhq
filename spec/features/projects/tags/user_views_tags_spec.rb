@@ -15,7 +15,7 @@ RSpec.describe 'User views tags', :feature do
       it do
         visit project_tags_path(project, format: :atom)
 
-        expect(page.current_path).to eq("/users/sign_in")
+        expect(page).to have_current_path("/users/sign_in")
       end
     end
 

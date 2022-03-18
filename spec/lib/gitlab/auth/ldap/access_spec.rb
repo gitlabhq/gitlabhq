@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Auth::Ldap::Access do
   include LdapHelpers
 
-  let(:user) { create(:omniauth_user) }
+  let(:user) { create(:omniauth_user, :ldap) }
 
   subject(:access) { described_class.new(user) }
 

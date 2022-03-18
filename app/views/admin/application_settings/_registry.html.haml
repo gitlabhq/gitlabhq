@@ -30,5 +30,13 @@
         = f.number_field :container_registry_cleanup_tags_service_max_list_size, min: 0, class: 'form-control'
         .form-text.text-muted
           = _("The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0.")
+      .form-group
+        .form-check
+          = f.check_box :container_registry_expiration_policies_caching, class: 'form-check-input'
+          = f.label :container_registry_expiration_policies_caching, class: 'form-check-label' do
+            = _("Enable container expiration caching.")
+          .form-text.text-muted
+            = _("When enabled, cleanup polices execute faster but put more load on Redis.")
+            = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'set-cleanup-limits-to-conserve-resources')
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

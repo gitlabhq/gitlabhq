@@ -25,7 +25,7 @@ module Docs
       entries = entries.sort_by { |d| d["name"] }
 
       milestones = entries.map { |entry| entry[milestone_key_name] }.uniq
-      milestones = VersionSorter.sort(milestones)
+      milestones = VersionSorter.rsort(milestones)
 
       load_template(template_path)
         .result_with_hash(entries: entries, milestones: milestones)

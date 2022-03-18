@@ -15,5 +15,5 @@
     = render_if_exists 'notify/merge_request_approvers', presenter: @mr_presenter
 
 - if @merge_request.description
-  %div
+  .md
     = markdown(@merge_request.description, pipeline: :email, author: @merge_request.author, current_user: @recipient, issuable_reference_expansion_enabled: true)

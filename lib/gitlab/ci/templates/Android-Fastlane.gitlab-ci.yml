@@ -4,8 +4,14 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Android-Fastlane.gitlab-ci.yml
 
 # Read more about how to use this script on this blog post https://about.gitlab.com/2019/01/28/android-publishing-with-gitlab-and-fastlane/
-# You will also need to configure your build.gradle, Dockerfile, and fastlane configuration to make this work.
 # If you are looking for a simpler template that does not publish, see the Android template.
+# You will also need to configure your build.gradle, Dockerfile, and fastlane configuration to make this work.
+
+# The following environment variables also need to be defined via the CI/CD settings:
+#
+# - $signing_jks_file_hex: A hex-encoded Java keystore file containing your signing keys.
+#   To encode this file, use `xxd -p <your-keystore-file>.jks` and save the output as `$signing_jks_file_hex`
+# - $google_play_service_account_api_key_json: Your Google Play service account credentials - https://docs.fastlane.tools/getting-started/android/setup/#collect-your-google-credentials
 
 stages:
   - environment
@@ -41,20 +47,21 @@ ensureContainer:
   before_script:
     - "mkdir -p ~/.docker && echo '{\"experimental\": \"enabled\"}' > ~/.docker/config.json"
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    # Skip update container `script` if the container already exists
-    # via https://gitlab.com/gitlab-org/gitlab-foss/issues/26866#note_97609397 -> https://stackoverflow.com/a/52077071/796832
-    - docker manifest inspect $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG > /dev/null && exit || true
-
+    - |
+      if docker manifest inspect $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG > /dev/null; then
+        echo 'Skipping job since there is already an image with this tag'
+        exit 0
+      fi
 
 .build_job:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   stage: build
   before_script:
-    # We store this binary file in a variable as hex with this command: `xxd -p android-app.jks`
+    # We store this binary file in a project variable as hex with this command: `xxd -p android-app.jks`
     # Then we convert the hex back to a binary file
     - echo "$signing_jks_file_hex" | xxd -r -p - > android-signing-keystore.jks
-    - "export VERSION_CODE=$CI_PIPELINE_IID && echo $VERSION_CODE"
-    - "export VERSION_SHA=`echo ${CI_COMMIT_SHA:0:8}` && echo $VERSION_SHA"
+    - export VERSION_CODE="$CI_PIPELINE_IID" && echo "$VERSION_CODE"
+    - export VERSION_SHA="${CI_COMMIT_SHA:0:8}" && echo "$VERSION_SHA"
   after_script:
     - rm -f android-signing-keystore.jks || true
   artifacts:

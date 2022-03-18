@@ -89,6 +89,14 @@ For example:
 
 Do not use title case **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
+## agent access token
+
+The token generated when you create an agent for Kubernetes. Use **agent access token**, not:
+
+- registration token
+- secret token
+- authentication token
+
 ## allow, enable
 
 Try to avoid **allow** and **enable**, unless you are talking about security-related features.
@@ -174,8 +182,7 @@ See also [contractions](index.md#contractions).
 
 Use one word for **checkbox**. Do not use **check box**.
 
-You **select** (not **check** or **enable**) and **clear** (not **deselect** or **disable**) checkboxes.
-For example:
+You **select** (not **check** or **enable**) and **clear** (not **deselect** or **disable**) checkboxes. For example:
 
 - Select the **Protect environment** checkbox.
 - Clear the **Protect environment** checkbox.
@@ -184,6 +191,8 @@ If you must refer to the checkbox, you can say it is selected or cleared. For ex
 
 - Ensure the **Protect environment** checkbox is cleared.
 - Ensure the **Protect environment** checkbox is selected.
+
+(For `deselect`, [Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## checkout, check out
 
@@ -200,10 +209,6 @@ CI/CD is always uppercase. No need to spell it out on first use.
 
 Use **CI/CD minutes** instead of **CI minutes**, **pipeline minutes**, **pipeline minutes quota**, or
 **CI pipeline minutes**. This decision was made in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342813).
-
-## CI/CD tunnel
-
-Use lowercase for **tunnel** in **CI/CD tunnel**.
 
 ## click
 
@@ -255,6 +260,11 @@ Do not use **Developer permissions**. A user who is assigned the Developer role 
 
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
+
+
+## disallow
+
+Use **prevent** instead of **disallow**. ([Vale](../testing.md#vale) rule: [`Substitutions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Substitutions.yml))
 
 ## dropdown list
 
@@ -667,6 +677,10 @@ Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is
 
 Permissions are not the same as [**access levels**](#access-level).
 
+## personal access token
+
+Use lowercase for **personal access token**.
+
 ## please
 
 Do not use **please**. For details, see the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
@@ -950,6 +964,17 @@ One exception: You can use **we recommend** instead of **it is recommended** or 
 ## whitelist
 
 Do not use **whitelist**. Another option is **allowlist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+
+## yet
+
+Do not use **yet** when talking about the product or its features. The documentation describes the product as it is today.
+
+Sometimes you might need to use **yet** when writing a task. If you use
+**yet**, ensure the surrounding phrases are written
+in present tense, active voice. 
+
+[View guidance about how to write about future features](index.md#promising-features-in-future-versions).
+([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
 ## you, your, yours
 

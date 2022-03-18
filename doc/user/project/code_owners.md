@@ -124,7 +124,7 @@ Only one CODEOWNERS pattern can match per file path.
 
 ### Organize Code Owners by putting them into sections
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12137) in GitLab Premium 13.2 behind a feature flag, enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12137) in GitLab 13.2 behind a feature flag, enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42389) in GitLab 13.4.
 
 You can organize Code Owners by putting them into named sections.
@@ -170,7 +170,7 @@ entries under **Database**. The entries defined under the sections **Documentati
 
 ### Make a Code Owners section optional
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232995) in GitLab Premium 13.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232995) in GitLab 13.8.
 
 You can designate optional sections in your Code Owners file. Prepend the
 section name with the caret `^` character to treat the entire section as optional.

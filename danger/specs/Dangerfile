@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 NO_SPECS_LABELS = [
-  'type::tooling',
-  'tooling::pipelines',
-  'tooling::workflow',
+  'maintenance::pipelines',
+  'maintenance::workflow',
   'documentation',
   'QA'
 ].freeze

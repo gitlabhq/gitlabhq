@@ -61,7 +61,7 @@ export default {
       };
     },
     removeMemberButtonText() {
-      return this.isInvitedUser ? null : __('Remove user');
+      return this.isInvitedUser ? null : __('Remove member');
     },
     removeMemberButtonIcon() {
       return this.isInvitedUser ? 'remove' : '';
@@ -86,7 +86,6 @@ export default {
         :icon="removeMemberButtonIcon"
         :button-text="removeMemberButtonText"
         :button-category="removeMemberButtonCategory"
-        :title="s__('Member|Remove member')"
       />
     </div>
     <div v-else-if="permissions.canOverride && !member.isOverridden" class="gl-px-1">

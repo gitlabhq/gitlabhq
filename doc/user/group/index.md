@@ -46,19 +46,16 @@ the immediate parent group.
 
 ### Namespaces
 
-In GitLab, a namespace is a unique name and URL for a user, a group, or subgroup.
-
-- `http://gitlab.example.com/username`
-- `http://gitlab.example.com/groupname`
-- `http://gitlab.example.com/groupname/subgroup_name`
+In GitLab, a namespace is a unique name for a user, a group, or subgroup under
+which a project can be created.
 
 For example, consider a user named Alex:
 
-1. Alex creates an account with the username `alex`: `https://gitlab.example.com/alex`
-1. Alex creates a group for their team with the group name `alex-team`.
-   The group and its projects are available at: `https://gitlab.example.com/alex-team`
-1. Alex creates a subgroup of `alex-team` with the subgroup name `marketing`.
-   The subgroup and its projects are available at: `https://gitlab.example.com/alex-team/marketing`
+| GitLab URL | Namespace |
+| ---------- | --------- |
+| Alex creates an account with the username `alex`: `https://gitlab.example.com/alex`. | The namespace in this case is `alex`. |
+| Alex creates a group for their team with the group name `alex-team`. The group and its projects are available at: `https://gitlab.example.com/alex-team`. | The namespace in this cases is `alex-team`. |
+| Alex creates a subgroup of `alex-team` with the subgroup name `marketing`. The subgroup and its projects are available at: `https://gitlab.example.com/alex-team/marketing`. | The namespace in this case is `alex-team/marketing`. |
 
 ## Create a group
 
@@ -87,6 +84,7 @@ You can give a user access to all projects in a group.
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
+1. Select **Invite members**.
 1. Fill in the fields.
    - The role applies to all projects in the group. [Learn more about permissions](../permissions.md).
    - On the **Access expiration date**, the user can no longer access projects in the group.
@@ -174,6 +172,7 @@ Filter a group to find members. By default, all members in the group and subgrou
    - To view members in the group only, select **Membership = Direct**.
    - To view members of the group and its subgroups, select **Membership = Inherited**.
    - To view members with two-factor authentication enabled or disabled, select **2FA = Enabled** or **Disabled**.
+   - [In GitLab 14.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/349887), to view GitLab users created by [SAML SSO](saml_sso/index.md) or [SCIM provisioning](saml_sso/scim_setup.md) select **Enterprise = true**.
 
 ### Search a group
 
@@ -207,31 +206,24 @@ A to-do item is created for all the group and subgroup members.
 
 ## Change the default branch protection of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
+> - [Settings moved and renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/340403) in GitLab 14.9.
 
 By default, every group inherits the branch protection set at the global level.
 
-To change this setting for a specific group:
+To change this setting for a specific group, see [group level default branch protection](../project/repository/branches/default.md#group-level-default-branch-protection).
 
-1. On the top bar, select **Menu > Groups**.
-1. Select **Your Groups**.
-1. Find the group and select it.
-1. From the left menu, select **Settings > General**.
-1. Expand the **Permissions and group features** section.
-1. Select the desired option in the **Default branch protection** dropdown list.
-1. Select **Save changes**.
-
-To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#protect-default-branches).
+To change this setting globally, see [initial default branch protection](../project/repository/branches/default.md#instance-level-default-branch-protection).
 
 NOTE:
-In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#prevent-overrides-of-default-branch-protection).
+In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../project/repository/branches/default.md#prevent-overrides-of-default-branch-protection).
 
 ## Add projects to a group
 
 There are two different ways to add a new project to a group:
 
-- Select a group, and then click **New project**. You can then continue [creating your project](../../user/project/working_with_projects.md#create-a-project).
-- While you are creating a project, select a group from the dropdown menu.
+- Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/working_with_projects.md#create-a-project).
+- While you are creating a project, select a group from the dropdown list.
 
   ![Select group](img/select_group_dropdown_13_10.png)
 
@@ -256,7 +248,7 @@ To change this setting globally, see [Default project creation protection](../ad
 
 ## Group activity analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [beta feature](https://about.gitlab.com/handbook/product/#beta).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/alpha-beta-support.md#beta-features).
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
 
@@ -283,12 +275,8 @@ To view the activity feed in Atom format, select the
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-
-FLAG:
-On self-managed GitLab, by default the modal window feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md)
-named `invite_members_group_modal`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
+    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group. Members get direct access
@@ -308,7 +296,7 @@ All the members of the `Engineering` group are added to the `Frontend` group.
 
 ## Manage group memberships via LDAP **(PREMIUM SELF)**
 
-Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing, edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that will be associated with GitLab groups.
+Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing, edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that are associated with GitLab groups.
 
 Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings > LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group.
 
@@ -325,9 +313,9 @@ To create group links via CN:
 
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP Group cn`.
-1. In the **LDAP Group cn** field, begin typing the CN of the group. There is a dropdown menu with matching CNs in the configured `group_base`. Select your CN from this list.
+1. In the **LDAP Group cn** field, begin typing the CN of the group. There is a dropdown list with matching CNs in the configured `group_base`. Select your CN from this list.
 1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
-1. Select the **Add Synchronization** button.
+1. Select **Add Synchronization**.
 
 <!-- vale gitlab.Spelling = YES -->
 
@@ -339,7 +327,7 @@ To create group links via filter:
 1. As the **Sync method**, select `LDAP user filter`.
 1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/index.md#set-up-ldap-user-filter).
 1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
-1. Select the **Add Synchronization** button.
+1. Select **Add Synchronization**.
 
 ### Override user permissions **(PREMIUM SELF)**
 
@@ -347,7 +335,7 @@ LDAP user permissions can be manually overridden by an administrator. To overrid
 
 1. Go to your group's **Group information > Members** page.
 1. In the row for the user you are editing, select the pencil (**{pencil}**) icon.
-1. Select the brown **Edit permissions** button in the modal.
+1. Select **Edit permissions** in the modal.
 
 Now you can edit the user's permissions from the **Members** page.
 
@@ -375,7 +363,7 @@ Changing a group's path (group URL) can have unintended side effects. Read
 before you proceed.
 
 If you are changing the path so it can be claimed by another group or user,
-you may need to rename the group too. Both names and paths must
+you must rename the group too. Both names and paths must
 be unique.
 
 To retain ownership of the original namespace and protect the URL redirects,
@@ -384,7 +372,7 @@ create a new group and transfer projects to it instead.
 To change your group path (group URL):
 
 1. Go to your group's **Settings > General** page.
-1. Expand the **Path, transfer, remove** section.
+1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter a new name.
 1. Select **Change group URL**.
 
@@ -467,7 +455,7 @@ To restore a group that is marked for deletion:
 
 This setting is only available on top-level groups. It affects all subgroups.
 
-When checked, any group within the top-level group hierarchy can be shared only with other groups within the hierarchy.
+When checked, any group in the top-level group hierarchy can be shared only with other groups in the hierarchy.
 
 For example, with these groups:
 
@@ -496,7 +484,7 @@ To prevent a project from being shared with other groups:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Select **Prevent sharing a project within `<group_name>` with other groups**.
+1. Select **Prevent sharing a project in `<group_name>` with other groups**.
 1. Select **Save changes**.
 
 This setting applies to all subgroups unless overridden by a group owner. Groups already
@@ -559,6 +547,8 @@ Decreasing the user cap does not approve pending members.
 When the number of billable users reaches the user cap, any new member is put in a pending state
 and must be approved.
 
+Pending members do not count as billable. Members count as billable only after they have been approved and are no longer in a pending state.
+
 Prerequisite:
 
 - You must be assigned the Owner role) for the group.
@@ -586,7 +576,7 @@ To prevent members from being added to projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Under **Member lock**, select **Prevent adding new members to project membership within this group**.
+1. Under **Membership**, select **Prevent adding new members to projects within this group**.
 1. Select **Save changes**.
 
 All users who previously had permissions can no longer add members to a group.
@@ -601,7 +591,7 @@ You can export a list of members in a group or subgroup as a CSV.
 
 1. Go to your group or subgroup and select either **Group information > Members** or **Subgroup information > Members**.
 1. Select **Export as CSV**.
-1. Once the CSV file has been generated, it is emailed as an attachment to the user that requested it.
+1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
 ## Restrict group access by IP address **(PREMIUM)**
 
@@ -646,7 +636,7 @@ To restrict group access by IP address:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in GitLab 12.2.
 > - Support for specifying multiple email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1.
-> - Support for restricting access to projects within the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
+> - Support for restricting access to projects in the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
 
 You can prevent users with email addresses in specific domains from being added to a group and its projects.
 
@@ -663,7 +653,7 @@ Any time you attempt to add a new user, the user's [primary email](../profile/in
 Only users with a [primary email](../profile/index.md#change-your-primary-email) that matches any of the configured email domain restrictions
 can be added to the group.
 
-Some domains cannot be restricted. These are the most popular public email domains, such as:
+The most popular public email domains cannot be restricted, such as:
 
 - `gmail.com`, `yahoo.com`, `aol.com`, `icloud.com`
 - `hotmail.com`, `hotmail.co.uk`, `hotmail.fr`
@@ -718,9 +708,10 @@ To disable email notifications:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21301) in GitLab 12.6.
 
 You can prevent users from being added to a conversation and getting notified when
-anyone mentions a group in which those users are members.
+anyone [mentions a group](../discussions/index.md#mentions)
+in which those users are members.
 
-Groups with disabled mentions are visualized accordingly in the autocompletion dropdown.
+Groups with disabled mentions are visualized accordingly in the autocompletion dropdown list.
 
 This is particularly helpful for groups with a large number of users.
 
@@ -806,9 +797,7 @@ The group's new subgroups have push rules set for them based on either:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `group_merge_request_approval_settings_feature_flag`. On GitLab.com, this feature is available.
+> - [Feature flag `group_merge_request_approval_settings_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/issues/343872) removed in GitLab 14.9.
 
 Group approval rules manage [project merge request approval rules](../project/merge_requests/approvals/index.md)
 at the top-level group level. These rules [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)

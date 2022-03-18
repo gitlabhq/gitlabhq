@@ -14,6 +14,7 @@ module Gitlab
       # however is guaranteed to be "fast", because it only looks up statistics.
       class ReltuplesCountStrategy
         attr_reader :models
+
         def initialize(models)
           @models = models
         end
@@ -46,7 +47,7 @@ module Gitlab
         end
 
         def table_to_model_mapping
-          @table_to_model_mapping ||= models.each_with_object({}) { |model, h| h[model.table_name] = model }
+          @table_to_model_mapping ||= models.index_by(&:table_name)
         end
 
         def table_to_model(table_name)

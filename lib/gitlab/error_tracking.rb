@@ -23,7 +23,12 @@ module Gitlab
     ].freeze
 
     class << self
-      def configure
+      def configure(&block)
+        configure_raven(&block)
+        configure_sentry(&block)
+      end
+
+      def configure_raven
         Raven.configure do |config|
           config.dsn = sentry_dsn
           config.release = Gitlab.revision
@@ -34,7 +39,20 @@ module Gitlab
 
           # Sanitize authentication headers
           config.sanitize_http_headers = %w[Authorization Private-Token]
-          config.before_send = method(:before_send)
+          config.before_send = method(:before_send_raven)
+
+          yield config if block_given?
+        end
+      end
+
+      def configure_sentry
+        Sentry.init do |config|
+          config.dsn = new_sentry_dsn
+          config.release = Gitlab.revision
+          config.environment = new_sentry_environment
+          config.before_send = method(:before_send_sentry)
+          config.background_worker_threads = 0
+          config.send_default_pii = true
 
           yield config if block_given?
         end
@@ -96,6 +114,18 @@ module Gitlab
 
       private
 
+      def before_send_raven(event, hint)
+        return unless Feature.enabled?(:enable_old_sentry_integration, default_enabled: :yaml)
+
+        before_send(event, hint)
+      end
+
+      def before_send_sentry(event, hint)
+        return unless Feature.enabled?(:enable_new_sentry_integration, default_enabled: :yaml)
+
+        before_send(event, hint)
+      end
+
       def before_send(event, hint)
         inject_context_for_exception(event, hint[:exception])
         custom_fingerprinting(event, hint[:exception])
@@ -112,6 +142,13 @@ module Gitlab
           Raven.capture_exception(exception, **context_payload)
         end
 
+        # There is a possibility that this method is called before Sentry is
+        # configured. Since Sentry 4.0, some methods of Sentry are forwarded to
+        # to `nil`, hence we have to check the client as well.
+        if sentry && ::Sentry.get_current_client && ::Sentry.configuration.dsn
+          ::Sentry.capture_exception(exception, **context_payload)
+        end
+
         if logging
           formatter = Gitlab::ErrorTracking::LogFormatter.new
           log_hash = formatter.generate_log(exception, context_payload)
@@ -121,10 +158,28 @@ module Gitlab
       end
 
       def sentry_dsn
-        return unless Rails.env.production? || Rails.env.development?
+        return unless sentry_configurable?
         return unless Gitlab.config.sentry.enabled
 
         Gitlab.config.sentry.dsn
+      end
+
+      def new_sentry_dsn
+        return unless sentry_configurable?
+        return unless Gitlab::CurrentSettings.respond_to?(:sentry_enabled?)
+        return unless Gitlab::CurrentSettings.sentry_enabled?
+
+        Gitlab::CurrentSettings.sentry_dsn
+      end
+
+      def new_sentry_environment
+        return unless Gitlab::CurrentSettings.respond_to?(:sentry_environment)
+
+        Gitlab::CurrentSettings.sentry_environment
+      end
+
+      def sentry_configurable?
+        Rails.env.production? || Rails.env.development?
       end
 
       def should_raise_for_dev?

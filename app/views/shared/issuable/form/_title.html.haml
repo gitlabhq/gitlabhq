@@ -8,9 +8,9 @@
 - add_wip_text = (_('%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request draft from merging before it\'s ready.') % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft:</code>'.html_safe } ).html_safe
 - remove_wip_text = (_('%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it\'s ready.' ) % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft</code>'.html_safe } ).html_safe
 
-%div{ class: div_class }
-  = form.text_field :title, required: true, maxlength: 255, autofocus: true,
-      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('Title'), dir: 'auto'
+%div{ class: div_class, data: { testid: 'issue-title-input-field' } }
+  = form.text_field :title, required: true, aria: { required: true }, maxlength: 255, autofocus: true,
+    autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('Title'), dir: 'auto'
 
   - if issuable.respond_to?(:work_in_progress?)
     .form-text.text-muted

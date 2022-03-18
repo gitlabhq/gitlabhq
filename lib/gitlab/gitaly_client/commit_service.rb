@@ -212,7 +212,7 @@ module Gitlab
         )
 
         response = GitalyClient.call(@repository.storage, :diff_service, :diff_stats, request, timeout: GitalyClient.medium_timeout)
-        response.flat_map(&:stats)
+        response.flat_map { |rsp| rsp.stats.to_a }
       end
 
       def find_changed_paths(commits)

@@ -302,7 +302,7 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 In GitLab 14.5 and later, you can also use:
 
 - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
-- [Scheduled pipeline variables](../pipelines/schedules.md#using-variables).
+- [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
 - [Manual pipeline run variables](../variables/index.md#override-a-variable-when-running-a-pipeline-manually).
 - Pipeline [predefined variables](../variables/predefined_variables.md).
 
@@ -369,6 +369,11 @@ You can only use the following rules with `include` (and only with [certain vari
   ```
 
 `rules` keyword `changes` is not supported.
+
+You cannot use [`needs:`](index.md#needs) to create a job dependency that points to
+a job added with `include:local:rules`. When the configuration is checked for validity,
+GitLab returns `undefined need: <job-name>`. An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/345377)
+to improve this behavior.
 
 ## Use `include:local` with wildcard file paths
 

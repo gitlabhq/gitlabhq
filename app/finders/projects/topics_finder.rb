@@ -12,7 +12,7 @@ module Projects
     end
 
     def execute
-      topics = Projects::Topic.order_by_total_projects_count
+      topics = Projects::Topic.order_by_non_private_projects_count
       by_search(topics)
     end
 

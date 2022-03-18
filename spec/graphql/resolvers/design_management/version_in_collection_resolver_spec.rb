@@ -26,8 +26,10 @@ RSpec.describe Resolvers::DesignManagement::VersionInCollectionResolver do
     subject(:result) { resolve_version(issue.design_collection) }
 
     context 'Neither id nor sha is passed as parameters' do
-      it 'raises an appropriate error' do
-        expect { result }.to raise_error(appropriate_error)
+      it 'generates an appropriate error' do
+        expect_graphql_error_to_be_created(appropriate_error) do
+          result
+        end
       end
     end
 

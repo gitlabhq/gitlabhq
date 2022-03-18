@@ -27,7 +27,7 @@ RSpec.describe 'ClusterAgents', :js do
     end
 
     it 'displays empty state', :aggregate_failures do
-      expect(page).to have_content('Install new Agent')
+      expect(page).to have_content('Install a new agent')
       expect(page).to have_selector('.empty-state')
     end
   end

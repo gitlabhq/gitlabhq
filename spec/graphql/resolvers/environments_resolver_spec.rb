@@ -46,10 +46,10 @@ RSpec.describe Resolvers::EnvironmentsResolver do
           expect(resolve_environments(states: ['available'])).to contain_exactly(environment1, environment3)
         end
 
-        it 'returns error if requested state is invalid' do
-          expect { resolve_environments(states: ['invalid']) }.to(
-            raise_error(Gitlab::Graphql::Errors::ArgumentError)
-          )
+        it 'generates an error if requested state is invalid' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+            resolve_environments(states: ['invalid'])
+          end
         end
       end
 

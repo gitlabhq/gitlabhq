@@ -75,6 +75,7 @@ module API
           requires :body, type: String, desc: 'The content of a note'
           optional :confidential, type: Boolean, desc: 'Confidentiality note flag, default is false'
           optional :created_at, type: String, desc: 'The creation date of the note'
+          optional :merge_request_diff_head_sha, type: String, desc: 'The SHA of the head commit'
         end
         post ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
           allowlist =
@@ -87,7 +88,8 @@ module API
             noteable_type: noteables_str.classify,
             noteable_id: noteable.id,
             confidential: params[:confidential],
-            created_at: params[:created_at]
+            created_at: params[:created_at],
+            merge_request_diff_head_sha: params[:merge_request_diff_head_sha]
           }
 
           note = create_note(noteable, opts)

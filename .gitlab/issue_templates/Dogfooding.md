@@ -1,6 +1,6 @@
 <!--Lightweight issue template to encourage Dogfooding and educate team members about the importance of Dogfooding -->
 
-/label ~"dogfooding" ~"group::" ~"section::"  ~"Category::" 
+/label ~"dogfooding" ~"group::" ~"section::"  ~"Category:"
 
 ## Feature to Dogfood
 <!--Link to Description of feature (Documentation, Epic, Opportunity Canvas, etc.) -->

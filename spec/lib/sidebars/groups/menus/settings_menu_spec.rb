@@ -72,6 +72,18 @@ RSpec.describe Sidebars::Groups::Menus::SettingsMenu do
       let(:item_id) { :ci_cd }
 
       it_behaves_like 'access rights checks'
+
+      describe 'when runner list group view is disabled' do
+        before do
+          stub_feature_flags(runner_list_group_view_vue_ui: false)
+        end
+
+        it_behaves_like 'access rights checks'
+
+        it 'has group runners as active_routes' do
+          expect(subject.active_routes[:path]).to match_array %w[ci_cd#show groups/runners#show groups/runners#edit]
+        end
+      end
     end
 
     describe 'Applications menu' do

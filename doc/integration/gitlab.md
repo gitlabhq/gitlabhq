@@ -62,9 +62,7 @@ GitLab.com generates an application ID and secret key for you to use.
        # label: "Provider name", # optional label for login button, defaults to "GitLab.com"
        app_id: "YOUR_APP_ID",
        app_secret: "YOUR_APP_SECRET",
-       args: { scope: "read_user" # optional: defaults to the scopes of the application
-             , client_options: { site: "https://gitlab.example.com/api/v4" }
-             }
+       args: { scope: "read_user" } # optional: defaults to the scopes of the application
      }
    ]
    ```
@@ -91,7 +89,6 @@ GitLab.com generates an application ID and secret key for you to use.
        # label: 'Provider name', # optional label for login button, defaults to "GitLab.com"
        app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET',
-       args: { "client_options": { "site": 'https://gitlab.example.com/api/v4' } }
    ```
 
    Or, for installations from source to authenticate against a different GitLab instance:
@@ -125,7 +122,7 @@ signed in.
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `omniauth_login_minimal_scopes`. On GitLab.com, this feature is not available.
 
-If you use a GitLab instance for authentication, you can reduce access rights when an OAuth application is used for sign in. 
+If you use a GitLab instance for authentication, you can reduce access rights when an OAuth application is used for sign in.
 
 Any OAuth application can advertise the purpose of the application with the
 authorization parameter: `gl_auth_type=login`. If the application is

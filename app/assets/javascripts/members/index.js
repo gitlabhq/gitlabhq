@@ -18,6 +18,7 @@ export const initMembersApp = (el, options) => {
     sourceId,
     canManageMembers,
     canExportMembers,
+    canFilterByEnterprise,
     exportCsvPath,
     ...vuexStoreAttributes
   } = parseDataAttributes(el);
@@ -60,6 +61,7 @@ export const initMembersApp = (el, options) => {
       currentUserId: gon.current_user_id || null,
       sourceId,
       canManageMembers,
+      canFilterByEnterprise,
       canExportMembers,
       exportCsvPath,
     },

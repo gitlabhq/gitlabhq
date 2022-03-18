@@ -16,6 +16,8 @@ import {
   REPORT_TYPE_LICENSE_COMPLIANCE,
 } from '~/vue_shared/security_reports/constants';
 
+import kontraLogo from 'images/vulnerability/kontra-logo.svg';
+import scwLogo from 'images/vulnerability/scw-logo.svg';
 import configureSastMutation from '../graphql/configure_sast.mutation.graphql';
 import configureSastIacMutation from '../graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from '../graphql/configure_secret_detection.mutation.graphql';
@@ -222,14 +224,12 @@ export const securityFeatures = [
     helpPath: COVERAGE_FUZZING_HELP_PATH,
     configurationHelpPath: COVERAGE_FUZZING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_COVERAGE_FUZZING,
-    secondary: gon?.features?.corpusManagementUi
-      ? {
-          type: REPORT_TYPE_CORPUS_MANAGEMENT,
-          name: CORPUS_MANAGEMENT_NAME,
-          description: CORPUS_MANAGEMENT_DESCRIPTION,
-          configurationText: CORPUS_MANAGEMENT_CONFIG_TEXT,
-        }
-      : {},
+    secondary: {
+      type: REPORT_TYPE_CORPUS_MANAGEMENT,
+      name: CORPUS_MANAGEMENT_NAME,
+      description: CORPUS_MANAGEMENT_DESCRIPTION,
+      configurationText: CORPUS_MANAGEMENT_CONFIG_TEXT,
+    },
   },
 ];
 
@@ -281,3 +281,21 @@ export const featureToMutationMap = {
 
 export const AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY =
   'security_configuration_auto_devops_enabled_dismissed_projects';
+
+// Fetch the svg path from the GraphQL query once this issue is resolved
+// https://gitlab.com/gitlab-org/gitlab/-/issues/346899
+export const TEMP_PROVIDER_LOGOS = {
+  Kontra: {
+    svg: kontraLogo,
+  },
+  [__('Secure Code Warrior')]: {
+    svg: scwLogo,
+  },
+};
+
+// Use the `url` field from the GraphQL query once this issue is resolved
+// https://gitlab.com/gitlab-org/gitlab/-/issues/356129
+export const TEMP_PROVIDER_URLS = {
+  Kontra: 'https://application.security/',
+  [__('Secure Code Warrior')]: 'https://www.securecodewarrior.com/',
+};

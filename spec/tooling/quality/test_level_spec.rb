@@ -28,7 +28,7 @@ RSpec.describe Quality::TestLevel do
     context 'when level is unit' do
       it 'returns a pattern' do
         expect(subject.pattern(:unit))
-          .to eq("spec/{bin,channels,config,db,dependencies,elastic,elastic_integration,experiments,events,factories,finders,frontend,graphql,haml_lint,helpers,initializers,javascripts,lib,metrics_server,models,policies,presenters,rack_servers,replicators,routing,rubocop,scripts,serializers,services,sidekiq,sidekiq_cluster,spam,support_specs,tasks,uploaders,validators,views,workers,tooling}{,/**/}*_spec.rb")
+          .to eq("spec/{bin,channels,config,db,dependencies,elastic,elastic_integration,experiments,events,factories,finders,frontend,graphql,haml_lint,helpers,initializers,javascripts,lib,metrics_server,models,policies,presenters,rack_servers,replicators,routing,rubocop,scripts,serializers,services,sidekiq,sidekiq_cluster,spam,support_specs,tasks,uploaders,validators,views,workers,tooling,component}{,/**/}*_spec.rb")
       end
     end
 
@@ -110,7 +110,7 @@ RSpec.describe Quality::TestLevel do
     context 'when level is unit' do
       it 'returns a regexp' do
         expect(subject.regexp(:unit))
-          .to eq(%r{spec/(bin|channels|config|db|dependencies|elastic|elastic_integration|experiments|events|factories|finders|frontend|graphql|haml_lint|helpers|initializers|javascripts|lib|metrics_server|models|policies|presenters|rack_servers|replicators|routing|rubocop|scripts|serializers|services|sidekiq|sidekiq_cluster|spam|support_specs|tasks|uploaders|validators|views|workers|tooling)})
+          .to eq(%r{spec/(bin|channels|config|db|dependencies|elastic|elastic_integration|experiments|events|factories|finders|frontend|graphql|haml_lint|helpers|initializers|javascripts|lib|metrics_server|models|policies|presenters|rack_servers|replicators|routing|rubocop|scripts|serializers|services|sidekiq|sidekiq_cluster|spam|support_specs|tasks|uploaders|validators|views|workers|tooling|component)})
       end
     end
 

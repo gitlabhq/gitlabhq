@@ -8,8 +8,6 @@ import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_t
 import BoardApp from '~/boards/components/board_app.vue';
 import '~/boards/filters/due_date_filters';
 import { issuableTypes } from '~/boards/constants';
-import eventHub from '~/boards/eventhub';
-import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import initBoardsFilteredSearch from '~/boards/mount_filtered_search_issue_boards';
 import store from '~/boards/stores';
 import toggleFocusMode from '~/boards/toggle_focus';
@@ -30,6 +28,12 @@ const apolloProvider = new VueApollo({
 function mountBoardApp(el) {
   const { boardId, groupId, fullPath, rootPath } = el.dataset;
 
+  store.dispatch('fetchBoard', {
+    fullPath,
+    fullBoardId: fullBoardId(boardId),
+    boardType: el.dataset.parent,
+  });
+
   store.dispatch('setInitialBoardData', {
     boardId,
     fullBoardId: fullBoardId(boardId),
@@ -37,29 +41,7 @@ function mountBoardApp(el) {
     boardType: el.dataset.parent,
     disabled: parseBoolean(el.dataset.disabled) || true,
     issuableType: issuableTypes.issue,
-    boardConfig: {
-      milestoneId: parseInt(el.dataset.boardMilestoneId, 10),
-      milestoneTitle: el.dataset.boardMilestoneTitle || '',
-      iterationId: parseInt(el.dataset.boardIterationId, 10),
-      iterationTitle: el.dataset.boardIterationTitle || '',
-      assigneeId: el.dataset.boardAssigneeId,
-      assigneeUsername: el.dataset.boardAssigneeUsername,
-      labels: el.dataset.labels ? JSON.parse(el.dataset.labels) : [],
-      labelIds: el.dataset.labelIds ? JSON.parse(el.dataset.labelIds) : [],
-      weight: el.dataset.boardWeight ? parseInt(el.dataset.boardWeight, 10) : null,
-    },
   });
-
-  if (!gon?.features?.issueBoardsFilteredSearch) {
-    // Warning: FilteredSearchBoards has an implicit dependency on the Vuex state 'boardConfig'
-    // Improve this situation in the future.
-    const filterManager = new FilteredSearchBoards({ path: '' }, true, []);
-    filterManager.setup();
-
-    eventHub.$on('updateTokens', () => {
-      filterManager.updateTokens();
-    });
-  }
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -110,10 +92,14 @@ export default () => {
     }
   });
 
-  if (gon?.features?.issueBoardsFilteredSearch) {
-    const { releasesFetchPath } = $boardApp.dataset;
-    initBoardsFilteredSearch(apolloProvider, isLoggedIn(), releasesFetchPath);
-  }
+  const { releasesFetchPath, epicFeatureAvailable, iterationFeatureAvailable } = $boardApp.dataset;
+  initBoardsFilteredSearch(
+    apolloProvider,
+    isLoggedIn(),
+    releasesFetchPath,
+    parseBoolean(epicFeatureAvailable),
+    parseBoolean(iterationFeatureAvailable),
+  );
 
   mountBoardApp($boardApp);
 

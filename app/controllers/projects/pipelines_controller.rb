@@ -4,6 +4,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   include ::Gitlab::Utils::StrongMemoize
   include RedisTracking
 
+  urgency :default, [:status]
+  urgency :low, [:index, :new, :builds, :show, :failures, :create, :stage, :retry, :dag, :cancel]
+
   before_action :disable_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts, :config_variables]
   before_action :set_pipeline_path, only: [:show]
@@ -13,13 +16,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
-  before_action do
-    push_frontend_feature_flag(:rearrange_pipelines_table, project, default_enabled: :yaml)
-  end
-
-  before_action do
-    push_frontend_feature_flag(:jobs_tab_vue, @project, default_enabled: :yaml)
-  end
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
@@ -55,8 +51,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        enable_code_quality_walkthrough_experiment
-        enable_ci_runner_templates_experiment
+        enable_runners_availability_section_experiment
       end
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
@@ -166,14 +161,20 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def retry
-    ::Ci::RetryPipelineWorker.perform_async(pipeline.id, current_user.id) # rubocop:disable CodeReuse/Worker
+    # Check for access before execution to allow for async execution while still returning access results
+    access_response = ::Ci::RetryPipelineService.new(@project, current_user).check_access(pipeline)
+
+    if access_response.error?
+      response = { json: { errors: [access_response.message] }, status: access_response.http_status }
+    else
+      response = { json: {}, status: :no_content }
+      ::Ci::RetryPipelineWorker.perform_async(pipeline.id, current_user.id) # rubocop:disable CodeReuse/Worker
+    end
 
     respond_to do |format|
-      format.html do
-        redirect_back_or_default default: project_pipelines_path(project)
+      format.json do
+        render response
       end
-
-      format.json { head :no_content }
     end
   end
 
@@ -224,7 +225,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     PipelineSerializer
       .new(project: @project, current_user: @current_user)
       .with_pagination(request, response)
-      .represent(@pipelines, disable_coverage: true, preload: true, code_quality_walkthrough: params[:code_quality_walkthrough].present?)
+      .represent(@pipelines, disable_coverage: true, preload: true)
   end
 
   def render_show
@@ -309,28 +310,13 @@ class Projects::PipelinesController < Projects::ApplicationController
     params.permit(:scope, :username, :ref, :status, :source)
   end
 
-  def enable_code_quality_walkthrough_experiment
-    experiment(:code_quality_walkthrough, namespace: project.root_ancestor) do |e|
-      e.exclude! unless current_user
-      e.exclude! unless can?(current_user, :create_pipeline, project)
-      e.exclude! unless project.root_ancestor.recent?
-      e.exclude! if @pipelines_count.to_i > 0
-      e.exclude! if helpers.has_gitlab_ci?(project)
+  def enable_runners_availability_section_experiment
+    return unless current_user
+    return unless can?(current_user, :create_pipeline, project)
+    return if @pipelines_count.to_i > 0
+    return if helpers.has_gitlab_ci?(project)
 
-      e.control {}
-      e.candidate {}
-      e.publish_to_database
-    end
-  end
-
-  def enable_ci_runner_templates_experiment
-    experiment(:ci_runner_templates, namespace: project.root_ancestor) do |e|
-      e.exclude! unless current_user
-      e.exclude! unless can?(current_user, :create_pipeline, project)
-      e.exclude! if @pipelines_count.to_i > 0
-      e.exclude! if helpers.has_gitlab_ci?(project)
-
-      e.control {}
+    experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
       e.candidate {}
       e.publish_to_database
     end

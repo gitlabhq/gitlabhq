@@ -1,5 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
+import { IssuableType } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 
 export default {
@@ -31,10 +32,11 @@ export default {
       );
     },
     isMergeRequest() {
-      return this.issuableType === 'merge_request';
+      return this.issuableType === IssuableType.MergeRequest;
     },
     hasMergeIcon() {
-      return this.isMergeRequest && !this.user.can_merge;
+      const canMerge = this.user.mergeRequestInteraction?.canMerge || this.user.can_merge;
+      return this.isMergeRequest && !canMerge;
     },
   },
 };

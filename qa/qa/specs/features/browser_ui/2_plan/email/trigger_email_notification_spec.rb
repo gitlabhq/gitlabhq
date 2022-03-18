@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :orchestrated, :smtp, :requires_admin do
+  RSpec.describe 'Plan', :orchestrated, :smtp do
     describe 'Email Notification' do
       include Support::API
 
@@ -16,7 +16,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:invite_members_group_modal)
         Flow::Login.sign_in
       end
 

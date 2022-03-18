@@ -23,7 +23,7 @@ module Peek
       private
 
       def duration
-        detail_store.map { |entry| entry[:duration] }.sum * 1000
+        detail_store.sum { |entry| entry[:duration] } * 1000
       end
 
       def calls

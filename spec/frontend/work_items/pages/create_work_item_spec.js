@@ -8,7 +8,10 @@ import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import ItemTitle from '~/work_items/components/item_title.vue';
 import { resolvers } from '~/work_items/graphql/resolvers';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
-import { projectWorkItemTypesQueryResponse } from '../mock_data';
+import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
+import { projectWorkItemTypesQueryResponse, createWorkItemMutationResponse } from '../mock_data';
+
+jest.mock('~/lib/utils/uuids', () => ({ uuids: () => ['testuuid'] }));
 
 Vue.use(VueApollo);
 
@@ -17,6 +20,7 @@ describe('Create work item component', () => {
   let fakeApollo;
 
   const querySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
+  const mutationSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTitleInput = () => wrapper.findComponent(ItemTitle);
@@ -28,8 +32,19 @@ describe('Create work item component', () => {
   const findContent = () => wrapper.find('[data-testid="content"]');
   const findLoadingTypesIcon = () => wrapper.find('[data-testid="loading-types"]');
 
-  const createComponent = ({ data = {}, props = {}, queryHandler = querySuccessHandler } = {}) => {
-    fakeApollo = createMockApollo([[projectWorkItemTypesQuery, queryHandler]], resolvers);
+  const createComponent = ({
+    data = {},
+    props = {},
+    queryHandler = querySuccessHandler,
+    mutationHandler = mutationSuccessHandler,
+  } = {}) => {
+    fakeApollo = createMockApollo(
+      [
+        [projectWorkItemTypesQuery, queryHandler],
+        [createWorkItemMutation, mutationHandler],
+      ],
+      resolvers,
+    );
     wrapper = shallowMount(CreateWorkItem, {
       apolloProvider: fakeApollo,
       data() {
@@ -124,7 +139,8 @@ describe('Create work item component', () => {
       wrapper.find('form').trigger('submit');
       await waitForPromises();
 
-      expect(wrapper.emitted('onCreate')).toEqual([[mockTitle]]);
+      const expected = { id: '1', title: mockTitle };
+      expect(wrapper.emitted('onCreate')).toEqual([[expected]]);
     });
 
     it('does not right margin for create button', () => {

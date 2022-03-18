@@ -4,6 +4,8 @@ module QA
   RSpec.describe(
     'Create',
     :runner,
+    # TODO: remove limitation to only run on main when the bug is fixed
+    only: { pipeline: :main },
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338179',
       type: :bug

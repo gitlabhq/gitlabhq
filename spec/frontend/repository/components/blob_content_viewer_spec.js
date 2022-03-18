@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -10,20 +11,26 @@ import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
-import BlobEdit from '~/repository/components/blob_edit.vue';
+import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import ForkSuggestion from '~/repository/components/fork_suggestion.vue';
 import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
 import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
+import userInfoQuery from '~/repository/queries/user_info.query.graphql';
+import applicationInfoQuery from '~/repository/queries/application_info.query.graphql';
+import CodeIntelligence from '~/code_navigation/components/app.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import httpStatusCodes from '~/lib/utils/http_status';
 import {
   simpleViewerMock,
   richViewerMock,
   projectMock,
+  userInfoMock,
+  applicationInfoMock,
   userPermissionsMock,
   propsMock,
   refMock,
@@ -35,8 +42,13 @@ jest.mock('~/lib/utils/common_utils');
 
 let wrapper;
 let mockResolver;
+let userInfoMockResolver;
+let applicationInfoMockResolver;
 
 const mockAxios = new MockAdapter(axios);
+
+const createMockStore = () =>
+  new Vuex.Store({ actions: { fetchData: jest.fn, setInitialData: jest.fn() } });
 
 const createComponent = async (mockData = {}, mountFn = shallowMount) => {
   Vue.use(VueApollo);
@@ -71,10 +83,23 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
     data: { isBinary, project },
   });
 
-  const fakeApollo = createMockApollo([[blobInfoQuery, mockResolver]]);
+  userInfoMockResolver = jest.fn().mockResolvedValue({
+    data: { ...userInfoMock },
+  });
+
+  applicationInfoMockResolver = jest.fn().mockResolvedValue({
+    data: { ...applicationInfoMock },
+  });
+
+  const fakeApollo = createMockApollo([
+    [blobInfoQuery, mockResolver],
+    [userInfoQuery, userInfoMockResolver],
+    [applicationInfoQuery, applicationInfoMockResolver],
+  ]);
 
   wrapper = extendedWrapper(
     mountFn(BlobContentViewer, {
+      store: createMockStore(),
       apolloProvider: fakeApollo,
       propsData: propsMock,
       mixins: [{ data: () => ({ ref: refMock }) }],
@@ -96,16 +121,21 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
   await waitForPromises();
 };
 
+const execImmediately = (callback) => {
+  callback();
+};
+
 describe('Blob content viewer component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBlobHeader = () => wrapper.findComponent(BlobHeader);
-  const findBlobEdit = () => wrapper.findComponent(BlobEdit);
-  const findPipelineEditor = () => wrapper.findByTestId('pipeline-editor');
+  const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
   const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
+  const findCodeIntelligence = () => wrapper.findComponent(CodeIntelligence);
 
   beforeEach(() => {
+    jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
     isLoggedIn.mockReturnValue(true);
   });
 
@@ -219,6 +249,26 @@ describe('Blob content viewer component', () => {
       loadViewer.mockRestore();
     });
 
+    it('renders a CodeIntelligence component with the correct props', async () => {
+      loadViewer.mockReturnValue(SourceViewer);
+
+      await createComponent();
+
+      expect(findCodeIntelligence().props()).toMatchObject({
+        codeNavigationPath: simpleViewerMock.codeNavigationPath,
+        blobPath: simpleViewerMock.path,
+        pathPrefix: simpleViewerMock.projectBlobPathRoot,
+      });
+    });
+
+    it('does not load a CodeIntelligence component when no viewers are loaded', async () => {
+      const url = 'some_file.js?format=json&viewer=rich';
+      mockAxios.onGet(url).replyOnce(httpStatusCodes.INTERNAL_SERVER_ERROR);
+      await createComponent({ blob: { ...richViewerMock, fileType: 'unknown' } });
+
+      expect(findCodeIntelligence().exists()).toBe(false);
+    });
+
     it('does not render a BlobContent component if a Blob viewer is available', async () => {
       loadViewer.mockReturnValue(() => true);
       await createComponent({ blob: richViewerMock });
@@ -255,43 +305,41 @@ describe('Blob content viewer component', () => {
   describe('BlobHeader action slot', () => {
     const { ideEditPath, editBlobPath } = simpleViewerMock;
 
-    it('renders BlobHeaderEdit buttons in simple viewer', async () => {
+    it('renders WebIdeLink button in simple viewer', async () => {
       await createComponent({ inject: { BlobContent: true, BlobReplace: true } }, mount);
 
-      expect(findBlobEdit().props()).toMatchObject({
-        editPath: editBlobPath,
-        webIdePath: ideEditPath,
+      expect(findWebIdeLink().props()).toMatchObject({
+        editUrl: editBlobPath,
+        webIdeUrl: ideEditPath,
         showEditButton: true,
+        showGitpodButton: applicationInfoMock.gitpodEnabled,
+        gitpodEnabled: userInfoMock.currentUser.gitpodEnabled,
+        showPipelineEditorButton: true,
+        gitpodUrl: simpleViewerMock.gitpodBlobUrl,
+        pipelineEditorUrl: simpleViewerMock.pipelineEditorPath,
+        userPreferencesGitpodPath: userInfoMock.currentUser.preferencesGitpodPath,
+        userProfileEnableGitpodPath: userInfoMock.currentUser.profileEnableGitpodPath,
       });
     });
 
-    it('renders BlobHeaderEdit button in rich viewer', async () => {
+    it('renders WebIdeLink button in rich viewer', async () => {
       await createComponent({ blob: richViewerMock }, mount);
 
-      expect(findBlobEdit().props()).toMatchObject({
-        editPath: editBlobPath,
-        webIdePath: ideEditPath,
+      expect(findWebIdeLink().props()).toMatchObject({
+        editUrl: editBlobPath,
+        webIdeUrl: ideEditPath,
         showEditButton: true,
       });
     });
 
-    it('renders BlobHeaderEdit button for binary files', async () => {
+    it('renders WebIdeLink button for binary files', async () => {
       await createComponent({ blob: richViewerMock, isBinary: true }, mount);
 
-      expect(findBlobEdit().props()).toMatchObject({
-        editPath: editBlobPath,
-        webIdePath: ideEditPath,
+      expect(findWebIdeLink().props()).toMatchObject({
+        editUrl: editBlobPath,
+        webIdeUrl: ideEditPath,
         showEditButton: false,
       });
-    });
-
-    it('renders Pipeline Editor button for .gitlab-ci files', async () => {
-      const pipelineEditorPath = 'some/path/.gitlab-ce';
-      const blob = { ...simpleViewerMock, pipelineEditorPath };
-      await createComponent({ blob, inject: { BlobContent: true, BlobReplace: true } }, mount);
-
-      expect(findPipelineEditor().exists()).toBe(true);
-      expect(findPipelineEditor().attributes('href')).toBe(pipelineEditorPath);
     });
 
     describe('blob header binary file', () => {
@@ -318,7 +366,7 @@ describe('Blob content viewer component', () => {
 
         expect(findBlobHeader().props('hideViewerSwitcher')).toBe(true);
         expect(findBlobHeader().props('isBinary')).toBe(true);
-        expect(findBlobEdit().props('showEditButton')).toBe(false);
+        expect(findWebIdeLink().props('showEditButton')).toBe(false);
       });
     });
 
@@ -401,12 +449,12 @@ describe('Blob content viewer component', () => {
     beforeEach(() => createComponent({}, mount));
 
     it('simple edit redirects to the simple editor', () => {
-      findBlobEdit().vm.$emit('edit', 'simple');
+      findWebIdeLink().vm.$emit('edit', 'simple');
       expect(redirectTo).toHaveBeenCalledWith(simpleViewerMock.editBlobPath);
     });
 
     it('IDE edit redirects to the IDE editor', () => {
-      findBlobEdit().vm.$emit('edit', 'ide');
+      findWebIdeLink().vm.$emit('edit', 'ide');
       expect(redirectTo).toHaveBeenCalledWith(simpleViewerMock.ideEditPath);
     });
 
@@ -435,7 +483,7 @@ describe('Blob content viewer component', () => {
           mount,
         );
 
-        findBlobEdit().vm.$emit('edit', 'simple');
+        findWebIdeLink().vm.$emit('edit', 'simple');
         await nextTick();
 
         expect(findForkSuggestion().exists()).toBe(showForkSuggestion);

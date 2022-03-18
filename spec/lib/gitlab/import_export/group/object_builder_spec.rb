@@ -51,16 +51,4 @@ RSpec.describe Gitlab::ImportExport::Group::ObjectBuilder do
       expect(milestone.persisted?).to be true
     end
   end
-
-  describe '#initialize' do
-    context 'when attributes contain description as empty string' do
-      let(:attributes) { base_attributes.merge('description' => '') }
-
-      it 'converts empty string to nil' do
-        builder = described_class.new(Label, attributes)
-
-        expect(builder.send(:attributes)).to include({ 'description' => nil })
-      end
-    end
-  end
 end

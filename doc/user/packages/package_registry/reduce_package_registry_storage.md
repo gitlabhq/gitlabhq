@@ -16,7 +16,7 @@ We recommend deleting unnecessary packages and files. This page offers examples 
 
 ## Check Package Registry Storage Use
 
-The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage usage for Packages. 
+The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage usage for Packages.
 
 ## Delete a package
 

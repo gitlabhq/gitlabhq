@@ -42,9 +42,6 @@ RSpec.describe 'Merge request > User sees suggest pipeline', :js do
 
     wait_for_requests
 
-    # Drawer is open
-    expect(page).to have_content('This template creates a simple test pipeline. To use it:')
-
     # Editor shows template
     expect(page).to have_content('This file is a template, and might need editing before it works on your project.')
 

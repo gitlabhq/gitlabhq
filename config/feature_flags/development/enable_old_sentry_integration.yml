@@ -1,0 +1,8 @@
+---
+name: enable_old_sentry_integration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72428
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344832
+milestone: '14.9'
+type: development
+group: group::pipeline execution
+default_enabled: true

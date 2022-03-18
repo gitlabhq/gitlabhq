@@ -11,9 +11,6 @@ module Gitlab
     module Ldap
       class User < Gitlab::Auth::OAuth::User
         extend ::Gitlab::Utils::Override
-        def save
-          super('LDAP')
-        end
 
         # instance methods
         def find_user
@@ -43,6 +40,10 @@ module Gitlab
 
         def auth_hash=(auth_hash)
           @auth_hash = Gitlab::Auth::Ldap::AuthHash.new(auth_hash)
+        end
+
+        def protocol_name
+          'LDAP'
         end
       end
     end

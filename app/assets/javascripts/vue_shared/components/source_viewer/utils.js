@@ -1,11 +1,13 @@
-export const wrapLines = (content) => {
+export const wrapLines = (content, language) => {
+  const isValidLanguage = /^[a-z\d\-_]+$/.test(language); // To prevent the possibility of a vulnerability we only allow languages that contain alphanumeric characters ([a-z\d), dashes (-) or underscores (_).
+
   return (
     content &&
     content
       .split('\n')
       .map((line, i) => {
         let formattedLine;
-        const idAttribute = `id="LC${i + 1}"`;
+        const attributes = `id="LC${i + 1}" lang="${isValidLanguage ? language : ''}"`;
 
         if (line.includes('<span class="hljs') && !line.includes('</span>')) {
           /**
@@ -14,9 +16,9 @@ export const wrapLines = (content) => {
            * example (before):  <span class="hljs-code">```bash
            * example (after):   <span id="LC67" class="hljs-code">```bash
            */
-          formattedLine = line.replace(/(?=class="hljs)/, `${idAttribute} `);
+          formattedLine = line.replace(/(?=class="hljs)/, `${attributes} `);
         } else {
-          formattedLine = `<span ${idAttribute} class="line">${line}</span>`;
+          formattedLine = `<span ${attributes} class="line">${line}</span>`;
         }
 
         return formattedLine;

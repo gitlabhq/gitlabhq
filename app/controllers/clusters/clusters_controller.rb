@@ -9,15 +9,25 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :generate_gcp_authorize_url, only: [:new]
   before_action :validate_gcp_token, only: [:new]
   before_action :gcp_cluster, only: [:new]
-  before_action :user_cluster, only: [:new]
+  before_action :user_cluster, only: [:new, :connect]
   before_action :authorize_read_cluster!, only: [:show, :index]
-  before_action :authorize_create_cluster!, only: [:new, :authorize_aws_role]
+  before_action :authorize_create_cluster!, only: [:new, :connect, :authorize_aws_role]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :update_applications_status, only: [:cluster_status]
+  before_action :ensure_feature_enabled!, except: :index
 
   helper_method :token_in_session
 
   STATUS_POLLING_INTERVAL = 10_000
+  AWS_CSP_DOMAINS = %w[https://ec2.ap-east-1.amazonaws.com https://ec2.ap-northeast-1.amazonaws.com https://ec2.ap-northeast-2.amazonaws.com https://ec2.ap-northeast-3.amazonaws.com https://ec2.ap-south-1.amazonaws.com https://ec2.ap-southeast-1.amazonaws.com https://ec2.ap-southeast-2.amazonaws.com https://ec2.ca-central-1.amazonaws.com https://ec2.eu-central-1.amazonaws.com https://ec2.eu-north-1.amazonaws.com https://ec2.eu-west-1.amazonaws.com https://ec2.eu-west-2.amazonaws.com https://ec2.eu-west-3.amazonaws.com https://ec2.me-south-1.amazonaws.com https://ec2.sa-east-1.amazonaws.com https://ec2.us-east-1.amazonaws.com https://ec2.us-east-2.amazonaws.com https://ec2.us-west-1.amazonaws.com https://ec2.us-west-2.amazonaws.com https://ec2.af-south-1.amazonaws.com https://iam.amazonaws.com].freeze
+
+  content_security_policy do |p|
+    next if p.directives.blank?
+
+    default_connect_src = p.directives['connect-src'] || p.directives['default-src']
+    connect_src_values = Array.wrap(default_connect_src) | AWS_CSP_DOMAINS
+    p.connect_src(*connect_src_values)
+  end
 
   def index
     @clusters = cluster_list
@@ -142,7 +152,7 @@ class Clusters::ClustersController < Clusters::BaseController
       validate_gcp_token
       gcp_cluster
 
-      render :new, locals: { active_tab: 'add' }
+      render :connect
     end
   end
 
@@ -163,7 +173,17 @@ class Clusters::ClustersController < Clusters::BaseController
 
   private
 
+  def certificate_based_clusters_enabled?
+    Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops)
+  end
+
+  def ensure_feature_enabled!
+    render_404 unless certificate_based_clusters_enabled?
+  end
+
   def cluster_list
+    return [] unless certificate_based_clusters_enabled?
+
     finder = ClusterAncestorsFinder.new(clusterable.subject, current_user)
     clusters = finder.execute
 

@@ -373,7 +373,8 @@ RSpec.describe 'Admin updates settings' do
           {
             container_registry_delete_tags_service_timeout: 'Container Registry delete tags service execution timeout',
             container_registry_expiration_policies_worker_capacity: 'Cleanup policy maximum workers running concurrently',
-            container_registry_cleanup_tags_service_max_list_size: 'Cleanup policy maximum number of tags to be deleted'
+            container_registry_cleanup_tags_service_max_list_size: 'Cleanup policy maximum number of tags to be deleted',
+            container_registry_expiration_policies_caching: 'Enable container expiration caching'
           }
         end
 
@@ -393,26 +394,16 @@ RSpec.describe 'Admin updates settings' do
 
         %i[container_registry_delete_tags_service_timeout container_registry_expiration_policies_worker_capacity container_registry_cleanup_tags_service_max_list_size].each do |setting|
           context "for container registry setting #{setting}" do
-            context 'with feature flag enabled' do
-              context 'with client supporting tag delete' do
-                it 'changes the setting' do
-                  visit ci_cd_admin_application_settings_path
+            it 'changes the setting' do
+              visit ci_cd_admin_application_settings_path
 
-                  page.within('.as-registry') do
-                    fill_in "application_setting_#{setting}", with: 400
-                    click_button 'Save changes'
-                  end
-
-                  expect(current_settings.public_send(setting)).to eq(400)
-                  expect(page).to have_content "Application settings saved successfully"
-                end
+              page.within('.as-registry') do
+                fill_in "application_setting_#{setting}", with: 400
+                click_button 'Save changes'
               end
 
-              context 'with client not supporting tag delete' do
-                let(:client_support) { false }
-
-                it_behaves_like 'not having container registry setting', setting
-              end
+              expect(current_settings.public_send(setting)).to eq(400)
+              expect(page).to have_content "Application settings saved successfully"
             end
 
             context 'with feature flag disabled' do
@@ -420,6 +411,28 @@ RSpec.describe 'Admin updates settings' do
 
               it_behaves_like 'not having container registry setting', setting
             end
+          end
+        end
+
+        context 'for container registry setting container_registry_expiration_policies_caching' do
+          it 'updates container_registry_expiration_policies_caching' do
+            old_value = current_settings.container_registry_expiration_policies_caching
+
+            visit ci_cd_admin_application_settings_path
+
+            page.within('.as-registry') do
+              find('#application_setting_container_registry_expiration_policies_caching.form-check-input').click
+              click_button 'Save changes'
+            end
+
+            expect(current_settings.container_registry_expiration_policies_caching).to eq(!old_value)
+            expect(page).to have_content "Application settings saved successfully"
+          end
+
+          context 'with feature flag disabled' do
+            let(:feature_flag_enabled) { false }
+
+            it_behaves_like 'not having container registry setting', :container_registry_expiration_policies_caching
           end
         end
       end
@@ -694,6 +707,20 @@ RSpec.describe 'Admin updates settings' do
 
         include_examples 'regular throttle rate limit settings'
       end
+
+      it 'changes search rate limits' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-search-limits') do
+          fill_in 'Maximum number of requests per minute for an authenticated user', with: 98
+          fill_in 'Maximum number of requests per minute for an unauthenticated IP address', with: 76
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.search_rate_limit).to eq(98)
+        expect(current_settings.search_rate_limit_unauthenticated).to eq(76)
+      end
     end
 
     context 'Preferences page' do
@@ -838,7 +865,7 @@ RSpec.describe 'Admin updates settings' do
     end
 
     it 'loads admin settings page without redirect for reauthentication' do
-      expect(current_path).to eq general_admin_application_settings_path
+      expect(page).to have_current_path general_admin_application_settings_path, ignore_query: true
     end
   end
 

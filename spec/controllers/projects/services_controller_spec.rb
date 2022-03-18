@@ -353,7 +353,16 @@ RSpec.describe Projects::ServicesController do
 
         it 'does not modify integration' do
           expect { put :update, params: project_params.merge(service: integration_params) }
-            .not_to change { project.prometheus_integration.reload.attributes }
+            .not_to change { prometheus_integration_as_data }
+        end
+
+        def prometheus_integration_as_data
+          pi = project.prometheus_integration.reload
+          attrs = pi.attributes.except('encrypted_properties',
+                                       'encrypted_properties_iv',
+                                       'encrypted_properties_tmp')
+
+          [attrs, pi.encrypted_properties_tmp]
         end
       end
 

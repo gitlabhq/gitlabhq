@@ -57,7 +57,7 @@ To run SAST jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 WARNING:
-Our SAST jobs require a Linux container type. Windows containers are not yet supported.
+Our SAST jobs require a Linux/amd64 container type. Windows containers are not yet supported.
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
@@ -315,7 +315,6 @@ To disable analyzer rules:
 1. In one or more `ruleset.identifier` sub sections, list the rules that you want disabled. Every `ruleset.identifier` section has:
 
 - a `type` field, to name the predefined rule identifier that the targeted analyzer uses.
-
 - a `value` field, to name the rule to be disabled.
 
 ##### Example: Disable predefined rules of SAST analyzers
@@ -345,6 +344,9 @@ and `sobelow` by matching the `type` and `value` of identifiers:
       value = "sql_injection"
 ```
 
+Those vulnerabilities containing the provided type and value are now disabled, meaning
+they won't be displayed in Merge Request nor the Vulnerability Report.
+
 #### Override predefined analyzer rules
 
 To override analyzer rules:
@@ -365,29 +367,39 @@ To override analyzer rules:
 
 ##### Example: Override predefined rules of SAST analyzers
 
-In the following example, rules from `eslint`
-and `gosec` are matched by the `type` and `value` of identifiers and
-then overridden:
+Before adding a ruleset, we verify which vulnerability will be overwritten by viewing the [`gl-sast-report.json`](#reports-json-format):
+
+```json
+"identifiers": [
+        {
+          "type": "gosec_rule_id",
+          "name": "Gosec Rule ID G307",
+          "value": "G307"
+        },
+        {
+          "type": "CWE",
+          "name": "CWE-703",
+          "value": "703",
+          "url": "https://cwe.mitre.org/data/definitions/703.html"
+        }
+      ]
+```
+
+In the following example, rules from `gosec` are matched by the `type`
+and `value` of identifiers and then overridden:
 
 ```toml
-[eslint]
-  [[eslint.ruleset]]
-    [eslint.ruleset.identifier]
-      type = "eslint_rule_id"
-      value = "security/detect-object-injection"
-    [eslint.ruleset.override]
-      description = "OVERRIDDEN description"
-      message = "OVERRIDDEN message"
-      name = "OVERRIDDEN name"
-      severity = "Critical"
 [gosec]
   [[gosec.ruleset]]
     [gosec.ruleset.identifier]
         type = "CWE"
-        value = "CWE-79"
+        value = "703"
     [gosec.ruleset.override]
       severity = "Critical"
 ```
+
+If a vulnerability is found with a type `CWE` with a value of `703` then
+the vulnerability severity is overwritten to `Critical`. 
 
 #### Synthesize a custom configuration
 
@@ -661,6 +673,25 @@ repositories and thus require credentials like username and password to download
 Depending on the analyzer, such credentials can be provided to
 it via [custom CI/CD variables](#custom-cicd-variables).
 
+#### Using a CI/CD variable to pass username and password to a private Go repository
+
+If your Go project depends on private modules, see
+[Fetch modules from private projects](../../packages/go_proxy/index.md#fetch-modules-from-private-projects)
+for how to provide authentication over HTTPS.
+
+To specify credentials via `~/.netrc` provide a `before_script` containing the following:
+
+```yaml
+gosec-sast:
+  before_script:
+    - |
+      cat <<EOF > ~/.netrc
+      machine gitlab.com
+      login $CI_DEPLOY_USER
+      password $CI_DEPLOY_PASSWORD
+      EOF
+```
+
 #### Using a CI/CD variable to pass username and password to a private Maven repository
 
 If your private Maven repository requires login credentials,
@@ -878,12 +909,12 @@ variables:
 
 ## Reports JSON format
 
-SAST outputs a report file in JSON format. The report file contains details of all found vulnerabilities. 
-To download the report file, you can either: 
+SAST outputs a report file in JSON format. The report file contains details of all found vulnerabilities.
+To download the report file, you can either:
 
 - Download the file from the CI/CD pipelines page.
-- In the pipelines tab on merge requests, set [`artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`.  
- 
+- In the pipelines tab on merge requests, set [`artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`.
+
 For information, see [Download job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
 
 For details of the report file's schema, see

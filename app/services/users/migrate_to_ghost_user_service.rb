@@ -66,20 +66,20 @@ module Users
 
     # rubocop: disable CodeReuse/ActiveRecord
     def migrate_issues
-      user.issues.update_all(author_id: ghost_user.id)
-      Issue.where(last_edited_by_id: user.id).update_all(last_edited_by_id: ghost_user.id)
+      batched_migrate(Issue, :author_id)
+      batched_migrate(Issue, :last_edited_by_id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def migrate_merge_requests
-      user.merge_requests.update_all(author_id: ghost_user.id)
-      MergeRequest.where(merge_user_id: user.id).update_all(merge_user_id: ghost_user.id)
+      batched_migrate(MergeRequest, :author_id)
+      batched_migrate(MergeRequest, :merge_user_id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     def migrate_notes
-      user.notes.update_all(author_id: ghost_user.id)
+      batched_migrate(Note, :author_id)
     end
 
     def migrate_abuse_reports
@@ -96,8 +96,17 @@ module Users
     end
 
     def migrate_reviews
-      user.reviews.update_all(author_id: ghost_user.id)
+      batched_migrate(Review, :author_id)
     end
+
+    # rubocop:disable CodeReuse/ActiveRecord
+    def batched_migrate(base_scope, column)
+      loop do
+        update_count = base_scope.where(column => user.id).limit(100).update_all(column => ghost_user.id)
+        break if update_count == 0
+      end
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
   end
 end
 

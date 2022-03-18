@@ -11,7 +11,7 @@ RSpec.describe Types::GroupMemberType do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      access_level created_by created_at updated_at expires_at group
+      access_level created_by created_at updated_at expires_at group notification_email
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

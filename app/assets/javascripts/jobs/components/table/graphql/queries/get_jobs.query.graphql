@@ -1,25 +1,22 @@
-query getJobs(
-  $fullPath: ID!
-  $first: Int
-  $last: Int
-  $after: String
-  $before: String
-  $statuses: [CiJobStatus!]
-) {
+query getJobs($fullPath: ID!, $after: String, $statuses: [CiJobStatus!]) {
   project(fullPath: $fullPath) {
     id
-    jobs(after: $after, before: $before, first: $first, last: $last, statuses: $statuses) {
+    __typename
+    jobs(after: $after, first: 30, statuses: $statuses) {
       pageInfo {
         endCursor
         hasNextPage
         hasPreviousPage
         startCursor
+        __typename
       }
       nodes {
+        __typename
         artifacts {
           nodes {
             downloadPath
             fileType
+            __typename
           }
         }
         allowFailure

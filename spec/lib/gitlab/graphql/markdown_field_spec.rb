@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
       expect(field.name).to eq('testHtml')
       expect(field.description).to eq('The GitLab Flavored Markdown rendering of `hello`')
       expect(field.type).to eq(GraphQL::Types::String)
-      expect(field.to_graphql.complexity).to eq(5)
+      expect(field.complexity).to eq(5)
     end
 
     context 'developer warnings' do
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
       let(:field) { type_class.fields['noteHtml'] }
 
       it 'renders markdown from the same property as the field name without the `_html` suffix' do
-        expect(field.to_graphql.resolve(type_instance, {}, context)).to eq(expected_markdown)
+        expect(field.resolve(type_instance, {}, context)).to eq(expected_markdown)
       end
 
       context 'when a `method` argument is passed' do
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
         let(:field) { type_class.fields['testHtml'] }
 
         it 'renders markdown from a specific property' do
-          expect(field.to_graphql.resolve(type_instance, {}, context)).to eq(expected_markdown)
+          expect(field.resolve(type_instance, {}, context)).to eq(expected_markdown)
         end
       end
 
@@ -62,21 +62,21 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
         let(:note) { build(:note, note: "Referencing #{issue.to_reference(full: true)}") }
 
         it 'renders markdown correctly' do
-          expect(field.to_graphql.resolve(type_instance, {}, context)).to include(issue_path(issue))
+          expect(field.resolve(type_instance, {}, context)).to include(issue_path(issue))
         end
 
         context 'when the issue is not publicly accessible' do
           let_it_be(:project) { create(:project, :private) }
 
           it 'hides the references from users that are not allowed to see the reference' do
-            expect(field.to_graphql.resolve(type_instance, {}, context)).not_to include(issue_path(issue))
+            expect(field.resolve(type_instance, {}, context)).not_to include(issue_path(issue))
           end
 
           it 'shows the reference to users that are allowed to see it' do
             context = GraphQL::Query::Context.new(query: query, values: { current_user: project.first_owner }, object: nil)
             type_instance = type_class.authorized_new(note, context)
 
-            expect(field.to_graphql.resolve(type_instance, {}, context)).to include(issue_path(issue))
+            expect(field.resolve(type_instance, {}, context)).to include(issue_path(issue))
           end
         end
       end

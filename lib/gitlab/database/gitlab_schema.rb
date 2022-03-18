@@ -95,6 +95,10 @@ module Gitlab
       def self.tables_to_schema
         @tables_to_schema ||= YAML.load_file(Rails.root.join('lib/gitlab/database/gitlab_schemas.yml'))
       end
+
+      def self.schema_names
+        @schema_names ||= self.tables_to_schema.values.to_set
+      end
     end
   end
 end

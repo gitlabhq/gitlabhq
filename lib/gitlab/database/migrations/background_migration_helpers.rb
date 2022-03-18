@@ -42,7 +42,7 @@ module Gitlab
         #     end
         def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BATCH_SIZE, other_job_arguments: [], initial_delay: 0, track_jobs: false, primary_column_name: :id)
           raise "#{model_class} does not have an ID column of #{primary_column_name} to use for batch ranges" unless model_class.column_names.include?(primary_column_name.to_s)
-          raise "#{primary_column_name} is not an integer column" unless model_class.columns_hash[primary_column_name.to_s].type == :integer
+          raise "#{primary_column_name} is not an integer or string column" unless [:integer, :string].include?(model_class.columns_hash[primary_column_name.to_s].type)
 
           job_coordinator = coordinator_for_tracking_database
 

@@ -44,13 +44,70 @@ RSpec.shared_examples_for 'wikis API returns list of wiki pages' do
 end
 
 RSpec.shared_examples_for 'wikis API returns wiki page' do
-  it 'returns the wiki page' do
-    expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response.size).to eq(4)
-    expect(json_response.keys).to match_array(expected_keys_with_content)
-    expect(json_response['content']).to eq(page.content)
-    expect(json_response['slug']).to eq(page.slug)
-    expect(json_response['title']).to eq(page.title)
+  subject(:request) { get api(url, user), params: params }
+
+  shared_examples 'returns wiki page' do
+    before do
+      request
+    end
+
+    specify do
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(5)
+      expect(json_response.keys).to match_array(expected_keys_with_content)
+      expect(json_response['content']).to eq(expected_content)
+      expect(json_response['slug']).to eq(page.slug)
+      expect(json_response['title']).to eq(page.title)
+    end
+  end
+
+  let(:expected_content) { page.content }
+
+  it_behaves_like 'returns wiki page'
+
+  context 'when render param is false' do
+    let(:params) { { render_html: false } }
+
+    it_behaves_like 'returns wiki page'
+  end
+
+  context 'when render param is true' do
+    let(:params) { { render_html: true } }
+    let(:expected_content) { '<p data-sourcepos="1:1-1:21" dir="auto">Content for wiki page</p>' }
+
+    it_behaves_like 'returns wiki page'
+  end
+
+  context 'when wiki page has versions' do
+    let(:new_content) { 'New content' }
+
+    before do
+      wiki.update_page(page.page, content: new_content, message: 'updated page')
+
+      expect(page.count_versions).to eq(2)
+
+      request
+    end
+
+    context 'when version param is not present' do
+      it 'retrieves the last version' do
+        expect(json_response['content']).to eq(new_content)
+      end
+    end
+
+    context 'when version param is set' do
+      let(:params) { { version: page.version.id } }
+
+      it 'retrieves the specific page version' do
+        expect(json_response['content']).to eq(page.content)
+      end
+
+      context 'when version param is not valid or inexistent' do
+        let(:params) { { version: 'foobar' } }
+
+        it_behaves_like 'wiki API 404 Wiki Page Not Found'
+      end
+    end
   end
 end
 
@@ -59,12 +116,13 @@ RSpec.shared_examples_for 'wikis API creates wiki page' do
     post(api(url, user), params: payload)
 
     expect(response).to have_gitlab_http_status(:created)
-    expect(json_response.size).to eq(4)
+    expect(json_response.size).to eq(5)
     expect(json_response.keys).to match_array(expected_keys_with_content)
     expect(json_response['content']).to eq(payload[:content])
     expect(json_response['slug']).to eq(payload[:title].tr(' ', '-'))
     expect(json_response['title']).to eq(payload[:title])
     expect(json_response['rdoc']).to eq(payload[:rdoc])
+    expect(json_response['encoding']).to eq('UTF-8')
   end
 
   [:title, :content].each do |part|
@@ -85,7 +143,7 @@ RSpec.shared_examples_for 'wikis API updates wiki page' do
     put(api(url, user), params: payload)
 
     expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response.size).to eq(4)
+    expect(json_response.size).to eq(5)
     expect(json_response.keys).to match_array(expected_keys_with_content)
     expect(json_response['content']).to eq(payload[:content])
     expect(json_response['slug']).to eq(payload[:title].tr(' ', '-'))

@@ -496,7 +496,6 @@ Gitlab/NamespacedClass:
   - app/serializers/build_trace_serializer.rb
   - app/serializers/cluster_application_entity.rb
   - app/serializers/cluster_entity.rb
-  - app/serializers/cluster_error_entity.rb
   - app/serializers/cluster_serializer.rb
   - app/serializers/codequality_degradation_entity.rb
   - app/serializers/codequality_reports_comparer_entity.rb

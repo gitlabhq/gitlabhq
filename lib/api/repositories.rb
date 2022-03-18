@@ -248,6 +248,8 @@ module API
         changelog = service.execute(commit_to_changelog: false)
 
         present changelog, with: Entities::Changelog
+      rescue Gitlab::Changelog::Error => ex
+        render_api_error!("Failed to generate the changelog: #{ex.message}", 422)
       end
 
       desc 'Generates a changelog section for a release and commits it in a changelog file' do

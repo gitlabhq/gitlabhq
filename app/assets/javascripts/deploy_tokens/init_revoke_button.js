@@ -9,14 +9,13 @@ export default () => {
   }
 
   return containers.forEach((el) => {
-    const { token, revokePath, buttonClass } = el.dataset;
+    const { token, revokePath } = el.dataset;
 
     return new Vue({
       el,
       provide: {
         token: JSON.parse(token),
         revokePath,
-        buttonClass,
       },
       render(h) {
         return h(RevokeButton);

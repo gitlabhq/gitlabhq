@@ -36,79 +36,28 @@ RSpec.describe RateLimitedService do
     subject { described_class::RateLimiterScopedAndKeyed.new(key: key, opts: opts, rate_limiter: rate_limiter) }
 
     describe '#rate_limit!' do
-      let(:project_with_feature_enabled) { create(:project) }
-      let(:project_without_feature_enabled) { create(:project) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:current_user) { create(:user) }
 
-      let(:project) { nil }
-
-      let(:current_user) { create(:user) }
       let(:service) { instance_double(Issues::CreateService, project: project, current_user: current_user) }
       let(:evaluated_scope) { [project, current_user] }
       let(:evaluated_opts) { { scope: evaluated_scope, users_allowlist: %w[support-bot] } }
-      let(:rate_limited_service_issues_create_feature_enabled) { nil }
 
-      before do
-        stub_feature_flags(rate_limited_service_issues_create: rate_limited_service_issues_create_feature_enabled)
-      end
+      context 'when rate limiting is not in effect' do
+        let(:throttled) { false }
 
-      shared_examples 'a service that does not attempt to throttle' do
-        it 'does not attempt to throttle' do
-          expect(rate_limiter).not_to receive(:throttled?)
-
+        it 'does not raise an exception' do
           expect(subject.rate_limit!(service)).to be_nil
         end
       end
 
-      shared_examples 'a service that does attempt to throttle' do
+      context 'when rate limiting is in effect' do
         before do
-          allow(rate_limiter).to receive(:throttled?).and_return(throttled)
+          allow(rate_limiter).to receive(:throttled?).and_return(true)
         end
 
-        context 'when rate limiting is not in effect' do
-          let(:throttled) { false }
-
-          it 'does not raise an exception' do
-            expect(subject.rate_limit!(service)).to be_nil
-          end
-        end
-
-        context 'when rate limiting is in effect' do
-          let(:throttled) { true }
-
-          it 'raises a RateLimitedError exception' do
-            expect { subject.rate_limit!(service) }.to raise_error(described_class::RateLimitedError, 'This endpoint has been requested too many times. Try again later.')
-          end
-        end
-      end
-
-      context 'when :rate_limited_service_issues_create feature is globally disabled' do
-        let(:rate_limited_service_issues_create_feature_enabled) { false }
-
-        it_behaves_like 'a service that does not attempt to throttle'
-      end
-
-      context 'when :rate_limited_service_issues_create feature is globally enabled' do
-        let(:throttled) { nil }
-        let(:rate_limited_service_issues_create_feature_enabled) { true }
-        let(:project) { project_without_feature_enabled }
-
-        it_behaves_like 'a service that does attempt to throttle'
-      end
-
-      context 'when :rate_limited_service_issues_create feature is enabled for project_with_feature_enabled' do
-        let(:throttled) { nil }
-        let(:rate_limited_service_issues_create_feature_enabled) { project_with_feature_enabled }
-
-        context 'for project_without_feature_enabled' do
-          let(:project) { project_without_feature_enabled }
-
-          it_behaves_like 'a service that does not attempt to throttle'
-        end
-
-        context 'for project_with_feature_enabled' do
-          let(:project) { project_with_feature_enabled }
-
-          it_behaves_like 'a service that does attempt to throttle'
+        it 'raises a RateLimitedError exception' do
+          expect { subject.rate_limit!(service) }.to raise_error(described_class::RateLimitedError, 'This endpoint has been requested too many times. Try again later.')
         end
       end
     end

@@ -4,7 +4,7 @@
 
 <!-- What is the problem and solution you're proposing? This content sets the overall vision for the feature and serves as the release notes that will populate in various places, including the [release post blog](https://about.gitlab.com/releases/categories/releases/) and [Gitlab project releases](https://gitlab.com/gitlab-org/gitlab/-/releases). " -->
 
-### Problem to solve 
+### Problem to solve
 
 <!-- What problem do we solve? Try to define the who/what/why of the opportunity as a user story. For example, "As a (who), I want (what), so I can (why/value)." -->
 
@@ -19,16 +19,18 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 * [Delaney (Development Team Lead)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#delaney-development-team-lead)
 * [Presley (Product Designer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#presley-product-designer)
 * [Sasha (Software Developer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sasha-software-developer)
-* [Devon (DevOps Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#devon-devops-engineer)
+* [Priyanka (Platform Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#priyanka-platform-engineer)
 * [Sidney (Systems Administrator)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sidney-systems-administrator)
 * [Sam (Security Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sam-security-analyst)
 * [Rachel (Release Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#rachel-release-manager)
 * [Alex (Security Operations Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#alex-security-operations-engineer)
 * [Simone (Software Engineer in Test)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#simone-software-engineer-in-test)
 * [Allison (Application Ops)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#allison-application-ops)
-* [Priyanka (Platform Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#priyanka-platform-engineer)
+* [Ingrid (Infrastructure Operator)](https://about.gitlab.com/handbook/product/personas/#ingrid-infrastructure-operator)
+* [Dakota (Application Development Director)](https://about.gitlab.com/handbook/product/personas/#dakota-application-development-director)
 * [Dana (Data Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#dana-data-analyst)
 * [Eddie (Content Editor)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#eddie-content-editor)
+
 -->
 
 ### User experience goal
@@ -36,7 +38,6 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 <!-- What is the single user experience workflow this problem addresses?
 For example, "The user should be able to use the UI/API/.gitlab-ci.yml with GitLab to <perform a specific task>"
 https://about.gitlab.com/handbook/engineering/ux/ux-research-training/user-story-mapping/ -->
-
 
 ### Proposal
 
@@ -55,9 +56,9 @@ Consider adding checkboxes and expectations of users with certain levels of memb
 * [ ] Add expected impact to Reporter (20) members
 * [ ] Add expected impact to Developer (30) members
 * [ ] Add expected impact to Maintainer (40) members
-* [ ] Add expected impact to Owner (50) members 
+* [ ] Add expected impact to Owner (50) members
 
-Please consider performing a threat model for the code changes that are introduced as part of this feature. To get started, refer to our Threat Modeling handbook page https://about.gitlab.com/handbook/security/threat_modeling/#threat-modeling. 
+Please consider performing a threat model for the code changes that are introduced as part of this feature. To get started, refer to our Threat Modeling handbook page https://about.gitlab.com/handbook/security/threat_modeling/#threat-modeling.
 
 Don't hesitate to reach out to the Application Security Team (`@gitlab-com/gl-security/appsec`) to discuss any security concerns.
 -->
@@ -91,7 +92,7 @@ See the test engineering planning process and reach out to your counterpart Soft
 * Ultimate/Gold
 -->
 
-### Feature Usage Metrics 
+### Feature Usage Metrics
 
 <!-- How are you going to track usage of this feature? Think about user behavior and their interaction with the product. What indicates someone is getting value from it?
 

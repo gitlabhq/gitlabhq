@@ -79,25 +79,19 @@ describe('Compare diff version dropdowns', () => {
       };
     };
 
-    const assertVersions = (targetVersions) => {
-      // base and head should be the last two versions in that order
-      const targetBaseVersion = targetVersions[targetVersions.length - 2];
-      const targetHeadVersion = targetVersions[targetVersions.length - 1];
+    const assertVersions = (targetVersions, checkBaseVersion) => {
+      const targetLatestVersion = targetVersions[targetVersions.length - 1];
       expect(targetVersions[0]).toEqual(expectedFirstVersion);
-      expect(targetBaseVersion).toEqual(expectedBaseVersion);
-      expect(targetHeadVersion).toEqual(expectedHeadVersion);
+
+      if (checkBaseVersion) {
+        expect(targetLatestVersion).toEqual(expectedBaseVersion);
+      } else {
+        expect(targetLatestVersion).toEqual(expectedHeadVersion);
+      }
     };
 
     afterEach(() => {
       setWindowLocation(originalLocation);
-    });
-
-    it('base version selected', () => {
-      setupTest();
-      expectedBaseVersion.selected = true;
-
-      const targetVersions = getters.diffCompareDropdownTargetVersions(localState, getters);
-      assertVersions(targetVersions);
     });
 
     it('head version selected', () => {
@@ -125,6 +119,21 @@ describe('Compare diff version dropdowns', () => {
         selectedTargetIndex: expectedFirstVersion.version_index,
       });
       assertVersions(targetVersions);
+    });
+
+    describe('when state.mergeRequestDiff.head_version_path is null', () => {
+      beforeEach(() => {
+        localState.mergeRequestDiff.head_version_path = null;
+      });
+
+      it('base version selected', () => {
+        setupTest(true);
+
+        expectedBaseVersion.selected = true;
+
+        const targetVersions = getters.diffCompareDropdownTargetVersions(localState, getters);
+        assertVersions(targetVersions, true);
+      });
     });
   });
 

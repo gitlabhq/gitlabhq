@@ -143,7 +143,7 @@ export default {
           <gl-loading-icon v-if="isLoading" size="md" class="gl-m-3" />
 
           <div v-else>
-            <token-table :tokens="tokens" />
+            <token-table :tokens="tokens" :cluster-agent-id="clusterAgent.id" :cursor="cursor" />
 
             <div v-if="showPagination" class="gl-display-flex gl-justify-content-center gl-mt-5">
               <gl-keyset-pagination v-bind="tokenPageInfo" @prev="prevPage" @next="nextPage" />

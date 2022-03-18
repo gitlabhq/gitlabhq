@@ -16,6 +16,7 @@ RSpec.describe 'Project navbar' do
     sign_in(user)
 
     stub_config(registry: { enabled: false })
+    stub_feature_flags(harbor_registry_integration: false)
     insert_package_nav(_('Infrastructure'))
     insert_infrastructure_registry_nav
     insert_infrastructure_google_cloud_nav
@@ -70,6 +71,18 @@ RSpec.describe 'Project navbar' do
         within: _('Settings'),
         new_sub_nav_item_name: _('Packages & Registries')
       )
+
+      visit project_path(project)
+    end
+
+    it_behaves_like 'verified navigation bar'
+  end
+
+  context 'when harbor registry is available' do
+    before do
+      stub_feature_flags(harbor_registry_integration: true)
+
+      insert_harbor_registry_nav(_('Infrastructure Registry'))
 
       visit project_path(project)
     end

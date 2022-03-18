@@ -10,22 +10,21 @@ import {
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
+import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import { CANCEL_BUTTON_TEXT, INVITE_BUTTON_TEXT } from '~/invite_members/constants';
 import { propsData } from '../mock_data/modal_base';
 
 describe('InviteModalBase', () => {
   let wrapper;
 
-  const createComponent = (data = {}, props = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(InviteModalBase, {
       propsData: {
         ...propsData,
         ...props,
       },
-      data() {
-        return data;
-      },
       stubs: {
+        ContentTransition,
         GlModal: stubComponent(GlModal, {
           template:
             '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-footer"></slot></div>',
@@ -52,6 +51,7 @@ describe('InviteModalBase', () => {
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findInviteButton = () => wrapper.findByTestId('invite-button');
+  const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
 
   describe('rendering the modal', () => {
     beforeEach(() => {
@@ -98,6 +98,34 @@ describe('InviteModalBase', () => {
       it('renders the datepicker', () => {
         expect(findDatepicker().exists()).toBe(true);
       });
+    });
+
+    it('renders the members form group', () => {
+      expect(findMembersFormGroup().props()).toEqual({
+        description: propsData.formGroupDescription,
+        invalidFeedback: '',
+        state: null,
+      });
+    });
+  });
+
+  it('with isLoading, shows loading for invite button', () => {
+    createComponent({
+      isLoading: true,
+    });
+
+    expect(findInviteButton().props('loading')).toBe(true);
+  });
+
+  it('with invalidFeedbackMessage, set members form group validation state', () => {
+    createComponent({
+      invalidFeedbackMessage: 'invalid message!',
+    });
+
+    expect(findMembersFormGroup().props()).toEqual({
+      description: propsData.formGroupDescription,
+      invalidFeedback: 'invalid message!',
+      state: false,
     });
   });
 });

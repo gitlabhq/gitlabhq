@@ -8,7 +8,7 @@ module QA
       def initialize
         super
 
-        @name = @path = 'reusable_group'
+        @name = @path = QA::Runtime::Env.reusable_group_path
         @description = "QA reusable group"
         @reuse_as = :default_group
       end

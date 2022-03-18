@@ -11,6 +11,10 @@ module QA
         current_date.next_month.strftime("%Y/%m/%d")
       end
 
+      def thirteen_days_from_now_yyyy_mm_dd
+        (current_date + 13).strftime("%Y/%m/%d")
+      end
+
       def format_date(date)
         new_date = DateTime.strptime(date, "%Y/%m/%d")
         new_date.strftime("%b %-d, %Y")

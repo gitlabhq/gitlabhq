@@ -1,8 +1,4 @@
 ---
 GraphQL/FieldMethod:
   Exclude:
-  - app/graphql/types/ci/job_type.rb
-  - app/graphql/types/merge_request_type.rb
-  - app/graphql/types/metrics/dashboards/annotation_type.rb
   - app/graphql/types/packages/package_details_type.rb
-  - app/graphql/types/project_type.rb

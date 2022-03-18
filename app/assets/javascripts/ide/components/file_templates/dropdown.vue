@@ -84,7 +84,7 @@ export default {
           v-model="search"
           :placeholder="__('Filter...')"
           type="search"
-          class="dropdown-input-field qa-dropdown-filter-input"
+          class="dropdown-input-field"
         />
         <gl-icon name="search" class="dropdown-input-search" />
       </div>

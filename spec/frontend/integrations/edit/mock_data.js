@@ -10,9 +10,11 @@ export const mockIntegrationProps = {
   },
   jiraIssuesProps: {},
   triggerEvents: [],
+  sections: [],
   fields: [],
   type: '',
   inheritFromId: 25,
+  integrationLevel: 'project',
 };
 
 export const mockJiraIssueTypes = [
@@ -28,4 +30,10 @@ export const mockField = {
   title: 'Project URL',
   type: 'text',
   value: '1',
+};
+
+export const mockSectionConnection = {
+  type: 'connection',
+  title: 'Connection details',
+  description: 'Learn more on how to configure this integration.',
 };

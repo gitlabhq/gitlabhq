@@ -37,6 +37,10 @@ export default {
       required: false,
       default: '',
     },
+    hasUnsavedChanges: {
+      type: Boolean,
+      required: true,
+    },
     isNewCiConfigFile: {
       type: Boolean,
       required: false,
@@ -151,6 +155,8 @@ export default {
   <commit-form
     :current-branch="currentBranch"
     :default-message="defaultCommitMessage"
+    :has-unsaved-changes="hasUnsavedChanges"
+    :is-new-ci-config-file="isNewCiConfigFile"
     :is-saving="isSaving"
     :scroll-to-commit-form="scrollToCommitForm"
     v-on="$listeners"

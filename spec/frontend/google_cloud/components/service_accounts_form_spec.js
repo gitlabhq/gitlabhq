@@ -11,7 +11,7 @@ describe('ServiceAccountsForm component', () => {
   const findAllButtons = () => wrapper.findAllComponents(GlButton);
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
-  const propsData = { gcpProjects: [], environments: [], cancelPath: '#cancel-url' };
+  const propsData = { gcpProjects: [], refs: [], cancelPath: '#cancel-url' };
 
   beforeEach(() => {
     wrapper = shallowMount(ServiceAccountsForm, { propsData, stubs: { GlFormCheckbox } });

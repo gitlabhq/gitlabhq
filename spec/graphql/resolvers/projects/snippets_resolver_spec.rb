@@ -81,12 +81,14 @@ RSpec.describe Resolvers::Projects::SnippetsResolver do
     end
 
     context 'when project snippets are disabled' do
-      it 'raises an error' do
+      it 'generates an error' do
         disabled_snippet_project = create(:project, :snippets_disabled)
         disabled_snippet_project.add_developer(current_user)
 
         expect(SnippetsFinder).not_to receive(:new)
-        expect { resolve_snippets(obj: disabled_snippet_project) }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_snippets(obj: disabled_snippet_project)
+        end
       end
     end
   end

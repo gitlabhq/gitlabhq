@@ -1,10 +1,4 @@
-import Playable from './playable';
+import playable from './playable';
 
 // Transforms generated HTML back to GFM for Banzai::Filter::VideoLinkFilter
-export default class Video extends Playable {
-  constructor() {
-    super();
-    this.mediaType = 'video';
-    this.extraElementAttrs = { width: '400' };
-  }
-}
+export default () => playable({ mediaType: 'video', extraElementAttrs: { width: '400' } });

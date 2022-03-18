@@ -150,7 +150,7 @@ export const trackSaasTrialProject = () => {
   });
 };
 
-export const trackSaasTrialProjectImport = () => {
+export const trackProjectImport = () => {
   if (!isSupported()) {
     return;
   }
@@ -159,7 +159,7 @@ export const trackSaasTrialProjectImport = () => {
   importButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const { platform } = button.dataset;
-      pushEvent('saasTrialProjectImport', { saasProjectImport: platform });
+      pushEvent('projectImport', { platform });
     });
   });
 };
@@ -230,4 +230,44 @@ export const trackTransaction = (transactionDetails) => {
   };
 
   pushEnhancedEcommerceEvent('EECtransactionSuccess', eventData);
+};
+
+export const trackAddToCartUsageTab = () => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const getStartedButton = document.querySelector('.js-buy-additional-minutes');
+  getStartedButton.addEventListener('click', () => {
+    window.dataLayer.push({
+      event: 'EECproductAddToCart',
+      ecommerce: {
+        currencyCode: 'USD',
+        add: {
+          products: [
+            {
+              name: 'CI/CD Minutes',
+              id: '0003',
+              price: '10',
+              brand: 'GitLab',
+              category: 'DevOps',
+              variant: 'add-on',
+              quantity: 1,
+            },
+          ],
+        },
+      },
+    });
+  });
+};
+
+export const trackCombinedGroupProjectForm = () => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const form = document.querySelector('.js-groups-projects-form');
+  form.addEventListener('submit', () => {
+    pushEvent('combinedGroupProjectFormSubmit');
+  });
 };

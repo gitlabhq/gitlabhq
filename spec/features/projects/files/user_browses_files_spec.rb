@@ -76,7 +76,7 @@ RSpec.describe "User browses files", :js do
 
       permalink_path = project_blob_path(project, "#{project.repository.commit.sha}/.gitignore")
 
-      expect(current_path).to eq(permalink_path)
+      expect(page).to have_current_path(permalink_path, ignore_query: true)
     end
   end
 
@@ -87,7 +87,7 @@ RSpec.describe "User browses files", :js do
       end
 
       it "shows correct files and links" do
-        expect(current_path).to eq(project_tree_path(project, "markdown"))
+        expect(page).to have_current_path(project_tree_path(project, "markdown"), ignore_query: true)
         expect(page).to have_content("README.md")
           .and have_content("CHANGELOG")
           .and have_content("Welcome to GitLab GitLab is a free project and repository management application")
@@ -108,7 +108,7 @@ RSpec.describe "User browses files", :js do
       it "shows correct content of file" do
         click_link("GitLab API doc")
 
-        expect(current_path).to eq(project_blob_path(project, "markdown/doc/api/README.md"))
+        expect(page).to have_current_path(project_blob_path(project, "markdown/doc/api/README.md"), ignore_query: true)
         expect(page).to have_content("All API requests require authentication")
           .and have_content("Contents")
           .and have_link("Users")
@@ -117,19 +117,19 @@ RSpec.describe "User browses files", :js do
 
         click_link("Users")
 
-        expect(current_path).to eq(project_blob_path(project, "markdown/doc/api/users.md"))
+        expect(page).to have_current_path(project_blob_path(project, "markdown/doc/api/users.md"), ignore_query: true)
         expect(page).to have_content("Get a list of users.")
 
         page.go_back
 
         click_link("Rake tasks")
 
-        expect(current_path).to eq(project_tree_path(project, "markdown/doc/raketasks"))
+        expect(page).to have_current_path(project_tree_path(project, "markdown/doc/raketasks"), ignore_query: true)
         expect(page).to have_content("backup_restore.md").and have_content("maintenance.md")
 
         click_link("maintenance.md")
 
-        expect(current_path).to eq(project_blob_path(project, "markdown/doc/raketasks/maintenance.md"))
+        expect(page).to have_current_path(project_blob_path(project, "markdown/doc/raketasks/maintenance.md"), ignore_query: true)
         expect(page).to have_content("bundle exec rake gitlab:env:info RAILS_ENV=production")
 
         click_link("shop")
@@ -156,12 +156,12 @@ RSpec.describe "User browses files", :js do
       it "shows correct content of directory" do
         click_link("GitLab API doc directory")
 
-        expect(current_path).to eq(project_tree_path(project, "markdown/doc/api"))
+        expect(page).to have_current_path(project_tree_path(project, "markdown/doc/api"), ignore_query: true)
         expect(page).to have_content("README.md").and have_content("users.md")
 
         click_link("Users")
 
-        expect(current_path).to eq(project_blob_path(project, "markdown/doc/api/users.md"))
+        expect(page).to have_current_path(project_blob_path(project, "markdown/doc/api/users.md"), ignore_query: true)
         expect(page).to have_content("List users").and have_content("Get a list of users.")
       end
     end
@@ -267,7 +267,7 @@ RSpec.describe "User browses files", :js do
     end
 
     it "shows files from a repository for `6d39438`" do
-      expect(current_path).to eq(ref)
+      expect(page).to have_current_path(ref, ignore_query: true)
       expect(page).to have_content(".gitignore").and have_content("LICENSE")
     end
 

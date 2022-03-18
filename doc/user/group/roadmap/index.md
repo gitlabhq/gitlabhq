@@ -24,12 +24,12 @@ When you hover over an epic bar, a popover appears with the epic's title, start 
 weight completed.
 
 You can expand epics that contain child epics to show their child epics in the roadmap.
-You can click the chevron (**{chevron-down}**) next to the epic title to expand and collapse the
+You can select the chevron (**{chevron-down}**) next to the epic title to expand and collapse the
 child epics.
 
 On top of the milestone bars, you can see their title.
 When you hover over a milestone bar or title, a popover appears with its title, start date, and due
-date. You can also click the chevron (**{chevron-down}**) next to the **Milestones** heading to
+date. You can also select the chevron (**{chevron-down}**) next to the **Milestones** heading to
 toggle the list of the milestone bars.
 
 ![roadmap view](img/roadmap_view_v14_3.png)
@@ -46,10 +46,6 @@ Filtering roadmaps by milestone might not be available to you. Check the **versi
 
 When you want to explore a roadmap, there are several ways to make it easier by sorting epics or
 filtering them by what's important for you.
-
-A dropdown menu lets you show only open or closed epics. By default, all epics are shown.
-
-![epics state dropdown](img/epics_state_dropdown_v14_3.png)
 
 You can sort epics in the Roadmap view by:
 
@@ -74,18 +70,15 @@ Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-ep
 
 ### Roadmap settings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345158) in GitLab 14.8 [with a flag](../../../administration/feature_flags.md) named `roadmap_settings`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `roadmap_settings`.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345158) in GitLab 14.8 [with a flag](../../../administration/feature_flags.md) named `roadmap_settings`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350830) in GitLab 14.9. Feature flag `roadmap_settings`removed.
 
 When you enable the roadmap settings sidebar, you can use it to refine epics shown in the roadmap.
 
 You can configure the following:
 
 - Select date range.
-- Turn milestones on or off and select whether to show all, group, sub-group, or project milestones.
+- Turn milestones on or off and select whether to show all, group, subgroup, or project milestones.
 - Show all, open, or closed epics.
 - Turn progress tracking for child issues on or off and select whether
   to use issue weights or counts.

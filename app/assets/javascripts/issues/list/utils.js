@@ -10,16 +10,16 @@ import {
   BLOCKING_ISSUES_DESC,
   CREATED_ASC,
   CREATED_DESC,
-  defaultPageSizeParams,
   DUE_DATE_ASC,
   DUE_DATE_DESC,
   filters,
   LABEL_PRIORITY_ASC,
   LABEL_PRIORITY_DESC,
-  largePageSizeParams,
   MILESTONE_DUE_ASC,
   MILESTONE_DUE_DESC,
   NORMAL_FILTER,
+  PAGE_SIZE,
+  PAGE_SIZE_MANUAL,
   POPULARITY_ASC,
   POPULARITY_DESC,
   PRIORITY_ASC,
@@ -43,8 +43,11 @@ import {
   WEIGHT_DESC,
 } from './constants';
 
-export const getInitialPageParams = (sortKey) =>
-  sortKey === RELATIVE_POSITION_ASC ? largePageSizeParams : defaultPageSizeParams;
+export const getInitialPageParams = (sortKey, afterCursor, beforeCursor) => ({
+  firstPageSize: sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE,
+  afterCursor,
+  beforeCursor,
+});
 
 export const getSortKey = (sort) =>
   Object.keys(urlSortParams).find((key) => urlSortParams[key] === sort);

@@ -5,7 +5,7 @@ import createStore from './store';
 
 Vue.use(Translate);
 
-export const initHeaderSearchApp = () => {
+export const initHeaderSearchApp = (search = '') => {
   const el = document.getElementById('js-header-search');
 
   if (!el) {
@@ -18,7 +18,7 @@ export const initHeaderSearchApp = () => {
 
   return new Vue({
     el,
-    store: createStore({ searchPath, issuesPath, mrPath, autocompletePath, searchContext }),
+    store: createStore({ searchPath, issuesPath, mrPath, autocompletePath, searchContext, search }),
     render(createElement) {
       return createElement(HeaderSearchApp);
     },

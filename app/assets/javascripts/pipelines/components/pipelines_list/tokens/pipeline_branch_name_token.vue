@@ -35,6 +35,13 @@ export default {
       Api.branches(this.config.projectId, searchterm)
         .then(({ data }) => {
           this.branches = data.map((branch) => branch.name);
+          if (!searchterm && this.config.defaultBranchName) {
+            // Shift the default branch to the top of the list
+            this.branches = this.branches.filter(
+              (branch) => branch !== this.config.defaultBranchName,
+            );
+            this.branches.unshift(this.config.defaultBranchName);
+          }
           this.loading = false;
         })
         .catch((err) => {

@@ -36,6 +36,8 @@ module API
         optional :ends_at, type: DateTime, desc: 'Ending time', default: -> { 1.hour.from_now }
         optional :color, type: String, desc: 'Background color'
         optional :font, type: String, desc: 'Foreground color'
+        optional :target_access_levels, type: Array[Integer], coerce_with: Validations::Types::CommaSeparatedToIntegerArray.coerce,
+          values: BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS, desc: 'Target user roles'
         optional :target_path, type: String, desc: 'Target path'
         optional :broadcast_type, type: String, values: BroadcastMessage.broadcast_types.keys, desc: 'Broadcast type. Defaults to banner', default: -> { 'banner' }
         optional :dismissable, type: Boolean, desc: 'Is dismissable'
@@ -76,6 +78,8 @@ module API
         optional :ends_at, type: DateTime, desc: 'Ending time'
         optional :color, type: String, desc: 'Background color'
         optional :font, type: String, desc: 'Foreground color'
+        optional :target_access_levels, type: Array[Integer], coerce_with: Validations::Types::CommaSeparatedToIntegerArray.coerce,
+          values: BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS, desc: 'Target user roles'
         optional :target_path, type: String, desc: 'Target path'
         optional :broadcast_type, type: String, values: BroadcastMessage.broadcast_types.keys, desc: 'Broadcast Type'
         optional :dismissable, type: Boolean, desc: 'Is dismissable'

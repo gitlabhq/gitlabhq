@@ -443,6 +443,7 @@ Example response:
       "builds_access_level":"enabled",
       "snippets_access_level":"enabled",
       "pages_access_level":"enabled",
+      "security_and_compliance_access_level":"enabled",
       "emails_disabled":null,
       "shared_runners_enabled":true,
       "lfs_enabled":true,
@@ -483,7 +484,9 @@ Example response:
 ## Details of a group
 
 Get all details of a group. This endpoint can be accessed without authentication
-if the group is publicly accessible. In case the user that requests is administrator of the group, it returns the `runners_token` for the group too.
+if the group is publicly accessible. In case the user that requests is an administrator
+if the group is publicly accessible. With authentication, it returns the `runners_token`
+for the group too, if the user is an administrator or group owner.
 
 ```plaintext
 GET /groups/:id
@@ -504,6 +507,11 @@ To get the details of all projects within a group, use either the [list a group'
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4"
 ```
+
+NOTE:
+There is [a known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/345200) that can
+prevent `runners_token` from being returned when the call has the `with_projects=false`
+parameter.
 
 This endpoint returns:
 
@@ -795,7 +803,7 @@ Parameters:
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
+| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `emails_disabled`                                       | boolean | no       | Disable email notifications |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
 | `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned |
@@ -858,7 +866,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 Transfer a group to a new parent group or turn a subgroup to a top-level group. Available to administrators and users:
 
 - With the Owner role for the group to transfer.
-- With permission to [create a subgroup](../user/group/subgroups/index.md#creating-a-subgroup) in the new parent group if transferring a group.
+- With permission to [create a subgroup](../user/group/subgroups/index.md#create-a-subgroup) in the new parent group if transferring a group.
 - With [permission to create a top-level group](../administration/user_settings.md#prevent-users-from-creating-top-level-groups) if turning a subgroup into a top-level group.
 
 ```plaintext
@@ -898,7 +906,7 @@ PUT /groups/:id
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
+| `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `emails_disabled`                                       | boolean | no       | Disable email notifications |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
 | `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned |

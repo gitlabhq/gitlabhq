@@ -76,15 +76,19 @@ export default {
   },
   data() {
     return {
+      hasFetched: false, // use this to avoid flash of `No suggestions found` before fetching
       searchKey: '',
       recentSuggestions: this.config.recentSuggestionsStorageKey
-        ? getRecentlyUsedSuggestions(this.config.recentSuggestionsStorageKey)
+        ? getRecentlyUsedSuggestions(this.config.recentSuggestionsStorageKey) ?? []
         : [],
     };
   },
   computed: {
     isRecentSuggestionsEnabled() {
       return Boolean(this.config.recentSuggestionsStorageKey);
+    },
+    suggestionsEnabled() {
+      return !this.config.suggestionsDisabled;
     },
     recentTokenIds() {
       return this.recentSuggestions.map((tokenValue) => tokenValue[this.valueIdentifier]);
@@ -134,17 +138,6 @@ export default {
     showAvailableSuggestions() {
       return this.availableSuggestions.length > 0;
     },
-    showSuggestions() {
-      // These conditions must match the template under `#suggestions` slot
-      // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65817#note_632619411
-      return (
-        this.showDefaultSuggestions ||
-        this.showRecentSuggestions ||
-        this.showPreloadedSuggestions ||
-        this.suggestionsLoading ||
-        this.showAvailableSuggestions
-      );
-    },
     searchTerm() {
       return this.searchBy && this.activeTokenValue
         ? this.activeTokenValue[this.searchBy]
@@ -158,6 +151,13 @@ export default {
         if (!newValue && !this.suggestions.length) {
           const search = this.searchTerm ? this.searchTerm : this.value.data;
           this.$emit('fetch-suggestions', search);
+        }
+      },
+    },
+    suggestionsLoading: {
+      handler(loading) {
+        if (loading) {
+          this.hasFetched = true;
         }
       },
     },
@@ -216,7 +216,7 @@ export default {
     <template #view="viewTokenProps">
       <slot name="view" :view-token-props="{ ...viewTokenProps, activeTokenValue }"></slot>
     </template>
-    <template v-if="showSuggestions" #suggestions>
+    <template v-if="suggestionsEnabled" #suggestions>
       <template v-if="showDefaultSuggestions">
         <gl-filtered-search-suggestion
           v-for="token in availableDefaultSuggestions"
@@ -238,12 +238,13 @@ export default {
         :suggestions="preloadedSuggestions"
       ></slot>
       <gl-loading-icon v-if="suggestionsLoading" size="sm" />
+      <template v-else-if="showAvailableSuggestions">
+        <slot name="suggestions-list" :suggestions="availableSuggestions"></slot>
+      </template>
       <gl-dropdown-text v-else-if="showNoMatchesText">
         {{ __('No matches found') }}
       </gl-dropdown-text>
-      <template v-else>
-        <slot name="suggestions-list" :suggestions="availableSuggestions"></slot>
-      </template>
+      <gl-dropdown-text v-else-if="hasFetched">{{ __('No suggestions found') }}</gl-dropdown-text>
     </template>
   </gl-filtered-search-token>
 </template>

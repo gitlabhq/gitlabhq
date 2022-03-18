@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlToggle } from '@gitlab/ui';
 import Daterange from '~/analytics/shared/components/daterange.vue';
 import ProjectsDropdownFilter from '~/analytics/shared/components/projects_dropdown_filter.vue';
 import FilterBar from '~/cycle_analytics/components/filter_bar.vue';
@@ -29,6 +30,7 @@ describe('ValueStreamFilters', () => {
   const findProjectsDropdown = () => wrapper.findComponent(ProjectsDropdownFilter);
   const findDateRangePicker = () => wrapper.findComponent(Daterange);
   const findFilterBar = () => wrapper.findComponent(FilterBar);
+  const findAggregationToggle = () => wrapper.findComponent(GlToggle);
 
   beforeEach(() => {
     wrapper = createComponent();
@@ -55,6 +57,10 @@ describe('ValueStreamFilters', () => {
 
   it('will render the date range picker', () => {
     expect(findDateRangePicker().exists()).toBe(true);
+  });
+
+  it('will not render the aggregation toggle', () => {
+    expect(findAggregationToggle().exists()).toBe(false);
   });
 
   it('will emit `selectProject` when a project is selected', () => {
@@ -86,6 +92,54 @@ describe('ValueStreamFilters', () => {
 
     it('will not render the project dropdown', () => {
       expect(findProjectsDropdown().exists()).toBe(false);
+    });
+  });
+
+  describe('canToggleAggregation = true', () => {
+    beforeEach(() => {
+      wrapper = createComponent({ isAggregationEnabled: false, canToggleAggregation: true });
+    });
+
+    it('will render the aggregation toggle', () => {
+      expect(findAggregationToggle().exists()).toBe(true);
+    });
+
+    it('will set the aggregation toggle to the `isAggregationEnabled` value', () => {
+      expect(findAggregationToggle().props('value')).toBe(false);
+
+      wrapper = createComponent({
+        isAggregationEnabled: true,
+        canToggleAggregation: true,
+      });
+
+      expect(findAggregationToggle().props('value')).toBe(true);
+    });
+
+    it('will emit `toggleAggregation` when the toggle is changed', async () => {
+      expect(wrapper.emitted('toggleAggregation')).toBeUndefined();
+
+      await findAggregationToggle().vm.$emit('change', true);
+
+      expect(wrapper.emitted('toggleAggregation')).toHaveLength(1);
+      expect(wrapper.emitted('toggleAggregation')).toEqual([[true]]);
+    });
+  });
+
+  describe('isUpdatingAggregationData = true', () => {
+    beforeEach(() => {
+      wrapper = createComponent({ canToggleAggregation: true, isUpdatingAggregationData: true });
+    });
+
+    it('will disable the aggregation toggle', () => {
+      expect(findAggregationToggle().props('disabled')).toBe(true);
+    });
+
+    it('will not emit `toggleAggregation` when the toggle is changed', async () => {
+      expect(wrapper.emitted('toggleAggregation')).toBeUndefined();
+
+      await findAggregationToggle().vm.$emit('change', true);
+
+      expect(wrapper.emitted('toggleAggregation')).toBeUndefined();
     });
   });
 });

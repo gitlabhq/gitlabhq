@@ -7,7 +7,7 @@ RSpec.describe NotificationService, :mailer do
   include ExternalAuthorizationServiceHelpers
   include NotificationHelpers
 
-  let_it_be_with_refind(:project) { create(:project, :public) }
+  let_it_be_with_refind(:project, reload: true) { create(:project, :public) }
   let_it_be_with_refind(:assignee) { create(:user) }
 
   let(:notification) { described_class.new }
@@ -258,6 +258,27 @@ RSpec.describe NotificationService, :mailer do
   end
 
   describe 'AccessToken' do
+    describe '#access_token_created' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:pat) { create(:personal_access_token, user: user) }
+
+      subject(:notification_service) { notification.access_token_created(user, pat.name) }
+
+      it 'sends email to the token owner' do
+        expect { notification_service }.to have_enqueued_email(user, pat.name, mail: "access_token_created_email")
+      end
+
+      context 'when user is not allowed to receive notifications' do
+        before do
+          user.block!
+        end
+
+        it 'does not send email to the token owner' do
+          expect { notification_service }.not_to have_enqueued_email(user, pat.name, mail: "access_token_created_email")
+        end
+      end
+    end
+
     describe '#access_token_about_to_expire' do
       let_it_be(:user) { create(:user) }
       let_it_be(:pat) { create(:personal_access_token, user: user, expires_at: 5.days.from_now) }
@@ -1051,6 +1072,7 @@ RSpec.describe NotificationService, :mailer do
     end
 
     before do
+      project.reload
       add_user_subscriptions(issue)
       reset_delivered_emails!
       update_custom_notification(:new_issue, @u_guest_custom, resource: project)
@@ -3312,7 +3334,7 @@ RSpec.describe NotificationService, :mailer do
       describe "##{sym}" do
         subject(:notify!) { notification.send(sym, domain) }
 
-        it 'emails current watching maintainers' do
+        it 'emails current watching maintainers and owners' do
           expect(Notify).to receive(:"#{sym}_email").at_least(:once).and_call_original
 
           notify!
@@ -3410,7 +3432,7 @@ RSpec.describe NotificationService, :mailer do
         reset_delivered_emails!
       end
 
-      it 'emails current watching maintainers' do
+      it 'emails current watching maintainers and owners' do
         notification.remote_mirror_update_failed(remote_mirror)
 
         should_only_email(u_maintainer1, u_maintainer2, u_owner)

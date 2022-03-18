@@ -74,8 +74,8 @@ module QA
         # @return [void]
         def configure_rspec
           RSpec.configure do |config|
-            config.add_formatter(AllureRspecFormatter)
             config.add_formatter(QA::Support::Formatters::AllureMetadataFormatter)
+            config.add_formatter(AllureRspecFormatter)
 
             config.append_after do |example|
               Allure.add_attachment(

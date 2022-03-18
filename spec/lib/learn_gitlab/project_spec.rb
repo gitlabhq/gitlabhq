@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe LearnGitlab::Project do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:learn_gitlab_project) { create(:project, name: LearnGitlab::Project::PROJECT_NAME) }
-  let_it_be(:learn_gitlab_ultimate_trial_project) { create(:project, name: LearnGitlab::Project::PROJECT_NAME_ULTIMATE_TRIAL) }
   let_it_be(:learn_gitlab_board) { create(:board, project: learn_gitlab_project, name: LearnGitlab::Project::BOARD_NAME) }
   let_it_be(:learn_gitlab_label) { create(:label, project: learn_gitlab_project, name: LearnGitlab::Project::LABEL_NAME) }
 
@@ -48,7 +47,7 @@ RSpec.describe LearnGitlab::Project do
     it { is_expected.to eq learn_gitlab_project }
 
     context 'when it is created during trial signup' do
-      let_it_be(:learn_gitlab_project) { create(:project, name: LearnGitlab::Project::PROJECT_NAME_ULTIMATE_TRIAL) }
+      let_it_be(:learn_gitlab_project) { create(:project, name: LearnGitlab::Project::PROJECT_NAME_ULTIMATE_TRIAL, path: 'learn-gitlab-ultimate-trial') }
 
       it { is_expected.to eq learn_gitlab_project }
     end

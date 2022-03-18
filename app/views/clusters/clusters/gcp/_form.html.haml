@@ -67,20 +67,20 @@
         label_class: 'label-bold' }
       .form-text.text-muted
         = s_('ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster.')
-        = link_to _('More information'), help_page_path('user/project/clusters/add_gke_clusters.md', anchor: 'cloud-run-for-anthos'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more.'), help_page_path('user/project/clusters/add_gke_clusters.md', anchor: 'cloud-run-for-anthos'), target: '_blank', rel: 'noopener noreferrer'
 
   .form-group
     = field.check_box :managed, { label: s_('ClusterIntegration|GitLab-managed cluster'),
       label_class: 'label-bold' }
     .form-text.text-muted
       = s_('ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster.')
-      = link_to _('More information'), help_page_path('user/project/clusters/gitlab_managed_clusters.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('user/project/clusters/gitlab_managed_clusters.md'), target: '_blank', rel: 'noopener noreferrer'
 
   .form-group
     = field.check_box :namespace_per_environment, { label: s_('ClusterIntegration|Namespace per environment'), label_class: 'label-bold' }
     .form-text.text-muted
       = s_('ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared.')
-      = link_to _('More information'), help_page_path('user/project/clusters/deploy_to_cluster.md', anchor: 'custom-namespace'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('user/project/clusters/deploy_to_cluster.md', anchor: 'custom-namespace'), target: '_blank', rel: 'noopener noreferrer'
 
   .form-group.js-gke-cluster-creation-submit-container
     = field.submit s_('ClusterIntegration|Create Kubernetes cluster'),

@@ -58,7 +58,7 @@ RSpec.describe 'Admin Groups' do
       fill_in 'group_admin_note_attributes_note', with: group_admin_note
       click_button "Create group"
 
-      expect(current_path).to eq admin_group_path(Group.find_by(path: path_component))
+      expect(page).to have_current_path admin_group_path(Group.find_by(path: path_component)), ignore_query: true
       content = page.find('#content-body')
       h3_texts = content.all('h3').collect(&:text).join("\n")
       expect(h3_texts).to match group_name

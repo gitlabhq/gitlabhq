@@ -21,6 +21,10 @@ RSpec.describe ::API::Admin::InstanceClusters do
       create_list(:cluster, 3, :provided_by_gcp, :instance, :production_environment)
     end
 
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { get api("/admin/clusters", admin_user) }
+    end
+
     context "when authenticated as a non-admin user" do
       it 'returns 403' do
         get api('/admin/clusters', regular_user)
@@ -61,6 +65,10 @@ RSpec.describe ::API::Admin::InstanceClusters do
     end
 
     let(:cluster_id) { cluster.id }
+
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { get api("/admin/clusters/#{cluster_id}", admin_user) }
+    end
 
     context "when authenticated as admin" do
       before do
@@ -186,6 +194,10 @@ RSpec.describe ::API::Admin::InstanceClusters do
         domain: 'domain.example.com',
         platform_kubernetes_attributes: platform_kubernetes_attributes
       }
+    end
+
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { post api('/admin/clusters/add', admin_user), params: cluster_params }
     end
 
     context 'authorized user' do
@@ -317,6 +329,10 @@ RSpec.describe ::API::Admin::InstanceClusters do
       create(:cluster, :instance, :provided_by_gcp, domain: 'old-domain.com')
     end
 
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { put api("/admin/clusters/#{cluster.id}", admin_user), params: update_params }
+    end
+
     context 'authorized user' do
       before do
         put api("/admin/clusters/#{cluster.id}", admin_user), params: update_params
@@ -446,6 +462,10 @@ RSpec.describe ::API::Admin::InstanceClusters do
 
     let_it_be(:cluster) do
       create(:cluster, :instance, :provided_by_gcp)
+    end
+
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { delete api("/admin/clusters/#{cluster.id}", admin_user), params: cluster_params }
     end
 
     context 'authorized user' do

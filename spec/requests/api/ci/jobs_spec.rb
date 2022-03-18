@@ -707,12 +707,14 @@ RSpec.describe API::Ci::Jobs do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/play' do
+    let(:params) { {} }
+
     before do
-      post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user)
+      post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user), params: params
     end
 
     context 'on a playable job' do
-      let_it_be(:job) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: project) }
+      let_it_be(:job) { create(:ci_build, :manual, project: project, pipeline: pipeline) }
 
       before do
         project.add_developer(user)
@@ -720,6 +722,8 @@ RSpec.describe API::Ci::Jobs do
 
       context 'when user is authorized to trigger a manual action' do
         context 'that is a bridge' do
+          let_it_be(:job) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: project) }
+
           it 'plays the job' do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['user']['id']).to eq(user.id)
@@ -729,13 +733,52 @@ RSpec.describe API::Ci::Jobs do
         end
 
         context 'that is a build' do
-          let_it_be(:job) { create(:ci_build, :manual, project: project, pipeline: pipeline) }
-
           it 'plays the job' do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['user']['id']).to eq(user.id)
             expect(json_response['id']).to eq(job.id)
             expect(job.reload).to be_pending
+          end
+        end
+
+        context 'when the user provides valid custom variables' do
+          let(:params) { { job_variables_attributes: [{ key: 'TEST_VAR', value: 'test' }] } }
+
+          it 'applies the variables to the job' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(job.reload).to be_pending
+            expect(job.job_variables.map(&:key)).to contain_exactly('TEST_VAR')
+            expect(job.job_variables.map(&:value)).to contain_exactly('test')
+          end
+        end
+
+        context 'when the user provides a variable without a key' do
+          let(:params) { { job_variables_attributes: [{ value: 'test' }] } }
+
+          it 'reports that the key is missing' do
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('job_variables_attributes[0][key] is missing')
+            expect(job.reload).to be_manual
+          end
+        end
+
+        context 'when the user provides a variable without a value' do
+          let(:params) { { job_variables_attributes: [{ key: 'TEST_VAR' }] } }
+
+          it 'reports that the value is missing' do
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('job_variables_attributes[0][value] is missing')
+            expect(job.reload).to be_manual
+          end
+        end
+
+        context 'when the user provides both valid and invalid variables' do
+          let(:params) { { job_variables_attributes: [{ key: 'TEST_VAR', value: 'test' }, { value: 'test2' }] } }
+
+          it 'reports the invalid variables and does not run the job' do
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('job_variables_attributes[1][key] is missing')
+            expect(job.reload).to be_manual
           end
         end
       end

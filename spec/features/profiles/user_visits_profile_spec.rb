@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User visits their profile' do
-  let(:user) { create(:user) }
+  let_it_be_with_refind(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -86,5 +86,54 @@ RSpec.describe 'User visits their profile' do
         expect(page).to have_content group.name
       end
     end
+  end
+
+  describe 'storage_enforcement_banner', :js do
+    context 'with storage_enforcement_date set' do
+      let_it_be(:storage_enforcement_date) { Date.today + 30 }
+
+      before do
+        allow_next_found_instance_of(Namespaces::UserNamespace) do |g|
+          allow(g).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+        end
+      end
+
+      it 'displays the banner in the profile page' do
+        visit(profile_path)
+        expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
+      end
+
+      it 'does not display the banner if user has previously closed unless threshold has changed' do
+        visit(profile_path)
+        expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
+        find('.js-storage-enforcement-banner [data-testid="close-icon"]').click
+        page.refresh
+        expect_page_not_to_have_storage_enforcement_banner
+
+        storage_enforcement_date = Date.today + 13
+        allow_next_found_instance_of(Namespaces::UserNamespace) do |g|
+          allow(g).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+        end
+        page.refresh
+        expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
+      end
+    end
+
+    context 'with storage_enforcement_date not set' do
+      # This test should break and be rewritten after the implementation of the storage_enforcement_date
+      # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
+      it 'does not display the banner in the group page' do
+        visit(profile_path)
+        expect_page_not_to_have_storage_enforcement_banner
+      end
+    end
+  end
+
+  def expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
+    expect(page).to have_text "From #{storage_enforcement_date} storage limits will apply to this namespace"
+  end
+
+  def expect_page_not_to_have_storage_enforcement_banner
+    expect(page).not_to have_text "storage limits will apply to this namespace"
   end
 end

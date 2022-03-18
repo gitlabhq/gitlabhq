@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'SSH keys support', :smoke do
+  RSpec.describe 'SSH keys support', :smoke, :skip_fips_env do
     key_title = "key for ssh tests #{Time.now.to_f}"
     key = nil
 

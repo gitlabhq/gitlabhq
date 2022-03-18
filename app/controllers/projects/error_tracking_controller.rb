@@ -6,6 +6,10 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   before_action :authorize_read_sentry_issue!
   before_action :set_issue_id, only: :details
 
+  before_action only: [:index] do
+    push_frontend_feature_flag(:integrated_error_tracking, project)
+  end
+
   def index
     respond_to do |format|
       format.html
@@ -75,7 +79,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   end
 
   def list_issues_params
-    params.permit(:search_term, :sort, :cursor, :issue_status)
+    params.permit(:search_term, :sort, :cursor, :issue_status).merge(tracking_event: :error_tracking_view_list)
   end
 
   def issue_update_params
@@ -83,7 +87,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   end
 
   def issue_details_params
-    params.permit(:issue_id)
+    params.permit(:issue_id).merge(tracking_event: :error_tracking_view_details)
   end
 
   def set_issue_id

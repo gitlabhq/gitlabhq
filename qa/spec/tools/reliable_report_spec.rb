@@ -167,7 +167,7 @@ describe QA::Tools::ReliableReport do
         payload: {
           title: "Reliable e2e test report",
           description: issue_body,
-          labels: "Quality,test,type::maintenance,reliable test report,automation:devops-mapping-disable"
+          labels: "Quality,test,type::maintenance,reliable test report,automation:ml"
         }
       )
       expect(slack_notifier).to have_received(:post).with(

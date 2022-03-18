@@ -1,0 +1,13 @@
+templates-shellcheck:
+  extends:
+    - .ci-templates:rules:shellcheck
+    - .default-before_script
+    - .default-retry
+    - .ruby-cache
+    - .use-pg13
+  stage: test
+  needs:
+    - setup-test-env
+  script:
+    - apt update && apt install -y shellcheck=0.7.1-1+deb11u1
+    - bundle exec scripts/lint_templates_bash.rb

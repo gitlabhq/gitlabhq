@@ -10,10 +10,22 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::ResultsStore do
   let(:merge_request) { double }
 
   describe '#read' do
-    it 'calls #retrieve on the interface' do
-      expect(interface).to receive(:retrieve_check).with(merge_check: merge_check)
+    let(:result_hash) { { 'status' => 'success', 'payload' => {} } }
 
-      results_store.read(merge_check: merge_check)
+    it 'calls #retrieve_check on the interface' do
+      expect(interface).to receive(:retrieve_check).with(merge_check: merge_check).and_return(result_hash)
+
+      cached_result = results_store.read(merge_check: merge_check)
+
+      expect(cached_result.status).to eq(result_hash['status'].to_sym)
+      expect(cached_result.payload).to eq(result_hash['payload'])
+    end
+
+    context 'when #retrieve_check returns nil' do
+      it 'returns nil' do
+        expect(interface).to receive(:retrieve_check).with(merge_check: merge_check).and_return(nil)
+        expect(results_store.read(merge_check: merge_check)).to be_nil
+      end
     end
   end
 

@@ -1,0 +1,21 @@
+---
+key_path: counts_monthly.aggregated_metrics.xmau_project_management
+description: Unique users interacting with Project Management features
+product_category: team planning
+product_section: dev
+product_stage: plan
+product_group: group::project management
+value_type: number
+status: active
+milestone: '14.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81336
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

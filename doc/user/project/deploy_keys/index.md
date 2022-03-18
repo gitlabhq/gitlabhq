@@ -2,186 +2,145 @@
 stage: Release
 group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto, reference
 ---
 
 # Deploy keys **(FREE)**
 
-Deploy keys allow read-only or read-write access to your
-repositories by importing an SSH public key into your GitLab instance.
+Use deploy keys to access repositories that are hosted in GitLab. In most cases, you use deploy keys
+to access a repository from an external host, like a build server or Continuous Integration (CI) server.
 
-Deploy keys streamline interactions between your GitLab repository and another
-machine. For example, setting up a deploy key allows secure cloning of your
-repositories to a Continuous Integration (CI) server without setting up a fake
-user account.
+Depending on your needs, you might want to use a [deploy token](../deploy_tokens/) to access a repository instead.
 
-There are two types of deploy keys:
+| Attribute        |  Deploy key | Deploy token |
+|------------------|-------------|--------------|
+| Sharing          | Shareable between multiple projects, even those in different groups. | Belong to a project or group. |
+| Source           | Public SSH key generated on an external host. | Generated on your GitLab instance, and is provided to users only at creation time. |
+| Validity         | Valid as long as it's registered and enabled. | Can be given an expiration date. |
+| Registry access  | Cannot access a package registry. | Can read from and write to a package registry. |
 
-- [Project deploy keys](#project-deploy-keys)
-- [Public deploy keys](#public-deploy-keys)
+## Scope
 
-## Key details on deploy keys
+A deploy key has a defined scope when it is created:
 
-Deploy keys allow a remote machine (VM, physical, and so on) to access a GitLab
-repository with just a few steps. If you want a remote machine to interact with a GitLab
-repository in automation, it's a simple solution.
+- **Project deploy key:** Access is limited to the selected project.
+- **Public deploy key:** Access can be granted to _any_ project in a GitLab instance. Access to each
+    project must be [granted](#grant-project-access-to-a-public-deploy-key) by a user with at least
+    the Maintainer role.
 
-A drawback is that your repository could become vulnerable if a remote machine is compromised
-by a hacker. You should limit access to the remote machine before a deploy key is
-enabled on your repository. A good rule to follow is to provide access only to trusted users,
-and make sure that the allowed users have at least the Maintainer role
-in the GitLab project.
+You cannot change a deploy key's scope after creating it.
 
-If this security implication is a concern for your organization,
-[Deploy Tokens](../deploy_tokens/index.md) works as an alternative, but with more
-security control.
+## Permissions
 
-## Deploy keys permissions
+A deploy key is given a permission level when it is created:
 
-You can choose the access level of a deploy key when you enable it on a project:
+- **Read-only:** A read-only deploy key can only read from the repository.
+- **Read-write:** A read-write deploy key can read from, and write to, the repository.
 
-- `read-only`: The deploy key can read a repository.
-- `read-write`: The deploy key can read a repository and write to it.
+You can change a deploy key's permission level after creating it. Changing a project deploy key's
+permissions only applies for the current project.
 
-Project maintainers and owners can activate and deactivate deploy keys.
-They can also add their own deploy keys and enable them for this project.
+When a read-write deploy key is used to push a commit, GitLab checks if the creator of the
+deploy key has permission to access the resource.
 
-When a `write-access` deploy key is used to push a commit, GitLab checks if
-the **creator** of the deploy key has permission to access the resource. For example:
+For example:
 
 - When a deploy key is used to push a commit to a [protected branch](../protected_branches.md),
-  the **creator** of the deploy key must have access to the branch.
-- When a deploy key is used to push a commit that triggers a CI/CD pipelines, the **creator** of
-  the deploy key must have access to the CI/CD resources (like protected environments, secret variables, and so on).
-- If the **creator** of a deploy key does not have permissions to read a project's
-  repository, the deploy key _might_ encounter an error during the process.
+  the _creator_ of the deploy key must have access to the branch.
+- When a deploy key is used to push a commit that triggers a CI/CD pipeline, the _creator_ of the
+  deploy key must have access to the CI/CD resources, including protected environments and secret
+  variables.
 
-## Differences between deploy keys and deploy tokens
+## View deploy keys
 
-Both deploy keys and [deploy tokens](../deploy_tokens/index.md#deploy-tokens) can
-help you access a repository, but there are some notables differences between them:
-
-- Deploy keys are shareable between projects that are not related or don't even
-  belong to the same group. Deploy tokens belong to either a project or
-  [a group](../deploy_tokens/index.md#group-deploy-token).
-- A deploy key is an SSH key you generate on the **remote machine**. A deploy
-  token, on the other hand, is generated by your **GitLab instance**, and is
-  provided to users only once (at creation time).
-- A deploy key is valid as long as it's registered and enabled. Deploy tokens
-  can be time-sensitive, as you can control their validity by setting an
-  expiration date to them.
-- You can't log in to a registry with deploy keys, or perform read / write operations
-  on it, but this [is possible with deploy tokens](../deploy_tokens/index.md#gitlab-deploy-token).
-- You need an SSH key pair to use deploy keys, but not deploy tokens.
-
-## How to enable deploy keys
-
-### Project deploy keys
-
-[Project maintainers and owners](../../permissions.md#project-members-permissions)
-can add or enable a deploy key for a project repository:
+To view the deploy keys available to a project:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy keys**.
-1. Specify a title for the new deploy key and paste your public SSH key.
-1. Optional. To allow `read-write` access, select the **Grant write permissions to this key** checkbox. Leave it unchecked for `read-only` access.
 
-There are three lists of project deploy keys:
+The deploy keys available are listed:
 
-- Enabled deploy keys
-- Privately accessible deploy keys
-- Public accessible deploy keys
+- **Enabled deploy keys:** Deploy keys that have access to the project.
+- **Privately accessible deploy keys:** Project deploy keys that don't have access to the project.
+- **Public accessible deploy keys:** Public deploy keys that don't have access to the project.
 
-![Deploy keys section](img/deploy_keys_v13_0.png)
+## Create a project deploy key
 
-After you add a key, it's enabled for this project by default and it appears
-in the **Enabled deploy keys** tab.
+Prerequisites:
 
-In the **Privately accessible deploy keys** tab, you can enable a private key which
-has been already imported in a different project. If you have access to these keys,
-it's because you have either:
+- You must have at least the Maintainer role for the project.
+- [Generate an SSH key pair](../../../ssh/index.md#generate-an-ssh-key-pair). Put the private SSH
+  key on the host that requires access to the repository.
 
-- Previously uploaded the keys yourself in a different project.
-- You are a maintainer or owner of the other project where the keys were imported.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Deploy keys**.
+1. Complete the fields.
+1. Optional. To grant `read-write` permission, select the **Grant write permissions to this key**
+   checkbox.
 
-In the **Publicly accessible deploy keys** tab, you can enable
-keys that were [made available to your entire GitLab instance](#public-deploy-keys).
+A project deploy key is enabled when it is created. You can modify only a project deploy key's
+name and permissions.
 
-After a key is added, you can edit it to update its title, or switch between `read-only`
-and `read-write` access.
+## Create a public deploy key
 
-NOTE:
-If you have enabled a privately or publicly accessible or deploy key for your
-project, and if you then update the access level for this key from `read-only` to
-`read-write`, the change is only for the **current project**.
+Prerequisites:
 
-### Public deploy keys
+- You must have administrator access.
+- [Generate an SSH key pair](../../../ssh/index.md#generate-an-ssh-key-pair). Put the private SSH
+  key on the host that requires access to the repository.
 
-Public deploy keys allow `read-only` or `read-write` access to any repository in
-your GitLab instance. This allows for the integration of your repositories to
-secure, shared services, such as CI/CD.
-
-Instance administrators can add public deploy keys:
+To create a public deploy key:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Deploy Keys**.
 1. Select **New deploy key**.
+1. Complete the fields.
+   - Use a meaningful description for **Name**. For example, include the name of the external host
+     or application that will use the public deploy key.
 
-Make sure your new key has a meaningful title. This title is the primary
-way for project maintainers and owners to identify the correct public deploy key
-to add to a repository or project. For example, the key you set up might be
-intended to give access to a SaaS CI/CD instance. In this case use the name of
-that service in the key title if that is all the key is used for.
+You can modify only a public deploy key's name.
 
-![Public deploy keys section](img/public_deploy_key_v13_0.png)
+## Grant project access to a public deploy key
 
-After adding a key, it's available to any shared system. Users with a maintainer role or
-higher can [authorize a public deploy key](#project-deploy-keys) to start using
-it with the project.
+Prerequisites:
 
-NOTE:
-The **Publicly accessible deploy keys** tab in a Project's CI/CD
-settings only appears if there is at least one Public deploy key configured.
+- You must have at least the Maintainer role for the project.
 
-Public deploy keys can provide greater security compared to project deploy keys.
-This is because the administrator of the target integrated system is the only
-entity who needs to know or configure the key value.
+To grant a public deploy key access to a project:
 
-When creating a Public deploy key, consider what scope and permissions are
-required for it across the entire GitLab instance. For very narrow usage, such
-as a single specific service, a `read-only` deploy key tied to this service is
-best. If the service entails broader usage across the instance, a
-deploy key with full `read-write` access is more appropriate.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Deploy keys**.
+1. Select **Publicly accessible deploy keys**.
+1. In the key's row, select **Enable**.
+1. To grant read-write permission to the public deploy key:
+   1. In the key's row, select **Edit** (**{pencil}**).
+   1. Select the **Grant write permissions to this key** checkbox.
 
-WARNING:
-Adding a public deploy key **does not** immediately expose any repository
-to the remote machine. Access to a project is only given when a project
-maintainer chooses to make use of a deploy key in the project's
-configuration.
+## Revoke project access of a deploy key
 
-## How to disable deploy keys
+To revoke a deploy key's access to a project, you can disable it. Any service that relies on
+a deploy key stops working when the key is disabled.
 
-[Project maintainers and owners](../../permissions.md#project-members-permissions)
-can remove or disable a deploy key for a project repository:
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To disable a deploy key:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Select **Disable** (**{cancel}**).
 
-NOTE:
-Any service that relies on a deploy key stops working after that key is removed.
+What happens to the deploy key when it is disabled depends on the following:
 
-If the key is **publicly accessible**, it is removed from the project, but can
-still be found under **Publicly accessible deploy keys**.
-
-If the key is **privately accessible** and only in use by this project, it is
-deleted entirely from GitLab on removal.
-
-If the key is **privately accessible** and also in use by other projects, it is
-removed from the project, but still available under **Privately accessible
-deploy keys**.
+- If the key is publicly accessible, it is removed from the project but still available in the
+  **Publicly accessible deploy keys** tab.
+- If the key is privately accessible and only in use by this project, it is deleted.
+- If the key is privately accessible and also in use by other projects, it is removed from the
+  project, but still available in the **Privately accessible deploy keys** tab.
 
 ## Troubleshooting
 
@@ -192,7 +151,7 @@ branch](../protected_branches.md).
 
 - The owner associated to a deploy key does not have access to the protected branch.
 - The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.
-- **No one** is selected in [the "Allowed to push" section](../protected_branches.md#configure-a-protected-branch) of the protected branch.
+- **No one** is selected in [the **Allowed to push** section](../protected_branches.md#configure-a-protected-branch) of the protected branch.
 
 All deploy keys are associated to an account. Since the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
 

@@ -32,9 +32,9 @@ to automate this step.
 
 Prometheus and Elastic Stack cluster integrations can only be enabled for clusters [connected through cluster certificates](../project/clusters/add_existing_cluster.md).
 
-To enable Prometheus for your cluster connected through the [GitLab Agent](agent/index.md), you can [integrate it manually](../project/integrations/prometheus.md#manual-configuration-of-prometheus).
+To enable Prometheus for your cluster connected through the [GitLab agent](agent/index.md), you can [integrate it manually](../project/integrations/prometheus.md#manual-configuration-of-prometheus).
 
-There is no option to enable Elastic Stack for your cluster if it is connected with the GitLab Agent.
+There is no option to enable Elastic Stack for your cluster if it is connected with the GitLab agent.
 Follow this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/300230) for updates.
 
 ## Prometheus cluster integration
@@ -44,7 +44,7 @@ Follow this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/300230) for up
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. However, you can **still use** Prometheus
 for Kubernetes clusters connected to GitLab through the
-[Agent](agent/index.md) by [enabling Prometheus manually](../project/integrations/prometheus.md#manual-configuration-of-prometheus).
+[agent](agent/index.md) by [enabling Prometheus manually](../project/integrations/prometheus.md#manual-configuration-of-prometheus).
 
 You can integrate your Kubernetes cluster with
 [Prometheus](https://prometheus.io/) for monitoring key metrics of your
@@ -113,9 +113,9 @@ To use this integration:
    `gitlab-managed-apps` namespace.
 1. The `Service` resource must be called `elastic-stack-elasticsearch-master`
    and expose the Elasticsearch API on port `9200`.
-1. The logs are expected to be [Filebeat container logs](https://www.elastic.co/guide/en/beats/filebeat/7.x/filebeat-input-container.html)
-   following the [7.x log structure](https://www.elastic.co/guide/en/beats/filebeat/7.x/exported-fields-log.html)
-   and include [Kubernetes metadata](https://www.elastic.co/guide/en/beats/filebeat/7.x/add-kubernetes-metadata.html).
+1. The logs are expected to be [Filebeat container logs](https://www.elastic.co/guide/en/beats/filebeat/7.16/filebeat-input-container.html)
+   following the [7.x log structure](https://www.elastic.co/guide/en/beats/filebeat/7.16/exported-fields-log.html)
+   and include [Kubernetes metadata](https://www.elastic.co/guide/en/beats/filebeat/7.16/add-kubernetes-metadata.html).
 
 You can manage your Elastic Stack however you like, but as an example, you can
 use [this Elastic Stack chart](https://gitlab.com/gitlab-org/charts/elastic-stack) to get up and

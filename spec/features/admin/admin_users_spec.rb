@@ -54,7 +54,7 @@ RSpec.describe "Admin::Users" do
 
       visit admin_users_path(tab: 'cohorts')
 
-      expect(page).to have_content("#{Time.now.strftime('%b %Y')} 3 0")
+      expect(page).to have_content("#{Time.zone.now.strftime('%b %Y')} 3 0")
     end
   end
 

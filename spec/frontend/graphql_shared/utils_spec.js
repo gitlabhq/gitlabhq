@@ -95,7 +95,7 @@ describe('convertToGraphQLIds', () => {
 
   it.each`
     type        | ids               | message
-    ${mockType} | ${null}           | ${"Cannot read property 'map' of null"}
+    ${mockType} | ${null}           | ${"Cannot read properties of null (reading 'map')"}
     ${mockType} | ${[mockId, null]} | ${'id must be a number or string; got object'}
     ${null}     | ${[mockId]}       | ${'type must be a string; got object'}
   `('throws TypeError with "$message" if a param is missing', ({ type, ids, message }) => {

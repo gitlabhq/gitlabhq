@@ -8,27 +8,39 @@ import (
 	"mime/multipart"
 	"net/http"
 
+	"github.com/golang-jwt/jwt/v4"
+
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
+const RewrittenFieldsHeader = "Gitlab-Workhorse-Multipart-Fields"
+
+type PreAuthorizer interface {
+	PreAuthorizeHandler(next api.HandleFunc, suffix string) http.Handler
+}
+
+type MultipartClaims struct {
+	RewrittenFields map[string]string `json:"rewritten_fields"`
+	jwt.StandardClaims
+}
+
 // MultipartFormProcessor abstracts away implementation differences
 // between generic MIME multipart file uploads and CI artifact uploads.
 type MultipartFormProcessor interface {
-	ProcessFile(ctx context.Context, formName string, file *filestore.FileHandler, writer *multipart.Writer) error
+	ProcessFile(ctx context.Context, formName string, file *destination.FileHandler, writer *multipart.Writer) error
 	ProcessField(ctx context.Context, formName string, writer *multipart.Writer) error
 	Finalize(ctx context.Context) error
 	Name() string
 	Count() int
 }
 
-// InterceptMultipartFiles is the core of the implementation of
-// Multipart. Because it is also used for CI artifact uploads it is a
-// public function.
-func InterceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, preauth *api.Response, filter MultipartFormProcessor, opts *filestore.SaveFileOpts) {
+// interceptMultipartFiles is the core of the implementation of
+// Multipart.
+func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, preauth *api.Response, filter MultipartFormProcessor, opts *destination.UploadOpts) {
 	var body bytes.Buffer
 	writer := multipart.NewWriter(&body)
 	defer writer.Close()
@@ -43,7 +55,7 @@ func InterceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 			helper.CaptureAndFail(w, r, err, err.Error(), http.StatusBadRequest)
 		case http.ErrNotMultipart:
 			h.ServeHTTP(w, r)
-		case filestore.ErrEntityTooLarge:
+		case destination.ErrEntityTooLarge:
 			helper.RequestEntityTooLarge(w, r, err)
 		case zipartifacts.ErrBadMetadata:
 			helper.RequestEntityTooLarge(w, r, err)

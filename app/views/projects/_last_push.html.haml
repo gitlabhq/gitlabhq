@@ -1,9 +1,9 @@
 - event = last_push_event
 - if event && show_last_push_widget?(event)
-  .gl-alert.gl-alert-success.mt-2{ role: 'alert' }
-    = sprite_icon('check-circle', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    %button.js-close-banner.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-      = sprite_icon('close', size: 16, css_class: 'gl-icon')
+  = render 'shared/global_alert',
+    variant: :success,
+    alert_class: 'gl-mt-3',
+    close_button_class: 'js-close-banner' do
     .gl-alert-body
       %span= s_("LastPushEvent|You pushed to")
       %strong.gl-display-inline-flex.gl-max-w-50p{ data: { toggle: 'tooltip' }, title: event.ref_name }

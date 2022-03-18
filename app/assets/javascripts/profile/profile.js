@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import createFlash from '~/flash';
+import createFlash, { FLASH_TYPES } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { Rails } from '~/lib/utils/rails_ujs';
@@ -86,7 +86,7 @@ export default class Profile {
 
         createFlash({
           message: data.message,
-          type: 'notice',
+          type: data.status === 'error' ? FLASH_TYPES.ALERT : FLASH_TYPES.NOTICE,
         });
       })
       .then(() => {

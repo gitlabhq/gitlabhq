@@ -100,15 +100,15 @@ describe('Accessibility extension', () => {
       await waitForPromises();
     });
 
-    it('displays all report list items', async () => {
-      expect(findAllExtensionListItems()).toHaveLength(10);
+    it('displays all report list items in viewport', async () => {
+      expect(findAllExtensionListItems()).toHaveLength(7);
     });
 
     it('displays report list item formatted', () => {
       const text = {
         newError: trimText(findAllExtensionListItems().at(0).text()),
         resolvedError: findAllExtensionListItems().at(3).text(),
-        existingError: trimText(findAllExtensionListItems().at(8).text()),
+        existingError: trimText(findAllExtensionListItems().at(6).text()),
       };
 
       expect(text.newError).toBe(
@@ -118,7 +118,7 @@ describe('Accessibility extension', () => {
         'The accessibility scanning found an error of the following type: WCAG2AA.Principle1.Guideline1_1.1_1_1.H30.2 Learn more Message: Img element is the only content of the link, but is missing alt text. The alt text should describe the purpose of the link.',
       );
       expect(text.existingError).toBe(
-        'The accessibility scanning found an error of the following type: WCAG2AA.Principle2.Guideline2_4.2_4_1.H64.1 Learn more Message: Iframe element requires a non-empty title attribute that identifies the frame.',
+        'The accessibility scanning found an error of the following type: WCAG2AA.Principle1.Guideline1_1.1_1_1.H37 Learn more Message: Img element missing an alt attribute. Use the alt attribute to specify a short text alternative.',
       );
     });
   });

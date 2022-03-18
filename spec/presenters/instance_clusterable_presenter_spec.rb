@@ -15,6 +15,12 @@ RSpec.describe InstanceClusterablePresenter do
     it { is_expected.to eq(create_aws_admin_clusters_path) }
   end
 
+  describe '#connect_path' do
+    subject { described_class.new(instance).connect_path }
+
+    it { is_expected.to eq(connect_admin_clusters_path) }
+  end
+
   describe '#authorize_aws_role_path' do
     subject { described_class.new(instance).authorize_aws_role_path }
 

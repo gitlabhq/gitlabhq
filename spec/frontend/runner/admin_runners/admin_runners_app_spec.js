@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlLink } from '@gitlab/ui';
+import { GlToast, GlLink } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -18,6 +18,7 @@ import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
+import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
@@ -34,8 +35,8 @@ import {
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
-import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
-import getRunnersCountQuery from '~/runner/graphql/get_runners_count.query.graphql';
+import adminRunnersQuery from '~/runner/graphql/list/admin_runners.query.graphql';
+import adminRunnersCountQuery from '~/runner/graphql/list/admin_runners_count.query.graphql';
 import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
@@ -51,6 +52,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 Vue.use(VueApollo);
+Vue.use(GlToast);
 
 describe('AdminRunnersApp', () => {
   let wrapper;
@@ -58,20 +60,19 @@ describe('AdminRunnersApp', () => {
   let mockRunnersCountQuery;
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
+  const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
-  const findRunnerPaginationPrev = () =>
-    findRunnerPagination().findByLabelText('Go to previous page');
   const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     const handlers = [
-      [getRunnersQuery, mockRunnersQuery],
-      [getRunnersCountQuery, mockRunnersCountQuery],
+      [adminRunnersQuery, mockRunnersQuery],
+      [adminRunnersCountQuery, mockRunnersCountQuery],
     ];
 
     wrapper = mountFn(AdminRunnersApp, {
@@ -94,6 +95,7 @@ describe('AdminRunnersApp', () => {
 
   afterEach(() => {
     mockRunnersQuery.mockReset();
+    mockRunnersCountQuery.mockReset();
     wrapper.destroy();
   });
 
@@ -188,6 +190,21 @@ describe('AdminRunnersApp', () => {
     expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${numericId}`);
   });
 
+  it('renders runner actions for each runner', async () => {
+    createComponent({ mountFn: mountExtended });
+
+    await waitForPromises();
+
+    const runnerActions = wrapper.find('tr [data-testid="td-actions"]').find(RunnerActionsCell);
+
+    const runner = runnersData.data.runners.nodes[0];
+
+    expect(runnerActions.props()).toEqual({
+      runner,
+      editUrl: runner.editAdminUrl,
+    });
+  });
+
   it('requests the runners with no filters', () => {
     expect(mockRunnersQuery).toHaveBeenLastCalledWith({
       status: undefined,
@@ -210,6 +227,41 @@ describe('AdminRunnersApp', () => {
         recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
       }),
     ]);
+  });
+
+  describe('Single runner row', () => {
+    let showToast;
+
+    const mockRunner = runnersData.data.runners.nodes[0];
+    const { id: graphqlId, shortSha } = mockRunner;
+    const id = getIdFromGraphQLId(graphqlId);
+
+    beforeEach(async () => {
+      mockRunnersQuery.mockClear();
+
+      createComponent({ mountFn: mountExtended });
+      showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
+
+      await waitForPromises();
+    });
+
+    it('Links to the runner page', async () => {
+      const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
+
+      expect(runnerLink.text()).toBe(`#${id} (${shortSha})`);
+      expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${id}`);
+    });
+
+    it('When runner is deleted, data is refetched and a toast message is shown', async () => {
+      expect(mockRunnersQuery).toHaveBeenCalledTimes(1);
+
+      findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
+
+      expect(mockRunnersQuery).toHaveBeenCalledTimes(2);
+
+      expect(showToast).toHaveBeenCalledTimes(1);
+      expect(showToast).toHaveBeenCalledWith('Runner deleted');
+    });
   });
 
   describe('when a filter is preselected', () => {
@@ -314,14 +366,6 @@ describe('AdminRunnersApp', () => {
 
       createComponent({ mountFn: mountExtended });
       await waitForPromises();
-    });
-
-    it('more pages can be selected', () => {
-      expect(findRunnerPagination().text()).toMatchInterpolatedText('Prev Next');
-    });
-
-    it('cannot navigate to the previous page', () => {
-      expect(findRunnerPaginationPrev().attributes('aria-disabled')).toBe('true');
     });
 
     it('navigates to the next page', async () => {

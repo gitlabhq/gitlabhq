@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Graphql::MountMutation do
         f.mount_mutation(mutation)
       end
 
-      mutation_type.get_field('testMutation').to_graphql
+      mutation_type.get_field('testMutation')
     end
 
     it 'mounts a mutation' do
@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Graphql::MountMutation do
         f.mount_aliased_mutation('MyAlias', mutation)
       end
 
-      mutation_type.get_field('myAlias').to_graphql
+      mutation_type.get_field('myAlias')
     end
 
     it 'mounts a mutation' do
@@ -43,11 +43,11 @@ RSpec.describe Gitlab::Graphql::MountMutation do
     end
 
     it 'has a correct type' do
-      expect(field.type.name).to eq('MyAliasPayload')
+      expect(field.type.to_type_signature).to eq('MyAliasPayload')
     end
 
     it 'has a correct input argument' do
-      expect(field.arguments['input'].type.unwrap.name).to eq('MyAliasInput')
+      expect(field.arguments['input'].type.unwrap.to_type_signature).to eq('MyAliasInput')
     end
   end
 

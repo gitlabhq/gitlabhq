@@ -27,7 +27,7 @@ Add a redirect to ensure:
 
 - Users see the new page and can update or delete their bookmark.
 - External sites can update their links, especially sites that have automation that
-  check for redirecting links.
+  checks for redirected links.
 - The documentation site global navigation does not link to a missing page.
 
   The links in the global navigation are already tested in the `gitlab-docs` project.
@@ -38,26 +38,28 @@ Technical Writers can help with any questions and can review your change.
 
 There are two types of redirects:
 
-- Redirect added into the documentation files themselves, for users who
+- [Redirect added into the documentation files themselves](#add-a-redirect), for users who
   view the docs in `/help` on self-managed instances. For example,
-  [`/help` on GitLab.com](https://gitlab.com/help).
-- [GitLab Pages redirects](../../user/project/pages/redirects.md),
-  for users who view the docs on [`docs.gitlab.com`](https://docs.gitlab.com).
+  [`/help` on GitLab.com](https://gitlab.com/help). These must be added in the same
+  MR that renames or moves a doc. Redirects to internal pages expire after three months
+  and redirects to external pages (starting with `https:`) expire after a year.
+- [GitLab Pages redirects](../../user/project/pages/redirects.md), which are added
+  automatically after redirect files expire. They must not be manually added by
+  contributors and expire after nine months. Redirects pointing to external sites
+  are not added to the GitLab Pages redirects.
 
-  The Technical Writing team manages the [process](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md)
-  to regularly update and [clean up the redirects](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#clean-up-redirects).
-  If you're a contributor, you may add a new redirect, but you don't need to delete
-  the old ones. This process is automatic and handled by the Technical
-  Writing team.
+Expired redirect files are removed from the documentation projects by the
+[`clean_redirects` Rake task](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#clean-up-redirects),
+as part of the Technical Writing team's [monthly tasks](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md).
+
+## Add a redirect
 
 NOTE:
-If the old page you're renaming doesn't exist in a stable branch, skip the
-following steps and ask a Technical Writer to add the redirect in
-[`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/redirects.yaml).
-For example, if you add a new page on the 3rd of the month and then rename it before it gets
-added in the stable branch on the 18th, the old page will never be part of the internal `/help`.
-In that case, you can jump straight to the
-[Pages redirect](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/maintenance.md#pages-redirects).
+If the renamed page is new, you can sometimes skip the following steps and ask a
+Technical Writer to manually add the redirect to [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/redirects.yaml).
+For example, if you add a new page and then rename it before it's added to a release
+on the 18th. The old page is not in any version's `/help` section, so a technical writer
+can jump straight to the [Pages redirect](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/maintenance.md#pages-redirects).
 
 To add a redirect:
 
@@ -87,20 +89,13 @@ To add a redirect:
      bundle exec rake "gitlab:docs:redirect[doc/user/search/old_file.md, https://example.com]"
      ```
 
-   Alternatively, you can omit the arguments and be asked to enter their values:
+   - Alternatively, you can omit the arguments and be prompted to enter the values:
 
-   ```shell
-   bundle exec rake gitlab:docs:redirect
-   ```
+     ```shell
+     bundle exec rake gitlab:docs:redirect
+     ```
 
-   If you don't want to use the Rake task, you can use the following template.
-
-   Replace the value of `redirect_to` with the new file path and `YYYY-MM-DD`
-   with the date the file should be removed.
-
-   Redirect files that link to docs in internal documentation projects
-   are removed after three months. Redirect files that link to external sites are
-   removed after one year:
+   If you don't want to use the Rake task, you can use the following template:
 
    ```markdown
    ---
@@ -111,8 +106,13 @@ To add a redirect:
    This document was moved to [another location](../path/to/file/index.md).
 
    <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
-   <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->
+   <!-- Redirects that point to other docs in the same project expire in three months. -->
+   <!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+   <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->
    ```
+
+   - Replace both instances of `../newpath/to/file/index.md` with the new file path.
+   - Replace `YYYY-MM-DD` with the expiry date, as explained in the template.
 
 1. If the documentation page being moved has any Disqus comments, follow the steps
    described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).

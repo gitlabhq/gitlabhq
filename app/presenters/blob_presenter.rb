@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'ipynbdiff'
 
 class BlobPresenter < Gitlab::View::Presenter::Delegated
   include ApplicationHelper
@@ -56,11 +55,17 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def replace_path
-    url_helpers.project_create_blob_path(project, ref_qualified_path)
+    url_helpers.project_update_blob_path(project, ref_qualified_path)
   end
 
   def pipeline_editor_path
     project_ci_pipeline_editor_path(project, branch_name: blob.commit_id) if can_collaborate_with_project?(project) && blob.path == project.ci_config_path_or_default
+  end
+
+  def gitpod_blob_url
+    return unless Gitlab::CurrentSettings.gitpod_enabled && !current_user.nil? && current_user.gitpod_enabled
+
+    "#{Gitlab::CurrentSettings.gitpod_url}##{url_helpers.project_tree_url(project, tree_join(blob.commit_id, blob.path || ''))}"
   end
 
   def find_file_path
@@ -104,6 +109,10 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     fork_path_for_current_user(project, ide_edit_path)
   end
 
+  def fork_and_view_path
+    fork_path_for_current_user(project, web_path)
+  end
+
   def can_modify_blob?
     super(blob, project, blob.commit_id)
   end
@@ -126,6 +135,14 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     return unless static_objects_external_storage_enabled?
 
     external_storage_url_or_path(url_helpers.project_raw_url(project, ref_qualified_path), project)
+  end
+
+  def code_navigation_path
+    Gitlab::CodeNavigationPath.new(project, blob.commit_id).full_json_path_for(blob.path)
+  end
+
+  def project_blob_path_root
+    project_blob_path(project, blob.commit_id)
   end
 
   private

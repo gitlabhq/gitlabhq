@@ -170,17 +170,6 @@ RSpec.describe API::GenericPackages do
       end
     end
 
-    context 'generic_packages feature flag is disabled' do
-      it 'responds with 404 Not Found' do
-        stub_feature_flags(generic_packages: false)
-        project.add_developer(user)
-
-        authorize_upload_file(workhorse_headers.merge(personal_access_token_header))
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     def authorize_upload_file(request_headers, package_name: 'mypackage', file_name: 'myfile.tar.gz')
       url = "/projects/#{project.id}/packages/generic/#{package_name}/0.0.1/#{file_name}/authorize"
 

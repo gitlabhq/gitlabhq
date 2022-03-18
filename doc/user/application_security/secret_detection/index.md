@@ -42,7 +42,7 @@ To run Secret Detection jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 WARNING:
-Our Secret Detection jobs expect a Linux container type. Windows containers are not supported.
+Our Secret Detection jobs expect a Linux/amd64 container type. Windows containers are not supported.
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
@@ -328,14 +328,6 @@ as part of your normal job definition.
 A new configuration variable ([`SECRET_DETECTION_HISTORIC_SCAN`](#available-cicd-variables))
 can be set to change the behavior of the GitLab Secret Detection scan to run on the entire Git history of a repository.
 
-We have created a [short video walkthrough](https://youtu.be/wDtc_K00Y0A) showcasing how you can perform a full history secret detection scan.
-<div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=wDtc_K00Y0A">Walkthrough of historical secret detection scan</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/wDtc_K00Y0A" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
-
 ## Running Secret Detection in an offline environment
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
@@ -450,9 +442,9 @@ secret_detection:
 
 ### `secret-detection` job fails with `ERR fatal: ambiguous argument` message
 
-Your `secret-detection` job can fail with `ERR fatal: ambiguous argument` error if your 
-repository's default branch is unrelated to the branch the job was triggered for. 
+Your `secret-detection` job can fail with `ERR fatal: ambiguous argument` error if your
+repository's default branch is unrelated to the branch the job was triggered for.
 See issue [!352014](https://gitlab.com/gitlab-org/gitlab/-/issues/352014) for more details.
 
-To resolve the issue, make sure to correctly [set your default branch](../../project/repository/branches/default.md#change-the-default-branch-name-for-a-project) on your repository. You should set it to a branch 
-that has related history with the branch you run the `secret-detection` job on. 
+To resolve the issue, make sure to correctly [set your default branch](../../project/repository/branches/default.md#change-the-default-branch-name-for-a-project) on your repository. You should set it to a branch
+that has related history with the branch you run the `secret-detection` job on.

@@ -106,21 +106,5 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
         expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
       end
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        job.tag_list = %w[tag1 tag2]
-        stub_feature_flags(ci_bulk_insert_tags: false)
-      end
-
-      it 'follows the old code path' do
-        expect(CommitStatus).not_to receive(:bulk_insert_tags!)
-
-        step.perform!
-
-        expect(job).to be_persisted
-        expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
-      end
-    end
   end
 end

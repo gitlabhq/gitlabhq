@@ -8,6 +8,7 @@ alert_management_alert_metric_images: :gitlab_main
 alert_management_alert_user_mentions: :gitlab_main
 alert_management_http_integrations: :gitlab_main
 allowed_email_domains: :gitlab_main
+analytics_cycle_analytics_aggregations: :gitlab_main
 analytics_cycle_analytics_group_stages: :gitlab_main
 analytics_cycle_analytics_group_value_streams: :gitlab_main
 analytics_cycle_analytics_issue_stage_events: :gitlab_main
@@ -273,6 +274,7 @@ issue_emails: :gitlab_main
 issue_email_participants: :gitlab_main
 issue_links: :gitlab_main
 issue_metrics: :gitlab_main
+issue_search_data: :gitlab_main
 issues: :gitlab_main
 issues_prometheus_alert_events: :gitlab_main
 issues_self_managed_prometheus_alert_events: :gitlab_main
@@ -379,7 +381,6 @@ pages_deployments: :gitlab_main
 pages_deployment_states: :gitlab_main
 pages_domain_acme_orders: :gitlab_main
 pages_domains: :gitlab_main
-partitioned_foreign_keys: :gitlab_main
 path_locks: :gitlab_main
 personal_access_tokens: :gitlab_main
 plan_limits: :gitlab_main
@@ -400,6 +401,7 @@ project_alerting_settings: :gitlab_main
 project_aliases: :gitlab_main
 project_authorizations: :gitlab_main
 project_auto_devops: :gitlab_main
+project_build_artifacts_size_refreshes: :gitlab_main
 project_ci_cd_settings: :gitlab_main
 project_ci_feature_usages: :gitlab_main
 project_compliance_framework_settings: :gitlab_main
@@ -441,6 +443,7 @@ push_event_payloads: :gitlab_main
 push_rules: :gitlab_main
 raw_usage_data: :gitlab_main
 redirect_routes: :gitlab_main
+related_epic_links: :gitlab_main
 release_links: :gitlab_main
 releases: :gitlab_main
 remote_mirrors: :gitlab_main
@@ -457,6 +460,7 @@ reviews: :gitlab_main
 routes: :gitlab_main
 saml_group_links: :gitlab_main
 saml_providers: :gitlab_main
+saved_replies: :gitlab_main
 schema_migrations: :gitlab_shared
 scim_identities: :gitlab_main
 scim_oauth_access_tokens: :gitlab_main

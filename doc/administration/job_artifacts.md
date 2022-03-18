@@ -307,6 +307,33 @@ To migrate back to local storage:
 
 ## Expiring artifacts
 
+> [In GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76504), we improved the performance of removing expired artifacts, introduced [with a flag](feature_flags.md) named `ci_destroy_all_expired_service`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to 
+[enable the feature flag](feature_flags.md) named `ci_destroy_all_expired_service`. The feature is not ready for 
+production use.
+On GitLab.com, this feature is not available.
+
+### Removing expired job artifacts on GitLab self-managed instances
+
+In the process of migrating old artifacts for our SaaS customers, we are working to resolve any potential unrecoverable data loss for self-managed customers for artifacts that they may not want deleted yet. Before we can use the more performant way of cleaning up expired artifacts, we need to do some remediation to make sure customers don't lose their data, which is part of our effort in [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/7097).
+
+Two options are available:
+
+- If you don't need any artifacts created before 2020-06-23, an Administrator can enable the worker for removing expired CI/CD artifacts:
+
+   ```ruby
+   Feature.enable(:ci_destroy_all_expired_service)
+   ```
+
+- If you want to keep any artifacts (including job logs) before 2020-06-23, follow the [progress of the migration effort](https://gitlab.com/groups/gitlab-org/-/epics/7097) where we work on a resolution to have this flag fully enabled in a future release.
+
+Alternatively, Administrators can also run commands in the Rails console to
+[delete artifacts from completed jobs prior to a specific date](#delete-job-artifacts-from-jobs-completed-before-a-specific-date).
+
+### Usage details
+
 If [`artifacts:expire_in`](../ci/yaml/index.md#artifactsexpire_in) is used to set
 an expiry for the artifacts, they are marked for deletion right after that date passes.
 Otherwise, they expire per the [default artifacts expiration setting](../user/admin_area/settings/continuous_integration.md).
@@ -387,6 +414,37 @@ space, and in some cases, manually delete job artifacts to reclaim disk space.
 
 One possible first step is to [clean up _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files).
 
+#### List projects and builds with artifacts with a specific expiration (or no expiration)
+
+Using a [Rails console](operations/rails_console.md), you can find projects that have job artifacts with either:
+
+- No expiration date.
+- An expiration date more than 7 days in the future.
+
+Similar to [deleting artifacts](#delete-job-artifacts-from-jobs-completed-before-a-specific-date), use the following example time frames
+and alter them as needed:
+
+- `7.days.from_now`
+- `10.days.from_now`
+- `2.weeks.from_now`
+- `3.months.from_now`
+
+Each of the following scripts also limits the search to 50 results with `.limit(50)`, but this number can also be changed as needed:
+
+```ruby
+# Find builds & projects with artifacts that never expire
+builds_with_artifacts_that_never_expire = Ci::Build.with_downloadable_artifacts.where(artifacts_expire_at: nil).limit(50)
+builds_with_artifacts_that_never_expire.find_each do |build|
+  puts "Build with id #{build.id} has artifacts that don't expire and belongs to project #{build.project.full_path}"
+end
+
+# Find builds & projects with artifacts that expire after 7 days from today
+builds_with_artifacts_that_expire_in_a_week = Ci::Build.with_downloadable_artifacts.where('artifacts_expire_at > ?', 7.days.from_now).limit(50)
+builds_with_artifacts_that_expire_in_a_week.find_each do |build|
+  puts "Build with id #{build.id} has artifacts that expire at #{build.artifacts_expire_at} and belongs to project #{build.project.full_path}"
+end
+```
+
 #### List projects by total size of job artifacts stored
 
 List the top 20 projects, sorted by the total size of job artifacts stored, by
@@ -435,7 +493,7 @@ list = arts.order(size: :desc).limit(50).each do |art|
 end
 ```
 
-To change the number of projects listed, change the number in `limit(50)`.
+To change the number of job artifacts listed, change the number in `limit(50)`.
 
 #### Delete job artifacts from jobs completed before a specific date
 
@@ -572,3 +630,15 @@ review:
   ```
 
 In both cases, you might need to add `region` to the job artifact [object storage configuration](#connection-settings).
+
+### Job artifact upload fails with `500 Internal Server Error (Missing file)`
+
+Bucket names that include folder paths are not supported with [consolidated object storage](object_storage.md#consolidated-object-storage-configuration).
+For example, `bucket/path`. If a bucket name has a path in it, you might receive an error similar to:
+
+```plaintext
+WARNING: Uploading artifacts as "archive" to coordinator... POST https://gitlab.example.com/api/v4/jobs/job_id/artifacts?artifact_format=zip&artifact_type=archive&expire_in=1+day: 500 Internal Server Error (Missing file) 
+FATAL: invalid argument
+```
+
+If a job artifact fails to upload with the above error when using consolidated object storage, make sure you are [using separate buckets](object_storage.md#use-separate-buckets) for each data type. 

@@ -32,7 +32,7 @@ RSpec.describe 'Group' do
         group = Group.find_by(name: 'test-group')
 
         expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
-        expect(current_path).to eq(group_path(group))
+        expect(page).to have_current_path(group_path(group), ignore_query: true)
         expect(page).to have_selector '.visibility-icon [data-testid="earth-icon"]'
       end
     end
@@ -51,7 +51,7 @@ RSpec.describe 'Group' do
         fill_in 'Group URL', with: 'space group'
         click_button 'Create group'
 
-        expect(current_path).to eq(new_group_path)
+        expect(page).to have_current_path(new_group_path, ignore_query: true)
         expect(page).to have_text('Choose a group path that does not start with a dash or end with a period. It can also contain alphanumeric characters and underscores.')
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe 'Group' do
         fill_in 'Group URL', with: 'atom_group.atom'
         click_button 'Create group'
 
-        expect(current_path).to eq(groups_path)
+        expect(page).to have_current_path(groups_path, ignore_query: true)
         expect(page).to have_namespace_error_message
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe 'Group' do
         fill_in 'Group URL', with: 'git_group.git'
         click_button 'Create group'
 
-        expect(current_path).to eq(groups_path)
+        expect(page).to have_current_path(groups_path, ignore_query: true)
         expect(page).to have_namespace_error_message
       end
     end
@@ -211,7 +211,7 @@ RSpec.describe 'Group' do
           fill_in 'Group name', with: 'bar'
           click_button 'Create group'
 
-          expect(current_path).to eq(group_path('foo/bar'))
+          expect(page).to have_current_path(group_path('foo/bar'), ignore_query: true)
           expect(page).to have_selector 'h1', text: 'bar'
         end
       end
@@ -237,7 +237,7 @@ RSpec.describe 'Group' do
         fill_in 'Group name', with: 'bar'
         click_button 'Create group'
 
-        expect(current_path).to eq(group_path('foo/bar'))
+        expect(page).to have_current_path(group_path('foo/bar'), ignore_query: true)
         expect(page).to have_selector 'h1', text: 'bar'
       end
     end
@@ -473,5 +473,70 @@ RSpec.describe 'Group' do
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with
     click_button 'Confirm'
+  end
+
+  describe 'storage_enforcement_banner', :js do
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_refind(:user) { create(:user) }
+
+    before_all do
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    context 'with storage_enforcement_date set' do
+      let_it_be(:storage_enforcement_date) { Date.today + 30 }
+
+      before do
+        allow_next_found_instance_of(Group) do |g|
+          allow(g).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+        end
+      end
+
+      it 'displays the banner in the group page' do
+        visit group_path(group)
+        expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
+      end
+
+      it 'does not display the banner in a paid group page' do
+        allow_next_found_instance_of(Group) do |g|
+          allow(g).to receive(:paid?).and_return(true)
+        end
+        visit group_path(group)
+        expect_page_not_to_have_storage_enforcement_banner
+      end
+
+      it 'does not display the banner if user has previously closed unless threshold has changed' do
+        visit group_path(group)
+        expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
+        find('.js-storage-enforcement-banner [data-testid="close-icon"]').click
+        page.refresh
+        expect_page_not_to_have_storage_enforcement_banner
+
+        storage_enforcement_date = Date.today + 13
+        allow_next_found_instance_of(Group) do |g|
+          allow(g).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+        end
+        page.refresh
+        expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
+      end
+    end
+
+    context 'with storage_enforcement_date not set' do
+      # This test should break and be rewritten after the implementation of the storage_enforcement_date
+      # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
+      it 'does not display the banner in the group page' do
+        visit group_path(group)
+        expect_page_not_to_have_storage_enforcement_banner
+      end
+    end
+  end
+
+  def expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
+    expect(page).to have_text "From #{storage_enforcement_date} storage limits will apply to this namespace"
+  end
+
+  def expect_page_not_to_have_storage_enforcement_banner
+    expect(page).not_to have_text "storage limits will apply to this namespace"
   end
 end

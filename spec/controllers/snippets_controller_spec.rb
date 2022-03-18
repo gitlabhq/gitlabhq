@@ -176,8 +176,8 @@ RSpec.describe SnippetsController do
         it_behaves_like 'tracking unique hll events' do
           subject(:request) { get :show, params: { id: public_snippet.to_param } }
 
-          let(:target_id) { 'i_snippets_show' }
-          let(:expected_type) { instance_of(String) }
+          let(:target_event) { 'i_snippets_show' }
+          let(:expected_value) { instance_of(String) }
         end
       end
 

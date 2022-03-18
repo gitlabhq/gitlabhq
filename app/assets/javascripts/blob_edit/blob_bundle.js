@@ -2,7 +2,6 @@
 
 import $ from 'jquery';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
-import initCodeQualityWalkthrough from '~/code_quality_walkthrough';
 import createFlash from '~/flash';
 import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
@@ -39,13 +38,6 @@ const initPopovers = () => {
   }
 };
 
-const initCodeQualityWalkthroughStep = () => {
-  const codeQualityWalkthroughEl = document.querySelector('.js-code-quality-walkthrough');
-  if (codeQualityWalkthroughEl) {
-    initCodeQualityWalkthrough(codeQualityWalkthroughEl);
-  }
-};
-
 export const initUploadForm = () => {
   const uploadBlobForm = $('.js-upload-blob-form');
   if (uploadBlobForm.length) {
@@ -71,7 +63,7 @@ export default () => {
     const isMarkdown = editBlobForm.data('is-markdown');
     const previewMarkdownPath = editBlobForm.data('previewMarkdownPath');
     const commitButton = $('.js-commit-button');
-    const cancelLink = $('.btn.btn-cancel');
+    const cancelLink = $('#cancel-changes');
 
     import('./edit_blob')
       .then(({ default: EditBlob } = {}) => {
@@ -84,7 +76,6 @@ export default () => {
           previewMarkdownPath,
         });
         initPopovers();
-        initCodeQualityWalkthroughStep();
       })
       .catch((e) =>
         createFlash({

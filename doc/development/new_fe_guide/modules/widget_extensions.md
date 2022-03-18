@@ -128,6 +128,7 @@ mentioned below:
     variant: '',  // Optional: GitLab UI badge variant, defaults to info
   },
   actions: [],    // Optional: Action button for row
+  children: [],   // Optional: Child content to render, structure matches the same structure
 }
 ```
 

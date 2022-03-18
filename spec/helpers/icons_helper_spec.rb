@@ -231,23 +231,33 @@ RSpec.describe IconsHelper do
     end
   end
 
-  describe 'loading_icon' do
-    it 'returns span with gl-spinner class and default configuration' do
-      expect(loading_icon.to_s)
-        .to eq '<span class="gl-spinner gl-spinner-orange gl-spinner-sm" aria-label="Loading"></span>'
+  describe 'gl_loading_icon' do
+    it 'returns the default spinner markup' do
+      expect(gl_loading_icon.to_s)
+        .to eq '<div class="gl-spinner-container" role="status"><span class="gl-spinner gl-spinner-dark gl-spinner-sm gl-vertical-align-text-bottom!" aria-label="Loading"></span></div>'
     end
 
     context 'when css_class is provided' do
-      it 'appends css_class to gl-spinner element' do
-        expect(loading_icon(css_class: 'gl-mr-2').to_s)
-          .to eq '<span class="gl-spinner gl-spinner-orange gl-spinner-sm gl-mr-2" aria-label="Loading"></span>'
+      it 'appends css_class to container element' do
+        expect(gl_loading_icon(css_class: 'gl-mr-2').to_s).to match 'gl-spinner-container gl-mr-2'
       end
     end
 
-    context 'when container is true' do
-      it 'creates a container that has the gl-spinner-container class selector' do
-        expect(loading_icon(container: true).to_s)
-        .to eq '<div class="gl-spinner-container"><span class="gl-spinner gl-spinner-orange gl-spinner-sm" aria-label="Loading"></span></div>'
+    context 'when size is provided' do
+      it 'sets the size class' do
+        expect(gl_loading_icon(size: 'xl').to_s).to match 'gl-spinner-xl'
+      end
+    end
+
+    context 'when color is provided' do
+      it 'sets the color class' do
+        expect(gl_loading_icon(color: 'light').to_s).to match 'gl-spinner-light'
+      end
+    end
+
+    context 'when inline is true' do
+      it 'creates an inline container' do
+        expect(gl_loading_icon(inline: true).to_s).to start_with '<span class="gl-spinner-container"'
       end
     end
   end

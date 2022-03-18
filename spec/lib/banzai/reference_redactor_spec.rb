@@ -106,13 +106,12 @@ RSpec.describe Banzai::ReferenceRedactor do
   end
 
   context 'when the user cannot read cross project' do
-    include ActionView::Helpers::UrlHelper
     let(:project) { create(:project) }
     let(:other_project) { create(:project, :public) }
 
     def create_link(issuable)
       type = issuable.class.name.underscore.downcase
-      link_to(issuable.to_reference, '',
+      ActionController::Base.helpers.link_to(issuable.to_reference, '',
               class: 'gfm has-tooltip',
               title: issuable.title,
               data: {

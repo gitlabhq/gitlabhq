@@ -5,6 +5,8 @@ module Gitlab
     module AsyncIndexes
       module MigrationHelpers
         def unprepare_async_index(table_name, column_name, **options)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
           return unless async_index_creation_available?
 
           index_name = options[:name] || index_name(table_name, column_name)
@@ -15,6 +17,8 @@ module Gitlab
         end
 
         def unprepare_async_index_by_name(table_name, index_name, **options)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
           return unless async_index_creation_available?
 
           PostgresAsyncIndex.find_by(name: index_name).try do |async_index|
@@ -32,6 +36,8 @@ module Gitlab
         # If the requested index has already been created, it is not stored in the table for
         # asynchronous creation.
         def prepare_async_index(table_name, column_name, **options)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
           return unless async_index_creation_available?
 
           index_name = options[:name] || index_name(table_name, column_name)
@@ -72,8 +78,7 @@ module Gitlab
         end
 
         def async_index_creation_available?
-          ApplicationRecord.connection.table_exists?(:postgres_async_indexes) &&
-            Feature.enabled?(:database_async_index_creation, type: :ops)
+          connection.table_exists?(:postgres_async_indexes)
         end
       end
     end

@@ -5,14 +5,28 @@ module QA
     class PageErrorChecker
       class << self
         def report!(page, error_code)
+          request_id_string = ''
+          if error_code == 500
+            request_id = parse_five_c_page_request_id(page)
+            if request_id
+              request_id_string = "\n\n" + Loglinking.failure_metadata(request_id)
+            end
+          end
+
           report = if QA::Runtime::Env.browser == :chrome
                      return_chrome_errors(page, error_code)
                    else
                      status_code_report(error_code)
                    end
 
-          raise "#{report}\n\n"\
-            "Path: #{page.current_path}"
+          raise "Error Code #{error_code}\n\n"\
+            "#{report}\n\n"\
+            "Path: #{page.current_path}"\
+            "#{request_id_string}"
+        end
+
+        def parse_five_c_page_request_id(page)
+          Nokogiri::HTML.parse(page.html).xpath("/html/body/div/p[1]/code").children.first
         end
 
         def return_chrome_errors(page, error_code)

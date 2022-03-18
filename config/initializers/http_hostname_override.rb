@@ -34,6 +34,7 @@ end
 
 class Net::HTTP
   attr_accessor :hostname_override
+
   SSL_IVNAMES << :@hostname_override
   SSL_ATTRIBUTES << :hostname_override
 

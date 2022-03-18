@@ -6,7 +6,7 @@ import {
   GlPagination,
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlSprintf,
-  GlTable,
+  GlTableLite,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
@@ -27,7 +27,7 @@ export default {
     GlPagination,
     GlSkeletonLoading,
     GlSprintf,
-    GlTable,
+    GlTableLite,
     NodeErrorHelpText,
     ClustersEmptyState,
   },
@@ -229,7 +229,7 @@ export default {
   <section v-else>
     <ancestor-notice />
 
-    <gl-table
+    <gl-table-lite
       v-if="hasClusters"
       :items="clusters"
       :fields="fields"
@@ -326,7 +326,7 @@ export default {
           {{ value }}
         </gl-badge>
       </template>
-    </gl-table>
+    </gl-table-lite>
 
     <clusters-empty-state v-else :is-child-component="isChildComponent" />
 

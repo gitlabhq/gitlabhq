@@ -16,7 +16,7 @@
     .card-body
       .loading-metrics.js-loading-metrics
         %p.m-3
-          = loading_icon(css_class: 'metrics-load-spinner')
+          = gl_loading_icon(inline: true, css_class: 'metrics-load-spinner')
           = s_('PrometheusService|Finding and configuring metrics...')
       .empty-metrics.hidden.js-empty-metrics
         %p.text-tertiary.m-3

@@ -7,7 +7,7 @@ RSpec.describe SpammableActions::CaptchaCheck::HtmlFormatActionsSupport do
     include SpammableActions::CaptchaCheck::HtmlFormatActionsSupport
 
     def create
-      with_captcha_check_html_format { render :some_rendered_view }
+      with_captcha_check_html_format(spammable: spammable) { render :some_rendered_view }
     end
   end
 

@@ -64,6 +64,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:bamboo_integration) }
     it { is_expected.to have_one(:teamcity_integration) }
     it { is_expected.to have_one(:jira_integration) }
+    it { is_expected.to have_one(:harbor_integration) }
     it { is_expected.to have_one(:redmine_integration) }
     it { is_expected.to have_one(:youtrack_integration) }
     it { is_expected.to have_one(:custom_issue_tracker_integration) }
@@ -134,7 +135,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
-    it { is_expected.to have_many(:pipeline_artifacts) }
+    it { is_expected.to have_many(:pipeline_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
     it { is_expected.to have_many(:timelogs) }
     it { is_expected.to have_many(:error_tracking_errors).class_name('ErrorTracking::Error') }
@@ -142,6 +143,9 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:pending_builds).class_name('Ci::PendingBuild') }
     it { is_expected.to have_many(:ci_feature_usages).class_name('Projects::CiFeatureUsage') }
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
+    it { is_expected.to have_many(:job_artifacts).dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:build_trace_chunks).through(:builds).dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:secure_files).class_name('Ci::SecureFile').dependent(:restrict_with_error) }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -202,6 +206,35 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
 
+    context 'when project has object storage attached to it' do
+      let_it_be(:project) { create(:project) }
+
+      before do
+        create(:ci_job_artifact, project: project)
+      end
+
+      context 'when associated object storage object is not deleted before the project' do
+        it 'adds an error to project', :aggregate_failures do
+          expect { project.destroy! }.to raise_error(ActiveRecord::RecordNotDestroyed)
+
+          expect(project.errors).not_to be_empty
+          expect(project.errors.first.message).to eq("Cannot delete record because dependent job artifacts exist")
+        end
+      end
+
+      context 'when associated object storage object is deleted before the project' do
+        before do
+          project.job_artifacts.first.destroy!
+        end
+
+        it 'deletes the project' do
+          project.destroy!
+
+          expect { project.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+    end
+
     context 'when creating a new project' do
       let_it_be(:project) { create(:project) }
 
@@ -246,33 +279,9 @@ RSpec.describe Project, factory_default: :keep do
             expect(project.project_namespace).to be_in_sync_with_project(project)
             expect(project.reload.project_namespace.traversal_ids).to eq([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact)
           end
-
-          context 'with FF disabled' do
-            before do
-              stub_feature_flags(create_project_namespace_on_project_create: false)
-            end
-
-            it 'does not create a project namespace' do
-              project = build(:project, path: 'hopefully-valid-path2')
-              project.save!
-
-              expect(project).to be_persisted
-              expect(project.project_namespace).to be_nil
-            end
-          end
         end
 
-        context 'sync-ing traversal_ids in before_commit callback' do
-          it_behaves_like 'creates project namespace'
-        end
-
-        context 'sync-ing traversal_ids in after_create callback' do
-          before do
-            stub_feature_flags(sync_traversal_ids_before_commit: false)
-          end
-
-          it_behaves_like 'creates project namespace'
-        end
+        it_behaves_like 'creates project namespace'
       end
     end
 
@@ -314,35 +323,6 @@ RSpec.describe Project, factory_default: :keep do
             expect(project.errors.full_messages).to include("Project namespace can't be blank")
             expect(project.reload.project_namespace).to be_in_sync_with_project(project)
           end
-        end
-      end
-
-      context 'with create_project_namespace_on_project_create FF enabled' do
-        it_behaves_like 'project update'
-
-        it 'keeps project namespace in sync with project' do
-          project = create(:project)
-          project.update!(path: 'hopefully-valid-path1')
-
-          expect(project).to be_persisted
-          expect(project.project_namespace).to be_persisted
-          expect(project.project_namespace).to be_in_sync_with_project(project)
-        end
-      end
-
-      context 'with create_project_namespace_on_project_create FF disabled' do
-        before do
-          stub_feature_flags(create_project_namespace_on_project_create: false)
-        end
-
-        it_behaves_like 'project update'
-
-        it 'does not create a project namespace when project is updated' do
-          project = create(:project)
-          project.update!(path: 'hopefully-valid-path1')
-
-          expect(project).to be_persisted
-          expect(project.project_namespace).to be_nil
         end
       end
     end
@@ -627,10 +607,30 @@ RSpec.describe Project, factory_default: :keep do
         expect(project).to be_valid
       end
 
-      it 'allows a path ending in a period' do
-        project = build(:project, path: 'foo.')
+      context 'path is unchanged' do
+        let_it_be(:invalid_path_project) do
+          project = create(:project, :repository, :public)
+          project.update_attribute(:path, 'foo.')
+          project
+        end
 
-        expect(project).to be_valid
+        it 'does not raise validation error for path for existing project' do
+          expect { invalid_path_project.update!(name: 'Foo') }.not_to raise_error
+        end
+      end
+
+      %w[. - _].each do |special_character|
+        it "rejects a path ending in '#{special_character}'" do
+          project = build(:project, path: "foo#{special_character}")
+
+          expect(project).not_to be_valid
+        end
+
+        it "rejects a path starting with '#{special_character}'" do
+          project = build(:project, path: "#{special_character}foo")
+
+          expect(project).not_to be_valid
+        end
       end
     end
   end
@@ -782,8 +782,8 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'does not set an random token if one provided' do
-      project = FactoryBot.create(:project, runners_token: "#{Project::RUNNERS_TOKEN_PREFIX}my-token")
-      expect(project.runners_token).to eq("#{Project::RUNNERS_TOKEN_PREFIX}my-token")
+      project = FactoryBot.create(:project, runners_token: "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token")
+      expect(project.runners_token).to eq("#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token")
     end
   end
 
@@ -1470,7 +1470,7 @@ RSpec.describe Project, factory_default: :keep do
 
     context 'when there is an active external issue tracker integration' do
       let!(:integration) do
-        create(:integration, project: project, type: 'JiraService', category: 'issue_tracker', active: true)
+        create(:jira_integration, project: project, category: 'issue_tracker')
       end
 
       specify { is_expected.to eq(true) }
@@ -1489,7 +1489,7 @@ RSpec.describe Project, factory_default: :keep do
 
       context 'when there are two active external issue tracker integrations' do
         let_it_be(:second_integration) do
-          create(:integration, project: project, type: 'CustomIssueTracker', category: 'issue_tracker', active: true)
+          create(:custom_issue_tracker_integration, project: project, category: 'issue_tracker')
         end
 
         it 'does not become false when external issue tracker integration is destroyed' do
@@ -6559,7 +6559,6 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#mark_pages_as_deployed' do
     let(:project) { create(:project) }
-    let(:artifacts_archive) { create(:ci_job_artifact, project: project) }
 
     it "works when artifacts_archive is missing" do
       project.mark_pages_as_deployed
@@ -6571,7 +6570,7 @@ RSpec.describe Project, factory_default: :keep do
       project.pages_metadatum.destroy!
       project.reload
 
-      project.mark_pages_as_deployed(artifacts_archive: artifacts_archive)
+      project.mark_pages_as_deployed
 
       expect(project.pages_metadatum.reload.deployed).to eq(true)
     end
@@ -6581,15 +6580,13 @@ RSpec.describe Project, factory_default: :keep do
       pages_metadatum.update!(deployed: false)
 
       expect do
-        project.mark_pages_as_deployed(artifacts_archive: artifacts_archive)
+        project.mark_pages_as_deployed
       end.to change { pages_metadatum.reload.deployed }.from(false).to(true)
-               .and change { pages_metadatum.reload.artifacts_archive }.from(nil).to(artifacts_archive)
     end
   end
 
   describe '#mark_pages_as_not_deployed' do
     let(:project) { create(:project) }
-    let(:artifacts_archive) { create(:ci_job_artifact, project: project) }
 
     it "creates new record and sets deployed to false if none exists yet" do
       project.pages_metadatum.destroy!
@@ -6602,12 +6599,11 @@ RSpec.describe Project, factory_default: :keep do
 
     it "updates the existing record and sets deployed to false and clears artifacts_archive" do
       pages_metadatum = project.pages_metadatum
-      pages_metadatum.update!(deployed: true, artifacts_archive: artifacts_archive)
+      pages_metadatum.update!(deployed: true)
 
       expect do
         project.mark_pages_as_not_deployed
       end.to change { pages_metadatum.reload.deployed }.from(true).to(false)
-               .and change { pages_metadatum.reload.artifacts_archive }.from(artifacts_archive).to(nil)
     end
   end
 
@@ -6697,6 +6693,24 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#access_request_approvers_to_be_notified' do
+    context 'for a personal project' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:maintainer) { create(:user) }
+
+      let(:owner_membership) { project.members.owners.find_by(user_id: project.namespace.owner_id) }
+
+      it 'includes only the owner of the personal project' do
+        expect(project.access_request_approvers_to_be_notified.to_a).to eq([owner_membership])
+      end
+
+      it 'includes the maintainers of the personal project, if any' do
+        project.add_maintainer(maintainer)
+        maintainer_membership = project.members.maintainers.find_by(user_id: maintainer.id)
+
+        expect(project.access_request_approvers_to_be_notified.to_a).to match_array([owner_membership, maintainer_membership])
+      end
+    end
+
     let_it_be(:project) { create(:project, group: create(:group, :public)) }
 
     it 'returns a maximum of ten maintainers of the project in recent_sign_in descending order' do
@@ -7504,6 +7518,14 @@ RSpec.describe Project, factory_default: :keep do
         expect(project.save).to be_falsy
         expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
       end
+
+      it 'does not add new topic if name is not unique (case insensitive)' do
+        project.topic_list = 'topic1, TOPIC2, topic3'
+
+        project.save!
+
+        expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
+      end
     end
 
     context 'public topics counter' do
@@ -7956,53 +7978,41 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#context_commits_enabled?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, namespace: group) }
+  describe '.not_hidden' do
+    it 'lists projects that are not hidden' do
+      project = create(:project)
+      hidden_project = create(:project, :hidden)
 
-    subject(:result) { project.context_commits_enabled? }
-
-    context 'when context_commits feature flag is enabled' do
-      before do
-        stub_feature_flags(context_commits: true)
-      end
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when context_commits feature flag is disabled' do
-      before do
-        stub_feature_flags(context_commits: false)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when context_commits feature flag is enabled on project group' do
-      before do
-        stub_feature_flags(context_commits: group)
-      end
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when context_commits feature flag is enabled on another group' do
-      let(:another_group) { create(:group) }
-
-      before do
-        stub_feature_flags(context_commits: another_group)
-      end
-
-      it { is_expected.to be_falsey }
+      expect(described_class.not_hidden).to contain_exactly(project)
+      expect(described_class.not_hidden).not_to include(hidden_project)
     end
   end
 
-  describe '#runners_token' do
-    let_it_be(:project) { create(:project) }
+  describe '#pending_delete_or_hidden?' do
+    let_it_be(:project) { create(:project, name: 'test-project') }
 
-    subject { project }
+    where(:pending_delete, :hidden, :expected_result) do
+      true  | false | true
+      true  | true  | true
+      false | true  | true
+      false | false | false
+    end
 
-    it_behaves_like 'it has a prefixable runners_token'
+    with_them do
+      it 'returns true if project is pending delete or hidden' do
+        project.pending_delete = pending_delete
+        project.hidden = hidden
+        project.save!
+
+        expect(project.pending_delete_or_hidden?).to eq(expected_result)
+      end
+    end
+  end
+
+  describe 'serialization' do
+    let(:object) { build(:project) }
+
+    it_behaves_like 'blocks unsafe serialization'
   end
 
   private

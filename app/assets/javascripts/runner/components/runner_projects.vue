@@ -2,7 +2,7 @@
 import { GlSkeletonLoading } from '@gitlab/ui';
 import { sprintf, formatNumber } from '~/locale';
 import { createAlert } from '~/flash';
-import getRunnerProjectsQuery from '../graphql/get_runner_projects.query.graphql';
+import runnerProjectsQuery from '../graphql/details/runner_projects.query.graphql';
 import {
   I18N_ASSIGNED_PROJECTS,
   I18N_NONE,
@@ -41,7 +41,7 @@ export default {
   },
   apollo: {
     projects: {
-      query: getRunnerProjectsQuery,
+      query: runnerProjectsQuery,
       variables() {
         return this.variables;
       },
@@ -55,8 +55,7 @@ export default {
       },
       error(error) {
         createAlert({ message: I18N_FETCH_ERROR });
-
-        this.reportToSentry(error);
+        captureException({ error, component: this.$options.name });
       },
     },
   },
@@ -75,11 +74,6 @@ export default {
       return sprintf(I18N_ASSIGNED_PROJECTS, {
         projectCount: formatNumber(this.projects.count),
       });
-    },
-  },
-  methods: {
-    reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
     },
   },
   I18N_NONE,

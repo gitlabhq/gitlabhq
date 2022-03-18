@@ -9,8 +9,8 @@ module Types
     authorize :read_dependency_proxy
 
     field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
-    field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
     field :file_name, GraphQL::Types::String, null: false, description: 'Name of the blob.'
     field :size, GraphQL::Types::String, null: false, description: 'Size of the blob file.'
+    field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
   end
 end

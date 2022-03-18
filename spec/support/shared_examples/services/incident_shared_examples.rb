@@ -70,7 +70,7 @@ RSpec.shared_examples 'incident management label service' do
         expect(execute).to be_success
         expect(execute.payload).to eq(label: label)
         expect(label.title).to eq(title)
-        expect(label.color).to eq(color)
+        expect(label.color).to be_color(color)
         expect(label.description).to eq(description)
       end
     end

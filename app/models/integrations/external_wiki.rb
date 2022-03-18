@@ -2,8 +2,6 @@
 
 module Integrations
   class ExternalWiki < Integration
-    include ActionView::Helpers::UrlHelper
-
     prop_accessor :external_wiki_url
     validates :external_wiki_url, presence: true, public_url: true, if: :activated?
 
@@ -33,7 +31,7 @@ module Integrations
     end
 
     def help
-      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/wiki/index', anchor: 'link-an-external-wiki'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/wiki/index', anchor: 'link-an-external-wiki'), target: '_blank', rel: 'noopener noreferrer'
 
       s_('Link an external wiki from the project\'s sidebar. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end

@@ -212,7 +212,7 @@ class GroupsController < Groups::ApplicationController
   def issues
     return super if !html_request? || Feature.disabled?(:vue_issues_list, group, default_enabled: :yaml)
 
-    @has_issues = IssuesFinder.new(current_user, group_id: group.id).execute
+    @has_issues = IssuesFinder.new(current_user, group_id: group.id, include_subgroups: true).execute
       .non_archived
       .exists?
 
@@ -235,7 +235,7 @@ class GroupsController < Groups::ApplicationController
 
   def render_details_view_atom
     load_events
-    render layout: 'xml.atom', template: 'groups/show'
+    render layout: 'xml', template: 'groups/show'
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

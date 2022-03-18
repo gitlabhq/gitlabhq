@@ -90,7 +90,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.roots'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         expect { described_class.where(id: [nested_group_1]).roots.load }.to make_queries_matching(/WITH RECURSIVE/)
       end
     end
@@ -126,7 +126,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
     end
 
     context 'with offset and limit' do
-      subject { described_class.where(id: [deep_nested_group_1, deep_nested_group_2]).offset(1).limit(1).self_and_ancestors }
+      subject { described_class.where(id: [deep_nested_group_1, deep_nested_group_2]).order(:traversal_ids).offset(1).limit(1).self_and_ancestors }
 
       it { is_expected.to contain_exactly(group_2, nested_group_2, deep_nested_group_2) }
     end
@@ -159,7 +159,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.self_and_ancestors'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         expect { described_class.where(id: [nested_group_1]).self_and_ancestors.load }.to make_queries_matching(/WITH RECURSIVE/)
       end
     end
@@ -185,6 +185,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
       subject do
         described_class
           .where(id: [deep_nested_group_1, deep_nested_group_2])
+          .order(:traversal_ids)
           .limit(1)
           .offset(1)
           .self_and_ancestor_ids
@@ -204,7 +205,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.self_and_ancestor_ids'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         expect { described_class.where(id: [nested_group_1]).self_and_ancestor_ids.load }.not_to make_queries_matching(/WITH RECURSIVE/)
       end
     end
@@ -216,7 +217,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.self_and_ancestor_ids'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         expect { described_class.where(id: [nested_group_1]).self_and_ancestor_ids.load }.to make_queries_matching(/WITH RECURSIVE/)
       end
     end
@@ -240,9 +241,19 @@ RSpec.shared_examples 'namespace traversal scopes' do
     end
 
     context 'with offset and limit' do
-      subject { described_class.where(id: [group_1, group_2]).offset(1).limit(1).self_and_descendants }
+      subject { described_class.where(id: [group_1, group_2]).order(:traversal_ids).offset(1).limit(1).self_and_descendants }
 
       it { is_expected.to contain_exactly(group_2, nested_group_2, deep_nested_group_2) }
+    end
+
+    context 'with nested query groups' do
+      let!(:nested_group_1b) { create(:group, parent: group_1) }
+      let!(:deep_nested_group_1b) { create(:group, parent: nested_group_1b) }
+      let(:group1_hierarchy) { [group_1, nested_group_1, deep_nested_group_1, nested_group_1b, deep_nested_group_1b] }
+
+      subject { described_class.where(id: [group_1, nested_group_1]).self_and_descendants }
+
+      it { is_expected.to match_array group1_hierarchy }
     end
   end
 
@@ -278,6 +289,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
       subject do
         described_class
           .where(id: [group_1, group_2])
+          .order(:traversal_ids)
           .limit(1)
           .offset(1)
           .self_and_descendant_ids
@@ -340,7 +352,7 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it_behaves_like '.self_and_hierarchy'
 
-      it 'make recursive queries' do
+      it 'makes recursive queries' do
         base_groups = Group.where(id: nested_group_1)
         expect { base_groups.self_and_hierarchy.load }.to make_queries_matching(/WITH RECURSIVE/)
       end

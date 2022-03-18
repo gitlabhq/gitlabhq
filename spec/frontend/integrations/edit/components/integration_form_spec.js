@@ -14,6 +14,8 @@ import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_field
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import ResetConfirmationModal from '~/integrations/edit/components/reset_confirmation_modal.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
+import IntegrationSectionConnection from '~/integrations/edit/components/sections/connection.vue';
+
 import {
   integrationLevels,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
@@ -22,7 +24,7 @@ import {
 import { createStore } from '~/integrations/edit/store';
 import httpStatus from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import { mockIntegrationProps, mockField } from '../mock_data';
+import { mockIntegrationProps, mockField, mockSectionConnection } from '../mock_data';
 
 jest.mock('@sentry/browser');
 jest.mock('~/lib/utils/url_utility');
@@ -37,7 +39,7 @@ describe('IntegrationForm', () => {
   const createComponent = ({
     customStateProps = {},
     initialState = {},
-    props = {},
+    provide = {},
     mountFn = shallowMountExtended,
   } = {}) => {
     const store = createStore({
@@ -47,7 +49,7 @@ describe('IntegrationForm', () => {
     dispatch = jest.spyOn(store, 'dispatch').mockImplementation();
 
     wrapper = mountFn(IntegrationForm, {
-      propsData: { ...props },
+      provide,
       store,
       stubs: {
         OverrideDropdown,
@@ -78,6 +80,11 @@ describe('IntegrationForm', () => {
   const findGlForm = () => wrapper.findComponent(GlForm);
   const findRedirectToField = () => wrapper.findByTestId('redirect-to-field');
   const findDynamicField = () => wrapper.findComponent(DynamicField);
+  const findAllDynamicFields = () => wrapper.findAllComponents(DynamicField);
+  const findAllSections = () => wrapper.findAllByTestId('integration-section');
+  const findConnectionSection = () => findAllSections().at(0);
+  const findConnectionSectionComponent = () =>
+    findConnectionSection().findComponent(IntegrationSectionConnection);
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
@@ -253,23 +260,32 @@ describe('IntegrationForm', () => {
     });
 
     describe('fields is present', () => {
-      it('renders DynamicField for each field', () => {
-        const fields = [
-          { name: 'username', type: 'text' },
-          { name: 'API token', type: 'password' },
+      it('renders DynamicField for each field without a section', () => {
+        const sectionFields = [
+          { name: 'username', type: 'text', section: mockSectionConnection.type },
+          { name: 'API token', type: 'password', section: mockSectionConnection.type },
+        ];
+
+        const nonSectionFields = [
+          { name: 'branch', type: 'text' },
+          { name: 'labels', type: 'select' },
         ];
 
         createComponent({
+          provide: {
+            glFeatures: { integrationFormSections: true },
+          },
           customStateProps: {
-            fields,
+            sections: [mockSectionConnection],
+            fields: [...sectionFields, ...nonSectionFields],
           },
         });
 
-        const dynamicFields = wrapper.findAll(DynamicField);
+        const dynamicFields = findAllDynamicFields();
 
         expect(dynamicFields).toHaveLength(2);
         dynamicFields.wrappers.forEach((field, index) => {
-          expect(field.props()).toMatchObject(fields[index]);
+          expect(field.props()).toMatchObject(nonSectionFields[index]);
         });
       });
     });
@@ -300,7 +316,7 @@ describe('IntegrationForm', () => {
       });
     });
 
-    describe('with `helpHtml` prop', () => {
+    describe('with `helpHtml` provided', () => {
       const mockTestId = 'jest-help-html-test';
 
       setHTMLFixture(`
@@ -316,7 +332,7 @@ describe('IntegrationForm', () => {
         const mockHelpHtml = document.querySelector(`[data-testid="${mockTestId}"]`);
 
         createComponent({
-          props: {
+          provide: {
             helpHtml: mockHelpHtml.outerHTML,
           },
         });
@@ -344,6 +360,106 @@ describe('IntegrationForm', () => {
     });
   });
 
+  describe('when integration has sections', () => {
+    beforeEach(() => {
+      createComponent({
+        provide: {
+          glFeatures: { integrationFormSections: true },
+        },
+        customStateProps: {
+          sections: [mockSectionConnection],
+        },
+      });
+    });
+
+    it('renders the expected number of sections', () => {
+      expect(findAllSections().length).toBe(1);
+    });
+
+    it('renders title, description and the correct dynamic component', () => {
+      const connectionSection = findConnectionSection();
+
+      expect(connectionSection.find('h4').text()).toBe(mockSectionConnection.title);
+      expect(connectionSection.find('p').text()).toBe(mockSectionConnection.description);
+      expect(findConnectionSectionComponent().exists()).toBe(true);
+    });
+
+    it('passes only fields with section type', () => {
+      const sectionFields = [
+        { name: 'username', type: 'text', section: mockSectionConnection.type },
+        { name: 'API token', type: 'password', section: mockSectionConnection.type },
+      ];
+
+      const nonSectionFields = [
+        { name: 'branch', type: 'text' },
+        { name: 'labels', type: 'select' },
+      ];
+
+      createComponent({
+        provide: {
+          glFeatures: { integrationFormSections: true },
+        },
+        customStateProps: {
+          sections: [mockSectionConnection],
+          fields: [...sectionFields, ...nonSectionFields],
+        },
+      });
+
+      expect(findConnectionSectionComponent().props('fields')).toEqual(sectionFields);
+    });
+
+    describe.each`
+      formActive | novalidate
+      ${true}    | ${undefined}
+      ${false}   | ${'true'}
+    `(
+      'when `toggle-integration-active` is emitted with $formActive',
+      ({ formActive, novalidate }) => {
+        beforeEach(() => {
+          createComponent({
+            provide: {
+              glFeatures: { integrationFormSections: true },
+            },
+            customStateProps: {
+              sections: [mockSectionConnection],
+              showActive: true,
+              initialActivated: false,
+            },
+          });
+
+          findConnectionSectionComponent().vm.$emit('toggle-integration-active', formActive);
+        });
+
+        it(`sets noValidate to ${novalidate}`, () => {
+          expect(findGlForm().attributes('novalidate')).toBe(novalidate);
+        });
+      },
+    );
+
+    describe('when IntegrationSectionConnection emits `request-jira-issue-types` event', () => {
+      beforeEach(() => {
+        jest.spyOn(document, 'querySelector').mockReturnValue(document.createElement('form'));
+
+        createComponent({
+          provide: {
+            glFeatures: { integrationFormSections: true },
+          },
+          customStateProps: {
+            sections: [mockSectionConnection],
+            testPath: '/test',
+          },
+          mountFn: mountExtended,
+        });
+
+        findConnectionSectionComponent().vm.$emit('request-jira-issue-types');
+      });
+
+      it('dispatches `requestJiraIssueTypes` action', () => {
+        expect(dispatch).toHaveBeenCalledWith('requestJiraIssueTypes', expect.any(FormData));
+      });
+    });
+  });
+
   describe('ActiveCheckbox', () => {
     describe.each`
       showActive
@@ -368,7 +484,7 @@ describe('IntegrationForm', () => {
     `(
       'when `toggle-integration-active` is emitted with $formActive',
       ({ formActive, novalidate }) => {
-        beforeEach(async () => {
+        beforeEach(() => {
           createComponent({
             customStateProps: {
               showActive: true,
@@ -376,7 +492,7 @@ describe('IntegrationForm', () => {
             },
           });
 
-          await findActiveCheckbox().vm.$emit('toggle-integration-active', formActive);
+          findActiveCheckbox().vm.$emit('toggle-integration-active', formActive);
         });
 
         it(`sets noValidate to ${novalidate}`, () => {

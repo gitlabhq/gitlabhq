@@ -51,13 +51,13 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js do
     visit new_path
     wait_for_requests
 
-    expect(current_path).to eq(new_path)
+    expect(page).to have_current_path(new_path, ignore_query: true)
     expect(find('.breadcrumbs')).to have_content(project.name)
 
     visit old_path
     wait_for_requests
 
-    expect(current_path).to eq(new_path)
+    expect(page).to have_current_path(new_path, ignore_query: true)
     expect(find('.breadcrumbs')).to have_content(project.name)
   end
 
@@ -69,7 +69,7 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js do
       new_project = create(:project, namespace: user.namespace, path: project_path)
       visit old_path
 
-      expect(current_path).to eq(old_path)
+      expect(page).to have_current_path(old_path, ignore_query: true)
       expect(find('.breadcrumbs')).to have_content(new_project.name)
     end
   end

@@ -26,7 +26,7 @@ module Gitlab
       end
 
       def safe_keys
-        issuable_builder.safe_hook_attributes + issuable_builder::SAFE_HOOK_RELATIONS
+        issuable_builder.safe_hook_attributes + issuable_builder.safe_hook_relations
       end
 
       private

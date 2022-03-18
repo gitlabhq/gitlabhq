@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration policy', :js do
-  using RSpec::Parameterized::TableSyntax
-
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, namespace: user.namespace) }
 
@@ -63,31 +61,34 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
   end
 
   context 'with a project without expiration policy' do
-    where(:application_setting, :feature_flag, :result) do
-      true  | true  | :available_section
-      true  | false | :available_section
-      false | true  | :available_section
-      false | false | :disabled_message
+    before do
+      project.container_expiration_policy.destroy!
     end
 
-    with_them do
+    context 'with container_expiration_policies_enable_historic_entries enabled' do
       before do
-        project.container_expiration_policy.destroy!
-        stub_feature_flags(container_expiration_policies_historic_entry: false)
-        stub_application_setting(container_expiration_policies_enable_historic_entries: application_setting)
-        stub_feature_flags(container_expiration_policies_historic_entry: project) if feature_flag
+        stub_application_setting(container_expiration_policies_enable_historic_entries: true)
       end
 
-      it 'displays the expected result' do
+      it 'displays the related section' do
         subject
 
         within '[data-testid="registry-settings-app"]' do
-          case result
-          when :available_section
-            expect(find('[data-testid="enable-toggle"]')).to have_content('Disabled - Tags will not be automatically deleted.')
-          when :disabled_message
-            expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
-          end
+          expect(find('[data-testid="enable-toggle"]')).to have_content('Disabled - Tags will not be automatically deleted.')
+        end
+      end
+    end
+
+    context 'with container_expiration_policies_enable_historic_entries disabled' do
+      before do
+        stub_application_setting(container_expiration_policies_enable_historic_entries: false)
+      end
+
+      it 'does not display the related section' do
+        subject
+
+        within '[data-testid="registry-settings-app"]' do
+          expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
         end
       end
     end

@@ -127,6 +127,10 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
+- name: i_quickactions_page
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
 - name: i_quickactions_publish
   category: quickactions
   redis_slot: quickactions

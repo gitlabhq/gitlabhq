@@ -51,7 +51,7 @@ Once [Group Single Sign-On](index.md) has been configured, we can:
 
 The SAML application that was created during [Single sign-on](index.md) setup for [Azure](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) now needs to be set up for SCIM. You can refer to [Azure SCIM setup documentation](https://docs.microsoft.com/en-us/azure/active-directory/app-provisioning/use-scim-to-provision-users-and-groups#getting-started).
 
-1. In your app, go to the Provisioning tab, and set the **Provisioning Mode** to **Automatic**. 
+1. In your app, go to the Provisioning tab, and set the **Provisioning Mode** to **Automatic**.
    Then fill in the **Admin Credentials**, and save. The **Tenant URL** and **secret token** are the items
    retrieved in the [previous step](#gitlab-configuration).
 
@@ -60,7 +60,7 @@ The SAML application that was created during [Single sign-on](index.md) setup fo
     - **Settings**: We recommend setting a notification email and selecting the **Send an email notification when a failure occurs** checkbox.
       You also control what is actually synced by selecting the **Scope**. For example, **Sync only assigned users and groups** only syncs the users and groups assigned to the application. Otherwise, it syncs the whole Active Directory.
 
-    - **Mappings**: We recommend keeping **Provision Azure Active Directory Users** enabled, and disable **Provision Azure Active Directory Groups**. 
+    - **Mappings**: We recommend keeping **Provision Azure Active Directory Users** enabled, and disable **Provision Azure Active Directory Groups**.
       Leaving **Provision Azure Active Directory Groups** enabled does not break the SCIM user provisioning, but it causes errors in Azure AD that may be confusing and misleading.
 
 1. You can then test the connection by selecting **Test Connection**. If the connection is successful, save your configuration before moving on. See below for [troubleshooting](#troubleshooting).
@@ -100,12 +100,14 @@ Once synchronized, changing the field mapped to `id` and `externalId` may cause 
 
 ### Okta configuration steps
 
-Before you start this section, complete the [GitLab configuration](#gitlab-configuration) process.
-Make sure that you've also set up a SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/),
-as described in the [Okta setup notes](index.md#okta-setup-notes)
+Before you start this section:
 
-Make sure that the Okta setup matches our documentation exactly, especially the NameID
-configuration. Otherwise, the Okta SCIM app may not work properly.
+- Check that you are using Okta [Lifecycle Management](https://www.okta.com/products/lifecycle-management/) product. This product tier is required to use SCIM on Okta. To check which Okta product you are using, check your signed Okta contract, contact your Okta AE, CSM, or Okta support.
+- Complete the [GitLab configuration](#gitlab-configuration) process.
+- Complete the setup for SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/), as described in the [Okta setup notes](index.md#okta-setup-notes).
+- Check that your Okta SAML setup matches our documentation exactly, especially the NameID configuration. Otherwise, the Okta SCIM app may not work properly.
+
+After the above steps are complete:
 
 1. Sign in to Okta.
 1. Ensure you are in the Admin section by selecting the **Admin** button located in the top right. The admin button is not visible from the admin page.
@@ -169,7 +171,7 @@ We recommend users do this prior to turning on sync, because while synchronizati
 
 New users and existing users on subsequent visits can access the group through the identify provider's dashboard or by visiting links directly.
 
-[In GitLab 14.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325712), GitLab users created with a SCIM identity display with an **Enterprise** badge in the **Members** view.
+[In GitLab 14.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325712), GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning display with an **Enterprise** badge in the **Members** view.
 
 ![Enterprise badge for users created with a SCIM identity](img/member_enterprise_badge_v14_0.png)
 
@@ -244,7 +246,7 @@ It is important not to update these to incorrect values, since this causes users
 
 ### I need to change my SCIM app
 
-Individual users can follow the instructions in the ["SAML authentication failed: User has already been taken"](index.md#i-need-to-change-my-saml-app) section.
+Individual users can follow the instructions in the ["SAML authentication failed: User has already been taken"](index.md#change-the-saml-app) section.
 
 Alternatively, users can be removed from the SCIM app which de-links all removed users. Sync can then be turned on for the new SCIM app to [link existing users](#user-access-and-linking-setup).
 

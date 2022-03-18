@@ -30,16 +30,9 @@ end
 # `job_args` to be arguments to #perform if it takes arguments
 RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_duration|
   before do
-    # Allow Timecop freeze and travel without the block form
-    Timecop.safe_mode = false
-    Timecop.freeze
+    freeze_time
 
     time_travel_during_perform(actual_duration)
-  end
-
-  after do
-    Timecop.return
-    Timecop.safe_mode = true
   end
 
   let(:subject_perform) { defined?(job_args) ? subject.perform(job_args) : subject.perform }
@@ -58,7 +51,7 @@ RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_durat
     let(:actual_duration) { 0.1 * minimum_duration }
 
     it 'sleeps 90% of minimum duration' do
-      expect(subject).to receive(:sleep).with(a_value_within(0.01).of(0.9 * minimum_duration))
+      expect(subject).to receive(:sleep).with(a_value_within(1).of(0.9 * minimum_duration))
 
       subject_perform
     end
@@ -68,7 +61,7 @@ RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_durat
     let(:actual_duration) { 0.9 * minimum_duration }
 
     it 'sleeps 10% of minimum duration' do
-      expect(subject).to receive(:sleep).with(a_value_within(0.01).of(0.1 * minimum_duration))
+      expect(subject).to receive(:sleep).with(a_value_within(1).of(0.1 * minimum_duration))
 
       subject_perform
     end
@@ -111,7 +104,7 @@ RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_durat
     allow(subject).to receive(:ensure_minimum_duration) do |minimum_duration, &block|
       original_ensure_minimum_duration.call(minimum_duration) do
         # Time travel inside the block inside ensure_minimum_duration
-        Timecop.travel(actual_duration) if actual_duration && actual_duration > 0
+        travel_to(actual_duration.from_now) if actual_duration && actual_duration > 0
       end
     end
   end

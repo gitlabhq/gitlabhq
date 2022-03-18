@@ -8,7 +8,10 @@ module Atlassian
       end
 
       def app_key
-        "gitlab-jira-connect-#{gitlab_host}"
+        # App key must be <= 64 characters.
+        # See: https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/#app-descriptor-structure
+
+        "gitlab-jira-connect-#{gitlab_host}"[..63]
       end
 
       private

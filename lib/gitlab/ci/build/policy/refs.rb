@@ -36,7 +36,7 @@ module Gitlab
             # the pattern matching does not work for merge requests pipelines
             if pipeline.branch? || pipeline.tag?
               regexp = Gitlab::UntrustedRegexp::RubySyntax
-                .fabricate(pattern, fallback: true, project: pipeline.project)
+                .fabricate(pattern, project: pipeline.project)
 
               if regexp
                 regexp.match?(pipeline.ref)

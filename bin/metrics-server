@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require_relative '../metrics_server/dependencies'
 require_relative '../metrics_server/metrics_server'
 
 target = ENV['METRICS_SERVER_TARGET']

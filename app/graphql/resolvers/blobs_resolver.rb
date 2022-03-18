@@ -30,8 +30,17 @@ module Resolvers
       return [] if repository.empty?
 
       ref ||= repository.root_ref
+      validate_ref(ref)
 
       repository.blobs_at(paths.map { |path| [ref, path] })
+    end
+
+    private
+
+    def validate_ref(ref)
+      unless Gitlab::GitRefValidator.validate(ref)
+        raise Gitlab::Graphql::Errors::ArgumentError, 'Ref is not valid'
+      end
     end
   end
 end

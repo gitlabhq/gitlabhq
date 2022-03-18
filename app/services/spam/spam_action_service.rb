@@ -65,22 +65,19 @@ module Spam
       # ask the SpamVerdictService what to do with the target.
       spam_verdict_service.execute.tap do |result|
         case result
-        when CONDITIONAL_ALLOW
-          # at the moment, this means "ask for reCAPTCHA"
-          create_spam_log
-
-          break if target.allow_possible_spam?
-
-          target.needs_recaptcha!
-        when DISALLOW
-          # TODO: remove `unless target.allow_possible_spam?` once this flag has been passed to `SpamVerdictService`
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/214739
-          target.spam! unless target.allow_possible_spam?
-          create_spam_log
         when BLOCK_USER
           # TODO: improve BLOCK_USER handling, non-existent until now
           # https://gitlab.com/gitlab-org/gitlab/-/issues/329666
-          target.spam! unless target.allow_possible_spam?
+          target.spam!
+          create_spam_log
+        when DISALLOW
+          target.spam!
+          create_spam_log
+        when CONDITIONAL_ALLOW
+          # This means "require a CAPTCHA to be solved"
+          target.needs_recaptcha!
+          create_spam_log
+        when OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM
           create_spam_log
         when ALLOW
           target.clear_spam_flags!

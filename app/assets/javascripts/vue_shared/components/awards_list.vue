@@ -199,12 +199,15 @@ export default {
     <div v-if="canAwardEmoji" class="award-menu-holder gl-my-2">
       <emoji-picker
         v-if="glFeatures.improvedEmojiPicker"
+        v-gl-tooltip.viewport
+        :title="__('Add reaction')"
         :toggle-class="['add-reaction-button btn-icon gl-relative!', { 'is-active': isMenuOpen }]"
         @click="handleAward"
         @shown="setIsMenuOpen(true)"
         @hidden="setIsMenuOpen(false)"
       >
         <template #button-content>
+          <span class="gl-sr-only">{{ __('Add reaction') }}</span>
           <span class="reaction-control-icon reaction-control-icon-neutral">
             <gl-icon name="slight-smile" />
           </span>

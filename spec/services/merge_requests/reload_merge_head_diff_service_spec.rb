@@ -47,15 +47,5 @@ RSpec.describe MergeRequests::ReloadMergeHeadDiffService do
         expect(merge_request.reload.merge_head_diff).not_to eq(existing_merge_head_diff)
       end
     end
-
-    context 'when default_merge_ref_for_diffs feature flag is disabled' do
-      before do
-        stub_feature_flags(default_merge_ref_for_diffs: false)
-      end
-
-      it 'returns error' do
-        expect(subject[:status]).to eq(:error)
-      end
-    end
   end
 end

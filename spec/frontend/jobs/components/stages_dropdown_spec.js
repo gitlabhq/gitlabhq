@@ -1,10 +1,12 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { trimText } from 'helpers/text_helper';
+import Mousetrap from 'mousetrap';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import StagesDropdown from '~/jobs/components/stages_dropdown.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import * as copyToClipboard from '~/behaviors/copy_to_clipboard';
 import {
+  mockPipelineWithoutRef,
   mockPipelineWithoutMR,
   mockPipelineWithAttachedMR,
   mockPipelineDetached,
@@ -18,19 +20,18 @@ describe('Stages Dropdown', () => {
   const findStageItem = (index) => wrapper.findAllComponents(GlDropdownItem).at(index);
 
   const findPipelineInfoText = () => wrapper.findByTestId('pipeline-info').text();
-  const findPipelinePath = () => wrapper.findByTestId('pipeline-path').attributes('href');
-  const findMRLinkPath = () => wrapper.findByTestId('mr-link').attributes('href');
-  const findCopySourceBranchBtn = () => wrapper.findByTestId('copy-source-ref-link');
-  const findSourceBranchLinkPath = () =>
-    wrapper.findByTestId('source-branch-link').attributes('href');
-  const findTargetBranchLinkPath = () =>
-    wrapper.findByTestId('target-branch-link').attributes('href');
 
   const createComponent = (props) => {
     wrapper = extendedWrapper(
       shallowMount(StagesDropdown, {
         propsData: {
+          stages: [],
+          selectedStage: 'deploy',
           ...props,
+        },
+        stubs: {
+          GlSprintf,
+          GlLink,
         },
       }),
     );
@@ -45,16 +46,11 @@ describe('Stages Dropdown', () => {
       createComponent({
         pipeline: mockPipelineWithoutMR,
         stages: [{ name: 'build' }, { name: 'test' }],
-        selectedStage: 'deploy',
       });
     });
 
     it('renders pipeline status', () => {
       expect(findStatus().exists()).toBe(true);
-    });
-
-    it('renders pipeline link', () => {
-      expect(findPipelinePath()).toBe('pipeline/28029444');
     });
 
     it('renders dropdown with stages', () => {
@@ -64,84 +60,133 @@ describe('Stages Dropdown', () => {
     it('rendes selected stage', () => {
       expect(findSelectedStageText()).toBe('deploy');
     });
+  });
 
-    it(`renders the pipeline info text like "Pipeline #123 for source_branch"`, () => {
-      const expected = `Pipeline #${mockPipelineWithoutMR.id} for ${mockPipelineWithoutMR.ref.name}`;
-      const actual = trimText(findPipelineInfoText());
+  describe('pipelineInfo', () => {
+    const allElements = [
+      'pipeline-path',
+      'mr-link',
+      'source-ref-link',
+      'copy-source-ref-link',
+      'source-branch-link',
+      'copy-source-branch-link',
+      'target-branch-link',
+      'copy-target-branch-link',
+    ];
+    describe.each([
+      [
+        'does not have a ref',
+        {
+          pipeline: mockPipelineWithoutRef,
+          text: `Pipeline #${mockPipelineWithoutRef.id}`,
+          foundElements: [
+            { testId: 'pipeline-path', props: [{ href: mockPipelineWithoutRef.path }] },
+          ],
+        },
+      ],
+      [
+        'hasRef but not triggered by MR',
+        {
+          pipeline: mockPipelineWithoutMR,
+          text: `Pipeline #${mockPipelineWithoutMR.id} for ${mockPipelineWithoutMR.ref.name}`,
+          foundElements: [
+            { testId: 'pipeline-path', props: [{ href: mockPipelineWithoutMR.path }] },
+            { testId: 'source-ref-link', props: [{ href: mockPipelineWithoutMR.ref.path }] },
+            { testId: 'copy-source-ref-link', props: [{ text: mockPipelineWithoutMR.ref.name }] },
+          ],
+        },
+      ],
+      [
+        'hasRef and MR but not MR pipeline',
+        {
+          pipeline: mockPipelineDetached,
+          text: `Pipeline #${mockPipelineDetached.id} for !${mockPipelineDetached.merge_request.iid} with ${mockPipelineDetached.merge_request.source_branch}`,
+          foundElements: [
+            { testId: 'pipeline-path', props: [{ href: mockPipelineDetached.path }] },
+            { testId: 'mr-link', props: [{ href: mockPipelineDetached.merge_request.path }] },
+            {
+              testId: 'source-branch-link',
+              props: [{ href: mockPipelineDetached.merge_request.source_branch_path }],
+            },
+            {
+              testId: 'copy-source-branch-link',
+              props: [{ text: mockPipelineDetached.merge_request.source_branch }],
+            },
+          ],
+        },
+      ],
+      [
+        'hasRef and MR and MR pipeline',
+        {
+          pipeline: mockPipelineWithAttachedMR,
+          text: `Pipeline #${mockPipelineWithAttachedMR.id} for !${mockPipelineWithAttachedMR.merge_request.iid} with ${mockPipelineWithAttachedMR.merge_request.source_branch} into ${mockPipelineWithAttachedMR.merge_request.target_branch}`,
+          foundElements: [
+            { testId: 'pipeline-path', props: [{ href: mockPipelineWithAttachedMR.path }] },
+            { testId: 'mr-link', props: [{ href: mockPipelineWithAttachedMR.merge_request.path }] },
+            {
+              testId: 'source-branch-link',
+              props: [{ href: mockPipelineWithAttachedMR.merge_request.source_branch_path }],
+            },
+            {
+              testId: 'copy-source-branch-link',
+              props: [{ text: mockPipelineWithAttachedMR.merge_request.source_branch }],
+            },
+            {
+              testId: 'target-branch-link',
+              props: [{ href: mockPipelineWithAttachedMR.merge_request.target_branch_path }],
+            },
+            {
+              testId: 'copy-target-branch-link',
+              props: [{ text: mockPipelineWithAttachedMR.merge_request.target_branch }],
+            },
+          ],
+        },
+      ],
+    ])('%s', (_, { pipeline, text, foundElements }) => {
+      beforeEach(() => {
+        createComponent({
+          pipeline,
+        });
+      });
 
-      expect(actual).toBe(expected);
-    });
+      it('should render the text', () => {
+        expect(findPipelineInfoText()).toMatchInterpolatedText(text);
+      });
 
-    it(`renders the source ref copy button`, () => {
-      expect(findCopySourceBranchBtn().exists()).toBe(true);
+      it('should find components with props', () => {
+        foundElements.forEach((element) => {
+          element.props.forEach((prop) => {
+            const key = Object.keys(prop)[0];
+            expect(wrapper.findByTestId(element.testId).attributes(key)).toBe(prop[key]);
+          });
+        });
+      });
+
+      it('should not find components', () => {
+        const foundTestIds = foundElements.map((element) => element.testId);
+        allElements
+          .filter((testId) => !foundTestIds.includes(testId))
+          .forEach((testId) => {
+            expect(wrapper.findByTestId(testId).exists()).toBe(false);
+          });
+      });
     });
   });
 
-  describe('with an "attached" merge request pipeline', () => {
-    beforeEach(() => {
-      createComponent({
-        pipeline: mockPipelineWithAttachedMR,
-        stages: [],
-        selectedStage: 'deploy',
-      });
-    });
+  describe('mousetrap', () => {
+    it.each([
+      ['copy-source-ref-link', mockPipelineWithoutMR],
+      ['copy-source-branch-link', mockPipelineWithAttachedMR],
+    ])(
+      'calls clickCopyToClipboardButton with `%s` button when `b` is pressed',
+      (button, pipeline) => {
+        const copyToClipboardMock = jest.spyOn(copyToClipboard, 'clickCopyToClipboardButton');
+        createComponent({ pipeline });
 
-    it(`renders the pipeline info text like "Pipeline #123 for !456 with source_branch into target_branch"`, () => {
-      const expected = `Pipeline #${mockPipelineWithAttachedMR.id} for !${mockPipelineWithAttachedMR.merge_request.iid} with ${mockPipelineWithAttachedMR.merge_request.source_branch} into ${mockPipelineWithAttachedMR.merge_request.target_branch}`;
-      const actual = trimText(findPipelineInfoText());
+        Mousetrap.trigger('b');
 
-      expect(actual).toBe(expected);
-    });
-
-    it(`renders the correct merge request link`, () => {
-      expect(findMRLinkPath()).toBe(mockPipelineWithAttachedMR.merge_request.path);
-    });
-
-    it(`renders the correct source branch link`, () => {
-      expect(findSourceBranchLinkPath()).toBe(
-        mockPipelineWithAttachedMR.merge_request.source_branch_path,
-      );
-    });
-
-    it(`renders the correct target branch link`, () => {
-      expect(findTargetBranchLinkPath()).toBe(
-        mockPipelineWithAttachedMR.merge_request.target_branch_path,
-      );
-    });
-
-    it(`renders the source ref copy button`, () => {
-      expect(findCopySourceBranchBtn().exists()).toBe(true);
-    });
-  });
-
-  describe('with a detached merge request pipeline', () => {
-    beforeEach(() => {
-      createComponent({
-        pipeline: mockPipelineDetached,
-        stages: [],
-        selectedStage: 'deploy',
-      });
-    });
-
-    it(`renders the pipeline info like "Pipeline #123 for !456 with source_branch"`, () => {
-      const expected = `Pipeline #${mockPipelineDetached.id} for !${mockPipelineDetached.merge_request.iid} with ${mockPipelineDetached.merge_request.source_branch}`;
-      const actual = trimText(findPipelineInfoText());
-
-      expect(actual).toBe(expected);
-    });
-
-    it(`renders the correct merge request link`, () => {
-      expect(findMRLinkPath()).toBe(mockPipelineDetached.merge_request.path);
-    });
-
-    it(`renders the correct source branch link`, () => {
-      expect(findSourceBranchLinkPath()).toBe(
-        mockPipelineDetached.merge_request.source_branch_path,
-      );
-    });
-
-    it(`renders the source ref copy button`, () => {
-      expect(findCopySourceBranchBtn().exists()).toBe(true);
-    });
+        expect(copyToClipboardMock).toHaveBeenCalledWith(wrapper.findByTestId(button).element);
+      },
+    );
   });
 });

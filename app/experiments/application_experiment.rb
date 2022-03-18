@@ -1,19 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationExperiment < Gitlab::Experiment
-  def publish(_result = nil)
-    super
-
-    publish_to_client
-  end
-
-  def publish_to_client
-    return unless should_track?
-
-    Gon.push({ experiment: { name => signature } }, true)
-  rescue NoMethodError
-    # means we're not in the request cycle, and can't add to Gon. Log a warning maybe?
-  end
+  control { nil } # provide a default control for anonymous experiments
 
   def publish_to_database
     ActiveSupport::Deprecation.warn('publish_to_database is deprecated and should not be used for reporting anymore')

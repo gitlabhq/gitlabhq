@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger do
     end
   end
 
-  context 'when trigger is a hash' do
+  context 'when trigger is a hash - cross-project' do
     context 'when branch is provided' do
       let(:config) { { project: 'some/project', branch: 'feature' } }
 
@@ -82,40 +82,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger do
       end
     end
 
-    describe '#include' do
-      context 'with simple include' do
-        let(:config) { { include: 'path/to/config.yml' } }
-
-        it { is_expected.to be_valid }
-
-        it 'returns a trigger configuration hash' do
-          expect(subject.value).to eq(include: 'path/to/config.yml' )
-        end
-      end
-
-      context 'with project' do
-        let(:config) { { project: 'some/project', include: 'path/to/config.yml' } }
-
-        it { is_expected.not_to be_valid }
-
-        it 'returns an error' do
-          expect(subject.errors.first)
-            .to match /config contains unknown keys: project/
-        end
-      end
-
-      context 'with branch' do
-        let(:config) { { branch: 'feature', include: 'path/to/config.yml' } }
-
-        it { is_expected.not_to be_valid }
-
-        it 'returns an error' do
-          expect(subject.errors.first)
-            .to match /config contains unknown keys: branch/
-        end
-      end
-    end
-
     context 'when config contains unknown keys' do
       let(:config) { { project: 'some/project', unknown: 123 } }
 
@@ -128,6 +94,72 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger do
           expect(subject.errors.first)
             .to match /config contains unknown keys: unknown/
         end
+      end
+    end
+
+    context 'with forward' do
+      let(:config) { { project: 'some/project', forward: { pipeline_variables: true } } }
+
+      before do
+        subject.compose!
+      end
+
+      it { is_expected.to be_valid }
+
+      it 'returns a trigger configuration hash' do
+        expect(subject.value).to eq(
+          project: 'some/project', forward: { pipeline_variables: true }
+        )
+      end
+    end
+  end
+
+  context 'when trigger is a hash - parent-child' do
+    context 'with simple include' do
+      let(:config) { { include: 'path/to/config.yml' } }
+
+      it { is_expected.to be_valid }
+
+      it 'returns a trigger configuration hash' do
+        expect(subject.value).to eq(include: 'path/to/config.yml' )
+      end
+    end
+
+    context 'with project' do
+      let(:config) { { project: 'some/project', include: 'path/to/config.yml' } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'returns an error' do
+        expect(subject.errors.first)
+          .to match /config contains unknown keys: project/
+      end
+    end
+
+    context 'with branch' do
+      let(:config) { { branch: 'feature', include: 'path/to/config.yml' } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'returns an error' do
+        expect(subject.errors.first)
+          .to match /config contains unknown keys: branch/
+      end
+    end
+
+    context 'with forward' do
+      let(:config) { { include: 'path/to/config.yml', forward: { yaml_variables: false } } }
+
+      before do
+        subject.compose!
+      end
+
+      it { is_expected.to be_valid }
+
+      it 'returns a trigger configuration hash' do
+        expect(subject.value).to eq(
+          include: 'path/to/config.yml', forward: { yaml_variables: false }
+        )
       end
     end
   end

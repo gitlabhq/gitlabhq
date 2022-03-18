@@ -9,9 +9,9 @@ RSpec.describe Projects::TopicsFinder do
   let!(:topic2) { create(:topic, name: 'topicC') }
   let!(:topic3) { create(:topic, name: 'topicA') }
 
-  let!(:project1) { create(:project, namespace: user.namespace, topic_list: 'topicC, topicA, topicB') }
-  let!(:project2) { create(:project, namespace: user.namespace, topic_list: 'topicC, topicA') }
-  let!(:project3) { create(:project, namespace: user.namespace, topic_list: 'topicC') }
+  let!(:project1) { create(:project, :public, namespace: user.namespace, topic_list: 'topicC, topicA, topicB') }
+  let!(:project2) { create(:project, :public, namespace: user.namespace, topic_list: 'topicC, topicA') }
+  let!(:project3) { create(:project, :public, namespace: user.namespace, topic_list: 'topicC') }
 
   describe '#execute' do
     it 'returns topics' do

@@ -400,7 +400,7 @@ RSpec.describe 'Dashboard Todos' do
     end
 
     it 'shows the todo' do
-      expect(page).to have_content 'The build failed for merge request'
+      expect(page).to have_content 'The pipeline failed in merge request'
     end
 
     it 'links to the pipelines for the merge request' do
@@ -441,7 +441,7 @@ RSpec.describe 'Dashboard Todos' do
         target.project, target.issue, target.filename
       )
 
-      expect(current_path).to eq(expectation)
+      expect(page).to have_current_path(expectation, ignore_query: true)
     end
   end
 end

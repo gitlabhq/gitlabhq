@@ -7,8 +7,8 @@ type: howto, reference
 
 # Deploy boards (DEPRECATED) **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to GitLab Free in 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in GitLab 9.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) from GitLab Premium to GitLab Free in 13.8.
 > - In GitLab 13.5 and earlier, apps that consist of multiple deployments are shown as
 >   duplicates on the deploy board. This is [fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/8463)
 >   in GitLab 13.6.
@@ -20,7 +20,7 @@ type: howto, reference
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/2493)
-to add this functionality to the [Agent](../index.md).
+to add this functionality to the [agent](../index.md).
 
 GitLab deploy boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/index.md) running on [Kubernetes](https://kubernetes.io), displaying the status

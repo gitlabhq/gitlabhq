@@ -32,7 +32,7 @@ module QA
             element :file_template_dropdown
           end
 
-          view 'app/assets/javascripts/ide/components/file_templates/dropdown.vue' do
+          view 'app/assets/javascripts/ide/components/file_templates/bar.vue' do
             element :dropdown_filter_input
           end
 

@@ -241,7 +241,6 @@ module Integrations
 
     def notify_for_ref?(data)
       return true if data[:object_kind] == 'tag_push'
-      return true if data[:object_kind] == 'deployment' && !Feature.enabled?(:chat_notification_deployment_protected_branch_filter, project)
 
       ref = data[:ref] || data.dig(:object_attributes, :ref)
       return true if ref.blank? # No need to check protected branches when there is no ref

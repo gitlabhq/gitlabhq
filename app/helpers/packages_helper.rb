@@ -50,8 +50,6 @@ module PackagesHelper
     Gitlab.com? &&
     Gitlab.config.registry.enabled &&
     project.feature_available?(:container_registry, current_user) &&
-    !Gitlab::CurrentSettings.container_expiration_policies_enable_historic_entries &&
-    Feature.enabled?(:container_expiration_policies_historic_entry, project) &&
     project.container_expiration_policy.nil? &&
     project.container_repositories.exists?
   end

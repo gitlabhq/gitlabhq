@@ -4,13 +4,13 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# CI/CD Analytics **(FREE)**
+# CI/CD analytics **(FREE)**
 
 ## Pipeline success and duration charts
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI/CD Analytics in GitLab 12.8.
 
-CI/CD Analytics shows the history of your pipeline successes and failures, as well as how long each pipeline
+CI/CD analytics shows the history of your pipeline successes and failures, as well as how long each pipeline
 ran.
 
 View successful pipelines:
@@ -39,21 +39,14 @@ To view CI/CD analytics:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.
 > - [Added support](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) for lead time for changes in GitLab 13.10.
 
-Customer experience is a key metric. Users want to measure platform stability and other
-post-deployment performance KPIs, and set targets for customer behavior, experience, and financial
-impact. Tracking and measuring these indicators solves an important pain point. Similarly, creating
-views that manage products, not projects or repositories, provides users with a more relevant data set.
-Since GitLab is a tool for the entire DevOps life-cycle, information from different workflows is
-integrated and can be used to measure the success of the teams.
-
 The DevOps Research and Assessment ([DORA](https://cloud.google.com/blog/products/devops-sre/the-2019-accelerate-state-of-devops-elite-performance-productivity-and-scaling))
-team developed four key metrics that the industry has widely adopted. You can use these metrics as
-performance indicators for software development teams:
+team developed several key metrics that you can use as performance indicators for software development
+teams:
 
 - Deployment frequency: How often an organization successfully releases to production.
 - Lead time for changes: The amount of time it takes for code to reach production.
 - Change failure rate: The percentage of deployments that cause a failure in production.
-- Time to restore service: How long it takes an organization to recover from a failure in
+- Time to restore service: How long it takes for an organization to recover from a failure in
   production.
 
 ### Supported metrics in GitLab
@@ -62,39 +55,48 @@ The following table shows the supported metrics, at which level they are support
 
 | Metric                    | Level               | API version                          | Chart (UI) version                    | Comments  |
 |---------------------------|---------------------|--------------------------------------|---------------------------------------|-----------|
-| `deployment_frequency`    | Project-level       | [13.7+](../../api/dora/metrics.md)   | [13.8+](#deployment-frequency-charts) | The [old API endpoint](../../api/dora4_project_analytics.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
-| `deployment_frequency`    | Group-level         | [13.10+](../../api/dora/metrics.md)  | [13.12+](#deployment-frequency-charts)                    | |
-| `lead_time_for_changes`   | Project-level       | [13.10+](../../api/dora/metrics.md)  | [13.11+](#lead-time-charts)           | Unit in seconds. Aggregation method is median. |
-| `lead_time_for_changes`   | Group-level         |  [13.10+](../../api/dora/metrics.md) | [14.0+](#lead-time-charts)                        | Unit in seconds. Aggregation method is median. |
+| `deployment_frequency`    | Project-level       | [13.7+](../../api/dora/metrics.md)   | [13.8+](#view-deployment-frequency-chart) | The [old API endpoint](../../api/dora4_project_analytics.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
+| `deployment_frequency`    | Group-level         | [13.10+](../../api/dora/metrics.md)  | [13.12+](#view-deployment-frequency-chart)                    | |
+| `lead_time_for_changes`   | Project-level       | [13.10+](../../api/dora/metrics.md)  | [13.11+](#view-lead-time-for-changes-chart)           | Unit in seconds. Aggregation method is median. |
+| `lead_time_for_changes`   | Group-level         |  [13.10+](../../api/dora/metrics.md) | [14.0+](#view-lead-time-for-changes-chart)               | Unit in seconds. Aggregation method is median. |
 | `change_failure_rate`     | Project/Group-level |  To be supported                     | To be supported                       | |
 | `time_to_restore_service` | Project/Group-level |  To be supported                     | To be supported                       | |
 
-### Deployment frequency charts
+## View deployment frequency chart **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.8.
 
-The **Analytics > CI/CD Analytics** page shows information about the deployment
+The deployment frequency charts show information about the deployment
 frequency to the `production` environment. The environment must be part of the
 [production deployment tier](../../ci/environments/index.md#deployment-tier-of-environments)
 for its deployment information to appear on the graphs.
 
+The deployment frequency chart is available for groups and projects.
+
+To view the deployment frequency chart:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > CI/CD Analytics**.
+1. Select the **Deployment frequency** tab.
+
 ![Deployment frequency](img/deployment_frequency_charts_v13_12.png)
 
-These charts are available for both groups and projects.
-
-### Lead time charts
+## View lead time for changes chart **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250329) in GitLab 13.11.
 
-The charts in the **Lead Time** tab show information about how long it takes
-merge requests to be deployed to a production environment.
+The lead time for changes chart shows information about how long it takes for
+merge requests to be deployed to a production environment. This chart is available for groups and projects.
+
+- Small lead times indicate fast, efficient deployment
+  processes.
+- For time periods in which no merge requests were deployed, the charts render a
+  red, dashed line.
+
+To view the lead time for changes chart:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > CI/CD Analytics**.
+1. Select the **Lead time** tab.
 
 ![Lead time](img/lead_time_chart_v13_11.png)
-
-Smaller values are better. Small lead times indicate fast, efficient deployment
-processes.
-
-For time periods in which no merge requests were deployed, the charts render a
-red, dashed line.
-
-These charts are available for both groups and projects.

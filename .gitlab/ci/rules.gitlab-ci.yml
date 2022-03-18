@@ -61,8 +61,8 @@
 .if-merge-request-labels-run-all-jest: &if-merge-request-labels-run-all-jest
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
 
-.if-merge-request-labels-run-decomposed: &if-merge-request-labels-run-decomposed
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-decomposed/'
+.if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
@@ -147,6 +147,9 @@
   - "scripts/trigger-build.rb"
   - "{,ee/,jh/}{bin,config}/**/*.rb"
 
+.ci-templates-patterns: &ci-templates-patterns
+  - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
+
 .ci-qa-patterns: &ci-qa-patterns
   - ".gitlab-ci.yml"
   - ".gitlab/ci/frontend.gitlab-ci.yml"
@@ -164,6 +167,7 @@
 .yaml-lint-patterns: &yaml-lint-patterns
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*.yml"
+  - "data/**/*.yml"
   - "lib/gitlab/ci/templates/**/*.yml"
 
 .docs-patterns: &docs-patterns
@@ -247,7 +251,7 @@
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
   - "{,ee/,jh/}{bin,cable,config,db,generator_templates,lib}/**/*"
-  - "{,ee/,jh/}spec/**/*.rb"
+  - "{,ee/,jh/}spec/**/*"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -441,6 +445,9 @@
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
+  # CI Templates changes
+  - "scripts/lint_templates_bash.rb"
+  - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
 
 .danger-patterns: &danger-patterns
   - "Dangerfile"
@@ -608,6 +615,15 @@
     - <<: *if-dot-com-gitlab-org-and-security-tag
       when: manual
       allow_failure: true
+
+######################
+# CI Templates Rules #
+######################
+.ci-templates:rules:shellcheck:
+  rules:
+    - changes: *ci-templates-patterns
+    - changes:
+        - scripts/lint_templates_bash.rb
 
 ##################
 # Delivery rules #
@@ -876,14 +892,26 @@
 ###############
 # Rails rules #
 ###############
+.rails:rules:build-components:
+  rules:
+    - <<: *if-dot-com-ee-schedule
+    - <<: *if-dot-com-gitlab-org-default-branch
+      changes:
+        - "workhorse/**/*"
+    - <<: *if-dot-com-gitlab-org-merge-request
+      when: manual
+      allow_failure: true
+
 .rails:rules:setup-test-env:
   rules:
     - changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
 
-.rails:rules:decomposed-databases:
+.rails:rules:single-db:
   rules:
-    - <<: *if-merge-request-labels-run-decomposed
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request
+      changes: *db-patterns
     - <<: *if-default-branch-schedule-nightly
 
 .rails:rules:ee-and-foss-migration:

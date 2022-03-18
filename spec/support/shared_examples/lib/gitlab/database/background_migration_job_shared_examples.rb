@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'marks background migration job records' do
   it 'marks each job record as succeeded after processing' do
-    create(:background_migration_job, class_name: "::#{described_class.name}",
+    create(:background_migration_job, class_name: "::#{described_class.name.demodulize}",
            arguments: arguments)
 
     expect(::Gitlab::Database::BackgroundMigrationJob).to receive(:mark_all_as_succeeded).and_call_original
@@ -13,7 +13,7 @@ RSpec.shared_examples 'marks background migration job records' do
   end
 
   it 'returns the number of job records marked as succeeded' do
-    create(:background_migration_job, class_name: "::#{described_class.name}",
+    create(:background_migration_job, class_name: "::#{described_class.name.demodulize}",
            arguments: arguments)
 
     jobs_updated = subject.perform(*arguments)

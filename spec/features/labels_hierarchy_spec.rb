@@ -160,7 +160,7 @@ RSpec.describe 'Labels Hierarchy', :js do
 
       find('.btn-confirm').click
 
-      expect(page.find('.issue-details h2.title')).to have_content('new created issue')
+      expect(page.find('.issue-details h1.title')).to have_content('new created issue')
       expect(page).to have_selector('span.gl-label-text', text: grandparent_group_label.title)
       expect(page).to have_selector('span.gl-label-text', text: parent_group_label.title)
       expect(page).to have_selector('span.gl-label-text', text: project_label_1.title)
@@ -175,38 +175,6 @@ RSpec.describe 'Labels Hierarchy', :js do
         project_1.add_developer(user)
 
         visit project_issue_path(project_1, issue)
-      end
-
-      it_behaves_like 'assigning labels from sidebar'
-    end
-
-    context 'on project board issue sidebar' do
-      let(:board) { create(:board, project: project_1) }
-
-      before do
-        project_1.add_developer(user)
-
-        visit project_board_path(project_1, board)
-
-        wait_for_requests
-
-        find('.board-card').click
-      end
-
-      it_behaves_like 'assigning labels from sidebar'
-    end
-
-    context 'on group board issue sidebar' do
-      let(:board) { create(:board, group: parent) }
-
-      before do
-        parent.add_developer(user)
-
-        visit group_board_path(parent, board)
-
-        wait_for_requests
-
-        find('.board-card').click
       end
 
       it_behaves_like 'assigning labels from sidebar'
@@ -241,30 +209,6 @@ RSpec.describe 'Labels Hierarchy', :js do
       end
 
       it_behaves_like 'filtering by ancestor labels for groups'
-    end
-
-    context 'on project boards filter' do
-      let(:board) { create(:board, project: project_1) }
-
-      before do
-        project_1.add_developer(user)
-
-        visit project_board_path(project_1, board)
-      end
-
-      it_behaves_like 'filtering by ancestor labels for projects', true
-    end
-
-    context 'on group boards filter' do
-      let(:board) { create(:board, group: parent) }
-
-      before do
-        parent.add_developer(user)
-
-        visit group_board_path(parent, board)
-      end
-
-      it_behaves_like 'filtering by ancestor labels for groups', true
     end
   end
 end

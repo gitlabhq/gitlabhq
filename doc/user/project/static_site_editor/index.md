@@ -18,24 +18,56 @@ WARNING:
 This feature is in its end-of-life process. It is
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77246)
 for use in GitLab 14.7, and is planned for
-[removal](https://gitlab.com/groups/gitlab-org/-/epics/7351) in GitLab 15.0.
-Users should instead use the [Web Editor](../repository/web_editor.md) or [Web IDE](../web_ide/index.md).
+[removal](https://gitlab.com/groups/gitlab-org/-/epics/7351) in GitLab 14.10.
+Users should instead use the [Web Editor](../repository/web_editor.md) or [Web IDE](../web_ide/index.md). [Removal instructions](#remove-the-static-site-editor) for existing projects are included on this page.
 
 Static Site Editor (SSE) enables users to edit content on static websites without
 prior knowledge of the underlying templating language, site architecture, or
 Git commands. A contributor to your project can quickly edit a Markdown page
-and submit the changes for review.
-
-## Use cases
-
-The Static Site Editor allows collaborators to submit changes to static site
-files seamlessly. For example:
+and submit the changes for review. For example:
 
 - Non-technical collaborators can edit a page directly from the browser.
   They don't need to know Git and the details of your project to contribute.
 - Recently hired team members can quickly edit content.
 - Temporary collaborators can jump from project to project and quickly edit pages instead
   of having to clone or fork every single project they need to submit changes to.
+
+## Remove the Static Site Editor
+
+The Static Site Editor itself isn't part of your project. To remove the Static Site Editor
+from an existing project, remove links that point back to the editor:
+
+1. Remove any links that use `edit_page_url` in your project. If you used the
+   **Middleman - Static Site Editor** project template, the only instance of this
+   helper is located in `/source/layouts/layout.erb`. Remove this line entirely:
+
+   ```ruby
+   <%= link_to('Edit this page', edit_page_url(data.config.repository, current_page.file_descriptor.relative_path), id: 'edit-page-link') %>
+   ```
+
+1. In `/data/config.yml`, delete the `repository` key / value pair:
+
+   ```yaml
+   repository: https://gitlab.com/<username>/<myproject>
+   ```
+
+   - If `repository` is the only value stored in `/data/config.yml`, you can delete the entire file.
+1. In `/helpers/custom_helpers.rb`, delete `edit_page_url()` and `endcode_path()`:
+
+   ```ruby
+   def edit_page_url(base_url, relative_path)
+     "#{base_url}/-/sse/#{encode_path(relative_path)}/"
+   end
+
+   def encode_path(relative_path)
+     ERB::Util.url_encode("master/source/#{relative_path}")
+   end
+   ```
+
+   - If `edit_page_url()` and `encode_path()` are the only helpers, you may delete
+     `/helpers/custom_helpers.rb` entirely.
+1. Clean up any extraneous configuration files.
+1. Commit and push your changes.
 
 ## Requirements
 

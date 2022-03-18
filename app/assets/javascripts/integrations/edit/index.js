@@ -22,6 +22,7 @@ function parseDatasetToProps(data) {
     editProjectPath,
     learnMorePath,
     triggerEvents,
+    sections,
     fields,
     inheritFromId,
     integrationLevel,
@@ -38,6 +39,7 @@ function parseDatasetToProps(data) {
   const {
     showActive,
     activated,
+    activateDisabled,
     editable,
     canTest,
     commitEvents,
@@ -53,6 +55,7 @@ function parseDatasetToProps(data) {
   return {
     initialActivated: activated,
     showActive,
+    activateDisabled,
     type,
     cancelPath,
     editable,
@@ -81,6 +84,7 @@ function parseDatasetToProps(data) {
     },
     learnMorePath,
     triggerEvents: JSON.parse(triggerEvents),
+    sections: JSON.parse(sections, { deep: true }),
     fields: convertObjectPropsToCamelCase(JSON.parse(fields), { deep: true }),
     inheritFromId: parseInt(inheritFromId, 10),
     integrationLevel,
@@ -114,13 +118,13 @@ export default function initIntegrationSettingsForm() {
 
   return new Vue({
     el: customSettingsEl,
+    name: 'IntegrationEditRoot',
     store: createStore(initialState),
+    provide: {
+      helpHtml,
+    },
     render(createElement) {
-      return createElement(IntegrationForm, {
-        props: {
-          helpHtml,
-        },
-      });
+      return createElement(IntegrationForm);
     },
   });
 }

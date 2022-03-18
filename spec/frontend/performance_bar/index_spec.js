@@ -51,7 +51,7 @@ describe('performance bar wrapper', () => {
     mock.restore();
   });
 
-  describe('loadRequestDetails', () => {
+  describe('addRequest', () => {
     beforeEach(() => {
       jest.spyOn(vm.store, 'addRequest');
     });
@@ -59,26 +59,46 @@ describe('performance bar wrapper', () => {
     it('does nothing if the request cannot be tracked', () => {
       jest.spyOn(vm.store, 'canTrackRequest').mockImplementation(() => false);
 
-      vm.loadRequestDetails('123', 'https://gitlab.com/');
+      vm.addRequest('123', 'https://gitlab.com/');
 
       expect(vm.store.addRequest).not.toHaveBeenCalled();
     });
 
     it('adds the request immediately', () => {
-      vm.loadRequestDetails('123', 'https://gitlab.com/');
+      vm.addRequest('123', 'https://gitlab.com/');
 
       expect(vm.store.addRequest).toHaveBeenCalledWith('123', 'https://gitlab.com/');
     });
+  });
+
+  describe('loadRequestDetails', () => {
+    beforeEach(() => {
+      jest.spyOn(PerformanceBarService, 'fetchRequestDetails');
+    });
 
     it('makes an HTTP request for the request details', () => {
-      jest.spyOn(PerformanceBarService, 'fetchRequestDetails');
-
-      vm.loadRequestDetails('456', 'https://gitlab.com/');
+      vm.addRequest('456', 'https://gitlab.com/');
+      vm.loadRequestDetails('456');
 
       expect(PerformanceBarService.fetchRequestDetails).toHaveBeenCalledWith(
         '/-/peek/results',
         '456',
       );
+    });
+
+    it('does not make a request if request was not added', () => {
+      vm.loadRequestDetails('456');
+
+      expect(PerformanceBarService.fetchRequestDetails).not.toHaveBeenCalled();
+    });
+
+    it('makes an HTTP request only once for the same request', async () => {
+      vm.addRequest('456', 'https://gitlab.com/');
+      await vm.loadRequestDetails('456');
+
+      vm.loadRequestDetails('456');
+
+      expect(PerformanceBarService.fetchRequestDetails).toHaveBeenCalledTimes(1);
     });
   });
 });

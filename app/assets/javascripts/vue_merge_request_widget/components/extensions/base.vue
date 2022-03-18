@@ -2,21 +2,20 @@
 import {
   GlButton,
   GlLoadingIcon,
-  GlLink,
-  GlBadge,
   GlSafeHtmlDirective,
   GlTooltipDirective,
   GlIntersectionObserver,
 } from '@gitlab/ui';
 import { once } from 'lodash';
 import * as Sentry from '@sentry/browser';
+import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import api from '~/api';
 import { sprintf, s__, __ } from '~/locale';
-import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 import Poll from '~/lib/utils/poll';
 import { EXTENSION_ICON_CLASS, EXTENSION_ICONS } from '../../constants';
 import StatusIcon from './status_icon.vue';
 import Actions from './actions.vue';
+import ChildContent from './child_content.vue';
 import { generateText } from './utils';
 
 export const LOADING_STATES = {
@@ -30,12 +29,12 @@ export default {
   components: {
     GlButton,
     GlLoadingIcon,
-    GlLink,
-    GlBadge,
     GlIntersectionObserver,
-    SmartVirtualList,
     StatusIcon,
     Actions,
+    ChildContent,
+    DynamicScroller,
+    DynamicScrollerItem,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -188,16 +187,13 @@ export default {
       this.fetchFullData(this.$props)
         .then((data) => {
           this.loadingState = null;
-          this.fullData = data;
+          this.fullData = data.map((x, i) => ({ id: i, ...x }));
         })
         .catch((e) => {
           this.loadingState = LOADING_STATES.expandedError;
 
           Sentry.captureException(e);
         });
-    },
-    isArray(arr) {
-      return Array.isArray(arr);
     },
     appear(index) {
       if (index === this.fullData.length - 1) {
@@ -281,80 +277,33 @@ export default {
       <div v-if="isLoadingExpanded" class="report-block-container">
         <gl-loading-icon size="sm" inline /> {{ __('Loading...') }}
       </div>
-      <smart-virtual-list
+      <dynamic-scroller
         v-else-if="hasFullData"
-        :length="fullData.length"
-        :remain="20"
-        :size="32"
-        wtag="ul"
-        wclass="report-block-list"
+        :items="fullData"
+        :min-item-size="32"
         class="report-block-container gl-px-5 gl-py-0"
       >
-        <li
-          v-for="(data, index) in fullData"
-          :key="data.id"
-          :class="{
-            'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== fullData.length - 1,
-          }"
-          class="gl-py-3 gl-pl-7"
-          data-testid="extension-list-item"
-        >
-          <div class="gl-w-full">
-            <div v-if="data.header" class="gl-mb-2">
-              <template v-if="isArray(data.header)">
-                <component
-                  :is="headerI === 0 ? 'strong' : 'span'"
-                  v-for="(header, headerI) in data.header"
-                  :key="headerI"
-                  v-safe-html="generateText(header)"
-                  class="gl-display-block"
-                />
-              </template>
-              <strong v-else v-safe-html="generateText(data.header)"></strong>
-            </div>
-            <div class="gl-display-flex">
-              <status-icon
-                v-if="data.icon"
-                :icon-name="data.icon.name"
-                :size="12"
-                class="gl-pl-0"
-              />
+        <template #default="{ item, index, active }">
+          <dynamic-scroller-item :item="item" :active="active" :class="{ active }">
+            <div
+              :class="{
+                'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== fullData.length - 1,
+              }"
+              class="gl-py-3 gl-pl-7"
+              data-testid="extension-list-item"
+            >
               <gl-intersection-observer
                 :options="{ rootMargin: '100px', thresholds: 0.1 }"
                 class="gl-w-full"
                 @appear="appear(index)"
                 @disappear="disappear(index)"
               >
-                <div class="gl-flex-wrap gl-display-flex gl-w-full">
-                  <div class="gl-mr-4 gl-display-flex gl-align-items-center">
-                    <p v-safe-html="generateText(data.text)" class="gl-m-0"></p>
-                  </div>
-                  <div v-if="data.link">
-                    <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
-                  </div>
-                  <div v-if="data.supportingText">
-                    <p v-safe-html="generateText(data.supportingText)" class="gl-m-0"></p>
-                  </div>
-                  <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
-                    {{ data.badge.text }}
-                  </gl-badge>
-
-                  <actions
-                    :widget="$options.label || $options.name"
-                    :tertiary-buttons="data.actions"
-                    class="gl-ml-auto"
-                  />
-                </div>
-                <p
-                  v-if="data.subtext"
-                  v-safe-html="generateText(data.subtext)"
-                  class="gl-m-0 gl-font-sm"
-                ></p>
+                <child-content :data="item" :widget-label="widgetLabel" :level="2" />
               </gl-intersection-observer>
             </div>
-          </div>
-        </li>
-      </smart-virtual-list>
+          </dynamic-scroller-item>
+        </template>
+      </dynamic-scroller>
       <div
         :class="{ show: showFade }"
         class="fade mr-extenson-scrim gl-absolute gl-left-0 gl-bottom-0 gl-w-full gl-h-7 gl-pointer-events-none"

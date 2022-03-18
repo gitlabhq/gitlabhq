@@ -10,7 +10,7 @@ func TestParseAuthBackendFailure(t *testing.T) {
 	failures := []string{
 		"",
 		"ftp://localhost",
-		"https://example.com",
+		"gopher://example.com",
 	}
 
 	for _, example := range failures {
@@ -27,6 +27,7 @@ func TestParseAuthBackend(t *testing.T) {
 		{"localhost:3000", "localhost:3000", "http"},
 		{"http://localhost", "localhost", "http"},
 		{"localhost", "localhost", "http"},
+		{"https://localhost", "localhost", "https"},
 	}
 
 	for _, example := range successes {

@@ -142,3 +142,23 @@ export const triggerMarkInputRule = ({ tiptapEditor, inputRuleText }) => {
     f(view, selection.from, inputRuleText.length + 1, inputRuleText),
   );
 };
+
+/**
+ * Executes an action that triggers a transaction in the
+ * tiptap Editor. Returns a promise that resolves
+ * after the transaction completes
+ * @param {*} params.tiptapEditor Tiptap editor
+ * @param {*} params.action A function that triggers a transaction in the tiptap Editor
+ * @returns A promise that resolves when the transaction completes
+ */
+export const waitUntilNextDocTransaction = ({ tiptapEditor, action }) => {
+  return new Promise((resolve) => {
+    const handleTransaction = () => {
+      tiptapEditor.off('update', handleTransaction);
+      resolve();
+    };
+
+    tiptapEditor.on('update', handleTransaction);
+    action();
+  });
+};

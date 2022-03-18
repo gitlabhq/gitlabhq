@@ -1,9 +1,3 @@
-- sort_title = label_sort_options_hash[@sort] || sort_title_name_desc
-.dropdown.inline
-  %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
-    = sort_title
-    = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
-  %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-sort
-    %li
-      - label_sort_options_hash.each do |value, title|
-        = sortable_item(title, page_filter_path(sort: value), sort_title)
+- label_sort_options = label_sort_options_hash.map { |value, text| { value: value, text: text, href: page_filter_path(sort: value) } }
+
+= gl_redirect_listbox_tag label_sort_options, @sort, data: { right: true }

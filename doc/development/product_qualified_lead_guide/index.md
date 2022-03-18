@@ -35,6 +35,7 @@ The hand-raise lead form accepts the following parameters via provide or inject.
 
 ```javascript
     provide: {
+      small,
       user: {
         namespaceId,
         userName,
@@ -43,8 +44,17 @@ The hand-raise lead form accepts the following parameters via provide or inject.
         companyName,
         glmContent,
       },
+      ctaTracking: {
+        action,
+        label,
+        property,
+        value,
+        experiment,
+      },
     },
 ```
+
+The `ctaTracking` parameters follow [the `data-track` attributes](../snowplow/implementation.md#data-track-attributes) for implementing Snowplow tracking. The provided tracking attributes are attached to the button inside the `HandRaiseLeadButton` component, which triggers the hand-raise lead modal when selected.
 
 ### Monitor the lead location
 
@@ -82,13 +92,80 @@ The flow of a PQL lead is as follows:
 1. Marketo does scoring and sends the form to Salesforce.
 1. Our Sales team uses Salesforce to connect to the leads.
 
+### Trial lead flow 
+
+#### Trial lead flow on GitLab.com
+
+```mermaid
+sequenceDiagram
+    Trial Frontend Forms ->>TrialsController#create_lead: GitLab.com frontend sends [lead] to backend
+    TrialsController#create_lead->>CreateLeadService: [lead]
+    TrialsController#create_lead->>ApplyTrialService: [lead] Apply the trial
+    CreateLeadService->>SubscriptionPortalClient#generate_trial(sync_to_gl=false): [lead] Creates customer account on CustomersDot
+    ApplyTrialService->>SubscriptionPortalClient#generate_trial(sync_to_gl=true): [lead] Asks CustomersDot to apply the trial on namespace
+    SubscriptionPortalClient#generate_trial(sync_to_gl=false)->>CustomersDot|TrialsController#create(sync_to_gl=false): GitLab.com sends [lead] to CustomersDot
+    SubscriptionPortalClient#generate_trial(sync_to_gl=true)->>CustomersDot|TrialsController#create(sync_to_gl=true): GitLab.com asks CustomersDot to apply the trial
+
+
+```
+
+#### Trial lead flow on CustomersDot (sync_to_gl)
+
+```mermaid
+sequenceDiagram
+    CustomersDot|TrialsController#create->>HostedPlans|CreateTrialService#execute: Save [lead] to leads table for monitoring purposes
+    HostedPlans|CreateTrialService#execute->>BaseTrialService#create_account: Creates a customer record in customers table
+    HostedPlans|CreateTrialService#create_platypus_lead->>PlatypusLogLeadService: Creates a platypus lead
+    HostedPlans|CreateTrialService#create_platypus_lead->>Platypus|CreateLeadWorker: Async worker to submit [lead] to Platypus
+    Platypus|CreateLeadWorker->>Platypus|CreateLeadService: [lead]
+    Platypus|CreateLeadService->>PlatypusApp#post: [lead]
+    PlatypusApp#post->>Platypus: [lead] is sent to Platypus
+```
+
+#### Applying the trial to a namespace on CustomersDot
+
+```mermaid
+sequenceDiagram
+    HostedPlans|CreateTrialService->load_namespace#Gitlab api/namespaces: Load namespace details
+    HostedPlans|CreateTrialService->create_order#: Creates an order in orders table
+    HostedPlans|CreateTrialService->create_trial_history#: Creates a record in trial_histories table
+```
+
+### Hand raise lead flow 
+
+#### Hand raise flow on GitLab.com
+
+```mermaid
+sequenceDiagram
+    HandRaiseForm Vue Component->>TrialsController#create_hand_raise_lead: GitLab.com frontend sends [lead] to backend
+    TrialsController#create_hand_raise_lead->>CreateHandRaiseLeadService: [lead]
+    CreateHandRaiseLeadService->>SubscriptionPortalClient: [lead]
+    SubscriptionPortalClient->>CustomersDot|TrialsController#create_hand_raise_lead: GitLab.com sends [lead] to CustomersDot
+```
+
+#### Hand raise flow on CustomersDot
+
+```mermaid
+sequenceDiagram
+    CustomersDot|TrialsController#create_hand_raise_lead->>PlatypusLogLeadService: Save [lead] to leads table for monitoring purposes
+    CustomersDot|TrialsController#create_hand_raise_lead->>Platypus|CreateLeadWorker: Async worker to submit [lead] to Platypus
+    Platypus|CreateLeadWorker->>Platypus|CreateLeadService: [lead]
+    Platypus|CreateLeadService->>PlatypusApp#post: [lead]
+    PlatypusApp#post->>Platypus: [lead] is sent to Platypus
+```
+
+### PQL flow after Platypus for all lead types
+
+```mermaid
+sequenceDiagram
+    Platypus->>Workato: [lead]
+    Workato->>Marketo: [lead]
+    Marketo->>Salesforce(SFDC): [lead]
+```      
+
 ## Monitor and manually test leads
 
 - Check the application and Sidekiq logs on `gitlab.com` and CustomersDot to monitor leads.
 - Check the `leads` table in CustomersDot.
 - Set up staging credentials for Platypus, and track the leads on the [Platypus Dashboard](https://staging.ci.nexus.gitlabenvironment.cloud/admin/queues/queue/new-lead-queue).
 - Ask for access to the Marketo Sandbox and validate the leads there.
-
-## Trials
-
-Trials follow the same flow as the PQL leads.

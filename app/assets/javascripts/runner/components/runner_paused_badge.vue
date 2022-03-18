@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
-import { I18N_PAUSED_RUNNER_DESCRIPTION } from '../constants';
+import { I18N_PAUSED_DESCRIPTION } from '../constants';
 
 export default {
   components: {
@@ -9,17 +9,11 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  i18n: {
-    I18N_PAUSED_RUNNER_DESCRIPTION,
-  },
+  I18N_PAUSED_DESCRIPTION,
 };
 </script>
 <template>
-  <gl-badge
-    v-gl-tooltip="$options.i18n.I18N_PAUSED_RUNNER_DESCRIPTION"
-    variant="danger"
-    v-bind="$attrs"
-  >
+  <gl-badge v-gl-tooltip="$options.I18N_PAUSED_DESCRIPTION" variant="danger" v-bind="$attrs">
     {{ s__('Runners|paused') }}
   </gl-badge>
 </template>

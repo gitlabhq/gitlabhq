@@ -6,7 +6,6 @@ module Types
       graphql_name 'MergeRequestAssignee'
       description 'A user assigned to a merge request.'
 
-      include FindClosest
       include ::Types::MergeRequests::InteractsWithMergeRequest
 
       authorize :read_user

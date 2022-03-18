@@ -1,6 +1,6 @@
 import { GlModal } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import BoardForm from '~/boards/components/board_form.vue';
@@ -22,6 +22,8 @@ const currentBoard = {
   labels: [],
   milestone: {},
   assignee: {},
+  iteration: {},
+  iterationCadence: {},
   weight: null,
   hideBacklogList: false,
   hideClosedList: false,
@@ -37,11 +39,11 @@ describe('BoardForm', () => {
   let wrapper;
   let mutate;
 
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findModalActionPrimary = () => findModal().props('actionPrimary');
-  const findForm = () => wrapper.find('[data-testid="board-form"]');
-  const findFormWrapper = () => wrapper.find('[data-testid="board-form-wrapper"]');
-  const findDeleteConfirmation = () => wrapper.find('[data-testid="delete-confirmation-message"]');
+  const findForm = () => wrapper.findByTestId('board-form');
+  const findFormWrapper = () => wrapper.findByTestId('board-form-wrapper');
+  const findDeleteConfirmation = () => wrapper.findByTestId('delete-confirmation-message');
   const findInput = () => wrapper.find('#board-new-name');
 
   const store = createStore({
@@ -52,7 +54,7 @@ describe('BoardForm', () => {
   });
 
   const createComponent = (props, data) => {
-    wrapper = shallowMount(BoardForm, {
+    wrapper = shallowMountExtended(BoardForm, {
       propsData: { ...defaultProps, ...props },
       data() {
         return {

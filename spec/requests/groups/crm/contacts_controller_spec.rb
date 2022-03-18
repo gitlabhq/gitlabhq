@@ -49,6 +49,12 @@ RSpec.describe Groups::Crm::ContactsController do
 
           it_behaves_like 'response with 404 status'
         end
+
+        context 'when subgroup' do
+          let(:group) { create(:group, :private, :crm_enabled, parent: create(:group)) }
+
+          it_behaves_like 'response with 404 status'
+        end
       end
 
       context 'with unauthorized user' do

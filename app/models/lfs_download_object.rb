@@ -4,6 +4,7 @@ class LfsDownloadObject
   include ActiveModel::Validations
 
   attr_accessor :oid, :size, :link, :headers
+
   delegate :sanitized_url, :credentials, to: :sanitized_uri
 
   validates :oid, format: { with: /\A\h{64}\z/ }

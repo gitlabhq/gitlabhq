@@ -102,7 +102,7 @@ class IncrementalWebpackCompiler {
 
         setTimeout(() => {
           devServer.invalidate(() => {
-            if (devServer.sockets) {
+            if (Array.isArray(devServer.webSocketServer && devServer.webSocketServer.clients)) {
               devServer.sendMessage(devServer.webSocketServer.clients, 'static-changed');
             }
           });

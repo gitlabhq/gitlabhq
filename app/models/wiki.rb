@@ -87,8 +87,7 @@ class Wiki
   end
 
   def create_wiki_repository
-    repository.create_if_not_exists
-    change_head_to_default_branch
+    repository.create_if_not_exists(default_branch)
 
     raise CouldNotCreateWikiError unless repository_exists?
   rescue StandardError => err
@@ -150,10 +149,10 @@ class Wiki
   #         the page.
   #
   # Returns an initialized WikiPage instance or nil
-  def find_page(title, version = nil)
+  def find_page(title, version = nil, load_content: true)
     page_title, page_dir = page_title_and_dir(title)
 
-    if page = wiki.page(title: page_title, version: version, dir: page_dir)
+    if page = wiki.page(title: page_title, version: version, dir: page_dir, load_content: load_content)
       WikiPage.new(self, page)
     end
   end
@@ -321,16 +320,6 @@ class Wiki
 
   def default_message(action, title)
     "#{user.username} #{action} page: #{title}"
-  end
-
-  def change_head_to_default_branch
-    # If the wiki has commits in the 'HEAD' branch means that the current
-    # HEAD is pointing to the right branch. If not, it could mean that either
-    # the repo has just been created or that 'HEAD' is pointing
-    # to the wrong branch and we need to rewrite it
-    return if repository.raw_repository.commit_count('HEAD') != 0
-
-    repository.raw_repository.write_ref('HEAD', "refs/heads/#{default_branch}")
   end
 end
 

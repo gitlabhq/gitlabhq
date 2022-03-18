@@ -293,6 +293,30 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
         end
       end
     end
+
+    context 'when bridge trigger contains forward' do
+      let(:config) do
+        { trigger: { project: 'some/project', forward: { pipeline_variables: true } } }
+      end
+
+      describe '#valid?' do
+        it { is_expected.to be_valid }
+      end
+
+      describe '#value' do
+        it 'returns a bridge job configuration hash' do
+          expect(subject.value).to eq(name: :my_bridge,
+                                      trigger: { project: 'some/project',
+                                                 forward: { pipeline_variables: true } },
+                                      ignore: false,
+                                      stage: 'test',
+                                      only: { refs: %w[branches tags] },
+                                      job_variables: {},
+                                      root_variables_inheritance: true,
+                                      scheduling_type: :stage)
+        end
+      end
+    end
   end
 
   describe '#manual_action?' do

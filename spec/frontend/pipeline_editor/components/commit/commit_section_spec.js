@@ -51,6 +51,7 @@ describe('Pipeline Editor | Commit section', () => {
   const defaultProps = {
     ciFileContent: mockCiYml,
     commitSha: mockCommitSha,
+    hasUnsavedChanges: true,
     isNewCiConfigFile: false,
   };
 

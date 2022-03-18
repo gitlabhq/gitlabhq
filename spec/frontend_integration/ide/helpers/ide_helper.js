@@ -106,7 +106,7 @@ const fillFileNameModal = async (value, submitText = 'Create file') => {
   const nameField = await findByTestId(modal, 'file-name-field');
   fireEvent.input(nameField, { target: { value } });
 
-  const createButton = getByText(modal, submitText, { selector: 'button' });
+  const createButton = getByText(modal, submitText, { selector: 'button > span' });
   createButton.click();
 };
 

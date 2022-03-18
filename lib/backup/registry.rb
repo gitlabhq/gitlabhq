@@ -2,18 +2,16 @@
 
 module Backup
   class Registry < Backup::Files
-    attr_reader :progress
-
     def initialize(progress)
-      @progress = progress
-
-      super('registry', Settings.registry.path)
+      super(progress, 'registry', Settings.registry.path)
     end
 
+    override :human_name
     def human_name
       _('container registry images')
     end
 
+    override :enabled
     def enabled
       Gitlab.config.registry.enabled
     end

@@ -20,7 +20,7 @@ The information displayed in the Jira Development panel depends on where you men
 
 | Your mention of Jira issue ID in GitLab context   | Automated effect in Jira issue                                                                         |
 |---------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| In a merge request                                | Link to the MR is displayed in Development panel.                                                      |
+| In a merge request title or description           | Link to the MR is displayed in Development panel.                                                      |
 | In a branch name                                  | Link to the branch is displayed in Development panel.                                                  |
 | In a commit message                               | Link to the commit is displayed in Development panel.                                                  |
 | In a commit message with Jira [Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html) | Displays your custom comment or logged time spent and/or performs specified issue transition on merge. |

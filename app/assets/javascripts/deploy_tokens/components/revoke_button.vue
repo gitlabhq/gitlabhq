@@ -17,9 +17,6 @@ export default {
     revokePath: {
       default: '',
     },
-    buttonClass: {
-      default: '',
-    },
   },
   computed: {
     modalId() {
@@ -38,10 +35,9 @@ export default {
   <div>
     <gl-button
       v-gl-modal="modalId"
-      :class="buttonClass"
       category="primary"
       variant="danger"
-      class="float-right"
+      class="gl-float-right"
       data-testid="revoke-button"
       >{{ s__('DeployTokens|Revoke') }}</gl-button
     >

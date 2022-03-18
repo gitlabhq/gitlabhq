@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::Migrations::Observers::TransactionDuration do
   let(:connection) { ActiveRecord::Migration.connection }
   let(:observation) { Gitlab::Database::Migrations::Observation.new(version: migration_version, name: migration_name) }
   let(:directory_path) { Dir.mktmpdir }
-  let(:log_file) { "#{directory_path}/#{migration_version}_#{migration_name}-transaction-duration.json" }
+  let(:log_file) { "#{directory_path}/transaction-duration.json" }
   let(:transaction_duration) { Gitlab::Json.parse(File.read(log_file)) }
   let(:migration_version) { 20210422152437 }
   let(:migration_name) { 'test' }

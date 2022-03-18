@@ -438,15 +438,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it { expect(pipeline).not_to be_merge_request }
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_merge_request_presence_check: false)
-        pipeline.update!(merge_request_id: non_existing_record_id)
-      end
-
-      it { expect(pipeline).to be_merge_request }
-    end
   end
 
   describe '#detached_merge_request_pipeline?' do
@@ -2887,6 +2878,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           end.to raise_error(ActiveRecord::StaleObjectError)
         end
       end
+    end
+  end
+
+  describe '.cancelable' do
+    subject { described_class.cancelable }
+
+    shared_examples 'containing the pipeline' do |status|
+      context "when it's #{status} pipeline" do
+        let!(:pipeline) { create(:ci_pipeline, status: status) }
+
+        it { is_expected.to contain_exactly(pipeline) }
+      end
+    end
+
+    shared_examples 'not containing the pipeline' do |status|
+      context "when it's #{status} pipeline" do
+        let!(:pipeline) { create(:ci_pipeline, status: status) }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    %i[running pending waiting_for_resource preparing created scheduled manual].each do |status|
+      it_behaves_like 'containing the pipeline', status
+    end
+
+    %i[failed success skipped canceled].each do |status|
+      it_behaves_like 'not containing the pipeline', status
     end
   end
 

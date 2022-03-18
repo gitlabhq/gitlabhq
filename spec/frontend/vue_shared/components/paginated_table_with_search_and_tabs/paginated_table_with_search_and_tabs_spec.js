@@ -221,7 +221,7 @@ describe('AlertManagementEmptyState', () => {
         findPagination().vm.$emit('input', 3);
 
         await nextTick();
-        expect(findPagination().findAll('.page-item').at(0).text()).toBe('Prev');
+        expect(findPagination().findAll('.page-item').at(0).text()).toBe('Previous');
       });
 
       it('returns prevPage number', async () => {

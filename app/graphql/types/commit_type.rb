@@ -8,6 +8,8 @@ module Types
 
     present_using CommitPresenter
 
+    implements(Types::TodoableInterface)
+
     field :id, type: GraphQL::Types::ID, null: false,
           description: 'ID (global ID) of the commit.'
 
@@ -41,12 +43,12 @@ module Types
     field :signature_html, type: GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'Rendered HTML of the commit signature.'
 
-    field :author_name, type: GraphQL::Types::String, null: true,
-          description: 'Commit authors name.'
     field :author_email, type: GraphQL::Types::String, null: true,
           description: "Commit author's email."
     field :author_gravatar, type: GraphQL::Types::String, null: true,
           description: 'Commit authors gravatar.'
+    field :author_name, type: GraphQL::Types::String, null: true,
+          description: 'Commit authors name.'
 
     # models/commit lazy loads the author by email
     field :author, type: Types::UserType, null: true,

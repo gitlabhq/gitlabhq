@@ -10,6 +10,7 @@ module Users
     REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
     SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
+    REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -47,7 +48,8 @@ module Users
       !Gitlab.com? &&
         current_user&.admin? &&
         signup_enabled? &&
-        !user_dismissed?(REGISTRATION_ENABLED_CALLOUT)
+        !user_dismissed?(REGISTRATION_ENABLED_CALLOUT) &&
+        REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS.any? { |path| controller.controller_path.match?(path) }
     end
 
     def dismiss_two_factor_auth_recovery_settings_check

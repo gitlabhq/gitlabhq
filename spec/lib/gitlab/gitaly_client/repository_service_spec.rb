@@ -54,6 +54,28 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
+  describe '#optimize_repository' do
+    it 'sends a optimize_repository message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:optimize_repository)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(:optimize_repository))
+
+      client.optimize_repository
+    end
+  end
+
+  describe '#prune_unreachable_objects' do
+    it 'sends a prune_unreachable_objects message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:prune_unreachable_objects)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(:prune_unreachable_objects))
+
+      client.prune_unreachable_objects
+    end
+  end
+
   describe '#repository_size' do
     it 'sends a repository_size message' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
@@ -193,6 +215,26 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
         .and_return(double(checksum: 0))
 
       client.calculate_checksum
+    end
+  end
+
+  describe '#create_repository' do
+    it 'sends a create_repository message without arguments' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:create_repository)
+        .with(gitaly_request_with_path(storage_name, relative_path).and(gitaly_request_with_params(default_branch: '')), kind_of(Hash))
+        .and_return(double)
+
+      client.create_repository
+    end
+
+    it 'sends a create_repository message with default branch' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:create_repository)
+        .with(gitaly_request_with_path(storage_name, relative_path).and(gitaly_request_with_params(default_branch: 'default-branch-name')), kind_of(Hash))
+        .and_return(double)
+
+      client.create_repository('default-branch-name')
     end
   end
 

@@ -29,6 +29,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
     >
       <markdown-header-stub
         data-testid="markdownHeader"
+        enablepreview="true"
         linecontent=""
         suggestionstartindex="0"
       />

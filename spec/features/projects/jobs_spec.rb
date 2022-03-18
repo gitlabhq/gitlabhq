@@ -103,7 +103,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
 
         it "redirects to new URL" do
-          expect(page.current_path).to eq(jobs_url)
+          expect(page).to have_current_path(jobs_url, ignore_query: true)
         end
       end
     end
@@ -313,9 +313,9 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       context 'job is cancelable' do
         it 'shows cancel button' do
-          click_link 'Cancel'
+          find('[data-testid="cancel-button"]').click
 
-          expect(page.current_path).to eq(job_url)
+          expect(page).to have_current_path(job_url, ignore_query: true)
         end
       end
     end
@@ -384,7 +384,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       context 'when expire date is defined' do
-        let(:expire_at) { Time.now + 7.days }
+        let(:expire_at) { Time.zone.now + 7.days }
 
         context 'when user has ability to update job' do
           context 'when artifacts are unlocked' do
@@ -423,7 +423,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       context 'when artifacts expired' do
-        let(:expire_at) { Time.now - 7.days }
+        let(:expire_at) { Time.zone.now - 7.days }
 
         context 'when artifacts are unlocked' do
           before do
@@ -459,7 +459,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it "redirects to new URL" do
-        expect(page.current_path).to eq(job_url)
+        expect(page).to have_current_path(job_url, ignore_query: true)
       end
     end
 
@@ -1031,7 +1031,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it 'loads the page and shows all needed controls' do
-        expect(page).to have_content 'Retry'
+        expect(page).to have_selector('[data-testid="retry-button"')
       end
     end
   end
@@ -1049,7 +1049,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it 'shows the right status and buttons' do
         page.within('aside.right-sidebar') do
-          expect(page).to have_content 'Cancel'
+          expect(page).to have_selector('[data-testid="cancel-button"')
         end
       end
     end
@@ -1179,7 +1179,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it "redirects to new URL" do
-        expect(page.current_path).to eq(raw_job_url)
+        expect(page).to have_current_path(raw_job_url, ignore_query: true)
       end
     end
   end

@@ -86,6 +86,31 @@ RSpec.describe CommitsHelper do
     end
   end
 
+  describe '#diff_mode_swap_button' do
+    let(:keyword) { 'rendered' }
+    let(:node) { Nokogiri::HTML.parse(helper.diff_mode_swap_button(keyword, 'abc')).at_css('a') }
+
+    context 'for rendered' do
+      it 'renders the correct select-rendered button' do
+        expect(node[:title]).to eq('Display rendered diff')
+        expect(node['data-file-hash']).to eq('abc')
+        expect(node['data-diff-toggle-entity']).to eq('toShowBtn')
+        expect(node.xpath("//a/svg")[0]["data-testid"]).to eq('doc-text-icon')
+      end
+    end
+
+    context 'for raw' do
+      let(:keyword) { 'raw' }
+
+      it 'renders the correct select-raw button' do
+        expect(node[:title]).to eq('Display raw diff')
+        expect(node['data-file-hash']).to eq('abc')
+        expect(node['data-diff-toggle-entity']).to eq('toHideBtn')
+        expect(node.xpath("//a/svg")[0]["data-testid"]).to eq('doc-code-icon')
+      end
+    end
+  end
+
   describe '#commit_to_html' do
     let(:project) { create(:project, :repository) }
     let(:ref) { 'master' }

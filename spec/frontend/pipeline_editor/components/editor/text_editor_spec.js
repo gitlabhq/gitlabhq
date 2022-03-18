@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 
 import { EDITOR_READY_EVENT } from '~/editor/constants';
+import { SOURCE_EDITOR_DEBOUNCE } from '~/pipeline_editor/constants';
 import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
 import {
   mockCiConfigPath,
@@ -22,7 +23,7 @@ describe('Pipeline Editor | Text editor component', () => {
 
   const MockSourceEditor = {
     template: '<div/>',
-    props: ['value', 'fileName'],
+    props: ['value', 'fileName', 'editorOptions', 'debounceValue'],
   };
 
   const createComponent = (glFeatures = {}, mountFn = shallowMount) => {
@@ -88,6 +89,14 @@ describe('Pipeline Editor | Text editor component', () => {
 
     it('editor is configured for the CI config path', () => {
       expect(findEditor().props('fileName')).toBe(mockCiConfigPath);
+    });
+
+    it('passes down editor configs options', () => {
+      expect(findEditor().props('editorOptions')).toEqual({ quickSuggestions: true });
+    });
+
+    it('passes down editor debounce value', () => {
+      expect(findEditor().props('debounceValue')).toBe(SOURCE_EDITOR_DEBOUNCE);
     });
 
     it('bubbles up events', () => {

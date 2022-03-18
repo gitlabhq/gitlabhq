@@ -1,6 +1,6 @@
 load_performance:
   stage: performance
-  image: docker:19.03.11
+  image: docker:20.10.12
   allow_failure: true
   variables:
     DOCKER_TLS_CERTDIR: ""
@@ -10,11 +10,12 @@ load_performance:
     K6_OPTIONS: ''
     K6_DOCKER_OPTIONS: ''
   services:
-    - docker:19.03.11-dind
+    - name: 'docker:20.10.12-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
   script:
     - |
       if ! docker info &>/dev/null; then
-        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+        if [ -z "$DOCKER_HOST" ] && [ -n "$KUBERNETES_PORT" ]; then
           export DOCKER_HOST='tcp://localhost:2375'
         fi
       fi

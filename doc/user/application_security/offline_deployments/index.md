@@ -179,7 +179,7 @@ set -ux
 
 # Specify needed analyzer images
 analyzers=${SAST_ANALYZERS:-"bandit eslint gosec"}
-gitlab=registry.gitlab.com/gitlab-org/security-products/analyzers/
+gitlab=registry.gitlab.com/security-products/
 
 for i in "${analyzers[@]}"
 do

@@ -38,12 +38,6 @@ RSpec.describe Groups::GroupMembersController do
         expect(assigns(:invited_members).map(&:invite_email)).to match_array(invited.map(&:invite_email))
       end
 
-      it 'assigns skip groups' do
-        get :index, params: { group_id: group }
-
-        expect(assigns(:skip_groups)).to match_array(group.related_group_ids)
-      end
-
       it 'restricts search to one email' do
         get :index, params: { group_id: group, search_invited: invited.first.invite_email }
 
@@ -68,11 +62,10 @@ RSpec.describe Groups::GroupMembersController do
         sign_in(user)
       end
 
-      it 'does not assign invited members or skip_groups', :aggregate_failures do
+      it 'does not assign invited members' do
         get :index, params: { group_id: group }
 
         expect(assigns(:invited_members)).to be_nil
-        expect(assigns(:skip_groups)).to be_nil
       end
     end
 
@@ -102,107 +95,6 @@ RSpec.describe Groups::GroupMembersController do
         get :index, params: { group_id: nested_group, with_inherited_permissions: 'only' }
 
         expect(assigns(:members).map(&:user_id)).to contain_exactly(user.id)
-      end
-    end
-  end
-
-  describe 'POST create' do
-    let_it_be(:group_user) { create(:user) }
-
-    before do
-      sign_in(user)
-    end
-
-    context 'when user does not have enough rights' do
-      before do
-        group.add_developer(user)
-      end
-
-      it 'returns 403', :aggregate_failures do
-        post :create, params: {
-                        group_id: group,
-                        user_ids: group_user.id,
-                        access_level: Gitlab::Access::GUEST
-                      }
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-        expect(group.users).not_to include group_user
-      end
-    end
-
-    context 'when user has enough rights' do
-      before do
-        group.add_owner(user)
-      end
-
-      it 'adds user to members', :aggregate_failures, :snowplow do
-        post :create, params: {
-                        group_id: group,
-                        user_ids: group_user.id,
-                        access_level: Gitlab::Access::GUEST
-                      }
-
-        expect(controller).to set_flash.to 'Users were successfully added.'
-        expect(response).to redirect_to(group_group_members_path(group))
-        expect(group.users).to include group_user
-        expect_snowplow_event(
-          category: 'Members::CreateService',
-          action: 'create_member',
-          label: 'group-members-page',
-          property: 'existing_user',
-          user: user
-        )
-      end
-
-      it 'adds no user to members', :aggregate_failures do
-        post :create, params: {
-                        group_id: group,
-                        user_ids: '',
-                        access_level: Gitlab::Access::GUEST
-                      }
-
-        expect(controller).to set_flash.to 'No users specified.'
-        expect(response).to redirect_to(group_group_members_path(group))
-        expect(group.users).not_to include group_user
-      end
-    end
-
-    context 'access expiry date' do
-      before do
-        group.add_owner(user)
-      end
-
-      subject do
-        post :create, params: {
-                        group_id: group,
-                        user_ids: group_user.id,
-                        access_level: Gitlab::Access::GUEST,
-                        expires_at: expires_at
-                      }
-      end
-
-      context 'when set to a date in the past' do
-        let(:expires_at) { 2.days.ago }
-
-        it 'does not add user to members', :aggregate_failures do
-          subject
-
-          expect(flash[:alert]).to include('Expires at cannot be a date in the past')
-          expect(response).to redirect_to(group_group_members_path(group))
-          expect(group.users).not_to include group_user
-        end
-      end
-
-      context 'when set to a date in the future' do
-        let(:expires_at) { 5.days.from_now }
-
-        it 'adds user to members', :aggregate_failures do
-          subject
-
-          expect(controller).to set_flash.to 'Users were successfully added.'
-          expect(response).to redirect_to(group_group_members_path(group))
-          expect(group.users).to include group_user
-        end
       end
     end
   end
@@ -512,14 +404,6 @@ RSpec.describe Groups::GroupMembersController do
         get :index, params: { group_id: group }
 
         expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-
-    describe 'POST #create' do
-      it 'is successful' do
-        post :create, params: { group_id: group, users: user, access_level: Gitlab::Access::GUEST }
-
-        expect(response).to have_gitlab_http_status(:found)
       end
     end
 

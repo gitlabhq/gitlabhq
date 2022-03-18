@@ -1,4 +1,22 @@
 #
+# PRODUCTION
+#
+production:
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    username: git
+    password: "secure password"
+    host: localhost
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production_ci
+    username: git
+    password: "secure password"
+    host: localhost
+#
 # Development specific
 #
 development:

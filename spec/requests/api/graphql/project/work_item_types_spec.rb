@@ -64,8 +64,8 @@ RSpec.describe 'getting a list of work item types for a project' do
       post_graphql(query, current_user: current_user)
     end
 
-    it 'makes the workItemTypes field unavailable' do
-      expect(graphql_errors).to contain_exactly(hash_including("message" => "Field 'workItemTypes' doesn't exist on type 'Project'"))
+    it 'returns null' do
+      expect(graphql_data.dig('project', 'workItemTypes')).to be_nil
     end
   end
 end

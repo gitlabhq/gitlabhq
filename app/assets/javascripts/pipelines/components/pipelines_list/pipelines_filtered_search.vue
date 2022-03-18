@@ -24,6 +24,11 @@ export default {
       type: String,
       required: true,
     },
+    defaultBranchName: {
+      type: String,
+      required: false,
+      default: null,
+    },
     params: {
       type: Object,
       required: true,
@@ -57,6 +62,7 @@ export default {
           token: PipelineBranchNameToken,
           operators: OPERATOR_IS_ONLY,
           projectId: this.projectId,
+          defaultBranchName: this.defaultBranchName,
           disabled: this.selectedTypes.includes(this.$options.tagType),
         },
         {

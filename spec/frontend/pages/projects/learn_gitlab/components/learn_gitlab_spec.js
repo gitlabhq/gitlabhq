@@ -9,7 +9,6 @@ import { testActions, testSections, testProject } from './mock_data';
 describe('Learn GitLab', () => {
   let wrapper;
   let sidebar;
-  let inviteMembers = false;
 
   const createWrapper = () => {
     wrapper = mount(LearnGitlab, {
@@ -17,7 +16,6 @@ describe('Learn GitLab', () => {
         actions: testActions,
         sections: testSections,
         project: testProject,
-        inviteMembers,
       },
     });
   };
@@ -38,7 +36,6 @@ describe('Learn GitLab', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    inviteMembers = false;
     sidebar.remove();
   });
 
@@ -73,7 +70,6 @@ describe('Learn GitLab', () => {
     });
 
     it('emits openModal', () => {
-      inviteMembers = true;
       Cookies.set(INVITE_MODAL_OPEN_COOKIE, true);
 
       createWrapper();
@@ -86,18 +82,10 @@ describe('Learn GitLab', () => {
     });
 
     it('does not emit openModal when cookie is not set', () => {
-      inviteMembers = true;
-
       createWrapper();
 
       expect(spy).not.toHaveBeenCalled();
       expect(cookieSpy).toHaveBeenCalledWith(INVITE_MODAL_OPEN_COOKIE);
-    });
-
-    it('does not emit openModal when inviteMembers is false', () => {
-      createWrapper();
-
-      expect(spy).not.toHaveBeenCalled();
     });
   });
 

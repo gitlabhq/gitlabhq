@@ -10,7 +10,7 @@ RSpec.shared_examples 'allowed user IDs are cached' do
   end
 
   it 'caches the allowed user IDs in L1 cache for 1 minute', :use_clean_rails_memory_store_caching do
-    Timecop.travel 2.minutes do
+    travel_to 2.minutes.from_now do
       expect do
         expect(described_class.l1_cache_backend).to receive(:fetch).and_call_original
         expect(described_class.l2_cache_backend).to receive(:fetch).and_call_original
@@ -20,7 +20,7 @@ RSpec.shared_examples 'allowed user IDs are cached' do
   end
 
   it 'caches the allowed user IDs in L2 cache for 5 minutes', :use_clean_rails_memory_store_caching do
-    Timecop.travel 6.minutes do
+    travel_to 6.minutes.from_now do
       expect do
         expect(described_class.l1_cache_backend).to receive(:fetch).and_call_original
         expect(described_class.l2_cache_backend).to receive(:fetch).and_call_original

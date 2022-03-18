@@ -8,6 +8,7 @@ RSpec.describe CronValidator do
       include ActiveModel::Model
       include ActiveModel::Validations
       attr_accessor :cron
+
       validates :cron, cron: true
 
       def cron_timezone
@@ -34,6 +35,7 @@ RSpec.describe CronValidator do
         include ActiveModel::Model
         include ActiveModel::Validations
         attr_accessor :cron_partytime
+
         validates :cron_partytime, cron: true
       end.new
     end

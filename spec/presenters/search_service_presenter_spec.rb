@@ -4,13 +4,33 @@ require 'spec_helper'
 
 RSpec.describe SearchServicePresenter do
   let(:user) { create(:user) }
+  let(:search) { '' }
   let(:search_service) { SearchService.new(user, search: search, scope: scope) }
   let(:presenter) { described_class.new(search_service, current_user: user) }
+
+  describe '#search_objects' do
+    let(:search_objects) { Kaminari::PaginatableArray.new([]) }
+
+    context 'objects do not respond to eager_load' do
+      before do
+        allow(search_service).to receive(:search_objects).and_return(search_objects)
+        allow(search_objects).to receive(:respond_to?).with(:eager_load).and_return(false)
+      end
+
+      context 'users scope' do
+        let(:scope) { 'users' }
+
+        it 'does not eager load anything' do
+          expect(search_objects).not_to receive(:eager_load)
+          presenter.search_objects
+        end
+      end
+    end
+  end
 
   describe '#show_results_status?' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:search) { '' }
     let(:scope) { nil }
 
     before do

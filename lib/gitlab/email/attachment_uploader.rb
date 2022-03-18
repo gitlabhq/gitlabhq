@@ -15,7 +15,9 @@ module Gitlab
         filter_signature_attachments(message).each do |attachment|
           tmp = Tempfile.new("gitlab-email-attachment")
           begin
-            File.open(tmp.path, "w+b") { |f| f.write attachment.body.decoded }
+            content = attachment.body.decoded
+            File.open(tmp.path, "w+b") { |f| f.write content }
+            sanitize_exif_if_needed(content, tmp.path)
 
             file = {
               tempfile:     tmp,
@@ -54,6 +56,12 @@ module Gitlab
       # e.g. "application/x-pkcs7-signature" with "application/pkcs7-signature"
       def normalize_mime(content_type)
         MIME::Type.simplified(content_type, remove_x_prefix: true)
+      end
+
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/239343
+      def sanitize_exif_if_needed(content, path)
+        exif_sanitizer = Gitlab::Sanitizers::Exif.new
+        exif_sanitizer.clean_existing_path(path, content: content, skip_unallowed_types: true)
       end
     end
   end

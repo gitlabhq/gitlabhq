@@ -36,7 +36,7 @@ PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/index.md#namespaced-path-encoding).                                    |
 | `module-name`      | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), or hyphens (`-`) and cannot exceed 64 characters.
-| `module-system`    | string          | yes      | The package system. It can contain only lowercase letters (`a-z`) and numbers (`0-9`), and cannot exceed 64 characters.
+| `module-system`    | string          | yes      | The package system. It can contain only lowercase letters (`a-z`) and numbers (`0-9`), and cannot exceed 64 characters. More information can be found in the [Terraform Module Registry Protocol documentation](https://www.terraform.io/internals/module-registry-protocol).
 | `module-version`   | string          | yes      | The package version. It must be valid according to the [Semantic Versioning Specification](https://semver.org/).
 
 Provide the file content in the request body.
@@ -93,13 +93,15 @@ credentials "gitlab.com" {
 
 Where `gitlab.com` can be replaced with the hostname of your self-managed GitLab instance.
 
-You can then reference your Terraform Module from a downstream Terraform project:
+You can then refer to your Terraform Module from a downstream Terraform project:
 
 ```plaintext
 module "<module>" {
   source = "gitlab.com/<namespace>/<module-name>/<module-system>"
 }
 ```
+
+Where `<namespace>` is the [namespace](../../../user/group/index.md#namespaces) of the Terraform module registry.
 
 ## Publish a Terraform module by using CI/CD
 

@@ -7,9 +7,9 @@ RSpec.describe API::Topics do
 
   let_it_be(:file) { fixture_file_upload('spec/fixtures/dk.png') }
 
-  let_it_be(:topic_1) { create(:topic, name: 'Git', total_projects_count: 1, avatar: file) }
-  let_it_be(:topic_2) { create(:topic, name: 'GitLab', total_projects_count: 2) }
-  let_it_be(:topic_3) { create(:topic, name: 'other-topic', total_projects_count: 3) }
+  let_it_be(:topic_1) { create(:topic, name: 'Git', total_projects_count: 1, non_private_projects_count: 1, avatar: file) }
+  let_it_be(:topic_2) { create(:topic, name: 'GitLab', total_projects_count: 2, non_private_projects_count: 2) }
+  let_it_be(:topic_3) { create(:topic, name: 'other-topic', total_projects_count: 3, non_private_projects_count: 3) }
 
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:user) { create(:user) }
@@ -142,6 +142,13 @@ RSpec.describe API::Topics do
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eql('name is missing')
       end
+
+      it 'returns 400 if name is not unique (case insensitive)' do
+        post api('/topics/', admin), params: { name: topic_1.name.downcase }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['name']).to eq(['has already been taken'])
+      end
     end
 
     context 'as normal user' do
@@ -243,6 +250,45 @@ RSpec.describe API::Topics do
     context 'as anonymous' do
       it 'returns 401 Unauthorized' do
         put api("/topics/#{topic_3.id}"), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
+  describe 'DELETE /topics', :aggregate_failures do
+    context 'as administrator' do
+      it 'deletes a topic' do
+        delete api("/topics/#{topic_3.id}", admin), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'returns 404 for non existing id' do
+        delete api("/topics/#{non_existing_record_id}", admin), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 400 for invalid `id` parameter' do
+        delete api('/topics/invalid', admin), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eql('id is invalid')
+      end
+    end
+
+    context 'as normal user' do
+      it 'returns 403 Forbidden' do
+        delete api("/topics/#{topic_3.id}", user), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'as anonymous' do
+      it 'returns 401 Unauthorized' do
+        delete api("/topics/#{topic_3.id}"), params: { name: 'my-topic' }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end

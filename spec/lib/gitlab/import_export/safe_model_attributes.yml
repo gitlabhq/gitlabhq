@@ -857,6 +857,7 @@ Epic:
   - health_status
   - external_key
   - confidential
+  - color
 EpicIssue:
   - id
   - relative_position

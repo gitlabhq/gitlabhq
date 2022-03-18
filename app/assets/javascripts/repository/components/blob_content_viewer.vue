@@ -10,11 +10,14 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
+import CodeIntelligence from '~/code_navigation/components/app.vue';
 import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
+import userInfoQuery from '../queries/user_info.query.graphql';
+import applicationInfoQuery from '../queries/application_info.query.graphql';
 import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE } from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
-import BlobEdit from './blob_edit.vue';
 import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
 
@@ -24,12 +27,13 @@ export default {
   },
   components: {
     BlobHeader,
-    BlobEdit,
     BlobButtonGroup,
     BlobContent,
     GlLoadingIcon,
     GlButton,
     ForkSuggestion,
+    WebIdeLink,
+    CodeIntelligence,
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
@@ -38,6 +42,18 @@ export default {
     },
   },
   apollo: {
+    gitpodEnabled: {
+      query: applicationInfoQuery,
+      error() {
+        this.displayError();
+      },
+    },
+    currentUser: {
+      query: userInfoQuery,
+      error() {
+        this.displayError();
+      },
+    },
     project: {
       query: blobInfoQuery,
       variables() {
@@ -78,8 +94,11 @@ export default {
       legacySimpleViewer: null,
       isBinary: false,
       isLoadingLegacyViewer: false,
+      isRenderingLegacyTextViewer: false,
       activeViewerType: SIMPLE_BLOB_VIEWER,
-      project: DEFAULT_BLOB_INFO,
+      project: DEFAULT_BLOB_INFO.project,
+      gitpodEnabled: DEFAULT_BLOB_INFO.gitpodEnabled,
+      currentUser: DEFAULT_BLOB_INFO.currentUser,
     };
   },
   computed: {
@@ -142,9 +161,13 @@ export default {
       return this.isLoggedIn && !canModifyBlob && createMergeRequestIn && forkProject;
     },
     forkPath() {
-      return this.forkTarget === 'ide'
-        ? this.blobInfo.ideForkAndEditPath
-        : this.blobInfo.forkAndEditPath;
+      const forkPaths = {
+        ide: this.blobInfo.ideForkAndEditPath,
+        simple: this.blobInfo.forkAndEditPath,
+        view: this.blobInfo.forkAndViewPath,
+      };
+
+      return forkPaths[this.forkTarget];
     },
     isUsingLfs() {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
@@ -163,7 +186,13 @@ export default {
         .get(`${this.blobInfo.webPath}?format=json&viewer=${type}`)
         .then(({ data: { html, binary } }) => {
           if (type === SIMPLE_BLOB_VIEWER) {
+            this.isRenderingLegacyTextViewer = true;
+
             this.legacySimpleViewer = html;
+
+            window.requestIdleCallback(() => {
+              this.isRenderingLegacyTextViewer = false;
+            });
           } else {
             this.legacyRichViewer = html;
           }
@@ -213,25 +242,24 @@ export default {
         @viewer-changed="switchViewer"
       >
         <template #actions>
-          <blob-edit
+          <web-ide-link
             v-if="!blobInfo.archived"
             :show-edit-button="!isBinaryFileType"
-            :edit-path="blobInfo.editBlobPath"
-            :web-ide-path="blobInfo.ideEditPath"
+            class="gl-mr-3"
+            :edit-url="blobInfo.editBlobPath"
+            :web-ide-url="blobInfo.ideEditPath"
             :needs-to-fork="showForkSuggestion"
+            :show-pipeline-editor-button="Boolean(blobInfo.pipelineEditorPath)"
+            :pipeline-editor-url="blobInfo.pipelineEditorPath"
+            :gitpod-url="blobInfo.gitpodBlobUrl"
+            :show-gitpod-button="gitpodEnabled"
+            :gitpod-enabled="currentUser && currentUser.gitpodEnabled"
+            :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"
+            :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
+            is-blob
+            disable-fork-modal
             @edit="editBlob"
           />
-
-          <gl-button
-            v-if="blobInfo.pipelineEditorPath"
-            class="gl-mr-3"
-            category="secondary"
-            variant="confirm"
-            data-testid="pipeline-editor"
-            :href="blobInfo.pipelineEditorPath"
-          >
-            {{ $options.i18n.pipelineEditor }}
-          </gl-button>
 
           <blob-button-group
             v-if="isLoggedIn && !blobInfo.archived"
@@ -246,7 +274,7 @@ export default {
             :is-locked="Boolean(pathLockedByUser)"
             :can-lock="canLock"
             :show-fork-suggestion="showForkSuggestion"
-            @fork="setForkTarget('ide')"
+            @fork="setForkTarget('view')"
           />
         </template>
       </blob-header>
@@ -265,8 +293,15 @@ export default {
         :active-viewer="viewer"
         :hide-line-numbers="true"
         :loading="isLoadingLegacyViewer"
+        :data-loading="isRenderingLegacyTextViewer"
       />
       <component :is="blobViewer" v-else :blob="blobInfo" class="blob-viewer" />
+      <code-intelligence
+        v-if="blobViewer || legacyViewerLoaded"
+        :code-navigation-path="blobInfo.codeNavigationPath"
+        :blob-path="blobInfo.path"
+        :path-prefix="blobInfo.projectBlobPathRoot"
+      />
     </div>
   </div>
 </template>

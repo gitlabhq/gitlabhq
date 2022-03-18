@@ -1,15 +1,31 @@
 <script>
-import { GlAlert, GlCard, GlToggle, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlTooltipDirective,
+  GlCard,
+  GlToggle,
+  GlLink,
+  GlSkeletonLoader,
+  GlIcon,
+  GlSafeHtmlDirective,
+} from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import {
   TRACK_TOGGLE_TRAINING_PROVIDER_ACTION,
   TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
+  TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION,
+  TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
 } from '~/security_configuration/constants';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
-import securityTrainingProvidersQuery from '../graphql/security_training_providers.query.graphql';
-import configureSecurityTrainingProvidersMutation from '../graphql/configure_security_training_providers.mutation.graphql';
+import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
+import configureSecurityTrainingProvidersMutation from '~/security_configuration/graphql/configure_security_training_providers.mutation.graphql';
+import {
+  updateSecurityTrainingCache,
+  updateSecurityTrainingOptimisticResponse,
+} from '~/security_configuration/graphql/cache_utils';
+import { TEMP_PROVIDER_LOGOS, TEMP_PROVIDER_URLS } from './constants';
 
 const i18n = {
   providerQueryErrorMessage: __(
@@ -17,6 +33,10 @@ const i18n = {
   ),
   configMutationErrorMessage: __(
     'Could not save configuration. Please refresh the page, or try again later.',
+  ),
+  primaryTraining: s__('SecurityTraining|Primary Training'),
+  primaryTrainingDescription: s__(
+    'SecurityTraining|Training from this partner takes precedence when more than one training partner is enabled.',
   ),
 };
 
@@ -27,6 +47,11 @@ export default {
     GlToggle,
     GlLink,
     GlSkeletonLoader,
+    GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [Tracking.mixin()],
   inject: ['projectFullPath'],
@@ -49,12 +74,14 @@ export default {
   data() {
     return {
       errorMessage: '',
-      providerLoadingId: null,
       securityTrainingProviders: [],
       hasTouchedConfiguration: false,
     };
   },
   computed: {
+    enabledProviders() {
+      return this.securityTrainingProviders.filter(({ isEnabled }) => isEnabled);
+    },
     isLoading() {
       return this.$apollo.queries.securityTrainingProviders.loading;
     },
@@ -89,15 +116,41 @@ export default {
         Sentry.captureException(e);
       }
     },
-    toggleProvider(provider) {
-      const { isEnabled } = provider;
+    async toggleProvider(provider) {
+      const { isEnabled, isPrimary } = provider;
       const toggledIsEnabled = !isEnabled;
 
       this.trackProviderToggle(provider.id, toggledIsEnabled);
-      this.storeProvider({ ...provider, isEnabled: toggledIsEnabled });
+
+      // when the current primary provider gets disabled then set the first enabled to be the new primary
+      if (!toggledIsEnabled && isPrimary && this.enabledProviders.length > 1) {
+        const firstOtherEnabledProvider = this.enabledProviders.find(
+          ({ id }) => id !== provider.id,
+        );
+        this.setPrimaryProvider(firstOtherEnabledProvider);
+      }
+
+      this.storeProvider({
+        ...provider,
+        isEnabled: toggledIsEnabled,
+      });
     },
-    async storeProvider({ id, isEnabled, isPrimary }) {
-      this.providerLoadingId = id;
+    setPrimaryProvider(provider) {
+      this.storeProvider({ ...provider, isPrimary: true });
+    },
+    async storeProvider(provider) {
+      const { id, isEnabled, isPrimary } = provider;
+      let nextIsPrimary = isPrimary;
+
+      // if the current provider has been disabled it can't be primary
+      if (!isEnabled) {
+        nextIsPrimary = false;
+      }
+
+      // if the current provider is the only enabled provider it should be primary
+      if (isEnabled && !this.enabledProviders.length) {
+        nextIsPrimary = true;
+      }
 
       try {
         const {
@@ -111,9 +164,18 @@ export default {
               projectPath: this.projectFullPath,
               providerId: id,
               isEnabled,
-              isPrimary,
+              isPrimary: nextIsPrimary,
             },
           },
+          optimisticResponse: updateSecurityTrainingOptimisticResponse({
+            id,
+            isEnabled,
+            isPrimary: nextIsPrimary,
+          }),
+          update: updateSecurityTrainingCache({
+            query: securityTrainingProvidersQuery,
+            variables: { fullPath: this.projectFullPath },
+          }),
         });
 
         if (errors.length > 0) {
@@ -124,8 +186,6 @@ export default {
         this.hasTouchedConfiguration = true;
       } catch {
         this.errorMessage = this.$options.i18n.configMutationErrorMessage;
-      } finally {
-        this.providerLoadingId = null;
       }
     },
     trackProviderToggle(providerId, providerIsEnabled) {
@@ -137,8 +197,16 @@ export default {
         },
       });
     },
+    trackProviderLearnMoreClick(providerId) {
+      this.track(TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION, {
+        label: TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
+        property: providerId,
+      });
+    },
   },
   i18n,
+  TEMP_PROVIDER_LOGOS,
+  TEMP_PROVIDER_URLS,
 };
 </script>
 
@@ -165,15 +233,54 @@ export default {
               :value="provider.isEnabled"
               :label="__('Training mode')"
               label-position="hidden"
-              :is-loading="providerLoadingId === provider.id"
               @change="toggleProvider(provider)"
             />
-            <div class="gl-ml-5">
+            <div v-if="$options.TEMP_PROVIDER_LOGOS[provider.name]" class="gl-ml-4">
+              <div
+                v-safe-html="$options.TEMP_PROVIDER_LOGOS[provider.name].svg"
+                data-testid="provider-logo"
+                style="width: 18px"
+                role="presentation"
+              ></div>
+            </div>
+            <div class="gl-ml-3">
               <h3 class="gl-font-lg gl-m-0 gl-mb-2">{{ provider.name }}</h3>
               <p>
                 {{ provider.description }}
-                <gl-link :href="provider.url" target="_blank">{{ __('Learn more.') }}</gl-link>
+                <gl-link
+                  v-if="$options.TEMP_PROVIDER_URLS[provider.name]"
+                  :href="$options.TEMP_PROVIDER_URLS[provider.name]"
+                  target="_blank"
+                  @click="trackProviderLearnMoreClick(provider.id)"
+                >
+                  {{ __('Learn more.') }}
+                </gl-link>
               </p>
+              <!-- Note: The following `div` and it's content will be replaced by 'GlFormRadio' once https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1720#note_857342988 is resolved -->
+              <div
+                class="gl-form-radio custom-control custom-radio"
+                data-testid="primary-provider-radio"
+              >
+                <input
+                  :id="`security-training-provider-${provider.id}`"
+                  type="radio"
+                  :checked="provider.isPrimary"
+                  class="custom-control-input"
+                  :disabled="!provider.isEnabled"
+                  @change="setPrimaryProvider(provider)"
+                />
+                <label
+                  class="custom-control-label"
+                  :for="`security-training-provider-${provider.id}`"
+                >
+                  {{ $options.i18n.primaryTraining }}
+                </label>
+                <gl-icon
+                  v-gl-tooltip="$options.i18n.primaryTrainingDescription"
+                  name="information-o"
+                  class="gl-ml-2 gl-cursor-help"
+                />
+              </div>
             </div>
           </div>
         </gl-card>

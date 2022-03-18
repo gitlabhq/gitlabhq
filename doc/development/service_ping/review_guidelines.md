@@ -51,12 +51,13 @@ are regular backend changes.
 #### The Product Intelligence **reviewer** should
 
 - Perform a first-pass review on the merge request and suggest improvements to the author.
-- Check the [metrics location](implement.md#name-and-place-the-metric) in
+- Check the [metrics location](metrics_dictionary.md#metric-key_path) in
   the Service Ping JSON payload.
-- Suggest that the author checks the [naming suggestion](implement.md#how-to-get-a-metric-name-suggestion) while
+- Suggest that the author checks the [naming suggestion](metrics_dictionary.md#generate-a-metric-name-suggestion) while
   generating the metric's YAML definition.
 - Add the `~database` label and ask for a [database review](../database_review.md) for
   metrics that are based on Database.
+- Add `~Data Warehouse::Impact Check` for any database metric that has a query change. Changes in queries can affect [data operations](https://about.gitlab.com/handbook/business-technology/data-team/how-we-work/triage/#gitlabcom-db-structure-changes).
 - For tracking using Redis HLL (HyperLogLog):
   - Check the Redis slot.
   - Check if a [feature flag is needed](implement.md#recommendations).

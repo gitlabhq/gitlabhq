@@ -89,14 +89,14 @@ established but GitLab doesn't show you LDAP users in the output, one of the
 following is most likely true:
 
 - The `bind_dn` user doesn't have enough permissions to traverse the user tree.
-- The user(s) don't fall under the [configured `base`](index.md#configure-ldap).
-- The [configured `user_filter`](index.md#set-up-ldap-user-filter) blocks access to the user(s).
+- The users don't fall under the [configured `base`](index.md#configure-ldap).
+- The [configured `user_filter`](index.md#set-up-ldap-user-filter) blocks access to the users.
 
 In this case, you con confirm which of the above is true using
 [ldapsearch](#ldapsearch) with the existing LDAP configuration in your
 `/etc/gitlab/gitlab.rb`.
 
-#### User(s) cannot sign-in
+#### Users cannot sign-in
 
 A user can have trouble signing in for any number of reasons. To get started,
 here are some questions to ask yourself:
@@ -284,7 +284,7 @@ If you don't find a particular user's GitLab email in the output, then that
 user hasn't signed in with LDAP yet.
 
 Next, GitLab searches its `identities` table for the existing
-link between this user and the configured LDAP provider(s):
+link between this user and the configured LDAP providers:
 
 ```sql
   Identity Load (0.9ms)  SELECT  "identities".* FROM "identities" WHERE "identities"."user_id" = 20 AND (provider LIKE 'ldap%') LIMIT 1
@@ -334,7 +334,7 @@ Gitlab::Auth::Ldap::Person.find_by_uid('<uid>', adapter)
 
 ### Group memberships **(PREMIUM SELF)**
 
-#### Membership(s) not granted
+#### Memberships not granted
 
 Sometimes you may think a particular user should be added to a GitLab group via
 LDAP group sync, but for some reason it's not happening. You can check several
@@ -348,7 +348,7 @@ things to debug the situation.
   1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Overview > Users**.
   1. Search for the user.
-  1. Open the user by clicking their name. Do not click **Edit**.
+  1. Open the user by selecting their name. Do not select **Edit**.
   1. Select the **Identities** tab. There should be an LDAP identity with
      an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
      LDAP yet and must do so first.
@@ -558,7 +558,7 @@ aren't blocked or unable to access their accounts.
 
 NOTE:
 The following script requires that any new accounts with the new
-email address are removed first. This is because emails have to be unique in GitLab.
+email address are removed first. Email addresses must be unique in GitLab.
 
 Go to the [rails console](#rails-console) and then run:
 

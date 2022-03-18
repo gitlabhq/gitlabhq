@@ -27,4 +27,10 @@ module AccessTokensHelper
       }
     }.to_json
   end
+
+  def expires_at_field_data
+    {}
+  end
 end
+
+AccessTokensHelper.prepend_mod

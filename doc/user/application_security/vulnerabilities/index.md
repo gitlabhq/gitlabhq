@@ -27,8 +27,9 @@ On the vulnerability's page, you can:
 - [Change the vulnerability's status](#change-vulnerability-status).
 - [Create an issue](#create-an-issue-for-a-vulnerability).
 - [Link issues to the vulnerability](#linked-issues).
-- [Resolve a vulnerability](#resolve-a-vulnerability), if a solution is
-  available.
+- [Resolve a vulnerability](#resolve-a-vulnerability) if a solution is
+  available. 
+- [View security training specific to the detected vulnerability](#view-security-training-for-a-vulnerability).
 
 ## Vulnerability status values
 
@@ -80,7 +81,7 @@ The issue is then opened so you can take further action.
 Prerequisites:
 
 - [Enable Jira integration](../../../integration/jira/index.md).
-  The **Enable Jira issues creation from vulnerabilities** option must be selected as part of the configuration.
+  The **Enable Jira issue creation from vulnerabilities** option must be selected as part of the configuration.
 - Each user must have a personal Jira user account with permission to create issues in the target project.
 
 To create a Jira issue for a vulnerability:
@@ -159,3 +160,29 @@ To manually apply the patch that GitLab generated for a vulnerability:
 1. Ensure your local project has the same commit checked out that was used to generate the patch.
 1. Run `git apply remediation.patch`.
 1. Verify and commit the changes to your branch.
+
+## Enable security training for vulnerabilities
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
+
+Security training helps your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.
+
+To enable security training for vulnerabilities in your project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the tab bar, select **Vulnerability Management**.
+1. To enable a security training provider, turn on the toggle.
+
+## View security training for a vulnerability
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
+
+If security training is enabled, the vulnerability page includes a training link relevant to the detected vulnerability.
+
+To view the security training for a vulnerability:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Vulnerability report**.
+1. Select the vulnerability for which you want to view security training.
+1. Select **View training**.

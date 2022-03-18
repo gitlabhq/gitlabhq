@@ -1,0 +1,8 @@
+query getUserInfo {
+  currentUser {
+    id
+    gitpodEnabled
+    preferencesGitpodPath
+    profileEnableGitpodPath
+  }
+}

@@ -44,7 +44,7 @@ RSpec.describe Gitlab::MailRoom::Authenticator do
   describe '#verify_api_request' do
     let(:incoming_email_secret) { SecureRandom.hex(16) }
     let(:service_desk_email_secret) { SecureRandom.hex(16) }
-    let(:payload) { { iss: described_class::INTERNAL_API_REQUEST_JWT_ISSUER, iat: (Time.current - 5.minutes + 1.second).to_i } }
+    let(:payload) { { iss: Gitlab::MailRoom::INTERNAL_API_REQUEST_JWT_ISSUER, iat: (Time.current - 5.minutes + 1.second).to_i } }
 
     before do
       allow(described_class).to receive(:secret).with(:incoming_email).and_return(incoming_email_secret)
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::MailRoom::Authenticator do
     context 'verify a valid token' do
       it 'returns the decoded payload' do
         encoded_token = JWT.encode(payload, incoming_email_secret, 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers, 'incoming_email')[0]).to match a_hash_including(
           "iss" => "gitlab-mailroom",
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::MailRoom::Authenticator do
         )
 
         encoded_token = JWT.encode(payload, service_desk_email_secret, 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers, 'service_desk_email')[0]).to match a_hash_including(
           "iss" => "gitlab-mailroom",
@@ -74,7 +74,7 @@ RSpec.describe Gitlab::MailRoom::Authenticator do
     context 'verify an invalid token' do
       it 'returns false' do
         encoded_token = JWT.encode(payload, 'wrong secret', 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers, 'incoming_email')).to eq(false)
       end
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::MailRoom::Authenticator do
     context 'verify a valid token but wrong mailbox type' do
       it 'returns false' do
         encoded_token = JWT.encode(payload, incoming_email_secret, 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers, 'service_desk_email')).to eq(false)
       end
@@ -94,18 +94,18 @@ RSpec.describe Gitlab::MailRoom::Authenticator do
 
       it 'returns false' do
         encoded_token = JWT.encode(payload, incoming_email_secret, 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers, 'incoming_email')).to eq(false)
       end
     end
 
     context 'verify a valid token but expired' do
-      let(:payload) { { iss: described_class::INTERNAL_API_REQUEST_JWT_ISSUER, iat: (Time.current - 5.minutes - 1.second).to_i } }
+      let(:payload) { { iss: Gitlab::MailRoom::INTERNAL_API_REQUEST_JWT_ISSUER, iat: (Time.current - 5.minutes - 1.second).to_i } }
 
       it 'returns false' do
         encoded_token = JWT.encode(payload, incoming_email_secret, 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers, 'incoming_email')).to eq(false)
       end
@@ -125,7 +125,7 @@ RSpec.describe Gitlab::MailRoom::Authenticator do
 
       it 'returns false' do
         encoded_token = JWT.encode(payload, incoming_email_secret, 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers, 'incoming_email')).to eq(false)
       end
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::MailRoom::Authenticator do
 
     context 'verify headers for a non-existing mailbox type' do
       it 'returns false' do
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => 'something' }
+        headers = { Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => 'something' }
 
         expect(described_class.verify_api_request(headers, 'invalid_mailbox_type')).to eq(false)
       end

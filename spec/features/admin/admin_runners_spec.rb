@@ -11,6 +11,8 @@ RSpec.describe "Admin Runners" do
     admin = create(:admin)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
+
+    wait_for_requests
   end
 
   describe "Runners page", :js do
@@ -21,7 +23,7 @@ RSpec.describe "Admin Runners" do
 
     context "when there are runners" do
       it 'has all necessary texts' do
-        create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: Time.now)
+        create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: Time.zone.now)
         create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.week.ago)
         create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.year.ago)
 
@@ -156,9 +158,9 @@ RSpec.describe "Admin Runners" do
         let!(:never_contacted) { create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil) }
 
         before do
-          create(:ci_runner, :instance, description: 'runner-1', contacted_at: Time.now)
-          create(:ci_runner, :instance, description: 'runner-2', contacted_at: Time.now)
-          create(:ci_runner, :instance, description: 'runner-paused', active: false, contacted_at: Time.now)
+          create(:ci_runner, :instance, description: 'runner-1', contacted_at: Time.zone.now)
+          create(:ci_runner, :instance, description: 'runner-2', contacted_at: Time.zone.now)
+          create(:ci_runner, :instance, description: 'runner-paused', active: false, contacted_at: Time.zone.now)
 
           visit admin_runners_path
         end

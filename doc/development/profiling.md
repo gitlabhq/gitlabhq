@@ -91,6 +91,73 @@ printer = RubyProf::CallStackPrinter.new(result)
 printer.print(File.open('/tmp/profile.html', 'w'))
 ```
 
+### Stackprof support
+
+By default, `Gitlab::Profiler.profile` uses a tracing profiler called [`ruby-prof`](https://ruby-prof.github.io/). However, sampling profilers
+[run faster and use less memory](https://jvns.ca/blog/2017/12/17/how-do-ruby---python-profilers-work-/), so they might be preferred.
+
+You can switch to [Stackprof](https://github.com/tmm1/stackprof) (a sampling profiler) to generate a profile by passing `sampling_mode: true`.
+Pass in a `profiler_options` hash to configure the output file (`out`) of the sampling data. For example:
+
+```ruby
+Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first, sampling_mode: true, profiler_options: { out: 'tmp/profile.dump' })
+```
+
+You can get a summary of where time was spent by running Stackprof against the sampling data. For example:
+
+```shell
+stackprof tmp/profile.dump
+```
+
+Example sampling data:
+
+```plaintext
+==================================
+  Mode: wall(1000)
+  Samples: 8745 (6.92% miss rate)
+  GC: 1399 (16.00%)
+==================================
+     TOTAL    (pct)     SAMPLES    (pct)     FRAME
+      1022  (11.7%)        1022  (11.7%)     Sprockets::PathUtils#stat
+       957  (10.9%)         957  (10.9%)     (marking)
+       493   (5.6%)         493   (5.6%)     Sprockets::PathUtils#entries
+       576   (6.6%)         471   (5.4%)     Mustermann::AST::Translator#decorator_for
+       439   (5.0%)         439   (5.0%)     (sweeping)
+       630   (7.2%)         241   (2.8%)     Sprockets::Cache::FileStore#get
+       208   (2.4%)         208   (2.4%)     ActiveSupport::FileUpdateChecker#watched
+       206   (2.4%)         206   (2.4%)     Digest::Instance#file
+       544   (6.2%)         176   (2.0%)     Sprockets::Cache::FileStore#safe_open
+       176   (2.0%)         176   (2.0%)     ActiveSupport::FileUpdateChecker#max_mtime
+       268   (3.1%)         147   (1.7%)     ActiveRecord::ConnectionAdapters::PostgreSQLAdapter#exec_no_cache
+       140   (1.6%)         140   (1.6%)     ActiveSupport::BacktraceCleaner#add_gem_filter
+       116   (1.3%)         116   (1.3%)     Bootsnap::CompileCache::ISeq.storage_to_output
+       160   (1.8%)         113   (1.3%)     Gem::Version#<=>
+       109   (1.2%)         109   (1.2%)     block in <main>
+       108   (1.2%)         108   (1.2%)     Gem::Version.new
+       131   (1.5%)         105   (1.2%)     Sprockets::EncodingUtils#unmarshaled_deflated
+      1166  (13.3%)          82   (0.9%)     Mustermann::RegexpBased#initialize
+        82   (0.9%)          78   (0.9%)     FileUtils.touch
+        72   (0.8%)          72   (0.8%)     Sprockets::Manifest.compile_match_filter
+        71   (0.8%)          70   (0.8%)     Grape::Router#compile!
+        91   (1.0%)          65   (0.7%)     ActiveRecord::ConnectionAdapters::PostgreSQL::DatabaseStatements#query
+        93   (1.1%)          64   (0.7%)     ActionDispatch::Journey::Path::Pattern::AnchoredRegexp#accept
+        59   (0.7%)          59   (0.7%)     Mustermann::AST::Translator.dispatch_table
+        62   (0.7%)          59   (0.7%)     Rails::BacktraceCleaner#initialize
+      2492  (28.5%)          49   (0.6%)     Sprockets::PathUtils#stat_directory
+       242   (2.8%)          49   (0.6%)     Gitlab::Instrumentation::RedisBase.add_call_details
+        47   (0.5%)          47   (0.5%)     URI::RFC2396_Parser#escape
+        46   (0.5%)          46   (0.5%)     #<Class:0x00000001090c2e70>#__setobj__
+        44   (0.5%)          44   (0.5%)     Sprockets::Base#normalize_logical_path
+```
+
+You can also generate flamegraphs:
+
+```shell
+stackprof --d3-flamegraph tmp/profile.dump > flamegraph.html
+```
+
+See [the Stackprof documentation](https://github.com/tmm1/stackprof) for more details.
+
 ## Speedscope flamegraphs
 
 You can generate a flamegraph for a particular URL by selecting a flamegraph sampling mode button in the performance bar or by adding the `performance_bar=flamegraph` parameter to the request.

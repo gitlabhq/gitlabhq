@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DestroyService, :aggregate_failures do
+RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publisher do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }
@@ -15,7 +15,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
-    allow(Gitlab::EventStore).to receive(:publish)
   end
 
   shared_examples 'deleting the project' do
@@ -30,23 +29,8 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
 
     it 'publishes a ProjectDeleted event with project id and namespace id' do
       expected_data = { project_id: project.id, namespace_id: project.namespace_id }
-      expect(Gitlab::EventStore)
-        .to receive(:publish)
-        .with(event_type(Projects::ProjectDeletedEvent).containing(expected_data))
 
-      destroy_project(project, user, {})
-    end
-
-    context 'when feature flag publish_project_deleted_event is disabled' do
-      before do
-        stub_feature_flags(publish_project_deleted_event: false)
-      end
-
-      it 'does not publish an event' do
-        expect(Gitlab::EventStore).not_to receive(:publish).with(event_type(Projects::ProjectDeletedEvent))
-
-        destroy_project(project, user, {})
-      end
+      expect { destroy_project(project, user, {}) }.to publish_event(Projects::ProjectDeletedEvent).with(expected_data)
     end
   end
 
@@ -59,6 +43,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       let!(:report_result) { create(:ci_build_report_result, build: build) }
       let!(:pending_state) { create(:ci_build_pending_state, build: build) }
       let!(:pipeline_artifact) { create(:ci_pipeline_artifact, pipeline: pipeline) }
+      let!(:secure_file) { create(:ci_secure_file, project: project) }
 
       it 'deletes build and pipeline related records' do
         expect { destroy_project(project, user, {}) }
@@ -72,6 +57,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
           .and change { Ci::BuildReportResult.count }.by(-1)
           .and change { Ci::BuildRunnerSession.count }.by(-1)
           .and change { Ci::Pipeline.count }.by(-1)
+          .and change { Ci::SecureFile.count }.by(-1)
       end
 
       it 'avoids N+1 queries' do
@@ -449,11 +435,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       destroy_project(project, user)
     end
 
-    it 'calls the bulk snippet destroy service' do
+    it 'calls the bulk snippet destroy service with the hard_delete param set to true' do
       expect(project.snippets.count).to eq 2
 
-      expect(Snippets::BulkDestroyService).to receive(:new)
-        .with(user, project.snippets).and_call_original
+      expect_next_instance_of(Snippets::BulkDestroyService, user, project.snippets) do |instance|
+        expect(instance).to receive(:execute).with(hard_delete: true).and_call_original
+      end
 
       expect do
         destroy_project(project, user)
@@ -461,11 +448,15 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
     end
 
     context 'when an error is raised deleting snippets' do
+      let(:error_message) { 'foo' }
+
       it 'does not delete project' do
         allow_next_instance_of(Snippets::BulkDestroyService) do |instance|
-          allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'foo'))
+          allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
         end
 
+        expect(Gitlab::AppLogger).to receive(:error).with("Snippet deletion failed on #{project.full_path} with the following message: #{error_message}")
+        expect(Gitlab::AppLogger).to receive(:error).with(/Failed to remove project snippets/)
         expect(destroy_project(project, user)).to be_falsey
         expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_truthy
       end

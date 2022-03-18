@@ -64,7 +64,7 @@
   published_at: 2020-11-22
   release: 13.6
 - title: Milestone Burnup Charts and historically accurate reporting
-  body:  |
+  body: |
     A milestone or iteration burndown chart helps track completion progress of total scope, but it doesn't provide insight into how the scope changed during the course of the timebox. Neither has it previously retained historical accuracy regarding how much of the initial committed scope of the milestone or iteration was actually completed.
 
     To solve these problems and help teams have better insights into scope creep, milestones and iterations now show a burnup chart that tracks the daily total count and weight of issues added to and completed within a given timebox.

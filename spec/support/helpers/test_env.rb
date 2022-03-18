@@ -54,7 +54,7 @@ module TestEnv
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
-    'add-ipython-files'                  => '532c837',
+    'add-ipython-files'                  => 'a867a602',
     'add-pdf-file'                       => 'e774ebd',
     'squash-large-files'                 => '54cec52',
     'add-pdf-text-binary'                => '79faa7b',
@@ -80,7 +80,8 @@ module TestEnv
     'invalid-utf8-diff-paths'            => '99e4853',
     'compare-with-merge-head-source'     => 'f20a03d',
     'compare-with-merge-head-target'     => '2f1e176',
-    'trailers'                           => 'f0a5ed6'
+    'trailers'                           => 'f0a5ed6',
+    'add_commit_with_5mb_subject'        => '8cf8e80'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

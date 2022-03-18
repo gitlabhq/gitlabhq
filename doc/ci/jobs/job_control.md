@@ -85,6 +85,28 @@ be triggered by the same event (a push to the source branch for an open merge re
 See how to [prevent duplicate pipelines](#avoid-duplicate-pipelines)
 for more details.
 
+#### Run jobs for scheduled pipelines
+
+To configure a job to be executed only when the pipeline has been
+scheduled, use the [`rules`](../yaml/index.md#rules) keyword.
+
+In this example, `make world` runs in scheduled pipelines, and `make build`
+runs in branch and tag pipelines:
+
+```yaml
+job:on-schedule:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - make world
+
+job:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+  script:
+    - make build
+```
+
 ### Complex rules
 
 You can use all `rules` keywords, like `if`, `changes`, and `exists`, in the same
@@ -115,7 +137,7 @@ job1:
   script:
     - echo This rule uses parentheses.
   rules:
-    if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
+    - if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
 ```
 
 WARNING:
@@ -727,6 +749,38 @@ deploystacks:
     - ${PROVIDER}-${STACK}
 ```
 
+#### Fetch artifacts from a `parallel:matrix` job
+
+You can fetch artifacts from a job created with [`parallel:matrix`](../yaml/index.md#parallelmatrix)
+by using the [`dependencies`](../yaml/index.md#dependencies) keyword. Use the job name
+as the value for `dependencies` as a string in the form:
+
+```plaintext
+<job_name> [<matrix argument 1>, <matrix argument 2>, ... <matrix argument N>]
+```
+
+For example, to fetch the artifacts from the job with a `RUBY_VERSION` of `2.7` and
+a `PROVIDER` of `aws`:
+
+```yaml
+ruby:
+  image: ruby:${RUBY_VERSION}
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["2.5", "2.6", "2.7", "3.0", "3.1"]
+        PROVIDER: [aws, gcp]
+  script: bundle install
+
+deploy:
+  image: ruby:2.7
+  stage: deploy
+  dependencies:
+    - "ruby: [2.7, aws]"
+  script: echo hello
+```
+
+Quotes around the `dependencies` entry are required.
+
 ## Use predefined CI/CD variables to run jobs only in specific pipeline types
 
 You can use [predefined CI/CD variables](../variables/predefined_variables.md) to choose
@@ -812,13 +866,9 @@ due to computational complexity, and some features, like negative lookaheads, be
 Only a subset of features provided by [Ruby Regexp](https://ruby-doc.org/core/Regexp.html)
 are now supported.
 
-From GitLab 11.9.7 to GitLab 12.0, GitLab provided a feature flag to
-let you use unsafe regexp syntax. After migrating to safe syntax, you should disable
-this feature flag again:
-
-```ruby
-Feature.enable(:allow_unsafe_ruby_regexp)
-```
+From GitLab 11.9.7 to GitLab 14.9, GitLab provided a feature flag to let you
+use unsafe regexp syntax. We've fully migrated to RE2 now, and that feature
+flag is no longer available.
 
 ## CI/CD variable expressions
 

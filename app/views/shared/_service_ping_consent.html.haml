@@ -1,7 +1,6 @@
 - if session[:ask_for_usage_stats_consent]
   = render 'shared/global_alert',
     variant: :info,
-    is_contained: true,
     alert_class: 'service-ping-consent-message' do
     .gl-alert-body
       - docs_link = link_to _('collect usage information'), help_page_path('user/admin_area/settings/usage_statistics.md'), class: 'gl-link'

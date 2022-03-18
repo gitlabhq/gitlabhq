@@ -15,7 +15,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::BackfillProjectN
   let!(:project2) { projects.create!(name: 'project2', path: 'project2', namespace_id: namespace2.id, visibility_level: 20) }
   let!(:project3) { projects.create!(name: 'project3', path: 'project3', namespace_id: namespace3.id, visibility_level: 20) }
   let!(:project4) { projects.create!(name: 'project4', path: 'project4', namespace_id: namespace3.id, visibility_level: 20) }
-  let!(:batching_strategy) { described_class.new }
+  let!(:batching_strategy) { described_class.new(connection: ActiveRecord::Base.connection) }
 
   let(:job_arguments) { [namespace1.id, 'up'] }
 

@@ -15,7 +15,7 @@ module Routing
       end
 
       def mask_params
-        return default_root_url + @request.original_fullpath unless has_maskable_params?
+        return @request.original_url unless has_maskable_params?
 
         masked_params = @request.path_parameters.to_h do |key, value|
           case key
@@ -65,10 +65,6 @@ module Routing
         end
 
         query_string_hash
-      end
-
-      def default_root_url
-        Gitlab::Routing.url_helpers.root_url(only_path: false)
       end
     end
 

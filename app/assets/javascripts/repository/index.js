@@ -1,10 +1,12 @@
 import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
+import Vuex from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
+import createStore from '~/code_navigation/store';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
@@ -19,6 +21,7 @@ import createRouter from './router';
 import { updateFormAction } from './utils/dom';
 import { setTitle } from './utils/title';
 
+Vue.use(Vuex);
 Vue.use(PerformancePlugin, {
   components: ['SimpleViewer', 'BlobContent'],
 });
@@ -200,6 +203,7 @@ export default function setupVueRepositoryList() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    store: createStore(),
     router,
     apolloProvider,
     render(h) {

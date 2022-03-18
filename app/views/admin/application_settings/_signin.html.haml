@@ -8,17 +8,17 @@
         = f.label :password_authentication_enabled_for_web, class: 'form-check-label' do
           = _('Allow password authentication for the web interface')
           .form-text.text-muted
-            = _('When inactive, an external authentication provider must be used.')
+            = _('Clear this checkbox to use an external authentication provider instead.')
     .form-group
       .form-check
         = f.check_box :password_authentication_enabled_for_git, class: 'form-check-input'
         = f.label :password_authentication_enabled_for_git, class: 'form-check-label' do
           = _('Allow password authentication for Git over HTTP(S)')
           .form-text.text-muted
-            When inactive, a Personal Access Token
             - if Gitlab::Auth::Ldap::Config.enabled?
-              or LDAP password
-            must be used to authenticate.
+              = _('Clear this checkbox to use a personal access token or LDAP password instead.')
+            - else
+              = _('Clear this checkbox to use a personal access token instead.')
     - if omniauth_enabled? && button_based_providers.any?
       %fieldset.form-group
         %legend.gl-font-base.gl-mb-3.gl-border-none.gl-font-weight-bold= _('Enabled OAuth authentication sources')

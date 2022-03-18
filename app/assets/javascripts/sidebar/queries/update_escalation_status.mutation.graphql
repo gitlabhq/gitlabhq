@@ -1,0 +1,10 @@
+mutation updateEscalationStatus($projectPath: ID!, $status: IssueEscalationStatus!, $iid: String!) {
+  issueSetEscalationStatus(input: { projectPath: $projectPath, status: $status, iid: $iid }) {
+    errors
+    clientMutationId
+    issue {
+      id
+      escalationStatus
+    }
+  }
+}

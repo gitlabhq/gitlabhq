@@ -76,6 +76,24 @@ RSpec.describe 'getting merge request information nested in a project' do
     end
   end
 
+  context 'when the merge_request has committers' do
+    let(:mr_fields) do
+      <<~SELECT
+      committers { nodes { id username } }
+      SELECT
+    end
+
+    it 'includes committers' do
+      expected = merge_request.committers.map do |r|
+        a_hash_including('id' => global_id_of(r), 'username' => r.username)
+      end
+
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:project, :merge_request, :committers, :nodes)).to match_array(expected)
+    end
+  end
+
   describe 'diffStats' do
     let(:mr_fields) do
       <<~FIELDS

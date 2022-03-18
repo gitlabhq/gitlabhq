@@ -1,9 +1,4 @@
 ---
 GraphQL/FieldDefinitions:
   Exclude:
-  - ee/app/graphql/types/ci/code_quality_degradation_type.rb
-  - ee/app/graphql/types/epic_type.rb
-  - ee/app/graphql/types/group_release_stats_type.rb
-  - ee/app/graphql/types/iteration_type.rb
-  - ee/app/graphql/types/requirements_management/requirement_type.rb
   - ee/app/graphql/types/vulnerability_type.rb

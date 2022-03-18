@@ -10,6 +10,7 @@ export const updateContainerExpirationPolicy = (projectPath) => (client, { data:
 
   const data = produce(sourceData, (draftState) => {
     draftState.project.containerExpirationPolicy = {
+      ...draftState.project.containerExpirationPolicy,
       ...updatedData.updateContainerExpirationPolicy.containerExpirationPolicy,
     };
   });

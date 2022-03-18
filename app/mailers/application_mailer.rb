@@ -7,6 +7,7 @@ class ApplicationMailer < ActionMailer::Base
   helper MarkupHelper
 
   attr_accessor :current_user
+
   helper_method :current_user, :can?
 
   default from:     proc { default_sender_address.format }

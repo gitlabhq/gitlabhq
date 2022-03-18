@@ -5,8 +5,11 @@ require 'rspec-parameterized'
 
 require_relative '../../support/stub_settings_source'
 require_relative '../../../sidekiq_cluster/cli'
+require_relative '../../support/helpers/next_instance_of'
 
 RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubocop:disable RSpec/FilePath
+  include NextInstanceOf
+
   let(:cli) { described_class.new('/dev/null') }
   let(:timeout) { Gitlab::SidekiqCluster::DEFAULT_SOFT_TIMEOUT_SECONDS }
   let(:default_options) do
@@ -37,6 +40,8 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
     }
   end
 
+  let(:supervisor) { instance_double(Gitlab::SidekiqCluster::SidekiqProcessSupervisor) }
+
   before do
     stub_env('RAILS_ENV', 'test')
 
@@ -44,8 +49,11 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
     config_file.close
 
     allow(::Settings).to receive(:source).and_return(config_file.path)
-
     ::Settings.reload!
+
+    allow(Gitlab::ProcessManagement).to receive(:write_pid)
+    allow(Gitlab::SidekiqCluster::SidekiqProcessSupervisor).to receive(:instance).and_return(supervisor)
+    allow(supervisor).to receive(:supervise)
   end
 
   after do
@@ -60,12 +68,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
     end
 
     context 'with arguments' do
-      before do
-        allow(cli).to receive(:write_pid)
-        allow(cli).to receive(:trap_signals)
-        allow(cli).to receive(:start_loop)
-      end
-
       it 'starts the Sidekiq workers' do
         expect(Gitlab::SidekiqCluster).to receive(:start)
                                             .with([['foo']], default_options)
@@ -81,7 +83,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
           .to receive(:worker_queues).and_return(worker_queues)
 
         expect(Gitlab::SidekiqCluster)
-          .to receive(:start).with([worker_queues], default_options)
+          .to receive(:start).with([worker_queues], default_options).and_return([])
 
         cli.run(%w(*))
       end
@@ -135,6 +137,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
         it 'when given', 'starts Sidekiq workers with given timeout' do
           expect(Gitlab::SidekiqCluster).to receive(:start)
             .with([['foo']], default_options.merge(timeout: 10))
+            .and_return([])
 
           cli.run(%w(foo --timeout 10))
         end
@@ -142,6 +145,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
         it 'when not given', 'starts Sidekiq workers with default timeout' do
           expect(Gitlab::SidekiqCluster).to receive(:start)
             .with([['foo']], default_options.merge(timeout: Gitlab::SidekiqCluster::DEFAULT_SOFT_TIMEOUT_SECONDS))
+            .and_return([])
 
           cli.run(%w(foo))
         end
@@ -257,7 +261,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             .to receive(:worker_queues).and_return(worker_queues)
 
           expect(Gitlab::SidekiqCluster)
-            .to receive(:start).with([worker_queues], default_options)
+            .to receive(:start).with([worker_queues], default_options).and_return([])
 
           cli.run(%w(--queue-selector *))
         end
@@ -292,15 +296,12 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
 
       context 'starting the server' do
         context 'without --dryrun' do
+          before do
+            allow(Gitlab::SidekiqCluster).to receive(:start).and_return([])
+          end
+
           context 'when there are no sidekiq_health_checks settings set' do
             let(:sidekiq_exporter_enabled) { true }
-
-            before do
-              allow(Gitlab::SidekiqCluster).to receive(:start)
-              allow(cli).to receive(:write_pid)
-              allow(cli).to receive(:trap_signals)
-              allow(cli).to receive(:start_loop)
-            end
 
             it 'does not start a sidekiq metrics server' do
               expect(MetricsServer).not_to receive(:fork)
@@ -311,13 +312,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
 
           context 'when the sidekiq_exporter.port setting is not set' do
             let(:sidekiq_exporter_enabled) { true }
-
-            before do
-              allow(Gitlab::SidekiqCluster).to receive(:start)
-              allow(cli).to receive(:write_pid)
-              allow(cli).to receive(:trap_signals)
-              allow(cli).to receive(:start_loop)
-            end
 
             it 'does not start a sidekiq metrics server' do
               expect(MetricsServer).not_to receive(:fork)
@@ -342,13 +336,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
               }
             end
 
-            before do
-              allow(Gitlab::SidekiqCluster).to receive(:start)
-              allow(cli).to receive(:write_pid)
-              allow(cli).to receive(:trap_signals)
-              allow(cli).to receive(:start_loop)
-            end
-
             it 'does not start a sidekiq metrics server' do
               expect(MetricsServer).not_to receive(:fork)
 
@@ -366,13 +353,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
                   }
                 }
               }
-            end
-
-            before do
-              allow(Gitlab::SidekiqCluster).to receive(:start)
-              allow(cli).to receive(:write_pid)
-              allow(cli).to receive(:trap_signals)
-              allow(cli).to receive(:start_loop)
             end
 
             it 'does not start a sidekiq metrics server' do
@@ -397,13 +377,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             end
 
             with_them do
-              before do
-                allow(Gitlab::SidekiqCluster).to receive(:start)
-                allow(cli).to receive(:write_pid)
-                allow(cli).to receive(:trap_signals)
-                allow(cli).to receive(:start_loop)
-              end
-
               specify do
                 if start_metrics_server
                   expect(MetricsServer).to receive(:fork).with('sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: true, reset_signals: trapped_signals)
@@ -413,6 +386,23 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
 
                 cli.run(%w(foo))
               end
+            end
+          end
+
+          context 'when a PID is specified' do
+            it 'writes the PID to a file' do
+              expect(Gitlab::ProcessManagement).to receive(:write_pid).with('/dev/null')
+
+              cli.option_parser.parse!(%w(-P /dev/null))
+              cli.run(%w(foo))
+            end
+          end
+
+          context 'when no PID is specified' do
+            it 'does not write a PID' do
+              expect(Gitlab::ProcessManagement).not_to receive(:write_pid)
+
+              cli.run(%w(foo))
             end
           end
         end
@@ -427,130 +417,46 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
           end
         end
       end
-
-      context 'supervising the server' do
-        let(:sidekiq_exporter_enabled) { true }
-        let(:sidekiq_health_checks_port) { '3907' }
-
-        before do
-          allow(cli).to receive(:sleep).with(a_kind_of(Numeric))
-          allow(MetricsServer).to receive(:fork).and_return(99)
-          cli.start_metrics_server
-        end
-
-        it 'stops the metrics server when one of the processes has been terminated' do
-          allow(Gitlab::ProcessManagement).to receive(:process_died?).and_return(false)
-          allow(Gitlab::ProcessManagement).to receive(:all_alive?).with(an_instance_of(Array)).and_return(false)
-          allow(Gitlab::ProcessManagement).to receive(:signal_processes).with(an_instance_of(Array), :TERM)
-
-          expect(Process).to receive(:kill).with(:TERM, 99)
-
-          cli.start_loop
-        end
-
-        it 'starts the metrics server when it is down' do
-          allow(Gitlab::ProcessManagement).to receive(:process_died?).and_return(true)
-          allow(Gitlab::ProcessManagement).to receive(:all_alive?).with(an_instance_of(Array)).and_return(false)
-          allow(cli).to receive(:stop_metrics_server)
-
-          expect(MetricsServer).to receive(:fork).with(
-            'sidekiq', metrics_dir: metrics_dir, wipe_metrics_dir: false, reset_signals: trapped_signals
-          )
-
-          cli.start_loop
-        end
-      end
-    end
-  end
-
-  describe '#write_pid' do
-    context 'when a PID is specified' do
-      it 'writes the PID to a file' do
-        expect(Gitlab::ProcessManagement).to receive(:write_pid).with('/dev/null')
-
-        cli.option_parser.parse!(%w(-P /dev/null))
-        cli.write_pid
-      end
     end
 
-    context 'when no PID is specified' do
-      it 'does not write a PID' do
-        expect(Gitlab::ProcessManagement).not_to receive(:write_pid)
+    context 'supervising the cluster' do
+      let(:sidekiq_exporter_enabled) { true }
+      let(:sidekiq_health_checks_port) { '3907' }
+      let(:metrics_server_pid) { 99 }
+      let(:sidekiq_worker_pids) { [2, 42] }
 
-        cli.write_pid
-      end
-    end
-  end
-
-  describe '#wait_for_termination' do
-    it 'waits for termination of all sub-processes and succeeds after 3 checks' do
-      expect(Gitlab::ProcessManagement).to receive(:any_alive?)
-        .with(an_instance_of(Array)).and_return(true, true, true, false)
-
-      expect(Gitlab::ProcessManagement).to receive(:pids_alive)
-        .with([]).and_return([])
-
-      expect(Gitlab::ProcessManagement).to receive(:signal_processes)
-        .with([], "-KILL")
-
-      stub_const("Gitlab::SidekiqCluster::CHECK_TERMINATE_INTERVAL_SECONDS", 0.1)
-      allow(cli).to receive(:terminate_timeout_seconds) { 1 }
-
-      cli.wait_for_termination
-    end
-
-    context 'with hanging workers' do
       before do
-        expect(cli).to receive(:write_pid)
-        expect(cli).to receive(:trap_signals)
-        expect(cli).to receive(:start_loop)
+        allow(Gitlab::SidekiqCluster).to receive(:start).and_return(sidekiq_worker_pids)
       end
 
-      it 'hard kills workers after timeout expires' do
-        worker_pids = [101, 102, 103]
-        expect(Gitlab::SidekiqCluster).to receive(:start)
-                                            .with([['foo']], default_options)
-                                            .and_return(worker_pids)
-
-        expect(Gitlab::ProcessManagement).to receive(:any_alive?)
-          .with(worker_pids).and_return(true).at_least(10).times
-
-        expect(Gitlab::ProcessManagement).to receive(:pids_alive)
-          .with(worker_pids).and_return([102])
-
-        expect(Gitlab::ProcessManagement).to receive(:signal_processes)
-          .with([102], "-KILL")
+      it 'stops the entire process cluster if one of the workers has been terminated' do
+        expect(supervisor).to receive(:alive).and_return(true)
+        expect(supervisor).to receive(:supervise).and_yield([2])
+        expect(MetricsServer).to receive(:fork).once.and_return(metrics_server_pid)
+        expect(Gitlab::ProcessManagement).to receive(:signal_processes).with([42, 99], :TERM)
 
         cli.run(%w(foo))
-
-        stub_const("Gitlab::SidekiqCluster::CHECK_TERMINATE_INTERVAL_SECONDS", 0.1)
-        allow(cli).to receive(:terminate_timeout_seconds) { 1 }
-
-        cli.wait_for_termination
       end
-    end
-  end
 
-  describe '#trap_signals' do
-    it 'traps termination and sidekiq specific signals' do
-      expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i[INT TERM])
-      expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i[TTIN USR1 USR2 HUP])
+      context 'when the supervisor is alive' do
+        it 'restarts the metrics server when it is down' do
+          expect(supervisor).to receive(:alive).and_return(true)
+          expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
+          expect(MetricsServer).to receive(:fork).twice.and_return(metrics_server_pid)
 
-      cli.trap_signals
-    end
-  end
+          cli.run(%w(foo))
+        end
+      end
 
-  describe '#start_loop' do
-    it 'runs until one of the processes has been terminated' do
-      allow(cli).to receive(:sleep).with(a_kind_of(Numeric))
+      context 'when the supervisor is shutting down' do
+        it 'does not restart the metrics server' do
+          expect(supervisor).to receive(:alive).and_return(false)
+          expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
+          expect(MetricsServer).to receive(:fork).once.and_return(metrics_server_pid)
 
-      expect(Gitlab::ProcessManagement).to receive(:all_alive?)
-        .with(an_instance_of(Array)).and_return(false)
-
-      expect(Gitlab::ProcessManagement).to receive(:signal_processes)
-        .with(an_instance_of(Array), :TERM)
-
-      cli.start_loop
+          cli.run(%w(foo))
+        end
+      end
     end
   end
 end

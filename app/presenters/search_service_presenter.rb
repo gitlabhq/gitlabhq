@@ -25,7 +25,7 @@ class SearchServicePresenter < Gitlab::View::Presenter::Delegated
 
       case scope
       when 'users'
-        objects.eager_load(:status) # rubocop:disable CodeReuse/ActiveRecord
+        objects.eager_load(:status) if objects.respond_to?(:eager_load) # rubocop:disable CodeReuse/ActiveRecord
       when 'commits'
         prepare_commits_for_rendering(objects)
       else

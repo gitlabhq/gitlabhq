@@ -9,7 +9,7 @@ class ProjectAuthorization < ApplicationRecord
 
   validates :project, presence: true
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
-  validates :user, uniqueness: { scope: [:project, :access_level] }, presence: true
+  validates :user, uniqueness: { scope: :project }, presence: true
 
   def self.select_from_union(relations)
     from_union(relations)

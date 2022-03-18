@@ -27,8 +27,6 @@
       = render_if_exists 'admin/users/gma_user_badge'
 
   .gl-my-3.gl-display-flex.gl-flex-wrap.gl-my-n2.gl-mx-n2
-    .gl-p-2
-      #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
     - if @user != current_user
       .gl-p-2
         - if impersonation_enabled? && @user.can?(:log_in)
@@ -36,6 +34,8 @@
         - if can_force_email_confirmation?(@user)
           %button.btn.gl-button.btn-info.js-confirm-modal-button{ data: confirm_user_data(@user) }
             = _('Confirm user')
+    .gl-p-2
+      #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
 = gl_tabs_nav do
   = gl_tab_link_to _("Account"), admin_user_path(@user)
   = gl_tab_link_to _("Groups and projects"), projects_admin_user_path(@user)

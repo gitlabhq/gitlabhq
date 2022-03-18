@@ -1,8 +1,0 @@
----
-name: allow_unsafe_ruby_regexp
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10566
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/257849
-milestone: '11.10'
-type: development
-group: group::pipeline execution
-default_enabled: false

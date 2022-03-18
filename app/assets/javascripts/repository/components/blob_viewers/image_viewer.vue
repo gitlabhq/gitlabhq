@@ -16,6 +16,6 @@ export default {
 </script>
 <template>
   <div class="gl-text-center gl-p-7 gl-bg-gray-50">
-    <img :src="url" :alt="alt" data-testid="image" />
+    <img :src="url" :alt="alt" data-testid="image" class="gl-max-w-full" />
   </div>
 </template>

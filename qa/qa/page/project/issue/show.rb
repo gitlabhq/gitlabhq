@@ -18,6 +18,8 @@ module QA
           view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
             element :close_issue_button
             element :reopen_issue_button
+            element :issue_actions_ellipsis_dropdown
+            element :delete_issue_button
           end
 
           view 'app/assets/javascripts/related_issues/components/add_issuable_form.vue' do
@@ -68,6 +70,20 @@ module QA
 
           def has_reopen_issue_button?
             has_element?(:reopen_issue_button)
+          end
+
+          def has_delete_issue_button?
+            click_element(:issue_actions_ellipsis_dropdown)
+            has_element?(:delete_issue_button)
+          end
+
+          def delete_issue
+            click_element(:issue_actions_ellipsis_dropdown)
+            click_element(:delete_issue_button, Page::Modal::DeleteIssue)
+
+            Page::Modal::DeleteIssue.perform(&:confirm_delete_issue)
+
+            wait_for_requests
           end
         end
       end

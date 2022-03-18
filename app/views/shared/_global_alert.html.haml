@@ -8,16 +8,14 @@
 - close_button_class = local_assigns.fetch(:close_button_class, nil)
 - close_button_data = local_assigns.fetch(:close_button_data, nil)
 - icon = icons[variant]
-- alert_container_class = [container_class, @content_class] unless fluid_layout || local_assigns.fetch(:is_contained, false)
 
 %div{ role: 'alert', class: ['gl-alert', "gl-alert-#{variant}", alert_class], data: alert_data }
-  .gl-alert-container{ class: alert_container_class }
-    = sprite_icon(icon, size: 16, css_class: "gl-alert-icon#{' gl-alert-icon-no-title' if title.nil?}")
-    - if dismissible
-      %button.btn.gl-dismiss-btn.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon.js-close{ type: 'button', aria: { label: _('Dismiss') }, class: close_button_class, data: close_button_data }
-        = sprite_icon('close', size: 16)
-    .gl-alert-content{ role: 'alert' }
-      - if title
-        %h4.gl-alert-title
-          = title
-      = yield
+  = sprite_icon(icon, css_class: "gl-alert-icon#{' gl-alert-icon-no-title' if title.nil?}")
+  - if dismissible
+    %button.btn.gl-dismiss-btn.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon.js-close{ type: 'button', aria: { label: _('Dismiss') }, class: close_button_class, data: close_button_data }
+      = sprite_icon('close')
+  .gl-alert-content{ role: 'alert' }
+    - if title
+      %h4.gl-alert-title
+        = title
+    = yield

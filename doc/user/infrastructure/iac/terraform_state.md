@@ -8,9 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
 
-[Terraform remote backends](https://www.terraform.io/docs/language/settings/backends/index.html)
+[Terraform remote backends](https://www.terraform.io/language/settings/backends)
 enable you to store the state file in a remote, shared store. GitLab uses the
-[Terraform HTTP backend](https://www.terraform.io/docs/language/settings/backends/http.html)
+[Terraform HTTP backend](https://www.terraform.io/language/settings/backends/http)
 to securely store the state files in local storage (the default) or
 [the remote store of your choice](../../../administration/terraform_state.md).
 
@@ -222,9 +222,9 @@ See [this reference project](https://gitlab.com/gitlab-org/configure/examples/gi
 ## Using a GitLab-managed Terraform state backend as a remote data source
 
 You can use a GitLab-managed Terraform state as a
-[Terraform data source](https://www.terraform.io/docs/language/state/remote-state-data.html).
+[Terraform data source](https://www.terraform.io/language/state/remote-state-data).
 To use your existing Terraform state backend as a data source, provide the following details
-as [Terraform input variables](https://www.terraform.io/docs/language/values/variables.html):
+as [Terraform input variables](https://www.terraform.io/language/values/variables):
 
 - **address**: The URL of the remote state backend you want to use as a data source.
   For example, `https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>`.

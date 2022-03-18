@@ -2,7 +2,7 @@
 
 module Integrations
   class Bugzilla < BaseIssueTracker
-    include ActionView::Helpers::UrlHelper
+    include Integrations::HasIssueTrackerFields
 
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
 
@@ -15,7 +15,7 @@ module Integrations
     end
 
     def help
-      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/bugzilla'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/bugzilla'), target: '_blank', rel: 'noopener noreferrer'
       s_("IssueTracker|Use Bugzilla as this project's issue tracker. %{docs_link}").html_safe % { docs_link: docs_link.html_safe }
     end
 

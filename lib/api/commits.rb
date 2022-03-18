@@ -44,6 +44,8 @@ module API
         use :pagination
       end
       get ':id/repository/commits', urgency: :low do
+        not_found! 'Repository' unless user_project.repository_exists?
+
         path = params[:path]
         before = params[:until]
         after = params[:since]

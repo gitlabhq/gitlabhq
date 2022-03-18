@@ -187,6 +187,7 @@ export const imageTagsCountMock = (override) => ({
     containerRepository: {
       id: containerRepositoryMock.id,
       tagsCount: 13,
+      size: null,
       ...override,
     },
   },
@@ -233,6 +234,15 @@ export const graphQLDeleteImageRepositoryTagsMock = {
     destroyContainerRepositoryTags: {
       deletedTagNames: [],
       errors: [],
+      __typename: 'DestroyContainerRepositoryTagsPayload',
+    },
+  },
+};
+
+export const graphQLDeleteImageRepositoryTagImportingErrorMock = {
+  data: {
+    destroyContainerRepositoryTags: {
+      errors: ['repository importing'],
       __typename: 'DestroyContainerRepositoryTagsPayload',
     },
   },

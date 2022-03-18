@@ -43,11 +43,10 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
       context "when we only pass #{arg_name}" do
         let(:move_params) { { arg_name => list1.id } }
 
-        it 'raises an error' do
-          expect { subject }.to raise_error(
-            Gitlab::Graphql::Errors::ArgumentError,
-            'Both fromListId and toListId must be present'
-          )
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'Both fromListId and toListId must be present') do
+            subject
+          end
         end
       end
     end
@@ -55,11 +54,10 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
     context 'when required arguments are missing' do
       let(:move_params) { {} }
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(
-          Gitlab::Graphql::Errors::ArgumentError,
-          "At least one of the arguments fromListId, toListId, afterId or beforeId is required"
-        )
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'At least one of the arguments fromListId, toListId, afterId or beforeId is required') do
+          subject
+        end
       end
     end
 

@@ -35,7 +35,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks do
 
       let(:headers) { { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token, 'Content-Type' => 'text/plain' } }
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
-      let(:update_interval) { 10.seconds.to_i }
+      let(:update_interval) { 10.seconds }
 
       before do
         initial_patch_the_trace
@@ -81,7 +81,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks do
         end
 
         context 'when job was not updated recently' do
-          let(:update_interval) { 15.minutes.to_i }
+          let(:update_interval) { 16.minutes }
 
           it { expect { patch_the_trace }.to change { job.updated_at } }
 
@@ -293,10 +293,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks do
           end
         end
 
-        Timecop.travel(job.updated_at + update_interval) do
+        travel_to(job.updated_at + update_interval) do
           patch api("/jobs/#{job_id}/trace"), params: content, headers: request_headers
-          job.reload
         end
+        job.reload
       end
 
       def initial_patch_the_trace

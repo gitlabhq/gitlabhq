@@ -1,0 +1,24 @@
+#import "../fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+
+query projectUsersSearchWithMRPermissions(
+  $search: String!
+  $fullPath: ID!
+  $mergeRequestId: MergeRequestID!
+) {
+  workspace: project(fullPath: $fullPath) {
+    id
+    users: projectMembers(search: $search, relations: [DIRECT, INHERITED, INVITED_GROUPS]) {
+      nodes {
+        id
+        mergeRequestInteraction(id: $mergeRequestId) {
+          canMerge
+        }
+        user {
+          ...User
+          ...UserAvailability
+        }
+      }
+    }
+  }
+}

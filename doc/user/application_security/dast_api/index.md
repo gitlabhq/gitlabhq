@@ -479,8 +479,8 @@ Follow these steps to provide the bearer token with `DAST_API_OVERRIDES_ENV`:
    `{"headers":{"Authorization":"Bearer dXNlcm5hbWU6cGFzc3dvcmQ="}}` (substitute your token). You
    can create CI/CD variables from the GitLab projects page at **Settings > CI/CD**, in the
    **Variables** section.
-   Due to the format of `TEST_API_BEARERAUTH` it's not possible to mask the variable. 
-   To mask the token's value, you can create a second variable with the token value's, and define 
+   Due to the format of `TEST_API_BEARERAUTH` it's not possible to mask the variable.
+   To mask the token's value, you can create a second variable with the token value's, and define
    `TEST_API_BEARERAUTH` with the value `{"headers":{"Authorization":"Bearer $MASKED_VARIABLE"}}`.
 
 1. In your `.gitlab-ci.yml` file, set `DAST_API_OVERRIDES_ENV` to the variable you just created:
@@ -876,7 +876,7 @@ variables:
 
 If the value must be generated or regenerated on expiration, you can provide a program or script for
 the DAST API scanner to execute on a specified interval. The provided command runs in an Alpine Linux
-container that has Python 3 and Bash installed. 
+container that has Python 3 and Bash installed.
 
 You have to set the environment variable `DAST_API_OVERRIDES_CMD` to the program or script you would like
 to execute. The provided command creates the overrides JSON file as defined previously.
@@ -885,7 +885,7 @@ You might want to install other scripting runtimes like NodeJS or Ruby, or maybe
 your overrides command. In this case, we recommend setting the `DAST_API_PRE_SCRIPT` to the file path of a script which
 provides those prerequisites. The script provided by `DAST_API_PRE_SCRIPT` is executed once, before the analyzer starts.
 
-See the [Alpine Linux package management](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management) 
+See the [Alpine Linux package management](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management)
 page for information about installing Alpine Linux packages.
 
 You must provide three CI/CD variables, each set for correct operation:

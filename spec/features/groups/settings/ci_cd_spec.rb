@@ -13,6 +13,24 @@ RSpec.describe 'Group CI/CD settings' do
     sign_in(user)
   end
 
+  describe 'new group runners view banner' do
+    it 'displays banner' do
+      visit group_settings_ci_cd_path(group)
+
+      expect(page).to have_content(s_('Runners|New group runners view'))
+      expect(page).to have_link(href: group_runners_path(group))
+    end
+
+    it 'does not display banner' do
+      stub_feature_flags(runner_list_group_view_vue_ui: false)
+
+      visit group_settings_ci_cd_path(group)
+
+      expect(page).not_to have_content(s_('Runners|New group runners view'))
+      expect(page).not_to have_link(href: group_runners_path(group))
+    end
+  end
+
   describe 'runners registration token' do
     let!(:token) { group.runners_token }
 

@@ -33,9 +33,7 @@ RSpec.describe 'Gcp Cluster', :js do
       before do
         visit project_clusters_path(project)
 
-        click_link 'Certificate'
-        click_link 'Connect with a certificate'
-        click_link 'Create new cluster'
+        visit_create_cluster_page
         click_link 'Google GKE'
       end
 
@@ -118,16 +116,7 @@ RSpec.describe 'Gcp Cluster', :js do
         expect(page.find(:css, '.cluster-name').value).to eq(cluster.name)
       end
 
-      context 'when user disables the cluster' do
-        before do
-          page.find(:css, '.js-cluster-enable-toggle-area .js-project-feature-toggle').click
-          page.within('.js-cluster-details-form') { click_button 'Save changes' }
-        end
-
-        it 'user sees the successful message' do
-          expect(page).to have_content('Kubernetes cluster was successfully updated.')
-        end
-      end
+      include_examples "user disables a cluster"
 
       context 'when user changes cluster parameters' do
         before do
@@ -145,7 +134,6 @@ RSpec.describe 'Gcp Cluster', :js do
         before do
           visit project_clusters_path(project)
 
-          click_link 'Certificate'
           click_button(class: 'dropdown-toggle-split')
           click_link 'Connect with a certificate'
         end
@@ -175,7 +163,6 @@ RSpec.describe 'Gcp Cluster', :js do
   context 'when user has not dismissed GCP signup offer' do
     before do
       visit project_clusters_path(project)
-      click_link 'Certificate'
     end
 
     it 'user sees offer on cluster index page' do
@@ -183,7 +170,7 @@ RSpec.describe 'Gcp Cluster', :js do
     end
 
     it 'user sees offer on cluster create page' do
-      click_link 'Connect with a certificate'
+      visit_create_cluster_page
 
       expect(page).to have_css('.gcp-signup-offer')
     end
@@ -201,7 +188,7 @@ RSpec.describe 'Gcp Cluster', :js do
       find('.gcp-signup-offer .js-close').click
       wait_for_requests
 
-      click_link 'Connect with a certificate'
+      visit_create_cluster_page
 
       expect(page).not_to have_css('.gcp-signup-offer')
     end
@@ -229,5 +216,10 @@ RSpec.describe 'Gcp Cluster', :js do
 
       expect(page).not_to have_css('.gcp-signup-offer')
     end
+  end
+
+  def visit_create_cluster_page
+    click_button(class: 'dropdown-toggle-split')
+    click_link 'Create a new cluster'
   end
 end

@@ -147,6 +147,9 @@ export default {
     fileType() {
       return this.previewMode?.id || '';
     },
+    showTabs() {
+      return !this.shouldHideEditor && this.isEditModeActive && this.previewMode;
+    },
   },
   watch: {
     'file.name': {
@@ -193,6 +196,9 @@ export default {
       if (!this.panelResizing) {
         this.refreshEditorDimensions();
       }
+    },
+    showTabs() {
+      this.$nextTick(() => this.refreshEditorDimensions());
     },
     rightPaneIsOpen() {
       this.refreshEditorDimensions();
@@ -410,7 +416,7 @@ export default {
       }
     },
     refreshEditorDimensions() {
-      if (this.showEditor) {
+      if (this.showEditor && this.editor) {
         this.editor.updateDimensions();
       }
     },
@@ -495,7 +501,7 @@ export default {
 
 <template>
   <div id="ide" class="blob-viewer-container blob-editor-container">
-    <div v-if="!shouldHideEditor && isEditModeActive" class="ide-mode-tabs clearfix">
+    <div v-if="showTabs" class="ide-mode-tabs clearfix">
       <ul class="nav-links float-left border-bottom-0">
         <li :class="editTabCSS">
           <a
@@ -506,7 +512,7 @@ export default {
             >{{ __('Edit') }}</a
           >
         </li>
-        <li v-if="previewMode" :class="previewTabCSS">
+        <li :class="previewTabCSS">
           <a
             href="javascript:void(0);"
             role="button"

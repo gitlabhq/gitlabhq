@@ -26,10 +26,10 @@ module Gitlab
           # ignore - happens when Rake tasks yet have to create a database, e.g. for testing
         end
 
-        def sync_partitions(models_to_sync = registered_for_sync)
+        def sync_partitions(models_to_sync = registered_for_sync, only_on: nil)
           Gitlab::AppLogger.info(message: 'Syncing dynamic postgres partitions')
 
-          Gitlab::Database::EachDatabase.each_model_connection(models_to_sync) do |model|
+          Gitlab::Database::EachDatabase.each_model_connection(models_to_sync, only_on: only_on) do |model|
             PartitionManager.new(model).sync_partitions
           end
 

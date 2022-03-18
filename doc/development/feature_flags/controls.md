@@ -72,8 +72,8 @@ group.
 To enable a feature for 25% of the time, run the following in Slack:
 
 ```shell
-/chatops run feature set new_navigation_bar 25 --dev
-/chatops run feature set new_navigation_bar 25 --staging
+/chatops run feature set new_navigation_bar 25 --random --dev
+/chatops run feature set new_navigation_bar 25 --random --staging
 ```
 
 ### Enabling a feature for GitLab.com
@@ -121,7 +121,7 @@ command you make so people can understand the change if they need to.
 To enable a feature for 25% of the time, run the following in Slack:
 
 ```shell
-/chatops run feature set new_navigation_bar 25
+/chatops run feature set new_navigation_bar 25 --random
 ```
 
 This sets a feature flag to `true` based on the following formula:

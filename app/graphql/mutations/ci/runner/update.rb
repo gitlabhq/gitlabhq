@@ -53,7 +53,7 @@ module Mutations
         def resolve(id:, **runner_attrs)
           runner = authorized_find!(id)
 
-          unless ::Ci::UpdateRunnerService.new(runner).update(runner_attrs)
+          unless ::Ci::Runners::UpdateRunnerService.new(runner).update(runner_attrs)
             return { runner: nil, errors: runner.errors.full_messages }
           end
 

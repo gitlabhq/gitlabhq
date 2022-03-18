@@ -428,7 +428,7 @@ const mockUser1 = {
 
 export const mockUser2 = {
   __typename: 'UserCore',
-  id: 'gid://gitlab/User/4',
+  id: 'gid://gitlab/User/5',
   avatarUrl: '/avatar2',
   name: 'rookie',
   username: 'rookie',
@@ -450,6 +450,33 @@ export const searchResponse = {
           {
             id: 'gid://gitlab/User/4',
             user: mockUser2,
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const searchResponseOnMR = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: '1',
+      users: {
+        nodes: [
+          {
+            id: 'gid://gitlab/User/1',
+            user: mockUser1,
+            mergeRequestInteraction: {
+              canMerge: true,
+            },
+          },
+          {
+            id: 'gid://gitlab/User/4',
+            user: mockUser2,
+            mergeRequestInteraction: {
+              canMerge: false,
+            },
           },
         ],
       },

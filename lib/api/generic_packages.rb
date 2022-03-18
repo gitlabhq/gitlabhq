@@ -14,8 +14,6 @@ module API
     before do
       require_packages_enabled!
       authenticate_non_get!
-
-      require_generic_packages_available!
     end
 
     params do
@@ -112,10 +110,6 @@ module API
     helpers do
       include ::API::Helpers::PackagesHelpers
       include ::API::Helpers::Packages::BasicAuthHelpers
-
-      def require_generic_packages_available!
-        not_found! unless Feature.enabled?(:generic_packages, project, default_enabled: true)
-      end
 
       def project
         authorized_user_project

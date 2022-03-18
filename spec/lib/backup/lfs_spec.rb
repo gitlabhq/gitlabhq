@@ -20,7 +20,7 @@ RSpec.describe Backup::Lfs do
       expect(backup).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found -C /var/lfs-objects -cf - .), 'gzip -c -1'], any_args).and_return([[true, true], ''])
       expect(backup).to receive(:pipeline_succeeded?).and_return(true)
 
-      backup.dump
+      backup.dump('lfs.tar.gz')
     end
   end
 end

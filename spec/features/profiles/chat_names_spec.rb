@@ -28,7 +28,7 @@ RSpec.describe 'Profile > Chat' do
       end
 
       it 'goes to list of chat names and see chat account' do
-        expect(page.current_path).to eq(profile_chat_names_path)
+        expect(page).to have_current_path(profile_chat_names_path, ignore_query: true)
         expect(page).to have_content('my_chat_team')
         expect(page).to have_content('my_chat_user')
       end
@@ -46,7 +46,7 @@ RSpec.describe 'Profile > Chat' do
       end
 
       it 'goes to list of chat names and do not see chat account' do
-        expect(page.current_path).to eq(profile_chat_names_path)
+        expect(page).to have_current_path(profile_chat_names_path, ignore_query: true)
         expect(page).not_to have_content('my_chat_team')
         expect(page).not_to have_content('my_chat_user')
       end

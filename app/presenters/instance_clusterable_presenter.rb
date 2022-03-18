@@ -38,6 +38,11 @@ class InstanceClusterablePresenter < ClusterablePresenter
     admin_cluster_path(cluster, params)
   end
 
+  override :connect_path
+  def connect_path
+    connect_admin_clusters_path
+  end
+
   override :create_user_clusters_path
   def create_user_clusters_path
     create_user_admin_clusters_path

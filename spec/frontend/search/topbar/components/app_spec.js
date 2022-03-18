@@ -1,4 +1,4 @@
-import { GlForm, GlSearchBoxByType, GlButton } from '@gitlab/ui';
+import { GlSearchBoxByClick } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -36,39 +36,18 @@ describe('GlobalSearchTopbar', () => {
     wrapper.destroy();
   });
 
-  const findTopbarForm = () => wrapper.find(GlForm);
-  const findGlSearchBox = () => wrapper.find(GlSearchBoxByType);
+  const findGlSearchBox = () => wrapper.find(GlSearchBoxByClick);
   const findGroupFilter = () => wrapper.find(GroupFilter);
   const findProjectFilter = () => wrapper.find(ProjectFilter);
-  const findSearchButton = () => wrapper.find(GlButton);
 
   describe('template', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('renders Topbar Form always', () => {
-      expect(findTopbarForm().exists()).toBe(true);
-    });
-
     describe('Search box', () => {
       it('renders always', () => {
         expect(findGlSearchBox().exists()).toBe(true);
-      });
-
-      describe('onSearch', () => {
-        const testSearch = 'test search';
-
-        beforeEach(() => {
-          findGlSearchBox().vm.$emit('input', testSearch);
-        });
-
-        it('calls setQuery when input event is fired from GlSearchBoxByType', () => {
-          expect(actionSpies.setQuery).toHaveBeenCalledWith(expect.any(Object), {
-            key: 'search',
-            value: testSearch,
-          });
-        });
       });
     });
 
@@ -92,10 +71,6 @@ describe('GlobalSearchTopbar', () => {
         expect(findProjectFilter().exists()).toBe(showFilters);
       });
     });
-
-    it('renders SearchButton always', () => {
-      expect(findSearchButton().exists()).toBe(true);
-    });
   });
 
   describe('actions', () => {
@@ -103,8 +78,8 @@ describe('GlobalSearchTopbar', () => {
       createComponent();
     });
 
-    it('clicking SearchButton calls applyQuery', () => {
-      findTopbarForm().vm.$emit('submit', { preventDefault: () => {} });
+    it('clicking search button inside search box calls applyQuery', () => {
+      findGlSearchBox().vm.$emit('submit', { preventDefault: () => {} });
 
       expect(actionSpies.applyQuery).toHaveBeenCalled();
     });

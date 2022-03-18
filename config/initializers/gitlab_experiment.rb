@@ -49,7 +49,7 @@ Gitlab::Experiment.configure do |config|
   #
   valid_domains = %w[about.gitlab.com docs.gitlab.com gitlab.com gdk.test localhost]
   config.redirect_url_validator = lambda do |url|
-    Gitlab.dev_env_or_com? && (url = URI.parse(url)) && valid_domains.include?(url.host)
+    Gitlab.com? && (url = URI.parse(url)) && valid_domains.include?(url.host)
   rescue URI::InvalidURIError
     false
   end

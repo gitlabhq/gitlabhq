@@ -63,7 +63,7 @@ module Gitlab
         @repository
         .languages
         .first(MAX_LANGUAGES)
-        .to_h { |l| [l[:label], l] }
+        .index_by { |l| l[:label] }
     end
   end
 end

@@ -100,6 +100,7 @@ export default {
             <gl-link
               :href="tokenData.resetPath"
               :data-confirm="$options.i18n[tokenType].resetConfirmMessage"
+              data-confirm-btn-variant="danger"
               data-method="put"
               >{{ content }}</gl-link
             >

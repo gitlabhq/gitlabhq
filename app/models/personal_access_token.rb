@@ -34,6 +34,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :order_expires_at_asc, -> { reorder(expires_at: :asc) }
   scope :order_expires_at_desc, -> { reorder(expires_at: :desc) }
   scope :project_access_token, -> { includes(:user).where(user: { user_type: :project_bot }) }
+  scope :owner_is_human, -> { includes(:user).where(user: { user_type: :human }) }
 
   validates :scopes, presence: true
   validate :validate_scopes

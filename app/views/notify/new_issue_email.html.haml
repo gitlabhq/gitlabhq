@@ -7,5 +7,5 @@
     = assignees_label(@issue)
 
 - if @issue.description
-  %div
-  = markdown(@issue.description, pipeline: :email, author: @issue.author, current_user: @recipient, issuable_reference_expansion_enabled: true)
+  .md
+    = markdown(@issue.description, pipeline: :email, author: @issue.author, current_user: @recipient, issuable_reference_expansion_enabled: true)

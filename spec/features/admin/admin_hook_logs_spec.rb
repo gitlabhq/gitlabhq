@@ -39,6 +39,6 @@ RSpec.describe 'Admin::HookLogs' do
     click_link 'View details'
     click_link 'Resend Request'
 
-    expect(current_path).to eq(edit_admin_hook_path(system_hook))
+    expect(page).to have_current_path(edit_admin_hook_path(system_hook), ignore_query: true)
   end
 end

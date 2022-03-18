@@ -15,7 +15,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when invalid token is provided' do
         it 'returns 403 error' do
-          allow_next_instance_of(::Ci::RegisterRunnerService) do |service|
+          allow_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
             allow(service).to receive(:execute).and_return(nil)
           end
 
@@ -43,7 +43,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         let_it_be(:new_runner) { create(:ci_runner) }
 
         before do
-          allow_next_instance_of(::Ci::RegisterRunnerService) do |service|
+          allow_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
             expected_params = {
               description: 'server.hostname',
               maintenance_note: 'Some maintainer notes',
@@ -108,7 +108,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         let(:new_runner) { create(:ci_runner) }
 
         it 'converts to maintenance_note param' do
-          allow_next_instance_of(::Ci::RegisterRunnerService) do |service|
+          allow_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
             expect(service).to receive(:execute)
               .once
               .with('valid token', a_hash_including('maintenance_note' => 'Some maintainer notes')
@@ -133,7 +133,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         let_it_be(:new_runner) { create(:ci_runner) }
 
         it 'uses active value in registration' do
-          expect_next_instance_of(::Ci::RegisterRunnerService) do |service|
+          expect_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
             expected_params = { active: false }.stringify_keys
 
             expect(service).to receive(:execute)

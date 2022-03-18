@@ -1,32 +1,19 @@
-import groupsSelect from '~/groups_select';
 import initImportAProjectModal from '~/invite_members/init_import_a_project_modal';
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
-import initInviteMembersForm from '~/invite_members/init_invite_members_form';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteGroupsModal from '~/invite_members/init_invite_groups_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { s__ } from '~/locale';
-import memberExpirationDate from '~/member_expiration_date';
 import { initMembersApp } from '~/members';
 import { MEMBER_TYPES } from '~/members/constants';
 import { groupLinkRequestFormatter } from '~/members/utils';
 import { projectMemberRequestFormatter } from '~/projects/members/utils';
-import UsersSelect from '~/users_select';
 
-groupsSelect();
-memberExpirationDate();
-memberExpirationDate('.js-access-expiration-date-groups');
 initImportAProjectModal();
 initInviteMembersModal();
 initInviteGroupsModal();
 initInviteMembersTrigger();
 initInviteGroupTrigger();
-
-// This is only used when `invite_members_group_modal` feature flag is disabled.
-// This can be removed when `invite_members_group_modal` feature flag is removed.
-initInviteMembersForm();
-
-new UsersSelect(); // eslint-disable-line no-new
 
 const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
 initMembersApp(document.querySelector('.js-project-members-list-app'), {

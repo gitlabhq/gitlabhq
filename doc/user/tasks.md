@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `work_items`. Disabled by default.
 
 WARNING:
-Tasks are in **Alpha**. Current implementation does not have any API requests and works with mocked data.
+Tasks are in [**Alpha**](../policy/alpha-beta-support.md#alpha-features). Current implementation does not have any API requests and works with mocked data.
 For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103).
 
 FLAG:

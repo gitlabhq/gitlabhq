@@ -35,6 +35,7 @@ FactoryBot.define do
       metrics_dashboard_access_level { ProjectFeature::PRIVATE }
       operations_access_level { ProjectFeature::ENABLED }
       container_registry_access_level { ProjectFeature::ENABLED }
+      security_and_compliance_access_level { ProjectFeature::PRIVATE }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -70,7 +71,8 @@ FactoryBot.define do
         metrics_dashboard_access_level: evaluator.metrics_dashboard_access_level,
         operations_access_level: evaluator.operations_access_level,
         analytics_access_level: evaluator.analytics_access_level,
-        container_registry_access_level: evaluator.container_registry_access_level
+        container_registry_access_level: evaluator.container_registry_access_level,
+        security_and_compliance_access_level: evaluator.security_and_compliance_access_level
       }
 
       project.build_project_feature(hash)
@@ -82,7 +84,7 @@ FactoryBot.define do
       # user have access to the project. Our specs don't use said service class,
       # thus we must manually refresh things here.
       unless project.group || project.pending_delete
-        project.add_maintainer(project.first_owner)
+        project.add_owner(project.first_owner)
       end
 
       project.group&.refresh_members_authorized_projects
@@ -152,6 +154,10 @@ FactoryBot.define do
 
     trait :archived do
       archived { true }
+    end
+
+    trait :hidden do
+      hidden { true }
     end
 
     trait :last_repository_check_failed do
@@ -355,6 +361,9 @@ FactoryBot.define do
     trait(:container_registry_enabled)  { container_registry_access_level { ProjectFeature::ENABLED } }
     trait(:container_registry_disabled) { container_registry_access_level { ProjectFeature::DISABLED } }
     trait(:container_registry_private)  { container_registry_access_level { ProjectFeature::PRIVATE } }
+    trait(:security_and_compliance_enabled)  { security_and_compliance_access_level { ProjectFeature::ENABLED } }
+    trait(:security_and_compliance_disabled) { security_and_compliance_access_level { ProjectFeature::DISABLED } }
+    trait(:security_and_compliance_private)  { security_and_compliance_access_level { ProjectFeature::PRIVATE } }
 
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops
@@ -377,6 +386,10 @@ FactoryBot.define do
 
   trait(:service_desk_enabled) do
     service_desk_enabled { true }
+  end
+
+  trait :with_error_tracking_setting do
+    error_tracking_setting { association :project_error_tracking_setting }
   end
 
   # Project with empty repository

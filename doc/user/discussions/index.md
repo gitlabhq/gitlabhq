@@ -36,10 +36,9 @@ Each object can have as many as 5,000 comments.
 
 ## Mentions
 
-You can mention a user or a group present in your GitLab instance with `@username` or
-`@groupname`. All mentioned users are notified with to-do items and emails.
-Users can change this setting for themselves in the
-[notification settings](../profile/notifications.md).
+You can mention a user or a group (including [subgroups](../group/subgroups/index.md#mention-subgroups)) in your GitLab
+instance with `@username` or `@groupname`. All mentioned users are notified with to-do items and emails.
+Users can change this setting for themselves in the [notification settings](../profile/notifications.md).
 
 You can quickly see which comments involve you, because
 mentions for yourself (the user currently signed in) are highlighted
@@ -47,6 +46,8 @@ in a different color.
 
 Avoid mentioning `@all` in issues and merge requests, because it sends an email notification
 to all the members of that project's group. This might be interpreted as spam.
+Notifications and mentions can be disabled in
+[a group's settings](../group/index.md#disable-email-notifications).
 
 ## Add a comment to a merge request diff
 

@@ -4,6 +4,7 @@ module NotificationRecipients
   module Builder
     class MergeRequestUnmergeable < Base
       attr_reader :target
+
       def initialize(merge_request)
         @target = merge_request
       end

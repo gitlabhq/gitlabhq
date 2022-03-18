@@ -81,6 +81,16 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
         expect(local_file.valid?).to be_falsy
       end
     end
+
+    context 'when the given sha is not valid' do
+      let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
+      let(:sha) { ':' }
+
+      it 'returns false and adds an error message stating that included file does not exist' do
+        expect(local_file).not_to be_valid
+        expect(local_file.errors).to include("Sha #{sha} is not valid!")
+      end
+    end
   end
 
   describe '#content' do

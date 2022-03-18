@@ -85,14 +85,14 @@ RSpec.describe Integration do
 
       subject { described_class.by_type(type) }
 
-      context 'when type is "JiraService"' do
-        let(:type) { 'JiraService' }
+      context 'when type is "Integrations::JiraService"' do
+        let(:type) { 'Integrations::Jira' }
 
         it { is_expected.to match_array([integration1, integration2]) }
       end
 
-      context 'when type is "RedmineService"' do
-        let(:type) { 'RedmineService' }
+      context 'when type is "Integrations::Redmine"' do
+        let(:type) { 'Integrations::Redmine' }
 
         it { is_expected.to match_array([integration3]) }
       end
@@ -103,7 +103,7 @@ RSpec.describe Integration do
       let!(:integration2) { create(:jira_integration) }
 
       it 'returns the right group integration' do
-        expect(described_class.for_group(group)).to match_array([integration1])
+        expect(described_class.for_group(group)).to contain_exactly(integration1)
       end
     end
 
@@ -268,7 +268,7 @@ RSpec.describe Integration do
   describe '.build_from_integration' do
     context 'when integration is invalid' do
       let(:invalid_integration) do
-        build(:prometheus_integration, :template, active: true, properties: {})
+        build(:prometheus_integration, :instance, active: true, properties: {})
           .tap { |integration| integration.save!(validate: false) }
       end
 
@@ -376,22 +376,24 @@ RSpec.describe Integration do
       let_it_be(:instance_integration) { create(:jira_integration, :instance) }
 
       it 'returns the instance integration' do
-        expect(described_class.default_integration('JiraService', project)).to eq(instance_integration)
+        expect(described_class.default_integration('Integrations::Jira', project)).to eq(instance_integration)
       end
 
       it 'returns nil for nonexistent integration type' do
-        expect(described_class.default_integration('HipchatService', project)).to eq(nil)
+        expect(described_class.default_integration('Integrations::Hipchat', project)).to eq(nil)
       end
 
       context 'with a group integration' do
+        let(:integration_name) { 'Integrations::Jira' }
+
         let_it_be(:group_integration) { create(:jira_integration, group_id: group.id, project_id: nil) }
 
         it 'returns the group integration for a project' do
-          expect(described_class.default_integration('JiraService', project)).to eq(group_integration)
+          expect(described_class.default_integration(integration_name, project)).to eq(group_integration)
         end
 
         it 'returns the instance integration for a group' do
-          expect(described_class.default_integration('JiraService', group)).to eq(instance_integration)
+          expect(described_class.default_integration(integration_name, group)).to eq(instance_integration)
         end
 
         context 'with a subgroup' do
@@ -400,18 +402,18 @@ RSpec.describe Integration do
           let!(:project) { create(:project, group: subgroup) }
 
           it 'returns the closest group integration for a project' do
-            expect(described_class.default_integration('JiraService', project)).to eq(group_integration)
+            expect(described_class.default_integration(integration_name, project)).to eq(group_integration)
           end
 
           it 'returns the closest group integration for a subgroup' do
-            expect(described_class.default_integration('JiraService', subgroup)).to eq(group_integration)
+            expect(described_class.default_integration(integration_name, subgroup)).to eq(group_integration)
           end
 
           context 'having a integration with custom settings' do
             let!(:subgroup_integration) { create(:jira_integration, group_id: subgroup.id, project_id: nil) }
 
             it 'returns the closest group integration for a project' do
-              expect(described_class.default_integration('JiraService', project)).to eq(subgroup_integration)
+              expect(described_class.default_integration(integration_name, project)).to eq(subgroup_integration)
             end
           end
 
@@ -419,7 +421,7 @@ RSpec.describe Integration do
             let!(:subgroup_integration) { create(:jira_integration, group_id: subgroup.id, project_id: nil, inherit_from_id: group_integration.id) }
 
             it 'returns the closest group integration which does not inherit from its parent for a project' do
-              expect(described_class.default_integration('JiraService', project)).to eq(group_integration)
+              expect(described_class.default_integration(integration_name, project)).to eq(group_integration)
             end
           end
         end
@@ -556,13 +558,26 @@ RSpec.describe Integration do
     end
   end
 
-  describe '.integration_name_to_model' do
-    it 'returns the model for the given integration name' do
-      expect(described_class.integration_name_to_model('asana')).to eq(Integrations::Asana)
+  describe '.integration_name_to_type' do
+    it 'handles a simple case' do
+      expect(described_class.integration_name_to_type(:asana)).to eq 'Integrations::Asana'
     end
 
+    it 'raises an error if the name is unknown' do
+      expect { described_class.integration_name_to_type('foo') }
+        .to raise_exception(described_class::UnknownType, /foo/)
+    end
+
+    it 'handles all available_integration_names' do
+      types = described_class.available_integration_names.map { described_class.integration_name_to_type(_1) }
+
+      expect(types).to all(start_with('Integrations::'))
+    end
+  end
+
+  describe '.integration_name_to_model' do
     it 'raises an error if integration name is invalid' do
-      expect { described_class.integration_name_to_model('foo') }.to raise_exception(NameError, /uninitialized constant FooService/)
+      expect { described_class.integration_name_to_model('foo') }.to raise_exception(described_class::UnknownType, /foo/)
     end
   end
 
@@ -704,27 +719,63 @@ RSpec.describe Integration do
   end
 
   describe '#api_field_names' do
-    let(:fake_integration) do
-      Class.new(Integration) do
-        def fields
-          [
-            { name: 'token' },
-            { name: 'api_token' },
-            { name: 'token_api' },
-            { name: 'safe_token' },
-            { name: 'key' },
-            { name: 'api_key' },
-            { name: 'password' },
-            { name: 'password_field' },
-            { name: 'some_safe_field' },
-            { name: 'safe_field' }
-          ].shuffle
-        end
+    shared_examples 'api field names' do
+      it 'filters out sensitive fields' do
+        safe_fields = %w[some_safe_field safe_field url trojan_gift]
+
+        expect(fake_integration.new).to have_attributes(
+          api_field_names: match_array(safe_fields)
+        )
       end
     end
 
-    it 'filters out sensitive fields' do
-      expect(fake_integration.new).to have_attributes(api_field_names: match_array(%w[some_safe_field safe_field]))
+    context 'when the class overrides #fields' do
+      let(:fake_integration) do
+        Class.new(Integration) do
+          def fields
+            [
+              { name: 'token' },
+              { name: 'api_token' },
+              { name: 'token_api' },
+              { name: 'safe_token' },
+              { name: 'key' },
+              { name: 'api_key' },
+              { name: 'password' },
+              { name: 'password_field' },
+              { name: 'some_safe_field' },
+              { name: 'safe_field' },
+              { name: 'url' },
+              { name: 'trojan_horse', type: 'password' },
+              { name: 'trojan_gift', type: 'gift' }
+            ].shuffle
+          end
+        end
+      end
+
+      it_behaves_like 'api field names'
+    end
+
+    context 'when the class uses the field DSL' do
+      let(:fake_integration) do
+        Class.new(described_class) do
+          field :token
+          field :token
+          field :api_token
+          field :token_api
+          field :safe_token
+          field :key
+          field :api_key
+          field :password
+          field :password_field
+          field :some_safe_field
+          field :safe_field
+          field :url
+          field :trojan_horse, type: 'password'
+          field :trojan_gift, type: 'gift'
+        end
+      end
+
+      it_behaves_like 'api field names'
     end
   end
 
@@ -774,35 +825,33 @@ RSpec.describe Integration do
   end
 
   describe '.available_integration_names' do
-    it 'calls the right methods' do
-      expect(described_class).to receive(:integration_names).and_call_original
-      expect(described_class).to receive(:dev_integration_names).and_call_original
-      expect(described_class).to receive(:project_specific_integration_names).and_call_original
+    subject { described_class.available_integration_names }
 
-      described_class.available_integration_names
+    before do
+      allow(described_class).to receive(:integration_names).and_return(%w(foo))
+      allow(described_class).to receive(:project_specific_integration_names).and_return(['bar'])
+      allow(described_class).to receive(:dev_integration_names).and_return(['baz'])
     end
 
-    it 'does not call project_specific_integration_names with include_project_specific false' do
-      expect(described_class).to receive(:integration_names).and_call_original
-      expect(described_class).to receive(:dev_integration_names).and_call_original
-      expect(described_class).not_to receive(:project_specific_integration_names)
+    it { is_expected.to include('foo', 'bar', 'baz') }
 
-      described_class.available_integration_names(include_project_specific: false)
+    context 'when `include_project_specific` is false' do
+      subject { described_class.available_integration_names(include_project_specific: false) }
+
+      it { is_expected.to include('foo', 'baz') }
+      it { is_expected.not_to include('bar') }
     end
 
-    it 'does not call dev_integration_names with include_dev false' do
-      expect(described_class).to receive(:integration_names).and_call_original
-      expect(described_class).not_to receive(:dev_integration_names)
-      expect(described_class).to receive(:project_specific_integration_names).and_call_original
+    context 'when `include_dev` is false' do
+      subject { described_class.available_integration_names(include_dev: false) }
 
-      described_class.available_integration_names(include_dev: false)
+      it { is_expected.to include('foo', 'bar') }
+      it { is_expected.not_to include('baz') }
     end
-
-    it { expect(described_class.available_integration_names).to include('jenkins') }
   end
 
   describe '.project_specific_integration_names' do
-    it do
+    specify do
       expect(described_class.project_specific_integration_names)
         .to include(*described_class::PROJECT_SPECIFIC_INTEGRATION_NAMES)
     end
@@ -821,6 +870,155 @@ RSpec.describe Integration do
 
     it 'returns an empty array if no password fields exist' do
       expect(subject.password_fields).to eq([])
+    end
+  end
+
+  describe 'encrypted_properties' do
+    let(:properties) { { foo: 1, bar: true } }
+    let(:db_props) { properties.stringify_keys }
+    let(:record) { create(:integration, :instance, properties: properties) }
+
+    it 'contains the same data as properties' do
+      expect(record).to have_attributes(
+        properties: db_props,
+        encrypted_properties_tmp: db_props
+      )
+    end
+
+    it 'is persisted' do
+      encrypted_properties = described_class.id_in(record.id)
+
+      expect(encrypted_properties).to contain_exactly have_attributes(encrypted_properties_tmp: db_props)
+    end
+
+    it 'is updated when using prop_accessors' do
+      some_integration = Class.new(described_class) do
+        prop_accessor :foo
+      end
+
+      record = some_integration.new
+
+      record.foo = 'the foo'
+
+      expect(record.encrypted_properties_tmp).to eq({ 'foo' => 'the foo' })
+    end
+
+    it 'saves correctly using insert_all' do
+      hash = record.to_integration_hash
+      hash[:project_id] = project
+
+      expect do
+        described_class.insert_all([hash])
+      end.to change(described_class, :count).by(1)
+
+      expect(described_class.last).to have_attributes(encrypted_properties_tmp: db_props)
+    end
+
+    it 'is part of the to_integration_hash' do
+      hash = record.to_integration_hash
+
+      expect(hash).to include('encrypted_properties' => be_present, 'encrypted_properties_iv' => be_present)
+      expect(hash['encrypted_properties']).not_to eq(record.encrypted_properties)
+      expect(hash['encrypted_properties_iv']).not_to eq(record.encrypted_properties_iv)
+
+      decrypted = described_class.decrypt(:encrypted_properties_tmp,
+                                          hash['encrypted_properties'],
+                                          { iv: hash['encrypted_properties_iv'] })
+
+      expect(decrypted).to eq db_props
+    end
+
+    context 'when the properties are empty' do
+      let(:properties) { {} }
+
+      it 'is part of the to_integration_hash' do
+        hash = record.to_integration_hash
+
+        expect(hash).to include('encrypted_properties' => be_nil, 'encrypted_properties_iv' => be_nil)
+      end
+
+      it 'saves correctly using insert_all' do
+        hash = record.to_integration_hash
+        hash[:project_id] = project
+
+        expect do
+          described_class.insert_all([hash])
+        end.to change(described_class, :count).by(1)
+
+        expect(described_class.last).not_to eq record
+        expect(described_class.last).to have_attributes(encrypted_properties_tmp: db_props)
+      end
+    end
+  end
+
+  describe 'field DSL' do
+    let(:integration_type) do
+      Class.new(described_class) do
+        field :foo
+        field :foo_p, storage: :properties
+        field :foo_dt, storage: :data_fields
+
+        field :bar, type: 'password'
+        field :password
+
+        field :with_help,
+              help: -> { 'help' }
+
+        field :a_number,
+              type: 'number'
+      end
+    end
+
+    before do
+      allow(integration).to receive(:data_fields).and_return(data_fields)
+    end
+
+    let(:integration) { integration_type.new }
+    let(:data_fields) { Struct.new(:foo_dt).new }
+
+    it 'checks the value of storage' do
+      expect do
+        Class.new(described_class) { field(:foo, storage: 'bar') }
+      end.to raise_error(ArgumentError, /Unknown field storage/)
+    end
+
+    it 'provides prop_accessors' do
+      integration.foo = 1
+      expect(integration.foo).to eq 1
+      expect(integration.properties['foo']).to eq 1
+      expect(integration).to be_foo_changed
+
+      integration.foo_p = 2
+      expect(integration.foo_p).to eq 2
+      expect(integration.properties['foo_p']).to eq 2
+      expect(integration).to be_foo_p_changed
+    end
+
+    it 'provides data fields' do
+      integration.foo_dt = 3
+      expect(integration.foo_dt).to eq 3
+      expect(data_fields.foo_dt).to eq 3
+      expect(integration).to be_foo_dt_changed
+    end
+
+    it 'registers fields in the fields list' do
+      expect(integration.fields.pluck(:name)).to match_array %w[
+        foo foo_p foo_dt bar password with_help a_number
+      ]
+
+      expect(integration.api_field_names).to match_array %w[
+        foo foo_p foo_dt with_help a_number
+      ]
+    end
+
+    specify 'fields have expected attributes' do
+      expect(integration.fields).to include(
+        have_attributes(name: 'foo', type: 'text'),
+        have_attributes(name: 'bar', type: 'password'),
+        have_attributes(name: 'password', type: 'password'),
+        have_attributes(name: 'a_number', type: 'number'),
+        have_attributes(name: 'with_help', help: 'help')
+      )
     end
   end
 end

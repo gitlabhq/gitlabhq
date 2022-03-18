@@ -10,29 +10,28 @@ export function createApolloProvider() {
 
   const defaultClient = createDefaultClient(resolvers, {
     typeDefs,
+    cacheConfig: {
+      possibleTypes: {
+        LocalWorkItemWidget: ['LocalTitleWidget'],
+      },
+    },
   });
 
   defaultClient.cache.writeQuery({
     query: workItemQuery,
     variables: {
-      id: '1',
+      id: 'gid://gitlab/WorkItem/1',
     },
     data: {
-      workItem: {
+      localWorkItem: {
         __typename: 'LocalWorkItem',
-        id: '1',
+        id: 'gid://gitlab/WorkItem/1',
         type: 'FEATURE',
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        title: 'Test Work Item',
         widgets: {
           __typename: 'LocalWorkItemWidgetConnection',
-          nodes: [
-            {
-              __typename: 'LocalTitleWidget',
-              type: 'TITLE',
-              enabled: true,
-              // eslint-disable-next-line @gitlab/require-i18n-strings
-              contentText: 'Test Work Item Title',
-            },
-          ],
+          nodes: [],
         },
       },
     },

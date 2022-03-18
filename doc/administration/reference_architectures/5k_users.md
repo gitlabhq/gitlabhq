@@ -1305,6 +1305,7 @@ To configure the Praefect nodes, on each one:
    alertmanager['enable'] = false
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
    nginx['enable'] = false
 
    # Praefect Configuration
@@ -1445,6 +1446,7 @@ On each node:
    alertmanager['enable'] = false
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
    nginx['enable'] = false
 
    # Prevent database migrations from running on upgrade automatically
@@ -1466,6 +1468,11 @@ On each node:
    # Gitaly Auth Token
    # Should be the same as praefect_internal_token
    gitaly['auth_token'] = '<praefect_internal_token>'
+
+   # Gitaly Pack-objects cache
+   # Recommended to be enabled for improved performance but can notably increase disk I/O
+   # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
+   gitaly['pack_objects_cache_enabled'] = true
    ```
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective server:
@@ -1573,7 +1580,7 @@ To configure Praefect with TLS:
    ```ruby
    git_data_dirs({
      "default" => {
-       "gitaly_address" => 'tls://LOAD_BALANCER_SERVER_ADDRESS:2305',
+       "gitaly_address" => 'tls://LOAD_BALANCER_SERVER_ADDRESS:3305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })
@@ -1617,6 +1624,7 @@ To configure the Sidekiq nodes, one each one:
    alertmanager['enable'] = false
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
    nginx['enable'] = false
 
    # External URL

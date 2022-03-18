@@ -10,7 +10,13 @@
           .line-numbers
             .gl-display-flex
               %span.diff-line-num.gl-pl-3
-                %a.has-tooltip{ href: "#{blame_link}#L#{i}", id: "blame-L#{i}", 'data-line-number' => i, title: _('View blame') }
+                %a.has-tooltip{ href: "#{blame_link}#L#{i}",
+                                id: "blame-L#{i}",
+                                data: { "line_number" => i,
+                                        "track_action" => 'click_link',
+                                        "track_label" => 'git_blame',
+                                        "track_property" => 'search_result' },
+                                title: _('View blame') }
                   = sprite_icon('git')
               %span.diff-line-num.flex-grow-1.gl-pr-3
                 %a{ href: "#{blob_link}#L#{i}", id: "blob-L#{i}", 'data-line-number' => i, class: 'gl-display-flex! gl-align-items-center gl-justify-content-end' }

@@ -13,7 +13,7 @@ class IssuePolicy < IssuablePolicy
   end
 
   desc "User can read contacts belonging to the issue group"
-  condition(:can_read_crm_contacts, scope: :subject) { @user.can?(:read_crm_contact, @subject.project.group) }
+  condition(:can_read_crm_contacts, scope: :subject) { @user.can?(:read_crm_contact, @subject.project.root_ancestor) }
 
   desc "Issue is confidential"
   condition(:confidential, scope: :subject) { @subject.confidential? }

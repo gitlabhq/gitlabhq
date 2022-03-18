@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
-  include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
   include MarkupHelper
   include TreeHelper
@@ -150,7 +149,11 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     )
   end
 
-  def assign_to_closing_issues_link
+  def assign_to_closing_issues_path
+    assign_related_issues_project_merge_request_path(project, merge_request)
+  end
+
+  def assign_to_closing_issues_count
     # rubocop: disable CodeReuse/ServiceClass
     issues = MergeRequests::AssignIssuesService.new(project: project,
                                                     current_user: current_user,
@@ -158,14 +161,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
                                                       merge_request: merge_request,
                                                       closes_issues: closing_issues
                                                     }).assignable_issues
-    path = assign_related_issues_project_merge_request_path(project, merge_request)
-    if issues.present?
-      if issues.count > 1
-        link_to _('Assign yourself to these issues'), path, method: :post
-      else
-        link_to _('Assign yourself to this issue'), path, method: :post
-      end
-    end
+    issues.count
     # rubocop: enable CodeReuse/ServiceClass
   end
 
@@ -289,6 +285,11 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def user_can_fork_project?
     can?(current_user, :fork_project, project)
+  end
+
+  # Avoid including ActionView::Helpers::UrlHelper
+  def link_to(*args)
+    ApplicationController.helpers.link_to(*args)
   end
 end
 

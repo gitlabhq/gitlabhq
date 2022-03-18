@@ -72,40 +72,29 @@ export default {
     visibilityHelpPath: {
       default: '',
     },
-  },
-  props: {
     endpoint: {
-      type: String,
-      required: true,
+      default: '',
     },
     projectFullPath: {
-      type: String,
-      required: true,
+      default: '',
     },
     projectId: {
-      type: String,
-      required: true,
+      default: '',
     },
     projectName: {
-      type: String,
-      required: true,
+      default: '',
     },
     projectPath: {
-      type: String,
-      required: true,
+      default: '',
     },
     projectDescription: {
-      type: String,
-      required: false,
       default: '',
     },
     projectVisibility: {
-      type: String,
-      required: true,
+      default: '',
     },
     restrictedVisibilityLevels: {
-      type: Array,
-      required: true,
+      default: [],
     },
   },
   data() {

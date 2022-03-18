@@ -6,11 +6,11 @@ module Types
 
     authorize :read_instance_metadata
 
-    field :version, GraphQL::Types::String, null: false,
-          description: 'Version.'
-    field :revision, GraphQL::Types::String, null: false,
-          description: 'Revision.'
     field :kas, ::Types::Metadata::KasType, null: false,
           description: 'Metadata about KAS.'
+    field :revision, GraphQL::Types::String, null: false,
+          description: 'Revision.'
+    field :version, GraphQL::Types::String, null: false,
+          description: 'Version.'
   end
 end

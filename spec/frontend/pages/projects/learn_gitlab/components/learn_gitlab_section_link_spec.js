@@ -12,8 +12,9 @@ const defaultProps = {
   completed: false,
 };
 
-const docLinkProps = {
+const openInNewTabProps = {
   url: 'https://docs.gitlab.com/ee/user/application_security/security_dashboard/',
+  openInNewTab: true,
 };
 
 describe('Learn GitLab Section Link', () => {
@@ -59,9 +60,9 @@ describe('Learn GitLab Section Link', () => {
     expect(wrapper.find('[data-testid="trial-only"]').exists()).toBe(true);
   });
 
-  describe('doc links', () => {
+  describe('links marked with openInNewTab', () => {
     beforeEach(() => {
-      createWrapper('securityScanEnabled', docLinkProps);
+      createWrapper('securityScanEnabled', openInNewTabProps);
     });
 
     it('renders links with blank target', () => {
@@ -78,7 +79,6 @@ describe('Learn GitLab Section Link', () => {
 
       expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_link', {
         label: 'Run a Security scan using CI/CD',
-        property: 'Growth::Conversion::Experiment::LearnGitLab',
       });
 
       unmockTracking();

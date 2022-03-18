@@ -20,11 +20,22 @@ module ResolvesPipelines
              GraphQL::Types::String,
              required: false,
              description: "Filter pipelines by the sha of the commit they are run for."
-
     argument :source,
              GraphQL::Types::String,
              required: false,
              description: "Filter pipelines by their source."
+
+    argument :updated_after, Types::TimeType,
+             required: false,
+             description: 'Pipelines updated after this date.'
+    argument :updated_before, Types::TimeType,
+             required: false,
+             description: 'Pipelines updated before this date.'
+
+    argument :username,
+             GraphQL::Types::String,
+             required: false,
+             description: "Filter pipelines by the user that triggered the pipeline."
   end
 
   class_methods do

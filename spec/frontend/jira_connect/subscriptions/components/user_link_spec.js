@@ -7,7 +7,7 @@ jest.mock('~/jira_connect/subscriptions/utils', () => ({
   getGitlabSignInURL: jest.fn().mockImplementation((path) => Promise.resolve(path)),
 }));
 
-describe('SubscriptionsList', () => {
+describe('UserLink', () => {
   let wrapper;
 
   const createComponent = (propsData = {}, { provide } = {}) => {
@@ -68,24 +68,35 @@ describe('SubscriptionsList', () => {
   });
 
   describe('gitlab user link', () => {
-    window.gon = { current_username: 'root' };
+    describe.each`
+      current_username | gitlabUserPath | user                         | expectedUserHandle | expectedUserLink
+      ${'root'}        | ${'/root'}     | ${{ username: 'test-user' }} | ${'@root'}         | ${'/root'}
+      ${'root'}        | ${'/root'}     | ${undefined}                 | ${'@root'}         | ${'/root'}
+      ${undefined}     | ${undefined}   | ${{ username: 'test-user' }} | ${'@test-user'}    | ${'/test-user'}
+    `(
+      'when current_username=$current_username, gitlabUserPath=$gitlabUserPath and user=$user',
+      ({ current_username, gitlabUserPath, user, expectedUserHandle, expectedUserLink }) => {
+        beforeEach(() => {
+          window.gon = { current_username, relative_root_url: '' };
 
-    beforeEach(() => {
-      createComponent(
-        {
-          userSignedIn: true,
-          hasSubscriptions: true,
-        },
-        { provide: { gitlabUserPath: '/root' } },
-      );
-    });
+          createComponent(
+            {
+              userSignedIn: true,
+              hasSubscriptions: true,
+              user,
+            },
+            { provide: { gitlabUserPath } },
+          );
+        });
 
-    it('renders with correct href', () => {
-      expect(findGitlabUserLink().attributes('href')).toBe('/root');
-    });
+        it(`sets href to ${expectedUserLink}`, () => {
+          expect(findGitlabUserLink().attributes('href')).toBe(expectedUserLink);
+        });
 
-    it('contains GitLab user handle', () => {
-      expect(findGitlabUserLink().text()).toBe('@root');
-    });
+        it(`renders ${expectedUserHandle} as text`, () => {
+          expect(findGitlabUserLink().text()).toBe(expectedUserHandle);
+        });
+      },
+    );
   });
 });

@@ -1,3 +1,4 @@
+import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RelatedLinks from '~/vue_merge_request_widget/components/mr_widget_related_links.vue';
 
@@ -85,13 +86,29 @@ describe('MRWidgetRelatedLinks', () => {
     expect(content).toContain('Mentions issues #23 and #42');
   });
 
-  it('should have assing issues link', () => {
-    createComponent({
-      relatedLinks: {
-        assignToMe: '<a href="#">Assign yourself to these issues</a>',
-      },
+  describe('should have correct assign issues link', () => {
+    it.each([
+      [1, 'Assign yourself to this issue'],
+      [2, 'Assign yourself to these issues'],
+    ])('when issue count is %s, link displays correct text', (unassignedCount, text) => {
+      const assignToMe = '/assign';
+
+      createComponent({
+        relatedLinks: { assignToMe, unassignedCount },
+      });
+
+      const glLinkWrapper = wrapper.findComponent(GlLink);
+
+      expect(glLinkWrapper.attributes('href')).toBe(assignToMe);
+      expect(glLinkWrapper.text()).toBe(text);
     });
 
-    expect(wrapper.text().trim()).toContain('Assign yourself to these issues');
+    it('when no link is present', () => {
+      createComponent({
+        relatedLinks: { assignToMe: '#', unassignedCount: 0 },
+      });
+
+      expect(wrapper.findComponent(GlLink).exists()).toBe(false);
+    });
   });
 });

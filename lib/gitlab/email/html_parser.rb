@@ -8,6 +8,7 @@ module Gitlab
       end
 
       attr_reader :raw_body
+
       def initialize(raw_body)
         @raw_body = raw_body
       end

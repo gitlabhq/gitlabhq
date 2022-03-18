@@ -286,11 +286,6 @@ further configuration steps.
    ```ruby
    # Disable all components except PostgreSQL related ones
    roles(['postgres_role'])
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   pgbouncer_exporter['enable'] = false
-   redis_exporter['enable'] = false
-   gitlab_exporter['enable'] = false
 
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -365,19 +360,7 @@ Omnibus:
 
    ```ruby
    ## Enable Redis
-   redis['enable'] = true
-
-   # Avoid running unnecessary services on the Redis server
-   gitaly['enable'] = false
-   postgresql['enable'] = false
-   puma['enable'] = false
-   sidekiq['enable'] = false
-   gitlab_workhorse['enable'] = false
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   grafana['enable'] = false
-   gitlab_exporter['enable'] = false
-   nginx['enable'] = false
+   roles(["redis_master_role"])
 
    redis['bind'] = '0.0.0.0'
    redis['port'] = 6379
@@ -481,6 +464,7 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    alertmanager['enable'] = false
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
    nginx['enable'] = false
 
    # Prevent database migrations from running on upgrade automatically

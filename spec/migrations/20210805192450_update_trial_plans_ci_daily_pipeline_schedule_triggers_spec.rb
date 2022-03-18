@@ -16,7 +16,7 @@ RSpec.describe UpdateTrialPlansCiDailyPipelineScheduleTriggers, :migration do
 
     context 'when the environment is dev or com' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+        allow(Gitlab).to receive(:com?).and_return(true)
       end
 
       it 'sets the trial plan limits for ci_daily_pipeline_schedule_triggers' do
@@ -57,7 +57,7 @@ RSpec.describe UpdateTrialPlansCiDailyPipelineScheduleTriggers, :migration do
 
     context 'when the environment is anything other than dev or com' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+        allow(Gitlab).to receive(:com?).and_return(false)
       end
 
       it 'does not update the plan limits' do
@@ -75,7 +75,7 @@ RSpec.describe UpdateTrialPlansCiDailyPipelineScheduleTriggers, :migration do
 
     context 'when the environment is dev or com' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+        allow(Gitlab).to receive(:com?).and_return(true)
       end
 
       it 'sets the trial plan limits ci_daily_pipeline_schedule_triggers to zero' do
@@ -116,7 +116,7 @@ RSpec.describe UpdateTrialPlansCiDailyPipelineScheduleTriggers, :migration do
 
     context 'when the environment is anything other than dev or com' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+        allow(Gitlab).to receive(:com?).and_return(false)
       end
 
       it 'does not change the ultimate trial plan limits' do

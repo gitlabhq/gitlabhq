@@ -130,6 +130,55 @@ RSpec.describe API::DeployTokens do
     end
   end
 
+  describe 'GET /projects/:id/deploy_tokens/:token_id' do
+    subject do
+      get api("/projects/#{project.id}/deploy_tokens/#{deploy_token.id}", user)
+      response
+    end
+
+    context 'when unauthenticated' do
+      let(:user) { nil }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when authenticated as non-admin user' do
+      before do
+        project.add_developer(user)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
+    end
+
+    context 'when authenticated as maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:ok) }
+
+      it 'returns specific deploy token for the project' do
+        subject
+
+        expect(response).to match_response_schema('public_api/v4/deploy_token')
+      end
+
+      context 'invalid request' do
+        it 'returns not found with invalid project id' do
+          get api("/projects/bad_id/deploy_tokens/#{deploy_token.id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'returns not found with invalid token id' do
+          get api("/projects/#{project.id}/deploy_tokens/#{non_existing_record_id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe 'GET /groups/:id/deploy_tokens' do
     subject do
       get api("/groups/#{group.id}/deploy_tokens", user)
@@ -188,6 +237,55 @@ RSpec.describe API::DeployTokens do
     end
   end
 
+  describe 'GET /groups/:id/deploy_tokens/:token_id' do
+    subject do
+      get api("/groups/#{group.id}/deploy_tokens/#{group_deploy_token.id}", user)
+      response
+    end
+
+    context 'when unauthenticated' do
+      let(:user) { nil }
+
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
+    end
+
+    context 'when authenticated as non-admin user' do
+      before do
+        group.add_developer(user)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
+    end
+
+    context 'when authenticated as maintainer' do
+      before do
+        group.add_maintainer(user)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:ok) }
+
+      it 'returns specific deploy token for the group' do
+        subject
+
+        expect(response).to match_response_schema('public_api/v4/deploy_token')
+      end
+
+      context 'invalid request' do
+        it 'returns not found with invalid group id' do
+          get api("/groups/bad_id/deploy_tokens/#{group_deploy_token.id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'returns not found with invalid token id' do
+          get api("/groups/#{group.id}/deploy_tokens/#{non_existing_record_id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe 'DELETE /projects/:id/deploy_tokens/:token_id' do
     subject do
       delete api("/projects/#{project.id}/deploy_tokens/#{deploy_token.id}", user)
@@ -232,10 +330,10 @@ RSpec.describe API::DeployTokens do
 
         it 'returns bad_request with invalid token id' do
           expect(::Projects::DeployTokens::DestroyService).to receive(:new)
-            .with(project, user, token_id: 999)
+            .with(project, user, token_id: non_existing_record_id)
             .and_raise(ActiveRecord::RecordNotFound)
 
-          delete api("/projects/#{project.id}/deploy_tokens/999", user)
+          delete api("/projects/#{project.id}/deploy_tokens/#{non_existing_record_id}", user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -395,10 +493,10 @@ RSpec.describe API::DeployTokens do
 
         it 'returns not found with invalid deploy token id' do
           expect(::Groups::DeployTokens::DestroyService).to receive(:new)
-            .with(group, user, token_id: 999)
+            .with(group, user, token_id: non_existing_record_id)
             .and_raise(ActiveRecord::RecordNotFound)
 
-          delete api("/groups/#{group.id}/deploy_tokens/999", user)
+          delete api("/groups/#{group.id}/deploy_tokens/#{non_existing_record_id}", user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

@@ -158,26 +158,10 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
     end
 
     describe 'load balancing' do
-      context 'when feature flag load_balancing_for_export_workers is enabled' do
-        before do
-          stub_feature_flags(load_balancing_for_export_workers: true)
-        end
+      it 'reads from replica' do
+        expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_replicas_for_read_queries).and_call_original
 
-        it 'reads from replica' do
-          expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_replicas_for_read_queries).and_call_original
-
-          subject.execute
-        end
-      end
-
-      context 'when feature flag load_balancing_for_export_workers is disabled' do
-        it 'reads from primary' do
-          stub_feature_flags(load_balancing_for_export_workers: false)
-
-          expect(Gitlab::Database::LoadBalancing::Session.current).not_to receive(:use_replicas_for_read_queries)
-
-          subject.execute
-        end
+        subject.execute
       end
     end
   end

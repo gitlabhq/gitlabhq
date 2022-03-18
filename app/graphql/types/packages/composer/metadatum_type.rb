@@ -9,8 +9,8 @@ module Types
 
         authorize :read_package
 
-        field :target_sha, GraphQL::Types::String, null: false, description: 'Target SHA of the package.'
         field :composer_json, Types::Packages::Composer::JsonType, null: false, description: 'Data of the Composer JSON file.'
+        field :target_sha, GraphQL::Types::String, null: false, description: 'Target SHA of the package.'
       end
     end
   end

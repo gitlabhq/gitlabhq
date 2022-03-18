@@ -23,7 +23,11 @@ module Gitlab
           end
         end
         execution_message do
-          if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
+          if params[:merge_request_diff_head_sha].blank?
+            _("Merge request diff sha parameter is required for the merge quick action.")
+          elsif params[:merge_request_diff_head_sha] != quick_action_target.diff_head_sha
+            _("Branch has been updated since the merge was requested.")
+          elsif preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
             _("Scheduled to merge this merge request (%{strategy}).") % { strategy: preferred_strategy.humanize }
           else
             _('Merged this merge request.')
@@ -35,6 +39,10 @@ module Gitlab
             merge_orchestration_service.can_merge?(quick_action_target)
         end
         command :merge do
+          next unless params[:merge_request_diff_head_sha].present?
+
+          next unless params[:merge_request_diff_head_sha] == quick_action_target.diff_head_sha
+
           @updates[:merge] = params[:merge_request_diff_head_sha]
         end
 

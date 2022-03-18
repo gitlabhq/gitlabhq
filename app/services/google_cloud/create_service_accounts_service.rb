@@ -12,7 +12,7 @@ module GoogleCloud
         service_account.project_id,
         service_account.to_json,
         service_account_key.to_json,
-        environment_protected?
+        ProtectedBranch.protected?(project, environment_name) || ProtectedTag.protected?(project, environment_name)
       )
 
       ServiceResponse.success(message: _('Service account generated successfully'), payload: {
@@ -49,11 +49,6 @@ module GoogleCloud
 
     def service_account_desc
       "GitLab generated service account for project '#{project.name}' and environment '#{environment_name}'"
-    end
-
-    # Overridden in EE
-    def environment_protected?
-      false
     end
   end
 end

@@ -62,7 +62,7 @@ Using the consolidated object storage configuration has a number of advantages:
 - It enables the use of [encrypted S3 buckets](#encrypted-s3-buckets).
 - It [uploads files to S3 with proper `Content-MD5` headers](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/222).
 
-Because [direct upload mode](../development/uploads.md#direct-upload)
+Because [direct upload mode](../development/uploads/implementation.md#direct-upload)
 must be enabled, only the following providers can be used:
 
 - [Amazon S3-compatible providers](#s3-compatible-connection-settings)
@@ -598,6 +598,7 @@ See the following additional guides:
 1. Configure [database lookup of SSH keys](operations/fast_ssh_key_lookup.md)
    to eliminate the need for a shared `authorized_keys` file.
 1. [Prevent local disk usage for job logs](job_logs.md#prevent-local-disk-usage).
+1. [Disable Pages local storage](pages/index.md#disable-pages-local-storage).
 
 ## Warnings, limitations, and known issues
 

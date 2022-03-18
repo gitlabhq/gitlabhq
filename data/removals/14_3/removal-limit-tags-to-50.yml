@@ -1,5 +1,5 @@
 - name: "Introduced limit of 50 tags for jobs"
-  removal_date: September 22nd, 2021 
+  removal_date: September 22nd, 2021
   removal_milestone: "14.3"
   reporter: jreporter
   breaking_change: false

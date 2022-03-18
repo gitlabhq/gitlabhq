@@ -7,7 +7,7 @@
   directly_invite_members: can_admin_project_member?(@project) } }
   .title.hide-collapsed
     = _('Assignee')
-    = loading_icon(css_class: 'gl-vertical-align-text-bottom')
+    = gl_loading_icon(inline: true)
 
 .js-sidebar-assignee-data.selectbox.hide-collapsed
   - if assignees.none?

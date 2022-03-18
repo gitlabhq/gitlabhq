@@ -5,6 +5,10 @@ module Gitlab
     extend self
     PathTraversalAttackError ||= Class.new(StandardError)
 
+    private_class_method def logger
+      @logger ||= Gitlab::AppLogger
+    end
+
     # Ensure that the relative path will not traverse outside the base directory
     # We url decode the path to avoid passing invalid paths forward in url encoded format.
     # Also see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24223#note_284122580
@@ -16,6 +20,7 @@ module Gitlab
       path_regex = %r{(\A(\.{1,2})\z|\A\.\.[/\\]|[/\\]\.\.\z|[/\\]\.\.[/\\]|\n)}
 
       if path.match?(path_regex)
+        logger.warn(message: "Potential path traversal attempt detected", path: "#{path}")
         raise PathTraversalAttackError, 'Invalid path'
       end
 
@@ -35,6 +40,13 @@ module Gitlab
       return if allowlisted?(path, allowlist)
 
       raise StandardError, "path #{path} is not allowed"
+    end
+
+    def check_allowed_absolute_path_and_path_traversal!(path, path_allowlist)
+      traversal_path = check_path_traversal!(path)
+      raise StandardError, "path is not a string!" unless traversal_path.is_a?(String)
+
+      check_allowed_absolute_path!(traversal_path, path_allowlist)
     end
 
     def decode_path(encoded_path)

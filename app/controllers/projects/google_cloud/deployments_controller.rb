@@ -9,6 +9,7 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
                                   .new(project, current_user, params).execute
 
     if enable_cloud_run_response[:status] == :error
+      track_event('deployments#cloud_run', 'enable_cloud_run_error', enable_cloud_run_response)
       flash[:error] = enable_cloud_run_response[:message]
       redirect_to project_google_cloud_index_path(project)
     else
@@ -17,15 +18,17 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
                                      .new(project, current_user, params).execute
 
       if generate_pipeline_response[:status] == :error
+        track_event('deployments#cloud_run', 'generate_pipeline_error', generate_pipeline_response)
         flash[:error] = 'Failed to generate pipeline'
         redirect_to project_google_cloud_index_path(project)
       else
         cloud_run_mr_params = cloud_run_mr_params(generate_pipeline_response[:branch_name])
+        track_event('deployments#cloud_run', 'cloud_run_success', cloud_run_mr_params)
         redirect_to project_new_merge_request_path(project, merge_request: cloud_run_mr_params)
       end
     end
   rescue Google::Apis::ClientError => error
-    handle_gcp_error(error, project)
+    handle_gcp_error('deployments#cloud_run', error)
   end
 
   def cloud_storage

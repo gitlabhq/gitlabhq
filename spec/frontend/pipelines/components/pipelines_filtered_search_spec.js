@@ -27,6 +27,7 @@ describe('Pipelines filtered search', () => {
     wrapper = mount(PipelinesFilteredSearch, {
       propsData: {
         projectId: '21',
+        defaultBranchName: 'main',
         params,
       },
       attachTo: document.body,
@@ -69,6 +70,7 @@ describe('Pipelines filtered search', () => {
       title: 'Branch name',
       unique: true,
       projectId: '21',
+      defaultBranchName: 'main',
       operators: OPERATOR_IS_ONLY,
     });
 

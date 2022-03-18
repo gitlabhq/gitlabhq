@@ -169,7 +169,7 @@ module IssuesHelper
   end
 
   def issue_header_actions_data(project, issuable, current_user)
-    new_issuable_params = { issue: { description: _('Related to #%{issue_id}.') % { issue_id: issuable.iid } + "\n\n" } }
+    new_issuable_params = { issue: {}, add_related_issue: issuable.iid }
     if issuable.incident?
       new_issuable_params[:issuable_template] = 'incident'
       new_issuable_params[:issue][:issue_type] = 'incident'
@@ -209,7 +209,7 @@ module IssuesHelper
     }
   end
 
-  def project_issues_list_data(project, current_user, finder)
+  def project_issues_list_data(project, current_user)
     common_issues_list_data(project, current_user).merge(
       can_bulk_update: can?(current_user, :admin_issue, project).to_s,
       can_edit: can?(current_user, :admin_project, project).to_s,
@@ -223,7 +223,7 @@ module IssuesHelper
       is_project: true.to_s,
       markdown_help_path: help_page_path('user/markdown'),
       max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
-      new_issue_path: new_project_issue_path(project, issue: { milestone_id: finder.milestones.first.try(:id) }),
+      new_issue_path: new_project_issue_path(project),
       project_import_jira_path: project_import_jira_path(project),
       quick_actions_help_path: help_page_path('user/project/quick_actions'),
       releases_path: project_releases_path(project, format: :json),

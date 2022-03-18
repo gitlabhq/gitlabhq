@@ -1,16 +1,23 @@
 <script>
-import { GlAvatarLabeled, GlAvatarLink } from '@gitlab/ui';
+import { GlAvatarLabeled, GlAvatarLink, GlIcon } from '@gitlab/ui';
+import { IssuableType } from '~/issues/constants';
 import { s__, sprintf } from '~/locale';
 
 export default {
   components: {
     GlAvatarLabeled,
     GlAvatarLink,
+    GlIcon,
   },
   props: {
     user: {
       type: Object,
       required: true,
+    },
+    issuableType: {
+      type: String,
+      required: false,
+      default: IssuableType.Issue,
     },
   },
   computed: {
@@ -22,6 +29,9 @@ export default {
         author: this.user.name,
       });
     },
+    hasCannotMergeIcon() {
+      return this.issuableType === IssuableType.MergeRequest && !this.user.canMerge;
+    },
   },
 };
 </script>
@@ -31,9 +41,19 @@ export default {
     <gl-avatar-labeled
       :size="32"
       :label="userLabel"
-      :sub-label="user.username"
+      :sub-label="`@${user.username}`"
       :src="user.avatarUrl || user.avatar || user.avatar_url"
-      class="gl-align-items-center"
-    />
+      class="gl-align-items-center gl-relative"
+    >
+      <template #meta>
+        <gl-icon
+          v-if="hasCannotMergeIcon"
+          name="warning-solid"
+          aria-hidden="true"
+          class="merge-icon"
+          :size="12"
+        />
+      </template>
+    </gl-avatar-labeled>
   </gl-avatar-link>
 </template>

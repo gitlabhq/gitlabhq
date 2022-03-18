@@ -135,7 +135,9 @@ The `include` files are:
 - Always evaluated first and then merged with the content of the `.gitlab-ci.yml` file,
   regardless of the position of the `include` keyword.
 
-You can [nest](includes.md#use-nested-includes) up to 100 includes, but you can't have duplicate includes.
+You can [nest](includes.md#use-nested-includes) up to 100 includes. In [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28987),
+the same file can be included multiple times in nested includes, but duplicates are ignored.
+
 In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28212),
 the time limit to resolve all files is 30 seconds.
 
@@ -1349,7 +1351,7 @@ In this example:
 **Additional details**:
 
 - Coverage regular expressions set in `gitlab-ci.yml` take precedence over coverage regular expression set in the
-  [GitLab UI](../pipelines/settings.md#add-test-coverage-results-to-a-merge-request-deprecated).
+  [GitLab UI](../pipelines/settings.md#add-test-coverage-results-using-project-settings-deprecated).
 - If there is more than one matched line in the job output, the last line is used
   (the first result of reverse search).
 - If there are multiple matches in a single line, the last match is searched
@@ -1863,7 +1865,7 @@ image:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207484) in GitLab 12.9.
 
-Use `inherit` to [control inheritance of globally-defined defaults and variables](../jobs/index.md#control-the-inheritance-of-default-keywords-and-global-variables).
+Use `inherit` to [control inheritance of default keywords and variables](../jobs/index.md#control-the-inheritance-of-default-keywords-and-global-variables).
 
 #### `inherit:default`
 
@@ -3689,6 +3691,61 @@ trigger_job:
 
 In this example, jobs from subsequent stages wait for the triggered pipeline to
 successfully complete before starting.
+
+#### `trigger:forward`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213729) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `ci_trigger_forward_variables`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_trigger_forward_variables`.
+The feature is not ready for production use.
+
+Use `trigger:forward` to specify what to forward to the downstream pipeline. You can control
+what is forwarded to both [parent-child pipelines](../pipelines/parent_child_pipelines.md)
+and [multi-project pipelines](../pipelines/multi_project_pipelines.md).
+
+**Possible inputs**:
+
+- `yaml_variables`: `true` (default), or `false`. When `true`, variables defined
+  in the trigger job are passed to downstream pipelines.
+- `pipeline_variables`: `true` or `false` (default). When `true`, [manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
+  are passed to downstream pipelines.
+
+**Example of `trigger:forward`**:
+
+[Run this pipeline manually](../pipelines/index.md#run-a-pipeline-manually), with
+the CI/CD variable `MYVAR = my value`:
+
+```yaml
+variables: # default variables for each job
+  VAR: value
+
+# Default behavior:
+# - VAR is passed to the child
+# - MYVAR is not passed to the child
+child1:
+  trigger:
+    include: .child-pipeline.yml
+
+# Forward pipeline variables:
+# - VAR is passed to the child
+# - MYVAR is passed to the child
+child2:
+  trigger:
+    include: .child-pipeline.yml
+    forward:
+      pipeline_variables: true
+
+# Do not forward YAML variables:
+# - VAR is not passed to the child
+# - MYVAR is not passed to the child
+child3:
+  trigger:
+    include: .child-pipeline.yml
+    forward:
+      yaml_variables: false
+```
 
 ### `variables`
 

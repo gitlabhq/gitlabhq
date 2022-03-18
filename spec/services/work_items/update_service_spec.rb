@@ -23,6 +23,9 @@ RSpec.describe WorkItems::UpdateService do
 
       it 'triggers issuable_title_updated graphql subscription' do
         expect(GraphqlTriggers).to receive(:issuable_title_updated).with(work_item).and_call_original
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_title_changed_action).with(author: current_user)
+        # During the work item transition we also want to track work items as issues
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_title_changed_action)
 
         update_work_item
       end
@@ -33,6 +36,7 @@ RSpec.describe WorkItems::UpdateService do
 
       it 'does not trigger issuable_title_updated graphql subscription' do
         expect(GraphqlTriggers).not_to receive(:issuable_title_updated)
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).not_to receive(:track_work_item_title_changed_action)
 
         update_work_item
       end

@@ -80,6 +80,10 @@ RSpec.describe Gitlab::Runtime do
 
     it_behaves_like "valid runtime", :puma, 3 + Gitlab::ActionCable::Config.worker_pool_size
 
+    it 'identifies as an application runtime' do
+      expect(Gitlab::Runtime.application?).to be true
+    end
+
     context "when ActionCable worker pool size is configured" do
       before do
         stub_env('ACTION_CABLE_WORKER_POOL_SIZE', 10)
@@ -113,6 +117,10 @@ RSpec.describe Gitlab::Runtime do
     end
 
     it_behaves_like "valid runtime", :sidekiq, 5
+
+    it 'identifies as an application runtime' do
+      expect(Gitlab::Runtime.application?).to be true
+    end
   end
 
   context "console" do
@@ -121,6 +129,10 @@ RSpec.describe Gitlab::Runtime do
     end
 
     it_behaves_like "valid runtime", :console, 1
+
+    it 'does not identify as an application runtime' do
+      expect(Gitlab::Runtime.application?).to be false
+    end
   end
 
   context "test suite" do
@@ -129,6 +141,10 @@ RSpec.describe Gitlab::Runtime do
     end
 
     it_behaves_like "valid runtime", :test_suite, 1
+
+    it 'does not identify as an application runtime' do
+      expect(Gitlab::Runtime.application?).to be false
+    end
   end
 
   context "geo log cursor" do
@@ -145,5 +161,9 @@ RSpec.describe Gitlab::Runtime do
     end
 
     it_behaves_like "valid runtime", :rails_runner, 1
+
+    it 'does not identify as an application runtime' do
+      expect(Gitlab::Runtime.application?).to be false
+    end
   end
 end

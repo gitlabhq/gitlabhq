@@ -187,55 +187,74 @@ NOTE:
 The complexity limits may be revised in future, and additionally, the complexity
 of a query may be altered.
 
-## Spam
+## Resolve mutations detected as spam
 
-GraphQL mutations can be detected as spam. If this happens, a
-[GraphQL top-level error](https://spec.graphql.org/June2018/#sec-Errors) is raised. For example:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327360) in GitLab 13.11.
 
-```json
-{
-  "errors": [
-    {
-      "message": "Request denied. Spam detected",
-      "locations": [ { "line": 6, "column": 7 } ],
-      "path": [ "updateSnippet" ],
-      "extensions": {
-        "spam": true
+GraphQL mutations can be detected as spam. If a mutation is detected as spam and:
+
+- A CAPTCHA service is not configured, a
+  [GraphQL top-level error](https://spec.graphql.org/June2018/#sec-Errors) is raised. For example:
+
+  ```json
+  {
+    "errors": [
+      {
+        "message": "Request denied. Spam detected",
+        "locations": [ { "line": 6, "column": 7 } ],
+        "path": [ "updateSnippet" ],
+        "extensions": {
+          "spam": true
+        }
+      }
+    ],
+    "data": {
+      "updateSnippet": {
+        "snippet": null
       }
     }
-  ],
-  "data": {
-    "updateSnippet": {
-      "snippet": null
+  }
+  ```
+
+- A CAPTCHA service is configured, you receive a response with:
+  - `needsCaptchaResponse` set to `true`.
+  - The `spamLogId` and `captchaSiteKey` fields set.
+
+  For example:
+
+  ```json
+  {
+    "errors": [
+      {
+        "message": "Request denied. Solve CAPTCHA challenge and retry",
+        "locations": [ { "line": 6, "column": 7 } ],
+        "path": [ "updateSnippet" ],
+        "extensions": {
+          "needsCaptchaResponse": true,
+          "captchaSiteKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+          "spamLogId": 67
+        }
+      }
+    ],
+    "data": {
+      "updateSnippet": {
+        "snippet": null,
+      }
     }
   }
-}
-```
-
-If a mutation is detected as potential spam and a CAPTCHA service is configured:
+  ```
 
 - Use the `captchaSiteKey` to obtain a CAPTCHA response value using the appropriate CAPTCHA API.
   Only [Google reCAPTCHA v2](https://developers.google.com/recaptcha/docs/display) is supported.
 - Resubmit the request with the `X-GitLab-Captcha-Response` and `X-GitLab-Spam-Log-Id` headers set.
+  
+NOTE:
+The GitLab GraphiQL implementation doesn't permit passing of headers, so we must write
+this as a cURL query. `--data-binary` is used to properly handle escaped double quotes
+in the JSON-embedded query.  
 
-```json
-{
-  "errors": [
-    {
-      "message": "Request denied. Solve CAPTCHA challenge and retry",
-      "locations": [ { "line": 6, "column": 7 } ],
-      "path": [ "updateSnippet" ],
-      "extensions": {
-        "needsCaptchaResponse": true,
-        "captchaSiteKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
-        "spamLogId": 67
-      }
-    }
-  ],
-  "data": {
-    "updateSnippet": {
-      "snippet": null,
-    }
-  }
-}
+```shell
+export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"
+export SPAM_LOG_ID="<spam_log_id obtained from initial REST response>"
+curl --header "Authorization: Bearer $PRIVATE_TOKEN" --header "Content-Type: application/json" --header "X-GitLab-Captcha-Response: $CAPTCHA_RESPONSE" --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID" --request POST --data-binary '{"query": "mutation {createSnippet(input: {title: \"Title\" visibilityLevel: public blobActions: [ { action: create filePath: \"BlobPath\" content: \"BlobContent\" } ] }) { snippet { id title } errors }}"}' "https://gitlab.example.com/api/graphql"
 ```

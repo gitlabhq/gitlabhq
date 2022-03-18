@@ -26,23 +26,23 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js do
 
     file_content = first('.file-editor')
     expect(file_content).to have_content('MIT License')
-    expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(file_content).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
     click_button 'Commit changes'
 
-    expect(current_path).to eq(
-      project_blob_path(project, 'master/LICENSE'))
+    expect(page).to have_current_path(
+      project_blob_path(project, 'master/LICENSE'), ignore_query: true)
     expect(page).to have_content('MIT License')
-    expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(page).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
   end
 
   it 'project maintainer creates a license file from the "Add license" link' do
     click_link 'Add LICENSE'
 
     expect(page).to have_content('New file')
-    expect(current_path).to eq(
-      project_new_blob_path(project, 'master'))
+    expect(page).to have_current_path(
+      project_new_blob_path(project, 'master'), ignore_query: true)
     expect(find('#file_name').value).to eq('LICENSE')
     expect(page).to have_selector('.license-selector')
 
@@ -50,15 +50,15 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js do
 
     file_content = first('.file-editor')
     expect(file_content).to have_content('MIT License')
-    expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(file_content).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
     click_button 'Commit changes'
 
-    expect(current_path).to eq(
-      project_blob_path(project, 'master/LICENSE'))
+    expect(page).to have_current_path(
+      project_blob_path(project, 'master/LICENSE'), ignore_query: true)
     expect(page).to have_content('MIT License')
-    expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(page).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
   end
 
   def select_template(template)

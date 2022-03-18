@@ -4,6 +4,7 @@ import $ from 'jquery';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownFieldHeader from '~/vue_shared/components/markdown/header.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 const markdownPreviewPath = `${TEST_HOST}/preview`;
@@ -32,7 +33,7 @@ describe('Markdown field component', () => {
     axiosMock.restore();
   });
 
-  function createSubject(lines = []) {
+  function createSubject({ lines = [], enablePreview = true } = {}) {
     // We actually mount a wrapper component so that we can force Vue to rerender classes in order to test a regression
     // caused by mixing Vanilla JS and Vue.
     subject = mountExtended(
@@ -61,6 +62,7 @@ describe('Markdown field component', () => {
           isSubmitting: false,
           textareaValue,
           lines,
+          enablePreview,
         },
         provide: {
           glFeatures: {
@@ -74,7 +76,7 @@ describe('Markdown field component', () => {
   const getPreviewLink = () => subject.findByTestId('preview-tab');
   const getWriteLink = () => subject.findByTestId('write-tab');
   const getMarkdownButton = () => subject.find('.js-md');
-  const getAllMarkdownButtons = () => subject.findAll('.js-md');
+  const getListBulletedButton = () => subject.findAll('.js-md[title="Add a bullet list"]');
   const getVideo = () => subject.find('video');
   const getAttachButton = () => subject.find('.button-attach-file');
   const clickAttachButton = () => getAttachButton().trigger('click');
@@ -183,7 +185,7 @@ describe('Markdown field component', () => {
       it('converts a line', async () => {
         const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 0);
-        const markdownButton = getAllMarkdownButtons().wrappers[5];
+        const markdownButton = getListBulletedButton();
         markdownButton.trigger('click');
 
         await nextTick();
@@ -193,7 +195,7 @@ describe('Markdown field component', () => {
       it('converts multiple lines', async () => {
         const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 50);
-        const markdownButton = getAllMarkdownButtons().wrappers[5];
+        const markdownButton = getListBulletedButton();
         markdownButton.trigger('click');
 
         await nextTick();
@@ -266,17 +268,46 @@ describe('Markdown field component', () => {
             'You are about to add 11 people to the discussion. They will all receive a notification.',
           );
         });
+
+        it('removes warning when all mention is removed while endpoint is loading', async () => {
+          axiosMock.onPost(markdownPreviewPath).reply(200, { references: { users } });
+          jest.spyOn(axios, 'post');
+
+          subject.setProps({ textareaValue: 'hello @all' });
+
+          await nextTick();
+
+          subject.setProps({ textareaValue: 'hello @allan' });
+
+          await axios.waitFor(markdownPreviewPath);
+
+          expect(axios.post).toHaveBeenCalled();
+          expect(subject.text()).not.toContain(
+            'You are about to add 11 people to the discussion. They will all receive a notification.',
+          );
+        });
       });
     });
   });
 
   describe('suggestions', () => {
     it('escapes new line characters', () => {
-      createSubject([{ rich_text: 'hello world\\n' }]);
+      createSubject({ lines: [{ rich_text: 'hello world\\n' }] });
 
       expect(subject.find('[data-testid="markdownHeader"]').props('lineContent')).toBe(
         'hello world%br',
       );
     });
+  });
+
+  it('allows enabling and disabling Markdown Preview', () => {
+    createSubject({ enablePreview: false });
+
+    expect(subject.findComponent(MarkdownFieldHeader).props('enablePreview')).toBe(false);
+
+    subject.destroy();
+    createSubject({ enablePreview: true });
+
+    expect(subject.findComponent(MarkdownFieldHeader).props('enablePreview')).toBe(true);
   });
 });

@@ -238,14 +238,34 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
         end
 
         it_behaves_like 'pipeline with Kubernetes jobs'
+
+        context 'when certificate_based_clusters FF is disabled' do
+          before do
+            stub_feature_flags(certificate_based_clusters: false)
+          end
+
+          it 'does not include production job' do
+            expect(build_names).not_to include('production')
+          end
+        end
       end
 
-      context 'when project has an Agent is present' do
+      context 'when project has an Agent' do
         before do
           create(:cluster_agent, project: project)
         end
 
         it_behaves_like 'pipeline with Kubernetes jobs'
+
+        context 'when certificate_based_clusters FF is disabled' do
+          before do
+            stub_feature_flags(certificate_based_clusters: false)
+          end
+
+          it 'includes production job' do
+            expect(build_names).to include('production')
+          end
+        end
       end
     end
 

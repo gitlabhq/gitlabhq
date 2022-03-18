@@ -60,6 +60,15 @@ export default {
         iid: this.pipelineIid,
       };
     },
+    loading() {
+      return this.$apollo.queries.jobs.loading;
+    },
+    showSkeletonLoader() {
+      return this.firstLoad && this.loading;
+    },
+    showLoadingSpinner() {
+      return !this.firstLoad && this.loading;
+    },
   },
   mounted() {
     eventHub.$on('jobActionPerformed', this.handleJobAction);
@@ -69,7 +78,7 @@ export default {
   },
   methods: {
     handleJobAction() {
-      this.firstLoad = true;
+      this.firstLoad = false;
 
       this.$apollo.queries.jobs.refetch();
     },
@@ -98,7 +107,7 @@ export default {
 
 <template>
   <div>
-    <div v-if="$apollo.loading && firstLoad" class="gl-mt-5">
+    <div v-if="showSkeletonLoader" class="gl-mt-5">
       <gl-skeleton-loader :width="1248" :height="73">
         <circle cx="748.031" cy="37.7193" r="15.0307" />
         <circle cx="787.241" cy="37.7193" r="15.0307" />
@@ -118,7 +127,7 @@ export default {
     <jobs-table v-else :jobs="jobs" :table-fields="$options.fields" data-testid="jobs-tab-table" />
 
     <gl-intersection-observer v-if="jobsPageInfo.hasNextPage" @appear="fetchMoreJobs">
-      <gl-loading-icon v-if="$apollo.loading" size="md" />
+      <gl-loading-icon v-if="showLoadingSpinner" size="md" />
     </gl-intersection-observer>
   </div>
 </template>

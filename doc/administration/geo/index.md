@@ -23,7 +23,7 @@ to clone and fetch large repositories, speeding up development.
 
 For a video introduction to Geo, see [Introduction to GitLab Geo - GitLab Features](https://www.youtube.com/watch?v=-HDLxSjEh6w).
 
-To make sure you're using the right version of the documentation, navigate to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown. For example, [`v13.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.7.6-ee/doc/administration/geo/index.md).
+To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v13.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.7.6-ee/doc/administration/geo/index.md).
 
 Geo uses a set of defined terms that are described in the [Geo Glossary](glossary.md).
 Be sure to familiarize yourself with those terms.
@@ -148,14 +148,14 @@ NOTE:
 When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
 
 NOTE:
-When using HTTPS protocol for port 443, you need to add an SSL certificate to the load balancers.
+When using HTTPS protocol for port 443, you must add an SSL certificate to the load balancers.
 If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
 
 #### Internal URL
 
 HTTP requests from any Geo secondary site to the primary Geo site use the Internal URL of the primary
 Geo site. If this is not explicitly defined in the primary Geo site settings in the Admin Area, the
-public URL of the primary site will be used.
+public URL of the primary site is used.
 
 To update the internal URL of the primary Geo site:
 
@@ -187,7 +187,7 @@ Because the replicated database instance is read-only, we need this additional d
 This daemon:
 
 - Reads a log of events replicated by the **primary** site to the **secondary** database instance.
-- Updates the Geo Tracking Database instance with changes that need to be executed.
+- Updates the Geo Tracking Database instance with changes that must be executed.
 
 When something is marked to be updated in the tracking database instance, asynchronous jobs running on the **secondary** site execute the required operations and update the state.
 
@@ -198,9 +198,9 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 WARNING:
 This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.
 
-- Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381), except when using Git over HTTP with credentials embedded within the URI. For example, `https://user:password@secondary.tld`.
+- Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381), except when using Git over HTTP with credentials embedded in the URI. For example, `https://user:password@secondary.tld`.
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
-- The installation takes multiple manual steps that together can take about an hour depending on circumstances. We are working on improving this experience. See [Omnibus GitLab issue #2978](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/2978) for details.
+- The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using [the GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to deploy and operate production GitLab instances based on our [Reference Architectures](../reference_architectures/index.md), including automation of common daily tasks. We are planning to [improve Geo's installation even further](https://gitlab.com/groups/gitlab-org/-/epics/1465).
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** site.
 - GitLab Runners cannot register with a **secondary** site. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
 - [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
@@ -210,13 +210,25 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 
 There is a complete list of all GitLab [data types](replication/datatypes.md) and [existing support for replication and verification](replication/datatypes.md#limitations-on-replicationverification).
 
+### View replication data on the primary site
+
+If you try to view replication data on the primary site, you receive a warning that this may be inconsistent:
+
+> Viewing projects and designs data from a primary site is not possible when using a unified URL. Visit the secondary site directly.
+
+The only way to view projects replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/projects`.
+An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4623) to fix this limitation.
+
+The only way to view designs replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/designs`.
+An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4624) to fix this limitation.
+
 ## Setup instructions
 
 For setup instructions, see [Setting up Geo](setup/index.md).
 
 ## Post-installation documentation
 
-After installing GitLab on the **secondary** site(s) and performing the initial configuration, see the following documentation for post-installation information.
+After installing GitLab on the **secondary** sites and performing the initial configuration, see the following documentation for post-installation information.
 
 ### Configuring Geo
 
@@ -224,7 +236,7 @@ For information on configuring Geo, see [Geo configuration](replication/configur
 
 ### Updating Geo
 
-For information on how to update your Geo site(s) to the latest GitLab version, see [Updating the Geo sites](replication/updating_the_geo_sites.md).
+For information on how to update your Geo sites to the latest GitLab version, see [Updating the Geo sites](replication/updating_the_geo_sites.md).
 
 ### Pausing and resuming replication
 
@@ -237,8 +249,8 @@ secondary. If the site is paused, be sure to resume before promoting. This
 issue has been fixed in GitLab 13.4 and later.
 
 WARNING:
-Pausing and resuming of replication is currently only supported for Geo installations using an
-Omnibus GitLab-managed database. External databases are currently not supported.
+Pausing and resuming of replication is only supported for Geo installations using an
+Omnibus GitLab-managed database. External databases are not supported.
 
 In some circumstances, like during [upgrades](replication/updating_the_geo_sites.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 

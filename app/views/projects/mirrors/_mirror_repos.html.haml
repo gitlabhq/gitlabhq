@@ -37,8 +37,9 @@
           .panel-footer
             = f.submit _('Mirror repository'), class: 'gl-button btn btn-confirm js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror
     - else
-      .gl-alert.gl-alert-info{ role: 'alert' }
-        = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      = render 'shared/global_alert',
+        dismissible: false,
+        variant: :info do
         .gl-alert-body
           = _('Mirror settings are only available to GitLab administrators.')
 

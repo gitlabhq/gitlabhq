@@ -193,6 +193,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
     it_behaves_like 'an error is raised', RuntimeError.new('Something broke!')
     it_behaves_like 'an error is raised', SignalException.new('SIGTERM')
+    it_behaves_like 'an error is raised', ActiveRecord::StatementTimeout.new('Timeout!')
   end
 
   context 'when the batched background migration does not inherit from BaseJob' do

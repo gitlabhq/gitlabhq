@@ -44,17 +44,22 @@ There are two kinds of events logged:
 - Instance events scoped to the whole GitLab instance, used by your Compliance team to
   perform formal audits.
 
+NOTE:
+Some events are recorded and available only as [streaming audit events](audit_event_streaming.md).
+
 ### Impersonation data
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536) in GitLab 13.0.
 
 When a user is being [impersonated](../user/admin_area/index.md#user-impersonation), their actions are logged as audit events as usual, with two additional details:
 
-1. Usual audit events include information about the impersonating administrator. These are visible in their respective Audit Event pages depending on their type (Group/Project/User).
-1. Extra audit events are recorded for the start and stop of the administrator's impersonation session. These are visible in
-   the:
+1. Usual audit events include information about the impersonating administrator. These audit events are visible in their
+   respective audit event pages depending on their type (group, project, or user).
+1. Extra audit events are recorded for the start and stop of the administrator's impersonation session. These audit events
+   are visible in the:
    - Instance audit events.
-   - Group audit events for all groups the user belongs to (GitLab 14.8 and later). This is limited to 20 groups for performance reasons.
+   - Group audit events for all groups the user belongs to (GitLab 14.8 and later). For performance reasons, group audit
+     events are limited to the oldest 20 groups to which you belong.
 
 ![audit events](img/impersonated_audit_events_v13_8.png)
 
@@ -107,6 +112,8 @@ From there, you can see the following actions:
 - Compliance framework created, updated, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340649) in GitLab 14.5.
 - Event streaming destination created, updated, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) in GitLab 14.6.
 - Instance administrator started or stopped impersonation of a group member. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) in GitLab 14.8.
+- Group deploy token was successfully created, revoked, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
+- Failed attempt to create a group deploy token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 
@@ -158,6 +165,8 @@ From there, you can see the following actions:
 - Allowing force push to protected branch changed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
 - Code owner approval requirement on merge requests targeting protected branch changed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
 - Users and groups allowed to merge and push to protected branch added or removed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3)
+- Project deploy token was successfully created, revoked or deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9)
+- Failed attempt to create a project deploy token ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 

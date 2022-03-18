@@ -170,26 +170,13 @@ RSpec.describe Spam::SpamActionService do
             allow(fake_verdict_service).to receive(:execute).and_return(DISALLOW)
           end
 
-          context 'when allow_possible_spam feature flag is false' do
-            before do
-              stub_feature_flags(allow_possible_spam: false)
-            end
+          it_behaves_like 'creates a spam log'
 
-            it 'marks as spam' do
-              response = subject
+          it 'marks as spam' do
+            response = subject
 
-              expect(response.message).to match(expected_service_check_response_message)
-              expect(issue).to be_spam
-            end
-          end
-
-          context 'when allow_possible_spam feature flag is true' do
-            it 'does not mark as spam' do
-              response = subject
-
-              expect(response.message).to match(expected_service_check_response_message)
-              expect(issue).not_to be_spam
-            end
+            expect(response.message).to match(expected_service_check_response_message)
+            expect(issue).to be_spam
           end
         end
 
@@ -198,26 +185,13 @@ RSpec.describe Spam::SpamActionService do
             allow(fake_verdict_service).to receive(:execute).and_return(BLOCK_USER)
           end
 
-          context 'when allow_possible_spam feature flag is false' do
-            before do
-              stub_feature_flags(allow_possible_spam: false)
-            end
+          it_behaves_like 'creates a spam log'
 
-            it 'marks as spam' do
-              response = subject
+          it 'marks as spam' do
+            response = subject
 
-              expect(response.message).to match(expected_service_check_response_message)
-              expect(issue).to be_spam
-            end
-          end
-
-          context 'when allow_possible_spam feature flag is true' do
-            it 'does not mark as spam' do
-              response = subject
-
-              expect(response.message).to match(expected_service_check_response_message)
-              expect(issue).not_to be_spam
-            end
+            expect(response.message).to match(expected_service_check_response_message)
+            expect(issue).to be_spam
           end
         end
 
@@ -226,37 +200,42 @@ RSpec.describe Spam::SpamActionService do
             allow(fake_verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
           end
 
-          context 'when allow_possible_spam feature flag is false' do
-            before do
-              stub_feature_flags(allow_possible_spam: false)
-            end
+          it_behaves_like 'creates a spam log'
 
-            it_behaves_like 'creates a spam log'
+          it 'does not mark as spam' do
+            response = subject
 
-            it 'does not mark as spam' do
-              response = subject
-
-              expect(response.message).to match(expected_service_check_response_message)
-              expect(issue).not_to be_spam
-            end
-
-            it 'marks as needing reCAPTCHA' do
-              response = subject
-
-              expect(response.message).to match(expected_service_check_response_message)
-              expect(issue).to be_needs_recaptcha
-            end
+            expect(response.message).to match(expected_service_check_response_message)
+            expect(issue).not_to be_spam
           end
 
-          context 'when allow_possible_spam feature flag is true' do
-            it_behaves_like 'creates a spam log'
+          it 'marks as needing reCAPTCHA' do
+            response = subject
 
-            it 'does not mark as needing reCAPTCHA' do
-              response = subject
+            expect(response.message).to match(expected_service_check_response_message)
+            expect(issue).to be_needs_recaptcha
+          end
+        end
 
-              expect(response.message).to match(expected_service_check_response_message)
-              expect(issue.needs_recaptcha).to be_falsey
-            end
+        context 'when spam verdict service returns OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM' do
+          before do
+            allow(fake_verdict_service).to receive(:execute).and_return(OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM)
+          end
+
+          it_behaves_like 'creates a spam log'
+
+          it 'does not mark as spam' do
+            response = subject
+
+            expect(response.message).to match(expected_service_check_response_message)
+            expect(issue).not_to be_spam
+          end
+
+          it 'does not mark as needing CAPTCHA' do
+            response = subject
+
+            expect(response.message).to match(expected_service_check_response_message)
+            expect(issue).not_to be_needs_recaptcha
           end
         end
 

@@ -199,8 +199,8 @@ RSpec.describe API::Issues do
         expect(spam_service).to receive_messages(check_for_spam?: true)
       end
 
-      expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-        expect(verdict_service).to receive(:execute).and_return(DISALLOW)
+      allow_next_instance_of(Spam::AkismetService) do |akismet_service|
+        allow(akismet_service).to receive(:spam?).and_return(true)
       end
     end
 
@@ -217,7 +217,7 @@ RSpec.describe API::Issues do
         update_issue
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to include('message' => { 'error' => 'Spam detected' })
+        expect(json_response['message']['base']).to match_array([/issue has been recognized as spam/])
       end
 
       it 'creates a new spam log entry' do
@@ -323,44 +323,44 @@ RSpec.describe API::Issues do
     end
 
     it 'removes all labels and touches the record' do
-      Timecop.travel(1.minute.from_now) do
+      travel_to(2.minutes.from_now) do
         put api_for_user, params: { labels: '' }
       end
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to eq([])
-      expect(json_response['updated_at']).to be > Time.now
+      expect(json_response['updated_at']).to be > Time.current
     end
 
     it 'removes all labels and touches the record with labels param as array' do
-      Timecop.travel(1.minute.from_now) do
+      travel_to(2.minutes.from_now) do
         put api_for_user, params: { labels: [''] }
       end
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to eq([])
-      expect(json_response['updated_at']).to be > Time.now
+      expect(json_response['updated_at']).to be > Time.current
     end
 
     it 'updates labels and touches the record' do
-      Timecop.travel(1.minute.from_now) do
+      travel_to(2.minutes.from_now) do
         put api_for_user, params: { labels: 'foo,bar' }
       end
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to contain_exactly('foo', 'bar')
-      expect(json_response['updated_at']).to be > Time.now
+      expect(json_response['updated_at']).to be > Time.current
     end
 
     it 'updates labels and touches the record with labels param as array' do
-      Timecop.travel(1.minute.from_now) do
+      travel_to(2.minutes.from_now) do
         put api_for_user, params: { labels: %w(foo bar) }
       end
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
-      expect(json_response['updated_at']).to be > Time.now
+      expect(json_response['updated_at']).to be > Time.current
     end
 
     it 'allows special label names' do

@@ -1,0 +1,140 @@
+---
+stage: Configure
+group: Configure
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
+
+# Using a GitOps workflow for Kubernetes **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7.
+
+With GitOps, you can manage containerized clusters and applications from a Git repository that:
+
+- Is the single source of truth of your system.
+- Is the single place where you operate your system.
+
+By combining GitLab, Kubernetes, and GitOps, you can have:
+
+- GitLab as the GitOps operator.
+- Kubernetes as the automation and convergence system.
+- GitLab CI/CD for Continuous Integration and the agent for Continuous Deployment.
+
+This diagram shows the repositories and main actors in a GitOps deployment:
+
+```mermaid
+sequenceDiagram
+  participant D as Developer
+  participant A as Application code repository
+  participant M as Manifest repository
+  participant K as GitLab agent
+  participant C as Agent configuration repository
+  loop Regularly
+    K-->>C: Grab the configuration
+  end
+  D->>+A: Pushing code changes
+  A->>M: Updating manifest
+  loop Regularly
+    K-->>M: Watching changes
+    M-->>K: Pulling and applying changes
+  end
+```
+
+For details, view the [architecture documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/architecture.md#high-level-architecture).
+
+## GitOps workflow steps
+
+To update a Kubernetes cluster by using GitOps, complete the following steps.
+
+1. Ensure you have a working Kubernetes cluster, and that the manifests are in a GitLab project.
+1. In the same project, [register and install the GitLab agent](install/index.md).
+1. Configure the agent configuration file so that the agent monitors the project for changes to the Kubernetes manifests.
+   Use the [GitOps configuration reference](#gitops-configuration-reference) for guidance.
+
+Any time you commit updates to your Kubernetes manifests, the agent updates the cluster.
+
+## GitOps configuration reference
+
+The following snippet shows an example of the possible keys and values for the GitOps section of an agent configuration file.
+
+```yaml
+gitops:
+  manifest_projects:
+  - id: gitlab-org/cluster-integration/gitlab-agent
+    default_namespace: my-ns
+    paths:
+      # Read all YAML files from this directory. 
+    - glob: '/team1/app1/*.yaml'
+      # Read all .yaml files from team2/apps and all subdirectories.
+    - glob: '/team2/apps/**/*.yaml'
+      # If 'paths' is not specified or is an empty list, the configuration below is used.
+    - glob: '/**/*.{yaml,yml,json}'
+    reconcile_timeout: 3600s
+    dry_run_strategy: none
+    prune: true
+    prune_timeout: 3600s
+    prune_propagation_policy: foreground
+    inventory_policy: must_match
+```
+
+| Keyword | Description |
+|--|--|
+| `manifest_projects` | Projects where your Kubernetes manifests are stored. The agent monitors the files in the repositories in these projects. When manifest files change, the agent deploys the changes to the cluster. |
+| `id` | Required. Path to a Git repository that has Kubernetes manifests in YAML or JSON format. No authentication mechanisms are currently supported. |
+| `default_namespace` | Namespace to use if not set explicitly in object manifest. Also used for inventory `ConfigMap` objects. |
+| `paths` | Repository paths to scan for manifest files. Directories with names that start with a dot `(.)` are ignored. |
+| `paths[].glob` | Required. See [doublestar](https://github.com/bmatcuk/doublestar#about) and [the match function](https://pkg.go.dev/github.com/bmatcuk/doublestar/v2#Match) for globbing rules. |
+| `reconcile_timeout` | Determines whether the applier should wait until all applied resources have been reconciled, and if so, how long to wait. Default is 3600 seconds (1 hour). |
+| `dry_run_strategy` | Determines whether changes [should be performed](https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/common/common.go#L68-L89). Can be: `none`, `client`, or `server`. Default is `none`.|
+| `prune` | Determines whether pruning of previously applied objects should happen after apply. Default is `true`. |
+| `prune_timeout` | Determines whether to wait for all resources to be fully deleted after pruning, and if so, how long to wait. Default is 3600 seconds (1 hour). |
+| `prune_propagation_policy` | The deletion propagation policy that [should be used for pruning](https://github.com/kubernetes/apimachinery/blob/44113beed5d39f1b261a12ec398a356e02358307/pkg/apis/meta/v1/types.go#L456-L470). Can be: `orphan`, `background`, or `foreground`. Default is `foreground`. |
+| `inventory_policy` | Determines whether an inventory object can take over objects that belong to another inventory object or don't belong to any inventory object. This is done by determining if the apply/prune operation can go through for a resource based on comparison of the `inventory-id` value in the package and the `owning-inventory` annotation (`config.k8s.io/owning-inventory`) [in the live object](https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/inventory/policy.go#L12-L66). Can be: `must_match`, `adopt_if_no_inventory`, or `adopt_all`. Default is `must_match`. |
+
+## Additional resources
+
+The following documentation and examples can help you get started with a GitOps workflow.
+
+- [Managing Kubernetes secrets in a GitOps workflow](gitops/secrets_management.md)
+- [Application and manifest repository example](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service-gitops)
+
+## Troubleshooting
+
+### Avoiding conflicts when you have multiple projects
+
+The agent watches each glob pattern set under a project's `paths` section independently, and makes updates to the cluster concurrently.
+If changes are found at multiple paths, when the agent attempts to update the cluster,
+a conflict can occur.
+
+To prevent this from happening, consider storing a logical group of manifests in a single place and reference them only once to avoid overlapping globs.
+
+For example, both of these globs match `*.yaml` files in the root directory
+and could cause conflicts:
+
+```yaml
+gitops:
+  manifest_projects:
+  - id: project1
+    paths:
+    - glob: '/**/*.yaml'
+    - glob: '/*.yaml'
+```
+
+Instead, specify a single glob that matches all `*.yaml` files recursively:
+
+```yaml
+gitops:
+  manifest_projects:
+  - id: project1
+    paths:
+    - glob: '/**/*.yaml'
+```
+
+### Use multiple agents or projects
+
+If you store your Kubernetes manifests in separate GitLab projects,
+update your agent configuration file with the location of these projects.
+
+WARNING:
+The project with the agent's
+configuration file can be private or public. Other projects with Kubernetes manifests must be public. Support for private manifest projects is tracked
+in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/283885).

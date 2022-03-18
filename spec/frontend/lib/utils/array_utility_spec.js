@@ -29,4 +29,17 @@ describe('array_utility', () => {
       },
     );
   });
+
+  describe('getDuplicateItemsFromArray', () => {
+    it.each`
+      array                                  | result
+      ${[]}                                  | ${[]}
+      ${[1, 2, 2, 3, 3, 4]}                  | ${[2, 3]}
+      ${[1, 2, 3, 2, 3, 4]}                  | ${[2, 3]}
+      ${['foo', 'bar', 'bar', 'foo', 'baz']} | ${['bar', 'foo']}
+      ${['foo', 'foo', 'bar', 'foo', 'bar']} | ${['foo', 'bar']}
+    `('given $array will return $result', ({ array, result }) => {
+      expect(arrayUtils.getDuplicateItemsFromArray(array)).toEqual(result);
+    });
+  });
 });

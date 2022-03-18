@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Broadcast Messages API **(FREE SELF)**
 
+> 'target_access_levels' [introduced](https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/461) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `role_targeted_broadcast_messages`. Disabled by default.
+
 Broadcast messages API operates on [broadcast messages](../user/admin_area/broadcast_messages.md).
 
 As of GitLab 12.8, GET requests do not require authentication. All other broadcast message API endpoints are accessible only to administrators. Non-GET requests by:
@@ -39,6 +41,7 @@ Example response:
         "font":"#FFFFFF",
         "id":1,
         "active": false,
+        "target_access_levels": [10,30],
         "target_path": "*/welcome",
         "broadcast_type": "banner",
         "dismissable": false
@@ -77,6 +80,7 @@ Example response:
     "font":"#FFFFFF",
     "id":1,
     "active":false,
+    "target_access_levels": [10,30],
     "target_path": "*/welcome",
     "broadcast_type": "banner",
     "dismissable": false
@@ -93,21 +97,31 @@ POST /broadcast_messages
 
 Parameters:
 
-| Attribute       | Type     | Required | Description                                           |
-|:----------------|:---------|:---------|:------------------------------------------------------|
-| `message`       | string   | yes      | Message to display.                                   |
-| `starts_at`     | datetime | no       | Starting time (defaults to current time). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `ends_at`       | datetime | no       | Ending time (defaults to one hour from current time). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `color`         | string   | no       | Background color hex code.                            |
-| `font`          | string   | no       | Foreground color hex code.                            |
-| `target_path`   | string   | no       | Target path of the broadcast message.                 |
-| `broadcast_type`| string   | no       | Appearance type (defaults to banner)                  |
-| `dismissable`   | boolean  | no       | Can the user dismiss the message?                     |
+| Attribute              | Type              | Required | Description                                           |
+|:-----------------------|:------------------|:---------|:------------------------------------------------------|
+| `message`              | string            | yes      | Message to display.                                   |
+| `starts_at`            | datetime          | no       | Starting time (defaults to current time). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `ends_at`              | datetime          | no       | Ending time (defaults to one hour from current time). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `color`                | string            | no       | Background color hex code.                            |
+| `font`                 | string            | no       | Foreground color hex code.                            |
+| `target_access_levels` | array of integers | no       | Target access levels (roles) of the broadcast message.|
+| `target_path`          | string            | no       | Target path of the broadcast message.                 |
+| `broadcast_type`       | string            | no       | Appearance type (defaults to banner)                  |
+| `dismissable`          | boolean           | no       | Can the user dismiss the message?                     |
+
+The `target_access_levels` are defined in the `Gitlab::Access` module. The
+following levels are valid:
+
+- Guest (`10`)
+- Reporter (`20`)
+- Developer (`30`)
+- Maintainer (`40`)
+- Owner (`50`)
 
 Example request:
 
 ```shell
-curl --data "message=Deploy in progress&color=#cecece" \
+curl --data "message=Deploy in progress&color=#cecece&target_access_levels[]=10&target_access_levels[]=30" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/broadcast_messages"
 ```
@@ -123,6 +137,7 @@ Example response:
     "font":"#FFFFFF",
     "id":1,
     "active": true,
+    "target_access_levels": [10,30],
     "target_path": "*/welcome",
     "broadcast_type": "notification",
     "dismissable": false
@@ -139,17 +154,27 @@ PUT /broadcast_messages/:id
 
 Parameters:
 
-| Attribute       | Type     | Required | Description                           |
-|:----------------|:---------|:---------|:--------------------------------------|
-| `id`            | integer  | yes      | ID of broadcast message to update.    |
-| `message`       | string   | no       | Message to display.                   |
-| `starts_at`     | datetime | no       | Starting time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `ends_at`       | datetime | no       | Ending time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `color`         | string   | no       | Background color hex code.            |
-| `font`          | string   | no       | Foreground color hex code.            |
-| `target_path`   | string   | no       | Target path of the broadcast message. |
-| `broadcast_type`| string   | no       | Appearance type (defaults to banner)  |
-| `dismissable`   | boolean  | no       | Can the user dismiss the message?     |
+| Attribute              | Type              | Required | Description                                           |
+|:-----------------------|:------------------|:---------|:------------------------------------------------------|
+| `id`                   | integer           | yes      | ID of broadcast message to update.                    |
+| `message`              | string            | no       | Message to display.                                   |
+| `starts_at`            | datetime          | no       | Starting time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `ends_at`              | datetime          | no       | Ending time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `color`                | string            | no       | Background color hex code.                            |
+| `font`                 | string            | no       | Foreground color hex code.                            |
+| `target_access_levels` | array of integers | no       | Target access levels (roles) of the broadcast message.|
+| `target_path`          | string            | no       | Target path of the broadcast message.                 |
+| `broadcast_type`       | string            | no       | Appearance type (defaults to banner)                  |
+| `dismissable`          | boolean           | no       | Can the user dismiss the message?                     |
+
+The `target_access_levels` are defined in the `Gitlab::Access` module. The
+following levels are valid:
+
+- Guest (`10`)
+- Reporter (`20`)
+- Developer (`30`)
+- Maintainer (`40`)
+- Owner (`50`)
 
 Example request:
 
@@ -169,6 +194,7 @@ Example response:
     "font":"#FFFFFF",
     "id":1,
     "active": true,
+    "target_access_levels": [10,30],
     "target_path": "*/welcome",
     "broadcast_type": "notification",
     "dismissable": false

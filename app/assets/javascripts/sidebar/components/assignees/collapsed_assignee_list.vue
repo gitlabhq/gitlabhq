@@ -58,7 +58,7 @@ export default {
       return this.users.length > 2;
     },
     allAssigneesCanMerge() {
-      return this.users.every((user) => user.can_merge);
+      return this.users.every((user) => user.can_merge || user.mergeRequestInteraction?.canMerge);
     },
     sidebarAvatarCounter() {
       if (this.users.length > DEFAULT_MAX_COUNTER) {
@@ -77,7 +77,9 @@ export default {
         return '';
       }
 
-      const mergeLength = this.users.filter((u) => u.can_merge).length;
+      const mergeLength = this.users.filter(
+        (u) => u.can_merge || u.mergeRequestInteraction?.canMerge,
+      ).length;
 
       if (mergeLength === this.users.length) {
         return '';

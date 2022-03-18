@@ -50,9 +50,7 @@ RSpec.describe Projects::ErrorTrackingController do
       let(:external_url) { 'http://example.com' }
 
       context 'no data' do
-        let(:permitted_params) do
-          ActionController::Parameters.new({}).permit!
-        end
+        let(:permitted_params) { permit_index_parameters!({}) }
 
         before do
           expect(ErrorTracking::ListIssuesService)
@@ -75,9 +73,7 @@ RSpec.describe Projects::ErrorTrackingController do
         let(:search_term) { 'something' }
         let(:sort) { 'last_seen' }
         let(:params) { project_params(format: :json, search_term: search_term, sort: sort, cursor: cursor) }
-        let(:permitted_params) do
-          ActionController::Parameters.new(search_term: search_term, sort: sort, cursor: cursor).permit!
-        end
+        let(:permitted_params) { permit_index_parameters!(search_term: search_term, sort: sort, cursor: cursor) }
 
         before do
           expect(ErrorTracking::ListIssuesService)
@@ -114,7 +110,7 @@ RSpec.describe Projects::ErrorTrackingController do
       context 'without extra params' do
         before do
           expect(ErrorTracking::ListIssuesService)
-            .to receive(:new).with(project, user, {})
+            .to receive(:new).with(project, user, permit_index_parameters!({}))
             .and_return(list_issues_service)
         end
 
@@ -179,6 +175,15 @@ RSpec.describe Projects::ErrorTrackingController do
         end
       end
     end
+
+    private
+
+    def permit_index_parameters!(params)
+      ActionController::Parameters.new(
+        **params,
+        tracking_event: :error_tracking_view_list
+      ).permit!
+    end
   end
 
   describe 'GET #issue_details' do
@@ -188,7 +193,8 @@ RSpec.describe Projects::ErrorTrackingController do
 
     let(:permitted_params) do
       ActionController::Parameters.new(
-        { issue_id: issue_id.to_s }
+        issue_id: issue_id.to_s,
+        tracking_event: :error_tracking_view_details
       ).permit!
     end
 

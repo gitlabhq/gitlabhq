@@ -15,6 +15,9 @@ module Integrations
     ATLASSIAN_REFERRER_GITLAB_COM = { atlOrigin: 'eyJpIjoiY2QyZTJiZDRkNGZhNGZlMWI3NzRkNTBmZmVlNzNiZTkiLCJwIjoianN3LWdpdGxhYi1pbnQifQ' }.freeze
     ATLASSIAN_REFERRER_SELF_MANAGED = { atlOrigin: 'eyJpIjoiYjM0MTA4MzUyYTYxNDVkY2IwMzVjOGQ3ZWQ3NzMwM2QiLCJwIjoianN3LWdpdGxhYlNNLWludCJ9' }.freeze
 
+    SECTION_TYPE_JIRA_TRIGGER = 'jira_trigger'
+    SECTION_TYPE_JIRA_ISSUES = 'jira_issues'
+
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
     validates :username, presence: true, if: :activated?
@@ -28,11 +31,6 @@ module Integrations
     # We should use username/password for Jira Server and email/api_token for Jira Cloud,
     # for more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/49936.
 
-    # TODO: we can probably just delegate as part of
-    # https://gitlab.com/gitlab-org/gitlab/issues/29404
-    data_field :username, :password, :url, :api_url, :jira_issue_transition_automatic, :jira_issue_transition_id, :project_key, :issues_enabled,
-      :vulnerabilities_enabled, :vulnerabilities_issuetype
-
     before_validation :reset_password
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
@@ -41,14 +39,48 @@ module Integrations
       all_details: 2
     }
 
+    self.field_storage = :data_fields
+
+    field :url,
+          section: SECTION_TYPE_CONNECTION,
+          required: true,
+          title: -> { s_('JiraService|Web URL') },
+          help: -> { s_('JiraService|Base URL of the Jira instance.') },
+          placeholder: 'https://jira.example.com'
+
+    field :api_url,
+          section: SECTION_TYPE_CONNECTION,
+          title: -> { s_('JiraService|Jira API URL') },
+          help: -> { s_('JiraService|If different from Web URL.') }
+
+    field :username,
+          section: SECTION_TYPE_CONNECTION,
+          required: true,
+          title: -> { s_('JiraService|Username or Email') },
+          help: -> { s_('JiraService|Use a username for server version and an email for cloud version.') }
+
+    field :password,
+          section: SECTION_TYPE_CONNECTION,
+          required: true,
+          title: -> { s_('JiraService|Password or API token') },
+          non_empty_password_title: -> { s_('JiraService|Enter new password or API token') },
+          non_empty_password_help: -> { s_('JiraService|Leave blank to use your current password or API token.') },
+          help: -> { s_('JiraService|Use a password for server version and an API token for cloud version.') }
+
+    # TODO: we can probably just delegate as part of
+    # https://gitlab.com/gitlab-org/gitlab/issues/29404
+    # These fields are API only, so no field definition is required.
+    data_field :jira_issue_transition_automatic
+    data_field :jira_issue_transition_id
+    data_field :project_key
+    data_field :issues_enabled
+    data_field :vulnerabilities_enabled
+    data_field :vulnerabilities_issuetype
+
     # When these are false GitLab does not create cross reference
     # comments on Jira except when an issue gets transitioned.
     def self.supported_events
       %w(commit merge_request)
-    end
-
-    def self.supported_event_actions
-      %w(comment)
     end
 
     # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
@@ -111,8 +143,8 @@ module Integrations
     end
 
     def help
-      jira_doc_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_url('integration/jira/index.html') }
-      s_("JiraService|You need to configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}.") % { jira_doc_link_start: jira_doc_link_start, link_end: '</a>'.html_safe }
+      jira_doc_link_start = '<a href="%{url}">'.html_safe % { url: help_page_url('integration/jira/index.html') }
+      s_("JiraService|You must configure Jira before enabling this integration. %{jira_doc_link_start}Learn more.%{link_end}") % { jira_doc_link_start: jira_doc_link_start, link_end: '</a>'.html_safe }
     end
 
     def title
@@ -127,39 +159,32 @@ module Integrations
       'jira'
     end
 
-    def fields
-      [
+    def sections
+      jira_issues_link_start = '<a href="%{url}">'.html_safe % { url: help_page_url('integration/jira/issues.html') }
+
+      sections = [
         {
-          type: 'text',
-          name: 'url',
-          title: s_('JiraService|Web URL'),
-          placeholder: 'https://jira.example.com',
-          help: s_('JiraService|Base URL of the Jira instance.'),
-          required: true
+          type: SECTION_TYPE_CONNECTION,
+          title: s_('Integrations|Connection details'),
+          description: help
         },
         {
-          type: 'text',
-          name: 'api_url',
-          title: s_('JiraService|Jira API URL'),
-          help: s_('JiraService|If different from Web URL.')
-        },
-        {
-          type: 'text',
-          name: 'username',
-          title: s_('JiraService|Username or Email'),
-          help: s_('JiraService|Use a username for server version and an email for cloud version.'),
-          required: true
-        },
-        {
-          type: 'password',
-          name: 'password',
-          title: s_('JiraService|Password or API token'),
-          non_empty_password_title: s_('JiraService|Enter new password or API token'),
-          non_empty_password_help: s_('JiraService|Leave blank to use your current password or API token.'),
-          help: s_('JiraService|Use a password for server version and an API token for cloud version.'),
-          required: true
+          type: SECTION_TYPE_JIRA_TRIGGER,
+          title: _('Trigger'),
+          description: s_('JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created.')
         }
       ]
+
+      # Jira issues is currently only configurable on the project level.
+      if project_level?
+        sections.push({
+          type: SECTION_TYPE_JIRA_ISSUES,
+          title: _('Issues'),
+          description: s_('JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues. %{jira_issues_link_start}Learn more.%{link_end}') % { jira_issues_link_start: jira_issues_link_start, link_end: '</a>'.html_safe }
+        })
+      end
+
+      sections
     end
 
     def web_url(path = nil, **params)
@@ -180,17 +205,12 @@ module Integrations
       url.to_s
     end
 
-    override :project_url
-    def project_url
-      web_url
-    end
+    alias_method :project_url, :web_url
 
-    override :issues_url
     def issues_url
       web_url('browse/:id')
     end
 
-    override :new_issue_url
     def new_issue_url
       web_url('secure/CreateIssue!default.jspa')
     end

@@ -38,6 +38,7 @@ module WorkItems
 
     scope :default, -> { where(namespace: nil) }
     scope :order_by_name_asc, -> { order('LOWER(name)') }
+    scope :by_type, ->(base_type) { where(base_type: base_type) }
 
     def self.default_by_type(type)
       find_by(namespace_id: nil, base_type: type)

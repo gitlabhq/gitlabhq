@@ -33,15 +33,10 @@ module QA
         end
 
         def click_edit
-          # TODO: remove this condition and else part once ff :consolidated_edit_button is enabled by default
-          if has_element?(:action_dropdown)
-            within_element(:action_dropdown) do
-              click_button(class: 'dropdown-toggle-split')
-              click_element(:edit_menu_item)
-              click_element(:edit_button)
-            end
-          else
-            click_on 'Edit'
+          within_element(:action_dropdown) do
+            click_button(class: 'dropdown-toggle-split')
+            click_element(:edit_menu_item)
+            click_element(:edit_button)
           end
         end
 

@@ -39,8 +39,11 @@ import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/con
 import {
   CREATED_DESC,
   i18n,
+  ISSUE_REFERENCE,
   MAX_LIST_SIZE,
   PAGE_SIZE,
+  PARAM_PAGE_AFTER,
+  PARAM_PAGE_BEFORE,
   PARAM_STATE,
   RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
@@ -134,6 +137,8 @@ export default {
     },
   },
   data() {
+    const pageAfter = getParameterByName(PARAM_PAGE_AFTER);
+    const pageBefore = getParameterByName(PARAM_PAGE_BEFORE);
     const state = getParameterByName(PARAM_STATE);
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
     const dashboardSortKey = getSortKey(this.initialSort);
@@ -165,7 +170,7 @@ export default {
       issuesCounts: {},
       issuesError: null,
       pageInfo: {},
-      pageParams: getInitialPageParams(sortKey),
+      pageParams: getInitialPageParams(sortKey, pageAfter, pageBefore),
       showBulkEditSidebar: false,
       sortKey,
       state: state || IssuableStates.Opened,
@@ -219,11 +224,13 @@ export default {
   },
   computed: {
     queryVariables() {
+      const isIidSearch = ISSUE_REFERENCE.test(this.searchQuery);
       return {
         fullPath: this.fullPath,
+        iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         isProject: this.isProject,
         isSignedIn: this.isSignedIn,
-        search: this.searchQuery,
+        search: isIidSearch ? undefined : this.searchQuery,
         sort: this.sortKey,
         state: this.state,
         ...this.pageParams,
@@ -234,7 +241,12 @@ export default {
       return this.isProject ? ITEM_TYPE.PROJECT : ITEM_TYPE.GROUP;
     },
     hasSearch() {
-      return this.searchQuery || Object.keys(this.urlFilterParams).length;
+      return (
+        this.searchQuery ||
+        Object.keys(this.urlFilterParams).length ||
+        this.pageParams.afterCursor ||
+        this.pageParams.beforeCursor
+      );
     },
     isBulkEditButtonDisabled() {
       return this.showBulkEditSidebar || !this.issues.length;
@@ -391,6 +403,8 @@ export default {
     },
     urlParams() {
       return {
+        page_after: this.pageParams.afterCursor,
+        page_before: this.pageParams.beforeCursor,
         search: this.searchQuery,
         sort: urlSortParams[this.sortKey],
         state: this.state,

@@ -1,4 +1,4 @@
-import { GlTable, GlSkeletonLoader } from '@gitlab/ui';
+import { GlTableLite, GlSkeletonLoader } from '@gitlab/ui';
 import {
   extendedWrapper,
   shallowMountExtended,
@@ -6,8 +6,6 @@ import {
 } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
-import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
-import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import { runnersData } from '../mock_data';
 
 const mockRunners = runnersData.data.runners.nodes;
@@ -17,19 +15,20 @@ describe('RunnerList', () => {
   let wrapper;
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findTable = () => wrapper.findComponent(GlTable);
+  const findTable = () => wrapper.findComponent(GlTableLite);
   const findHeaders = () => wrapper.findAll('th');
   const findRows = () => wrapper.findAll('[data-testid^="runner-row-"]');
   const findCell = ({ row = 0, fieldKey }) =>
     extendedWrapper(findRows().at(row).find(`[data-testid="td-${fieldKey}"]`));
 
-  const createComponent = ({ props = {} } = {}, mountFn = shallowMountExtended) => {
+  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMountExtended) => {
     wrapper = mountFn(RunnerList, {
       propsData: {
         runners: mockRunners,
         activeRunnersCount: mockActiveRunnersCount,
         ...props,
       },
+      ...options,
     });
   };
 
@@ -90,11 +89,31 @@ describe('RunnerList', () => {
     expect(findCell({ fieldKey: 'contactedAt' }).text()).toEqual(expect.any(String));
 
     // Actions
-    const actions = findCell({ fieldKey: 'actions' });
+    expect(findCell({ fieldKey: 'actions' }).exists()).toBe(true);
+  });
 
-    expect(actions.findComponent(RunnerEditButton).exists()).toBe(true);
-    expect(actions.findComponent(RunnerPauseButton).exists()).toBe(true);
-    expect(actions.findByTestId('delete-runner').exists()).toBe(true);
+  describe('Scoped cell slots', () => {
+    it('Render #runner-name slot in "summary" cell', () => {
+      createComponent(
+        {
+          scopedSlots: { 'runner-name': ({ runner }) => `Summary: ${runner.id}` },
+        },
+        mountExtended,
+      );
+
+      expect(findCell({ fieldKey: 'summary' }).text()).toContain(`Summary: ${mockRunners[0].id}`);
+    });
+
+    it('Render #runner-actions-cell slot in "actions" cell', () => {
+      createComponent(
+        {
+          scopedSlots: { 'runner-actions-cell': ({ runner }) => `Actions: ${runner.id}` },
+        },
+        mountExtended,
+      );
+
+      expect(findCell({ fieldKey: 'actions' }).text()).toBe(`Actions: ${mockRunners[0].id}`);
+    });
   });
 
   describe('Table data formatting', () => {
@@ -143,7 +162,8 @@ describe('RunnerList', () => {
   describe('When data is loading', () => {
     it('shows a busy state', () => {
       createComponent({ props: { runners: [], loading: true } });
-      expect(findTable().attributes('busy')).toBeTruthy();
+
+      expect(findTable().classes('gl-opacity-6')).toBe(true);
     });
 
     it('when there are no runners, shows an skeleton loader', () => {

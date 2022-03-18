@@ -9,6 +9,7 @@ module API
         expose :permissions
         expose :checksum
         expose :checksum_algorithm
+        expose :created_at
       end
     end
   end

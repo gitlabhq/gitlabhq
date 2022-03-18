@@ -3,18 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe RunnersTokenPrefixable do
-  before do
-    stub_const('DummyModel', Class.new)
-    DummyModel.class_eval do
-      include RunnersTokenPrefixable
-    end
-  end
+  describe 'runners token prefix' do
+    subject { described_class::RUNNERS_TOKEN_PREFIX }
 
-  describe '.runners_token_prefix' do
-    subject { DummyModel.new }
-
-    it 'returns RUNNERS_TOKEN_PREFIX' do
-      expect(subject.runners_token_prefix).to eq(RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX)
+    it 'has the correct value' do
+      expect(subject).to eq('GR1348941')
     end
   end
 end

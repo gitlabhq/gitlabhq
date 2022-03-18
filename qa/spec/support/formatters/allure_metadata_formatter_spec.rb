@@ -14,6 +14,7 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
       add_link: nil,
       attempts: 0,
       file_path: 'file/path/spec.rb',
+      execution_result: instance_double("RSpec::Core::Example::ExecutionResult", status: :passed),
       metadata: {
         testcase: 'testcase',
         quarantine: { issue: 'issue' }
@@ -31,7 +32,7 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
   end
 
   it "adds additional data to report" do
-    formatter.example_started(rspec_example_notification)
+    formatter.example_finished(rspec_example_notification)
 
     aggregate_failures do
       expect(rspec_example).to have_received(:issue).with('Quarantine issue', 'issue')

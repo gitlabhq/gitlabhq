@@ -267,12 +267,30 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
             'container_expiration_policy' => true }
         end
 
-        it 'succeeds without a user' do
+        before do
           expect_delete(%w(Bb Ba C), container_expiration_policy: true)
+        end
 
-          expect_caching
+        it { is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3)) }
 
-          is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3))
+        context 'caching' do
+          it 'expects caching to be used' do
+            expect_caching
+
+            subject
+          end
+
+          context 'when setting set to false' do
+            before do
+              stub_application_setting(container_registry_expiration_policies_caching: false)
+            end
+
+            it 'does not use caching' do
+              expect_no_caching
+
+              subject
+            end
+          end
         end
       end
 

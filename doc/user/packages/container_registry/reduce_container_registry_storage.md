@@ -49,20 +49,6 @@ Cleanup policies can be run on all projects, with these exceptions:
 
   There are performance risks with enabling it for all projects, especially if you
   are using an [external registry](#use-with-external-container-registries).
-- For self-managed GitLab instances, you can enable or disable the cleanup policy for a specific
-  project.
-
-  To enable it:
-
-  ```ruby
-  Feature.enable(:container_expiration_policies_historic_entry, Project.find(<project id>))
-  ```
-
-  To disable it:
-
-  ```ruby
-  Feature.disable(:container_expiration_policies_historic_entry, Project.find(<project id>))
-  ```
 
 WARNING:
 For performance reasons, enabled cleanup policies are automatically disabled for projects on
@@ -171,22 +157,32 @@ Here are examples of regex patterns you may want to use:
 
 ### Set cleanup limits to conserve resources
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/288812) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's enabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cleanup-policy-limits).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/288812) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `container_registry_expiration_policies_throttling`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80815) in GitLab 14.9.
+
+FLAG:
+By default this feature is available in GitLab 14.9. To disable the feature, an administrator can
+[disable the feature flag](../../../administration/feature_flags.md)
+named `container_registry_expiration_policies_throttling`.
 
 Cleanup policies are executed as a background process. This process is complex, and depending on the number of tags to delete,
 the process can take time to finish.
 
 To prevent server resource starvation, the following application settings are available:
 
-- `container_registry_expiration_policies_worker_capacity`. The maximum number of cleanup workers running concurrently. This must be greater than `1`.
-   We recommend starting with a low number and increasing it after monitoring the resources used by the background workers.
-- `container_registry_delete_tags_service_timeout`. The maximum time, in seconds, that the cleanup process can take to delete a batch of tags.
-- `container_registry_cleanup_tags_service_max_list_size`. The maximum number of tags that can be deleted in a single execution. Additional tags must be deleted in another execution.
-   We recommend starting with a low number, like `100`, and increasing it after monitoring that container images are properly deleted.
+- `container_registry_expiration_policies_worker_capacity`: the maximum number of cleanup workers
+  running concurrently. This must be greater than or equal to `0`. We recommend starting with a low
+  number and increasing it after monitoring the resources used by the background workers. To remove
+  all workers and not execute the cleanup policies, set this to `0`. The default value is `4`.
+- `container_registry_delete_tags_service_timeout`: the maximum time (in seconds) that the cleanup
+  process can take to delete a batch of tags. The default value is `250`.
+- `container_registry_cleanup_tags_service_max_list_size`: the maximum number of tags that can be
+  deleted in a single execution. Additional tags must be deleted in another execution. We recommend
+  starting with a low number and increasing it after monitoring that container images are properly
+  deleted. The default value is `200`.
+- `container_registry_expiration_policies_caching`: enable or disable tag creation timestamp caching
+  during execution of policies. Cached timestamps are stored in [Redis](../../../development/architecture.md#redis).
+  Enabled by default.
 
 For self-managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
@@ -194,30 +190,10 @@ For self-managed instances, those settings can be updated in the [Rails console]
   ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
   ```
 
-Alternatively, once the limits are [enabled](#enable-or-disable-cleanup-policy-limits),
-they are available in the [administrator area](../../admin_area/index.md):
+They are also available in the [administrator area](../../admin_area/index.md):
 
 1. On the top bar, select **Menu > Admin**.
 1. Go to **Settings > CI/CD > Container Registry**.
-
-#### Enable or disable cleanup policy limits
-
-The cleanup policies limits are under development and not ready for production use. They are
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:container_registry_expiration_policies_throttling)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:container_registry_expiration_policies_throttling)
-```
 
 ### Use the cleanup policy API
 

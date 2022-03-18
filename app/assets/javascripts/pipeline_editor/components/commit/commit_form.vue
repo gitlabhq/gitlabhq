@@ -31,6 +31,14 @@ export default {
       required: false,
       default: '',
     },
+    hasUnsavedChanges: {
+      type: Boolean,
+      required: true,
+    },
+    isNewCiConfigFile: {
+      type: Boolean,
+      required: true,
+    },
     isSaving: {
       type: Boolean,
       required: false,
@@ -50,11 +58,14 @@ export default {
     };
   },
   computed: {
+    isCommitFormFilledOut() {
+      return this.message && this.targetBranch;
+    },
     isCurrentBranchTarget() {
       return this.targetBranch === this.currentBranch;
     },
-    submitDisabled() {
-      return !(this.message && this.targetBranch);
+    isSubmitDisabled() {
+      return !this.isCommitFormFilledOut || (!this.hasUnsavedChanges && !this.isNewCiConfigFile);
     },
   },
   watch: {
@@ -125,6 +136,7 @@ export default {
           v-if="!isCurrentBranchTarget"
           v-model="openMergeRequest"
           data-testid="new-mr-checkbox"
+          data-qa-selector="new_mr_checkbox"
           class="gl-mt-3"
         >
           <gl-sprintf :message="$options.i18n.startMergeRequest">
@@ -143,7 +155,7 @@ export default {
           category="primary"
           variant="confirm"
           data-qa-selector="commit_changes_button"
-          :disabled="submitDisabled"
+          :disabled="isSubmitDisabled"
           :loading="isSaving"
         >
           {{ $options.i18n.commitChanges }}

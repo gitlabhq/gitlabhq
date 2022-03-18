@@ -1,6 +1,17 @@
 - if lookup_context.template_exists?('top', "projects/services/#{integration.to_param}", true)
   = render "projects/services/#{integration.to_param}/top", integration: integration
 
+- if integration.activate_disabled_reason.present? && integration.activate_disabled_reason[:trackers].any?
+  -# When using integration.activate_disabled_reason[:trackers], it's potentially insecure to use the raw records
+  -# when passed directly to the frontend. Only use specific fields that are needed for render.
+  -# For example, we can get the link to each tracker with scoped_edit_integration_path(tracker, tracker.project)
+  = render 'shared/global_alert',
+    title: s_('ExternalIssueIntegration|Another issue tracker is already in use'),
+    variant: :warning,
+    dismissible: false do
+    .gl-alert-body
+      = s_('ExternalIssueIntegration|Only one issue tracker integration can be active at a time. Please disable the active tracker first and try again.')
+
 %h3.page-title
   = integration.title
   - if integration.operating?

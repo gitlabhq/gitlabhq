@@ -5,8 +5,10 @@ class DependencyProxy::Blob < ApplicationRecord
   include TtlExpirable
   include Packages::Destructible
   include EachBatch
+  include UpdateNamespaceStatistics
 
   belongs_to :group
+  alias_attribute :namespace, :group
 
   MAX_FILE_SIZE = 5.gigabytes.freeze
 
@@ -17,6 +19,7 @@ class DependencyProxy::Blob < ApplicationRecord
   scope :with_files_stored_locally, -> { where(file_store: ::DependencyProxy::FileUploader::Store::LOCAL) }
 
   mount_file_store_uploader DependencyProxy::FileUploader
+  update_namespace_statistics namespace_statistics_name: :dependency_proxy_size
 
   def self.total_size
     sum(:size)

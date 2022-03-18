@@ -428,4 +428,27 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
       end
     end
   end
+
+  describe '.finalize' do
+    context 'when the connection is passed' do
+      let(:connection) { double('connection') }
+
+      let(:table_name) { :_test_batched_migrations_test_table }
+      let(:column_name) { :some_id }
+      let(:job_arguments) { [:some, :other, :arguments] }
+      let(:batched_migration) { create(:batched_background_migration, table_name: table_name, column_name: column_name) }
+
+      it 'initializes the object with the given connection' do
+        expect(described_class).to receive(:new).with(connection: connection).and_call_original
+
+        described_class.finalize(
+          batched_migration.job_class_name,
+          table_name,
+          column_name,
+          job_arguments,
+          connection: connection
+        )
+      end
+    end
+  end
 end

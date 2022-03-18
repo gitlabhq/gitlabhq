@@ -62,15 +62,15 @@ RSpec.shared_examples 'a resource event for issues' do
   let_it_be(:issue2) { create(:issue, author: user1) }
   let_it_be(:issue3) { create(:issue, author: user2) }
 
+  let_it_be(:event1) { create(described_class.name.underscore.to_sym, issue: issue1) }
+  let_it_be(:event2) { create(described_class.name.underscore.to_sym, issue: issue2) }
+  let_it_be(:event3) { create(described_class.name.underscore.to_sym, issue: issue1) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:issue) }
   end
 
   describe '.by_issue' do
-    let_it_be(:event1) { create(described_class.name.underscore.to_sym, issue: issue1) }
-    let_it_be(:event2) { create(described_class.name.underscore.to_sym, issue: issue2) }
-    let_it_be(:event3) { create(described_class.name.underscore.to_sym, issue: issue1) }
-
     it 'returns the expected records for an issue with events' do
       events = described_class.by_issue(issue1)
 
@@ -84,21 +84,29 @@ RSpec.shared_examples 'a resource event for issues' do
     end
   end
 
-  describe '.by_issue_ids_and_created_at_earlier_or_equal_to' do
+  describe '.by_issue_ids' do
+    it 'returns the expected events' do
+      events = described_class.by_issue_ids([issue1.id])
+
+      expect(events).to contain_exactly(event1, event3)
+    end
+  end
+
+  describe '.by_created_at_earlier_or_equal_to' do
     let_it_be(:event1) { create(described_class.name.underscore.to_sym, issue: issue1, created_at: '2020-03-10') }
     let_it_be(:event2) { create(described_class.name.underscore.to_sym, issue: issue2, created_at: '2020-03-10') }
     let_it_be(:event3) { create(described_class.name.underscore.to_sym, issue: issue1, created_at: '2020-03-12') }
 
-    it 'returns the expected records for an issue with events' do
-      events = described_class.by_issue_ids_and_created_at_earlier_or_equal_to([issue1.id, issue2.id], '2020-03-11 23:59:59')
+    it 'returns the expected events' do
+      events = described_class.by_created_at_earlier_or_equal_to('2020-03-11 23:59:59')
 
       expect(events).to contain_exactly(event1, event2)
     end
 
-    it 'returns the expected records for an issue with no events' do
-      events = described_class.by_issue_ids_and_created_at_earlier_or_equal_to(issue3, '2020-03-12')
+    it 'returns the expected events' do
+      events = described_class.by_created_at_earlier_or_equal_to('2020-03-12')
 
-      expect(events).to be_empty
+      expect(events).to contain_exactly(event1, event2, event3)
     end
   end
 

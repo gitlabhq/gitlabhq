@@ -7,7 +7,7 @@ description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
 
 # Installing GitLab on Google Cloud Platform **(FREE SELF)**
 
-This guide will help you install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official GitLab Linux package. You should customize it to accommodate your needs.
+You can install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official GitLab Linux package. You should customize it to accommodate your needs.
 
 NOTE:
 To deploy production-ready GitLab on
@@ -19,20 +19,20 @@ the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts/).
 
 ## Prerequisites
 
-There are only two prerequisites in order to install GitLab on GCP:
+There are two prerequisites to install GitLab on GCP:
 
-1. You need to have a Google account.
-1. You need to sign up for the GCP program. If this is your first time, Google
+1. You must have a Google account.
+1. You must sign up for the GCP program. If this is your first time, Google
    gives you [$300 credit for free](https://console.cloud.google.com/freetrial) to consume over a 60-day period.
 
-Once you have performed those two steps, you can [create a VM](#creating-the-vm).
+After you have performed those two steps, you can [create a VM](#creating-the-vm).
 
 ## Creating the VM
 
-To deploy GitLab on GCP you first need to create a virtual machine:
+To deploy GitLab on GCP you must create a virtual machine:
 
 1. Go to <https://console.cloud.google.com/compute/instances> and log in with your Google credentials.
-1. Click on **Create**
+1. Select **Create**
 
    ![Search for GitLab](img/launch_vm.png)
 
@@ -43,9 +43,9 @@ To deploy GitLab on GCP you first need to create a virtual machine:
    ![Launch on Compute Engine](img/vm_details.png)
 
 1. To select the size, type, and desired [operating system](../requirements.md#supported-linux-distributions),
-   click **Change** under `Boot disk`. Click **Select** when finished.
+   select **Change** under `Boot disk`. select **Select** when finished.
 
-1. As a last step allow HTTP and HTTPS traffic, then click **Create**. The process finishes in a few seconds.
+1. As a last step allow HTTP and HTTPS traffic, then select **Create**. The process finishes in a few seconds.
 
 ## Installing GitLab
 
@@ -54,7 +54,7 @@ After a few seconds, the instance is created and available to log in. The next s
 ![Deploy settings](img/vm_created.png)
 
 1. Make a note of the external IP address of the instance, as you will need that in a later step. <!-- using future tense is okay here -->
-1. Click on the SSH button to connect to the instance.
+1. Select **SSH** under the connect column to connect to the instance.
 1. A new window appears, with you logged into the instance.
 
    ![GitLab first sign in](img/ssh_terminal.png)
@@ -84,7 +84,7 @@ Assuming you have a domain name in your possession and you have correctly
 set up DNS to point to the static IP you configured in the previous step,
 here's how you configure GitLab to be aware of the change:
 
-1. SSH into the VM. You can easily use the **SSH** button in the Google console
+1. SSH into the VM. You can select **SSH** in the Google console
    and a new window pops up.
 
    ![SSH button](img/vm_created.png)
@@ -122,7 +122,7 @@ certificate. Follow the steps in the [Omnibus documentation](https://docs.gitlab
 
 ### Configuring the email SMTP settings
 
-You need to configure the email SMTP settings correctly otherwise GitLab cannot send notification emails, like comments, and password changes.
+You must configure the email SMTP settings correctly otherwise GitLab cannot send notification emails, like comments, and password changes.
 Check the [Omnibus documentation](https://docs.gitlab.com/omnibus/settings/smtp.html#smtp-settings) how to do so.
 
 ## Further reading

@@ -46,6 +46,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    debounceValue: {
+      type: Number,
+      required: false,
+      default: CONTENT_UPDATE_DEBOUNCE,
+    },
   },
   data() {
     return {
@@ -73,9 +78,7 @@ export default {
       ...this.editorOptions,
     });
 
-    this.editor.onDidChangeModelContent(
-      debounce(this.onFileChange.bind(this), CONTENT_UPDATE_DEBOUNCE),
-    );
+    this.editor.onDidChangeModelContent(debounce(this.onFileChange.bind(this), this.debounceValue));
   },
   beforeDestroy() {
     this.editor.dispose();

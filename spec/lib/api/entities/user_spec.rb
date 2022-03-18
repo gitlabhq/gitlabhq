@@ -78,6 +78,63 @@ RSpec.describe API::Entities::User do
     end
   end
 
+  context 'with group bot user' do
+    let(:group) { create(:group) }
+    let(:user) { create(:user, :project_bot, name: 'group bot') }
+
+    before do
+      group.add_maintainer(user)
+    end
+
+    it 'exposes user as a bot' do
+      expect(subject[:bot]).to eq(true)
+    end
+
+    context 'when the requester is not a group member' do
+      context 'with a public group' do
+        it 'exposes group bot user name' do
+          expect(subject[:name]).to eq('group bot')
+        end
+      end
+
+      context 'with a private group' do
+        let(:group) { create(:group, :private) }
+
+        it 'does not expose group bot user name' do
+          expect(subject[:name]).to eq('****')
+        end
+      end
+    end
+
+    context 'when the requester is nil' do
+      let(:current_user) { nil }
+
+      it 'does not expose group bot user name' do
+        expect(subject[:name]).to eq('****')
+      end
+    end
+
+    context 'when the requester is a group maintainer' do
+      let(:current_user) { create(:user) }
+
+      before do
+        group.add_maintainer(current_user)
+      end
+
+      it 'exposes group bot user name' do
+        expect(subject[:name]).to eq('group bot')
+      end
+    end
+
+    context 'when the requester is an admin' do
+      let(:current_user) { create(:user, :admin) }
+
+      it 'exposes group bot user name', :enable_admin_mode do
+        expect(subject[:name]).to eq('group bot')
+      end
+    end
+  end
+
   it 'exposes local_time' do
     local_time = '2:30 PM'
     expect(entity).to receive(:local_time).with(timezone).and_return(local_time)

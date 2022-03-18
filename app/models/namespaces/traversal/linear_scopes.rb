@@ -126,36 +126,26 @@ module Namespaces
         end
 
         def self_and_descendants_with_comparison_operators(include_self: true)
-          base = all.select(
-            :traversal_ids,
-            'LEAD (namespaces.traversal_ids, 1) OVER (ORDER BY namespaces.traversal_ids ASC) next_traversal_ids'
-          )
+          base = all.select(:traversal_ids)
           base_cte = Gitlab::SQL::CTE.new(:descendants_base_cte, base)
 
           namespaces = Arel::Table.new(:namespaces)
 
           # Bound the search space to ourselves (optional) and descendants.
           #
-          # WHERE (base_cte.next_traversal_ids IS NULL OR base_cte.next_traversal_ids > namespaces.traversal_ids)
-          #   AND next_traversal_ids_sibling(base_cte.traversal_ids) > namespaces.traversal_ids
+          # WHERE next_traversal_ids_sibling(base_cte.traversal_ids) > namespaces.traversal_ids
           records = unscoped
+            .distinct
+            .with(base_cte.to_arel)
             .from([base_cte.table, namespaces])
-            .where(base_cte.table[:next_traversal_ids].eq(nil).or(base_cte.table[:next_traversal_ids].gt(namespaces[:traversal_ids])))
             .where(next_sibling_func(base_cte.table[:traversal_ids]).gt(namespaces[:traversal_ids]))
 
           #   AND base_cte.traversal_ids <= namespaces.traversal_ids
-          records = if include_self
-                      records.where(base_cte.table[:traversal_ids].lteq(namespaces[:traversal_ids]))
-                    else
-                      records.where(base_cte.table[:traversal_ids].lt(namespaces[:traversal_ids]))
-                    end
-
-          records_cte = Gitlab::SQL::CTE.new(:descendants_cte, records)
-
-          unscoped
-            .unscope(where: [:type])
-            .with(base_cte.to_arel, records_cte.to_arel)
-            .from(records_cte.alias_to(namespaces))
+          if include_self
+            records.where(base_cte.table[:traversal_ids].lteq(namespaces[:traversal_ids]))
+          else
+            records.where(base_cte.table[:traversal_ids].lt(namespaces[:traversal_ids]))
+          end
         end
 
         def next_sibling_func(*args)

@@ -43,6 +43,21 @@ RSpec.describe API::UserCounts do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_a Hash
           expect(json_response['merge_requests']).to eq(2)
+          expect(json_response['attention_requests']).to eq(2)
+        end
+
+        describe 'mr_attention_requests is disabled' do
+          before do
+            stub_feature_flags(mr_attention_requests: false)
+          end
+
+          it 'does not include attention_requests count' do
+            create(:merge_request, source_project: project, author: user, assignees: [user])
+
+            get api('/user_counts', user)
+
+            expect(json_response.key?('attention_requests')).to be(false)
+          end
         end
       end
 

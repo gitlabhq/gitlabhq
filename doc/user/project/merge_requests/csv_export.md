@@ -18,11 +18,11 @@ The following table shows what attributes will be present in the CSV.
 
 | Column             | Description                                                  |
 |--------------------|--------------------------------------------------------------|
+| Title              | Merge request title                                          |
+| Description        | Merge request description                                    |
 | MR ID              | MR `iid`                                                     |
 | URL                | A link to the merge request on GitLab                        |
-| Title              | Merge request title                                          |
 | State              | Opened, Closed, Locked, or Merged                            |
-| Description        | Merge request description                                    |
 | Source Branch      | Source branch                                                |
 | Target Branch      | Target branch                                                |
 | Source Project ID  | ID of the source project                                     |
@@ -38,6 +38,10 @@ The following table shows what attributes will be present in the CSV.
 | Milestone ID       | ID of the merge request milestone                            |
 | Created At (UTC)   | Formatted as `YYYY-MM-DD HH:MM:SS`                           |
 | Updated At (UTC)   | Formatted as `YYYY-MM-DD HH:MM:SS`                           |
+
+In GitLab 14.7 and earlier, the first two columns were `MR ID` and `URL`,
+which [caused an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/34769)
+when importing back into GitLab.
 
 ## Limitations
 

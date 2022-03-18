@@ -37,7 +37,7 @@ flowchart LR
     subgraph backend
     be["Backend code"]--tested with-->rspec
     end
-    
+
     be--generates-->fixtures["frontend fixtures"]
     fixtures--used in-->jest
 ```
@@ -69,7 +69,7 @@ In addition, there are a few circumstances where we would always run the full RS
 - when the `pipeline:run-all-rspec` label is set on the merge request
 - when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
-- when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any CI configuration file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
 ### Jest minimal jobs
 
@@ -85,7 +85,7 @@ In addition, there are a few circumstances where we would always run the full Je
 - when the `pipeline:run-all-jest` label is set on the merge request
 - when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
-- when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any CI configuration file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 - when any frontend "core" file is changed (i.e. `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
 - when any vendored JavaScript file is changed (i.e. `vendor/assets/javascripts/**/*`)
 - when any backend file is changed ([see the patterns list for details](https://gitlab.com/gitlab-org/gitlab/-/blob/3616946936c1adbd9e754c1bd06f86ba670796d8/.gitlab/ci/rules.gitlab-ci.yml#L205-216))
@@ -194,6 +194,14 @@ We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
 
+### Single database testing
+
+By default, all tests run with [multiple databases](database/multiple_databases.md).
+
+We also run tests with a single database in nightly scheduled pipelines, and in merge requests that touch database-related files.
+
+If you want to force tests to run with a single database, you can add the `pipeline:run-single-db` label to the merge request.
+
 ### Monitoring
 
 The GitLab test suite is [monitored](performance.md#rspec-profiling) for the `main` branch, and any branch
@@ -218,7 +226,7 @@ of `gitlab-org/gitlab-foss`. These jobs are only created in the following cases:
 
 - when the `pipeline:run-as-if-foss` label is set on the merge request
 - when the merge request is created in the `gitlab-org/security/gitlab` project
-- when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any CI configuration file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
 The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
 set and get the `ee/` folder removed before the tests start running.
@@ -247,7 +255,7 @@ appending `-jh` to the branch name. If a corresponding JH branch is found,
 rather than from the default branch.
 
 NOTE:
-For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
+For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
 
 ## `undercover` RSpec test
 
@@ -262,6 +270,16 @@ job.
 In the event of an emergency, or false positive from this job, add the
 `pipeline:skip-undercoverage` label to the merge request to allow this job to
 fail.
+
+You can disable the `undercover` code coverage check by wrapping the desired block of code in `# :nocov:` lines:
+
+```ruby
+# :nocov:
+def some_method
+  # code coverage for this method will be skipped
+end
+# :nocov:
+```
 
 ## PostgreSQL versions testing
 
@@ -290,6 +308,21 @@ We follow the [PostgreSQL versions shipped with Omnibus GitLab](../administratio
 | PG12               | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` |
 | PG11               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
 | PG13               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
+
+## Redis versions testing
+
+Our test suite runs against Redis 6 as GitLab.com runs on Redis 6 and
+[Omnibus defaults to Redis 6 for new installs and upgrades](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/config/software/redis.rb).
+
+We do run our test suite against Redis 5 on `nightly` scheduled pipelines, specifically when running backward-compatible and forward-compatible PostgreSQL jobs.
+
+### Current versions testing
+
+| Where? | Redis version |
+| ------ | ------------------ |
+| MRs    | 6 |
+| `default branch` (non-scheduled pipelines) | 6 |
+| `nightly` scheduled pipelines | 5 |
 
 ## Pipelines types for merge requests
 
@@ -531,6 +564,8 @@ that are scoped to a single [configuration keyword](../ci/yaml/index.md#job-keyw
 | `.use-pg11-ee` | Same as `.use-pg11` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
 | `.use-pg12` | Allows a job to use the `postgres` 12 and `redis` services (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific versions of the services). |
 | `.use-pg12-ee` | Same as `.use-pg12` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
+| `.use-pg13` | Allows a job to use the `postgres` 13 and `redis` services (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific versions of the services). |
+| `.use-pg13-ee` | Same as `.use-pg13` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
 | `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
 | `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` CI/CD variable. |
 | `.use-docker-in-docker` | Allows a job to use Docker in Docker. |
@@ -614,6 +649,20 @@ otherwise.
 If you want a running pipeline to finish even if you push new commits to a merge
 request, be sure to start the `dont-interrupt-me` job before pushing.
 
+### Git fetch caching
+
+Because GitLab.com uses the [pack-objects cache](../administration/gitaly/configure_gitaly.md#pack-objects-cache),
+concurrent Git fetches of the same pipeline ref are deduplicated on
+the Gitaly server (always) and served from cache (when available).
+
+This works well for the following reasons:
+
+- The pack-objects cache is enabled on all Gitaly servers on GitLab.com.
+- The CI/CD [Git strategy setting](../ci/pipelines/settings.md#choose-the-default-git-strategy) for `gitlab-org/gitlab` is **Git clone**,
+  causing all jobs to fetch the same data, which maximizes the cache hit ratio.
+- We use [shallow clone](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone) to avoid downloading the full Git
+  history for every job.
+
 ### Caching strategy
 
 1. All jobs must only pull caches by default.
@@ -647,19 +696,31 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 
 We limit the artifacts that are saved and retrieved by jobs to the minimum in order to reduce the upload/download time and costs, as well as the artifacts storage.
 
-### Git fetch caching
+### Components caching
 
-Because GitLab.com uses the [pack-objects cache](../administration/gitaly/configure_gitaly.md#pack-objects-cache),
-concurrent Git fetches of the same pipeline ref are deduplicated on
-the Gitaly server (always) and served from cache (when available).
+Some external components (currently only GitLab Workhorse) of GitLab need to be built from source as a preliminary step for running tests.
 
-This works well for the following reasons:
+In [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79766), we introduced a new `build-components` job that:
 
-- The pack-objects cache is enabled on all Gitaly servers on GitLab.com.
-- The CI/CD [Git strategy setting](../ci/pipelines/settings.md#choose-the-default-git-strategy) for `gitlab-org/gitlab` is **Git clone**,
-  causing all jobs to fetch the same data, which maximizes the cache hit ratio.
-- We use [shallow clone](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone) to avoid downloading the full Git
-  history for every job.
+- runs automatically for all GitLab.com `gitlab-org/gitlab` scheduled pipelines
+- runs automatically for any `master` commit that touches the `workhorse/` folder
+- is manual for GitLab.com's `gitlab-org`'s MRs
+
+This job tries to download a generic package that contains GitLab Workhorse binaries needed in the GitLab test suite (under `tmp/tests/gitlab-workhorse`).
+
+- If the package URL returns a 404:
+   1. It runs `scripts/setup-test-env`, so that the GitLab Workhorse binaries are built.
+   1. It then creates an archive which contains the binaries and upload it [as a generic package](https://gitlab.com/gitlab-org/gitlab/-/packages/).
+- Otherwise, if the package already exists, it exit the job successfully.
+
+We also changed the `setup-test-env` job to:
+
+1. First download the GitLab Workhorse generic package build and uploaded by `build-components`.
+1. If the package is retrieved successfully, its content is placed in the right folder (i.e. `tmp/tests/gitlab-workhorse`), preventing the building of the binaries when `scripts/setup-test-env` is run later on.
+1. If the package URL returns a 404, the behavior doesn't change compared to the current one: the GitLab Workhorse binaries are built as part of `scripts/setup-test-env`.
+
+NOTE:
+The version of the package is the workhorse tree SHA (i.e. `git rev-parse HEAD:workhorse`).
 
 ### Pre-clone step
 

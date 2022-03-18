@@ -27,11 +27,6 @@ export default {
       required: true,
       type: Object,
     },
-    inviteMembers: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     project: {
       required: true,
       type: Object,
@@ -54,7 +49,7 @@ export default {
     },
   },
   mounted() {
-    if (this.inviteMembers && this.getCookieForInviteMembers()) {
+    if (this.getCookieForInviteMembers()) {
       this.openInviteMembersModal('celebrate');
     }
 

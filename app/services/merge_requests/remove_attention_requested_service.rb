@@ -2,13 +2,12 @@
 
 module MergeRequests
   class RemoveAttentionRequestedService < MergeRequests::BaseService
-    attr_accessor :merge_request, :user
+    attr_accessor :merge_request
 
-    def initialize(project:, current_user:, merge_request:, user:)
+    def initialize(project:, current_user:, merge_request:)
       super(project: project, current_user: current_user)
 
       @merge_request = merge_request
-      @user = user
     end
 
     def execute
@@ -17,6 +16,8 @@ module MergeRequests
       if reviewer || assignee
         update_state(reviewer)
         update_state(assignee)
+
+        current_user.invalidate_attention_requested_count
 
         success
       else
@@ -27,11 +28,11 @@ module MergeRequests
     private
 
     def assignee
-      merge_request.find_assignee(user)
+      merge_request.find_assignee(current_user)
     end
 
     def reviewer
-      merge_request.find_reviewer(user)
+      merge_request.find_reviewer(current_user)
     end
 
     def update_state(reviewer_or_assignee)

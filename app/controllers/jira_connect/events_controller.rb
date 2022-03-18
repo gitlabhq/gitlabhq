@@ -7,11 +7,13 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
   before_action :verify_asymmetric_atlassian_jwt!
 
   def installed
-    return head :ok if current_jira_installation
+    unless Feature.enabled?(:jira_connect_installation_update, default_enabled: :yaml)
+      return head :ok if current_jira_installation
+    end
 
-    installation = JiraConnectInstallation.new(event_params)
+    success = current_jira_installation ? update_installation : create_installation
 
-    if installation.save
+    if success
       head :ok
     else
       head :unprocessable_entity
@@ -28,8 +30,24 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
 
   private
 
-  def event_params
-    params.permit(:clientKey, :sharedSecret, :baseUrl).transform_keys(&:underscore)
+  def create_installation
+    JiraConnectInstallation.new(create_params).save
+  end
+
+  def update_installation
+    current_jira_installation.update(update_params)
+  end
+
+  def create_params
+    transformed_params.permit(:client_key, :shared_secret, :base_url)
+  end
+
+  def update_params
+    transformed_params.permit(:shared_secret, :base_url)
+  end
+
+  def transformed_params
+    @transformed_params ||= params.transform_keys(&:underscore)
   end
 
   def verify_asymmetric_atlassian_jwt!
@@ -43,7 +61,7 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
   def jwt_verification_claims
     {
       aud: jira_connect_base_url(protocol: 'https'),
-      iss: event_params[:client_key],
+      iss: transformed_params[:client_key],
       qsh: Atlassian::Jwt.create_query_string_hash(request.url, request.method, jira_connect_base_url)
     }
   end

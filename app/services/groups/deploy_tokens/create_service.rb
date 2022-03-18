@@ -13,3 +13,5 @@ module Groups
     end
   end
 end
+
+Groups::DeployTokens::CreateService.prepend_mod

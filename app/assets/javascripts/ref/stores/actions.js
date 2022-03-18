@@ -5,6 +5,9 @@ import * as types from './mutation_types';
 export const setEnabledRefTypes = ({ commit }, refTypes) =>
   commit(types.SET_ENABLED_REF_TYPES, refTypes);
 
+export const setUseSymbolicRefNames = ({ commit }, useSymbolicRefNames) =>
+  commit(types.SET_USE_SYMBOLIC_REF_NAMES, useSymbolicRefNames);
+
 export const setProjectId = ({ commit }, projectId) => commit(types.SET_PROJECT_ID, projectId);
 
 export const setSelectedRef = ({ commit }, selectedRef) =>

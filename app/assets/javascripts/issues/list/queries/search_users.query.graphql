@@ -3,7 +3,7 @@
 query searchUsers($fullPath: ID!, $search: String, $isProject: Boolean = false) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
     id
-    groupMembers(search: $search) {
+    groupMembers(search: $search, relations: [DIRECT, INHERITED, SHARED_FROM_GROUPS]) {
       nodes {
         id
         user {
@@ -14,7 +14,7 @@ query searchUsers($fullPath: ID!, $search: String, $isProject: Boolean = false) 
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     id
-    projectMembers(search: $search) {
+    projectMembers(search: $search, relations: [DIRECT, INHERITED, INVITED_GROUPS]) {
       nodes {
         id
         user {

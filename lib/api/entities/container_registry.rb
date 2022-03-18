@@ -22,6 +22,7 @@ module API
         expose :tags_count, if: -> (_, options) { options[:tags_count] }
         expose :tags, using: Tag, if: -> (_, options) { options[:tags] }
         expose :delete_api_path, if: ->(object, options) { Ability.allowed?(options[:user], :admin_container_image, object) }
+        expose :size, if: -> (_, options) { options[:size] }
 
         private
 

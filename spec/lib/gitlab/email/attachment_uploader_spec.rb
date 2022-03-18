@@ -8,7 +8,27 @@ RSpec.describe Gitlab::Email::AttachmentUploader do
     let(:message_raw) { fixture_file("emails/attachment.eml") }
     let(:message) { Mail::Message.new(message_raw) }
 
+    before do
+      allow_next_instance_of(Gitlab::Sanitizers::Exif) do |instance|
+        allow(instance).to receive(:clean_existing_path).and_call_original
+      end
+    end
+
+    def expect_exif_sanitizer_called
+      expect_next_instance_of(Gitlab::Sanitizers::Exif) do |sanitizer|
+        expect(sanitizer).to receive(:clean_existing_path) do |path, **options|
+          expect(File.exist?(path)).to be true
+
+          file = File.open(path, "rb")
+          expect(options).to eql(content: file.read, skip_unallowed_types: true)
+          file.close
+        end
+      end
+    end
+
     it "uploads all attachments and returns their links" do
+      expect_exif_sanitizer_called
+
       links = described_class.new(message).execute(upload_parent: project, uploader_class: FileUploader)
       link = links.first
 
@@ -21,6 +41,8 @@ RSpec.describe Gitlab::Email::AttachmentUploader do
       let(:message_raw) { fixture_file("emails/valid_reply_signed_smime.eml") }
 
       it 'uploads all attachments except the signature' do
+        expect_exif_sanitizer_called
+
         links = described_class.new(message).execute(upload_parent: project, uploader_class: FileUploader)
 
         expect(links).not_to include(a_hash_including(alt: 'smime.p7s'))
@@ -36,6 +58,8 @@ RSpec.describe Gitlab::Email::AttachmentUploader do
       let(:message_raw) { fixture_file("emails/valid_reply_signed_smime_mixed_protocol_prefix.eml") }
 
       it 'uploads all attachments except the signature' do
+        expect_exif_sanitizer_called
+
         links = described_class.new(message).execute(upload_parent: project, uploader_class: FileUploader)
 
         expect(links).not_to include(a_hash_including(alt: 'smime.p7s'))

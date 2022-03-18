@@ -121,7 +121,7 @@ Use the following variables to configure coverage-guided fuzz testing in your CI
 | `COVFUZZ_URL_PREFIX`      | Path to the `gitlab-cov-fuzz` repository cloned for use with an offline environment. You should only change this value when using an offline environment. Default: `https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw`. |
 | `COVFUZZ_USE_REGISTRY`    | Set to `true` to have the corpus stored in the GitLab corpus registry. The variables `COVFUZZ_CORPUS_NAME` and `COVFUZZ_GITLAB_TOKEN` are required if this variable is set to `true`. Default: `false`. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8. |
 | `COVFUZZ_CORPUS_NAME`     | Name of the corpus to be used in the job.  [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8. |
-| `COVFUZZ_GITLAB_TOKEN`    | Environment variable configured with [Personal Access Token](../../../user/profile/personal_access_tokens.md#create-a-personal-access-token) with API read/write access. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8. |
+| `COVFUZZ_GITLAB_TOKEN`    | Environment variable configured with [Personal Access Token](../../../user/profile/personal_access_tokens.md#create-a-personal-access-token) or [Project Access Token](../../../user/project/settings/project_access_tokens.md#create-a-project-access-token) with API read/write access. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8. |
 
 #### Seed corpus
 
@@ -144,12 +144,8 @@ You can download the JSON report file from the CI/CD pipelines page. For more in
 
 ## Corpus registry
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an
-administrator to [disable the feature flags](../../../administration/feature_flags.md) named
-`corpus_management` and `corpus_management_ui`. On GitLab.com, this feature is available.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347187) in GitLab 14.9. [Feature flags `corpus_management` and `corpus_management_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/328418) removed.  
 
 The corpus registry is a library of corpuses. Corpuses in a project's registry are available to
 all jobs in that project. A project-wide registry is a more efficient way to manage corpuses than

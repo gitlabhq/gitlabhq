@@ -1,5 +1,5 @@
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
-import * as lowlight from 'lowlight';
+import { lowlight } from 'lowlight/lib/all';
 
 const extractLanguage = (element) => element.getAttribute('lang');
 

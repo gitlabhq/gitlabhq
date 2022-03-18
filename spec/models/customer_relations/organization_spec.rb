@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe CustomerRelations::Organization, type: :model do
+  let_it_be(:group) { create(:group) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:group).with_foreign_key('group_id') }
   end
@@ -17,6 +19,20 @@ RSpec.describe CustomerRelations::Organization, type: :model do
     it { is_expected.to validate_length_of(:description).is_at_most(1024) }
   end
 
+  describe '#root_group' do
+    context 'when root group' do
+      subject { build(:organization, group: group) }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when subgroup' do
+      subject { build(:organization, group: create(:group, parent: group)) }
+
+      it { is_expected.to be_invalid }
+    end
+  end
+
   describe '#name' do
     it 'strips name' do
       organization = described_class.new(name: '   GitLab   ')
@@ -27,7 +43,6 @@ RSpec.describe CustomerRelations::Organization, type: :model do
   end
 
   describe '#find_by_name' do
-    let!(:group) { create(:group) }
     let!(:organiztion1) { create(:organization, group: group, name: 'Test') }
     let!(:organiztion2) { create(:organization, group: create(:group), name: 'Test') }
 

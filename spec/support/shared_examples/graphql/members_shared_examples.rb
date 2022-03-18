@@ -76,8 +76,10 @@ RSpec.shared_examples 'querying members with a group' do
         resolve(described_class, obj: resource, args: base_args.merge(args), ctx: { current_user: other_user })
       end
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          subject
+        end
       end
     end
   end

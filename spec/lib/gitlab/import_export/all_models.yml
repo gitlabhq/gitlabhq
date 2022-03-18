@@ -34,6 +34,7 @@ issues:
 - issuable_severity
 - issuable_sla
 - issue_assignees
+- search_data
 - closed_by
 - epic_issue
 - epic
@@ -54,6 +55,7 @@ issues:
 - status_page_published_incident
 - namespace
 - note_authors
+- user_note_authors
 - issue_email_participants
 - test_reports
 - requirement
@@ -199,6 +201,7 @@ merge_requests:
 - user_mentions
 - system_note_metadata
 - note_authors
+- user_note_authors
 - cleanup_schedule
 - compliance_violations
 external_pull_requests:
@@ -392,6 +395,7 @@ project:
 - mattermost_slash_commands_integration
 - shimo_integration
 - slack_slash_commands_integration
+- harbor_integration
 - irker_integration
 - packagist_integration
 - pivotaltracker_integration
@@ -607,6 +611,7 @@ project:
 - sync_events
 - secure_files
 - security_trainings
+- vulnerability_reads
 award_emoji:
 - awardable
 - user
@@ -627,6 +632,8 @@ issuable_severity:
 issue_assignees:
 - issue
 - assignee
+search_data:
+- issue
 merge_request_assignees:
 - merge_request
 - assignee
@@ -771,6 +778,7 @@ epic:
 - resource_state_events
 - user_mentions
 - note_authors
+- user_note_authors
 - boards_epic_user_preferences
 - epic_board_positions
 epic_issue:

@@ -228,44 +228,83 @@ RSpec.describe API::Notes do
     end
 
     let(:request_body) { 'Hi!' }
+    let(:params) { { body: request_body } }
     let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes" }
 
-    subject { post api(request_path, user), params: { body: request_body } }
+    subject { post api(request_path, user), params: params }
 
     context 'a command only note' do
-      let(:request_body) { "/spend 1h" }
+      context '/spend' do
+        let(:request_body) { "/spend 1h" }
 
-      before do
-        project.add_developer(user)
+        before do
+          project.add_developer(user)
+        end
+
+        it 'returns 202 Accepted status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:accepted)
+        end
+
+        it 'does not actually create a new note' do
+          expect { subject }.not_to change { Note.where(system: false).count }
+        end
+
+        it 'does however create a system note about the change', :sidekiq_inline do
+          expect { subject }.to change { Note.system.count }.by(1)
+        end
+
+        it 'applies the commands' do
+          expect { subject }.to change { merge_request.reset.total_time_spent }
+        end
+
+        it 'reports the changes' do
+          subject
+
+          expect(json_response).to include(
+            'commands_changes' => include(
+              'spend_time' => include('duration' => 3600)
+            ),
+            'summary' => include('Added 1h spent time.')
+          )
+        end
       end
 
-      it 'returns 202 Accepted status' do
-        subject
+      context '/merge' do
+        let(:request_body) { "/merge" }
+        let(:project) { create(:project, :public, :repository) }
+        let(:merge_request) { create(:merge_request_with_multiple_diffs, source_project: project, target_project: project, author: user) }
+        let(:params) { { body: request_body, merge_request_diff_head_sha: merge_request.diff_head_sha } }
 
-        expect(response).to have_gitlab_http_status(:accepted)
-      end
+        before do
+          project.add_developer(user)
+        end
 
-      it 'does not actually create a new note' do
-        expect { subject }.not_to change { Note.where(system: false).count }
-      end
+        it 'returns 202 Accepted status' do
+          subject
 
-      it 'does however create a system note about the change', :sidekiq_inline do
-        expect { subject }.to change { Note.system.count }.by(1)
-      end
+          expect(response).to have_gitlab_http_status(:accepted)
+        end
 
-      it 'applies the commands' do
-        expect { subject }.to change { merge_request.reset.total_time_spent }
-      end
+        it 'does not actually create a new note' do
+          expect { subject }.not_to change { Note.where(system: false).count }
+        end
 
-      it 'reports the changes' do
-        subject
+        it 'applies the commands' do
+          expect { subject }.to change { merge_request.reload.merge_jid.present? }.from(false).to(true)
+        end
 
-        expect(json_response).to include(
-          'commands_changes' => include(
-            'spend_time' => include('duration' => 3600)
-          ),
-          'summary' => include('Added 1h spent time.')
-        )
+        it 'reports the changes' do
+          subject
+
+          expect(json_response).to include(
+            'commands_changes' => include(
+              'merge' => merge_request.diff_head_sha
+            ),
+            'summary' => ['Merged this merge request.']
+          )
+        end
       end
     end
 

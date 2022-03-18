@@ -23,6 +23,12 @@ module QA
           end
         end
 
+        def filter_by_name(name)
+          within_element(:project_filter_form) do
+            fill_in :name, with: name
+          end
+        end
+
         def go_to_project(name)
           filter_by_name(name)
 
@@ -39,14 +45,6 @@ module QA
 
         def clear_project_filter
           fill_element(:project_filter_form, "")
-        end
-
-        private
-
-        def filter_by_name(name)
-          within_element(:project_filter_form) do
-            fill_in :name, with: name
-          end
         end
       end
     end

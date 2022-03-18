@@ -1,7 +1,7 @@
 - release_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }
 - description_details = { tag: @release.tag, name: @project.name, release_link_start: release_link_start, release_link_end: '</a>'.html_safe }
 
-%div{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;" }
+.md{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;" }
   %p
     = _("A new Release %{tag} for %{name} was published. Visit the %{release_link_start}Releases page%{release_link_end} to read more about it.").html_safe % description_details
 

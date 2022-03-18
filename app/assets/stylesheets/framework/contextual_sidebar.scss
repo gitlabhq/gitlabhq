@@ -360,26 +360,9 @@
   }
 
   > li {
-    // TODO: Remove this block once all sidebar badges use gl_badge_tag
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/350061
-    .badge.badge-pill:not(.gl-badge) {
-      @include gl-rounded-lg;
-      @include gl-py-1;
-      @include gl-px-3;
-      background-color: $blue-100;
-      color: $blue-700;
-    }
-
     &.active {
       .sidebar-sub-level-items:not(.is-fly-out-only) {
         display: block;
-      }
-
-      // TODO: Remove this block once all sidebar badges use gl_badge_tag
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/350061
-      .badge.badge-pill:not(.gl-badge) {
-        @include gl-font-weight-normal;
-        color: $blue-700;
       }
     }
   }

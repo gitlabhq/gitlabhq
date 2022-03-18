@@ -176,7 +176,7 @@ See the [troubleshooting page](../../../administration/troubleshooting/group_sam
 
 ### Okta setup notes
 
-Please follow the Okta documentation on [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/) with the notes below for consideration.
+Please follow the Okta documentation on [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) with the notes below for consideration.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).
@@ -213,6 +213,35 @@ we recommend the ["Use the OneLogin SAML Test Connector" documentation](https://
 | Identity provider single sign-on URL             | SAML 2.0 Endpoint            |
 
 Recommended `NameID` value: `OneLogin ID`.
+
+### Change the SAML app
+
+To change the SAML app used for sign in:
+
+- If the NameID is not identical in both the existing and new SAML apps, users must:
+  1. [Unlink the current SAML identity](#unlinking-accounts).
+  1. [Link their identity](#user-access-and-management) to the new SAML app.
+- If the NameID is identical, no change is required.
+
+### Migrate to a different SAML provider
+
+You can migrate to a different SAML provider. During the migration process users will not be able to access any of the SAML groups.
+To mitigate this, you can disable [SSO enforcement](#sso-enforcement).
+
+To migrate SAML providers:
+
+1. [Configure](#configure-your-identity-provider) the group with the new identity provider SAML app.
+1. Ask users to [unlink their account from the group](#unlinking-accounts).
+1. Ask users to [link their account to the new SAML app](#linking-saml-to-your-existing-gitlabcom-account).
+
+### Change email domains
+
+To migrate users to a new email domain, users must:
+
+1. Add their new email as the primary email to their accounts and verify it.
+1. [Unlink their account from the group](#unlinking-accounts).
+1. [Link their account to the group](#linking-saml-to-your-existing-gitlabcom-account).
+1. (Optional) Remove their old email from the account.
 
 ## User access and management
 
@@ -609,12 +638,6 @@ Alternatively, when users need to [link SAML to their existing GitLab.com accoun
 | Cause                                                                                                                                                                                    | Solution                                                                                                                                                               |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | As mentioned in the [NameID](#nameid) section, if the NameID changes for any user, the user can be locked out. This is a common problem when an email address is used as the identifier. | Follow the steps outlined in the ["SAML authentication failed: User has already been taken"](#message-saml-authentication-failed-user-has-already-been-taken) section. |
-
-### I need to change my SAML app
-
-If the NameID is identical in both SAML apps, then no change is required.
-
-Otherwise, to change the SAML app used for sign in, users need to [unlink the current SAML identity](#unlinking-accounts) and then [link their identity](#user-access-and-management) to the new SAML app.
 
 ### I need additional information to configure my identity provider
 

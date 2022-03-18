@@ -36,6 +36,8 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { gqlClient } from '../graphql';
+import projectBoardQuery from '../graphql/project_board.query.graphql';
+import groupBoardQuery from '../graphql/group_board.query.graphql';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
 import groupBoardMilestonesQuery from '../graphql/group_board_milestones.query.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
@@ -46,8 +48,42 @@ import projectBoardMilestonesQuery from '../graphql/project_board_milestones.que
 import * as types from './mutation_types';
 
 export default {
+  fetchBoard: ({ commit, dispatch }, { fullPath, fullBoardId, boardType }) => {
+    const variables = {
+      fullPath,
+      boardId: fullBoardId,
+    };
+
+    return gqlClient
+      .query({
+        query: boardType === BoardType.group ? groupBoardQuery : projectBoardQuery,
+        variables,
+      })
+      .then(({ data }) => {
+        const board = data.workspace?.board;
+        commit(types.RECEIVE_BOARD_SUCCESS, board);
+        dispatch('setBoardConfig', board);
+      })
+      .catch(() => commit(types.RECEIVE_BOARD_FAILURE));
+  },
+
   setInitialBoardData: ({ commit }, data) => {
     commit(types.SET_INITIAL_BOARD_DATA, data);
+  },
+
+  setBoardConfig: ({ commit }, board) => {
+    const config = {
+      milestoneId: board.milestone?.id || null,
+      milestoneTitle: board.milestone?.title || null,
+      iterationId: board.iteration?.id || null,
+      iterationTitle: board.iteration?.title || null,
+      assigneeId: board.assignee?.id || null,
+      assigneeUsername: board.assignee?.username || null,
+      labels: board.labels?.nodes || [],
+      labelIds: board.labels?.nodes?.map((label) => label.id) || [],
+      weight: board.weight,
+    };
+    commit(types.SET_BOARD_CONFIG, config);
   },
 
   setActiveId({ commit }, { id, sidebarType }) {

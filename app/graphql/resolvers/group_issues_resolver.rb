@@ -3,9 +3,11 @@
 
 module Resolvers
   class GroupIssuesResolver < BaseIssuesResolver
-    include GroupIssuableResolver
+    def self.issuable_collection_name
+      'issues'
+    end
 
-    include_subgroups 'issues'
+    include GroupIssuableResolver
 
     def ready?(**args)
       if args.dig(:not, :release_tag).present?

@@ -40,6 +40,9 @@ export default {
     Terminal,
     TimeAgoTooltip,
     Delete,
+    EnvironmentAlert: () => import('ee_component/environments/components/environment_alert.vue'),
+    EnvironmentApproval: () =>
+      import('ee_component/environments/components/environment_approval.vue'),
   },
   directives: {
     GlTooltip,
@@ -96,6 +99,9 @@ export default {
     },
     hasDeployment() {
       return Boolean(this.environment?.upcomingDeployment || this.environment?.lastDeployment);
+    },
+    hasOpenedAlert() {
+      return this.environment?.hasOpenedAlert;
     },
     actions() {
       if (!this.lastDeployment) {
@@ -296,12 +302,20 @@ export default {
             class="gl-pl-4"
           />
         </div>
-        <div v-if="upcomingDeployment" :class="$options.deploymentClasses">
+        <div
+          v-if="upcomingDeployment"
+          :class="$options.deploymentClasses"
+          data-testid="upcoming-deployment-content"
+        >
           <deployment
             :deployment="upcomingDeployment"
             :class="{ 'gl-ml-7': inFolder }"
             class="gl-pl-4"
-          />
+          >
+            <template #approval>
+              <environment-approval :environment="environment" @change="$emit('change')" />
+            </template>
+          </deployment>
         </div>
       </template>
       <div v-else :class="$options.deploymentClasses">
@@ -318,6 +332,9 @@ export default {
           :class="{ 'gl-ml-7': inFolder }"
           class="gl-pl-4"
         />
+      </div>
+      <div v-if="hasOpenedAlert" class="gl-bg-gray-10 gl-md-px-7">
+        <environment-alert :environment="environment" class="gl-pl-4 gl-py-5" />
       </div>
     </gl-collapse>
   </div>

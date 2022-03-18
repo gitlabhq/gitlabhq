@@ -194,6 +194,10 @@ class ProjectPolicy < BasePolicy
     condition(:"#{f}_disabled", score: 32) { !access_allowed_to?(f.to_sym) }
   end
 
+  condition(:project_runner_registration_allowed) do
+    Feature.disabled?(:runner_registration_control, default_enabled: :yaml) || Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin }.enable :read_project_for_iids
@@ -230,6 +234,8 @@ class ProjectPolicy < BasePolicy
     enable :set_emails_disabled
     enable :set_show_default_award_emojis
     enable :set_warn_about_potentially_unwanted_characters
+
+    enable :register_project_runners
   end
 
   rule { can?(:guest_access) }.policy do
@@ -263,8 +269,6 @@ class ProjectPolicy < BasePolicy
     enable :create_task
     enable :create_work_item
   end
-
-  rule { can?(:update_issue) }.enable :update_work_item
 
   # These abilities are not allowed to admins that are not members of the project,
   # that's why they are defined separately.
@@ -409,6 +413,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_feature_flag
     enable :admin_feature_flags_user_lists
     enable :update_escalation_status
+    enable :read_secure_files
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -455,8 +460,10 @@ class ProjectPolicy < BasePolicy
     enable :update_freeze_period
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
+    enable :register_project_runners
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
+    enable :admin_secure_files
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do
@@ -727,6 +734,10 @@ class ProjectPolicy < BasePolicy
 
   rule { ~security_and_compliance_disabled & can?(:developer_access) }.policy do
     enable :access_security_and_compliance
+  end
+
+  rule { ~admin & ~project_runner_registration_allowed }.policy do
+    prevent :register_project_runners
   end
 
   private

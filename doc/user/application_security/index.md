@@ -110,11 +110,9 @@ For more details about each of the security scanning tools, see their respective
 
 ### Override the default registry base address
 
-By default, GitLab security scanners use `registry.gitlab.com/gitlab-org/security-products/analyzers` as the
+By default, GitLab security scanners use `registry.gitlab.com/security-products` as the
 base address for Docker images. You can override this globally by setting the CI/CD variable
-`SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once, except
-the container-scanning analyzer which uses
-`registry.gitlab.com/security-products/container-scanning` as its registry.
+`SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once.
 
 ### Use security scanning tools with merge request pipelines
 
@@ -221,7 +219,7 @@ security issues:
 WARNING:
 This feature is in its end-of-life process. It is [deprecated](../../update/deprecations.md#vulnerability-check)
 for use in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
-[Security Approval Policies](policies/#scan-result-policy-editor).
+[Security Approval Policies](policies/scan-result-policies.md).
 
 To prevent a merge request introducing a security vulnerability in a project, enable the
 Vulnerability-Check rule. While this rule is enabled, additional merge request approval by
@@ -396,6 +394,8 @@ In GitLab 14.0 and later, when artifact validation is enabled, the pipeline's **
 any report artifacts that failed validation.
 
 ### Enable security report validation
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9, and planned for removal in GitLab 15.0.
 
 To enable report artifacts validation, set the `VALIDATE_SCHEMA` environment variable to `"true"`
 for the desired jobs in the `.gitlab-ci.yml` file.

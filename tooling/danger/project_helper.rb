@@ -4,7 +4,6 @@ module Tooling
   module Danger
     module ProjectHelper
       LOCAL_RULES ||= %w[
-        changelog
         ci_config
         database
         documentation
@@ -54,7 +53,7 @@ module Tooling
         %r{\A(
           ((ee|jh)/)?app/((?!.*clusters)(?!.*alert_management)(?!.*views)(?!.*assets).+/)?integration.+ |
           ((ee|jh)/)?app/((?!.*search).+/)?project_service.+ |
-          ((ee|jh)/)?app/(models|helpers|workers|services|controllers)/(.+/)?(jira_connect.+|.*hook.+) |
+          ((ee|jh)/)?app/(models|helpers|workers|services|serializers|controllers)/(.+/)?(jira_connect.+|.*hook.+) |
           ((ee|jh)/)?app/controllers/(.+/)?oauth/jira/.+ |
           ((ee|jh)/)?app/services/(.+/)?jira.+ |
           ((ee|jh)/)?app/workers/(.+/)?(propagate_integration.+|irker_worker\.rb) |
@@ -75,7 +74,9 @@ module Tooling
           spec/frontend/tracking/.*\.js |
           spec/frontend/tracking_spec\.js
         )\z}x => [:frontend, :product_intelligence],
-        %r{\A((ee|jh)/)?app/(assets|views)/} => :frontend,
+        %r{\A((ee|jh)/)?app/assets/} => :frontend,
+        %r{\A((ee|jh)/)?app/views/.*\.svg} => :frontend,
+        %r{\A((ee|jh)/)?app/views/} => [:frontend, :backend],
         %r{\A((ee|jh)/)?public/} => :frontend,
         %r{\A((ee|jh)/)?spec/(javascripts|frontend|frontend_integration)/} => :frontend,
         %r{\A((ee|jh)/)?vendor/assets/} => :frontend,
@@ -133,6 +134,7 @@ module Tooling
         %r{\A((ee|jh)/)?lib/gitlab/usage_data_counters/.*\.yml\z} => [:product_intelligence],
         %r{\A((ee|jh)/)?config/(events|metrics)/((.*\.yml)|(schema\.json))\z} => [:product_intelligence],
         %r{\A((ee|jh)/)?lib/gitlab/usage_data(_counters)?(/|\.rb)} => [:backend, :product_intelligence],
+        %r{\A((ee|jh)/)?(spec/)?lib/gitlab/usage(/|\.rb)} => [:backend, :product_intelligence],
         %r{\A(
           lib/gitlab/tracking\.rb |
           spec/lib/gitlab/tracking_spec\.rb |
@@ -193,16 +195,8 @@ module Tooling
         helper.ci? ? LOCAL_RULES | CI_ONLY_RULES : LOCAL_RULES
       end
 
-      def all_ee_changes
-        helper.changes.files.grep(%r{\Aee/})
-      end
-
       def file_lines(filename)
         read_file(filename).lines(chomp: true)
-      end
-
-      def labels_to_add
-        @labels_to_add ||= []
       end
 
       private

@@ -70,7 +70,9 @@ export default {
         <template v-if="isCollapsed">
           <slot name="header"></slot>
           <gl-button
-            variant="link"
+            category="tertiary"
+            variant="confirm"
+            size="small"
             data-testid="mr-collapsible-title"
             :disabled="isLoading"
             :class="{ 'border-0': isLoading }"
@@ -81,7 +83,9 @@ export default {
         </template>
         <gl-button
           v-else
-          variant="link"
+          category="tertiary"
+          variant="confirm"
+          size="small"
           data-testid="mr-collapsible-title"
           :disabled="isLoading"
           :class="{ 'border-0': isLoading }"

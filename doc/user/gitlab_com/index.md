@@ -85,7 +85,10 @@ are included when cloning.
 Top-level groups created after August 12, 2021 have delayed project deletion enabled by default.
 Projects are permanently deleted after a seven-day delay.
 
-You can disable this by changing the [group setting](../group/index.md#enable-delayed-project-deletion).
+If you are on:
+
+- Premium tier and above, you can disable this by changing the [group setting](../group/index.md#enable-delayed-project-deletion).
+- Free tier, you cannot disable this setting or restore projects.
 
 ## Alternative SSH port
 
@@ -130,20 +133,20 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/index.md).
 Any settings or feature limits not listed here are using the defaults listed in
 the related documentation.
 
-| Setting                             | GitLab.com  | Default |
-|-------------------------------------|-------------|---------|
-| Artifacts maximum size (compressed) | 1 GB        | 100 MB  |
-| Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
-| Scheduled Pipeline Cron | `*/5 * * * *` | `3-59/10 * * * *` |
-| [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited |
-| [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
-| [Max number of pipeline triggers in a project](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers) | `25000` for Free tier, Unlimited for all paid tiers | Unlimited |
-| [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
-| [Max pipelines per schedule](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day) | `24` for Free tier, `288` for all paid tiers | Unlimited |
-| [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs) | 3 months | Never |
-| Max test cases per [unit test report](../../ci/unit_test_reports.md) | `500_000` | Unlimited |
-| [Max registered runners](../../administration/instance_limits.md#number-of-registered-runners-per-scope) | Free tier: `50` per-group / `50` per-project <br/> All paid tiers: `1_000` per-group  / `1_000` per-project | `1_000` per-group / `1_000` per-project |
-| [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables) | Free tier: `50` / Premium tier: `100` / Ultimate tier: `150` | 150 |
+| Setting                                                                  | GitLab.com                                                                                                                | Default (self-managed)                                                                                                                                                                   |
+|:-------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Artifacts maximum size (compressed)                                      | 1 GB                                                                                                                      | See [Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size)                                                                            |
+| Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)       | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry). | See [Default artifacts expiration](../admin_area/settings/continuous_integration.md#default-artifacts-expiration)                                                                        |
+| Scheduled Pipeline Cron                                                  | `*/5 * * * *`                                                                                                             | See [Pipeline schedules advanced configuration](../../administration/cicd.md#change-maximum-scheduled-pipeline-frequency)                                                               |
+| Maximum jobs in active pipelines                                         | `500` for Free tier, unlimited otherwise                                                                                  | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines)                                                                     |
+| Maximum CI/CD subscriptions to a project                                 | `2`                                                                                                                       | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project)                                                      |
+| Maximum number of pipeline triggers in a project                         | `25000` for Free tier, Unlimited for all paid tiers                                                                       | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers)                                                               |
+| Maximum pipeline schedules in projects                                   | `10` for Free tier, `50` for all paid tiers                                                                               | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules)                                                                                 |
+| Maximum pipelines per schedule                                           | `24` for Free tier, `288` for all paid tiers                                                                              | See [Limit the number of pipelines created by a pipeline schedule per day](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day) |
+| Scheduled job archiving                                                  | 3 months (from June 22, 2020). Jobs created before that date were archived after September 22, 2020.                      | Never                                                                                                                                                                                    |
+| Maximum test cases per [unit test report](../../ci/unit_test_reports.md) | `500000`                                                                                                                  | Unlimited                                                                                                                                                                                |
+| Maximum registered runners                                               | Free tier: `50` per-group / `50` per-project<br/>All paid tiers: `1000` per-group  / `1000` per-project                   | See [Number of registered runners per scope](../../administration/instance_limits.md#number-of-registered-runners-per-scope)                                                             |
+| Limit of dotenv variables                                                | Free tier: `50` / Premium tier: `100` / Ultimate tier: `150`                                                              | See [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables)                                                                                             |
 
 ## Package registry limits
 
@@ -188,7 +191,7 @@ GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic 
 fleet. This whole range is solely allocated to GitLab. You can expect connections from webhooks or repository mirroring to come
 from those IPs and allow them.
 
-GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6)).
+GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
 
 For outgoing connections from CI/CD runners, we are not providing static IP
 addresses. All GitLab.com shared runners are deployed into Google Cloud Platform (GCP). Any
@@ -296,7 +299,7 @@ for `shared_buffers` is quite high, and we are
 
 ## Puma
 
-GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#worker-timeout).
+GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#change-the-worker-timeout).
 
 ## GitLab.com-specific rate limits
 

@@ -203,9 +203,11 @@ module TreeHelper
       show_edit_button: show_edit_button?(options),
       show_web_ide_button: show_web_ide_button?,
       show_gitpod_button: show_gitpod_button?,
+      show_pipeline_editor_button: show_pipeline_editor_button?(@project, @path),
 
       web_ide_url: web_ide_url,
       edit_url: edit_url(options),
+      pipeline_editor_url: project_ci_pipeline_editor_path(@project, branch_name: @ref),
 
       gitpod_url: gitpod_url,
       user_preferences_gitpod_path: profile_preferences_path(anchor: 'user_gitpod_enabled'),

@@ -31,7 +31,7 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
 
   context 'The sidebar comes from a custom page' do
     before do
-      assign(:sidebar_page, double('WikiPage', path: 'sidebar.md', slug: 'sidebar', content: 'Some sidebar content'))
+      assign(:sidebar_page, double('WikiPage', path: 'sidebar.md', slug: 'sidebar', content: 'Some sidebar content', wiki: wiki))
     end
 
     it 'does not show an alert' do

@@ -16,5 +16,4 @@
 
     - if @commit
       .network-graph.gl-bg-white.gl-overflow-scroll.gl-overflow-x-hidden{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
-        .text-center.gl-mt-3
-          .gl-spinner.gl-spinner-md
+        = gl_loading_icon(size: 'md', css_class: 'gl-mt-3')

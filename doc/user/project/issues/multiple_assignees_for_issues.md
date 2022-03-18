@@ -39,4 +39,4 @@ to assign the issue to.
 
 ![adding multiple assignees](img/multiple_assignees.gif)
 
-To remove an assignee, deselect them from the same dropdown menu.
+To remove an assignee, clear them from the same dropdown menu.

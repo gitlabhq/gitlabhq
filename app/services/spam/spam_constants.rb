@@ -2,11 +2,12 @@
 
 module Spam
   module SpamConstants
-    CONDITIONAL_ALLOW = "conditional_allow"
-    DISALLOW = "disallow"
-    ALLOW = "allow"
-    BLOCK_USER = "block"
-    NOOP = "noop"
+    BLOCK_USER = 'block'
+    DISALLOW = 'disallow'
+    CONDITIONAL_ALLOW = 'conditional_allow'
+    OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM = 'override_via_allow_possible_spam'
+    ALLOW = 'allow'
+    NOOP = 'noop'
 
     SUPPORTED_VERDICTS = {
       BLOCK_USER => {
@@ -18,11 +19,14 @@ module Spam
       CONDITIONAL_ALLOW => {
         priority: 3
       },
-      ALLOW => {
+      OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM => {
         priority: 4
       },
-      NOOP => {
+      ALLOW => {
         priority: 5
+      },
+      NOOP => {
+        priority: 6
       }
     }.freeze
   end

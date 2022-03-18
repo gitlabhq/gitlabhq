@@ -1,5 +1,4 @@
 import produce from 'immer';
-import { getAgentConfigPath } from '../clusters_util';
 
 export const hasErrors = ({ errors = [] }) => errors?.length;
 
@@ -12,17 +11,8 @@ export function addAgentToStore(store, createClusterAgent, query, variables) {
     });
 
     const data = produce(sourceData, (draftData) => {
-      const configuration = {
-        id: clusterAgent.id,
-        name: clusterAgent.name,
-        path: getAgentConfigPath(clusterAgent.name),
-        webPath: clusterAgent.webPath,
-        __typename: 'TreeEntry',
-      };
-
       draftData.project.clusterAgents.nodes.push(clusterAgent);
       draftData.project.clusterAgents.count += 1;
-      draftData.project.repository.tree.trees.nodes.push(configuration);
     });
 
     store.writeQuery({

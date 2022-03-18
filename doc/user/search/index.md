@@ -34,14 +34,15 @@ in the search field in the upper right corner:
 
 > - Filtering by epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab 12.9.
 > - Filtering by child epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab 13.0.
-> - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6. Moved from GitLab Ultimate to Premium in 13.9.
+> - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
+> - Filtering by iterations was moved from GitLab Ultimate to GitLab Premium in 13.9.
 > - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
 
 Follow these steps to filter the **Issues** and **Merge requests** list pages in projects and
 groups:
 
-1. Click in the field **Search or filter results...**.
-1. In the dropdown menu that appears, select the attribute you wish to filter by:
+1. Select **Search or filter results...**.
+1. In the dropdown list that appears, select the attribute you wish to filter by:
    - Assignee
    - Author
    - Confidential
@@ -112,8 +113,8 @@ You can filter the **Issues** list to individual instances by their ID. For exam
 
 > Moved to GitLab Premium in 13.9.
 
-To filter merge requests by an individual approver, you can type (or select from
-the dropdown) **Approver** and select the user.
+To filter merge requests by an individual eligible approver ([Codeowner](../project/code_owners.md)), you can type (or select from
+the dropdown list) **Approver** and select the user.
 
 ![Filter MRs by an approver](img/filter_approver_merge_requests_v14_6.png)
 
@@ -123,29 +124,29 @@ the dropdown) **Approver** and select the user.
 > - Moved to GitLab Premium in 13.9.
 
 To filter merge requests already approved by a specific individual, you can type (or select from
-the dropdown) **Approved-By** and select the user.
+the dropdown list) **Approved-By** and select the user.
 
 ![Filter MRs by approved by](img/filter_approved_by_merge_requests_v14_6.png)
 
-### Filtering merge requests by reviewer **(FREE)**
+### Filtering merge requests by reviewer
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
 
 To filter review requested merge requests for a specific individual, you can type (or select from
-the dropdown) **Reviewer** and select the user.
+the dropdown list) **Reviewer** and select the user.
 
-### Filtering merge requests by environment or deployment date **(FREE)**
+### Filtering merge requests by environment or deployment date
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
 
 To filter merge requests by deployment data, such as the environment or a date,
-you can type (or select from the dropdown) the following:
+you can type (or select from the dropdown list) the following:
 
 - Environment
 - Deployed-before
 - Deployed-after
 
-When filtering by an environment, a dropdown presents all environments that
+When filtering by an environment, a dropdown list presents all environments that
 you can choose from:
 
 ![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v14_6.png)
@@ -174,7 +175,7 @@ you must type at least `Sim` before autocomplete displays results.
 Search history is available for issues and merge requests, and is stored locally
 in your browser. To run a search from history:
 
-1. In the top menu, click **Issues** or **Merge requests**.
+1. In the top menu, select **Issues** or **Merge requests**.
 1. To the left of the search bar, click **Recent searches**, and select a search from the list.
 
 ## Removing search filters
@@ -193,7 +194,7 @@ Some filters can be added multiple times. These include but are not limited to a
 
 You can search your [To-Do List](../todos.md) by "to do" and "done".
 You can filter to-do items per project, author, type, and action.
-Also, you can sort them by [**Label priority**](../../user/project/labels.md#label-priority),
+Also, you can sort them by [**Label priority**](../../user/project/labels.md#set-label-priority),
 **Last created**, and **Oldest created**.
 
 ## Projects
@@ -227,7 +228,7 @@ and sort them by **Last created**, **Oldest created**, **Last updated**, or **Ol
 From an [issue board](../../user/project/issue_board.md), you can filter issues by **Author**, **Assignee**, **Milestone**, and **Labels**.
 You can also filter them by name (issue title), from the field **Filter by name**, which is loaded as you type.
 
-To search for issues to add to lists present in your issue board, click
+To search for issues to add to lists present in your issue board, select
 the button **Add issues** on the top-right of your screen, opening a modal window from which
 you can, besides filtering them by **Name**, **Author**, **Assignee**, **Milestone**,
 and **Labels**, select multiple issues to add to a list of your choice:
@@ -281,13 +282,13 @@ To search through code or other documents in a single project, you can use
 the search field on the top-right of your screen while the project page is open.
 Code search shows only the first result in the file.
 
-#### Git blame from code search **(PREMIUM)**
+#### Git blame from code search **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
 
 You can access Git blame from any line that returned a result from the code search:
 
-![code search results](img/code_search.png)
+![code search results](img/code_search_git_blame_v14_9.png)
 
 ### SHA search
 
@@ -307,7 +308,7 @@ GitLab instance.
 ## Search settings
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8 [with a flag](../../administration/feature_flags.md) named `search_settings_in_page`. Disabled by default.
-> - [Added to Group, Administrator, and User settings](https://gitlab.com/groups/gitlab-org/-/epics/4842) in GitLab 13.9.
+> - [Added](https://gitlab.com/groups/gitlab-org/-/epics/4842) to Group, Administrator, and User settings in GitLab 13.9.
 > - [Feature flag `search_settings_in_page` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
 

@@ -26,8 +26,10 @@ RSpec.describe Resolvers::BlobsResolver do
     subject(:resolve_blobs) { resolve(described_class, obj: repository, args: args, ctx: { current_user: user }) }
 
     context 'when unauthorized' do
-      it 'raises an exception' do
-        expect { resolve_blobs }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      it 'generates an error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_blobs
+        end
       end
     end
 
@@ -65,6 +67,28 @@ RSpec.describe Resolvers::BlobsResolver do
             is_expected.to contain_exactly(
               have_attributes(path: 'files/pdf/test.pdf'),
               have_attributes(path: 'README.md')
+            )
+          end
+        end
+
+        context 'when specifying an invalid ref' do
+          let(:ref) { 'ma:in' }
+
+          it 'raises an ArgumentError' do
+            expect { resolve_blobs }.to raise_error(
+              Gitlab::Graphql::Errors::ArgumentError,
+              'Ref is not valid'
+            )
+          end
+        end
+
+        context 'when passing an empty ref' do
+          let(:ref) { '' }
+
+          it 'raises an ArgumentError' do
+            expect { resolve_blobs }.to raise_error(
+              Gitlab::Graphql::Errors::ArgumentError,
+              'Ref is not valid'
             )
           end
         end

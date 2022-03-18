@@ -1,12 +1,24 @@
-import { GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlFilteredSearchToken,
+  GlLoadingIcon,
+  GlFilteredSearchSuggestion,
+  GlDropdownSectionHeader,
+  GlDropdownDivider,
+  GlDropdownText,
+} from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   mockRegularLabel,
   mockLabels,
 } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 
-import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  DEFAULT_NONE_ANY,
+  OPERATOR_IS,
+  OPERATOR_IS_NOT,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   getRecentlyUsedSuggestions,
   setTokenValueToRecentlyUsed,
@@ -32,6 +44,7 @@ const defaultStubs = {
       <div>
         <slot name="view-token"></slot>
         <slot name="view"></slot>
+        <slot name="suggestions"></slot>
       </div>
     `,
   },
@@ -43,6 +56,7 @@ const defaultStubs = {
   },
 };
 
+const mockSuggestionListTestId = 'suggestion-list';
 const defaultSlots = {
   'view-token': `
     <div class="js-view-token">${mockRegularLabel.title}</div>
@@ -50,6 +64,10 @@ const defaultSlots = {
   view: `
     <div class="js-view">${mockRegularLabel.title}</div>
   `,
+};
+
+const defaultScopedSlots = {
+  'suggestions-list': `<div data-testid="${mockSuggestionListTestId}" :data-suggestions="JSON.stringify(props.suggestions)"></div>`,
 };
 
 const mockProps = {
@@ -62,8 +80,15 @@ const mockProps = {
   getActiveTokenValue: (labels, data) => labels.find((label) => label.title === data),
 };
 
-function createComponent({ props = {}, stubs = defaultStubs, slots = defaultSlots } = {}) {
-  return mount(BaseToken, {
+function createComponent({
+  props = {},
+  data = {},
+  stubs = defaultStubs,
+  slots = defaultSlots,
+  scopedSlots = defaultScopedSlots,
+  mountFn = mount,
+} = {}) {
+  return mountFn(BaseToken, {
     propsData: {
       ...mockProps,
       ...props,
@@ -72,9 +97,17 @@ function createComponent({ props = {}, stubs = defaultStubs, slots = defaultSlot
       portalName: 'fake target',
       alignSuggestions: jest.fn(),
       suggestionsListClass: () => 'custom-class',
+      filteredSearchSuggestionListInstance: {
+        register: jest.fn(),
+        unregister: jest.fn(),
+      },
+    },
+    data() {
+      return data;
     },
     stubs,
     slots,
+    scopedSlots,
   });
 }
 
@@ -82,6 +115,9 @@ describe('BaseToken', () => {
   let wrapper;
 
   const findGlFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
+  const findMockSuggestionList = () => wrapper.findByTestId(mockSuggestionListTestId);
+  const getMockSuggestionListSuggestions = () =>
+    JSON.parse(findMockSuggestionList().attributes('data-suggestions'));
 
   afterEach(() => {
     wrapper.destroy();
@@ -132,6 +168,187 @@ describe('BaseToken', () => {
         await wrapper.setProps({ active: false });
 
         expect(wrapper.emitted('fetch-suggestions')).toEqual([[`"${mockRegularLabel.title}"`]]);
+      });
+    });
+  });
+
+  describe('suggestions', () => {
+    describe('with suggestions disabled', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          props: {
+            config: {
+              suggestionsDisabled: true,
+            },
+            suggestions: [{ id: 'Foo' }],
+          },
+          mountFn: shallowMountExtended,
+        });
+      });
+
+      it('does not render suggestions', () => {
+        expect(findMockSuggestionList().exists()).toBe(false);
+      });
+    });
+
+    describe('with available suggestions', () => {
+      let mockSuggestions;
+
+      describe.each`
+        hasSuggestions | searchKey | shouldRenderSuggestions
+        ${true}        | ${null}   | ${true}
+        ${true}        | ${'foo'}  | ${true}
+        ${false}       | ${null}   | ${false}
+      `(
+        `when hasSuggestions is $hasSuggestions`,
+        ({ hasSuggestions, searchKey, shouldRenderSuggestions }) => {
+          beforeEach(async () => {
+            mockSuggestions = hasSuggestions ? [{ id: 'Foo' }] : [];
+            const props = { defaultSuggestions: [], suggestions: mockSuggestions };
+
+            getRecentlyUsedSuggestions.mockReturnValue([]);
+            wrapper = createComponent({ props, mountFn: shallowMountExtended, stubs: {} });
+            findGlFilteredSearchToken().vm.$emit('input', { data: searchKey });
+
+            await nextTick();
+          });
+
+          it(`${shouldRenderSuggestions ? 'should' : 'should not'} render suggestions`, () => {
+            expect(findMockSuggestionList().exists()).toBe(shouldRenderSuggestions);
+
+            if (shouldRenderSuggestions) {
+              expect(getMockSuggestionListSuggestions()).toEqual(mockSuggestions);
+            }
+          });
+        },
+      );
+    });
+
+    describe('with preloaded suggestions', () => {
+      const mockPreloadedSuggestions = [{ id: 'Foo' }, { id: 'Bar' }];
+
+      describe.each`
+        searchKey | shouldRenderPreloadedSuggestions
+        ${null}   | ${true}
+        ${'foo'}  | ${false}
+      `('when searchKey is $searchKey', ({ shouldRenderPreloadedSuggestions, searchKey }) => {
+        beforeEach(async () => {
+          const props = { preloadedSuggestions: mockPreloadedSuggestions };
+          wrapper = createComponent({ props, mountFn: shallowMountExtended, stubs: {} });
+          findGlFilteredSearchToken().vm.$emit('input', { data: searchKey });
+
+          await nextTick();
+        });
+
+        it(`${
+          shouldRenderPreloadedSuggestions ? 'should' : 'should not'
+        } render preloaded suggestions`, () => {
+          expect(findMockSuggestionList().exists()).toBe(shouldRenderPreloadedSuggestions);
+
+          if (shouldRenderPreloadedSuggestions) {
+            expect(getMockSuggestionListSuggestions()).toEqual(mockPreloadedSuggestions);
+          }
+        });
+      });
+    });
+
+    describe('with recent suggestions', () => {
+      let mockSuggestions;
+
+      describe.each`
+        searchKey | recentEnabled | shouldRenderRecentSuggestions
+        ${null}   | ${true}       | ${true}
+        ${'foo'}  | ${true}       | ${false}
+        ${null}   | ${false}      | ${false}
+      `(
+        'when searchKey is $searchKey and recentEnabled is $recentEnabled',
+        ({ shouldRenderRecentSuggestions, recentEnabled, searchKey }) => {
+          beforeEach(async () => {
+            const props = { value: { data: '', operator: '=' }, defaultSuggestions: [] };
+
+            if (recentEnabled) {
+              mockSuggestions = [{ id: 'Foo' }, { id: 'Bar' }];
+              getRecentlyUsedSuggestions.mockReturnValue(mockSuggestions);
+            }
+
+            props.config = { recentSuggestionsStorageKey: recentEnabled ? mockStorageKey : null };
+
+            wrapper = createComponent({ props, mountFn: shallowMountExtended, stubs: {} });
+            findGlFilteredSearchToken().vm.$emit('input', { data: searchKey });
+
+            await nextTick();
+          });
+
+          it(`${
+            shouldRenderRecentSuggestions ? 'should' : 'should not'
+          } render recent suggestions`, () => {
+            expect(findMockSuggestionList().exists()).toBe(shouldRenderRecentSuggestions);
+            expect(wrapper.findComponent(GlDropdownSectionHeader).exists()).toBe(
+              shouldRenderRecentSuggestions,
+            );
+            expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(
+              shouldRenderRecentSuggestions,
+            );
+
+            if (shouldRenderRecentSuggestions) {
+              expect(getMockSuggestionListSuggestions()).toEqual(mockSuggestions);
+            }
+          });
+        },
+      );
+    });
+
+    describe('with default suggestions', () => {
+      describe.each`
+        operator           | shouldRenderFilteredSearchSuggestion
+        ${OPERATOR_IS}     | ${true}
+        ${OPERATOR_IS_NOT} | ${false}
+      `('when operator is $operator', ({ shouldRenderFilteredSearchSuggestion, operator }) => {
+        beforeEach(() => {
+          const props = {
+            defaultSuggestions: DEFAULT_NONE_ANY,
+            value: { data: '', operator },
+          };
+
+          wrapper = createComponent({ props, mountFn: shallowMountExtended });
+        });
+
+        it(`${
+          shouldRenderFilteredSearchSuggestion ? 'should' : 'should not'
+        } render GlFilteredSearchSuggestion`, () => {
+          const filteredSearchSuggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion)
+            .wrappers;
+
+          if (shouldRenderFilteredSearchSuggestion) {
+            expect(filteredSearchSuggestions.map((c) => c.props())).toMatchObject(
+              DEFAULT_NONE_ANY.map((opt) => ({ value: opt.value })),
+            );
+          } else {
+            expect(filteredSearchSuggestions).toHaveLength(0);
+          }
+        });
+      });
+    });
+
+    describe('with no suggestions', () => {
+      it.each`
+        data                       | expected
+        ${{ searchKey: 'search' }} | ${'No matches found'}
+        ${{ hasFetched: true }}    | ${'No suggestions found'}
+      `('shows $expected text', ({ data, expected }) => {
+        wrapper = createComponent({
+          props: {
+            config: { recentSuggestionsStorageKey: null },
+            defaultSuggestions: [],
+            preloadedSuggestions: [],
+            suggestions: [],
+            suggestionsLoading: false,
+          },
+          data,
+          mountFn: shallowMountExtended,
+        });
+
+        expect(wrapper.findComponent(GlDropdownText).text()).toBe(expected);
       });
     });
   });

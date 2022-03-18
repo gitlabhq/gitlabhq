@@ -69,9 +69,10 @@ export default {
       // If it's a brand new file, we don't want to fetch the content.
       // Then when the user commits the first time, the query would run
       // to get the initial file content, but we already have it in `lastCommitedContent`
-      // so we skip the loading altogether.
-      skip({ isNewCiConfigFile, lastCommittedContent }) {
-        return isNewCiConfigFile || lastCommittedContent;
+      // so we skip the loading altogether. We also wait for the currentBranch
+      // to have been fetched
+      skip() {
+        return this.shouldSkipBlobContentQuery;
       },
       variables() {
         return {
@@ -128,8 +129,8 @@ export default {
     },
     ciConfigData: {
       query: getCiConfigData,
-      skip({ currentCiFileContent }) {
-        return !currentCiFileContent;
+      skip() {
+        return this.shouldSkipCiConfigQuery;
       },
       variables() {
         return {
@@ -174,6 +175,9 @@ export default {
     },
     commitSha: {
       query: getLatestCommitShaQuery,
+      skip({ currentBranch }) {
+        return !currentBranch;
+      },
       variables() {
         return {
           projectPath: this.projectFullPath,
@@ -181,7 +185,7 @@ export default {
         };
       },
       update(data) {
-        const latestCommitSha = data.project?.repository?.tree?.lastCommit?.sha;
+        const latestCommitSha = data?.project?.repository?.tree?.lastCommit?.sha;
 
         if (this.isFetchingCommitSha && latestCommitSha === this.commitSha) {
           this.$apollo.queries.commitSha.startPolling(COMMIT_SHA_POLL_INTERVAL);
@@ -191,6 +195,9 @@ export default {
         this.isFetchingCommitSha = false;
         this.$apollo.queries.commitSha.stopPolling();
         return latestCommitSha;
+      },
+      error() {
+        this.reportFailure(LOAD_FAILURE_UNKNOWN);
       },
     },
     currentBranch: {
@@ -233,6 +240,12 @@ export default {
     },
     isEmpty() {
       return this.currentCiFileContent === '';
+    },
+    shouldSkipBlobContentQuery() {
+      return this.isNewCiConfigFile || this.lastCommittedContent || !this.currentBranch;
+    },
+    shouldSkipCiConfigQuery() {
+      return !this.currentCiFileContent || !this.commitSha;
     },
   },
   i18n: {

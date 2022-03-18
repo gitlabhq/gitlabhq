@@ -47,10 +47,7 @@ To implement tracking for HAML or Vue templates, add a [`data-track` attribute](
 The following example shows `data-track-*` attributes assigned to a button:
 
 ```haml
-%button.btn{ data: { track: { action: "click_button", label: "template_preview", property: "my-template" } } }
-
-// or
-// %button.btn{ data: { track_action: "click_button", track_label: "template_preview", track_property: "my-template" } }
+%button.btn{ data: { track_action: "click_button", track_label: "template_preview", track_property: "my-template" } }
 ```
 
 ```html
@@ -69,7 +66,7 @@ The following example shows `data-track-*` attributes assigned to a button:
 | `data-track-action`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field is `activate_form_input` and clicking a button is `click_button`. Replaces `data-track-event`, which was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/290962) in GitLab 13.11. |
 | `data-track-label`    | false    | The specific element or object to act on. This can be: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created. |
 | `data-track-property` | false    | Any additional property of the element, or object being acted on. |
-| `data-track-value`    | false    | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility. If omitted, this is the element's `value` property or `undefined`. For checkboxes, the default value is the element's checked attribute or `0` when unchecked. |
+| `data-track-value`    | false    | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility. If omitted, this is the element's `value` property or `undefined`. For checkboxes, the default value is the element's checked attribute or `0` when unchecked. The value is parsed as numeric before sendind the event. |
 | `data-track-extra` | false    | A key-value pair object passed as a valid JSON string. This attribute is added to the `extra` property in our [`gitlab_standard`](schemas.md#gitlab_standard) schema. |
 | `data-track-context`  | false    | To append a custom context object, passed as a valid JSON string. |
 
@@ -520,7 +517,7 @@ To install and run Snowplow Micro, complete these steps to modify the
 ### Troubleshoot
 
 To control content security policy warnings when using an external host, modify `config/gitlab.yml`
-to allow or disallow them. To allow them, add the relevant host for `connect_src`. For example, for
+to allow or prevent them. To allow them, add the relevant host for `connect_src`. For example, for
 `https://snowplow.trx.gitlab.net`:
 
 ```yaml

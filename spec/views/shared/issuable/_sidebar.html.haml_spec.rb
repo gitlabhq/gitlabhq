@@ -11,7 +11,7 @@ RSpec.describe 'shared/issuable/_sidebar.html.haml' do
   end
 
   context 'project in a group' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group) { create(:group, :crm_enabled) }
     let_it_be(:project) { create(:project, group: group) }
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:incident) { create(:incident, project: project) }
@@ -33,6 +33,35 @@ RSpec.describe 'shared/issuable/_sidebar.html.haml' do
 
       it 'does not show escalation policy dropdown' do
         expect(rendered).not_to have_css('[data-testid="escalation_status_container"]')
+      end
+    end
+
+    context 'crm contacts widget' do
+      let(:issuable) { issue }
+
+      context 'without permission' do
+        it 'is expected not to be shown' do
+          create(:contact, group: group)
+
+          expect(rendered).not_to have_css('#js-issue-crm-contacts')
+        end
+      end
+
+      context 'without contacts' do
+        it 'is expected not to be shown' do
+          group.add_developer(user)
+
+          expect(rendered).not_to have_css('#js-issue-crm-contacts')
+        end
+      end
+
+      context 'with permission and contacts' do
+        it 'is expected to be shown' do
+          create(:contact, group: group)
+          group.add_developer(user)
+
+          expect(rendered).to have_css('#js-issue-crm-contacts')
+        end
       end
     end
   end

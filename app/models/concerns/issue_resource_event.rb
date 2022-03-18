@@ -8,6 +8,10 @@ module IssueResourceEvent
 
     scope :by_issue, ->(issue) { where(issue_id: issue.id) }
 
-    scope :by_issue_ids_and_created_at_earlier_or_equal_to, ->(issue_ids, time) { where(issue_id: issue_ids).where('created_at <= ?', time) }
+    scope :by_created_at_earlier_or_equal_to, ->(time) { where('created_at <= ?', time) }
+    scope :by_issue_ids, ->(issue_ids) do
+                           table = self.klass.arel_table
+                           where(table[:issue_id].in(issue_ids))
+                         end
   end
 end

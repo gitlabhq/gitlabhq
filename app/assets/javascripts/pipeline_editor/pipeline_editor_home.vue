@@ -131,6 +131,7 @@ export default {
       :ref="$options.commitSectionRef"
       :ci-file-content="ciFileContent"
       :commit-sha="commitSha"
+      :has-unsaved-changes="hasUnsavedChanges"
       :is-new-ci-config-file="isNewCiConfigFile"
       :scroll-to-commit-form="scrollToCommitForm"
       @scrolled-to-commit-form="setScrollToCommitForm(false)"

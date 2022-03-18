@@ -7,12 +7,16 @@ module Ci
     DEFAULT_STATUS = 'created'
     BLOCKED_STATUS = %w[manual scheduled].freeze
     AVAILABLE_STATUSES = %w[created waiting_for_resource preparing pending running success failed canceled skipped manual scheduled].freeze
+    # TODO: replace STARTED_STATUSES with data from BUILD_STARTED_RUNNING_STATUSES in https://gitlab.com/gitlab-org/gitlab/-/issues/273378
+    # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82149#note_865508501
+    BUILD_STARTED_RUNNING_STATUSES = %w[running success failed].freeze
     STARTED_STATUSES = %w[running success failed skipped manual scheduled].freeze
     ACTIVE_STATUSES = %w[waiting_for_resource preparing pending running].freeze
     COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
     ORDERED_STATUSES = %w[failed preparing pending running waiting_for_resource manual scheduled canceled success skipped created].freeze
     PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
     EXCLUDE_IGNORED_STATUSES = %w[manual failed canceled].to_set.freeze
+    CANCELABLE_STATUSES = %w[running waiting_for_resource preparing pending created scheduled].freeze
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
       failed: 4, canceled: 5, skipped: 6, manual: 7,
       scheduled: 8, preparing: 9, waiting_for_resource: 10 }.freeze
@@ -85,7 +89,7 @@ module Ci
       scope :waiting_for_resource_or_upcoming, -> { with_status(:created, :scheduled, :waiting_for_resource) }
 
       scope :cancelable, -> do
-        where(status: [:running, :waiting_for_resource, :preparing, :pending, :created, :scheduled])
+        where(status: klass::CANCELABLE_STATUSES)
       end
 
       scope :without_statuses, -> (names) do

@@ -8,6 +8,7 @@ RSpec.describe FutureDateValidator do
       include ActiveModel::Model
       include ActiveModel::Validations
       attr_accessor :expires_at
+
       validates :expires_at, future_date: true
     end.new
   end

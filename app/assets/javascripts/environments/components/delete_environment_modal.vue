@@ -62,7 +62,8 @@ export default {
             mutation: deleteEnvironmentMutation,
             variables: { environment: this.environment },
           })
-          .then(([message]) => {
+          .then(({ data }) => {
+            const [message] = data?.deleteEvironment?.errors ?? [];
             if (message) {
               createFlash({ message });
             }

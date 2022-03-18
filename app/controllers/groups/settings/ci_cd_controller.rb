@@ -36,7 +36,7 @@ module Groups
       end
 
       def reset_registration_token
-        @group.reset_runners_token!
+        ::Ci::Runners::ResetRegistrationTokenService.new(@group, current_user).execute
 
         flash[:notice] = _('GroupSettings|New runners registration token has been generated!')
         redirect_to group_settings_ci_cd_path

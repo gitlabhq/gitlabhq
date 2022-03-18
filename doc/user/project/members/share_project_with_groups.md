@@ -15,10 +15,14 @@ Groups are used primarily to [create collections of projects](../../group/index.
 take advantage of the fact that groups define collections of _users_, namely the group
 members.
 
-## Sharing a project with a group of users
+## Share a project with a group of users
 
-NOTE:
-In GitLab 13.11, you can [replace this form with a modal window](#share-a-project-modal-window).
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal
+    window [with a flag](../../feature_flags.md). Disabled by default.
+> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208)
+    in GitLab 14.8.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
+    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 The primary mechanism to give a group of users, say 'Engineering', access to a project,
 say 'Project Acme', in GitLab is to make the 'Engineering' group the owner of 'Project
@@ -28,9 +32,9 @@ This is where the group sharing feature can be of use.
 To share 'Project Acme' with the 'Engineering' group:
 
 1. For 'Project Acme' use the left navigation menu to go to **Project information > Members**.
-1. Select the **Invite group** tab.
+1. Select **Invite a group**.
 1. Add the 'Engineering' group with the maximum access level of your choice.
-1. Optional. Select an expiration date.
+1. Optional. Select an **Access expiration date**.
 1. Select **Invite**.
 
 After sharing 'Project Acme' with 'Engineering':
@@ -45,51 +49,19 @@ You can share a project only with:
 
 Administrators can share projects with any group in the system.
 
-### Share a project modal window
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11.
-> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - Replaces the existing form with buttons to open a modal window.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-modal-window).
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-In GitLab 13.11, you can optionally replace the sharing form with a modal window.
-To share a project after enabling this feature:
-
-1. Go to your project's page.
-1. On the left sidebar, go to **Project information > Members**, and then select **Invite a group**.
-1. Select a group, and select a **Max role**.
-1. Optional. Select an **Access expiration date**.
-1. Select **Invite**.
-
-### Enable or disable modal window **(FREE SELF)**
-
-The modal window for sharing a project is under development and is ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:invite_members_group_modal)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:invite_members_group_modal)
-```
-
 ## Maximum access level
 
 In the example above, the maximum access level of 'Developer' for members from 'Engineering' means that users with higher access levels in 'Engineering' ('Maintainer' or 'Owner') only have 'Developer' access to 'Project Acme'.
 
-## Sharing public project with private group
+### Share a project with a subgroup
+
+You can't share a project with a group that's an ancestor of a [subgroup](../../group/subgroups/index.md) the project is
+in. That means you can only share down the hierarchy. For example, `group/subgroup01/project`:
+
+- Can not be shared with `group`.
+- Can be shared with `group/subgroup02` or  `group/subgroup01/subgroup03`.
+
+## Share public project with private group
 
 When sharing a public project with a private group, owners and maintainers of the project see the name of the group in the `members` page. Owners also have the possibility to see members of the private group they don't have access to when mentioning them in the issue or merge request.
 

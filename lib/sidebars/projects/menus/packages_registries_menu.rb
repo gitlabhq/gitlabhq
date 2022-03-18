@@ -9,7 +9,7 @@ module Sidebars
           add_item(packages_registry_menu_item)
           add_item(container_registry_menu_item)
           add_item(infrastructure_registry_menu_item)
-
+          add_item(harbor_registry__menu_item)
           true
         end
 
@@ -62,6 +62,17 @@ module Sidebars
             link: project_infrastructure_registry_index_path(context.project),
             active_routes: { controller: :infrastructure_registry },
             item_id: :infrastructure_registry
+          )
+        end
+
+        def harbor_registry__menu_item
+          return ::Sidebars::NilMenuItem.new(item_id: :harbor_registry) if Feature.disabled?(:harbor_registry_integration)
+
+          ::Sidebars::MenuItem.new(
+            title: _('Harbor Registry'),
+            link: project_harbor_registry_index_path(context.project),
+            active_routes: { controller: :harbor_registry },
+            item_id: :harbor_registry
           )
         end
 

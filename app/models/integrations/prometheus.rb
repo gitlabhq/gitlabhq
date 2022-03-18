@@ -115,7 +115,6 @@ module Integrations
     end
 
     def prometheus_available?
-      return false if template?
       return false unless project
 
       project.all_clusters.enabled.eager_load(:integration_prometheus).any? do |cluster|

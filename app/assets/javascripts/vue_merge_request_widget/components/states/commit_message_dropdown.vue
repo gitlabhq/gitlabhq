@@ -21,7 +21,9 @@ export default {
     <gl-dropdown
       right
       text="Use an existing commit message"
-      variant="link"
+      category="tertiary"
+      variant="confirm"
+      size="small"
       class="mr-commit-dropdown"
     >
       <gl-dropdown-item

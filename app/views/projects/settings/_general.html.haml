@@ -23,7 +23,7 @@
     .row
       .form-group.col-md-9
         = f.label :description, _('Project description (optional)'), class: 'label-bold'
-        = f.text_area :description, class: 'form-control gl-form-input', rows: 3, maxlength: 250
+        = f.text_area :description, class: 'form-control gl-form-input', rows: 3
 
   .row= render_if_exists 'projects/classification_policy_settings', f: f
 

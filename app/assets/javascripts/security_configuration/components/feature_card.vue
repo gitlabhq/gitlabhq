@@ -31,13 +31,12 @@ export default {
       const button = this.enabled
         ? {
             text: this.$options.i18n.configureFeature,
-            category: 'secondary',
           }
         : {
             text: this.$options.i18n.enableFeature,
-            category: 'primary',
           };
 
+      button.category = 'secondary';
       button.text = sprintf(button.text, { feature: this.shortName });
 
       return button;
@@ -126,7 +125,7 @@ export default {
         v-else-if="showManageViaMr"
         :feature="feature"
         variant="confirm"
-        category="primary"
+        category="secondary"
         class="gl-mt-5"
         :data-qa-selector="`${feature.type}_mr_button`"
         @error="onError"

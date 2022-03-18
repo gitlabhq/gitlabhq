@@ -1,16 +1,18 @@
 import { merge } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  trackCombinedGroupProjectForm,
   trackFreeTrialAccountSubmissions,
+  trackProjectImport,
   trackNewRegistrations,
   trackSaasTrialSubmit,
   trackSaasTrialSkip,
   trackSaasTrialGroup,
   trackSaasTrialProject,
-  trackSaasTrialProjectImport,
   trackSaasTrialGetStarted,
   trackCheckout,
   trackTransaction,
+  trackAddToCartUsageTab,
 } from '~/google_tag_manager';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { logError } from '~/lib/logger';
@@ -148,20 +150,20 @@ describe('~/google_tag_manager/index', () => {
     createTestCase(trackSaasTrialProject, {
       forms: [{ id: 'new_project', expectation: { event: 'saasTrialProject' } }],
     }),
-    createTestCase(trackSaasTrialProjectImport, {
+    createTestCase(trackProjectImport, {
       links: [
         {
           id: 'js-test-btn-0',
           cls: 'js-import-project-btn',
           attributes: { 'data-platform': 'bitbucket' },
-          expectation: { event: 'saasTrialProjectImport', saasProjectImport: 'bitbucket' },
+          expectation: { event: 'projectImport', platform: 'bitbucket' },
         },
         {
           // id is neeeded so we trigger the right element in the test
           id: 'js-test-btn-1',
           cls: 'js-import-project-btn',
           attributes: { 'data-platform': 'github' },
-          expectation: { event: 'saasTrialProjectImport', saasProjectImport: 'github' },
+          expectation: { event: 'projectImport', platform: 'github' },
         },
       ],
     }),
@@ -170,6 +172,40 @@ describe('~/google_tag_manager/index', () => {
         {
           cls: 'js-get-started-btn',
           expectation: { event: 'saasTrialGetStarted' },
+        },
+      ],
+    }),
+    createTestCase(trackAddToCartUsageTab, {
+      links: [
+        {
+          cls: 'js-buy-additional-minutes',
+          expectation: {
+            event: 'EECproductAddToCart',
+            ecommerce: {
+              currencyCode: 'USD',
+              add: {
+                products: [
+                  {
+                    name: 'CI/CD Minutes',
+                    id: '0003',
+                    price: '10',
+                    brand: 'GitLab',
+                    category: 'DevOps',
+                    variant: 'add-on',
+                    quantity: 1,
+                  },
+                ],
+              },
+            },
+          },
+        },
+      ],
+    }),
+    createTestCase(trackCombinedGroupProjectForm, {
+      forms: [
+        {
+          cls: 'js-groups-projects-form',
+          expectation: { event: 'combinedGroupProjectFormSubmit' },
         },
       ],
     }),

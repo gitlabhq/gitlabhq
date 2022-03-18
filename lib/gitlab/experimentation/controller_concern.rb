@@ -20,7 +20,7 @@ module Gitlab
       end
 
       def set_experimentation_subject_id_cookie
-        if Gitlab.dev_env_or_com?
+        if Gitlab.com?
           return if cookies[:experimentation_subject_id].present?
 
           cookies.permanent.signed[:experimentation_subject_id] = {

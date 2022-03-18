@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin do
+  RSpec.describe 'Manage', :reliable, :requires_admin do
     describe 'Gitlab migration' do
       let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }
       let(:admin_api_client) { Runtime::API::Client.as_admin }
@@ -55,9 +55,9 @@ module QA
 
       after do |example|
         # Checking for failures in the test currently makes test very flaky due to catching unrelated failures
-        # Just log in case of failure until cause of network errors is found
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/346500
-        Runtime::Logger.warn(import_failures) if example.exception && !import_failures.empty?
+        # Log failures for easier debugging
+        Runtime::Logger.warn("Import failures: #{import_failures}") if example.exception && !import_failures.empty?
+      ensure
         user.remove_via_api!
       end
 
@@ -144,39 +144,6 @@ module QA
             expect(imported_milestone.updated_at).to eq(source_milestone.updated_at)
 
             expect(imported_group.badges).to eq(source_group.badges)
-          end
-        end
-      end
-
-      context 'with group members' do
-        let(:member) do
-          Resource::User.fabricate_via_api! do |usr|
-            usr.api_client = admin_api_client
-            usr.hard_delete_on_api_removal = true
-          end
-        end
-
-        before do
-          member.set_public_email
-          source_group.add_member(member, Resource::Members::AccessLevel::DEVELOPER)
-
-          imported_group # trigger import
-        end
-
-        after do
-          member.remove_via_api!
-        end
-
-        it(
-          'adds members for imported group',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347609'
-        ) do
-          expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
-
-          imported_member = imported_group.reload!.members.find { |usr| usr.username == member.username }
-          aggregate_failures do
-            expect(imported_member).not_to be_nil
-            expect(imported_member.access_level).to eq(Resource::Members::AccessLevel::DEVELOPER)
           end
         end
       end

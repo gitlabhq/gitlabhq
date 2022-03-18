@@ -60,7 +60,7 @@ RSpec.shared_examples 'User views wiki pages' do
     before do
       page.within('.wiki-sort-dropdown') do
         click_button('Title')
-        click_link('Created date')
+        click_button('Created date')
       end
     end
 

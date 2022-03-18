@@ -24,6 +24,8 @@ module Sidebars
 
         override :render?
         def render?
+          return false unless context.group.root?
+
           can_read_contact? || can_read_organization?
         end
 

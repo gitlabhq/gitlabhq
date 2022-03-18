@@ -4,22 +4,20 @@ require 'spec_helper'
 
 RSpec.describe 'layouts/_published_experiments', :experiment do
   before do
-    stub_const('TestControlExperiment', ApplicationExperiment)
-    stub_const('TestCandidateExperiment', ApplicationExperiment)
-    stub_const('TestExcludedExperiment', ApplicationExperiment)
+    # Stub each experiment to be enabled, otherwise tracking does not happen.
+    stub_experiments(
+      test_control: :control,
+      test_excluded: true,
+      test_published_only: :control,
+      test_candidate: :candidate,
+      test_variant: :variant_name
+    )
 
-    TestControlExperiment.new('test_control').tap do |e|
-      e.variant(:control)
-      e.publish
-    end
-    TestCandidateExperiment.new('test_candidate').tap do |e|
-      e.variant(:candidate)
-      e.publish
-    end
-    TestExcludedExperiment.new('test_excluded').tap do |e|
-      e.exclude!
-      e.publish
-    end
+    experiment(:test_control) { }
+    experiment(:test_excluded) { |e| e.exclude! }
+    experiment(:test_candidate) { |e| e.candidate { } }
+    experiment(:test_variant) { |e| e.variant(:variant_name) { } }
+    experiment(:test_published_only).publish
 
     render
   end
@@ -29,7 +27,9 @@ RSpec.describe 'layouts/_published_experiments', :experiment do
 
     expect(output).to include('gl.experiments = {')
     expect(output).to match(/"test_control":\{[^}]*"variant":"control"/)
-    expect(output).to match(/"test_candidate":\{[^}]*"variant":"candidate"/)
     expect(output).not_to include('"test_excluded"')
+    expect(output).to match(/"test_candidate":\{[^}]*"variant":"candidate"/)
+    expect(output).to match(/"test_variant":\{[^}]*"variant":"variant_name"/)
+    expect(output).to match(/"test_published_only":\{[^}]*"variant":"control"/)
   end
 end

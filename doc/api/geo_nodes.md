@@ -63,7 +63,8 @@ Example response:
   "sync_object_storage": false,
   "clone_protocol": "http",
   "web_edit_url": "https://primary.example.com/admin/geo/sites/3/edit",
-  "web_geo_projects_url": "http://secondary.example.com/admin/geo/projects",
+  "web_geo_projects_url": "https://secondary.example.com/admin/geo/projects",
+  "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/3/replication/lfs_objects",
   "_links": {
      "self": "https://primary.example.com/api/v4/geo_nodes/3",
      "status": "https://primary.example.com/api/v4/geo_nodes/3/status",
@@ -71,6 +72,10 @@ Example response:
   }
 }
 ```
+
+WARNING:
+The `web_geo_projects_url` attribute is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80106)
+for use in GitLab 14.9.
 
 ## Retrieve configuration about all Geo nodes
 
@@ -130,6 +135,7 @@ Example response:
     "clone_protocol": "http",
     "web_edit_url": "https://primary.example.com/admin/geo/sites/2/edit",
     "web_geo_projects_url": "https://secondary.example.com/admin/geo/projects",
+    "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/2/replication/lfs_objects",
     "_links": {
       "self":"https://primary.example.com/api/v4/geo_nodes/2",
       "status":"https://primary.example.com/api/v4/geo_nodes/2/status",
@@ -138,6 +144,10 @@ Example response:
   }
 ]
 ```
+
+WARNING:
+The `web_geo_projects_url` attribute is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80106)
+for use in GitLab 14.9.
 
 ## Retrieve configuration about a specific Geo node
 
@@ -228,6 +238,7 @@ Example response:
   "clone_protocol": "http",
   "web_edit_url": "https://primary.example.com/admin/geo/sites/2/edit",
   "web_geo_projects_url": "https://secondary.example.com/admin/geo/projects",
+  "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/2/replication/lfs_objects",
   "_links": {
     "self":"https://primary.example.com/api/v4/geo_nodes/2",
     "status":"https://primary.example.com/api/v4/geo_nodes/2/status",
@@ -235,6 +246,10 @@ Example response:
   }
 }
 ```
+
+WARNING:
+The `web_geo_projects_url` attribute is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80106)
+for use in GitLab 14.9.
 
 ## Delete a Geo node
 

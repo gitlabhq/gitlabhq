@@ -12,11 +12,13 @@
 #   end
 #
 class ColorValidator < ActiveModel::EachValidator
-  PATTERN = /\A\#(?:[0-9A-Fa-f]{3}){1,2}\Z/.freeze
-
   def validate_each(record, attribute, value)
-    unless value =~ PATTERN
-      record.errors.add(attribute, "must be a valid color code")
+    case value
+    when NilClass        then return
+    when ::Gitlab::Color then return if value.valid?
+    when ::String        then return if ::Gitlab::Color.new(value).valid?
     end
+
+    record.errors.add(attribute, "must be a valid color code")
   end
 end

@@ -51,6 +51,7 @@ exceptions:
   - EKS
   - ELB
   - EOL
+  - EWM
   - EXIF
   - FAQ
   - FIDO
@@ -144,6 +145,7 @@ exceptions:
   - RSA
   - RDS
   - RSS
+  - RTC
   - RVM
   - SAAS
   - SAML
@@ -171,6 +173,7 @@ exceptions:
   - SSH
   - SSL
   - SSO
+  - STI
   - SVG
   - SVN
   - TCP

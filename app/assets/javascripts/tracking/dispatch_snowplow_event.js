@@ -10,13 +10,18 @@ export function dispatchSnowplowEvent(
     throw new Error('Tracking: no category provided for tracking.');
   }
 
-  const { label, property, value, extra = {} } = data;
+  const { label, property, extra = {} } = data;
+  let { value } = data;
 
   const standardContext = getStandardContext({ extra });
   const contexts = [standardContext];
 
   if (data.context) {
     contexts.push(data.context);
+  }
+
+  if (value !== undefined) {
+    value = Number(value);
   }
 
   return window.snowplow('trackStructEvent', category, action, label, property, value, contexts);

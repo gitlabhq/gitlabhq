@@ -4,6 +4,7 @@ import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
 import defaultState from '~/boards/stores/state';
 import {
+  mockBoard,
   mockLists,
   rawIssue,
   mockIssue,
@@ -33,6 +34,27 @@ describe('Board Store Mutations', () => {
     state = defaultState();
   });
 
+  describe('RECEIVE_BOARD_SUCCESS', () => {
+    it('Should set board to state', () => {
+      mutations[types.RECEIVE_BOARD_SUCCESS](state, mockBoard);
+
+      expect(state.board).toEqual({
+        ...mockBoard,
+        labels: mockBoard.labels.nodes,
+      });
+    });
+  });
+
+  describe('RECEIVE_BOARD_FAILURE', () => {
+    it('Should set error in state', () => {
+      mutations[types.RECEIVE_BOARD_FAILURE](state);
+
+      expect(state.error).toEqual(
+        'An error occurred while fetching the board. Please reload the page.',
+      );
+    });
+  });
+
   describe('SET_INITIAL_BOARD_DATA', () => {
     it('Should set initial Boards data to state', () => {
       const allowSubEpics = true;
@@ -40,9 +62,6 @@ describe('Board Store Mutations', () => {
       const fullPath = 'gitlab-org';
       const boardType = 'group';
       const disabled = false;
-      const boardConfig = {
-        milestoneTitle: 'Milestone 1',
-      };
       const issuableType = issuableTypes.issue;
 
       mutations[types.SET_INITIAL_BOARD_DATA](state, {
@@ -51,7 +70,6 @@ describe('Board Store Mutations', () => {
         fullPath,
         boardType,
         disabled,
-        boardConfig,
         issuableType,
       });
 
@@ -60,8 +78,20 @@ describe('Board Store Mutations', () => {
       expect(state.fullPath).toEqual(fullPath);
       expect(state.boardType).toEqual(boardType);
       expect(state.disabled).toEqual(disabled);
-      expect(state.boardConfig).toEqual(boardConfig);
       expect(state.issuableType).toEqual(issuableType);
+    });
+  });
+
+  describe('SET_BOARD_CONFIG', () => {
+    it('Should set board config data o state', () => {
+      const boardConfig = {
+        milestoneId: 1,
+        milestoneTitle: 'Milestone 1',
+      };
+
+      mutations[types.SET_BOARD_CONFIG](state, boardConfig);
+
+      expect(state.boardConfig).toEqual(boardConfig);
     });
   });
 

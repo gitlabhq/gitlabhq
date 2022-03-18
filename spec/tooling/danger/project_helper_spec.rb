@@ -44,7 +44,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/README'       | [:unknown]
 
       'app/assets/foo'                   | [:frontend]
-      'app/views/foo'                    | [:frontend]
+      'app/views/foo'                    | [:frontend, :backend]
       'public/foo'                       | [:frontend]
       'scripts/frontend/foo'             | [:frontend]
       'spec/frontend/bar'                | [:frontend]
@@ -58,7 +58,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'config/deep/foo.js'               | [:frontend]
 
       'ee/app/assets/foo'                | [:frontend]
-      'ee/app/views/foo'                 | [:frontend]
+      'ee/app/views/foo'                 | [:frontend, :backend]
       'ee/spec/frontend/bar'             | [:frontend]
       'ee/spec/frontend_integration/bar' | [:frontend]
 
@@ -166,6 +166,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'lib/gitlab/usage_data_counters/aggregated_metrics/common.yml' | [:product_intelligence]
       'lib/gitlab/usage_data_counters/hll_redis_counter.rb' | [:backend, :product_intelligence]
       'lib/gitlab/tracking.rb' | [:backend, :product_intelligence]
+      'lib/gitlab/usage/service_ping_report.rb' | [:backend, :product_intelligence]
+      'lib/gitlab/usage/metrics/key_path_processor.rb' | [:backend, :product_intelligence]
       'spec/lib/gitlab/tracking_spec.rb' | [:backend, :product_intelligence]
       'app/helpers/tracking_helper.rb' | [:backend, :product_intelligence]
       'spec/helpers/tracking_helper_spec.rb' | [:backend, :product_intelligence]
@@ -181,6 +183,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'config/metrics/schema.json' | [:product_intelligence]
       'doc/api/usage_data.md' | [:product_intelligence]
       'spec/lib/gitlab/usage_data_spec.rb' | [:product_intelligence]
+      'spec/lib/gitlab/usage/service_ping_report.rb' | [:backend, :product_intelligence]
+      'spec/lib/gitlab/usage/metrics/key_path_processor.rb' | [:backend, :product_intelligence]
 
       'app/models/integration.rb' | [:integrations_be, :backend]
       'ee/app/models/integrations/github.rb' | [:integrations_be, :backend]
@@ -213,6 +217,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/lib/ee/gitlab/integrations/sti_type.rb' | [:integrations_be, :backend]
       'ee/lib/ee/api/helpers/integrations_helpers.rb' | [:integrations_be, :backend]
       'ee/app/serializers/integrations/jira_serializers/issue_entity.rb' | [:integrations_be, :backend]
+      'app/serializers/jira_connect/app_data_serializer.rb' | [:integrations_be, :backend]
       'lib/api/github/entities.rb' | [:integrations_be, :backend]
       'lib/api/v3/github.rb' | [:integrations_be, :backend]
       'app/models/clusters/integrations/elastic_stack.rb' | [:backend]
@@ -227,9 +232,12 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/app/assets/javascripts/integrations/zentao/issues_list/graphql/queries/get_zentao_issues.query.graphql' | [:integrations_fe, :frontend]
       'app/assets/javascripts/pages/projects/settings/integrations/show/index.js' | [:integrations_fe, :frontend]
       'ee/app/assets/javascripts/pages/groups/hooks/index.js' | [:integrations_fe, :frontend]
-      'app/views/clusters/clusters/_integrations_tab.html.haml' | [:frontend]
+      'app/views/clusters/clusters/_integrations_tab.html.haml' | [:frontend, :backend]
       'app/assets/javascripts/alerts_settings/graphql/fragments/integration_item.fragment.graphql' | [:frontend]
       'app/assets/javascripts/filtered_search/droplab/hook_input.js' | [:frontend]
+
+      'app/views/layouts/header/_default.html.haml' | [:frontend, :backend]
+      'app/views/layouts/header/_default.html.erb'  | [:frontend, :backend]
     end
 
     with_them do
@@ -270,7 +278,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
   describe '.local_warning_message' do
     it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, ci_config, database, documentation, duplicate_yarn_dependencies, eslint, gitaly, pajamas, pipeline, prettier, product_intelligence, utility_css, vue_shared_documentation, datateam')
+      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: ci_config, database, documentation, duplicate_yarn_dependencies, eslint, gitaly, pajamas, pipeline, prettier, product_intelligence, utility_css, vue_shared_documentation, datateam')
     end
   end
 
@@ -299,18 +307,6 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       it 'returns all rules' do
         expect(project_helper.rule_names).to eq(described_class::LOCAL_RULES | described_class::CI_ONLY_RULES)
       end
-    end
-  end
-
-  describe '#all_ee_changes' do
-    subject { project_helper.all_ee_changes }
-
-    it 'returns all changed files starting with ee/' do
-      changes = double
-      expect(fake_helper).to receive(:changes).and_return(changes)
-      expect(changes).to receive(:files).and_return(%w[fr/ee/beer.rb ee/wine.rb ee/lib/ido.rb ee.k])
-
-      is_expected.to match_array(%w[ee/wine.rb ee/lib/ido.rb])
     end
   end
 

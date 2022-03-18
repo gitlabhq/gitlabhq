@@ -3,47 +3,33 @@
 require 'spec_helper'
 
 RSpec.describe 'Project > Members > Invite group', :js do
-  include Select2Helper
   include ActionView::Helpers::DateHelper
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let_it_be(:maintainer) { create(:user) }
 
-  using RSpec::Parameterized::TableSyntax
+  it 'displays the invite group button' do
+    project = create(:project, namespace: create(:group))
 
-  where(:invite_members_group_modal_enabled, :expected_invite_group_selector) do
-    true  | 'button[data-qa-selector="invite_a_group_button"]' # rubocop:disable QA/SelectorUsage
-    false | '#invite-group-tab'
+    project.add_maintainer(maintainer)
+    sign_in(maintainer)
+
+    visit project_project_members_path(project)
+
+    expect(page).to have_selector('button[data-test-id="invite-group-button"]')
   end
 
-  with_them do
-    before do
-      stub_feature_flags(invite_members_group_modal: invite_members_group_modal_enabled)
-    end
+  it 'does not display  the  button when visiting the page not signed in' do
+    project = create(:project, namespace: create(:group))
 
-    it 'displays either the invite group button or the form with tabs based on the feature flag' do
-      project = create(:project, namespace: create(:group))
+    visit project_project_members_path(project)
 
-      project.add_maintainer(maintainer)
-      sign_in(maintainer)
-
-      visit project_project_members_path(project)
-
-      expect(page).to have_selector(expected_invite_group_selector)
-    end
-
-    it 'does not display either the form or the button when visiting the page not signed in' do
-      project = create(:project, namespace: create(:group))
-
-      visit project_project_members_path(project)
-
-      expect(page).not_to have_selector(expected_invite_group_selector)
-    end
+    expect(page).not_to have_selector('button[data-test-id="invite-group-button"]')
   end
 
   describe 'Share with group lock' do
-    let(:invite_group_selector) { 'button[data-qa-selector="invite_a_group_button"]' } # rubocop:disable QA/SelectorUsage
+    let(:invite_group_selector) { 'button[data-test-id="invite-group-button"]' }
 
     shared_examples 'the project can be shared with groups' do
       it 'the "Invite a group" button exists' do
@@ -72,27 +58,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
       context 'when the group has "Share with group lock" disabled' do
         it_behaves_like 'the project can be shared with groups'
 
-        it 'the project can be shared with another group when the feature flag invite_members_group_modal is disabled' do
-          stub_feature_flags(invite_members_group_modal: false)
-
-          visit project_project_members_path(project)
-
-          expect(page).not_to have_link 'Groups'
-
-          click_on 'invite-group-tab'
-
-          select2 group_to_share_with.id, from: '#link_group_id'
-          page.find('body').click
-          find('.btn-confirm').click
-
-          click_link 'Groups'
-
-          expect(members_table).to have_content(group_to_share_with.name)
-        end
-
-        it 'the project can be shared with another group when the feature flag invite_members_group_modal is enabled' do
-          stub_feature_flags(invite_members_group_modal: true)
-
+        it 'the project can be shared with another group' do
           visit project_project_members_path(project)
 
           expect(page).not_to have_link 'Groups'
@@ -247,51 +213,6 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
           expect_not_to_have_group(parent_group)
           expect_not_to_have_group(project_group)
-        end
-      end
-
-      context 'when invite_members_group_modal feature disabled' do
-        let(:group_invite_dropdown) { find('#select2-results-2') }
-
-        before do
-          stub_feature_flags(invite_members_group_modal: false)
-        end
-
-        it 'does not show the groups inherited from projects', :aggregate_failures do
-          project.add_maintainer(maintainer)
-          public_sibbling_group.add_maintainer(maintainer)
-
-          visit project_project_members_path(project)
-
-          click_on 'Invite group'
-          click_on 'Search for a group'
-          wait_for_requests
-
-          expect(group_invite_dropdown).to have_text(public_membership_group.full_path)
-          expect(group_invite_dropdown).to have_text(public_sibbling_group.full_path)
-          expect(group_invite_dropdown).to have_text(private_membership_group.full_path)
-          expect(group_invite_dropdown).not_to have_text(public_sub_subgroup.full_path)
-          expect(group_invite_dropdown).not_to have_text(private_sibbling_group.full_path)
-          expect(group_invite_dropdown).not_to have_text(parent_group.full_path, exact: true)
-          expect(group_invite_dropdown).not_to have_text(project_group.full_path, exact: true)
-        end
-
-        it 'does not show the ancestors or project group', :aggregate_failures do
-          parent_group.add_maintainer(maintainer)
-
-          visit project_project_members_path(project)
-
-          click_on 'Invite group'
-          click_on 'Search for a group'
-          wait_for_requests
-
-          expect(group_invite_dropdown).to have_text(public_membership_group.full_path)
-          expect(group_invite_dropdown).to have_text(public_sub_subgroup.full_path)
-          expect(group_invite_dropdown).to have_text(public_sibbling_group.full_path)
-          expect(group_invite_dropdown).to have_text(private_sibbling_group.full_path)
-          expect(group_invite_dropdown).to have_text(private_membership_group.full_path)
-          expect(group_invite_dropdown).not_to have_text(parent_group.full_path, exact: true)
-          expect(group_invite_dropdown).not_to have_text(project_group.full_path, exact: true)
         end
       end
 

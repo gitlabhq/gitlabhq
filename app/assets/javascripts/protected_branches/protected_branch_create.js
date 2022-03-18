@@ -5,6 +5,7 @@ import AccessorUtilities from '~/lib/utils/accessor';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import AccessDropdown from '~/projects/settings/access_dropdown';
+import { initToggle } from '~/toggles';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 
 export default class ProtectedBranchCreate {
@@ -15,25 +16,18 @@ export default class ProtectedBranchCreate {
     this.isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
     this.currentProjectUserDefaults = {};
     this.buildDropdowns();
-    this.$forcePushToggle = this.$form.find('.js-force-push-toggle');
-    this.$codeOwnerToggle = this.$form.find('.js-code-owner-toggle');
+
+    this.forcePushToggle = initToggle(document.querySelector('.js-force-push-toggle'));
+
+    if (this.hasLicense) {
+      this.codeOwnerToggle = initToggle(document.querySelector('.js-code-owner-toggle'));
+    }
+
     this.bindEvents();
   }
 
   bindEvents() {
-    this.$forcePushToggle.on('click', this.onForcePushToggleClick.bind(this));
-    if (this.hasLicense) {
-      this.$codeOwnerToggle.on('click', this.onCodeOwnerToggleClick.bind(this));
-    }
     this.$form.on('submit', this.onFormSubmit.bind(this));
-  }
-
-  onForcePushToggleClick() {
-    this.$forcePushToggle.toggleClass('is-checked');
-  }
-
-  onCodeOwnerToggleClick() {
-    this.$codeOwnerToggle.toggleClass('is-checked');
   }
 
   buildDropdowns() {
@@ -92,8 +86,8 @@ export default class ProtectedBranchCreate {
       authenticity_token: this.$form.find('input[name="authenticity_token"]').val(),
       protected_branch: {
         name: this.$form.find('input[name="protected_branch[name]"]').val(),
-        allow_force_push: this.$forcePushToggle.hasClass('is-checked'),
-        code_owner_approval_required: this.$codeOwnerToggle.hasClass('is-checked'),
+        allow_force_push: this.forcePushToggle.value,
+        code_owner_approval_required: this.codeOwnerToggle?.value ?? false,
       },
     };
 

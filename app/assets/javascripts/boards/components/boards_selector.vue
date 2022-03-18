@@ -101,6 +101,7 @@ export default {
       },
       update(data) {
         const board = data.workspace?.board;
+        this.setBoardConfig(board);
         return {
           ...board,
           labels: board?.labels?.nodes,
@@ -170,7 +171,7 @@ export default {
     eventHub.$off('showBoardModal', this.showPage);
   },
   methods: {
-    ...mapActions(['setError']),
+    ...mapActions(['setError', 'setBoardConfig']),
     showPage(page) {
       this.currentPage = page;
     },
@@ -315,9 +316,7 @@ export default {
 
           <gl-dropdown-item v-if="hasMissingBoards" class="no-pointer-events">
             {{
-              s__(
-                'IssueBoards|Some of your boards are hidden, activate a license to see them again.',
-              )
+              s__('IssueBoards|Some of your boards are hidden, add a license to see them again.')
             }}
           </gl-dropdown-item>
         </div>

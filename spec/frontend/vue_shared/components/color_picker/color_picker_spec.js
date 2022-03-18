@@ -127,5 +127,18 @@ describe('ColorPicker', () => {
 
       expect(wrapper.emitted().input[0]).toStrictEqual([setColor]);
     });
+
+    it('shows the suggested colors passed using props', () => {
+      const customColors = {
+        '#ff0000': 'Red',
+        '#808080': 'Gray',
+      };
+
+      createComponent(shallowMount, { suggestedColors: customColors });
+      expect(description()).toBe('Enter any color or choose one of the suggested colors below.');
+      expect(presetColors()).toHaveLength(2);
+      expect(presetColors().at(0).attributes('title')).toBe('Red');
+      expect(presetColors().at(1).attributes('title')).toBe('Gray');
+    });
   });
 });

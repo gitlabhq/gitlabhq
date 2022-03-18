@@ -128,7 +128,7 @@ and you should make sure your version matches the version used by GitLab.
 
 ## Update linter configuration
 
-[Vale configuration](#vale) and [markdownlint configuration](#markdownlint) is under source control in each 
+[Vale configuration](#vale) and [markdownlint configuration](#markdownlint) is under source control in each
 project, so updates must be committed to each project individually.
 
 We consider the configuration in the `gitlab` project as the source of truth and that's where all updates should
@@ -213,19 +213,19 @@ You can use Vale:
 
 #### Vale result types
 
-Vale returns three types of results: `suggestion`, `warning`, and `error`:
+Vale returns three types of results:
 
-- **Suggestion**-level results are writing tips and aren't displayed in CI
-  job output. Suggestions don't break CI. See a list of
-  [suggestion-level rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Suggestion%3A&group_id=9970&project_id=278964).
-- **Warning**-level results are [Style Guide](styleguide/index.md) violations, aren't displayed in CI
-  job output, and should contain clear explanations of how to resolve the warning.
-  Warnings may be technical debt, or can be future error-level test items
-  (after the Technical Writing team completes its cleanup). Warnings don't break CI. See a list of
-  [warning-level rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Warning%3A&group_id=9970&project_id=278964).
-- **Error**-level results are Style Guide violations, and should contain clear explanations
-  of how to resolve the error. Errors break CI and are displayed in CI job output. See a list of
-  [error-level rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Error%3A&group_id=9970&project_id=278964).
+- **Error** - For branding and trademark issues, and words or phrases with ambiguous meanings.
+- **Warning** - For Technical Writing team style preferences.
+- **Suggestion** - For basic technical writing tenets and best practices.
+
+The result types have these attributes:
+
+| Result type  | Displayed in CI/CD job output | Causes CI/CD jobs to fail | Vale rule link |
+|--------------|-------------------------------|---------------------------|----------------|
+| `error`      | **{check-circle}** Yes        | **{check-circle}** Yes    | [Error-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Error%3A&group_id=9970&project_id=278964) |
+| `warning`    | **{dotted-circle}** No        | **{dotted-circle}** No    | [Warning-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Warning%3A&group_id=9970&project_id=278964) |
+| `suggestion` | **{dotted-circle}** No        | **{dotted-circle}** No    | [Suggestion-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Suggestion%3A&group_id=9970&project_id=278964) |
 
 #### Vale spelling test
 
@@ -270,12 +270,10 @@ build pipelines:
    [used (see `variables:` section)](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/.gitlab-ci.yml) when building
    the `image:docs-lint-markdown`.
 
-1. Install [`vale`](https://github.com/errata-ai/vale/releases). For example, to install using
-   `brew` for macOS, run:
+1. Install [`vale`](https://github.com/errata-ai/vale/releases). To install for:
 
-   ```shell
-   brew install vale
-   ```
+   - macOS using `brew`, run: `brew install vale`.
+   - Linux, use your distribution's package manager or a [released binary](https://github.com/errata-ai/vale/releases).
 
 These tools can be [integrated with your code editor](#configure-editors).
 
@@ -313,6 +311,9 @@ To configure Vale in your editor, install one of the following as appropriate:
 - Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server).
   You can configure the plugin to [display only a subset of alerts](#show-subset-of-vale-alerts).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
+- Jetbrains IDEs - No plugin exists, but
+  [this issue comment](https://github.com/errata-ai/vale-server/issues/39#issuecomment-751714451)
+  contains tips for configuring an external tool.
 - Emacs [Flycheck extension](https://github.com/flycheck/flycheck).
   This requires some configuration:
 

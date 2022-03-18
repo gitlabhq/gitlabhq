@@ -431,7 +431,7 @@ export default {
               class="js-ide-edit-blob"
               data-qa-selector="edit_in_ide_button"
             >
-              {{ __('Edit in Web IDE') }}
+              {{ __('Open in Web IDE') }}
             </gl-dropdown-item>
           </template>
 

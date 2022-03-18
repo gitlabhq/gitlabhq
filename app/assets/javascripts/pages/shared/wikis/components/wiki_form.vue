@@ -60,7 +60,7 @@ export default {
     contentEditor: {
       renderFailed: {
         message: s__(
-          'WikiPage|An error occured while trying to render the content editor. Please try again later.',
+          'WikiPage|An error occurred while trying to render the content editor. Please try again later.',
         ),
         primaryAction: s__('WikiPage|Retry'),
       },
@@ -495,6 +495,7 @@ export default {
           :textarea-value="content"
           :markdown-docs-path="pageInfo.markdownHelpPath"
           :uploads-path="pageInfo.uploadsPath"
+          :enable-preview="isMarkdownFormat"
           class="bordered-box"
         >
           <template #textarea>

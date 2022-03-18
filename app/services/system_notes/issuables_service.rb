@@ -10,8 +10,9 @@ module SystemNotes
     #   "marked this issue as related to gitlab-foss#9001"
     #
     # Returns the created Note object
-    def relate_issue(noteable_ref)
-      body = "marked this issue as related to #{noteable_ref.to_reference(noteable.project)}"
+    def relate_issuable(noteable_ref)
+      issuable_type = noteable.to_ability_name.humanize(capitalize: false)
+      body = "marked this #{issuable_type} as related to #{noteable_ref.to_reference(noteable.resource_parent)}"
 
       issue_activity_counter.track_issue_related_action(author: author) if noteable.is_a?(Issue)
 
@@ -26,8 +27,8 @@ module SystemNotes
     #   "removed the relation with gitlab-foss#9001"
     #
     # Returns the created Note object
-    def unrelate_issue(noteable_ref)
-      body = "removed the relation with #{noteable_ref.to_reference(noteable.project)}"
+    def unrelate_issuable(noteable_ref)
+      body = "removed the relation with #{noteable_ref.to_reference(noteable.resource_parent)}"
 
       issue_activity_counter.track_issue_unrelated_action(author: author) if noteable.is_a?(Issue)
 
@@ -160,6 +161,7 @@ module SystemNotes
       body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
 
       issue_activity_counter.track_issue_title_changed_action(author: author) if noteable.is_a?(Issue)
+      work_item_activity_counter.track_work_item_title_changed_action(author: author) if noteable.is_a?(WorkItem)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
     end
@@ -482,6 +484,10 @@ module SystemNotes
 
     def issue_activity_counter
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter
+    end
+
+    def work_item_activity_counter
+      Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter
     end
 
     def track_cross_reference_action

@@ -9,7 +9,6 @@ SPECIALIZATIONS = {
   ux: 'UX',
   docs: 'documentation',
   qa: 'QA',
-  tooling: 'type::tooling',
   ci_template: 'ci::templates',
   feature_flag: 'feature flag'
 }.freeze
@@ -26,4 +25,4 @@ labels_to_add = helper.changes_by_category.each_with_object([]) do |(category, _
   memo << label
 end
 
-project_helper.labels_to_add.concat(labels_to_add) if labels_to_add.any?
+helper.labels_to_add.concat(labels_to_add) if labels_to_add.any?

@@ -1058,13 +1058,35 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
     end
   end
 
-  context 'enable ndjson import' do
-    it_behaves_like 'project tree restorer work properly', :legacy_reader, true
+  context 'when import_relation_object_persistence feature flag is enabled' do
+    before do
+      stub_feature_flags(import_relation_object_persistence: true)
+    end
 
-    it_behaves_like 'project tree restorer work properly', :ndjson_reader, true
+    context 'enable ndjson import' do
+      it_behaves_like 'project tree restorer work properly', :legacy_reader, true
+
+      it_behaves_like 'project tree restorer work properly', :ndjson_reader, true
+    end
+
+    context 'disable ndjson import' do
+      it_behaves_like 'project tree restorer work properly', :legacy_reader, false
+    end
   end
 
-  context 'disable ndjson import' do
-    it_behaves_like 'project tree restorer work properly', :legacy_reader, false
+  context 'when import_relation_object_persistence feature flag is disabled' do
+    before do
+      stub_feature_flags(import_relation_object_persistence: false)
+    end
+
+    context 'enable ndjson import' do
+      it_behaves_like 'project tree restorer work properly', :legacy_reader, true
+
+      it_behaves_like 'project tree restorer work properly', :ndjson_reader, true
+    end
+
+    context 'disable ndjson import' do
+      it_behaves_like 'project tree restorer work properly', :legacy_reader, false
+    end
   end
 end

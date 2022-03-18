@@ -16,6 +16,10 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
     p.style_src(*style_src_values)
   end
 
+  before_action do
+    push_frontend_feature_flag(:jira_connect_oauth, @user, default_enabled: :yaml)
+  end
+
   before_action :allow_rendering_in_iframe, only: :index
   before_action :verify_qsh_claim!, only: :index
   before_action :authenticate_user!, only: :create

@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
       }
     )
 
-    allow(Gitlab).to receive(:dev_env_or_com?).and_return(is_gitlab_com)
+    allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
 
     Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
   end

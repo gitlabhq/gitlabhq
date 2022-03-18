@@ -1,8 +1,0 @@
----
-name: jobs_tab_vue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76146
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347371
-milestone: '14.6'
-type: development
-group: group::pipeline execution
-default_enabled: true

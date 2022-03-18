@@ -51,24 +51,29 @@ RSpec.describe ErrorTracking::CollectErrorService do
       end
     end
 
-    context 'unusual payload' do
+    context 'with unusual payload' do
       let(:modified_event) { parsed_event }
+      let(:event) { described_class.new(project, nil, event: modified_event).execute }
 
-      context 'missing transaction' do
+      context 'when transaction is missing' do
         it 'builds actor from stacktrace' do
           modified_event.delete('transaction')
-
-          event = described_class.new(project, nil, event: modified_event).execute
 
           expect(event.error.actor).to eq 'find()'
         end
       end
 
-      context 'timestamp is numeric' do
+      context 'when transaction is an empty string' do \
+        it 'builds actor from stacktrace' do
+          modified_event['transaction'] = ''
+
+          expect(event.error.actor).to eq 'find()'
+        end
+      end
+
+      context 'when timestamp is numeric' do
         it 'parses timestamp' do
           modified_event['timestamp'] = '1631015580.50'
-
-          event = described_class.new(project, nil, event: modified_event).execute
 
           expect(event.occurred_at).to eq '2021-09-07T11:53:00.5'
         end

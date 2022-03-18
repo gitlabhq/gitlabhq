@@ -155,6 +155,20 @@ describe('WikiForm', () => {
   });
 
   it.each`
+    format        | enabled  | action
+    ${'markdown'} | ${true}  | ${'displays'}
+    ${'rdoc'}     | ${false} | ${'hides'}
+    ${'asciidoc'} | ${false} | ${'hides'}
+    ${'org'}      | ${false} | ${'hides'}
+  `('$action preview in the markdown field when format is $format', async ({ format, enabled }) => {
+    createWrapper();
+
+    await setFormat(format);
+
+    expect(findClassicEditor().props('enablePreview')).toBe(enabled);
+  });
+
+  it.each`
     value         | text
     ${'markdown'} | ${'[Link Title](page-slug)'}
     ${'rdoc'}     | ${'{Link title}[link:page-slug]'}

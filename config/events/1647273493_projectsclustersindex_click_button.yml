@@ -1,0 +1,19 @@
+---
+description: Button clicked within the create token modal on the agent's page
+category: default
+action: click_button
+label_description: agent_token_creation_modal
+property_description: One of "create-token", "close"
+product_section: ops
+product_stage: configure
+product_group: group::configure
+milestone: "14.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82690
+distributions:
+- ce
+- ee
+tiers: 
+- free
+- premium
+- ultimate
+

@@ -212,6 +212,7 @@ module ApplicationSettingsHelper
       :auto_devops_enabled,
       :auto_devops_domain,
       :container_expiration_policies_enable_historic_entries,
+      :container_registry_expiration_policies_caching,
       :container_registry_token_expire_delay,
       :default_artifacts_expire_in,
       :default_branch_name,
@@ -423,7 +424,8 @@ module ApplicationSettingsHelper
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
       :suggest_pipeline_enabled,
-      :user_email_lookup_limit,
+      :search_rate_limit,
+      :search_rate_limit_unauthenticated,
       :users_get_by_id_limit,
       :users_get_by_id_limit_allowlist_raw,
       :runner_token_expiration_interval,
@@ -463,7 +465,10 @@ module ApplicationSettingsHelper
   end
 
   def instance_clusters_enabled?
-    can?(current_user, :read_cluster, Clusters::Instance.new)
+    clusterable = Clusters::Instance.new
+
+    Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops) &&
+      can?(current_user, :read_cluster, clusterable)
   end
 
   def omnibus_protected_paths_throttle?

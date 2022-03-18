@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe 'Project wikis' do
+RSpec.describe 'Project wikis', :js do
   let_it_be(:user) { create(:user) }
 
   let(:wiki) { create(:project_wiki, user: user, project: project) }

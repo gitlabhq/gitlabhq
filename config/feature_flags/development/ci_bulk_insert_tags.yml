@@ -1,8 +1,0 @@
----
-name: ci_bulk_insert_tags
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73198
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/346124
-milestone: '14.6'
-type: development
-group: group::pipeline execution
-default_enabled: true

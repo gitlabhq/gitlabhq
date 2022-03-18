@@ -98,19 +98,24 @@ export default {
       type: String,
       required: true,
     },
-    params: {
-      type: Object,
-      required: true,
-    },
-    codeQualityPagePath: {
+    defaultBranchName: {
       type: String,
       required: false,
       default: null,
+    },
+    params: {
+      type: Object,
+      required: true,
     },
     ciRunnerSettingsPath: {
       type: String,
       required: false,
       default: null,
+    },
+    anyRunnersAvailable: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -347,6 +352,7 @@ export default {
         <pipelines-filtered-search
           class="gl-display-flex gl-flex-grow-1 gl-mr-4"
           :project-id="projectId"
+          :default-branch-name="defaultBranchName"
           :params="validatedParams"
           @filterPipelines="filterPipelines"
         />
@@ -380,8 +386,8 @@ export default {
         v-else-if="stateToRender === $options.stateMap.emptyState"
         :empty-state-svg-path="emptyStateSvgPath"
         :can-set-ci="canCreatePipeline"
-        :code-quality-page-path="codeQualityPagePath"
         :ci-runner-settings-path="ciRunnerSettingsPath"
+        :any-runners-available="anyRunnersAvailable"
       />
 
       <gl-empty-state

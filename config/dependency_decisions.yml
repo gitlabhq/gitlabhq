@@ -362,3 +362,9 @@
 - - :approve
   - 0.0.62
   - *2
+- - :approve
+  - argparse
+  - :who: Lukas Eipert
+    :why: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79864#note_845406018
+    :versions: [2.0.1]
+    :when: 2022-02-24 10:44:26.669326000 Z

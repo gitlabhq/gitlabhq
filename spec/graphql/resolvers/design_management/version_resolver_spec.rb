@@ -22,8 +22,10 @@ RSpec.describe Resolvers::DesignManagement::VersionResolver do
   context 'the current user is not authorized' do
     let(:current_user) { create(:user) }
 
-    it 'raises an error on resolution' do
-      expect { resolve_version }.to raise_error(::Gitlab::Graphql::Errors::ResourceNotAvailable)
+    it 'generates an error on resolution' do
+      expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+        resolve_version
+      end
     end
   end
 

@@ -125,7 +125,6 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
 
       before do
         stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: false)
-        stub_feature_flags(rearrange_pipelines_table: false)
       end
 
       it 'creates a pipeline in the parent project when user proceeds with the warning' do
@@ -186,7 +185,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
         page.within(first('.commit')) do
           page.within('.pipeline-tags') do
             expect(page.find('[data-testid="pipeline-url-link"]')[:href]).to include(expected_project.full_path)
-            expect(page).to have_content('detached')
+            expect(page).to have_content('merge request')
           end
           page.within('.pipeline-triggerer') do
             expect(page).to have_link(href: user_path(actor))
@@ -232,7 +231,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
       sign_in user
     end
 
-    context 'when pipeline and merge request were created simultaneously' do
+    context 'when pipeline and merge request were created simultaneously', :delete do
       before do
         stub_ci_pipeline_to_return_yaml_file
 

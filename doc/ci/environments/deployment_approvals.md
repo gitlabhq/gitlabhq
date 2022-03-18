@@ -11,7 +11,7 @@ description: Require approvals prior to deploying to a Protected Environment
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8.
 
 WARNING:
-This feature is in an alpha stage and subject to change without prior notice.
+This feature is in a [Beta](../../policy/alpha-beta-support.md#beta-features) stage and subject to change without prior notice.
 
 It may be useful to require additional approvals before deploying to certain protected environments (for example, production). This pre-deployment approval requirement is useful to accommodate testing, security, or compliance processes that must happen before each deployment.
 
@@ -79,30 +79,53 @@ Maintainer role.
 
 ## Approve or reject a deployment
 
-NOTE:
-This functionality is currently only available through the API. UI is planned for the near future. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
 
-A blocked deployment is enqueued as soon as it receives the required number of approvals. A single rejection causes the deployment to fail. The creator of a deployment cannot approve it, even if they have permission to deploy.
+Using either the GitLab UI or the API, you can:
 
-Using the [Deployments API](../../api/deployments.md#approve-or-reject-a-blocked-deployment), users who are allowed to deploy to the protected environment can approve or reject a blocked deployment.
+- Approve a deployment to allow it to proceed.
+- Reject a deployment to prevent it.
+
+### Approve or reject a deployment using the UI
+
+Prerequisites:
+
+- Permission to deploy to the protected environment.
+
+To approve or reject a deployment to a protected environment using the UI:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. In the deployment's row, select **Approval options** (**{thumb-up}**).
+1. Select **Approve** or **Reject**.
+
+### Approve or reject a deployment using the API
+
+Prerequisites:
+
+- Permission to deploy to the protected environment.
+
+To approve or reject a deployment to a protected environment using the API, pass the
+required attributes. For more details, see
+[Approve or reject a blocked deployment](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
 
 Example:
 
 ```shell
-curl --data "status=approved" \
+curl --data "status=approved&comment=Looks good to me" \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1/approval"
 ```
 
-### How to see blocked deployments
+## How to see blocked deployments
 
-#### Using the UI
+### Using the UI
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the environment being deployed to.
 1. Look for the `blocked` label.
 
-#### Using the API
+### Using the API
 
 Use the [Deployments API](../../api/deployments.md) to see deployments.
 

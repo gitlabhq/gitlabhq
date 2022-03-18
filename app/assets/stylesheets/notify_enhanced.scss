@@ -1,0 +1,68 @@
+// Import a subset of the GitLab UI framework:
+// keep parts that affect elements that can appear in emails;
+// omit Bootstrap Reboot since it adds unnecessary styles to every element.
+@import 'notify_base';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/code';
+@import '@gitlab/ui/src/scss/variables';
+@import '@gitlab/ui/src/scss/utility-mixins/index';
+@import '@gitlab/ui/src/scss/components';
+@import 'bootstrap_migration';
+@import 'framework/common';
+@import 'framework/gfm';
+@import 'framework/kbd';
+@import 'framework/tables';
+@import 'framework/typography';
+@import 'framework/emojis';
+
+body {
+  font-family: $regular-font;
+  font-size: inherit;
+}
+
+a {
+  text-decoration: none;
+}
+
+.content {
+  .md {
+    padding: 1rem 0;
+  }
+
+  hr {
+    border: 1px solid #e1e1e1;
+  }
+
+  blockquote {
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-right-width: 0;
+
+    &:dir(rtl) {
+      border-left-width: 0;
+      border-right-width: inherit;
+    }
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  .diff-table.code,
+  table.code {
+    width: auto;
+
+    td {
+      padding: inherit;
+
+      pre {
+        background-color: inherit;
+        margin: 0;
+        padding: 0;
+        border: inherit;
+      }
+    }
+  }
+}

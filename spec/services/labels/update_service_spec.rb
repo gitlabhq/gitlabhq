@@ -13,7 +13,7 @@ RSpec.describe Labels::UpdateService do
     let(:unknown_color) { 'unknown' }
     let(:no_color) { '' }
 
-    let(:expected_saved_color) { hex_color }
+    let(:expected_saved_color) { ::Gitlab::Color.of(hex_color) }
 
     before do
       @label = Labels::CreateService.new(title: 'Initial', color: '#000000').execute(project: project)

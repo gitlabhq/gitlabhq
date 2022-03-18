@@ -22,10 +22,12 @@ module Gitlab
       #     end
       #
       def strong_memoize(name)
-        if strong_memoized?(name)
-          instance_variable_get(ivar(name))
+        key = ivar(name)
+
+        if instance_variable_defined?(key)
+          instance_variable_get(key)
         else
-          instance_variable_set(ivar(name), yield)
+          instance_variable_set(key, yield)
         end
       end
 
@@ -34,13 +36,23 @@ module Gitlab
       end
 
       def clear_memoization(name)
-        remove_instance_variable(ivar(name)) if instance_variable_defined?(ivar(name))
+        key = ivar(name)
+        remove_instance_variable(key) if instance_variable_defined?(key)
       end
 
       private
 
+      # Convert `"name"`/`:name` into `:@name`
+      #
+      # Depending on a type ensure that there's a single memory allocation
       def ivar(name)
-        "@#{name}"
+        if name.is_a?(Symbol)
+          name.to_s.prepend("@").to_sym
+        elsif name.is_a?(String)
+          :"@#{name}"
+        else
+          raise ArgumentError, "Invalid type of '#{name}'"
+        end
       end
     end
   end

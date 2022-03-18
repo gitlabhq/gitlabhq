@@ -4,7 +4,7 @@ import { createAlert } from '~/flash';
 import { TYPE_GROUP, TYPE_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
-import runnersRegistrationTokenResetMutation from '~/runner/graphql/runners_registration_token_reset.mutation.graphql';
+import runnersRegistrationTokenResetMutation from '~/runner/graphql/list/runners_registration_token_reset.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../../constants';
 
@@ -98,16 +98,13 @@ export default {
     },
     onError(error) {
       const { message } = error;
-      createAlert({ message });
 
-      this.reportToSentry(error);
+      createAlert({ message });
+      captureException({ error, component: this.$options.name });
     },
     onSuccess(token) {
       this.$toast?.show(s__('Runners|New registration token generated!'));
       this.$emit('tokenReset', token);
-    },
-    reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
     },
   },
 };

@@ -18,68 +18,33 @@ RSpec.describe ApplicationExperiment, :experiment do
     allow(application_experiment).to receive(:enabled?).and_return(true)
   end
 
-  it "doesn't raise an exception without a defined control" do
-    # because we have a default behavior defined
+  it "registers a default control behavior for anonymous experiments" do
+    # This default control behavior is not inherited, intentionally, but it
+    # does provide anonymous experiments with a base control behavior to keep
+    # them optional there.
 
-    expect { experiment('namespaced/stub') { } }.not_to raise_error
+    expect(experiment(:example)).to register_behavior(:control).with(nil)
+    expect { experiment(:example) { } }.not_to raise_error
   end
 
   describe "#publish" do
-    let(:should_track) { true }
-
-    before do
-      allow(application_experiment).to receive(:should_track?).and_return(should_track)
-    end
-
     it "tracks the assignment", :snowplow do
+      expect(application_experiment).to receive(:track).with(:assignment)
+
+      application_experiment.publish
+    end
+
+    it "adds to the published experiments" do
+      # These are surfaced in the client layer by rendering them in the
+      # _published_experiments.html.haml partial.
       application_experiment.publish
 
-      expect_snowplow_event(
-        category: 'namespaced/stub',
-        action: 'assignment',
-        context: [{ schema: anything, data: anything }]
+      expect(ApplicationExperiment.published_experiments['namespaced/stub']).to include(
+        experiment: 'namespaced/stub',
+        excluded: false,
+        key: anything,
+        variant: 'control'
       )
-    end
-
-    it "publishes to the client" do
-      expect(application_experiment).to receive(:publish_to_client)
-
-      application_experiment.publish
-    end
-
-    context 'when we should not track' do
-      let(:should_track) { false }
-
-      it 'does not track an event to Snowplow', :snowplow do
-        application_experiment.publish
-
-        expect_no_snowplow_event
-      end
-    end
-
-    describe "#publish_to_client" do
-      it "adds the data into Gon" do
-        signature = { key: '86208ac54ca798e11f127e8b23ec396a', variant: 'control' }
-        expect(Gon).to receive(:push).with({ experiment: { 'namespaced/stub' => hash_including(signature) } }, true)
-
-        application_experiment.publish_to_client
-      end
-
-      it "handles when Gon raises exceptions (like when it can't be pushed into)" do
-        expect(Gon).to receive(:push).and_raise(NoMethodError)
-
-        expect { application_experiment.publish_to_client }.not_to raise_error
-      end
-
-      context 'when we should not track' do
-        let(:should_track) { false }
-
-        it 'returns early' do
-          expect(Gon).not_to receive(:push)
-
-          application_experiment.publish_to_client
-        end
-      end
     end
 
     describe '#publish_to_database' do
@@ -278,12 +243,12 @@ RSpec.describe ApplicationExperiment, :experiment do
 
     with_them do
       it "returns the url or nil if invalid" do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+        allow(Gitlab).to receive(:com?).and_return(true)
         expect(application_experiment.process_redirect_url(url)).to eq(processed_url)
       end
 
       it "considers all urls invalid when not on dev or com" do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+        allow(Gitlab).to receive(:com?).and_return(false)
         expect(application_experiment.process_redirect_url(url)).to be_nil
       end
     end
@@ -340,7 +305,7 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
 
     it "caches the variant determined by the variant resolver" do
-      expect(application_experiment.variant.name).to eq('candidate') # we should be in the experiment
+      expect(application_experiment.assigned.name).to eq('candidate') # we should be in the experiment
 
       application_experiment.run
 
@@ -355,7 +320,7 @@ RSpec.describe ApplicationExperiment, :experiment do
       # the control.
       stub_feature_flags(namespaced_stub: false) # simulate being not rolled out
 
-      expect(application_experiment.variant.name).to eq('control') # if we ask, it should be control
+      expect(application_experiment.assigned.name).to eq('control') # if we ask, it should be control
 
       application_experiment.run
 

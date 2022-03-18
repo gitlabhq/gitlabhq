@@ -63,7 +63,7 @@ export default {
   computed: {
     shouldEnableRealtime() {
       // Note: Realtime is only available on issues right now, future support for MR wil be built later.
-      return this.glFeatures.realTimeIssueSidebar && this.issuableType === 'issue';
+      return this.issuableType === 'issue';
     },
     queryVariables() {
       return {

@@ -114,16 +114,16 @@ RSpec.describe LabelsHelper do
 
   describe 'text_color_for_bg' do
     it 'uses light text on dark backgrounds' do
-      expect(text_color_for_bg('#222E2E')).to eq('#FFFFFF')
+      expect(text_color_for_bg('#222E2E')).to be_color('#FFFFFF')
     end
 
     it 'uses dark text on light backgrounds' do
-      expect(text_color_for_bg('#EEEEEE')).to eq('#333333')
+      expect(text_color_for_bg('#EEEEEE')).to be_color('#333333')
     end
 
     it 'supports RGB triplets' do
-      expect(text_color_for_bg('#FFF')).to eq '#333333'
-      expect(text_color_for_bg('#000')).to eq '#FFFFFF'
+      expect(text_color_for_bg('#FFF')).to be_color '#333333'
+      expect(text_color_for_bg('#000')).to be_color '#FFFFFF'
     end
   end
 

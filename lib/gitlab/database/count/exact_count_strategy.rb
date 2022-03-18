@@ -12,6 +12,7 @@ module Gitlab
       # Note that for very large tables, this may even timeout.
       class ExactCountStrategy
         attr_reader :models
+
         def initialize(models)
           @models = models
         end

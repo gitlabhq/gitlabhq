@@ -439,6 +439,12 @@
       .na {
         color: inherit;
       }
+
+      // Rouge `Comment` token (quoted text in email body)
+      .c {
+        color: $gl-grayish-blue;
+        font-style: italic;
+      }
     }
   }
 }

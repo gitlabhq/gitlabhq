@@ -174,6 +174,8 @@ export default {
         });
 
         if (errors.length > 0) {
+          this.isRetrying = false;
+
           this.reportFailure(POST_FAILURE);
         } else {
           await this.$apollo.queries.pipeline.refetch();
@@ -182,6 +184,8 @@ export default {
           }
         }
       } catch {
+        this.isRetrying = false;
+
         this.reportFailure(POST_FAILURE);
       }
     },

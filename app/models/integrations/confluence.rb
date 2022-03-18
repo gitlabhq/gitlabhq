@@ -2,8 +2,6 @@
 
 module Integrations
   class Confluence < Integration
-    include ActionView::Helpers::UrlHelper
-
     VALID_SCHEME_MATCH = %r{\Ahttps?\Z}.freeze
     VALID_HOST_MATCH = %r{\A.+\.atlassian\.net\Z}.freeze
     VALID_PATH_MATCH = %r{\A/wiki(/|\Z)}.freeze
@@ -39,7 +37,7 @@ module Integrations
 
         s_(
           'ConfluenceService|Your GitLab wiki is still available at %{wiki_link}. To re-enable the link to the GitLab wiki, disable this integration.' %
-          { wiki_link: link_to(wiki_url, wiki_url) }
+          { wiki_link: ActionController::Base.helpers.link_to(wiki_url, wiki_url) }
         ).html_safe
       else
         s_('ConfluenceService|Link to a Confluence Workspace from the sidebar. Enabling this integration replaces the "Wiki" sidebar link with a link to the Confluence Workspace. The GitLab wiki is still available at the original URL.').html_safe

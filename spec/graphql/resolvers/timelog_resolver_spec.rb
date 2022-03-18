@@ -85,27 +85,30 @@ RSpec.describe Resolvers::TimelogResolver do
       context 'when start_time and start_date are present' do
         let(:args) { { start_time: 6.days.ago, start_date: 6.days.ago } }
 
-        it 'returns correct error' do
-          expect { timelogs }
-            .to raise_error(error_class, /Provide either a start date or time, but not both/)
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(error_class, /Provide either a start date or time, but not both/) do
+            timelogs
+          end
         end
       end
 
       context 'when end_time and end_date are present' do
         let(:args) { { end_time: 2.days.ago, end_date: 2.days.ago } }
 
-        it 'returns correct error' do
-          expect { timelogs }
-            .to raise_error(error_class, /Provide either an end date or time, but not both/)
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(error_class, /Provide either an end date or time, but not both/) do
+            timelogs
+          end
         end
       end
 
       context 'when start argument is after end argument' do
         let(:args) { { start_time: 2.days.ago, end_time: 6.days.ago } }
 
-        it 'returns correct error' do
-          expect { timelogs }
-            .to raise_error(error_class, /Start argument must be before End argument/)
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(error_class, /Start argument must be before End argument/) do
+            timelogs
+          end
         end
       end
     end
@@ -170,27 +173,30 @@ RSpec.describe Resolvers::TimelogResolver do
       context 'when start_time and start_date are present' do
         let(:args) { { start_time: short_time_ago, start_date: short_time_ago } }
 
-        it 'returns correct error' do
-          expect { timelogs }
-            .to raise_error(error_class, /Provide either a start date or time, but not both/)
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(error_class, /Provide either a start date or time, but not both/) do
+            timelogs
+          end
         end
       end
 
       context 'when end_time and end_date are present' do
         let(:args) { { end_time: short_time_ago, end_date: short_time_ago } }
 
-        it 'returns correct error' do
-          expect { timelogs }
-            .to raise_error(error_class, /Provide either an end date or time, but not both/)
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(error_class, /Provide either an end date or time, but not both/) do
+            timelogs
+          end
         end
       end
 
       context 'when start argument is after end argument' do
         let(:args) { { start_time: short_time_ago, end_time: medium_time_ago } }
 
-        it 'returns correct error' do
-          expect { timelogs }
-            .to raise_error(error_class, /Start argument must be before End argument/)
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(error_class, /Start argument must be before End argument/) do
+            timelogs
+          end
         end
       end
     end
@@ -273,9 +279,10 @@ RSpec.describe Resolvers::TimelogResolver do
     let(:args) { {} }
     let(:extra_args) { {} }
 
-    it 'returns correct error' do
-      expect { timelogs }
-        .to raise_error(error_class, /Provide at least one argument/)
+    it 'generates an error' do
+      expect_graphql_error_to_be_created(error_class, /Provide at least one argument/) do
+        timelogs
+      end
     end
   end
 

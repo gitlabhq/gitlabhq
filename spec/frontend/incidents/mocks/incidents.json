@@ -7,6 +7,7 @@
     "assignees": {},
     "state": "opened",
     "severity": "CRITICAL",
+    "escalationStatus": "TRIGGERED",
     "slaDueAt": "2020-06-04T12:46:08Z"
   },
   {
@@ -26,6 +27,7 @@
     },
     "state": "opened",
     "severity": "HIGH",
+    "escalationStatus": "ACKNOWLEDGED",
     "slaDueAt": null
   },
   {
@@ -35,7 +37,8 @@
     "createdAt": "2020-05-19T08:53:55Z",
     "assignees": {},
     "state": "closed",
-    "severity": "LOW"
+    "severity": "LOW",
+    "escalationStatus": "RESOLVED"
   },
   {
     "id": 4,
@@ -44,6 +47,7 @@
     "createdAt": "2020-05-18T17:13:35Z",
     "assignees": {},
     "state": "closed",
-    "severity": "MEDIUM"
+    "severity": "MEDIUM",
+    "escalationStatus": null
   }
 ]

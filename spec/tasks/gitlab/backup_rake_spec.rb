@@ -72,7 +72,6 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         before do
           allow(YAML).to receive(:load_file)
             .and_return({ gitlab_version: gitlab_version })
-          expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
           expect_next_instance_of(::Backup::Manager) do |instance|
             backup_types.each do |subtask|
               expect(instance).to receive(:run_restore_task).with(subtask).ordered
@@ -84,10 +83,6 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
 
         it 'invokes restoration on match' do
           expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout_from_any_process
-        end
-
-        it 'prints timestamps on messages' do
-          expect { run_rake_task('gitlab:backup:restore') }.to output(/.*\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\s[-+]\d{4}\s--\s.*/).to_stdout_from_any_process
         end
       end
     end
@@ -130,8 +125,6 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         allow(FileUtils).to receive(:mv).and_return(true)
         allow(YAML).to receive(:load_file)
           .and_return({ gitlab_version: Gitlab::VERSION })
-
-        expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
 
         expect_next_instance_of(::Backup::Manager) do |instance|
           backup_types.each do |subtask|
@@ -183,8 +176,8 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
 
           expect(exit_status).to eq(0)
           expect(tar_contents).to match(user_backup_path)
-          expect(tar_contents).to match("#{user_backup_path}/custom_hooks.tar")
-          expect(tar_contents).to match("#{user_backup_path}.bundle")
+          expect(tar_contents).to match("#{user_backup_path}/.+/001.custom_hooks.tar")
+          expect(tar_contents).to match("#{user_backup_path}/.+/001.bundle")
         end
 
         it 'restores files correctly' do
@@ -367,14 +360,14 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
           expect(exit_status).to eq(0)
 
           [
-            "#{project_a.disk_path}.bundle",
-            "#{project_a.disk_path}.wiki.bundle",
-            "#{project_a.disk_path}.design.bundle",
-            "#{project_b.disk_path}.bundle",
-            "#{project_snippet_a.disk_path}.bundle",
-            "#{project_snippet_b.disk_path}.bundle"
+            "#{project_a.disk_path}/.+/001.bundle",
+            "#{project_a.disk_path}.wiki/.+/001.bundle",
+            "#{project_a.disk_path}.design/.+/001.bundle",
+            "#{project_b.disk_path}/.+/001.bundle",
+            "#{project_snippet_a.disk_path}/.+/001.bundle",
+            "#{project_snippet_b.disk_path}/.+/001.bundle"
           ].each do |repo_name|
-            expect(tar_lines.grep(/#{repo_name}/).size).to eq 1
+            expect(tar_lines).to include(a_string_matching(repo_name))
           end
         end
 
@@ -435,7 +428,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         expect(::Backup::Repositories).to receive(:new)
           .with(anything, strategy: anything, max_concurrency: 5, max_storage_concurrency: 2)
           .and_call_original
-        expect(::Backup::GitalyBackup).to receive(:new).with(anything, max_parallelism: 5, storage_parallelism: 2).and_call_original
+        expect(::Backup::GitalyBackup).to receive(:new).with(anything, max_parallelism: 5, storage_parallelism: 2, incremental: false).and_call_original
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
       end
@@ -486,7 +479,6 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       allow(Rake::Task['gitlab:shell:setup'])
         .to receive(:invoke).and_return(true)
 
-      expect(Rake::Task['gitlab:db:drop_tables']).to receive :invoke
       expect_next_instance_of(::Backup::Manager) do |instance|
         (backup_types - %w{repositories uploads}).each do |subtask|
           expect(instance).to receive(:run_restore_task).with(subtask).ordered
@@ -531,7 +523,6 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       allow(Rake::Task['gitlab:shell:setup'])
         .to receive(:invoke).and_return(true)
 
-      expect(Rake::Task['gitlab:db:drop_tables']).to receive :invoke
       expect_next_instance_of(::Backup::Manager) do |instance|
         backup_types.each do |subtask|
           expect(instance).to receive(:run_restore_task).with(subtask).ordered

@@ -535,6 +535,25 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
   end
 
+  describe '#integrated_enabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:enabled, :integrated, :integrated_enabled) do
+      true   | false | false
+      false  | true  | false
+      true   | true  | true
+    end
+
+    with_them do
+      before do
+        subject.enabled = enabled
+        subject.integrated = integrated
+      end
+
+      it { expect(subject.integrated_enabled?).to eq(integrated_enabled) }
+    end
+  end
+
   describe '#gitlab_dsn' do
     let!(:client_key) { create(:error_tracking_client_key, project: project) }
 

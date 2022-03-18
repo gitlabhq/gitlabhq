@@ -127,11 +127,19 @@ RSpec.describe Atlassian::JiraConnect::Client do
       end
     end
 
+    context 'the response is 202 accepted' do
+      let(:response) { double(code: 202, parsed_response: :foo) }
+
+      it 'yields to the block' do
+        expect(processed).to eq [:data, :foo]
+      end
+    end
+
     context 'the response is 400 bad request' do
       let(:response) { double(code: 400, parsed_response: errors) }
 
       it 'extracts the errors messages' do
-        expect(processed).to eq('errorMessages' => %w(X Y))
+        expect(processed).to eq('errorMessages' => %w(X Y), 'responseCode' => 400)
       end
     end
 
@@ -139,7 +147,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       let(:response) { double(code: 401, parsed_response: nil) }
 
       it 'reports that our JWT is wrong' do
-        expect(processed).to eq('errorMessages' => ['Invalid JWT'])
+        expect(processed).to eq('errorMessages' => ['Invalid JWT'], 'responseCode' => 401)
       end
     end
 
@@ -147,7 +155,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       let(:response) { double(code: 403, parsed_response: nil) }
 
       it 'reports that the App is misconfigured' do
-        expect(processed).to eq('errorMessages' => ['App does not support foo'])
+        expect(processed).to eq('errorMessages' => ['App does not support foo'], 'responseCode' => 403)
       end
     end
 
@@ -155,7 +163,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       let(:response) { double(code: 413, parsed_response: errors) }
 
       it 'extracts the errors messages' do
-        expect(processed).to eq('errorMessages' => ['Data too large', 'X', 'Y'])
+        expect(processed).to eq('errorMessages' => ['Data too large', 'X', 'Y'], 'responseCode' => 413)
       end
     end
 
@@ -163,7 +171,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       let(:response) { double(code: 429, parsed_response: nil) }
 
       it 'reports that we exceeded the rate limit' do
-        expect(processed).to eq('errorMessages' => ['Rate limit exceeded'])
+        expect(processed).to eq('errorMessages' => ['Rate limit exceeded'], 'responseCode' => 429)
       end
     end
 
@@ -171,7 +179,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       let(:response) { double(code: 503, parsed_response: nil) }
 
       it 'reports that the service is unavailable' do
-        expect(processed).to eq('errorMessages' => ['Service unavailable'])
+        expect(processed).to eq('errorMessages' => ['Service unavailable'], 'responseCode' => 503)
       end
     end
 
@@ -179,7 +187,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       let(:response) { double(code: 1000, parsed_response: :something) }
 
       it 'reports that this was unanticipated' do
-        expect(processed).to eq('errorMessages' => ['Unknown error'], 'response' => :something)
+        expect(processed).to eq('errorMessages' => ['Unknown error'], 'responseCode' => 1000, 'response' => :something)
       end
     end
   end

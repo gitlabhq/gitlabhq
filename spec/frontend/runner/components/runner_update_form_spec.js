@@ -13,7 +13,7 @@ import {
   ACCESS_LEVEL_REF_PROTECTED,
   ACCESS_LEVEL_NOT_PROTECTED,
 } from '~/runner/constants';
-import runnerUpdateMutation from '~/runner/graphql/runner_update.mutation.graphql';
+import runnerUpdateMutation from '~/runner/graphql/details/runner_update.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
 import { runnerData } from '../mock_data';
 

@@ -317,7 +317,7 @@ of tracking an event in Ruby would be:
 experiment(:pill_color, actor: current_user).track(:clicked)
 ```
 
-When you run an experiment with any of the examples so far, an `:assigned` event
+When you run an experiment with any of the examples so far, an `:assignment` event
 is tracked automatically by default. All events that are tracked from an
 experiment have a special
 [experiment context](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-3)
@@ -448,7 +448,7 @@ The first way is simply by running the experiment. Assuming the experiment has b
 
 The second way doesn't run the experiment and is intended to be used if the experiment only needs to surface in the client layer. To accomplish this we can simply `.publish` the experiment. This won't run any logic, but does surface the experiment details in the client layer so they can be utilized there.
 
-An example might be to publish an experiment in a `before_action` in a controller. Assuming we've defined the `PillColorExperiment` class, like we have above, we can surface it to the client by publishing it instead of running it: 
+An example might be to publish an experiment in a `before_action` in a controller. Assuming we've defined the `PillColorExperiment` class, like we have above, we can surface it to the client by publishing it instead of running it:
 
 ```ruby
 before_action -> { experiment(:pill_color).publish }, only: [:show]

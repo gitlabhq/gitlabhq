@@ -11,7 +11,13 @@ const apolloProvider = new VueApollo({
 });
 
 const mountPipelineChartsApp = (el) => {
-  const { projectPath, failedPipelinesLink, coverageChartPath, defaultBranch } = el.dataset;
+  const {
+    projectPath,
+    failedPipelinesLink,
+    coverageChartPath,
+    defaultBranch,
+    testRunsEmptyStateImagePath,
+  } = el.dataset;
 
   const shouldRenderDoraCharts = parseBoolean(el.dataset.shouldRenderDoraCharts);
   const shouldRenderQualitySummary = parseBoolean(el.dataset.shouldRenderQualitySummary);
@@ -30,6 +36,7 @@ const mountPipelineChartsApp = (el) => {
       shouldRenderQualitySummary,
       coverageChartPath,
       defaultBranch,
+      testRunsEmptyStateImagePath,
     },
     render: (createElement) => createElement(ProjectPipelinesCharts, {}),
   });

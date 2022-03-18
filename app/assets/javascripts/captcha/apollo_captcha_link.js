@@ -12,7 +12,7 @@ export const apolloCaptchaLink = new ApolloLink((operation, forward) =>
       const spamLogId = captchaError.extensions.spam_log_id;
 
       return new Observable((observer) => {
-        import('~/captcha/wait_for_captcha_to_be_solved')
+        import('jh_else_ce/captcha/wait_for_captcha_to_be_solved')
           .then(({ waitForCaptchaToBeSolved }) => waitForCaptchaToBeSolved(captchaSiteKey))
           .then((captchaResponse) => {
             // If the captcha was solved correctly, we re-do our action while setting

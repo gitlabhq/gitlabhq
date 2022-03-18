@@ -9,6 +9,7 @@ module API
 
     resource :snippets do
       helpers Helpers::SnippetsHelpers
+      helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
       helpers do
         def snippets_for_current_user
           SnippetsFinder.new(current_user, author: current_user).execute
@@ -91,9 +92,9 @@ module API
         if service_response.success?
           present snippet, with: Entities::PersonalSnippet, current_user: current_user
         else
-          render_spam_error! if snippet.spam?
-
-          render_api_error!({ error: service_response.message }, service_response.http_status)
+          with_captcha_check_rest_api(spammable: snippet) do
+            render_api_error!({ error: service_response.message }, service_response.http_status)
+          end
         end
       end
 
@@ -135,9 +136,9 @@ module API
         if service_response.success?
           present snippet, with: Entities::PersonalSnippet, current_user: current_user
         else
-          render_spam_error! if snippet.spam?
-
-          render_api_error!({ error: service_response.message }, service_response.http_status)
+          with_captcha_check_rest_api(spammable: snippet) do
+            render_api_error!({ error: service_response.message }, service_response.http_status)
+          end
         end
       end
 

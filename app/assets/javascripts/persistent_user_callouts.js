@@ -11,6 +11,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-eoa-bronze-plan-banner',
   '.js-security-newsletter-callout',
   '.js-approaching-seats-count-threshold',
+  '.js-storage-enforcement-banner',
 ];
 
 const initCallouts = () => {

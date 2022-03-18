@@ -90,7 +90,7 @@ module API
           runner = get_runner(params.delete(:id))
           authenticate_update_runner!(runner)
           params[:active] = !params.delete(:paused) if params.include?(:paused)
-          update_service = ::Ci::UpdateRunnerService.new(runner)
+          update_service = ::Ci::Runners::UpdateRunnerService.new(runner)
 
           if update_service.update(declared_params(include_missing: false))
             present runner, with: Entities::Ci::RunnerDetails, current_user: current_user
@@ -110,7 +110,7 @@ module API
 
           authenticate_delete_runner!(runner)
 
-          destroy_conditionally!(runner) { ::Ci::UnregisterRunnerService.new(runner).execute }
+          destroy_conditionally!(runner) { ::Ci::Runners::UnregisterRunnerService.new(runner, current_user).execute }
         end
 
         desc 'List jobs running on a runner' do
@@ -187,7 +187,7 @@ module API
           runner = get_runner(params[:runner_id])
           authenticate_enable_runner!(runner)
 
-          if runner.assign_to(user_project)
+          if ::Ci::Runners::AssignRunnerService.new(runner, user_project, current_user).execute
             present runner, with: Entities::Ci::Runner
           else
             render_validation_error!(runner)
@@ -246,9 +246,9 @@ module API
           success Entities::Ci::ResetTokenResult
         end
         post 'reset_registration_token' do
-          authorize! :update_runners_registration_token
+          authorize! :update_runners_registration_token, ApplicationSetting.current
 
-          ApplicationSetting.current.reset_runners_registration_token!
+          ::Ci::Runners::ResetRegistrationTokenService.new(ApplicationSetting.current, current_user).execute
           present ApplicationSetting.current_without_cache.runners_registration_token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end

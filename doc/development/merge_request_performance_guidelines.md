@@ -446,49 +446,6 @@ that accepts an upper limit of counting rows.
 In some cases it's desired that badge counters are loaded asynchronously.
 This can speed up the initial page load and give a better user experience overall.
 
-## Application/misuse limits
-
-Every new feature should have safe usage quotas introduced.
-The quota should be optimised to a level that we consider the feature to
-be performant and usable for the user, but **not limiting**.
-
-**We want the features to be fully usable for the users.**
-**However, we want to ensure that the feature continues to perform well if used at its limit**
-**and it doesn't cause availability issues.**
-
-Consider that it's always better to start with some kind of limitation,
-instead of later introducing a breaking change that would result in some
-workflows breaking.
-
-The intent is to provide a safe usage pattern for the feature,
-as our implementation decisions are optimised for the given data set.
-Our feature limits should reflect the optimisations that we introduced.
-
-The intent of quotas could be different:
-
-1. We want to provide higher quotas for higher tiers of features:
-   we want to provide on GitLab.com more capabilities for different tiers,
-1. We want to prevent misuse of the feature: someone accidentally creates
-   10000 deploy tokens, because of a broken API script,
-1. We want to prevent abuse of the feature: someone purposely creates
-   a 10000 pipelines to take advantage of the system.
-
-Examples:
-
-1. Pipeline Schedules: It's very unlikely that user wants to create
-   more than 50 schedules.
-   In such cases it's rather expected that this is either misuse
-   or abuse of the feature. Lack of the upper limit can result
-   in service degradation as the system tries to process all schedules
-   assigned the project.
-
-1. GitLab CI/CD includes: We started with the limit of maximum of 50 nested includes.
-   We understood that performance of the feature was acceptable at that level.
-   We received a request from the community that the limit is too small.
-   We had a time to understand the customer requirement, and implement an additional
-   fail-safe mechanism (time-based one) to increase the limit 100, and if needed increase it
-   further without negative impact on availability of the feature and GitLab.
-
 ## Usage of feature flags
 
 Each feature that has performance critical elements or has a known performance deficiency
@@ -569,7 +526,7 @@ end
 
 The usage of shared temporary storage is required if your intent
 is to persistent file for a disk-based storage, and not Object Storage.
-[Workhorse direct_upload](uploads.md#direct-upload) when accepting file
+[Workhorse direct_upload](uploads/implementation.md#direct-upload) when accepting file
 can write it to shared storage, and later GitLab Rails can perform a move operation.
 The move operation on the same destination is instantaneous.
 The system instead of performing `copy` operation just re-attaches file into a new place.
@@ -593,7 +550,7 @@ that implements a seamless support for Shared and Object Storage-based persisten
 #### Data access
 
 Each feature that accepts data uploads or allows to download them needs to use
-[Workhorse direct_upload](uploads.md#direct-upload). It means that uploads needs to be
+[Workhorse direct_upload](uploads/implementation.md#direct-upload). It means that uploads needs to be
 saved directly to Object Storage by Workhorse, and all downloads needs to be served
 by Workhorse.
 
@@ -605,5 +562,5 @@ can time out, which is especially problematic for slow clients. If clients take 
 to upload/download the processing slot might be killed due to request processing
 timeout (usually between 30s-60s).
 
-For the above reasons it is required that [Workhorse direct_upload](uploads.md#direct-upload) is implemented
+For the above reasons it is required that [Workhorse direct_upload](uploads/implementation.md#direct-upload) is implemented
 for all file uploads and downloads.

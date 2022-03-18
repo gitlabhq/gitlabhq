@@ -23,7 +23,18 @@ function updateReviewerMergeRequestCounts(newCount) {
 function updateMergeRequestCounts(newCount) {
   const mergeRequestsCountEl = document.querySelector('.js-merge-requests-count');
   mergeRequestsCountEl.textContent = newCount.toLocaleString();
-  mergeRequestsCountEl.classList.toggle('hidden', Number(newCount) === 0);
+  mergeRequestsCountEl.classList.toggle('gl-display-none', Number(newCount) === 0);
+}
+
+function updateAttentionRequestsCount(count) {
+  const attentionCountEl = document.querySelector('.js-attention-count');
+  attentionCountEl.textContent = count.toLocaleString();
+
+  if (Number(count) === 0) {
+    attentionCountEl.classList.replace('badge-warning', 'badge-neutral');
+  } else {
+    attentionCountEl.classList.replace('badge-neutral', 'badge-warning');
+  }
 }
 
 /**
@@ -32,14 +43,22 @@ function updateMergeRequestCounts(newCount) {
 export function refreshUserMergeRequestCounts() {
   return getUserCounts()
     .then(({ data }) => {
+      const attentionRequestsEnabled = window.gon?.features?.mrAttentionRequests;
       const assignedMergeRequests = data.assigned_merge_requests;
       const reviewerMergeRequests = data.review_requested_merge_requests;
-      const fullCount = assignedMergeRequests + reviewerMergeRequests;
+      const attentionRequests = data.attention_requests;
+      const fullCount = attentionRequestsEnabled
+        ? attentionRequests
+        : assignedMergeRequests + reviewerMergeRequests;
 
       updateUserMergeRequestCounts(assignedMergeRequests);
       updateReviewerMergeRequestCounts(reviewerMergeRequests);
       updateMergeRequestCounts(fullCount);
       broadcastCount(fullCount);
+
+      if (attentionRequestsEnabled) {
+        updateAttentionRequestsCount(attentionRequests);
+      }
     })
     .catch((ex) => {
       console.error(ex); // eslint-disable-line no-console

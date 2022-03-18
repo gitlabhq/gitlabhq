@@ -19,9 +19,18 @@ class CustomerRelations::Organization < ApplicationRecord
   validates :name, uniqueness: { case_sensitive: false, scope: [:group_id] }
   validates :name, length: { maximum: 255 }
   validates :description, length: { maximum: 1024 }
+  validate :validate_root_group
 
   def self.find_by_name(group_id, name)
     where(group: group_id)
     .where('LOWER(name) = LOWER(?)', name)
+  end
+
+  private
+
+  def validate_root_group
+    return if group&.root?
+
+    self.errors.add(:base, _('organizations can only be added to root groups'))
   end
 end

@@ -36,6 +36,28 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
       expect(Rails.cache.read('metric_instrumentation/special_issue_count_maximum_id')).to eq(nil)
     end
 
+    context 'with metric options specified with custom batch_size' do
+      subject do
+        described_class.tap do |metric_class|
+          metric_class.relation { Issue }
+          metric_class.operation :count
+          metric_class.start { metric_class.relation.minimum(:id) }
+          metric_class.finish { metric_class.relation.maximum(:id) }
+          metric_class.metric_options { { batch_size: 12345 } }
+        end.new(time_frame: 'all')
+      end
+
+      it 'calls metric with customized batch_size' do
+        expect(subject).to receive(:count).with(any_args, hash_including(batch_size: 12345, start: issues.min_by(&:id).id, finish: issues.max_by(&:id).id)).and_call_original
+
+        subject.value
+      end
+
+      it 'calculates a correct result' do
+        expect(subject.value).to eq(3)
+      end
+    end
+
     context 'with start and finish not called' do
       subject do
         described_class.tap do |metric_class|

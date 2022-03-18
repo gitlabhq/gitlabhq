@@ -178,7 +178,7 @@ RSpec.describe 'Dashboard > User filters todos', :js do
         review_requested: ' requested a review of ',
         mentioned: ' mentioned ',
         marked: ' added a todo for ',
-        build_failed: ' build failed for '
+        build_failed: ' pipeline failed in '
       }
 
       action_name_text = action_names.delete(action_name)

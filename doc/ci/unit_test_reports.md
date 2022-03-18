@@ -231,7 +231,7 @@ The [JunitXML.TestLogger](https://www.nuget.org/packages/JunitXml.TestLogger/) N
 package can generate test reports for .Net Framework and .Net Core applications. The following
 example expects a solution in the root folder of the repository, with one or more
 project files in sub-folders. One result file is produced per test project, and each file
-is placed in a new artifacts folder. This example includes optional formatting arguments, which
+is placed in the artifacts folder. This example includes optional formatting arguments, which
 improve the readability of test data in the test widget. A full .Net Core
 [example is available](https://gitlab.com/Siphonophora/dot-net-cicd-test-logging-demo).
 
@@ -353,7 +353,7 @@ displays a list of test suites and cases reported from the XML file.
 
 ![Test Reports Widget](img/pipelines_junit_test_report_v13_10.png)
 
-You can view all the known test suites and click on each of these to see further
+You can view all the known test suites and select each of these to see further
 details, including the cases that make up the suite.
 
 You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a-pipelines-test-report).
@@ -366,8 +366,7 @@ If parsing JUnit report XML results in an error, an indicator is shown next to t
 
 ![Test Reports With Errors](img/pipelines_junit_test_report_with_errors_v13_10.png)
 
-NOTE:
-GitLab.com has a 500,000 [test case parsing limit](../user/gitlab_com/#gitlab-cicd). Self-managed administrators can manage this setting on their instance.
+For test case parsing limits, see [Max test cases per unit test report](../user/gitlab_com/#gitlab-cicd).
 
 GitLab does not parse very [large nodes](https://nokogiri.org/tutorials/parsing_an_html_xml_document.html#parse-options) of JUnit reports. There is [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/268035) open to make this optional.
 

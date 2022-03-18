@@ -155,7 +155,7 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
       end
 
       def expect_iid_to_be_set_and_rollback
-        ActiveRecord::Base.transaction(requires_new: true) do
+        instance.transaction(requires_new: true) do
           instance.save!
 
           expect(read_internal_id).not_to be_nil

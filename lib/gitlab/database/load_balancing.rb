@@ -47,6 +47,8 @@ module Gitlab
       # Returns the role (primary/replica) of the database the connection is
       # connecting to.
       def self.db_role_for_connection(connection)
+        return ROLE_UNKNOWN if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
+
         db_config = Database.db_config_for_connection(connection)
         return ROLE_UNKNOWN unless db_config
 

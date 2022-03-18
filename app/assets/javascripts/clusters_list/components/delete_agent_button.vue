@@ -116,7 +116,7 @@ export default {
 
         this.$toast.show(this.error || successMessage);
 
-        this.$refs.modal.hide();
+        this.$refs.modal?.hide();
       }
     },
     deleteAgentMutation() {

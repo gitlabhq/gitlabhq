@@ -18,3 +18,13 @@ export const swapArrayItems = (array, leftIndex = 0, rightIndex = 0) => {
   copy[rightIndex] = temp;
   return copy;
 };
+
+/**
+ * Return an array with all duplicate items from the given array
+ *
+ * @param {Array} array - The source array
+ * @returns {Array} new array with all duplicate items
+ */
+export const getDuplicateItemsFromArray = (array) => [
+  ...new Set(array.filter((value, index) => array.indexOf(value) !== index)),
+];

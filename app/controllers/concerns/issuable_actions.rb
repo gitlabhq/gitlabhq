@@ -17,10 +17,6 @@ module IssuableActions
   def show
     respond_to do |format|
       format.html do
-        @show_crm_contacts = issuable.is_a?(Issue) && # rubocop:disable Gitlab/ModuleWithInstanceVariables
-          can?(current_user, :read_crm_contact, issuable.project.group) &&
-          CustomerRelations::Contact.exists_for_group?(issuable.project.group)
-
         @issuable_sidebar = serializer.represent(issuable, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
         render 'show'
       end
@@ -43,18 +39,18 @@ module IssuableActions
     if updated_issuable.is_a?(Spammable)
       respond_to do |format|
         format.html do
-          # NOTE: This redirect is intentionally only performed in the case where the updated
-          # issuable is a spammable, and intentionally is not performed in the non-spammable case.
-          # This preserves the legacy behavior of this action.
           if updated_issuable.valid?
+            # NOTE: This redirect is intentionally only performed in the case where the valid updated
+            # issuable is a spammable, and intentionally is not performed below in the
+            # valid non-spammable case. This preserves the legacy behavior of this action.
             redirect_to spammable_path
           else
-            with_captcha_check_html_format { render :edit }
+            with_captcha_check_html_format(spammable: spammable) { render :edit }
           end
         end
 
         format.json do
-          with_captcha_check_json_format { render_entity_json }
+          with_captcha_check_json_format(spammable: spammable) { render_entity_json }
         end
       end
     else

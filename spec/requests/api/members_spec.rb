@@ -675,13 +675,13 @@ RSpec.describe API::Members do
     end
 
     context 'adding owner to project' do
-      it 'returns 403' do
+      it 'returns created status' do
         expect do
           post api("/projects/#{project.id}/members", maintainer),
                params: { user_id: stranger.id, access_level: Member::OWNER }
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-        end.not_to change { project.members.count }
+          expect(response).to have_gitlab_http_status(:created)
+        end.to change { project.members.count }.by(1)
       end
     end
 

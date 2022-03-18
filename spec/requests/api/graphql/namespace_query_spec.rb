@@ -31,7 +31,8 @@ RSpec.describe 'Query' do
         it 'fetches the expected data' do
           expect(query_result).to include(
             'fullPath' => target_namespace.full_path,
-            'name' => target_namespace.name
+            'name' => target_namespace.name,
+            'crossProjectPipelineAvailable' => target_namespace.licensed_feature_available?(:cross_project_pipeline)
           )
         end
       end

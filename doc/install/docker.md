@@ -189,7 +189,7 @@ services:
         external_url 'http://gitlab.example.com:8929'
         gitlab_rails['gitlab_shell_ssh_port'] = 2224
     ports:
-      - '8929:8929'
+      - '8929:80'
       - '2224:22'
     volumes:
       - '$GITLAB_HOME/config:/etc/gitlab'
@@ -198,7 +198,7 @@ services:
     shm_size: '256m'
 ```
 
-This is the same as using `--publish 8929:8929 --publish 2224:22`.
+This is the same as using `--publish 8929:80 --publish 2224:22`.
 
 ### Install GitLab using Docker swarm mode
 
@@ -512,6 +512,22 @@ To update GitLab that was [installed using Docker Compose](#install-gitlab-using
 
    If you have used [tags](#use-tagged-versions-of-gitlab) instead, you'll need
    to first edit `docker-compose.yml`.
+
+### Convert Community Edition to Enterprise Edition
+
+You can convert an existing Docker-based GitLab Community Edition (CE) container
+to a GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) (EE) container
+using the same approach as [updating the version](#update).
+
+We recommend you convert from the same version of CE to EE (for example, CE 14.1 to EE 14.1).
+This is not explicitly necessary, and any standard upgrade (for example, CE 14.0 to EE 14.1) should work.
+The following steps assume that you are upgrading the same version.
+
+1. Take a [backup](#back-up-gitlab).
+1. Stop the current CE container, and remove or rename it.
+1. To create a new container with GitLab EE,
+   replace `ce` with `ee` in your `docker run` command or `docker-compose.yml` file.
+   However, reuse the CE container name, port and file mappings, and version.
 
 ## Back up GitLab
 

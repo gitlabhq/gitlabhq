@@ -17,10 +17,10 @@ class ProjectsController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
   before_action :disable_query_limiting, only: [:show, :create]
-  before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :resolve, :unfoldered_environment_names]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :unfoldered_environment_names]
   before_action :redirect_git_extension, only: [:show]
-  before_action :project, except: [:index, :new, :create, :resolve]
-  before_action :repository, except: [:index, :new, :create, :resolve]
+  before_action :project, except: [:index, :new, :create]
+  before_action :repository, except: [:index, :new, :create]
   before_action :verify_git_import_enabled, only: [:create]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
   before_action :present_project, only: [:edit]
@@ -41,7 +41,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:increase_page_size_exponentially, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:new_dir_modal, @project, default_enabled: :yaml)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
-    push_frontend_feature_flag(:consolidated_edit_button, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:work_items, @project, default_enabled: :yaml)
   end
 
@@ -49,7 +48,7 @@ class ProjectsController < Projects::ApplicationController
 
   feature_category :projects, [
                      :index, :show, :new, :create, :edit, :update, :transfer,
-                     :destroy, :resolve, :archive, :unarchive, :toggle_star, :activity
+                     :destroy, :archive, :unarchive, :toggle_star, :activity
                    ]
 
   feature_category :source_code_management, [:remove_fork, :housekeeping, :refs]
@@ -174,7 +173,7 @@ class ProjectsController < Projects::ApplicationController
       format.atom do
         load_events
         @events = @events.select { |event| event.visible_to_user?(current_user) }
-        render layout: 'xml.atom'
+        render layout: 'xml'
       end
     end
   end
@@ -325,16 +324,6 @@ class ProjectsController < Projects::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def resolve
-    @project = Project.find(params[:id])
-
-    if can?(current_user, :read_project, @project)
-      redirect_to @project
-    else
-      render_404
-    end
-  end
-
   def unfoldered_environment_names
     respond_to do |format|
       format.json do
@@ -346,11 +335,7 @@ class ProjectsController < Projects::ApplicationController
   private
 
   def refs_params
-    if Feature.enabled?(:strong_parameters_for_project_controller, @project, default_enabled: :yaml)
-      params.permit(:search, :sort, :ref, find: [])
-    else
-      params
-    end
+    params.permit(:search, :sort, :ref, find: [])
   end
 
   # Render project landing depending of which features are available

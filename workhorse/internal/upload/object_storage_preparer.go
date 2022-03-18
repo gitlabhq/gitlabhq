@@ -3,7 +3,7 @@ package upload
 import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 )
 
 type ObjectStoragePreparer struct {
@@ -11,12 +11,15 @@ type ObjectStoragePreparer struct {
 	credentials config.ObjectStorageCredentials
 }
 
+// NewObjectStoragePreparer returns a new preparer instance which is responsible for
+// setting the object storage credentials and settings needed by an uploader
+// to upload to object storage.
 func NewObjectStoragePreparer(c config.Config) Preparer {
 	return &ObjectStoragePreparer{credentials: c.ObjectStorageCredentials, config: c.ObjectStorageConfig}
 }
 
-func (p *ObjectStoragePreparer) Prepare(a *api.Response) (*filestore.SaveFileOpts, Verifier, error) {
-	opts, err := filestore.GetOpts(a)
+func (p *ObjectStoragePreparer) Prepare(a *api.Response) (*destination.UploadOpts, Verifier, error) {
+	opts, err := destination.GetOpts(a)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -20,4 +20,6 @@ namespace :jira_connect do
       put :update
     end
   end
+
+  resources :oauth_callbacks, only: [:index]
 end

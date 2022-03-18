@@ -18,7 +18,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
       it 'parses the artifact' do
         expect(subject[:status]).to eq(:success)
 
-        expect(build.job_variables.as_json).to contain_exactly(
+        expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
           hash_including('key' => 'KEY1', 'value' => 'VAR1'),
           hash_including('key' => 'KEY2', 'value' => 'VAR2'))
       end
@@ -57,7 +57,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
 
           expect(subject[:status]).to eq(:success)
 
-          expect(build.job_variables.as_json).to contain_exactly(
+          expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
             hash_including('key' => 'KEY1', 'value' => 'VAR4'),
             hash_including('key' => 'KEY2', 'value' => 'VAR3'))
         end
@@ -101,7 +101,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'trims the trailing space' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'KEY1', 'value' => 'VAR1'))
           end
         end
@@ -112,7 +112,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'parses the dotenv data' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'KEY', 'value' => 'VARCONTAINING=EQLS'))
           end
         end
@@ -133,7 +133,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'parses the dotenv data' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'skateboard', 'value' => '🛹'))
           end
         end
@@ -154,7 +154,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'parses the dotenv data' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'KEY1', 'value' => 'V A R 1'))
           end
         end
@@ -165,7 +165,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'parses the value as-is' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'KEY1', 'value' => '"VAR1"'))
           end
         end
@@ -176,7 +176,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'parses the value as-is' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'KEY1', 'value' => "'VAR1'"))
           end
         end
@@ -187,7 +187,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'parses the value as-is' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'KEY1', 'value' => '"  VAR1  "'))
           end
         end
@@ -208,7 +208,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'parses the dotenv data' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'KEY1', 'value' => ''))
           end
         end
@@ -250,7 +250,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'does not support variable expansion in dotenv parser' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'KEY1', 'value' => 'VAR1'),
               hash_including('key' => 'KEY2', 'value' => '${KEY1}_Test'))
           end
@@ -284,7 +284,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
           it 'does not support comment in dotenv parser' do
             subject
 
-            expect(build.job_variables.as_json).to contain_exactly(
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
               hash_including('key' => 'KEY1', 'value' => 'VAR1         # This is variable'))
           end
         end

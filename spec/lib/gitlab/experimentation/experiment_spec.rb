@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Experimentation::Experiment do
 
   describe '#active?' do
     before do
-      allow(Gitlab).to receive(:dev_env_or_com?).and_return(on_gitlab_com)
+      allow(Gitlab).to receive(:com?).and_return(on_gitlab_com)
     end
 
     subject { experiment.active? }

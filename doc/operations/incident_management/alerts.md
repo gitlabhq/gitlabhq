@@ -144,6 +144,7 @@ The following actions result in a system note:
 - [Updating the status of an alert](#update-an-alerts-status)
 - [Creating an incident based on an alert](#create-an-incident-from-an-alert)
 - [Assignment of an alert to a user](#assign-an-alert)
+- [Escalation of an alert to on-call responders](paging.md#escalating-an-alert)
 
 ![Alert Details Activity Feed](img/alert_detail_activity_feed_v13_5.png)
 
@@ -153,8 +154,26 @@ There are different actions available in GitLab to help triage and respond to al
 
 ### Update an alert's status
 
-The Alert detail view enables you to update the Alert Status.
-See [Create and manage alerts in GitLab](alerts.md) for more details.
+**Triggered** is the default status for new alerts. For users with the Developer role or higher, the
+alert status can be updated from these locations:
+
+- [Alert list](#alert-list): select the status dropdown corresponding to an alert, then select an
+  alternate status.
+- [Alert details page](#alert-details-page): select **Edit** in the right-hand side bar, then select
+  an alternate status.
+
+To stop email notifications for alert reoccurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts),
+[change the alert's status](alerts.md#update-an-alerts-status) away from **Triggered**.
+
+In projects with GitLab Premium, on-call responders can respond to [alert pages](paging.md#escalating-an-alert)
+by changing the status. Setting the status to:
+
+- **Resolved** silences all on-call pages for the alert.
+- **Acknowledged** limits on-call pages based on the project's [escalation policy](escalation_policies.md).
+- **Triggered** from **Resolved** restarts the alert escalating from the beginning.
+
+For [alerts with an associated incident](alerts.md#create-an-incident-from-an-alert),
+updating the alert status also updates the incident status.
 
 ### Create an incident from an alert
 
@@ -165,8 +184,10 @@ description populated from an alert. To create the issue,
 select the **Create Issue** button. You can then view the issue from the
 alert by selecting the **View Issue** button.
 
-Closing a GitLab issue associated with an alert changes the alert's status to
-Resolved. See [Create and manage alerts in GitLab](alerts.md) for more details
+You can also [create incidents for alerts automatically](incidents.md#create-incidents-automatically).
+
+Closing a GitLab issue associated with an alert [changes the alert's status](#update-an-alerts-status) to
+**Resolved**. See [Alert List](#alert-list) for more details
 about alert statuses.
 
 ### Assign an alert
@@ -196,7 +217,7 @@ To assign an alert:
 
 After completing their portion of investigating or fixing the alert, users can
 unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown menu
-and deselect the user from the list of assignees, or select **Unassigned**.
+and clear the user from the list of assignees, or select **Unassigned**.
 
 ### Create a to-do item from an alert
 
@@ -217,13 +238,3 @@ add a to-do item:
    ![Alert Details Add a to do](img/alert_detail_add_todo_v13_9.png)
 
 To view your To-Do List, on the top bar, select **To-Do List** (**{todo-done}**).
-
-## View the environment that generated the alert
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.5 behind a feature flag, disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.6.
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-The environment information and the link are displayed in the [Alert Details tab](#alert-details-tab).

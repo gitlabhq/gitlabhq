@@ -7,6 +7,8 @@ RSpec.describe GitlabSchema.types['Commit'] do
 
   specify { expect(described_class).to require_graphql_authorizations(:download_code) }
 
+  specify { expect(described_class).to include(Types::TodoableInterface) }
+
   it 'contains attributes related to commit' do
     expect(described_class).to have_graphql_fields(
       :id, :sha, :short_id, :title, :full_title, :full_title_html, :description, :description_html, :message, :title_html, :authored_date,

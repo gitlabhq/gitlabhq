@@ -80,34 +80,53 @@ RSpec.describe Gitlab do
   end
 
   describe '.com?' do
-    it "is true when on #{Gitlab::Saas.com_url}" do
-      stub_config_setting(url: Gitlab::Saas.com_url)
+    context 'when not simulating SaaS' do
+      before do
+        stub_env('GITLAB_SIMULATE_SAAS', '0')
+      end
+
+      it "is true when on #{Gitlab::Saas.com_url}" do
+        stub_config_setting(url: Gitlab::Saas.com_url)
+
+        expect(described_class.com?).to eq true
+      end
+
+      it "is true when on #{Gitlab::Saas.staging_com_url}" do
+        stub_config_setting(url: Gitlab::Saas.staging_com_url)
+
+        expect(described_class.com?).to eq true
+      end
+
+      it 'is true when on other gitlab subdomain' do
+        url_with_subdomain = Gitlab::Saas.com_url.gsub('https://', 'https://example.')
+        stub_config_setting(url: url_with_subdomain)
+
+        expect(described_class.com?).to eq true
+      end
+
+      it 'is true when on other gitlab subdomain with hyphen' do
+        url_with_subdomain = Gitlab::Saas.com_url.gsub('https://', 'https://test-example.')
+        stub_config_setting(url: url_with_subdomain)
+
+        expect(described_class.com?).to eq true
+      end
+
+      it 'is false when not on GitLab.com' do
+        stub_config_setting(url: 'http://example.com')
+
+        expect(described_class.com?).to eq false
+      end
+    end
+
+    it 'is true when GITLAB_SIMULATE_SAAS is true and in development' do
+      stub_rails_env('development')
+      stub_env('GITLAB_SIMULATE_SAAS', '1')
 
       expect(described_class.com?).to eq true
     end
 
-    it "is true when on #{Gitlab::Saas.staging_com_url}" do
-      stub_config_setting(url: Gitlab::Saas.staging_com_url)
-
-      expect(described_class.com?).to eq true
-    end
-
-    it 'is true when on other gitlab subdomain' do
-      url_with_subdomain = Gitlab::Saas.com_url.gsub('https://', 'https://example.')
-      stub_config_setting(url: url_with_subdomain)
-
-      expect(described_class.com?).to eq true
-    end
-
-    it 'is true when on other gitlab subdomain with hyphen' do
-      url_with_subdomain = Gitlab::Saas.com_url.gsub('https://', 'https://test-example.')
-      stub_config_setting(url: url_with_subdomain)
-
-      expect(described_class.com?).to eq true
-    end
-
-    it 'is false when not on GitLab.com' do
-      stub_config_setting(url: 'http://example.com')
+    it 'is false when GITLAB_SIMULATE_SAAS is true and in test' do
+      stub_env('GITLAB_SIMULATE_SAAS', '1')
 
       expect(described_class.com?).to eq false
     end
@@ -197,51 +216,71 @@ RSpec.describe Gitlab do
     end
   end
 
-  describe '.dev_env_org_or_com?' do
+  describe '.org_or_com?' do
     it 'is true when on .com' do
       allow(described_class).to receive_messages(com?: true, org?: false)
 
-      expect(described_class.dev_env_org_or_com?).to eq true
+      expect(described_class.org_or_com?).to eq true
     end
 
     it 'is true when org' do
       allow(described_class).to receive_messages(com?: false, org?: true)
 
-      expect(described_class.dev_env_org_or_com?).to eq true
-    end
-
-    it 'is true when dev env' do
-      allow(described_class).to receive_messages(com?: false, org?: false)
-      stub_rails_env('development')
-
-      expect(described_class.dev_env_org_or_com?).to eq true
+      expect(described_class.org_or_com?).to eq true
     end
 
     it 'is false when not dev, org or com' do
       allow(described_class).to receive_messages(com?: false, org?: false)
 
-      expect(described_class.dev_env_org_or_com?).to eq false
+      expect(described_class.org_or_com?).to eq false
     end
   end
 
-  describe '.dev_env_or_com?' do
-    it 'is true when on .com' do
-      allow(described_class).to receive(:com?).and_return(true)
+  describe '.simulate_com?' do
+    subject { described_class.simulate_com? }
 
-      expect(described_class.dev_env_or_com?).to eq true
+    context 'when GITLAB_SIMULATE_SAAS is true' do
+      before do
+        stub_env('GITLAB_SIMULATE_SAAS', '1')
+      end
+
+      it 'is false when test env' do
+        expect(subject).to eq false
+      end
+
+      it 'is true when dev env' do
+        stub_rails_env('development')
+
+        expect(subject).to eq true
+      end
+
+      it 'is false when env is not dev' do
+        stub_rails_env('production')
+
+        expect(subject).to eq false
+      end
     end
 
-    it 'is true when dev env' do
-      allow(described_class).to receive(:com?).and_return(false)
-      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+    context 'when GITLAB_SIMULATE_SAAS is false' do
+      before do
+        stub_env('GITLAB_SIMULATE_SAAS', '0')
+      end
 
-      expect(described_class.dev_env_or_com?).to eq true
-    end
+      it 'is false when test env' do
+        expect(subject).to eq false
+      end
 
-    it 'is false when not dev or com' do
-      allow(described_class).to receive(:com?).and_return(false)
+      it 'is false when dev env' do
+        stub_rails_env('development')
 
-      expect(described_class.dev_env_or_com?).to eq false
+        expect(subject).to eq false
+      end
+
+      it 'is false when env is not dev or test' do
+        stub_rails_env('production')
+
+        expect(subject).to eq false
+      end
     end
   end
 

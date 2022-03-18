@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::BaseIssueTracker do
+  let(:integration) { Integrations::Redmine.new(project: project, active: true, issue_tracker_data: build(:issue_tracker_data)) }
+
+  let_it_be_with_refind(:project) { create :project }
+
   describe 'Validations' do
-    let(:project) { create :project }
-
     describe 'only one issue tracker per project' do
-      let(:integration) { Integrations::Redmine.new(project: project, active: true, issue_tracker_data: build(:issue_tracker_data)) }
-
       before do
         create(:custom_issue_tracker_integration, project: project)
       end
@@ -29,6 +29,20 @@ RSpec.describe Integrations::BaseIssueTracker do
           expect(integration.valid?).to be_truthy
         end
       end
+    end
+  end
+
+  describe '#activate_disabled_reason' do
+    subject { integration.activate_disabled_reason }
+
+    context 'when there is an existing issue tracker integration' do
+      let_it_be(:custom_tracker) { create(:custom_issue_tracker_integration, project: project) }
+
+      it { is_expected.to eq(trackers: [custom_tracker]) }
+    end
+
+    context 'when there is no existing issue tracker integration' do
+      it { is_expected.to be(nil) }
     end
   end
 end

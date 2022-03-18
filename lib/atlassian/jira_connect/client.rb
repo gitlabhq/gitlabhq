@@ -127,16 +127,21 @@ module Atlassian
       def handle_response(response, name, &block)
         data = response.parsed_response
 
-        case response.code
-        when 200 then yield data
-        when 400 then { 'errorMessages' => data.map { |e| e['message'] } }
-        when 401 then { 'errorMessages' => ['Invalid JWT'] }
-        when 403 then { 'errorMessages' => ["App does not support #{name}"] }
-        when 413 then { 'errorMessages' => ['Data too large'] + data.map { |e| e['message'] } }
-        when 429 then { 'errorMessages' => ['Rate limit exceeded'] }
-        when 503 then { 'errorMessages' => ['Service unavailable'] }
+        if [200, 202].include?(response.code)
+          yield data
         else
-          { 'errorMessages' => ['Unknown error'], 'response' => data }
+          message = case response.code
+                    when 400 then { 'errorMessages' => data.map { |e| e['message'] } }
+                    when 401 then { 'errorMessages' => ['Invalid JWT'] }
+                    when 403 then { 'errorMessages' => ["App does not support #{name}"] }
+                    when 413 then { 'errorMessages' => ['Data too large'] + data.map { |e| e['message'] } }
+                    when 429 then { 'errorMessages' => ['Rate limit exceeded'] }
+                    when 503 then { 'errorMessages' => ['Service unavailable'] }
+                    else
+                      { 'errorMessages' => ['Unknown error'], 'response' => data }
+                    end
+
+          message.merge('responseCode' => response.code)
         end
       end
 

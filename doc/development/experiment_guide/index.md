@@ -64,3 +64,15 @@ We recommend the following workflow:
 1. **If the experiment is a success**, designers add the new icon or illustration to the Pajamas UI kit as part of the cleanup process.
    Engineers can then add it to the [SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/) and modify the implementation based on the
    [Frontend Development Guidelines](../fe_guide/icons.md#usage-in-hamlrails-2).
+   
+## Turn off all experiments 
+
+When there is a case on GitLab.com (SaaS) that necessitates turning off all experiments, we have this control.
+
+You can toggle experiments on SaaS on and off using the `gitlab_experiment` [feature flag](../feature_flags).
+
+This can be done via chatops:
+
+- [disable](../feature_flags/controls.md#disabling-feature-flags): `/chatops run feature set gitlab_experiment false`
+- [enable](../feature_flags/controls.md#process): `/chatops run feature delete gitlab_experiment`
+  - This allows the `default_enabled` [value of true in the yml](https://gitlab.com/gitlab-org/gitlab/-/blob/016430f6751b0c34abb24f74608c80a1a8268f20/config/feature_flags/ops/gitlab_experiment.yml#L8) to be honored.

@@ -106,6 +106,7 @@ RSpec.describe 'Issue Sidebar' do
       end
 
       context 'when GraphQL assignees widget feature flag is enabled' do
+        # TODO: Move to shared examples when feature flag is removed: https://gitlab.com/gitlab-org/gitlab/-/issues/328185
         context 'when a privileged user can invite' do
           it 'shows a link for inviting members and launches invite modal' do
             project.add_maintainer(user)
@@ -234,6 +235,12 @@ RSpec.describe 'Issue Sidebar' do
 
       context 'editing issue labels', :js do
         it_behaves_like 'labels sidebar widget'
+      end
+
+      context 'escalation status', :js do
+        it 'is not available for default issue type' do
+          expect(page).not_to have_selector('.block.escalation-status')
+        end
       end
 
       context 'interacting with collapsed sidebar', :js do

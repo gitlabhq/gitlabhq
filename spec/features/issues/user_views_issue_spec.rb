@@ -25,7 +25,7 @@ RSpec.describe "User views issue" do
   it 'shows the merge request and issue actions', :js, :aggregate_failures do
     click_button 'Issue actions'
 
-    expect(page).to have_link('New issue', href: new_project_issue_path(project, { issue: { description: "Related to \##{issue.iid}.\n\n" } }))
+    expect(page).to have_link('New related issue', href: new_project_issue_path(project, { add_related_issue: issue.iid }))
     expect(page).to have_button('Create merge request')
     expect(page).to have_button('Close issue')
   end

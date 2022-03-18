@@ -50,8 +50,16 @@ function canUseLocalStorage() {
   return safe;
 }
 
+/**
+ * Determines if `window.crypto` is available.
+ */
+function canUseCrypto() {
+  return window.crypto?.subtle !== undefined;
+}
+
 const AccessorUtilities = {
   canUseLocalStorage,
+  canUseCrypto,
 };
 
 export default AccessorUtilities;

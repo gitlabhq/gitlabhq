@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Service Ping Guide **(FREE SELF)**
 
-> Introduced in GitLab Ultimate 11.2, more statistics.
+> - Introduced in GitLab Ultimate 11.2, more statistics.
+> - In GitLab 14.1, [renamed from Usage Ping to Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/5990). In 14.0 and earlier, use the Usage Ping documentation for the Rails commands appropriate to your version.
 
 Service Ping is a GitLab process that collects and sends a weekly payload to GitLab.
 The payload provides important high-level data that helps our product, support,
@@ -68,7 +69,10 @@ Because of these limitations we recommend you:
 
 > Introduced in GitLab 14.1.
 
-In GitLab versions 14.1 and later, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data through Service Ping. Features introduced here do not remove the feature from its paid tier. Users can continue to access the features in a paid tier without sharing usage data.
+In GitLab versions 14.1 and later, GitLab Free customers with a self-managed instance running
+[GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us
+activity data through Service Ping. Features introduced here do not remove the feature from its paid
+tier. Users can continue to access the features in a paid tier without sharing usage data.
 
 #### Features available in 14.1 and later
 
@@ -209,17 +213,17 @@ sequenceDiagram
 
 - `uuid` - GitLab instance unique identifier
 - `hostname` - GitLab instance hostname
-- `version` - GitLab instance current versions 
+- `version` - GitLab instance current versions
 - `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
 - `message` - Error message
 
 <pre>
 <code>
 {
-  "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d", 
-  "hostname"=>"127.0.0.1", 
-  "version"=>"14.7.0-pre", 
-  "elapsed"=>0.006946, 
+  "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
+  "hostname"=>"127.0.0.1",
+  "version"=>"14.7.0-pre",
+  "elapsed"=>0.006946,
   "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
 }
 </code>
@@ -576,7 +580,7 @@ skip_db_write:
 ServicePing::SubmitService.new(skip_db_write: true).execute
 ```
 
-## Manually upload Service Ping payload 
+## Manually upload Service Ping payload
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7388) in GitLab 14.8 with a flag named `admin_application_settings_service_usage_data_center`. Disabled by default.
 
@@ -596,7 +600,7 @@ To upload payload manually:
 
 ## Monitoring
 
-Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health). 
+Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
 
 ## Troubleshooting
 

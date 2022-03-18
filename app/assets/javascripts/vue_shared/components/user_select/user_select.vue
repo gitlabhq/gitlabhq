@@ -1,4 +1,5 @@
 <script>
+import { debounce } from 'lodash';
 import {
   GlDropdown,
   GlDropdownForm,
@@ -6,11 +7,14 @@ import {
   GlDropdownItem,
   GlSearchBoxByType,
   GlLoadingIcon,
+  GlTooltipDirective,
 } from '@gitlab/ui';
-import searchUsers from '~/graphql_shared/queries/users_search.query.graphql';
 import { __ } from '~/locale';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
-import { ASSIGNEES_DEBOUNCE_DELAY, participantsQueries } from '~/sidebar/constants';
+import { IssuableType } from '~/issues/constants';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { participantsQueries, userSearchQueries } from '~/sidebar/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 
 export default {
   i18n: {
@@ -24,6 +28,9 @@ export default {
     GlSearchBoxByType,
     SidebarParticipant,
     GlLoadingIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     headerText: {
@@ -58,12 +65,17 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: 'issue',
+      default: IssuableType.Issue,
     },
     isEditing: {
       type: Boolean,
       required: false,
       default: true,
+    },
+    issuableId: {
+      type: Number,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -89,28 +101,35 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable?.participants.nodes;
+        return data.workspace?.issuable?.participants.nodes.map((node) => ({
+          ...node,
+          canMerge: false,
+        }));
       },
       error() {
         this.$emit('error');
       },
     },
     searchUsers: {
-      query: searchUsers,
+      query() {
+        return userSearchQueries[this.issuableType].query;
+      },
       variables() {
-        return {
-          fullPath: this.fullPath,
-          search: this.search,
-          first: 20,
-        };
+        return this.searchUsersVariables;
       },
       skip() {
         return !this.isEditing;
       },
       update(data) {
-        return data.workspace?.users?.nodes.filter((x) => x?.user).map(({ user }) => user) || [];
+        return (
+          data.workspace?.users?.nodes
+            .filter((x) => x?.user)
+            .map((node) => ({
+              ...node.user,
+              canMerge: node.mergeRequestInteraction?.canMerge || false,
+            })) || []
+        );
       },
-      debounce: ASSIGNEES_DEBOUNCE_DELAY,
       error() {
         this.$emit('error');
         this.isSearching = false;
@@ -121,6 +140,23 @@ export default {
     },
   },
   computed: {
+    isMergeRequest() {
+      return this.issuableType === IssuableType.MergeRequest;
+    },
+    searchUsersVariables() {
+      const variables = {
+        fullPath: this.fullPath,
+        search: this.search,
+        first: 20,
+      };
+      if (!this.isMergeRequest) {
+        return variables;
+      }
+      return {
+        ...variables,
+        mergeRequestId: convertToGraphQLId('MergeRequest', this.issuableId),
+      };
+    },
     isLoading() {
       return this.$apollo.queries.searchUsers.loading || this.$apollo.queries.participants.loading;
     },
@@ -135,8 +171,8 @@ export default {
 
       // TODO this de-duplication is temporary (BE fix required)
       // https://gitlab.com/gitlab-org/gitlab/-/issues/327822
-      const mergedSearchResults = filteredParticipants
-        .concat(this.searchUsers)
+      const mergedSearchResults = this.searchUsers
+        .concat(filteredParticipants)
         .reduce(
           (acc, current) => (acc.some((user) => current.id === user.id) ? acc : [...acc, current]),
           [],
@@ -179,6 +215,7 @@ export default {
       return this.selectedFiltered.length === 0;
     },
   },
+
   watch: {
     // We need to add this watcher to track the moment when user is alredy typing
     // but query is still not started due to debounce
@@ -188,15 +225,21 @@ export default {
       }
     },
   },
+  created() {
+    this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+  },
   methods: {
     selectAssignee(user) {
       let selected = [...this.value];
       if (!this.allowMultipleAssignees) {
         selected = [user];
+        this.$emit('input', selected);
+        this.$refs.dropdown.hide();
+        this.$emit('toggle');
       } else {
         selected.push(user);
+        this.$emit('input', selected);
       }
-      this.$emit('input', selected);
     },
     unselect(name) {
       const selected = this.value.filter((user) => user.username !== name);
@@ -204,6 +247,9 @@ export default {
     },
     focusSearch() {
       this.$refs.search.focusInput();
+    },
+    showDropdown() {
+      this.$refs.dropdown.show();
     },
     showDivider(list) {
       return list.length > 0 && this.isSearchEmpty;
@@ -216,22 +262,37 @@ export default {
       const currentUser = usersCopy.find((user) => user.username === this.currentUser.username);
 
       if (currentUser) {
+        currentUser.canMerge = this.currentUser.canMerge;
         const index = usersCopy.indexOf(currentUser);
         usersCopy.splice(0, 0, usersCopy.splice(index, 1)[0]);
       }
 
       return usersCopy;
     },
+    setSearchKey(value) {
+      this.search = value.trim();
+    },
+    tooltipText(user) {
+      if (!this.isMergeRequest) {
+        return '';
+      }
+      return user.canMerge ? '' : __('Cannot merge');
+    },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown class="show" :text="text" @toggle="$emit('toggle')">
+  <gl-dropdown ref="dropdown" :text="text" @toggle="$emit('toggle')" @shown="focusSearch">
     <template #header>
       <p class="gl-font-weight-bold gl-text-center gl-mt-2 gl-mb-4">{{ headerText }}</p>
       <gl-dropdown-divider />
-      <gl-search-box-by-type ref="search" v-model.trim="search" class="js-dropdown-input-field" />
+      <gl-search-box-by-type
+        ref="search"
+        :value="search"
+        class="js-dropdown-input-field"
+        @input="debouncedSearchKeyUpdate"
+      />
     </template>
     <gl-dropdown-form class="gl-relative gl-min-h-7">
       <gl-loading-icon
@@ -247,7 +308,7 @@ export default {
             :is-checked="selectedIsEmpty"
             :is-check-centered="true"
             data-testid="unassign"
-            @click="$emit('input', [])"
+            @click.native.capture.stop="$emit('input', [])"
           >
             <span :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'" class="gl-font-weight-bold">{{
               $options.i18n.unassigned
@@ -258,27 +319,44 @@ export default {
         <gl-dropdown-item
           v-for="item in selectedFiltered"
           :key="item.id"
+          v-gl-tooltip.left.viewport
+          :title="tooltipText(item)"
+          boundary="viewport"
           is-checked
           is-check-centered
           data-testid="selected-participant"
-          @click.stop="unselect(item.username)"
+          @click.native.capture.stop="unselect(item.username)"
         >
-          <sidebar-participant :user="item" />
+          <sidebar-participant :user="item" :issuable-type="issuableType" />
         </gl-dropdown-item>
         <template v-if="showCurrentUser">
           <gl-dropdown-divider />
-          <gl-dropdown-item data-testid="current-user" @click.stop="selectAssignee(currentUser)">
-            <sidebar-participant :user="currentUser" class="gl-pl-6!" />
+          <gl-dropdown-item
+            data-testid="current-user"
+            @click.native.capture.stop="selectAssignee(currentUser)"
+          >
+            <sidebar-participant
+              :user="currentUser"
+              :issuable-type="issuableType"
+              class="gl-pl-6!"
+            />
           </gl-dropdown-item>
         </template>
         <gl-dropdown-divider v-if="showDivider(unselectedFiltered)" />
         <gl-dropdown-item
           v-for="unselectedUser in unselectedFiltered"
           :key="unselectedUser.id"
+          v-gl-tooltip.left.viewport
+          :title="tooltipText(unselectedUser)"
+          boundary="viewport"
           data-testid="unselected-participant"
-          @click="selectAssignee(unselectedUser)"
+          @click.native.capture.stop="selectAssignee(unselectedUser)"
         >
-          <sidebar-participant :user="unselectedUser" class="gl-pl-6!" />
+          <sidebar-participant
+            :user="unselectedUser"
+            :issuable-type="issuableType"
+            class="gl-pl-6!"
+          />
         </gl-dropdown-item>
         <gl-dropdown-item v-if="noUsersFound" data-testid="empty-results" class="gl-pl-6!">
           {{ __('No matching results') }}

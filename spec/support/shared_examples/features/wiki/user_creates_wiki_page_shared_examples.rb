@@ -50,7 +50,7 @@ RSpec.shared_examples 'User creates wiki page' do
         click_on("Create page")
       end
 
-      expect(current_path).to include("one/two/three-test")
+      expect(page).to have_current_path(%r(one/two/three-test), ignore_query: true)
       expect(page).to have_link(href: wiki_page_path(wiki, 'one/two/three-test'))
     end
 
@@ -68,7 +68,7 @@ RSpec.shared_examples 'User creates wiki page' do
         click_button("Create page")
       end
 
-      expect(current_path).to eq(wiki_page_path(wiki, "home"))
+      expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
       expect(page).to have_content("test GitLab API doc Rake tasks Wiki header")
                   .and have_content("Home")
                   .and have_content("Last edited by #{user.name}")
@@ -76,7 +76,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       click_link("test")
 
-      expect(current_path).to eq(wiki_page_path(wiki, "test"))
+      expect(page).to have_current_path(wiki_page_path(wiki, "test"), ignore_query: true)
 
       page.within(:css, ".wiki-page-header") do
         expect(page).to have_content("Create New Page")
@@ -84,11 +84,11 @@ RSpec.shared_examples 'User creates wiki page' do
 
       click_link("Home")
 
-      expect(current_path).to eq(wiki_page_path(wiki, "home"))
+      expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
 
       click_link("GitLab API")
 
-      expect(current_path).to eq(wiki_page_path(wiki, "api"))
+      expect(page).to have_current_path(wiki_page_path(wiki, "api"), ignore_query: true)
 
       page.within(:css, ".wiki-page-header") do
         expect(page).to have_content("Create")
@@ -96,11 +96,11 @@ RSpec.shared_examples 'User creates wiki page' do
 
       click_link("Home")
 
-      expect(current_path).to eq(wiki_page_path(wiki, "home"))
+      expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
 
       click_link("Rake tasks")
 
-      expect(current_path).to eq(wiki_page_path(wiki, "raketasks"))
+      expect(page).to have_current_path(wiki_page_path(wiki, "raketasks"), ignore_query: true)
 
       page.within(:css, ".wiki-page-header") do
         expect(page).to have_content("Create")

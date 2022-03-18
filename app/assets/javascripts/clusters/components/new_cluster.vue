@@ -5,9 +5,9 @@ import { s__ } from '~/locale';
 
 export default {
   i18n: {
-    title: s__('ClusterIntegration|Enter the details for your Kubernetes cluster'),
+    title: s__('ClusterIntegration|Enter your Kubernetes cluster certificate details'),
     information: s__(
-      'ClusterIntegration|Please enter access information for your Kubernetes cluster. If you need help, you can read our %{linkStart}documentation%{linkEnd} on Kubernetes',
+      'ClusterIntegration|Enter details about your cluster. %{linkStart}How do I use a certificate to connect to my cluster?%{linkEnd}',
     ),
   },
   components: {
@@ -21,7 +21,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-pt-4">
     <h4>{{ $options.i18n.title }}</h4>
     <p>
       <gl-sprintf :message="$options.i18n.information">

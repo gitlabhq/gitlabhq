@@ -20,8 +20,8 @@
           = render 'shared/new_commit_form', placeholder: placeholder, ref: local_assigns[:ref]
 
           .form-actions
-            = button_tag class: 'btn gl-button btn-confirm btn-upload-file', id: 'submit-all', type: 'button' do
-              .gl-spinner.gl-mr-2.js-loading-icon.hidden
+            = button_tag class: 'btn gl-button btn-confirm btn-upload-file gl-mr-2', id: 'submit-all', type: 'button' do
+              = gl_loading_icon(inline: true, css_class: 'gl-mr-2 js-loading-icon hidden')
               = button_title
             = link_to _("Cancel"), '#', class: "btn gl-button btn-default btn-cancel", "data-dismiss" => "modal"
 

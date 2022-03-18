@@ -7,7 +7,7 @@ RSpec.describe SpammableActions::CaptchaCheck::JsonFormatActionsSupport do
     include SpammableActions::CaptchaCheck::JsonFormatActionsSupport
 
     def some_action
-      with_captcha_check_json_format { render :some_rendered_view }
+      with_captcha_check_json_format(spammable: spammable) { render :some_rendered_view }
     end
   end
 

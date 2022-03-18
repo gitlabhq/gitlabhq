@@ -22,14 +22,10 @@ type LocalWorkItemWidgetConnection {
   pageInfo: PageInfo!
 }
 
-type LocalTitleWidget implements LocalWorkItemWidget {
-  type: LocalWidgetType!
-  contentText: String!
-}
-
 type LocalWorkItem {
   id: ID!
   type: LocalWorkItemType!
+  title: String!
   widgets: [LocalWorkItemWidgetConnection]
 }
 
@@ -51,7 +47,7 @@ type LocalUpdateWorkItemPayload {
 }
 
 extend type Query {
-  workItem(id: ID!): LocalWorkItem!
+  localWorkItem(id: ID!): LocalWorkItem!
 }
 
 extend type Mutation {

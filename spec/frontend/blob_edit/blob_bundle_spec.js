@@ -25,7 +25,7 @@ describe('BlobBundle', () => {
       setFixtures(`
       <div class="js-edit-blob-form" data-blob-filename="blah">
         <button class="js-commit-button"></button>
-        <a class="btn btn-cancel" href="#"></a>
+        <button id='cancel-changes'></button>
       </div>`);
 
       blobBundle();
@@ -42,7 +42,7 @@ describe('BlobBundle', () => {
     });
 
     it('removes beforeunload listener when cancel link is clicked', () => {
-      $('.btn.btn-cancel').click();
+      $('#cancel-changes').click();
 
       expect(window.onbeforeunload).toBeNull();
     });
@@ -61,7 +61,7 @@ describe('BlobBundle', () => {
           data-human-access="owner"
           data-merge-request-path="path/to/mr">
           <button id='commit-changes' class="js-commit-button"></button>
-          <a class="btn btn-cancel" href="#"></a>
+          <button id='cancel-changes'></button>
         </div>
       </div>`);
 

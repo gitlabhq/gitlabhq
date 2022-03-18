@@ -11,3 +11,5 @@ module Projects
     end
   end
 end
+
+Projects::DeployTokens::DestroyService.prepend_mod

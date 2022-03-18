@@ -1,5 +1,6 @@
 import { Editor } from '@tiptap/vue-2';
 import { isFunction } from 'lodash';
+import eventHubFactory from '~/helpers/event_hub_factory';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import Attachment from '../extensions/attachment';
 import Audio from '../extensions/audio';
@@ -38,6 +39,7 @@ import Loading from '../extensions/loading';
 import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
+import PasteMarkdown from '../extensions/paste_markdown';
 import Reference from '../extensions/reference';
 import Strike from '../extensions/strike';
 import Subscript from '../extensions/subscript';
@@ -54,6 +56,7 @@ import Video from '../extensions/video';
 import WordBreak from '../extensions/word_break';
 import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
+import createMarkdownDeserializer from './markdown_deserializer';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
 
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
@@ -78,8 +81,10 @@ export const createContentEditor = ({
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
   }
 
+  const eventHub = eventHubFactory();
+
   const builtInContentEditorExtensions = [
-    Attachment.configure({ uploadsPath, renderMarkdown }),
+    Attachment.configure({ uploadsPath, renderMarkdown, eventHub }),
     Audio,
     Blockquote,
     Bold,
@@ -116,6 +121,7 @@ export const createContentEditor = ({
     MathInline,
     OrderedList,
     Paragraph,
+    PasteMarkdown.configure({ renderMarkdown, eventHub }),
     Reference,
     Strike,
     Subscript,
@@ -135,7 +141,8 @@ export const createContentEditor = ({
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
-  const serializer = createMarkdownSerializer({ render: renderMarkdown, serializerConfig });
+  const serializer = createMarkdownSerializer({ serializerConfig });
+  const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-  return new ContentEditor({ tiptapEditor, serializer });
+  return new ContentEditor({ tiptapEditor, serializer, eventHub, deserializer });
 };

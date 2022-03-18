@@ -7,6 +7,7 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 import createFlash from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
+import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { __, s__, sprintf } from '../../locale';
@@ -350,7 +351,10 @@ export default {
         parent: this.$el,
       });
     },
-    async formCancelHandler({ shouldConfirm, isDirty }) {
+    formCancelHandler: ignoreWhilePending(async function formCancelHandler({
+      shouldConfirm,
+      isDirty,
+    }) {
       if (shouldConfirm && isDirty) {
         const msg = __('Are you sure you want to cancel editing this comment?');
         const confirmed = await confirmAction(msg);
@@ -364,7 +368,7 @@ export default {
       }
       this.isEditing = false;
       this.$emit('cancelForm');
-    },
+    }),
     recoverNoteContent(noteText) {
       // we need to do this to prevent noteForm inconsistent content warning
       // this is something we intentionally do so we need to recover the content

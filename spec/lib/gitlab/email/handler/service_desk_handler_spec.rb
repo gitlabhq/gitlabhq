@@ -382,7 +382,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
       subject { 2.times { receiver.execute } }
 
       before do
-        stub_feature_flags(rate_limited_service_issues_create: true)
         stub_application_setting(issues_create_limit: 1)
       end
 
@@ -475,6 +474,20 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         new_issue = Issue.last
 
         expect(new_issue.external_author).to eq('finn@adventuretime.ooo')
+      end
+    end
+
+    context 'when there is a reply-to address and a from address' do
+      let(:email_raw) { email_fixture('emails/service_desk_reply_to_and_from.eml') }
+
+      it 'shows both from and reply-to addresses in the issue header' do
+        setup_attachment
+
+        expect { receiver.execute }.to change { Issue.count }.by(1)
+
+        new_issue = Issue.last
+
+        expect(new_issue.external_author).to eq('finn@adventuretime.ooo (reply to: marceline@adventuretime.ooo)')
       end
     end
 

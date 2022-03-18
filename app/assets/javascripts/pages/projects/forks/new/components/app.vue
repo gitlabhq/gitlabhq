@@ -10,38 +10,6 @@ export default {
       type: String,
       required: true,
     },
-    endpoint: {
-      type: String,
-      required: true,
-    },
-    projectFullPath: {
-      type: String,
-      required: true,
-    },
-    projectId: {
-      type: String,
-      required: true,
-    },
-    projectName: {
-      type: String,
-      required: true,
-    },
-    projectPath: {
-      type: String,
-      required: true,
-    },
-    projectDescription: {
-      type: String,
-      required: true,
-    },
-    projectVisibility: {
-      type: String,
-      required: true,
-    },
-    restrictedVisibilityLevels: {
-      type: Array,
-      required: true,
-    },
   },
 };
 </script>
@@ -62,16 +30,7 @@ export default {
       </p>
     </div>
     <div class="col-lg-9">
-      <fork-form
-        :endpoint="endpoint"
-        :project-full-path="projectFullPath"
-        :project-id="projectId"
-        :project-name="projectName"
-        :project-path="projectPath"
-        :project-description="projectDescription"
-        :project-visibility="projectVisibility"
-        :restricted-visibility-levels="restrictedVisibilityLevels"
-      />
+      <fork-form />
     </div>
   </div>
 </template>

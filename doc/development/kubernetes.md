@@ -136,7 +136,7 @@ Mitigation strategies include:
 
 1. Not allowing redirects to attacker controller resources:
    [`Kubeclient::KubeClient`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/kubernetes/kube_client.rb#)
-   can be configured to disallow any redirects by passing in
+   can be configured to prevent any redirects by passing in
    `http_max_redirects: 0` as an option.
 1. Not exposing error messages: by doing so, we
    prevent attackers from triggering errors to expose results from

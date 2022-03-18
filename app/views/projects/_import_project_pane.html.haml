@@ -8,7 +8,7 @@
     .import-buttons
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body', qa_selector: 'gitlab_import_button' } }
-          = link_to new_import_gitlab_project_path, class: 'gl-button btn-default btn btn_import_gitlab_project js-import-project-btn', data: { platform: 'gitlab_export', **tracking_attrs_data(track_label, 'click_button', 'gitlab_export') } do
+          = link_to '#', class: 'gl-button btn-default btn btn_import_gitlab_project js-import-project-btn', data: { href: new_import_gitlab_project_path, platform: 'gitlab_export', **tracking_attrs_data(track_label, 'click_button', 'gitlab_export') } do
             .gl-button-icon
               = sprite_icon('tanuki')
             = _("GitLab export")
@@ -36,12 +36,11 @@
         %div
       - if gitlab_import_enabled?
         %div
-          = link_to status_import_gitlab_path, class: "gl-button btn-default btn import_gitlab js-import-project-btn #{'how_to_import_link' unless gitlab_import_configured?}", data: { platform: 'gitlab_com', **tracking_attrs_data(track_label, 'click_button', 'gitlab_com') } do
+          = link_to status_import_gitlab_path, class: "gl-button btn-default btn import_gitlab js-import-project-btn #{'js-how-to-import-link' unless gitlab_import_configured?}",
+            data: { modal_title: _("Import projects from GitLab.com"), modal_message: import_from_gitlab_message, platform: 'gitlab_com', **tracking_attrs_data(track_label, 'click_button', 'gitlab_com') } do
             .gl-button-icon
               = sprite_icon('tanuki')
             = _("GitLab.com")
-          - unless gitlab_import_configured?
-            = render 'projects/gitlab_import_modal'
 
       - if fogbugz_import_enabled?
         %div

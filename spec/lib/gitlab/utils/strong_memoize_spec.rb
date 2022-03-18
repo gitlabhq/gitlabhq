@@ -48,6 +48,36 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
         let(:value) { value }
 
         it_behaves_like 'caching the value'
+
+        it 'raises exception for invalid key' do
+          expect { object.strong_memoize(10) { 20 } }.to raise_error /Invalid type of '10'/
+        end
+      end
+    end
+
+    context "memory allocation", type: :benchmark do
+      let(:value) { 'aaa' }
+
+      before do
+        object.method_name # warmup
+      end
+
+      [:method_name, "method_name"].each do |argument|
+        context "for #{argument.class}" do
+          it 'does allocate exactly one string when fetching value' do
+            expect do
+              object.strong_memoize(argument) { 10 }
+            end.to perform_allocation(1)
+          end
+
+          it 'does allocate exactly one string when storing value' do
+            object.clear_memoization(:method_name) # clear to force set
+
+            expect do
+              object.strong_memoize(argument) { 10 }
+            end.to perform_allocation(1)
+          end
+        end
       end
     end
   end

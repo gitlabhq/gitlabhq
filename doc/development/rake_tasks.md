@@ -196,6 +196,16 @@ One way to generate the initial list is to run the Rake task `rubocop:todo:gener
 bundle exec rake rubocop:todo:generate
 ```
 
+To generate TODO list for specific RuboCop rules, pass them comma-seperated as
+argument to the Rake task:
+
+```shell
+bundle exec rake 'rubocop:todo:generate[Gitlab/NamespacedClass,Lint/Syntax]'
+bundle exec rake rubocop:todo:generate\[Gitlab/NamespacedClass,Lint/Syntax\]
+```
+
+Some shells require brackets to be escaped or quoted.
+
 See [Resolving RuboCop exceptions](contributing/style_guides.md#resolving-rubocop-exceptions)
 on how to proceed from here.
 
@@ -219,14 +229,14 @@ To update the Emoji aliases file (used for Emoji autocomplete), run the
 following:
 
 ```shell
-bundle exec rake gemojione:aliases
+bundle exec rake tanuki_emoji:aliases
 ```
 
 To update the Emoji digests file (used for Emoji autocomplete), run the
 following:
 
 ```shell
-bundle exec rake gemojione:digests
+bundle exec rake tanuki_emoji:digests
 ```
 
 This updates the file `fixtures/emojis/digests.json` based on the currently
@@ -235,7 +245,7 @@ available Emoji.
 To generate a sprite file containing all the Emoji, run:
 
 ```shell
-bundle exec rake gemojione:sprite
+bundle exec rake tanuki_emoji:sprite
 ```
 
 If new emoji are added, the sprite sheet may change size. To compensate for

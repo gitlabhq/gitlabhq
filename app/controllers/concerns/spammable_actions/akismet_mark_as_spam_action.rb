@@ -2,7 +2,6 @@
 
 module SpammableActions::AkismetMarkAsSpamAction
   extend ActiveSupport::Concern
-  include SpammableActions::Attributes
 
   included do
     before_action :authorize_submit_spammable!, only: :mark_as_spam
@@ -22,7 +21,15 @@ module SpammableActions::AkismetMarkAsSpamAction
     access_denied! unless current_user.can_admin_all_resources?
   end
 
+  def spammable
+    # The class extending this module should define the #spammable method to return
+    # the Spammable model instance via: `alias_method :spammable , <:model_name>`
+    raise NotImplementedError, "#{self.class} should implement #{__method__}"
+  end
+
   def spammable_path
-    raise NotImplementedError, "#{self.class} does not implement #{__method__}"
+    # The class extending this module should define the #spammable_path method to return
+    # the route helper pointing to the action to show the Spammable instance
+    raise NotImplementedError, "#{self.class} should implement #{__method__}"
   end
 end

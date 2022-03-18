@@ -1,11 +1,13 @@
 import $ from 'jquery';
 import { memoize, throttle } from 'lodash';
+import createEventHub from '~/helpers/event_hub_factory';
 
 class DirtySubmitForm {
   constructor(form) {
     this.form = form;
     this.dirtyInputs = [];
     this.isDisabled = true;
+    this.events = createEventHub();
 
     this.init();
   }
@@ -36,10 +38,20 @@ class DirtySubmitForm {
     this.form.addEventListener('submit', (event) => this.formSubmit(event));
   }
 
+  addInputsListener(callback) {
+    this.events.$on('input', callback);
+  }
+
+  removeInputsListener(callback) {
+    this.events.$off('input', callback);
+  }
+
   updateDirtyInput(event) {
     const { target } = event;
 
     if (!target.dataset.isDirtySubmitInput) return;
+
+    this.events.$emit('input', event);
 
     this.updateDirtyInputs(target);
     this.toggleSubmission();

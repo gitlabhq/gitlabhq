@@ -88,6 +88,13 @@ RSpec.describe Admin::TopicsController do
       expect(errors).to contain_exactly(errors.full_message(:name, I18n.t('errors.messages.blank')))
     end
 
+    it 'shows error message if topic not unique (case insensitive)' do
+      post :create, params: { projects_topic: { name: topic.name.upcase } }
+
+      errors = assigns[:topic].errors
+      expect(errors).to contain_exactly(errors.full_message(:name, I18n.t('errors.messages.taken')))
+    end
+
     context 'as a normal user' do
       before do
         sign_in(user)
@@ -114,6 +121,15 @@ RSpec.describe Admin::TopicsController do
 
       errors = assigns[:topic].errors
       expect(errors).to contain_exactly(errors.full_message(:name, I18n.t('errors.messages.blank')))
+    end
+
+    it 'shows error message if topic not unique (case insensitive)' do
+      other_topic = create(:topic, name: 'other-topic')
+
+      put :update, params: { id: topic.id, projects_topic: { name: other_topic.name.upcase } }
+
+      errors = assigns[:topic].errors
+      expect(errors).to contain_exactly(errors.full_message(:name, I18n.t('errors.messages.taken')))
     end
 
     context 'as a normal user' do

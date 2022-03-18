@@ -4,7 +4,7 @@ module FlocOptOut
   extend ActiveSupport::Concern
 
   included do
-    after_action :set_floc_opt_out_header, unless: :floc_enabled?
+    before_action :set_floc_opt_out_header, unless: :floc_enabled?
   end
 
   def floc_enabled?

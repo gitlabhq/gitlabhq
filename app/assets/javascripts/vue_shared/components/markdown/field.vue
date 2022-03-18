@@ -48,6 +48,11 @@ export default {
       required: false,
       default: '',
     },
+    enablePreview: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     addSpacingClasses: {
       type: Boolean,
       required: false,
@@ -113,6 +118,7 @@ export default {
       markdownPreviewLoading: false,
       previewMarkdown: false,
       suggestions: this.note.suggestions || [],
+      debouncedFetchMarkdownLoading: false,
     };
   },
   computed: {
@@ -198,9 +204,19 @@ export default {
         const justRemovedAll = hadAll && !hasAll;
 
         if (justAddedAll) {
+          this.debouncedFetchMarkdownLoading = false;
           this.debouncedFetchMarkdown();
         } else if (justRemovedAll) {
+          this.debouncedFetchMarkdownLoading = true;
           this.referencedUsers = [];
+        }
+      },
+    },
+    enablePreview: {
+      immediate: true,
+      handler(newVal) {
+        if (!newVal) {
+          this.showWriteTab();
         }
       },
     },
@@ -271,7 +287,12 @@ export default {
     },
 
     debouncedFetchMarkdown: debounce(function debouncedFetchMarkdown() {
-      return this.fetchMarkdown();
+      return this.fetchMarkdown().then(() => {
+        if (this.debouncedFetchMarkdownLoading) {
+          this.referencedUsers = [];
+          this.debouncedFetchMarkdownLoading = false;
+        }
+      });
     }, 400),
 
     renderMarkdown(data = {}) {
@@ -301,6 +322,7 @@ export default {
       :preview-markdown="previewMarkdown"
       :line-content="lineContent"
       :can-suggest="canSuggest"
+      :enable-preview="enablePreview"
       :show-suggest-popover="showSuggestPopover"
       :suggestion-start-index="suggestionsStartIndex"
       data-testid="markdownHeader"

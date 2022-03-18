@@ -20,7 +20,7 @@ Some components (documented on the GitLab Operator doc) are not supported yet.
 
 ## Deploy to and integrate with OpenShift from GitLab
 
-Deploying custom or COTS applications on top of OpenShift from GitLab is supported using [the GitLab Agent](../../user/clusters/agent/index.md).
+Deploying custom or COTS applications on top of OpenShift from GitLab is supported using [the GitLab agent](../../user/clusters/agent/index.md).
 
 ## Use OpenShift to run a GitLab Runner Fleet
 
@@ -28,6 +28,12 @@ The GitLab Operator does not include the GitLab Runner. To install and manage a 
 [GitLab Runner Operator](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator).
 
 ## Unsupported GitLab features
+
+### Secure and Protect
+
+- License Compliance
+- Code Quality scanning
+- Cluster Image Scanning
 
 ### Docker-in-Docker
 

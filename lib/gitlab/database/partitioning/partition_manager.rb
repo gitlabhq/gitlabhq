@@ -46,6 +46,7 @@ module Gitlab
         private
 
         attr_reader :model
+
         delegate :connection, to: :model
 
         def missing_partitions

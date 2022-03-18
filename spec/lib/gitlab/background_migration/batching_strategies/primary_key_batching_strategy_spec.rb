@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy, '#next_batch' do
-  let(:batching_strategy) { described_class.new }
+  let(:batching_strategy) { described_class.new(connection: ActiveRecord::Base.connection) }
   let(:namespaces) { table(:namespaces) }
 
   let!(:namespace1) { namespaces.create!(name: 'batchtest1', path: 'batch-test1') }
   let!(:namespace2) { namespaces.create!(name: 'batchtest2', path: 'batch-test2') }
   let!(:namespace3) { namespaces.create!(name: 'batchtest3', path: 'batch-test3') }
   let!(:namespace4) { namespaces.create!(name: 'batchtest4', path: 'batch-test4') }
+
+  it { expect(described_class).to be < Gitlab::BackgroundMigration::BatchingStrategies::BaseStrategy }
 
   context 'when starting on the first batch' do
     it 'returns the bounds of the next batch' do

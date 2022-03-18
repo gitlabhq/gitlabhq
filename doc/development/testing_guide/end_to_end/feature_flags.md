@@ -130,7 +130,7 @@ You can set this variable inside the `fabricate_via_api` call. For a consistent 
 - Add the word `activated` to the end of a variable's name.
 - Inside the `initialize` method, set the variable's default value.
 
-For example: 
+For example:
 
 ```ruby
 def initialize

@@ -5,7 +5,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '../components/runner_header.vue';
 import RunnerUpdateForm from '../components/runner_update_form.vue';
 import { I18N_FETCH_ERROR } from '../constants';
-import getRunnerQuery from '../graphql/get_runner.query.graphql';
+import runnerQuery from '../graphql/details/runner.query.graphql';
 import { captureException } from '../sentry_utils';
 
 export default {
@@ -27,7 +27,7 @@ export default {
   },
   apollo: {
     runner: {
-      query: getRunnerQuery,
+      query: runnerQuery,
       variables() {
         return {
           id: convertToGraphQLId(TYPE_CI_RUNNER, this.runnerId),

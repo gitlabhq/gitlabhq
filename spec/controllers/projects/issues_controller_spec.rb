@@ -72,7 +72,21 @@ RSpec.describe Projects::IssuesController do
         project.add_developer(user)
       end
 
-      it_behaves_like "issuables list meta-data", :issue
+      context 'when issues_full_text_search is disabled' do
+        before do
+          stub_feature_flags(issues_full_text_search: false)
+        end
+
+        it_behaves_like 'issuables list meta-data', :issue
+      end
+
+      context 'when issues_full_text_search is enabled' do
+        before do
+          stub_feature_flags(issues_full_text_search: true)
+        end
+
+        it_behaves_like 'issuables list meta-data', :issue
+      end
 
       it_behaves_like 'set sort order from user preference' do
         let(:sorting_param) { 'updated_asc' }
@@ -605,11 +619,11 @@ RSpec.describe Projects::IssuesController do
         end
       end
 
-      context 'when the SpamVerdictService disallows' do
+      context 'when an issue is identified as spam' do
         before do
           stub_application_setting(recaptcha_enabled: true)
-          expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-            expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
+          allow_next_instance_of(Spam::AkismetService) do |akismet_service|
+            allow(akismet_service).to receive(:spam?).and_return(true)
           end
         end
 
@@ -926,8 +940,8 @@ RSpec.describe Projects::IssuesController do
         context 'when an issue is identified as spam' do
           context 'when recaptcha is not verified' do
             before do
-              expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-                expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
+              allow_next_instance_of(Spam::AkismetService) do |akismet_service|
+                allow(akismet_service).to receive(:spam?).and_return(true)
               end
             end
 
@@ -1004,6 +1018,7 @@ RSpec.describe Projects::IssuesController do
             end
 
             it 'returns 200 status' do
+              update_verified_issue
               expect(response).to have_gitlab_http_status(:ok)
             end
 
@@ -1049,35 +1064,6 @@ RSpec.describe Projects::IssuesController do
         # Follow-up to get rid of this `2 * label.count` requirement: https://gitlab.com/gitlab-org/gitlab-foss/issues/52230
         expect { issue.update!(description: [issue.description, labels].join(' ')) }
           .not_to exceed_query_limit(control_count + 2 * labels.count)
-      end
-
-      context 'real-time sidebar feature flag' do
-        let_it_be(:project) { create(:project, :public) }
-        let_it_be(:issue) { create(:issue, project: project) }
-
-        context 'when enabled' do
-          before do
-            stub_feature_flags(real_time_issue_sidebar: true)
-          end
-
-          it 'pushes the correct value to the frontend' do
-            go(id: issue.to_param)
-
-            expect(Gon.features).to include('realTimeIssueSidebar' => true)
-          end
-        end
-
-        context 'when disabled' do
-          before do
-            stub_feature_flags(real_time_issue_sidebar: false)
-          end
-
-          it 'pushes the correct value to the frontend' do
-            go(id: issue.to_param)
-
-            expect(Gon.features).to include('realTimeIssueSidebar' => false)
-          end
-        end
       end
 
       it 'logs the view with Gitlab::Search::RecentIssues' do
@@ -1260,11 +1246,11 @@ RSpec.describe Projects::IssuesController do
         end
       end
 
-      context 'when SpamVerdictService requires recaptcha' do
+      context 'when an issue is identified as spam and requires recaptcha' do
         context 'when captcha is not verified' do
           before do
-            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-              expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
+            allow_next_instance_of(Spam::AkismetService) do |akismet_service|
+              allow(akismet_service).to receive(:spam?).and_return(true)
             end
           end
 

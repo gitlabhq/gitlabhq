@@ -199,6 +199,7 @@ RSpec.configure do |config|
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
   config.include StubSpamServices
+  config.include RSpec::Benchmark::Matchers, type: :benchmark
 
   include StubFeatureFlags
 
@@ -252,6 +253,20 @@ RSpec.configure do |config|
     ::Ci::ApplicationRecord.set_open_transactions_baseline
   end
 
+  config.around do |example|
+    if example.metadata.fetch(:stub_feature_flags, true)
+      # It doesn't make sense for this to default to enabled as we only plan to
+      # use this temporarily to override an environment variable but eventually
+      # we'll just use the environment variable value when we've completed the
+      # gradual rollout. This stub must happen in around block as there are other
+      # around blocks in tests that will run before this and get the wrong
+      # database connection.
+      stub_feature_flags(force_no_sharing_primary_model: false)
+    end
+
+    example.run
+  end
+
   config.append_after do
     ApplicationRecord.reset_open_transactions_baseline
     ::Ci::ApplicationRecord.reset_open_transactions_baseline
@@ -303,8 +318,6 @@ RSpec.configure do |config|
       # It's done in order to preserve the concistency in tests
       # As we're ready to change `master` usages to `main`, let's enable it
       stub_feature_flags(main_branch_over_master: false)
-
-      stub_feature_flags(issue_boards_filtered_search: false)
 
       # Disable issue respositioning to avoid heavy load on database when importing big projects.
       # This is only turned on when app is handling heavy project imports.
@@ -445,11 +458,6 @@ RSpec.configure do |config|
     end
   end
 
-  # Allows stdout to be redirected to reduce noise
-  config.before(:each, :silence_stdout) do
-    $stdout = StringIO.new
-  end
-
   # Makes diffs show entire non-truncated values.
   config.before(:each, unlimited_max_formatted_output_length: true) do |_example|
     config.expect_with :rspec do |c|
@@ -460,10 +468,6 @@ RSpec.configure do |config|
   # Ensures that any Javascript script that tries to make the external VersionCheck API call skips it and returns a response
   config.before(:each, :js) do
     allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
-  end
-
-  config.after(:each, :silence_stdout) do
-    $stdout = STDOUT
   end
 
   config.disable_monkey_patching!

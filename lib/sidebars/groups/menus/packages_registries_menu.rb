@@ -8,8 +8,8 @@ module Sidebars
         def configure_menu_items
           add_item(packages_registry_menu_item)
           add_item(container_registry_menu_item)
+          add_item(harbor_registry__menu_item)
           add_item(dependency_proxy_menu_item)
-
           true
         end
 
@@ -46,6 +46,17 @@ module Sidebars
             link: group_container_registries_path(context.group),
             active_routes: { controller: 'groups/registry/repositories' },
             item_id: :container_registry
+          )
+        end
+
+        def harbor_registry__menu_item
+          return nil_menu_item(:harbor_registry) if Feature.disabled?(:harbor_registry_integration)
+
+          ::Sidebars::MenuItem.new(
+            title: _('Harbor Registry'),
+            link: group_harbor_registries_path(context.group),
+            active_routes: { controller: 'groups/harbor/repositories' },
+            item_id: :harbor_registry
           )
         end
 

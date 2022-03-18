@@ -8,8 +8,12 @@ class DeleteIssueMergeRequestTaggingsRecords < Gitlab::Database::Migration[1.0]
   BATCH_SIZE = 3_000
   TAGGABLE_TYPES = %w(Issue MergeRequest)
 
+  class Tagging < ActiveRecord::Base
+    self.table_name = "taggings"
+  end
+
   def up
-    sleep 2 while ActsAsTaggableOn::Tagging.where(taggable_type: TAGGABLE_TYPES).limit(BATCH_SIZE).delete_all > 0
+    sleep 2 while Tagging.where(taggable_type: TAGGABLE_TYPES).limit(BATCH_SIZE).delete_all > 0
 
     remove_concurrent_index_by_name :taggings, INDEX_NAME
   end

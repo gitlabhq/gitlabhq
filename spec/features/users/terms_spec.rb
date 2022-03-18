@@ -82,7 +82,7 @@ RSpec.describe 'Users > Terms', :js do
 
         click_link 'Continue'
 
-        expect(current_path).to eq(root_path)
+        expect(page).to have_current_path(root_path, ignore_query: true)
       end
     end
 
@@ -99,7 +99,7 @@ RSpec.describe 'Users > Terms', :js do
         enforce_terms
 
         # Application settings are cached for a minute
-        Timecop.travel 2.minutes do
+        travel_to 2.minutes.from_now do
           within('.nav-sidebar') do
             click_link 'Issues'
           end
@@ -108,7 +108,7 @@ RSpec.describe 'Users > Terms', :js do
 
           click_button('Accept terms')
 
-          expect(current_path).to eq(project_issues_path(project))
+          expect(page).to have_current_path(project_issues_path(project), ignore_query: true)
         end
       end
 
@@ -123,11 +123,11 @@ RSpec.describe 'Users > Terms', :js do
 
         click_button 'Create issue'
 
-        expect(current_path).to eq(terms_path)
+        expect(page).to have_current_path(terms_path, ignore_query: true)
 
         click_button('Accept terms')
 
-        expect(current_path).to eq(new_project_issue_path(project))
+        expect(page).to have_current_path(new_project_issue_path(project), ignore_query: true)
         expect(find_field('issue_title').value).to eq('Hello world, a new issue')
         expect(find_field('issue_description').value).to eq("We don't want to lose what the user typed")
       end

@@ -32,11 +32,7 @@ class BulkCreateIntegrationService
   end
 
   def integration_hash
-    if integration.template?
-      integration.to_integration_hash
-    else
-      integration.to_integration_hash.tap { |json| json['inherit_from_id'] = integration.inherit_from_id || integration.id }
-    end
+    integration.to_integration_hash.tap { |json| json['inherit_from_id'] = integration.inherit_from_id || integration.id }
   end
 
   def data_fields_hash

@@ -11,6 +11,11 @@ module Ci
     InvalidBridgeTypeError = Class.new(StandardError)
     InvalidTransitionError = Class.new(StandardError)
 
+    FORWARD_DEFAULTS = {
+      yaml_variables: true,
+      pipeline_variables: false
+    }.freeze
+
     belongs_to :project
     belongs_to :trigger_request
     has_many :sourced_pipelines, class_name: "::Ci::Sources::Pipeline",
@@ -199,12 +204,13 @@ module Ci
     end
 
     def downstream_variables
-      variables = scoped_variables.concat(pipeline.persisted_variables)
-
-      variables.to_runner_variables.yield_self do |all_variables|
-        yaml_variables.to_a.map do |hash|
-          { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], all_variables) }
-        end
+      if ::Feature.enabled?(:ci_trigger_forward_variables, project, default_enabled: :yaml)
+        calculate_downstream_variables
+          .reverse # variables priority
+          .uniq { |var| var[:key] } # only one variable key to pass
+          .reverse
+      else
+        legacy_downstream_variables
       end
     end
 
@@ -249,6 +255,58 @@ module Ci
           merge_request: parent_pipeline.merge_request
         }
       }
+    end
+
+    def legacy_downstream_variables
+      variables = scoped_variables.concat(pipeline.persisted_variables)
+
+      variables.to_runner_variables.yield_self do |all_variables|
+        yaml_variables.to_a.map do |hash|
+          { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], all_variables) }
+        end
+      end
+    end
+
+    def calculate_downstream_variables
+      expand_variables = scoped_variables
+                           .concat(pipeline.persisted_variables)
+                           .to_runner_variables
+
+      # The order of this list refers to the priority of the variables
+      downstream_yaml_variables(expand_variables) +
+        downstream_pipeline_variables(expand_variables)
+    end
+
+    def downstream_yaml_variables(expand_variables)
+      return [] unless forward_yaml_variables?
+
+      yaml_variables.to_a.map do |hash|
+        { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], expand_variables) }
+      end
+    end
+
+    def downstream_pipeline_variables(expand_variables)
+      return [] unless forward_pipeline_variables?
+
+      pipeline.variables.to_a.map do |variable|
+        { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+      end
+    end
+
+    def forward_yaml_variables?
+      strong_memoize(:forward_yaml_variables) do
+        result = options&.dig(:trigger, :forward, :yaml_variables)
+
+        result.nil? ? FORWARD_DEFAULTS[:yaml_variables] : result
+      end
+    end
+
+    def forward_pipeline_variables?
+      strong_memoize(:forward_pipeline_variables) do
+        result = options&.dig(:trigger, :forward, :pipeline_variables)
+
+        result.nil? ? FORWARD_DEFAULTS[:pipeline_variables] : result
+      end
     end
   end
 end

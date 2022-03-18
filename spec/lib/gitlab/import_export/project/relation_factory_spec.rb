@@ -401,4 +401,20 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       expect(created_object.value).to be_nil
     end
   end
+
+  context 'event object' do
+    let(:relation_sym) { :events }
+    let(:relation_hash) do
+      {
+        'project_id' => project.id,
+        'author_id' => admin.id,
+        'action' => 'created',
+        'target_type' => 'Issue'
+      }
+    end
+
+    it 'has preloaded project' do
+      expect(created_object.project).to equal(project)
+    end
+  end
 end

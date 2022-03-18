@@ -277,7 +277,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter do
   end
 
   context 'References with html entities' do
-    let!(:label) { create(:label, name: '&lt;html&gt;', project: project) }
+    let!(:label) { create(:label, title: '&lt;html&gt;', project: project) }
 
     it 'links to a valid reference' do
       doc = reference_filter('See ~"&lt;html&gt;"')

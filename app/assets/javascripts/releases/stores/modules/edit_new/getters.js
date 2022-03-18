@@ -1,5 +1,6 @@
 import { isEmpty } from 'lodash';
 import { hasContent } from '~/lib/utils/text_utility';
+import { getDuplicateItemsFromArray } from '~/lib/utils/array_utility';
 
 /**
  * @returns {Boolean} `true` if the app is editing an existing release.
@@ -95,6 +96,17 @@ export const validationErrors = (state) => {
     }
   });
 
+  // check for duplicated Link Titles
+  const linkTitles = state.release.assets.links.map((link) => link.name.trim());
+  const duplicatedTitles = getDuplicateItemsFromArray(linkTitles);
+
+  // add a validation error for each link that shares Link Title
+  state.release.assets.links.forEach((link) => {
+    if (hasContent(link.name) && duplicatedTitles.includes(link.name.trim())) {
+      errors.assets.links[link.id].isTitleDuplicate = true;
+    }
+  });
+
   return errors;
 };
 
@@ -131,7 +143,7 @@ export const releaseCreateMutatationVariables = (state, getters) => {
       ref: state.createFrom,
       assets: {
         links: getters.releaseLinksToCreate.map(({ name, url, linkType }) => ({
-          name,
+          name: name.trim(),
           url,
           linkType: linkType.toUpperCase(),
         })),

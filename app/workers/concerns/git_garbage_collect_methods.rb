@@ -83,17 +83,27 @@ module GitGarbageCollectMethods
   def gitaly_call(task, resource)
     repository = resource.repository.raw_repository
 
-    client = get_gitaly_client(task, repository)
+    if Feature.enabled?(:optimized_housekeeping, container(resource), default_enabled: :yaml)
+      client = repository.gitaly_repository_client
 
-    case task
-    when :prune, :gc
-      client.garbage_collect(bitmaps_enabled?, prune: task == :prune)
-    when :full_repack
-      client.repack_full(bitmaps_enabled?)
-    when :incremental_repack
-      client.repack_incremental
-    when :pack_refs
-      client.pack_refs
+      if task == :prune
+        client.prune_unreachable_objects
+      else
+        client.optimize_repository
+      end
+    else
+      client = get_gitaly_client(task, repository)
+
+      case task
+      when :prune, :gc
+        client.garbage_collect(bitmaps_enabled?, prune: task == :prune)
+      when :full_repack
+        client.repack_full(bitmaps_enabled?)
+      when :incremental_repack
+        client.repack_incremental
+      when :pack_refs
+        client.pack_refs
+      end
     end
   rescue GRPC::NotFound => e
     Gitlab::GitLogger.error("#{__method__} failed:\nRepository not found")

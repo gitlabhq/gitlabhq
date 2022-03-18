@@ -304,10 +304,6 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review, urgency: :high do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        project = merge_request.project
-
-        not_found! unless project.context_commits_enabled?
-
         context_commits =
           paginate(merge_request.merge_request_context_commits).map(&:to_commit)
 
@@ -328,9 +324,6 @@ module API
         end
 
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        project = merge_request.project
-
-        not_found! unless project.context_commits_enabled?
 
         authorize!(:update_merge_request, merge_request)
 
@@ -351,9 +344,6 @@ module API
       delete ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review do
         commit_ids = params[:commits]
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        project = merge_request.project
-
-        not_found! unless project.context_commits_enabled?
 
         authorize!(:destroy_merge_request, merge_request)
         project = merge_request.target_project

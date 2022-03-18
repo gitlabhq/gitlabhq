@@ -169,12 +169,11 @@ describe('RepoEditor', () => {
       expect(findEditor().isVisible()).toBe(true);
     });
 
-    it('renders only an edit tab', async () => {
+    it('renders no tabs', async () => {
       await createComponent();
       const tabs = findTabs();
 
-      expect(tabs).toHaveLength(1);
-      expect(tabs.at(0).text()).toBe('Edit');
+      expect(tabs).toHaveLength(0);
     });
   });
 
@@ -196,25 +195,48 @@ describe('RepoEditor', () => {
       mock.restore();
     });
 
-    it('renders an Edit and a Preview Tab', async () => {
-      await createComponent({ activeFile });
-      const tabs = findTabs();
+    describe('when files is markdown', () => {
+      let layoutSpy;
 
-      expect(tabs).toHaveLength(2);
-      expect(tabs.at(0).text()).toBe('Edit');
-      expect(tabs.at(1).text()).toBe('Preview Markdown');
+      beforeEach(async () => {
+        await createComponent({ activeFile });
+        layoutSpy = jest.spyOn(wrapper.vm.editor, 'layout');
+      });
+
+      it('renders an Edit and a Preview Tab', () => {
+        const tabs = findTabs();
+
+        expect(tabs).toHaveLength(2);
+        expect(tabs.at(0).text()).toBe('Edit');
+        expect(tabs.at(1).text()).toBe('Preview Markdown');
+      });
+
+      it('renders markdown for tempFile', async () => {
+        findPreviewTab().trigger('click');
+        await waitForPromises();
+        expect(wrapper.find(ContentViewer).html()).toContain(defaultFileProps.content);
+      });
+
+      it('should not trigger layout', async () => {
+        expect(layoutSpy).not.toHaveBeenCalled();
+      });
+
+      describe('when file changes to non-markdown file', () => {
+        beforeEach(async () => {
+          wrapper.setProps({ file: dummyFile.empty });
+        });
+
+        it('should hide tabs', () => {
+          expect(findTabs()).toHaveLength(0);
+        });
+
+        it('should trigger refresh dimensions', async () => {
+          expect(layoutSpy).toHaveBeenCalledTimes(1);
+        });
+      });
     });
 
-    it('renders markdown for tempFile', async () => {
-      // by default files created in the spec are temp: no need for explicitly sending the param
-      await createComponent({ activeFile });
-
-      findPreviewTab().trigger('click');
-      await waitForPromises();
-      expect(wrapper.find(ContentViewer).html()).toContain(defaultFileProps.content);
-    });
-
-    it('shows no tabs when not in Edit mode', async () => {
+    it('when not in edit mode, shows no tabs', async () => {
       await createComponent({
         state: {
           currentActivityView: leftSidebarViews.review.name,
@@ -405,7 +427,7 @@ describe('RepoEditor', () => {
 
     it.each`
       mode        | isVisible
-      ${'edit'}   | ${true}
+      ${'edit'}   | ${false}
       ${'review'} | ${false}
       ${'commit'} | ${false}
     `('tabs in $mode are $isVisible', async ({ mode, isVisible } = {}) => {

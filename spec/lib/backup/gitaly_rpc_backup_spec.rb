@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Backup::GitalyRpcBackup do
   let(:progress) { spy(:stdout) }
+  let(:destination) { File.join(Gitlab.config.backup.path, 'repositories') }
 
   subject { described_class.new(progress) }
 
@@ -14,7 +15,7 @@ RSpec.describe Backup::GitalyRpcBackup do
 
   context 'unknown' do
     it 'fails to start unknown' do
-      expect { subject.start(:unknown) }.to raise_error(::Backup::Error, 'unknown backup type: unknown')
+      expect { subject.start(:unknown, destination) }.to raise_error(::Backup::Error, 'unknown backup type: unknown')
     end
   end
 
@@ -27,7 +28,7 @@ RSpec.describe Backup::GitalyRpcBackup do
         project_snippet = create(:project_snippet, :repository, project: project)
         personal_snippet = create(:personal_snippet, :repository, author: project.first_owner)
 
-        subject.start(:create)
+        subject.start(:create, destination)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
         subject.enqueue(project, Gitlab::GlRepository::WIKI)
         subject.enqueue(project, Gitlab::GlRepository::DESIGN)
@@ -35,11 +36,11 @@ RSpec.describe Backup::GitalyRpcBackup do
         subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
         subject.finish!
 
-        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.bundle'))
-        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.wiki.bundle'))
-        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.design.bundle'))
-        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', personal_snippet.disk_path + '.bundle'))
-        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project_snippet.disk_path + '.bundle'))
+        expect(File).to exist(File.join(destination, project.disk_path + '.bundle'))
+        expect(File).to exist(File.join(destination, project.disk_path + '.wiki.bundle'))
+        expect(File).to exist(File.join(destination, project.disk_path + '.design.bundle'))
+        expect(File).to exist(File.join(destination, personal_snippet.disk_path + '.bundle'))
+        expect(File).to exist(File.join(destination, project_snippet.disk_path + '.bundle'))
       end
 
       context 'failure' do
@@ -50,7 +51,7 @@ RSpec.describe Backup::GitalyRpcBackup do
         end
 
         it 'logs an appropriate message', :aggregate_failures do
-          subject.start(:create)
+          subject.start(:create, destination)
           subject.enqueue(project, Gitlab::GlRepository::PROJECT)
           subject.finish!
 
@@ -90,7 +91,7 @@ RSpec.describe Backup::GitalyRpcBackup do
       copy_bundle_to_backup_path('personal_snippet_repo.bundle', personal_snippet.disk_path + '.bundle')
       copy_bundle_to_backup_path('project_snippet_repo.bundle', project_snippet.disk_path + '.bundle')
 
-      subject.start(:restore)
+      subject.start(:restore, destination)
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
       subject.enqueue(project, Gitlab::GlRepository::WIKI)
       subject.enqueue(project, Gitlab::GlRepository::DESIGN)
@@ -123,7 +124,7 @@ RSpec.describe Backup::GitalyRpcBackup do
         repository
       end
 
-      subject.start(:restore)
+      subject.start(:restore, destination)
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
       subject.enqueue(project, Gitlab::GlRepository::WIKI)
       subject.enqueue(project, Gitlab::GlRepository::DESIGN)
@@ -141,7 +142,7 @@ RSpec.describe Backup::GitalyRpcBackup do
       end
 
       it 'logs an appropriate message', :aggregate_failures do
-        subject.start(:restore)
+        subject.start(:restore, destination)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
         subject.finish!
 

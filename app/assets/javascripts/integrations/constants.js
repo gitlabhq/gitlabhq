@@ -1,6 +1,7 @@
 import { s__, __ } from '~/locale';
 
 export const integrationLevels = {
+  PROJECT: 'project',
   GROUP: 'group',
   INSTANCE: 'instance',
 };
@@ -24,3 +25,15 @@ export const I18N_SUCCESSFUL_CONNECTION_MESSAGE = s__('Integrations|Connection s
 
 export const settingsTabTitle = __('Settings');
 export const overridesTabTitle = s__('Integrations|Projects using custom settings');
+
+export const integrationFormSections = {
+  CONNECTION: 'connection',
+  JIRA_TRIGGER: 'jira_trigger',
+  JIRA_ISSUES: 'jira_issues',
+};
+
+export const integrationFormSectionComponents = {
+  [integrationFormSections.CONNECTION]: 'IntegrationSectionConnection',
+  [integrationFormSections.JIRA_TRIGGER]: 'IntegrationSectionJiraTrigger',
+  [integrationFormSections.JIRA_ISSUES]: 'IntegrationSectionJiraIssues',
+};

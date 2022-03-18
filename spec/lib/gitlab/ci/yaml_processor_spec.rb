@@ -9,10 +9,6 @@ module Gitlab
 
       subject { described_class.new(config, user: nil).execute }
 
-      before do
-        stub_feature_flags(allow_unsafe_ruby_regexp: false)
-      end
-
       shared_examples 'returns errors' do |error_message|
         it 'adds a message when an error is encountered' do
           expect(subject.errors).to include(error_message)
@@ -326,6 +322,40 @@ module Gitlab
 
             it 'has the attributes' do
               expect(subject[:resource_group_key]).to eq 'iOS'
+            end
+          end
+        end
+
+        describe 'bridge job' do
+          let(:config) do
+            YAML.dump(rspec: {
+              trigger: {
+                project: 'namespace/project',
+                branch: 'main'
+              }
+            })
+          end
+
+          it 'has the attributes' do
+            expect(subject[:options]).to eq(
+              trigger: { project: 'namespace/project', branch: 'main' }
+            )
+          end
+
+          context 'with forward' do
+            let(:config) do
+              YAML.dump(rspec: {
+                trigger: {
+                  project: 'namespace/project',
+                  forward: { pipeline_variables: true }
+                }
+              })
+            end
+
+            it 'has the attributes' do
+              expect(subject[:options]).to eq(
+                trigger: { project: 'namespace/project', forward: { pipeline_variables: true } }
+              )
             end
           end
         end

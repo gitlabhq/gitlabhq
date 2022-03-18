@@ -16,7 +16,7 @@ module Gitlab
       def disk_access_denied?
         return true unless ::Settings.pages.local_store&.enabled
 
-        ::Gitlab::Runtime.web_server? && !::Gitlab::Runtime.test_suite?
+        ::Gitlab::Runtime.puma? && !::Gitlab::Runtime.test_suite?
       end
 
       def report_denied_disk_access

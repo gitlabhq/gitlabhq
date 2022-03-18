@@ -7,6 +7,7 @@ import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vu
 import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/vue_shared/components/source_viewer/constants';
 import LineNumbers from '~/vue_shared/components/line_numbers.vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import * as sourceViewerUtils from '~/vue_shared/components/source_viewer/utils';
 
 jest.mock('highlight.js/lib/core');
 Vue.use(VueRouter);
@@ -36,6 +37,7 @@ describe('Source Viewer component', () => {
   beforeEach(() => {
     hljs.highlight.mockImplementation(() => ({ value: highlightedContent }));
     hljs.highlightAuto.mockImplementation(() => ({ value: highlightedContent }));
+    jest.spyOn(sourceViewerUtils, 'wrapLines');
 
     return createComponent();
   });
@@ -71,6 +73,10 @@ describe('Source Viewer component', () => {
       await createComponent();
 
       expect(findLoadingIcon().exists()).toBe(true);
+    });
+
+    it('calls the wrapLines helper method with highlightedContent and mappedLanguage', () => {
+      expect(sourceViewerUtils.wrapLines).toHaveBeenCalledWith(highlightedContent, mappedLanguage);
     });
 
     it('renders Line Numbers', () => {

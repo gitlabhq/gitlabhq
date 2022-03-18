@@ -1,8 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
-
-const I18N_EDIT = __('Edit');
+import { I18N_EDIT } from '../constants';
 
 export default {
   components: {

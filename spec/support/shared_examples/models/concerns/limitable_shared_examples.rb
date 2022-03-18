@@ -23,7 +23,7 @@ RSpec.shared_examples 'includes Limitable concern' do
 
       context 'with an existing model' do
         before do
-          subject.dup.save!
+          subject.clone.save!
         end
 
         it 'cannot create new models exceeding the plan limits' do

@@ -28,7 +28,7 @@ RSpec.describe Docs::DeprecationHandling do
         milestones = arguments[:milestones]
         entries = arguments[:entries]
 
-        expect(milestones).to eq(['14.2', '14.10'])
+        expect(milestones).to eq(['14.10', '14.2'])
         expect(entries.map { |e| e['name'] }).to eq(['a.yml', 'b.yml', 'c.yml'])
       end
     end

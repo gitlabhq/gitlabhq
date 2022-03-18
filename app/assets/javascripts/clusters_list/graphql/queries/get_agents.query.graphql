@@ -7,9 +7,7 @@ query getAgents(
   $first: Int
   $last: Int
   $afterAgent: String
-  $afterTree: String
   $beforeAgent: String
-  $beforeTree: String
 ) {
   project(fullPath: $projectPath) {
     id
@@ -27,16 +25,12 @@ query getAgents(
 
     repository {
       tree(path: ".gitlab/agents", ref: $defaultBranchName) {
-        trees(first: $first, last: $last, after: $afterTree, before: $beforeTree) {
+        trees {
           nodes {
             id
             name
             path
             webPath
-          }
-
-          pageInfo {
-            ...PageInfo
           }
         }
       }

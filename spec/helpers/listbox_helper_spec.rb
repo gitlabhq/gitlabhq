@@ -65,10 +65,13 @@ RSpec.describe ListboxHelper do
     end
 
     context 'when selected does not match any item' do
-      let(:selected) { 'qux' }
+      where(selected: [nil, 'qux'])
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(ArgumentError, /cannot find qux/)
+      with_them do
+        it 'selects first item' do
+          expect(subject.at_css('button').content).to eq('Foo')
+          expect(subject.attributes['data-selected'].value).to eq('foo')
+        end
       end
     end
   end

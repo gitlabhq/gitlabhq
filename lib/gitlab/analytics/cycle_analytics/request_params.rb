@@ -80,12 +80,13 @@ module Gitlab
             direction: direction&.to_sym,
             page: page,
             end_event_filter: end_event_filter.to_sym,
-            use_aggregated_data_collector: Feature.enabled?(:use_vsa_aggregated_tables, group || project, default_enabled: :yaml)
+            use_aggregated_data_collector: use_aggregated_backend?
           }.merge(attributes.symbolize_keys.slice(*FINDER_PARAM_NAMES))
         end
 
         def to_data_attributes
           {}.tap do |attrs|
+            attrs[:aggregation] = aggregation_attributes if group
             attrs[:group] = group_data_attributes if group
             attrs[:value_stream] = value_stream_data_attributes.to_json if value_stream
             attrs[:created_after] = created_after.to_date.iso8601
@@ -102,6 +103,24 @@ module Gitlab
         end
 
         private
+
+        def use_aggregated_backend?
+          group.present? && # for now it's only available on the group-level
+            aggregation.enabled &&
+            Feature.enabled?(:use_vsa_aggregated_tables, group, default_enabled: :yaml)
+        end
+
+        def aggregation_attributes
+          {
+            enabled: aggregation.enabled.to_s,
+            last_run_at: aggregation.last_incremental_run_at&.iso8601,
+            next_run_at: aggregation.estimated_next_run_at&.iso8601
+          }
+        end
+
+        def aggregation
+          @aggregation ||= ::Analytics::CycleAnalytics::Aggregation.safe_create_for_group(group)
+        end
 
         def group_data_attributes
           {

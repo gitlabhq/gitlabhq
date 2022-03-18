@@ -4,8 +4,6 @@ require 'asana'
 
 module Integrations
   class Asana < Integration
-    include ActionView::Helpers::UrlHelper
-
     prop_accessor :api_key, :restrict_to_branch
     validates :api_key, presence: true, if: :activated?
 
@@ -18,7 +16,7 @@ module Integrations
     end
 
     def help
-      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/asana'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/asana'), target: '_blank', rel: 'noopener noreferrer'
       s_('Add commit messages as comments to Asana tasks. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 

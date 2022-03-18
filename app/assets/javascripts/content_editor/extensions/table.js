@@ -1,5 +1,6 @@
 import { Table } from '@tiptap/extension-table';
 import { debounce } from 'lodash';
+import { VARIANT_WARNING } from '~/flash';
 import { __ } from '~/locale';
 import { getMarkdownSource } from '../services/markdown_sourcemap';
 import { shouldRenderHTMLTable } from '../services/serialization_helpers';
@@ -14,7 +15,7 @@ const onUpdate = debounce((editor) => {
         message: __(
           'The content editor may change the markdown formatting style of the document, which may not match your original markdown style.',
         ),
-        variant: 'warning',
+        variant: VARIANT_WARNING,
       });
 
       alertShown = true;

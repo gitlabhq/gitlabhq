@@ -3,7 +3,6 @@ import SecretValues from '../behaviors/secret_values';
 import CreateItemDropdown from '../create_item_dropdown';
 import { parseBoolean } from '../lib/utils/common_utils';
 import { s__ } from '../locale';
-import setupToggleButtons from '../toggle_buttons';
 
 const ALL_ENVIRONMENTS_STRING = s__('CiVariable|All environments');
 
@@ -114,8 +113,6 @@ export default class VariableList {
 
   initRow(rowEl) {
     const $row = $(rowEl);
-
-    setupToggleButtons($row[0]);
 
     // Reset the resizable textarea
     $row.find(this.inputMap.secret_value.selector).css('height', '');

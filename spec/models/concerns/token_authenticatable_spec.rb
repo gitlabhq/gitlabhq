@@ -9,6 +9,12 @@ RSpec.shared_examples 'TokenAuthenticatable' do
     it { is_expected.to respond_to("set_#{token_field}") }
     it { is_expected.to respond_to("reset_#{token_field}!") }
   end
+
+  describe 'SensitiveSerializableHash' do
+    it 'includes the token field in list of sensitive attributes prevented from serialization' do
+      expect(described_class.attributes_exempt_from_serializable_hash).to include(token_field)
+    end
+  end
 end
 
 RSpec.describe User, 'TokenAuthenticatable' do

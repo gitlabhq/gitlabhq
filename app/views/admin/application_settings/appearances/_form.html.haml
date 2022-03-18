@@ -16,7 +16,7 @@
             = image_tag @appearance.header_logo_path, class: 'appearance-light-logo-preview'
             - if @appearance.persisted?
               %br
-              = link_to _('Remove header logo'), header_logos_admin_application_settings_appearances_path, data: { confirm: _("Header logo will be removed. Are you sure?") }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm"
+              = link_to _('Remove header logo'), header_logos_admin_application_settings_appearances_path, data: { confirm: _("Header logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove header logo') }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm"
             %hr
           = f.hidden_field :header_logo_cache
           = f.file_field :header_logo, class: "", accept: 'image/*'
@@ -35,7 +35,7 @@
             = image_tag @appearance.favicon_path, class: 'appearance-light-logo-preview'
             - if @appearance.persisted?
               %br
-              = link_to _('Remove favicon'), favicon_admin_application_settings_appearances_path, data: { confirm: _("Favicon will be removed. Are you sure?") }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm"
+              = link_to _('Remove favicon'), favicon_admin_application_settings_appearances_path, data: { confirm: _("Favicon will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove favicon') }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm"
             %hr
           = f.hidden_field :favicon_cache
           = f.file_field :favicon, class: '', accept: 'image/*'
@@ -67,7 +67,7 @@
             = image_tag @appearance.logo_path, class: 'appearance-logo-preview'
             - if @appearance.persisted?
               %br
-              = link_to _('Remove logo'), logo_admin_application_settings_appearances_path, data: { confirm: _("Logo will be removed. Are you sure?") }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm remove-logo"
+              = link_to _('Remove logo'), logo_admin_application_settings_appearances_path, data: { confirm: _("Logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove logo') }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm remove-logo"
             %hr
           = f.hidden_field :logo_cache
           = f.file_field :logo, class: "", accept: 'image/*'

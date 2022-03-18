@@ -86,7 +86,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
     end
 
     it "add spent time for #{issuable_name}" do
-      Timecop.travel(1.minute.from_now) do
+      travel_to(2.minutes.from_now) do
         expect do
           post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user), params: { duration: '2h' }
         end.to change { issuable.reload.updated_at }
@@ -98,7 +98,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
 
     context 'when subtracting time' do
       it 'subtracts time of the total spent time' do
-        Timecop.travel(1.minute.from_now) do
+        travel_to(2.minutes.from_now) do
           expect do
             issuable.update!(spend_time: { duration: 7200, user_id: user.id })
           end.to change { issuable.reload.updated_at }
@@ -115,7 +115,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
       it 'does not modify the total time spent' do
         issuable.update!(spend_time: { duration: 7200, user_id: user.id })
 
-        Timecop.travel(1.minute.from_now) do
+        travel_to(2.minutes.from_now) do
           expect do
             post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user), params: { duration: '-1w' }
           end.not_to change { issuable.reload.updated_at }
@@ -160,7 +160,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
     end
 
     it "resets spent time for #{issuable_name}" do
-      Timecop.travel(1.minute.from_now) do
+      travel_to(2.minutes.from_now) do
         expect do
           post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_spent_time", user)
         end.to change { issuable.reload.updated_at }

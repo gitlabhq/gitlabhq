@@ -23,6 +23,8 @@ describe('Text Viewer', () => {
     });
   };
 
+  const findLink = () => wrapper.findComponent(GlLink);
+
   it('renders download human readable file size text', () => {
     createComponent();
 
@@ -42,12 +44,19 @@ describe('Text Viewer', () => {
     createComponent();
     const { rawPath, name } = DEFAULT_BLOB_DATA;
 
-    expect(wrapper.findComponent(GlLink).attributes()).toMatchObject({
+    expect(findLink().attributes()).toMatchObject({
       rel: 'nofollow',
       target: '_blank',
       href: rawPath,
       download: name,
     });
+  });
+
+  it('renders the correct link href when stored externally', () => {
+    const externalStorageUrl = 'https://cdn.test.com/project/some/file.js?token=1234';
+    createComponent({ externalStorageUrl });
+
+    expect(findLink().attributes('href')).toBe(externalStorageUrl);
   });
 
   it('renders download icon', () => {

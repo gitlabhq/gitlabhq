@@ -16,7 +16,7 @@ class User < ApplicationRecord
   include FeatureGate
   include CreatedAtFilterable
   include BulkMemberAccessLoad
-  include BlocksJsonSerialization
+  include BlocksUnsafeSerialization
   include WithUploads
   include OptionallySearch
   include FromUnion
@@ -135,6 +135,7 @@ class User < ApplicationRecord
   has_many :u2f_registrations, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :webauthn_registrations
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :saved_replies, class_name: '::Users::SavedReply'
   has_one :user_synced_attributes_metadata, autosave: true
   has_one :aws_role, class_name: 'Aws::Role'
 
@@ -276,23 +277,21 @@ class User < ApplicationRecord
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
-  after_create :add_primary_email_to_emails!, if: :confirmed?
-  after_commit(on: :update) do
-    if previous_changes.key?('email')
-      # Add the old primary email to Emails if not added already - this should be removed
-      # after the background migration for MR https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70872/ has completed,
-      # as the primary email is now added to Emails upon confirmation
-      # Issue to remove that: https://gitlab.com/gitlab-org/gitlab/-/issues/344134
-      previous_confirmed_at = previous_changes.key?('confirmed_at') ? previous_changes['confirmed_at'][0] : confirmed_at
-      previous_email = previous_changes[:email][0]
-      if previous_confirmed_at && !emails.exists?(email: previous_email)
-        # rubocop: disable CodeReuse/ServiceClass
-        Emails::CreateService.new(self, user: self, email: previous_email).execute(confirmed_at: previous_confirmed_at)
-        # rubocop: enable CodeReuse/ServiceClass
-      end
+  after_save if: -> { saved_change_to_email? && confirmed? } do
+    email_to_confirm = self.emails.find_by(email: self.email)
 
-      update_invalid_gpg_signatures
+    if email_to_confirm.present?
+      if skip_confirmation_period_expiry_check
+        email_to_confirm.force_confirm
+      else
+        email_to_confirm.confirm
+      end
+    else
+      add_primary_email_to_emails!
     end
+  end
+  after_commit(on: :update) do
+    update_invalid_gpg_signatures if previous_changes.key?('email')
   end
 
   after_initialize :set_projects_limit
@@ -1692,6 +1691,12 @@ class User < ApplicationRecord
     end
   end
 
+  def attention_requested_open_merge_requests_count(force: false)
+    Rails.cache.fetch(attention_request_cache_key, force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+      MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
+    end
+  end
+
   def assigned_open_issues_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       IssuesFinder.new(self, assignee_id: self.id, state: 'opened', non_archived: true).execute.count
@@ -1735,6 +1740,11 @@ class User < ApplicationRecord
   def invalidate_merge_request_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
     Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
+    invalidate_attention_requested_count
+  end
+
+  def invalidate_attention_requested_count
+    Rails.cache.delete(attention_request_cache_key)
   end
 
   def invalidate_todos_cache_counts
@@ -1744,6 +1754,10 @@ class User < ApplicationRecord
 
   def invalidate_personal_projects_count
     Rails.cache.delete(['users', id, 'personal_projects_count'])
+  end
+
+  def attention_request_cache_key
+    ['users', id, 'attention_requested_open_merge_requests_count']
   end
 
   # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth
@@ -1846,7 +1860,9 @@ class User < ApplicationRecord
   #
   # Returns a Hash mapping project ID -> maximum access level.
   def max_member_access_for_project_ids(project_ids)
-    max_member_access_for_resource_ids(Project, project_ids) do |project_ids|
+    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(Project),
+                                      resource_ids: project_ids,
+                                      default_value: Gitlab::Access::NO_ACCESS) do |project_ids|
       project_authorizations.where(project: project_ids)
                             .group(:project_id)
                             .maximum(:access_level)
@@ -1861,7 +1877,9 @@ class User < ApplicationRecord
   #
   # Returns a Hash mapping project ID -> maximum access level.
   def max_member_access_for_group_ids(group_ids)
-    max_member_access_for_resource_ids(Group, group_ids) do |group_ids|
+    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(Group),
+                                      resource_ids: group_ids,
+                                      default_value: Gitlab::Access::NO_ACCESS) do |group_ids|
       group_members.where(source: group_ids).group(:source_id).maximum(:access_level)
     end
   end
@@ -1991,29 +2009,6 @@ class User < ApplicationRecord
 
   def from_ci_job_token?
     ci_job_token_scope.present?
-  end
-
-  # override from Devise::Models::Confirmable
-  #
-  # Add the primary email to user.emails (or confirm it if it was already
-  # present) when the primary email is confirmed.
-  def confirm(args = {})
-    saved = super(args)
-    return false unless saved
-
-    email_to_confirm = self.emails.find_by(email: self.email)
-
-    if email_to_confirm.present?
-      if skip_confirmation_period_expiry_check
-        email_to_confirm.force_confirm(args)
-      else
-        email_to_confirm.confirm(args)
-      end
-    else
-      add_primary_email_to_emails!
-    end
-
-    saved
   end
 
   def user_project
@@ -2166,7 +2161,7 @@ class User < ApplicationRecord
   end
 
   def signup_email_invalid_message
-    self.new_record? ? _('is not allowed for sign-up.') : _('is not allowed.')
+    self.new_record? ? _('is not allowed for sign-up. Please use your regular email address.') : _('is not allowed. Please use your regular email address.')
   end
 
   def check_username_format

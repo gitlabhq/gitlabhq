@@ -9,7 +9,7 @@
   artifacts:
     reports:
       metrics: "${METRICS_FILE}"
-    expire_in: 31d
+    expire_in: 62d
 
 
 # Show memory usage caused by invoking require per gem.
@@ -26,11 +26,17 @@ memory-on-boot:
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "true"
-    MEMORY_ON_BOOT_FILE: "tmp/memory_on_boot.txt"
+    MEMORY_ON_BOOT_FILE_PREFIX: "tmp/memory_on_boot_"
+    TEST_COUNT: 5
   script:
-    - PATH_TO_HIT="/users/sign_in" CUT_OFF=0.3 bundle exec derailed exec perf:mem >> "${MEMORY_ON_BOOT_FILE}"
-    - scripts/generate-memory-metrics-on-boot "${MEMORY_ON_BOOT_FILE}" >> "${METRICS_FILE}"
+    - |
+      for i in $(seq 1 $TEST_COUNT)
+      do
+        echo "Starting run $i out of $TEST_COUNT"
+        PATH_TO_HIT="/users/sign_in" CUT_OFF=0.3 bundle exec derailed exec perf:mem >> "${MEMORY_ON_BOOT_FILE_PREFIX}$i.txt"
+      done
+    - scripts/generate-memory-metrics-on-boot "${MEMORY_ON_BOOT_FILE_PREFIX}" "$TEST_COUNT" >> "${METRICS_FILE}"
   artifacts:
     paths:
       - "${METRICS_FILE}"
-      - "${MEMORY_ON_BOOT_FILE}"
+      - "${MEMORY_ON_BOOT_FILE_PREFIX}*.txt"

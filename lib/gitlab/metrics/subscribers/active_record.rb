@@ -134,11 +134,7 @@ module Gitlab
                              :"gitlab_transaction_db_#{counter}_total"
                            end
 
-          if ENV['GITLAB_MULTIPLE_DATABASE_METRICS']
-            current_transaction&.increment(prometheus_key, 1, { db_config_name: db_config_name })
-          else
-            current_transaction&.increment(prometheus_key, 1)
-          end
+          current_transaction&.increment(prometheus_key, 1, { db_config_name: db_config_name })
 
           Gitlab::SafeRequestStore[log_key] = Gitlab::SafeRequestStore[log_key].to_i + 1
 
@@ -154,11 +150,7 @@ module Gitlab
         def observe(histogram, event, &block)
           db_config_name = db_config_name(event.payload)
 
-          if ENV['GITLAB_MULTIPLE_DATABASE_METRICS']
-            current_transaction&.observe(histogram, event.duration / 1000.0, { db_config_name: db_config_name }, &block)
-          else
-            current_transaction&.observe(histogram, event.duration / 1000.0, &block)
-          end
+          current_transaction&.observe(histogram, event.duration / 1000.0, { db_config_name: db_config_name }, &block)
         end
 
         def current_transaction
@@ -193,11 +185,9 @@ module Gitlab
               counters << compose_metric_key(metric, role)
             end
 
-            if ENV['GITLAB_MULTIPLE_DATABASE_METRICS']
-              ::Gitlab::Database.db_config_names.each do |config_name|
-                counters << compose_metric_key(metric, nil, config_name) # main
-                counters << compose_metric_key(metric, nil, config_name + ::Gitlab::Database::LoadBalancing::LoadBalancer::REPLICA_SUFFIX) # main_replica
-              end
+            ::Gitlab::Database.db_config_names.each do |config_name|
+              counters << compose_metric_key(metric, nil, config_name) # main
+              counters << compose_metric_key(metric, nil, config_name + ::Gitlab::Database::LoadBalancing::LoadBalancer::REPLICA_SUFFIX) # main_replica
             end
           end
 

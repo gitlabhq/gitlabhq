@@ -12,7 +12,7 @@ RSpec.describe "User browses artifacts" do
     it "redirects to new URL" do
       visit(browse_url.sub("/-/jobs", "/builds"))
 
-      expect(page.current_path).to eq(browse_url)
+      expect(page).to have_current_path(browse_url, ignore_query: true)
     end
   end
 

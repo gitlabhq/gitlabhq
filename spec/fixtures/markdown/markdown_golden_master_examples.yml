@@ -218,13 +218,13 @@
     </ol>
     <ul data-sourcepos="7:1-9:47" class="task-list" dir="auto">
     <li data-sourcepos="7:1-7:47" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> <span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> <span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span>
     </li>
     <li data-sourcepos="8:1-8:47" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> <span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> <span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span>
     </li>
     <li data-sourcepos="9:1-9:47" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> <span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video" width="400" preload="metadata"></video><a href="https://gitlab.com/3.mp4" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Video'">Sample Video</a></span>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> <span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video" width="400" preload="metadata"></video><a href="https://gitlab.com/3.mp4" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Video'">Sample Video</a></span>
     </li>
     </ul>
 
@@ -553,7 +553,7 @@
     * The concert starts at <time datetime="20:00">20:00</time> and you'll be able to enjoy the band for at least <time datetime="PT2H30M">2h 30m</time>.
     * Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy text (Windows).
     * WWF's goal is to: <q>Build a future where people live in harmony with nature.</q> We hope they succeed.
-    * The error occured was: <samp>Keyboard not found. Press F1 to continue.</samp>
+    * The error occurred was: <samp>Keyboard not found. Press F1 to continue.</samp>
     * The area of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the base, and <var>h</var> is the vertical height.
     * <ruby>漢<rt>ㄏㄢˋ</rt></ruby>
     * C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O
@@ -572,7 +572,7 @@
     <li data-sourcepos="8:1-8:149">The concert starts at <time datetime="20:00">20:00</time> and you'll be able to enjoy the band for at least <time datetime="PT2H30M">2h 30m</time>.</li>
     <li data-sourcepos="9:1-9:62">Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy text (Windows).</li>
     <li data-sourcepos="10:1-10:105">WWF's goal is to: <q>Build a future where people live in harmony with nature.</q> We hope they succeed.</li>
-    <li data-sourcepos="11:1-11:79">The error occured was: <samp>Keyboard not found. Press F1 to continue.</samp>
+    <li data-sourcepos="11:1-11:80">The error occurred was: <samp>Keyboard not found. Press F1 to continue.</samp>
     </li>
     <li data-sourcepos="12:1-12:136">The area of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the base, and <var>h</var> is the vertical height.</li>
     <li data-sourcepos="13:1-13:35"><ruby>漢<rt>ㄏㄢˋ</rt></ruby></li>
@@ -670,19 +670,19 @@
   html: |-
     <ol data-sourcepos="1:1-6:18" class="task-list" dir="auto">
     <li data-sourcepos="1:1-1:12" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
     <li data-sourcepos="2:1-2:12" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> world</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> world</li>
     <li data-sourcepos="3:1-6:18" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" disabled> example
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> example
     <ol data-sourcepos="4:4-6:18" class="task-list">
     <li data-sourcepos="4:4-6:18" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" disabled> of nested
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> of nested
     <ol data-sourcepos="5:7-6:18" class="task-list">
     <li data-sourcepos="5:7-5:22" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> task list</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> task list</li>
     <li data-sourcepos="6:7-6:18" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" disabled> items</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> items</li>
     </ol>
     </li>
     </ol>
@@ -697,11 +697,11 @@
   html: |-
     <ol start="4893" data-sourcepos="1:1-3:17" class="task-list" dir="auto">
     <li data-sourcepos="1:1-1:15" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
     <li data-sourcepos="2:1-2:15" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> world</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> world</li>
     <li data-sourcepos="3:1-3:17" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" disabled> example</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> example</li>
     </ol>
 
 - name: reference_for_project_wiki
@@ -810,19 +810,19 @@
   html: |-
     <ul data-sourcepos="1:1-6:15" class="task-list" dir="auto">
     <li data-sourcepos="1:1-1:11" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
     <li data-sourcepos="2:1-2:11" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> world</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> world</li>
     <li data-sourcepos="3:1-6:15" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" disabled> example
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> example
     <ul data-sourcepos="4:3-6:15" class="task-list">
     <li data-sourcepos="4:3-6:15" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" disabled> of nested
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> of nested
     <ul data-sourcepos="5:5-6:15" class="task-list">
     <li data-sourcepos="5:5-5:19" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" checked disabled> task list</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> task list</li>
     <li data-sourcepos="6:5-6:15" class="task-list-item">
-    <input type="checkbox" class="task-list-item-checkbox" disabled> items</li>
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> items</li>
     </ul>
     </li>
     </ul>

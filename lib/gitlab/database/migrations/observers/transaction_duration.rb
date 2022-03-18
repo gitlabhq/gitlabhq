@@ -6,7 +6,7 @@ module Gitlab
       module Observers
         class TransactionDuration < MigrationObserver
           def before
-            file_path = File.join(output_dir, "#{observation.version}_#{observation.name}-transaction-duration.json")
+            file_path = File.join(output_dir, "transaction-duration.json")
             @file = File.open(file_path, 'wb')
             @writer = Oj::StreamWriter.new(@file, {})
             @writer.push_array

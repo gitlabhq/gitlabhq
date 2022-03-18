@@ -14,6 +14,11 @@ export default {
       type: String,
       required: true,
     },
+    remoteFile: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -23,14 +28,29 @@ export default {
     };
   },
   mounted() {
-    const parsed = Papa.parse(this.csv, { skipEmptyLines: true });
-    this.items = parsed.data;
-
-    if (parsed.errors.length) {
-      this.papaParseErrors = parsed.errors;
+    if (!this.remoteFile) {
+      const parsed = Papa.parse(this.csv, { skipEmptyLines: true });
+      this.handleParsedData(parsed);
+    } else {
+      Papa.parse(this.csv, {
+        download: true,
+        skipEmptyLines: true,
+        complete: (parsed) => {
+          this.handleParsedData(parsed);
+        },
+      });
     }
+  },
+  methods: {
+    handleParsedData(parsed) {
+      this.items = parsed.data;
 
-    this.loading = false;
+      if (parsed.errors.length) {
+        this.papaParseErrors = parsed.errors;
+      }
+
+      this.loading = false;
+    },
   },
 };
 </script>

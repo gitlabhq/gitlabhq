@@ -82,17 +82,8 @@ export default {
 
       return this.mr.shouldBeRebased;
     },
-    sourceBranchProtected() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.stateData.sourceBranchProtected;
-      }
-
-      return this.mr.sourceBranchProtected;
-    },
     showResolveButton() {
-      return (
-        this.mr.conflictResolutionPath && this.canPushToSourceBranch && !this.sourceBranchProtected
-      );
+      return this.mr.conflictResolutionPath && this.canPushToSourceBranch;
     },
   },
 };
@@ -144,7 +135,7 @@ export default {
           :size="glFeatures.restructuredMrWidget ? 'small' : 'medium'"
           data-testid="merge-locally-button"
         >
-          {{ s__('mrWidget|Merge locally') }}
+          {{ s__('mrWidget|Resolve locally') }}
         </gl-button>
       </template>
     </div>

@@ -103,12 +103,14 @@ The following table details the testing done against the reference architectures
 
 <style>
 table.test-coverage td {
+    border-top: 1px solid #dbdbdb;
     border-left: 1px solid #dbdbdb;
     border-right: 1px solid #dbdbdb;
     border-bottom: 1px solid #dbdbdb;
 }
 
 table.test-coverage th {
+    border-top: 1px solid #dbdbdb;
     border-left: 1px solid #dbdbdb;
     border-right: 1px solid #dbdbdb;
     border-bottom: 1px solid #dbdbdb;
@@ -131,12 +133,10 @@ table.test-coverage th {
     <th scope="col">Omnibus</th>
     <th scope="col">Cloud Native Hybrid</th>
     <th scope="col">Omnibus</th>
-    <th scope="col">Cloud Native Hybrid</th>
   </tr>
     <tr>
     <th scope="row">1k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k">Daily</a> (to be moved to Weekly)</td>
-    <td></td>
     <td></td>
     <td></td>
     <td></td>
@@ -149,12 +149,10 @@ table.test-coverage th {
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
   </tr>
   <tr>
     <th scope="row">3k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k">Weekly</a></td>
-    <td></td>
     <td></td>
     <td></td>
     <td></td>
@@ -167,7 +165,6 @@ table.test-coverage th {
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
   </tr>
   <tr>
     <th scope="row">10k</th>
@@ -176,7 +173,6 @@ table.test-coverage th {
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k">Ad-Hoc (inc Cloud Services)</a></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k-Cloud-Native-Hybrid">Ad-Hoc</a></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k">Ad-Hoc</a></td>
-    <td></td>
   </tr>
   <tr>
     <th scope="row">25k</th>
@@ -185,14 +181,12 @@ table.test-coverage th {
     <td></td>
     <td></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/25k">Ad-Hoc</a></td>
-    <td></td>
   </tr>
   <tr>
     <th scope="row">50k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k">Weekly</a></td>
     <td></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/50k">Ad-Hoc (inc Cloud Services)</a></td>
-    <td></td>
     <td></td>
     <td></td>
   </tr>
@@ -218,12 +212,10 @@ The Standard Reference Architectures are designed to be platform agnostic, with 
     <th scope="col">Omnibus</th>
     <th scope="col">Cloud Native Hybrid</th>
     <th scope="col">Omnibus</th>
-    <th scope="col">Cloud Native Hybrid</th>
   </tr>
     <tr>
     <th scope="row">1k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=a6d6a94a-c7dc-4c22-85c4-7c5747f272ed">Calculated cost</a></td>
-    <td></td>
     <td></td>
     <td></td>
     <td></td>
@@ -236,12 +228,10 @@ The Standard Reference Architectures are designed to be platform agnostic, with 
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
   </tr>
   <tr>
     <th scope="row">3k</th>
     <td><a href="https://cloud.google.com/products/calculator/#id=ac4838e6-9c40-4a36-ac43-6d1bc1843e08">Calculated cost</a></td>
-    <td></td>
     <td></td>
     <td></td>
     <td></td>
@@ -254,12 +244,10 @@ The Standard Reference Architectures are designed to be platform agnostic, with 
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
   </tr>
   <tr>
     <th scope="row">10k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=e77713f6-dc0b-4bb3-bcef-cea904ac8efd">Calculated cost</a></td>
-    <td></td>
     <td></td>
     <td></td>
     <td></td>
@@ -272,7 +260,6 @@ The Standard Reference Architectures are designed to be platform agnostic, with 
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
   </tr>
   <tr>
     <th scope="row">50k</th>
@@ -281,9 +268,91 @@ The Standard Reference Architectures are designed to be platform agnostic, with 
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
   </tr>
 </table>
+
+### Recommended cloud providers and services
+
+NOTE:
+The following lists are non exhaustive. Generally, other cloud providers not listed
+here will likely work with the same specs, but this hasn't been validated.
+Additionally, when it comes to other cloud provider services not listed here,
+it's advised to be cautious as each implementation can be notably different
+and should be tested thoroughly before production use.
+
+Through testing and real life usage, the Reference Architectures are validated and supported on the following cloud providers:
+
+<table>
+<thead>
+  <tr>
+    <th>Reference Architecture</th>
+    <th>GCP</th>
+    <th>AWS</th>
+    <th>Azure</th>
+    <th>Bare Metal</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Omnibus</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>✅</td>
+  </tr>
+  <tr>
+    <td>Cloud Native Hybrid</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td></td>
+    <td></td>
+  </tr>
+</tbody>
+</table>
+
+Additionally, the following cloud provider services are validated and supported for use as part of the Reference Architectures:
+
+<table>
+<thead>
+  <tr>
+    <th>Cloud Service</th>
+    <th>GCP</th>
+    <th>AWS</th>
+    <th>Bare Metal</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Object Storage</td>
+    <td>✅ &nbsp; <a href="https://cloud.google.com/storage" target="_blank">Cloud Storage</a></td>
+    <td>✅ &nbsp; <a href="https://aws.amazon.com/s3/" target="_blank">S3</a></td>
+    <td>✅ &nbsp; <a href="https://min.io/" target="_blank">MinIO</a></td>
+  </tr>
+  <tr>
+    <td>Database</td>
+    <td>✅ &nbsp; <a href="https://cloud.google.com/sql" target="_blank" rel="noopener noreferrer">Cloud SQL</a></td>
+    <td>✅ &nbsp; <a href="https://aws.amazon.com/rds/" target="_blank" rel="noopener noreferrer">RDS</a></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Redis</td>
+    <td></td>
+    <td>✅ &nbsp; <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">Elasticache</a></td>
+    <td></td>
+  </tr>
+</tbody>
+</table>
+
+The following specific cloud provider services have been found to have issues in terms of either functionality or performance. As such, they either have caveats that should be considered or are not recommended:
+
+- [Azure Blob Storage](https://azure.microsoft.com/en-gb/services/storage/blobs/) has been found to have performance limits that can impact production use at certain times. For larger Reference Architectures the service may not be sufficient for production use and an alternative is recommended for use instead.
+- [Azure Database for PostgreSQL Server](https://azure.microsoft.com/en-gb/services/postgresql/#overview) (Single / Flexible) is not recommended for use due to notable performance issues or missing functionality.
+- [AWS Aurora Database](https://aws.amazon.com/rds/aurora) is not recommended due to compatibility issues.
+
+NOTE:
+As a general rule we unfortunately don't recommend Azure Services at this time.
+If required, we advise thorough testing is done at your intended scale
+over a sustained period to validate if the service is suitable.
 
 ## Availability Components
 

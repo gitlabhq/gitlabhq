@@ -13,7 +13,22 @@ RSpec.describe DashboardController do
     end
 
     describe 'GET issues' do
-      it_behaves_like 'issuables list meta-data', :issue, :issues
+      context 'when issues_full_text_search is disabled' do
+        before do
+          stub_feature_flags(issues_full_text_search: false)
+        end
+
+        it_behaves_like 'issuables list meta-data', :issue, :issues
+      end
+
+      context 'when issues_full_text_search is enabled' do
+        before do
+          stub_feature_flags(issues_full_text_search: true)
+        end
+
+        it_behaves_like 'issuables list meta-data', :issue, :issues
+      end
+
       it_behaves_like 'issuables requiring filter', :issues
     end
 
@@ -83,25 +98,49 @@ RSpec.describe DashboardController do
     context "no filters" do
       let(:params) { {} }
 
+      shared_examples_for 'no filters are set' do
+        it 'sets @no_filters_set to true' do
+          expect(assigns[:no_filters_set]).to eq(true)
+        end
+      end
+
+      it_behaves_like 'no filters are set'
+
+      context 'when key is present but value is not' do
+        let(:params) { { author_username: nil } }
+
+        it_behaves_like 'no filters are set'
+      end
+
+      context 'when in param is set but no search' do
+        let(:params) { { in: 'title' } }
+
+        it_behaves_like 'no filters are set'
+      end
+    end
+
+    shared_examples_for 'filters are set' do
       it 'sets @no_filters_set to false' do
-        expect(assigns[:no_filters_set]).to eq(true)
+        expect(assigns[:no_filters_set]).to eq(false)
       end
     end
 
     context "scalar filters" do
       let(:params) { { author_id: user.id } }
 
-      it 'sets @no_filters_set to false' do
-        expect(assigns[:no_filters_set]).to eq(false)
-      end
+      it_behaves_like 'filters are set'
     end
 
     context "array filters" do
       let(:params) { { label_name: ['bug'] } }
 
-      it 'sets @no_filters_set to false' do
-        expect(assigns[:no_filters_set]).to eq(false)
-      end
+      it_behaves_like 'filters are set'
+    end
+
+    context 'search' do
+      let(:params) { { search: 'test' } }
+
+      it_behaves_like 'filters are set'
     end
   end
 end

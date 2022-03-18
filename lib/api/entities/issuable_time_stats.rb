@@ -18,7 +18,7 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       def total_time_spent
         # Avoids an N+1 query since timelogs are preloaded
-        object.timelogs.map(&:time_spent).sum
+        object.timelogs.sum(&:time_spent)
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

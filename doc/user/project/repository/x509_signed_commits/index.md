@@ -20,15 +20,15 @@ The main difference is the way GitLab determines whether or not the developer's 
   (A trust store is a repository of trusted security certificates.) Combined with
   any required intermediate certificates in the signature, the developer's certificate
   can be chained back to a trusted root certificate.
-- For GPG, developers [add their GPG key](../gpg_signed_commits/index.md#adding-a-gpg-key-to-your-account)
+- For GPG, developers [add their GPG key](../gpg_signed_commits/index.md#add-a-gpg-key-to-your-account)
   to their account.
 
 GitLab uses its own certificate store and therefore defines the
-[trust chain](https://www.ssl.com/faqs/what-is-a-chain-of-trust/).
+[trust chain](https://www.ssl.com/faqs/what-is-a-certificate-authority/).
 For a commit or tag to be *verified* by GitLab:
 
 - The signing certificate email must match a verified email address in GitLab.
-- The GitLab instance must be able to establish a full [trust chain](https://www.ssl.com/faqs/what-is-a-chain-of-trust/)
+- The GitLab instance must be able to establish a full trust chain
   from the certificate in the signature to a trusted certificate in the GitLab certificate store.
   This chain may include intermediate certificates supplied in the signature. You may
   need to add certificates, such as Certificate Authority root certificates,

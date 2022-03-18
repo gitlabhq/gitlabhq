@@ -10,6 +10,7 @@ import ISetter from '~/filtered_search/droplab/plugins/input_setter';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 
 // Todo: Remove this when fixing issue in input_setter plugin
 const InputSetter = { ...ISetter };
@@ -171,12 +172,21 @@ export default class CreateMergeRequestDropdown {
       this.isCreatingMergeRequest = true;
 
       return this.createBranch().then(() => {
-        window.location.href = canCreateConfidentialMergeRequest()
+        let path = canCreateConfidentialMergeRequest()
           ? this.createMrPath.replace(
               this.projectPath,
               confidentialMergeRequestState.selectedProject.pathWithNamespace,
             )
           : this.createMrPath;
+        path = mergeUrlParams(
+          {
+            'merge_request[target_branch]': this.refInput.value,
+            'merge_request[source_branch]': this.branchInput.value,
+          },
+          path,
+        );
+
+        window.location.href = path;
       });
     });
   }

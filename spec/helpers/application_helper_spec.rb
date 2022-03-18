@@ -517,4 +517,112 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
+
+  describe '#dispensable_render' do
+    context 'when an error occurs in the template to be rendered' do
+      before do
+        allow(helper).to receive(:render).and_raise
+      end
+
+      it 'calls `track_and_raise_for_dev_exception`' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        helper.dispensable_render
+      end
+
+      context 'for development environment' do
+        before do
+          stub_rails_env('development')
+        end
+
+        it 'raises an error' do
+          expect { helper.dispensable_render }.to raise_error(StandardError)
+        end
+      end
+
+      context 'for production environments' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it 'returns nil' do
+          expect(helper.dispensable_render).to be_nil
+        end
+
+        context 'when the feature flag is disabled' do
+          before do
+            stub_feature_flags(dispensable_render: false)
+          end
+
+          it 'raises an error' do
+            expect { helper.dispensable_render }.to raise_error(StandardError)
+          end
+        end
+      end
+    end
+
+    context 'when no error occurs in the template to be rendered' do
+      before do
+        allow(helper).to receive(:render).and_return('foo')
+      end
+
+      it 'does not track or raise and returns the rendered content' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+        expect(helper.dispensable_render).to eq('foo')
+      end
+    end
+  end
+
+  describe '#dispensable_render_if_exists' do
+    context 'when an error occurs in the template to be rendered' do
+      before do
+        allow(helper).to receive(:render_if_exists).and_raise
+      end
+
+      it 'calls `track_and_raise_for_dev_exception`' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        helper.dispensable_render_if_exists
+      end
+
+      context 'for development environment' do
+        before do
+          stub_rails_env('development')
+        end
+
+        it 'raises an error' do
+          expect { helper.dispensable_render_if_exists }.to raise_error(StandardError)
+        end
+      end
+
+      context 'for production environments' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it 'returns nil' do
+          expect(helper.dispensable_render_if_exists).to be_nil
+        end
+
+        context 'when the feature flag is disabled' do
+          before do
+            stub_feature_flags(dispensable_render: false)
+          end
+
+          it 'raises an error' do
+            expect { helper.dispensable_render_if_exists }.to raise_error(StandardError)
+          end
+        end
+      end
+    end
+
+    context 'when no error occurs in the template to be rendered' do
+      before do
+        allow(helper).to receive(:render_if_exists).and_return('foo')
+      end
+
+      it 'does not track or raise' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+        expect(helper.dispensable_render_if_exists).to eq('foo')
+      end
+    end
+  end
 end

@@ -1,14 +1,17 @@
 - return unless show_registration_enabled_user_callout?
 
 = render 'shared/global_alert',
-  title: _('Open registration is enabled on your instance.'),
+  title: _('Anyone can register for an account.'),
   variant: :warning,
   alert_class: 'js-registration-enabled-callout',
   alert_data: { feature_id: Users::CalloutsHelper::REGISTRATION_ENABLED_CALLOUT, dismiss_endpoint: callouts_path },
   close_button_data: { testid: 'close-registration-enabled-callout' } do
   .gl-alert-body
-    = html_escape(_('%{anchorOpen}Learn more%{anchorClose} about how you can customize / disable registration on your instance.')) % { anchorOpen: "<a href=\"#{help_page_path('user/admin_area/settings/sign_up_restrictions')}\" class=\"gl-link\">".html_safe, anchorClose: '</a>'.html_safe }
+    = _('Only allow anyone to register for accounts on GitLab instances that you intend to be used by anyone. Allowing anyone to register makes GitLab instances more vulnerable.')
   .gl-alert-actions
     = link_to general_admin_application_settings_path(anchor: 'js-signup-settings'), class: 'btn gl-alert-action btn-confirm btn-md gl-button' do
       %span.gl-button-text
-        = _('View setting')
+        = _('Turn off')
+    %button.btn.gl-alert-action.btn-default.btn-md.gl-button.js-close
+      %span.gl-button-text
+        = _('Acknowledge')

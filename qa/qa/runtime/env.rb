@@ -404,6 +404,14 @@ module QA
         ENV.fetch('GITLAB_QA_LOOP_RUNNER_MINUTES', 1).to_i
       end
 
+      def reusable_project_path
+        ENV.fetch('QA_REUSABLE_PROJECT_PATH', 'reusable_project')
+      end
+
+      def reusable_group_path
+        ENV.fetch('QA_REUSABLE_GROUP_PATH', 'reusable_group')
+      end
+
       def mailhog_hostname
         ENV['MAILHOG_HOSTNAME']
       end
@@ -441,11 +449,6 @@ module QA
         running_in_ci? && enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: true)
       end
 
-      def test_resources_created_filepath
-        file_name = running_in_ci? ? "test-resources-#{SecureRandom.hex(3)}.json" : 'test-resources.json'
-        ENV.fetch('QA_TEST_RESOURCES_CREATED_FILEPATH', File.join(Path.qa_root, 'tmp', file_name))
-      end
-
       def ee_activation_code
         ENV['QA_EE_ACTIVATION_CODE']
       end
@@ -456,6 +459,10 @@ module QA
 
       def validate_resource_reuse?
         enabled?(ENV['QA_VALIDATE_RESOURCE_REUSE'], default: false)
+      end
+
+      def skip_smoke_reliable?
+        enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
       end
 
       private

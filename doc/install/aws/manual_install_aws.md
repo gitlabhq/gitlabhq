@@ -390,7 +390,7 @@ persistence and is used to store session data, temporary cache information, and 
    chance to deploy Redis in multiple availability zones.
 1. In the settings section:
    1. Give the cluster a name (`gitlab-redis`) and a description.
-   1. For the version, select the latest of the `5.0` series (for example, `5.0.6`).
+   1. For the version, select the latest.
    1. Leave the port as `6379` since this is what we used in our Redis security group above.
    1. Select the node type (at least `cache.t3.medium`, but adjust to your needs) and the number of replicas.
 1. In the advanced settings section:
@@ -827,7 +827,7 @@ to request additional material:
   Geo is the solution for widely distributed development teams.
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/) - Everything you need to know
   about administering your GitLab instance.
-- [Upload a license](../../user/admin_area/license.md):
+- [Add a license](../../user/admin_area/license.md):
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 

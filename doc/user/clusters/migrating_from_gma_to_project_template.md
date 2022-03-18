@@ -20,7 +20,7 @@ To migrate from GitLab Managed Apps to a Cluster Management Project,
 follow the steps below.
 See also [video walk-throughs](#video-walk-throughs) with examples.
 
-1. Create a new project based on the [Cluster Management Project template](management_project_template.md#create-a-new-project-based-on-the-cluster-management-template).
+1. Create a new project based on the [Cluster Management Project template](management_project_template.md#create-a-project-based-on-the-cluster-management-project-template).
 1. [Associate your new Cluster Management Project with your cluster](management_project.md#associate-the-cluster-management-project-with-the-cluster).
 1. Detect apps deployed through Helm v2 releases by using the pre-configured [`.gitlab-ci.yml`](management_project_template.md#the-gitlab-ciyml-file) file:
    - In case you had overwritten the default GitLab Managed Apps namespace, edit `.gitlab-ci.yml`,
@@ -120,7 +120,7 @@ you want to manage with the Cluster Management Project.
 
 ## Backup and uninstall cert-manager v0.10
 
-1. Follow the [official docs](https://docs.cert-manager.io/en/release-0.10/tasks/backup-restore-crds.html) on how to
+1. Follow the [official docs](https://cert-manager.io/docs/tutorials/backup/) on how to
    backup your cert-manager v0.10 data.
 1. Uninstall cert-manager by editing the setting all the occurrences of `installed: true` to `installed: false` in the
    `applications/cert-manager/helmfile.yaml` file.

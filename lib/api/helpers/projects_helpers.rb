@@ -36,6 +36,7 @@ module API
         optional :operations_access_level, type: String, values: %w(disabled private enabled), desc: 'Operations access level. One of `disabled`, `private` or `enabled`'
         optional :analytics_access_level, type: String, values: %w(disabled private enabled), desc: 'Analytics access level. One of `disabled`, `private` or `enabled`'
         optional :container_registry_access_level, type: String, values: %w(disabled private enabled), desc: 'Controls visibility of the container registry. One of `disabled`, `private` or `enabled`. `private` will make the container registry accessible only to project members (reporter role and above). `enabled` will make the container registry accessible to everyone who has access to the project. `disabled` will disable the container registry'
+        optional :security_and_compliance_access_level, type: String, values: %w(disabled private enabled), desc: 'Security and compliance access level. One of `disabled`, `private` or `enabled`'
 
         optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
         optional :show_default_award_emojis, type: Boolean, desc: 'Show default award emojis'
@@ -118,6 +119,7 @@ module API
       def self.update_params_at_least_one_of
         [
           :allow_merge_on_skipped_pipeline,
+          :analytics_access_level,
           :autoclose_referenced_issues,
           :auto_devops_enabled,
           :auto_devops_deploy_strategy,
@@ -145,6 +147,7 @@ module API
           :name,
           :only_allow_merge_if_all_discussions_are_resolved,
           :only_allow_merge_if_pipeline_succeeds,
+          :operations_access_level,
           :pages_access_level,
           :path,
           :printing_merge_request_link_enabled,
@@ -154,6 +157,7 @@ module API
           :request_access_enabled,
           :resolve_outdated_diff_discussions,
           :restrict_user_defined_variables,
+          :security_and_compliance_access_level,
           :squash_option,
           :shared_runners_enabled,
           :snippets_access_level,

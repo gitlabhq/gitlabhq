@@ -8,6 +8,9 @@ RSpec.describe Packages::Pypi::Metadatum, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:package) }
+    it { is_expected.to allow_value('').for(:required_python) }
+    it { is_expected.not_to allow_value(nil).for(:required_python) }
+    it { is_expected.not_to allow_value('a' * 256).for(:required_python) }
 
     describe '#pypi_package_type' do
       it 'will not allow a package with a different package_type' do

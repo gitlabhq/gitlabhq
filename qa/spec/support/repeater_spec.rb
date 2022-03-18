@@ -3,12 +3,6 @@
 require 'active_support/core_ext/integer/time'
 
 RSpec.describe QA::Support::Repeater do
-  before do
-    logger = ::Logger.new $stdout
-    logger.level = ::Logger::DEBUG
-    QA::Runtime::Logger.logger = logger
-  end
-
   subject do
     Module.new do
       extend QA::Support::Repeater

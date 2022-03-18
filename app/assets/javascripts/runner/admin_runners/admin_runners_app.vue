@@ -12,6 +12,7 @@ import RunnerName from '../components/runner_name.vue';
 import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
+import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
 
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
@@ -25,8 +26,8 @@ import {
   STATUS_STALE,
   I18N_FETCH_ERROR,
 } from '../constants';
-import getRunnersQuery from '../graphql/get_runners.query.graphql';
-import getRunnersCountQuery from '../graphql/get_runners_count.query.graphql';
+import runnersAdminQuery from '../graphql/list/admin_runners.query.graphql';
+import runnersAdminCountQuery from '../graphql/list/admin_runners_count.query.graphql';
 import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
@@ -35,7 +36,7 @@ import {
 import { captureException } from '../sentry_utils';
 
 const runnersCountSmartQuery = {
-  query: getRunnersCountQuery,
+  query: runnersAdminCountQuery,
   fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
   update(data) {
     return data?.runners?.count;
@@ -57,6 +58,7 @@ export default {
     RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
+    RunnerActionsCell,
   },
   props: {
     registrationToken: {
@@ -75,7 +77,7 @@ export default {
   },
   apollo: {
     runners: {
-      query: getRunnersQuery,
+      query: runnersAdminQuery,
       // Runners can be updated by users directly in this list.
       // A "cache and network" policy prevents outdated filtered
       // results.
@@ -187,6 +189,7 @@ export default {
       deep: true,
       handler() {
         // TODO Implement back button response using onpopstate
+        // See: https://gitlab.com/gitlab-org/gitlab/-/issues/333804
         updateHistory({
           url: fromSearchToUrl(this.search),
           title: document.title,
@@ -220,6 +223,10 @@ export default {
         return formatNumber(count);
       }
       return '';
+    },
+    onDeleted({ message }) {
+      this.$root.$toast?.show(message);
+      this.$apollo.queries.runners.refetch();
     },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
@@ -277,6 +284,13 @@ export default {
           <gl-link :href="runner.adminUrl">
             <runner-name :runner="runner" />
           </gl-link>
+        </template>
+        <template #runner-actions-cell="{ runner }">
+          <runner-actions-cell
+            :runner="runner"
+            :edit-url="runner.editAdminUrl"
+            @deleted="onDeleted"
+          />
         </template>
       </runner-list>
       <runner-pagination

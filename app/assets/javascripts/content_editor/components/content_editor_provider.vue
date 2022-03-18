@@ -8,6 +8,7 @@ export default {
 
     return {
       contentEditor,
+      eventHub: contentEditor.eventHub,
       tiptapEditor: contentEditor.tiptapEditor,
     };
   },

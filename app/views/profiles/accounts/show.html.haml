@@ -5,7 +5,6 @@
   = render 'shared/global_alert',
     variant: :info,
     alert_class: 'gl-my-5',
-    is_contained: true,
     dismissible: false do
     .gl-alert-body
       = s_('Profiles|Some options are unavailable for LDAP accounts')
@@ -14,7 +13,6 @@
   = render 'shared/global_alert',
     variant: :success,
     alert_class: 'gl-my-5',
-    is_contained: true,
     close_button_class: 'js-close-2fa-enabled-success-alert' do
     .gl-alert-body
       = html_escape(_('You have set up 2FA for your account! If you lose access to your 2FA device, you can use your recovery codes to access your account. Alternatively, if you upload an SSH key, you can %{anchorOpen}use that key to generate additional recovery codes%{anchorClose}.')) % { anchorOpen: '<a href="%{href}">'.html_safe % { href: help_page_path('user/profile/account/two_factor_authentication', anchor: 'generate-new-recovery-codes-using-ssh') }, anchorClose: '</a>'.html_safe }

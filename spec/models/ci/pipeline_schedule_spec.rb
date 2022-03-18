@@ -228,6 +228,66 @@ RSpec.describe Ci::PipelineSchedule do
     end
   end
 
+  describe '#for_tag?' do
+    context 'when the target is a tag' do
+      before do
+        subject.ref = 'refs/tags/v1.0'
+      end
+
+      it { expect(subject.for_tag?).to eq(true) }
+    end
+
+    context 'when the target is a branch' do
+      before do
+        subject.ref = 'refs/heads/main'
+      end
+
+      it { expect(subject.for_tag?).to eq(false) }
+    end
+
+    context 'when there is no ref' do
+      before do
+        subject.ref = nil
+      end
+
+      it { expect(subject.for_tag?).to eq(false) }
+    end
+  end
+
+  describe '#ref_for_display' do
+    context 'when the target is a tag' do
+      before do
+        subject.ref = 'refs/tags/v1.0'
+      end
+
+      it { expect(subject.ref_for_display).to eq('v1.0') }
+    end
+
+    context 'when the target is a branch' do
+      before do
+        subject.ref = 'refs/heads/main'
+      end
+
+      it { expect(subject.ref_for_display).to eq('main') }
+    end
+
+    context 'when the ref is ambiguous' do
+      before do
+        subject.ref = 'release-2.8'
+      end
+
+      it { expect(subject.ref_for_display).to eq('release-2.8') }
+    end
+
+    context 'when there is no ref' do
+      before do
+        subject.ref = nil
+      end
+
+      it { expect(subject.ref_for_display).to eq(nil) }
+    end
+  end
+
   context 'loose foreign key on ci_pipeline_schedules.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }

@@ -1,0 +1,18 @@
+---
+# Error: gitlab.HeadingContent
+#
+# Checks for generic, unhelpful subheadings.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: 'Rename the subheading "%s", or re-purpose the content elsewhere.'
+level: warning
+scope: heading
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#headings-1
+ignorecase: false
+tokens:
+  - How it works
+  - Limitations
+  - Overview
+  - Use cases?
+  - Important notes?

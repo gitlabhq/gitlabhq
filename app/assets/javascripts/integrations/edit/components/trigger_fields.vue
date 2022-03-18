@@ -1,6 +1,5 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
-import { startCase } from 'lodash';
 import { mapGetters } from 'vuex';
 import { __ } from '~/locale';
 
@@ -45,7 +44,6 @@ export default {
     fieldName(name) {
       return `service[${name}]`;
     },
-    startCase,
   },
 };
 </script>
@@ -58,10 +56,10 @@ export default {
     data-testid="trigger-fields-group"
   >
     <div id="trigger-fields" class="gl-pt-3">
-      <gl-form-group v-for="event in events" :key="event.title" :description="event.description">
+      <gl-form-group v-for="event in events" :key="event.name" :description="event.description">
         <input :name="checkboxName(event.name)" type="hidden" :value="event.value || false" />
         <gl-form-checkbox v-model="event.value" :disabled="isInheriting">
-          {{ startCase(event.title) }}
+          {{ event.title }}
         </gl-form-checkbox>
         <gl-form-input
           v-if="event.field"

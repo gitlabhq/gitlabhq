@@ -5,8 +5,8 @@
   self-managed: true
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
-  url:  https://docs.gitlab.com/runner/install/openshift.html
-  image_url:  https://img.youtube.com/vi/ZNBc_QnDUu4/hqdefault.jpg
+  url: https://docs.gitlab.com/runner/install/openshift.html
+  image_url: https://img.youtube.com/vi/ZNBc_QnDUu4/hqdefault.jpg
   published_at: 2021-03-22
   release: 13.10
 - title: "View epics on a board (MVC)"
@@ -21,7 +21,7 @@
   gitlab-com: true
   packages: [Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/group/epics/epic_boards.html
-  image_url:  https://about.gitlab.com/images/13_10/view-epics-on-a-board-mvc-1.png
+  image_url: https://about.gitlab.com/images/13_10/view-epics-on-a-board-mvc-1.png
   published_at: 2021-03-22
   release: 13.10
 - title: "View Jira issue details in GitLab"
@@ -35,8 +35,8 @@
   self-managed: true
   gitlab-com: true
   packages: [Premium, Ultimate]
-  url:  https://docs.gitlab.com/ee/user/project/integrations/jira.html#view-a-jira-issue
-  image_url:  https://about.gitlab.com/images/13_10/jira-detail-view.png
+  url: https://docs.gitlab.com/ee/user/project/integrations/jira.html#view-a-jira-issue
+  image_url: https://about.gitlab.com/images/13_10/jira-detail-view.png
   published_at: 2021-03-22
   release: 13.10
 - title: "DORA4-based lead time for changes"
@@ -46,8 +46,8 @@
   self-managed: true
   gitlab-com: true
   packages: [Ultimate]
-  url:  https://docs.gitlab.com/ee/api/dora4_project_analytics.html#list-project-merge-request-lead-times
-  image_url:  https://about.gitlab.com/images/13_10/api.png
+  url: https://docs.gitlab.com/ee/api/dora4_project_analytics.html#list-project-merge-request-lead-times
+  image_url: https://about.gitlab.com/images/13_10/api.png
   published_at: 2021-03-22
   release: 13.10
 - title: "Create a release from an existing tag"
@@ -57,8 +57,8 @@
   self-managed: true
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
-  url:  https://docs.gitlab.com/ee/user/project/releases/#create-a-release
-  image_url:  https://about.gitlab.com/images/13_10/exiting_tags.png
+  url: https://docs.gitlab.com/ee/user/project/releases/#create-a-release
+  image_url: https://about.gitlab.com/images/13_10/exiting_tags.png
   published_at: 2021-03-22
   release: 13.10
 - title: "Integrate any IT alerting tool with GitLab"
@@ -70,8 +70,8 @@
   self-managed: true
   gitlab-com: true
   packages: [Premium, Ultimate]
-  url:  https://docs.gitlab.com/ee/operations/incident_management/integrations.html#http-endpoints
-  image_url:  https://about.gitlab.com/images/13_10/integrate_alerts.png
+  url: https://docs.gitlab.com/ee/operations/incident_management/integrations.html#http-endpoints
+  image_url: https://about.gitlab.com/images/13_10/integrate_alerts.png
   published_at: 2021-03-22
   release: 13.10
 - title: "Merge request test summary usability improvements"
@@ -85,7 +85,7 @@
   self-managed: true
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
-  url:  https://docs.gitlab.com/ee/ci/unit_test_reports.html
-  image_url:  https://about.gitlab.com/images/13_10/test_summary_ux_improvements.png
+  url: https://docs.gitlab.com/ee/ci/unit_test_reports.html
+  image_url: https://about.gitlab.com/images/13_10/test_summary_ux_improvements.png
   published_at: 2021-03-22
   release: 13.10

@@ -27,7 +27,7 @@
         = topic_icon(@topic, alt: _('Topic avatar'), class: 'avatar topic-avatar s90')
     = render 'shared/choose_avatar_button', f: f
     - if @topic.avatar?
-      = link_to _('Remove avatar'), admin_topic_avatar_path(@topic), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'gl-button btn btn-danger-secondary gl-mt-2'
+      .js-remove-topic-avatar{ data: { path: admin_topic_avatar_path(@topic) } }
 
   - if @topic.new_record?
     .form-actions

@@ -17,7 +17,7 @@ RSpec.describe User do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(TokenAuthenticatable) }
-    it { is_expected.to include_module(BlocksJsonSerialization) }
+    it { is_expected.to include_module(BlocksUnsafeSerialization) }
     it { is_expected.to include_module(AsyncDeviseEmail) }
   end
 
@@ -116,6 +116,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
+    it { is_expected.to have_many(:saved_replies).class_name('::Users::SavedReply') }
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
@@ -498,7 +499,7 @@ RSpec.describe User do
     end
 
     describe 'email' do
-      let(:expected_error) { _('is not allowed for sign-up. Check with your administrator.') }
+      let(:expected_error) { _('is not allowed for sign-up. Please use your regular email address. Check with your administrator.') }
 
       context 'when no signup domains allowed' do
         before do
@@ -550,7 +551,7 @@ RSpec.describe User do
           user = create(:user, email: "info@test.example.com")
 
           expect { user.update!(email: "test@notexample.com") }
-            .to raise_error(StandardError, 'Validation failed: Email is not allowed. Check with your administrator.')
+            .to raise_error(StandardError, 'Validation failed: Email is not allowed. Please use your regular email address. Check with your administrator.')
         end
       end
 
@@ -623,7 +624,7 @@ RSpec.describe User do
             user = create(:user, email: 'info@test.com')
 
             expect { user.update!(email: 'info@example.com') }
-              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Check with your administrator.')
+              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Please use your regular email address. Check with your administrator.')
           end
         end
 
@@ -700,7 +701,7 @@ RSpec.describe User do
             user = create(:user, email: 'info@test.com')
 
             expect { user.update!(email: 'info@gitlab.com') }
-              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Check with your administrator.')
+              .to raise_error(StandardError, 'Validation failed: Email is not allowed. Please use your regular email address. Check with your administrator.')
           end
 
           it 'does accept a valid email address' do
@@ -1171,8 +1172,8 @@ RSpec.describe User do
         @user.update!(email: 'new_primary@example.com')
         @user.reload
 
-        expect(@user.emails.count).to eq 2
-        expect(@user.emails.pluck(:email)).to match_array([@secondary.email, 'primary@example.com'])
+        expect(@user.emails.count).to eq 3
+        expect(@user.emails.pluck(:email)).to match_array([@secondary.email, 'primary@example.com', 'new_primary@example.com'])
       end
 
       context 'when the first email was unconfirmed and the second email gets confirmed' do
@@ -1589,6 +1590,66 @@ RSpec.describe User do
             expect(email.reload.confirmed?).to be_truthy
           end
         end
+      end
+    end
+  end
+
+  describe 'saving primary email to the emails table' do
+    context 'when calling skip_reconfirmation! while updating the primary email' do
+      let(:user) { create(:user, email: 'primary@example.com') }
+
+      it 'adds the new email to emails' do
+        user.skip_reconfirmation!
+        user.update!(email: 'new_primary@example.com')
+
+        expect(user.email).to eq('new_primary@example.com')
+        expect(user.unconfirmed_email).to be_nil
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).to include('new_primary@example.com')
+        expect(user.emails.find_by(email: 'new_primary@example.com')).to be_confirmed
+      end
+    end
+
+    context 'when the email is changed but not confirmed' do
+      let(:user) { create(:user, email: 'primary@example.com') }
+
+      it 'does not add the new email to emails yet' do
+        user.update!(email: 'new_primary@example.com')
+
+        expect(user.unconfirmed_email).to eq('new_primary@example.com')
+        expect(user.email).to eq('primary@example.com')
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).not_to include('new_primary@example.com')
+      end
+    end
+
+    context 'when the user is created as not confirmed' do
+      let(:user) { create(:user, :unconfirmed, email: 'primary@example.com') }
+
+      it 'does not add the email to emails yet' do
+        expect(user).not_to be_confirmed
+        expect(user.emails.pluck(:email)).not_to include('primary@example.com')
+      end
+    end
+
+    context 'when the user is created as confirmed' do
+      let(:user) { create(:user, email: 'primary@example.com', confirmed_at: DateTime.now.utc) }
+
+      it 'adds the email to emails' do
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).to include('primary@example.com')
+      end
+    end
+
+    context 'when skip_confirmation! is called' do
+      let(:user) { build(:user, :unconfirmed, email: 'primary@example.com') }
+
+      it 'adds the email to emails' do
+        user.skip_confirmation!
+        user.save!
+
+        expect(user).to be_confirmed
+        expect(user.emails.pluck(:email)).to include('primary@example.com')
       end
     end
   end
@@ -3089,7 +3150,7 @@ RSpec.describe User do
 
     describe '#ldap_identity' do
       it 'returns ldap identity' do
-        user = create :omniauth_user
+        user = create(:omniauth_user, :ldap)
 
         expect(user.ldap_identity.provider).not_to be_empty
       end
@@ -3717,7 +3778,7 @@ RSpec.describe User do
 
     context 'with min_access_level' do
       let!(:user) { create(:user) }
-      let!(:project) { create(:project, :private, namespace: user.namespace) }
+      let!(:project) { create(:project, :private, group: create(:group)) }
 
       before do
         project.add_developer(user)
@@ -4712,10 +4773,25 @@ RSpec.describe User do
 
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count'])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'attention_requested_open_merge_requests_count'])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
 
       user.invalidate_merge_request_cache_counts
+    end
+  end
+
+  describe '#invalidate_attention_requested_count' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for issue counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'attention_requested_open_merge_requests_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_attention_requested_count
     end
   end
 
@@ -4802,6 +4878,20 @@ RSpec.describe User do
       create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
 
       expect(user.review_requested_open_merge_requests_count(force: true)).to eq 1
+    end
+  end
+
+  describe '#attention_requested_open_merge_requests_count' do
+    it 'returns number of open merge requests from non-archived projects' do
+      user    = create(:user)
+      project = create(:project, :public)
+      archived_project = create(:project, :public, :archived)
+
+      create(:merge_request, source_project: project, author: user, reviewers: [user])
+      create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
+      create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
+
+      expect(user.attention_requested_open_merge_requests_count(force: true)).to eq 1
     end
   end
 

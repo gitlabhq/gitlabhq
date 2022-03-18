@@ -44,6 +44,38 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
     end
   end
 
+  describe '#can_sign_in_bot?' do
+    context 'the user is nil' do
+      it { is_expected.not_to be_can_sign_in_bot(nil) }
+    end
+
+    context 'the user is a bot, but for a web request' do
+      let(:user) { build(:user, :project_bot) }
+
+      it { is_expected.not_to be_can_sign_in_bot(user) }
+    end
+
+    context 'the user is a regular user, for an API request' do
+      let(:user) { build(:user) }
+
+      before do
+        env['SCRIPT_NAME'] = '/api/some_resource'
+      end
+
+      it { is_expected.not_to be_can_sign_in_bot(user) }
+    end
+
+    context 'the user is a project bot, for an API request' do
+      let(:user) { build(:user, :project_bot) }
+
+      before do
+        env['SCRIPT_NAME'] = '/api/some_resource'
+      end
+
+      it { is_expected.to be_can_sign_in_bot(user) }
+    end
+  end
+
   describe '#find_sessionless_user' do
     let_it_be(:dependency_proxy_user) { build(:user) }
     let_it_be(:access_token_user) { build(:user) }

@@ -26,6 +26,10 @@ RSpec.describe Projects::ClustersController do
         let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
         let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
 
+        include_examples ':certificate_based_clusters feature flag index responses' do
+          let(:subject) { go }
+        end
+
         it 'lists available clusters and renders html' do
           go
 
@@ -116,6 +120,10 @@ RSpec.describe Projects::ClustersController do
         project_id: project,
         provider: provider
       }
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality for new cluster' do
@@ -264,6 +272,10 @@ RSpec.describe Projects::ClustersController do
       post :create_gcp, params: params.merge(namespace_id: project.namespace, project_id: project)
     end
 
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
+    end
+
     describe 'functionality' do
       context 'when access token is valid' do
         before do
@@ -358,6 +370,10 @@ RSpec.describe Projects::ClustersController do
 
     def go
       post :create_user, params: params.merge(namespace_id: project.namespace, project_id: project)
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality' do
@@ -477,6 +493,10 @@ RSpec.describe Projects::ClustersController do
       post :create_aws, params: params.merge(namespace_id: project.namespace, project_id: project)
     end
 
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { post_create_aws }
+    end
+
     it 'creates a new cluster' do
       expect(ClusterProvisionWorker).to receive(:perform_async)
       expect { post_create_aws }.to change { Clusters::Cluster.count }
@@ -548,6 +568,10 @@ RSpec.describe Projects::ClustersController do
         .and_return(double(execute: double))
     end
 
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
+    end
+
     it 'updates the associated role with the supplied ARN' do
       go
 
@@ -603,6 +627,10 @@ RSpec.describe Projects::ClustersController do
         }
     end
 
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
+    end
+
     it 'deletes the namespaces associated with the cluster' do
       expect { go }.to change { Clusters::KubernetesNamespace.count }
 
@@ -638,6 +666,10 @@ RSpec.describe Projects::ClustersController do
           id: cluster
         },
         format: :json
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality' do
@@ -683,6 +715,10 @@ RSpec.describe Projects::ClustersController do
           id: cluster,
           tab: tab
         }
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality' do
@@ -747,6 +783,10 @@ RSpec.describe Projects::ClustersController do
           }
         }
       }
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     it "updates and redirects back to show page" do
@@ -840,6 +880,10 @@ RSpec.describe Projects::ClustersController do
           project_id: project,
           id: cluster
         }
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
     end
 
     describe 'functionality' do

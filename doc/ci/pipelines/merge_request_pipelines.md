@@ -41,8 +41,10 @@ Both of these types of pipelines can appear on the **Pipelines** tab of a merge 
 The three types of merge request pipelines are:
 
 - Merge request pipelines, which run on the changes in the merge request's
-  source branch. These pipelines display a `detached` label to indicate that the
+  source branch. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352939)
+  in GitLab 14.9, these pipelines display a `merge request` label to indicate that the
   pipeline ran only on the contents of the source branch, ignoring the target branch.
+  In GitLab 14.8 and earlier, the label is `detached`.
 - [Merged results pipelines](merged_results_pipelines.md), which run on
   the result of combining the source branch's changes with the target branch.
 - [Merge trains](merge_trains.md), which run when merging multiple merge requests

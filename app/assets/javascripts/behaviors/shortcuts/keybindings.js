@@ -131,6 +131,13 @@ export const ITALIC_TEXT = {
   customizable: false,
 };
 
+export const STRIKETHROUGH_TEXT = {
+  id: 'editing.strikethroughText',
+  description: __('Strikethrough text'),
+  defaultKeys: ['mod+shift+x'],
+  customizable: false,
+};
+
 export const LINK_TEXT = {
   id: 'editing.linkText',
   description: __('Link text'),
@@ -511,7 +518,14 @@ export const GLOBAL_SHORTCUTS_GROUP = {
 export const EDITING_SHORTCUTS_GROUP = {
   id: 'editing',
   name: __('Editing'),
-  keybindings: [BOLD_TEXT, ITALIC_TEXT, LINK_TEXT, TOGGLE_MARKDOWN_PREVIEW, EDIT_RECENT_COMMENT],
+  keybindings: [
+    BOLD_TEXT,
+    ITALIC_TEXT,
+    STRIKETHROUGH_TEXT,
+    LINK_TEXT,
+    TOGGLE_MARKDOWN_PREVIEW,
+    EDIT_RECENT_COMMENT,
+  ],
 };
 
 export const WIKI_SHORTCUTS_GROUP = {

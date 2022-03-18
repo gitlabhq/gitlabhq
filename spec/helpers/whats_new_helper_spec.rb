@@ -39,14 +39,14 @@ RSpec.describe WhatsNewHelper do
     subject { helper.display_whats_new? }
 
     it 'returns true when gitlab.com' do
-      allow(Gitlab).to receive(:dev_env_org_or_com?).and_return(true)
+      allow(Gitlab).to receive(:org_or_com?).and_return(true)
 
       expect(subject).to be true
     end
 
     context 'when self-managed' do
       before do
-        allow(Gitlab).to receive(:dev_env_org_or_com?).and_return(false)
+        allow(Gitlab).to receive(:org_or_com?).and_return(false)
       end
 
       it 'returns true if user is signed in' do
@@ -71,7 +71,7 @@ RSpec.describe WhatsNewHelper do
 
       with_them do
         it 'returns correct result depending on variant' do
-          allow(Gitlab).to receive(:dev_env_org_or_com?).and_return(true)
+          allow(Gitlab).to receive(:org_or_com?).and_return(true)
           Gitlab::CurrentSettings.update!(whats_new_variant: ApplicationSetting.whats_new_variants[variant])
 
           expect(subject).to eq(result)

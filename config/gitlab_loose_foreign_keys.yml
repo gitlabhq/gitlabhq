@@ -78,9 +78,6 @@ ci_pipelines:
   - table: merge_requests
     column: merge_request_id
     on_delete: async_delete
-  - table: external_pull_requests
-    column: external_pull_request_id
-    on_delete: async_nullify
   - table: users
     column: user_id
     on_delete: async_nullify

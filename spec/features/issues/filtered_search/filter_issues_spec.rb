@@ -497,6 +497,8 @@ RSpec.describe 'Filter issues', :js do
       end
 
       it 'filters issues by searched text containing special characters' do
+        stub_feature_flags(issues_full_text_search: false)
+
         issue = create(:issue, project: project, author: user, title: "issue with !@\#{$%^&*()-+")
 
         search = '!@#{$%^&*()-+'
@@ -512,6 +514,14 @@ RSpec.describe 'Filter issues', :js do
         input_filtered_search(search)
 
         expect_no_issues_list
+        expect_filtered_search_input(search)
+      end
+
+      it 'filters issues by issue reference' do
+        search = '#1'
+        input_filtered_search(search)
+
+        expect_issues_list_count(1)
         expect_filtered_search_input(search)
       end
     end

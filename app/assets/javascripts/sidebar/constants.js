@@ -1,7 +1,8 @@
 import { s__, sprintf } from '~/locale';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
+import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import userSearchWithMRPermissionsQuery from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
 import { IssuableType, WorkspaceType } from '~/issues/constants';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import epicConfidentialQuery from '~/sidebar/queries/epic_confidential.query.graphql';
 import epicDueDateQuery from '~/sidebar/queries/epic_due_date.query.graphql';
 import epicParticipantsQuery from '~/sidebar/queries/epic_participants.query.graphql';
@@ -49,11 +50,11 @@ import getMergeRequestParticipants from '~/vue_shared/components/sidebar/queries
 import getMrTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_mr_timelogs.query.graphql';
 import updateIssueAssigneesMutation from '~/vue_shared/components/sidebar/queries/update_issue_assignees.mutation.graphql';
 import updateMergeRequestAssigneesMutation from '~/vue_shared/components/sidebar/queries/update_mr_assignees.mutation.graphql';
+import getEscalationStatusQuery from '~/sidebar/queries/escalation_status.query.graphql';
+import updateEscalationStatusMutation from '~/sidebar/queries/update_escalation_status.mutation.graphql';
 import projectIssueMilestoneMutation from './queries/project_issue_milestone.mutation.graphql';
 import projectIssueMilestoneQuery from './queries/project_issue_milestone.query.graphql';
 import projectMilestonesQuery from './queries/project_milestones.query.graphql';
-
-export const ASSIGNEES_DEBOUNCE_DELAY = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
 
 export const defaultEpicSort = 'TITLE_ASC';
 
@@ -88,6 +89,15 @@ export const participantsQueries = {
   [IssuableType.Alert]: {
     query: '',
     skipQuery: true,
+  },
+};
+
+export const userSearchQueries = {
+  [IssuableType.Issue]: {
+    query: userSearchQuery,
+  },
+  [IssuableType.MergeRequest]: {
+    query: userSearchWithMRPermissionsQuery,
   },
 };
 
@@ -305,3 +315,6 @@ export function dropdowni18nText(issuableAttribute, issuableType) {
     ),
   };
 }
+
+export const escalationStatusQuery = getEscalationStatusQuery;
+export const escalationStatusMutation = updateEscalationStatusMutation;

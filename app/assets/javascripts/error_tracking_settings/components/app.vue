@@ -1,29 +1,40 @@
 <script>
 import {
+  GlAlert,
   GlButton,
   GlFormGroup,
   GlFormCheckbox,
   GlFormRadioGroup,
   GlFormRadio,
   GlFormInputGroup,
+  GlLink,
+  GlSprintf,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { I18N_ERROR_TRACKING_SETTINGS } from '../constants';
 import ErrorTrackingForm from './error_tracking_form.vue';
 import ProjectDropdown from './project_dropdown.vue';
 
 export default {
+  i18n: I18N_ERROR_TRACKING_SETTINGS,
   components: {
     ErrorTrackingForm,
+    GlAlert,
     GlButton,
     GlFormCheckbox,
     GlFormGroup,
     GlFormRadioGroup,
     GlFormRadio,
     GlFormInputGroup,
+    GlLink,
+    GlSprintf,
     ProjectDropdown,
     ClipboardButton,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     initialApiHost: {
       type: String,
@@ -62,6 +73,11 @@ export default {
       default: null,
     },
   },
+  data() {
+    return {
+      isAlertDismissed: false,
+    };
+  },
   computed: {
     ...mapGetters([
       'dropdownLabel',
@@ -81,12 +97,34 @@ export default {
     showGitlabDsnSetting() {
       return this.integrated && this.enabled && this.gitlabDsn;
     },
+    showIntegratedErrorTracking() {
+      return this.glFeatures.integratedErrorTracking === true;
+    },
+    setInitialEnabled() {
+      if (this.showIntegratedErrorTracking) {
+        return this.initialEnabled;
+      }
+      if (this.initialIntegrated === 'true') {
+        return 'false';
+      }
+      return this.initialEnabled;
+    },
+    showIntegratedTrackingDisabledAlert() {
+      return (
+        !this.isAlertDismissed &&
+        !this.showIntegratedErrorTracking &&
+        this.initialIntegrated === 'true' &&
+        this.initialEnabled === 'true'
+      );
+    },
   },
+  epicLink: 'https://gitlab.com/gitlab-org/gitlab/-/issues/353639',
+  featureFlagLink: helpPagePath('operations/error_tracking'),
   created() {
     this.setInitialState({
       apiHost: this.initialApiHost,
-      enabled: this.initialEnabled,
-      integrated: this.initialIntegrated,
+      enabled: this.setInitialEnabled,
+      integrated: this.showIntegratedErrorTracking && this.initialIntegrated,
       project: this.initialProject,
       token: this.initialToken,
       listProjectsEndpoint: this.listProjectsEndpoint,
@@ -104,21 +142,41 @@ export default {
     handleSubmit() {
       this.updateSettings();
     },
+    dismissAlert() {
+      this.isAlertDismissed = true;
+    },
   },
 };
 </script>
 
 <template>
   <div>
+    <gl-alert v-if="showIntegratedTrackingDisabledAlert" variant="danger" @dismiss="dismissAlert">
+      <gl-sprintf :message="this.$options.i18n.integratedErrorTrackingDisabledText">
+        <template #epicLink="{ content }">
+          <gl-link :href="$options.epicLink" target="_blank">{{ content }}</gl-link>
+        </template>
+        <template #flagLink="{ content }">
+          <gl-link :href="$options.featureFlagLink" target="_blank">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
+
     <gl-form-group
       :label="s__('ErrorTracking|Enable error tracking')"
       label-for="error-tracking-enabled"
     >
-      <gl-form-checkbox id="error-tracking-enabled" :checked="enabled" @change="updateEnabled">
+      <gl-form-checkbox
+        id="error-tracking-enabled"
+        :checked="enabled"
+        data-testid="error-tracking-enabled"
+        @change="updateEnabled"
+      >
         {{ s__('ErrorTracking|Active') }}
       </gl-form-checkbox>
     </gl-form-group>
     <gl-form-group
+      v-if="showIntegratedErrorTracking"
       :label="s__('ErrorTracking|Error tracking backend')"
       data-testid="tracking-backend-settings"
     >

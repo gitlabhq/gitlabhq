@@ -2,6 +2,7 @@ import Store from '~/sidebar/stores/sidebar_store';
 import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { visitUrl } from '../lib/utils/url_utility';
 import Service from './services/sidebar_service';
 
@@ -125,6 +126,7 @@ export default class SidebarMediator {
       this.store.updateReviewer(user.id, 'attention_requested');
       this.store.updateAssignee(user.id, 'attention_requested');
 
+      refreshUserMergeRequestCounts();
       callback();
     } catch (error) {
       callback();

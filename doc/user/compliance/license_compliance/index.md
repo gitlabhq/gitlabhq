@@ -55,7 +55,7 @@ You can view and modify existing policies from the [policies](#policies) tab.
 
 ## License expressions
 
-GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/).
+GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/SPDX-license-expressions/).
 License compliance can read multiple licenses, but always considers them combined using the `AND` operator. For example,
 if a dependency has two licenses, and one of them is allowed and the other is denied by the project [policy](#policies),
 GitLab evaluates the composite license as _denied_, as this is the safer option.
@@ -90,7 +90,7 @@ The reported licenses might be incomplete or inaccurate.
 | Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage), [CocoaPods](https://cocoapods.org/) v0.39 and below |
 | Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)                               |
 | C++/C      | [Conan](https://conan.io/)                                                                                    |
-| Rust       | [Cargo](https://crates.io)                                                                                    |
+| Rust       | [Cargo](https://crates.io/)                                                                                   |
 | PHP        | [Composer](https://getcomposer.org/)                                                                          |
 
 ## Enable License Compliance
@@ -219,7 +219,7 @@ license_scanning:
     MAVEN_CLI_OPTS: --debug
 ```
 
-`mvn install` runs through all of the [build life cycle](http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
+`mvn install` runs through all of the [build life cycle](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
 stages prior to `install`, including `test`. Running unit tests is not directly
 necessary for the license scanning purposes and consumes time, so it's skipped
 by having the default value of `MAVEN_CLI_OPTS` as `-DskipTests`. If you want
@@ -249,7 +249,7 @@ license_scanning:
 
 Alternatively, you can use a Java key store to verify the TLS connection. For instructions on how to
 generate a key store file, see the
-[Maven Guide to Remote repository access through authenticated HTTPS](http://maven.apache.org/guides/mini/guide-repository-ssl.html).
+[Maven Guide to Remote repository access through authenticated HTTPS](https://maven.apache.org/guides/mini/guide-repository-ssl.html).
 
 ### Selecting the version of Java
 
@@ -650,7 +650,7 @@ import the following default License Compliance analyzer images from `registry.g
 offline [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:latest
+registry.gitlab.com/security-products/license-finder:latest
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
@@ -734,7 +734,7 @@ Note, the merge request is not able to be merged until the `denied` license is r
 You may add a [`License-Check` approval rule](#enabling-license-approvals-within-a-project),
 which enables a designated approver that can approve and then merge a merge request with `denied` license.
 
-![Merge Request with denied licenses](img/denied_licenses_v13_3.png)
+![Merge request with denied licenses](img/denied_licenses_v13_3.png)
 
 The **Policies** tab in the project's license compliance section displays your project's license
 policies. Project maintainers can specify policies in this section.
@@ -853,7 +853,7 @@ A full list of variables can be found in [CI/CD variables](#available-cicd-varia
 To find out what tools are pre-installed in the `license_scanning` Docker image use the following command:
 
 ```shell
-$ docker run --entrypoint='' registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:3 /bin/bash -lc 'asdf list'
+$ docker run --entrypoint='' registry.gitlab.com/security-products/license-finder:3 /bin/bash -lc 'asdf list'
 golang
   1.14
 gradle
@@ -880,7 +880,7 @@ sbt
 To interact with the `license_scanning` runtime environment use the following command:
 
 ```shell
-$ docker run -it --entrypoint='' registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:3 /bin/bash -l
+$ docker run -it --entrypoint='' registry.gitlab.com/security-products/license-finder:3 /bin/bash -l
 root@6abb70e9f193:~#
 ```
 

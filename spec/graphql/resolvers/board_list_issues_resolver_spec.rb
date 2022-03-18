@@ -25,10 +25,10 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
       let(:wildcard_started) { 'STARTED' }
       let(:filters) { { milestone_title: ["started"], milestone_wildcard_id: wildcard_started } }
 
-      it 'raises a mutually exclusive filter error when milestone wildcard and title are provided' do
-        expect do
+      it 'generates a mutually exclusive filter error when milestone wildcard and title are provided' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
           resolve_board_list_issues(args: { filters: filters })
-        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+        end
       end
 
       it 'returns the issues in the correct order' do
@@ -63,10 +63,10 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
         expect(result).to contain_exactly(incident)
       end
 
-      it 'raises an exception if both assignee_username and assignee_wildcard_id are present' do
-        expect do
+      it 'generates an error if both assignee_username and assignee_wildcard_id are present' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
           resolve_board_list_issues(args: { filters: { assignee_username: ['username'], assignee_wildcard_id: 'NONE' } })
-        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+        end
       end
 
       it 'accepts assignee wildcard id NONE' do

@@ -6,7 +6,6 @@ module Types
       graphql_name 'MergeRequestReviewer'
       description 'A user assigned to a merge request as a reviewer.'
 
-      include FindClosest
       include ::Types::MergeRequests::InteractsWithMergeRequest
 
       authorize :read_user

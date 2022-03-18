@@ -43,7 +43,7 @@ RSpec.describe 'Admin uses repository checks', :request_store do
       project = create(:project)
       project.update_columns(
         last_repository_check_failed: true,
-        last_repository_check_at: Time.now
+        last_repository_check_at: Time.zone.now
       )
       visit_admin_project_page(project)
 

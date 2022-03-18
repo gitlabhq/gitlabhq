@@ -8,6 +8,9 @@ import { stubComponent } from 'helpers/stub_component';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { clusterAgents, connectedTimeNow, connectedTimeInactive } from './mock_data';
 
+const defaultConfigHelpUrl =
+  '/help/user/clusters/agent/install/index#create-an-agent-without-configuration-file';
+
 const provideData = {
   gitlabVersion: '14.8',
 };
@@ -31,8 +34,8 @@ describe('AgentTable', () => {
   let wrapper;
 
   const findAgentLink = (at) => wrapper.findAllByTestId('cluster-agent-name-link').at(at);
-  const findStatusIcon = (at) => wrapper.findAllComponents(GlIcon).at(at);
   const findStatusText = (at) => wrapper.findAllByTestId('cluster-agent-connection-status').at(at);
+  const findStatusIcon = (at) => findStatusText(at).find(GlIcon);
   const findLastContactText = (at) => wrapper.findAllByTestId('cluster-agent-last-contact').at(at);
   const findVersionText = (at) => wrapper.findAllByTestId('cluster-agent-version').at(at);
   const findConfiguration = (at) =>
@@ -141,16 +144,16 @@ describe('AgentTable', () => {
     );
 
     it.each`
-      agentPath                   | hasLink  | lineNumber
-      ${'.gitlab/agents/agent-1'} | ${true}  | ${0}
-      ${'.gitlab/agents/agent-2'} | ${false} | ${1}
+      agentConfig                 | link                    | lineNumber
+      ${'.gitlab/agents/agent-1'} | ${'/agent/full/path'}   | ${0}
+      ${'Default configuration'}  | ${defaultConfigHelpUrl} | ${1}
     `(
       'displays config file path as "$agentPath" at line $lineNumber',
-      ({ agentPath, hasLink, lineNumber }) => {
+      ({ agentConfig, link, lineNumber }) => {
         const findLink = findConfiguration(lineNumber).find(GlLink);
 
-        expect(findLink.exists()).toBe(hasLink);
-        expect(findConfiguration(lineNumber).text()).toBe(agentPath);
+        expect(findLink.attributes('href')).toBe(link);
+        expect(findConfiguration(lineNumber).text()).toBe(agentConfig);
       },
     );
 

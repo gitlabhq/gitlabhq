@@ -94,9 +94,9 @@ class ProjectMember < Member
 
   override :access_level_inclusion
   def access_level_inclusion
-    return if access_level.in?(Gitlab::Access.values)
-
-    errors.add(:access_level, "is not included in the list")
+    unless access_level.in?(Gitlab::Access.all_values)
+      errors.add(:access_level, "is not included in the list")
+    end
   end
 
   override :refresh_member_authorized_projects

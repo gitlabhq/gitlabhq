@@ -294,6 +294,28 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('initial url params', () => {
+    describe('page', () => {
+      it('page_after is set from the url params', () => {
+        setWindowLocation('?page_after=randomCursorString');
+
+        wrapper = mountComponent();
+
+        expect(findIssuableList().props('urlParams')).toMatchObject({
+          page_after: 'randomCursorString',
+        });
+      });
+
+      it('page_before is set from the url params', () => {
+        setWindowLocation('?page_before=anotherRandomCursorString');
+
+        wrapper = mountComponent();
+
+        expect(findIssuableList().props('urlParams')).toMatchObject({
+          page_before: 'anotherRandomCursorString',
+        });
+      });
+    });
+
     describe('search', () => {
       it('is set from the url params', () => {
         setWindowLocation(locationSearch);
@@ -881,7 +903,12 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('does not update IssuableList with url params ', async () => {
-          const defaultParams = { sort: 'created_date', state: 'opened' };
+          const defaultParams = {
+            page_after: null,
+            page_before: null,
+            sort: 'created_date',
+            state: 'opened',
+          };
 
           expect(findIssuableList().props('urlParams')).toEqual(defaultParams);
         });

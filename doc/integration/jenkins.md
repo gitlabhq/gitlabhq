@@ -45,7 +45,7 @@ Grant a GitLab user access to the relevant GitLab projects.
 
    If you're integrating Jenkins with many GitLab projects, consider granting the
    user administrator access. Otherwise, add the user to each project
-   and grant the Developer role.
+   and grant the Maintainer role.
 
 ## Grant Jenkins access to the GitLab API
 
@@ -242,7 +242,7 @@ To enable job logs in Jenkins:
 1. Go to **Dashboard > Manage Jenkins > System Log**.
 1. Select **Add new log recorder**.
 1. Enter a name for the log recorder.
-1. On the next screen, select **Add** and enter `org.jenkinsci.plugins.workflow.job`.
+1. On the next screen, select **Add** and enter `com.dabsquared.gitlabjenkins`.
 1. Make sure that the Log Level is **All** and select **Save**.
 
 To view your logs:

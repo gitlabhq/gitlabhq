@@ -86,10 +86,10 @@ RSpec.describe Resolvers::GroupIssuesResolver do
     end
 
     context 'release_tag filter' do
-      it 'returns an error when trying to filter by negated release_tag' do
-        expect do
+      it 'generates an error when trying to filter by negated release_tag' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'releaseTag filter is not allowed when parent is a group.') do
           resolve_issues(not: { release_tag: ['v1.0'] })
-        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'releaseTag filter is not allowed when parent is a group.')
+        end
       end
     end
   end

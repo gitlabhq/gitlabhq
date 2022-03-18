@@ -46,6 +46,7 @@ import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variab
 import getStateQuery from './queries/get_state.query.graphql';
 import terraformExtension from './extensions/terraform';
 import accessibilityExtension from './extensions/accessibility';
+import codeQualityExtension from './extensions/code_quality';
 
 export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
@@ -241,6 +242,11 @@ export default {
         this.registerTerraformPlans();
       }
     },
+    shouldRenderCodeQuality(newVal) {
+      if (newVal) {
+        this.registerCodeQualityExtension();
+      }
+    },
     shouldShowAccessibilityReport(newVal) {
       if (newVal) {
         this.registerAccessibilityExtension();
@@ -352,6 +358,8 @@ export default {
       return Promise.resolve();
     },
     initPolling() {
+      if (this.startingPollInterval <= 0) return;
+
       this.pollingInterval = new SmartInterval({
         callback: this.checkStatus,
         startingInterval: this.startingPollInterval,
@@ -435,10 +443,10 @@ export default {
       notify.notifyMe(title, message, this.mr.gitlabLogo);
     },
     resumePolling() {
-      this.pollingInterval.resume();
+      this.pollingInterval?.resume();
     },
     stopPolling() {
-      this.pollingInterval.stopTimer();
+      this.pollingInterval?.stopTimer();
     },
     bindEventHubListeners() {
       eventHub.$on('MRWidgetUpdateRequested', (cb) => {
@@ -487,6 +495,11 @@ export default {
     registerAccessibilityExtension() {
       if (this.shouldShowAccessibilityReport && this.shouldShowExtension) {
         registerExtension(accessibilityExtension);
+      }
+    },
+    registerCodeQualityExtension() {
+      if (this.shouldRenderCodeQuality && this.shouldShowExtension) {
+        registerExtension(codeQualityExtension);
       }
     },
   },
@@ -544,7 +557,7 @@ export default {
       </div>
       <extensions-container :mr="mr" />
       <grouped-codequality-reports-app
-        v-if="shouldRenderCodeQuality"
+        v-if="shouldRenderCodeQuality && !shouldShowExtension"
         :head-blob-path="mr.headBlobPath"
         :base-blob-path="mr.baseBlobPath"
         :codequality-reports-path="mr.codequalityReportsPath"
@@ -574,7 +587,7 @@ export default {
       />
 
       <grouped-accessibility-reports-app
-        v-if="shouldShowAccessibilityReport"
+        v-if="shouldShowAccessibilityReport && !shouldShowExtension"
         :endpoint="mr.accessibilityReportPath"
       />
 

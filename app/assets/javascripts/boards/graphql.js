@@ -10,5 +10,6 @@ export const gqlClient = createDefaultClient(
         return object.__typename === 'BoardList' ? object.iid : defaultDataIdFromObject(object);
       },
     },
+    batchMax: 2,
   },
 );

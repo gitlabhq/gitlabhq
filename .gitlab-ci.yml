@@ -16,7 +16,7 @@ stages:
 # in cases where jobs require Docker-in-Docker, the job
 # definition must be extended with `.use-docker-in-docker`
 default:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7.patched-golang-1.16-git-2.33-lfs-2.9-chrome-97-node-16.14-yarn-1.22-postgresql-11-graphicsmagick-1.3.36
   tags:
     - gitlab-org
   # All jobs are interruptible by default
@@ -65,10 +65,15 @@ variables:
   # we override the max_old_space_size to prevent OOM errors
   NODE_OPTIONS: --max_old_space_size=3584
   GIT_DEPTH: "20"
+  # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
+  GIT_STRATEGY: "clone"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   DEBIAN_VERSION: "bullseye"
 
+  TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
+  GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
+  TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
@@ -86,6 +91,8 @@ variables:
   CHECK_PRECOMPILED_ASSETS: "true"
   FF_USE_FASTZIP: "true"
   SKIP_FLAKY_TESTS_AUTOMATICALLY: "true"
+  # Run with decomposed databases by default
+  DECOMPOSED_DB: "true"
 
   DOCS_REVIEW_APPS_DOMAIN: "178.62.207.141.nip.io"
   DOCS_GITLAB_REPO_SUFFIX: "ee"

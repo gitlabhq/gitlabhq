@@ -46,7 +46,7 @@ module Gitlab
           valid? && persisted?
         end
 
-        def save(provider = 'OAuth')
+        def save(provider = protocol_name)
           raise SigninDisabledForProviderError if oauth_provider_disabled?
           raise SignupDisabledError unless gl_user
 
@@ -55,6 +55,7 @@ module Gitlab
           Users::UpdateService.new(gl_user, user: gl_user).execute!
 
           gl_user.block_pending_approval if block_after_save
+          activate_user_if_user_cap_not_reached
 
           log.info "(#{provider}) saving user #{auth_hash.email} from login with admin => #{gl_user.admin}, extern_uid => #{auth_hash.uid}"
           gl_user
@@ -96,7 +97,15 @@ module Gitlab
           end
         end
 
+        def protocol_name
+          'OAuth'
+        end
+
         protected
+
+        def activate_user_if_user_cap_not_reached
+          nil
+        end
 
         def should_save?
           true

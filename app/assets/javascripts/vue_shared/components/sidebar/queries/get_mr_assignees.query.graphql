@@ -10,7 +10,13 @@ query getMrAssignees($fullPath: ID!, $iid: String!) {
         nodes {
           ...User
           ...UserAvailability
+          mergeRequestInteraction {
+            canMerge
+          }
         }
+      }
+      userPermissions {
+        canMerge
       }
     }
   }

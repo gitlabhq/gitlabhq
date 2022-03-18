@@ -81,7 +81,7 @@ request is as follows:
 1. If your MR touches code that executes shell commands, reads or opens files, or
    handles paths to files on disk, make sure it adheres to the
    [shell command guidelines](../shell_commands.md)
-1. If your code needs to handle file storage, see the [uploads documentation](../uploads.md).
+1. If your code needs to handle file storage, see the [uploads documentation](../uploads/index.md).
 1. If your merge request adds one or more migrations, make sure to execute all
    migrations on a fresh database before the MR is reviewed. If the review leads
    to large changes in the MR, execute the migrations again once the review is complete.
@@ -264,8 +264,11 @@ requirements.
 1. Peer member testing is optional but recommended when the risk of a change is high. This includes when the changes are [far-reaching](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work) or are for [components critical for security](../code_review.md#security).
 1. Regressions and bugs are covered with tests that reduce the risk of the issue happening
    again.
+1. Code affected by a feature flag is covered by [automated tests with the feature flag enabled and disabled](../feature_flags/index.md#feature-flags-in-tests), or both
+   states are tested as part of peer member testing or as part of the rollout plan.
 1. [Performance guidelines](../merge_request_performance_guidelines.md) have been followed.
 1. [Secure coding guidelines](https://gitlab.com/gitlab-com/gl-security/security-guidelines) have been followed.
+1. [Application and rate limit guidelines](../merge_request_application_and_rate_limit_guidelines.md) have been followed.
 1. [Documented](../documentation/index.md) in the `/doc` directory.
 1. [Changelog entry added](../changelog.md), if necessary.
 1. Reviewed by relevant reviewers, and all concerns are addressed for Availability, Regressions, and Security. Documentation reviews should take place as soon as possible, but they should not block a merge request.

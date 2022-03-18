@@ -6,8 +6,7 @@ class Groups::DeployTokensController < Groups::ApplicationController
   feature_category :continuous_delivery
 
   def revoke
-    @token = @group.deploy_tokens.find(params[:id])
-    @token.revoke!
+    Groups::DeployTokens::RevokeService.new(@group, current_user, params).execute
 
     redirect_to group_settings_repository_path(@group, anchor: 'js-deploy-tokens')
   end

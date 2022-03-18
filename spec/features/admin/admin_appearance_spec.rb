@@ -17,7 +17,7 @@ RSpec.describe 'Admin Appearance' do
     fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines'
     click_button 'Update appearance settings'
 
-    expect(current_path).to eq admin_application_settings_appearances_path
+    expect(page).to have_current_path admin_application_settings_appearances_path, ignore_query: true
     expect(page).to have_content 'Appearance'
 
     expect(page).to have_field('appearance_title', with: 'MyCompany')

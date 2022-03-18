@@ -33,7 +33,7 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter do
   end
 
   it 'ignores non-issuable links' do
-    link = create_link('text', project: project, reference_type: 'issue')
+    link = create_link('text', project: project.id, reference_type: 'issue')
     doc = filter(link, context)
 
     expect(doc.css('a').last.text).to eq('text')

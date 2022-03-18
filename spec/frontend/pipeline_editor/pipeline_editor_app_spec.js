@@ -18,12 +18,15 @@ import {
   COMMIT_SUCCESS,
   COMMIT_SUCCESS_WITH_REDIRECT,
   COMMIT_FAILURE,
+  EDITOR_APP_STATUS_LOADING,
 } from '~/pipeline_editor/constants';
 import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.query.graphql';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import getTemplate from '~/pipeline_editor/graphql/queries/get_starter_template.query.graphql';
 import getLatestCommitShaQuery from '~/pipeline_editor/graphql/queries/latest_commit_sha.query.graphql';
 import getPipelineQuery from '~/pipeline_editor/graphql/queries/pipeline.query.graphql';
+import getCurrentBranch from '~/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
+import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.query.graphql';
 
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
 import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
@@ -84,9 +87,6 @@ describe('Pipeline editor app component', () => {
             initialCiFileContent: {
               loading: blobLoading,
             },
-            ciConfigData: {
-              loading: false,
-            },
           },
         },
       },
@@ -94,7 +94,11 @@ describe('Pipeline editor app component', () => {
     });
   };
 
-  const createComponentWithApollo = async ({ provide = {}, stubs = {} } = {}) => {
+  const createComponentWithApollo = async ({
+    provide = {},
+    stubs = {},
+    withUndefinedBranch = false,
+  } = {}) => {
     const handlers = [
       [getBlobContent, mockBlobContentData],
       [getCiConfigData, mockCiConfigData],
@@ -104,6 +108,31 @@ describe('Pipeline editor app component', () => {
     ];
 
     mockApollo = createMockApollo(handlers, resolvers);
+
+    if (!withUndefinedBranch) {
+      mockApollo.clients.defaultClient.cache.writeQuery({
+        query: getCurrentBranch,
+        data: {
+          workBranches: {
+            __typename: 'BranchList',
+            current: {
+              __typename: 'WorkBranch',
+              name: mockDefaultBranch,
+            },
+          },
+        },
+      });
+    }
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getAppStatus,
+      data: {
+        app: {
+          __typename: 'AppData',
+          status: EDITOR_APP_STATUS_LOADING,
+        },
+      },
+    });
 
     const options = {
       localVue,
@@ -142,6 +171,55 @@ describe('Pipeline editor app component', () => {
 
       expect(findLoadingIcon().exists()).toBe(true);
       expect(findEditorHome().exists()).toBe(false);
+    });
+  });
+
+  describe('skipping queries', () => {
+    describe('when branchName is undefined', () => {
+      beforeEach(async () => {
+        await createComponentWithApollo({ withUndefinedBranch: true });
+      });
+
+      it('does not calls getBlobContent', () => {
+        expect(mockBlobContentData).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when branchName is defined', () => {
+      beforeEach(async () => {
+        await createComponentWithApollo();
+      });
+
+      it('calls getBlobContent', () => {
+        expect(mockBlobContentData).toHaveBeenCalled();
+      });
+    });
+
+    describe('when commit sha is undefined', () => {
+      beforeEach(async () => {
+        mockLatestCommitShaQuery.mockResolvedValue(undefined);
+        await createComponentWithApollo();
+      });
+
+      it('calls getBlobContent', () => {
+        expect(mockBlobContentData).toHaveBeenCalled();
+      });
+
+      it('does not call ciConfigData', () => {
+        expect(mockCiConfigData).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when commit sha is defined', () => {
+      beforeEach(async () => {
+        mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
+        mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
+        await createComponentWithApollo();
+      });
+
+      it('calls ciConfigData', () => {
+        expect(mockCiConfigData).toHaveBeenCalled();
+      });
     });
   });
 

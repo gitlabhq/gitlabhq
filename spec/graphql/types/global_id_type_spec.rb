@@ -11,7 +11,7 @@ RSpec.describe Types::GlobalIDType do
   let(:gid) { project.to_global_id }
 
   it 'is has the correct name' do
-    expect(described_class.to_graphql.name).to eq('GlobalID')
+    expect(described_class.graphql_name).to eq('GlobalID')
   end
 
   describe '.coerce_result' do
@@ -63,7 +63,7 @@ RSpec.describe Types::GlobalIDType do
     let(:type) { ::Types::GlobalIDType[::Project] }
 
     it 'is has the correct name' do
-      expect(type.to_graphql.name).to eq('ProjectID')
+      expect(type.graphql_name).to eq('ProjectID')
     end
 
     context 'the GID is appropriate' do
@@ -126,7 +126,7 @@ RSpec.describe Types::GlobalIDType do
       let(:deprecating_gid) { Gitlab::GlobalId.build(model_name: 'Issue', id: issue.id) }
 
       it 'appends the description with a deprecation notice for the old Global ID' do
-        expect(type.to_graphql.description).to include('The older format `"gid://gitlab/OldIssue/1"` was deprecated in 10.0')
+        expect(type.description).to include('The older format `"gid://gitlab/OldIssue/1"` was deprecated in 10.0')
       end
 
       describe 'coercing input against the type (parsing the Global ID string when supplied as an argument)' do
@@ -242,7 +242,7 @@ RSpec.describe Types::GlobalIDType do
     let(:type) { ::Types::GlobalIDType[::Ci::Build] }
 
     it 'is has a valid GraphQL identifier for a name' do
-      expect(type.to_graphql.name).to eq('CiBuildID')
+      expect(type.graphql_name).to eq('CiBuildID')
     end
   end
 
@@ -374,6 +374,12 @@ RSpec.describe Types::GlobalIDType do
   describe '.model_name_to_graphql_name' do
     it 'returns a graphql name for the given model name' do
       expect(described_class.model_name_to_graphql_name('DesignManagement::Design')).to eq('DesignManagementDesignID')
+    end
+  end
+
+  describe '.[]' do
+    it 'returns a custom class for work items' do
+      expect(described_class[::WorkItem]).to eq(::Types::WorkItemIdType)
     end
   end
 end

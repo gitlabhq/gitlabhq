@@ -18,15 +18,4 @@ RSpec.describe ProjectPagesMetadatum do
       expect(described_class.only_on_legacy_storage).to eq([legacy_storage_project.pages_metadatum])
     end
   end
-
-  it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:model) do
-      artifacts_archive = create(:ci_job_artifact, :legacy_archive)
-      metadatum = artifacts_archive.project.pages_metadatum
-      metadatum.artifacts_archive = artifacts_archive
-      metadatum
-    end
-
-    let!(:parent) { model.artifacts_archive }
-  end
 end

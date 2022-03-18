@@ -104,7 +104,7 @@ RSpec.describe 'Profile > Password' do
 
         expect(user.failed_attempts).to eq(1)
         expect(user.valid_password?(new_password)).to eq(false)
-        expect(current_path).to eq(edit_profile_password_path)
+        expect(page).to have_current_path(edit_profile_password_path, ignore_query: true)
 
         page.within '.flash-container' do
           expect(page).to have_content('You must provide a valid current password')
@@ -116,7 +116,7 @@ RSpec.describe 'Profile > Password' do
 
         subject
 
-        expect(current_path).to eq(new_user_session_path)
+        expect(page).to have_current_path(new_user_session_path, ignore_query: true)
 
         page.within '.flash-container' do
           expect(page).to have_content('Your account is locked.')
@@ -146,7 +146,7 @@ RSpec.describe 'Profile > Password' do
 
       it 'changes the password, logs the user out and prompts them to sign in again', :aggregate_failures do
         expect { subject }.to change { user.reload.valid_password?(new_password) }.to(true)
-        expect(current_path).to eq new_user_session_path
+        expect(page).to have_current_path new_user_session_path, ignore_query: true
 
         page.within '.flash-container' do
           expect(page).to have_content('Password was successfully updated. Please sign in again.')
@@ -167,14 +167,14 @@ RSpec.describe 'Profile > Password' do
     it 'needs change user password' do
       visit edit_profile_password_path
 
-      expect(current_path).to eq new_profile_password_path
+      expect(page).to have_current_path new_profile_password_path, ignore_query: true
 
       fill_in :user_password,      with: user.password
       fill_in :user_new_password,  with: Gitlab::Password.test_default
       fill_in :user_password_confirmation, with: Gitlab::Password.test_default
       click_button 'Set new password'
 
-      expect(current_path).to eq new_user_session_path
+      expect(page).to have_current_path new_user_session_path, ignore_query: true
     end
 
     context 'when global require_two_factor_authentication is enabled' do
@@ -183,7 +183,7 @@ RSpec.describe 'Profile > Password' do
 
         visit profile_path
 
-        expect(current_path).to eq new_profile_password_path
+        expect(page).to have_current_path new_profile_password_path, ignore_query: true
       end
     end
   end

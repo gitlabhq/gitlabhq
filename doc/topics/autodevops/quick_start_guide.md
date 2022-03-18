@@ -76,17 +76,18 @@ to deploy this project to.
 
    ![Project landing page](img/guide_project_landing_page_v12_10.png)
 
-1. On the **Add a Kubernetes cluster integration** page, select the **Create new cluster** tab,
-   then select **Google GKE**.
+1. On the **Kubernetes clusters** page, select the **Create a new cluster** option from the **Actions** dropdown menu.
+
+1. On the **Connect a Kubernetes cluster** page, select **Google GKE**.
 
 1. Connect with your Google account, and select **Allow** to allow access to your
    Google account. (This authorization request is only displayed the first time
    you connect GitLab with your Google account.)
 
-   After authorizing access, the **Add a Kubernetes cluster integration** page
+   After authorizing access, the **Connect a Kubernetes cluster** page
    is displayed.
 
-1. In the **Enter the details for your Kubernetes cluster** section, provide
+1. In the **Enter your Kubernetes cluster certificate details** section, provide
    details about your cluster:
 
    - **Kubernetes cluster name**

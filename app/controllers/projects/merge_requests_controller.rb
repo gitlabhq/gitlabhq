@@ -30,14 +30,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
-  before_action only: [:index, :show] do
-    push_frontend_feature_flag(:mr_attention_requests, project, default_enabled: :yaml)
-  end
 
   before_action only: [:show] do
     push_frontend_feature_flag(:file_identifier_hash)
     push_frontend_feature_flag(:merge_request_widget_graphql, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:default_merge_ref_for_diffs, project, default_enabled: :yaml)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:paginated_notes, project, default_enabled: :yaml)
     push_frontend_feature_flag(:confidential_notes, project, default_enabled: :yaml)
@@ -45,8 +41,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
     push_frontend_feature_flag(:refactor_mr_widgets_extensions, project, default_enabled: :yaml)
     push_frontend_feature_flag(:rebase_without_ci_ui, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:rearrange_pipelines_table, project, default_enabled: :yaml)
     push_frontend_feature_flag(:markdown_continue_lists, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:secure_vulnerability_training, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
     # Usage data feature flags
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, project, default_enabled: :yaml)
     push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
@@ -87,7 +84,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :ci_environments_status,
     :destroy,
     :rebase,
-    :discussions
+    :discussions,
+    :pipelines
   ]
 
   def index
@@ -95,7 +93,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     respond_to do |format|
       format.html
-      format.atom { render layout: 'xml.atom' }
+      format.atom { render layout: 'xml' }
       format.json do
         render json: {
           html: view_to_html_string("projects/merge_requests/_merge_requests")
@@ -220,8 +218,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def context_commits
-    return render_404 unless project.context_commits_enabled?
-
     # Get commits from repository
     # or from cache if already merged
     commits = ContextCommitsFinder.new(project, @merge_request, { search: params[:search], limit: params[:limit], offset: params[:offset] }).execute
@@ -553,12 +549,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def endpoint_metadata_url(project, merge_request)
-    params = request.query_parameters
-    params[:view] = "inline"
-
-    if Feature.enabled?(:default_merge_ref_for_diffs, project, default_enabled: :yaml)
-      params = params.merge(diff_head: true)
-    end
+    params = request.query_parameters.merge(view: 'inline', diff_head: true)
 
     diffs_metadata_project_json_merge_request_path(project, merge_request, 'json', params)
   end

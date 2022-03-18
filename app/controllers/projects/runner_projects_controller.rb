@@ -14,7 +14,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
 
     path = project_runners_path(project)
 
-    if @runner.assign_to(project, current_user)
+    if ::Ci::Runners::AssignRunnerService.new(@runner, @project, current_user).execute
       redirect_to path, notice: s_('Runners|Runner assigned to project.')
     else
       assign_to_messages = @runner.errors.messages[:assign_to]
@@ -26,7 +26,8 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
 
   def destroy
     runner_project = project.runner_projects.find(params[:id])
-    runner_project.destroy
+
+    ::Ci::Runners::UnassignRunnerService.new(runner_project, current_user).execute
 
     redirect_to project_runners_path(project), status: :found, notice: s_('Runners|Runner unassigned from project.')
   end

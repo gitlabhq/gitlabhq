@@ -68,7 +68,7 @@ export default {
 
 <template>
   <div class="title-container">
-    <h2
+    <h1
       v-safe-html="titleHtml"
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
@@ -76,7 +76,7 @@ export default {
       }"
       class="title qa-title"
       dir="auto"
-    ></h2>
+    ></h1>
     <gl-button
       v-if="showInlineEditButton && canUpdate"
       v-gl-tooltip.bottom

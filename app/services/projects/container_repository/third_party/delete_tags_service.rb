@@ -41,14 +41,12 @@ module Projects
 
         # update the manifests of the tags with the new dummy image
         def replace_tag_manifests(dummy_manifest)
-          deleted_tags = {}
-
-          @tag_names.each do |name|
+          deleted_tags = @tag_names.map do |name|
             digest = @container_repository.client.put_tag(@container_repository.path, name, dummy_manifest)
             next unless digest
 
-            deleted_tags[name] = digest
-          end
+            [name, digest]
+          end.compact.to_h
 
           # make sure the digests are the same (it should always be)
           digests = deleted_tags.values.uniq

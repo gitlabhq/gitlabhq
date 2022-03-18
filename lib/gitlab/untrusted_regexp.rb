@@ -61,6 +61,16 @@ module Gitlab
     def self.with_fallback(pattern, multiline: false)
       UntrustedRegexp.new(pattern, multiline: multiline)
     rescue RegexpError
+      raise if Feature.enabled?(:disable_unsafe_regexp, default_enabled: :yaml)
+
+      if Feature.enabled?(:ci_unsafe_regexp_logger, type: :ops, default_enabled: :yaml)
+        Gitlab::AppJsonLogger.info(
+          class: self.name,
+          regexp: pattern.to_s,
+          fabricated: 'unsafe ruby regexp'
+        )
+      end
+
       Regexp.new(pattern)
     end
 

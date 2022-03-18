@@ -43,12 +43,7 @@ To create and enable a feature flag:
 1. Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`),
    or dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
 1. Optional. Enter a description (255 characters maximum).
-1. Enter details about how the flag should be applied:
-   - In GitLab 13.0 and earlier, add **Environment specs**. For each environment,
-     include the **Status** (default enabled) and [**Rollout strategy**](#rollout-strategy-legacy)
-     (defaults to **All users**).
-   - In GitLab 13.1 and later, add Feature Flag [**Strategies**](#feature-flag-strategies).
-     For each strategy, include the **Type** (defaults to [**All users**](#all-users))
+1. Add Feature Flag [**Strategies**](#feature-flag-strategies) to define how the flag should be applied. For each strategy, include the **Type** (defaults to [**All users**](#all-users))
      and **Environments** (defaults to all environments).
 1. Select **Create feature flag**.
 
@@ -163,21 +158,6 @@ WARNING:
 The Unleash client **must** be given a user ID for the feature to be enabled for
 target users. See the [Ruby example](#ruby-application-example) below.
 
-## Search for Code References **(PREMIUM)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
-
-Search your project and find any references of a feature flag in your
-code so that you can clean it up when it's time to remove the feature flag.
-
-To search for code references of a feature flag:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
-1. Edit the feature flag you want to remove.
-1. Select **More actions** (**{ellipsis_v}**).
-1. Select **Search code references**.
-
 ### User List
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
@@ -235,34 +215,20 @@ To remove users from a user list:
 1. Select **Edit** (**{pencil}**) next to the list you want to change.
 1. Select **Remove** (**{remove}**) next to the ID you want to remove.
 
-## Rollout strategy (legacy)
+## Search for Code References **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
-> - [Made read-only](https://gitlab.com/gitlab-org/gitlab/-/issues/220228) in GitLab 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
 
-In GitLab 13.0 and earlier, the **Rollout strategy** setting affects which users experience
-the feature as enabled. Choose the percentage of users that the feature is enabled
-for. The rollout strategy has no effect if the environment spec is disabled.
+Search your project and find any references of a feature flag in your
+code so that you can clean it up when it's time to remove the feature flag.
 
-It can be set to:
+To search for code references of a feature flag:
 
-- All users
-- [Percent of users](#percent-of-users)
-  - Optionally, you can click the **Include additional user IDs** checkbox and add a list
-    of specific users IDs to enable the feature for.
-- [User IDs](#user-ids)
-
-## Legacy feature flag migration
-
-Legacy feature flags became read-only in GitLab 13.4. GitLab 14.0 removes support for legacy feature
-flags. You must migrate your legacy feature flags to the new version. To do so, follow these steps:
-
-1. Take a screenshot of the legacy flag for tracking.
-1. Delete the flag through the API or UI (you don't need to alter the code).
-1. Create a new feature flag with the same name as the legacy flag you deleted. Make sure the
-   strategies and environments match the deleted flag.
-
-See [this video tutorial](https://www.youtube.com/watch?v=CAJY2IGep7Y) for help with this migration.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Feature Flags**.
+1. Edit the feature flag you want to remove.
+1. Select **More actions** (**{ellipsis_v}**).
+1. Select **Search code references**.
 
 ## Disable a feature flag for a specific environment
 
@@ -441,3 +407,49 @@ click the `+` button and input the issue reference number or the full URL of the
 The issues then appear in the related feature flag and the other way round.
 
 This feature is similar to the [linked issues](../user/project/issues/related_issues.md) feature.
+
+## Performance factors
+
+In general, GitLab Feature Flags can be used in any applications,
+however, if it's a large application, it could require an additional configuration in advance.
+This section explains the performance factors to help your organization to identify
+what's needed to be done before using the feature.
+Please read [How it works](#how-it-works) section before diving into the details.
+
+### Maximum supported clients in application nodes
+
+GitLab accepts client requests as much as possible until it hits the [rate limiting](../security/rate_limits.md).
+At the moment, the Feature Flag API falls into **Unauthenticated traffic (from a given IP address)**
+in the [GitLab.com specific limits](../user/gitlab_com/index.md),
+so it's **500 requests per minute**.
+
+Please note that the polling rate is configurable in SDKs. Provided that all clients are requesting from the same IP:
+
+- Request once per minute ... 500 clients can be supported.
+- Request once per 15 sec ... 125 clients can be supported.
+
+For applications looking for more scalable solution, we recommend to use [Unleash Proxy](#unleash-proxy-example).
+This proxy server sits between the server and clients. It requests to the server as a behalf of the client groups,
+so the nubmer of outbound requests can be greatly reduced.
+
+There is also an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295472) to give more
+capacity to the current rate limit.
+
+### Recovering from network errors
+
+In general, [Unleash clients](https://github.com/Unleash/unleash#unleash-sdks) have
+a fall-back mechanism when the server returns an error code.
+For example, `unleash-ruby-client` reads flag data from the local backup so that
+application can keep running in the current state.
+
+Please reads the documentation in a SDK project for more information.
+
+### Self-managed GitLab
+
+Functionality-wise, there are no differences. Both SaaS and self-managed behave the same.
+
+In terms of scalability, it's up to the spec of the GitLab instance.
+For example, GitLab.com runs on HA architecture so that it can handle a lot of requests concurrently,
+however, a self-managed instance runs on a low spec machine can't expect the same result.
+Please see [Reference architectures](../administration/reference_architectures/index.md)
+for more information.

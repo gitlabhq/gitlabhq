@@ -60,7 +60,7 @@ module ErrorTracking
     end
 
     def actor
-      return event['transaction'] if event['transaction']
+      return event['transaction'] if event['transaction'].present?
 
       # Some SDKs do not have a transaction attribute.
       # So we build it by combining function name and module name from

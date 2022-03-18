@@ -184,6 +184,7 @@ Users are notified of the following events:
 | Password changed             | User                | Security email, always sent when user changes their own password. |
 | Password changed by administrator | User           | Security email, always sent when an administrator changes the password of another user. |
 | Personal access tokens expiring soon | User        | Security email, always sent. |
+| Personal access tokens have been created | User    | Security email, always sent. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337591) in GitLab 14.9. |
 | Personal access tokens have expired | User         | Security email, always sent. |
 | Project access level changed | User                | Sent when user project access level is changed. |
 | SSH key has expired          | User                | Security email, always sent. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.12._ |

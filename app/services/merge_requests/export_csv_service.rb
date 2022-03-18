@@ -13,11 +13,11 @@ module MergeRequests
 
     def header_to_value_hash
       {
+        'Title' => 'title',
+        'Description' => 'description',
         'MR IID' => 'iid',
         'URL' => -> (merge_request) { merge_request_url(merge_request) },
-        'Title' => 'title',
         'State' => 'state',
-        'Description' => 'description',
         'Source Branch' => 'source_branch',
         'Target Branch' => 'target_branch',
         'Source Project ID' => 'source_project_id',

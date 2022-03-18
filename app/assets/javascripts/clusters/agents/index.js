@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import AgentShowPage from 'ee_else_ce/clusters/agents/components/show.vue';
 import apolloProvider from './graphql/provider';
 import createRouter from './router';
@@ -16,6 +17,8 @@ export default () => {
     canAdminVulnerability,
     emptyStateSvgPath,
     projectPath,
+    kasAddress,
+    canAdminCluster,
   } = el.dataset;
 
   return new Vue({
@@ -28,6 +31,8 @@ export default () => {
       canAdminVulnerability,
       emptyStateSvgPath,
       projectPath,
+      kasAddress,
+      canAdminCluster: parseBoolean(canAdminCluster),
     },
     render(createElement) {
       return createElement(AgentShowPage);

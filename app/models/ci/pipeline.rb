@@ -25,6 +25,7 @@ module Ci
     }.freeze
     CONFIG_EXTENSION = '.gitlab-ci.yml'
     DEFAULT_CONFIG_PATH = CONFIG_EXTENSION
+    CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
 
     BridgeStatusError = Class.new(StandardError)
 
@@ -421,9 +422,7 @@ module Ci
 
       sql = sql.where(ref: ref) if ref
 
-      sql.each_with_object({}) do |pipeline, hash|
-        hash[pipeline.sha] = pipeline
-      end
+      sql.index_by(&:sha)
     end
 
     def self.latest_successful_ids_per_project
@@ -653,7 +652,7 @@ module Ci
     def coverage
       coverage_array = latest_statuses.map(&:coverage).compact
       if coverage_array.size >= 1
-        coverage_array.reduce(:+) / coverage_array.size
+        coverage_array.sum / coverage_array.size
       end
     end
 
@@ -1165,11 +1164,7 @@ module Ci
     end
 
     def merge_request?
-      if Feature.enabled?(:ci_pipeline_merge_request_presence_check, default_enabled: :yaml)
-        merge_request_id.present? && merge_request
-      else
-        merge_request_id.present?
-      end
+      merge_request_id.present? && merge_request.present?
     end
 
     def external_pull_request?

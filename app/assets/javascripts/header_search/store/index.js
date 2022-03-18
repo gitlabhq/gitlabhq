@@ -13,11 +13,12 @@ export const getStoreConfig = ({
   mrPath,
   autocompletePath,
   searchContext,
+  search,
 }) => ({
   actions,
   getters,
   mutations,
-  state: createState({ searchPath, issuesPath, mrPath, autocompletePath, searchContext }),
+  state: createState({ searchPath, issuesPath, mrPath, autocompletePath, searchContext, search }),
 });
 
 const createStore = (config) => new Vuex.Store(getStoreConfig(config));

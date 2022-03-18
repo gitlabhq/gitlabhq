@@ -29,7 +29,7 @@ class UpdateTrialPlansCiDailyPipelineScheduleTriggers < ActiveRecord::Migration[
   end
 
   def up
-    return unless Gitlab.dev_env_or_com?
+    return unless Gitlab.com?
 
     if plan_limits_present?
       create_or_update_plan_limit('ci_daily_pipeline_schedule_triggers', PREMIUM_TRIAL, EVERY_5_MINUTES)
@@ -38,7 +38,7 @@ class UpdateTrialPlansCiDailyPipelineScheduleTriggers < ActiveRecord::Migration[
   end
 
   def down
-    return unless Gitlab.dev_env_or_com?
+    return unless Gitlab.com?
 
     if plan_limits_present?
       create_or_update_plan_limit('ci_daily_pipeline_schedule_triggers', PREMIUM_TRIAL, 0)

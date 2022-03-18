@@ -227,7 +227,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Working with merge request diffs](diffs.md)
 - [Approval Rules](approval_rules.md)
 - [Repository mirroring](repository_mirroring.md)
-- [File uploads](uploads.md)
+- [Uploads development guide](uploads/index.md)
 - [Auto DevOps development guide](auto_devops.md)
 - [Renaming features](renaming_features.md)
 - [Code Intelligence](code_intelligence/index.md)
@@ -275,6 +275,7 @@ See [database guidelines](database/index.md).
 
 ## Integration guides
 
+- [Integrations development guide](integrations/index.md)
 - [Jira Connect app](integrations/jira_connect.md)
 - [Security Scanners](integrations/secure.md)
 - [Secure Partner Integration](integrations/secure_partner_integration.md)
@@ -329,6 +330,10 @@ See [database guidelines](database/index.md).
 - [CI/CD development documentation](cicd/index.md)
 - [AppSec development documentation](appsec/index.md)
 
+## Technical Reference by Group
+
+- [Create: Source Code BE](backend/create_source_code_be/index.md)
+
 ## Other Development guides
 
 - [Defining relations between files using projections](projections.md)
@@ -338,6 +343,7 @@ See [database guidelines](database/index.md).
 - [Dashboards for stage groups](stage_group_dashboards.md)
 - [Preventing transient bugs](transient/prevention-patterns.md)
 - [GitLab Application SLIs](application_slis/index.md)
+- [Spam protection and CAPTCHA development guide](spam_protection_and_captcha/index.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

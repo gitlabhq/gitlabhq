@@ -13,10 +13,16 @@ RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:|
         env: :"#{rate_limit_key}_request_limit",
         remote_ip: kind_of(String),
         request_method: kind_of(String),
-        path: kind_of(String),
-        user_id: current_user.id,
-        username: current_user.username
-      }
+        path: kind_of(String)
+      }.merge(expected_user_attributes)
+    end
+
+    let(:expected_user_attributes) do
+      if defined?(current_user) && current_user.present?
+        { user_id: current_user.id, username: current_user.username }
+      else
+        {}
+      end
     end
 
     let(:error_message) { _('This endpoint has been requested too many times. Try again later.') }

@@ -116,16 +116,18 @@ function deferredInitialisation() {
     );
   }
 
-  const search = document.querySelector('#search');
-  if (search) {
-    search.addEventListener(
+  const searchInputBox = document.querySelector('#search');
+  if (searchInputBox) {
+    searchInputBox.addEventListener(
       'focus',
       () => {
         if (gon.features?.newHeaderSearch) {
           import(/* webpackChunkName: 'globalSearch' */ '~/header_search')
             .then(async ({ initHeaderSearchApp }) => {
-              await initHeaderSearchApp();
-              document.querySelector('#search').focus();
+              // In case the user started searching before we bootstrapped, let's pass the search along.
+              const initialSearchValue = searchInputBox.value;
+              await initHeaderSearchApp(initialSearchValue);
+              searchInputBox.focus();
             })
             .catch(() => {});
         } else {
@@ -159,6 +161,12 @@ function deferredInitialisation() {
 
   // Adding a helper class to activate animations only after all is rendered
   setTimeout(() => $body.addClass('page-initialised'), 1000);
+
+  if (window.gon?.features?.mrAttentionRequests) {
+    import('~/attention_requests')
+      .then((module) => module.default())
+      .catch(() => {});
+  }
 }
 
 const $body = $('body');

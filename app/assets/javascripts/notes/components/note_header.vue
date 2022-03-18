@@ -6,6 +6,7 @@ import {
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { mapActions } from 'vuex';
+import { __ } from '~/locale';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserNameWithStatus from '../../sidebar/components/assignees/user_name_with_status.vue';
 
@@ -139,6 +140,10 @@ export default {
       return selectedAuthor?.availability || '';
     },
   },
+  i18n: {
+    showThread: __('Show thread'),
+    hideThread: __('Hide thread'),
+  },
 };
 </script>
 
@@ -148,10 +153,16 @@ export default {
       <button
         class="note-action-button discussion-toggle-button js-vue-toggle-button"
         type="button"
+        data-testid="thread-toggle"
         @click="handleToggle"
       >
         <gl-icon ref="chevronIcon" :name="toggleChevronIconName" />
-        {{ __('Toggle thread') }}
+        <template v-if="expanded">
+          {{ $options.i18n.hideThread }}
+        </template>
+        <template v-else>
+          {{ $options.i18n.showThread }}
+        </template>
       </button>
     </div>
     <template v-if="hasAuthor">

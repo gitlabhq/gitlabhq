@@ -23,7 +23,7 @@ class DiffsEntity < Grape::Entity
     CommitEntity.represent(options[:commit], commit_options(options))
   end
 
-  expose :context_commits, using: API::Entities::Commit, if: -> (diffs, options) { merge_request&.project&.context_commits_enabled? } do |diffs|
+  expose :context_commits, using: API::Entities::Commit do |diffs|
     options[:context_commits]
   end
 
@@ -89,7 +89,7 @@ class DiffsEntity < Grape::Entity
     project_blob_path(merge_request.project, merge_request.diff_head_sha)
   end
 
-  expose :context_commits_diff, if: -> (_) { merge_request&.project&.context_commits_enabled? } do |diffs, options|
+  expose :context_commits_diff do |diffs, options|
     next unless merge_request.context_commits_diff.commits_count > 0
 
     ContextCommitsDiffEntity.represent(

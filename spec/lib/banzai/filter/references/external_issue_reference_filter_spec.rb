@@ -256,4 +256,23 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter do
       it_behaves_like "external issue tracker"
     end
   end
+
+  context 'checking N+1' do
+    let_it_be(:integration) { create(:redmine_integration, project: project) }
+    let_it_be(:issue1) { ExternalIssue.new("#123", project) }
+    let_it_be(:issue2) { ExternalIssue.new("YT-123", project) }
+
+    before do
+      project.update!(issues_enabled: false)
+    end
+
+    it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
+      single_reference = "External Issue #{issue1.to_reference}"
+      multiple_references = "External Issues #{issue1.to_reference} and #{issue2.to_reference}"
+
+      control_count = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }.count
+
+      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control_count)
+    end
+  end
 end

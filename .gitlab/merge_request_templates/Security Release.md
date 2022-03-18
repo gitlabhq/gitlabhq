@@ -31,7 +31,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 ## Maintainer checklist
 
 - [ ] Correct milestone is applied and the title is matching across all backports.
-- [ ] Assigned to `@gitlab-release-tools-bot` with passing CI pipelines.
+- [ ] Assigned (_not_ as reviewer) to `@gitlab-release-tools-bot` with passing CI pipelines.
 
 /label ~security
 

@@ -27,18 +27,18 @@ By default:
 
 ## Configuring protected tags
 
-To protect a tag, you need to have at least the Maintainer role.
+To protect a tag, you must have at least the Maintainer role.
 
 1. Go to the project's **Settings > Repository**.
 
-1. From the **Tag** dropdown menu, select the tag you want to protect or type and click **Create wildcard**. In the screenshot below, we chose to protect all tags matching `v*`:
+1. From the **Tag** dropdown list, select the tag you want to protect or type and click **Create wildcard**. In the screenshot below, we chose to protect all tags matching `v*`:
 
    ![Protected tags page](img/protected_tags_page_v12_3.png)
 
-1. From the **Allowed to create** dropdown, select users with permission to create
-   matching tags, and click **Protect**:
+1. From the **Allowed to create** dropdown list, select users with permission to create
+   matching tags, and select **Protect**:
 
-   ![Allowed to create tags dropdown](img/protected_tags_permissions_dropdown_v12_3.png)
+   ![Allowed to create tags dropdown list](img/protected_tags_permissions_dropdown_v12_3.png)
 
 1. After done, the protected tag displays in the **Protected tags** list:
 
@@ -61,7 +61,7 @@ Two different wildcards can potentially match the same tag. For example,
 In that case, if _any_ of these protected tags have a setting like
 **Allowed to create**, then `production-stable` also inherit this setting.
 
-If you click on a protected tag's name, GitLab displays a list of
+If you select a protected tag's name, GitLab displays a list of
 all matching tags:
 
 ![Protected tag matches](img/protected_tag_matches.png)

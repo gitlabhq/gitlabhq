@@ -1,0 +1,5 @@
+<%= _('Hi %{username}!') % { username: sanitize_name(@user.name) } %>
+
+<%= _('A new personal access token, named %{token_name}, has been created.') % { token_name: @token_name } %>
+
+<%= _('You can check it in your in your personal access tokens settings %{pat_link}.') % { pat_link: @target_url } %>

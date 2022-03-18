@@ -12,6 +12,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15).utc }
   let(:note_body) { 'Hello' }
   let(:file_path) { 'files/ruby/popen.rb' }
+  let(:end_line) { 15 }
 
   let(:diff_hunk) do
     '@@ -14 +14 @@
@@ -31,7 +32,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
       created_at: created_at,
       updated_at: updated_at,
       start_line: nil,
-      end_line: 15,
+      end_line: end_line,
       github_id: 1,
       diff_hunk: diff_hunk,
       side: 'RIGHT'
@@ -173,7 +174,24 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             NOTE
         end
 
-        context 'when the note diff file creation fails' do
+        context 'when the note diff file creation fails with DiffNoteCreationError due to outdated suggestion' do
+          let(:end_line) { nil }
+
+          it 'falls back to the LegacyDiffNote' do
+            expect(Gitlab::GithubImport::Logger)
+              .to receive(:warn)
+                    .with(
+                      message: "Validation failed: Line code can't be blank, Line code must be a valid line code, Position is incomplete",
+                      'error.class': 'Gitlab::GithubImport::Importer::DiffNoteImporter::DiffNoteCreationError'
+                    )
+
+            expect { subject.execute }
+              .to change(LegacyDiffNote, :count)
+                    .and not_change(DiffNote, :count)
+          end
+        end
+
+        context 'when the note diff file creation fails with NoteDiffFileCreationError' do
           it 'falls back to the LegacyDiffNote' do
             exception = ::DiffNote::NoteDiffFileCreationError.new('Failed to create diff note file')
 

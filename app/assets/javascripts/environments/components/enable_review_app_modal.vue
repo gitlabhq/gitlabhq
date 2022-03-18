@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlModal, GlSprintf } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
@@ -43,6 +44,11 @@ export default {
     closeText: s__('EnableReviewApp|Close'),
     copyToClipboardText: s__('EnableReviewApp|Copy snippet text'),
     title: s__('ReviewApp|Enable Review App'),
+  },
+  data() {
+    const modalInfoCopyId = uniqueId('enable-review-app-copy-string-');
+
+    return { modalInfoCopyId };
   },
   computed: {
     modalInfoCopyStr() {
@@ -99,14 +105,14 @@ export default {
         </gl-sprintf>
       </p>
       <div class="gl-display-flex align-items-start">
-        <pre class="gl-w-full" data-testid="enable-review-app-copy-string">
+        <pre :id="modalInfoCopyId" class="gl-w-full" data-testid="enable-review-app-copy-string">
  {{ modalInfoCopyStr }} </pre
         >
         <modal-copy-button
           :title="$options.modalInfo.copyToClipboardText"
-          :text="$options.modalInfo.copyString"
           :modal-id="modalId"
           css-classes="border-0"
+          :target="`#${modalInfoCopyId}`"
         />
       </div>
     </div>

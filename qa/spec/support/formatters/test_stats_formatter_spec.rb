@@ -60,7 +60,8 @@ describe QA::Support::Formatters::TestStatsFormatter do
         retry_attempts: 0,
         job_url: ci_job_url,
         pipeline_url: ci_pipeline_url,
-        pipeline_id: ci_pipeline_id
+        pipeline_id: ci_pipeline_id,
+        merge_request_iid: nil
       }
     }
   end
@@ -150,6 +151,23 @@ describe QA::Support::Formatters::TestStatsFormatter do
       it 'exports data to influxdb with correct quarantine tag' do
         run_spec do
           it('spec', :quarantine, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
+        end
+
+        expect(influx_write_api).to have_received(:write).once
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with context quarantined spec' do
+      let(:quarantined) { 'false' }
+
+      it 'exports data to influxdb with correct qurantine tag' do
+        run_spec do
+          it(
+            'spec',
+            quarantine: { only: { job: 'praefect' } },
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
+          ) {}
         end
 
         expect(influx_write_api).to have_received(:write).once

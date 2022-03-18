@@ -50,6 +50,107 @@ we can:
 NOTE:
 For this procedure to work, we must register which tables to clean up asynchronously.
 
+## The `scripts/decomposition/generate-loose-foreign-key`
+
+We built an automation tool to aid migration of foreign keys into loose foreign keys as part of
+decomposition effort. It presents existing keys and allows chosen foreign keys to be automatically
+converted into loose foreign keys. This ensures consistency between foreign key and loose foreign
+key definitions, and ensures that they are properly tested.
+
+WARNING:
+We strongly advise you to use the automation script for swapping any foreign key to a loose foreign key.
+
+The tool ensures that all aspects of swapping a foreign key are covered. This includes:
+
+- Creating a migration to remove a foreign key.
+- Updating `db/structure.sql` with the new migration.
+- Updating `lib/gitlab/database/gitlab_loose_foreign_keys.yml` to add the new loose foreign key.
+- Creating or updating a model's specs to ensure that the loose foreign key is properly supported.
+- Creating a new branch, commit, push, and creating a merge request on GitLab.com.
+- Creating a merge request template with all the necessary details to validate the safety of the foreign key removal.
+
+The tool is located at `scripts/decomposition/generate-loose-foreign-key`:
+
+```shell
+$ scripts/decomposition/generate-loose-foreign-key -h
+
+Usage: scripts/decomposition/generate-loose-foreign-key [options] <filters...>
+    -c, --cross-schema               Show only cross-schema foreign keys
+    -n, --dry-run                    Do not execute any commands (dry run)
+    -b, --[no-]branch                Create or not a new branch
+    -r, --[no-]rspec                 Create or not a rspecs automatically
+    -m, --milestone MILESTONE        Specify custom milestone (current: 14.8)
+    -h, --help                       Prints this help
+```
+
+For the migration of cross-schema foreign keys, we use the `-c` modifier to show the foreign keys
+yet to migrate:
+
+```shell
+$ scripts/decomposition/generate-loose-foreign-key -c
+Re-creating current test database
+Dropped database 'gitlabhq_test_ee'
+Dropped database 'gitlabhq_geo_test_ee'
+Created database 'gitlabhq_test_ee'
+Created database 'gitlabhq_geo_test_ee'
+
+Showing cross-schema foreign keys (20):
+   ID | HAS_LFK |                                     FROM |                   TO |                         COLUMN |       ON_DELETE 
+    0 |       N |                                ci_builds |             projects |                     project_id |         cascade 
+    1 |       N |                         ci_job_artifacts |             projects |                     project_id |         cascade 
+    2 |       N |                             ci_pipelines |             projects |                     project_id |         cascade 
+    3 |       Y |                             ci_pipelines |       merge_requests |               merge_request_id |         cascade 
+    4 |       N |                   external_pull_requests |             projects |                     project_id |         cascade 
+    5 |       N |                     ci_sources_pipelines |             projects |                     project_id |         cascade 
+    6 |       N |                                ci_stages |             projects |                     project_id |         cascade 
+    7 |       N |                    ci_pipeline_schedules |             projects |                     project_id |         cascade 
+    8 |       N |                       ci_runner_projects |             projects |                     project_id |         cascade 
+    9 |       Y |             dast_site_profiles_pipelines |         ci_pipelines |                 ci_pipeline_id |         cascade 
+   10 |       Y |                   vulnerability_feedback |         ci_pipelines |                    pipeline_id |         nullify 
+   11 |       N |                             ci_variables |             projects |                     project_id |         cascade 
+   12 |       N |                                  ci_refs |             projects |                     project_id |         cascade 
+   13 |       N |                       ci_builds_metadata |             projects |                     project_id |         cascade 
+   14 |       N |                ci_subscriptions_projects |             projects |          downstream_project_id |         cascade 
+   15 |       N |                ci_subscriptions_projects |             projects |            upstream_project_id |         cascade 
+   16 |       N |                      ci_sources_projects |             projects |              source_project_id |         cascade 
+   17 |       N |         ci_job_token_project_scope_links |             projects |              source_project_id |         cascade 
+   18 |       N |         ci_job_token_project_scope_links |             projects |              target_project_id |         cascade 
+   19 |       N |                ci_project_monthly_usages |             projects |                     project_id |         cascade 
+
+To match FK write one or many filters to match against FROM/TO/COLUMN:
+- scripts/decomposition/generate-loose-foreign-key <filter(s)...>
+- scripts/decomposition/generate-loose-foreign-key ci_job_artifacts project_id
+- scripts/decomposition/generate-loose-foreign-key dast_site_profiles_pipelines
+```
+
+The command accepts a list of filters to match from, to, or column for the purpose of the foreign key generation.
+For example, run this to swap all foreign keys for `ci_job_token_project_scope_links` for the
+decomposed database:
+
+```shell
+scripts/decomposition/generate-loose-foreign-key -c ci_job_token_project_scope_links
+```
+
+To swap only the `source_project_id` of `ci_job_token_project_scope_links` for the decomposed database, run:
+
+```shell
+scripts/decomposition/generate-loose-foreign-key -c ci_job_token_project_scope_links source_project_id
+```
+
+To swap all the foreign keys (all having `_id` appended), but not create a new branch (only commit
+the changes) and not create rspecs, run:
+
+```shell
+scripts/decomposition/generate-loose-foreign-key -c --no-branch --no-rspec _id
+```
+
+To swap all foreign keys referencing `projects`, but not create a new branch (only commit the
+changes), run:
+
+```shell
+scripts/decomposition/generate-loose-foreign-key -c --no-branch projects
+```
+
 ## Example migration and configuration
 
 ### Configure the loose foreign key
@@ -148,6 +249,67 @@ end
 At this point, the setup phase is concluded. The deleted `projects` records should be automatically
 picked up by the scheduled cleanup worker job.
 
+### Remove the loose foreign key
+
+When the loose foreign key definition is no longer needed (parent table is removed, or FK is restored),
+we need to remove the definition from the YAML file and ensure that we don't leave pending deleted
+records in the database.
+
+1. Remove the loose foreign key definition from the config (`config/gitlab_loose_foreign_keys.yml`).
+1. Remove the deletion tracking trigger from the parent table (if the parent table is still there).
+1. Remove leftover deleted records from the `loose_foreign_keys_deleted_records` table.
+
+Migration for removing the trigger:
+
+```ruby
+class UnTrackProjectRecordChanges < Gitlab::Database::Migration[1.0]
+  include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
+
+  enable_lock_retries!
+
+  def up
+    untrack_record_deletions(:projects)
+  end
+
+  def down
+    track_record_deletions(:projects)
+  end
+end
+```
+
+With the trigger removal, we prevent further records to be inserted in the `loose_foreign_keys_deleted_records`
+table however, there is still a chance for having leftover pending records in the table. These records
+must be removed with an inline data migration.
+
+```ruby
+class RemoveLeftoverProjectDeletions < Gitlab::Database::Migration[1.0]
+  disable_ddl_transaction!
+
+  def up
+    loop do
+      result = execute <<~SQL
+      DELETE FROM "loose_foreign_keys_deleted_records"
+      WHERE
+      ("loose_foreign_keys_deleted_records"."partition", "loose_foreign_keys_deleted_records"."id") IN (
+        SELECT "loose_foreign_keys_deleted_records"."partition", "loose_foreign_keys_deleted_records"."id"
+        FROM "loose_foreign_keys_deleted_records"
+        WHERE
+        "loose_foreign_keys_deleted_records"."fully_qualified_table_name" = 'public.projects' AND
+        "loose_foreign_keys_deleted_records"."status" = 1
+        LIMIT 100
+      )
+      SQL
+
+      break if result.cmd_tuples == 0
+    end
+  end
+
+  def down
+    # no-op
+  end
+end
+```
+
 ## Testing
 
 The "`it has loose foreign keys`" shared example can be used to test the presence of the `ON DELETE` trigger and the
@@ -233,6 +395,12 @@ We considered using these Rails features as an alternative to foreign keys but t
 1. These run on a different connection in the context of a transaction [which we do not allow](multiple_databases.md#removing-cross-database-transactions).
 1. These can lead to severe performance degradation as we load all records from PostgreSQL, loop over them in Ruby, and call individual `DELETE` queries.
 1. These can miss data as they only cover the case when the `destroy` method is called directly on the model. There are other cases including `delete_all` and cascading deletes from another parent table that could mean these are missed.
+
+For non-trivial objects that need to clean up data outside the
+database (for example, object storage) where you might wish to use `dependent: :destroy`,
+see alternatives in
+[Avoid `dependent: :nullify` and `dependent: :destroy` across
+databases](./multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
 
 ## Risks of loose foreign keys and possible mitigations
 

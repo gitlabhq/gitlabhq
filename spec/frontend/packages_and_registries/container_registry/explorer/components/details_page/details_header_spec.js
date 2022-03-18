@@ -2,6 +2,7 @@ import { GlDropdownItem, GlIcon, GlDropdown } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import { nextTick } from 'vue';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -20,7 +21,7 @@ import {
   ROOT_IMAGE_TEXT,
   ROOT_IMAGE_TOOLTIP,
 } from '~/packages_and_registries/container_registry/explorer/constants';
-import getContainerRepositoryTagCountQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags_count.query.graphql';
+import getContainerRepositoryMetadata from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_metadata.query.graphql';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { imageTagsCountMock } from '../../mock_data';
 
@@ -52,6 +53,7 @@ describe('Details Header', () => {
   const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
   const findMenu = () => wrapper.findComponent(GlDropdown);
+  const findSize = () => findByTestId('image-size');
 
   const waitForMetadataItems = async () => {
     // Metadata items are printed by a loop in the title-area and it takes two ticks for them to be available
@@ -72,7 +74,7 @@ describe('Details Header', () => {
       localVue = createLocalVue();
       localVue.use(VueApollo);
 
-      const requestHandlers = [[getContainerRepositoryTagCountQuery, resolver]];
+      const requestHandlers = [[getContainerRepositoryMetadata, resolver]];
       apolloProvider = createMockApollo(requestHandlers);
     }
 
@@ -227,6 +229,30 @@ describe('Details Header', () => {
         await waitForMetadataItems();
 
         expect(findTagsCount().props('icon')).toBe('tag');
+      });
+    });
+
+    describe('size metadata item', () => {
+      it('when size is not returned, it hides the item', async () => {
+        mountComponent();
+        await waitForMetadataItems();
+
+        expect(findSize().exists()).toBe(false);
+      });
+
+      it('when size is returned shows the item', async () => {
+        const size = 1000;
+        mountComponent({
+          resolver: jest.fn().mockResolvedValue(imageTagsCountMock({ size })),
+        });
+
+        await waitForPromises();
+        await waitForMetadataItems();
+
+        expect(findSize().props()).toMatchObject({
+          icon: 'disk',
+          text: numberToHumanSize(size),
+        });
       });
     });
 

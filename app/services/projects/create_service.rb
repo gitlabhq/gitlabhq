@@ -147,7 +147,7 @@ module Projects
           priority: UserProjectAccessChangedService::LOW_PRIORITY
         )
       else
-        @project.add_maintainer(@project.namespace.owner, current_user: current_user)
+        @project.add_owner(@project.namespace.owner, current_user: current_user)
       end
     end
 

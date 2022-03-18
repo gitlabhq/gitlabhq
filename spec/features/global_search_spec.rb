@@ -72,6 +72,10 @@ RSpec.describe 'Global search' do
       # TODO: Remove this along with feature flag #339348
       stub_feature_flags(new_header_search: true)
       visit dashboard_projects_path
+
+      # intialize javascript loaded input search input field
+      find('#search').click
+      find('body').click
     end
 
     it 'renders updated search bar' do

@@ -13,9 +13,8 @@ import getContainerRepositoriesQuery from 'shared_queries/container_registry/get
 import createFlash from '~/flash';
 import CleanupPolicyEnabledAlert from '~/packages_and_registries/shared/components/cleanup_policy_enabled_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
-import { extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
 import Tracking from '~/tracking';
-import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
+import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import DeleteImage from '../components/delete_image.vue';
 import RegistryHeader from '../components/list_page/registry_header.vue';
 
@@ -61,8 +60,8 @@ export default {
     GlSkeletonLoader,
     RegistryHeader,
     DeleteImage,
-    RegistrySearch,
     CleanupPolicyEnabledAlert,
+    PersistedSearch,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -130,8 +129,7 @@ export default {
       containerRepositoriesCount: 0,
       itemToDelete: {},
       deleteAlertType: null,
-      filter: [],
-      sorting: { orderBy: 'UPDATED', sort: 'desc' },
+      sorting: null,
       name: null,
       mutationLoading: false,
       fetchBaseQuery: false,
@@ -154,7 +152,7 @@ export default {
     queryVariables() {
       return {
         name: this.name,
-        sort: this.sortBy,
+        sort: this.sorting,
         fullPath: this.config.isGroupPage ? this.config.groupPath : this.config.projectPath,
         isGroupPage: this.config.isGroupPage,
         first: GRAPHQL_PAGE_SIZE,
@@ -182,24 +180,6 @@ export default {
         ? DELETE_IMAGE_SUCCESS_MESSAGE
         : DELETE_IMAGE_ERROR_MESSAGE;
     },
-    sortBy() {
-      const { orderBy, sort } = this.sorting;
-      return `${orderBy}_${sort}`.toUpperCase();
-    },
-  },
-  mounted() {
-    const { sorting, filters } = extractFilterAndSorting(this.$route.query);
-
-    this.filter = [...filters];
-    this.name = filters[0]?.value.data;
-    this.sorting = { ...this.sorting, ...sorting };
-
-    // If the two graphql calls - which are not batched - resolve togheter we will have a race
-    //  condition when apollo sets the cache, with this we give the 'base' call an headstart
-    this.fetchBaseQuery = true;
-    setTimeout(() => {
-      this.fetchAdditionalDetails = true;
-    }, 200);
   },
   methods: {
     deleteImage(item) {
@@ -258,18 +238,20 @@ export default {
       this.track('confirm_delete');
       this.mutationLoading = true;
     },
-    updateSorting(value) {
-      this.sorting = {
-        ...this.sorting,
-        ...value,
-      };
-    },
-    doFilter() {
-      const search = this.filter.find((i) => i.type === FILTERED_SEARCH_TERM);
+    handleSearchUpdate({ sort, filters }) {
+      this.sorting = sort;
+
+      const search = filters.find((i) => i.type === FILTERED_SEARCH_TERM);
       this.name = search?.value?.data;
-    },
-    updateUrlQueryString(query) {
-      this.$router.push({ query });
+
+      if (!this.fetchBaseQuery && !this.fetchAdditionalDetails) {
+        // If the two graphql calls - which are not batched - resolve together we will have a race
+        // condition when apollo sets the cache, with this we give the 'base' call an headstart
+        this.fetchBaseQuery = true;
+        setTimeout(() => {
+          this.fetchAdditionalDetails = true;
+        }, 200);
+      }
     },
   },
 };
@@ -332,16 +314,12 @@ export default {
           />
         </template>
       </registry-header>
-
-      <registry-search
-        :filter="filter"
-        :sorting="sorting"
-        :tokens="[]"
+      <persisted-search
+        class="gl-mb-5"
         :sortable-fields="$options.searchConfig"
-        @sorting:changed="updateSorting"
-        @filter:changed="filter = $event"
-        @filter:submit="doFilter"
-        @query:changed="updateUrlQueryString"
+        :default-order="$options.searchConfig[0].orderBy"
+        default-sort="desc"
+        @update="handleSearchUpdate"
       />
 
       <div v-if="isLoading" class="gl-mt-5">

@@ -19,6 +19,7 @@ import {
   LEARN_GITLAB,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
+import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import { getParameterValues } from '~/lib/utils/url_utility';
@@ -55,6 +56,7 @@ describe('InviteMembersModal', () => {
       },
       stubs: {
         InviteModalBase,
+        ContentTransition,
         GlSprintf,
         GlModal: stubComponent(GlModal, {
           template: '<div><slot></slot><slot name="modal-footer"></slot></div>',

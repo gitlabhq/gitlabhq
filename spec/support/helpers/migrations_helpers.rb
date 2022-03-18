@@ -13,6 +13,8 @@ module MigrationsHelpers
       def self.name
         table_name.singularize.camelcase
       end
+
+      yield self if block_given?
     end
   end
 
@@ -104,9 +106,9 @@ module MigrationsHelpers
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
-  def previous_migration
-    migrations.each_cons(2) do |previous, migration|
-      break previous if migration.name == described_class.name
+  def previous_migration(steps_back = 2)
+    migrations.each_cons(steps_back) do |cons|
+      break cons.first if cons.last.name == described_class.name
     end
   end
 

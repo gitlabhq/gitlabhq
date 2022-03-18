@@ -103,6 +103,7 @@ RSpec.describe Users::CalloutsHelper do
         allow(helper).to receive(:current_user).and_return(admin)
         stub_application_setting(signup_enabled: true)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
+        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
       end
 
       it { is_expected.to be false }
@@ -114,6 +115,7 @@ RSpec.describe Users::CalloutsHelper do
         allow(helper).to receive(:current_user).and_return(user)
         stub_application_setting(signup_enabled: true)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
+        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
       end
 
       it { is_expected.to be false }
@@ -125,6 +127,7 @@ RSpec.describe Users::CalloutsHelper do
         allow(helper).to receive(:current_user).and_return(admin)
         stub_application_setting(signup_enabled: false)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
+        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
       end
 
       it { is_expected.to be false }
@@ -136,17 +139,31 @@ RSpec.describe Users::CalloutsHelper do
         allow(helper).to receive(:current_user).and_return(admin)
         stub_application_setting(signup_enabled: true)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { true }
+        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
       end
 
       it { is_expected.to be false }
     end
 
-    context 'when not gitlab.com, `current_user` is an admin, signup is enabled, and user has not dismissed callout' do
+    context 'when controller path is not allowed' do
       before do
         allow(::Gitlab).to receive(:com?).and_return(false)
         allow(helper).to receive(:current_user).and_return(admin)
         stub_application_setting(signup_enabled: true)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
+        allow(helper.controller).to receive(:controller_path).and_return("projects/issues")
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when not gitlab.com, `current_user` is an admin, signup is enabled, user has not dismissed callout, and controller path is allowed' do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(false)
+        allow(helper).to receive(:current_user).and_return(admin)
+        stub_application_setting(signup_enabled: true)
+        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
+        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
       end
 
       it { is_expected.to be true }

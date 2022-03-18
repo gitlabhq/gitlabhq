@@ -25,5 +25,9 @@ FactoryBot.define do
       feature_flag_events { true }
       releases_events { true }
     end
+
+    trait :with_push_branch_filter do
+      push_events_branch_filter { 'my-branch-*' }
+    end
   end
 end

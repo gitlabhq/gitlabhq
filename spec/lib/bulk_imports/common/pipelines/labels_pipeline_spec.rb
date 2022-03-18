@@ -43,7 +43,7 @@ RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline do
 
       expect(label.title).to eq('Label 1')
       expect(label.description).to eq('Label 1')
-      expect(label.color).to eq('#6699cc')
+      expect(label.color).to be_color('#6699cc')
       expect(File.directory?(tmpdir)).to eq(false)
     end
   end

@@ -262,7 +262,7 @@ module QA
         reload!.api_response[:default_branch] || Runtime::Env.default_branch
       end
 
-      def import_status
+      def project_import_status
         response = get(request_url("/projects/#{id}/import"))
 
         unless response.code == HTTP_STATUS_OK
@@ -276,7 +276,7 @@ module QA
           Runtime::Logger.error("Failed relations: #{result[:failed_relations]}")
         end
 
-        result[:import_status]
+        result
       end
 
       def commits(auto_paginate: false, attempts: 0)
@@ -373,6 +373,30 @@ module QA
         api_post_to(api_wikis_path, title: title, content: content)
       end
 
+      # Uses the API to wait until a pull mirroring update is successful (pull mirroring is treated as an import)
+      def wait_for_pull_mirroring
+        mirror_succeeded = Support::Retrier.retry_until(max_duration: 180, raise_on_failure: false, sleep_interval: 1) do
+          reload!
+          api_resource[:import_status] == "finished"
+        end
+
+        unless mirror_succeeded
+          raise "Mirroring failed with error: #{api_resource[:import_error]}"
+        end
+      end
+
+      def remove_via_api!
+        super
+
+        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 1, message: "Waiting for #{self.class.name} to be removed") do
+          !exists?
+        rescue InternalServerError
+          # Retry on transient errors that are likely to be due to race conditions between concurrent delete operations
+          # when parts of a resource are stored in multiple tables
+          false
+        end
+      end
+
       protected
 
       # Return subset of fields for comparing projects
@@ -406,14 +430,6 @@ module QA
         api_resource[:repository_http_location] =
           Git::Location.new(api_resource[:http_url_to_repo])
         api_resource
-      end
-
-      # Get api request url
-      #
-      # @param [String] path
-      # @return [String]
-      def request_url(path, **opts)
-        Runtime::API::Request.new(api_client, path, **opts).url
       end
     end
   end

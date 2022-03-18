@@ -215,6 +215,14 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
               MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
             end
+
+            it 'updates attention requested by of reviewer' do
+              opts[:reviewers] = [user2]
+
+              MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+
+              expect(merge_request.find_reviewer(user2).updated_state_by).to eq(user)
+            end
           end
 
           context 'when reviewers did not change' do

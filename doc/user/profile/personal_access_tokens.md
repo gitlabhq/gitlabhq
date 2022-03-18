@@ -25,8 +25,8 @@ Personal access tokens are:
 - Used with a GitLab username to authenticate with GitLab features that require usernames. For example,
   [GitLab managed Terraform state backend](../infrastructure/iac/terraform_state.md#using-a-gitlab-managed-terraform-state-backend-as-a-remote-data-source)
   and [Docker container registry](../packages/container_registry/index.md#authenticate-with-the-container-registry),
-- Similar to [project access tokens](../project/settings/project_access_tokens.md), but are attached
-  to a user rather than a project.
+- Similar to [project access tokens](../project/settings/project_access_tokens.md) and [group access tokens](../group/settings/group_access_tokens.md), but are attached
+  to a user rather than a project or group.
 
 NOTE:
 Though required, GitLab usernames are ignored when authenticating with a personal access token.

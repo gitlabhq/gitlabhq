@@ -2,7 +2,6 @@
 
 module Gitlab
   class BlamePresenter < Gitlab::View::Presenter::Simple
-    include ActionView::Helpers::UrlHelper
     include ActionView::Helpers::TranslationHelper
     include ActionView::Context
     include AvatarsHelper
@@ -74,6 +73,14 @@ module Gitlab
 
     def project_duration
       @project_duration ||= age_map_duration(groups, project)
+    end
+
+    def link_to(*args, &block)
+      ActionController::Base.helpers.link_to(*args, &block)
+    end
+
+    def mail_to(*args, &block)
+      ActionController::Base.helpers.mail_to(*args, &block)
     end
   end
 end

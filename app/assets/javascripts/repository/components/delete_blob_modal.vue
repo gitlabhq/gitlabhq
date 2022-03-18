@@ -87,7 +87,7 @@ export default {
       fields: {
         // fields key must match case of form name for validation directive to work
         commit_message: initFormField({ value: this.commitMessage }),
-        branch_name: initFormField({ value: this.targetBranch }),
+        branch_name: initFormField({ value: this.targetBranch, skipValidation: !this.canPushCode }),
       },
     };
     return {

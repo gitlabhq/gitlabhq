@@ -85,13 +85,15 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
   end
 
   it 'errors when no iid or sha is passed' do
-    expect { resolve_pipeline(project, {}) }
-      .to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+    expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+      resolve_pipeline(project, {})
+    end
   end
 
   it 'errors when both iid and sha are passed' do
-    expect { resolve_pipeline(project, { iid: '1234', sha: 'sha' }) }
-      .to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+    expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+      resolve_pipeline(project, { iid: '1234', sha: 'sha' })
+    end
   end
 
   context 'when the pipeline is a dangling pipeline' do

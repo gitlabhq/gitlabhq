@@ -9,6 +9,7 @@ module Types
       present_using ::AlertManagement::AlertPresenter
 
       implements(Types::Notes::NoteableInterface)
+      implements(Types::TodoableInterface)
 
       authorize :read_alert_management_alert
 
@@ -126,6 +127,12 @@ module Types
             Types::PrometheusAlertType,
             null: true,
             description: 'Alert condition for Prometheus.'
+
+      field :web_url,
+            GraphQL::Types::String,
+            method: :details_url,
+            null: false,
+            description: 'URL of the alert.'
 
       def notes
         object.ordered_notes

@@ -1,4 +1,4 @@
-import setupToggleButtons from '~/toggle_buttons';
+import { initToggle } from '~/toggles';
 
 function updateVisibility(selector, isVisible) {
   Array.from(document.querySelectorAll(selector)).forEach((el) => {
@@ -11,12 +11,12 @@ function updateVisibility(selector, isVisible) {
 }
 
 export default () => {
-  const toggleContainer = document.querySelector('.js-auto-ssl-toggle-container');
+  const sslToggle = initToggle(document.querySelector('.js-enable-ssl-gl-toggle'));
+  const sslToggleInput = document.querySelector('.js-project-feature-toggle-input');
 
-  if (toggleContainer) {
-    const onToggleButtonClicked = (isAutoSslEnabled) => {
+  if (sslToggle) {
+    sslToggle.$on('change', (isAutoSslEnabled) => {
       updateVisibility('.js-shown-unless-auto-ssl', !isAutoSslEnabled);
-
       updateVisibility('.js-shown-if-auto-ssl', isAutoSslEnabled);
 
       Array.from(document.querySelectorAll('.js-enabled-unless-auto-ssl')).forEach((el) => {
@@ -26,8 +26,9 @@ export default () => {
           el.removeAttribute('disabled');
         }
       });
-    };
 
-    setupToggleButtons(toggleContainer, onToggleButtonClicked);
+      sslToggleInput.setAttribute('value', isAutoSslEnabled);
+    });
   }
+  return sslToggle;
 };

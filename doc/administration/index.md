@@ -35,7 +35,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Installing GitLab on Amazon Web Services (AWS)](../install/aws/index.md): Set up GitLab on Amazon AWS.
 - [Geo](geo/index.md): Replicate your GitLab instance to other geographic locations as a read-only fully operational version.
 - [Disaster Recovery](geo/disaster_recovery/index.md): Quickly fail-over to a different site with minimal effort in a disaster situation.
-- [Add License](../user/admin_area/license.md): Upload a license at install time to unlock features that are in paid tiers of GitLab.
+- [Add License](../user/admin_area/license.md): Add a license at install time to unlock features that are in paid tiers of GitLab.
 
 ### Configuring GitLab
 
@@ -68,7 +68,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to
   empower Advanced Search. Use when you deal with a huge amount of data.
 - [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md)
-- [Upload a license](../user/admin_area/license.md): Upload a license to unlock
+- [Add a license](../user/admin_area/license.md): Add a license to unlock
   features that are in paid tiers of GitLab.
 - [Admin Area](../user/admin_area/index.md): for self-managed instance-wide
   configuration and maintenance.

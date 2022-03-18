@@ -45,6 +45,19 @@ RSpec.describe Gitlab::UsageDataQueries do
     end
   end
 
+  describe '.alt_usage_data' do
+    subject(:alt_usage_data) { described_class.alt_usage_data { 42 } }
+
+    it 'returns value when used with value' do
+      expect(described_class.alt_usage_data(1))
+        .to eq(alt_usage_data_value: 1)
+    end
+
+    it 'returns a stringified block for alt_usage_data with a block' do
+      expect(alt_usage_data[:alt_usage_data_block]).to start_with('#<Proc:')
+    end
+  end
+
   describe '.sum' do
     it 'returns the raw SQL' do
       expect(described_class.sum(Issue, :weight)).to eq('SELECT SUM("issues"."weight") FROM "issues"')

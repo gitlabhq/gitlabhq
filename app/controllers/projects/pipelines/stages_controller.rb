@@ -5,6 +5,10 @@ module Projects
     class StagesController < Projects::Pipelines::ApplicationController
       before_action :authorize_update_pipeline!
 
+      urgency :low, [
+        :play_manual
+      ]
+
       def play_manual
         ::Ci::PlayManualStageService
           .new(@project, current_user, pipeline: pipeline)

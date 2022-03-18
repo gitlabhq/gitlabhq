@@ -1,4 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
+import { __ } from '~/locale';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
 const propsData = {
@@ -12,7 +14,7 @@ describe('HiddenFilesWarning', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMount(HiddenFilesWarning, {
+    wrapper = mount(HiddenFilesWarning, {
       propsData,
     });
   };
@@ -26,22 +28,20 @@ describe('HiddenFilesWarning', () => {
   });
 
   it('has a correct plain diff URL', () => {
-    const plainDiffLink = wrapper.findAll('a').wrappers.filter((x) => x.text() === 'Plain diff')[0];
+    const plainDiffLink = wrapper.findAllComponents(GlButton).at(0);
 
     expect(plainDiffLink.attributes('href')).toBe(propsData.plainDiffPath);
   });
 
   it('has a correct email patch URL', () => {
-    const emailPatchLink = wrapper
-      .findAll('a')
-      .wrappers.filter((x) => x.text() === 'Email patch')[0];
+    const emailPatchLink = wrapper.findAllComponents(GlButton).at(1);
 
     expect(emailPatchLink.attributes('href')).toBe(propsData.emailPatchPath);
   });
 
   it('has a correct visible/total files text', () => {
-    const filesText = wrapper.find('strong');
-
-    expect(filesText.text()).toBe('5 of 10');
+    expect(wrapper.text()).toContain(
+      __('To preserve performance only 5 of 10 files are displayed.'),
+    );
   });
 });

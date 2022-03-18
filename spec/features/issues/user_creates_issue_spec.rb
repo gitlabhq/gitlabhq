@@ -22,11 +22,11 @@ RSpec.describe "User creates issue" do
         click_link "New issue"
       end
 
-      expect(current_path).to eq new_user_session_path
+      expect(page).to have_current_path new_user_session_path, ignore_query: true
 
       gitlab_sign_in(create(:user))
 
-      expect(current_path).to eq new_project_issue_path(project)
+      expect(page).to have_current_path new_project_issue_path(project), ignore_query: true
     end
   end
 

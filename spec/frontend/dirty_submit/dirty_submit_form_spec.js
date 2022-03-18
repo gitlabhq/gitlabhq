@@ -93,5 +93,38 @@ describe('DirtySubmitForm', () => {
 
       expect(updateDirtyInputSpy).toHaveBeenCalledTimes(range.length);
     });
+
+    describe('when inputs listener is added', () => {
+      it('calls listener when changes are made to an input', () => {
+        const { form, input } = createForm();
+        const inputsListener = jest.fn();
+
+        const dirtySubmitForm = new DirtySubmitForm(form);
+        dirtySubmitForm.addInputsListener(inputsListener);
+
+        setInputValue(input, 'new value');
+
+        jest.runOnlyPendingTimers();
+
+        expect(inputsListener).toHaveBeenCalledTimes(1);
+      });
+
+      describe('when inputs listener is removed', () => {
+        it('does not call listener when changes are made to an input', () => {
+          const { form, input } = createForm();
+          const inputsListener = jest.fn();
+
+          const dirtySubmitForm = new DirtySubmitForm(form);
+          dirtySubmitForm.addInputsListener(inputsListener);
+          dirtySubmitForm.removeInputsListener(inputsListener);
+
+          setInputValue(input, 'new value');
+
+          jest.runOnlyPendingTimers();
+
+          expect(inputsListener).not.toHaveBeenCalled();
+        });
+      });
+    });
   });
 });

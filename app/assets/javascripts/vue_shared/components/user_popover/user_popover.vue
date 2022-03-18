@@ -116,7 +116,7 @@ export default {
           <div v-if="statusHtml" class="gl-mb-2" data-testid="user-popover-status">
             <span v-safe-html:[$options.safeHtmlConfig]="statusHtml"></span>
           </div>
-          <div v-if="user.bot" class="gl-text-blue-500">
+          <div v-if="user.bot && user.websiteUrl" class="gl-text-blue-500">
             <gl-icon name="question" />
             <gl-link data-testid="user-popover-bot-docs-link" :href="user.websiteUrl">
               <gl-sprintf :message="__('Learn more about %{username}')">

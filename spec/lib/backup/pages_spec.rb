@@ -19,7 +19,7 @@ RSpec.describe Backup::Pages do
       expect(subject).to receive(:tar).and_return('blabla-tar')
       expect(subject).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found --exclude=./@pages.tmp -C /var/gitlab-pages -cf - .), 'gzip -c -1'], any_args).and_return([[true, true], ''])
       expect(subject).to receive(:pipeline_succeeded?).and_return(true)
-      subject.dump
+      subject.dump('pages.tar.gz')
     end
   end
 end

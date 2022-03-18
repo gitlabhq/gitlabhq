@@ -2,11 +2,6 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import WidgetRebase from '~/vue_merge_request_widget/components/states/mr_widget_rebase.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import ActionsButton from '~/vue_shared/components/actions_button.vue';
-import {
-  REBASE_BUTTON_KEY,
-  REBASE_WITHOUT_CI_BUTTON_KEY,
-} from '~/vue_merge_request_widget/constants';
 
 let wrapper;
 
@@ -38,8 +33,8 @@ function createWrapper(propsData, mergeRequestWidgetGraphql, rebaseWithoutCiUi) 
 describe('Merge request widget rebase component', () => {
   const findRebaseMessage = () => wrapper.find('[data-testid="rebase-message"]');
   const findRebaseMessageText = () => findRebaseMessage().text();
-  const findRebaseButtonActions = () => wrapper.find(ActionsButton);
   const findStandardRebaseButton = () => wrapper.find('[data-testid="standard-rebase-button"]');
+  const findRebaseWithoutCiButton = () => wrapper.find('[data-testid="rebase-without-ci-button"]');
 
   afterEach(() => {
     wrapper.destroy();
@@ -112,7 +107,7 @@ describe('Merge request widget rebase component', () => {
           expect(findRebaseMessageText()).toContain('Something went wrong!');
         });
 
-        describe('Rebase button with flag rebaseWithoutCiUi', () => {
+        describe('Rebase buttons with flag rebaseWithoutCiUi', () => {
           beforeEach(() => {
             createWrapper(
               {
@@ -130,30 +125,13 @@ describe('Merge request widget rebase component', () => {
             );
           });
 
-          it('rebase button with actions is rendered', () => {
-            expect(findRebaseButtonActions().exists()).toBe(true);
-            expect(findStandardRebaseButton().exists()).toBe(false);
-          });
-
-          it('has rebase and rebase without CI actions', () => {
-            const actionNames = findRebaseButtonActions()
-              .props('actions')
-              .map((action) => action.key);
-
-            expect(actionNames).toStrictEqual([REBASE_BUTTON_KEY, REBASE_WITHOUT_CI_BUTTON_KEY]);
-          });
-
-          it('defaults to rebase action', () => {
-            expect(findRebaseButtonActions().props('selectedKey')).toStrictEqual(REBASE_BUTTON_KEY);
+          it('renders both buttons', () => {
+            expect(findRebaseWithoutCiButton().exists()).toBe(true);
+            expect(findStandardRebaseButton().exists()).toBe(true);
           });
 
           it('starts the rebase when clicking', async () => {
-            // ActionButtons use the actions props instead of emitting
-            // a click event, therefore simulating the behavior here:
-            findRebaseButtonActions()
-              .props('actions')
-              .find((x) => x.key === REBASE_BUTTON_KEY)
-              .handle();
+            findStandardRebaseButton().vm.$emit('click');
 
             await nextTick();
 
@@ -161,12 +139,7 @@ describe('Merge request widget rebase component', () => {
           });
 
           it('starts the CI-skipping rebase when clicking on "Rebase without CI"', async () => {
-            // ActionButtons use the actions props instead of emitting
-            // a click event, therefore simulating the behavior here:
-            findRebaseButtonActions()
-              .props('actions')
-              .find((x) => x.key === REBASE_WITHOUT_CI_BUTTON_KEY)
-              .handle();
+            findRebaseWithoutCiButton().vm.$emit('click');
 
             await nextTick();
 
@@ -193,7 +166,7 @@ describe('Merge request widget rebase component', () => {
 
           it('standard rebase button is rendered', () => {
             expect(findStandardRebaseButton().exists()).toBe(true);
-            expect(findRebaseButtonActions().exists()).toBe(false);
+            expect(findRebaseWithoutCiButton().exists()).toBe(false);
           });
 
           it('calls rebase method with skip_ci false', () => {
@@ -240,7 +213,7 @@ describe('Merge request widget rebase component', () => {
           });
         });
 
-        it('does not render the rebase actions button with rebaseWithoutCiUI flag enabled', () => {
+        it('does not render the "Rebase without pipeline" button with rebaseWithoutCiUI flag enabled', () => {
           createWrapper(
             {
               mr: {
@@ -254,7 +227,7 @@ describe('Merge request widget rebase component', () => {
             { rebaseWithoutCiUi: true },
           );
 
-          expect(findRebaseButtonActions().exists()).toBe(false);
+          expect(findRebaseWithoutCiButton().exists()).toBe(false);
         });
 
         it('does not render the standard rebase button with rebaseWithoutCiUI flag disabled', () => {

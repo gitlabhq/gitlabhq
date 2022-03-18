@@ -2,7 +2,6 @@ import Vue from 'vue';
 
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import { EDITOR_APP_STATUS_LOADING } from './constants';
 import { CODE_SNIPPET_SOURCE_SETTINGS } from './components/code_snippet_alert/constants';
 import getCurrentBranch from './graphql/queries/client/current_branch.query.graphql';
@@ -14,11 +13,6 @@ import typeDefs from './graphql/typedefs.graphql';
 import PipelineEditorApp from './pipeline_editor_app.vue';
 
 export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
-  // Prevent issues loading syntax validation workers
-  // Fixes https://gitlab.com/gitlab-org/gitlab/-/issues/297252
-  // TODO Remove when https://gitlab.com/gitlab-org/gitlab/-/issues/321656 is resolved
-  resetServiceWorkersPublicPath();
-
   const el = document.querySelector(selector);
 
   if (!el) {

@@ -328,6 +328,16 @@ module SortingHelper
 
     sort_direction_button(url, reverse_sort, sort_value)
   end
+
+  def admin_users_sort_options(path_params)
+    users_sort_options_hash.map do |value, text|
+      {
+        value: value,
+        text: text,
+        href: admin_users_path(sort: value, **path_params)
+      }
+    end
+  end
 end
 
 SortingHelper.prepend_mod_with('SortingHelper')

@@ -1,8 +1,0 @@
----
-name: sync_traversal_ids_before_commit
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79964
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352499
-group: group::workspace
-type: development
-default_enabled: false
-milestone: '14.8'

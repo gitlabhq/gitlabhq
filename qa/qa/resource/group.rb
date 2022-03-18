@@ -10,7 +10,11 @@ module QA
       end
 
       attribute :name do
-        @name || path
+        @name || @path || Runtime::Namespace.name
+      end
+
+      attribute :path do
+        @path || @name || Runtime::Namespace.name
       end
 
       attribute :sandbox do
@@ -20,7 +24,6 @@ module QA
       end
 
       def initialize
-        @path = Runtime::Namespace.name
         @description = "QA test run at #{Runtime::Namespace.time}"
         @require_two_factor_authentication = false
       end
@@ -64,7 +67,7 @@ module QA
         {
           parent_id: sandbox.id,
           path: path,
-          name: name || path,
+          name: name,
           visibility: 'public',
           require_two_factor_authentication: @require_two_factor_authentication,
           avatar: avatar

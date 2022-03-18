@@ -36,7 +36,6 @@ module RateLimitedService
 
     def rate_limit!(service)
       evaluated_scope = evaluated_scope_for(service)
-      return if feature_flag_disabled?(evaluated_scope[:project])
 
       if rate_limiter.throttled?(key, **opts.merge(scope: evaluated_scope.values, users_allowlist: users_allowlist))
         raise RateLimitedError.new(key: key, rate_limiter: rate_limiter), _('This endpoint has been requested too many times. Try again later.')
@@ -54,14 +53,11 @@ module RateLimitedService
         all[var] = service.public_send(var) # rubocop: disable GitlabSecurity/PublicSend
       end
     end
-
-    def feature_flag_disabled?(project)
-      Feature.disabled?("rate_limited_service_#{key}", project, default_enabled: :yaml)
-    end
   end
 
   prepended do
     attr_accessor :rate_limiter_bypassed
+
     cattr_accessor :rate_limiter_scoped_and_keyed
 
     def self.rate_limit(key:, opts:, rate_limiter: ::Gitlab::ApplicationRateLimiter)

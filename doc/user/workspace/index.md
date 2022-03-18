@@ -39,4 +39,4 @@ For a video introduction to the new hierarchy concept for groups and projects fo
 
 ## Related topics
 
-- [Workspaces developer documentation](../../development/workspaces/index.md)
+- [Workspace developer documentation](../../development/workspace/index.md)

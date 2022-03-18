@@ -385,23 +385,25 @@ RSpec.describe Group do
         end
       end
 
-      before do
-        subject
-        reload_models(old_parent, new_parent, group)
-      end
-
       context 'within the same hierarchy' do
         let!(:root) { create(:group).reload }
         let!(:old_parent) { create(:group, parent: root) }
         let!(:new_parent) { create(:group, parent: root) }
 
-        it 'updates traversal_ids' do
-          expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
-        end
+        context 'with FOR NO KEY UPDATE lock' do
+          before do
+            subject
+            reload_models(old_parent, new_parent, group)
+          end
 
-        it_behaves_like 'hierarchy with traversal_ids'
-        it_behaves_like 'locked row' do
-          let(:row) { root }
+          it 'updates traversal_ids' do
+            expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
+          end
+
+          it_behaves_like 'hierarchy with traversal_ids'
+          it_behaves_like 'locked row' do
+            let(:row) { root }
+          end
         end
       end
 
@@ -409,6 +411,11 @@ RSpec.describe Group do
         let!(:old_parent) { create(:group) }
         let!(:new_parent) { create(:group) }
         let!(:group) { create(:group, parent: old_parent) }
+
+        before do
+          subject
+          reload_models(old_parent, new_parent, group)
+        end
 
         it 'updates traversal_ids' do
           expect(group.traversal_ids).to eq [new_parent.id, group.id]
@@ -435,6 +442,11 @@ RSpec.describe Group do
         let!(:old_parent) { nil }
         let!(:new_parent) { create(:group) }
 
+        before do
+          subject
+          reload_models(old_parent, new_parent, group)
+        end
+
         it 'updates traversal_ids' do
           expect(group.traversal_ids).to eq [new_parent.id, group.id]
         end
@@ -451,6 +463,11 @@ RSpec.describe Group do
       context 'to being a root ancestor' do
         let!(:old_parent) { create(:group) }
         let!(:new_parent) { nil }
+
+        before do
+          subject
+          reload_models(old_parent, new_parent, group)
+        end
 
         it 'updates traversal_ids' do
           expect(group.traversal_ids).to eq [group.id]
@@ -1327,10 +1344,14 @@ RSpec.describe Group do
     let!(:group) { create(:group, :nested) }
     let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
     let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+    let!(:pending_maintainer) { create(:group_member, :awaiting, :maintainer, group: group.parent) }
+    let!(:pending_developer) { create(:group_member, :awaiting, :developer, group: group) }
 
-    it 'returns parents members' do
+    it 'returns parents active members' do
       expect(group.members_with_parents).to include(developer)
       expect(group.members_with_parents).to include(maintainer)
+      expect(group.members_with_parents).not_to include(pending_developer)
+      expect(group.members_with_parents).not_to include(pending_maintainer)
     end
 
     context 'group sharing' do
@@ -1340,9 +1361,11 @@ RSpec.describe Group do
         create(:group_group_link, shared_group: shared_group, shared_with_group: group)
       end
 
-      it 'returns shared with group members' do
+      it 'returns shared with group active members' do
         expect(shared_group.members_with_parents).to(
           include(developer))
+        expect(shared_group.members_with_parents).not_to(
+          include(pending_developer))
       end
     end
   end
@@ -2168,7 +2191,7 @@ RSpec.describe Group do
 
     let(:group) { create(:group) }
 
-    subject { group.first_auto_devops_config }
+    subject(:fetch_config) { group.first_auto_devops_config }
 
     where(:instance_value, :group_value, :config) do
       # Instance level enabled
@@ -2193,6 +2216,8 @@ RSpec.describe Group do
     end
 
     context 'with parent groups' do
+      let(:parent) { create(:group) }
+
       where(:instance_value, :parent_value, :group_value, :config) do
         # Instance level enabled
         true | nil   | nil    | { status: true, scope: :instance }
@@ -2222,17 +2247,82 @@ RSpec.describe Group do
       end
 
       with_them do
+        def define_cache_expectations(cache_key)
+          if group_value.nil?
+            expect(Rails.cache).to receive(:fetch).with(start_with(cache_key), expires_in: 1.day)
+          else
+            expect(Rails.cache).not_to receive(:fetch).with(start_with(cache_key), expires_in: 1.day)
+          end
+        end
+
         before do
           stub_application_setting(auto_devops_enabled: instance_value)
-          parent = create(:group, auto_devops_enabled: parent_value)
 
           group.update!(
             auto_devops_enabled: group_value,
             parent: parent
           )
+          parent.update!(auto_devops_enabled: parent_value)
+
+          group.reload # Reload so we get the populated traversal IDs
         end
 
         it { is_expected.to eq(config) }
+
+        it 'caches the parent config when group auto_devops_enabled is nil' do
+          cache_key = "namespaces:{#{group.traversal_ids.first}}:first_auto_devops_config:#{group.id}"
+          define_cache_expectations(cache_key)
+
+          fetch_config
+        end
+
+        context 'when traversal ID feature flags are disabled' do
+          before do
+            stub_feature_flags(sync_traversal_ids: false)
+          end
+
+          it 'caches the parent config when group auto_devops_enabled is nil' do
+            cache_key = "namespaces:{first_auto_devops_config}:#{group.id}"
+            define_cache_expectations(cache_key)
+
+            fetch_config
+          end
+        end
+      end
+
+      context 'cache expiration' do
+        before do
+          group.update!(parent: parent)
+
+          reload_models(parent)
+        end
+
+        it 'clears both self and descendant cache when the parent value is updated' do
+          expect(Rails.cache).to receive(:delete_multi)
+            .with(
+              match_array([
+                start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{parent.id}"),
+                start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{group.id}")
+              ])
+            )
+
+          parent.update!(auto_devops_enabled: true)
+        end
+
+        it 'only clears self cache when there are no dependents' do
+          expect(Rails.cache).to receive(:delete_multi)
+            .with([start_with("namespaces:{#{group.traversal_ids.first}}:first_auto_devops_config:#{group.id}")])
+
+          group.update!(auto_devops_enabled: true)
+        end
+
+        it 'does not clear cache when the feature is disabled' do
+          stub_feature_flags(namespaces_cache_first_auto_devops_config: false)
+
+          expect(Rails.cache).not_to receive(:delete_multi)
+
+          parent.update!(auto_devops_enabled: true)
+        end
       end
     end
   end
@@ -2860,7 +2950,14 @@ RSpec.describe Group do
 
       expect(group.crm_enabled?).to be_truthy
     end
+
+    it 'returns true where crm_settings.state is enabled for subgroup' do
+      subgroup = create(:group, :crm_enabled, parent: group)
+
+      expect(subgroup.crm_enabled?).to be_truthy
+    end
   end
+
   describe '.get_ids_by_ids_or_paths' do
     let(:group_path) { 'group_path' }
     let!(:group) { create(:group, path: group_path) }
@@ -3148,13 +3245,5 @@ RSpec.describe Group do
       it_behaves_like 'no enforced expiration interval'
       it_behaves_like 'no effective expiration interval'
     end
-  end
-
-  describe '#runners_token' do
-    let_it_be(:group) { create(:group) }
-
-    subject { group }
-
-    it_behaves_like 'it has a prefixable runners_token'
   end
 end

@@ -55,12 +55,12 @@ RSpec.describe 'User visits the profile preferences page', :js do
       find('#logo').click
 
       expect(page).to have_content("You don't have starred projects yet")
-      expect(page.current_path).to eq starred_dashboard_projects_path
+      expect(page).to have_current_path starred_dashboard_projects_path, ignore_query: true
 
       find('.shortcuts-activity').click
 
       expect(page).not_to have_content("You don't have starred projects yet")
-      expect(page.current_path).to eq dashboard_projects_path
+      expect(page).to have_current_path dashboard_projects_path, ignore_query: true
     end
   end
 

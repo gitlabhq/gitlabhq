@@ -56,6 +56,9 @@ export default {
     hasDuplicateUrl(link) {
       return Boolean(this.getLinkErrors(link).isDuplicate);
     },
+    hasDuplicateName(link) {
+      return Boolean(this.getLinkErrors(link).isTitleDuplicate);
+    },
     hasBadFormat(link) {
       return Boolean(this.getLinkErrors(link).isBadFormat);
     },
@@ -72,7 +75,7 @@ export default {
       return !this.hasDuplicateUrl(link) && !this.hasBadFormat(link) && !this.hasEmptyUrl(link);
     },
     isNameValid(link) {
-      return !this.hasEmptyName(link);
+      return !this.hasEmptyName(link) && !this.hasDuplicateName(link);
     },
 
     /**
@@ -121,7 +124,7 @@ export default {
     <p>
       {{
         __(
-          'Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance. Duplicate URLs are not allowed.',
+          'Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance. Each URL and link title must be unique.',
         )
       }}
     </p>
@@ -165,7 +168,7 @@ export default {
             </gl-sprintf>
           </span>
           <span v-else-if="hasDuplicateUrl(link)" class="invalid-feedback d-inline">
-            {{ __('This URL is already used for another link; duplicate URLs are not allowed') }}
+            {{ __('This URL already exists.') }}
           </span>
         </template>
       </gl-form-group>
@@ -190,6 +193,9 @@ export default {
         <template #invalid-feedback>
           <span v-if="hasEmptyName(link)" class="invalid-feedback d-inline">
             {{ __('Link title is required') }}
+          </span>
+          <span v-else-if="hasDuplicateName(link)" class="invalid-feedback d-inline">
+            {{ __('This title already exists.') }}
           </span>
         </template>
       </gl-form-group>

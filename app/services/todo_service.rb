@@ -9,6 +9,7 @@
 #
 class TodoService
   include Gitlab::Utils::UsageData
+
   # When create an issue we should:
   #
   #  * create a todo for assignee if issue is assigned
@@ -229,8 +230,24 @@ class TodoService
 
     return if users.empty?
 
-    users_with_pending_todos = pending_todos(users, attributes).distinct_user_ids
-    users.reject! { |user| users_with_pending_todos.include?(user.id) && Feature.disabled?(:multiple_todos, user) }
+    users_single_todos, users_multiple_todos = users.partition { |u| Feature.disabled?(:multiple_todos, u) }
+    excluded_user_ids = []
+
+    if users_single_todos.present?
+      excluded_user_ids += pending_todos(
+        users_single_todos,
+        attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion)
+      ).distinct_user_ids
+    end
+
+    if users_multiple_todos.present? && !Todo::ACTIONS_MULTIPLE_ALLOWED.include?(attributes.fetch(:action))
+      excluded_user_ids += pending_todos(
+        users_multiple_todos,
+        attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion, :action)
+      ).distinct_user_ids
+    end
+
+    users.reject! { |user| excluded_user_ids.include?(user.id) }
 
     todos = users.map do |user|
       issue_type = attributes.delete(:issue_type)

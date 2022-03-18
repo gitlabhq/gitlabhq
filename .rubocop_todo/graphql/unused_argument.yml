@@ -1,0 +1,5 @@
+---
+GraphQL/UnusedArgument:
+  Exclude:
+    - app/graphql/mutations/jira_import/start.rb
+    - app/graphql/resolvers/packages_base_resolver.rb

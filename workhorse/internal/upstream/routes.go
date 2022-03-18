@@ -20,7 +20,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lfs"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
@@ -251,8 +250,8 @@ func configureRoutes(u *upstream) {
 		u.route("PUT", gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, upload.RequestBody(api, signingProxy, preparers.lfs), withMatcher(isContentType("application/octet-stream"))),
 
 		// CI Artifacts
-		u.route("POST", apiPattern+`v4/jobs/[0-9]+/artifacts\z`, contentEncodingHandler(artifacts.UploadArtifacts(api, signingProxy, preparers.artifacts))),
-		u.route("POST", ciAPIPattern+`v1/builds/[0-9]+/artifacts\z`, contentEncodingHandler(artifacts.UploadArtifacts(api, signingProxy, preparers.artifacts))),
+		u.route("POST", apiPattern+`v4/jobs/[0-9]+/artifacts\z`, contentEncodingHandler(upload.Artifacts(api, signingProxy, preparers.artifacts))),
+		u.route("POST", ciAPIPattern+`v1/builds/[0-9]+/artifacts\z`, contentEncodingHandler(upload.Artifacts(api, signingProxy, preparers.artifacts))),
 
 		// ActionCable websocket
 		u.wsRoute(`^/-/cable\z`, cableProxy),
@@ -318,8 +317,11 @@ func configureRoutes(u *upstream) {
 		// Group Import via UI upload acceleration
 		u.route("POST", importPattern+`gitlab_group`, upload.Multipart(api, signingProxy, preparers.uploads)),
 
-		// Metric image upload
+		// Issuable Metric image upload
 		u.route("POST", apiProjectPattern+`issues/[0-9]+/metric_images\z`, upload.Multipart(api, signingProxy, preparers.uploads)),
+
+		// Alert Metric image upload
+		u.route("POST", apiProjectPattern+`alert_management_alerts/[0-9]+/metric_images\z`, upload.Multipart(api, signingProxy, preparers.uploads)),
 
 		// Requirements Import via UI upload acceleration
 		u.route("POST", projectPattern+`requirements_management/requirements/import_csv`, upload.Multipart(api, signingProxy, preparers.uploads)),
@@ -383,17 +385,26 @@ func configureRoutes(u *upstream) {
 		u.route("", "^/oauth/geo/(auth|callback|logout)$", defaultUpstream),
 
 		// Admin Area > Geo routes
-		u.route("", "^/admin/geo$", defaultUpstream),
-		u.route("", "^/admin/geo/", defaultUpstream),
+		u.route("", "^/admin/geo/replication/projects", defaultUpstream),
+		u.route("", "^/admin/geo/replication/designs", defaultUpstream),
 
 		// Geo API routes
-		u.route("", "^/api/v4/geo_nodes", defaultUpstream),
 		u.route("", "^/api/v4/geo_replication", defaultUpstream),
 		u.route("", "^/api/v4/geo/proxy_git_ssh", defaultUpstream),
 		u.route("", "^/api/v4/geo/graphql", defaultUpstream),
 
 		// Internal API routes
 		u.route("", "^/api/v4/internal", defaultUpstream),
+
+		u.route(
+			"", `^/assets/`,
+			static.ServeExisting(
+				u.URLPrefix,
+				staticpages.CacheExpireMax,
+				assetsNotFoundHandler,
+			),
+			withoutTracing(), // Tracing on assets is very noisy
+		),
 
 		// Don't define a catch-all route. If a route does not match, then we know
 		// the request should be proxied.
@@ -405,7 +416,7 @@ func createUploadPreparers(cfg config.Config) uploadPreparers {
 
 	return uploadPreparers{
 		artifacts: defaultPreparer,
-		lfs:       lfs.NewLfsUploadPreparer(cfg, defaultPreparer),
+		lfs:       upload.NewLfsPreparer(cfg, defaultPreparer),
 		packages:  defaultPreparer,
 		uploads:   defaultPreparer,
 	}

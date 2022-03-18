@@ -45,5 +45,4 @@
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide
         .center
-          %h2
-            %i.icon-spinner.icon-spin
+          = gl_loading_icon(size: 'lg')

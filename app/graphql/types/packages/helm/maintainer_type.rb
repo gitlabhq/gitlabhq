@@ -9,8 +9,8 @@ module Types
         description 'Represents a Helm maintainer'
 
         # Need to be synced with app/validators/json_schemas/helm_metadata.json#maintainers
-        field :name, GraphQL::Types::String, null: true, description: 'Name of the maintainer.'
         field :email, GraphQL::Types::String, null: true, description: 'Email of the maintainer.'
+        field :name, GraphQL::Types::String, null: true, description: 'Name of the maintainer.'
         field :url, GraphQL::Types::String, null: true, description: 'URL of the maintainer.'
       end
     end

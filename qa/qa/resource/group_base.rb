@@ -64,6 +64,10 @@ module QA
         end
       end
 
+      def marked_for_deletion?
+        reload!.api_response[:marked_for_deletion_on].present?
+      end
+
       # Get group badges
       #
       # @return [Array<QA::Resource::GroupBadge>]
@@ -76,22 +80,6 @@ module QA
             resource.name = badge[:name]
             resource.link_url = badge[:link_url]
             resource.image_url = badge[:image_url]
-          end
-        end
-      end
-
-      # Get group members
-      #
-      # @return [Array<QA::Resource::User>]
-      def members
-        parse_body(api_get_from("#{api_get_path}/members")).map do |member|
-          User.init do |resource|
-            resource.api_client = api_client
-            resource.id = member[:id]
-            resource.name = member[:name]
-            resource.username = member[:username]
-            resource.email = member[:email]
-            resource.access_level = member[:access_level]
           end
         end
       end

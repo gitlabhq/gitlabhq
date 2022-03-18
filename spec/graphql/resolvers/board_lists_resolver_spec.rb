@@ -74,9 +74,10 @@ RSpec.describe Resolvers::BoardListsResolver do
           expect(list).to eq List.none
         end
 
-        it 'raises an argument error if list ID is not valid' do
-          expect { resolve_board_lists(args: { id: 'test' }) }
-            .to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+        it 'generates an error if list ID is not valid' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+            resolve_board_lists(args: { id: 'test' })
+          end
         end
       end
     end

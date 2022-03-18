@@ -147,8 +147,8 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
   it 'has an high complexity regardless of arguments' do
     field = Types::BaseField.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: described_class, null: false, max_page_size: 100)
 
-    expect(field.to_graphql.complexity.call({}, {}, 1)).to eq 24
-    expect(field.to_graphql.complexity.call({}, { include_subgroups: true }, 1)).to eq 24
+    expect(field.complexity.call({}, {}, 1)).to eq 24
+    expect(field.complexity.call({}, { include_subgroups: true }, 1)).to eq 24
   end
 
   def resolve_projects(args = { include_subgroups: false, sort: nil, search: nil, ids: nil }, context = { current_user: current_user })

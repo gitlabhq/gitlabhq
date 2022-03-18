@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlLink } from '@gitlab/ui';
+import { GlButton, GlLink, GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -17,6 +17,7 @@ import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
+import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
@@ -30,19 +31,22 @@ import {
   PARAM_KEY_STATUS,
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
+  I18N_EDIT,
 } from '~/runner/constants';
-import getGroupRunnersQuery from '~/runner/graphql/get_group_runners.query.graphql';
-import getGroupRunnersCountQuery from '~/runner/graphql/get_group_runners_count.query.graphql';
+import getGroupRunnersQuery from '~/runner/graphql/list/group_runners.query.graphql';
+import getGroupRunnersCountQuery from '~/runner/graphql/list/group_runners_count.query.graphql';
 import GroupRunnersApp from '~/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { groupRunnersData, groupRunnersDataPaginated, groupRunnersCountData } from '../mock_data';
 
 Vue.use(VueApollo);
+Vue.use(GlToast);
 
 const mockGroupFullPath = 'group1';
 const mockRegistrationToken = 'AABBCC';
-const mockGroupRunnersLimitedCount = groupRunnersData.data.group.runners.edges.length;
+const mockGroupRunnersEdges = groupRunnersData.data.group.runners.edges;
+const mockGroupRunnersLimitedCount = mockGroupRunnersEdges.length;
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -57,12 +61,12 @@ describe('GroupRunnersApp', () => {
   let mockGroupRunnersCountQuery;
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
+  const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
+  const findRunnerRow = (id) => extendedWrapper(wrapper.findByTestId(`runner-row-${id}`));
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
-  const findRunnerPaginationPrev = () =>
-    findRunnerPagination().findByLabelText('Go to previous page');
   const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
@@ -156,20 +160,7 @@ describe('GroupRunnersApp', () => {
 
   it('shows the runners list', () => {
     const runners = findRunnerList().props('runners');
-    expect(runners).toEqual(groupRunnersData.data.group.runners.edges.map(({ node }) => node));
-  });
-
-  it('runner item links to the runner group page', async () => {
-    const { webUrl, node } = groupRunnersData.data.group.runners.edges[0];
-    const { id, shortSha } = node;
-
-    createComponent({ mountFn: mountExtended });
-
-    await waitForPromises();
-
-    const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
-    expect(runnerLink.text()).toBe(`#${getIdFromGraphQLId(id)} (${shortSha})`);
-    expect(runnerLink.attributes('href')).toBe(webUrl);
+    expect(runners).toEqual(mockGroupRunnersEdges.map(({ node }) => node));
   });
 
   it('requests the runners with group path and no other filters', () => {
@@ -194,6 +185,50 @@ describe('GroupRunnersApp', () => {
         options: expect.any(Array),
       }),
     );
+  });
+
+  describe('Single runner row', () => {
+    let showToast;
+
+    const { webUrl, editUrl, node } = mockGroupRunnersEdges[0];
+    const { id: graphqlId, shortSha } = node;
+    const id = getIdFromGraphQLId(graphqlId);
+
+    beforeEach(async () => {
+      mockGroupRunnersQuery.mockClear();
+
+      createComponent({ mountFn: mountExtended });
+      showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
+
+      await waitForPromises();
+    });
+
+    it('view link is displayed correctly', () => {
+      const viewLink = findRunnerRow(id).findByTestId('td-summary').findComponent(GlLink);
+
+      expect(viewLink.text()).toBe(`#${id} (${shortSha})`);
+      expect(viewLink.attributes('href')).toBe(webUrl);
+    });
+
+    it('edit link is displayed correctly', () => {
+      const editLink = findRunnerRow(id).findByTestId('td-actions').findComponent(GlButton);
+
+      expect(editLink.attributes()).toMatchObject({
+        'aria-label': I18N_EDIT,
+        href: editUrl,
+      });
+    });
+
+    it('When runner is deleted, data is refetched and a toast is shown', async () => {
+      expect(mockGroupRunnersQuery).toHaveBeenCalledTimes(1);
+
+      findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
+
+      expect(mockGroupRunnersQuery).toHaveBeenCalledTimes(2);
+
+      expect(showToast).toHaveBeenCalledTimes(1);
+      expect(showToast).toHaveBeenCalledWith('Runner deleted');
+    });
   });
 
   describe('when a filter is preselected', () => {
@@ -301,14 +336,6 @@ describe('GroupRunnersApp', () => {
 
       createComponent({ mountFn: mountExtended });
       await waitForPromises();
-    });
-
-    it('more pages can be selected', () => {
-      expect(findRunnerPagination().text()).toMatchInterpolatedText('Prev Next');
-    });
-
-    it('cannot navigate to the previous page', () => {
-      expect(findRunnerPaginationPrev().attributes('aria-disabled')).toBe('true');
     });
 
     it('navigates to the next page', async () => {

@@ -137,7 +137,7 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js do
         build_item.click
         find('.build-page')
 
-        expect(current_path).to eql(project_job_path(project, build))
+        expect(page).to have_current_path(project_job_path(project, build), ignore_query: true)
       end
 
       it 'shows tooltip when hovered' do

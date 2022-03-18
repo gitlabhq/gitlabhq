@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe CustomerRelations::Contact, type: :model do
+  let_it_be(:group) { create(:group) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:organization).optional }
@@ -23,6 +25,8 @@ RSpec.describe CustomerRelations::Contact, type: :model do
     it { is_expected.to validate_length_of(:email).is_at_most(255) }
     it { is_expected.to validate_length_of(:description).is_at_most(1024) }
 
+    it { is_expected.to validate_uniqueness_of(:email).scoped_to(:group_id) }
+
     it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :email
   end
 
@@ -38,33 +42,15 @@ RSpec.describe CustomerRelations::Contact, type: :model do
     it { expect(described_class.reference_postfix).to eq(']') }
   end
 
-  describe '#unique_email_for_group_hierarchy' do
-    let_it_be(:parent) { create(:group) }
-    let_it_be(:group) { create(:group, parent: parent) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
-
-    let_it_be(:existing_contact) { create(:contact, group: group) }
-
-    context 'with unique email for group hierarchy' do
+  describe '#root_group' do
+    context 'when root group' do
       subject { build(:contact, group: group) }
 
       it { is_expected.to be_valid }
     end
 
-    context 'with duplicate email in group' do
-      subject { build(:contact, email: existing_contact.email, group: group) }
-
-      it { is_expected.to be_invalid }
-    end
-
-    context 'with duplicate email in parent group' do
-      subject { build(:contact, email: existing_contact.email, group: subgroup) }
-
-      it { is_expected.to be_invalid }
-    end
-
-    context 'with duplicate email in subgroup' do
-      subject { build(:contact, email: existing_contact.email, group: parent) }
+    context 'when subgroup' do
+      subject { build(:contact, group: create(:group, parent: group)) }
 
       it { is_expected.to be_invalid }
     end
@@ -82,19 +68,11 @@ RSpec.describe CustomerRelations::Contact, type: :model do
   end
 
   describe '#self.find_ids_by_emails' do
-    let_it_be(:group) { create(:group) }
     let_it_be(:group_contacts) { create_list(:contact, 2, group: group) }
     let_it_be(:other_contacts) { create_list(:contact, 2) }
 
     it 'returns ids of contacts from group' do
       contact_ids = described_class.find_ids_by_emails(group, group_contacts.pluck(:email))
-
-      expect(contact_ids).to match_array(group_contacts.pluck(:id))
-    end
-
-    it 'returns ids of contacts from parent group' do
-      subgroup = create(:group, parent: group)
-      contact_ids = described_class.find_ids_by_emails(subgroup, group_contacts.pluck(:email))
 
       expect(contact_ids).to match_array(group_contacts.pluck(:id))
     end
@@ -112,28 +90,17 @@ RSpec.describe CustomerRelations::Contact, type: :model do
   end
 
   describe '#self.exists_for_group?' do
-    let(:group) { create(:group) }
-    let(:subgroup) { create(:group, parent: group) }
-
-    context 'with no contacts in group or parent' do
+    context 'with no contacts in group' do
       it 'returns false' do
-        expect(described_class.exists_for_group?(subgroup)).to be_falsey
+        expect(described_class.exists_for_group?(group)).to be_falsey
       end
     end
 
     context 'with contacts in group' do
       it 'returns true' do
-        create(:contact, group: subgroup)
-
-        expect(described_class.exists_for_group?(subgroup)).to be_truthy
-      end
-    end
-
-    context 'with contacts in parent' do
-      it 'returns true' do
         create(:contact, group: group)
 
-        expect(described_class.exists_for_group?(subgroup)).to be_truthy
+        expect(described_class.exists_for_group?(group)).to be_truthy
       end
     end
   end

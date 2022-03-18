@@ -79,11 +79,11 @@ RSpec.describe 'Dashboard > User filters projects' do
       page.find('.filtered-search-block #filtered-search-sorting-dropdown .reverse-sort-btn').click
     end
 
-    def select_dropdown_option(selector, label)
+    def select_dropdown_option(selector, label, option_selector = '.dropdown-menu a')
       dropdown = page.find(selector)
       dropdown.click
 
-      dropdown.find('.dropdown-menu a', text: label, match: :first).click
+      dropdown.find(option_selector, text: label, match: :first).click
     end
 
     def expect_to_see_projects(sorted_projects)
@@ -125,7 +125,7 @@ RSpec.describe 'Dashboard > User filters projects' do
       end
 
       it 'filters private projects only' do
-        select_dropdown_option '#filtered-search-visibility-dropdown', 'Private'
+        select_dropdown_option '#filtered-search-visibility-dropdown > .dropdown', 'Private', '.dropdown-item'
 
         expect(current_url).to match(/visibility_level=0/)
 
@@ -135,7 +135,7 @@ RSpec.describe 'Dashboard > User filters projects' do
       end
 
       it 'filters internal projects only' do
-        select_dropdown_option '#filtered-search-visibility-dropdown', 'Internal'
+        select_dropdown_option '#filtered-search-visibility-dropdown > .dropdown', 'Internal', '.dropdown-item'
 
         expect(current_url).to match(/visibility_level=10/)
 
@@ -145,7 +145,7 @@ RSpec.describe 'Dashboard > User filters projects' do
       end
 
       it 'filters any project' do
-        select_dropdown_option '#filtered-search-visibility-dropdown', 'Any'
+        select_dropdown_option '#filtered-search-visibility-dropdown > .dropdown', 'Any', '.dropdown-item'
         list = page.all('.projects-list .project-name').map(&:text)
 
         expect(list).to contain_exactly("Internal project", "Private project", "Treasure", "Victorialand")

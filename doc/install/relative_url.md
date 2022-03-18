@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Install GitLab under a relative URL **(FREE SELF)**
 
-While it is recommended to install GitLab on its own (sub)domain, sometimes
+While we recommend to install GitLab on its own (sub)domain, sometimes
 this is not possible due to a variety of reasons. In that case, GitLab can also
 be installed under a relative URL, for example `https://example.com/gitlab`.
 
@@ -19,8 +19,8 @@ first time.
 There is no limit to how deeply nested the relative URL can be. For example you
 could serve GitLab under `/foo/bar/gitlab/git` without any issues.
 
-Note that by changing the URL on an existing GitLab installation, all remote
-URLs will change, so you'll have to manually edit them in any local repository
+Changing the URL on an existing GitLab installation, changes all remote
+URLs, so you have to manually edit them in any local repository
 that points to your GitLab instance.
 
 The list of configuration files you must change to serve GitLab from a
@@ -32,7 +32,7 @@ relative URL is:
 - `/home/git/gitlab-shell/config.yml`
 - `/etc/default/gitlab`
 
-After all the changes you need to recompile the assets and [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+After all the changes, you must recompile the assets and [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
 
 ## Relative URL requirements
 

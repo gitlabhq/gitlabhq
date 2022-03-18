@@ -1,5 +1,12 @@
-import { currentKey, isInheriting, propsSource } from '~/integrations/edit/store/getters';
+import {
+  currentKey,
+  isInheriting,
+  isProjectLevel,
+  propsSource,
+} from '~/integrations/edit/store/getters';
+
 import createState from '~/integrations/edit/store/state';
+import { integrationLevels } from '~/integrations/constants';
 import { mockIntegrationProps } from '../mock_data';
 
 describe('Integration form store getters', () => {
@@ -42,6 +49,18 @@ describe('Integration form store getters', () => {
           expect(isInheriting(state)).toBe(false);
         });
       });
+    });
+  });
+
+  describe('isProjectLevel', () => {
+    it.each`
+      integrationLevel              | expected
+      ${integrationLevels.PROJECT}  | ${true}
+      ${integrationLevels.GROUP}    | ${false}
+      ${integrationLevels.INSTANCE} | ${false}
+    `('when integrationLevel is `$integrationLevel`', ({ integrationLevel, expected }) => {
+      state.customState.integrationLevel = integrationLevel;
+      expect(isProjectLevel(state)).toBe(expected);
     });
   });
 

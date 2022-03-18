@@ -211,10 +211,22 @@ RSpec.shared_examples 'handle uploads' do
                   stub_feature_flags(enforce_auth_checks_on_uploads: true)
                 end
 
-                it "responds with status 302" do
+                it "responds with appropriate status" do
                   show_upload
 
-                  expect(response).to have_gitlab_http_status(:redirect)
+                  # We're switching here based on the class due to the feature
+                  #   flag :enforce_auth_checks_on_uploads switching on project.
+                  #   When it is enabled fully, we will apply the code it guards
+                  #   to both Projects::UploadsController as well as
+                  #   Groups::UploadsController.
+                  #
+                  # https://gitlab.com/gitlab-org/gitlab/-/issues/352291
+                  #
+                  if model.instance_of?(Group)
+                    expect(response).to have_gitlab_http_status(:ok)
+                  else
+                    expect(response).to have_gitlab_http_status(:redirect)
+                  end
                 end
               end
 
@@ -305,7 +317,19 @@ RSpec.shared_examples 'handle uploads' do
                   it "responds with status 404" do
                     show_upload
 
-                    expect(response).to have_gitlab_http_status(:not_found)
+                    # We're switching here based on the class due to the feature
+                    #   flag :enforce_auth_checks_on_uploads switching on
+                    #   project. When it is enabled fully, we will apply the
+                    #   code it guards to both Projects::UploadsController as
+                    #   well as Groups::UploadsController.
+                    #
+                    # https://gitlab.com/gitlab-org/gitlab/-/issues/352291
+                    #
+                    if model.instance_of?(Group)
+                      expect(response).to have_gitlab_http_status(:ok)
+                    else
+                      expect(response).to have_gitlab_http_status(:not_found)
+                    end
                   end
                 end
 

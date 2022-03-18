@@ -32,7 +32,7 @@ export default {
       );
     },
     openInNewTab() {
-      return ACTION_LABELS[this.action]?.openInNewTab === true;
+      return ACTION_LABELS[this.action]?.openInNewTab === true || this.value.openInNewTab === true;
     },
   },
   methods: {
@@ -65,8 +65,6 @@ export default {
       data-testid="uncompleted-learn-gitlab-link"
       data-track-action="click_link"
       :data-track-label="$options.i18n.ACTION_LABELS[action].title"
-      data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-      data-track-experiment="change_continuous_onboarding_link_urls"
     >
       {{ $options.i18n.ACTION_LABELS[action].title }}
     </gl-link>

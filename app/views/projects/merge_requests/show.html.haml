@@ -76,14 +76,12 @@
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if @number_of_pipelines.nonzero?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      - params = request.query_parameters
-      - if Feature.enabled?(:default_merge_ref_for_diffs, @project, default_enabled: :yaml)
-        - params = params.merge(diff_head: true)
+      - params = request.query_parameters.merge(diff_head: true)
       = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 
     .mr-loading-status
       .loading.hide
-        .gl-spinner.gl-spinner-md
+        = gl_loading_icon(size: 'lg')
 
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
@@ -93,6 +91,9 @@
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit
 
 #js-review-bar
+
+- if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+  #js-need-attention-sidebar-onboarding
 
 = render 'projects/invite_members_modal', project: @project
 = render 'shared/web_ide_path'

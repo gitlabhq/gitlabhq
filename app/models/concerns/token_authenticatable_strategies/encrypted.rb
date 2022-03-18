@@ -2,6 +2,10 @@
 
 module TokenAuthenticatableStrategies
   class Encrypted < Base
+    def token_fields
+      super + [encrypted_field]
+    end
+
     def find_token_authenticatable(token, unscoped = false)
       return if token.blank?
 

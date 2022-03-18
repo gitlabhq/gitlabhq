@@ -164,11 +164,19 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
           end
         end
 
-        context "when the primary_column_name is not an integer" do
+        context 'when the primary_column_name is a string' do
+          it 'does not raise error' do
+            expect do
+              model.queue_background_migration_jobs_by_range_at_intervals(ContainerExpirationPolicy, 'FooJob', 10.minutes, primary_column_name: :name_regex)
+            end.not_to raise_error
+          end
+        end
+
+        context "when the primary_column_name is not an integer or a string" do
           it 'raises error' do
             expect do
               model.queue_background_migration_jobs_by_range_at_intervals(ContainerExpirationPolicy, 'FooJob', 10.minutes, primary_column_name: :enabled)
-            end.to raise_error(StandardError, /is not an integer column/)
+            end.to raise_error(StandardError, /is not an integer or string column/)
           end
         end
 

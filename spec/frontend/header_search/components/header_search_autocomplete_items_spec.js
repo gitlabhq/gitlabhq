@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlLoadingIcon, GlAvatar } from '@gitlab/ui';
+import { GlDropdownItem, GlLoadingIcon, GlAvatar, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -46,6 +46,7 @@ describe('HeaderSearchAutocompleteItems', () => {
   const findDropdownItemLinks = () => findDropdownItems().wrappers.map((w) => w.attributes('href'));
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findGlAvatar = () => wrapper.findComponent(GlAvatar);
+  const findGlAlert = () => wrapper.findComponent(GlAlert);
 
   describe('template', () => {
     describe('when loading is true', () => {
@@ -62,6 +63,15 @@ describe('HeaderSearchAutocompleteItems', () => {
       });
     });
 
+    describe('when api returns error', () => {
+      beforeEach(() => {
+        createComponent({ autocompleteError: true });
+      });
+
+      it('renders Alert', () => {
+        expect(findGlAlert().exists()).toBe(true);
+      });
+    });
     describe('when loading is false', () => {
       beforeEach(() => {
         createComponent({ loading: false });
@@ -86,6 +96,7 @@ describe('HeaderSearchAutocompleteItems', () => {
           expect(findDropdownItemLinks()).toStrictEqual(expectedLinks);
         });
       });
+
       describe.each`
         item                                                             | showAvatar | avatarSize
         ${{ data: [{ category: PROJECTS_CATEGORY, avatar_url: null }] }} | ${true}    | ${String(LARGE_AVATAR_PX)}

@@ -27,7 +27,7 @@ RSpec.describe 'devise/shared/_signup_box' do
 
     context 'when on .com' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+        allow(Gitlab).to receive(:com?).and_return(true)
       end
 
       it 'shows expected GitLab text' do
@@ -39,7 +39,7 @@ RSpec.describe 'devise/shared/_signup_box' do
 
     context 'when not on .com' do
       before do
-        allow(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+        allow(Gitlab).to receive(:com?).and_return(false)
       end
 
       it 'shows expected text without GitLab' do
@@ -53,7 +53,7 @@ RSpec.describe 'devise/shared/_signup_box' do
   context 'when terms are not enforced' do
     before do
       allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enforce_terms?).and_return(false)
-      allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+      allow(Gitlab).to receive(:com?).and_return(true)
     end
 
     it 'shows expected text with placeholders' do

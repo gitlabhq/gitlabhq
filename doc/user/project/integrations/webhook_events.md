@@ -202,6 +202,10 @@ The available values for `object_attributes.action` in the payload are:
 The `assignee` and `assignee_id` keys are deprecated
 and contain the first assignee only.
 
+The `escalation_status` and `escalation_policy` fields are
+only available for issue types which support escalations,
+such as incidents.
+
 Request header:
 
 ```plaintext
@@ -271,6 +275,12 @@ Payload example:
     "url": "http://example.com/diaspora/issues/23",
     "state": "opened",
     "action": "open",
+    "severity": "high",
+    "escalation_status": "triggered",
+    "escalation_policy": {
+      "id": 18,
+      "name": "Engineering On-call"
+    },
     "labels": [{
         "id": 206,
         "title": "API",
@@ -771,7 +781,8 @@ Payload example:
 Merge request events are triggered when:
 
 - A new merge request is created.
-- An existing merge request is updated, approved, unapproved, merged, or closed.
+- An existing merge request is updated, approved (by all required approvers), unapproved, merged, or closed.
+- An individual user adds or removes their approval to an existing merge request.
 - A commit is added in the source branch.
 - All threads are resolved on the merge request.
 
@@ -783,6 +794,8 @@ The available values for `object_attributes.action` in the payload are:
 - `update`
 - `approved`
 - `unapproved`
+- `approval`
+- `unapproval`
 - `merge`
 
 Request header:
@@ -1294,7 +1307,7 @@ Payload example:
     "id": 3,
     "name": "User",
     "email": "user@gitlab.com",
-    "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
+    "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
   },
   "commit": {
     "id": 2366,

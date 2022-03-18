@@ -5,12 +5,13 @@ module Gitlab
     class Config
       module Entry
         ##
-        # Entry that represents a cross-project downstream trigger.
+        # Entry that represents a parent-child or cross-project downstream trigger.
         #
         class Trigger < ::Gitlab::Config::Entry::Simplifiable
           strategy :SimpleTrigger, if: -> (config) { config.is_a?(String) }
           strategy :ComplexTrigger, if: -> (config) { config.is_a?(Hash) }
 
+          # cross-project
           class SimpleTrigger < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable
 
@@ -28,11 +29,13 @@ module Gitlab
               config.key?(:include)
             end
 
+            # cross-project
             class CrossProjectTrigger < ::Gitlab::Config::Entry::Node
               include ::Gitlab::Config::Entry::Validatable
               include ::Gitlab::Config::Entry::Attributable
+              include ::Gitlab::Config::Entry::Configurable
 
-              ALLOWED_KEYS = %i[project branch strategy].freeze
+              ALLOWED_KEYS = %i[project branch strategy forward].freeze
               attributes :project, :branch, :strategy
 
               validations do
@@ -42,15 +45,26 @@ module Gitlab
                 validates :branch, type: String, allow_nil: true
                 validates :strategy, type: String, inclusion: { in: %w[depend], message: 'should be depend' }, allow_nil: true
               end
+
+              entry :forward, ::Gitlab::Ci::Config::Entry::Trigger::Forward,
+                description: 'List what to forward to downstream pipelines'
+
+              def value
+                { project: project,
+                  branch: branch,
+                  strategy: strategy,
+                  forward: forward_value }.compact
+              end
             end
 
+            # parent-child
             class SameProjectTrigger < ::Gitlab::Config::Entry::Node
               include ::Gitlab::Config::Entry::Validatable
               include ::Gitlab::Config::Entry::Attributable
               include ::Gitlab::Config::Entry::Configurable
 
               INCLUDE_MAX_SIZE = 3
-              ALLOWED_KEYS = %i[strategy include].freeze
+              ALLOWED_KEYS = %i[strategy include forward].freeze
               attributes :strategy
 
               validations do
@@ -64,8 +78,13 @@ module Gitlab
                 reserved: true,
                 metadata: { max_size: INCLUDE_MAX_SIZE }
 
+              entry :forward, ::Gitlab::Ci::Config::Entry::Trigger::Forward,
+                description: 'List what to forward to downstream pipelines'
+
               def value
-                @config
+                { include: @config[:include],
+                  strategy: strategy,
+                  forward: forward_value }.compact
               end
             end
 

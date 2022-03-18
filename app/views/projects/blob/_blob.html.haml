@@ -21,8 +21,7 @@
                               project_path: @project.full_path,
                               target_branch: project.empty_repo? ? ref : @ref,
                               original_branch: @ref } }
-      .gl-spinner-container
-        = loading_icon(size: 'md')
+      = gl_loading_icon(size: 'md')
   - else
     %article.file-holder
       = render 'projects/blob/header', blob: blob

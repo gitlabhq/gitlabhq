@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
 class RequireVerificationForNamespaceCreationExperiment < ApplicationExperiment
+  control { false }
+  candidate { true }
+
   exclude :existing_user
 
   EXPERIMENT_START_DATE = Date.new(2022, 1, 31)
-
-  def control_behavior
-    false
-  end
-
-  def candidate_behavior
-    true
-  end
 
   def candidate?
     run

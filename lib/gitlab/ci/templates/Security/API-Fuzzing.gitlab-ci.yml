@@ -10,7 +10,7 @@
 
 variables:
     FUZZAPI_VERSION: "1"
-    SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+    SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
     FUZZAPI_IMAGE: ${SECURE_ANALYZERS_PREFIX}/api-fuzzing:${FUZZAPI_VERSION}
 
 apifuzzer_fuzz:

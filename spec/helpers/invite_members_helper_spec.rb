@@ -147,17 +147,6 @@ RSpec.describe InviteMembersHelper do
           expect(helper.can_invite_members_for_project?(project)).to eq true
           expect(helper).to have_received(:can?).with(owner, :admin_project_member, project)
         end
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(invite_members_group_modal: false)
-          end
-
-          it 'returns false', :aggregate_failures do
-            expect(helper.can_invite_members_for_project?(project)).to eq false
-            expect(helper).not_to have_received(:can?).with(owner, :admin_project_member, project)
-          end
-        end
       end
 
       context 'when the user can not manage project members' do

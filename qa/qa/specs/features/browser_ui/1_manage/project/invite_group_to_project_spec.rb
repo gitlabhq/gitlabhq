@@ -2,7 +2,7 @@
 
 module QA
   # Tagging with issue for a transient invite group modal search bug, but does not require quarantine at this time
-  RSpec.describe 'Manage', :requires_admin, :transient, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/349379' do
+  RSpec.describe 'Manage', :transient, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/349379' do
     describe 'Invite group' do
       shared_examples 'invites group to project' do
         it 'verifies group is added and members can access project with correct access level' do
@@ -16,6 +16,8 @@ module QA
           Flow::Login.sign_in(as: @user)
 
           Page::Dashboard::Projects.perform do |projects|
+            projects.filter_by_name(project.name)
+
             expect(projects).to have_project_with_access_role(project.name, 'Developer')
           end
 
@@ -28,7 +30,6 @@ module QA
       end
 
       before(:context) do
-        Runtime::Feature.enable(:invite_members_group_modal)
         @user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
       end
 
@@ -78,10 +79,6 @@ module QA
       after do
         project&.remove_via_api!
         group&.remove_via_api!
-      end
-
-      after(:context) do
-        Runtime::Feature.disable(:invite_members_group_modal)
       end
     end
   end

@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     docsUrl() {
-      return helpPagePath('user/infrastructure/terraform_state');
+      return helpPagePath('user/infrastructure/iac/terraform_state');
     },
   },
 };

@@ -4,14 +4,16 @@
   - webpack_preload_asset_tag('monaco')
 
 - if @conflict
-  .gl-alert.gl-alert-danger.gl-mb-5.gl-mt-5
-    .gl-alert-container
-      = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-      .gl-alert-content
-        .gl-alert-body
-          Someone edited the file the same time you did. Please check out
-          = link_to _('the file'), project_blob_path(@project, tree_join(@branch_name, @file_path)), target: "_blank", rel: 'noopener noreferrer', class: 'gl-link'
-          and make sure your changes will not unintentionally remove theirs.
+  = render 'shared/global_alert',
+    alert_class: 'gl-mb-5 gl-mt-5',
+    variant: :danger,
+    dismissible: false do
+    - blob_url = project_blob_path(@project, @id)
+    - external_link_icon = content_tag 'span', { aria: { label: _('Opens new window') }} do
+      - sprite_icon('external-link', css_class: 'gl-icon').html_safe
+    - blob_link_start = '<a href="%{url}" class="gl-link" target="_blank" rel="noopener noreferrer">'.html_safe % { url: blob_url }
+    = _('Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs.').html_safe % { link_start: blob_link_start, link_end: '</a>'.html_safe , icon: external_link_icon }
+
 
 %h3.page-title.blob-edit-page-title
   Edit file

@@ -18,4 +18,15 @@ describe('performance bar app', () => {
   it('sets the class to match the environment', () => {
     expect(wrapper.element.getAttribute('class')).toContain('development');
   });
+
+  describe('changeCurrentRequest', () => {
+    it('emits a change-request event', () => {
+      expect(wrapper.emitted('change-request')).toBeUndefined();
+
+      wrapper.vm.changeCurrentRequest('123');
+
+      expect(wrapper.emitted('change-request')).toBeDefined();
+      expect(wrapper.emitted('change-request')[0]).toEqual(['123']);
+    });
+  });
 });

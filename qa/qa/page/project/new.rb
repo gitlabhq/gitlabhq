@@ -13,11 +13,11 @@ module QA
 
         view 'app/views/projects/_new_project_fields.html.haml' do
           element :initialize_with_readme_checkbox
-          element :project_name, 'text_field :name' # rubocop:disable QA/ElementWithPattern
-          element :project_path, 'text_field :path' # rubocop:disable QA/ElementWithPattern
-          element :project_description, 'text_area :description' # rubocop:disable QA/ElementWithPattern
-          element :project_create_button, "submit _('Create project')" # rubocop:disable QA/ElementWithPattern
-          element :visibility_radios, 'visibility_level:' # rubocop:disable QA/ElementWithPattern
+          element :project_name
+          element :project_path
+          element :project_description
+          element :project_create_button
+          element :visibility_radios
         end
 
         view 'app/views/projects/_new_project_initialize_with_sast.html.haml' do

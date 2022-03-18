@@ -18,7 +18,7 @@ module Types
           null: true,
           authorize: :read_project
 
-    field :group, Types::GroupType,
+    field :group, 'Types::GroupType',
           description: 'Group this to-do item is associated with.',
           null: true,
           authorize: :read_group
@@ -29,6 +29,11 @@ module Types
 
     field :action, Types::TodoActionEnum,
           description: 'Action of the to-do item.',
+          null: false
+
+    field :target, Types::TodoableInterface,
+          description: 'Target of the to-do item.',
+          calls_gitaly: true,
           null: false
 
     field :target_type, Types::TodoTargetEnum,
@@ -59,5 +64,28 @@ module Types
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
     end
+
+    def target
+      if object.for_commit?
+        Gitlab::Graphql::Loaders::BatchCommitLoader.new(
+          container_class: Project,
+          container_id: object.project_id,
+          oid: object.commit_id
+        ).find
+      else
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(target_type_class, object.target_id).find
+      end
+    end
+
+    private
+
+    def target_type_class
+      klass = object.target_type.safe_constantize
+      raise "Invalid target type \"#{object.target_type}\"" unless klass < Todoable
+
+      klass
+    end
   end
 end
+
+Types::TodoType.prepend_mod

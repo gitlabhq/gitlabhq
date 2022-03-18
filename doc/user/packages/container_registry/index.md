@@ -553,13 +553,6 @@ this setting. However, disabling the Container Registry disables all Container R
 | Private project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)  | View Container Registry <br/> and pull images | No        | No    | Yes      |
 | Any project with Container Registry `disabled` | All operations on Container Registry | No | No | No |
 
-## Manifest lists and garbage collection
-
-Manifest lists are commonly used for creating multi-architecture images. If you rely on manifest
-lists, you should tag all the individual manifests referenced by a list in their respective
-repositories, and not just the manifest list itself. This ensures that those manifests aren't
-garbage collected, as long as they have at least one tag pointing to them.
-
 ## Troubleshooting the GitLab Container Registry
 
 ### Docker connection error
@@ -702,3 +695,10 @@ There may be some errors not properly cached. Follow these steps to investigate 
    Once adjusted, trigger another tag deletion. You should be able to successfully delete tags.
 
 Follow [this issue](https://gitlab.com/gitlab-org/container-registry/-/issues/551) for details.
+
+### Tags temporarily cannot be marked for deletion
+
+GitLab is [migrating to the next generation of the Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/5523). 
+During the migration, you may encounter difficulty deleting tags. 
+If you encounter an error, it's likely that your image repository is in the process of being migrated. 
+Please wait a few minutes and try again.

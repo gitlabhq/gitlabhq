@@ -34,5 +34,4 @@
   %div{ id: dom_id(@project) }
     %ol#commits-list.list-unstyled.content_list
       = render 'commits', project: @project, ref: @ref
-  .loading.hide
-    = loading_icon(size: "lg")
+  = gl_loading_icon(size: 'lg', css_class: 'loading hide')

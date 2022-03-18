@@ -13,8 +13,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
 
-    @skip_groups = @project.related_group_ids
-
     @group_links = @project.project_group_links
     @group_links = @group_links.search(params[:search_groups]) if params[:search_groups].present?
 
@@ -24,25 +22,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
 
     @project_members = present_members(non_invited_members.page(params[:page]))
-
-    @project_member = @project.project_members.new
-  end
-
-  def import
-    @projects = Project.visible_to_user_and_access_level(current_user, Gitlab::Access::MAINTAINER).order_id_desc
-  end
-
-  def apply_import
-    source_project = Project.find(params[:source_project_id])
-
-    if can?(current_user, :admin_project_member, source_project)
-      status = @project.team.import(source_project, current_user)
-      notice = status ? "Successfully imported" : "Import failed"
-    else
-      return render_404
-    end
-
-    redirect_to(project_project_members_path(project), notice: notice)
   end
 
   # MembershipActions concern

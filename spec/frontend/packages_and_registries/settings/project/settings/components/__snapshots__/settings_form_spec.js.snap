@@ -58,7 +58,7 @@ exports[`Settings Form Remove regex matches snapshot 1`] = `
   error=""
   label="Remove tags matching:"
   name="remove-regex"
-  placeholder=".*"
+  placeholder=""
   value="asdasdssssdfdf"
 />
 `;

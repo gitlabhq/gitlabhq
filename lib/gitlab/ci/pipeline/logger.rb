@@ -94,6 +94,7 @@ module Gitlab
         private
 
         attr_reader :project, :destination, :started_at, :log_conditions
+
         delegate :current_monotonic_time, to: :class
 
         def age

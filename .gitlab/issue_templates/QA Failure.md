@@ -11,11 +11,16 @@ The issue should have the following:
 - A link to the failing job.
 - The stack trace from the job's logs in the "Stack trace" section below.
 - A screenshot (if available), and HTML capture (if available), in the "Screenshot / HTML page" section below.
+- A link to the corresponding test case(s) in the summary.
 --->
 
 ### Summary
 
+Failing job(s):
 
+Failing spec(s):
+
+Corresponding test case(s):
 
 ### Stack trace
 
@@ -52,7 +57,7 @@ If you include multiple screenshots it can be helpful to hide all but the first 
 /label ~Quality ~QA ~test
 
 <!-- Test failure type label, please use just one.-->
-/label ~"failure::broken-test" ~"failure::flaky-test" ~"failure::stale-test" ~"failure::test-environment" ~"failure::investigating"
+/label ~"failure::broken-test" ~"failure::flaky-test" ~"failure::stale-test" ~"failure::test-environment" ~"failure::investigating" ~"failure::new"
 
 <!--
 Choose the stage that appears in the test path, e.g. ~"devops::create" for

@@ -549,10 +549,11 @@ RSpec.describe Gitlab::PathRegex do
     it { is_expected.to match('gitlab-foss') }
     it { is_expected.to match('gitlab_foss') }
     it { is_expected.to match('gitlab-org/gitlab-foss') }
+    it { is_expected.to match('a/b/c/d/e') }
     it { is_expected.to match('100px.com/100px.ruby') }
 
-    it 'only matches at most one slash' do
-      expect(subject.match('foo/bar/baz')[0]).to eq('foo/bar')
+    it 'does not match beyond 4 slashes' do
+      expect(subject.match('foo/bar/baz/buz/zip/zap/zoo')[0]).to eq('foo/bar/baz/buz/zip')
     end
 
     it 'does not match other non-word characters' do

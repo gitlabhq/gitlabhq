@@ -40,7 +40,9 @@ describe('ForkForm component', () => {
     },
   ];
 
-  const DEFAULT_PROPS = {
+  const DEFAULT_PROVIDE = {
+    newGroupPath: 'some/groups/path',
+    visibilityHelpPath: 'some/visibility/help/path',
     endpoint: '/some/project-full-path/-/forks/new.json',
     projectFullPath: '/some/project-full-path',
     projectId: '10',
@@ -52,18 +54,14 @@ describe('ForkForm component', () => {
   };
 
   const mockGetRequest = (data = {}, statusCode = httpStatus.OK) => {
-    axiosMock.onGet(DEFAULT_PROPS.endpoint).replyOnce(statusCode, data);
+    axiosMock.onGet(DEFAULT_PROVIDE.endpoint).replyOnce(statusCode, data);
   };
 
-  const createComponentFactory = (mountFn) => (props = {}, data = {}) => {
+  const createComponentFactory = (mountFn) => (provide = {}, data = {}) => {
     wrapper = mountFn(ForkForm, {
       provide: {
-        newGroupPath: 'some/groups/path',
-        visibilityHelpPath: 'some/visibility/help/path',
-      },
-      propsData: {
-        ...DEFAULT_PROPS,
-        ...props,
+        ...DEFAULT_PROVIDE,
+        ...provide,
       },
       data() {
         return {
@@ -111,7 +109,7 @@ describe('ForkForm component', () => {
     mockGetRequest();
     createComponent();
 
-    const { projectFullPath } = DEFAULT_PROPS;
+    const { projectFullPath } = DEFAULT_PROVIDE;
     const cancelButton = wrapper.find('[data-testid="cancel-button"]');
 
     expect(cancelButton.attributes('href')).toBe(projectFullPath);
@@ -130,10 +128,10 @@ describe('ForkForm component', () => {
     mockGetRequest();
     createComponent();
 
-    expect(findForkNameInput().attributes('value')).toBe(DEFAULT_PROPS.projectName);
-    expect(findForkSlugInput().attributes('value')).toBe(DEFAULT_PROPS.projectPath);
+    expect(findForkNameInput().attributes('value')).toBe(DEFAULT_PROVIDE.projectName);
+    expect(findForkSlugInput().attributes('value')).toBe(DEFAULT_PROVIDE.projectPath);
     expect(findForkDescriptionTextarea().attributes('value')).toBe(
-      DEFAULT_PROPS.projectDescription,
+      DEFAULT_PROVIDE.projectDescription,
     );
   });
 
@@ -164,7 +162,7 @@ describe('ForkForm component', () => {
     it('make GET request from endpoint', async () => {
       await axios.waitForAll();
 
-      expect(axiosMock.history.get[0].url).toBe(DEFAULT_PROPS.endpoint);
+      expect(axiosMock.history.get[0].url).toBe(DEFAULT_PROVIDE.endpoint);
     });
 
     it('generate default option', async () => {
@@ -469,7 +467,7 @@ describe('ForkForm component', () => {
           projectName,
           projectPath,
           projectVisibility,
-        } = DEFAULT_PROPS;
+        } = DEFAULT_PROVIDE;
 
         const url = `/api/${GON_API_VERSION}/projects/${projectId}/fork`;
         const project = {

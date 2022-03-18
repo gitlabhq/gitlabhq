@@ -55,7 +55,7 @@ const testSerializesHtmlToMarkdownForElement = async ({ markdown, html }) => {
 
   // Assert that the markdown we ended up with after sending it through all the ContentEditor
   // plumbing matches the original markdown from the YAML.
-  expect(serializedContent).toBe(markdown);
+  expect(serializedContent.trim()).toBe(markdown.trim());
 };
 
 // describeMarkdownProcesssing

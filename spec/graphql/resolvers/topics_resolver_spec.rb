@@ -6,9 +6,9 @@ RSpec.describe Resolvers::TopicsResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
-    let!(:topic1) { create(:topic, name: 'GitLab', total_projects_count: 1) }
-    let!(:topic2) { create(:topic, name: 'git', total_projects_count: 2) }
-    let!(:topic3) { create(:topic, name: 'topic3', total_projects_count: 3) }
+    let!(:topic1) { create(:topic, name: 'GitLab', non_private_projects_count: 1) }
+    let!(:topic2) { create(:topic, name: 'git', non_private_projects_count: 2) }
+    let!(:topic3) { create(:topic, name: 'topic3', non_private_projects_count: 3) }
 
     it 'finds all topics' do
       expect(resolve_topics).to eq([topic3, topic2, topic1])

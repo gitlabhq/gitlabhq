@@ -2,17 +2,16 @@
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"
-  removal_date: "2022-05-22" 
-  breaking_change: true 
-  body: | 
+  removal_date: "2022-05-22"
+  breaking_change: true
+  body: |
         Elasticsearch 6.8 is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
         Customers using Elasticsearch 6.8 need to upgrade their Elasticsearch version to 7.x prior to upgrading to GitLab 15.0.
         We recommend using the latest version of Elasticsearch 7 to benefit from all Elasticsearch improvements.
 
         Elasticsearch 6.8 is also incompatible with Amazon OpenSearch, which we [plan to support in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/327560).
 
-  stage: Enablement 
-  tiers: [Premium, Ultimate] 
+  stage: Enablement
+  tiers: [Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350275
   documentation_url: https://docs.gitlab.com/ee/integration/elasticsearch.html#version-requirements
-

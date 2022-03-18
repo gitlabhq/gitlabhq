@@ -5,19 +5,22 @@ require 'spec_helper'
 RSpec.describe 'New/edit issue', :js do
   include ActionView::Helpers::JavaScriptHelper
 
-  let_it_be(:project)   { create(:project) }
+  let_it_be(:project)   { create(:project, :repository) }
   let_it_be(:user)      { create(:user) }
   let_it_be(:user2)     { create(:user) }
+  let_it_be(:guest)     { create(:user) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:label)     { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
   let_it_be(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
+  let_it_be(:confidential_issue) { create(:issue, project: project, assignees: [user], milestone: milestone, confidential: true) }
 
   let(:current_user) { user }
 
   before_all do
     project.add_maintainer(user)
     project.add_maintainer(user2)
+    project.add_guest(guest)
   end
 
   before do
@@ -184,6 +187,14 @@ RSpec.describe 'New/edit issue', :js do
       end
     end
 
+    it 'displays an error message when submitting an invalid form' do
+      click_button 'Create issue'
+
+      page.within('[data-testid="issue-title-input-field"]') do
+        expect(page).to have_text(_('This field is required.'))
+      end
+    end
+
     it 'correctly updates the dropdown toggle when removing a label' do
       click_button 'Labels'
 
@@ -306,6 +317,108 @@ RSpec.describe 'New/edit issue', :js do
           expect(page).to have_content milestone.title
           expect(page).not_to have_selector 'img'
         end
+      end
+    end
+  end
+
+  describe 'new issue with query parameters' do
+    before do
+      project.repository.create_file(
+        current_user,
+        '.gitlab/issue_templates/test_template.md',
+        'description from template',
+        message: 'Add test_template.md',
+        branch_name: project.default_branch_or_main
+      )
+    end
+
+    after do
+      project.repository.delete_file(
+        current_user,
+        '.gitlab/issue_templates/test_template.md',
+        message: 'Remove test_template.md',
+        branch_name: project.default_branch_or_main
+      )
+    end
+
+    it 'leaves the description blank if no query parameters are specified' do
+      visit new_project_issue_path(project)
+
+      expect(find('#issue_description').value).to be_empty
+    end
+
+    it 'fills the description from the issue[description] query parameter' do
+      visit new_project_issue_path(project, issue: { description: 'description from query parameter' })
+
+      expect(find('#issue_description').value).to match('description from query parameter')
+    end
+
+    it 'fills the description from the issuable_template query parameter' do
+      visit new_project_issue_path(project, issuable_template: 'test_template')
+      wait_for_requests
+
+      expect(find('#issue_description').value).to match('description from template')
+    end
+
+    it 'fills the description from the issuable_template and issue[description] query parameters' do
+      visit new_project_issue_path(project, issuable_template: 'test_template', issue: { description: 'description from query parameter' })
+      wait_for_requests
+
+      expect(find('#issue_description').value).to match('description from template\ndescription from query parameter')
+    end
+  end
+
+  describe 'new issue from related issue' do
+    it 'does not offer to link the new issue to any other issues if the URL parameter is absent' do
+      visit new_project_issue_path(project)
+      expect(page).not_to have_selector '#add_related_issue'
+      expect(page).not_to have_text "Relate to"
+    end
+
+    context 'guest' do
+      let(:current_user) { guest }
+
+      it 'does not offer to link the new issue to an issue that the user does not have access to' do
+        visit new_project_issue_path(project, { add_related_issue: confidential_issue.iid })
+        expect(page).not_to have_selector '#add_related_issue'
+        expect(page).not_to have_text "Relate to"
+      end
+    end
+
+    it 'links the new issue and the issue of origin' do
+      visit new_project_issue_path(project, { add_related_issue: issue.iid })
+      expect(page).to have_selector '#add_related_issue'
+      expect(page).to have_text "Relate to issue \##{issue.iid}"
+      expect(page).to have_text 'Adds this issue as related to the issue it was created from'
+      fill_in 'issue_title', with: 'title'
+      click_button 'Create issue'
+      page.within '#related-issues' do
+        expect(page).to have_text "\##{issue.iid}"
+      end
+    end
+
+    it 'links the new incident and the incident of origin' do
+      incident = create(:incident, project: project)
+      visit new_project_issue_path(project, { add_related_issue: incident.iid })
+      expect(page).to have_selector '#add_related_issue'
+      expect(page).to have_text "Relate to incident \##{incident.iid}"
+      expect(page).to have_text 'Adds this incident as related to the incident it was created from'
+      fill_in 'issue_title', with: 'title'
+      click_button 'Create issue'
+      page.within '#related-issues' do
+        expect(page).to have_text "\##{incident.iid}"
+      end
+    end
+
+    it 'does not link the new issue to any other issues if the checkbox is not checked' do
+      visit new_project_issue_path(project, { add_related_issue: issue.iid })
+      expect(page).to have_selector '#add_related_issue'
+      expect(page).to have_text "Relate to issue \##{issue.iid}"
+      uncheck "Relate to issue \##{issue.iid}"
+      fill_in 'issue_title', with: 'title'
+      click_button 'Create issue'
+      page.within '#related-issues' do
+        expect(page).not_to have_text "\##{issue.iid}"
       end
     end
   end

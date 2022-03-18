@@ -43,12 +43,12 @@ describe('UserActionButtons', () => {
         memberId: member.id,
         memberType: 'GroupMember',
         message: `Are you sure you want to remove ${member.user.name} from "${member.source.fullName}"?`,
-        title: 'Remove member',
+        title: null,
         isAccessRequest: false,
         isInvite: false,
         icon: '',
         buttonCategory: 'secondary',
-        buttonText: 'Remove user',
+        buttonText: 'Remove member',
         userDeletionObstacles: {
           name: member.user.name,
           obstacles: parseUserDeletionObstacles(member.user),
@@ -135,9 +135,9 @@ describe('UserActionButtons', () => {
 
   describe('isInvitedUser', () => {
     it.each`
-      isInvitedUser | icon        | buttonText       | buttonCategory
-      ${true}       | ${'remove'} | ${null}          | ${'primary'}
-      ${false}      | ${''}       | ${'Remove user'} | ${'secondary'}
+      isInvitedUser | icon        | buttonText         | buttonCategory
+      ${true}       | ${'remove'} | ${null}            | ${'primary'}
+      ${false}      | ${''}       | ${'Remove member'} | ${'secondary'}
     `(
       'passes the correct props to remove-member-button when isInvitedUser is $isInvitedUser',
       ({ isInvitedUser, icon, buttonText, buttonCategory }) => {

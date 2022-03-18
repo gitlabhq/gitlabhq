@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Gitlab
       # This cop checks for `UploadedFile.from_params` usage.
-      # See https://docs.gitlab.com/ee/development/uploads.html#how-to-add-a-new-upload-route
+      # See https://docs.gitlab.com/ee/development/uploads/working_with_uploads.html
       #
       # @example
       #
@@ -34,7 +34,7 @@ module RuboCop
       #     end
       #   end
       class AvoidUploadedFileFromParams < RuboCop::Cop::Cop
-        MSG = 'Use the `UploadedFile` set by `multipart.rb` instead of calling `UploadedFile.from_params` directly. See https://docs.gitlab.com/ee/development/uploads.html#how-to-add-a-new-upload-route'
+        MSG = 'Use the `UploadedFile` set by `multipart.rb` instead of calling `UploadedFile.from_params` directly. See https://docs.gitlab.com/ee/development/uploads/working_with_uploads.html'
 
         def_node_matcher :calling_uploaded_file_from_params?, <<~PATTERN
           (send (const nil? :UploadedFile) :from_params ...)

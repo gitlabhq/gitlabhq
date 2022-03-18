@@ -13,6 +13,9 @@ If a mailer argument needs to be added or removed, it is important to ensure
 both backward and forward compatibility. Adhere to the Sidekiq steps for
 [changing the arguments for a worker](sidekiq/compatibility_across_updates.md#changing-the-arguments-for-a-worker).
 
+The same applies to a new mailer method, or a new mailer. If you introduce either,
+follow the steps for [adding new workers](sidekiq/compatibility_across_updates.md#adding-new-workers).
+
 In the following example from [`NotificationService`](https://gitlab.com/gitlab-org/gitlab/-/blob/33ccb22e4fc271dbaac94b003a7a1a2915a13441/app/services/notification_service.rb#L74)
 adding or removing an argument in this mailer's definition may cause problems
 during deployment before all Rails and Sidekiq nodes have the updated code.

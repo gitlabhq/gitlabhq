@@ -1,5 +1,4 @@
 <script>
-import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import {
   getParameterByName,
@@ -7,46 +6,24 @@ import {
   queryToObject,
   redirectTo,
 } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
 import {
   SEARCH_TOKEN_TYPE,
   SORT_QUERY_PARAM_NAME,
   ACTIVE_TAB_QUERY_PARAM_NAME,
-} from '~/members/constants';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+  AVAILABLE_FILTERED_SEARCH_TOKENS,
+} from 'ee_else_ce/members/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 export default {
   name: 'MembersFilteredSearchBar',
   components: { FilteredSearchBar },
-  availableTokens: [
-    {
-      type: 'two_factor',
-      icon: 'lock',
-      title: s__('Members|2FA'),
-      token: GlFilteredSearchToken,
-      unique: true,
-      operators: OPERATOR_IS_ONLY,
-      options: [
-        { value: 'enabled', title: s__('Members|Enabled') },
-        { value: 'disabled', title: s__('Members|Disabled') },
-      ],
-      requiredPermissions: 'canManageMembers',
-    },
-    {
-      type: 'with_inherited_permissions',
-      icon: 'group',
-      title: s__('Members|Membership'),
-      token: GlFilteredSearchToken,
-      unique: true,
-      operators: OPERATOR_IS_ONLY,
-      options: [
-        { value: 'exclude', title: s__('Members|Direct') },
-        { value: 'only', title: s__('Members|Inherited') },
-      ],
-    },
-  ],
-  inject: ['namespace', 'sourceId', 'canManageMembers'],
+  availableTokens: AVAILABLE_FILTERED_SEARCH_TOKENS,
+  inject: {
+    namespace: {},
+    sourceId: {},
+    canManageMembers: {},
+    canFilterByEnterprise: { default: false },
+  },
   data() {
     return {
       initialFilterValue: [],

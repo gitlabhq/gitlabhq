@@ -90,10 +90,18 @@ module StubConfiguration
     allow(Gitlab.config.repositories).to receive(:storages).and_return(Settingslogic.new(messages))
   end
 
-  def stub_sentry_settings
-    allow(Gitlab.config.sentry).to receive(:enabled).and_return(true)
-    allow(Gitlab.config.sentry).to receive(:dsn).and_return('dummy://b44a0828b72421a6d8e99efd68d44fa8@example.com/42')
-    allow(Gitlab.config.sentry).to receive(:clientside_dsn).and_return('dummy://b44a0828b72421a6d8e99efd68d44fa8@example.com/43')
+  def stub_sentry_settings(enabled: true)
+    allow(Gitlab.config.sentry).to receive(:enabled) { enabled }
+    allow(Gitlab::CurrentSettings).to receive(:sentry_enabled?) { enabled }
+
+    dsn = 'dummy://b44a0828b72421a6d8e99efd68d44fa8@example.com/42'
+    allow(Gitlab.config.sentry).to receive(:dsn) { dsn }
+    allow(Gitlab::CurrentSettings).to receive(:sentry_dsn) { dsn }
+
+    clientside_dsn = 'dummy://b44a0828b72421a6d8e99efd68d44fa8@example.com/43'
+    allow(Gitlab.config.sentry).to receive(:clientside_dsn) { clientside_dsn }
+    allow(Gitlab::CurrentSettings)
+      .to receive(:sentry_clientside_dsn) { clientside_dsn }
   end
 
   def stub_kerberos_setting(messages)

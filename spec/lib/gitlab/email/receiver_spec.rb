@@ -32,9 +32,18 @@ RSpec.describe Gitlab::Email::Receiver do
 
       metadata = receiver.mail_metadata
 
-      expect(metadata.keys).to match_array(%i(mail_uid from_address to_address mail_key references delivered_to envelope_to x_envelope_to meta))
+      expect(metadata.keys).to match_array(%i(mail_uid from_address to_address mail_key references delivered_to envelope_to x_envelope_to meta received_recipients))
       expect(metadata[:meta]).to include(client_id: 'email/jake@example.com', project: project.full_path)
       expect(metadata[meta_key]).to eq(meta_value)
+    end
+  end
+
+  shared_examples 'failed receive' do
+    it 'adds metric event' do
+      expect(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
+      expect(metric_transaction).to receive(:add_event).with('email_receiver_error', { error: expected_error.name })
+
+      expect { receiver.execute }.to raise_error(expected_error)
     end
   end
 
@@ -74,14 +83,25 @@ RSpec.describe Gitlab::Email::Receiver do
 
       it_behaves_like 'successful receive'
     end
-  end
 
-  shared_examples 'failed receive' do
-    it 'adds metric event' do
-      expect(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
-      expect(metric_transaction).to receive(:add_event).with('email_receiver_error', { error: expected_error.name })
+    context 'when all other headers are missing' do
+      let(:email_raw) { fixture_file('emails/missing_delivered_to_header.eml') }
+      let(:meta_key) { :received_recipients }
+      let(:meta_value) { ['incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com', 'incoming+gitlabhq/gitlabhq@example.com'] }
 
-      expect { receiver.execute }.to raise_error(expected_error)
+      context 'when use_received_header_for_incoming_emails is enabled' do
+        it_behaves_like 'successful receive'
+      end
+
+      context 'when use_received_header_for_incoming_emails is disabled' do
+        let(:expected_error) { Gitlab::Email::UnknownIncomingEmail }
+
+        before do
+          stub_feature_flags(use_received_header_for_incoming_emails: false)
+        end
+
+        it_behaves_like 'failed receive'
+      end
     end
   end
 

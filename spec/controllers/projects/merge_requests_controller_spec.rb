@@ -68,6 +68,18 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     describe 'as html' do
+      it 'sets the endpoint_metadata_url' do
+        go
+
+        expect(assigns["endpoint_metadata_url"]).to eq(
+          diffs_metadata_project_json_merge_request_path(
+            project,
+            merge_request,
+            'json',
+            diff_head: true,
+            view: 'inline'))
+      end
+
       context 'when diff files were cleaned' do
         render_views
 
@@ -82,23 +94,6 @@ RSpec.describe Projects::MergeRequestsController do
           go(format: :html)
 
           expect(response).to be_successful
-        end
-      end
-
-      context 'with `default_merge_ref_for_diffs` feature flag enabled' do
-        before do
-          stub_feature_flags(default_merge_ref_for_diffs: true)
-          go
-        end
-
-        it 'adds the diff_head parameter' do
-          expect(assigns["endpoint_metadata_url"]).to eq(
-            diffs_metadata_project_json_merge_request_path(
-              project,
-              merge_request,
-              'json',
-              diff_head: true,
-              view: 'inline'))
         end
       end
 

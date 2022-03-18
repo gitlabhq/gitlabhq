@@ -185,6 +185,14 @@ RSpec.describe API::PypiPackages do
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
+
+      context 'without requires_python' do
+        let(:token) { personal_access_token.token }
+        let(:user_headers) { basic_auth_header(user.username, token) }
+        let(:headers) { user_headers.merge(workhorse_headers) }
+
+        it_behaves_like 'PyPI package creation', :developer, :created, true
+      end
     end
 
     context 'with required_python too big' do

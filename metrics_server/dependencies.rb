@@ -31,5 +31,6 @@ require_relative '../lib/gitlab/metrics/exporter/gc_request_middleware'
 require_relative '../lib/gitlab/health_checks/probes/collection'
 require_relative '../lib/gitlab/health_checks/probes/status'
 require_relative '../lib/gitlab/process_management'
+require_relative '../lib/gitlab/process_supervisor'
 
 # rubocop:enable Naming/FileName

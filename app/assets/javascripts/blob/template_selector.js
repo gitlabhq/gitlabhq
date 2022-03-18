@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 
 export default class TemplateSelector {
   constructor({ dropdown, data, pattern, wrapper, editor, $input } = {}) {
@@ -10,10 +11,9 @@ export default class TemplateSelector {
     this.dropdown = dropdown;
     this.$dropdownContainer = wrapper;
     this.$filenameInput = $input || $('#file_name');
-    this.$dropdownIcon = $('.dropdown-menu-toggle-icon', dropdown);
-    this.$loadingIcon = $(
-      '<div class="gl-spinner gl-spinner-orange gl-spinner-sm gl-absolute gl-top-3 gl-right-3 gl-display-none"></div>',
-    ).insertAfter(this.$dropdownIcon);
+    this.dropdownIcon = dropdown[0].querySelector('.dropdown-menu-toggle-icon');
+    this.loadingIcon = loadingIconForLegacyJS({ classes: ['gl-display-none'] });
+    this.dropdownIcon.parentNode.insertBefore(this.loadingIcon, this.dropdownIcon.nextSibling);
 
     this.initDropdown(dropdown, data);
     this.listenForFilenameInput();
@@ -78,7 +78,12 @@ export default class TemplateSelector {
   setEditorContent(file, { skipFocus } = {}) {
     if (!file) return;
 
-    const newValue = file.content;
+    let newValue = file.content;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('issue[description]')) {
+      newValue += `\n${urlParams.get('issue[description]')}`;
+    }
 
     this.editor.setValue(newValue, 1);
 
@@ -95,12 +100,12 @@ export default class TemplateSelector {
   }
 
   startLoadingSpinner() {
-    this.$loadingIcon.removeClass('gl-display-none');
-    this.$dropdownIcon.addClass('gl-display-none');
+    this.loadingIcon.classList.remove('gl-display-none');
+    this.dropdownIcon.classList.add('gl-display-none');
   }
 
   stopLoadingSpinner() {
-    this.$loadingIcon.addClass('gl-display-none');
-    this.$dropdownIcon.removeClass('gl-display-none');
+    this.loadingIcon.classList.add('gl-display-none');
+    this.dropdownIcon.classList.remove('gl-display-none');
   }
 }

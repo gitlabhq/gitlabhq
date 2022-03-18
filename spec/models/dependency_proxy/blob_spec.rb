@@ -5,6 +5,10 @@ RSpec.describe DependencyProxy::Blob, type: :model do
   it_behaves_like 'ttl_expirable'
   it_behaves_like 'destructible', factory: :dependency_proxy_blob
 
+  it_behaves_like 'updates namespace statistics' do
+    let(:statistic_source) { build(:dependency_proxy_blob, size: 10) }
+  end
+
   describe 'relationships' do
     it { is_expected.to belong_to(:group) }
   end

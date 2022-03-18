@@ -1,7 +1,12 @@
-import { shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { GlSprintf } from '@gitlab/ui';
+import VueApollo from 'vue-apollo';
+import produce from 'immer';
+import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
 import waitForPromises from 'helpers/wait_for_promises';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import simplePoll from '~/lib/utils/simple_poll';
 import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
@@ -19,9 +24,11 @@ jest.mock('~/commons/nav/user_merge_requests', () => ({
   refreshUserMergeRequestCounts: jest.fn(),
 }));
 
-const commitMessage = 'This is the commit message';
-const squashCommitMessage = 'This is the squash commit message';
-const commitMessageWithDescription = 'This is the commit message description';
+const commitMessage = readyToMergeResponse.data.project.mergeRequest.defaultMergeCommitMessage;
+const squashCommitMessage =
+  readyToMergeResponse.data.project.mergeRequest.defaultSquashCommitMessage;
+const commitMessageWithDescription =
+  readyToMergeResponse.data.project.mergeRequest.defaultMergeCommitMessageWithDescription;
 const createTestMr = (customConfig) => {
   const mr = {
     isPipelineActive: false,
@@ -42,6 +49,8 @@ const createTestMr = (customConfig) => {
     commitMessage,
     squashCommitMessage,
     commitMessageWithDescription,
+    defaultMergeCommitMessage: commitMessage,
+    defaultSquashCommitMessage: squashCommitMessage,
     shouldRemoveSourceBranch: true,
     canRemoveSourceBranch: false,
     targetBranch: 'main',
@@ -61,15 +70,25 @@ const createTestService = () => ({
   merge: jest.fn(),
   poll: jest.fn().mockResolvedValue(),
 });
+const localVue = createLocalVue();
+localVue.use(VueApollo);
 
 let wrapper;
+let readyToMergeResponseSpy;
 
 const findMergeButton = () => wrapper.find('[data-testid="merge-button"]');
 const findPipelineFailedConfirmModal = () =>
   wrapper.findComponent(MergeFailedPipelineConfirmationDialog);
 
+const createReadyToMergeResponse = (customMr) => {
+  return produce(readyToMergeResponse, (draft) => {
+    Object.assign(draft.data.project.mergeRequest, customMr);
+  });
+};
+
 const createComponent = (customConfig = {}, mergeRequestWidgetGraphql = false) => {
   wrapper = shallowMount(ReadyToMerge, {
+    localVue,
     propsData: {
       mr: createTestMr(customConfig),
       service: createTestService(),
@@ -82,10 +101,29 @@ const createComponent = (customConfig = {}, mergeRequestWidgetGraphql = false) =
     stubs: {
       CommitEdit,
     },
+    apolloProvider: createMockApollo([[readyToMergeQuery, readyToMergeResponseSpy]]),
   });
 };
 
+const findCheckboxElement = () => wrapper.find(SquashBeforeMerge);
+const findCommitsHeaderElement = () => wrapper.find(CommitsHeader);
+const findCommitEditElements = () => wrapper.findAll(CommitEdit);
+const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
+const findFirstCommitEditLabel = () => findCommitEditElements().at(0).props('label');
+const findTipLink = () => wrapper.find(GlSprintf);
+const findCommitEditWithInputId = (inputId) =>
+  findCommitEditElements().wrappers.find((x) => x.props('inputId') === inputId);
+const findMergeCommitMessage = () => findCommitEditWithInputId('merge-message-edit').props('value');
+const findSquashCommitMessage = () =>
+  findCommitEditWithInputId('squash-message-edit').props('value');
+
+const triggerApprovalUpdated = () => eventHub.$emit('ApprovalUpdated');
+
 describe('ReadyToMerge', () => {
+  beforeEach(() => {
+    readyToMergeResponseSpy = jest.fn().mockResolvedValueOnce(readyToMergeResponse);
+  });
+
   afterEach(() => {
     wrapper.destroy();
   });
@@ -447,13 +485,6 @@ describe('ReadyToMerge', () => {
   });
 
   describe('render children components', () => {
-    const findCheckboxElement = () => wrapper.find(SquashBeforeMerge);
-    const findCommitsHeaderElement = () => wrapper.find(CommitsHeader);
-    const findCommitEditElements = () => wrapper.findAll(CommitEdit);
-    const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
-    const findFirstCommitEditLabel = () => findCommitEditElements().at(0).props('label');
-    const findTipLink = () => wrapper.find(GlSprintf);
-
     describe('squash checkbox', () => {
       it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {
         createComponent({
@@ -770,6 +801,67 @@ describe('ReadyToMerge', () => {
       await findMergeButton().vm.$emit('click');
 
       expect(findPipelineFailedConfirmModal().props()).toEqual({ visible: true });
+    });
+  });
+
+  describe('updating graphql data triggers commit message update when default changed', () => {
+    const UPDATED_MERGE_COMMIT_MESSAGE = 'New merge message from BE';
+    const UPDATED_SQUASH_COMMIT_MESSAGE = 'New squash message from BE';
+    const USER_COMMIT_MESSAGE = 'Merge message provided manually by user';
+
+    const createDefaultGqlComponent = () =>
+      createComponent({ mr: { commitsCount: 2, enableSquashBeforeMerge: true } }, true);
+
+    beforeEach(() => {
+      readyToMergeResponseSpy = jest
+        .fn()
+        .mockResolvedValueOnce(createReadyToMergeResponse({ squash: true, squashOnMerge: true }))
+        .mockResolvedValue(
+          createReadyToMergeResponse({
+            squash: true,
+            squashOnMerge: true,
+            defaultMergeCommitMessage: UPDATED_MERGE_COMMIT_MESSAGE,
+            defaultSquashCommitMessage: UPDATED_SQUASH_COMMIT_MESSAGE,
+          }),
+        );
+    });
+
+    describe.each`
+      desc                       | finderFn                   | initialValue           | updatedValue                     | inputId
+      ${'merge commit message'}  | ${findMergeCommitMessage}  | ${commitMessage}       | ${UPDATED_MERGE_COMMIT_MESSAGE}  | ${'#merge-message-edit'}
+      ${'squash commit message'} | ${findSquashCommitMessage} | ${squashCommitMessage} | ${UPDATED_SQUASH_COMMIT_MESSAGE} | ${'#squash-message-edit'}
+    `('with $desc', ({ finderFn, initialValue, updatedValue, inputId }) => {
+      it('should have initial value', async () => {
+        createDefaultGqlComponent();
+
+        await waitForPromises();
+
+        expect(finderFn()).toBe(initialValue);
+      });
+
+      it('should have updated value after graphql refetch', async () => {
+        createDefaultGqlComponent();
+        await waitForPromises();
+
+        triggerApprovalUpdated();
+        await waitForPromises();
+
+        expect(finderFn()).toBe(updatedValue);
+      });
+
+      it('should not update if user has touched', async () => {
+        createDefaultGqlComponent();
+        await waitForPromises();
+
+        const input = wrapper.find(inputId);
+        input.element.value = USER_COMMIT_MESSAGE;
+        input.trigger('input');
+
+        triggerApprovalUpdated();
+        await waitForPromises();
+
+        expect(finderFn()).toBe(USER_COMMIT_MESSAGE);
+      });
     });
   });
 });

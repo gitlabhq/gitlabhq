@@ -2,26 +2,16 @@
 
 module ContainerRegistry
   class Registry
-    include Gitlab::Utils::StrongMemoize
-
-    attr_reader :uri, :client, :path
+    attr_reader :uri, :client, :gitlab_api_client, :path
 
     def initialize(uri, options = {})
       @uri = uri
       @options = options
       @path = @options[:path] || default_path
       @client = ContainerRegistry::Client.new(@uri, @options)
-    end
 
-    def gitlab_api_client
-      strong_memoize(:gitlab_api_client) do
-        token = Auth::ContainerRegistryAuthenticationService.import_access_token
-
-        url = Gitlab.config.registry.api_url
-        host_port = Gitlab.config.registry.host_port
-
-        ContainerRegistry::GitlabApiClient.new(url, token: token, path: host_port)
-      end
+      import_token = Auth::ContainerRegistryAuthenticationService.import_access_token
+      @gitlab_api_client = ContainerRegistry::GitlabApiClient.new(@uri, @options.merge(import_token: import_token))
     end
 
     private

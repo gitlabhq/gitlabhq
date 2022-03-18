@@ -1,3 +1,17 @@
+- if Feature.enabled?(:runner_list_group_view_vue_ui, @group, default_enabled: :yaml)
+  .gl-card.gl-px-8.gl-py-6.gl-line-height-20
+    .gl-card-body.gl-display-flex{ :class => "gl-p-0!" }
+      .gl-banner-illustration
+        = image_tag('illustrations/rocket-launch-md.svg', alt: s_('Runners|Rocket launch illustration'))
+      .gl-banner-content
+        %h1.gl-banner-title
+          = s_('Runners|New group runners view')
+        %p
+          = s_('Runners|The new view gives you more space and better visibility into your fleet of runners.')
+        %a.btn.btn-confirm.btn-md.gl-button{ :href => group_runners_path(@group) }
+          %span.gl-button-text
+          = s_('Runners|Take me there!')
+
 = render 'shared/runners/runner_description'
 
 %hr

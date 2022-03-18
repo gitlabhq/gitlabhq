@@ -92,6 +92,18 @@ RSpec.describe Gitlab::Database::LoadBalancing do
         end
       end
 
+      context 'when an invalid connection is used' do
+        it 'returns :unknown' do
+          expect(described_class.db_role_for_connection(:invalid)).to eq(:unknown)
+        end
+      end
+
+      context 'when a null connection is used' do
+        it 'returns :unknown' do
+          expect(described_class.db_role_for_connection(nil)).to eq(:unknown)
+        end
+      end
+
       context 'when a read connection is used' do
         it 'returns :replica' do
           load_balancer.read do |connection|

@@ -11,6 +11,7 @@ RSpec.describe API::Users do
 
   let(:blocked_user) { create(:user, :blocked) }
   let(:omniauth_user) { create(:omniauth_user) }
+  let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:private_user) { create(:user, private_profile: true) }
   let(:deactivated_user) { create(:user, state: 'deactivated') }
@@ -643,20 +644,6 @@ RSpec.describe API::Users do
           expect(Gitlab::ApplicationRateLimiter)
             .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: allowlist)
             .and_call_original
-
-          get api("/users/#{user.id}", user)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(rate_limit_user_by_id_endpoint: false)
-        end
-
-        it 'does not throttle the request' do
-          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
 
           get api("/users/#{user.id}", user)
 
@@ -1307,10 +1294,10 @@ RSpec.describe API::Users do
     end
 
     it "updates user's existing identity" do
-      put api("/users/#{omniauth_user.id}", admin), params: { provider: 'ldapmain', extern_uid: '654321' }
+      put api("/users/#{ldap_user.id}", admin), params: { provider: 'ldapmain', extern_uid: '654321' }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(omniauth_user.reload.identities.first.extern_uid).to eq('654321')
+      expect(ldap_user.reload.identities.first.extern_uid).to eq('654321')
     end
 
     it 'updates user with new identity' do
@@ -1732,6 +1719,33 @@ RSpec.describe API::Users do
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(key.title)
+    end
+  end
+
+  describe 'GET /user/:id/keys/:key_id' do
+    it 'gets existing key', :aggregate_failures do
+      user.keys << key
+
+      get api("/users/#{user.id}/keys/#{key.id}")
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['title']).to eq(key.title)
+    end
+
+    it 'returns 404 error if user not found', :aggregate_failures do
+      user.keys << key
+
+      get api("/users/0/keys/#{key.id}")
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns 404 error if key not found', :aggregate_failures do
+      get api("/users/#{user.id}/keys/#{non_existing_record_id}")
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Key Not Found')
     end
   end
 
@@ -3101,6 +3115,18 @@ RSpec.describe API::Users do
 
           expect(response).to have_gitlab_http_status(:created)
           expect(response.body).to eq('null')
+        end
+      end
+
+      context 'with the API initiating user' do
+        let(:user_id) { admin.id }
+
+        it 'does not block the API initiating user, returns 403' do
+          block_user
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('403 Forbidden - The API initiating user cannot be blocked by the API')
+          expect(admin.reload.state).to eq('active')
         end
       end
     end

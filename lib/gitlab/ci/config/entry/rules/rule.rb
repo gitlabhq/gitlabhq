@@ -24,7 +24,7 @@ module Gitlab
             validates :config, allowed_keys: ALLOWED_KEYS
             validates :config, disallowed_keys: %i[start_in], unless: :specifies_delay?
             validates :start_in, presence: true, if: :specifies_delay?
-            validates :start_in, duration: { limit: '1 day' }, if: :specifies_delay?
+            validates :start_in, duration: { limit: '1 week' }, if: :specifies_delay?
 
             with_options allow_nil: true do
               validates :if, expression: true

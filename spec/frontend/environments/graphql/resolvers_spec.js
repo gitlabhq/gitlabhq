@@ -7,6 +7,7 @@ import environmentToDelete from '~/environments/graphql/queries/environment_to_d
 import environmentToStopQuery from '~/environments/graphql/queries/environment_to_stop.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import pollIntervalQuery from '~/environments/graphql/queries/poll_interval.query.graphql';
+import isEnvironmentStoppingQuery from '~/environments/graphql/queries/is_environment_stopping.query.graphql';
 import pageInfoQuery from '~/environments/graphql/queries/page_info.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
 import {
@@ -123,10 +124,11 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
   describe('folder', () => {
     it('should fetch the folder url passed to it', async () => {
-      mock.onGet(ENDPOINT, { params: { per_page: 3 } }).reply(200, folder);
+      mock.onGet(ENDPOINT, { params: { per_page: 3, scope: 'available' } }).reply(200, folder);
 
       const environmentFolder = await mockResolvers.Query.folder(null, {
         environment: { folderPath: ENDPOINT },
+        scope: 'available',
       });
 
       expect(environmentFolder).toEqual(resolvedFolder);
@@ -136,11 +138,36 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should post to the stop environment path', async () => {
       mock.onPost(ENDPOINT).reply(200);
 
-      await mockResolvers.Mutation.stopEnvironment(null, { environment: { stopPath: ENDPOINT } });
+      const client = { writeQuery: jest.fn() };
+      const environment = { stopPath: ENDPOINT };
+      await mockResolvers.Mutation.stopEnvironment(null, { environment }, { client });
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
       );
+
+      expect(client.writeQuery).toHaveBeenCalledWith({
+        query: isEnvironmentStoppingQuery,
+        variables: { environment },
+        data: { isEnvironmentStopping: true },
+      });
+    });
+    it('should set is stopping to false if stop fails', async () => {
+      mock.onPost(ENDPOINT).reply(500);
+
+      const client = { writeQuery: jest.fn() };
+      const environment = { stopPath: ENDPOINT };
+      await mockResolvers.Mutation.stopEnvironment(null, { environment }, { client });
+
+      expect(mock.history.post).toContainEqual(
+        expect.objectContaining({ url: ENDPOINT, method: 'post' }),
+      );
+
+      expect(client.writeQuery).toHaveBeenCalledWith({
+        query: isEnvironmentStoppingQuery,
+        variables: { environment },
+        data: { isEnvironmentStopping: false },
+      });
     });
   });
   describe('rollbackEnvironment', () => {

@@ -5,7 +5,7 @@
   .detail-page-description.content-block
     #js-issuable-app{ data: { initial: issuable_initial_data(issuable).to_json, full_path: @project.full_path } }
       .title-container
-        %h2.title= markdown_field(issuable, :title)
+        %h1.title= markdown_field(issuable, :title)
       - if issuable.description.present?
         .description
           .md= markdown_field(issuable, :description)

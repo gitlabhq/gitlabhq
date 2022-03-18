@@ -9,3 +9,4 @@
 /sitespeed-result/
 /fixtures/**/*.graphql
 spec/fixtures/**/*.graphql
+**/contracts/consumer/

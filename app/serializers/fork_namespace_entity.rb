@@ -30,14 +30,6 @@ class ForkNamespaceEntity < Grape::Entity
     markdown_description(namespace)
   end
 
-  expose :can_create_project do |namespace, options|
-    if Feature.enabled?(:fork_project_form, options[:project], default_enabled: :yaml)
-      true
-    else
-      options[:current_user].can?(:create_projects, namespace)
-    end
-  end
-
   private
 
   # rubocop: disable CodeReuse/ActiveRecord

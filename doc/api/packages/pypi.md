@@ -175,6 +175,7 @@ PUT projects/:id/packages/pypi
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | string | yes | The ID or full path of the project. |
+| `requires_python` | string | no | The PyPI required version. |
 
 ```shell
 curl --request PUT \

@@ -6,8 +6,8 @@ import (
 	"mime/multipart"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 )
 
 type SavedFileTracker struct {
@@ -26,7 +26,7 @@ func (s *SavedFileTracker) Count() int {
 	return len(s.rewrittenFields)
 }
 
-func (s *SavedFileTracker) ProcessFile(_ context.Context, fieldName string, file *filestore.FileHandler, _ *multipart.Writer) error {
+func (s *SavedFileTracker) ProcessFile(_ context.Context, fieldName string, file *destination.FileHandler, _ *multipart.Writer) error {
 	if _, ok := s.rewrittenFields[fieldName]; ok {
 		return fmt.Errorf("the %v field has already been processed", fieldName)
 	}

@@ -25,7 +25,7 @@ RSpec.shared_examples 'User updates wiki page' do
         click_on('Cancel')
       end
 
-      expect(current_path).to eq wiki_path(wiki)
+      expect(page).to have_current_path wiki_path(wiki), ignore_query: true
     end
 
     it 'updates a page that has a path', :js do
@@ -36,7 +36,7 @@ RSpec.shared_examples 'User updates wiki page' do
         click_on('Create page')
       end
 
-      expect(current_path).to include('one/two/three-test')
+      expect(page).to have_current_path(%r(one/two/three-test), ignore_query: true)
       expect(find('.wiki-pages')).to have_content('three')
 
       first(:link, text: 'three').click
@@ -45,7 +45,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
       click_on('Edit')
 
-      expect(current_path).to include('one/two/three-test')
+      expect(page).to have_current_path(%r(one/two/three-test), ignore_query: true)
       expect(page).to have_content('Edit Page')
 
       fill_in('Content', with: 'Updated Wiki Content')
@@ -120,7 +120,7 @@ RSpec.shared_examples 'User updates wiki page' do
         click_on('Cancel')
       end
 
-      expect(current_path).to eq(wiki_page_path(wiki, wiki_page))
+      expect(page).to have_current_path(wiki_page_path(wiki, wiki_page), ignore_query: true)
     end
 
     it_behaves_like 'wiki file attachments'
@@ -175,7 +175,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
       click_button('Save changes')
 
-      expect(current_path).to eq(wiki_page_path(wiki, page_name))
+      expect(page).to have_current_path(wiki_page_path(wiki, page_name), ignore_query: true)
     end
 
     it 'moves the page to other dir', :js do
@@ -185,7 +185,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
       click_button('Save changes')
 
-      expect(current_path).to eq(wiki_page_path(wiki, new_page_dir))
+      expect(page).to have_current_path(wiki_page_path(wiki, new_page_dir), ignore_query: true)
     end
 
     it 'remains in the same place if title has not changed', :js do
@@ -195,7 +195,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
       click_button('Save changes')
 
-      expect(current_path).to eq(original_path)
+      expect(page).to have_current_path(original_path, ignore_query: true)
     end
 
     it 'can be moved to a different dir with a different name', :js do
@@ -205,7 +205,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
       click_button('Save changes')
 
-      expect(current_path).to eq(wiki_page_path(wiki, new_page_dir))
+      expect(page).to have_current_path(wiki_page_path(wiki, new_page_dir), ignore_query: true)
     end
 
     it 'can be renamed and moved to the root folder', :js do
@@ -215,7 +215,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
       click_button('Save changes')
 
-      expect(current_path).to eq(wiki_page_path(wiki, new_name))
+      expect(page).to have_current_path(wiki_page_path(wiki, new_name), ignore_query: true)
     end
 
     it 'squishes the title before creating the page', :js do
@@ -225,7 +225,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
       click_button('Save changes')
 
-      expect(current_path).to eq(wiki_page_path(wiki, "foo1/bar1/#{page_name}"))
+      expect(page).to have_current_path(wiki_page_path(wiki, "foo1/bar1/#{page_name}"), ignore_query: true)
     end
 
     it_behaves_like 'wiki file attachments'

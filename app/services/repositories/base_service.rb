@@ -18,8 +18,6 @@ class Repositories::BaseService < BaseService
   end
 
   def mv_repository(from_path, to_path)
-    return true unless repo_exists?(from_path)
-
     gitlab_shell.mv_repository(repository.shard, from_path, to_path)
   end
 

@@ -38,6 +38,8 @@ module Resolvers
           .validate(content, dry_run: dry_run)
 
         response(result).merge(merged_yaml: result.merged_yaml)
+      rescue GRPC::InvalidArgument => error
+        Gitlab::ErrorTracking.track_and_raise_exception(error, sha: sha)
       end
 
       private

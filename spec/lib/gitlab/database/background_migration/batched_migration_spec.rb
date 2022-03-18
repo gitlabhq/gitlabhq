@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :model do
   it_behaves_like 'having unique enum values'
 
+  it { is_expected.to be_a Gitlab::Database::SharedModel }
+
   describe 'associations' do
     it { is_expected.to have_many(:batched_jobs).with_foreign_key(:batched_background_migration_id) }
 
@@ -272,7 +274,13 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
       before do
         allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
-          allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 10])
+          allow(batch_class).to receive(:next_batch).with(
+            anything,
+            anything,
+            batch_min_value: 6,
+            batch_size: 5,
+            job_arguments: batched_migration.job_arguments
+          ).and_return([6, 10])
         end
       end
 

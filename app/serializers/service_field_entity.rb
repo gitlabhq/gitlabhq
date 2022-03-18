@@ -4,7 +4,7 @@ class ServiceFieldEntity < Grape::Entity
   include RequestAwareEntity
   include Gitlab::Utils::StrongMemoize
 
-  expose :type, :name, :placeholder, :required, :choices, :checkbox_label
+  expose :section, :type, :name, :placeholder, :required, :choices, :checkbox_label
 
   expose :title do |field|
     non_empty_password?(field) ? field[:non_empty_password_title] : field[:title]

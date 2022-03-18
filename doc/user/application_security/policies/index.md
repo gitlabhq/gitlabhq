@@ -64,13 +64,13 @@ The policy editor has two modes:
 - The visual _Rule_ mode allows you to construct and preview policy
   rules using rule blocks and related controls.
 
-  ![Policy Editor Rule Mode](img/container_policy_rule_mode_v14_3.png)
+  ![Policy Editor Rule Mode](img/policy_rule_mode_v14_9.png)
 
 - YAML mode allows you to enter a policy definition in `.yaml` format
   and is aimed at expert users and cases that the Rule mode doesn't
   support.
 
-  ![Policy Editor YAML Mode](img/container_policy_yaml_mode_v14_3.png)
+  ![Policy Editor YAML Mode](img/policy_yaml_mode_v14_9.png)
 
 You can use both modes interchangeably and switch between them at any
 time. If a YAML resource is incorrect or contains data not supported

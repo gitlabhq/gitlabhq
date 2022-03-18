@@ -123,7 +123,7 @@ module API
           use :pagination
         end
 
-        get ':id/pipelines/:pipeline_id/jobs', feature_category: :continuous_integration do
+        get ':id/pipelines/:pipeline_id/jobs', urgency: :low, feature_category: :continuous_integration do
           authorize!(:read_pipeline, user_project)
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])
@@ -223,9 +223,13 @@ module API
         post ':id/pipelines/:pipeline_id/retry', feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
-          pipeline.retry_failed(current_user)
+          response = pipeline.retry_failed(current_user)
 
-          present pipeline, with: Entities::Ci::Pipeline
+          if response.success?
+            present pipeline, with: Entities::Ci::Pipeline
+          else
+            render_api_error!(response.errors.join(', '), response.http_status)
+          end
         end
 
         desc 'Cancel all builds in the pipeline' do

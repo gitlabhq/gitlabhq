@@ -99,10 +99,12 @@ describe('toggles/index.js', () => {
       const name = 'toggle-name';
       const help = 'Help text';
       const foo = 'bar';
+      const id = 'an-id';
 
       beforeEach(() => {
         initToggleWithOptions({
           name,
+          id,
           isChecked: true,
           disabled: true,
           isLoading: true,
@@ -143,6 +145,10 @@ describe('toggles/index.js', () => {
 
       it('passes custom dataset to the wrapper', () => {
         expect(toggleWrapper.dataset.foo).toBe('bar');
+      });
+
+      it('passes an id to the wrapper', () => {
+        expect(toggleWrapper.id).toBe(id);
       });
     });
   });

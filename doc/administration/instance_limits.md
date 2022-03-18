@@ -153,6 +153,17 @@ Set the limit to `0` to disable it.
 
 - **Default rate limit**: Disabled (unlimited).
 
+### Search rate limit
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9
+
+This setting limits global search requests.
+
+| Limit                   | Default (requests per minute) |
+|-------------------------|-------------------------------|
+| Authenticated user      | 30 |
+| Unauthenticated user    | 10 |
+
 ## Gitaly concurrency limit
 
 Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly's configuration file.
@@ -208,13 +219,18 @@ When the number exceeds the limit the page displays an alert and links to a pagi
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51401) in GitLab 11.10.
 
-The number of pipelines that can be created in a single push is 4.
-This limit prevents the accidental creation of pipelines when `git push --all`
-or `git push --mirror` is used.
+When pushing multiple changes with a single Git push, like multiple tags or branches,
+only four tag or branch pipelines can be triggered. This limit prevents the accidental
+creation of a large number of pipelines when using `git push --all` or `git push --mirror`.
 
-This limit does not affect any of the updated merge request pipelines.
-All updated merge requests have a pipeline created when using
-[merge request pipelines](../ci/pipelines/merge_request_pipelines.md).
+[Merge request pipelines](../ci/pipelines/merge_request_pipelines.md) are not limited.
+If the Git push updates multiple merge requests at the same time, a merge request pipeline
+can trigger for every updated merge request.
+
+To remove the limit so that any number of pipelines can trigger for a single Git push event,
+administrators can enable the `git_push_create_all_pipelines` [feature flag](feature_flags.md).
+Enabling this feature flag is not recommended, as it can cause excessive load on the GitLab
+instance if too many changes are pushed at once and a flood of pipelines are created accidentally.
 
 ## Retention of activity history
 
@@ -558,7 +574,7 @@ Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 
 ### Number of files per GitLab Pages web-site
 
-The total number of file entries (including directories and symlinks) is limited to `100000` per
+The total number of file entries (including directories and symlinks) is limited to `200,000` per
 GitLab Pages website.
 
 This is the default limit for all [GitLab self-managed and SaaS plans](https://about.gitlab.com/pricing/).
@@ -800,7 +816,7 @@ Reports that go over the 20 MB limit aren't loaded. Affected reports:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8638) in GitLab 13.3.
 
 You can set a limit on the content of repository files that are indexed in
-Elasticsearch. Any files larger than this limit only index the file name.
+Elasticsearch. Any files larger than this limit only index the filename.
 The file content is neither indexed nor searchable.
 
 Setting a limit helps reduce the memory usage of the indexing processes and
@@ -942,3 +958,7 @@ varies by file type:
 If a branch is merged while open merge requests still point to it, GitLab can
 retarget merge requests pointing to the now-merged branch. To learn more, read
 [Branch retargeting on merge](../user/project/merge_requests/getting_started.md#branch-retargeting-on-merge).
+
+## CDN-based limits on GitLab.com
+
+In addition to application-based limits, GitLab.com is configured to use Cloudflare's standard DDoS protection and Spectrum to protect Git over SSH. Cloudflare terminates client TLS connections but is not application aware and cannot be used for limits tied to users or groups. Cloudflare page rules and rate limits are configured with Terraform. These configurations are [not public](https://about.gitlab.com/handbook/communication/#not-public) because they include security and abuse implementations that detect malicious activities and making them public would undermine those operations.

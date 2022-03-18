@@ -98,8 +98,10 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
               }
             end
 
-            it 'raises a suitable error' do
-              expect { result }.to raise_error(GraphQL::ExecutionError)
+            it 'generates a suitable error' do
+              expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+                result
+              end
             end
           end
         end

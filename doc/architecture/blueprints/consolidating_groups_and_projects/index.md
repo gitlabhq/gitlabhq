@@ -173,4 +173,4 @@ DRIs:
 
 ## Related topics
 
-- [Workspaces developer documentation](../../../development/workspaces/index.md)
+- [Workspace developer documentation](../../../development/workspace/index.md)

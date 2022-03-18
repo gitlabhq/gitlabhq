@@ -8,9 +8,9 @@ module Gitlab
       #
       SERIALIZE_KEYS = %i(line_code rich_text text type index old_pos new_pos).freeze
 
-      attr_reader :line_code, :marker_ranges
-      attr_writer :text, :rich_text
-      attr_accessor :index, :type, :old_pos, :new_pos
+      attr_reader :marker_ranges
+      attr_writer :text, :rich_text, :discussable
+      attr_accessor :index, :type, :old_pos, :new_pos, :line_code
 
       def initialize(text, type, index, old_pos, new_pos, parent_file: nil, line_code: nil, rich_text: nil)
         @text = text
@@ -26,6 +26,7 @@ module Gitlab
         @line_code = line_code || calculate_line_code
 
         @marker_ranges = []
+        @discussable = true
       end
 
       def self.init_from_hash(hash)
@@ -96,7 +97,7 @@ module Gitlab
       end
 
       def discussable?
-        !meta?
+        @discussable && !meta?
       end
 
       def suggestible?

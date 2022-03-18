@@ -8,6 +8,6 @@ lint-yaml:
   stage: lint
   needs: []
   variables:
-    LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates
+    LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates data/deprecations data/removals data/whats_new
   script:
     - yamllint --strict -f colored $LINT_PATHS

@@ -1,7 +1,7 @@
 <script>
-// NOTE 1: This is similar to recaptcha_modal.vue, but it directly uses the reCAPTCHA Javascript API
-// (https://developers.google.com/recaptcha/docs/display#js_api) and gl-modal, rather than relying
-// on the form-based ReCAPTCHA HTML being pre-rendered by the backend and using deprecated-modal.
+// NOTE 1: This modal directly uses the reCAPTCHA Javascript API
+// (https://developers.google.com/recaptcha/docs/display#js_api) and gl-modal,
+// rather than relying form-based reCAPTCHA HTML being pre-rendered by the backend.
 
 // NOTE 2: Even though this modal currently only supports reCAPTCHA, we use 'captcha' instead
 // of 'recaptcha' throughout the code, so that we can easily add support for future alternative

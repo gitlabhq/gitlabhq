@@ -40,7 +40,7 @@ module Projects
         avenues = [authorizable_project_members]
 
         avenues << if project.personal?
-                     project_owner_acting_as_maintainer
+                     project_owner
                    else
                      authorizable_group_members
                    end
@@ -85,9 +85,11 @@ module Projects
         Member.from_union(members)
       end
 
-      def project_owner_acting_as_maintainer
+      # workaround until we migrate Project#owners to have membership with
+      # OWNER access level
+      def project_owner
         user_id = project.namespace.owner.id
-        access_level = Gitlab::Access::MAINTAINER
+        access_level = Gitlab::Access::OWNER
 
         Member
           .from(generate_from_statement([[user_id, access_level]])) # rubocop: disable CodeReuse/ActiveRecord

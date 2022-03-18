@@ -616,7 +616,7 @@ Note the following:
   - IP address, you must add it as a Subject Alternative Name to the certificate.
 - When running Praefect sub-commands such as `dial-nodes` and `list-untracked-repositories` from the command line with
   [Gitaly TLS enabled](configure_gitaly.md#enable-tls-support), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
-  environment variable so that the Gitaly certificate is trusted. For example: 
+  environment variable so that the Gitaly certificate is trusted. For example:
 
    ```shell
    sudo SSL_CERT_DIR=/etc/gitlab/trusted_certs /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
@@ -1195,6 +1195,9 @@ You can configure:
 
   current assignments: gitaly-1, gitaly-2
   ```
+
+If `default_replication_factor` is unset, the repositories are always replicated on every node defined in `virtual_storages`. If a new
+node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically. 
 
 ## Automatic failover and primary election strategies
 

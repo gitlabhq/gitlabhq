@@ -9,7 +9,9 @@ function needsCaptchaResponse(err) {
 const showCaptchaModalAndResubmit = async (axios, data, errConfig) => {
   // NOTE: We asynchronously import and unbox the module. Since this is included globally, we don't
   // do a regular import because that would increase the size of the webpack bundle.
-  const { waitForCaptchaToBeSolved } = await import('~/captcha/wait_for_captcha_to_be_solved');
+  const { waitForCaptchaToBeSolved } = await import(
+    'jh_else_ce/captcha/wait_for_captcha_to_be_solved'
+  );
 
   // show the CAPTCHA modal and wait for it to be solved or closed
   const captchaResponse = await waitForCaptchaToBeSolved(data.captcha_site_key);

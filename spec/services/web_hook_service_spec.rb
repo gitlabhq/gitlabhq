@@ -14,10 +14,6 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
 
   let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
-  around do |example|
-    travel_to(Time.current) { example.run }
-  end
-
   describe '#initialize' do
     before do
       stub_application_setting(setting_name => setting)
@@ -257,14 +253,6 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
     end
 
     context 'execution logging' do
-      let(:hook_log) { project_hook.web_hook_logs.last }
-
-      def run_service
-        service_instance.execute
-        ::WebHooks::LogExecutionWorker.drain
-        project_hook.reload
-      end
-
       context 'with success' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
@@ -280,42 +268,38 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
               .with(hook: project_hook, log_data: Hash, response_category: :ok)
               .and_return(double(execute: nil))
 
-            run_service
+            service_instance.execute
           end
         end
 
-        it 'log successful execution' do
-          run_service
+        it 'queues LogExecutionWorker correctly' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+            .with(
+              project_hook.id,
+              hash_including(
+                trigger: 'push_hooks',
+                url: project_hook.url,
+                request_headers: headers,
+                request_data: data,
+                response_body: 'Success',
+                response_headers: {},
+                response_status: 200,
+                execution_duration: be > 0,
+                internal_error_message: nil
+              ),
+              :ok,
+              nil
+            )
 
-          expect(hook_log.trigger).to eq('push_hooks')
-          expect(hook_log.url).to eq(project_hook.url)
-          expect(hook_log.request_headers).to eq(headers)
-          expect(hook_log.response_body).to eq('Success')
-          expect(hook_log.response_status).to eq('200')
-          expect(hook_log.execution_duration).to be > 0
-          expect(hook_log.internal_error_message).to be_nil
+          service_instance.execute
+        end
+
+        it 'queues LogExecutionWorker correctly, resulting in a log record (integration-style test)', :sidekiq_inline do
+          expect { service_instance.execute }.to change(::WebHookLog, :count).by(1)
         end
 
         it 'does not log in the service itself' do
           expect { service_instance.execute }.not_to change(::WebHookLog, :count)
-        end
-
-        it 'does not increment the failure count' do
-          expect { run_service }.not_to change(project_hook, :recent_failures)
-        end
-
-        it 'does not change the disabled_until attribute' do
-          expect { run_service }.not_to change(project_hook, :disabled_until)
-        end
-
-        context 'when the hook had previously failed' do
-          before do
-            project_hook.update!(recent_failures: 2)
-          end
-
-          it 'resets the failure count' do
-            expect { run_service }.to change(project_hook, :recent_failures).to(0)
-          end
         end
       end
 
@@ -324,45 +308,26 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
           stub_full_request(project_hook.url, method: :post).to_return(status: 400, body: 'Bad request')
         end
 
-        it 'logs failed execution' do
-          run_service
+        it 'queues LogExecutionWorker correctly' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+            .with(
+              project_hook.id,
+              hash_including(
+                trigger: 'push_hooks',
+                url: project_hook.url,
+                request_headers: headers,
+                request_data: data,
+                response_body: 'Bad request',
+                response_headers: {},
+                response_status: 400,
+                execution_duration: be > 0,
+                internal_error_message: nil
+              ),
+              :failed,
+              nil
+            )
 
-          expect(hook_log).to have_attributes(
-            trigger: eq('push_hooks'),
-            url: eq(project_hook.url),
-            request_headers: eq(headers),
-            response_body: eq('Bad request'),
-            response_status: eq('400'),
-            execution_duration: be > 0,
-            internal_error_message: be_nil
-          )
-        end
-
-        it 'increments the failure count' do
-          expect { run_service }.to change(project_hook, :recent_failures).by(1)
-        end
-
-        it 'does not change the disabled_until attribute' do
-          expect { run_service }.not_to change(project_hook, :disabled_until)
-        end
-
-        it 'does not allow the failure count to overflow' do
-          project_hook.update!(recent_failures: 32767)
-
-          expect { run_service }.not_to change(project_hook, :recent_failures)
-        end
-
-        context 'when the web_hooks_disable_failed FF is disabled' do
-          before do
-            # Hook will only be executed if the flag is disabled.
-            stub_feature_flags(web_hooks_disable_failed: false)
-          end
-
-          it 'does not allow the failure count to overflow' do
-            project_hook.update!(recent_failures: 32767)
-
-            expect { run_service }.not_to change(project_hook, :recent_failures)
-          end
+          service_instance.execute
         end
       end
 
@@ -371,65 +336,54 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
           stub_full_request(project_hook.url, method: :post).to_raise(SocketError.new('Some HTTP Post error'))
         end
 
-        it 'log failed execution' do
-          run_service
+        it 'queues LogExecutionWorker correctly' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+            .with(
+              project_hook.id,
+              hash_including(
+                trigger: 'push_hooks',
+                url: project_hook.url,
+                request_headers: headers,
+                request_data: data,
+                response_body: '',
+                response_headers: {},
+                response_status: 'internal error',
+                execution_duration: be > 0,
+                internal_error_message: 'Some HTTP Post error'
+              ),
+              :error,
+              nil
+            )
 
-          expect(hook_log.trigger).to eq('push_hooks')
-          expect(hook_log.url).to eq(project_hook.url)
-          expect(hook_log.request_headers).to eq(headers)
-          expect(hook_log.response_body).to eq('')
-          expect(hook_log.response_status).to eq('internal error')
-          expect(hook_log.execution_duration).to be > 0
-          expect(hook_log.internal_error_message).to eq('Some HTTP Post error')
-        end
-
-        it 'does not increment the failure count' do
-          expect { run_service }.not_to change(project_hook, :recent_failures)
-        end
-
-        it 'backs off' do
-          expect { run_service }.to change(project_hook, :disabled_until)
-        end
-
-        it 'increases the backoff count' do
-          expect { run_service }.to change(project_hook, :backoff_count).by(1)
-        end
-
-        context 'when the previous cool-off was near the maximum' do
-          before do
-            project_hook.update!(disabled_until: 5.minutes.ago, backoff_count: 8)
-          end
-
-          it 'sets the disabled_until attribute' do
-            expect { run_service }.to change(project_hook, :disabled_until).to(1.day.from_now)
-          end
-        end
-
-        context 'when we have backed-off many many times' do
-          before do
-            project_hook.update!(disabled_until: 5.minutes.ago, backoff_count: 365)
-          end
-
-          it 'sets the disabled_until attribute' do
-            expect { run_service }.to change(project_hook, :disabled_until).to(1.day.from_now)
-          end
+          service_instance.execute
         end
       end
 
       context 'with unsafe response body' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: "\xBB")
-          run_service
         end
 
-        it 'log successful execution' do
-          expect(hook_log.trigger).to eq('push_hooks')
-          expect(hook_log.url).to eq(project_hook.url)
-          expect(hook_log.request_headers).to eq(headers)
-          expect(hook_log.response_body).to eq('')
-          expect(hook_log.response_status).to eq('200')
-          expect(hook_log.execution_duration).to be > 0
-          expect(hook_log.internal_error_message).to be_nil
+        it 'queues LogExecutionWorker with sanitized response_body' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+            .with(
+              project_hook.id,
+              hash_including(
+                trigger: 'push_hooks',
+                url: project_hook.url,
+                request_headers: headers,
+                request_data: data,
+                response_body: '',
+                response_headers: {},
+                response_status: 200,
+                execution_duration: be > 0,
+                internal_error_message: nil
+              ),
+              :ok,
+              nil
+            )
+
+          service_instance.execute
         end
       end
     end

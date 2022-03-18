@@ -55,6 +55,10 @@ RSpec.describe 'Pipeline Editor', :js do
     it 'displays new branch as selected after commiting on a new branch' do
       find('#target-branch-field').set('new_branch', clear: :backspace)
 
+      page.within('#source-editor-') do
+        find('textarea').send_keys '123'
+      end
+
       click_button 'Commit changes'
 
       page.within('[data-testid="branch-selector"]') do
@@ -77,8 +81,6 @@ RSpec.describe 'Pipeline Editor', :js do
 
     context 'when a change is made' do
       before do
-        click_button 'Collapse'
-
         page.within('#source-editor-') do
           find('textarea').send_keys '123'
           # It takes some time after sending keys for the vue
@@ -123,8 +125,6 @@ RSpec.describe 'Pipeline Editor', :js do
 
   describe 'Editor content' do
     it 'user can reset their CI configuration' do
-      click_button 'Collapse'
-
       page.within('#source-editor-') do
         find('textarea').send_keys '123'
       end
@@ -147,8 +147,6 @@ RSpec.describe 'Pipeline Editor', :js do
     end
 
     it 'user can cancel reseting their CI configuration' do
-      click_button 'Collapse'
-
       page.within('#source-editor-') do
         find('textarea').send_keys '123'
       end

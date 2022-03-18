@@ -2,6 +2,7 @@ import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
 import ToolbarButton from '~/content_editor/components/toolbar_button.vue';
+import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
 
 describe('content_editor/components/toolbar_button', () => {
@@ -25,6 +26,7 @@ describe('content_editor/components/toolbar_button', () => {
       },
       provide: {
         tiptapEditor,
+        eventHub: eventHubFactory(),
       },
       propsData: {
         contentType: CONTENT_TYPE,

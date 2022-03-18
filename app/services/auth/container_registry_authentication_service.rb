@@ -59,12 +59,7 @@ module Auth
       token.expire_time = token_expire_at
 
       token[:access] = names.map do |name|
-        {
-          type: type,
-          name: name,
-          actions: actions,
-          migration_eligible: type == 'repository' ? migration_eligible(repository_path: name) : nil
-        }.compact
+        { type: type, name: name, actions: actions }
       end
 
       token.encoded
@@ -136,12 +131,7 @@ module Auth
       #
       ensure_container_repository!(path, authorized_actions)
 
-      {
-        type: type,
-        name: path.to_s,
-        actions: authorized_actions,
-        migration_eligible: self.class.migration_eligible(project: requested_project)
-      }.compact
+      { type: type, name: path.to_s, actions: authorized_actions }
     end
 
     def actively_importing?(actions, path)
@@ -151,28 +141,6 @@ module Auth
       return false unless container_repository
 
       container_repository.migration_importing?
-    end
-
-    def self.migration_eligible(project: nil, repository_path: nil)
-      return unless Feature.enabled?(:container_registry_migration_phase1)
-
-      # project has precedence over repository_path. If only the latter is provided, we find the corresponding Project.
-      unless project
-        return unless repository_path
-
-        project = ContainerRegistry::Path.new(repository_path).repository_project
-      end
-
-      # The migration process will start by allowing only specific test and gitlab-org projects using the
-      # `container_registry_migration_phase1_allow` FF. We'll then move on to a percentage rollout using this same FF.
-      # To remove the risk of impacting enterprise customers that rely heavily on the registry during the percentage
-      # rollout, we'll add their top-level group/namespace to the `container_registry_migration_phase1_deny` FF. Later,
-      # we'll remove them manually from this deny list, and their new repositories will become eligible.
-      Feature.disabled?(:container_registry_migration_phase1_deny, project.root_ancestor) &&
-        Feature.enabled?(:container_registry_migration_phase1_allow, project)
-    rescue ContainerRegistry::Path::InvalidRegistryPathError => ex
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ex, **Gitlab::ApplicationContext.current)
-      false
     end
 
     ##

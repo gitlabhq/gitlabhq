@@ -1,14 +1,18 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
 import DeploymentsServiceTable from './deployments_service_table.vue';
+import RevokeOauth from './revoke_oauth.vue';
 import ServiceAccountsList from './service_accounts_list.vue';
+import GcpRegionsList from './gcp_regions_list.vue';
 
 export default {
   components: {
     GlTabs,
     GlTab,
     DeploymentsServiceTable,
+    RevokeOauth,
     ServiceAccountsList,
+    GcpRegionsList,
   },
   props: {
     serviceAccounts: {
@@ -16,6 +20,10 @@ export default {
       required: true,
     },
     createServiceAccountUrl: {
+      type: String,
+      required: true,
+    },
+    configureGcpRegionsUrl: {
       type: String,
       required: true,
     },
@@ -28,6 +36,14 @@ export default {
       required: true,
     },
     enableCloudStorageUrl: {
+      type: String,
+      required: true,
+    },
+    gcpRegions: {
+      type: Array,
+      required: true,
+    },
+    revokeOauthUrl: {
       type: String,
       required: true,
     },
@@ -44,6 +60,15 @@ export default {
         :create-url="createServiceAccountUrl"
         :empty-illustration-url="emptyIllustrationUrl"
       />
+      <hr />
+      <gcp-regions-list
+        class="gl-mx-4"
+        :empty-illustration-url="emptyIllustrationUrl"
+        :create-url="configureGcpRegionsUrl"
+        :list="gcpRegions"
+      />
+      <hr v-if="revokeOauthUrl" />
+      <revoke-oauth v-if="revokeOauthUrl" :url="revokeOauthUrl" />
     </gl-tab>
     <gl-tab :title="__('Deployments')">
       <deployments-service-table

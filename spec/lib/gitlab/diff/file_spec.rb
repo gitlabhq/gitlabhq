@@ -51,45 +51,29 @@ RSpec.describe Gitlab::Diff::File do
     project.commit(branch_name).diffs.diff_files.first
   end
 
-  describe 'initialize' do
-    context 'when file is ipynb with a change after transformation' do
+  describe '#has_renderable?' do
+    context 'file is ipynb' do
       let(:commit) { project.commit("532c837") }
-      let(:diff) { commit.raw_diffs.first }
-      let(:diff_file) { described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
 
-      context 'and :jupyter_clean_diffs is enabled' do
-        before do
-          stub_feature_flags(jupyter_clean_diffs: true)
-        end
-
-        it 'recreates the diff by transforming the files' do
-          expect(diff_file.diff.diff).not_to include('cell_type')
-        end
-      end
-
-      context 'but :jupyter_clean_diffs is disabled' do
-        before do
-          stub_feature_flags(jupyter_clean_diffs: false)
-        end
-
-        it 'does not recreate the diff' do
-          expect(diff_file.diff.diff).to include('cell_type')
-        end
+      it 'has renderable viewer' do
+        expect(diff_file.has_renderable?).to be_truthy
       end
     end
 
-    context 'when file is ipynb, but there only changes that are removed' do
-      let(:commit) { project.commit("2b5ef814") }
-      let(:diff) { commit.raw_diffs.first }
-      let(:diff_file) { described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
+    context 'file is not ipynb' do
+      let(:commit) { project.commit("d59c60028b053793cecfb4022de34602e1a9218e") }
 
-      before do
-        stub_feature_flags(jupyter_clean_diffs: true)
+      it 'does not have renderable viewer' do
+        expect(diff_file.has_renderable?).to be_falsey
       end
+    end
+  end
 
-      it 'does not recreate the diff' do
-        expect(diff_file.diff.diff).to include('execution_count')
-      end
+  describe '#rendered' do
+    let(:commit) { project.commit("532c837") }
+
+    it 'creates a NotebookDiffFile for rendering' do
+      expect(diff_file.rendered).to be_kind_of(Gitlab::Diff::Rendered::Notebook::DiffFile)
     end
   end
 

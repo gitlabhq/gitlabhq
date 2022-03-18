@@ -28,7 +28,7 @@ RSpec.describe 'User searches for wiki pages', :js do
       end
 
       fill_in('dashboard_search', with: search_term)
-      find('.btn-search').click
+      find('.gl-search-box-by-click-search-button').click
       select_search_scope('Wiki')
 
       page.within('.results') do

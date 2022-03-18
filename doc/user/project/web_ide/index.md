@@ -17,16 +17,16 @@ You can also open the Web IDE when viewing a file, from the repository file list
 and from merge requests:
 
 - *When viewing a file, or the repository file list* -
-  1. In the upper right corner of the page, select **Edit in Web IDE** if it is visible.
-  1. If **Edit in Web IDE** is not visible:
+  1. In the upper right corner of the page, select **Open in Web IDE** if it is visible.
+  1. If **Open in Web IDE** is not visible:
      1. Select the **(angle-down)** next to **Edit** or **Gitpod**, depending on your configuration.
-     1. Select **Edit in Web IDE** from the list to display it as the editing option.
-     1. Select **Edit in Web IDE** to open the editor.
+     1. Select **Open in Web IDE** from the list to display it as the editing option.
+     1. Select **Open in Web IDE** to open the editor.
 - *When viewing a merge request* -
   1. Go to your merge request, and select the **Overview** tab.
   1. Scroll to the widgets section, after the merge request description.
-  1. Select **Edit in Web IDE** if it is visible.
-  1. If **Edit in Web IDE** is not visible:
+  1. Select **Open in Web IDE** if it is visible.
+  1. If **Open in Web IDE** is not visible:
      1. Select the **(angle-down)** next to **Open in Gitpod**.
      1. Select **Open in Web IDE** from the list to display it as the editing option.
      1. Select **Open in Web IDE** to open the editor.
@@ -145,7 +145,7 @@ Each schema entry supports two properties:
 
 ## Configure the Web IDE
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23352) in GitLab Free 13.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23352) in GitLab 13.1.
 
 The Web IDE supports configuration of certain editor settings by using
 [`.editorconfig` files](https://editorconfig.org/). When opening a file, the
@@ -164,8 +164,8 @@ The Web IDE currently supports the following `.editorconfig` settings:
 
 ## Commit changes
 
-> - Starting with [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/33441), files are automatically staged.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/196609), support for staging files was removed to prevent loss of unstaged data. All of your current changes must be committed or discarded.
+> - [Starting](https://gitlab.com/gitlab-org/gitlab/-/issues/33441) with GitLab 12.7, files are automatically staged.
+> - In GitLab 12.9, support for staging files was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/196609) to prevent loss of unstaged data. All of your current changes must be committed or discarded.
 
 After making your changes, select **Commit** on the bottom-left to
 review the list of changed files.
@@ -215,13 +215,13 @@ different branch.
 
 ## Markdown editing
 
-> - Support for pasting images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22822) in GitLab Free 13.1.
-> - Side-by-side Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68274) in GitLab Free 14.3.
+> - Support for pasting images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22822) in GitLab 13.1.
+> - Side-by-side Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68274) in GitLab 14.3.
 
 To edit Markdown files in the Web IDE:
 
 1. Go to your repository, and navigate to the Markdown page you want to edit.
-1. Select **Edit in Web IDE**, and GitLab loads the page in a tab in the editor.
+1. Select **Open in Web IDE**, and GitLab loads the page in a tab in the editor.
 1. Make your changes to the file. GitLab supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
 1. When your changes are complete, select **Commit** in the left sidebar.
 1. Add a commit message, select the branch you want to commit to, and select **Commit**.
@@ -286,10 +286,10 @@ An example `package.json`:
 
 ## Interactive Web Terminals for the Web IDE
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) to GitLab Free in 13.1.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) from GitLab Ultimate to GitLab Free in 13.1.
 
 WARNING:
-Interactive Web Terminals for the Web IDE is currently in **Beta**.
+Interactive Web Terminals for the Web IDE is currently in [**Beta**](../../../policy/alpha-beta-support.md#beta-features).
 GitLab.com shared runners [do not yet support Interactive Web Terminals](https://gitlab.com/gitlab-org/gitlab/-/issues/24674),
 so you must use your own private runner to make use of this feature.
 
@@ -308,7 +308,7 @@ to work:
   This section requires at least a `session_timeout` value (which defaults to 1800
   seconds) and a `listen_address` value. If `advertise_address` is not defined, `listen_address` is used.
 - If you are using a reverse proxy with your GitLab instance, web terminals must be
-  [enabled](../../../administration/integration/terminal.md#enabling-and-disabling-terminal-support). **(ULTIMATE SELF)**
+  [enabled](../../../administration/integration/terminal.md#enabling-and-disabling-terminal-support).
 
 If you have the terminal open and the job has finished with its tasks, the
 terminal blocks the job from finishing for the duration configured in
@@ -391,7 +391,7 @@ click **Restart Terminal** to start a new terminal session.
 
 ### File syncing to web terminal
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5276) in GitLab Ultimate 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5276) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211686) from GitLab Ultimate to GitLab Free in 13.1.
 
 File changes in the Web IDE can be synced to a running web terminal.

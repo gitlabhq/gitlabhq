@@ -130,6 +130,7 @@ The **Network** settings contain:
     Git LFS requests that supersede the user and IP rate limits.
   - [Files API Rate Limits](files_api_rate_limits.md) - Configure specific limits for
     Files API requests that supersede the user and IP rate limits.
+  - [Search rate limits](../../../administration/instance_limits.md#search-rate-limit) - Configure global search request rate limits for authenticated and unauthenticated users.
   - [Deprecated API Rate Limits](deprecated_api_rate_limits.md) - Configure specific limits
     for deprecated API requests that supersede the user and IP rate limits.
 - [Outbound requests](../../../security/webhooks.md) - Allow requests to the local network from hooks and services.
@@ -170,6 +171,8 @@ The **Repository** settings contain:
 
 - [Repository's custom initial branch name](../../project/repository/branches/default.md#instance-level-custom-initial-branch-name) -
   Set a custom branch name for new repositories created in your instance.
+- [Repository's initial default branch protection](../../project/repository/branches/default.md#instance-level-default-branch-protection) -
+  Configure the branch protections to apply to every repository's default branch.
 - [Repository mirror](visibility_and_access_controls.md#enable-project-mirroring) -
   Configure repository mirroring.
 - [Repository storage](../../../administration/repository_storage_types.md) - Configure storage path settings.

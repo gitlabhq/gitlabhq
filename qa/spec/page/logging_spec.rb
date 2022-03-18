@@ -4,11 +4,10 @@ require 'capybara/dsl'
 
 RSpec.describe QA::Support::Page::Logging do
   let(:page) { double.as_null_object }
+  let(:logger) { Gitlab::QA::TestLogger.logger(level: ::Logger::DEBUG, source: 'QA Tests') }
 
   before do
-    logger = ::Logger.new $stdout
-    logger.level = ::Logger::DEBUG
-    QA::Runtime::Logger.logger = logger
+    allow(QA::Runtime::Logger).to receive(:logger).and_return(logger)
 
     allow(Capybara).to receive(:current_session).and_return(page)
     allow(page).to receive(:find).and_return(page)
@@ -59,7 +58,7 @@ RSpec.describe QA::Support::Page::Logging do
 
   it 'logs find_element with class' do
     expect { subject.find_element(:element, class: 'active') }
-      .to output(/finding :element with args {:class=>\"active\"}/).to_stdout_from_any_process
+      .to output(/finding :element with args {:class=>"active"}/).to_stdout_from_any_process
   end
 
   it 'logs click_element' do
@@ -74,40 +73,40 @@ RSpec.describe QA::Support::Page::Logging do
 
   it 'logs has_element?' do
     expect { subject.has_element?(:element) }
-      .to output(/has_element\? :element \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/).to_stdout_from_any_process
+      .to output(/has_element\? :element \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/o).to_stdout_from_any_process
   end
 
   it 'logs has_element? with text' do
     expect { subject.has_element?(:element, text: "some text") }
-      .to output(/has_element\? :element with text \"some text\" \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/).to_stdout_from_any_process
+      .to output(/has_element\? :element with text "some text" \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/o).to_stdout_from_any_process
   end
 
   it 'logs has_no_element?' do
     allow(page).to receive(:has_no_css?).and_return(true)
 
     expect { subject.has_no_element?(:element) }
-      .to output(/has_no_element\? :element \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/).to_stdout_from_any_process
+      .to output(/has_no_element\? :element \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/o).to_stdout_from_any_process
   end
 
   it 'logs has_no_element? with text' do
     allow(page).to receive(:has_no_css?).and_return(true)
 
     expect { subject.has_no_element?(:element, text: "more text") }
-      .to output(/has_no_element\? :element with text \"more text\" \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/).to_stdout_from_any_process
+      .to output(/has_no_element\? :element with text "more text" \(wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned: true/o).to_stdout_from_any_process
   end
 
   it 'logs has_text?' do
     allow(page).to receive(:has_text?).and_return(true)
 
     expect { subject.has_text? 'foo' }
-      .to output(/has_text\?\('foo', wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned true/).to_stdout_from_any_process
+      .to output(/has_text\?\('foo', wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned true/o).to_stdout_from_any_process
   end
 
   it 'logs has_no_text?' do
     allow(page).to receive(:has_no_text?).with('foo', any_args).and_return(true)
 
     expect { subject.has_no_text? 'foo' }
-      .to output(/has_no_text\?\('foo', wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned true/).to_stdout_from_any_process
+      .to output(/has_no_text\?\('foo', wait: #{QA::Runtime::Browser::CAPYBARA_MAX_WAIT_TIME}\) returned true/o).to_stdout_from_any_process
   end
 
   it 'logs finished_loading?' do

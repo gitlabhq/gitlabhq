@@ -35,7 +35,7 @@ To have:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10586) in GitLab 12.4.
 
 WARNING:
-This is a [**beta** feature](https://about.gitlab.com/handbook/product/#beta) and is not ready yet for production use at any scale. The main limitations are a lack of testing at scale and no verification of any replicated data.
+This is a [**Beta** feature](../../../policy/alpha-beta-support.md#beta-features) and is not ready yet for production use at any scale. The main limitations are a lack of testing at scale and no verification of any replicated data.
 
 **Secondary** sites can replicate files stored on the **primary** site regardless of
 whether they are stored on the local file system or in object storage.

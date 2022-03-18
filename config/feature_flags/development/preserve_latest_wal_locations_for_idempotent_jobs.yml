@@ -1,8 +1,0 @@
----
-name: preserve_latest_wal_locations_for_idempotent_jobs
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66280
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338350
-milestone: '14.3'
-type: development
-group: group::memory
-default_enabled: true

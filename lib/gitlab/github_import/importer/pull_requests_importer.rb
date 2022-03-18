@@ -74,6 +74,10 @@ module Gitlab
           { state: 'all', sort: 'created', direction: 'asc' }
         end
 
+        def parallel_import_batch
+          { size: 200, delay: 1.minute }
+        end
+
         def repository_updates_counter
           @repository_updates_counter ||= Gitlab::Metrics.counter(
             :github_importer_repository_updates,

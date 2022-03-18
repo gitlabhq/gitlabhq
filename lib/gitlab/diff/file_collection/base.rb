@@ -11,7 +11,7 @@ module Gitlab
         delegate :count, :size, :real_size, to: :raw_diff_files
 
         def self.default_options
-          ::Commit.max_diff_options.merge(ignore_whitespace_change: false, expanded: false, include_stats: true)
+          ::Commit.max_diff_options.merge(ignore_whitespace_change: false, expanded: false, include_stats: true, use_extra_viewer_as_main: false)
         end
 
         def initialize(diffable, project:, diff_options: nil, diff_refs: nil, fallback_diff_refs: nil)
@@ -25,6 +25,7 @@ module Gitlab
           @diff_refs = diff_refs
           @fallback_diff_refs = fallback_diff_refs
           @repository = project.repository
+          @use_extra_viewer_as_main = diff_options.delete(:use_extra_viewer_as_main)
         end
 
         def diffs
@@ -120,11 +121,17 @@ module Gitlab
 
           stats = diff_stats_collection&.find_by_path(diff.new_path)
 
-          Gitlab::Diff::File.new(diff,
+          diff_file = Gitlab::Diff::File.new(diff,
                                  repository: project.repository,
                                  diff_refs: diff_refs,
                                  fallback_diff_refs: fallback_diff_refs,
                                  stats: stats)
+
+          if @use_extra_viewer_as_main && diff_file.has_renderable?
+            diff_file.rendered
+          else
+            diff_file
+          end
         end
 
         def sort_diffs(diffs)

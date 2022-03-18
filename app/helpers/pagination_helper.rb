@@ -22,4 +22,8 @@ module PaginationHelper
   def paginate_with_count(collection, remote: nil, total_pages: nil)
     paginate(collection, remote: remote, theme: 'gitlab', total_pages: total_pages)
   end
+
+  def page_size
+    Kaminari.config.default_per_page
+  end
 end

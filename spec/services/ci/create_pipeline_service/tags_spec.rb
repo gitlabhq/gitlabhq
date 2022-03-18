@@ -81,31 +81,6 @@ RSpec.describe Ci::CreatePipelineService do
           end
         end
 
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_bulk_insert_tags: false)
-          end
-
-          it 'executes N+1s queries' do
-            stub_yaml_config(config_without_tags)
-
-            # warm up the cached objects so we get a more accurate count
-            create_pipeline
-
-            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-              create_pipeline
-            end
-
-            stub_yaml_config(config)
-
-            expect { pipeline }
-              .to exceed_all_query_limit(control)
-              .with_threshold(4)
-
-            expect(pipeline).to be_created_successfully
-          end
-        end
-
         context 'when tags are already persisted' do
           it 'does not execute N+1 queries' do
             # warm up the cached objects so we get a more accurate count

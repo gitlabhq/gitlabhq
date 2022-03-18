@@ -1,6 +1,35 @@
 # frozen_string_literal: true
 
 module IntegrationsHelper
+  def integration_event_title(event)
+    case event
+    when "push", "push_events"
+      _("Push")
+    when "tag_push", "tag_push_events"
+      _("Tag push")
+    when "note", "note_events"
+      _("Note")
+    when "confidential_note", "confidential_note_events"
+      _("Confidential note")
+    when "issue", "issue_events"
+      _("Issue")
+    when "confidential_issue", "confidential_issue_events"
+      _("Confidential issue")
+    when "merge_request", "merge_request_events"
+      _("Merge request")
+    when "pipeline", "pipeline_events"
+      _("Pipeline")
+    when "wiki_page", "wiki_page_events"
+      _("Wiki page")
+    when "commit", "commit_events"
+      _("Commit")
+    when "deployment"
+      _("Deployment")
+    when "alert"
+      _("Alert")
+    end
+  end
+
   def integration_event_description(integration, event)
     case integration
     when Integrations::Jira
@@ -75,7 +104,8 @@ module IntegrationsHelper
     form_data = {
       id: integration.id,
       show_active: integration.show_active_box?.to_s,
-      activated: (integration.active || integration.new_record?).to_s,
+      activated: (integration.active || (integration.new_record? && integration.activate_disabled_reason.nil?)).to_s,
+      activate_disabled: integration.activate_disabled_reason.present?.to_s,
       type: integration.to_param,
       merge_request_events: integration.merge_requests_events.to_s,
       commit_events: integration.commit_events.to_s,
@@ -83,6 +113,7 @@ module IntegrationsHelper
       comment_detail: integration.comment_detail,
       learn_more_path: integrations_help_page_path,
       trigger_events: trigger_events_for_integration(integration),
+      sections: integration.sections.to_json,
       fields: fields_for_integration(integration),
       inherit_from_id: integration.inherit_from_id,
       integration_level: integration_level(integration),

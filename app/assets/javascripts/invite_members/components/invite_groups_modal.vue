@@ -4,6 +4,7 @@ import Api from '~/api';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { GROUP_FILTERS, GROUP_MODAL_LABELS } from '../constants';
 import eventHub from '../event_hub';
+import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import GroupSelect from './group_select.vue';
 import InviteModalBase from './invite_modal_base.vue';
 
@@ -55,6 +56,8 @@ export default {
   },
   data() {
     return {
+      invalidFeedbackMessage: '',
+      isLoading: false,
       modalId: uniqueId('invite-groups-modal-'),
       groupToBeSharedWith: {},
     };
@@ -83,13 +86,19 @@ export default {
     });
   },
   methods: {
+    showInvalidFeedbackMessage(response) {
+      this.invalidFeedbackMessage = getInvalidFeedbackMessage(response);
+    },
     openModal() {
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);
     },
-    sendInvite({ onError, onSuccess, data: { accessLevel, expiresAt } }) {
+    sendInvite({ accessLevel, expiresAt }) {
+      this.invalidFeedbackMessage = '';
+      this.isLoading = true;
+
       const apiShareWithGroup = this.isProject
         ? Api.projectShareWithGroup.bind(Api)
         : Api.groupShareWithGroup.bind(Api);
@@ -101,17 +110,26 @@ export default {
         expires_at: expiresAt,
       })
         .then(() => {
-          onSuccess();
           this.showSuccessMessage();
         })
-        .catch(onError);
+        .catch((e) => {
+          this.showInvalidFeedbackMessage(e);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
     resetFields() {
+      this.invalidFeedbackMessage = '';
+      this.isLoading = false;
       this.groupToBeSharedWith = {};
     },
     showSuccessMessage() {
       this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);
       this.closeModal();
+    },
+    clearValidation() {
+      this.invalidFeedbackMessage = '';
     },
   },
   labels: GROUP_MODAL_LABELS,
@@ -129,10 +147,12 @@ export default {
     :label-intro-text="labelIntroText"
     :label-search-field="$options.labels.searchField"
     :submit-disabled="inviteDisabled"
+    :invalid-feedback-message="invalidFeedbackMessage"
+    :is-loading="isLoading"
     @reset="resetFields"
     @submit="sendInvite"
   >
-    <template #select="{ clearValidation }">
+    <template #select>
       <group-select
         v-model="groupToBeSharedWith"
         :access-levels="accessLevels"

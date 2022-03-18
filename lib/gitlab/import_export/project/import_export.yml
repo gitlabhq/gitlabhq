@@ -370,6 +370,7 @@ included_attributes:
     - :name
     - :email
   events:
+    - :project_id
     - :target_type
     - :action
     - :author_id

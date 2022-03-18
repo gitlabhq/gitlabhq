@@ -51,4 +51,24 @@ RSpec.describe MergeRequestAssignee do
 
     it { is_expected.to have_attributes(state: 'reviewed') }
   end
+
+  describe '#attention_requested_by' do
+    let(:current_user) { create(:user) }
+
+    before do
+      subject.update!(updated_state_by: current_user)
+    end
+
+    context 'attention requested' do
+      it { expect(subject.attention_requested_by).to eq(current_user) }
+    end
+
+    context 'attention requested' do
+      before do
+        subject.update!(state: :reviewed)
+      end
+
+      it { expect(subject.attention_requested_by).to eq(nil) }
+    end
+  end
 end

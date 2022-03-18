@@ -38,17 +38,10 @@
             = render 'layouts/header/new_dropdown', class: 'gl-display-none gl-sm-display-block'
           - if top_nav_show_search
             - search_menu_item = top_nav_search_menu_item_attrs
-            %li.nav-item.d-none.d-lg-block.m-auto
+            %li.nav-item.header-search-new.d-none.d-lg-block.m-auto
               - unless current_controller?(:search)
                 - if Feature.enabled?(:new_header_search)
-                  #js-header-search.header-search{ data: { 'search-context' => header_search_context.to_json,
-                  'search-path' => search_path,
-                  'issues-path' => issues_dashboard_path,
-                  'mr-path' => merge_requests_dashboard_path,
-                  'autocomplete-path' => search_autocomplete_path } }
-                    .gl-search-box-by-type
-                      = sprite_icon('search', css_class: 'gl-search-box-by-type-search-icon gl-icon')
-                      %input{ type: "text", placeholder: s_('GlobalSearch|Search GitLab'), class: 'form-control gl-form-input gl-search-box-by-type-input', id: 'search', autocomplete: 'off' }
+                  = render 'layouts/header_search'
                 - else
                   = render 'layouts/search'
             %li.nav-item{ class: 'd-none d-sm-inline-block d-lg-none' }
@@ -68,7 +61,8 @@
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
-              = link_to assigned_mrs_dashboard_path, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
+              - top_level_link = Feature.enabled?(:mr_attention_requests, default_enabled: :yaml) ? attention_requested_mrs_dashboard_path : assigned_mrs_dashboard_path
+              = link_to top_level_link, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
                 data: { qa_selector: 'merge_requests_shortcut_button',
                 toggle: "dropdown",
                 placement: 'bottom',
@@ -84,6 +78,13 @@
                 %ul
                   %li.dropdown-header
                     = _('Merge requests')
+                  - if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+                    %li#js-need-attention-nav
+                      #js-need-attention-nav-onboarding
+                      = link_to attention_requested_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
+                        = _('Need your attention')
+                        = gl_badge_tag user_merge_requests_counts[:attention_requested_count], { size: :sm, variant: user_merge_requests_counts[:attention_requested_count] == 0 ? :neutral : :warning }, { class: 'merge-request-badge gl-ml-auto js-attention-count' }
+                    %li.divider
                   %li
                     = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
                       = _('Assigned to you')

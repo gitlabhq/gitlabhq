@@ -85,14 +85,6 @@ RSpec.describe Groups::CreateService, '#execute' do
       context 'with before_commit callback' do
         it_behaves_like 'has sync-ed traversal_ids'
       end
-
-      context 'with after_create callback' do
-        before do
-          stub_feature_flags(sync_traversal_ids_before_commit: false)
-        end
-
-        it_behaves_like 'has sync-ed traversal_ids'
-      end
     end
 
     context 'when user can not create a group' do
@@ -119,17 +111,7 @@ RSpec.describe Groups::CreateService, '#execute' do
         expect { subject }.not_to change(OnboardingProgress, :count).from(0)
       end
 
-      context 'with before_commit callback' do
-        it_behaves_like 'has sync-ed traversal_ids'
-      end
-
-      context 'with after_create callback' do
-        before do
-          stub_feature_flags(sync_traversal_ids_before_commit: false)
-        end
-
-        it_behaves_like 'has sync-ed traversal_ids'
-      end
+      it_behaves_like 'has sync-ed traversal_ids'
     end
 
     context 'as guest' do

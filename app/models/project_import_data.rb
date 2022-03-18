@@ -14,7 +14,12 @@ class ProjectImportData < ApplicationRecord
                  insecure_mode: true,
                  algorithm: 'aes-256-cbc'
 
-  serialize :data, JSON # rubocop:disable Cop/ActiveRecordSerialize
+  # NOTE
+  # We are serializing a project as `data` in an "unsafe" way here
+  # because the credentials are necessary for a successful import.
+  # This is safe because the serialization is only going between rails
+  # and the database, never to any end users.
+  serialize :data, Serializers::UnsafeJson # rubocop:disable Cop/ActiveRecordSerialize
 
   validates :project, presence: true
 

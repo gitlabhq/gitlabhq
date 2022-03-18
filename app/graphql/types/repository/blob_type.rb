@@ -41,6 +41,9 @@ module Types
       field :ide_fork_and_edit_path, GraphQL::Types::String, null: true,
             description: 'Web path to edit this blob in the Web IDE using a forked project.'
 
+      field :fork_and_view_path, GraphQL::Types::String, null: true,
+            description: 'Web path to view this blob using a forked project.'
+
       field :size, GraphQL::Types::Int, null: true,
             description: 'Size (in bytes) of the blob.'
 
@@ -73,6 +76,9 @@ module Types
 
       field :pipeline_editor_path, GraphQL::Types::String, null: true,
             description: 'Web path to edit .gitlab-ci.yml file.'
+
+      field :gitpod_blob_url, GraphQL::Types::String, null: true,
+            description: 'URL to the blob within Gitpod.'
 
       field :find_file_path, GraphQL::Types::String, null: true,
             description: 'Web path to find file.'
@@ -130,6 +136,12 @@ module Types
             method: :blob_language,
             null: true,
             calls_gitaly: true
+
+      field :code_navigation_path, GraphQL::Types::String, null: true, calls_gitaly: true,
+            description: 'Web path for code navigation.'
+
+      field :project_blob_path_root, GraphQL::Types::String, null: true,
+            description: 'Web path for the root of the blob.'
 
       def raw_text_blob
         object.data unless object.binary?

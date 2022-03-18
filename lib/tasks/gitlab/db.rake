@@ -4,30 +4,28 @@ databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
 namespace :gitlab do
   namespace :db do
-    desc 'GitLab | DB | Manually insert schema migration version'
+    desc 'GitLab | DB | Manually insert schema migration version on all configured databases'
     task :mark_migration_complete, [:version] => :environment do |_, args|
       mark_migration_complete(args[:version])
     end
 
     namespace :mark_migration_complete do
-      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-        desc "Gitlab | DB | Manually insert schema migration version on #{name} database"
-        task name, [:version] => :environment do |_, args|
-          mark_migration_complete(args[:version], database: name)
+      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
+        desc "Gitlab | DB | Manually insert schema migration version on #{database} database"
+        task database, [:version] => :environment do |_, args|
+          mark_migration_complete(args[:version], only_on: database)
         end
       end
     end
 
-    def mark_migration_complete(version, database: nil)
+    def mark_migration_complete(version, only_on: nil)
       if version.to_i == 0
         puts 'Must give a version argument that is a non-zero integer'.color(:red)
         exit 1
       end
 
-      Gitlab::Database.database_base_models.each do |name, model|
-        next if database && database.to_s != name
-
-        model.connection.execute("INSERT INTO schema_migrations (version) VALUES (#{model.connection.quote(version)})")
+      Gitlab::Database::EachDatabase.each_database_connection(only: only_on) do |connection, name|
+        connection.execute("INSERT INTO schema_migrations (version) VALUES (#{connection.quote(version)})")
 
         puts "Successfully marked '#{version}' as complete on database #{name}".color(:green)
       rescue ActiveRecord::RecordNotUnique
@@ -35,32 +33,44 @@ namespace :gitlab do
       end
     end
 
-    desc 'GitLab | DB | Drop all tables'
+    desc 'GitLab | DB | Drop all tables on all configured databases'
     task drop_tables: :environment do
-      connection = ActiveRecord::Base.connection
+      drop_tables
+    end
 
-      # In PostgreSQLAdapter, data_sources returns both views and tables, so use
-      # #tables instead
-      tables = connection.tables
-
-      # Removes the entry from the array
-      tables.delete 'schema_migrations'
-      # Truncate schema_migrations to ensure migrations re-run
-      connection.execute('TRUNCATE schema_migrations') if connection.table_exists? 'schema_migrations'
-
-      # Drop any views
-      connection.views.each do |view|
-        connection.execute("DROP VIEW IF EXISTS #{connection.quote_table_name(view)} CASCADE")
+    namespace :drop_tables do
+      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
+        desc "GitLab | DB | Drop all tables on the #{database} database"
+        task database => :environment do
+          drop_tables(only_on: database)
+        end
       end
+    end
 
-      # Drop tables with cascade to avoid dependent table errors
-      # PG: http://www.postgresql.org/docs/current/static/ddl-depend.html
-      # Add `IF EXISTS` because cascade could have already deleted a table.
-      tables.each { |t| connection.execute("DROP TABLE IF EXISTS #{connection.quote_table_name(t)} CASCADE") }
+    def drop_tables(only_on: nil)
+      Gitlab::Database::EachDatabase.each_database_connection(only: only_on) do |connection, name|
+        # In PostgreSQLAdapter, data_sources returns both views and tables, so use tables instead
+        tables = connection.tables
 
-      # Drop all extra schema objects GitLab owns
-      Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
-        connection.execute("DROP SCHEMA IF EXISTS #{connection.quote_table_name(schema)} CASCADE")
+        # Removes the entry from the array
+        tables.delete 'schema_migrations'
+        # Truncate schema_migrations to ensure migrations re-run
+        connection.execute('TRUNCATE schema_migrations') if connection.table_exists? 'schema_migrations'
+
+        # Drop any views
+        connection.views.each do |view|
+          connection.execute("DROP VIEW IF EXISTS #{connection.quote_table_name(view)} CASCADE")
+        end
+
+        # Drop tables with cascade to avoid dependent table errors
+        # PG: http://www.postgresql.org/docs/current/static/ddl-depend.html
+        # Add `IF EXISTS` because cascade could have already deleted a table.
+        tables.each { |t| connection.execute("DROP TABLE IF EXISTS #{connection.quote_table_name(t)} CASCADE") }
+
+        # Drop all extra schema objects GitLab owns
+        Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
+          connection.execute("DROP SCHEMA IF EXISTS #{connection.quote_table_name(schema)} CASCADE")
+        end
       end
     end
 
@@ -152,6 +162,17 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
+    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      # We'll temporarily skip this enhancement for geo, since in some situations we
+      # wish to setup the geo database before the other databases have been setup,
+      # and partition management attempts to connect to the main database.
+      next if name == 'geo'
+
+      Rake::Task["db:migrate:#{name}"].enhance do
+        Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+      end
+    end
+
     # When we load the database schema from db/structure.sql
     # we don't have any dynamic partitions created. We don't really need to
     # because application initializers/sidekiq take care of that, too.
@@ -160,15 +181,28 @@ namespace :gitlab do
     #
     # Other than that it's helpful to create partitions early when bootstrapping
     # a new installation.
-    #
-    # Rails 6.1 deprecates db:structure:load in favor of db:schema:load
-    Rake::Task['db:structure:load'].enhance do
-      Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
-    end
-
     Rake::Task['db:schema:load'].enhance do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
+
+    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      # We'll temporarily skip this enhancement for geo, since in some situations we
+      # wish to setup the geo database before the other databases have been setup,
+      # and partition management attempts to connect to the main database.
+      next if name == 'geo'
+
+      Rake::Task["db:schema:load:#{name}"].enhance do
+        Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+      end
+    end
+
+    desc "Clear all connections"
+    task :clear_all_connections do
+      ActiveRecord::Base.clear_all_connections!
+    end
+
+    Rake::Task['db:test:purge'].enhance(['gitlab:db:clear_all_connections'])
+    Rake::Task['db:drop'].enhance(['gitlab:db:clear_all_connections'])
 
     # During testing, db:test:load restores the database schema from scratch
     # which does not include dynamic partitions. We cannot rely on application
@@ -195,8 +229,6 @@ namespace :gitlab do
     end
 
     namespace :reindex do
-      databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
-
       ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
         desc "Reindex #{database_name} database without downtime to eliminate bloat"
         task database_name => :environment do

@@ -31,6 +31,7 @@ module Gitlab
         private
 
         attr_reader :connection
+
         delegate :execute, :quote_table_name, :quote_column_name, to: :connection
 
         def default_sequence(table, column)

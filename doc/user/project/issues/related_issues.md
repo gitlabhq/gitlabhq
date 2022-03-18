@@ -75,4 +75,9 @@ Access our [permissions](../../permissions.md) page for more information.
 When you [add a linked issue](#add-a-linked-issue), you can show that it **blocks** or
 **is blocked by** another issue.
 
-Issues that block other issues have an icon (**{issue-block}**) shown in the issue lists and [boards](../issue_board.md).
+Issues that block other issues have an icon (**{issue-block}**) next to their title, shown in the
+issue lists and [boards](../issue_board.md).
+The icon disappears when the blocking issue is closed or their relationship is changed or
+[removed](#remove-a-linked-issue).
+
+If you try to close a blocked issue using the "Close issue" button, a confirmation message appears.

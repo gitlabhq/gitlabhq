@@ -163,3 +163,60 @@ export const mockAgentHistoryActivityItems = [
     body: 'Event occurred',
   },
 ];
+
+export const clusterAgentToken = {
+  data: {
+    clusterAgentTokenCreate: {
+      errors: [],
+      secret: 'token-secret',
+      token: {
+        createdAt: '2022-03-13T18:42:44Z',
+        createdByUser: {
+          ...user,
+        },
+        description: 'token-description',
+        id: 'token-id',
+        lastUsedAt: null,
+        name: 'token-name',
+        __typename: 'ClusterAgentToken',
+      },
+      __typename: 'ClusterAgentTokenCreatePayload',
+    },
+  },
+};
+
+export const createAgentTokenErrorResponse = {
+  data: {
+    clusterAgentTokenCreate: {
+      token: null,
+      secret: null,
+      errors: ['could not create agent token'],
+    },
+  },
+};
+
+export const getTokenResponse = {
+  data: {
+    project: {
+      id: 'project-1',
+      clusterAgent: {
+        id: 'cluster-agent-id',
+        createdAt: '2022-03-13T18:42:44Z',
+        createdByUser: {
+          ...user,
+        },
+        tokens: {
+          count: 1,
+          nodes: [{ ...clusterAgentToken.token }],
+          pageInfo: {
+            endCursor: '',
+            hasNextPage: false,
+            hasPreviousPage: false,
+            startCursor: '',
+          },
+        },
+      },
+      __typename: 'Project',
+    },
+  },
+};

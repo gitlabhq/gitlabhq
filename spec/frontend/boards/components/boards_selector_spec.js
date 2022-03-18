@@ -41,6 +41,7 @@ describe('BoardsSelector', () => {
       ...defaultStore,
       actions: {
         setError: jest.fn(),
+        setBoardConfig: jest.fn(),
       },
       getters: {
         isGroupBoard: () => isGroupBoard,

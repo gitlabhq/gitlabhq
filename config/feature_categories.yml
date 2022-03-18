@@ -31,6 +31,7 @@
 - continuous_delivery
 - continuous_integration
 - continuous_integration_scaling
+- continuous_verification
 - database
 - dataops
 - delivery
@@ -74,7 +75,6 @@
 - kubernetes_management
 - license
 - license_compliance
-- live_preview
 - logging
 - memory
 - merge_trains
@@ -110,7 +110,6 @@
 - secrets_management
 - security_benchmarking
 - security_orchestration
-- self_monitoring
 - service_desk
 - service_ping
 - sharding
@@ -119,7 +118,6 @@
 - static_application_security_testing
 - static_site_editor
 - subgroups
-- synthetic_monitoring
 - team_planning
 - tracing
 - usage_ping

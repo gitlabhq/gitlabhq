@@ -106,7 +106,7 @@ module Gitlab
         private
 
         def max_tests(*used)
-          [DEFAULT_MAX_TESTS - used.map(&:count).sum, DEFAULT_MIN_TESTS].max
+          [DEFAULT_MAX_TESTS - used.sum(&:count), DEFAULT_MIN_TESTS].max
         end
       end
     end

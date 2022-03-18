@@ -1,8 +1,0 @@
----
-name: group_project_api_preload_plans
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77538
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350176
-milestone: '14.7'
-type: development
-group: group::authentication and authorization
-default_enabled: false

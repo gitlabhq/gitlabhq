@@ -2,7 +2,7 @@
   = _('Specific runners')
 
 .bs-callout.help-callout
-  - if valid_runner_registrars.include?('project')
+  - if can?(current_user, :register_project_runners, @project)
     = _('These runners are specific to this project.')
     - if params[:ci_runner_templates]
       %hr

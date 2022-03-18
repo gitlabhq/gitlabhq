@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DeleteApplication the modal component form matches the snapshot 1`] = `
+<form
+  action="application/path/1"
+  method="post"
+>
+  <input
+    name="_method"
+    type="hidden"
+    value="delete"
+  />
+   
+  <input
+    name="authenticity_token"
+    type="hidden"
+    value="mock-csrf-token"
+  />
+</form>
+`;

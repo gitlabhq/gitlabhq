@@ -28,9 +28,13 @@ query getBlobInfo(
           language
           path
           editBlobPath
+          gitpodBlobUrl
           ideEditPath
           forkAndEditPath
           ideForkAndEditPath
+          codeNavigationPath
+          projectBlobPathRoot
+          forkAndViewPath
           environmentFormattedExternalUrl
           environmentExternalUrlForRouteMap
           canModifyBlob

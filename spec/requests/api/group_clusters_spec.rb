@@ -22,6 +22,10 @@ RSpec.describe API::GroupClusters do
                   groups: [group])
     end
 
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { get api("/groups/#{group.id}/clusters", current_user) }
+    end
+
     context 'non-authorized user' do
       it 'responds with 403' do
         get api("/groups/#{group.id}/clusters", unauthorized_user)
@@ -64,6 +68,10 @@ RSpec.describe API::GroupClusters do
              platform_kubernetes: platform_kubernetes,
              user: current_user,
              groups: [group])
+    end
+
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { get api("/groups/#{group.id}/clusters/#{cluster_id}", current_user) }
     end
 
     context 'non-authorized user' do
@@ -179,6 +187,10 @@ RSpec.describe API::GroupClusters do
         platform_kubernetes_attributes: platform_kubernetes_attributes,
         management_project_id: management_project_id
       }
+    end
+
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { post api("/groups/#{group.id}/clusters/user", current_user), params: cluster_params }
     end
 
     context 'non-authorized user' do
@@ -362,6 +374,10 @@ RSpec.describe API::GroupClusters do
              groups: [group], domain: 'old-domain.com')
     end
 
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { put api("/groups/#{group.id}/clusters/#{cluster.id}", current_user), params: update_params }
+    end
+
     context 'non-authorized user' do
       it 'responds with 403' do
         put api("/groups/#{group.id}/clusters/#{cluster.id}", unauthorized_user), params: update_params
@@ -501,6 +517,10 @@ RSpec.describe API::GroupClusters do
     let(:cluster) do
       create(:cluster, :group, :provided_by_gcp,
              groups: [group])
+    end
+
+    include_examples ':certificate_based_clusters feature flag API responses' do
+      let(:subject) { delete api("/groups/#{group.id}/clusters/#{cluster.id}", current_user), params: cluster_params }
     end
 
     context 'non-authorized user' do

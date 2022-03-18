@@ -8,6 +8,11 @@ RSpec.describe API::Search do
   let_it_be(:project, reload: true) { create(:project, :wiki_repo, :public, name: 'awesome project', group: group) }
   let_it_be(:repo_project) { create(:project, :public, :repository, group: group) }
 
+  before do
+    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit).and_return(1000)
+    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit_unauthenticated).and_return(1000)
+  end
+
   shared_examples 'response is correct' do |schema:, size: 1|
     it { expect(response).to have_gitlab_http_status(:ok) }
     it { expect(response).to match_response_schema(schema) }
@@ -347,7 +352,7 @@ RSpec.describe API::Search do
       end
     end
 
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
       let(:current_user) { user }
 
       def request
@@ -522,7 +527,7 @@ RSpec.describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
         let(:current_user) { user }
 
         def request
@@ -803,7 +808,7 @@ RSpec.describe API::Search do
         end
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :user_email_lookup do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
         let(:current_user) { user }
 
         def request

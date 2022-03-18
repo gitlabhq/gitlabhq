@@ -38,3 +38,13 @@ export const CANARY_STATUS = {
 };
 
 export const CANARY_UPDATE_MODAL = 'confirm-canary-change';
+
+export const ENVIRONMENTS_SCOPE = {
+  AVAILABLE: 'available',
+  STOPPED: 'stopped',
+};
+
+export const ENVIRONMENT_COUNT_BY_SCOPE = {
+  [ENVIRONMENTS_SCOPE.AVAILABLE]: 'availableCount',
+  [ENVIRONMENTS_SCOPE.STOPPED]: 'stoppedCount',
+};

@@ -4,10 +4,6 @@ module Integrations
   class BaseIssueTracker < Integration
     validate :one_issue_tracker, if: :activated?, on: :manual_change
 
-    # TODO: we can probably just delegate as part of
-    # https://gitlab.com/gitlab-org/gitlab/issues/29404
-    data_field :project_url, :issues_url, :new_issue_url
-
     default_value_for :category, 'issue_tracker'
 
     before_validation :handle_properties
@@ -72,14 +68,6 @@ module Integrations
       issue_url(iid)
     end
 
-    def fields
-      [
-        { type: 'text', name: 'project_url', title: _('Project URL'), help: s_('IssueTracker|The URL to the project in the external issue tracker.'), required: true },
-        { type: 'text', name: 'issues_url', title: s_('IssueTracker|Issue URL'), help: s_('IssueTracker|The URL to view an issue in the external issue tracker. Must contain %{colon_id}.') % { colon_id: '<code>:id</code>'.html_safe }, required: true },
-        { type: 'text', name: 'new_issue_url', title: s_('IssueTracker|New issue URL'), help: s_('IssueTracker|The URL to create an issue in the external issue tracker.'), required: true }
-      ]
-    end
-
     def initialize_properties
       {}
     end
@@ -132,7 +120,17 @@ module Integrations
       # implement inside child
     end
 
+    def activate_disabled_reason
+      { trackers: other_external_issue_trackers } if other_external_issue_trackers.any?
+    end
+
     private
+
+    def other_external_issue_trackers
+      return [] unless project_level?
+
+      @other_external_issue_trackers ||= project.integrations.external_issue_trackers.where.not(id: id)
+    end
 
     def enabled_in_gitlab_config
       Gitlab.config.issues_tracker &&
@@ -145,10 +143,10 @@ module Integrations
     end
 
     def one_issue_tracker
-      return if template? || instance?
+      return if instance?
       return if project.blank?
 
-      if project.integrations.external_issue_trackers.where.not(id: id).any?
+      if other_external_issue_trackers.any?
         errors.add(:base, _('Another issue tracker is already in use. Only one issue tracker service can be active at a time'))
       end
     end

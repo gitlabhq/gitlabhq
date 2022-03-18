@@ -6,7 +6,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   let(:default_sast_values) do
     { 'global' =>
       [
-        { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/gitlab-org/security-products/analyzers', 'value' => 'registry.gitlab.com/gitlab-org/security-products/analyzers' }
+        { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/security-products', 'value' => 'registry.gitlab.com/security-products' }
       ],
       'pipeline' =>
       [
@@ -19,7 +19,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
   let(:params) do
     { 'global' =>
       [
-        { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/gitlab-org/security-products/analyzers', 'value' => 'new_registry' }
+        { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/security-products', 'value' => 'new_registry' }
       ],
       'pipeline' =>
       [
@@ -164,7 +164,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       let(:params) do
         { 'global' =>
           [
-            { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/gitlab-org/security-products/analyzers', 'value' => 'registry.gitlab.com/gitlab-org/security-products/analyzers' }
+            { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/security-products', 'value' => 'registry.gitlab.com/security-products' }
           ],
           'pipeline' =>
           [
@@ -275,7 +275,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
         let(:params) do
           { 'global' =>
             [
-              { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/gitlab-org/security-products/analyzers', 'value' => '' }
+              { 'field' => 'SECURE_ANALYZERS_PREFIX', 'defaultValue' => 'registry.gitlab.com/security-products', 'value' => '' }
             ] }
         end
 

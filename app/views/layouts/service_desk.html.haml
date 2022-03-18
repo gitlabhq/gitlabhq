@@ -5,7 +5,10 @@
     %title
       GitLab
     -# haml-lint:enable NoPlainNodes
-    = stylesheet_link_tag 'notify'
+    - if Feature.enabled?(:enhanced_notify_css)
+      = stylesheet_link_tag 'notify_enhanced'
+    - else
+      = stylesheet_link_tag 'notify'
     = yield :head
   %body
     .content

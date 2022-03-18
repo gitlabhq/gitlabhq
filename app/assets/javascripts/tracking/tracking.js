@@ -10,6 +10,8 @@ import {
   addReferrersCacheEntry,
 } from './utils';
 
+const ALLOWED_URL_HASHES = ['#diff', '#note'];
+
 export default class Tracking {
   static queuedEvents = [];
   static initialized = false;
@@ -183,7 +185,9 @@ export default class Tracking {
       originalUrl: window.location.href,
     });
 
-    window.snowplow('setCustomUrl', pageLinks.url);
+    const appendHash = ALLOWED_URL_HASHES.some((prefix) => window.location.hash.startsWith(prefix));
+    const customUrl = `${pageUrl}${appendHash ? window.location.hash : ''}`;
+    window.snowplow('setCustomUrl', customUrl);
 
     if (document.referrer) {
       const node = referrers.find((links) => links.originalUrl === document.referrer);

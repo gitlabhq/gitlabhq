@@ -101,7 +101,7 @@ from outside the Marketplace, which allows you to install the application:
       ![Button labeled "upload app"](img/jira-upload-app_v13_11.png)
 
    1. For **App descriptor URL**, provide the full URL to your manifest file, based
-      on your instance configuration. For example: `https://your.domain/your-path/-/jira_connect/app_descriptor.json`.
+      on your instance configuration. By default, your manifest file is located at `/-/jira_connect/app_descriptor.json`. For example, if your GitLab self-managed instance domain is `app.pet-store.cloud`, your manifest file is located at `https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`.
    1. Select **Upload**. Jira fetches the content of your `app_descriptor` file and installs
       it.
    1. If the upload is successful, Jira displays a modal panel: **Installed and ready to go!**

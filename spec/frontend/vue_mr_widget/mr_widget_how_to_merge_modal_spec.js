@@ -1,4 +1,4 @@
-import { GlModal, GlSprintf } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MrWidgetHowToMergeModal from '~/vue_merge_request_widget/components/mr_widget_how_to_merge_modal.vue';
 
@@ -27,7 +27,7 @@ describe('MRWidgetHowToMerge', () => {
   const findModal = () => wrapper.find(GlModal);
   const findInstructionsFields = () =>
     wrapper.findAll('[ data-testid="how-to-merge-instructions"]');
-  const findTipLink = () => wrapper.find(GlSprintf);
+  const findTipLink = () => wrapper.find("[data-testid='docs-tip']");
 
   it('renders a modal', () => {
     expect(findModal().exists()).toBe(true);

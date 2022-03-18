@@ -3225,52 +3225,44 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when failed' do
-      shared_examples 'failed skip_ci_check' do
-        context 'when #mergeable_ci_state? is false' do
-          before do
-            allow(subject).to receive(:mergeable_ci_state?) { false }
-          end
-
-          it 'returns false' do
-            expect(subject.mergeable_state?).to be_falsey
-          end
-
-          it 'returns true when skipping ci check' do
-            expect(subject.mergeable_state?(skip_ci_check: true)).to be(true)
-          end
-        end
-
-        context 'when #mergeable_discussions_state? is false' do
-          before do
-            allow(subject).to receive(:mergeable_discussions_state?) { false }
-          end
-
-          it 'returns false' do
-            expect(subject.mergeable_state?).to be_falsey
-          end
-
-          it 'returns true when skipping discussions check' do
-            expect(subject.mergeable_state?(skip_discussions_check: true)).to be(true)
-          end
-        end
-      end
-
-      context 'when improved_mergeability_checks is on' do
-        it_behaves_like 'failed skip_ci_check'
-      end
-
-      context 'when improved_mergeability_checks is off' do
+      context 'when #mergeable_ci_state? is false' do
         before do
-          stub_feature_flags(improved_mergeability_checks: false)
+          allow(subject).to receive(:mergeable_ci_state?) { false }
         end
 
-        it_behaves_like 'failed skip_ci_check'
+        it 'returns false' do
+          expect(subject.mergeable_state?).to be_falsey
+        end
+
+        it 'returns true when skipping ci check' do
+          expect(subject.mergeable_state?(skip_ci_check: true)).to be(true)
+        end
+      end
+
+      context 'when #mergeable_discussions_state? is false' do
+        before do
+          allow(subject).to receive(:mergeable_discussions_state?) { false }
+        end
+
+        it 'returns false' do
+          expect(subject.mergeable_state?).to be_falsey
+        end
+
+        it 'returns true when skipping discussions check' do
+          expect(subject.mergeable_state?(skip_discussions_check: true)).to be(true)
+        end
       end
     end
   end
 
   describe '#mergeable_state?' do
-    context 'when merge state caching is on' do
+    it_behaves_like 'for mergeable_state'
+
+    context 'when improved_mergeability_checks is off' do
+      before do
+        stub_feature_flags(improved_mergeability_checks: false)
+      end
+
       it_behaves_like 'for mergeable_state'
     end
 
@@ -4249,6 +4241,29 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '#eager_fetch_ref!' do
+    let(:project) { create(:project, :repository) }
+
+    # We use build instead of create to test that an IID is allocated
+    subject { build(:merge_request, source_project: project) }
+
+    it 'fetches the ref correctly' do
+      expect(subject.iid).to be_nil
+
+      expect { subject.eager_fetch_ref! }.to change { subject.iid.to_i }.by(1)
+
+      expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
+    end
+
+    it 'only fetches the ref once after saved' do
+      expect(subject.target_project.repository).to receive(:fetch_source_branch!).once.and_call_original
+
+      subject.save!
+
+      expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
+    end
+  end
+
   describe 'removing a merge request' do
     it 'refreshes the number of open merge requests of the target project' do
       project = subject.target_project
@@ -5084,6 +5099,36 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:ci_pipeline) }
       let!(:model) { create(:merge_request, head_pipeline: parent) }
+    end
+  end
+
+  describe '#merge_request_reviewers_with' do
+    let_it_be(:reviewer1) { create(:user) }
+    let_it_be(:reviewer2) { create(:user) }
+
+    before do
+      subject.update!(reviewers: [reviewer1, reviewer2])
+    end
+
+    it 'returns reviewers' do
+      reviewers = subject.merge_request_reviewers_with([reviewer1.id])
+
+      expect(reviewers).to match_array([subject.merge_request_reviewers[0]])
+    end
+  end
+
+  describe '#merge_request_assignees_with' do
+    let_it_be(:assignee1) { create(:user) }
+    let_it_be(:assignee2) { create(:user) }
+
+    before do
+      subject.update!(assignees: [assignee1, assignee2])
+    end
+
+    it 'returns assignees' do
+      assignees = subject.merge_request_assignees_with([assignee1.id])
+
+      expect(assignees).to match_array([subject.merge_request_assignees[0]])
     end
   end
 end

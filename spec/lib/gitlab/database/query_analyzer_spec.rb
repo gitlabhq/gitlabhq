@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
   let(:analyzer) { double(:query_analyzer) }
+  let(:user_analyzer) { double(:query_analyzer) }
   let(:disabled_analyzer) { double(:disabled_query_analyzer) }
 
   before do
@@ -53,6 +54,10 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
 
         expect { |b| described_class.instance.within(&b) }.to yield_control
       end
+
+      it 'raises exception when trying to re-define analyzers' do
+        expect { |b| described_class.instance.within([user_analyzer], &b) }.to raise_error /Query analyzers are already defined, cannot re-define them/
+      end
     end
 
     context 'when initializer is enabled' do
@@ -73,6 +78,18 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
         expect { |b| described_class.instance.within(&b) }.to yield_control
+      end
+    end
+
+    context 'when user analyzers are used' do
+      it 'calls begin! and end!' do
+        expect(analyzer).not_to receive(:begin!)
+        allow(user_analyzer).to receive(:enabled?).and_return(true)
+        allow(user_analyzer).to receive(:suppressed?).and_return(false)
+        expect(user_analyzer).to receive(:begin!)
+        expect(user_analyzer).to receive(:end!)
+
+        expect { |b| described_class.instance.within([user_analyzer], &b) }.to yield_control
       end
     end
   end

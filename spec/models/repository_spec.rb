@@ -3062,6 +3062,14 @@ RSpec.describe Repository do
       repository.create_if_not_exists
     end
 
+    it 'creates a repository with a default branch name' do
+      default_branch_name = 'branch-a'
+      repository.create_if_not_exists(default_branch_name)
+      repository.create_file(user, 'file', 'content', message: 'initial commit', branch_name: default_branch_name)
+
+      expect(repository.root_ref).to eq(default_branch_name)
+    end
+
     context 'it does nothing if the repository already existed' do
       let(:project) { create(:project, :repository) }
 

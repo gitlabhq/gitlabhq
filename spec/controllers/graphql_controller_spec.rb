@@ -139,8 +139,45 @@ RSpec.describe GraphqlController do
     context 'when user uses an API token' do
       let(:user) { create(:user, last_activity_on: Date.yesterday) }
       let(:token) { create(:personal_access_token, user: user, scopes: [:api]) }
+      let(:query) { '{ __typename }' }
 
-      subject { post :execute, params: { access_token: token.token } }
+      subject { post :execute, params: { query: query, access_token: token.token } }
+
+      context 'when the user is a project bot' do
+        let(:user) { create(:user, :project_bot, last_activity_on: Date.yesterday) }
+
+        it 'updates the users last_activity_on field' do
+          expect { subject }.to change { user.reload.last_activity_on }
+        end
+
+        it "sets context's sessionless value as true" do
+          subject
+
+          expect(assigns(:context)[:is_sessionless_user]).to be true
+        end
+
+        it 'executes a simple query with no errors' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq({ 'data' => { '__typename' => 'Query' } })
+        end
+
+        it 'can access resources the project_bot has access to' do
+          project_a, project_b = create_list(:project, 2, :private)
+          project_a.add_developer(user)
+
+          post :execute, params: { query: <<~GQL, access_token: token.token }
+            query {
+              a: project(fullPath: "#{project_a.full_path}") { name }
+              b: project(fullPath: "#{project_b.full_path}") { name }
+            }
+          GQL
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq({ 'data' => { 'a' => { 'name' => project_a.name }, 'b' => nil } })
+        end
+      end
 
       it 'updates the users last_activity_on field' do
         expect { subject }.to change { user.reload.last_activity_on }

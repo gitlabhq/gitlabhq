@@ -29,8 +29,10 @@ RSpec.describe Resolvers::DesignManagement::DesignAtVersionResolver do
     context 'when the user cannot see designs' do
       let(:current_user) { create(:user) }
 
-      it 'raises ResourceNotAvailable' do
-        expect { resolve_design }.to raise_error(resource_not_available)
+      it 'generates ResourceNotAvailable' do
+        expect_graphql_error_to_be_created(resource_not_available) do
+          resolve_design
+        end
       end
     end
 
@@ -45,8 +47,10 @@ RSpec.describe Resolvers::DesignManagement::DesignAtVersionResolver do
 
       let(:global_id) { global_id_of(other_dav) }
 
-      it 'raises ResourceNotAvailable' do
-        expect { resolve_design }.to raise_error(resource_not_available)
+      it 'generates ResourceNotAvailable' do
+        expect_graphql_error_to_be_created(resource_not_available) do
+          resolve_design
+        end
       end
 
       context 'the current object does not constrain the issue' do

@@ -2,6 +2,7 @@ import $ from 'jquery';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 
 import { __ } from '~/locale';
 
@@ -14,7 +15,7 @@ export default class GpgBadges {
 
     const badges = $('.js-loading-gpg-badge');
 
-    badges.html('<span class="gl-spinner gl-spinner-orange gl-spinner-sm"></span>');
+    badges.html(loadingIconForLegacyJS());
     badges.children().attr('aria-label', __('Loading'));
 
     const displayError = () =>

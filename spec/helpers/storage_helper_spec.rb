@@ -57,6 +57,8 @@ RSpec.describe StorageHelper do
     let_it_be(:paid_group) { create(:group) }
 
     before do
+      allow(helper).to receive(:can?).with(current_user, :admin_namespace, free_group).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :admin_namespace, paid_group).and_return(true)
       allow(helper).to receive(:current_user) { current_user }
       allow(Gitlab).to receive(:com?).and_return(true)
       allow(paid_group).to receive(:paid?).and_return(true)
@@ -64,26 +66,37 @@ RSpec.describe StorageHelper do
 
     describe "#storage_enforcement_banner_info" do
       it 'returns nil when namespace is not free' do
-        expect(storage_enforcement_banner_info(paid_group)).to be(nil)
+        expect(helper.storage_enforcement_banner_info(paid_group)).to be(nil)
       end
 
       it 'returns nil when storage_enforcement_date is not set' do
         allow(free_group).to receive(:storage_enforcement_date).and_return(nil)
 
-        expect(storage_enforcement_banner_info(free_group)).to be(nil)
+        expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
       end
 
-      it 'returns a hash when storage_enforcement_date is set' do
-        storage_enforcement_date = Date.today + 30
-        allow(free_group).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+      describe 'when storage_enforcement_date is set' do
+        let_it_be(:storage_enforcement_date) { Date.today + 30 }
 
-        expect(storage_enforcement_banner_info(free_group)).to eql({
-          text: "From #{storage_enforcement_date} storage limits will apply to this namespace. View and manage your usage in <strong>Group Settings &gt; Usage quotas</strong>.",
-          variant: 'warning',
-          callouts_feature_name: 'storage_enforcement_banner_second_enforcement_threshold',
-          callouts_path: '/-/users/group_callouts',
-          learn_more_link: '<a rel="noopener noreferrer" target="_blank" href="/help//">Learn more.</a>'
-        })
+        before do
+          allow(free_group).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+        end
+
+        it 'returns nil when current_user do not have access usage quotas page' do
+          allow(helper).to receive(:can?).with(current_user, :admin_namespace, free_group).and_return(false)
+
+          expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
+        end
+
+        it 'returns a hash when current_user can access usage quotas page' do
+          expect(helper.storage_enforcement_banner_info(free_group)).to eql({
+            text: "From #{storage_enforcement_date} storage limits will apply to this namespace. View and manage your usage in <strong>Group settings &gt; Usage quotas</strong>.",
+            variant: 'warning',
+            callouts_feature_name: 'storage_enforcement_banner_second_enforcement_threshold',
+            callouts_path: '/-/users/group_callouts',
+            learn_more_link: '<a rel="noopener noreferrer" target="_blank" href="/help//">Learn more.</a>'
+          })
+        end
       end
 
       context 'when storage_enforcement_date is set and dismissed callout exists' do
@@ -96,7 +109,7 @@ RSpec.describe StorageHelper do
           allow(free_group).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
         end
 
-        it { expect(storage_enforcement_banner_info(free_group)).to be(nil) }
+        it { expect(helper.storage_enforcement_banner_info(free_group)).to be(nil) }
       end
 
       context 'callouts_feature_name' do
@@ -106,7 +119,7 @@ RSpec.describe StorageHelper do
           storage_enforcement_date = Date.today + days_from_now
           allow(free_group).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
 
-          storage_enforcement_banner_info(free_group)[:callouts_feature_name]
+          helper.storage_enforcement_banner_info(free_group)[:callouts_feature_name]
         end
 
         it 'returns first callouts_feature_name' do

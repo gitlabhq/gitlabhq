@@ -6,6 +6,11 @@ class Projects::IncidentsController < Projects::ApplicationController
 
   before_action :authorize_read_issue!
   before_action :load_incident, only: [:show]
+  before_action do
+    push_frontend_feature_flag(:incident_escalations, @project)
+    push_frontend_feature_flag(:incident_timeline_event_tab, @project, default_enabled: :yaml)
+    push_licensed_feature(:incident_timeline_events) if @project.licensed_feature_available?(:incident_timeline_events)
+  end
 
   feature_category :incident_management
 
@@ -43,3 +48,5 @@ class Projects::IncidentsController < Projects::ApplicationController
     IssueSerializer.new(current_user: current_user, project: incident.project)
   end
 end
+
+Projects::IncidentsController.prepend_mod

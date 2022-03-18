@@ -94,6 +94,10 @@ module Gitlab
           end
         end
 
+        def primary_db_config
+          primary_model_or_model_if_enabled.connection_db_config
+        end
+
         def replica_db_config
           @model.connection_db_config
         end

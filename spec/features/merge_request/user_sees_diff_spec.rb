@@ -45,8 +45,8 @@ RSpec.describe 'Merge request > User sees diff', :js do
 
       visit diffs_project_merge_request_path(project, merge_request)
 
-      page.within('.alert') do
-        expect(page).to have_text("Too many changes to show. Plain diff Email patch To preserve performance only 3 of 3+ files are displayed.")
+      page.within('.gl-alert') do
+        expect(page).to have_text("Too many changes to show. To preserve performance only 3 of 3+ files are displayed. Plain diff Email patch")
       end
     end
   end
@@ -69,7 +69,7 @@ RSpec.describe 'Merge request > User sees diff', :js do
     end
 
     context 'as user who needs to fork' do
-      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline do
+      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/337477' do
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 

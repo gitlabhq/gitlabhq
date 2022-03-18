@@ -28,7 +28,7 @@ module Mutations
       def resolve(id:, **attributes)
         work_item = authorized_find!(id: id)
 
-        unless Feature.enabled?(:work_items, work_item.project)
+        unless Feature.enabled?(:work_items, work_item.project, default_enabled: :yaml)
           return { errors: ['`work_items` feature flag disabled for this project'] }
         end
 

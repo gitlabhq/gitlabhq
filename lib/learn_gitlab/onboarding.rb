@@ -5,19 +5,19 @@ module LearnGitlab
     include Gitlab::Utils::StrongMemoize
 
     ACTION_ISSUE_IDS = {
-      issue_created: 4,
-      git_write: 6,
       pipeline_created: 7,
-      merge_request_created: 9,
-      user_added: 8,
       trial_started: 2,
       required_mr_approvals_enabled: 11,
       code_owners_enabled: 10
     }.freeze
 
-    ACTION_DOC_URLS = {
-      security_scan_enabled: 'https://docs.gitlab.com/ee/user/application_security/security_dashboard/#gitlab-security-dashboard-security-center-and-vulnerability-reports'
-    }.freeze
+    ACTION_PATHS = [
+      :issue_created,
+      :git_write,
+      :merge_request_created,
+      :user_added,
+      :security_scan_enabled
+    ].freeze
 
     def initialize(namespace)
       @namespace = namespace
@@ -49,7 +49,7 @@ module LearnGitlab
     end
 
     def tracked_actions
-      ACTION_ISSUE_IDS.keys + ACTION_DOC_URLS.keys
+      ACTION_ISSUE_IDS.keys + ACTION_PATHS
     end
 
     attr_reader :namespace

@@ -17,10 +17,11 @@ module Mutations
           pipeline = authorized_find!(id: id)
           project = pipeline.project
 
-          ::Ci::RetryPipelineService.new(project, current_user).execute(pipeline)
+          service_response = ::Ci::RetryPipelineService.new(project, current_user).execute(pipeline)
+
           {
             pipeline: pipeline,
-            errors: errors_on_object(pipeline)
+            errors: errors_on_object(pipeline) + service_response.errors
           }
         end
       end

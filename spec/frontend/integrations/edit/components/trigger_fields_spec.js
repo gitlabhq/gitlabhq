@@ -40,13 +40,13 @@ describe('TriggerFields', () => {
     describe('events without field property', () => {
       const events = [
         {
-          title: 'push',
+          title: 'Push',
           name: 'push_event',
           description: 'Event on push',
           value: true,
         },
         {
-          title: 'merge_request',
+          title: 'Merge request',
           name: 'merge_requests_event',
           description: 'Event on merge_request',
           value: false,
@@ -81,7 +81,7 @@ describe('TriggerFields', () => {
         const checkboxes = findAllGlFormGroups();
         const expectedResults = [
           { labelText: 'Push', inputName: 'service[push_event]' },
-          { labelText: 'Merge Request', inputName: 'service[merge_requests_event]' },
+          { labelText: 'Merge request', inputName: 'service[merge_requests_event]' },
         ];
         expect(checkboxes).toHaveLength(2);
 

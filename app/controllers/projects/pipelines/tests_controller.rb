@@ -42,9 +42,9 @@ module Projects
       end
 
       def test_suite
-        suite = builds.map do |build|
+        suite = builds.sum do |build|
           build.collect_test_reports!(Gitlab::Ci::Reports::TestReports.new)
-        end.sum
+        end
 
         Gitlab::Ci::Reports::TestFailureHistory.new(suite.failed.values, project).load!
 

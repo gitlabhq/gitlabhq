@@ -24,7 +24,7 @@ class ClusterEntity < Grape::Entity
   end
 
   expose :kubernetes_errors do |cluster|
-    ClusterErrorEntity.new(cluster)
+    Clusters::KubernetesErrorEntity.new(cluster)
   end
 
   expose :enable_advanced_logs_querying do |cluster|

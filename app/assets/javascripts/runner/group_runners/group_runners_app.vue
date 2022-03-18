@@ -12,19 +12,20 @@ import RunnerName from '../components/runner_name.vue';
 import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
+import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
 
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import {
-  I18N_FETCH_ERROR,
   GROUP_FILTERED_SEARCH_NAMESPACE,
   GROUP_TYPE,
   PROJECT_TYPE,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_STALE,
+  I18N_FETCH_ERROR,
 } from '../constants';
-import getGroupRunnersQuery from '../graphql/get_group_runners.query.graphql';
-import getGroupRunnersCountQuery from '../graphql/get_group_runners_count.query.graphql';
+import groupRunnersQuery from '../graphql/list/group_runners.query.graphql';
+import groupRunnersCountQuery from '../graphql/list/group_runners_count.query.graphql';
 import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
@@ -33,7 +34,7 @@ import {
 import { captureException } from '../sentry_utils';
 
 const runnersCountSmartQuery = {
-  query: getGroupRunnersCountQuery,
+  query: groupRunnersCountQuery,
   fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
   update(data) {
     return data?.group?.runners?.count;
@@ -55,6 +56,7 @@ export default {
     RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
+    RunnerActionsCell,
   },
   props: {
     registrationToken: {
@@ -74,15 +76,15 @@ export default {
     return {
       search: fromUrlQueryToSearch(),
       runners: {
-        webUrls: [],
         items: [],
+        urlsById: {},
         pageInfo: {},
       },
     };
   },
   apollo: {
     runners: {
-      query: getGroupRunnersQuery,
+      query: groupRunnersQuery,
       // Runners can be updated by users directly in this list.
       // A "cache and network" policy prevents outdated filtered
       // results.
@@ -91,12 +93,23 @@ export default {
         return this.variables;
       },
       update(data) {
-        const { runners } = data?.group || {};
+        const { edges = [], pageInfo = {} } = data?.group?.runners || {};
+
+        const items = [];
+        const urlsById = {};
+
+        edges.forEach(({ node, webUrl, editUrl }) => {
+          items.push(node);
+          urlsById[node.id] = {
+            web: webUrl,
+            edit: editUrl,
+          };
+        });
 
         return {
-          webUrls: runners?.edges.map(({ webUrl }) => webUrl) || [],
-          items: runners?.edges.map(({ node }) => node) || [],
-          pageInfo: runners?.pageInfo || {},
+          items,
+          urlsById,
+          pageInfo,
         };
       },
       error(error) {
@@ -190,6 +203,7 @@ export default {
       deep: true,
       handler() {
         // TODO Implement back button reponse using onpopstate
+        // See https://gitlab.com/gitlab-org/gitlab/-/issues/333804
         updateHistory({
           url: fromSearchToUrl(this.search),
           title: document.title,
@@ -220,6 +234,16 @@ export default {
         return formatNumber(count);
       }
       return null;
+    },
+    webUrl(runner) {
+      return this.runners.urlsById[runner.id]?.web;
+    },
+    editUrl(runner) {
+      return this.runners.urlsById[runner.id]?.edit;
+    },
+    onDeleted({ message }) {
+      this.$root.$toast?.show(message);
+      this.$apollo.queries.runners.refetch();
     },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
@@ -272,13 +296,20 @@ export default {
     </div>
     <template v-else>
       <runner-list :runners="runners.items" :loading="runnersLoading">
-        <template #runner-name="{ runner, index }">
-          <gl-link :href="runners.webUrls[index]">
+        <template #runner-name="{ runner }">
+          <gl-link :href="webUrl(runner)">
             <runner-name :runner="runner" />
           </gl-link>
         </template>
+        <template #runner-actions-cell="{ runner }">
+          <runner-actions-cell :runner="runner" :edit-url="editUrl(runner)" @deleted="onDeleted" />
+        </template>
       </runner-list>
-      <runner-pagination v-model="search.pagination" :page-info="runners.pageInfo" />
+      <runner-pagination
+        v-model="search.pagination"
+        class="gl-mt-3"
+        :page-info="runners.pageInfo"
+      />
     </template>
   </div>
 </template>

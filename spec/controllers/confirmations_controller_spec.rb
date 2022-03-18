@@ -152,7 +152,7 @@ RSpec.describe ConfirmationsController do
         perform_request
 
         expect(response).to render_template(:new)
-        expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+        expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
       end
 
       it 'successfully sends password reset when reCAPTCHA is solved' do

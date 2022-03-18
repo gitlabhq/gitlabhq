@@ -22,9 +22,7 @@ module AlertManagement
       return result unless result.success?
 
       issue = result.payload[:issue]
-      update_title_for(issue)
-
-      SystemNoteService.new_alert_issue(alert, issue, user)
+      perform_after_create_tasks(issue)
 
       result
     end
@@ -56,6 +54,12 @@ module AlertManagement
       issue.update!(title: "#{DEFAULT_INCIDENT_TITLE} #{issue.iid}")
     end
 
+    def perform_after_create_tasks(issue)
+      update_title_for(issue)
+
+      SystemNoteService.new_alert_issue(alert, issue, user)
+    end
+
     def error(message, issue = nil)
       ServiceResponse.error(payload: { issue: issue }, message: message)
     end
@@ -75,3 +79,5 @@ module AlertManagement
     end
   end
 end
+
+AlertManagement::CreateAlertIssueService.prepend_mod

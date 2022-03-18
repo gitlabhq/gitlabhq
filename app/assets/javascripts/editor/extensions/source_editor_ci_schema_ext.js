@@ -14,7 +14,7 @@ export class CiSchemaExtension {
         // to fetch schema files, hence the `gon.gitlab_url`
         // reference. This prevents error:
         //   "Failed to execute 'fetch' on 'WorkerGlobalScope'"
-        const absoluteSchemaUrl = gon.gitlab_url + ciSchemaPath;
+        const absoluteSchemaUrl = new URL(ciSchemaPath, gon.gitlab_url).href;
         const modelFileName = instance.getModel().uri.path.split('/').pop();
 
         registerSchema({

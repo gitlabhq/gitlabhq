@@ -45,8 +45,29 @@ A to-do item is added to your To-Do List when:
 
 When several actions occur for the same user on the same object,
 GitLab displays the first action as a single to-do item.
+To change this behavior, enable
+[multiple to-do items per object](#multiple-to-do-items-per-object).
 
 To-do items aren't affected by [GitLab notification email settings](profile/notifications.md).
+
+### Multiple to-do items per object **(FREE SELF)**
+
+<!-- When the feature flag is removed, integrate this topic into the one above. -->
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a flag](../administration/feature_flags.md) named `multiple_todos`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82470) in GitLab 14.9: only mentions create multiple to-do items.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user,
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `multiple_todos`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+When you enable this feature:
+
+- Every time you're mentioned, GitLab creates a new to-do item for you.
+- Other [actions that create to-do items](#actions-that-create-to-do-items)
+  create one to-do item per action type on the issue, MR, and so on.
 
 ## Create a to-do item
 
@@ -73,9 +94,7 @@ For example, in the following comment:
 
 - @carol can you please have a look?
 
->>>
-@dan what do you think?
->>>
+> @dan what do you think?
 
 @erin @frank thank you!
 ```

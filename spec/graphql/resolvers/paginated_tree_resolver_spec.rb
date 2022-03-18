@@ -65,7 +65,11 @@ RSpec.describe Resolvers::PaginatedTreeResolver do
       context 'when cursor is invalid' do
         let(:args) { super().merge(after: 'invalid') }
 
-        it { expect { subject }.to raise_error(Gitlab::Graphql::Errors::ArgumentError) }
+        it 'generates an error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+            subject
+          end
+        end
       end
 
       it 'returns all tree entries during cursor pagination' do

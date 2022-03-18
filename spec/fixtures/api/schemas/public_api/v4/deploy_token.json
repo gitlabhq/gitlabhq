@@ -5,7 +5,9 @@
     "name",
     "username",
     "expires_at",
-    "scopes"
+    "scopes",
+    "revoked",
+    "expired"
   ],
   "properties": {
     "id": {
@@ -26,6 +28,12 @@
     },
     "token": {
       "type": "string"
+    },
+    "revoked": {
+      "type": "boolean"
+    },
+    "expired": {
+      "type": "boolean"
     }
   }
 }

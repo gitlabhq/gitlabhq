@@ -17,18 +17,17 @@
 
 */
 
-import { GlLink, GlTooltipDirective } from '@gitlab/ui';
-import userAvatarImage from './user_avatar_image.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import UserAvatarLinkNew from './user_avatar_link_new.vue';
+import UserAvatarLinkOld from './user_avatar_link_old.vue';
 
 export default {
   name: 'UserAvatarLink',
   components: {
-    GlLink,
-    userAvatarImage,
+    UserAvatarLinkNew,
+    UserAvatarLinkOld,
   },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
+  mixins: [glFeatureFlagMixin()],
   props: {
     lazy: {
       type: Boolean,
@@ -76,36 +75,21 @@ export default {
       default: '',
     },
   },
-  computed: {
-    shouldShowUsername() {
-      return this.username.length > 0;
-    },
-    avatarTooltipText() {
-      return this.shouldShowUsername ? '' : this.tooltipText;
-    },
-  },
 };
 </script>
 
 <template>
-  <gl-link :href="linkHref" class="user-avatar-link">
-    <user-avatar-image
-      :img-src="imgSrc"
-      :img-alt="imgAlt"
-      :css-classes="imgCssClasses"
-      :size="imgSize"
-      :tooltip-text="avatarTooltipText"
-      :tooltip-placement="tooltipPlacement"
-      :lazy="lazy"
-    >
-      <slot></slot> </user-avatar-image
-    ><span
-      v-if="shouldShowUsername"
-      v-gl-tooltip
-      :title="tooltipText"
-      :tooltip-placement="tooltipPlacement"
-      class="js-user-avatar-link-username"
-      >{{ username }}</span
-    ><slot name="avatar-badge"></slot>
-  </gl-link>
+  <user-avatar-link-new v-if="glFeatures.glAvatarForAllUserAvatars" v-bind="$props">
+    <slot></slot>
+    <template #avatar-badge>
+      <slot name="avatar-badge"></slot>
+    </template>
+  </user-avatar-link-new>
+
+  <user-avatar-link-old v-else v-bind="$props">
+    <slot></slot>
+    <template #avatar-badge>
+      <slot name="avatar-badge"></slot>
+    </template>
+  </user-avatar-link-old>
 </template>

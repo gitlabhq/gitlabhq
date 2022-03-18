@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe IssueSidebarBasicEntity do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:user) { create(:user, developer_projects: [project]) }
-  let_it_be(:issue) { create(:issue, project: project, assignees: [user]) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [user]) }
 
   let(:serializer) { IssueSerializer.new(current_user: user, project: project) }
 
@@ -68,6 +69,29 @@ RSpec.describe IssueSidebarBasicEntity do
             expect(entity[:current_user]).not_to include(:can_update_escalation_status)
           end
         end
+      end
+    end
+  end
+
+  describe 'show_crm_contacts' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:is_reporter, :contacts_exist_for_group, :expected) do
+      false | false | false
+      false | true  | false
+      true  | false | false
+      true  | true  | true
+    end
+
+    with_them do
+      it 'sets proper boolean value for show_crm_contacts' do
+        allow(CustomerRelations::Contact).to receive(:exists_for_group?).with(group).and_return(contacts_exist_for_group)
+
+        if is_reporter
+          project.root_ancestor.add_reporter(user)
+        end
+
+        expect(entity[:show_crm_contacts]).to be(expected)
       end
     end
   end

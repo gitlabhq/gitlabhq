@@ -31,7 +31,7 @@ RSpec.describe EnvironmentEntity do
   end
 
   it 'exposes core elements of environment' do
-    expect(subject).to include(:id, :global_id, :name, :state, :environment_path)
+    expect(subject).to include(:id, :global_id, :name, :state, :environment_path, :tier)
   end
 
   it 'exposes folder path' do

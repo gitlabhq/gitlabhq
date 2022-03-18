@@ -438,3 +438,61 @@ old method:
 
 If you want to add easy Geo replication of a resource you're working
 on, check out our [self-service framework](geo/framework.md).
+
+## Geo development workflow
+
+### GET:Geo pipeline
+
+As part of the [package-and-qa](testing_guide/end_to_end/index.md#using-the-package-and-qa-job) pipeline, there is an option to manually trigger a job named `GET:Geo`. This
+pipeline uses [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to spin up a
+[1k](../administration/reference_architectures/1k_users.md) Geo installation,
+and run the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) Geo scenario against the instance.
+When working on Geo features, it is a good idea to ensure the `qa-geo` job passes in a triggered `GET:Geo pipeline`.
+
+The pipelines that control the provisioning and teardown of the instance are included in The GitLab Environment Toolkit Configs
+[Geo subproject](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit-configs/Geo).
+
+When adding new functionality, consider adding new tests to verify the behavior. For steps,
+see the [QA documentation](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#writing-tests).
+
+#### Architecture
+
+The pipeline involves the interaction of multiple different projects:
+
+- [GitLab](https://gitlab.com/gitlab-org/gitlab) - The [package-and-qa job](testing_guide/end_to_end/index.md#using-the-package-and-qa-job) is launched from merge requests in this project.
+- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab) - Builds relevant artifacts containing the changes from the triggering merge request pipeline.
+- [GET-Configs/Geo](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit-configs/Geo) - Coordinates the lifecycle of a short-lived Geo installation that can be evaluated.
+- [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - Contains the necessary logic for creating and destroying Geo installations. Used by `GET-Configs/Geo`.
+- [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) - Tool for running automated tests against a GitLab instance.
+
+```mermaid
+flowchart TD;
+  GET:Geo-->getcg
+  Provision-->Terraform
+  Configure-->Ansible
+  Geo-->Ansible
+  QA-->gagq
+
+  subgraph "omnibus-gitlab-mirror"
+    GET:Geo
+  end
+
+  subgraph getcg [GitLab-environment-toolkit-configs/Geo]
+    direction LR
+    Generate-terraform-config-->Provision
+    Provision-->Generate-ansible-config
+    Generate-ansible-config-->Configure
+    Configure-->Geo
+    Geo-->QA
+    QA-->Destroy-geo
+  end
+
+  subgraph get [GitLab Environment Toolkit]
+    Terraform
+    Ansible
+  end
+
+  subgraph GitLab QA
+     gagq[GitLab QA Geo Scenario]
+  end
+```

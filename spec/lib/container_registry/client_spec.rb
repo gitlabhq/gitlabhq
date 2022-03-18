@@ -168,24 +168,100 @@ RSpec.describe ContainerRegistry::Client do
       expect(subject).to eq('Blob')
     end
 
-    it 'follows 307 redirect for GET /v2/:name/blobs/:digest' do
-      stub_request(method, url)
-        .with(headers: blob_headers)
-        .to_return(status: 307, body: '', headers: { Location: 'http://redirected' })
-      # We should probably use hash_excluding here, but that requires an update to WebMock:
-      # https://github.com/bblimke/webmock/blob/master/lib/webmock/matchers/hash_excluding_matcher.rb
-      stub_request(:get, "http://redirected/")
-        .with(headers: redirect_header) do |request|
-          !request.headers.include?('Authorization')
+    context 'with a 307 redirect' do
+      let(:redirect_location) { 'http://redirected' }
+
+      before do
+        stub_request(method, url)
+          .with(headers: blob_headers)
+          .to_return(status: 307, body: '', headers: { Location: redirect_location })
+
+        # We should probably use hash_excluding here, but that requires an update to WebMock:
+        # https://github.com/bblimke/webmock/blob/master/lib/webmock/matchers/hash_excluding_matcher.rb
+        stub_request(:get, redirect_location)
+          .with(headers: redirect_header) do |request|
+            !request.headers.include?('Authorization')
+          end
+          .to_return(status: 200, body: "Successfully redirected")
+      end
+
+      shared_examples 'handling redirects' do
+        it 'follows the redirect' do
+          expect(Faraday::Utils).not_to receive(:escape).with('signature=')
+          expect_new_faraday
+          expect(subject).to eq('Successfully redirected')
         end
-        .to_return(status: 200, body: "Successfully redirected")
+      end
 
-      expect_new_faraday(times: 2)
+      it_behaves_like 'handling redirects'
 
-      expect(subject).to eq('Successfully redirected')
+      context 'with a redirect location with params ending with =' do
+        let(:redirect_location) { 'http://redirect?foo=bar&test=signature=' }
+
+        it_behaves_like 'handling redirects'
+
+        context 'with container_registry_follow_redirects_middleware disabled' do
+          before do
+            stub_feature_flags(container_registry_follow_redirects_middleware: false)
+          end
+
+          it 'follows the redirect' do
+            expect(Faraday::Utils).to receive(:escape).with('foo').and_call_original
+            expect(Faraday::Utils).to receive(:escape).with('bar').and_call_original
+            expect(Faraday::Utils).to receive(:escape).with('test').and_call_original
+            expect(Faraday::Utils).to receive(:escape).with('signature=').and_call_original
+
+            expect_new_faraday(times: 2)
+            expect(subject).to eq('Successfully redirected')
+          end
+        end
+      end
+
+      context 'with a redirect location with params ending with %3D' do
+        let(:redirect_location) { 'http://redirect?foo=bar&test=signature%3D' }
+
+        it_behaves_like 'handling redirects'
+
+        context 'with container_registry_follow_redirects_middleware disabled' do
+          before do
+            stub_feature_flags(container_registry_follow_redirects_middleware: false)
+          end
+
+          it 'follows the redirect' do
+            expect(Faraday::Utils).to receive(:escape).with('foo').and_call_original
+            expect(Faraday::Utils).to receive(:escape).with('bar').and_call_original
+            expect(Faraday::Utils).to receive(:escape).with('test').and_call_original
+            expect(Faraday::Utils).to receive(:escape).with('signature=').and_call_original
+
+            expect_new_faraday(times: 2)
+            expect(subject).to eq('Successfully redirected')
+          end
+        end
+      end
     end
 
     it_behaves_like 'handling timeouts'
+
+    # TODO Remove this context along with the
+    # container_registry_follow_redirects_middleware feature flag
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/353291
+    context 'faraday blob' do
+      subject { client.send(:faraday_blob) }
+
+      it 'has a follow redirects middleware' do
+        expect(subject.builder.handlers).to include(::FaradayMiddleware::FollowRedirects)
+      end
+
+      context 'with container_registry_follow_redirects_middleware is disabled' do
+        before do
+          stub_feature_flags(container_registry_follow_redirects_middleware: false)
+        end
+
+        it 'has  not a follow redirects middleware' do
+          expect(subject.builder.handlers).not_to include(::FaradayMiddleware::FollowRedirects)
+        end
+      end
+    end
   end
 
   describe '#upload_blob' do

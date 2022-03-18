@@ -13,7 +13,7 @@
         - unless Gitlab::Metrics.metrics_folder_present?
           .form-text.text-muted
             %strong.cred= _("WARNING:")
-            = _("Environment variable %{code_start}%{environment_variable}%{code_end} does not exist or is not pointing to a valid directory.").html_safe % { environment_variable: prometheus_multiproc_dir, code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
+            = _("Environment variable %{environment_variable} does not exist or is not pointing to a valid directory.").html_safe % { environment_variable: '<code>prometheus_multiproc_dir</code>'.html_safe }
             = link_to sprite_icon('question-o'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
     .form-group
       = f.label :metrics_method_call_threshold, _('Method call threshold (ms)'), class: 'label-bold'

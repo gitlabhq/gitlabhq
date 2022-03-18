@@ -22,7 +22,7 @@ To run IaC scanning jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 WARNING:
-Our IaC scanning jobs require a Linux container type. Windows containers are not yet supported.
+Our IaC scanning jobs require a Linux/amd64 container type. Windows containers are not yet supported.
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
@@ -58,7 +58,7 @@ as shown in the following table:
 |:---------------------------------------------------------------------------------------|:--------------------|:-------------------|
 | [Configure IaC Scanners](#configuration)                                               | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](#reports-json-format)                                               | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in Merge Request                                           | **{dotted-circle}** | **{check-circle}** |
+| Presentation of JSON Report in merge request                                           | **{dotted-circle}** | **{check-circle}** |
 | [Address vulnerabilities](../../application_security/vulnerabilities/index.md)         | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](../../application_security/security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
 
@@ -76,7 +76,12 @@ To configure IaC Scanning for a project you can:
 ### Configure IaC Scanning manually
 
 To enable IaC Scanning you must [include](../../../ci/yaml/index.md#includetemplate) the
-[`SAST-IaC.latest.gitlab-ci.yml template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST-IaC.latest.gitlab-ci.yml) provided as part of your GitLab installation.
+[`SAST-IaC.latest.gitlab-ci.yml template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST-IaC.latest.gitlab-ci.yml) provided as part of your GitLab installation. Here is an example of how to include it:
+
+```yaml
+include:
+  - template: Security/SAST-IaC.latest.gitlab-ci.yml
+```
 
 The included template creates IaC scanning jobs in your CI/CD pipeline and scans
 your project's configuration files for possible vulnerabilities.

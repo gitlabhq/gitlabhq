@@ -104,7 +104,11 @@ class MergeRequestWidgetEntity < Grape::Entity
   # include them if they are explicitly requested on first load.
   expose :issues_links, if: -> (_, opts) { opts[:issues_links] } do
     expose :assign_to_closing do |merge_request|
-      presenter(merge_request).assign_to_closing_issues_link
+      presenter(merge_request).assign_to_closing_issues_path
+    end
+
+    expose :assign_to_closing_count do |merge_request|
+      presenter(merge_request).assign_to_closing_issues_count
     end
 
     expose :closing do |merge_request|

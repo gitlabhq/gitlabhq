@@ -14,7 +14,8 @@ stages:
 a11y:
   stage: accessibility
   image: registry.gitlab.com/gitlab-org/ci-cd/accessibility:6.1.1
-  script: /gitlab-accessibility.sh $a11y_urls
+  script:
+    - /gitlab-accessibility.sh "$a11y_urls"
   allow_failure: true
   artifacts:
     when: always

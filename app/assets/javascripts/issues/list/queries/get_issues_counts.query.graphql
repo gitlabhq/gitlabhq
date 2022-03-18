@@ -1,6 +1,7 @@
 query getIssuesCount(
   $isProject: Boolean = false
   $fullPath: ID!
+  $iid: String
   $search: String
   $assigneeId: String
   $assigneeUsernames: [String!]
@@ -20,6 +21,7 @@ query getIssuesCount(
     openedIssues: issues(
       includeSubgroups: true
       state: opened
+      iid: $iid
       search: $search
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
@@ -37,6 +39,7 @@ query getIssuesCount(
     closedIssues: issues(
       includeSubgroups: true
       state: closed
+      iid: $iid
       search: $search
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
@@ -54,6 +57,7 @@ query getIssuesCount(
     allIssues: issues(
       includeSubgroups: true
       state: all
+      iid: $iid
       search: $search
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
@@ -73,6 +77,7 @@ query getIssuesCount(
     id
     openedIssues: issues(
       state: opened
+      iid: $iid
       search: $search
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
@@ -91,6 +96,7 @@ query getIssuesCount(
     }
     closedIssues: issues(
       state: closed
+      iid: $iid
       search: $search
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
@@ -109,6 +115,7 @@ query getIssuesCount(
     }
     allIssues: issues(
       state: all
+      iid: $iid
       search: $search
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames

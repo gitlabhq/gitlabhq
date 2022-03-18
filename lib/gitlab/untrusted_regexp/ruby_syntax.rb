@@ -16,40 +16,23 @@ module Gitlab
 
       # The regexp can match the pattern `/.../`, but may not be fabricatable:
       # it can be invalid or incomplete: `/match ( string/`
-      def self.valid?(pattern, fallback: false)
-        !!self.fabricate(pattern, fallback: fallback)
+      def self.valid?(pattern)
+        !!self.fabricate(pattern)
       end
 
-      def self.fabricate(pattern, fallback: false, project: nil)
-        self.fabricate!(pattern, fallback: fallback, project: project)
+      def self.fabricate(pattern, project: nil)
+        self.fabricate!(pattern, project: project)
       rescue RegexpError
         nil
       end
 
-      def self.fabricate!(pattern, fallback: false, project: nil)
+      def self.fabricate!(pattern, project: nil)
         raise RegexpError, 'Pattern is not string!' unless pattern.is_a?(String)
 
         matches = pattern.match(PATTERN)
         raise RegexpError, 'Invalid regular expression!' if matches.nil?
 
-        begin
-          create_untrusted_regexp(matches[:regexp], matches[:flags])
-        rescue RegexpError
-          raise unless fallback &&
-              Feature.enabled?(:allow_unsafe_ruby_regexp, default_enabled: :yaml)
-
-          if Feature.enabled?(:ci_unsafe_regexp_logger, type: :ops, default_enabled: :yaml)
-            Gitlab::AppJsonLogger.info(
-              class: self.name,
-              regexp: pattern.to_s,
-              fabricated: 'unsafe ruby regexp',
-              project_id: project&.id,
-              project_path: project&.full_path
-            )
-          end
-
-          create_ruby_regexp(matches[:regexp], matches[:flags])
-        end
+        create_untrusted_regexp(matches[:regexp], matches[:flags])
       end
 
       def self.create_untrusted_regexp(pattern, flags)
@@ -58,15 +41,6 @@ module Gitlab
         UntrustedRegexp.new(pattern, multiline: false)
       end
       private_class_method :create_untrusted_regexp
-
-      def self.create_ruby_regexp(pattern, flags)
-        options = 0
-        options += Regexp::IGNORECASE if flags&.include?('i')
-        options += Regexp::MULTILINE if flags&.include?('m')
-
-        Regexp.new(pattern, options)
-      end
-      private_class_method :create_ruby_regexp
     end
   end
 end

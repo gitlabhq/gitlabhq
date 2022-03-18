@@ -10,6 +10,8 @@ module Ci
     include Presentable
     include Importable
     include Ci::HasRef
+    include HasDeploymentName
+
     extend ::Gitlab::Utils::Override
 
     BuildArchivedError = Class.new(StandardError)
@@ -34,6 +36,8 @@ module Ci
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
+
+    DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
@@ -68,6 +72,7 @@ module Ci
     delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :service_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
+    delegate :harbor_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
 
     ##
@@ -579,6 +584,7 @@ module Ci
           .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
           .concat(deploy_token_variables)
+          .concat(harbor_variables)
       end
     end
 
@@ -613,6 +619,12 @@ module Ci
         variables.append(key: 'CI_DEPENDENCY_PROXY_USER', value: ::Gitlab::Auth::CI_JOB_USER)
         variables.append(key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: token.to_s, public: false, masked: true)
       end
+    end
+
+    def harbor_variables
+      return [] unless harbor_integration.try(:activated?)
+
+      Gitlab::Ci::Variables::Collection.new(harbor_integration.ci_variables)
     end
 
     def features
@@ -1121,6 +1133,10 @@ module Ci
         .dig(:allow_failure_criteria, :exit_codes)
         .to_a
         .include?(exit_code)
+    end
+
+    def track_deployment_usage
+      Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_deployment_job', user_id) if user_id.present? && count_user_deployment?
     end
 
     protected

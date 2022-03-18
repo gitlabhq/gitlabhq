@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+PUMA_EXTERNAL_METRICS_SERVER = Gitlab::Utils.to_boolean(ENV['PUMA_EXTERNAL_METRICS_SERVER'])
+require Rails.root.join('metrics_server', 'metrics_server') if PUMA_EXTERNAL_METRICS_SERVER
+
 # Keep separate directories for separate processes
 def prometheus_default_multiproc_dir
   return unless Rails.env.development? || Rails.env.test?
@@ -34,8 +37,6 @@ end
 ::Prometheus::Client.configure do |config|
   config.logger = Gitlab::AppLogger
 
-  config.initial_mmap_file_size = 4 * 1024
-
   config.multiprocess_files_dir = ENV['prometheus_multiproc_dir'] || prometheus_default_multiproc_dir
 
   config.pid_provider = ::Prometheus::PidProvider.method(:worker_id)
@@ -45,6 +46,10 @@ Gitlab::Application.configure do |config|
   # 0 should be Sentry to catch errors in this middleware
   config.middleware.insert_after(Labkit::Middleware::Rack, Gitlab::Metrics::RequestsRackMiddleware)
 end
+
+# Any actions beyond this check should only execute outside of tests, when running in an application
+# context (i.e. not in the Rails console or rspec) and when users have enabled metrics.
+return if Rails.env.test? || !Gitlab::Runtime.application? || !Gitlab::Metrics.prometheus_metrics_enabled?
 
 if Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0')
   # The single worker outside of a sidekiq-cluster, or the first worker (sidekiq_0)
@@ -64,67 +69,75 @@ if Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER
   end
 end
 
-if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
-  Gitlab::Cluster::LifecycleEvents.on_master_start do
-    if Gitlab::Runtime.puma?
-      Gitlab::Metrics::Samplers::PumaSampler.instance.start
+Gitlab::Cluster::LifecycleEvents.on_master_start do
+  Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION, revision: Gitlab.revision }, 1)
+
+  if Gitlab::Runtime.puma?
+    Gitlab::Metrics::Samplers::PumaSampler.instance.start
+
+    if PUMA_EXTERNAL_METRICS_SERVER && Settings.monitoring.web_exporter.enabled
+      MetricsServer.start_for_puma
+    else
+      Gitlab::Metrics::Exporter::WebExporter.instance.start
     end
-
-    Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION, revision: Gitlab.revision }, 1)
-
-    Gitlab::Ci::Parsers.instrument!
-  rescue IOError => e
-    Gitlab::ErrorTracking.track_exception(e)
-    Gitlab::Metrics.error_detected!
   end
 
-  Gitlab::Cluster::LifecycleEvents.on_worker_start do
-    defined?(::Prometheus::Client.reinitialize_on_pid_change) && ::Prometheus::Client.reinitialize_on_pid_change
-    logger = Gitlab::AppLogger
-    Gitlab::Metrics::Samplers::RubySampler.initialize_instance(logger: logger).start
-    Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance(logger: logger).start
-    Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance(logger: logger).start
-
-    if Gitlab::Runtime.web_server?
-      Gitlab::Metrics::Samplers::ActionCableSampler.instance(logger: logger).start
-    end
-
-    if Gitlab.ee? && Gitlab::Runtime.sidekiq?
-      Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start
-    end
-
-    Gitlab::Ci::Parsers.instrument!
-  rescue IOError => e
-    Gitlab::ErrorTracking.track_exception(e)
-    Gitlab::Metrics.error_detected!
-  end
+  Gitlab::Ci::Parsers.instrument!
+rescue IOError => e
+  Gitlab::ErrorTracking.track_exception(e)
+  Gitlab::Metrics.error_detected!
 end
 
-if Gitlab::Runtime.web_server?
-  Gitlab::Cluster::LifecycleEvents.on_master_start do
-    Gitlab::Metrics::Exporter::WebExporter.instance.start
+Gitlab::Cluster::LifecycleEvents.on_worker_start do
+  defined?(::Prometheus::Client.reinitialize_on_pid_change) && ::Prometheus::Client.reinitialize_on_pid_change
+  logger = Gitlab::AppLogger
+  Gitlab::Metrics::Samplers::RubySampler.initialize_instance(logger: logger).start
+  Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance(logger: logger).start
+  Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance(logger: logger).start
+
+  if Gitlab::Runtime.puma?
+    # Since we are observing a metrics server from the Puma primary, we would inherit
+    # this supervision thread after forking into workers, so we need to explicitly stop it here.
+    if PUMA_EXTERNAL_METRICS_SERVER
+      ::MetricsServer::PumaProcessSupervisor.instance.stop
+    else
+      Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    end
+
+    Gitlab::Metrics::Samplers::ActionCableSampler.instance(logger: logger).start
   end
 
+  if Gitlab.ee? && Gitlab::Runtime.sidekiq?
+    Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start
+  end
+
+  Gitlab::Ci::Parsers.instrument!
+rescue IOError => e
+  Gitlab::ErrorTracking.track_exception(e)
+  Gitlab::Metrics.error_detected!
+end
+
+if Gitlab::Runtime.puma?
   Gitlab::Cluster::LifecycleEvents.on_before_graceful_shutdown do
     # We need to ensure that before we re-exec or shutdown server
-    # we do stop the exporter
-    Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    # we also stop the metrics server
+    if PUMA_EXTERNAL_METRICS_SERVER
+      ::MetricsServer::PumaProcessSupervisor.instance.shutdown
+    else
+      Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    end
   end
 
   Gitlab::Cluster::LifecycleEvents.on_before_master_restart do
     # We need to ensure that before we re-exec server
-    # we do stop the exporter
+    # we also stop the metrics server
     #
     # We do it again, for being extra safe,
     # but it should not be needed
-    Gitlab::Metrics::Exporter::WebExporter.instance.stop
-  end
-
-  Gitlab::Cluster::LifecycleEvents.on_worker_start do
-    # The `#close_on_exec=` takes effect only on `execve`
-    # but this does not happen for Ruby fork
-    #
-    # This does stop server, as it is running on master.
-    Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    if PUMA_EXTERNAL_METRICS_SERVER
+      ::MetricsServer::PumaProcessSupervisor.instance.shutdown
+    else
+      Gitlab::Metrics::Exporter::WebExporter.instance.stop
+    end
   end
 end

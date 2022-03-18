@@ -48,6 +48,14 @@ describe('Ref selector Vuex store mutations', () => {
     });
   });
 
+  describe(`${types.SET_USE_SYMBOLIC_REF_NAMES}`, () => {
+    it('sets useSymbolicRefNames on the state', () => {
+      mutations[types.SET_USE_SYMBOLIC_REF_NAMES](state, true);
+
+      expect(state.useSymbolicRefNames).toBe(true);
+    });
+  });
+
   describe(`${types.SET_PROJECT_ID}`, () => {
     it('updates the project ID', () => {
       const newProjectId = '4';

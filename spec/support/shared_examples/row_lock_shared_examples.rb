@@ -7,7 +7,7 @@
 RSpec.shared_examples 'locked row' do
   it "has locked row" do
     table_name = row.class.table_name
-    ids_regex = /SELECT.*FROM.*#{table_name}.*"#{table_name}"."id" = #{row.id}.+FOR UPDATE/m
+    ids_regex = /SELECT.*FROM.*#{table_name}.*"#{table_name}"."id" = #{row.id}.+FOR NO KEY UPDATE/m
 
     expect(recorded_queries.log).to include a_string_matching 'SAVEPOINT'
     expect(recorded_queries.log).to include a_string_matching ids_regex

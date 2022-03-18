@@ -19,16 +19,11 @@ describe('ResizeObserver Utility', () => {
 
     jest.spyOn(document.documentElement, 'scrollTo');
 
-    setFixtures(`<div id="content-body"><div class="target">element to scroll to</div></div>`);
+    setFixtures(`<div id="content-body"><div id="note_1234">note to scroll to</div></div>`);
 
-    const target = document.querySelector('.target');
+    const target = document.querySelector('#note_1234');
 
     jest.spyOn(target, 'getBoundingClientRect').mockReturnValue({ top: 200 });
-
-    observer = scrollToTargetOnResize({
-      target: '.target',
-      container: '#content-body',
-    });
   });
 
   afterEach(() => {
@@ -38,21 +33,22 @@ describe('ResizeObserver Utility', () => {
   describe('Observer behavior', () => {
     it('returns null for empty target', () => {
       observer = scrollToTargetOnResize({
-        target: '',
+        targetId: '',
         container: '#content-body',
       });
 
       expect(observer).toBe(null);
     });
 
-    it('returns ResizeObserver instance', () => {
-      expect(observer).toBeInstanceOf(ResizeObserver);
-    });
+    it('does not scroll if target does not exist', () => {
+      observer = scrollToTargetOnResize({
+        targetId: 'some_imaginary_id',
+        container: '#content-body',
+      });
 
-    it('scrolls body so anchor is just below sticky header (contentTop)', () => {
       triggerResize();
 
-      expect(document.documentElement.scrollTo).toHaveBeenCalledWith({ top: 110 });
+      expect(document.documentElement.scrollTo).not.toHaveBeenCalled();
     });
 
     const interactionEvents = ['mousedown', 'touchstart', 'keydown', 'wheel'];
@@ -63,6 +59,25 @@ describe('ResizeObserver Utility', () => {
       triggerResize();
 
       expect(document.documentElement.scrollTo).not.toHaveBeenCalledWith();
+    });
+
+    describe('with existing target', () => {
+      beforeEach(() => {
+        observer = scrollToTargetOnResize({
+          targetId: 'note_1234',
+          container: '#content-body',
+        });
+      });
+
+      it('returns ResizeObserver instance', () => {
+        expect(observer).toBeInstanceOf(ResizeObserver);
+      });
+
+      it('scrolls body so anchor is just below sticky header (contentTop)', () => {
+        triggerResize();
+
+        expect(document.documentElement.scrollTo).toHaveBeenCalledWith({ top: 110 });
+      });
     });
   });
 });

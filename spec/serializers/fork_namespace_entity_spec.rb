@@ -59,26 +59,4 @@ RSpec.describe ForkNamespaceEntity do
   it 'exposes human readable permission level' do
     expect(json[:permission]).to eql 'Developer'
   end
-
-  it 'exposes can_create_project' do
-    expect(json[:can_create_project]).to be true
-  end
-
-  context 'when fork_project_form feature flag is disabled' do
-    before do
-      stub_feature_flags(fork_project_form: false)
-    end
-
-    it 'sets can_create_project to true when user can create projects in namespace' do
-      allow(user).to receive(:can?).with(:create_projects, namespace).and_return(true)
-
-      expect(json[:can_create_project]).to be true
-    end
-
-    it 'sets can_create_project to false when user is not allowed create projects in namespace' do
-      allow(user).to receive(:can?).with(:create_projects, namespace).and_return(false)
-
-      expect(json[:can_create_project]).to be false
-    end
-  end
 end

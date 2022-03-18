@@ -27,8 +27,8 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
     context 'for count with default column metrics' do
       it_behaves_like 'name suggestion' do
         # corresponding metric is collected with count(Board)
-        let(:key_path) { 'counts.boards' }
-        let(:name_suggestion) { /count_boards/ }
+        let(:key_path) { 'counts.issues' }
+        let(:name_suggestion) { /count_issues/ }
       end
     end
 

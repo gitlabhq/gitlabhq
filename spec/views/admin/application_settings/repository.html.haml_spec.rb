@@ -21,8 +21,9 @@ RSpec.describe 'admin/application_settings/repository.html.haml' do
     it 'renders the correct setting section content' do
       render
 
-      expect(rendered).to have_content("Default initial branch name")
-      expect(rendered).to have_content("The default name for the initial branch of new repositories created in the instance.")
+      expect(rendered).to have_content("Initial default branch name")
+      expect(rendered).to have_content("Set the initial name and protections for the default branch of new repositories created in the instance.")
+      expect(rendered).to have_content("Initial default branch protection")
     end
   end
 end

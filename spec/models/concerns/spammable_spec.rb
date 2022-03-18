@@ -55,7 +55,7 @@ RSpec.describe Spammable do
         subject { invalidate_if_spam(needs_recaptcha: true) }
 
         it 'has an error related to spam on the model' do
-          expect(subject.errors.messages[:base]).to match_array /solve the reCAPTCHA/
+          expect(subject.errors.messages[:base]).to match_array /content or solve the/
         end
       end
 
@@ -63,7 +63,7 @@ RSpec.describe Spammable do
         subject { invalidate_if_spam(is_spam: true, needs_recaptcha: true) }
 
         it 'has an error related to spam on the model' do
-          expect(subject.errors.messages[:base]).to match_array /solve the reCAPTCHA/
+          expect(subject.errors.messages[:base]).to match_array /content or solve the/
         end
       end
 

@@ -21,11 +21,13 @@ module Preloaders
       def load_deployment_association(association_name, association_attributes)
         return unless environments.present?
 
-        union_arg = environments.inject([]) do |result, environment|
-          result << environment.association(association_name).scope
-        end
-
-        union_sql = Deployment.from_union(union_arg).to_sql
+        # Not using Gitlab::SQL::Union as `order_by` in the SQL constructed is ignored.
+        # See:
+        #   1) https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/sql/union.rb#L7
+        #   2) https://gitlab.com/gitlab-org/gitlab/-/issues/353966#note_860928647
+        union_sql = environments.map do |environment|
+          "(#{environment.association(association_name).scope.to_sql})"
+        end.join(' UNION ')
 
         deployments = Deployment
                         .from("(#{union_sql}) #{::Deployment.table_name}")
@@ -34,8 +36,16 @@ module Preloaders
         deployments_by_environment_id = deployments.index_by(&:environment_id)
 
         environments.each do |environment|
-          environment.association(association_name).target = deployments_by_environment_id[environment.id]
+          associated_deployment = deployments_by_environment_id[environment.id]
+
+          environment.association(association_name).target = associated_deployment
           environment.association(association_name).loaded!
+
+          if associated_deployment
+            # `last?` in DeploymentEntity requires this environment to be loaded
+            associated_deployment.association(:environment).target = environment
+            associated_deployment.association(:environment).loaded!
+          end
         end
       end
     end

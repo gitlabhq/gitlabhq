@@ -10,6 +10,7 @@ import {
   isInIssuePage,
   isInDesignPage,
   isInIncidentPage,
+  isInMRPage,
   parseBoolean,
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
@@ -27,9 +28,11 @@ import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_v
 import LabelsSelectWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
 import { LabelType } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import eventHub from '~/sidebar/event_hub';
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import Translate from '../vue_shared/translate';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
+import SidebarEscalationStatus from './components/incidents/sidebar_escalation_status.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
@@ -134,6 +137,8 @@ function mountAssigneesComponent() {
   if (!el) return;
 
   const { id, iid, fullPath, editable } = getSidebarOptions();
+  const isIssuablePage = isInIssuePage() || isInIncidentPage() || isInDesignPage();
+  const issuableType = isIssuablePage ? IssuableType.Issue : IssuableType.MergeRequest;
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -151,21 +156,16 @@ function mountAssigneesComponent() {
         props: {
           iid: String(iid),
           fullPath,
-          issuableType:
-            isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
-              : IssuableType.MergeRequest,
+          issuableType,
           issuableId: id,
           allowMultipleAssignees: !el.dataset.maxAssignees,
         },
         scopedSlots: {
-          collapsed: ({ users, onClick }) =>
+          collapsed: ({ users }) =>
             createElement(CollapsedAssigneeList, {
               props: {
                 users,
-              },
-              nativeOn: {
-                click: onClick,
+                issuableType,
               },
             }),
         },
@@ -567,6 +567,36 @@ function mountSeverityComponent() {
   });
 }
 
+function mountEscalationStatusComponent() {
+  const statusContainerEl = document.querySelector('#js-escalation-status');
+
+  if (!statusContainerEl) {
+    return false;
+  }
+
+  const { issuableType } = getSidebarOptions();
+  const { canUpdate, issueIid, projectPath } = statusContainerEl.dataset;
+
+  return new Vue({
+    el: statusContainerEl,
+    apolloProvider,
+    components: {
+      SidebarEscalationStatus,
+    },
+    provide: {
+      canUpdate: parseBoolean(canUpdate),
+    },
+    render: (createElement) =>
+      createElement('sidebar-escalation-status', {
+        props: {
+          iid: issueIid,
+          issuableType,
+          projectPath,
+        },
+      }),
+  });
+}
+
 function mountCopyEmailComponent() {
   const el = document.getElementById('issuable-copy-email');
 
@@ -584,7 +614,7 @@ function mountCopyEmailComponent() {
 }
 
 const isAssigneesWidgetShown =
-  (isInIssuePage() || isInDesignPage()) && gon.features.issueAssigneesWidget;
+  (isInIssuePage() || isInDesignPage() || isInMRPage()) && gon.features.issueAssigneesWidget;
 
 export function mountSidebar(mediator, store) {
   initInviteMembersModal();
@@ -618,10 +648,13 @@ export function mountSidebar(mediator, store) {
 
   mountSeverityComponent();
 
+  mountEscalationStatusComponent();
+
   if (window.gon?.features?.mrAttentionRequests) {
-    eventHub.$on('removeCurrentUserAttentionRequested', () =>
-      mediator.removeCurrentUserAttentionRequested(),
-    );
+    eventHub.$on('removeCurrentUserAttentionRequested', () => {
+      mediator.removeCurrentUserAttentionRequested();
+      refreshUserMergeRequestCounts();
+    });
   }
 }
 

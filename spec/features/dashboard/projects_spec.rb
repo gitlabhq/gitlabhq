@@ -48,7 +48,7 @@ RSpec.describe 'Dashboard Projects' do
 
   context 'when last_repository_updated_at, last_activity_at and update_at are present' do
     it 'shows the last_repository_updated_at attribute as the update date' do
-      project.update!(last_repository_updated_at: Time.now, last_activity_at: 1.hour.ago)
+      project.update!(last_repository_updated_at: Time.zone.now, last_activity_at: 1.hour.ago)
 
       visit dashboard_projects_path
 
@@ -56,7 +56,7 @@ RSpec.describe 'Dashboard Projects' do
     end
 
     it 'shows the last_activity_at attribute as the update date' do
-      project.update!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.now)
+      project.update!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.zone.now)
 
       visit dashboard_projects_path
 
@@ -236,7 +236,7 @@ RSpec.describe 'Dashboard Projects' do
       end
 
       expect(page).to have_selector('.merge-request-form')
-      expect(current_path).to eq project_new_merge_request_path(project)
+      expect(page).to have_current_path project_new_merge_request_path(project), ignore_query: true
       expect(find('#merge_request_target_project_id', visible: false).value).to eq project.id.to_s
       expect(page).to have_content "From feature into master"
     end

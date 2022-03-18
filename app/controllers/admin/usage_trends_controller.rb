@@ -7,6 +7,8 @@ class Admin::UsageTrendsController < Admin::ApplicationController
 
   feature_category :devops_reports
 
+  urgency :low
+
   def index
   end
 end

@@ -3,7 +3,7 @@
 module Integrations
   class Jenkins < BaseCi
     include HasWebHook
-    include ActionView::Helpers::UrlHelper
+
     prepend EnableSslVerification
     extend Gitlab::Utils::Override
 
@@ -65,7 +65,7 @@ module Integrations
     end
 
     def help
-      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('integration/jenkins'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('integration/jenkins'), target: '_blank', rel: 'noopener noreferrer'
       s_('Run CI/CD pipelines with Jenkins when you push to a repository, or when a merge request is created, updated, or merged. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 

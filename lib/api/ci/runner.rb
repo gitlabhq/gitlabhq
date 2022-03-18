@@ -38,7 +38,7 @@ module API
           attributes[:maintenance_note] ||= deprecated_note if deprecated_note
           attributes[:active] = !attributes.delete(:paused) if attributes.include?(:paused)
 
-          @runner = ::Ci::RegisterRunnerService.new.execute(params[:token], attributes)
+          @runner = ::Ci::Runners::RegisterRunnerService.new.execute(params[:token], attributes)
           forbidden! unless @runner
 
           if @runner.persisted?
@@ -57,7 +57,7 @@ module API
         delete '/', feature_category: :runner do
           authenticate_runner!
 
-          destroy_conditionally!(current_runner) { ::Ci::UnregisterRunnerService.new(current_runner).execute }
+          destroy_conditionally!(current_runner) { ::Ci::Runners::UnregisterRunnerService.new(current_runner, params[:token]).execute }
         end
 
         desc 'Validates authentication credentials' do
@@ -70,6 +70,19 @@ module API
           authenticate_runner!
           status 200
           body "200"
+        end
+
+        desc 'Reset runner authentication token with current token' do
+          success Entities::Ci::ResetTokenResult
+        end
+        params do
+          requires :token, type: String, desc: 'The current authentication token of the runner'
+        end
+        post '/reset_authentication_token', feature_category: :runner do
+          authenticate_runner!
+
+          current_runner.reset_token!
+          present current_runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -118,7 +131,7 @@ module API
         formatter :build_json, ->(object, _) { object }
         parser :build_json, ::Grape::Parser::Json
 
-        post '/request', feature_category: :continuous_integration do
+        post '/request', urgency: :low, feature_category: :continuous_integration do
           authenticate_runner!
 
           unless current_runner.active?
@@ -172,7 +185,7 @@ module API
           end
           optional :exit_code, type: Integer, desc: %q(Job's exit code)
         end
-        put '/:id', feature_category: :continuous_integration do
+        put '/:id', urgency: :low, feature_category: :continuous_integration do
           job = authenticate_job!(heartbeat_runner: true)
 
           Gitlab::Metrics.add_event(:update_build)
@@ -199,7 +212,7 @@ module API
           requires :id, type: Integer, desc: %q(Job's ID)
           optional :token, type: String, desc: %q(Job's authentication token)
         end
-        patch '/:id/trace', feature_category: :continuous_integration do
+        patch '/:id/trace', urgency: :default, feature_category: :continuous_integration do
           job = authenticate_job!(heartbeat_runner: true)
 
           error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')

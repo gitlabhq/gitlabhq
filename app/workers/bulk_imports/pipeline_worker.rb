@@ -43,6 +43,10 @@ module BulkImports
     private
 
     def run(pipeline_tracker)
+      if pipeline_tracker.entity.failed?
+        raise(Entity::FailedError, 'Failed entity status')
+      end
+
       if ndjson_pipeline?(pipeline_tracker)
         status = ExportStatus.new(pipeline_tracker, pipeline_tracker.pipeline_class.relation)
 

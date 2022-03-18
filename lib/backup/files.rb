@@ -1,25 +1,27 @@
 # frozen_string_literal: true
 
 require 'open3'
-require_relative 'helper'
 
 module Backup
-  class Files
+  class Files < Task
+    extend ::Gitlab::Utils::Override
     include Backup::Helper
 
     DEFAULT_EXCLUDE = 'lost+found'
 
-    attr_reader :name, :backup_tarball, :excludes
+    attr_reader :name, :excludes
 
-    def initialize(name, app_files_dir, excludes: [])
+    def initialize(progress, name, app_files_dir, excludes: [])
+      super(progress)
+
       @name = name
       @app_files_dir = app_files_dir
-      @backup_tarball = File.join(Gitlab.config.backup.path, name + '.tar.gz')
       @excludes = [DEFAULT_EXCLUDE].concat(excludes)
     end
 
     # Copy files from public/files to backup/files
-    def dump
+    override :dump
+    def dump(backup_tarball)
       FileUtils.mkdir_p(Gitlab.config.backup.path)
       FileUtils.rm_f(backup_tarball)
 
@@ -35,7 +37,7 @@ module Backup
 
         unless status == 0
           puts output
-          raise_custom_error
+          raise_custom_error(backup_tarball)
         end
 
         tar_cmd = [tar, exclude_dirs(:tar), %W[-C #{backup_files_realpath} -cf - .]].flatten
@@ -47,11 +49,12 @@ module Backup
       end
 
       unless pipeline_succeeded?(tar_status: status_list[0], gzip_status: status_list[1], output: output)
-        raise_custom_error
+        raise_custom_error(backup_tarball)
       end
     end
 
-    def restore
+    override :restore
+    def restore(backup_tarball)
       backup_existing_files_dir
 
       cmd_list = [%w[gzip -cd], %W[#{tar} --unlink-first --recursive-unlink -C #{app_files_realpath} -xf -]]
@@ -59,10 +62,6 @@ module Backup
       unless pipeline_succeeded?(gzip_status: status_list[0], tar_status: status_list[1], output: output)
         raise Backup::Error, "Restore operation failed: #{output}"
       end
-    end
-
-    def enabled
-      true
     end
 
     def tar
@@ -146,7 +145,7 @@ module Backup
       end
     end
 
-    def raise_custom_error
+    def raise_custom_error(backup_tarball)
       raise FileBackupError.new(app_files_realpath, backup_tarball)
     end
 

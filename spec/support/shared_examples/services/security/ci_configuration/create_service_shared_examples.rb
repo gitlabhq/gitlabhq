@@ -76,6 +76,18 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
         end
       end
 
+      context 'when the project has a non-default ci config file' do
+        before do
+          project.ci_config_path = 'non-default/.gitlab-ci.yml'
+        end
+
+        it 'does track the snowplow event' do
+          subject
+
+          expect_snowplow_event(**snowplow_event)
+        end
+      end
+
       unless skip_w_params
         context 'with parameters' do
           let(:params) { non_empty_params }

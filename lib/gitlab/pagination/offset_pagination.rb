@@ -4,6 +4,7 @@ module Gitlab
   module Pagination
     class OffsetPagination < Base
       attr_reader :request_context
+
       delegate :params, :header, :request, to: :request_context
 
       def initialize(request_context)
@@ -26,7 +27,7 @@ module Gitlab
                           end
 
         return pagination_data unless pagination_data.is_a?(ActiveRecord::Relation)
-        return pagination_data unless Feature.enabled?(:api_kaminari_count_with_limit, type: :ops)
+        return pagination_data unless Feature.enabled?(:api_kaminari_count_with_limit, type: :ops, default_enabled: :yaml)
 
         limited_total_count = pagination_data.total_count_with_limit
         if limited_total_count > Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT

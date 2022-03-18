@@ -127,7 +127,7 @@ module MarkupHelper
     text = wiki_page.content
     return '' unless text.present?
 
-    context = render_wiki_content_context(@wiki, wiki_page, context)
+    context = render_wiki_content_context(wiki_page.wiki, wiki_page, context)
     html = markup_unsafe(wiki_page.path, text, context)
 
     prepare_for_rendering(html, context)
@@ -181,7 +181,8 @@ module MarkupHelper
       wiki: wiki,
       repository: wiki.repository,
       page_slug: wiki_page.slug,
-      issuable_reference_expansion_enabled: true
+      issuable_reference_expansion_enabled: true,
+      requested_path: wiki_page.path
     ).merge(render_wiki_content_context_container(wiki))
   end
 
@@ -263,7 +264,7 @@ module MarkupHelper
   end
 
   def asciidoc_unsafe(text, context = {})
-    context.merge!(
+    context.reverse_merge!(
       commit:         @commit,
       ref:            @ref,
       requested_path: @path

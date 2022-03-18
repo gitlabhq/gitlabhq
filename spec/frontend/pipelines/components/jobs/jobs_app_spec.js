@@ -1,4 +1,4 @@
-import { GlIntersectionObserver, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIntersectionObserver, GlSkeletonLoader, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -19,6 +19,7 @@ describe('Jobs app', () => {
   let resolverSpy;
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
   const findJobsTable = () => wrapper.findComponent(JobsTable);
 
   const triggerInfiniteScroll = () =>
@@ -48,7 +49,29 @@ describe('Jobs app', () => {
     wrapper.destroy();
   });
 
-  it('displays the loading state', () => {
+  describe('loading spinner', () => {
+    beforeEach(async () => {
+      createComponent(resolverSpy);
+
+      await waitForPromises();
+
+      triggerInfiniteScroll();
+    });
+
+    it('displays loading spinner when fetching more jobs', () => {
+      expect(findLoadingSpinner().exists()).toBe(true);
+      expect(findSkeletonLoader().exists()).toBe(false);
+    });
+
+    it('hides loading spinner after jobs have been fetched', async () => {
+      await waitForPromises();
+
+      expect(findLoadingSpinner().exists()).toBe(false);
+      expect(findSkeletonLoader().exists()).toBe(false);
+    });
+  });
+
+  it('displays the skeleton loader', () => {
     createComponent(resolverSpy);
 
     expect(findSkeletonLoader().exists()).toBe(true);
@@ -91,7 +114,7 @@ describe('Jobs app', () => {
     });
   });
 
-  it('does not display main loading state again after fetchMore', async () => {
+  it('does not display skeleton loader again after fetchMore', async () => {
     createComponent(resolverSpy);
 
     expect(findSkeletonLoader().exists()).toBe(true);

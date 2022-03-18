@@ -22,6 +22,27 @@ beforeEach(() => {
 });
 
 describe('URL utility', () => {
+  describe('parseUrlPathname', () => {
+    it('returns an absolute url when given an absolute url', () => {
+      expect(urlUtils.parseUrlPathname('/some/absolute/url')).toBe('/some/absolute/url');
+    });
+
+    it('returns an absolute url when given a relative url', () => {
+      expect(urlUtils.parseUrlPathname('some/relative/url')).toBe('/some/relative/url');
+    });
+
+    it('returns an absolute url that includes the document.location path when given a relative url', () => {
+      // Change the location to see the `/mypath/` included in the result
+      setWindowLocation(`${TEST_HOST}/mypath/`);
+
+      expect(urlUtils.parseUrlPathname('some/relative/url')).toBe('/mypath/some/relative/url');
+    });
+
+    it('encodes certain character in the url', () => {
+      expect(urlUtils.parseUrlPathname('test="a b"')).toBe('/test=%22a%20b%22');
+    });
+  });
+
   describe('webIDEUrl', () => {
     afterEach(() => {
       gon.relative_url_root = '';
@@ -636,7 +657,7 @@ describe('URL utility', () => {
     `('returns "$expectation" with "$protocol" protocol', ({ protocol, expectation }) => {
       setWindowLocation(`${protocol}//example.com`);
 
-      expect(urlUtils.getWebSocketProtocol()).toEqual(expectation);
+      expect(urlUtils.getWebSocketProtocol()).toBe(expectation);
     });
   });
 
@@ -646,7 +667,7 @@ describe('URL utility', () => {
 
       const path = '/lorem/ipsum?a=bc';
 
-      expect(urlUtils.getWebSocketUrl(path)).toEqual('ws://example.com/lorem/ipsum?a=bc');
+      expect(urlUtils.getWebSocketUrl(path)).toBe('ws://example.com/lorem/ipsum?a=bc');
     });
   });
 
@@ -696,7 +717,7 @@ describe('URL utility', () => {
     it('should return valid parameter', () => {
       setWindowLocation('?scope=all&p=2');
 
-      expect(getParameterByName('p')).toEqual('2');
+      expect(getParameterByName('p')).toBe('2');
       expect(getParameterByName('scope')).toBe('all');
     });
 
@@ -737,7 +758,7 @@ describe('URL utility', () => {
     it('converts search query object back into a search query', () => {
       const searchQueryObject = { one: '1', two: '2' };
 
-      expect(urlUtils.objectToQuery(searchQueryObject)).toEqual('one=1&two=2');
+      expect(urlUtils.objectToQuery(searchQueryObject)).toBe('one=1&two=2');
     });
 
     it('returns empty string when `params` is undefined, null or empty string', () => {
@@ -833,15 +854,15 @@ describe('URL utility', () => {
     it('adds new params as query string', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(
-        urlUtils.setUrlParams({ group_id: 'gitlab-org', project_id: 'my-project' }, url),
-      ).toEqual('https://gitlab.com/test?group_id=gitlab-org&project_id=my-project');
+      expect(urlUtils.setUrlParams({ group_id: 'gitlab-org', project_id: 'my-project' }, url)).toBe(
+        'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project',
+      );
     });
 
     it('updates an existing parameter', () => {
       const url = 'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project';
 
-      expect(urlUtils.setUrlParams({ project_id: 'gitlab-test' }, url)).toEqual(
+      expect(urlUtils.setUrlParams({ project_id: 'gitlab-test' }, url)).toBe(
         'https://gitlab.com/test?group_id=gitlab-org&project_id=gitlab-test',
       );
     });
@@ -849,7 +870,7 @@ describe('URL utility', () => {
     it("removes the project_id param when it's value is null", () => {
       const url = 'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project';
 
-      expect(urlUtils.setUrlParams({ project_id: null }, url)).toEqual(
+      expect(urlUtils.setUrlParams({ project_id: null }, url)).toBe(
         'https://gitlab.com/test?group_id=gitlab-org',
       );
     });
@@ -857,7 +878,7 @@ describe('URL utility', () => {
     it('adds parameters from arrays', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url)).toEqual(
+      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url)).toBe(
         'https://gitlab.com/test?labels=foo&labels=bar',
       );
     });
@@ -865,13 +886,13 @@ describe('URL utility', () => {
     it('removes parameters from empty arrays', () => {
       const url = 'https://gitlab.com/test?labels=foo&labels=bar';
 
-      expect(urlUtils.setUrlParams({ labels: [] }, url)).toEqual('https://gitlab.com/test');
+      expect(urlUtils.setUrlParams({ labels: [] }, url)).toBe('https://gitlab.com/test');
     });
 
     it('removes parameters from empty arrays while keeping other parameters', () => {
       const url = 'https://gitlab.com/test?labels=foo&labels=bar&unrelated=unrelated';
 
-      expect(urlUtils.setUrlParams({ labels: [] }, url)).toEqual(
+      expect(urlUtils.setUrlParams({ labels: [] }, url)).toBe(
         'https://gitlab.com/test?unrelated=unrelated',
       );
     });
@@ -879,7 +900,7 @@ describe('URL utility', () => {
     it('adds parameters from arrays when railsArraySyntax=true', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true)).toEqual(
+      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true)).toBe(
         'https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar',
       );
     });
@@ -887,7 +908,7 @@ describe('URL utility', () => {
     it('removes parameters from empty arrays when railsArraySyntax=true', () => {
       const url = 'https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar';
 
-      expect(urlUtils.setUrlParams({ labels: [] }, url, false, true)).toEqual(
+      expect(urlUtils.setUrlParams({ labels: [] }, url, false, true)).toBe(
         'https://gitlab.com/test',
       );
     });
@@ -895,7 +916,7 @@ describe('URL utility', () => {
     it('decodes URI when decodeURI=true', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true, true)).toEqual(
+      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true, true)).toBe(
         'https://gitlab.com/test?labels[]=foo&labels[]=bar',
       );
     });
@@ -903,7 +924,7 @@ describe('URL utility', () => {
     it('removes all existing URL params and sets a new param when cleanParams=true', () => {
       const url = 'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project';
 
-      expect(urlUtils.setUrlParams({ foo: 'bar' }, url, true)).toEqual(
+      expect(urlUtils.setUrlParams({ foo: 'bar' }, url, true)).toBe(
         'https://gitlab.com/test?foo=bar',
       );
     });

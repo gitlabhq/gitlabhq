@@ -24,8 +24,8 @@ export default {
     ...mapGetters(['defaultSearchOptions']),
     sectionHeader() {
       return (
-        this.searchContext.project?.name ||
-        this.searchContext.group?.name ||
+        this.searchContext?.project?.name ||
+        this.searchContext?.group?.name ||
         this.$options.i18n.allGitLab
       );
     },

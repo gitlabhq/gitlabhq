@@ -3,11 +3,19 @@
 namespace :tanuki_emoji do
   desc 'Generates Emoji aliases fixtures'
   task aliases: :environment do
+    ALLOWED_ALIASES = [':)', ':('].freeze
     aliases = {}
 
     TanukiEmoji.index.all.each do |emoji|
       emoji.aliases.each do |emoji_alias|
         aliases[TanukiEmoji::Character.format_name(emoji_alias)] = emoji.name
+      end
+
+      emoji.ascii_aliases.intersection(ALLOWED_ALIASES).each do |ascii_alias|
+        # We add an extra space at the end so that when a user types ":) "
+        # we'd still match this alias and not show "cocos (keeling) islands" as the first result.
+        # The initial ":" is ignored when matching because it's our emoji prefix in Markdown.
+        aliases[ascii_alias + ' '] = emoji.name
       end
     end
 

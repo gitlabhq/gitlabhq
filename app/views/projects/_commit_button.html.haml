@@ -2,6 +2,6 @@
   = button_tag 'Commit changes', id: 'commit-changes', class: 'gl-button btn btn-confirm js-commit-button  qa-commit-button'
 
   = link_to _('Cancel'), cancel_path,
-            class: 'gl-button btn btn-default gl-ml-3', data: {confirm: leave_edit_message}
+            id: 'cancel-changes', class: 'gl-button btn btn-default gl-ml-3', data: {confirm: leave_edit_message, confirm_btn_variant: "danger"}, aria: { label: _('Discard changes') }
 
   = render 'shared/projects/edit_information'

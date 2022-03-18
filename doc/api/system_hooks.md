@@ -46,6 +46,43 @@ Example response:
 ]
 ```
 
+## Get system hook
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81595) in GitLab 14.9.
+
+Get a system hook by its ID.
+
+```plaintext
+GET /hooks/:id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of the hook |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/hooks/1"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "url": "https://gitlab.example.com/hook",
+    "created_at": "2016-10-31T12:32:15.192Z",
+    "push_events": true,
+    "tag_push_events": false,
+    "merge_requests_events": true,
+    "repository_update_events": true,
+    "enable_ssl_verification": true
+  }
+]
+```
+
 ## Add new system hook
 
 Add a new system hook.

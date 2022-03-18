@@ -19,13 +19,27 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
   end
 
   shared_examples 'it calls Gitaly' do
-    specify do
-      repository_service = instance_double(Gitlab::GitalyClient::RepositoryService)
+    let(:repository_service) { instance_double(Gitlab::GitalyClient::RepositoryService) }
 
-      expect(subject).to receive(:get_gitaly_client).with(task, repository.raw_repository).and_return(repository_service)
-      expect(repository_service).to receive(gitaly_task)
+    specify do
+      expect_next_instance_of(Gitlab::GitalyClient::RepositoryService, repository.raw_repository) do |instance|
+        expect(instance).to receive(:optimize_repository).and_call_original
+      end
 
       subject.perform(*params)
+    end
+
+    context 'when optimized_housekeeping feature is disabled' do
+      before do
+        stub_feature_flags(optimized_housekeeping: false)
+      end
+
+      specify do
+        expect(subject).to receive(:get_gitaly_client).with(task, repository.raw_repository).and_return(repository_service)
+        expect(repository_service).to receive(gitaly_task)
+
+        subject.perform(*params)
+      end
     end
   end
 
@@ -70,11 +84,30 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
       end
 
       it 'handles gRPC errors' do
-        allow_next_instance_of(Gitlab::GitalyClient::RepositoryService, repository.raw_repository) do |instance|
-          allow(instance).to receive(:garbage_collect).and_raise(GRPC::NotFound)
+        repository_service = instance_double(Gitlab::GitalyClient::RepositoryService)
+
+        allow_next_instance_of(Projects::GitDeduplicationService) do |instance|
+          allow(instance).to receive(:execute)
         end
 
+        allow(repository.raw_repository).to receive(:gitaly_repository_client).and_return(repository_service)
+        allow(repository_service).to receive(:optimize_repository).and_raise(GRPC::NotFound)
+
         expect { subject.perform(*params) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
+      end
+
+      context 'when optimized_housekeeping feature flag is disabled' do
+        before do
+          stub_feature_flags(optimized_housekeeping: false)
+        end
+
+        it 'handles gRPC errors' do
+          allow_next_instance_of(Gitlab::GitalyClient::RepositoryService, repository.raw_repository) do |instance|
+            allow(instance).to receive(:garbage_collect).and_raise(GRPC::NotFound)
+          end
+
+          expect { subject.perform(*params) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
+        end
       end
     end
 
@@ -152,13 +185,8 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
         expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
       end
 
-      it 'calls Gitaly' do
-        repository_service = instance_double(Gitlab::GitalyClient::RefService)
-
-        expect(subject).to receive(:get_gitaly_client).with(task, repository.raw_repository).and_return(repository_service)
-        expect(repository_service).to receive(gitaly_task)
-
-        subject.perform(*params)
+      it_behaves_like 'it calls Gitaly' do
+        let(:repository_service) { instance_double(Gitlab::GitalyClient::RefService) }
       end
 
       it 'does not update the resource statistics' do
@@ -180,10 +208,26 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
       it_behaves_like 'it updates the resource statistics' if update_statistics
     end
 
+    context 'prune' do
+      before do
+        expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
+      end
+
+      specify do
+        expect_next_instance_of(Gitlab::GitalyClient::RepositoryService, repository.raw_repository) do |instance|
+          expect(instance).to receive(:prune_unreachable_objects).and_call_original
+        end
+
+        subject.perform(resource.id, 'prune', lease_key, lease_uuid)
+      end
+    end
+
     shared_examples 'gc tasks' do
       before do
         allow(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
         allow(subject).to receive(:bitmaps_enabled?).and_return(bitmaps_enabled)
+
+        stub_feature_flags(optimized_housekeeping: false)
       end
 
       it 'incremental repack adds a new packfile' do

@@ -12,7 +12,6 @@ export default class PerformanceBarStore {
         url: requestUrl,
         truncatedUrl: shortUrl,
         details: {},
-        hasWarnings: false,
       });
     }
 
@@ -27,7 +26,6 @@ export default class PerformanceBarStore {
     const request = this.findRequest(requestId);
 
     request.details = requestDetails.data;
-    request.hasWarnings = requestDetails.has_warnings;
 
     return request;
   }

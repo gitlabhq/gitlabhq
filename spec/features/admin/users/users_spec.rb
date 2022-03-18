@@ -21,7 +21,7 @@ RSpec.describe 'Admin::Users' do
     end
 
     it "is ok" do
-      expect(current_path).to eq(admin_users_path)
+      expect(page).to have_current_path(admin_users_path, ignore_query: true)
     end
 
     it "has users list" do
@@ -132,7 +132,7 @@ RSpec.describe 'Admin::Users' do
       end
 
       it 'searches with respect of sorting' do
-        visit admin_users_path(sort: 'Name')
+        visit admin_users_path(sort: 'name_asc')
 
         fill_in :search_query, with: 'Foo'
         click_button('Search users')
@@ -338,6 +338,8 @@ RSpec.describe 'Admin::Users' do
       end
 
       it 'displays count of the users authorized groups' do
+        visit admin_users_path
+
         wait_for_requests
 
         expect(page.find("[data-testid='user-group-count-#{current_user.id}']").text).to eq("2")
@@ -574,7 +576,7 @@ RSpec.describe 'Admin::Users' do
         user.reload
         expect(user.name).to eq('Big Bang')
         expect(user.admin?).to be_truthy
-        expect(user.password_expires_at).to be <= Time.now
+        expect(user.password_expires_at).to be <= Time.zone.now
       end
     end
 
@@ -602,8 +604,8 @@ RSpec.describe 'Admin::Users' do
 
   def sort_by(option)
     page.within('.filtered-search-block') do
-      find('.dropdown-menu-toggle').click
-      click_link option
+      find('.gl-new-dropdown').click
+      find('.gl-new-dropdown-item', text: option).click
     end
   end
 end

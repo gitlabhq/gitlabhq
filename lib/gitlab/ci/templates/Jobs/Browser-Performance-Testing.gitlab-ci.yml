@@ -2,7 +2,7 @@
 
 browser_performance:
   stage: performance
-  image: docker:19.03.12
+  image: docker:20.10.12
   allow_failure: true
   variables:
     DOCKER_TLS_CERTDIR: ""
@@ -10,19 +10,21 @@ browser_performance:
     SITESPEED_VERSION: 14.1.0
     SITESPEED_OPTIONS: ''
   services:
-    - docker:19.03.12-dind
+    - name: 'docker:20.10.12-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
   script:
     - |
       if ! docker info &>/dev/null; then
-        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+        if [ -z "$DOCKER_HOST" ] && [ -n "$KUBERNETES_PORT" ]; then
           export DOCKER_HOST='tcp://localhost:2375'
         fi
       fi
-    - export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+    - CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
+    - export CI_ENVIRONMENT_URL
     - mkdir gitlab-exporter
     # Busybox wget does not support proxied HTTPS, get the real thing.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/287611.
-    - (env | grep -i _proxy= 2>&1 >/dev/null) && apk --no-cache add wget
+    - (env | grep -i _proxy= >/dev/null 2>&1) && apk --no-cache add wget
     - wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
     - mkdir sitespeed-results
     - |

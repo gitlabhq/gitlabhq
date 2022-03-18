@@ -71,9 +71,9 @@ RSpec.describe EventCollection do
       end
 
       it 'can paginate through events' do
-        events = described_class.new(projects, offset: 20).to_a
+        events = described_class.new(projects, limit: 5, offset: 15).to_a
 
-        expect(events.length).to eq(2)
+        expect(events.length).to eq(5)
       end
 
       it 'returns an empty Array when crossing the maximum page number' do
@@ -123,6 +123,19 @@ RSpec.describe EventCollection do
         create(:event, project: nil, group: subgroup, author: user)
 
         expect(subject).to eq([event1])
+      end
+
+      context 'pagination through events' do
+        let_it_be(:project_events) { create_list(:event, 10, project: project) }
+        let_it_be(:group_events) { create_list(:event, 10, group: group, author: user) }
+
+        let(:subject) { described_class.new(projects, limit: 10, offset: 5, groups: groups).to_a }
+
+        it 'returns recent groups and projects events' do
+          recent_events_with_offset = (project_events[5..] + group_events[..4]).reverse
+
+          expect(subject).to eq(recent_events_with_offset)
+        end
       end
     end
   end

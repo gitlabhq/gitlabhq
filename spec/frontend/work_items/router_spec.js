@@ -21,6 +21,7 @@ describe('Work items router', () => {
       mocks: {
         $apollo: {
           queries: {
+            workItem: {},
             workItemTypes: {},
           },
         },

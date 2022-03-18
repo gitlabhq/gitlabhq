@@ -1019,7 +1019,11 @@ RSpec.describe 'Git HTTP requests' do
       let(:path) { "#{project.full_path}.git" }
 
       context "when the project is public" do
-        let(:project) { create(:project, :repository, :public, path: 'foo.') }
+        let(:project) do
+          project = create(:project, :repository, :public)
+          project.update_attribute(:path, 'foo.')
+          project
+        end
 
         it_behaves_like 'pushes require Basic HTTP Authentication'
 
@@ -1158,7 +1162,11 @@ RSpec.describe 'Git HTTP requests' do
       end
 
       context "when the project is private" do
-        let(:project) { create(:project, :repository, :private, path: 'foo.') }
+        let(:project) do
+          project = create(:project, :repository, :private)
+          project.update_attribute(:path, 'foo.')
+          project
+        end
 
         it_behaves_like 'pulls require Basic HTTP Authentication'
         it_behaves_like 'pushes require Basic HTTP Authentication'
@@ -1586,11 +1594,19 @@ RSpec.describe 'Git HTTP requests' do
       end
 
       it_behaves_like 'project path without .git suffix' do
-        let(:repository_path) { create(:project, :repository, :public, path: 'project.').full_path }
+        let(:repository_path) do
+          project = create(:project, :repository, :public)
+          project.update_attribute(:path, 'project.')
+          project.full_path
+        end
       end
 
       context "retrieving an info/refs file" do
-        let(:project) { create(:project, :repository, :public, path: 'project.') }
+        let(:project) do
+          project = create(:project, :repository, :public)
+          project.update_attribute(:path, 'project.')
+          project
+        end
 
         context "when the file exists" do
           before do
@@ -1625,7 +1641,11 @@ RSpec.describe 'Git HTTP requests' do
       let(:path) { "/#{wiki.repository.full_path}.git" }
 
       context "when the project is public" do
-        let(:project) { create(:project, :wiki_repo, :public, :wiki_enabled, path: 'foo.') }
+        let(:project) do
+          project = create(:project, :wiki_repo, :public, :wiki_enabled)
+          project.update_attribute(:path, 'foo.')
+          project
+        end
 
         it_behaves_like 'pushes require Basic HTTP Authentication'
 
@@ -1652,7 +1672,11 @@ RSpec.describe 'Git HTTP requests' do
             end
 
             context 'but the repo is disabled' do
-              let(:project) { create(:project, :wiki_repo, :public, :repository_disabled, :wiki_enabled, path: 'foo.') }
+              let(:project) do
+                project = create(:project, :wiki_repo, :public, :repository_disabled, :wiki_enabled)
+                project.update_attribute(:path, 'foo.')
+                project
+              end
 
               it_behaves_like 'pulls are allowed'
               it_behaves_like 'pushes are allowed'
@@ -1673,7 +1697,11 @@ RSpec.describe 'Git HTTP requests' do
       end
 
       context "when the project is private" do
-        let(:project) { create(:project, :wiki_repo, :private, :wiki_enabled, path: 'foo.') }
+        let(:project) do
+          project = create(:project, :wiki_repo, :private, :wiki_enabled)
+          project.update_attribute(:path, 'foo.')
+          project
+        end
 
         it_behaves_like 'pulls require Basic HTTP Authentication'
         it_behaves_like 'pushes require Basic HTTP Authentication'
@@ -1700,7 +1728,11 @@ RSpec.describe 'Git HTTP requests' do
             end
 
             context 'but the repo is disabled' do
-              let(:project) { create(:project, :wiki_repo, :private, :repository_disabled, :wiki_enabled, path: 'foo.') }
+              let(:project) do
+                project = create(:project, :wiki_repo, :private, :repository_disabled, :wiki_enabled)
+                project.update_attribute(:path, 'foo.')
+                project
+              end
 
               it 'allows clones' do
                 download(path, user: user.username, password: user.password) do |response|

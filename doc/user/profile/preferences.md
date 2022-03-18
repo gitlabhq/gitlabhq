@@ -39,7 +39,7 @@ The default theme is Indigo. You can choose between 10 themes:
 
 ## Dark mode
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an Alpha release.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Alpha](../../policy/alpha-beta-support.md#alpha-features) release.
 
 GitLab has started work on dark mode! The dark mode Alpha release is available in the
 spirit of iteration and the lower expectations of

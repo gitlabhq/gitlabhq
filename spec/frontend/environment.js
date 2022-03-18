@@ -123,6 +123,7 @@ class CustomEnvironment extends JSDOMEnvironment {
     // Reset `Date` so that Jest can report timing accurately *roll eyes*...
     setGlobalDateToRealDate();
 
+    // eslint-disable-next-line no-restricted-syntax
     await new Promise(setImmediate);
 
     if (this.rejectedPromises.length > 0) {

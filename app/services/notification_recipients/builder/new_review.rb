@@ -4,6 +4,7 @@ module NotificationRecipients
   module Builder
     class NewReview < Base
       attr_reader :review
+
       def initialize(review)
         @review = review
       end

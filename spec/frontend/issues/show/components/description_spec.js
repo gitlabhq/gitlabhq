@@ -2,17 +2,21 @@ import $ from 'jquery';
 import { nextTick } from 'vue';
 import '~/behaviors/markdown/render_gfm';
 import { GlPopover, GlModal } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
+import { mockTracking } from 'helpers/tracking_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createFlash from '~/flash';
 import Description from '~/issues/show/components/description.vue';
 import TaskList from '~/task_list';
+import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import {
   descriptionProps as initialProps,
   descriptionHtmlWithCheckboxes,
 } from '../mock_data/mock_data';
 
+jest.mock('~/flash');
 jest.mock('~/task_list');
 
 const showModal = jest.fn();
@@ -30,9 +34,10 @@ describe('Description component', () => {
   const findPopovers = () => wrapper.findAllComponents(GlPopover);
   const findModal = () => wrapper.findComponent(GlModal);
   const findCreateWorkItem = () => wrapper.findComponent(CreateWorkItem);
+  const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
 
   function createComponent({ props = {}, provide = {} } = {}) {
-    wrapper = shallowMount(Description, {
+    wrapper = shallowMountExtended(Description, {
       propsData: {
         ...initialProps,
         ...props,
@@ -210,7 +215,7 @@ describe('Description component', () => {
 
   describe('with work items feature flag is enabled', () => {
     describe('empty description', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         createComponent({
           props: {
             descriptionHtml: '',
@@ -221,7 +226,7 @@ describe('Description component', () => {
             },
           },
         });
-        await nextTick();
+        return nextTick();
       });
 
       it('renders without error', () => {
@@ -230,7 +235,7 @@ describe('Description component', () => {
     });
 
     describe('description with checkboxes', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         createComponent({
           props: {
             descriptionHtml: descriptionHtmlWithCheckboxes,
@@ -241,7 +246,7 @@ describe('Description component', () => {
             },
           },
         });
-        await nextTick();
+        return nextTick();
       });
 
       it('renders a list of hidden buttons corresponding to checkboxes in description HTML', () => {
@@ -275,12 +280,76 @@ describe('Description component', () => {
       it('updates description HTML on `onCreate` event', async () => {
         const newTitle = 'New title';
         findConvertToTaskButton().vm.$emit('click');
-        findCreateWorkItem().vm.$emit('onCreate', newTitle);
+        findCreateWorkItem().vm.$emit('onCreate', { title: newTitle });
         expect(hideModal).toHaveBeenCalled();
         await nextTick();
 
         expect(findTaskSvg().exists()).toBe(true);
         expect(wrapper.text()).toContain(newTitle);
+      });
+    });
+
+    describe('work items detail', () => {
+      const id = '1';
+      const title = 'my first task';
+      const type = 'task';
+
+      const createThenClickOnTask = () => {
+        findConvertToTaskButton().vm.$emit('click');
+        findCreateWorkItem().vm.$emit('onCreate', { id, title, type });
+        return wrapper.findByRole('button', { name: title }).trigger('click');
+      };
+
+      beforeEach(() => {
+        createComponent({
+          props: {
+            descriptionHtml: descriptionHtmlWithCheckboxes,
+          },
+          provide: {
+            glFeatures: { workItems: true },
+          },
+        });
+        return nextTick();
+      });
+
+      it('opens when task button is clicked', async () => {
+        expect(findWorkItemDetailModal().props('visible')).toBe(false);
+
+        await createThenClickOnTask();
+
+        expect(findWorkItemDetailModal().props('visible')).toBe(true);
+      });
+
+      it('closes from an open state', async () => {
+        await createThenClickOnTask();
+
+        expect(findWorkItemDetailModal().props('visible')).toBe(true);
+
+        findWorkItemDetailModal().vm.$emit('close');
+        await nextTick();
+
+        expect(findWorkItemDetailModal().props('visible')).toBe(false);
+      });
+
+      it('shows error on error', async () => {
+        const message = 'I am error';
+
+        await createThenClickOnTask();
+        findWorkItemDetailModal().vm.$emit('error', message);
+
+        expect(createFlash).toHaveBeenCalledWith({ message });
+      });
+
+      it('tracks when opened', async () => {
+        const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+        await createThenClickOnTask();
+
+        expect(trackingSpy).toHaveBeenCalledWith('workItems:show', 'viewed_work_item_from_modal', {
+          category: 'workItems:show',
+          label: 'work_item_view',
+          property: 'type_task',
+        });
       });
     });
   });

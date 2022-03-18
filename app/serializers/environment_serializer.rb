@@ -60,7 +60,7 @@ class EnvironmentSerializer < BaseSerializer
     Preloaders::Environments::DeploymentPreloader.new(resource)
       .execute_with_union(:upcoming_deployment, deployment_associations)
 
-    resource.all.to_a.tap do |environments|
+    resource.to_a.tap do |environments|
       environments.each do |environment|
         # Batch loading the commits of the deployments
         environment.last_deployment&.commit&.try(:lazy_author)

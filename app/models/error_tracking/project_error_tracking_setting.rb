@@ -59,6 +59,10 @@ module ErrorTracking
       integrated
     end
 
+    def integrated_enabled?
+      enabled? && integrated_client?
+    end
+
     def gitlab_dsn
       strong_memoize(:gitlab_dsn) do
         client_key&.sentry_dsn

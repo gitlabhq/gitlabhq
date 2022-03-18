@@ -21,7 +21,7 @@ RSpec.shared_examples 'backup object' do |setting|
       expect(backup).to receive(:run_pipeline!).with([%W(blabla-tar --exclude=lost+found --exclude=./tmp -C #{backup_path} -cf - .), 'gzip -c -1'], any_args).and_return([[true, true], ''])
       expect(backup).to receive(:pipeline_succeeded?).and_return(true)
 
-      backup.dump
+      backup.dump('backup_object.tar.gz')
     end
   end
 end

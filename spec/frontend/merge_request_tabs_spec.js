@@ -4,6 +4,7 @@ import initMrPage from 'helpers/init_vue_mr_page_helper';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs from '~/merge_request_tabs';
 import '~/lib/utils/common_utils';
+import '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/webpack', () => ({
   resetServiceWorkersPublicPath: jest.fn(),

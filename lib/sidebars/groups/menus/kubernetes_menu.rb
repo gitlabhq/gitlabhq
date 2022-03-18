@@ -21,7 +21,10 @@ module Sidebars
 
         override :render?
         def render?
-          can?(context.current_user, :read_cluster, context.group)
+          clusterable = context.group
+
+          Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops) &&
+            can?(context.current_user, :read_cluster, clusterable)
         end
 
         override :extra_container_html_options

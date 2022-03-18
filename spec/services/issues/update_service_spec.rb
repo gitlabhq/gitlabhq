@@ -1157,6 +1157,13 @@ RSpec.describe Issues::UpdateService, :mailer do
 
           expect(issue.escalation_status.status_name).to eq(expected_status)
         end
+
+        it 'triggers webhooks' do
+          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
+          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+
+          update_issue(opts)
+        end
       end
 
       shared_examples 'does not change the status record' do
@@ -1169,7 +1176,8 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'does not trigger side-effects' do
-          expect(escalation_update_class).not_to receive(:new)
+          expect(project).not_to receive(:execute_hooks)
+          expect(project).not_to receive(:execute_integrations)
 
           update_issue(opts)
         end
@@ -1324,32 +1332,14 @@ RSpec.describe Issues::UpdateService, :mailer do
     context 'broadcasting issue assignee updates' do
       let(:update_params) { { assignee_ids: [user2.id] } }
 
-      context 'when feature flag is enabled' do
-        before do
-          stub_feature_flags(broadcast_issue_updates: true)
-        end
+      it 'triggers the GraphQL subscription' do
+        expect(GraphqlTriggers).to receive(:issuable_assignees_updated).with(issue)
 
-        it 'triggers the GraphQL subscription' do
-          expect(GraphqlTriggers).to receive(:issuable_assignees_updated).with(issue)
-
-          update_issue(update_params)
-        end
-
-        context 'when assignee is not updated' do
-          let(:update_params) { { title: 'Some other title' } }
-
-          it 'does not trigger the GraphQL subscription' do
-            expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)
-
-            update_issue(update_params)
-          end
-        end
+        update_issue(update_params)
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(broadcast_issue_updates: false)
-        end
+      context 'when assignee is not updated' do
+        let(:update_params) { { title: 'Some other title' } }
 
         it 'does not trigger the GraphQL subscription' do
           expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)

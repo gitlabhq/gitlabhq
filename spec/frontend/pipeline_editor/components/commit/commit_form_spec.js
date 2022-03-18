@@ -17,6 +17,8 @@ describe('Pipeline Editor | Commit Form', () => {
       propsData: {
         defaultMessage: mockCommitMessage,
         currentBranch: mockDefaultBranch,
+        hasUnsavedChanges: true,
+        isNewCiConfigFile: false,
         ...props,
       },
 
@@ -80,6 +82,27 @@ describe('Pipeline Editor | Commit Form', () => {
 
       expect(wrapper.emitted('resetContent')).toHaveLength(1);
     });
+  });
+
+  describe('submit button', () => {
+    it.each`
+      hasUnsavedChanges | isNewCiConfigFile | isDisabled | btnState
+      ${false}          | ${false}          | ${true}    | ${'disabled'}
+      ${true}           | ${false}          | ${false}   | ${'enabled'}
+      ${true}           | ${true}           | ${false}   | ${'enabled'}
+      ${false}          | ${true}           | ${false}   | ${'enabled'}
+    `(
+      'is $btnState when hasUnsavedChanges:$hasUnsavedChanges and isNewCiConfigfile:$isNewCiConfigFile',
+      ({ hasUnsavedChanges, isNewCiConfigFile, isDisabled }) => {
+        createComponent({ props: { hasUnsavedChanges, isNewCiConfigFile } });
+
+        if (isDisabled) {
+          expect(findSubmitBtn().attributes('disabled')).toBe('true');
+        } else {
+          expect(findSubmitBtn().attributes('disabled')).toBeUndefined();
+        }
+      },
+    );
   });
 
   describe('when user inputs values', () => {

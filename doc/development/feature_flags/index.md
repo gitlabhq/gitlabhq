@@ -530,8 +530,9 @@ Feature.remove(:feature_flag_name)
 ## Feature flags in tests
 
 Introducing a feature flag into the codebase creates an additional code path that should be tested.
-It is strongly advised to test all code affected by a feature flag, both when **enabled** and **disabled**
-to ensure the feature works properly.
+It is strongly advised to include automated tests for all code affected by a feature flag, both when **enabled** and **disabled**
+to ensure the feature works properly. If automated tests are not included for both states, the functionality associated
+with the untested code path should be manually tested before deployment to production.
 
 When using the testing environment, all feature flags are enabled by default.
 

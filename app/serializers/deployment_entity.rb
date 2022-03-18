@@ -73,3 +73,5 @@ class DeploymentEntity < Grape::Entity
     request.try(:project) || options[:project]
   end
 end
+
+DeploymentEntity.prepend_mod

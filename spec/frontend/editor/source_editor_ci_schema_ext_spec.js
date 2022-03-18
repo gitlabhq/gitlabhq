@@ -4,10 +4,14 @@ import { CiSchemaExtension } from '~/editor/extensions/source_editor_ci_schema_e
 import ciSchemaPath from '~/editor/schema/ci.json';
 import SourceEditor from '~/editor/source_editor';
 
+// Webpack is configured to use file-loader for the CI schema; mimic that here
+jest.mock('~/editor/schema/ci.json', () => '/assets/ci.json');
+
 const mockRef = 'AABBCCDD';
 
 describe('~/editor/editor_ci_config_ext', () => {
   const defaultBlobPath = '.gitlab-ci.yml';
+  const expectedSchemaUri = `${TEST_HOST}${ciSchemaPath}`;
 
   let editor;
   let instance;
@@ -84,14 +88,13 @@ describe('~/editor/editor_ci_config_ext', () => {
         });
 
         expect(getConfiguredYmlSchema()).toEqual({
-          uri: `${TEST_HOST}${ciSchemaPath}`,
+          uri: expectedSchemaUri,
           fileMatch: [defaultBlobPath],
         });
       });
 
       it('with an alternative file name match', () => {
         createMockEditor({ blobPath: 'dir1/dir2/another-ci-filename.yml' });
-
         instance.registerCiSchema({
           projectNamespace: mockProjectNamespace,
           projectPath: mockProjectPath,
@@ -99,7 +102,7 @@ describe('~/editor/editor_ci_config_ext', () => {
         });
 
         expect(getConfiguredYmlSchema()).toEqual({
-          uri: `${TEST_HOST}${ciSchemaPath}`,
+          uri: expectedSchemaUri,
           fileMatch: ['another-ci-filename.yml'],
         });
       });

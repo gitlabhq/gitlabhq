@@ -3,20 +3,25 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
 import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
-import { createTestEditor, emitEditorEvent } from '../test_utils';
+import eventHubFactory from '~/helpers/event_hub_factory';
+import { ALERT_EVENT } from '~/content_editor/constants';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/components/content_editor_alert', () => {
   let wrapper;
   let tiptapEditor;
+  let eventHub;
 
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
 
   const createWrapper = async () => {
     tiptapEditor = createTestEditor();
+    eventHub = eventHubFactory();
 
     wrapper = shallowMountExtended(ContentEditorAlert, {
       provide: {
         tiptapEditor,
+        eventHub,
       },
       stubs: {
         EditorStateObserver,
@@ -37,7 +42,9 @@ describe('content_editor/components/content_editor_alert', () => {
     async ({ message, variant }) => {
       createWrapper();
 
-      await emitEditorEvent({ tiptapEditor, event: 'alert', params: { message, variant } });
+      eventHub.$emit(ALERT_EVENT, { message, variant });
+
+      await nextTick();
 
       expect(findErrorAlert().text()).toBe(message);
       expect(findErrorAlert().attributes().variant).toBe(variant);
@@ -48,11 +55,9 @@ describe('content_editor/components/content_editor_alert', () => {
     const message = 'error message';
 
     createWrapper();
-
-    await emitEditorEvent({ tiptapEditor, event: 'alert', params: { message } });
-
+    eventHub.$emit(ALERT_EVENT, { message });
+    await nextTick();
     findErrorAlert().vm.$emit('dismiss');
-
     await nextTick();
 
     expect(findErrorAlert().exists()).toBe(false);

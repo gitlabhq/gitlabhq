@@ -3,6 +3,7 @@
 module Projects
   module Serverless
     class FunctionsController < Projects::ApplicationController
+      before_action :ensure_feature_enabled!
       before_action :authorize_read_cluster!
 
       feature_category :not_owned
@@ -68,6 +69,10 @@ module Projects
 
       def serialize_function(function)
         Projects::Serverless::ServiceSerializer.new(current_user: @current_user, project: project).represent(function)
+      end
+
+      def ensure_feature_enabled!
+        render_404 unless Feature.enabled?(:deprecated_serverless, project, default_enabled: :yaml, type: :ops)
       end
     end
   end

@@ -15,7 +15,6 @@ RSpec.describe 'Projects > Files > User deletes files', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(refactor_blob_viewer: false) # This stub will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/349953
     sign_in(user)
   end
 
@@ -35,7 +34,7 @@ RSpec.describe 'Projects > Files > User deletes files', :js do
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Delete file')
 
-      expect(current_path).to eq(project_tree_path(project, 'master/'))
+      expect(page).to have_current_path(project_tree_path(project, 'master/'), ignore_query: true)
       expect(page).not_to have_content('.gitignore')
     end
   end
@@ -67,7 +66,7 @@ RSpec.describe 'Projects > Files > User deletes files', :js do
 
       fork = user.fork_of(project2.reload)
 
-      expect(current_path).to eq(project_new_merge_request_path(fork))
+      expect(page).to have_current_path(project_new_merge_request_path(fork), ignore_query: true)
       expect(page).to have_content('New commit message')
     end
   end

@@ -1,7 +1,6 @@
 import { GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import merge from 'lodash/merge';
-import waitForPromises from 'helpers/wait_for_promises';
 import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 import DescriptionComponent from '~/issues/show/components/description.vue';
 import HighlightBar from '~/issues/show/components/incidents/highlight_bar.vue';
@@ -36,6 +35,7 @@ describe('Incident Tabs component', () => {
             fullPath: '',
             iid: '',
             uploadMetricsFeatureAvailable: true,
+            glFeatures: { incidentTimelineEventTab: true, incidentTimelineEvents: true },
           },
           data() {
             return { alert: mockAlert, ...data };
@@ -112,18 +112,14 @@ describe('Incident Tabs component', () => {
   });
 
   describe('upload metrics feature available', () => {
-    it('shows the metric tab when metrics are available', async () => {
+    it('shows the metric tab when metrics are available', () => {
       mountComponent({}, { provide: { uploadMetricsFeatureAvailable: true } });
-
-      await waitForPromises();
 
       expect(findMetricsTab().exists()).toBe(true);
     });
 
-    it('hides the tab when metrics are not available', async () => {
+    it('hides the tab when metrics are not available', () => {
       mountComponent({}, { provide: { uploadMetricsFeatureAvailable: false } });
-
-      await waitForPromises();
 
       expect(findMetricsTab().exists()).toBe(false);
     });

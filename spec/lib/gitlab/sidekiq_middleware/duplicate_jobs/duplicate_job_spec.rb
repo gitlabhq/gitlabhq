@@ -122,20 +122,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
         it_behaves_like 'sets Redis keys with correct TTL'
       end
 
-      context 'when preserve_latest_wal_locations_for_idempotent_jobs feature flag is disabled' do
-        before do
-          stub_feature_flags(preserve_latest_wal_locations_for_idempotent_jobs: false)
-        end
-
-        it "does not change the existing wal locations key's TTL" do
-          expect { duplicate_job.check! }
-            .to not_change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, :main)) }
-                  .from([nil, -2])
-            .and not_change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, :ci)) }
-                  .from([nil, -2])
-        end
-      end
-
       it "adds the idempotency key to the jobs payload" do
         expect { duplicate_job.check! }.to change { job['idempotency_key'] }.from(nil).to(idempotency_key)
       end
@@ -184,28 +170,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
       # read existing_wal_locations
       duplicate_job.check!
-    end
-
-    context 'when preserve_latest_wal_locations_for_idempotent_jobs feature flag is disabled' do
-      let(:existing_wal) { {} }
-
-      before do
-        stub_feature_flags(preserve_latest_wal_locations_for_idempotent_jobs: false)
-      end
-
-      it "doesn't call Sidekiq.redis" do
-        expect(Sidekiq).not_to receive(:redis)
-
-        duplicate_job.update_latest_wal_location!
-      end
-
-      it "doesn't update a wal location to redis with an offset" do
-        expect { duplicate_job.update_latest_wal_location! }
-          .to not_change { read_range_from_redis(wal_location_key(idempotency_key, :main)) }
-                .from([])
-         .and not_change { read_range_from_redis(wal_location_key(idempotency_key, :ci)) }
-                .from([])
-      end
     end
 
     context "when the key doesn't exists in redis" do
@@ -328,20 +292,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
     context 'when job is not deduplication and wal locations were not persisted' do
       it { expect(duplicate_job.latest_wal_locations).to be_empty }
     end
-
-    context 'when preserve_latest_wal_locations_for_idempotent_jobs feature flag is disabled' do
-      before do
-        stub_feature_flags(preserve_latest_wal_locations_for_idempotent_jobs: false)
-      end
-
-      it "doesn't call Sidekiq.redis" do
-        expect(Sidekiq).not_to receive(:redis)
-
-        duplicate_job.latest_wal_locations
-      end
-
-      it { expect(duplicate_job.latest_wal_locations).to eq({}) }
-    end
   end
 
   describe '#delete!' do
@@ -405,32 +355,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
         it_behaves_like 'deleting keys from redis', 'latest wal location keys for ci database' do
           let(:key) { wal_location_key(idempotency_key, :ci) }
           let(:from_value) { wal_locations[:ci] }
-        end
-
-        context 'when preserve_latest_wal_locations_for_idempotent_jobs feature flag is disabled' do
-          before do
-            stub_feature_flags(preserve_latest_wal_locations_for_idempotent_jobs: false)
-          end
-
-          it_behaves_like 'does not delete key from redis', 'latest wal location keys for main database' do
-            let(:key) { existing_wal_location_key(idempotency_key, :main) }
-            let(:from_value) { wal_locations[:main] }
-          end
-
-          it_behaves_like 'does not delete key from redis', 'latest wal location keys for ci database' do
-            let(:key) { existing_wal_location_key(idempotency_key, :ci) }
-            let(:from_value) { wal_locations[:ci] }
-          end
-
-          it_behaves_like 'does not delete key from redis', 'latest wal location keys for main database' do
-            let(:key) { wal_location_key(idempotency_key, :main) }
-            let(:from_value) { wal_locations[:main] }
-          end
-
-          it_behaves_like 'does not delete key from redis', 'latest wal location keys for ci database' do
-            let(:key) { wal_location_key(idempotency_key, :ci) }
-            let(:from_value) { wal_locations[:ci] }
-          end
         end
       end
 
@@ -665,16 +589,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
       it 'returns true' do
         expect(duplicate_job).to be_idempotent
-      end
-
-      context 'when preserve_latest_wal_locations_for_idempotent_jobs feature flag is disabled' do
-        before do
-          stub_feature_flags(preserve_latest_wal_locations_for_idempotent_jobs: false)
-        end
-
-        it 'returns false' do
-          expect(duplicate_job).not_to be_idempotent
-        end
       end
     end
   end

@@ -1214,6 +1214,11 @@ export const mockPipelineWithoutMR = {
   },
 };
 
+export const mockPipelineWithoutRef = {
+  ...mockPipelineWithoutMR,
+  ref: null,
+};
+
 export const mockPipelineWithAttachedMR = {
   id: 28029444,
   details: {
@@ -1579,44 +1584,6 @@ export const mockJobsQueryResponse = {
   },
 };
 
-export const mockJobsQueryResponseLastPage = {
-  data: {
-    project: {
-      id: '1',
-      jobs: {
-        ...mockJobsQueryResponse.data.project.jobs,
-        pageInfo: {
-          endCursor: 'eyJpZCI6IjIzMTcifQ',
-          hasNextPage: false,
-          hasPreviousPage: true,
-          startCursor: 'eyJpZCI6IjIzMzYifQ',
-          __typename: 'PageInfo',
-        },
-      },
-      __typename: 'Project',
-    },
-  },
-};
-
-export const mockJobsQueryResponseFirstPage = {
-  data: {
-    project: {
-      id: '1',
-      jobs: {
-        ...mockJobsQueryResponse.data.project.jobs,
-        pageInfo: {
-          endCursor: 'eyJpZCI6IjIzMTcifQ',
-          hasNextPage: true,
-          hasPreviousPage: false,
-          startCursor: 'eyJpZCI6IjIzMzYifQ',
-          __typename: 'PageInfo',
-        },
-      },
-      __typename: 'Project',
-    },
-  },
-};
-
 export const mockJobsQueryEmptyResponse = {
   data: {
     project: {
@@ -1909,4 +1876,45 @@ export const cannotPlayScheduledJob = {
     updateBuild: false,
     __typename: 'JobPermissions',
   },
+};
+
+export const CIJobConnectionIncomingCache = {
+  __typename: 'CiJobConnection',
+  pageInfo: {
+    __typename: 'PageInfo',
+    endCursor: 'eyJpZCI6IjIwNTEifQ',
+    hasNextPage: true,
+    hasPreviousPage: false,
+    startCursor: 'eyJpZCI6IjIxNzMifQ',
+  },
+  nodes: [
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2057' },
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2056' },
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2051' },
+  ],
+};
+
+export const CIJobConnectionIncomingCacheRunningStatus = {
+  __typename: 'CiJobConnection',
+  pageInfo: {
+    __typename: 'PageInfo',
+    endCursor: 'eyJpZCI6IjIwNTEifQ',
+    hasNextPage: true,
+    hasPreviousPage: false,
+    startCursor: 'eyJpZCI6IjIxNzMifQ',
+  },
+  nodes: [
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2000' },
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2001' },
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2002' },
+  ],
+};
+
+export const CIJobConnectionExistingCache = {
+  nodes: [
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2057' },
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2056' },
+    { __ref: 'CiJob:gid://gitlab/Ci::Build/2051' },
+  ],
+  statuses: 'PENDING',
 };

@@ -7,6 +7,10 @@ module MergeRequests
       # We want to have the cheapest checks first in the list,
       # that way we can fail fast before running the more expensive ones
       CHECKS = [
+        CheckOpenStatusService,
+        CheckDraftStatusService,
+        CheckBrokenStatusService,
+        CheckDiscussionsStatusService,
         CheckCiStatusService
       ].freeze
 

@@ -1,4 +1,4 @@
-import { GlSearchBoxByType, GlDropdown } from '@gitlab/ui';
+import { GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 
@@ -76,7 +76,16 @@ describe('Sidebar assignees widget', () => {
         SidebarEditableItem,
         UserSelect,
         GlSearchBoxByType,
-        GlDropdown,
+        GlDropdown: {
+          template: `
+            <div>
+              <slot name="footer"></slot>
+            </div>
+          `,
+          methods: {
+            show: jest.fn(),
+          },
+        },
       },
     });
   };
@@ -340,20 +349,8 @@ describe('Sidebar assignees widget', () => {
     });
   });
 
-  it('when realtime feature flag is disabled', async () => {
+  it('includes the real-time assignees component', async () => {
     createComponent();
-    await waitForPromises();
-    expect(findRealtimeAssignees().exists()).toBe(false);
-  });
-
-  it('when realtime feature flag is enabled', async () => {
-    createComponent({
-      provide: {
-        glFeatures: {
-          realTimeIssueSidebar: true,
-        },
-      },
-    });
     await waitForPromises();
     expect(findRealtimeAssignees().exists()).toBe(true);
   });

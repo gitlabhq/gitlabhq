@@ -222,16 +222,26 @@ RSpec.describe ::Routing::PseudonymizationHelper do
   end
 
   describe 'when url has no params to mask' do
-    let(:root_url) { 'http://localhost/some/path' }
+    let(:original_url) { 'http://localhost/-/security/vulnerabilities' }
+    let(:request) do
+      double(:Request,
+             path_parameters: {
+               controller: 'security/vulnerabilities',
+               action: 'index'
+             },
+             protocol: 'http',
+             host: 'localhost',
+             query_string: '',
+             original_fullpath: '/-/security/vulnerabilities',
+             original_url: original_url)
+    end
 
-    context 'returns root url' do
-      before do
-        controller.request.path = 'some/path'
-      end
+    before do
+      allow(helper).to receive(:request).and_return(request)
+    end
 
-      it 'masked_page_url' do
-        expect(subject).to eq(root_url)
-      end
+    it 'returns unchanged url' do
+      expect(subject).to eq(original_url)
     end
   end
 

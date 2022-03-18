@@ -7,6 +7,7 @@ import ErrorTrackingActions from '~/error_tracking/components/error_tracking_act
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '~/error_tracking/utils';
 import Tracking from '~/tracking';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import errorsList from './list_mock.json';
 
 Vue.use(Vuex);
@@ -25,28 +26,33 @@ describe('ErrorTrackingList', () => {
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findPagination = () => wrapper.find(GlPagination);
   const findErrorActions = () => wrapper.find(ErrorTrackingActions);
+  const findIntegratedDisabledAlert = () => wrapper.findByTestId('integrated-disabled-alert');
 
   function mountComponent({
     errorTrackingEnabled = true,
     userCanEnableErrorTracking = true,
+    showIntegratedTrackingDisabledAlert = false,
     stubs = {},
   } = {}) {
-    wrapper = mount(ErrorTrackingList, {
-      store,
-      propsData: {
-        indexPath: '/path',
-        listPath: '/error_tracking',
-        projectPath: 'project/test',
-        enableErrorTrackingLink: '/link',
-        userCanEnableErrorTracking,
-        errorTrackingEnabled,
-        illustrationPath: 'illustration/path',
-      },
-      stubs: {
-        ...stubChildren(ErrorTrackingList),
-        ...stubs,
-      },
-    });
+    wrapper = extendedWrapper(
+      mount(ErrorTrackingList, {
+        store,
+        propsData: {
+          indexPath: '/path',
+          listPath: '/error_tracking',
+          projectPath: 'project/test',
+          enableErrorTrackingLink: '/link',
+          userCanEnableErrorTracking,
+          errorTrackingEnabled,
+          showIntegratedTrackingDisabledAlert,
+          illustrationPath: 'illustration/path',
+        },
+        stubs: {
+          ...stubChildren(ErrorTrackingList),
+          ...stubs,
+        },
+      }),
+    );
   }
 
   beforeEach(() => {
@@ -223,6 +229,31 @@ describe('ErrorTrackingList', () => {
     });
   });
 
+  describe('When the integrated tracking diabled alert should be shown', () => {
+    beforeEach(() => {
+      mountComponent({
+        showIntegratedTrackingDisabledAlert: true,
+        stubs: {
+          GlAlert: false,
+        },
+      });
+    });
+
+    it('shows the alert box', () => {
+      expect(findIntegratedDisabledAlert().exists()).toBe(true);
+    });
+
+    describe('when alert is dismissed', () => {
+      it('hides the alert box', async () => {
+        findIntegratedDisabledAlert().vm.$emit('dismiss');
+
+        await nextTick();
+
+        expect(findIntegratedDisabledAlert().exists()).toBe(false);
+      });
+    });
+  });
+
   describe('When the ignore button on an error is clicked', () => {
     beforeEach(() => {
       store.state.list.loading = false;
@@ -367,21 +398,6 @@ describe('ErrorTrackingList', () => {
   });
 
   describe('When pagination is required', () => {
-    describe('and the user is on the first page', () => {
-      beforeEach(() => {
-        store.state.list.loading = false;
-        mountComponent({
-          stubs: {
-            GlPagination: false,
-          },
-        });
-      });
-
-      it('shows a disabled Prev button', () => {
-        expect(wrapper.find('.prev-page-item').attributes('aria-disabled')).toBe('true');
-      });
-    });
-
     describe('and the user is not on the first page', () => {
       describe('and the previous button is clicked', () => {
         beforeEach(async () => {

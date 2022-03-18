@@ -58,9 +58,9 @@ POST /projects/:id/approvals
 | `id`                                             | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding)  |
 | `approvals_before_merge`                         | integer | no       | How many approvals are required before an MR can be merged. Deprecated in 12.0 in favor of Approval Rules API. |
 | `reset_approvals_on_push`                        | boolean | no       | Reset approvals on a new push                                                                       |
-| `disable_overriding_approvers_per_merge_request` | boolean | no       | Allow/Disallow overriding approvers per MR                                                          |
-| `merge_requests_author_approval`                 | boolean | no       | Allow/Disallow authors from self approving merge requests; `true` means authors can self approve |
-| `merge_requests_disable_committers_approval`     | boolean | no       | Allow/Disallow committers from self approving merge requests                                        |
+| `disable_overriding_approvers_per_merge_request` | boolean | no       | Allow or prevent overriding approvers per MR                                                          |
+| `merge_requests_author_approval`                 | boolean | no       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve |
+| `merge_requests_disable_committers_approval`     | boolean | no       | Allow or prevent committers from self approving merge requests                                        |
 | `require_password_to_approve`                    | boolean | no       | Require approver to enter a password to authenticate before adding the approval         |
 
 ```json

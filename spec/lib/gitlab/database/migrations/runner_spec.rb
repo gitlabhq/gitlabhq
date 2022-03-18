@@ -79,6 +79,15 @@ RSpec.describe Gitlab::Database::Migrations::Runner do
         expect(migration_runs.map(&:dir)).to match_array([:up, :up])
         expect(migration_runs.map(&:version_to_migrate)).to eq(pending_migrations.map(&:version))
       end
+
+      it 'writes a metadata file with the current schema version' do
+        up.run
+
+        metadata_file = result_dir.join('up', described_class::METADATA_FILENAME)
+        expect(metadata_file.exist?).to be_truthy
+        metadata = Gitlab::Json.parse(File.read(metadata_file))
+        expect(metadata).to match('version' => described_class::SCHEMA_VERSION)
+      end
     end
   end
 
@@ -104,6 +113,15 @@ RSpec.describe Gitlab::Database::Migrations::Runner do
         expect(migration_runs.map(&:dir)).to match_array([:down, :down])
         expect(migration_runs.map(&:version_to_migrate)).to eq(applied_migrations_this_branch.reverse.map(&:version))
       end
+    end
+
+    it 'writes a metadata file with the current schema version' do
+      down.run
+
+      metadata_file = result_dir.join('down', described_class::METADATA_FILENAME)
+      expect(metadata_file.exist?).to be_truthy
+      metadata = Gitlab::Json.parse(File.read(metadata_file))
+      expect(metadata).to match('version' => described_class::SCHEMA_VERSION)
     end
   end
 end

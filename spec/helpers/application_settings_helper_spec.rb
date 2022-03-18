@@ -51,7 +51,7 @@ RSpec.describe ApplicationSettingsHelper do
         issues_create_limit notes_create_limit project_export_limit
         project_download_export_limit project_export_limit project_import_limit
         raw_blob_request_limit group_export_limit group_download_export_limit
-        group_import_limit users_get_by_id_limit user_email_lookup_limit
+        group_import_limit users_get_by_id_limit search_rate_limit search_rate_limit_unauthenticated
       ))
     end
 
@@ -292,5 +292,26 @@ RSpec.describe ApplicationSettingsHelper do
     subject { helper.sidekiq_job_limiter_modes_for_select }
 
     it { is_expected.to eq([%w(Track track), %w(Compress compress)]) }
+  end
+
+  describe '#instance_clusters_enabled?' do
+    let_it_be(:user) { create(:user) }
+
+    subject { helper.instance_clusters_enabled? }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).with(user, :read_cluster, instance_of(Clusters::Instance)).and_return(true)
+    end
+
+    it { is_expected.to be_truthy}
+
+    context ':certificate_based_clusters feature flag is disabled' do
+      before do
+        stub_feature_flags(certificate_based_clusters: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
   end
 end

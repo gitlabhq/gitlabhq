@@ -3,10 +3,6 @@
 class Projects::ClusterAgentsController < Projects::ApplicationController
   before_action :authorize_can_read_cluster_agent!
 
-  before_action do
-    push_frontend_feature_flag(:cluster_vulnerabilities, project, default_enabled: :yaml)
-  end
-
   feature_category :kubernetes_management
 
   def show

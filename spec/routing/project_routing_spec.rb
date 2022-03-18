@@ -70,9 +70,11 @@ RSpec.describe 'project routing' do
         route_to('projects#preview_markdown', namespace_id: 'gitlab', id: 'gitlabhq')
       )
     end
+  end
 
-    it 'to #resolve' do
-      expect(get('/projects/1')).to route_to('projects#resolve', id: '1')
+  describe Projects::RedirectController, 'routing' do
+    it 'to #redirect_from_id' do
+      expect(get('/projects/1')).to route_to('projects/redirect#redirect_from_id', id: '1')
     end
   end
 
@@ -395,7 +397,7 @@ RSpec.describe 'project routing' do
   #                          DELETE /:project_id/project_members/:id(.:format)      project_members#destroy
   describe Projects::ProjectMembersController, 'routing' do
     it_behaves_like 'resource routing' do
-      let(:actions) { %i[index create update destroy] }
+      let(:actions) { %i[index update destroy] }
       let(:base_path) { '/gitlab/gitlabhq/-/project_members' }
     end
   end
@@ -680,6 +682,32 @@ RSpec.describe 'project routing' do
     end
   end
 
+  describe Projects::ReleasesController, 'routing' do
+    it 'to #latest_permalink with a valid permalink path' do
+      expect(get('/gitlab/gitlabhq/-/releases/permalink/latest/downloads/release-binary.zip')).to route_to(
+        'projects/releases#latest_permalink',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        suffix_path: 'downloads/release-binary.zip'
+      )
+
+      expect(get('/gitlab/gitlabhq/-/releases/permalink/latest')).to route_to(
+        'projects/releases#latest_permalink',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq'
+      )
+    end
+
+    it 'to #show for the release with tag named permalink' do
+      expect(get('/gitlab/gitlabhq/-/releases/permalink')).to route_to(
+        'projects/releases#show',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        tag: 'permalink'
+      )
+    end
+  end
+
   describe Projects::Registry::TagsController, 'routing' do
     describe '#destroy' do
       it 'correctly routes to a destroy action' do
@@ -896,6 +924,12 @@ RSpec.describe 'project routing' do
         'application#route_not_found',
         unmatched_route: 'gitlab/gitlabhq/-/metrics/dashboard1.yml/invalid_page'
       )
+    end
+  end
+
+  describe Projects::Ci::SecureFilesController, 'routing' do
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/-/ci/secure_files')).to route_to('projects/ci/secure_files#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
   end
 

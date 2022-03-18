@@ -1,18 +1,7 @@
 <script>
-import {
-  GlAlert,
-  GlButton,
-  GlFormGroup,
-  GlFormInputGroup,
-  GlLink,
-  GlModal,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormGroup, GlLink, GlModal, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
-import CodeBlock from '~/vue_shared/components/code_block.vue';
 import Tracking from '~/tracking';
-import { generateAgentRegistrationCommand } from '../clusters_util';
 import {
   INSTALL_AGENT_MODAL_ID,
   I18N_AGENT_MODAL,
@@ -30,39 +19,32 @@ import createAgentToken from '../graphql/mutations/create_agent_token.mutation.g
 import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import agentConfigurations from '../graphql/queries/agent_configurations.query.graphql';
 import AvailableAgentsDropdown from './available_agents_dropdown.vue';
+import AgentToken from './agent_token.vue';
 
 const trackingMixin = Tracking.mixin({ label: EVENT_LABEL_MODAL });
 
 export default {
   modalId: INSTALL_AGENT_MODAL_ID,
+  i18n: I18N_AGENT_MODAL,
   EVENT_ACTIONS_OPEN,
   EVENT_ACTIONS_CLICK,
   EVENT_LABEL_MODAL,
-  basicInstallPath: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'install-the-agent-into-the-cluster',
-  }),
-  advancedInstallPath: helpPagePath('user/clusters/agent/install/index', {
-    anchor: 'advanced-installation',
-  }),
   enableKasPath: helpPagePath('administration/clusters/kas'),
-  installAgentPath: helpPagePath('user/clusters/agent/install/index'),
   registerAgentPath: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'register-an-agent-with-gitlab',
   }),
   components: {
     AvailableAgentsDropdown,
-    CodeBlock,
+    AgentToken,
     GlAlert,
     GlButton,
     GlFormGroup,
-    GlFormInputGroup,
     GlLink,
     GlModal,
     GlSprintf,
-    ModalCopyButton,
   },
   mixins: [trackingMixin],
-  inject: ['projectPath', 'kasAddress', 'emptyStateImage'],
+  inject: ['projectPath', 'emptyStateImage'],
   props: {
     defaultBranchName: {
       default: '.noBranch',
@@ -109,13 +91,10 @@ export default {
       return !this.registering && this.agentName !== null;
     },
     canCancel() {
-      return !this.registered && !this.registering && this.isAgentRegistrationModal;
+      return !this.registered && !this.registering && !this.kasDisabled;
     },
     canRegister() {
-      return !this.registered && this.isAgentRegistrationModal;
-    },
-    agentRegistrationCommand() {
-      return generateAgentRegistrationCommand(this.agentToken, this.kasAddress);
+      return !this.registered && !this.kasDisabled;
     },
     getAgentsQueryVariables() {
       return {
@@ -125,32 +104,20 @@ export default {
         projectPath: this.projectPath,
       };
     },
-    i18n() {
-      return I18N_AGENT_MODAL[this.modalType];
-    },
+
     repositoryPath() {
       return `/${this.projectPath}`;
     },
     modalType() {
-      return !this.availableAgents?.length && !this.registered
-        ? MODAL_TYPE_EMPTY
-        : MODAL_TYPE_REGISTER;
+      return this.kasDisabled ? MODAL_TYPE_EMPTY : MODAL_TYPE_REGISTER;
     },
     modalSize() {
-      return this.isEmptyStateModal ? 'sm' : 'md';
-    },
-    isEmptyStateModal() {
-      return this.modalType === MODAL_TYPE_EMPTY;
-    },
-    isAgentRegistrationModal() {
-      return this.modalType === MODAL_TYPE_REGISTER;
-    },
-    isKasEnabledInEmptyStateModal() {
-      return this.isEmptyStateModal && !this.kasDisabled;
+      return this.kasDisabled ? 'sm' : 'md';
     },
   },
   methods: {
     setAgentName(name) {
+      this.error = null;
       this.agentName = name;
       this.track(EVENT_ACTIONS_SELECT);
     },
@@ -194,13 +161,13 @@ export default {
           return createClusterAgent;
         });
     },
-    createAgentTokenMutation(agendId) {
+    createAgentTokenMutation(agentId) {
       return this.$apollo
         .mutate({
           mutation: createAgentToken,
           variables: {
             input: {
-              clusterAgentId: agendId,
+              clusterAgentId: agentId,
               name: this.agentName,
             },
           },
@@ -244,7 +211,7 @@ export default {
         if (error) {
           this.error = error.message;
         } else {
-          this.error = this.i18n.unknownError;
+          this.error = this.$options.i18n.unknownError;
         }
       } finally {
         this.registering = false;
@@ -258,22 +225,21 @@ export default {
   <gl-modal
     ref="modal"
     :modal-id="$options.modalId"
-    :title="i18n.modalTitle"
+    :title="$options.i18n.modalTitle"
     :size="modalSize"
     static
     lazy
     @hidden="resetModal"
     @show="track($options.EVENT_ACTIONS_OPEN, { property: modalType })"
   >
-    <template v-if="isAgentRegistrationModal">
+    <template v-if="!kasDisabled">
       <template v-if="!registered">
-        <p>
-          <strong>{{ i18n.selectAgentTitle }}</strong>
-        </p>
-
-        <p class="gl-mb-0">{{ i18n.selectAgentBody }}</p>
-        <p>
-          <gl-link :href="$options.registerAgentPath"> {{ i18n.learnMoreLink }}</gl-link>
+        <p class="gl-mb-0">
+          <gl-sprintf :message="$options.i18n.modalBody">
+            <template #link="{ content }">
+              <gl-link :href="repositoryPath">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
         </p>
 
         <form>
@@ -287,87 +253,33 @@ export default {
           </gl-form-group>
         </form>
 
+        <p>
+          <gl-link :href="$options.registerAgentPath"> {{ $options.i18n.learnMoreLink }}</gl-link>
+        </p>
+
         <p v-if="error">
-          <gl-alert :title="i18n.registrationErrorTitle" variant="danger" :dismissible="false">
+          <gl-alert
+            :title="$options.i18n.registrationErrorTitle"
+            variant="danger"
+            :dismissible="false"
+          >
             {{ error }}
           </gl-alert>
         </p>
       </template>
 
-      <template v-else>
-        <p>
-          <strong>{{ i18n.tokenTitle }}</strong>
-        </p>
-
-        <p>
-          <gl-sprintf :message="i18n.tokenBody">
-            <template #link="{ content }">
-              <gl-link :href="$options.basicInstallPath" target="_blank"> {{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </p>
-
-        <p>
-          <gl-alert :title="i18n.tokenSingleUseWarningTitle" variant="warning" :dismissible="false">
-            {{ i18n.tokenSingleUseWarningBody }}
-          </gl-alert>
-        </p>
-
-        <p>
-          <gl-form-input-group readonly :value="agentToken" :select-on-click="true">
-            <template #append>
-              <modal-copy-button
-                :text="agentToken"
-                :title="i18n.copyToken"
-                :modal-id="$options.modalId"
-              />
-            </template>
-          </gl-form-input-group>
-        </p>
-
-        <p>
-          <strong>{{ i18n.basicInstallTitle }}</strong>
-        </p>
-
-        <p>
-          {{ i18n.basicInstallBody }}
-        </p>
-
-        <p>
-          <code-block :code="agentRegistrationCommand" />
-        </p>
-
-        <p>
-          <strong>{{ i18n.advancedInstallTitle }}</strong>
-        </p>
-
-        <p>
-          <gl-sprintf :message="i18n.advancedInstallBody">
-            <template #link="{ content }">
-              <gl-link :href="$options.advancedInstallPath" target="_blank"> {{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </p>
-      </template>
+      <agent-token v-else :agent-token="agentToken" :modal-id="$options.modalId" />
     </template>
 
     <template v-else>
       <div class="gl-text-center gl-mb-5">
-        <img :alt="i18n.altText" :src="emptyStateImage" height="100" />
+        <img :alt="$options.i18n.altText" :src="emptyStateImage" height="100" />
       </div>
 
       <p v-if="kasDisabled">
-        <gl-sprintf :message="i18n.enableKasText">
+        <gl-sprintf :message="$options.i18n.enableKasText">
           <template #link="{ content }">
             <gl-link :href="$options.enableKasPath">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </p>
-
-      <p v-else>
-        <gl-sprintf :message="i18n.modalBody">
-          <template #link="{ content }">
-            <gl-link :href="$options.installAgentPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </p>
@@ -382,7 +294,7 @@ export default {
         :data-track-label="$options.EVENT_LABEL_MODAL"
         data-track-property="close"
         @click="closeModal"
-        >{{ i18n.close }}
+        >{{ $options.i18n.close }}
       </gl-button>
 
       <gl-button
@@ -391,7 +303,7 @@ export default {
         :data-track-label="$options.EVENT_LABEL_MODAL"
         data-track-property="cancel"
         @click="closeModal"
-        >{{ i18n.cancel }}
+        >{{ $options.i18n.cancel }}
       </gl-button>
 
       <gl-button
@@ -403,25 +315,16 @@ export default {
         :data-track-label="$options.EVENT_LABEL_MODAL"
         data-track-property="register"
         @click="registerAgent"
-        >{{ i18n.registerAgentButton }}
+        >{{ $options.i18n.registerAgentButton }}
       </gl-button>
 
       <gl-button
-        v-if="isEmptyStateModal"
+        v-if="kasDisabled"
         :data-track-action="$options.EVENT_ACTIONS_CLICK"
         :data-track-label="$options.EVENT_LABEL_MODAL"
         data-track-property="done"
         @click="closeModal"
-        >{{ i18n.done }}
-      </gl-button>
-
-      <gl-button
-        v-if="isKasEnabledInEmptyStateModal"
-        :href="repositoryPath"
-        variant="confirm"
-        category="primary"
-        data-testid="agent-primary-button"
-        >{{ i18n.primaryButton }}
+        >{{ $options.i18n.close }}
       </gl-button>
     </template>
   </gl-modal>

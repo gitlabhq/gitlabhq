@@ -102,8 +102,22 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
     loose_fk_parent_table_2.delete_all
   end
 
+  def perform_for(db:)
+    time = Time.current.midnight
+
+    if db == :main
+      time += 2.minutes
+    elsif db == :ci
+      time += 3.minutes
+    end
+
+    travel_to(time) do
+      described_class.new.perform
+    end
+  end
+
   it 'cleans up all rows' do
-    described_class.new.perform
+    perform_for(db: :main)
 
     expect(loose_fk_child_table_1_1.count).to eq(0)
     expect(loose_fk_child_table_1_2.where(parent_id_with_different_column: nil).count).to eq(4)
@@ -118,7 +132,7 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
     it 'cleans up all rows' do
       expect(LooseForeignKeys::BatchCleanerService).to receive(:new).exactly(:twice).and_call_original
 
-      described_class.new.perform
+      perform_for(db: :main)
 
       expect(loose_fk_child_table_1_1.count).to eq(0)
       expect(loose_fk_child_table_1_2.where(parent_id_with_different_column: nil).count).to eq(4)
@@ -137,25 +151,40 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
     end
 
     it 'cleans up 2 rows' do
-      expect { described_class.new.perform }.to change { count_deletable_rows }.by(-2)
+      expect { perform_for(db: :main) }.to change { count_deletable_rows }.by(-2)
     end
   end
 
   describe 'multi-database support' do
-    where(:current_minute, :configured_base_models, :expected_connection) do
-      2 | { main: ApplicationRecord, ci: Ci::ApplicationRecord } | ApplicationRecord.connection
-      3 | { main: ApplicationRecord, ci: Ci::ApplicationRecord } | Ci::ApplicationRecord.connection
-      2 | { main: ApplicationRecord } | ApplicationRecord.connection
-      3 | { main: ApplicationRecord } | ApplicationRecord.connection
+    where(:current_minute, :configured_base_models, :expected_connection_model) do
+      2 | { main: 'ApplicationRecord', ci: 'Ci::ApplicationRecord' } | 'ApplicationRecord'
+      3 | { main: 'ApplicationRecord', ci: 'Ci::ApplicationRecord' } | 'Ci::ApplicationRecord'
+      2 | { main: 'ApplicationRecord' } | 'ApplicationRecord'
+      3 | { main: 'ApplicationRecord' } | 'ApplicationRecord'
     end
 
     with_them do
+      let(:database_base_models) { configured_base_models.transform_values(&:constantize) }
+
+      let(:expected_connection) { expected_connection_model.constantize.connection }
+
       before do
-        allow(Gitlab::Database).to receive(:database_base_models).and_return(configured_base_models)
+        allow(Gitlab::Database).to receive(:database_base_models).and_return(database_base_models)
+
+        if database_base_models.has_key?(:ci)
+          Gitlab::Database::SharedModel.using_connection(database_base_models[:ci].connection) do
+            LooseForeignKeys::DeletedRecord.create!(fully_qualified_table_name: 'public._test_loose_fk_parent_table_1', primary_key_value: 999)
+            LooseForeignKeys::DeletedRecord.create!(fully_qualified_table_name: 'public._test_loose_fk_parent_table_1', primary_key_value: 9991)
+          end
+        end
       end
 
       it 'uses the correct connection' do
-        LooseForeignKeys::DeletedRecord.count.times do
+        record_count = Gitlab::Database::SharedModel.using_connection(expected_connection) do
+          LooseForeignKeys::DeletedRecord.count
+        end
+
+        record_count.times do
           expect_next_found_instance_of(LooseForeignKeys::DeletedRecord) do |instance|
             expect(instance.class.connection).to eq(expected_connection)
           end

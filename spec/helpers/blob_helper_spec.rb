@@ -54,42 +54,6 @@ RSpec.describe BlobHelper do
 
       expect(Capybara.string(link_with_mr).find_link('Edit')[:href]).to eq("/#{project.full_path}/-/edit/master/README.md?mr_id=10")
     end
-
-    context 'when edit is the primary button' do
-      before do
-        stub_feature_flags(web_ide_primary_edit: false)
-      end
-
-      it 'is rendered as primary' do
-        expect(link).not_to match(/btn-inverted/)
-      end
-
-      it 'passes on primary tracking attributes' do
-        parsed_link = Capybara.string(link).find_link('Edit')
-
-        expect(parsed_link[:'data-track-action']).to eq("click_edit")
-        expect(parsed_link[:'data-track-label']).to eq("edit")
-        expect(parsed_link[:'data-track-property']).to eq(nil)
-      end
-    end
-
-    context 'when Web IDE is the primary button' do
-      before do
-        stub_feature_flags(web_ide_primary_edit: true)
-      end
-
-      it 'is rendered as inverted' do
-        expect(link).to match(/btn-inverted/)
-      end
-
-      it 'passes on secondary tracking attributes' do
-        parsed_link = Capybara.string(link).find_link('Edit')
-
-        expect(parsed_link[:'data-track-action']).to eq("click_edit")
-        expect(parsed_link[:'data-track-label']).to eq("edit")
-        expect(parsed_link[:'data-track-property']).to eq("secondary")
-      end
-    end
   end
 
   describe "#relative_raw_path" do
@@ -321,63 +285,6 @@ RSpec.describe BlobHelper do
       assign(:project, project)
 
       expect(helper.suggest_pipeline_commit_cookie_name).to eq "suggest_gitlab_ci_yml_commit_#{project.id}"
-    end
-  end
-
-  describe `#ide_edit_button` do
-    let_it_be(:namespace) { create(:namespace, name: 'gitlab') }
-    let_it_be(:project) { create(:project, :repository, namespace: namespace) }
-    let_it_be(:current_user) { create(:user) }
-
-    let(:can_push_code) { true }
-    let(:blob) { project.repository.blob_at('refs/heads/master', 'README.md') }
-
-    subject(:link) { helper.ide_edit_button(project, 'master', 'README.md', blob: blob) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:can?).with(current_user, :push_code, project).and_return(can_push_code)
-      allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
-    end
-
-    it 'returns a link with a Web IDE route' do
-      expect(Capybara.string(link).find_link('Web IDE')[:href]).to eq("/-/ide/project/#{project.full_path}/edit/master/-/README.md")
-    end
-
-    context 'when edit is the primary button' do
-      before do
-        stub_feature_flags(web_ide_primary_edit: false)
-      end
-
-      it 'is rendered as inverted' do
-        expect(link).to match(/btn-inverted/)
-      end
-
-      it 'passes on secondary tracking attributes' do
-        parsed_link = Capybara.string(link).find_link('Web IDE')
-
-        expect(parsed_link[:'data-track-action']).to eq("click_edit_ide")
-        expect(parsed_link[:'data-track-label']).to eq("web_ide")
-        expect(parsed_link[:'data-track-property']).to eq("secondary")
-      end
-    end
-
-    context 'when Web IDE is the primary button' do
-      before do
-        stub_feature_flags(web_ide_primary_edit: true)
-      end
-
-      it 'is rendered as primary' do
-        expect(link).not_to match(/btn-inverted/)
-      end
-
-      it 'passes on primary tracking attributes' do
-        parsed_link = Capybara.string(link).find_link('Web IDE')
-
-        expect(parsed_link[:'data-track-action']).to eq("click_edit_ide")
-        expect(parsed_link[:'data-track-label']).to eq("web_ide")
-        expect(parsed_link[:'data-track-property']).to eq(nil)
-      end
     end
   end
 

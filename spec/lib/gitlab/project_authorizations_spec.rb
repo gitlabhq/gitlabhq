@@ -37,7 +37,7 @@ RSpec.describe Gitlab::ProjectAuthorizations do
     it 'includes the correct access levels' do
       mapping = map_access_levels(authorizations)
 
-      expect(mapping[owned_project.id]).to eq(Gitlab::Access::MAINTAINER)
+      expect(mapping[owned_project.id]).to eq(Gitlab::Access::OWNER)
       expect(mapping[other_project.id]).to eq(Gitlab::Access::REPORTER)
       expect(mapping[group_project.id]).to eq(Gitlab::Access::DEVELOPER)
     end

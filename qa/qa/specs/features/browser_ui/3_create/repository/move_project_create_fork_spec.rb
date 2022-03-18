@@ -19,7 +19,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:invite_members_group_modal, project: parent_project)
         parent_project.add_member(user)
       end
 

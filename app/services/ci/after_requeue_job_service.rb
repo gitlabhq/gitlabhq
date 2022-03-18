@@ -22,9 +22,15 @@ module Ci
     end
 
     def dependent_jobs
-      stage_dependent_jobs
-        .or(needs_dependent_jobs.except(:preload))
+      dependent_jobs = stage_dependent_jobs
+        .or(needs_dependent_jobs)
         .ordered_by_stage
+
+      if ::Feature.enabled?(:ci_fix_order_of_subsequent_jobs, @processable.pipeline.project, default_enabled: :yaml)
+        dependent_jobs = ordered_by_dag(dependent_jobs)
+      end
+
+      dependent_jobs
     end
 
     def process(job)
@@ -44,5 +50,23 @@ module Ci
     def skipped_jobs
       @skipped_jobs ||= @processable.pipeline.processables.skipped
     end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def ordered_by_dag(jobs)
+      sorted_job_names = sort_jobs(jobs).each_with_index.to_h
+
+      jobs.preload(:needs).group_by(&:stage_idx).flat_map do |_, stage_jobs|
+        stage_jobs.sort_by { |job| sorted_job_names.fetch(job.name) }
+      end
+    end
+
+    def sort_jobs(jobs)
+      Gitlab::Ci::YamlProcessor::Dag.order(
+        jobs.to_h do |job|
+          [job.name, job.needs.map(&:name)]
+        end
+      )
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

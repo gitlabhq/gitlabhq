@@ -103,6 +103,9 @@ Job names must be 255 characters or less. [Introduced](https://gitlab.com/gitlab
 in GitLab 14.5, [with a feature flag](../../administration/feature_flags.md) named `ci_validate_job_length`.
 Enabled by default. To disable it, ask an administrator to [disable the feature flag](../../administration/feature_flags.md).
 
+Use unique names for your jobs. If multiple jobs have the same name,
+only one is added to the pipeline, and it's difficult to predict which one is chosen.
+
 ## Group jobs in a pipeline
 
 If you have many similar jobs, your [pipeline graph](../pipelines/index.md#visualize-pipelines) becomes long and hard

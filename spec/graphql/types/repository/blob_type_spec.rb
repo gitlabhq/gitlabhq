@@ -25,12 +25,15 @@ RSpec.describe Types::Repository::BlobType do
       :raw_path,
       :replace_path,
       :pipeline_editor_path,
+      :gitpod_blob_url,
       :find_file_path,
       :blame_path,
       :history_path,
       :permalink_path,
       :environment_formatted_external_url,
       :environment_external_url_for_route_map,
+      :code_navigation_path,
+      :project_blob_path_root,
       :code_owners,
       :simple_viewer,
       :rich_viewer,
@@ -42,6 +45,7 @@ RSpec.describe Types::Repository::BlobType do
       :external_storage_url,
       :fork_and_edit_path,
       :ide_fork_and_edit_path,
+      :fork_and_view_path,
       :language
     )
   end

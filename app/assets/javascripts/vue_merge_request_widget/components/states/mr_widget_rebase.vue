@@ -3,13 +3,11 @@ import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import simplePoll from '../../../lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import rebaseQuery from '../../queries/states/rebase.query.graphql';
 import statusIcon from '../mr_widget_status_icon.vue';
-import { REBASE_BUTTON_KEY, REBASE_WITHOUT_CI_BUTTON_KEY } from '../../constants';
 
 export default {
   name: 'MRWidgetRebase',
@@ -28,7 +26,6 @@ export default {
   components: {
     statusIcon,
     GlSkeletonLoader,
-    ActionsButton,
     GlButton,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
@@ -47,7 +44,6 @@ export default {
       state: {},
       isMakingRequest: false,
       rebasingError: null,
-      selectedRebaseAction: REBASE_BUTTON_KEY,
     };
   },
   computed: {
@@ -93,28 +89,6 @@ export default {
     fastForwardMergeText() {
       return __('Merge blocked: the source branch must be rebased onto the target branch.');
     },
-    actions() {
-      return [this.rebaseAction, this.rebaseWithoutCiAction].filter((action) => action);
-    },
-    rebaseAction() {
-      return {
-        key: REBASE_BUTTON_KEY,
-        text: __('Rebase'),
-        secondaryText: __('Rebases and triggers a pipeline'),
-        attrs: {
-          'data-qa-selector': 'mr_rebase_button',
-        },
-        handle: () => this.rebase(),
-      };
-    },
-    rebaseWithoutCiAction() {
-      return {
-        key: REBASE_WITHOUT_CI_BUTTON_KEY,
-        text: __('Rebase without CI'),
-        secondaryText: __('Performs a rebase but skips triggering a new pipeline'),
-        handle: () => this.rebase({ skipCi: true }),
-      };
-    },
   },
   methods: {
     rebase({ skipCi = false } = {}) {
@@ -138,8 +112,8 @@ export default {
           }
         });
     },
-    selectRebaseAction(key) {
-      this.selectedRebaseAction = key;
+    rebaseWithoutCi() {
+      return this.rebase({ skipCi: true });
     },
     checkRebaseStatus(continuePolling, stopPolling) {
       this.service
@@ -198,10 +172,10 @@ export default {
         >
         <div
           v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"
-          class="accept-merge-holder clearfix js-toggle-container accept-action media space-children"
+          class="accept-merge-holder clearfix js-toggle-container accept-action media space-children gl-align-items-center"
         >
           <gl-button
-            v-if="!glFeatures.restructuredMrWidget && !showRebaseWithoutCi"
+            v-if="!glFeatures.restructuredMrWidget"
             :loading="isMakingRequest"
             variant="confirm"
             data-qa-selector="mr_rebase_button"
@@ -210,14 +184,16 @@ export default {
           >
             {{ __('Rebase') }}
           </gl-button>
-          <actions-button
+          <gl-button
             v-if="!glFeatures.restructuredMrWidget && showRebaseWithoutCi"
-            :actions="actions"
-            :selected-key="selectedRebaseAction"
+            :loading="isMakingRequest"
             variant="confirm"
-            category="primary"
-            @select="selectRebaseAction"
-          />
+            category="secondary"
+            data-testid="rebase-without-ci-button"
+            @click="rebaseWithoutCi"
+          >
+            {{ __('Rebase without pipeline') }}
+          </gl-button>
           <span
             v-if="!rebasingError"
             :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }"

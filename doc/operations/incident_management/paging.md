@@ -21,7 +21,7 @@ receive a **single** page via Slack. To set up Slack notifications on your mobil
 device, make sure to enable notifications for the Slack app on your phone so
 you never miss a page.
 
-## Email notifications
+## Email notifications for alerts
 
 Email notifications are available in projects for triggered alerts. Project
 members with the **Owner** or **Maintainer** roles have the option to receive
@@ -34,8 +34,30 @@ a single email notification for new alerts.
    **Send a single email notification to Owners and Maintainers for new alerts** checkbox.
 1. Select **Save changes**.
 
+[Update the alert's status](alerts.md#update-an-alerts-status) to manage email notifications for an alert.
+
 ## Paging **(PREMIUM)**
 
-In projects that have an [on-call schedule](oncall_schedules.md) configured, on-call responders are
-paged through email for triggered alerts. The on-call responder(s) receive one email for triggered
-alerts.
+In projects that have an [escalation policy](escalation_policies.md) configured, on-call responder(s)
+can be automatically paged about critical problems through email.
+
+### Escalating an alert
+
+When an alert is triggered, it begins escalating to the on-call responders immediately.
+For each escalation rule in the project's escalation policy, the designated on-call
+responders receive one email when the rule fires. You can respond to a page
+or stop alert escalations by [updating the alert's status](alerts.md#update-an-alerts-status).
+
+### Escalating an incident
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9.
+
+For incidents, paging on-call responders is optional for each individual incident.
+To begin escalating the incident, [set the incident's escalation policy](incidents.md#change-escalation-policy).
+For each escalation rule, the designated on-call responders receive one email when
+the rule fires. You can respond to a page or stop incident escalations by
+[updating the incident's status](incidents.md#change-incident-status) or, if applicable,
+[unsetting the incident's escalation policy](incidents.md#change-escalation-policy).
+
+To avoid duplicate pages, [incidents created from alerts](alerts.md#create-an-incident-from-an-alert) do not support independent escalation.
+Instead, the status and escalation policy fields are synced between the alert and the incident.

@@ -130,19 +130,6 @@ export const isInViewport = (el, offset = {}) => {
   );
 };
 
-export const parseUrl = (url) => {
-  const parser = document.createElement('a');
-  parser.href = url;
-  return parser;
-};
-
-export const parseUrlPathname = (url) => {
-  const parsedUrl = parseUrl(url);
-  // parsedUrl.pathname will return an absolute path for Firefox and a relative path for IE11
-  // We have to make sure we always have an absolute path.
-  return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
-};
-
 export const isMetaKey = (e) => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 
 // Identify following special clicks

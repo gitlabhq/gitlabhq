@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Policy do
   let(:entry) { described_class.new(config) }
@@ -45,29 +45,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Policy do
         end
 
         context 'when using unsafe regexp' do
-          # When removed we could use `require 'fast_spec_helper'` again.
-          include StubFeatureFlags
-
           let(:config) { ['/^(?!master).+/'] }
 
-          context 'when allow_unsafe_ruby_regexp is disabled' do
-            before do
-              stub_feature_flags(allow_unsafe_ruby_regexp: false)
-            end
-
-            it 'is not valid' do
-              expect(entry).not_to be_valid
-            end
-          end
-
-          context 'when allow_unsafe_ruby_regexp is enabled' do
-            before do
-              stub_feature_flags(allow_unsafe_ruby_regexp: true)
-            end
-
-            it 'is valid' do
-              expect(entry).to be_valid
-            end
+          it 'is not valid' do
+            expect(entry).not_to be_valid
           end
         end
 
@@ -106,29 +87,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Policy do
     end
 
     context 'when using unsafe regexp' do
-      # When removed we could use `require 'fast_spec_helper'` again.
-      include StubFeatureFlags
-
       let(:config) { { refs: ['/^(?!master).+/'] } }
 
-      context 'when allow_unsafe_ruby_regexp is disabled' do
-        before do
-          stub_feature_flags(allow_unsafe_ruby_regexp: false)
-        end
-
-        it 'is not valid' do
-          expect(entry).not_to be_valid
-        end
-      end
-
-      context 'when allow_unsafe_ruby_regexp is enabled' do
-        before do
-          stub_feature_flags(allow_unsafe_ruby_regexp: true)
-        end
-
-        it 'is valid' do
-          expect(entry).to be_valid
-        end
+      it 'is not valid' do
+        expect(entry).not_to be_valid
       end
     end
 

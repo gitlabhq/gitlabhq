@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::Filter::ReferenceRedactorFilter do
-  include ActionView::Helpers::UrlHelper
   include FilterSpecHelper
 
   it 'ignores non-GFM links' do
@@ -14,7 +13,7 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter do
   end
 
   def reference_link(data)
-    link_to('text', '', class: 'gfm', data: data)
+    ActionController::Base.helpers.link_to('text', '', class: 'gfm', data: data)
   end
 
   it 'skips when the skip_redaction flag is set' do

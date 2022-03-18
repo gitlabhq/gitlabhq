@@ -17,6 +17,9 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
       def initialize
         @shared = Gitlab::ImportExport::Shared.new(nil)
       end
+
+      # Make the included methods public for testing
+      public :download_or_copy_upload, :download
     end.new
   end
 
@@ -36,6 +39,156 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
 
   it 'has the right mask for uploads' do
     expect(file_permissions("#{path}/uploads")).to eq(0755) # originally 555
+  end
+
+  describe '#download_or_copy_upload' do
+    let(:upload) { instance_double(Upload, local?: local) }
+    let(:uploader) { instance_double(ImportExportUploader, path: :path, url: :url, upload: upload) }
+    let(:upload_path) { '/some/path' }
+
+    context 'when the upload is local' do
+      let(:local) { true }
+
+      it 'copies the file' do
+        expect(subject).to receive(:copy_files).with(:path, upload_path)
+
+        subject.download_or_copy_upload(uploader, upload_path)
+      end
+    end
+
+    context 'when the upload is remote' do
+      let(:local) { false }
+
+      it 'downloads the file' do
+        expect(subject).to receive(:download).with(:url, upload_path, size_limit: nil)
+
+        subject.download_or_copy_upload(uploader, upload_path)
+      end
+    end
+  end
+
+  describe '#download' do
+    let(:content) { File.open('spec/fixtures/rails_sample.tif') }
+
+    context 'a non-localhost uri' do
+      before do
+        stub_request(:get, url)
+          .to_return(
+            status: status,
+            body: content
+          )
+      end
+
+      let(:url) { 'https://gitlab.com/file' }
+
+      context 'with ok status code' do
+        let(:status) { HTTP::Status::OK }
+
+        it 'gets the contents' do
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path)
+            expect(file.read).to eq(File.open('spec/fixtures/rails_sample.tif').read)
+          end
+        end
+
+        it 'streams the contents via Gitlab::HTTP' do
+          expect(Gitlab::HTTP).to receive(:get).with(url, hash_including(stream_body: true))
+
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path)
+          end
+        end
+
+        it 'does not get the content over the size_limit' do
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path, size_limit: 300.kilobytes)
+            expect(file.read).to eq('')
+          end
+        end
+
+        it 'gets the content within the size_limit' do
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path, size_limit: 400.kilobytes)
+            expect(file.read).to eq(File.open('spec/fixtures/rails_sample.tif').read)
+          end
+        end
+      end
+
+      %w[MOVED_PERMANENTLY FOUND TEMPORARY_REDIRECT].each do |code|
+        context "with a redirect status code #{code}" do
+          let(:status) { HTTP::Status.const_get(code, false) }
+
+          it 'logs the redirect' do
+            expect(Gitlab::Import::Logger).to receive(:warn)
+
+            Tempfile.create('test') do |file|
+              subject.download(url, file.path)
+            end
+          end
+        end
+      end
+
+      %w[ACCEPTED UNAUTHORIZED BAD_REQUEST].each do |code|
+        context "with an invalid status code #{code}" do
+          let(:status) { HTTP::Status.const_get(code, false) }
+
+          it 'throws an error' do
+            Tempfile.create('test') do |file|
+              expect { subject.download(url, file.path) }.to raise_error(Gitlab::ImportExport::Error)
+            end
+          end
+        end
+      end
+    end
+
+    context 'a localhost uri' do
+      include StubRequests
+
+      let(:status) { HTTP::Status::OK }
+      let(:url) { "#{host}/foo/bar" }
+      let(:host) { 'http://localhost:8081' }
+
+      before do
+        # Note: the hostname gets changed to an ip address due to dns_rebind_protection
+        stub_dns(url, ip_address: '127.0.0.1')
+        stub_request(:get, 'http://127.0.0.1:8081/foo/bar')
+          .to_return(
+            status: status,
+            body: content
+          )
+      end
+
+      it 'throws a blocked url error' do
+        Tempfile.create('test') do |file|
+          expect { subject.download(url, file.path) }.to raise_error((Gitlab::HTTP::BlockedUrlError))
+        end
+      end
+
+      context 'for object_storage uri' do
+        let(:enabled_object_storage_setting) do
+          {
+            'object_store' =>
+            {
+              'enabled' => true,
+              'connection' => {
+                'endpoint' => host
+              }
+            }
+          }
+        end
+
+        before do
+          allow(Settings).to receive(:external_diffs).and_return(enabled_object_storage_setting)
+        end
+
+        it 'gets the content' do
+          Tempfile.create('test') do |file|
+            subject.download(url, file.path)
+            expect(file.read).to eq(File.open('spec/fixtures/rails_sample.tif').read)
+          end
+        end
+      end
+    end
   end
 
   describe '#gzip' do

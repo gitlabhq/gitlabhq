@@ -92,6 +92,14 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
       let(:item_id) { :serverless }
 
       it_behaves_like 'access rights checks'
+
+      context 'when feature :deprecated_serverless is disabled' do
+        before do
+          stub_feature_flags(deprecated_serverless: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
 
     describe 'Terraform' do

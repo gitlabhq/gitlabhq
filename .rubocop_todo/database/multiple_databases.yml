@@ -1,13 +1,6 @@
 ---
 Database/MultipleDatabases:
   Exclude:
-  - ee/lib/gitlab/geo/database_tasks.rb
-  - ee/lib/gitlab/geo/geo_tasks.rb
-  - ee/lib/gitlab/geo/health_check.rb
-  - ee/lib/gitlab/geo/log_cursor/daemon.rb
-  - ee/lib/pseudonymizer/dumper.rb
-  - ee/lib/pseudonymizer/pager.rb
-  - ee/spec/lib/pseudonymizer/dumper_spec.rb
   - ee/spec/services/ee/merge_requests/update_service_spec.rb
   - lib/backup/database.rb
   - lib/backup/manager.rb
@@ -18,11 +11,7 @@ Database/MultipleDatabases:
   - lib/gitlab/database/migrations/observers/query_log.rb
   - lib/gitlab/database/partitioning_migration_helpers/backfill_partitioned_table.rb
   - lib/gitlab/database.rb
-  - lib/gitlab/gitlab_import/importer.rb
   - lib/gitlab/health_checks/db_check.rb
-  - lib/gitlab/import_export/base/relation_factory.rb
-  - lib/gitlab/import_export/group/relation_tree_restorer.rb
-  - lib/gitlab/legacy_github_import/importer.rb
   - lib/gitlab/seeder.rb
   - spec/db/schema_spec.rb
   - spec/initializers/database_config_spec.rb

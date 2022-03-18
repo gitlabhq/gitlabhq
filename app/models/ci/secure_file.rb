@@ -3,9 +3,13 @@
 module Ci
   class SecureFile < Ci::ApplicationRecord
     include FileStoreMounter
+    include Limitable
 
     FILE_SIZE_LIMIT = 5.megabytes.freeze
     CHECKSUM_ALGORITHM = 'sha256'
+
+    self.limit_scope = :project
+    self.limit_name = 'project_ci_secure_files'
 
     belongs_to :project, optional: false
 

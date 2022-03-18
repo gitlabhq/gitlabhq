@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::Tags::ReleasesController do
   let!(:project) { create(:project, :repository) }
   let!(:user)    { create(:user) }
-  let!(:release) { create(:release, project: project) }
+  let!(:release) { create(:release, project: project, tag: "v1.1.0") }
   let!(:tag)     { release.tag }
 
   before do
@@ -27,7 +27,7 @@ RSpec.describe Projects::Tags::ReleasesController do
     end
 
     it 'retrieves an existing release' do
-      response = get :edit, params: { namespace_id: project.namespace, project_id: project, tag_id: release.tag }
+      response = get :edit, params: { namespace_id: project.namespace, project_id: project, tag_id: tag }
 
       release = assigns(:release)
       expect(release).not_to be_nil

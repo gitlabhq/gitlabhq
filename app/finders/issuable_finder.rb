@@ -46,6 +46,7 @@ class IssuableFinder
 
   requires_cross_project_access unless: -> { params.project? }
 
+  FULL_TEXT_SEARCH_TERM_REGEX = /\A[\p{ASCII}|\p{Latin}]+\z/.freeze
   NEGATABLE_PARAMS_HELPER_KEYS = %i[project_id scope status include_subgroups].freeze
 
   attr_accessor :current_user, :params
@@ -331,6 +332,8 @@ class IssuableFinder
     return items if items.is_a?(ActiveRecord::NullRelation)
     return items if Feature.enabled?(:disable_anonymous_search, type: :ops) && current_user.nil?
 
+    return items.pg_full_text_search(search) if use_full_text_search?
+
     if use_cte_for_search?
       cte = Gitlab::SQL::CTE.new(klass.table_name, items)
 
@@ -340,6 +343,13 @@ class IssuableFinder
     items.full_search(search, matched_columns: params[:in], use_minimum_char_limit: !use_cte_for_search?)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def use_full_text_search?
+    params[:in].blank? &&
+      klass.try(:pg_full_text_searchable_columns).present? &&
+      params[:search] =~ FULL_TEXT_SEARCH_TERM_REGEX &&
+      Feature.enabled?(:issues_full_text_search, params.project || params.group, default_enabled: :yaml)
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_iids(items)

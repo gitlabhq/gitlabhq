@@ -11,3 +11,5 @@ module Groups
     end
   end
 end
+
+Groups::DeployTokens::DestroyService.prepend_mod

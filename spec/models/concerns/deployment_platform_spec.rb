@@ -12,16 +12,28 @@ RSpec.describe DeploymentPlatform do
       let(:group) { create(:group) }
       let(:project) { create(:project, group: group) }
 
+      shared_examples 'certificate_based_clusters is disabled' do
+        before do
+          stub_feature_flags(certificate_based_clusters: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
       shared_examples 'matching environment scope' do
         it 'returns environment specific cluster' do
           is_expected.to eq(cluster.platform_kubernetes)
         end
+
+        it_behaves_like 'certificate_based_clusters is disabled'
       end
 
       shared_examples 'not matching environment scope' do
         it 'returns default cluster' do
           is_expected.to eq(default_cluster.platform_kubernetes)
         end
+
+        it_behaves_like 'certificate_based_clusters is disabled'
       end
 
       context 'multiple clusters use the same management project' do

@@ -73,7 +73,7 @@ RSpec.describe 'Artifact file', :js do
     end
 
     it "redirects to new URL" do
-      expect(page.current_path).to eq(file_url)
+      expect(page).to have_current_path(file_url, ignore_query: true)
     end
   end
 end

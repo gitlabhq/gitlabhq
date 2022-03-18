@@ -25,32 +25,40 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
     context 'with invalid after' do
       let(:args) { { first: 1, after: 'not_json_string' } }
 
-      it 'raises argument error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      it 'generates an argument error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+          subject
+        end
       end
     end
 
     context 'with invalid after key' do
       let(:args) { { first: 1, after: encode_cursor(foo: 3) } }
 
-      it 'raises argument error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      it 'generates an argument error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+          subject
+        end
       end
     end
 
     context 'with invalid before' do
       let(:args) { { last: 1, before: 'not_json_string' } }
 
-      it 'raises argument error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      it 'generates an argument error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+          subject
+        end
       end
     end
 
     context 'with invalid before key' do
       let(:args) { { last: 1, before: encode_cursor(foo: 3) } }
 
-      it 'raises argument error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      it 'generates an argument error' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
+          subject
+        end
       end
     end
 

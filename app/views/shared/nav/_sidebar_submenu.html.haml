@@ -4,7 +4,7 @@
       %strong.fly-out-top-item-name
         = sidebar_menu.title
       - if sidebar_menu.has_pill?
-        %span.badge.badge-pill.count.fly-out-badge{ **sidebar_menu.pill_html_options }
+        = gl_badge_tag({ variant: :info, size: :sm }, { class: "count fly-out-badge #{sidebar_menu.pill_html_options[:class]}" }) do
           = number_with_delimiter(sidebar_menu.pill_count)
 
   - if sidebar_menu.has_renderable_items?

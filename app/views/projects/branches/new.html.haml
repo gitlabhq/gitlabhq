@@ -4,8 +4,7 @@
 - if @error
   = render 'shared/global_alert',
     variant: :danger,
-    close_button_class: 'js-close',
-    is_contained: true do
+    close_button_class: 'js-close' do
     .gl-alert-body
       = @error
 %h3.page-title

@@ -159,5 +159,20 @@ describe('Blob Header Default Actions', () => {
       await nextTick();
       expect(wrapper.vm.$emit).not.toHaveBeenCalled();
     });
+
+    it('sets different icons depending on the blob file type', async () => {
+      factory();
+      expect(wrapper.vm.blobSwitcherDocIcon).toBe('document');
+      await wrapper.setProps({
+        blob: {
+          ...Blob,
+          richViewer: {
+            ...Blob.richViewer,
+            fileType: 'csv',
+          },
+        },
+      });
+      expect(wrapper.vm.blobSwitcherDocIcon).toBe('table');
+    });
   });
 });

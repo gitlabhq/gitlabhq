@@ -27,7 +27,7 @@
             %p.mb-2= s_('%{service_ping_link_start}What information is shared with GitLab Inc.?%{service_ping_link_end}').html_safe % { service_ping_link_start: service_ping_link_start, service_ping_link_end: '</a>'.html_safe }
 
             %button.gl-button.btn.btn-default.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
-              .gl-spinner.js-spinner.gl-display-none.gl-mr-2
+              = gl_loading_icon(css_class: 'js-spinner gl-display-none gl-mr-2')
               .js-text.gl-display-inline= _('Preview payload')
             %pre.service-data-payload-container.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
           - else

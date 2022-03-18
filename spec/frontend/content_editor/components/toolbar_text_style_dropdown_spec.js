@@ -4,6 +4,7 @@ import EditorStateObserver from '~/content_editor/components/editor_state_observ
 import ToolbarTextStyleDropdown from '~/content_editor/components/toolbar_text_style_dropdown.vue';
 import { TEXT_STYLE_DROPDOWN_ITEMS } from '~/content_editor/constants';
 import Heading from '~/content_editor/extensions/heading';
+import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
 
 describe('content_editor/components/toolbar_text_style_dropdown', () => {
@@ -27,6 +28,7 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
       },
       provide: {
         tiptapEditor,
+        eventHub: eventHubFactory(),
       },
       propsData: {
         ...propsData,

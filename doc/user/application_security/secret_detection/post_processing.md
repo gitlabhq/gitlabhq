@@ -56,7 +56,7 @@ A vendor revocation receiver service integrates with a GitLab instance to receiv
 a web notification and respond to leaked token requests.
 
 To implement a receiver service to revoke leaked tokens:
- 
+
 1. Create a publicly accessible HTTP service matching the corresponding API contract
    below. Your service should be idempotent and rate-limited.
 1. When a pipeline corresponding to its revocable token type (in the example, `my_api_token`)

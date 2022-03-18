@@ -5,8 +5,10 @@ class DependencyProxy::Manifest < ApplicationRecord
   include TtlExpirable
   include Packages::Destructible
   include EachBatch
+  include UpdateNamespaceStatistics
 
   belongs_to :group
+  alias_attribute :namespace, :group
 
   MAX_FILE_SIZE = 10.megabytes.freeze
   DIGEST_HEADER = 'Docker-Content-Digest'
@@ -20,6 +22,7 @@ class DependencyProxy::Manifest < ApplicationRecord
   scope :with_files_stored_locally, -> { where(file_store: ::DependencyProxy::FileUploader::Store::LOCAL) }
 
   mount_file_store_uploader DependencyProxy::FileUploader
+  update_namespace_statistics namespace_statistics_name: :dependency_proxy_size
 
   def self.find_by_file_name_or_digest(file_name:, digest:)
     find_by(file_name: file_name) || find_by(digest: digest)

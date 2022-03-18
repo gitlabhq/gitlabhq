@@ -27,12 +27,18 @@ module Gitlab
 
             override :_resolve
             def _resolve(resolver)
-              object = resolver.config.dig(*location)
+              object = config_at_location(resolver)
               value = resolver.deep_resolve(object)
 
               raise MissingReferenceError, missing_ref_error_message unless value
 
               value
+            end
+
+            def config_at_location(resolver)
+              resolver.config.dig(*location)
+            rescue TypeError
+              raise MissingReferenceError, missing_ref_error_message
             end
 
             def missing_ref_error_message

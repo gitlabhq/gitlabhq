@@ -93,9 +93,9 @@ module Gitlab
         end
       end
 
-      def page(title:, version: nil, dir: nil)
+      def page(title:, version: nil, dir: nil, load_content: true)
         wrapped_gitaly_errors do
-          gitaly_find_page(title: title, version: version, dir: dir)
+          gitaly_find_page(title: title, version: version, dir: dir, load_content: load_content)
         end
       end
 
@@ -121,10 +121,10 @@ module Gitlab
         gitaly_wiki_client.update_page(page_path, title, format, content, commit_details)
       end
 
-      def gitaly_find_page(title:, version: nil, dir: nil)
+      def gitaly_find_page(title:, version: nil, dir: nil, load_content: true)
         return unless title.present?
 
-        wiki_page, version = gitaly_wiki_client.find_page(title: title, version: version, dir: dir)
+        wiki_page, version = gitaly_wiki_client.find_page(title: title, version: version, dir: dir, load_content: load_content)
         return unless wiki_page
 
         Gitlab::Git::WikiPage.new(wiki_page, version)

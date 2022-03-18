@@ -993,19 +993,6 @@ input {
 .top-nav-toggle .dropdown-icon {
   margin-right: 0.5rem;
 }
-.tanuki-logo .tanuki-left-ear,
-.tanuki-logo .tanuki-right-ear,
-.tanuki-logo .tanuki-nose {
-  fill: #e24329;
-}
-.tanuki-logo .tanuki-left-eye,
-.tanuki-logo .tanuki-right-eye {
-  fill: #fc6d26;
-}
-.tanuki-logo .tanuki-left-cheek,
-.tanuki-logo .tanuki-right-cheek {
-  fill: #fca326;
-}
 .context-header {
   position: relative;
   margin-right: 2px;
@@ -1393,23 +1380,10 @@ input {
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
-.sidebar-top-level-items > li .badge.badge-pill:not(.gl-badge) {
-  border-radius: 0.5rem;
-  padding-top: 0.125rem;
-  padding-bottom: 0.125rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  background-color: #064787;
-  color: #9dc7f1;
-}
 .sidebar-top-level-items
   > li.active
   .sidebar-sub-level-items:not(.is-fly-out-only) {
   display: block;
-}
-.sidebar-top-level-items > li.active .badge.badge-pill:not(.gl-badge) {
-  font-weight: 400;
-  color: #9dc7f1;
 }
 .sidebar-top-level-items li > a.gl-link {
   color: #fafafa;
@@ -1786,7 +1760,6 @@ body.gl-dark {
   --border-color: #4f4f4f;
   --white: #333;
   --black: #fff;
-  --black-normal: #fafafa;
   --svg-status-bg: #333;
 }
 .nav-sidebar li a {
@@ -1822,6 +1795,9 @@ body.gl-dark .navbar-gitlab .navbar-sub-nav {
   color: #fafafa;
 }
 body.gl-dark .navbar-gitlab .nav > li {
+  color: #fafafa;
+}
+body.gl-dark .navbar-gitlab .nav > li.header-search-new {
   color: #fafafa;
 }
 body.gl-dark .navbar-gitlab .nav > li > a .notification-dot {
@@ -1861,8 +1837,8 @@ body.gl-dark
 body.gl-dark .header-search {
   background-color: rgba(250, 250, 250, 0.2) !important;
 }
-body.gl-dark .header-search svg {
-  color: rgba(250, 250, 250, 0.8) !important;
+body.gl-dark .header-search svg.gl-search-box-by-type-search-icon {
+  color: rgba(250, 250, 250, 0.8);
 }
 body.gl-dark .header-search input {
   background-color: transparent;
@@ -2017,7 +1993,6 @@ body.gl-dark {
   --border-color: #4f4f4f;
   --white: #333;
   --black: #fff;
-  --black-normal: #fafafa;
   --svg-status-bg: #333;
 }
 .tab-width-8 {

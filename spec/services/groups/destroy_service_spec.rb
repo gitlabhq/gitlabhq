@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Groups::DestroyService do
-  include DatabaseConnectionHelpers
-
   let!(:user)         { create(:user) }
   let!(:group)        { create(:group) }
   let!(:nested_group) { create(:group, parent: group) }
@@ -109,6 +107,17 @@ RSpec.describe Groups::DestroyService do
 
       expect { destroy_group(group, user, false) }
         .to raise_error(Groups::DestroyService::DestroyError, "Project #{project.id} can't be deleted" )
+    end
+  end
+
+  context 'when group owner is blocked' do
+    before do
+      user.block!
+    end
+
+    it 'returns a more descriptive error message' do
+      expect { destroy_group(group, user, false) }
+      .to raise_error(Groups::DestroyService::DestroyError, "You can't delete this group because you're blocked.")
     end
   end
 

@@ -33,6 +33,10 @@ module Gitlab
 
             def fetch_local_content
               context.project.repository.blob_data_at(context.sha, location)
+            rescue GRPC::InvalidArgument
+              errors.push("Sha #{context.sha} is not valid!")
+
+              nil
             end
 
             override :expand_context_attrs

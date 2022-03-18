@@ -6,7 +6,7 @@ module InviteMembersHelper
   def can_invite_members_for_project?(project)
     # do not use the can_admin_project_member? helper here due to structure of the view and how membership_locked?
     # is leveraged for inviting groups
-    Feature.enabled?(:invite_members_group_modal, project.group, default_enabled: :yaml) && can?(current_user, :admin_project_member, project)
+    can?(current_user, :admin_project_member, project)
   end
 
   def invite_accepted_notice(member)
@@ -73,7 +73,7 @@ module InviteMembersHelper
   def show_invite_members_for_task?(source)
     return unless current_user
 
-    invite_for_help_continuous_onboarding = source.is_a?(Project) && experiment(:invite_for_help_continuous_onboarding, namespace: source.namespace).variant.name == 'candidate'
+    invite_for_help_continuous_onboarding = source.is_a?(Project) && experiment(:invite_for_help_continuous_onboarding, namespace: source.namespace).assigned.name == 'candidate'
     params[:open_modal] == 'invite_members_for_task' || invite_for_help_continuous_onboarding
   end
 

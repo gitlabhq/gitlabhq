@@ -229,7 +229,7 @@ and the exports between them are compatible.
 ## Related topics
 
 - [Project import/export API](../../../api/project_import_export.md)
-- [Project import/export administration Rake tasks](../../../administration/raketasks/project_import_export.md) **(FREE SELF)**
+- [Project import/export administration Rake tasks](../../../administration/raketasks/project_import_export.md)
 - [Group import/export](../../group/settings/import_export.md)
 - [Group import/export API](../../../api/group_import_export.md)
 
@@ -305,6 +305,9 @@ reduce the repository size for another import attempt:
 
 #### Workaround option 2
 
+NOTE:
+This workaround requires access to the rails console, which isn't available to end-users on GitLab.com.
+
 Rather than attempting to push all changes at once, this workaround:
 
 - Separates the project import from the Git Repository import
@@ -351,32 +354,32 @@ Rather than attempting to push all changes at once, this workaround:
      git push -u origin ${COMMIT_SHA}:refs/heads/main
    done
    git push -u origin main
-   git push -u origin -—all
-   git push -u origin -—tags
+   git push -u origin --all
+   git push -u origin --tags
    ```
 
 ### Manually execute export steps
 
 Exports sometimes fail without giving enough information to troubleshoot. In these cases, it can be
-helpful to [execute the export process manually within rails](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/uncategorized/project-export.md#export-a-project-via-rails-console).
+helpful to [open a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+and loop through [all the defined exporters](https://gitlab.com/gitlab-org/gitlab/-/blob/b67a5b5a12498d57cd877023b7385f7251e57de8/app/services/projects/import_export/export_service.rb#L65).
 Execute each line individually, rather than pasting the entire block at once, so you can see any
 errors each command returns.
 
 ```shell
+# User needs to have permission to export
 u = User.find_by_username('someuser')
 p = Project.find_by_full_path('some/project')
 e = Projects::ImportExport::ExportService.new(p,u)
 
 e.send(:version_saver).send(:save)
-e.send(:avatar_saver).send(:save)
-e.send(:project_tree_saver).send(:save)
-e.send(:uploads_saver).send(:save)
-e.send(:wiki_repo_saver).send(:save)
-e.send(:lfs_saver).send(:save)
-e.send(:snippets_repo_saver).send(:save)
-e.send(:design_repo_saver).send(:save)
+e.send(:repo_saver).send(:save)
+## continue using `e.send(:exporter_name).send(:save)` going through the list of exporters
 
+# The following line should show you the export_path similar to /var/opt/gitlab/gitlab-rails/shared/tmp/gitlab_exports/@hashed/49/94/4994....
 s = Gitlab::ImportExport::Saver.new(exportable: p, shared:p.import_export_shared)
+
+# To try and upload use:
 s.send(:compress_and_save)
 s.send(:save_upload)
 ```

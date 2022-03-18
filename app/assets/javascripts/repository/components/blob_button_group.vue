@@ -7,6 +7,8 @@ import getRefMixin from '../mixins/get_ref';
 import DeleteBlobModal from './delete_blob_modal.vue';
 import UploadBlobModal from './upload_blob_modal.vue';
 
+const REPLACE_BLOB_MODAL_ID = 'modal-replace-blob';
+
 export default {
   i18n: {
     replace: __('Replace'),
@@ -76,9 +78,6 @@ export default {
     },
   },
   computed: {
-    replaceModalId() {
-      return uniqueId('replace-modal');
-    },
     replaceModalTitle() {
       return sprintf(__('Replace %{name}'), { name: this.name });
     },
@@ -95,13 +94,14 @@ export default {
   methods: {
     showModal(modalId) {
       if (this.showForkSuggestion) {
-        this.$emit('fork');
+        this.$emit('fork', 'view');
         return;
       }
 
       this.$refs[modalId].show();
     },
   },
+  replaceBlobModalId: REPLACE_BLOB_MODAL_ID,
 };
 </script>
 
@@ -118,7 +118,7 @@ export default {
         data-testid="lock"
         :data-qa-selector="lockBtnQASelector"
       />
-      <gl-button data-testid="replace" @click="showModal(replaceModalId)">
+      <gl-button data-testid="replace" @click="showModal($options.replaceBlobModalId)">
         {{ $options.i18n.replace }}
       </gl-button>
       <gl-button data-testid="delete" @click="showModal(deleteModalId)">
@@ -126,8 +126,8 @@ export default {
       </gl-button>
     </gl-button-group>
     <upload-blob-modal
-      :ref="replaceModalId"
-      :modal-id="replaceModalId"
+      :ref="$options.replaceBlobModalId"
+      :modal-id="$options.replaceBlobModalId"
       :modal-title="replaceModalTitle"
       :commit-message="replaceModalTitle"
       :target-branch="targetBranch || ref"

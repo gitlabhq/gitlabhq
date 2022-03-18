@@ -14,6 +14,8 @@ class ContainerRepository < ApplicationRecord
   ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
   MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
 
+  MIGRATION_PHASE_1_STARTED_AT = Date.new(2021, 11, 4).freeze
+
   TooManyImportsError = Class.new(StandardError)
   NativeImportError = Class.new(StandardError)
 
@@ -64,7 +66,7 @@ class ContainerRepository < ApplicationRecord
     # feature flag since it is only accessed in this query.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/350543 tracks the rollout and
     # removal of this feature flag.
-    joins(:project).where(
+    joins(project: [:namespace]).where(
       migration_state: [:default],
       created_at: ...ContainerRegistry::Migration.created_before
     ).with_target_import_tier
@@ -74,7 +76,7 @@ class ContainerRepository < ApplicationRecord
         FROM feature_gates
         WHERE feature_gates.feature_key = 'container_registry_phase_2_deny_list'
         AND feature_gates.key = 'actors'
-        AND feature_gates.value = concat('Group:', projects.namespace_id)
+        AND feature_gates.value = concat('Group:', namespaces.traversal_ids[1])
       )"
     )
   end
@@ -406,6 +408,16 @@ class ContainerRepository < ApplicationRecord
 
   def start_expiration_policy!
     update!(expiration_policy_started_at: Time.zone.now)
+  end
+
+  def size
+    strong_memoize(:size) do
+      next unless Gitlab.com?
+      next if self.created_at.before?(MIGRATION_PHASE_1_STARTED_AT)
+      next unless gitlab_api_client.supports_gitlab_api?
+
+      gitlab_api_client.repository_details(self.path, with_size: true)['size_bytes']
+    end
   end
 
   def migration_in_active_state?

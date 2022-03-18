@@ -108,4 +108,39 @@ describe('~/users_select/index', () => {
       });
     });
   });
+
+  describe('XSS', () => {
+    const escaped = '&gt;&lt;script&gt;alert(1)&lt;/script&gt;';
+    const issuableType = 'merge_request';
+    const user = {
+      availability: 'not_set',
+      can_merge: true,
+      name: 'name',
+    };
+    const selected = true;
+    const username = 'username';
+    const img = '<img user-avatar />';
+    const elsClassName = 'elsclass';
+
+    it.each`
+      prop          | val                             | element
+      ${'username'} | ${'><script>alert(1)</script>'} | ${'.dropdown-menu-user-username'}
+      ${'name'}     | ${'><script>alert(1)</script>'} | ${'.dropdown-menu-user-full-name'}
+    `('properly escapes the $prop $val', ({ prop, val, element }) => {
+      const u = prop === 'username' ? val : username;
+      const n = prop === 'name' ? val : user.name;
+      const row = UsersSelect.prototype.renderRow(
+        issuableType,
+        { ...user, name: n },
+        selected,
+        u,
+        img,
+        elsClassName,
+      );
+      const fragment = document.createRange().createContextualFragment(row);
+      const output = fragment.querySelector(element).innerHTML.trim();
+
+      expect(output).toBe(escaped);
+    });
+  });
 });

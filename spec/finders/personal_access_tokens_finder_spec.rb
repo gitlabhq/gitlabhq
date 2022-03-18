@@ -17,6 +17,9 @@ RSpec.describe PersonalAccessTokensFinder do
     let!(:active_impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
     let!(:expired_impersonation_token) { create(:personal_access_token, :expired, :impersonation, user: user) }
     let!(:revoked_impersonation_token) { create(:personal_access_token, :revoked, :impersonation, user: user) }
+    let!(:project_bot) { create(:user, :project_bot) }
+    let!(:project_member) { create(:project_member, user: project_bot) }
+    let!(:project_access_token) { create(:personal_access_token, user: project_bot) }
 
     subject { finder(params, current_user).execute }
 
@@ -44,7 +47,7 @@ RSpec.describe PersonalAccessTokensFinder do
         it do
           is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
                                          revoked_personal_access_token, expired_personal_access_token,
-                                         revoked_impersonation_token, expired_impersonation_token)
+                                         revoked_impersonation_token, expired_impersonation_token, project_access_token)
         end
 
         context 'when current_user is not an administrator' do
@@ -59,7 +62,7 @@ RSpec.describe PersonalAccessTokensFinder do
       it do
         is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
           revoked_personal_access_token, expired_personal_access_token,
-          revoked_impersonation_token, expired_impersonation_token)
+          revoked_impersonation_token, expired_impersonation_token, project_access_token)
       end
 
       describe 'with users' do
@@ -98,14 +101,14 @@ RSpec.describe PersonalAccessTokensFinder do
           params[:impersonation] = false
         end
 
-        it { is_expected.to contain_exactly(active_personal_access_token, revoked_personal_access_token, expired_personal_access_token) }
+        it { is_expected.to contain_exactly(active_personal_access_token, revoked_personal_access_token, expired_personal_access_token, project_access_token) }
 
         describe 'with active state' do
           before do
             params[:state] = 'active'
           end
 
-          it { is_expected.to contain_exactly(active_personal_access_token) }
+          it { is_expected.to contain_exactly(active_personal_access_token, project_access_token) }
         end
 
         describe 'with inactive state' do
@@ -146,7 +149,7 @@ RSpec.describe PersonalAccessTokensFinder do
           params[:state] = 'active'
         end
 
-        it { is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token) }
+        it { is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token, project_access_token) }
       end
 
       describe 'with inactive state' do
@@ -206,6 +209,14 @@ RSpec.describe PersonalAccessTokensFinder do
         is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
           revoked_personal_access_token, expired_personal_access_token,
           revoked_impersonation_token, expired_impersonation_token)
+      end
+
+      describe 'filtering human tokens' do
+        before do
+          params[:owner_type] = 'human'
+        end
+
+        it { is_expected.not_to include(project_access_token) }
       end
 
       describe 'without impersonation' do

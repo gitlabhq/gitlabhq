@@ -334,4 +334,20 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
       is_expected.to eq(operation)
     end
   end
+
+  describe '#revoke_authorizations' do
+    subject { client.revoke_authorizations }
+
+    it 'calls the revoke endpoint' do
+      stub_request(:post, "https://oauth2.googleapis.com/revoke")
+        .with(
+          body: "token=token",
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'User-Agent' => 'Ruby'
+          })
+        .to_return(status: 200, body: "", headers: {})
+    end
+  end
 end

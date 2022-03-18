@@ -9,9 +9,13 @@ export const simpleViewerMock = {
   path: 'some_file.js',
   webPath: 'some_file.js',
   editBlobPath: 'some_file.js/edit',
+  gitpodBlobUrl: 'https://gitpod.io#path/to/blob.js',
   ideEditPath: 'some_file.js/ide/edit',
   forkAndEditPath: 'some_file.js/fork/edit',
   ideForkAndEditPath: 'some_file.js/fork/ide',
+  forkAndViewPath: 'some_file.js/fork/view',
+  codeNavigationPath: '',
+  projectBlobPathRoot: '',
   environmentFormattedExternalUrl: '',
   environmentExternalUrlForRouteMap: '',
   canModifyBlob: true,
@@ -22,7 +26,7 @@ export const simpleViewerMock = {
   externalStorage: 'lfs',
   rawPath: 'some_file.js',
   replacePath: 'some_file.js/replace',
-  pipelineEditorPath: '',
+  pipelineEditorPath: 'path/to/pipeline/editor',
   simpleViewer: {
     fileType: 'text',
     tooLarge: false,
@@ -66,6 +70,17 @@ export const projectMock = {
     empty: false,
   },
 };
+
+export const userInfoMock = {
+  currentUser: {
+    id: '123',
+    gitpodEnabled: true,
+    preferencesGitpodPath: '/-/profile/preferences#user_gitpod_enabled',
+    profileEnableGitpodPath: '/-/profile?user%5Bgitpod_enabled%5D=true',
+  },
+};
+
+export const applicationInfoMock = { gitpodEnabled: true };
 
 export const propsMock = { path: 'some_file.js', projectPath: 'some/path' };
 

@@ -148,34 +148,11 @@ RSpec.describe Gitlab::Email::Handler::CreateIssueHandler do
       end
     end
 
-    context 'rate limiting' do
-      let(:rate_limited_service_feature_enabled) { nil }
+    it 'raises a RateLimitedService::RateLimitedError' do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
-      before do
-        stub_feature_flags(rate_limited_service_issues_create: rate_limited_service_feature_enabled)
-      end
-
-      context 'when :rate_limited_service Feature is disabled' do
-        let(:rate_limited_service_feature_enabled) { false }
-
-        it 'does not attempt to throttle' do
-          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
-
-          setup_attachment
-          receiver.execute
-        end
-      end
-
-      context 'when :rate_limited_service Feature is enabled' do
-        let(:rate_limited_service_feature_enabled) { true }
-
-        it 'raises a RateLimitedService::RateLimitedError' do
-          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
-
-          setup_attachment
-          expect { receiver.execute }.to raise_error(RateLimitedService::RateLimitedError, _('This endpoint has been requested too many times. Try again later.'))
-        end
-      end
+      setup_attachment
+      expect { receiver.execute }.to raise_error(RateLimitedService::RateLimitedError, _('This endpoint has been requested too many times. Try again later.'))
     end
   end
 

@@ -29,13 +29,14 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   feature_category :continuous_delivery
 
   def index
-    @environments = project.environments
-      .with_state(params[:scope] || :available)
     @project = ProjectPresenter.new(project, current_user: current_user)
 
     respond_to do |format|
       format.html
       format.json do
+        @environments = project.environments
+          .with_state(params[:scope] || :available)
+
         Gitlab::PollingInterval.set_header(response, interval: 3_000)
         environments_count_by_state = project.environments.count_by_state
 
@@ -52,14 +53,15 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   # Returns all environments for a given folder
   # rubocop: disable CodeReuse/ActiveRecord
   def folder
-    folder_environments = project.environments.where(environment_type: params[:id])
-    @environments = folder_environments.with_state(params[:scope] || :available)
-      .order(:name)
     @folder = params[:id]
 
     respond_to do |format|
       format.html
       format.json do
+        folder_environments = project.environments.where(environment_type: params[:id])
+        @environments = folder_environments.with_state(params[:scope] || :available)
+          .order(:name)
+
         render json: {
           environments: serialize_environments(request, response),
           available_count: folder_environments.available.count,

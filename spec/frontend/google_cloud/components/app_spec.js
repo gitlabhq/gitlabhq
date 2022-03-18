@@ -17,15 +17,18 @@ const SCREEN_COMPONENTS = {
 };
 const SERVICE_ACCOUNTS_FORM_PROPS = {
   gcpProjects: [1, 2, 3],
-  environments: [4, 5, 6],
+  refs: [4, 5, 6],
   cancelPath: '',
 };
 const HOME_PROPS = {
   serviceAccounts: [{}, {}],
+  gcpRegions: [{}, {}],
   createServiceAccountUrl: '#url-create-service-account',
+  configureGcpRegionsUrl: '#url-configure-gcp-regions',
   emptyIllustrationUrl: '#url-empty-illustration',
   enableCloudRunUrl: '#url-enable-cloud-run',
   enableCloudStorageUrl: '#enableCloudStorageUrl',
+  revokeOauthUrl: '#revokeOauthUrl',
 };
 
 describe('google_cloud App component', () => {

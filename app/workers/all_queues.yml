@@ -309,6 +309,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:database_batched_background_migration_ci_database
+  :worker_name: Database::BatchedBackgroundMigration::CiDatabaseWorker
+  :feature_category: :database
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:database_drop_detached_partitions
   :worker_name: Database::DropDetachedPartitionsWorker
   :feature_category: :database
@@ -552,6 +561,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:projects_schedule_refresh_build_artifacts_size_statistics
+  :worker_name: Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:prune_old_events
   :worker_name: PruneOldEventsWorker
   :feature_category: :users
@@ -560,6 +578,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: cronjob:quality_test_data_cleanup
+  :worker_name: Quality::TestDataCleanupWorker
+  :feature_category: :quality_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:releases_manage_evidence
   :worker_name: Releases::ManageEvidenceWorker
@@ -1654,7 +1681,7 @@
   :worker_name: Ci::DropPipelineWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
-  :urgency: :low
+  :urgency: :high
   :resource_boundary: :unknown
   :weight: 3
   :idempotent: true
@@ -2781,6 +2808,15 @@
   :feature_category: :sharding
   :has_external_dependencies:
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: projects_refresh_build_artifacts_size_statistics
+  :worker_name: Projects::RefreshBuildArtifactsSizeStatisticsWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies:
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

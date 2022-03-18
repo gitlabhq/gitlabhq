@@ -63,6 +63,7 @@ module Gitlab
 
     class BlameLine
       attr_accessor :lineno, :oldlineno, :commit, :line
+
       def initialize(lineno, oldlineno, commit, line)
         @lineno = lineno
         @oldlineno = oldlineno

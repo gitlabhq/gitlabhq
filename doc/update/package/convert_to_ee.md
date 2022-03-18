@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Convert Community Edition to Enterprise Edition **(FREE SELF)**
@@ -91,8 +91,8 @@ The steps can be summed up to:
    sudo gitlab-ctl reconfigure
    ```
 
-1. Now go to the GitLab admin panel of your server (`/admin/license/new`) and
-   upload your license file.
+1. Now go to the GitLab admin panel of your server (`/admin/subscription`) and
+   [add your license](../../user/admin_area/license.md).
 
 1. After you confirm that GitLab is working as expected, you may remove the old
    Community Edition repository:

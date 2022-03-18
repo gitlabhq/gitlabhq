@@ -148,9 +148,22 @@ If you get this error, [check the batched background migration options](../user/
 ### What do I do if my background migrations are stuck?
 
 WARNING:
-The following operations can disrupt your GitLab performance.
+The following operations can disrupt your GitLab performance. They run a number of Sidekiq jobs that perform various database or file updates.
 
-It is safe to re-execute these commands, especially if you have 1000+ pending jobs which would likely overflow your runtime memory.
+#### Background migrations remain in the Sidekiq queue
+
+Run the following check. If it returns non-zero and the count does not decrease over time, follow the rest of the steps in this section.
+
+```shell
+# For Omnibus installations:
+sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+
+# For installations from source:
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+```
+
+It is safe to re-execute the following commands, especially if you have 1000+ pending jobs which would likely overflow your runtime memory.
 
 **For Omnibus installations**
 
@@ -176,7 +189,52 @@ pending_job_classes = scheduled_queue.select { |job| job["class"] == "Background
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 
-**Batched migrations (GitLab 14.0 and newer):**
+#### Background migrations stuck in 'pending' state
+
+GitLab 13.6 introduced an issue where a background migration named `BackfillJiraTrackerDeploymentType2` can be permanently stuck in a **pending** state across upgrades. To clean up this stuck migration, see the [13.6.0 version-specific instructions](#1360).
+
+For other background migrations stuck in pending, run the following check. If it returns non-zero and the count does not decrease over time, follow the rest of the steps in this section.
+
+```shell
+# For Omnibus installations:
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
+
+# For installations from source:
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
+```
+
+It is safe to re-attempt these migrations to clear them out from a pending status:
+
+**For Omnibus installations**
+
+```shell
+# Start the rails console
+sudo gitlab-rails c
+
+# Execute the following in the rails console
+Gitlab::Database::BackgroundMigrationJob.pending.find_each do |job|
+  puts "Running pending job '#{job.class_name}' with arguments #{job.arguments}"
+  result = Gitlab::BackgroundMigration.perform(job.class_name, job.arguments)
+  puts "Result: #{result}"
+end
+```
+
+**For installations from source**
+
+```shell
+# Start the rails console
+sudo -u git -H bundle exec rails RAILS_ENV=production
+
+# Execute the following in the rails console
+Gitlab::Database::BackgroundMigrationJob.pending.find_each do |job|
+  puts "Running pending job '#{job.class_name}' with arguments #{job.arguments}"
+  result = Gitlab::BackgroundMigration.perform(job.class_name, job.arguments)
+  puts "Result: #{result}"
+end
+```
+
+#### Batched migrations (GitLab 14.0 and later)
 
 See [troubleshooting batched background migrations](../user/admin_area/monitoring/background_migrations.md#troubleshooting).
 
@@ -192,6 +250,8 @@ To address the above two scenario's, it is advised to do the following prior to 
 1. Pause your runners.
 1. Wait until all jobs are finished.
 1. Upgrade GitLab.
+1. [Update GitLab Runner](https://docs.gitlab.com/runner/install/index.html) to the same version
+   as your GitLab version. Both versions [should be the same](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 
 ## Checking for pending Advanced Search migrations **(PREMIUM SELF)**
 
@@ -230,14 +290,12 @@ Backward-incompatible changes and migrations are reserved for major versions.
 Follow the directions carefully as we
 cannot guarantee that upgrading between major versions is seamless.
 
-It is required to follow the following upgrade steps to ensure a successful *major* version upgrade:
+A *major* upgrade requires the following steps:
 
+1. Start by identifying a [supported upgrade path](#upgrade-paths). This is essential for a successful *major* version upgrade.
 1. Upgrade to the latest minor version of the preceding major version.
-1. Upgrade to the next major version (`X.0.Z`).
-1. Upgrade to its first minor version (`X.1.Z`).
-1. Proceed with upgrading to a newer releases of that major version.
-
-Identify a [supported upgrade path](#upgrade-paths).
+1. Upgrade to the "dot zero" release of the next major version (`X.0.Z`).
+1. Optional. Follow the [upgrade path](#upgrade-paths), and proceed with upgrading to newer releases of that major version.
 
 It's also important to ensure that any [background migrations have been fully completed](#checking-for-background-migrations-before-upgrading)
 before upgrading to a new major version.
@@ -261,7 +319,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.1.Z`](#1410) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [latest `14.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -269,8 +327,8 @@ Additional steps between the mentioned versions are possible. We list the minima
 
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `14.2.6`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.11` -> `14.1.8` -> `14.2.6`                                         | Three intermediate versions are required: `13.12`, `14.0`, and `14.1`, then `14.2.6`.                                             |
-| `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.15` -> `14.0.11` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
+| `14.6.2`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.12` -> `14.6.2`                                                     | Two intermediate versions are required: `13.12` and `14.0`, then `14.6.2`.                                                      |
+| `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.15` -> `14.0.12` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
 | `13.12.15`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.15`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.15`.                                   |
 | `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
 | `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                        | Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`.                                            |
@@ -300,6 +358,8 @@ Edition, follow the guides below based on the installation method:
   script, start the application and check its status.
 - [Omnibus CE to EE](package/convert_to_ee.md) - Follow this guide to update your Omnibus
   GitLab Community Edition to the Enterprise Edition.
+- [Docker CE to EE](../install/docker.md#convert-community-edition-to-enterprise-edition) -
+  Follow this guide to update your GitLab Community Edition container to an Enterprise Edition container.
 
 ### Enterprise to Community Edition
 
@@ -336,6 +396,36 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 14.8.0
+
+- The agent server for Kubernetes [is enabled by default](https://about.gitlab.com/releases/2022/02/22/gitlab-14-8-released/#the-agent-server-for-kubernetes-is-enabled-by-default)
+  on Omnibus installations. If you run GitLab at scale,
+  such as [the reference architectures](../administration/reference_architectures/index.md),
+  you must disable the agent on the following server types, **if the agent is not required**.
+
+  - Praefect
+  - Gitaly
+  - Sidekiq
+  - Redis (if configured using `redis['enable'] = true` and not via `roles`)
+  - Container registry
+  - Any other server types based on `roles(['application_role'])`, such as the GitLab Rails nodes
+
+  [The reference architectures](../administration/reference_architectures/index.md) have been updated
+  with this configuration change and a specific role for standalone Redis servers.
+
+  Steps to disable the agent:
+
+  1. Add `gitlab_kas['enable'] = false` to `gitlab.rb`.
+  1. If the server is already upgraded to 14.8, run `gitlab-ctl reconfigure`.
+
+### 14.7.0
+
+- See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
+
+### 14.6.0
+
+- See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
+
 ### 14.5.0
 
 - When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
@@ -363,6 +453,15 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   The time it takes to complete depends on the size of the table, which can be obtained by using `select pg_size_pretty(pg_total_relation_size('merge_request_diff_commits'));`.
 
   For more information, refer to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331823).
+
+### 14.4.4
+
+- For [zero-downtime upgrades](zero_downtime.md) on a GitLab cluster with separate Web and API nodes, you need to enable the `paginated_tree_graphql_query` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) _before_ upgrading GitLab Web nodes to 14.4.
+  This is because we [enabled `paginated_tree_graphql_query by default in 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70913/diffs), so if GitLab UI is on 14.4 and its API is on 14.3, the frontend will have this feature enabled but the backend will have it disabled. This will result in the following error:
+
+  ```shell
+  bundle.esm.js:63 Uncaught (in promise) Error: GraphQL error: Field 'paginatedTree' doesn't exist on type 'Repository'
+  ```
 
 ### 14.4.0
 
@@ -585,6 +684,19 @@ Ruby 2.7.2 is required. GitLab does not start with Ruby 2.6.6 or older versions.
 
 The required Git version is Git v2.29 or higher.
 
+GitLab 13.6 includes a
+[background migration `BackfillJiraTrackerDeploymentType2`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46368)
+that may remain stuck permanently in a **pending** state despite completion of work
+due to a bug.
+
+To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+
+```ruby
+Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "BackfillJiraTrackerDeploymentType2").find_each do |job|
+  puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("BackfillJiraTrackerDeploymentType2", job.arguments)
+end
+```
+
 ### 13.4.0
 
 GitLab 13.4.0 includes a background migration to [move all remaining repositories in legacy storage to hashed storage](../administration/raketasks/storage.md#migrate-to-hashed-storage). There are [known issues with this migration](https://gitlab.com/gitlab-org/gitlab/-/issues/259605) which are fixed in GitLab 13.5.4 and later. If possible, skip 13.4.0 and upgrade to 13.5.4 or higher instead. Note that the migration can take quite a while to run, depending on how many repositories must be moved. Be sure to check that all background migrations have completed before upgrading further.
@@ -683,6 +795,12 @@ When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled,
 Users who were signed in before Maintenance mode was enabled will continue to be signed in. If the admin who enabled Maintenance mode loses their session, then they will not be able to disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
 
 [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
+
+### LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2
+
+When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
+
+[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/352368) was fixed in GitLab 14.8.0 and backported into 14.7.3.
 
 ## Miscellaneous
 

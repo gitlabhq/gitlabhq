@@ -8,6 +8,7 @@ RSpec.describe Projects::ClusterAgentsHelper do
     let_it_be(:current_user) { create(:user) }
 
     let(:user_can_admin_vulerability) { true }
+    let(:user_can_admin_cluster) { false }
     let(:agent_name) { 'agent-name' }
 
     before do
@@ -16,6 +17,10 @@ RSpec.describe Projects::ClusterAgentsHelper do
         .to receive(:can?)
         .with(current_user, :admin_vulnerability, project)
         .and_return(user_can_admin_vulerability)
+      allow(helper)
+        .to receive(:can?)
+        .with(current_user, :admin_cluster, project)
+        .and_return(user_can_admin_cluster)
     end
 
     subject { helper.js_cluster_agent_details_data(agent_name, project) }
@@ -26,8 +31,18 @@ RSpec.describe Projects::ClusterAgentsHelper do
         project_path: project.full_path,
         activity_empty_state_image: kind_of(String),
         empty_state_svg_path: kind_of(String),
-        can_admin_vulnerability: "true"
+        can_admin_vulnerability: "true",
+        kas_address: Gitlab::Kas.external_url,
+        can_admin_cluster: "false"
       })
     }
+
+    context 'user has admin cluster permissions' do
+      let(:user_can_admin_cluster) { true }
+
+      it 'displays that the user can admin cluster' do
+        expect(subject[:can_admin_cluster]).to eq("true")
+      end
+    end
   end
 end

@@ -257,7 +257,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       end
 
       it 'caches the status in L2 cache after 2 minutes' do
-        Timecop.travel 2.minutes do
+        travel_to 2.minutes.from_now do
           expect do
             expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
             expect(described_class.send(:l2_cache_backend)).to receive(:fetch).once.and_call_original
@@ -267,7 +267,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       end
 
       it 'fetches the status after an hour' do
-        Timecop.travel 61.minutes do
+        travel_to 61.minutes.from_now do
           expect do
             expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
             expect(described_class.send(:l2_cache_backend)).to receive(:fetch).once.and_call_original

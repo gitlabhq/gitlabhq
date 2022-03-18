@@ -24,7 +24,7 @@ class AddNewTrailPlans < ActiveRecord::Migration[6.0]
   end
 
   def up
-    return unless Gitlab.dev_env_or_com?
+    return unless Gitlab.com?
 
     ultimate_trial = Plan.create!(name: 'ultimate_trial', title: 'Ultimate Trial')
     premium_trial = Plan.create!(name: 'premium_trial', title: 'Premium Trial')
@@ -34,7 +34,7 @@ class AddNewTrailPlans < ActiveRecord::Migration[6.0]
   end
 
   def down
-    return unless Gitlab.dev_env_or_com?
+    return unless Gitlab.com?
 
     Plan.where(name: %w(ultimate_trial premium_trial)).delete_all
   end

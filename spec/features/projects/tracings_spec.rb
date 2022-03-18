@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Tracings Content Security Policy' do
+  include ContentSecurityPolicyHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -18,10 +20,7 @@ RSpec.describe 'Tracings Content Security Policy' do
 
   context 'when there is no global config' do
     before do
-      expect_next_instance_of(Projects::TracingsController) do |controller|
-        expect(controller).to receive(:current_content_security_policy)
-          .and_return(ActionDispatch::ContentSecurityPolicy.new)
-      end
+      setup_csp_for_controller(Projects::TracingsController)
     end
 
     it 'does not add CSP directives' do
@@ -37,9 +36,7 @@ RSpec.describe 'Tracings Content Security Policy' do
         p.frame_src 'https://global-policy.com'
       end
 
-      expect_next_instance_of(Projects::TracingsController) do |controller|
-        expect(controller).to receive(:current_content_security_policy).and_return(csp)
-      end
+      setup_existing_csp_for_controller(Projects::TracingsController, csp)
     end
 
     context 'when external_url is set' do

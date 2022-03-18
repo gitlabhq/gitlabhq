@@ -1,17 +1,17 @@
-- name: "Rename Task Runner pod to Toolbox" # The name of the feature to be deprecated
-  announcement_milestone: "14.2" # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-08-22" # The date of the milestone release when this feature was first announced as deprecated
-  removal_milestone: "14.5" # The milestone when this feature is planned to be removed
-  removal_date: "2021-11-22" # the date of the milestone release when this feature is planned to be removed
+- name: "Rename Task Runner pod to Toolbox"  # The name of the feature to be deprecated
+  announcement_milestone: "14.2"  # The milestone when this feature was first announced as deprecated.
+  announcement_date: "2021-08-22"  # The date of the milestone release when this feature was first announced as deprecated
+  removal_milestone: "14.5"  # The milestone when this feature is planned to be removed
+  removal_date: "2021-11-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: false
-  body: | # Do not modify this line, instead modify the lines below.
+  body: |  # Do not modify this line, instead modify the lines below.
     The Task Runner pod is used to execute periodic housekeeping tasks within the GitLab application and is often confused with the GitLab Runner. Thus, [Task Runner will be renamed to Toolbox](https://gitlab.com/groups/gitlab-org/charts/-/epics/25).
 
     This will result in the rename of the sub-chart: `gitlab/task-runner` to `gitlab/toolbox`. Resulting pods will be named along the lines of `{{ .Release.Name }}-toolbox`, which will often be `gitlab-toolbox`. They will be locatable with the label `app=toolbox`.
 
-  stage: # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
-  tiers: # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
-  issue_url: # (optional) This is a link to the deprecation issue in GitLab
-  documentation_url: # (optional) This is a link to the current documentation page
-  image_url: # (optional) This is a link to a thumbnail image depicting the feature
-  video_url: # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  stage:  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url:  # (optional) This is a link to the deprecation issue in GitLab
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

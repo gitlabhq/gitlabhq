@@ -15,7 +15,7 @@ import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { __ } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';
 import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
-import runnerUpdateMutation from '../graphql/runner_update.mutation.graphql';
+import runnerUpdateMutation from '../graphql/details/runner_update.mutation.graphql';
 
 export default {
   name: 'RunnerUpdateForm',
@@ -82,9 +82,9 @@ export default {
         this.onSuccess();
       } catch (error) {
         const { message } = error;
-        createAlert({ message });
 
-        this.reportToSentry(error);
+        createAlert({ message });
+        captureException({ error, component: this.$options.name });
       } finally {
         this.saving = false;
       }
@@ -92,9 +92,6 @@ export default {
     onSuccess() {
       createAlert({ message: __('Changes saved.'), variant: VARIANT_SUCCESS });
       this.model = runnerToModel(this.runner);
-    },
-    reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
     },
   },
   ACCESS_LEVEL_NOT_PROTECTED,

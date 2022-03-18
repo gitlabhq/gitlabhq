@@ -7,24 +7,51 @@ RSpec.describe Ci::AbortPipelinesService do
   let_it_be(:project) { create(:project, namespace: user.namespace) }
 
   let_it_be(:cancelable_pipeline, reload: true) { create(:ci_pipeline, :running, project: project, user: user) }
-  let_it_be(:manual_pipeline, reload: true) { create(:ci_pipeline, status: :manual, project: project, user: user) } # not cancelable
+  let_it_be(:manual_pipeline, reload: true) { create(:ci_pipeline, status: :manual, project: project, user: user) }
   let_it_be(:other_users_pipeline, reload: true) { create(:ci_pipeline, :running, project: project, user: create(:user)) } # not this user's pipeline
+
   let_it_be(:cancelable_build, reload: true) { create(:ci_build, :running, pipeline: cancelable_pipeline) }
   let_it_be(:non_cancelable_build, reload: true) { create(:ci_build, :success, pipeline: cancelable_pipeline) }
   let_it_be(:cancelable_stage, reload: true) { create(:ci_stage_entity, name: 'stageA', status: :running, pipeline: cancelable_pipeline, project: project) }
   let_it_be(:non_cancelable_stage, reload: true) { create(:ci_stage_entity, name: 'stageB', status: :success, pipeline: cancelable_pipeline, project: project) }
 
+  let_it_be(:manual_pipeline_cancelable_build, reload: true) { create(:ci_build, :created, pipeline: manual_pipeline) }
+  let_it_be(:manual_pipeline_non_cancelable_build, reload: true) { create(:ci_build, :manual, pipeline: manual_pipeline) }
+  let_it_be(:manual_pipeline_cancelable_stage, reload: true) { create(:ci_stage_entity, name: 'stageA', status: :created, pipeline: manual_pipeline, project: project) }
+  let_it_be(:manual_pipeline_non_cancelable_stage, reload: true) { create(:ci_stage_entity, name: 'stageB', status: :success, pipeline: manual_pipeline, project: project) }
+
   describe '#execute' do
-    def expect_correct_cancellations
+    def expect_correct_pipeline_cancellations
       expect(cancelable_pipeline.finished_at).not_to be_nil
-      expect(cancelable_pipeline.status).to eq('failed')
-      expect((cancelable_pipeline.stages - [non_cancelable_stage]).map(&:status)).to all(eq('failed'))
-      expect(cancelable_build.status).to eq('failed')
+      expect(cancelable_pipeline).to be_failed
+
+      expect(manual_pipeline.finished_at).not_to be_nil
+      expect(manual_pipeline).to be_failed
+    end
+
+    def expect_correct_stage_cancellations
+      expect(cancelable_pipeline.stages - [non_cancelable_stage]).to all(be_failed)
+      expect(manual_pipeline.stages - [manual_pipeline_non_cancelable_stage]).to all(be_failed)
+
+      expect(non_cancelable_stage).not_to be_failed
+      expect(manual_pipeline_non_cancelable_stage).not_to be_failed
+    end
+
+    def expect_correct_build_cancellations
+      expect(cancelable_build).to be_failed
       expect(cancelable_build.finished_at).not_to be_nil
 
-      expect(manual_pipeline.status).not_to eq('failed')
-      expect(non_cancelable_stage.status).not_to eq('failed')
-      expect(non_cancelable_build.status).not_to eq('failed')
+      expect(manual_pipeline_cancelable_build).to be_failed
+      expect(manual_pipeline_cancelable_build.finished_at).not_to be_nil
+
+      expect(non_cancelable_build).not_to be_failed
+      expect(manual_pipeline_non_cancelable_build).not_to be_failed
+    end
+
+    def expect_correct_cancellations
+      expect_correct_pipeline_cancellations
+      expect_correct_stage_cancellations
+      expect_correct_build_cancellations
     end
 
     context 'with project pipelines' do

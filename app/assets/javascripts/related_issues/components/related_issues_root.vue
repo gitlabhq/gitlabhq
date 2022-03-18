@@ -71,6 +71,16 @@ export default {
       required: false,
       default: true,
     },
+    autoCompleteEpics: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    autoCompleteIssues: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     pathIdSeparator: {
       type: String,
       required: false,
@@ -241,6 +251,8 @@ export default {
     :is-form-visible="isFormVisible"
     :input-value="inputValue"
     :auto-complete-sources="autoCompleteSources"
+    :auto-complete-epics="autoCompleteEpics"
+    :auto-complete-issues="autoCompleteIssues"
     :issuable-type="issuableType"
     :path-id-separator="pathIdSeparator"
     :show-categorized-issues="showCategorizedIssues"

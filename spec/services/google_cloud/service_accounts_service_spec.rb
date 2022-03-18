@@ -37,17 +37,17 @@ RSpec.describe GoogleCloud::ServiceAccountsService do
         aggregate_failures 'testing list of service accounts' do
           expect(list.length).to eq(3)
 
-          expect(list.first[:environment]).to eq('*')
+          expect(list.first[:ref]).to eq('*')
           expect(list.first[:gcp_project]).to eq('prj1')
           expect(list.first[:service_account_exists]).to eq(false)
           expect(list.first[:service_account_key_exists]).to eq(true)
 
-          expect(list.second[:environment]).to eq('staging')
+          expect(list.second[:ref]).to eq('staging')
           expect(list.second[:gcp_project]).to eq('prj2')
           expect(list.second[:service_account_exists]).to eq(true)
           expect(list.second[:service_account_key_exists]).to eq(false)
 
-          expect(list.third[:environment]).to eq('production')
+          expect(list.third[:ref]).to eq('production')
           expect(list.third[:gcp_project]).to eq('prj3')
           expect(list.third[:service_account_exists]).to eq(true)
           expect(list.third[:service_account_key_exists]).to eq(true)
@@ -68,12 +68,12 @@ RSpec.describe GoogleCloud::ServiceAccountsService do
       aggregate_failures 'testing list of service accounts' do
         expect(list.length).to eq(2)
 
-        expect(list.first[:environment]).to eq('env_1')
+        expect(list.first[:ref]).to eq('env_1')
         expect(list.first[:gcp_project]).to eq('gcp_prj_id_1')
         expect(list.first[:service_account_exists]).to eq(true)
         expect(list.first[:service_account_key_exists]).to eq(true)
 
-        expect(list.second[:environment]).to eq('env_2')
+        expect(list.second[:ref]).to eq('env_2')
         expect(list.second[:gcp_project]).to eq('gcp_prj_id_2')
         expect(list.second[:service_account_exists]).to eq(true)
         expect(list.second[:service_account_key_exists]).to eq(true)
@@ -89,12 +89,12 @@ RSpec.describe GoogleCloud::ServiceAccountsService do
         expect(list.length).to eq(2)
 
         # asserting that the first service account is replaced
-        expect(list.first[:environment]).to eq('env_1')
+        expect(list.first[:ref]).to eq('env_1')
         expect(list.first[:gcp_project]).to eq('new_project')
         expect(list.first[:service_account_exists]).to eq(true)
         expect(list.first[:service_account_key_exists]).to eq(true)
 
-        expect(list.second[:environment]).to eq('env_2')
+        expect(list.second[:ref]).to eq('env_2')
         expect(list.second[:gcp_project]).to eq('gcp_prj_id_2')
         expect(list.second[:service_account_exists]).to eq(true)
         expect(list.second[:service_account_key_exists]).to eq(true)

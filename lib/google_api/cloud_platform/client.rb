@@ -22,6 +22,7 @@ module GoogleApi
         "https://www.googleapis.com/auth/monitoring"
       ].freeze
       ROLES_LIST = %w[roles/iam.serviceAccountUser roles/artifactregistry.admin roles/cloudbuild.builds.builder roles/run.admin roles/storage.admin roles/cloudsql.admin roles/browser].freeze
+      REVOKE_URL = 'https://oauth2.googleapis.com/revoke'
 
       class << self
         def session_key_for_token
@@ -146,6 +147,11 @@ module GoogleApi
         enable_service(gcp_project_id, 'cloudbuild.googleapis.com')
       end
 
+      def revoke_authorizations
+        uri = URI(REVOKE_URL)
+        Gitlab::HTTP.post(uri, body: { 'token' => access_token })
+      end
+
       private
 
       def enable_service(gcp_project_id, service_name)
@@ -211,7 +217,7 @@ module GoogleApi
       end
 
       def cloud_resource_manager_service
-        @gpc_service ||= Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new.tap { |s| s. authorization = access_token }
+        @gpc_service ||= Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new.tap { |s| s.authorization = access_token }
       end
     end
   end

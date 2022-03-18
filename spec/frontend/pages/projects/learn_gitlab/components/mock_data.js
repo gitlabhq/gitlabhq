@@ -38,6 +38,7 @@ export const testActions = {
     url: 'https://docs.gitlab.com/ee/foobar/',
     completed: false,
     svg: 'http://example.com/images/illustration.svg',
+    openInNewTab: true,
   },
   issueCreated: {
     url: 'http://example.com/',

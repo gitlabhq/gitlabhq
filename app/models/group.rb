@@ -19,7 +19,6 @@ class Group < Namespace
   include BulkMemberAccessLoad
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
-  include RunnersTokenPrefixable
 
   extend ::Gitlab::Utils::Override
 
@@ -120,7 +119,7 @@ class Group < Namespace
 
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption, default_enabled: true) ? :optional : :required },
-                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
+                                prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -676,7 +675,7 @@ class Group < Namespace
 
   override :format_runners_token
   def format_runners_token(token)
-    "#{runners_token_prefix}#{token}"
+    "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}#{token}"
   end
 
   def project_creation_level
@@ -817,7 +816,9 @@ class Group < Namespace
   private
 
   def max_member_access(user_ids)
-    max_member_access_for_resource_ids(User, user_ids) do |user_ids|
+    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(User),
+                                      resource_ids: user_ids,
+                                      default_value: Gitlab::Access::NO_ACCESS) do |user_ids|
       members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
     end
   end
@@ -892,6 +893,7 @@ class Group < Namespace
       .where(group_member_table[:requested_at].eq(nil))
       .where(group_member_table[:source_id].eq(group_group_link_table[:shared_with_group_id]))
       .where(group_member_table[:source_type].eq('Namespace'))
+      .where(group_member_table[:state].eq(::Member::STATE_ACTIVE))
       .non_minimal_access
   end
 

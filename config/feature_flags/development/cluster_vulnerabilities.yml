@@ -1,8 +1,0 @@
----
-name: cluster_vulnerabilities
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73321
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343917
-milestone: '14.5'
-type: development
-group: group::container security
-default_enabled: true

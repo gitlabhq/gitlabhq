@@ -33,6 +33,10 @@ FactoryBot.define do
       title { generate(:jira_title) }
     end
 
+    trait :jira_description do
+      description { generate(:jira_description) }
+    end
+
     trait :jira_branch do
       source_branch { generate(:jira_branch) }
     end
