@@ -4,9 +4,5 @@
 = render_gcp_signup_offer
 
 .clusters-container
-  - if display_cluster_agents?(clusterable)
-    .gl-my-6
-      .js-clusters-main-view{ data: js_clusters_data(clusterable) }
-
-  - else
+  .gl-my-6
     .js-clusters-main-view{ data: js_clusters_list_data(clusterable) }

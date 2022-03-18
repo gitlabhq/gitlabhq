@@ -1,7 +1,7 @@
 import { InMemoryCache } from '@apollo/client/core';
 import { createMockClient as createMockApolloClient } from 'mock-apollo-client';
 import VueApollo from 'vue-apollo';
-import possibleTypes from '~/graphql_shared/possibleTypes.json';
+import possibleTypes from '~/graphql_shared/possible_types.json';
 import { typePolicies } from '~/lib/graphql';
 
 export function createMockClient(handlers = [], resolvers = {}, cacheOptions = {}) {

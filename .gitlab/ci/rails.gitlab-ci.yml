@@ -373,9 +373,6 @@ db:migrate:reset:
   extends: .db-job-base
   script:
     - bundle exec rake db:migrate:reset
-  variables:
-    # FIXME: make this job work with `GITLAB_USE_MODEL_LOAD_BALANCING: true`, see https://gitlab.com/gitlab-org/gitlab/-/issues/355573
-    GITLAB_USE_MODEL_LOAD_BALANCING: "false"
 
 db:migrate:reset single-db:
   extends:

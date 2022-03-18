@@ -461,6 +461,10 @@ module QA
         enabled?(ENV['QA_VALIDATE_RESOURCE_REUSE'], default: false)
       end
 
+      def skip_smoke_reliable?
+        enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
+      end
+
       private
 
       def remote_grid_credentials

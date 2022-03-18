@@ -38,6 +38,11 @@ RSpec.describe ClustersHelper do
 
     subject { helper.js_clusters_list_data(clusterable) }
 
+    before do
+      helper.send(:default_branch_name, clusterable)
+      helper.send(:clusterable_project_path, clusterable)
+    end
+
     it 'displays endpoint path' do
       expect(subject[:endpoint]).to eq("#{project_path(project)}/-/clusters.json")
     end
@@ -58,6 +63,7 @@ RSpec.describe ClustersHelper do
 
     it 'displays empty image path' do
       expect(subject[:clusters_empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-clusters|svg))
+      expect(subject[:empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-agents|svg))
     end
 
     it 'displays create cluster using certificate path' do
@@ -66,6 +72,22 @@ RSpec.describe ClustersHelper do
 
     it 'displays add cluster using certificate path' do
       expect(subject[:add_cluster_path]).to eq("#{project_path(project)}/-/clusters/connect")
+    end
+
+    it 'displays project default branch' do
+      expect(subject[:default_branch_name]).to eq(project.default_branch)
+    end
+
+    it 'displays project path' do
+      expect(subject[:project_path]).to eq(project.full_path)
+    end
+
+    it 'displays kas address' do
+      expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
+    end
+
+    it 'displays GitLab version' do
+      expect(subject[:gitlab_version]).to eq(Gitlab.version_info)
     end
 
     context 'user has no permissions to create a cluster' do
@@ -107,6 +129,14 @@ RSpec.describe ClustersHelper do
       it 'displays display_cluster_agents as false' do
         expect(subject[:display_cluster_agents]).to eq("false")
       end
+
+      it 'does not include a default branch' do
+        expect(subject[:default_branch_name]).to be_nil
+      end
+
+      it 'does not include a project path' do
+        expect(subject[:project_path]).to be_nil
+      end
     end
 
     describe 'certificate based clusters enabled' do
@@ -129,34 +159,6 @@ RSpec.describe ClustersHelper do
           expect(subject[:certificate_based_clusters_enabled]).to eq('false')
         end
       end
-    end
-  end
-
-  describe '#js_clusters_data' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:project) { build(:project) }
-    let_it_be(:clusterable) { ClusterablePresenter.fabricate(project, current_user: current_user) }
-
-    subject { helper.js_clusters_data(clusterable) }
-
-    it 'displays project default branch' do
-      expect(subject[:default_branch_name]).to eq(project.default_branch)
-    end
-
-    it 'displays image path' do
-      expect(subject[:empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-agents|svg))
-    end
-
-    it 'displays project path' do
-      expect(subject[:project_path]).to eq(project.full_path)
-    end
-
-    it 'displays kas address' do
-      expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
-    end
-
-    it 'displays GitLab version' do
-      expect(subject[:gitlab_version]).to eq(Gitlab.version_info)
     end
   end
 
@@ -219,6 +221,35 @@ RSpec.describe ClustersHelper do
 
       it 'does not allow agents to display' do
         expect(subject).to be_falsey
+      end
+    end
+  end
+
+  describe '#default_branch_name' do
+    subject { default_branch_name(clusterable) }
+
+    context 'when clusterable is a project without a repository' do
+      let(:clusterable) { build(:project) }
+
+      it 'allows default branch name to display default name from settings' do
+        expect(subject).to eq(Gitlab::CurrentSettings.default_branch_name)
+      end
+    end
+
+    context 'when clusterable is a project with a repository' do
+      let(:clusterable) { build(:project, :repository) }
+      let(:repository) { clusterable.repository }
+
+      it 'allows default branch name to display repository root branch' do
+        expect(subject).to eq(repository.root_ref)
+      end
+    end
+
+    context 'when clusterable is a group' do
+      let(:clusterable) { build(:group) }
+
+      it 'does not allow default branch name to display' do
+        expect(subject).to be_nil
       end
     end
   end

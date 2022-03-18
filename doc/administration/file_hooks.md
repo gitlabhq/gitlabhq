@@ -15,12 +15,12 @@ without modifying the GitLab source code.
 A file hook runs on each event. You can filter events or projects
 in a file hook's code, and create many file hooks as you need. Each file hook is
 triggered by GitLab asynchronously in case of an event. For a list of events
-see the [system hooks](../system_hooks/system_hooks.md) documentation.
+see the [system hooks](system_hooks.md) documentation.
 
 NOTE:
 File hooks must be configured on the file system of the GitLab server. Only GitLab
 server administrators can complete these tasks. Explore
-[system hooks](../system_hooks/system_hooks.md) or [webhooks](../user/project/integrations/webhooks.md)
+[system hooks](system_hooks.md) or [webhooks](../user/project/integrations/webhooks.md)
 as an option if you do not have file system access.
 
 Instead of writing and supporting your own file hook, you can also make changes
@@ -52,7 +52,7 @@ Follow the steps below to set up a custom hook:
    language type. For example, if the script is in Ruby the shebang will
    probably be `#!/usr/bin/env ruby`.
 1. The data to the file hook is provided as JSON on STDIN. It is exactly the
-   same as for [system hooks](../system_hooks/system_hooks.md).
+   same as for [system hooks](system_hooks.md).
 
 That's it! Assuming the file hook code is properly implemented, the hook fires
 as appropriate. The file hooks file list is updated for each event, there is no

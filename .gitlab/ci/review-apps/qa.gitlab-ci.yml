@@ -93,6 +93,7 @@ review-qa-all:
   variables:
     QA_RUN_TYPE: review-qa-all
     QA_SCENARIO: Test::Instance::All
+    QA_SKIP_SMOKE_RELIABLE: "true"
 
 review-performance:
   extends:

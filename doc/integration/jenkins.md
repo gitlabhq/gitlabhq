@@ -242,7 +242,7 @@ To enable job logs in Jenkins:
 1. Go to **Dashboard > Manage Jenkins > System Log**.
 1. Select **Add new log recorder**.
 1. Enter a name for the log recorder.
-1. On the next screen, select **Add** and enter `org.jenkinsci.plugins.workflow.job`.
+1. On the next screen, select **Add** and enter `com.dabsquared.gitlabjenkins`.
 1. Make sure that the Log Level is **All** and select **Save**.
 
 To view your logs:
