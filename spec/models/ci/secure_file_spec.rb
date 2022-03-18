@@ -17,6 +17,10 @@ RSpec.describe Ci::SecureFile do
 
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'includes Limitable concern' do
+    subject { build(:ci_secure_file, project: create(:project)) }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:checksum) }
     it { is_expected.to validate_presence_of(:file_store) }

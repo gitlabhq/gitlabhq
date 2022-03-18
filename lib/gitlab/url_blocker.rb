@@ -153,6 +153,7 @@ module Gitlab
           validate_local_network(address_info)
           validate_link_local(address_info)
           validate_shared_address(address_info)
+          validate_limited_broadcast_address(address_info)
         end
       end
 
@@ -255,6 +256,17 @@ module Gitlab
         return unless addrs_info.any? { |addr| addr.ipv6_linklocal? || netmask.include?(addr.ip_address) }
 
         raise BlockedUrlError, "Requests to the link local network are not allowed"
+      end
+
+      # Raises a BlockedUrlError if any IP in `addrs_info` is the limited
+      # broadcast address.
+      # https://datatracker.ietf.org/doc/html/rfc919#section-7
+      def validate_limited_broadcast_address(addrs_info)
+        blocked_ips = ["255.255.255.255"]
+
+        return if (blocked_ips & addrs_info.map(&:ip_address)).empty?
+
+        raise BlockedUrlError, "Requests to the limited broadcast address are not allowed"
       end
 
       def internal?(uri)

@@ -366,6 +366,21 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         ]
       end
 
+      let(:limited_broadcast_address_variants) do
+        [
+          '255.255.255.255', # "normal"  dotted decimal
+          '0377.0377.0377.0377', # Octal
+          '0377.00000000377.00377.0000377', # Still octal
+          '0xff.0xff.0xff.0xff', # hex
+          '0xffffffff', # still hex
+          '0xBaaaaaaaaaaaaaaaaffffffff', # padded hex
+          '255.255.255.255:65535', # with a port
+          '4294967295', # as an integer / dword
+          '[::ffff:ffff:ffff]', # short IPv6
+          '[0000:0000:0000:0000:0000:ffff:ffff:ffff]' # long IPv6
+        ]
+      end
+
       let(:fake_domain) { 'www.fakedomain.fake' }
 
       shared_examples 'allows local requests' do |url_blocker_attributes|
@@ -403,6 +418,12 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a864]', **url_blocker_attributes)
           expect(described_class).not_to be_blocked_url('http://[fe80::c800:eff:fe74:8]', **url_blocker_attributes)
         end
+
+        it 'allows limited broadcast address 255.255.255.255 and variants' do
+          limited_broadcast_address_variants.each do |variant|
+            expect(described_class).not_to be_blocked_url("https://#{variant}", **url_blocker_attributes), "Expected #{variant} to be allowed"
+          end
+        end
       end
 
       context 'true (default)' do
@@ -435,6 +456,17 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           expect(described_class).to be_blocked_url('http://[fe80::c800:eff:fe74:8]', allow_local_network: false)
         end
 
+        it 'blocks limited broadcast address 255.255.255.255 and variants' do
+          # Raise BlockedUrlError for invalid URLs.
+          # The padded hex version, for example, is a valid URL on Mac but
+          # not on Ubuntu.
+          stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+
+          limited_broadcast_address_variants.each do |variant|
+            expect(described_class).to be_blocked_url("https://#{variant}", allow_local_network: false), "Expected #{variant} to be blocked"
+          end
+        end
+
         context 'when local domain/IP is allowed' do
           let(:url_blocker_attributes) do
             {
@@ -461,6 +493,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
                 '::ffff:169.254.168.100',
                 '::ffff:a9fe:a864',
                 'fe80::c800:eff:fe74:8',
+                '255.255.255.255',
 
                 # garbage IPs
                 '45645632345',
@@ -481,6 +514,10 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
               stub_domain_resolv('example.com', '192.168.1.3') do
                 expect(described_class).to be_blocked_url(url, **attrs)
               end
+            end
+
+            it 'allows the limited broadcast address 255.255.255.255' do
+              expect(described_class).not_to be_blocked_url('http://255.255.255.255', **url_blocker_attributes)
             end
           end
 

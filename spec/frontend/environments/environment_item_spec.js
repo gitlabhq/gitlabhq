@@ -79,7 +79,7 @@ describe('Environment item', () => {
 
       describe('With user information', () => {
         it('should render user avatar with link to profile', () => {
-          expect(wrapper.find('.js-deploy-user-container').attributes('href')).toEqual(
+          expect(wrapper.find('.js-deploy-user-container').props('linkHref')).toEqual(
             environment.last_deployment.user.web_url,
           );
         });

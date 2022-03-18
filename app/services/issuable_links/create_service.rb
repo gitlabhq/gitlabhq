@@ -17,7 +17,7 @@ module IssuableLinks
       # otherwise create issue links for the issues which
       # are still not assigned and return success message.
       if render_conflict_error?
-        return error(issuables_assigned_message, 409)
+        return error(issuables_already_assigned_message, 409)
       end
 
       if render_not_found_error?
@@ -110,7 +110,7 @@ module IssuableLinks
       {}
     end
 
-    def issuables_assigned_message
+    def issuables_already_assigned_message
       _('%{issuable}(s) already assigned' % { issuable: target_issuable_type.capitalize })
     end
 

@@ -11,7 +11,6 @@ describe('content_editor/services/content_editor', () => {
   let contentEditor;
   let serializer;
   let deserializer;
-  let languageLoader;
   let eventHub;
   let doc;
   let p;
@@ -28,15 +27,8 @@ describe('content_editor/services/content_editor', () => {
 
     serializer = { deserialize: jest.fn() };
     deserializer = { deserialize: jest.fn() };
-    languageLoader = { loadLanguagesFromDOM: jest.fn() };
     eventHub = eventHubFactory();
-    contentEditor = new ContentEditor({
-      tiptapEditor,
-      serializer,
-      deserializer,
-      eventHub,
-      languageLoader,
-    });
+    contentEditor = new ContentEditor({ tiptapEditor, serializer, deserializer, eventHub });
   });
 
   describe('.dispose', () => {
@@ -51,12 +43,10 @@ describe('content_editor/services/content_editor', () => {
 
   describe('when setSerializedContent succeeds', () => {
     let document;
-    const dom = {};
-    const testMarkdown = '**bold text**';
 
     beforeEach(() => {
       document = doc(p('document'));
-      deserializer.deserialize.mockResolvedValueOnce({ document, dom });
+      deserializer.deserialize.mockResolvedValueOnce({ document });
     });
 
     it('emits loadingContent and loadingSuccess event in the eventHub', () => {
@@ -69,19 +59,13 @@ describe('content_editor/services/content_editor', () => {
         expect(loadingContentEmitted).toBe(true);
       });
 
-      contentEditor.setSerializedContent(testMarkdown);
+      contentEditor.setSerializedContent('**bold text**');
     });
 
     it('sets the deserialized document in the tiptap editor object', async () => {
-      await contentEditor.setSerializedContent(testMarkdown);
+      await contentEditor.setSerializedContent('**bold text**');
 
       expect(contentEditor.tiptapEditor.state.doc.toJSON()).toEqual(document.toJSON());
-    });
-
-    it('passes deserialized DOM document to language loader', async () => {
-      await contentEditor.setSerializedContent(testMarkdown);
-
-      expect(languageLoader.loadLanguagesFromDOM).toHaveBeenCalledWith(dom);
     });
   });
 

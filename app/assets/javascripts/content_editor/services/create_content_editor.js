@@ -1,6 +1,5 @@
 import { Editor } from '@tiptap/vue-2';
 import { isFunction } from 'lodash';
-import { lowlight } from 'lowlight/lib/core';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import Attachment from '../extensions/attachment';
@@ -59,7 +58,6 @@ import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
 import createMarkdownDeserializer from './markdown_deserializer';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
-import CodeBlockLanguageLoader from './code_block_language_loader';
 
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
   new Editor({
@@ -85,7 +83,6 @@ export const createContentEditor = ({
 
   const eventHub = eventHubFactory();
 
-  const languageLoader = new CodeBlockLanguageLoader(lowlight);
   const builtInContentEditorExtensions = [
     Attachment.configure({ uploadsPath, renderMarkdown, eventHub }),
     Audio,
@@ -94,7 +91,7 @@ export const createContentEditor = ({
     BulletList,
     Code,
     ColorChip,
-    CodeBlockHighlight.configure({ lowlight, languageLoader }),
+    CodeBlockHighlight,
     DescriptionItem,
     DescriptionList,
     Details,
@@ -108,7 +105,7 @@ export const createContentEditor = ({
     FootnoteDefinition,
     FootnoteReference,
     FootnotesSection,
-    Frontmatter.configure({ lowlight }),
+    Frontmatter,
     Gapcursor,
     HardBreak,
     Heading,
@@ -147,5 +144,5 @@ export const createContentEditor = ({
   const serializer = createMarkdownSerializer({ serializerConfig });
   const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-  return new ContentEditor({ tiptapEditor, serializer, eventHub, deserializer, languageLoader });
+  return new ContentEditor({ tiptapEditor, serializer, eventHub, deserializer });
 };

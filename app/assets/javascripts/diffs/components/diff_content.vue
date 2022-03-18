@@ -163,8 +163,8 @@ export default {
             v-if="diffFile.discussions.length"
             class="diff-file-discussions"
             :discussions="diffFile.discussions"
-            :should-collapse-discussions="true"
-            :render-avatar-badge="true"
+            should-collapse-discussions
+            render-avatar-badge
           />
           <diff-file-drafts :file-hash="diffFileHash" class="diff-file-discussions" />
           <note-form
