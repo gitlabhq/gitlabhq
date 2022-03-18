@@ -61,8 +61,8 @@
 .if-merge-request-labels-run-all-jest: &if-merge-request-labels-run-all-jest
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
 
-.if-merge-request-labels-run-decomposed: &if-merge-request-labels-run-decomposed
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-decomposed/'
+.if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
@@ -907,9 +907,11 @@
     - changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
 
-.rails:rules:decomposed-databases:
+.rails:rules:single-db:
   rules:
-    - <<: *if-merge-request-labels-run-decomposed
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request
+      changes: *db-patterns
     - <<: *if-default-branch-schedule-nightly
 
 .rails:rules:ee-and-foss-migration:

@@ -5,16 +5,15 @@ require "fog/google"
 # This script handles resources created during E2E test runs
 #
 # Delete: find all matching file pattern, read file and delete resources
-# rake test_resources:delete
 # rake test_resources:delete[<file_pattern>]
 #
 # Upload: find all matching file pattern for failed test resources
 # upload these files to GCS bucket `failed-test-resources` under specific environment name
-# rake test_resources:upload[<file_pattern>,<environment_name>]
+# rake test_resources:upload[<file_pattern>,<ci_project_name>]
 #
 # Download: download JSON files under a given environment name (bucket directory)
 # save to local under `tmp/`
-# rake test_resources:download[<environment_name>]
+# rake test_resources:download[<ci_project_name>]
 #
 # Required environment variables:
 #   GITLAB_ADDRESS, required for delete task
@@ -61,11 +60,11 @@ module QA
       # Files are organized by environment in which tests were executed
       #
       # E.g: staging/failed-test-resources-<randomhex>.json
-      def upload(environment_name)
+      def upload(ci_project_name)
         return puts "\nNothing to upload!" if files.empty?
 
         files.each do |file|
-          file_name = "#{environment_name}/#{file.split('/').last}"
+          file_name = "#{ci_project_name}/#{file.split('/').last}"
           Runtime::Logger.info("Uploading #{file_name}...")
           gcs_storage.put_object(BUCKET, file_name, File.read(file))
         end
@@ -75,8 +74,8 @@ module QA
 
       # Download files from GCS bucket by environment name
       # Delete the files afterward
-      def download(environment_name)
-        files_list = gcs_storage.list_objects(BUCKET, prefix: environment_name).items.each_with_object([]) do |obj, arr|
+      def download(ci_project_name)
+        files_list = gcs_storage.list_objects(BUCKET, prefix: ci_project_name).items.each_with_object([]) do |obj, arr|
           arr << obj.name
         end
 

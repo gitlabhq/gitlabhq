@@ -81,11 +81,10 @@ Maintainer role.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
 
-You can use the UI or API to take these actions on a deployment:
+Using either the GitLab UI or the API, you can:
 
-- Approve it
-- Allow it to proceed
-- Reject it
+- Approve a deployment to allow it to proceed.
+- Reject a deployment to prevent it.
 
 ### Approve or reject a deployment using the UI
 

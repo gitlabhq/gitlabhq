@@ -52,8 +52,8 @@ mutation {
     errors
     externalAuditEventDestination {
       destinationUrl
-      group {
       verificationToken
+      group {
         name
       }
     }

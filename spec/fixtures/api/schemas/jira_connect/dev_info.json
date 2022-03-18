@@ -1,8 +1,0 @@
-{
-  "repositories": {
-    "type": "array",
-    "items": {
-      "$ref": "./repository.json"
-    }
-  }
-}

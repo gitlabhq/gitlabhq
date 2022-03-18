@@ -18,12 +18,14 @@
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
 
-.decomposed-database:
+.single-db:
   variables:
-    DECOMPOSED_DB: "true"
+    DECOMPOSED_DB: "false"
 
-.decomposed-database-rspec:
-  extends: .decomposed-database
+.single-db-rspec:
+  extends: .single-db
+  variables:
+    GITLAB_USE_MODEL_LOAD_BALANCING: "false"
 
 .rspec-base:
   extends:
@@ -274,11 +276,11 @@ rspec migration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-migration:minimal
 
-rspec migration pg12 decomposed:
+rspec migration pg12 single-db:
   extends:
     - rspec migration pg12
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec unit pg12:
   extends:
@@ -292,11 +294,11 @@ rspec unit pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-unit:minimal
 
-rspec unit pg12 decomposed:
+rspec unit pg12 single-db:
   extends:
     - rspec unit pg12
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec integration pg12:
   extends:
@@ -310,11 +312,11 @@ rspec integration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-integration:minimal
 
-rspec integration pg12 decomposed:
+rspec integration pg12 single-db:
   extends:
     - rspec integration pg12
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec system pg12:
   extends:
@@ -330,11 +332,11 @@ rspec system pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-system:minimal
 
-rspec system pg12 decomposed:
+rspec system pg12 single-db:
   extends:
     - rspec system pg12
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 # Dedicated job to test DB library code against PG11.
 # Note that these are already tested against PG12 in the `rspec unit pg12` / `rspec-ee unit pg12` jobs.
@@ -361,22 +363,25 @@ db:rollback:
     - scripts/db_tasks db:migrate VERSION=20210301200959
     - scripts/db_tasks db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 
-db:rollback decomposed:
+db:rollback single-db:
   extends:
     - db:rollback
-    - .decomposed-database
-    - .rails:rules:decomposed-databases
+    - .single-db
+    - .rails:rules:single-db
 
 db:migrate:reset:
   extends: .db-job-base
   script:
     - bundle exec rake db:migrate:reset
+  variables:
+    # FIXME: make this job work with `GITLAB_USE_MODEL_LOAD_BALANCING: true`, see https://gitlab.com/gitlab-org/gitlab/-/issues/355573
+    GITLAB_USE_MODEL_LOAD_BALANCING: "false"
 
-db:migrate:reset decomposed:
+db:migrate:reset single-db:
   extends:
     - db:migrate:reset
-    - .decomposed-database
-    - .rails:rules:decomposed-databases
+    - .single-db
+    - .rails:rules:single-db
 
 db:migrate-from-previous-major-version:
   extends: .db-job-base
@@ -385,6 +390,7 @@ db:migrate-from-previous-major-version:
     SETUP_DB: "false"
     PROJECT_TO_CHECKOUT: "gitlab-foss"
     TAG_TO_CHECKOUT: "v13.12.9"
+    # FIXME: make this job work with `GITLAB_USE_MODEL_LOAD_BALANCING: true`, see https://gitlab.com/gitlab-org/gitlab/-/issues/355573
     GITLAB_USE_MODEL_LOAD_BALANCING: "false"
   before_script:
     - !reference [.default-before_script, before_script]
@@ -399,11 +405,11 @@ db:migrate-from-previous-major-version:
   script:
     - run_timed_command "scripts/db_tasks db:migrate"
 
-db:migrate-from-previous-major-version-decomposed:
+db:migrate-from-previous-major-version-single-db:
   extends:
     - db:migrate-from-previous-major-version
-    - .decomposed-database
-    - .rails:rules:decomposed-databases
+    - .single-db
+    - .rails:rules:single-db
 
 .db:check-schema-base:
   extends:
@@ -420,9 +426,9 @@ db:check-schema:
     - db:migrate-from-previous-major-version
     - .db:check-schema-base
 
-db:check-schema-decomposed:
+db:check-schema-single-db:
   extends:
-    - db:migrate-from-previous-major-version-decomposed
+    - db:migrate-from-previous-major-version-single-db
     - .db:check-schema-base
 
 db:check-migrations:
@@ -434,11 +440,11 @@ db:check-migrations:
     - scripts/validate_migration_schema
   allow_failure: true
 
-db:check-migrations-decomposed:
+db:check-migrations-single-db:
   extends:
     - db:check-migrations
-    - .decomposed-database
-    - .rails:rules:decomposed-databases
+    - .single-db
+    - .rails:rules:single-db
 
 db:migrate-non-superuser:
   extends:
@@ -545,11 +551,11 @@ rspec:coverage:
     - rspec unit pg12 minimal
     - rspec integration pg12 minimal
     - rspec system pg12 minimal
-    # FOSS/EE decomposed jobs
-    - rspec migration pg12 decomposed
-    - rspec unit pg12 decomposed
-    - rspec integration pg12 decomposed
-    - rspec system pg12 decomposed
+    # FOSS/EE single-db jobs
+    - rspec migration pg12 single-db
+    - rspec unit pg12 single-db
+    - rspec integration pg12 single-db
+    - rspec system pg12 single-db
     # EE jobs
     - rspec-ee migration pg12
     - rspec-ee unit pg12
@@ -560,11 +566,11 @@ rspec:coverage:
     - rspec-ee unit pg12 minimal
     - rspec-ee integration pg12 minimal
     - rspec-ee system pg12 minimal
-    # EE decomposed jobs
-    - rspec-ee migration pg12 decomposed
-    - rspec-ee unit pg12 decomposed
-    - rspec-ee integration pg12 decomposed
-    - rspec-ee system pg12 decomposed
+    # EE single-db jobs
+    - rspec-ee migration pg12 single-db
+    - rspec-ee unit pg12 single-db
+    - rspec-ee integration pg12 single-db
+    - rspec-ee system pg12 single-db
     # Geo jobs
     - rspec-ee unit pg12 geo
     - rspec-ee integration pg12 geo
@@ -578,16 +584,16 @@ rspec:coverage:
     # As-if-FOSS jobs
     - rspec migration pg12-as-if-foss
     - rspec migration pg12-as-if-foss minimal
-    - rspec migration pg12-as-if-foss decomposed
+    - rspec migration pg12-as-if-foss single-db
     - rspec unit pg12-as-if-foss
     - rspec unit pg12-as-if-foss minimal
-    - rspec unit pg12-as-if-foss decomposed
+    - rspec unit pg12-as-if-foss single-db
     - rspec integration pg12-as-if-foss
     - rspec integration pg12-as-if-foss minimal
-    - rspec integration pg12-as-if-foss decomposed
+    - rspec integration pg12-as-if-foss single-db
     - rspec system pg12-as-if-foss
     - rspec system pg12-as-if-foss minimal
-    - rspec system pg12-as-if-foss decomposed
+    - rspec system pg12-as-if-foss single-db
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
@@ -677,11 +683,11 @@ rspec migration pg12-as-if-foss minimal:
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-migration:minimal
 
-rspec migration pg12-as-if-foss decomposed:
+rspec migration pg12-as-if-foss single-db:
   extends:
     - rspec migration pg12-as-if-foss
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec unit pg12-as-if-foss:
   extends:
@@ -695,11 +701,11 @@ rspec unit pg12-as-if-foss minimal:
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-unit:minimal
 
-rspec unit pg12-as-if-foss decomposed:
+rspec unit pg12-as-if-foss single-db:
   extends:
     - rspec unit pg12-as-if-foss
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec integration pg12-as-if-foss:
   extends:
@@ -713,11 +719,11 @@ rspec integration pg12-as-if-foss minimal:
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-integration:minimal
 
-rspec integration pg12-as-if-foss decomposed:
+rspec integration pg12-as-if-foss single-db:
   extends:
     - rspec integration pg12-as-if-foss
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec system pg12-as-if-foss:
   extends:
@@ -731,11 +737,11 @@ rspec system pg12-as-if-foss minimal:
     - .minimal-rspec-tests
     - .rails:rules:as-if-foss-system:minimal
 
-rspec system pg12-as-if-foss decomposed:
+rspec system pg12-as-if-foss single-db:
   extends:
     - rspec system pg12-as-if-foss
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec migration pg12-as-if-jh:
   extends:
@@ -775,11 +781,11 @@ rspec-ee migration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-only-migration:minimal
 
-rspec-ee migration pg12 decomposed:
+rspec-ee migration pg12 single-db:
   extends:
     - rspec-ee migration pg12
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec-ee unit pg12:
   extends:
@@ -793,11 +799,11 @@ rspec-ee unit pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-only-unit:minimal
 
-rspec-ee unit pg12 decomposed:
+rspec-ee unit pg12 single-db:
   extends:
     - rspec-ee unit pg12
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec-ee integration pg12:
   extends:
@@ -811,11 +817,11 @@ rspec-ee integration pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-only-integration:minimal
 
-rspec-ee integration pg12 decomposed:
+rspec-ee integration pg12 single-db:
   extends:
     - rspec-ee integration pg12
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec-ee system pg12:
   extends:
@@ -829,11 +835,11 @@ rspec-ee system pg12 minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-only-system:minimal
 
-rspec-ee system pg12 decomposed:
+rspec-ee system pg12 single-db:
   extends:
     - rspec-ee system pg12
-    - .decomposed-database-rspec
-    - .rails:rules:decomposed-databases
+    - .single-db-rspec
+    - .rails:rules:single-db
 
 rspec-ee unit pg12 geo:
   extends:

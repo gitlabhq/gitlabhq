@@ -91,6 +91,8 @@ variables:
   CHECK_PRECOMPILED_ASSETS: "true"
   FF_USE_FASTZIP: "true"
   SKIP_FLAKY_TESTS_AUTOMATICALLY: "true"
+  # Run with decomposed databases by default
+  DECOMPOSED_DB: "true"
 
   DOCS_REVIEW_APPS_DOMAIN: "178.62.207.141.nip.io"
   DOCS_GITLAB_REPO_SUFFIX: "ee"

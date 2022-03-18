@@ -194,6 +194,14 @@ We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
 
+### Single database testing
+
+By default, all tests run with [multiple databases](database/multiple_databases.md).
+
+We also run tests with a single database in nightly scheduled pipelines, and in merge requests that touch database-related files.
+
+If you want to force tests to run with a single database, you can add the `pipeline:run-single-db` label to the merge request.
+
 ### Monitoring
 
 The GitLab test suite is [monitored](performance.md#rspec-profiling) for the `main` branch, and any branch
