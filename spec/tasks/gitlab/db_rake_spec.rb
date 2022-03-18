@@ -80,6 +80,17 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
           run_rake_task('gitlab:db:mark_migration_complete:main', '[123]')
         end
       end
+
+      context 'with geo configured' do
+        before do
+          skip_unless_geo_configured
+        end
+
+        it 'does not create a task for the geo database' do
+          expect { run_rake_task('gitlab:db:mark_migration_complete:geo') }
+            .to raise_error(/Don't know how to build task 'gitlab:db:mark_migration_complete:geo'/)
+        end
+      end
     end
 
     context 'when the migration is already marked complete' do
@@ -319,6 +330,17 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
           run_rake_task('gitlab:db:drop_tables:main')
         end
       end
+
+      context 'with geo configured' do
+        before do
+          skip_unless_geo_configured
+        end
+
+        it 'does not create a task for the geo database' do
+          expect { run_rake_task('gitlab:db:drop_tables:geo') }
+            .to raise_error(/Don't know how to build task 'gitlab:db:drop_tables:geo'/)
+        end
+      end
     end
 
     def expect_objects_to_be_dropped(connection)
@@ -336,38 +358,115 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     end
   end
 
-  describe 'reindex' do
-    it 'delegates to Gitlab::Database::Reindexing' do
-      expect(Gitlab::Database::Reindexing).to receive(:invoke)
+  describe 'create_dynamic_partitions' do
+    context 'with a single database' do
+      before do
+        skip_if_multiple_databases_are_setup
+      end
 
-      run_rake_task('gitlab:db:reindex')
+      it 'delegates syncing of partitions without limiting databases' do
+        expect(Gitlab::Database::Partitioning).to receive(:sync_partitions)
+
+        run_rake_task('gitlab:db:create_dynamic_partitions')
+      end
     end
 
-    context 'when reindexing is not enabled' do
-      it 'is a no-op' do
-        expect(Gitlab::Database::Reindexing).to receive(:enabled?).and_return(false)
-        expect(Gitlab::Database::Reindexing).not_to receive(:invoke)
+    context 'with multiple databases' do
+      before do
+        skip_if_multiple_databases_not_setup
+      end
 
-        expect { run_rake_task('gitlab:db:reindex') }.to raise_error(SystemExit)
+      context 'when running the multi-database variant' do
+        it 'delegates syncing of partitions without limiting databases' do
+          expect(Gitlab::Database::Partitioning).to receive(:sync_partitions)
+
+          run_rake_task('gitlab:db:create_dynamic_partitions')
+        end
+      end
+
+      context 'when running a single-database variant' do
+        it 'delegates syncing of partitions for the chosen database' do
+          expect(Gitlab::Database::Partitioning).to receive(:sync_partitions).with(only_on: 'main')
+
+          run_rake_task('gitlab:db:create_dynamic_partitions:main')
+        end
+      end
+    end
+
+    context 'with geo configured' do
+      before do
+        skip_unless_geo_configured
+      end
+
+      it 'does not create a task for the geo database' do
+        expect { run_rake_task('gitlab:db:create_dynamic_partitions:geo') }
+          .to raise_error(/Don't know how to build task 'gitlab:db:create_dynamic_partitions:geo'/)
       end
     end
   end
 
-  databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
-  ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
-    describe "reindex:#{database_name}" do
-      it 'delegates to Gitlab::Database::Reindexing' do
-        expect(Gitlab::Database::Reindexing).to receive(:invoke).with(database_name)
+  describe 'reindex' do
+    context 'with a single database' do
+      before do
+        skip_if_multiple_databases_are_setup
+      end
 
-        run_rake_task("gitlab:db:reindex:#{database_name}")
+      it 'delegates to Gitlab::Database::Reindexing' do
+        expect(Gitlab::Database::Reindexing).to receive(:invoke).with(no_args)
+
+        run_rake_task('gitlab:db:reindex')
       end
 
       context 'when reindexing is not enabled' do
         it 'is a no-op' do
           expect(Gitlab::Database::Reindexing).to receive(:enabled?).and_return(false)
-          expect(Gitlab::Database::Reindexing).not_to receive(:invoke).with(database_name)
+          expect(Gitlab::Database::Reindexing).not_to receive(:invoke)
 
-          expect { run_rake_task("gitlab:db:reindex:#{database_name}") }.to raise_error(SystemExit)
+          expect { run_rake_task('gitlab:db:reindex') }.to raise_error(SystemExit)
+        end
+      end
+    end
+
+    context 'with multiple databases' do
+      let(:base_models) { { 'main' => double(:model), 'ci' => double(:model) } }
+
+      before do
+        skip_if_multiple_databases_not_setup
+
+        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+      end
+
+      it 'delegates to Gitlab::Database::Reindexing without a specific database' do
+        expect(Gitlab::Database::Reindexing).to receive(:invoke).with(no_args)
+
+        run_rake_task('gitlab:db:reindex')
+      end
+
+      context 'when the single database task is used' do
+        it 'delegates to Gitlab::Database::Reindexing with a specific database' do
+          expect(Gitlab::Database::Reindexing).to receive(:invoke).with('ci')
+
+          run_rake_task('gitlab:db:reindex:ci')
+        end
+
+        context 'when reindexing is not enabled' do
+          it 'is a no-op' do
+            expect(Gitlab::Database::Reindexing).to receive(:enabled?).and_return(false)
+            expect(Gitlab::Database::Reindexing).not_to receive(:invoke)
+
+            expect { run_rake_task('gitlab:db:reindex:ci') }.to raise_error(SystemExit)
+          end
+        end
+      end
+
+      context 'with geo configured' do
+        before do
+          skip_unless_geo_configured
+        end
+
+        it 'does not create a task for the geo database' do
+          expect { run_rake_task('gitlab:db:reindex:geo') }
+            .to raise_error(/Don't know how to build task 'gitlab:db:reindex:geo'/)
         end
       end
     end
@@ -466,7 +565,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       skip_if_multiple_databases_not_setup
     end
 
-    describe 'db:structure:dump' do
+    describe 'db:structure:dump against a single database' do
       it 'invokes gitlab:db:clean_structure_sql' do
         expect(Rake::Task['gitlab:db:clean_structure_sql']).to receive(:invoke).twice.and_return(true)
 
@@ -474,7 +573,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       end
     end
 
-    describe 'db:schema:dump' do
+    describe 'db:schema:dump against a single database' do
       it 'invokes gitlab:db:clean_structure_sql' do
         expect(Rake::Task['gitlab:db:clean_structure_sql']).to receive(:invoke).once.and_return(true)
 
@@ -482,25 +581,23 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       end
     end
 
-    describe 'db:migrate' do
-      it 'invokes gitlab:db:create_dynamic_partitions' do
-        expect(Rake::Task['gitlab:db:create_dynamic_partitions']).to receive(:invoke).once.and_return(true)
+    describe 'db:migrate against a single database' do
+      it 'invokes gitlab:db:create_dynamic_partitions for the same database' do
+        expect(Rake::Task['gitlab:db:create_dynamic_partitions:main']).to receive(:invoke).once.and_return(true)
 
         expect { run_rake_task('db:migrate:main') }.not_to raise_error
       end
     end
 
     describe 'db:migrate:geo' do
-      it 'does not invoke gitlab:db:create_dynamic_partitions' do
-        skip 'Skipping because geo database is not setup' unless geo_configured?
+      before do
+        skip_unless_geo_configured
+      end
 
+      it 'does not invoke gitlab:db:create_dynamic_partitions' do
         expect(Rake::Task['gitlab:db:create_dynamic_partitions']).not_to receive(:invoke)
 
         expect { run_rake_task('db:migrate:geo') }.not_to raise_error
-      end
-
-      def geo_configured?
-        !!ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: 'geo')
       end
     end
   end
@@ -558,5 +655,13 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     end
 
     run_rake_task(test_task_name)
+  end
+
+  def skip_unless_geo_configured
+    skip 'Skipping because the geo database is not configured' unless geo_configured?
+  end
+
+  def geo_configured?
+    !!ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: 'geo')
   end
 end

@@ -2,6 +2,14 @@
 
 databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
+def each_database(databases, include_geo: false)
+  ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
+    next if !include_geo && database == 'geo'
+
+    yield database
+  end
+end
+
 namespace :gitlab do
   namespace :db do
     desc 'GitLab | DB | Manually insert schema migration version on all configured databases'
@@ -10,10 +18,10 @@ namespace :gitlab do
     end
 
     namespace :mark_migration_complete do
-      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
-        desc "Gitlab | DB | Manually insert schema migration version on #{database} database"
-        task database, [:version] => :environment do |_, args|
-          mark_migration_complete(args[:version], only_on: database)
+      each_database(databases) do |database_name|
+        desc "Gitlab | DB | Manually insert schema migration version on #{database_name} database"
+        task database_name, [:version] => :environment do |_, args|
+          mark_migration_complete(args[:version], only_on: database_name)
         end
       end
     end
@@ -39,10 +47,10 @@ namespace :gitlab do
     end
 
     namespace :drop_tables do
-      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
-        desc "GitLab | DB | Drop all tables on the #{database} database"
-        task database => :environment do
-          drop_tables(only_on: database)
+      each_database(databases) do |database_name|
+        desc "GitLab | DB | Drop all tables on the #{database_name} database"
+        task database_name => :environment do
+          drop_tables(only_on: database_name)
         end
       end
     end
@@ -155,6 +163,15 @@ namespace :gitlab do
       Gitlab::Database::Partitioning.sync_partitions
     end
 
+    namespace :create_dynamic_partitions do
+      each_database(databases) do |database_name|
+        desc "Create missing dynamic database partitions on the #{database_name} database"
+        task database_name => :environment do
+          Gitlab::Database::Partitioning.sync_partitions(only_on: database_name)
+        end
+      end
+    end
+
     # This is targeted towards deploys and upgrades of GitLab.
     # Since we're running migrations already at this time,
     # we also check and create partitions as needed here.
@@ -162,14 +179,12 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
-    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-      # We'll temporarily skip this enhancement for geo, since in some situations we
-      # wish to setup the geo database before the other databases have been setup,
-      # and partition management attempts to connect to the main database.
-      next if name == 'geo'
-
-      Rake::Task["db:migrate:#{name}"].enhance do
-        Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+    # We'll temporarily skip this enhancement for geo, since in some situations we
+    # wish to setup the geo database before the other databases have been setup,
+    # and partition management attempts to connect to the main database.
+    each_database(databases) do |database_name|
+      Rake::Task["db:migrate:#{database_name}"].enhance do
+        Rake::Task["gitlab:db:create_dynamic_partitions:#{database_name}"].invoke
       end
     end
 
@@ -185,15 +200,15 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
-    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-      # We'll temporarily skip this enhancement for geo, since in some situations we
-      # wish to setup the geo database before the other databases have been setup,
-      # and partition management attempts to connect to the main database.
-      next if name == 'geo'
-
-      Rake::Task["db:schema:load:#{name}"].enhance do
-        Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+    # We'll temporarily skip this enhancement for geo, since in some situations we
+    # wish to setup the geo database before the other databases have been setup,
+    # and partition management attempts to connect to the main database.
+    each_database(databases) do |database_name|
+      # :nocov:
+      Rake::Task["db:schema:load:#{database_name}"].enhance do
+        Rake::Task["gitlab:db:create_dynamic_partitions:#{database_name}"].invoke
       end
+      # :nocov:
     end
 
     desc "Clear all connections"
@@ -229,7 +244,7 @@ namespace :gitlab do
     end
 
     namespace :reindex do
-      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
+      each_database(databases) do |database_name|
         desc "Reindex #{database_name} database without downtime to eliminate bloat"
         task database_name => :environment do
           unless Gitlab::Database::Reindexing.enabled?

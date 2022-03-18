@@ -202,7 +202,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/29418')
   end
 
-  def application_setting_params
+  def application_setting_params # rubocop:disable Metrics/AbcSize
     params[:application_setting] ||= {}
 
     if params[:application_setting].key?(:enabled_oauth_sign_in_sources)
@@ -228,6 +228,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params.delete(:domain_denylist_raw) if params[:domain_denylist_file]
     params.delete(:domain_denylist_raw) if params[:domain_denylist]
     params.delete(:domain_allowlist_raw) if params[:domain_allowlist]
+
+    if params[:application_setting].key?(:user_email_lookup_limit)
+      params[:application_setting][:search_rate_limit] ||= params[:application_setting][:user_email_lookup_limit]
+    end
 
     params[:application_setting].permit(visible_application_setting_attributes)
   end
