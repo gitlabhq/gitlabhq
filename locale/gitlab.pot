@@ -14891,6 +14891,9 @@ msgstr ""
 msgid "Example: @sub\\.company\\.com$"
 msgstr ""
 
+msgid "Examples"
+msgstr ""
+
 msgid "Except policy:"
 msgstr ""
 
@@ -32931,6 +32934,9 @@ msgstr ""
 msgid "SecurityOrchestration|All policies"
 msgstr ""
 
+msgid "SecurityOrchestration|Allow all inbound traffic to all pods from all pods on ports 443/TCP."
+msgstr ""
+
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr ""
 
@@ -32946,10 +32952,19 @@ msgstr ""
 msgid "SecurityOrchestration|Don't show the alert anymore"
 msgstr ""
 
+msgid "SecurityOrchestration|Edit network policy"
+msgstr ""
+
 msgid "SecurityOrchestration|Edit policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit policy project"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit scan exection policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit scan result policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Empty policy name"
@@ -32959,6 +32974,9 @@ msgid "SecurityOrchestration|Enabled"
 msgstr ""
 
 msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
 msgstr ""
 
 msgid "SecurityOrchestration|If you are using Auto DevOps, your %{monospacedStart}auto-deploy-values.yaml%{monospacedEnd} file will not be updated if you change a policy in this section. Auto DevOps users should make changes by following the %{linkStart}Container Network Policy documentation%{linkEnd}."
@@ -32973,7 +32991,19 @@ msgstr ""
 msgid "SecurityOrchestration|Network"
 msgstr ""
 
+msgid "SecurityOrchestration|Network policy"
+msgstr ""
+
+msgid "SecurityOrchestration|New network policy"
+msgstr ""
+
 msgid "SecurityOrchestration|New policy"
+msgstr ""
+
+msgid "SecurityOrchestration|New scan exection policy"
+msgstr ""
+
+msgid "SecurityOrchestration|New scan result policy"
 msgstr ""
 
 msgid "SecurityOrchestration|No actions defined - policy will not run."
@@ -33024,6 +33054,9 @@ msgstr ""
 msgid "SecurityOrchestration|Rules"
 msgstr ""
 
+msgid "SecurityOrchestration|Run a DAST scan with Scan Profile A and Site Profile A when a pipeline run against the main branch."
+msgstr ""
+
 msgid "SecurityOrchestration|Runs %{actions} and %{lastAction} scans"
 msgstr ""
 
@@ -33042,10 +33075,19 @@ msgstr ""
 msgid "SecurityOrchestration|Scan execution policies can only be created by project owners."
 msgstr ""
 
+msgid "SecurityOrchestration|Scan execution policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Scan execution policy allow to create rules which forces security scans for particular branches at certain time. Supported types are SAST, DAST, Secret detection, Container scan, License scan, API fuzzing, coverage-guided fuzzing."
+msgstr ""
+
 msgid "SecurityOrchestration|Scan result"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan result policies can only be created by project owners."
+msgstr ""
+
+msgid "SecurityOrchestration|Scan result policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan to be performed %{cadence}"
@@ -33066,6 +33108,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|Select policy"
+msgstr ""
+
 msgid "SecurityOrchestration|Select security project"
 msgstr ""
 
@@ -33073,6 +33118,12 @@ msgid "SecurityOrchestration|Sorry, your filter produced no results."
 msgstr ""
 
 msgid "SecurityOrchestration|Status"
+msgstr ""
+
+msgid "SecurityOrchestration|Step 1: Choose a policy type"
+msgstr ""
+
+msgid "SecurityOrchestration|Step 2: Policy details"
 msgstr ""
 
 msgid "SecurityOrchestration|Summary"
@@ -33100,6 +33151,12 @@ msgid "SecurityOrchestration|Unlinking a security project removes all policies s
 msgstr ""
 
 msgid "SecurityOrchestration|Update scan policies"
+msgstr ""
+
+msgid "SecurityOrchestration|Use a scan result policy to create rules that ensure security issues are checked before merging a merge request."
+msgstr ""
+
+msgid "SecurityOrchestration|Use network policies to create firewall rules for network connections in your Kubernetes cluster."
 msgstr ""
 
 msgid "SecurityOrchestration|View policy project"
@@ -33357,9 +33414,6 @@ msgstr ""
 msgid "SecurityReports|Severity"
 msgstr ""
 
-msgid "SecurityReports|Software and container dependency survey"
-msgstr ""
-
 msgid "SecurityReports|Sometimes a scanner can't determine a finding's severity. Those findings may still be a potential source of risk though. Please review these manually."
 msgstr ""
 
@@ -33373,9 +33427,6 @@ msgid "SecurityReports|Submit vulnerability"
 msgstr ""
 
 msgid "SecurityReports|Take survey"
-msgstr ""
-
-msgid "SecurityReports|The Composition Analysis group is planning significant updates to how we make available the list of software and container dependency information in your projects. Therefore, we ask that you assist us by taking a short -no longer than 5 minute- survey to help align our direction with your needs."
 msgstr ""
 
 msgid "SecurityReports|The Vulnerability Report shows the results of the latest successful pipeline on your project's default branch, as well as vulnerabilities from your latest container scan. %{linkStart}Learn more.%{linkEnd}"
@@ -33454,9 +33505,6 @@ msgid "SecurityReports|You do not have sufficient permissions to access this rep
 msgstr ""
 
 msgid "SecurityReports|You must sign in as an authorized user to see this report"
-msgstr ""
-
-msgid "SecurityReports|Your feedback is important to us! We will ask again in 7 days."
 msgstr ""
 
 msgid "SecurityReports|Your feedback is important to us! We will ask again in a week."
@@ -42168,6 +42216,9 @@ msgid "WorkItem|Create work item"
 msgstr ""
 
 msgid "WorkItem|New Task"
+msgstr ""
+
+msgid "WorkItem|Please select work item type"
 msgstr ""
 
 msgid "WorkItem|Something went wrong when creating a work item. Please try again"

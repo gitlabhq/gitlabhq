@@ -7,6 +7,8 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import $ from 'jquery';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import TaskList from '~/task_list';
@@ -63,6 +65,11 @@ export default {
       required: false,
       default: 0,
     },
+    issueId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -81,6 +88,9 @@ export default {
     workItemsEnabled() {
       return this.glFeatures.workItems;
     },
+    issueGid() {
+      return this.issueId ? convertToGraphQLId(TYPE_WORK_ITEM, this.issueId) : null;
+    },
   },
   watch: {
     descriptionHtml(newDescription, oldDescription) {
@@ -92,6 +102,9 @@ export default {
 
       this.$nextTick(() => {
         this.renderGFM();
+        if (this.workItemsEnabled) {
+          this.renderTaskActions();
+        }
       });
     },
     taskStatus() {
@@ -168,9 +181,24 @@ export default {
         return;
       }
 
+      this.taskButtons = [];
       const taskListFields = this.$el.querySelectorAll('.task-list-item');
 
       taskListFields.forEach((item, index) => {
+        const taskLink = item.querySelector('.gfm-issue');
+        if (taskLink) {
+          const { issue, referenceType } = taskLink.dataset;
+          taskLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.workItemId = convertToGraphQLId(TYPE_WORK_ITEM, issue);
+            this.track('viewed_work_item_from_modal', {
+              category: 'workItems:show',
+              label: 'work_item_view',
+              property: `type_${referenceType}`,
+            });
+          });
+          return;
+        }
         const button = document.createElement('button');
         button.classList.add(
           'btn',
@@ -195,7 +223,14 @@ export default {
       });
     },
     openCreateTaskModal(id) {
-      this.activeTask = { id, title: this.$el.querySelector(`#${id}`).parentElement.innerText };
+      const { parentElement } = this.$el.querySelector(`#${id}`);
+      const lineNumbers = parentElement.getAttribute('data-sourcepos').match(/\b\d+(?=:)/g);
+      this.activeTask = {
+        id,
+        title: parentElement.innerText,
+        lineNumberStart: lineNumbers[0],
+        lineNumberEnd: lineNumbers[1],
+      };
       this.$refs.modal.show();
     },
     closeCreateTaskModal() {
@@ -207,37 +242,9 @@ export default {
     handleWorkItemDetailModalError(message) {
       createFlash({ message });
     },
-    handleCreateTask({ id, title, type }) {
-      const listItem = this.$el.querySelector(`#${this.activeTask.id}`).parentElement;
-      const taskBadge = document.createElement('span');
-      taskBadge.innerHTML = `
-        <svg data-testid="issue-open-m-icon" role="img" aria-hidden="true" class="gl-icon gl-fill-green-500 s12">
-          <use href="${gon.sprite_icons}#issue-open-m"></use>
-        </svg>
-        <span class="badge badge-info badge-pill gl-badge sm gl-mr-1">
-          ${__('Task')}
-        </span>
-      `;
-      const button = this.createWorkItemDetailButton(id, title, type);
-      taskBadge.append(button);
-
-      listItem.insertBefore(taskBadge, listItem.lastChild);
-      listItem.removeChild(listItem.lastChild);
+    handleCreateTask(description) {
+      this.$emit('updateDescription', description);
       this.closeCreateTaskModal();
-    },
-    createWorkItemDetailButton(id, title, type) {
-      const button = document.createElement('button');
-      button.addEventListener('click', () => {
-        this.workItemId = id;
-        this.track('viewed_work_item_from_modal', {
-          category: 'workItems:show',
-          label: 'work_item_view',
-          property: `type_${type}`,
-        });
-      });
-      button.classList.add('btn-link');
-      button.innerText = title;
-      return button;
     },
     focusButton() {
       this.$refs.convertButton[0].$el.focus();
@@ -287,6 +294,10 @@ export default {
       <create-work-item
         :is-modal="true"
         :initial-title="activeTask.title"
+        :issue-gid="issueGid"
+        :lock-version="lockVersion"
+        :line-number-start="activeTask.lineNumberStart"
+        :line-number-end="activeTask.lineNumberEnd"
         @closeModal="closeCreateTaskModal"
         @onCreate="handleCreateTask"
       />

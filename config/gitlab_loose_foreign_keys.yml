@@ -11,6 +11,9 @@ ci_builds:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: ci_runners
+    column: runner_id
+    on_delete: async_nullify
 ci_builds_metadata:
   - table: projects
     column: project_id

@@ -14,6 +14,7 @@ import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import {
   descriptionProps as initialProps,
   descriptionHtmlWithCheckboxes,
+  descriptionHtmlWithTask,
 } from '../mock_data/mock_data';
 
 jest.mock('~/flash');
@@ -29,7 +30,6 @@ describe('Description component', () => {
   const findTextarea = () => wrapper.find('[data-testid="textarea"]');
   const findTaskActionButtons = () => wrapper.findAll('.js-add-task');
   const findConvertToTaskButton = () => wrapper.find('[data-testid="convert-to-task"]');
-  const findTaskSvg = () => wrapper.find('[data-testid="issue-open-m-icon"]');
 
   const findPopovers = () => wrapper.findAllComponents(GlPopover);
   const findModal = () => wrapper.findComponent(GlModal);
@@ -39,6 +39,7 @@ describe('Description component', () => {
   function createComponent({ props = {}, provide = {} } = {}) {
     wrapper = shallowMountExtended(Description, {
       propsData: {
+        issueId: 1,
         ...initialProps,
         ...props,
       },
@@ -277,33 +278,21 @@ describe('Description component', () => {
         expect(hideModal).toHaveBeenCalled();
       });
 
-      it('updates description HTML on `onCreate` event', async () => {
-        const newTitle = 'New title';
-        findConvertToTaskButton().vm.$emit('click');
-        findCreateWorkItem().vm.$emit('onCreate', { title: newTitle });
+      it('emits `updateDescription` on `onCreate` event', async () => {
+        const newDescription = `<p>New description</p>`;
+        findCreateWorkItem().vm.$emit('onCreate', newDescription);
         expect(hideModal).toHaveBeenCalled();
-        await nextTick();
-
-        expect(findTaskSvg().exists()).toBe(true);
-        expect(wrapper.text()).toContain(newTitle);
+        expect(wrapper.emitted('updateDescription')).toEqual([[newDescription]]);
       });
     });
 
     describe('work items detail', () => {
-      const id = '1';
-      const title = 'my first task';
-      const type = 'task';
-
-      const createThenClickOnTask = () => {
-        findConvertToTaskButton().vm.$emit('click');
-        findCreateWorkItem().vm.$emit('onCreate', { id, title, type });
-        return wrapper.findByRole('button', { name: title }).trigger('click');
-      };
+      const findTaskLink = () => wrapper.find('a.gfm-issue');
 
       beforeEach(() => {
         createComponent({
           props: {
-            descriptionHtml: descriptionHtmlWithCheckboxes,
+            descriptionHtml: descriptionHtmlWithTask,
           },
           provide: {
             glFeatures: { workItems: true },
@@ -315,13 +304,13 @@ describe('Description component', () => {
       it('opens when task button is clicked', async () => {
         expect(findWorkItemDetailModal().props('visible')).toBe(false);
 
-        await createThenClickOnTask();
+        await findTaskLink().trigger('click');
 
         expect(findWorkItemDetailModal().props('visible')).toBe(true);
       });
 
       it('closes from an open state', async () => {
-        await createThenClickOnTask();
+        await findTaskLink().trigger('click');
 
         expect(findWorkItemDetailModal().props('visible')).toBe(true);
 
@@ -334,7 +323,7 @@ describe('Description component', () => {
       it('shows error on error', async () => {
         const message = 'I am error';
 
-        await createThenClickOnTask();
+        await findTaskLink().trigger('click');
         findWorkItemDetailModal().vm.$emit('error', message);
 
         expect(createFlash).toHaveBeenCalledWith({ message });
@@ -343,7 +332,7 @@ describe('Description component', () => {
       it('tracks when opened', async () => {
         const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
-        await createThenClickOnTask();
+        await findTaskLink().trigger('click');
 
         expect(trackingSpy).toHaveBeenCalledWith('workItems:show', 'viewed_work_item_from_modal', {
           category: 'workItems:show',

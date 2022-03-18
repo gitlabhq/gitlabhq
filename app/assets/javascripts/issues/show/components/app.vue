@@ -185,6 +185,11 @@ export default {
       required: false,
       default: false,
     },
+    issueId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const store = new Store({
@@ -534,6 +539,7 @@ export default {
 
       <component
         :is="descriptionComponent"
+        :issue-id="issueId"
         :can-update="canUpdate"
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"
@@ -545,6 +551,7 @@ export default {
         @taskListUpdateStarted="taskListUpdateStarted"
         @taskListUpdateSucceeded="taskListUpdateSucceeded"
         @taskListUpdateFailed="taskListUpdateFailed"
+        @updateDescription="state.descriptionHtml = $event"
       />
 
       <edited-component

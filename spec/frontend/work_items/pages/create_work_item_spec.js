@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlAlert, GlFormSelect } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,7 +9,12 @@ import ItemTitle from '~/work_items/components/item_title.vue';
 import { resolvers } from '~/work_items/graphql/resolvers';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
-import { projectWorkItemTypesQueryResponse, createWorkItemMutationResponse } from '../mock_data';
+import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_item_from_task.mutation.graphql';
+import {
+  projectWorkItemTypesQueryResponse,
+  createWorkItemMutationResponse,
+  createWorkItemFromTaskMutationResponse,
+} from '../mock_data';
 
 jest.mock('~/lib/utils/uuids', () => ({ uuids: () => ['testuuid'] }));
 
@@ -20,12 +25,15 @@ describe('Create work item component', () => {
   let fakeApollo;
 
   const querySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
-  const mutationSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
+  const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
+  const createWorkItemFromTaskSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(createWorkItemFromTaskMutationResponse);
+  const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTitleInput = () => wrapper.findComponent(ItemTitle);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findSelect = () => wrapper.findComponent(GlFormSelect);
 
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
@@ -36,12 +44,13 @@ describe('Create work item component', () => {
     data = {},
     props = {},
     queryHandler = querySuccessHandler,
-    mutationHandler = mutationSuccessHandler,
+    mutationHandler = createWorkItemSuccessHandler,
   } = {}) => {
     fakeApollo = createMockApollo(
       [
         [projectWorkItemTypesQuery, queryHandler],
         [createWorkItemMutation, mutationHandler],
+        [createWorkItemFromTaskMutation, mutationHandler],
       ],
       resolvers,
     );
@@ -123,6 +132,7 @@ describe('Create work item component', () => {
         props: {
           isModal: true,
         },
+        mutationHandler: createWorkItemFromTaskSuccessHandler,
       });
     });
 
@@ -133,14 +143,12 @@ describe('Create work item component', () => {
     });
 
     it('emits `onCreate` on successful mutation', async () => {
-      const mockTitle = 'Test title';
       findTitleInput().vm.$emit('title-input', 'Test title');
 
       wrapper.find('form').trigger('submit');
       await waitForPromises();
 
-      const expected = { id: '1', title: mockTitle };
-      expect(wrapper.emitted('onCreate')).toEqual([[expected]]);
+      expect(wrapper.emitted('onCreate')).toEqual([['<p>New description</p>']]);
     });
 
     it('does not right margin for create button', () => {
@@ -177,16 +185,14 @@ describe('Create work item component', () => {
     });
 
     it('displays a list of work item types', () => {
-      expect(findDropdownItems()).toHaveLength(2);
-      expect(findDropdownItems().at(0).text()).toContain('Issue');
+      expect(findSelect().attributes('options').split(',')).toHaveLength(3);
     });
 
     it('selects a work item type on click', async () => {
-      expect(findDropdown().props('text')).toBe('Type');
-      findDropdownItems().at(0).vm.$emit('click');
+      const mockId = 'work-item-1';
+      findSelect().vm.$emit('input', mockId);
       await nextTick();
-
-      expect(findDropdown().props('text')).toBe('Issue');
+      expect(findSelect().attributes('value')).toBe(mockId);
     });
   });
 
@@ -210,17 +216,32 @@ describe('Create work item component', () => {
   });
 
   describe('when title input field has a text', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const mockTitle = 'Test title';
       createComponent();
+      await waitForPromises();
       findTitleInput().vm.$emit('title-input', mockTitle);
     });
 
-    it('renders a non-disabled Create button', () => {
-      expect(findCreateButton().props('disabled')).toBe(false);
+    it('renders a disabled Create button', () => {
+      expect(findCreateButton().props('disabled')).toBe(true);
     });
 
-    // TODO: write a proper test here when we have a backend implementation
-    it.todo('shows an alert on mutation error');
+    it('renders a non-disabled Create button when work item type is selected', async () => {
+      findSelect().vm.$emit('input', 'work-item-1');
+      await nextTick();
+      expect(findCreateButton().props('disabled')).toBe(false);
+    });
+  });
+
+  it('shows an alert on mutation error', async () => {
+    createComponent({ mutationHandler: errorHandler });
+    await waitForPromises();
+    findTitleInput().vm.$emit('title-input', 'some title');
+    findSelect().vm.$emit('input', 'work-item-1');
+    wrapper.find('form').trigger('submit');
+    await waitForPromises();
+
+    expect(findAlert().text()).toBe(CreateWorkItem.createErrorText);
   });
 });

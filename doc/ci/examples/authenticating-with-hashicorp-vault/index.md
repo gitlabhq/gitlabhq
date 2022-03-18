@@ -277,3 +277,19 @@ read_secrets:
 ```
 
 ![read_secrets production](img/vault-read-secrets-production.png)
+
+### Limit token access to Vault secrets
+
+You can control `CI_JOB_JWT` access to Vault secrets by using Vault protections
+and GitLab features. For example, restrict the token by:
+
+- Using Vault [bound_claims](https://www.vaultproject.io/docs/auth/jwt#bound-claims)
+  for specific groups using `group_claim`.
+- Hard coding values for Vault bound claims based on the `user_login` and `user_email`
+  of specific users.
+- Setting Vault time limits for TTL of the token as specified in [`token_explicit_max_ttl`](https://www.vaultproject.io/api/auth/jwt#token_explicit_max_ttl),
+  where the token expires after authentication.
+- Scoping the JWT to [GitLab projected branches](../../../user/project/protected_branches.md)
+  that are restricted to a subset of project users.
+- Scoping the JWT to [GitLab projected tags](../../../user/project/protected_tags.md),
+  that are restricted to a subset of project users.

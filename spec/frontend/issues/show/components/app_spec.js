@@ -2,11 +2,14 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import '~/behaviors/markdown/render_gfm';
 import { IssuableStatus, IssuableStatusText } from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
 import DescriptionComponent from '~/issues/show/components/description.vue';
+import EditedComponent from '~/issues/show/components/edited.vue';
+import FormComponent from '~/issues/show/components/form.vue';
+import TitleComponent from '~/issues/show/components/title.vue';
 import IncidentTabs from '~/issues/show/components/incidents/incident_tabs.vue';
 import PinnedLinks from '~/issues/show/components/pinned_links.vue';
 import { POLLING_DELAY } from '~/issues/show/constants';
@@ -20,10 +23,6 @@ import {
   secondRequest,
   zoomMeetingUrl,
 } from '../mock_data/mock_data';
-
-function formatText(text) {
-  return text.trim().replace(/\s\s+/g, ' ');
-}
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/issues/show/event_hub');
@@ -39,10 +38,15 @@ describe('Issuable output', () => {
   const findLockedBadge = () => wrapper.findByTestId('locked');
   const findConfidentialBadge = () => wrapper.findByTestId('confidential');
   const findHiddenBadge = () => wrapper.findByTestId('hidden');
-  const findAlert = () => wrapper.find('.alert');
+
+  const findTitle = () => wrapper.findComponent(TitleComponent);
+  const findDescription = () => wrapper.findComponent(DescriptionComponent);
+  const findEdited = () => wrapper.findComponent(EditedComponent);
+  const findForm = () => wrapper.findComponent(FormComponent);
+  const findPinnedLinks = () => wrapper.findComponent(PinnedLinks);
 
   const mountComponent = (props = {}, options = {}, data = {}) => {
-    wrapper = mountExtended(IssuableApp, {
+    wrapper = shallowMountExtended(IssuableApp, {
       directives: {
         GlTooltip: createMockDirective(),
       },
@@ -104,23 +108,15 @@ describe('Issuable output', () => {
   });
 
   it('should render a title/description/edited and update title/description/edited on update', () => {
-    let editedText;
     return axios
       .waitForAll()
       .then(() => {
-        editedText = wrapper.find('.edited-text');
-      })
-      .then(() => {
-        expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
-        expect(wrapper.find('.title').text()).toContain('this is a title');
-        expect(wrapper.find('.md').text()).toContain('this is a description!');
-        expect(wrapper.find('.js-task-list-field').element.value).toContain(
-          'this is a description',
-        );
+        expect(findTitle().props('titleText')).toContain('this is a title');
+        expect(findDescription().props('descriptionText')).toContain('this is a description');
 
-        expect(formatText(editedText.text())).toMatch(/Edited[\s\S]+?by Some User/);
-        expect(editedText.find('.author-link').attributes('href')).toMatch(/\/some_user$/);
-        expect(editedText.find('time').text()).toBeTruthy();
+        expect(findEdited().exists()).toBe(true);
+        expect(findEdited().props('updatedByPath')).toMatch(/\/some_user$/);
+        expect(findEdited().props('updatedAt')).toBeTruthy();
         expect(wrapper.vm.state.lock_version).toBe(initialRequest.lock_version);
       })
       .then(() => {
@@ -128,20 +124,13 @@ describe('Issuable output', () => {
         return axios.waitForAll();
       })
       .then(() => {
-        expect(document.querySelector('title').innerText).toContain('2 (#1)');
-        expect(wrapper.find('.title').text()).toContain('2');
-        expect(wrapper.find('.md').text()).toContain('42');
-        expect(wrapper.find('.js-task-list-field').element.value).toContain('42');
-        expect(wrapper.find('.edited-text').text()).toBeTruthy();
-        expect(formatText(wrapper.find('.edited-text').text())).toMatch(
-          /Edited[\s\S]+?by Other User/,
-        );
+        expect(findTitle().props('titleText')).toContain('2');
+        expect(findDescription().props('descriptionText')).toContain('42');
 
-        expect(editedText.find('.author-link').attributes('href')).toMatch(/\/other_user$/);
-        expect(editedText.find('time').text()).toBeTruthy();
-        // As the lock_version value does not differ from the server,
-        // we should not see an alert
-        expect(findAlert().exists()).toBe(false);
+        expect(findEdited().exists()).toBe(true);
+        expect(findEdited().props('updatedByName')).toBe('Other User');
+        expect(findEdited().props('updatedByPath')).toMatch(/\/other_user$/);
+        expect(findEdited().props('updatedAt')).toBeTruthy();
       });
   });
 
@@ -149,7 +138,7 @@ describe('Issuable output', () => {
     wrapper.vm.showForm = true;
 
     await nextTick();
-    expect(wrapper.find('.markdown-selector').exists()).toBe(true);
+    expect(findForm().exists()).toBe(true);
   });
 
   it('does not show actions if permissions are incorrect', async () => {
@@ -157,7 +146,7 @@ describe('Issuable output', () => {
     wrapper.setProps({ canUpdate: false });
 
     await nextTick();
-    expect(wrapper.find('.markdown-selector').exists()).toBe(false);
+    expect(findForm().exists()).toBe(false);
   });
 
   it('does not update formState if form is already open', async () => {
@@ -177,8 +166,7 @@ describe('Issuable output', () => {
       ${'zoomMeetingUrl'}       | ${zoomMeetingUrl}
       ${'publishedIncidentUrl'} | ${publishedIncidentUrl}
     `('sets the $prop correctly on underlying pinned links', ({ prop, value }) => {
-      expect(wrapper.vm[prop]).toBe(value);
-      expect(wrapper.find(`[data-testid="${prop}"]`).attributes('href')).toBe(value);
+      expect(findPinnedLinks().props(prop)).toBe(value);
     });
   });
 
@@ -327,7 +315,6 @@ describe('Issuable output', () => {
 
       expect(wrapper.vm.formState.lockedWarningVisible).toBe(true);
       expect(wrapper.vm.formState.lock_version).toBe(1);
-      expect(findAlert().exists()).toBe(true);
     });
   });
 
@@ -374,15 +361,22 @@ describe('Issuable output', () => {
   });
 
   describe('show inline edit button', () => {
-    it('should not render by default', () => {
-      expect(wrapper.find('.btn-edit').exists()).toBe(true);
+    it('should render by default', () => {
+      expect(findTitle().props('showInlineEditButton')).toBe(true);
     });
 
     it('should render if showInlineEditButton', async () => {
       wrapper.setProps({ showInlineEditButton: true });
 
       await nextTick();
-      expect(wrapper.find('.btn-edit').exists()).toBe(true);
+      expect(findTitle().props('showInlineEditButton')).toBe(true);
+    });
+
+    it('should not render if showInlineEditButton is false', async () => {
+      wrapper.setProps({ showInlineEditButton: false });
+
+      await nextTick();
+      expect(findTitle().props('showInlineEditButton')).toBe(false);
     });
   });
 
@@ -533,13 +527,11 @@ describe('Issuable output', () => {
 
   describe('Composable description component', () => {
     const findIncidentTabs = () => wrapper.findComponent(IncidentTabs);
-    const findDescriptionComponent = () => wrapper.findComponent(DescriptionComponent);
-    const findPinnedLinks = () => wrapper.findComponent(PinnedLinks);
     const borderClass = 'gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-mb-6';
 
     describe('when using description component', () => {
       it('renders the description component', () => {
-        expect(findDescriptionComponent().exists()).toBe(true);
+        expect(findDescription().exists()).toBe(true);
       });
 
       it('does not render incident tabs', () => {
@@ -572,8 +564,8 @@ describe('Issuable output', () => {
         );
       });
 
-      it('renders the description component', () => {
-        expect(findDescriptionComponent().exists()).toBe(true);
+      it('does not the description component', () => {
+        expect(findDescription().exists()).toBe(false);
       });
 
       it('renders incident tabs', () => {

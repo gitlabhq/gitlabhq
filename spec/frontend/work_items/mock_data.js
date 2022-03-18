@@ -78,3 +78,17 @@ export const createWorkItemMutationResponse = {
     },
   },
 };
+
+export const createWorkItemFromTaskMutationResponse = {
+  data: {
+    workItemCreateFromTask: {
+      __typename: 'WorkItemCreateFromTaskPayload',
+      errors: [],
+      workItem: {
+        descriptionHtml: '<p>New description</p>',
+        id: 'gid://gitlab/WorkItem/13',
+        __typename: 'WorkItem',
+      },
+    },
+  },
+};

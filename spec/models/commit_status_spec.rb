@@ -994,4 +994,11 @@ RSpec.describe CommitStatus do
       let!(:model) { create(:ci_build, project: parent) }
     end
   end
+
+  context 'loose foreign key on ci_builds.runner_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:ci_runner) }
+      let!(:model) { create(:ci_build, runner: parent) }
+    end
+  end
 end

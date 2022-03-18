@@ -1,5 +1,5 @@
 <script>
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import ItemTitle from './item_title.vue';
@@ -7,6 +7,7 @@ import ItemTitle from './item_title.vue';
 export default {
   components: {
     GlModal,
+    GlLoadingIcon,
     ItemTitle,
   },
   props: {
@@ -57,6 +58,7 @@ export default {
 
 <template>
   <gl-modal hide-footer modal-id="work-item-detail-modal" :visible="visible" @hide="$emit('close')">
-    <item-title class="gl-m-0!" :initial-title="workItemTitle" />
+    <gl-loading-icon v-if="$apollo.queries.workItem.loading" size="md" />
+    <item-title v-else class="gl-m-0!" :initial-title="workItemTitle" />
   </gl-modal>
 </template>
