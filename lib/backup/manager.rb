@@ -21,6 +21,7 @@ module Backup
       max_concurrency = ENV.fetch('GITLAB_BACKUP_MAX_CONCURRENCY', 1).to_i
       max_storage_concurrency = ENV.fetch('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 1).to_i
       force = ENV['force'] == 'yes'
+      incremental = Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
 
       @definitions = definitions || {
         'db' => TaskDefinition.new(
@@ -32,7 +33,7 @@ module Backup
           destination_path: 'repositories',
           destination_optional: true,
           task: Repositories.new(progress,
-                                 strategy: repository_backup_strategy,
+                                 strategy: repository_backup_strategy(incremental),
                                  max_concurrency: max_concurrency,
                                  max_storage_concurrency: max_storage_concurrency)
         ),
@@ -481,11 +482,11 @@ module Backup
       Gitlab.config.backup.upload.connection&.provider&.downcase == 'google'
     end
 
-    def repository_backup_strategy
+    def repository_backup_strategy(incremental)
       if Feature.enabled?(:gitaly_backup, default_enabled: :yaml)
         max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
         max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
-        Backup::GitalyBackup.new(progress, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
+        Backup::GitalyBackup.new(progress, incremental: incremental, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
       else
         Backup::GitalyRpcBackup.new(progress)
       end

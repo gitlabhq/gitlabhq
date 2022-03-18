@@ -76,7 +76,12 @@ To configure IaC Scanning for a project you can:
 ### Configure IaC Scanning manually
 
 To enable IaC Scanning you must [include](../../../ci/yaml/index.md#includetemplate) the
-[`SAST-IaC.latest.gitlab-ci.yml template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST-IaC.latest.gitlab-ci.yml) provided as part of your GitLab installation.
+[`SAST-IaC.latest.gitlab-ci.yml template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST-IaC.latest.gitlab-ci.yml) provided as part of your GitLab installation. Here is an example of how to include it:
+
+```yaml
+include:
+  - template: Security/SAST-IaC.latest.gitlab-ci.yml
+```
 
 The included template creates IaC scanning jobs in your CI/CD pipeline and scans
 your project's configuration files for possible vulnerabilities.

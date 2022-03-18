@@ -3,6 +3,7 @@ import { GlModal, GlAlert } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { formType } from '../constants';
 
 import createBoardMutation from '../graphql/board_create.mutation.graphql';
@@ -15,6 +16,7 @@ const boardDefaults = {
   name: '',
   labels: [],
   milestone: {},
+  iterationCadence: {},
   iteration: {},
   assignee: {},
   weight: null,
@@ -41,6 +43,7 @@ export default {
     BoardConfigurationOptions,
     GlAlert,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     fullPath: {
       default: '',
@@ -231,9 +234,12 @@ export default {
         this.board = { ...boardDefaults, ...this.currentBoard };
       }
     },
-    setIteration(iterationId) {
+    setIteration(iteration) {
+      if (this.glFeatures.iterationCadences) {
+        this.board.iterationCadenceId = iteration.iterationCadenceId;
+      }
       this.$set(this.board, 'iteration', {
-        id: iterationId,
+        id: iteration.id,
       });
     },
     setBoardLabels(labels) {

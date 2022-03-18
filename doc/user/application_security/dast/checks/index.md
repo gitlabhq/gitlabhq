@@ -19,5 +19,6 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [16.6](16.6.md) | AspNetMvc header exposes version information | Low | Passive |
 | [200.1](200.1.md) | Exposure of sensitive information to an unauthorized actor (private IP address) | Low | Passive |
 | [548.1](548.1.md) | Exposure of information through directory listing | Low | Passive |
+| [598.1](598.1.md) | Use of GET request method with sensitive query strings (session ID) | Medium | Passive |
 | [614.1](614.1.md) | Sensitive cookie without Secure attribute | Low | Passive |
 | [693.1](693.1.md) | Missing X-Content-Type-Options: nosniff | Low | Passive |

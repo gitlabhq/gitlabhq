@@ -5852,6 +5852,9 @@ msgstr ""
 msgid "BoardNewIssue|Select a project"
 msgstr ""
 
+msgid "BoardScope|An error occurred while getting iterations. Please try again."
+msgstr ""
+
 msgid "BoardScope|An error occurred while getting milestones, please try again."
 msgstr ""
 
@@ -5867,6 +5870,9 @@ msgstr ""
 msgid "BoardScope|Any assignee"
 msgstr ""
 
+msgid "BoardScope|Any iteration"
+msgstr ""
+
 msgid "BoardScope|Any label"
 msgstr ""
 
@@ -5876,7 +5882,13 @@ msgstr ""
 msgid "BoardScope|Choose labels"
 msgstr ""
 
+msgid "BoardScope|Current iteration"
+msgstr ""
+
 msgid "BoardScope|Edit"
+msgstr ""
+
+msgid "BoardScope|Iteration"
 msgstr ""
 
 msgid "BoardScope|Labels"
@@ -5885,13 +5897,22 @@ msgstr ""
 msgid "BoardScope|Milestone"
 msgstr ""
 
+msgid "BoardScope|No iteration"
+msgstr ""
+
 msgid "BoardScope|No milestone"
+msgstr ""
+
+msgid "BoardScope|Search iterations"
 msgstr ""
 
 msgid "BoardScope|Search milestones"
 msgstr ""
 
 msgid "BoardScope|Select assignee"
+msgstr ""
+
+msgid "BoardScope|Select iteration"
 msgstr ""
 
 msgid "BoardScope|Select labels"

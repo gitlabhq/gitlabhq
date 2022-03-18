@@ -9,10 +9,13 @@ module Backup
     # @param [StringIO] progress IO interface to output progress
     # @param [Integer] max_parallelism max parallelism when running backups
     # @param [Integer] storage_parallelism max parallelism per storage (is affected by max_parallelism)
-    def initialize(progress, max_parallelism: nil, storage_parallelism: nil)
+    # @param [String] backup_id unique identifier for the backup
+    def initialize(progress, max_parallelism: nil, storage_parallelism: nil, incremental: false, backup_id: nil)
       @progress = progress
       @max_parallelism = max_parallelism
       @storage_parallelism = storage_parallelism
+      @incremental = incremental
+      @backup_id = backup_id
     end
 
     def start(type, backup_repos_path)
@@ -30,6 +33,13 @@ module Backup
       args = []
       args += ['-parallel', @max_parallelism.to_s] if @max_parallelism
       args += ['-parallel-storage', @storage_parallelism.to_s] if @storage_parallelism
+      if Feature.enabled?(:incremental_repository_backup, default_enabled: :yaml)
+        args += ['-layout', 'pointer']
+        if type == :create
+          args += ['-incremental'] if @incremental
+          args += ['-id', @backup_id] if @backup_id
+        end
+      end
 
       @input_stream, stdout, @thread = Open3.popen2(build_env, bin_path, command, '-path', backup_repos_path, *args)
 

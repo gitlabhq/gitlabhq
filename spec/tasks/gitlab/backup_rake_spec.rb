@@ -176,8 +176,8 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
 
           expect(exit_status).to eq(0)
           expect(tar_contents).to match(user_backup_path)
-          expect(tar_contents).to match("#{user_backup_path}/custom_hooks.tar")
-          expect(tar_contents).to match("#{user_backup_path}.bundle")
+          expect(tar_contents).to match("#{user_backup_path}/.+/001.custom_hooks.tar")
+          expect(tar_contents).to match("#{user_backup_path}/.+/001.bundle")
         end
 
         it 'restores files correctly' do
@@ -360,14 +360,14 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
           expect(exit_status).to eq(0)
 
           [
-            "#{project_a.disk_path}.bundle",
-            "#{project_a.disk_path}.wiki.bundle",
-            "#{project_a.disk_path}.design.bundle",
-            "#{project_b.disk_path}.bundle",
-            "#{project_snippet_a.disk_path}.bundle",
-            "#{project_snippet_b.disk_path}.bundle"
+            "#{project_a.disk_path}/.+/001.bundle",
+            "#{project_a.disk_path}.wiki/.+/001.bundle",
+            "#{project_a.disk_path}.design/.+/001.bundle",
+            "#{project_b.disk_path}/.+/001.bundle",
+            "#{project_snippet_a.disk_path}/.+/001.bundle",
+            "#{project_snippet_b.disk_path}/.+/001.bundle"
           ].each do |repo_name|
-            expect(tar_lines.grep(/#{repo_name}/).size).to eq 1
+            expect(tar_lines).to include(a_string_matching(repo_name))
           end
         end
 
@@ -428,7 +428,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         expect(::Backup::Repositories).to receive(:new)
           .with(anything, strategy: anything, max_concurrency: 5, max_storage_concurrency: 2)
           .and_call_original
-        expect(::Backup::GitalyBackup).to receive(:new).with(anything, max_parallelism: 5, storage_parallelism: 2).and_call_original
+        expect(::Backup::GitalyBackup).to receive(:new).with(anything, max_parallelism: 5, storage_parallelism: 2, incremental: false).and_call_original
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
       end
