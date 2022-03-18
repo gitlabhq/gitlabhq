@@ -13724,6 +13724,8 @@ CREATE TABLE container_repositories (
     migration_skipped_reason smallint,
     migration_state text DEFAULT 'default'::text NOT NULL,
     migration_aborted_in_state text,
+    migration_plan text,
+    CONSTRAINT check_05e9012f36 CHECK ((char_length(migration_plan) <= 255)),
     CONSTRAINT check_13c58fe73a CHECK ((char_length(migration_state) <= 255)),
     CONSTRAINT check_97f0249439 CHECK ((char_length(migration_aborted_in_state) <= 255))
 );

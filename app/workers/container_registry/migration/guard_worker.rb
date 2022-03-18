@@ -29,46 +29,45 @@ module ContainerRegistry
         log_extra_metadata_on_done(:stale_migrations_count, repositories.to_a.size)
 
         repositories.each do |repository|
-          if abortable?(repository)
+          if actively_importing?(repository)
+            # if a repository is actively importing but not yet long_running, do nothing
+            if long_running_migration?(repository)
+              long_running_migration_ids << repository.id
+              cancel_long_running_migration(repository)
+              aborts_count += 1
+            end
+          else
             repository.abort_import
             aborts_count += 1
-          else
-            long_running_migration_ids << repository.id if long_running_migration?(repository)
           end
         end
 
         log_extra_metadata_on_done(:aborted_stale_migrations_count, aborts_count)
 
         if long_running_migration_ids.any?
-          log_extra_metadata_on_done(:long_running_stale_migration_container_repository_ids, long_running_migration_ids)
+          log_extra_metadata_on_done(:aborted_long_running_migration_ids, long_running_migration_ids)
         end
       end
 
       private
 
-      # This can ping the Container Registry API.
-      # We loop on a set of repositories to calls this function (see #perform)
-      # In the worst case scenario, we have a n+1 API calls situation here.
-      #
-      # This is reasonable because the maximum amount of repositories looped
-      # on is `25`. See ::ContainerRegistry::Migration.capacity.
-      #
-      # TODO We can remove this n+1 situation by having a Container Registry API
-      # endpoint that accepts multiple repository paths at once. This is issue
+      # A repository is actively_importing if it has an importing migration state
+      # and that state matches the state in the registry
+      # TODO We can have an API call n+1 situation here. It can be solved when the
+      # endpoint accepts multiple repository paths at once. This is issue
       # https://gitlab.com/gitlab-org/container-registry/-/issues/582
-      def abortable?(repository)
-        # early return to save one Container Registry API request
-        return true unless repository.importing? || repository.pre_importing?
-        return true unless external_migration_in_progress?(repository)
+      def actively_importing?(repository)
+        return false unless repository.importing? || repository.pre_importing?
+        return false unless external_state_matches_migration_state?(repository)
 
-        false
+        true
       end
 
       def long_running_migration?(repository)
         migration_start_timestamp(repository).before?(long_running_migration_threshold)
       end
 
-      def external_migration_in_progress?(repository)
+      def external_state_matches_migration_state?(repository)
         status = repository.external_import_status
 
         (status == 'pre_import_in_progress' && repository.pre_importing?) ||
@@ -95,6 +94,21 @@ module ContainerRegistry
 
       def long_running_migration_threshold
         @threshold ||= 30.minutes.ago
+      end
+
+      def cancel_long_running_migration(repository)
+        result = repository.migration_cancel
+
+        case result[:status]
+        when :ok
+          repository.skip_import(reason: :migration_canceled)
+        when :bad_request
+          repository.reconcile_import_status(result[:state]) do
+            repository.abort_import
+          end
+        else
+          repository.abort_import
+        end
       end
     end
   end

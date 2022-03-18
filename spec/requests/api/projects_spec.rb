@@ -777,7 +777,7 @@ RSpec.describe API::Projects do
         subject { get api('/projects', current_user), params: params }
 
         before do
-          group_with_projects.add_owner(current_user)
+          group_with_projects.add_owner(current_user) if current_user
         end
 
         it 'returns non-public items based ordered by similarity' do

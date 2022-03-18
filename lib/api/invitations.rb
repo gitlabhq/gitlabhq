@@ -28,6 +28,8 @@ module API
           optional :tasks_project_id, type: Integer, desc: 'The project ID in which to create the task issues'
         end
         post ":id/invitations" do
+          ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/354016')
+
           params[:source] = find_source(source_type, params[:id])
 
           authorize_admin_source!(source_type, params[:source])

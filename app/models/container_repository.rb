@@ -9,10 +9,13 @@ class ContainerRepository < ApplicationRecord
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
+
   IDLE_MIGRATION_STATES = %w[default pre_import_done import_done import_aborted import_skipped].freeze
   ACTIVE_MIGRATION_STATES = %w[pre_importing importing].freeze
-  ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
   MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
+  ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
+
+  IRRECONCILABLE_MIGRATIONS_STATUSES = %w[import_in_progress pre_import_in_progress pre_import_canceled import_canceled].freeze
 
   MIGRATION_PHASE_1_STARTED_AT = Date.new(2021, 11, 4).freeze
 
@@ -32,7 +35,7 @@ class ContainerRepository < ApplicationRecord
 
   enum status: { delete_scheduled: 0, delete_failed: 1 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
-  enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3 }
+  enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3, migration_canceled: 4 }
 
   delegate :client, :gitlab_api_client, to: :registry
 
@@ -114,15 +117,15 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :finish_pre_import do
-      transition %i[pre_importing import_aborted] => :pre_import_done
+      transition %i[pre_importing importing import_aborted] => :pre_import_done
     end
 
     event :start_import do
-      transition pre_import_done: :importing
+      transition %i[pre_import_done pre_importing importing import_aborted] => :importing
     end
 
     event :finish_import do
-      transition %i[importing import_aborted] => :import_done
+      transition %i[pre_importing importing import_aborted] => :import_done
     end
 
     event :already_migrated do
@@ -138,11 +141,11 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :retry_pre_import do
-      transition import_aborted: :pre_importing
+      transition %i[pre_importing importing import_aborted] => :pre_importing
     end
 
     event :retry_import do
-      transition import_aborted: :importing
+      transition %i[pre_importing importing import_aborted] => :importing
     end
 
     before_transition any => :pre_importing do |container_repository|
@@ -276,24 +279,28 @@ class ContainerRepository < ApplicationRecord
   def retry_aborted_migration
     return unless migration_state == 'import_aborted'
 
-    case external_import_status
+    reconcile_import_status(external_import_status) do
+      # If the import_status request fails, use the timestamp to guess current state
+      migration_pre_import_done_at ? retry_import : retry_pre_import
+    end
+  end
+
+  def reconcile_import_status(status)
+    case status
     when 'native'
       raise NativeImportError
-    when 'import_in_progress'
+    when *IRRECONCILABLE_MIGRATIONS_STATUSES
       nil
     when 'import_complete'
       finish_import
     when 'import_failed'
       retry_import
-    when 'pre_import_in_progress'
-      nil
     when 'pre_import_complete'
       finish_pre_import_and_start_import
     when 'pre_import_failed'
       retry_pre_import
     else
-      # If the import_status request fails, use the timestamp to guess current state
-      migration_pre_import_done_at ? retry_import : retry_pre_import
+      yield
     end
   end
 
@@ -448,6 +455,12 @@ class ContainerRepository < ApplicationRecord
     raise TooManyImportsError if response == :too_many_imports
 
     response
+  end
+
+  def migration_cancel
+    return :error unless gitlab_api_client.supports_gitlab_api?
+
+    gitlab_api_client.cancel_repository_import(self.path)
   end
 
   def self.build_from_path(path)

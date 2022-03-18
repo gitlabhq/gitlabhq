@@ -12,7 +12,7 @@ RSpec.describe Metrics::Dashboard::SelfMonitoringDashboardService, :use_clean_ra
   let(:service_params) { [project, user, { environment: environment }] }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) if user
     stub_application_setting(self_monitoring_project_id: project.id)
   end
 

@@ -208,7 +208,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         end
       end
 
-      it_behaves_like 'transitioning from allowed states', %w[import_aborted]
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
       it_behaves_like 'transitioning to pre_importing'
       it_behaves_like 'transitioning out of import_aborted'
     end
@@ -218,7 +218,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
       subject { repository.finish_pre_import }
 
-      it_behaves_like 'transitioning from allowed states', %w[pre_importing import_aborted]
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
 
       it 'sets migration_pre_import_done_at' do
         expect { subject }.to change { repository.reload.migration_pre_import_done_at }
@@ -238,7 +238,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         end
       end
 
-      it_behaves_like 'transitioning from allowed states', %w[pre_import_done]
+      it_behaves_like 'transitioning from allowed states', %w[pre_import_done pre_importing importing import_aborted]
       it_behaves_like 'transitioning to importing'
     end
 
@@ -253,7 +253,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         end
       end
 
-      it_behaves_like 'transitioning from allowed states', %w[import_aborted]
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
       it_behaves_like 'transitioning to importing'
       it_behaves_like 'no action when feature flag is disabled'
     end
@@ -263,7 +263,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
       subject { repository.finish_import }
 
-      it_behaves_like 'transitioning from allowed states', %w[importing import_aborted]
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
       it_behaves_like 'queueing the next import'
 
       it 'sets migration_import_done_at and queues the next import' do
@@ -334,7 +334,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         end
       end
 
-      it_behaves_like 'transitioning from allowed states', %w[pre_importing import_aborted]
+      it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
       it_behaves_like 'transitioning to importing'
     end
   end
@@ -391,7 +391,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
   describe '#retry_aborted_migration' do
     subject { repository.retry_aborted_migration }
 
-    shared_examples 'no action' do
+    context 'when migration_state is not aborted' do
       it 'does nothing' do
         expect { subject }.not_to change { repository.reload.migration_state }
 
@@ -399,104 +399,45 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       end
     end
 
-    shared_examples 'retrying the pre_import' do
-      it 'retries the pre_import' do
-        expect(repository).to receive(:migration_pre_import).and_return(:ok)
-
-        expect { subject }.to change { repository.reload.migration_state }.to('pre_importing')
-      end
-    end
-
-    shared_examples 'retrying the import' do
-      it 'retries the import' do
-        expect(repository).to receive(:migration_import).and_return(:ok)
-
-        expect { subject }.to change { repository.reload.migration_state }.to('importing')
-      end
-    end
-
-    context 'when migration_state is not aborted' do
-      it_behaves_like 'no action'
-    end
-
     context 'when migration_state is aborted' do
       before do
         repository.abort_import
 
         allow(repository.gitlab_api_client)
-            .to receive(:import_status).with(repository.path).and_return(client_response)
+            .to receive(:import_status).with(repository.path).and_return(status)
       end
 
-      context 'native response' do
-        let(:client_response) { 'native' }
+      it_behaves_like 'reconciling migration_state' do
+        context 'error response' do
+          let(:status) { 'error' }
 
-        it 'raises an error' do
-          expect { subject }.to raise_error(described_class::NativeImportError)
-        end
-      end
-
-      context 'import_in_progress response' do
-        let(:client_response) { 'import_in_progress' }
-
-        it_behaves_like 'no action'
-      end
-
-      context 'import_complete response' do
-        let(:client_response) { 'import_complete' }
-
-        it 'finishes the import' do
-          expect { subject }.to change { repository.reload.migration_state }.to('import_done')
-        end
-      end
-
-      context 'import_failed response' do
-        let(:client_response) { 'import_failed' }
-
-        it_behaves_like 'retrying the import'
-      end
-
-      context 'pre_import_in_progress response' do
-        let(:client_response) { 'pre_import_in_progress' }
-
-        it_behaves_like 'no action'
-      end
-
-      context 'pre_import_complete response' do
-        let(:client_response) { 'pre_import_complete' }
-
-        it 'finishes the pre_import and starts the import' do
-          expect(repository).to receive(:finish_pre_import).and_call_original
-          expect(repository).to receive(:migration_import).and_return(:ok)
-
-          expect { subject }.to change { repository.reload.migration_state }.to('importing')
-        end
-      end
-
-      context 'pre_import_failed response' do
-        let(:client_response) { 'pre_import_failed' }
-
-        it_behaves_like 'retrying the pre_import'
-      end
-
-      context 'error response' do
-        let(:client_response) { 'error' }
-
-        context 'migration_pre_import_done_at is NULL' do
-          it_behaves_like 'retrying the pre_import'
-        end
-
-        context 'migration_pre_import_done_at is not NULL' do
-          before do
-            repository.update_columns(
-              migration_pre_import_started_at: 5.minutes.ago,
-              migration_pre_import_done_at: Time.zone.now
-            )
+          context 'migration_pre_import_done_at is NULL' do
+            it_behaves_like 'retrying the pre_import'
           end
 
-          it_behaves_like 'retrying the import'
+          context 'migration_pre_import_done_at is not NULL' do
+            before do
+              repository.update_columns(
+                migration_pre_import_started_at: 5.minutes.ago,
+                migration_pre_import_done_at: Time.zone.now
+              )
+            end
+
+            it_behaves_like 'retrying the import'
+          end
         end
       end
     end
+  end
+
+  describe '#reconcile_import_status' do
+    subject { repository.reconcile_import_status(status) }
+
+    before do
+      repository.abort_import
+    end
+
+    it_behaves_like 'reconciling migration_state'
   end
 
   describe '#tag' do
@@ -722,12 +663,12 @@ RSpec.describe ContainerRepository, :aggregate_failures do
   end
 
   context 'registry migration' do
-    shared_examples 'handling the migration step' do |step|
-      let(:client_response) { :foobar }
+    before do
+      allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
+    end
 
-      before do
-        allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
-      end
+    shared_examples 'gitlab migration client request' do |step|
+      let(:client_response) { :foobar }
 
       it 'returns the same response as the client' do
         expect(repository.gitlab_api_client)
@@ -746,6 +687,10 @@ RSpec.describe ContainerRepository, :aggregate_failures do
           expect(subject).to eq(:error)
         end
       end
+    end
+
+    shared_examples 'handling the migration step' do |step|
+      it_behaves_like 'gitlab migration client request', step
 
       context 'too many imports' do
         it 'raises an error when it receives too_many_imports as a response' do
@@ -766,6 +711,12 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       subject { repository.migration_import }
 
       it_behaves_like 'handling the migration step', :import_repository
+    end
+
+    describe '#migration_cancel' do
+      subject { repository.migration_cancel }
+
+      it_behaves_like 'gitlab migration client request', :cancel_repository_import
     end
   end
 

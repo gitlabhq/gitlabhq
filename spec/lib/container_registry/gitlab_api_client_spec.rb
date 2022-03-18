@@ -62,6 +62,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
     where(:status_code, :expected_result) do
       200 | :already_imported
       202 | :ok
+      400 | :bad_request
       401 | :unauthorized
       404 | :not_found
       409 | :already_being_imported
@@ -86,6 +87,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
     where(:status_code, :expected_result) do
       200 | :already_imported
       202 | :ok
+      400 | :bad_request
       401 | :unauthorized
       404 | :not_found
       409 | :already_being_imported
@@ -104,23 +106,68 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
     end
   end
 
+  describe '#cancel_repository_import' do
+    subject { client.cancel_repository_import(path) }
+
+    where(:status_code, :expected_result) do
+      200 | :already_imported
+      202 | :ok
+      400 | :bad_request
+      401 | :unauthorized
+      404 | :not_found
+      409 | :already_being_imported
+      418 | :error
+      424 | :pre_import_failed
+      425 | :already_being_imported
+      429 | :too_many_imports
+    end
+
+    with_them do
+      before do
+        stub_import_cancel(path, status_code)
+      end
+
+      it { is_expected.to eq({ status: expected_result, migration_state: nil }) }
+    end
+
+    context 'bad request' do
+      let(:status) { 'this_is_a_test' }
+
+      before do
+        stub_import_cancel(path, 400, status: status)
+      end
+
+      it { is_expected.to eq({ status: :bad_request, migration_state: status }) }
+    end
+  end
+
   describe '#import_status' do
     subject { client.import_status(path) }
 
-    before do
-      stub_import_status(path, status)
+    context 'with successful response' do
+      before do
+        stub_import_status(path, status)
+      end
+
+      context 'with a status' do
+        let(:status) { 'this_is_a_test' }
+
+        it { is_expected.to eq(status) }
+      end
+
+      context 'with no status' do
+        let(:status) { nil }
+
+        it { is_expected.to eq('error') }
+      end
     end
 
-    context 'with a status' do
-      let(:status) { 'this_is_a_test' }
+    context 'with non successful response' do
+      before do
+        stub_import_status(path, nil, status_code: 404)
+      end
 
-      it { is_expected.to eq(status) }
-    end
-
-    context 'with no status' do
-      let(:status) { nil }
-
-      it { is_expected.to eq('error') }
+      it { is_expected.to eq('pre_import_failed') }
     end
   end
 
@@ -230,12 +277,28 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
       .to_return(status: status_code, body: '')
   end
 
-  def stub_import_status(path, status)
+  def stub_import_status(path, status, status_code: 200)
     stub_request(:get, "#{registry_api_url}/gitlab/v1/import/#{path}/")
       .with(headers: { 'Accept' => described_class::JSON_TYPE, 'Authorization' => "bearer #{import_token}" })
       .to_return(
-        status: 200,
+        status: status_code,
         body: { status: status }.to_json,
+        headers: { content_type: 'application/json' }
+      )
+  end
+
+  def stub_import_cancel(path, http_status, status: nil)
+    body = {}
+
+    if http_status == 400
+      body = { status: status }
+    end
+
+    stub_request(:delete, "#{registry_api_url}/gitlab/v1/import/#{path}/")
+      .with(headers: { 'Accept' => described_class::JSON_TYPE, 'Authorization' => "bearer #{import_token}" })
+      .to_return(
+        status: http_status,
+        body: body.to_json,
         headers: { content_type: 'application/json' }
       )
   end

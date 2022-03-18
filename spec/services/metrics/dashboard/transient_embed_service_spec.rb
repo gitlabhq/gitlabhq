@@ -8,7 +8,7 @@ RSpec.describe Metrics::Dashboard::TransientEmbedService, :use_clean_rails_memor
   let_it_be(:environment) { create(:environment, project: project) }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) if user
   end
 
   describe '.valid_params?' do

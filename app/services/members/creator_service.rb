@@ -114,7 +114,7 @@ module Members
         User.find_by(id: user) # rubocop:todo CodeReuse/ActiveRecord
       else
         # must be an email or at least we'll consider it one
-        User.find_by_any_email(user) || user
+        source.users_by_emails([user])[user] || user
       end
     end
 

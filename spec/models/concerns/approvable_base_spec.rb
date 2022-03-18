@@ -36,7 +36,7 @@ RSpec.describe ApprovableBase do
     subject { merge_request.can_be_approved_by?(user) }
 
     before do
-      merge_request.project.add_developer(user)
+      merge_request.project.add_developer(user) if user
     end
 
     it 'returns true' do
@@ -64,7 +64,7 @@ RSpec.describe ApprovableBase do
     subject { merge_request.can_be_unapproved_by?(user) }
 
     before do
-      merge_request.project.add_developer(user)
+      merge_request.project.add_developer(user) if user
     end
 
     it 'returns false' do

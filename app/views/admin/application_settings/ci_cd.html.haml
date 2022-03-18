@@ -20,8 +20,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Customize CI/CD settings, including Auto DevOps, shared runners, and job artifacts.')
-  .settings-content
-    = render 'ci_cd'
+  = render 'ci_cd'
 
 = render_if_exists 'admin/application_settings/required_instance_ci_setting', expanded: expanded_by_default?
 

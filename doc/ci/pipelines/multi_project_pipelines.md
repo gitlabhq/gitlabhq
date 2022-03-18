@@ -282,7 +282,7 @@ tag in a different project.
 
 Prerequisites:
 
-- The upstream project must be [public](../../public_access/public_access.md).
+- The upstream project must be [public](../../user/public_access.md).
 - The user must have the Developer role
   in the upstream project.
 

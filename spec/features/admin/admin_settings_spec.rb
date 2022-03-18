@@ -311,7 +311,9 @@ RSpec.describe 'Admin updates settings' do
     end
 
     context 'CI/CD page' do
-      it 'change CI/CD settings' do
+      let_it_be(:default_plan) { create(:default_plan) }
+
+      it 'changes CI/CD settings' do
         visit ci_cd_admin_application_settings_path
 
         page.within('.as-ci-cd') do
@@ -327,6 +329,31 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.keep_latest_artifact).to be false
         expect(current_settings.suggest_pipeline_enabled).to be false
         expect(page).to have_content "Application settings saved successfully"
+      end
+
+      it 'changes CI/CD limits', :aggregate_failures do
+        visit ci_cd_admin_application_settings_path
+
+        page.within('.as-ci-cd') do
+          fill_in 'plan_limits_ci_pipeline_size', with: 10
+          fill_in 'plan_limits_ci_active_jobs', with: 20
+          fill_in 'plan_limits_ci_project_subscriptions', with: 30
+          fill_in 'plan_limits_ci_pipeline_schedules', with: 40
+          fill_in 'plan_limits_ci_needs_size_limit', with: 50
+          fill_in 'plan_limits_ci_registered_group_runners', with: 60
+          fill_in 'plan_limits_ci_registered_project_runners', with: 70
+          click_button 'Save Default limits'
+        end
+
+        limits = default_plan.reload.limits
+        expect(limits.ci_pipeline_size).to eq(10)
+        expect(limits.ci_active_jobs).to eq(20)
+        expect(limits.ci_project_subscriptions).to eq(30)
+        expect(limits.ci_pipeline_schedules).to eq(40)
+        expect(limits.ci_needs_size_limit).to eq(50)
+        expect(limits.ci_registered_group_runners).to eq(60)
+        expect(limits.ci_registered_project_runners).to eq(70)
+        expect(page).to have_content 'Application limits saved successfully'
       end
 
       context 'Runner Registration' do

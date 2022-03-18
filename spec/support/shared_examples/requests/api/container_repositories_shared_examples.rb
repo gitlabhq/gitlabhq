@@ -116,3 +116,80 @@ RSpec.shared_examples 'not hitting graphql network errors with the container reg
     expect_graphql_errors_to_be_empty
   end
 end
+
+RSpec.shared_examples 'reconciling migration_state' do
+  shared_examples 'no action' do
+    it 'does nothing' do
+      expect { subject }.not_to change { repository.reload.migration_state }
+
+      expect(subject).to eq(nil)
+    end
+  end
+
+  shared_examples 'retrying the pre_import' do
+    it 'retries the pre_import' do
+      expect(repository).to receive(:migration_pre_import).and_return(:ok)
+
+      expect { subject }.to change { repository.reload.migration_state }.to('pre_importing')
+    end
+  end
+
+  shared_examples 'retrying the import' do
+    it 'retries the import' do
+      expect(repository).to receive(:migration_import).and_return(:ok)
+
+      expect { subject }.to change { repository.reload.migration_state }.to('importing')
+    end
+  end
+
+  context 'native response' do
+    let(:status) { 'native' }
+
+    it 'raises an error' do
+      expect { subject }.to raise_error(described_class::NativeImportError)
+    end
+  end
+
+  context 'import_in_progress response' do
+    let(:status) { 'import_in_progress' }
+
+    it_behaves_like 'no action'
+  end
+
+  context 'import_complete response' do
+    let(:status) { 'import_complete' }
+
+    it 'finishes the import' do
+      expect { subject }.to change { repository.reload.migration_state }.to('import_done')
+    end
+  end
+
+  context 'import_failed response' do
+    let(:status) { 'import_failed' }
+
+    it_behaves_like 'retrying the import'
+  end
+
+  context 'pre_import_in_progress response' do
+    let(:status) { 'pre_import_in_progress' }
+
+    it_behaves_like 'no action'
+  end
+
+  context 'pre_import_complete response' do
+    let(:status) { 'pre_import_complete' }
+
+    it 'finishes the pre_import and starts the import' do
+      expect(repository).to receive(:finish_pre_import).and_call_original
+      expect(repository).to receive(:migration_import).and_return(:ok)
+
+      expect { subject }.to change { repository.reload.migration_state }.to('importing')
+    end
+  end
+
+  context 'pre_import_failed response' do
+    let(:status) { 'pre_import_failed' }
+
+    it_behaves_like 'retrying the pre_import'
+  end
+end

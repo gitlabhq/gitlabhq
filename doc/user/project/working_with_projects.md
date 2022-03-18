@@ -99,7 +99,7 @@ To create a blank project:
    - In the **Project description (optional)** field, enter the description of your project's dashboard.
    - In the **Project target (optional)** field, select your project's deployment target.
      This information helps GitLab better understand its users and their deployment requirements.
-   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for
+   - To modify the project's [viewing and access rights](../public_access.md) for
    users, change the **Visibility Level**.
    - To create README file so that the Git repository is initialized, has a default branch, and
      can be cloned, select **Initialize repository with a README**.
@@ -132,7 +132,7 @@ To create a project from a built-in template:
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
    - In the **Project description (optional)** field, enter the description of your project's dashboard.
-   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for users,
+   - To modify the project's [viewing and access rights](../public_access.md) for users,
       change the **Visibility Level**.
 1. Select **Create project**.
 
@@ -158,7 +158,7 @@ Custom project templates are available at:
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
    - The description of your project's dashboard in the **Project description (optional)** field.
-   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for users,
+   - To modify the project's [viewing and access rights](../public_access.md) for users,
       change the **Visibility Level**.
 1. Select **Create project**.
 
@@ -184,7 +184,7 @@ To create a project from the HIPAA Audit Protocol template:
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
    - In the **Project description (optional)** field, enter the description of your project's dashboard.
-   - To modify the project's [viewing and access rights](../../public_access/public_access.md) for users,
+   - To modify the project's [viewing and access rights](../public_access.md) for users,
       change the **Visibility Level**.
 1. Select **Create project**.
 
@@ -250,7 +250,7 @@ remote: The private project namespace/myproject was created.
 
 To view your new project, go to `https://gitlab.example.com/namespace/myproject`.
 Your project's visibility is set to **Private** by default. To change project visibility, adjust your
-[project's settings](../../public_access/public_access.md#change-project-visibility).
+[project's settings](../public_access.md#change-project-visibility).
 
 ## Star a project
 

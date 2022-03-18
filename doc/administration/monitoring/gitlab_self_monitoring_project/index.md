@@ -19,7 +19,7 @@ GitLab provides administrators insights into the health of their GitLab instance
 To provide a native experience (similar interacting with an application deployed using GitLab), a
 project called **Monitoring** is created:
 
-- With [internal visibility](../../../public_access/public_access.md#internal-projects-and-groups).
+- With [internal visibility](../../../user/public_access.md#internal-projects-and-groups).
 - Under a group called **GitLab Instance**.
 
 The project is created specifically for visualizing and configuring the monitoring of your GitLab

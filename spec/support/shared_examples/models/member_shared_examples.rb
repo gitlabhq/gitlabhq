@@ -410,6 +410,22 @@ RSpec.shared_examples_for "bulk member creation" do
       end
     end
 
+    it 'with the same user sent more than once by user and by email' do
+      members = described_class.add_users(source, [user1, user1.email], :maintainer)
+
+      expect(members.map(&:user)).to contain_exactly(user1)
+      expect(members).to all(be_a(member_type))
+      expect(members).to all(be_persisted)
+    end
+
+    it 'with the same user sent more than once by user id and by email' do
+      members = described_class.add_users(source, [user1.id, user1.email], :maintainer)
+
+      expect(members.map(&:user)).to contain_exactly(user1)
+      expect(members).to all(be_a(member_type))
+      expect(members).to all(be_persisted)
+    end
+
     context 'when a member already exists' do
       before do
         source.add_user(user1, :developer)

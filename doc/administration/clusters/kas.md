@@ -116,7 +116,7 @@ If you get the following error message:
 
 The project specified by the manifest (`root/kas-manifest001`)
 doesn't exist or the project where the manifest is kept is private. To fix this issue,
-ensure the project path is correct and that the project's visibility is [set to public](../../public_access/public_access.md).
+ensure the project path is correct and that the project's visibility is [set to public](../../user/public_access.md).
 
 ### Configuration file not found
 

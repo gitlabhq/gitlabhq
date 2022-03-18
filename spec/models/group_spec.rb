@@ -293,6 +293,8 @@ RSpec.describe Group do
     end
   end
 
+  it_behaves_like 'a BulkUsersByEmailLoad model'
+
   context 'traversal_ids on create' do
     context 'default traversal_ids' do
       let(:group) { build(:group) }

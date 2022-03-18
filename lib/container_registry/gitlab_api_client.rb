@@ -5,10 +5,12 @@ module ContainerRegistry
     include Gitlab::Utils::StrongMemoize
 
     JSON_TYPE = 'application/json'
+    CANCEL_RESPONSE_STATUS_HEADER = 'status'
 
     IMPORT_RESPONSES = {
       200 => :already_imported,
       202 => :ok,
+      400 => :bad_request,
       401 => :unauthorized,
       404 => :not_found,
       409 => :already_being_imported,
@@ -50,11 +52,29 @@ module ContainerRegistry
       IMPORT_RESPONSES.fetch(response.status, :error)
     end
 
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#import-repository
+    def cancel_repository_import(path)
+      response = with_import_token_faraday do |faraday_client|
+        faraday_client.delete(import_url_for(path))
+      end
+
+      status = IMPORT_RESPONSES.fetch(response.status, :error)
+      actual_state = response.body[CANCEL_RESPONSE_STATUS_HEADER]
+
+      { status: status, migration_state: actual_state }
+    end
+
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#get-repository-import-status
     def import_status(path)
       with_import_token_faraday do |faraday_client|
-        body_hash = response_body(faraday_client.get(import_url_for(path)))
-        body_hash['status'] || 'error'
+        response = faraday_client.get(import_url_for(path))
+
+        # Temporary solution for https://gitlab.com/gitlab-org/gitlab/-/issues/356085#solutions
+        # this will trigger a `retry_pre_import`
+        break 'pre_import_failed' unless response.success?
+
+        body_hash = response_body(response)
+        body_hash&.fetch('status') || 'error'
       end
     end
 

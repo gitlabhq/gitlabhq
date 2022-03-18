@@ -37,6 +37,7 @@ class Project < ApplicationRecord
   include EachBatch
   include GitlabRoutingHelper
   include BulkMemberAccessLoad
+  include BulkUsersByEmailLoad
   include RunnerTokenExpirationInterval
   include BlocksUnsafeSerialization
 

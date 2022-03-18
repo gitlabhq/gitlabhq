@@ -19,7 +19,7 @@ Values for the project visibility level are:
 - `internal`: the project can be cloned by any signed-in user except [external users](../user/permissions.md#external-users).
 - `public`: the project can be accessed without any authentication.
 
-For more, read [Project visibility](../public_access/public_access.md).
+For more, read [Project visibility](../user/public_access.md).
 
 ## Project merge method
 

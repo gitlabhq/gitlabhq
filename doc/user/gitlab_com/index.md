@@ -395,7 +395,7 @@ doesn't return the following headers:
 ### Visibility settings
 
 If created before GitLab 12.2 (July 2019), these items have the
-[Internal visibility](../../public_access/public_access.md#internal-projects-and-groups)
+[Internal visibility](../public_access.md#internal-projects-and-groups)
 setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388):
 
 - Projects

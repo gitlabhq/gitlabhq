@@ -342,7 +342,7 @@ RSpec.describe Ci::RetryBuildService do
       end
 
       shared_examples_for 'when build with dynamic environment is retried' do
-        let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(other_developer) } }
+        let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(u) } }
 
         let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
 

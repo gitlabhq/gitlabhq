@@ -13,7 +13,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures do
   let(:namespace) { create(:group) }
 
   before do
-    namespace.add_owner(user)
+    namespace.add_owner(user) if user
   end
 
   shared_examples 'requires authentication' do

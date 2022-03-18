@@ -147,7 +147,7 @@ a warning that you must accept before you can trigger the pipeline.
 Prerequisites:
 
 - You must be a member of the parent project and have at least the [Developer role](../../user/permissions.md).
-- The fork project must be [visible](../../public_access/public_access.md) to the
+- The fork project must be [visible](../../user/public_access.md) to the
   user running the pipeline. Otherwise, the **Pipelines** tab does not display
   in the merge request.
 

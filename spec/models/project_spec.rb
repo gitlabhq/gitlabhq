@@ -635,6 +635,8 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  it_behaves_like 'a BulkUsersByEmailLoad model'
+
   describe '#all_pipelines' do
     let_it_be(:project) { create(:project) }
 

@@ -278,11 +278,89 @@ RSpec.describe API::Invitations do
     it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
       let(:source) { project }
     end
+
+    it 'records queries', :request_store, :use_sql_query_cache do
+      post invitations_url(project, maintainer), params: { email: email, access_level: Member::DEVELOPER }
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post invitations_url(project, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
+      end
+
+      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
+
+      unresolved_n_plus_ones = 44 # old 48 with 12 per new email, currently there are 11 queries added per email
+
+      expect do
+        post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+    end
+
+    it 'records queries with secondary emails', :request_store, :use_sql_query_cache do
+      create(:email, email: email, user: create(:user))
+
+      post invitations_url(project, maintainer), params: { email: email, access_level: Member::DEVELOPER }
+
+      create(:email, email: email2, user: create(:user))
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post invitations_url(project, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
+      end
+
+      create(:email, email: 'email4@example.com', user: create(:user))
+      create(:email, email: 'email6@example.com', user: create(:user))
+
+      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
+
+      unresolved_n_plus_ones = 67 # currently there are 11 queries added per email
+
+      expect do
+        post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+    end
   end
 
   describe 'POST /groups/:id/invitations' do
     it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
       let(:source) { group }
+    end
+
+    it 'records queries', :request_store, :use_sql_query_cache do
+      post invitations_url(group, maintainer), params: { email: email, access_level: Member::DEVELOPER }
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post invitations_url(group, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
+      end
+
+      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
+
+      unresolved_n_plus_ones = 36 # old 40 with 10 per new email, currently there are 9 queries added per email
+
+      expect do
+        post invitations_url(group, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+    end
+
+    it 'records queries with secondary emails', :request_store, :use_sql_query_cache do
+      create(:email, email: email, user: create(:user))
+
+      post invitations_url(group, maintainer), params: { email: email, access_level: Member::DEVELOPER }
+
+      create(:email, email: email2, user: create(:user))
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post invitations_url(group, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
+      end
+
+      create(:email, email: 'email4@example.com', user: create(:user))
+      create(:email, email: 'email6@example.com', user: create(:user))
+
+      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
+
+      unresolved_n_plus_ones = 62 # currently there are 9 queries added per email
+
+      expect do
+        post invitations_url(group, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
     end
   end
 
@@ -313,23 +391,6 @@ RSpec.describe API::Invitations do
             expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
-      end
-
-      it 'avoids N+1 queries' do
-        invite_member_by_email(source, source_type, email, maintainer)
-
-        # Establish baseline
-        get invitations_url(source, maintainer)
-
-        control = ActiveRecord::QueryRecorder.new do
-          get invitations_url(source, maintainer)
-        end
-
-        invite_member_by_email(source, source_type, email2, maintainer)
-
-        expect do
-          get invitations_url(source, maintainer)
-        end.not_to exceed_query_limit(control)
       end
 
       it 'does not find confirmed members' do

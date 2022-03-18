@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_database|
+RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_database, feature_flag:|
   include ExclusiveLeaseHelpers
 
   describe 'defining the job attributes' do
@@ -36,6 +36,16 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
     it 'returns the lease key' do
       expect(described_class.lease_key).to eq(lease_key)
+    end
+  end
+
+  describe '.enabled?' do
+    it 'does not raise an error' do
+      expect { described_class.enabled? }.not_to raise_error
+    end
+
+    it 'returns true' do
+      expect(described_class.enabled?).to be_truthy
     end
   end
 
@@ -76,7 +86,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
       context 'when the feature flag is disabled' do
         before do
-          stub_feature_flags(execute_batched_migrations_on_schedule: false)
+          stub_feature_flags(feature_flag => false)
         end
 
         it 'does nothing' do
@@ -89,7 +99,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
       context 'when the feature flag is enabled' do
         before do
-          stub_feature_flags(execute_batched_migrations_on_schedule: true)
+          stub_feature_flags(feature_flag => true)
 
           allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration).and_return(nil)
         end

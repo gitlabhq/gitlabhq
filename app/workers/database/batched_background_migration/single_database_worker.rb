@@ -23,6 +23,10 @@ module Database
         def tracking_database
           raise NotImplementedError, "#{self.name} does not implement #{__method__}"
         end
+
+        def enabled?
+          raise NotImplementedError, "#{self.name} does not implement #{__method__}"
+        end
         # :nocov:
 
         def lease_key
@@ -41,7 +45,7 @@ module Database
         end
 
         Gitlab::Database::SharedModel.using_connection(base_model.connection) do
-          break unless Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops, default_enabled: :yaml) && active_migration
+          break unless self.class.enabled? && active_migration
 
           with_exclusive_lease(active_migration.interval) do
             # Now that we have the exclusive lease, reload migration in case another process has changed it.

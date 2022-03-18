@@ -1025,7 +1025,7 @@ describe('MrWidgetOptions', () => {
       it('captures sentry error and displays error when poll has failed', () => {
         expect(captureException).toHaveBeenCalledTimes(1);
         expect(captureException).toHaveBeenCalledWith(new Error('Fetch error'));
-        expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('error');
+        expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
       });
     });
   });
@@ -1036,7 +1036,7 @@ describe('MrWidgetOptions', () => {
     const itHandlesTheException = () => {
       expect(captureException).toHaveBeenCalledTimes(1);
       expect(captureException).toHaveBeenCalledWith(new Error('Fetch error'));
-      expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('error');
+      expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
     };
 
     beforeEach(() => {

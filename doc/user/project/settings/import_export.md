@@ -127,7 +127,7 @@ The following items are imported but changed slightly:
   associated with such merge requests are created in a project during the import/export. Thus, the
   number of branches in the exported project might be bigger than in the original project.
 - If use of the `Internal` visibility level
-  [is restricted](../../../public_access/public_access.md#restrict-use-of-public-or-internal-projects),
+  [is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects),
   all imported projects are given `Private` visibility.
 
 Deploy keys aren't imported. To use deploy keys, you must enable them in your imported project and update protected branches.

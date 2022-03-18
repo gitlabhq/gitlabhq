@@ -20,7 +20,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Arabic
   - Proofreaders needed.
 - Bosnian
-  - Proofreaders needed.
+  - Haris Delalić - [GitLab](https://gitlab.com/haris.delalic), [Crowdin](https://crowdin.com/profile/haris.delalic)
 - Bulgarian
   - Lyubomir Vasilev - [Crowdin](https://crowdin.com/profile/lyubomirv)
 - Catalan
@@ -38,7 +38,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Victor Wu - [GitLab](https://gitlab.com/_victorwu_), [Crowdin](https://crowdin.com/profile/victorwu)
   - Ivan Ip - [GitLab](https://gitlab.com/lifehome), [Crowdin](https://crowdin.com/profile/lifehome)
 - Croatian
-  - Proofreaders needed.
+  - Haris Delalić - [GitLab](https://gitlab.com/haris.delalic), [Crowdin](https://crowdin.com/profile/haris.delalic)
 - Czech
   - Jan Urbanec - [GitLab](https://gitlab.com/TatranskyMedved), [Crowdin](https://crowdin.com/profile/Tatranskymedved)
 - Danish
@@ -111,7 +111,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Andrey Komarov - [GitLab](https://gitlab.com/elkamarado), [Crowdin](https://crowdin.com/profile/kamarado)
   - Iaroslav Postovalov - [GitLab](https://gitlab.com/CMDR_Tvis), [Crowdin](https://crowdin.com/profile/CMDR_Tvis)
 - Serbian (Latin and Cyrillic)
-  - Proofreaders needed.
+  - Haris Delalić - [GitLab](https://gitlab.com/haris.delalic), [Crowdin](https://crowdin.com/profile/haris.delalic)
 - Sinhalese/Sinhala සිංහල
   - හෙළබස (HelaBasa) - [GitLab](https://gitlab.com/helabasa), [Crowdin](https://crowdin.com/profile/helabasa)
 - Slovak

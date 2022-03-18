@@ -149,7 +149,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>View project [Audit Events](../administration/audit_events.md)                                                                            |          |          | ✓ (*10*)  | ✓          | ✓        |
 | [Projects](project/index.md):<br>Add deploy keys                                                                                                                           |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Add new team members                                                                                                                      |          |          |           | ✓          | ✓        |
-| [Projects](project/index.md):<br>Change [project features visibility](../public_access/public_access.md) level                                                             |          |          |           | ✓ (*13*)   | ✓        |
+| [Projects](project/index.md):<br>Change [project features visibility](public_access.md) level                                                             |          |          |           | ✓ (*13*)   | ✓        |
 | [Projects](project/index.md):<br>Configure [webhooks](project/integrations/webhooks.md)                                                                                    |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Delete [wiki](project/wiki/index.md) pages                                                                                                |          |          | ✓         | ✓          | ✓        |
 | [Projects](project/index.md):<br>Edit comments (posted by any user)                                                                                                        |          |          |           | ✓          | ✓        |
@@ -224,7 +224,7 @@ The following table lists project permissions available for each role:
     supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
 12. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access Developers and Maintainers are given.
 13. A Maintainer can't change project features visibility level if
-    [project visibility](../public_access/public_access.md) is set to private.
+    [project visibility](public_access.md) is set to private.
 14. Attached design files are moved together with the issue even if the user doesn't have the
     Developer role.
 15. Guest users can only set metadata (for example, labels, assignees, or milestones)

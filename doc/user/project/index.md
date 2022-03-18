@@ -11,7 +11,7 @@ your codebase. You can also use projects to track issues, plan work,
 collaborate on code, and continuously build, test, and use
 built-in CI/CD to deploy your app.
 
-Projects can be available [publicly, internally, or privately](../../public_access/public_access.md).
+Projects can be available [publicly, internally, or privately](../public_access.md).
 GitLab does not limit the number of private projects you can create.
 
 ## Project features
