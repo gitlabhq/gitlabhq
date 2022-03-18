@@ -171,26 +171,27 @@ Users are notified of the following events:
 
 <!-- The table is sorted first by recipient, then alphabetically. -->
 
-| Event                        | Sent to             | Settings level               |
-|------------------------------|---------------------|------------------------------|
-| New release                  | Project members     | Custom notification.         |
-| Project moved                | Project members     | Any other than disabled.     |
-| Email changed                | User                | Security email, always sent. |
-| Group access level changed   | User                | Sent when user group access level is changed. |
-| New email added              | User                | Security email, always sent. |
-| New SAML/SCIM user provisioned | User              | Sent when a user is provisioned through SAML/SCIM. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276018) in GitLab 13.8 |
-| New SSH key added            | User                | Security email, always sent. |
-| New user created             | User                | Sent on user creation, except for OmniAuth (LDAP). |
-| Password changed             | User                | Security email, always sent when user changes their own password. |
-| Password changed by administrator | User           | Security email, always sent when an administrator changes the password of another user. |
-| Personal access tokens expiring soon | User        | Security email, always sent. |
-| Personal access tokens have been created | User    | Security email, always sent. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337591) in GitLab 14.9. |
-| Personal access tokens have expired | User         | Security email, always sent. |
-| Project access level changed | User                | Sent when user project access level is changed. |
-| SSH key has expired          | User                | Security email, always sent. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.12._ |
-| Two-factor authentication disabled | User          | Security email, always sent. |
-| User added to group          | User                | Sent when user is added to group. |
-| User added to project        | User                | Sent when user is added to project. |
+| Event                                    | Sent to         | Settings level                                                                                                                          |
+|------------------------------------------|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| New release                              | Project members | Custom notification.                                                                                                                    |
+| Project moved                            | Project members | Any other than disabled.                                                                                                                |
+| Email changed                            | User            | Security email, always sent.                                                                                                            |
+| Group access level changed               | User            | Sent when user group access level is changed.                                                                                           |
+| New email address added                  | User            | Security email, sent to primary email address. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337635) in GitLab 14.9._     |
+| New email address added                  | User            | Security email, sent to newly-added email address.                                                                                      |
+| New SAML/SCIM user provisioned           | User            | Sent when a user is provisioned through SAML/SCIM. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276018) in GitLab 13.8._ |
+| New SSH key added                        | User            | Security email, always sent.                                                                                                            |
+| New user created                         | User            | Sent on user creation, except for OmniAuth (LDAP).                                                                                      |
+| Password changed                         | User            | Security email, always sent when user changes their own password.                                                                       |
+| Password changed by administrator        | User            | Security email, always sent when an administrator changes the password of another user.                                                 |
+| Personal access tokens expiring soon     | User            | Security email, always sent.                                                                                                            |
+| Personal access tokens have been created | User            | Security email, always sent. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337591) in GitLab 14.9._                       |
+| Personal access tokens have expired      | User            | Security email, always sent.                                                                                                            |
+| Project access level changed             | User            | Sent when user project access level is changed.                                                                                         |
+| SSH key has expired                      | User            | Security email, always sent. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.12._                      |
+| Two-factor authentication disabled       | User            | Security email, always sent.                                                                                                            |
+| User added to group                      | User            | Sent when user is added to group.                                                                                                       |
+| User added to project                    | User            | Sent when user is added to project.                                                                                                     |
 
 ## Notifications on issues, merge requests, and epics
 

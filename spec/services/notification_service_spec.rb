@@ -376,6 +376,17 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  describe '#new_email_address_added' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:email) { create(:email, user: user) }
+
+    subject { notification.new_email_address_added(user, email) }
+
+    it 'sends email to the user' do
+      expect { subject }.to have_enqueued_email(user, email, mail: 'new_email_address_added_email')
+    end
+  end
+
   describe 'Notes' do
     context 'issue note' do
       let_it_be(:project) { create(:project, :private) }

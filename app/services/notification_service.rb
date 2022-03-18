@@ -109,6 +109,13 @@ class NotificationService
     mailer.unknown_sign_in_email(user, ip, time).deliver_later
   end
 
+  # Notify a user when a new email address is added to the their account
+  def new_email_address_added(user, email)
+    return unless user.can?(:receive_notifications)
+
+    mailer.new_email_address_added_email(user, email).deliver_later
+  end
+
   # When create an issue we should send an email to:
   #
   #  * issue assignee if their notification level is not Disabled

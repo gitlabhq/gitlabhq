@@ -1934,7 +1934,7 @@ RSpec.describe API::Users do
     end
   end
 
-  describe "POST /users/:id/emails" do
+  describe "POST /users/:id/emails", :mailer do
     it "does not create invalid email" do
       post api("/users/#{user.id}/emails", admin), params: {}
 
@@ -1944,11 +1944,15 @@ RSpec.describe API::Users do
 
     it "creates unverified email" do
       email_attrs = attributes_for :email
-      expect do
-        post api("/users/#{user.id}/emails", admin), params: email_attrs
-      end.to change { user.emails.count }.by(1)
+
+      perform_enqueued_jobs do
+        expect do
+          post api("/users/#{user.id}/emails", admin), params: email_attrs
+        end.to change { user.emails.count }.by(1)
+      end
 
       expect(json_response['confirmed_at']).to be_nil
+      should_email(user)
     end
 
     it "returns a 400 for invalid ID" do

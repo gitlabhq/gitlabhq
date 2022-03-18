@@ -25,6 +25,7 @@ class UserPolicy < BasePolicy
     enable :update_user_status
     enable :create_saved_replies
     enable :update_saved_replies
+    enable :destroy_saved_replies
     enable :read_user_personal_access_tokens
     enable :read_group_count
     enable :read_user_groups

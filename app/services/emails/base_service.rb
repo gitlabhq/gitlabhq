@@ -9,6 +9,10 @@ module Emails
       @params = params.dup
       @user = params.delete(:user)
     end
+
+    def notification_service
+      NotificationService.new
+    end
   end
 end
 

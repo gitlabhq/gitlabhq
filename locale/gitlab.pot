@@ -1604,6 +1604,9 @@ msgstr ""
 msgid "A new Release %{tag} for %{name} was published. Visit the Releases page to read more about it:"
 msgstr ""
 
+msgid "A new email address has been added to your GitLab account: %{email}"
+msgstr ""
+
 msgid "A new impersonation token has been created."
 msgstr ""
 
@@ -18691,6 +18694,12 @@ msgstr ""
 msgid "If you want to re-enable two-factor authentication, visit the %{settings_link_to} page."
 msgstr ""
 
+msgid "If you want to remove this email address, visit %{profile_link}"
+msgstr ""
+
+msgid "If you want to remove this email address, visit the %{settings_link_to} page."
+msgstr ""
+
 msgid "If you've purchased or renewed your subscription and have an activation code, please enter it below to start the activation process."
 msgstr ""
 
@@ -24744,6 +24753,9 @@ msgid "New directory"
 msgstr ""
 
 msgid "New discussion"
+msgstr ""
+
+msgid "New email address added"
 msgstr ""
 
 msgid "New environment"
@@ -43912,6 +43924,9 @@ msgid "eligible users"
 msgstr ""
 
 msgid "email '%{email}' is not a verified email."
+msgstr ""
+
+msgid "email address settings"
 msgstr ""
 
 msgid "enabled"

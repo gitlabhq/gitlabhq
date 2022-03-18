@@ -218,6 +218,8 @@ class GroupsController < Groups::ApplicationController
 
     @has_projects = group_projects.exists?
 
+    set_sort_order
+
     respond_to do |format|
       format.html
     end

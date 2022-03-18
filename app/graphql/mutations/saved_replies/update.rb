@@ -23,7 +23,7 @@ module Mutations
         raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless feature_enabled?
 
         saved_reply = authorized_find!(id)
-        result = ::Users::SavedReplies::UpdateService.new(current_user: current_user, saved_reply: saved_reply, name: name, content: content).execute
+        result = ::Users::SavedReplies::UpdateService.new(saved_reply: saved_reply, name: name, content: content).execute
         present_result(result)
       end
     end

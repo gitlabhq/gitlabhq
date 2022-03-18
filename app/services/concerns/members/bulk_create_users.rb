@@ -53,7 +53,7 @@ module Members
 
           if users.present?
             # helps not have to perform another query per user id to see if the member exists later on when fetching
-            existing_members = source.members_and_requesters.where(user_id: users).index_by(&:user_id) # rubocop:disable CodeReuse/ActiveRecord
+            existing_members = source.members_and_requesters.with_user(users).index_by(&:user_id)
           end
 
           [emails, users, existing_members]

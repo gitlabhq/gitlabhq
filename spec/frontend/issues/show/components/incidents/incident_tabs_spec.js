@@ -35,7 +35,7 @@ describe('Incident Tabs component', () => {
             fullPath: '',
             iid: '',
             uploadMetricsFeatureAvailable: true,
-            glFeatures: { incidentTimelineEventTab: true, incidentTimelineEvents: true },
+            glFeatures: { incidentTimeline: true, incidentTimelineEvents: true },
           },
           data() {
             return { alert: mockAlert, ...data };

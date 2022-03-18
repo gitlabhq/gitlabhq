@@ -52,7 +52,7 @@ export default {
       return this.$apollo.queries.alert.loading;
     },
     incidentTabEnabled() {
-      return this.glFeatures.incidentTimelineEvents && this.glFeatures.incidentTimelineEventTab;
+      return this.glFeatures.incidentTimelineEvents && this.glFeatures.incidentTimeline;
     },
   },
   mounted() {

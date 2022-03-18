@@ -4261,7 +4261,26 @@ Input type: `SavedReplyCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsavedreplycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsavedreplycreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationsavedreplycreatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Updated saved reply. |
+| <a id="mutationsavedreplycreatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Saved reply after mutation. |
+
+### `Mutation.savedReplyDestroy`
+
+Input type: `SavedReplyDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsavedreplydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsavedreplydestroyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the saved reply. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsavedreplydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsavedreplydestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsavedreplydestroysavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Saved reply after mutation. |
 
 ### `Mutation.savedReplyUpdate`
 
@@ -4282,7 +4301,7 @@ Input type: `SavedReplyUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsavedreplyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsavedreplyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationsavedreplyupdatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Updated saved reply. |
+| <a id="mutationsavedreplyupdatesavedreply"></a>`savedReply` | [`SavedReply`](#savedreply) | Saved reply after mutation. |
 
 ### `Mutation.scanExecutionPolicyCommit`
 

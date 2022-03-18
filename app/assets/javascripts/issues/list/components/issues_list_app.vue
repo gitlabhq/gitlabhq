@@ -260,6 +260,9 @@ export default {
     showCsvButtons() {
       return this.isProject && this.isSignedIn;
     },
+    showIssuableByEmail() {
+      return this.initialEmail && this.isSignedIn;
+    },
     showNewIssueDropdown() {
       return !this.isProject && this.hasAnyProjects;
     },
@@ -624,8 +627,9 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasAnyIssues">
+  <div>
     <issuable-list
+      v-if="hasAnyIssues"
       :namespace="fullPath"
       recent-searches-storage-key="issues"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
@@ -768,50 +772,50 @@ export default {
       </template>
     </issuable-list>
 
-    <issuable-by-email v-if="initialEmail" class="gl-text-center gl-pt-5 gl-pb-7" />
-  </div>
-
-  <div v-else-if="isSignedIn">
-    <gl-empty-state
-      :description="$options.i18n.noIssuesSignedInDescription"
-      :title="$options.i18n.noIssuesSignedInTitle"
-      :svg-path="emptyStateSvgPath"
-    >
-      <template #actions>
-        <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-          {{ $options.i18n.newIssueLabel }}
-        </gl-button>
-        <csv-import-export-buttons
-          v-if="showCsvButtons"
-          class="gl-mr-3"
-          :export-csv-path="exportCsvPathWithQuery"
-          :issuable-count="currentTabCount"
-        />
-        <new-issue-dropdown v-if="showNewIssueDropdown" />
-      </template>
-    </gl-empty-state>
-    <hr />
-    <p class="gl-text-center gl-font-weight-bold gl-mb-0">
-      {{ $options.i18n.jiraIntegrationTitle }}
-    </p>
-    <p class="gl-text-center gl-mb-0">
-      <gl-sprintf :message="$options.i18n.jiraIntegrationMessage">
-        <template #jiraDocsLink="{ content }">
-          <gl-link :href="jiraIntegrationPath">{{ content }}</gl-link>
+    <template v-else-if="isSignedIn">
+      <gl-empty-state
+        :description="$options.i18n.noIssuesSignedInDescription"
+        :title="$options.i18n.noIssuesSignedInTitle"
+        :svg-path="emptyStateSvgPath"
+      >
+        <template #actions>
+          <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+            {{ $options.i18n.newIssueLabel }}
+          </gl-button>
+          <csv-import-export-buttons
+            v-if="showCsvButtons"
+            class="gl-mr-3"
+            :export-csv-path="exportCsvPathWithQuery"
+            :issuable-count="currentTabCount"
+          />
+          <new-issue-dropdown v-if="showNewIssueDropdown" />
         </template>
-      </gl-sprintf>
-    </p>
-    <p class="gl-text-center gl-text-gray-500">
-      {{ $options.i18n.jiraIntegrationSecondaryMessage }}
-    </p>
-  </div>
+      </gl-empty-state>
+      <hr />
+      <p class="gl-text-center gl-font-weight-bold gl-mb-0">
+        {{ $options.i18n.jiraIntegrationTitle }}
+      </p>
+      <p class="gl-text-center gl-mb-0">
+        <gl-sprintf :message="$options.i18n.jiraIntegrationMessage">
+          <template #jiraDocsLink="{ content }">
+            <gl-link :href="jiraIntegrationPath">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
+      <p class="gl-text-center gl-text-gray-500">
+        {{ $options.i18n.jiraIntegrationSecondaryMessage }}
+      </p>
+    </template>
 
-  <gl-empty-state
-    v-else
-    :description="$options.i18n.noIssuesSignedOutDescription"
-    :title="$options.i18n.noIssuesSignedOutTitle"
-    :svg-path="emptyStateSvgPath"
-    :primary-button-text="$options.i18n.noIssuesSignedOutButtonText"
-    :primary-button-link="signInPath"
-  />
+    <gl-empty-state
+      v-else
+      :description="$options.i18n.noIssuesSignedOutDescription"
+      :title="$options.i18n.noIssuesSignedOutTitle"
+      :svg-path="emptyStateSvgPath"
+      :primary-button-text="$options.i18n.noIssuesSignedOutButtonText"
+      :primary-button-link="signInPath"
+    />
+
+    <issuable-by-email v-if="showIssuableByEmail" class="gl-text-center gl-pt-5 gl-pb-7" />
+  </div>
 </template>

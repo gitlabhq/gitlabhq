@@ -181,6 +181,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.unknown_sign_in_email(user, '127.0.0.1', Time.current).message
   end
 
+  def new_email_address_added_email
+    Notify.new_email_address_added_email(user, 'someone@gitlab.com').message
+  end
+
   def service_desk_new_note_email
     cleanup do
       note = create_note(noteable_type: 'Issue', noteable_id: issue.id, note: 'Issue note content')

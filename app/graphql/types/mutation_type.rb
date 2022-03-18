@@ -131,6 +131,7 @@ module Types
     mount_mutation Mutations::WorkItems::Update
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update
+    mount_mutation Mutations::SavedReplies::Destroy
   end
 end
 

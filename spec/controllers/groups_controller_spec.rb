@@ -509,6 +509,14 @@ RSpec.describe GroupsController, factory_default: :keep do
         expect(assigns(:issues)).to eq([issue_1])
       end
     end
+
+    it 'saves the sort order to user preferences' do
+      stub_feature_flags(vue_issues_list: true)
+
+      get :issues, params: { id: group.to_param, sort: 'priority' }
+
+      expect(user.reload.user_preference.issues_sort).to eq('priority')
+    end
   end
 
   describe 'GET #merge_requests', :sidekiq_might_not_need_inline do

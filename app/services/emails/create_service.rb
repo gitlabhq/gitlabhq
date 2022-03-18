@@ -7,6 +7,7 @@ module Emails
 
       user.emails.create(params.merge(extra_params)).tap do |email|
         email&.confirm if skip_confirmation && current_user.admin?
+        notification_service.new_email_address_added(user, email.email) if email.persisted? && !email.user_primary_email?
       end
     end
   end
