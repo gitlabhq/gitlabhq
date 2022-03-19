@@ -125,6 +125,8 @@ class Issue < ApplicationRecord
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
   scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
   scope :order_severity_desc, -> { includes(:issuable_severity).order('issuable_severities.severity DESC NULLS LAST') }
+  scope :order_escalation_status_asc, -> { includes(:incident_management_issuable_escalation_status).order(::Gitlab::Database.nulls_last_order('incident_management_issuable_escalation_status.status')) }
+  scope :order_escalation_status_desc, -> { includes(:incident_management_issuable_escalation_status).order(::Gitlab::Database.nulls_last_order('incident_management_issuable_escalation_status.status', 'DESC')) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> { preload(:author, project: [:project_feature, :route, namespace: :route]) }
@@ -327,6 +329,8 @@ class Issue < ApplicationRecord
     when 'relative_position', 'relative_position_asc'     then order_by_relative_position
     when 'severity_asc'                                   then order_severity_asc.with_order_id_desc
     when 'severity_desc'                                  then order_severity_desc.with_order_id_desc
+    when 'escalation_status_asc'                          then order_escalation_status_asc.with_order_id_desc
+    when 'escalation_status_desc'                         then order_escalation_status_desc.with_order_id_desc
     else
       super
     end

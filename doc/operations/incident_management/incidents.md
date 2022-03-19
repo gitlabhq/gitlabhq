@@ -255,7 +255,12 @@ Add a to-do for incidents that you want to track in your to-do list. Click the
 
 ### Change incident status
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
+
+FLAG:
+By default this feature is not available. To make it available per project or for your entire
+instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
+named `incident_escalations`.
 
 For users with the Developer role or higher, select **Edit** in the **Status** section of the
 right-hand side bar of an incident, then select a status. **Triggered** is the default status for
@@ -273,7 +278,12 @@ updating the incident status also updates the alert status.
 
 ## Change escalation policy **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
+
+FLAG:
+By default this feature is not available. To make it available per project or for your entire
+instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
+named `incident_escalations`.
 
 For users with the Developer role or higher, select **Edit** in the **Escalation policy** section of
 the right-hand side bar of an incident, then select a policy. By default, new incidents do not have

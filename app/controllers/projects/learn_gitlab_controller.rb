@@ -4,6 +4,7 @@ class Projects::LearnGitlabController < Projects::ApplicationController
   before_action :authenticate_user!
   before_action :check_experiment_enabled?
   before_action :enable_invite_for_help_continuous_onboarding_experiment
+  before_action :enable_video_tutorials_continuous_onboarding_experiment
 
   feature_category :users
 
@@ -23,5 +24,9 @@ class Projects::LearnGitlabController < Projects::ApplicationController
       e.candidate {}
       e.publish_to_database
     end
+  end
+
+  def enable_video_tutorials_continuous_onboarding_experiment
+    experiment(:video_tutorials_continuous_onboarding, namespace: project&.namespace).publish
   end
 end

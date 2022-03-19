@@ -522,11 +522,53 @@ RSpec.describe Resolvers::IssuesResolver do
           end
         end
 
+        context 'when sorting by escalation status' do
+          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:triggered_incident) { create(:incident, :with_escalation_status, project: project) }
+          let_it_be(:issue_no_status) { create(:issue, project: project) }
+          let_it_be(:resolved_incident) do
+            create(:incident, :with_escalation_status, project: project)
+              .tap { |issue| issue.escalation_status.resolve }
+          end
+
+          it 'sorts issues ascending' do
+            issues = resolve_issues(sort: :escalation_status_asc).to_a
+            expect(issues).to eq([triggered_incident, resolved_incident, issue_no_status])
+          end
+
+          it 'sorts issues descending' do
+            issues = resolve_issues(sort: :escalation_status_desc).to_a
+            expect(issues).to eq([resolved_incident, triggered_incident, issue_no_status])
+          end
+
+          it 'sorts issues created_at' do
+            issues = resolve_issues(sort: :created_desc).to_a
+            expect(issues).to eq([resolved_incident, issue_no_status, triggered_incident])
+          end
+
+          context 'when incident_escalations feature flag is disabled' do
+            before do
+              stub_feature_flags(incident_escalations: false)
+            end
+
+            it 'defaults ascending status sort to created_desc' do
+              issues = resolve_issues(sort: :escalation_status_asc).to_a
+              expect(issues).to eq([resolved_incident, issue_no_status, triggered_incident])
+            end
+
+            it 'defaults descending status sort to created_desc' do
+              issues = resolve_issues(sort: :escalation_status_desc).to_a
+              expect(issues).to eq([resolved_incident, issue_no_status, triggered_incident])
+            end
+          end
+        end
+
         context 'when sorting with non-stable cursors' do
           %i[priority_asc priority_desc
              popularity_asc popularity_desc
              label_priority_asc label_priority_desc
-             milestone_due_asc milestone_due_desc].each do |sort_by|
+             milestone_due_asc milestone_due_desc
+             escalation_status_asc escalation_status_desc].each do |sort_by|
             it "uses offset-pagination when sorting by #{sort_by}" do
               resolved = resolve_issues(sort: sort_by)
 

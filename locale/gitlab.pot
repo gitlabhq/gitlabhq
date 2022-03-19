@@ -41559,6 +41559,9 @@ msgstr ""
 msgid "Warning: Synchronizing LDAP removes direct members' access."
 msgstr ""
 
+msgid "Watch how"
+msgstr ""
+
 msgid "We are currently unable to fetch data for the pipeline header."
 msgstr ""
 

@@ -34,17 +34,23 @@ export default {
 };
 </script>
 <template>
-  <gl-card class="gl-pt-0 learn-gitlab-section-card">
-    <div class="learn-gitlab-section-card-header">
+  <gl-card
+    class="gl-pt-0 h-100"
+    header-class="gl-bg-white gl-border-0 gl-pb-0"
+    body-class="gl-pt-0"
+  >
+    <template #header>
       <img :src="svg" />
       <h2 class="gl-font-lg gl-mb-3">{{ $options.i18n[section].title }}</h2>
       <p class="gl-text-gray-700 gl-mb-6">{{ $options.i18n[section].description }}</p>
-    </div>
-    <learn-gitlab-section-link
-      v-for="[action, value] in sortedActions"
-      :key="action"
-      :action="action"
-      :value="value"
-    />
+    </template>
+    <template #default>
+      <learn-gitlab-section-link
+        v-for="[action, value] in sortedActions"
+        :key="action"
+        :action="action"
+        :value="value"
+      />
+    </template>
   </gl-card>
 </template>

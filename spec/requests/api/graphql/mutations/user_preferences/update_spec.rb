@@ -28,6 +28,17 @@ RSpec.describe Mutations::UserPreferences::Update do
       expect(current_user.user_preference.persisted?).to eq(true)
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
     end
+
+    context 'when incident_escalations feature flag is disabled' do
+      let(:sort_value) { 'ESCALATION_STATUS_ASC' }
+
+      before do
+        stub_feature_flags(incident_escalations: false)
+      end
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: ['Feature flag `incident_escalations` must be enabled to use this sort order.']
+    end
   end
 
   context 'when user has existing preference' do
@@ -44,6 +55,17 @@ RSpec.describe Mutations::UserPreferences::Update do
       expect(mutation_response['userPreferences']['issuesSort']).to eq(sort_value)
 
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
+    end
+
+    context 'when incident_escalations feature flag is disabled' do
+      let(:sort_value) { 'ESCALATION_STATUS_DESC' }
+
+      before do
+        stub_feature_flags(incident_escalations: false)
+      end
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: ['Feature flag `incident_escalations` must be enabled to use this sort order.']
     end
   end
 end

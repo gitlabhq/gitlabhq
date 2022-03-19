@@ -51,170 +51,204 @@ exports[`Learn GitLab renders correctly 1`] = `
   </div>
    
   <div
-    class="row row-cols-1 row-cols-md-3 gl-mt-5"
+    class="row"
   >
     <div
-      class="col gl-mb-6"
+      class="gl-mt-5 col-sm-12 col-mb-6 col-lg-4"
     >
       <div
-        class="gl-card gl-pt-0 learn-gitlab-section-card"
+        class="gl-card gl-pt-0 h-100"
       >
-        <!---->
+        <div
+          class="gl-card-header gl-bg-white gl-border-0 gl-pb-0"
+        >
+          <img
+            src="workspace.svg"
+          />
+           
+          <h2
+            class="gl-font-lg gl-mb-3"
+          >
+            Set up your workspace
+          </h2>
+           
+          <p
+            class="gl-text-gray-700 gl-mb-6"
+          >
+            Complete these tasks first so you can enjoy GitLab's features to their fullest:
+          </p>
+        </div>
          
         <div
-          class="gl-card-body"
+          class="gl-card-body gl-pt-0"
         >
           <div
-            class="learn-gitlab-section-card-header"
-          >
-            <img
-              src="workspace.svg"
-            />
-             
-            <h2
-              class="gl-font-lg gl-mb-3"
-            >
-              Set up your workspace
-            </h2>
-             
-            <p
-              class="gl-text-gray-700 gl-mb-6"
-            >
-              Complete these tasks first so you can enjoy GitLab's features to their fullest:
-            </p>
-          </div>
-           
-          <div
             class="gl-mb-4"
           >
-            <span
-              class="gl-text-green-500"
+            <!---->
+             
+            <div
+              class="flex align-items-center"
             >
-              <svg
-                aria-hidden="true"
-                class="gl-icon s16"
-                data-testid="completed-icon"
-                role="img"
+              <span
+                class="gl-text-green-500"
               >
-                <use
-                  href="#check-circle-filled"
-                />
-              </svg>
-              
-    Invite your colleagues
-  
-            </span>
-             
-            <!---->
+                <svg
+                  aria-hidden="true"
+                  class="gl-icon s16"
+                  data-testid="completed-icon"
+                  role="img"
+                >
+                  <use
+                    href="#check-circle-filled"
+                  />
+                </svg>
+                
+      Invite your colleagues
+    
+              </span>
+               
+              <!---->
+            </div>
           </div>
           <div
             class="gl-mb-4"
           >
-            <span
-              class="gl-text-green-500"
+            <!---->
+             
+            <div
+              class="flex align-items-center"
             >
-              <svg
-                aria-hidden="true"
-                class="gl-icon s16"
-                data-testid="completed-icon"
-                role="img"
+              <span
+                class="gl-text-green-500"
               >
-                <use
-                  href="#check-circle-filled"
-                />
-              </svg>
-              
-    Create or import a repository
-  
-            </span>
-             
-            <!---->
+                <svg
+                  aria-hidden="true"
+                  class="gl-icon s16"
+                  data-testid="completed-icon"
+                  role="img"
+                >
+                  <use
+                    href="#check-circle-filled"
+                  />
+                </svg>
+                
+      Create or import a repository
+    
+              </span>
+               
+              <!---->
+            </div>
           </div>
           <div
             class="gl-mb-4"
           >
-            <a
-              class="gl-link"
-              data-testid="uncompleted-learn-gitlab-link"
-              data-track-action="click_link"
-              data-track-label="Set up CI/CD"
-              href="http://example.com/"
-              target="_self"
-            >
-              
-    Set up CI/CD
-  
-            </a>
-             
             <!---->
+             
+            <div
+              class="flex align-items-center"
+            >
+              <a
+                class="gl-link"
+                data-testid="uncompleted-learn-gitlab-link"
+                data-track-action="click_link"
+                data-track-label="Set up CI/CD"
+                href="http://example.com/"
+                target="_self"
+              >
+                
+      Set up CI/CD
+    
+              </a>
+               
+              <!---->
+            </div>
           </div>
           <div
             class="gl-mb-4"
           >
-            <a
-              class="gl-link"
-              data-testid="uncompleted-learn-gitlab-link"
-              data-track-action="click_link"
-              data-track-label="Start a free Ultimate trial"
-              href="http://example.com/"
-              target="_self"
-            >
-              
-    Start a free Ultimate trial
-  
-            </a>
-             
             <!---->
+             
+            <div
+              class="flex align-items-center"
+            >
+              <a
+                class="gl-link"
+                data-testid="uncompleted-learn-gitlab-link"
+                data-track-action="click_link"
+                data-track-label="Start a free Ultimate trial"
+                href="http://example.com/"
+                target="_self"
+              >
+                
+      Start a free Ultimate trial
+    
+              </a>
+               
+              <!---->
+            </div>
           </div>
           <div
             class="gl-mb-4"
           >
-            <a
-              class="gl-link"
-              data-testid="uncompleted-learn-gitlab-link"
-              data-track-action="click_link"
-              data-track-label="Add code owners"
-              href="http://example.com/"
-              target="_self"
-            >
-              
-    Add code owners
-  
-            </a>
-             
-            <span
+            <div
               class="gl-font-style-italic gl-text-gray-500"
               data-testid="trial-only"
             >
               
-    - Trial only
+    Trial only
   
-            </span>
+            </div>
+             
+            <div
+              class="flex align-items-center"
+            >
+              <a
+                class="gl-link"
+                data-testid="uncompleted-learn-gitlab-link"
+                data-track-action="click_link"
+                data-track-label="Add code owners"
+                href="http://example.com/"
+                target="_self"
+              >
+                
+      Add code owners
+    
+              </a>
+               
+              <!---->
+            </div>
           </div>
           <div
             class="gl-mb-4"
           >
-            <a
-              class="gl-link"
-              data-testid="uncompleted-learn-gitlab-link"
-              data-track-action="click_link"
-              data-track-label="Add merge request approval"
-              href="http://example.com/"
-              target="_self"
-            >
-              
-    Add merge request approval
-  
-            </a>
-             
-            <span
+            <div
               class="gl-font-style-italic gl-text-gray-500"
               data-testid="trial-only"
             >
               
-    - Trial only
+    Trial only
   
-            </span>
+            </div>
+             
+            <div
+              class="flex align-items-center"
+            >
+              <a
+                class="gl-link"
+                data-testid="uncompleted-learn-gitlab-link"
+                data-track-action="click_link"
+                data-track-label="Add merge request approval"
+                href="http://example.com/"
+                target="_self"
+              >
+                
+      Add merge request approval
+    
+              </a>
+               
+              <!---->
+            </div>
           </div>
         </div>
          
@@ -222,71 +256,81 @@ exports[`Learn GitLab renders correctly 1`] = `
       </div>
     </div>
     <div
-      class="col gl-mb-6"
+      class="gl-mt-5 col-sm-12 col-mb-6 col-lg-4"
     >
       <div
-        class="gl-card gl-pt-0 learn-gitlab-section-card"
+        class="gl-card gl-pt-0 h-100"
       >
-        <!---->
+        <div
+          class="gl-card-header gl-bg-white gl-border-0 gl-pb-0"
+        >
+          <img
+            src="plan.svg"
+          />
+           
+          <h2
+            class="gl-font-lg gl-mb-3"
+          >
+            Plan and execute
+          </h2>
+           
+          <p
+            class="gl-text-gray-700 gl-mb-6"
+          >
+            Create a workflow for your new workspace, and learn how GitLab features work together:
+          </p>
+        </div>
          
         <div
-          class="gl-card-body"
+          class="gl-card-body gl-pt-0"
         >
           <div
-            class="learn-gitlab-section-card-header"
-          >
-            <img
-              src="plan.svg"
-            />
-             
-            <h2
-              class="gl-font-lg gl-mb-3"
-            >
-              Plan and execute
-            </h2>
-             
-            <p
-              class="gl-text-gray-700 gl-mb-6"
-            >
-              Create a workflow for your new workspace, and learn how GitLab features work together:
-            </p>
-          </div>
-           
-          <div
             class="gl-mb-4"
           >
-            <a
-              class="gl-link"
-              data-testid="uncompleted-learn-gitlab-link"
-              data-track-action="click_link"
-              data-track-label="Create an issue"
-              href="http://example.com/"
-              target="_self"
-            >
-              
-    Create an issue
-  
-            </a>
-             
             <!---->
+             
+            <div
+              class="flex align-items-center"
+            >
+              <a
+                class="gl-link"
+                data-testid="uncompleted-learn-gitlab-link"
+                data-track-action="click_link"
+                data-track-label="Create an issue"
+                href="http://example.com/"
+                target="_self"
+              >
+                
+      Create an issue
+    
+              </a>
+               
+              <!---->
+            </div>
           </div>
           <div
             class="gl-mb-4"
           >
-            <a
-              class="gl-link"
-              data-testid="uncompleted-learn-gitlab-link"
-              data-track-action="click_link"
-              data-track-label="Submit a merge request"
-              href="http://example.com/"
-              target="_self"
-            >
-              
-    Submit a merge request
-  
-            </a>
-             
             <!---->
+             
+            <div
+              class="flex align-items-center"
+            >
+              <a
+                class="gl-link"
+                data-testid="uncompleted-learn-gitlab-link"
+                data-track-action="click_link"
+                data-track-label="Submit a merge request"
+                href="http://example.com/"
+                target="_self"
+              >
+                
+      Submit a merge request
+    
+              </a>
+               
+              <!---->
+            </div>
           </div>
         </div>
          
@@ -294,54 +338,58 @@ exports[`Learn GitLab renders correctly 1`] = `
       </div>
     </div>
     <div
-      class="col gl-mb-6"
+      class="gl-mt-5 col-sm-12 col-mb-6 col-lg-4"
     >
       <div
-        class="gl-card gl-pt-0 learn-gitlab-section-card"
+        class="gl-card gl-pt-0 h-100"
       >
-        <!---->
+        <div
+          class="gl-card-header gl-bg-white gl-border-0 gl-pb-0"
+        >
+          <img
+            src="deploy.svg"
+          />
+           
+          <h2
+            class="gl-font-lg gl-mb-3"
+          >
+            Deploy
+          </h2>
+           
+          <p
+            class="gl-text-gray-700 gl-mb-6"
+          >
+            Use your new GitLab workflow to deploy your application, monitor its health, and keep it secure:
+          </p>
+        </div>
          
         <div
-          class="gl-card-body"
+          class="gl-card-body gl-pt-0"
         >
-          <div
-            class="learn-gitlab-section-card-header"
-          >
-            <img
-              src="deploy.svg"
-            />
-             
-            <h2
-              class="gl-font-lg gl-mb-3"
-            >
-              Deploy
-            </h2>
-             
-            <p
-              class="gl-text-gray-700 gl-mb-6"
-            >
-              Use your new GitLab workflow to deploy your application, monitor its health, and keep it secure:
-            </p>
-          </div>
-           
           <div
             class="gl-mb-4"
           >
-            <a
-              class="gl-link"
-              data-testid="uncompleted-learn-gitlab-link"
-              data-track-action="click_link"
-              data-track-label="Run a Security scan using CI/CD"
-              href="https://docs.gitlab.com/ee/foobar/"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              
-    Run a Security scan using CI/CD
-  
-            </a>
-             
             <!---->
+             
+            <div
+              class="flex align-items-center"
+            >
+              <a
+                class="gl-link"
+                data-testid="uncompleted-learn-gitlab-link"
+                data-track-action="click_link"
+                data-track-label="Run a Security scan using CI/CD"
+                href="https://docs.gitlab.com/ee/foobar/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                
+      Run a Security scan using CI/CD
+    
+              </a>
+               
+              <!---->
+            </div>
           </div>
         </div>
          

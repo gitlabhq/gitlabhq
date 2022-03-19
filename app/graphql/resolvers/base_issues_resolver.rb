@@ -17,7 +17,8 @@ module Resolvers
     NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc
                                  popularity_asc popularity_desc
                                  label_priority_asc label_priority_desc
-                                 milestone_due_asc milestone_due_desc].freeze
+                                 milestone_due_asc milestone_due_desc
+                                 escalation_status_asc escalation_status_desc].freeze
 
     def continue_issue_resolve(parent, finder, **args)
       issues = Gitlab::Graphql::Loaders::IssuableLoader.new(parent, finder).batching_find_all { |q| apply_lookahead(q) }
@@ -29,6 +30,13 @@ module Resolvers
       else
         issues
       end
+    end
+
+    def prepare_params(args, parent)
+      return unless [:escalation_status_asc, :escalation_status_desc].include?(args[:sort])
+      return if Feature.enabled?(:incident_escalations, parent)
+
+      args[:sort] = :created_desc # default for sort argument
     end
 
     private

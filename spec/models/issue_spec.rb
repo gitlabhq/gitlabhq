@@ -238,6 +238,24 @@ RSpec.describe Issue do
     end
   end
 
+  context 'order by escalation status' do
+    let_it_be(:triggered_incident) { create(:incident_management_issuable_escalation_status, :triggered).issue }
+    let_it_be(:resolved_incident) { create(:incident_management_issuable_escalation_status, :resolved).issue }
+    let_it_be(:issue_no_status) { create(:issue) }
+
+    describe '.order_escalation_status_asc' do
+      subject { described_class.order_escalation_status_asc }
+
+      it { is_expected.to eq([triggered_incident, resolved_incident, issue_no_status]) }
+    end
+
+    describe '.order_escalation_status_desc' do
+      subject { described_class.order_escalation_status_desc }
+
+      it { is_expected.to eq([resolved_incident, triggered_incident, issue_no_status]) }
+    end
+  end
+
   # TODO: Remove when NOT NULL constraint is added to the relationship
   describe '#work_item_type' do
     let(:issue) { create(:issue, :incident, project: reusable_project, work_item_type: nil) }

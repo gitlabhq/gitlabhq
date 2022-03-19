@@ -203,7 +203,7 @@ The `assignee` and `assignee_id` keys are deprecated
 and contain the first assignee only.
 
 The `escalation_status` and `escalation_policy` fields are
-only available for issue types which support escalations,
+only available for issue types which [support escalations](../../../operations/incident_management/paging.md#paging),
 such as incidents.
 
 Request header:
