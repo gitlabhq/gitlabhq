@@ -1,21 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+redirect_to: '../user/index.md'
+remove_date: '2022-06-17'
 ---
 
-# Use GitLab **(FREE)**
+This document was moved to [another location](../user/index.md).
 
-Get to know the GitLab end-to-end workflow. Configure permissions,
-organize your work, create and secure your application, and analyze its performance. Report on team productivity throughout the process.
-
-- [Set up your organization](set_up_organization.md)
-- [Organize work with projects](../user/project/index.md)
-- [Plan and track work](plan_and_track.md)
-- [Build your application](build_your_application.md)
-- [Secure your application](../user/application_security/index.md)
-- [Deploy and release your application](release_your_application.md)
-- [Monitor application performance](../operations/index.md)
-- [Monitor runner performance](https://docs.gitlab.com/runner/monitoring/index.html)
-- [Manage your infrastructure](../user/infrastructure/index.md)
-- [Analyze GitLab usage](../user/analytics/index.md)
+<!-- This redirect file can be deleted after <2022-06-17>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

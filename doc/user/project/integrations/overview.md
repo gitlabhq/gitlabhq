@@ -89,7 +89,7 @@ By default, the SSL certificate for outgoing HTTP requests is verified based on
 an internal list of Certificate Authorities. This means the certificate cannot
 be self-signed.
 
-You can turn off SSL verification in the configuration settings for [webhooks](webhooks.md#configure-a-webhook)
+You can turn off SSL verification in the configuration settings for [webhooks](webhooks.md#configure-a-webhook-in-gitlab)
 and some integrations.
 
 ## Troubleshooting integrations

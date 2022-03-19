@@ -150,7 +150,7 @@ To add links to other accounts:
 
 ## Show private contributions on your user profile page
 
-In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../index.md#user-contribution-events) to private projects.
+In the user contribution calendar graph and recent activity list, you can see your [contribution actions](#user-contribution-events) to private projects.
 
 To show private contributions:
 
@@ -321,6 +321,65 @@ and configure it on your local machine by using the following command:
 ```shell
 git config --global user.email <your email address>
 ```
+
+## User activity
+
+GitLab tracks user contribution activity.
+You can follow or unfollow other users from their [user profiles](#access-your-user-profile).
+To view a user's activity in a top-level Activity view:
+
+1. From a user's profile, select **Follow**.
+1. In the GitLab menu, select **Activity**.
+1. Select the **Followed users** tab.
+
+### User contribution events
+
+Each of these contribution events is tracked:
+
+- `approved`
+  - Merge request
+- `closed`
+  - [Epic](../group/epics/index.md)
+  - Issue
+  - Merge request
+  - Milestone
+- `commented` on any `Noteable` record.
+  - Alert
+  - Commit
+  - Design
+  - Issue
+  - Merge request
+  - Snippet
+- `created`
+  - Design
+  - [Epic](../group/epics/index.md)
+  - Issue
+  - Merge request
+  - Milestone
+  - Project
+  - Wiki page
+- `destroyed`
+  - Design
+  - Milestone
+  - Wiki page
+- `expired`
+  - Project membership
+- `joined`
+  - Project membership
+- `left`
+  - Project membership
+- `merged`
+  - Merge request
+- `pushed` commits to (or deleted commits from) a repository, individually or in bulk.
+  - Project
+- `reopened`
+  - [Epic](../group/epics/index.md)
+  - Issue
+  - Merge request
+  - Milestone
+- `updated`
+  - Design
+  - Wiki page
 
 ## Troubleshooting
 

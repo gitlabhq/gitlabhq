@@ -819,7 +819,8 @@ Regardless of the tag names, the relative order of the reference tags determines
 numbering.
 
 <!--
-Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+The following codeblock uses HTML to skip the Vale ReferenceLinks test.
+Do not change it back to a markdown codeblock.
 -->
 
 <pre class="highlight"><code>A footnote reference tag looks like this: [^1]
@@ -926,7 +927,8 @@ ___
 Examples:
 
 <!--
-Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+The following codeblock uses HTML to skip the Vale ReferenceLinks test.
+Do not change it back to a markdown codeblock.
 -->
 
 <pre class="highlight"><code>Inline-style (hover to see title text):
@@ -1192,17 +1194,18 @@ A new line due to the previous backslash.
 You can create links two ways: inline-style and reference-style. For example:
 
 <!--
-Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+The following codeblock uses HTML to skip the Vale ReferenceLinks test.
+Do not change it back to a markdown codeblock.
 -->
 
 <pre class="highlight"><code>- This line shows an [inline-style link](https://www.google.com)
-- This line shows a [link to a repository file in the same directory](index.md)
-- This line shows a [relative link to a readme one directory higher](../index.md)
+- This line shows a [link to a repository file in the same directory](permissions.md)
+- This line shows a [relative link to a file one directory higher](../index.md)
 - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using header ID anchors:
 
-- This line links to [a section on a different Markdown page, using a "#" and the header ID](index.md#overview)
+- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-features-permissions)
 - This line links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
 
 Using references:
@@ -1219,13 +1222,13 @@ Some text to show that the reference links can follow later.
 </code></pre>
 
 - This line shows an [inline-style link](https://www.google.com)
-- This line shows a [link to a repository file in the same directory](index.md)
-- This line shows a [relative link to a README one directory higher](../index.md)
+- This line shows a [link to a repository file in the same directory](permissions.md)
+- This line shows a [relative link to a file one directory higher](../index.md)
 - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using header ID anchors:
 
-- This line links to [a section on a different Markdown page, using a "#" and the header ID](index.md#overview)
+- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-features-permissions)
 - This line links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
 
 Using references:
