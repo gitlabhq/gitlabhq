@@ -30,6 +30,7 @@ query getGroupRunners(
         editUrl
         node {
           ...ListItem
+          projectCount # Used to determine why some project runners can't be deleted
         }
       }
       pageInfo {

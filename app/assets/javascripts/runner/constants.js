@@ -46,6 +46,12 @@ export const I18N_RESUME = __('Resume');
 export const I18N_RESUME_TOOLTIP = s__('Runners|Resume accepting jobs');
 
 export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
+export const I18N_DELETE_DISABLED_MANY_PROJECTS = s__(
+  'Runners|Multi-project runners cannot be deleted',
+);
+export const I18N_DELETE_DISABLED_UNKNOWN_REASON = s__(
+  'Runners|Runner cannot be deleted, please contact your administrator',
+);
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');

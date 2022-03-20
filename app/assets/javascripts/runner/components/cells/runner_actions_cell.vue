@@ -44,6 +44,11 @@ export default {
   <gl-button-group>
     <runner-edit-button v-if="canUpdate && editUrl" :href="editUrl" />
     <runner-pause-button v-if="canUpdate" :runner="runner" :compact="true" />
-    <runner-delete-button v-if="canDelete" :runner="runner" :compact="true" @deleted="onDeleted" />
+    <runner-delete-button
+      :disabled="!canDelete"
+      :runner="runner"
+      :compact="true"
+      @deleted="onDeleted"
+    />
   </gl-button-group>
 </template>

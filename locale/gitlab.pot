@@ -32054,6 +32054,9 @@ msgstr ""
 msgid "Runners|Members of the %{type} can register runners"
 msgstr ""
 
+msgid "Runners|Multi-project runners cannot be deleted"
+msgstr ""
+
 msgid "Runners|Name"
 msgstr ""
 
@@ -32154,6 +32157,9 @@ msgid "Runners|Runner %{name} was deleted"
 msgstr ""
 
 msgid "Runners|Runner assigned to project."
+msgstr ""
+
+msgid "Runners|Runner cannot be deleted, please contact your administrator"
 msgstr ""
 
 msgid "Runners|Runner is offline, last contact was %{runner_contact} ago"

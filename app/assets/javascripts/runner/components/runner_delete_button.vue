@@ -5,7 +5,12 @@ import { createAlert } from '~/flash';
 import { sprintf } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { I18N_DELETE_RUNNER, I18N_DELETED_TOAST } from '../constants';
+import {
+  I18N_DELETE_DISABLED_MANY_PROJECTS,
+  I18N_DELETE_DISABLED_UNKNOWN_REASON,
+  I18N_DELETE_RUNNER,
+  I18N_DELETED_TOAST,
+} from '../constants';
 import RunnerDeleteModal from './runner_delete_modal.vue';
 
 export default {
@@ -25,6 +30,11 @@ export default {
       validator: (runner) => {
         return runner?.id && runner?.shortSha;
       },
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     compact: {
       type: Boolean,
@@ -75,13 +85,28 @@ export default {
       return null;
     },
     tooltip() {
-      // Only show tooltip when compact.
+      if (this.disabled && this.runner.projectCount > 1) {
+        return I18N_DELETE_DISABLED_MANY_PROJECTS;
+      }
+      if (this.disabled) {
+        return I18N_DELETE_DISABLED_UNKNOWN_REASON;
+      }
+
+      // Only show basic "delete" tooltip when compact.
       // Also prevent a "sticky" tooltip: If this button is
       // disabled, mouseout listeners don't run leaving the tooltip stuck
       if (this.compact && !this.deleting) {
         return I18N_DELETE_RUNNER;
       }
       return '';
+    },
+    wrapperTabindex() {
+      if (this.disabled) {
+        // Trigger tooltip on keyboard-focusable wrapper
+        // See https://bootstrap-vue.org/docs/directives/tooltip
+        return '0';
+      }
+      return null;
     },
   },
   methods: {
@@ -125,20 +150,22 @@ export default {
 </script>
 
 <template>
-  <gl-button
-    v-gl-tooltip.hover.viewport="tooltip"
-    v-gl-modal="runnerDeleteModalId"
-    :aria-label="ariaLabel"
-    :icon="icon"
-    :class="buttonClass"
-    :loading="deleting"
-    variant="danger"
-  >
-    {{ buttonContent }}
+  <div v-gl-tooltip="tooltip" class="btn-group" :tabindex="wrapperTabindex">
+    <gl-button
+      v-gl-modal="runnerDeleteModalId"
+      :aria-label="ariaLabel"
+      :icon="icon"
+      :class="buttonClass"
+      :loading="deleting"
+      :disabled="disabled"
+      variant="danger"
+    >
+      {{ buttonContent }}
+    </gl-button>
     <runner-delete-modal
       :modal-id="runnerDeleteModalId"
       :runner-name="runnerName"
       @primary="onDelete"
     />
-  </gl-button>
+  </div>
 </template>
