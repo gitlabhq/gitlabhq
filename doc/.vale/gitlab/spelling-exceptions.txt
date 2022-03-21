@@ -594,6 +594,7 @@ Sobelow
 Solargraph
 Solarized
 Sourcegraph
+spammable
 sparkline
 sparklines
 spidering

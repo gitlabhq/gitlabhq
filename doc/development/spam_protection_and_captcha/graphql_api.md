@@ -13,28 +13,27 @@ related to changing a model's confidential/public flag.
 
 ## Add support to the GraphQL mutations
 
-This implementation is very similar to the controller implementation. You create a `spam_params`
-instance based on the request, and pass it to the relevant Service class constructor.
+The main steps are:
 
-The three main differences from the controller implementation are:
+1. Use `include Mutations::SpamProtection` in your mutation.
+1. Create a `spam_params` instance based on the request. Obtain the request from the context
+   via `context[:request]` when creating the `SpamParams` instance.
+1. Pass `spam_params` to the relevant Service class constructor.
+1. After you create or update the `Spammable` model instance, call `#check_spam_action_response!`
+   and pass it the model instance. This call:
+   1. Performs the necessary spam checks on the model.
+   1. If spam is detected:
+      - Raises a `GraphQL::ExecutionError` exception.
+      - Includes the relevant information added as error fields to the response via the `extensions:` parameter.
+        For more details on these fields, refer to the section in the GraphQL API documentation on
+        [Resolve mutations detected as spam](../../api/graphql/index.md#resolve-mutations-detected-as-spam).
 
-1. Use `include Mutations::SpamProtection` instead of `...JsonFormatActionsSupport`.
-1. Obtain the request from the context via `context[:request]` when creating the `SpamParams`
-   instance.
-1. After you create or updated the `Spammable` model instance, call `#check_spam_action_response!`
-   and pass it the model instance. This call will:
-    1. Perform the necessary spam checks on the model.
-    1. If spam is detected:
-       - Raise a `GraphQL::ExecutionError` exception.
-       - Include the relevant information added as error fields to the response via the `extensions:` parameter.
-       For more details on these fields, refer to the section on
-       [Spam and CAPTCHA support in the GraphQL API](../../api/graphql/index.md#resolve-mutations-detected-as-spam).
-
-       NOTE:
-       If you use the standard ApolloLink or Axios interceptor CAPTCHA support described
-       above, the field details are unimportant. They become important if you
-       attempt to use the GraphQL API directly to process a failed check for potential spam, and
-       resubmit the request with a solved CAPTCHA response.
+   NOTE:
+   If you use the standard ApolloLink or Axios interceptor CAPTCHA support described
+   above, you can ignore the field details, because they are handled
+   automatically. They become relevant if you attempt to use the GraphQL API directly to
+   process a failed check for potential spam, and resubmit the request with a solved
+   CAPTCHA response.
 
 For example:
 
@@ -57,10 +56,13 @@ module Mutations
         widget = service_response.payload[:widget]
         check_spam_action_response!(widget)
 
-        # If possible spam wasdetected, an exception would have been thrown by
+        # If possible spam was detected, an exception would have been thrown by
         # `#check_spam_action_response!`, so the normal resolve return logic can follow below.
       end
     end
   end
 end
 ```
+
+Refer to the [Exploratory Testing](exploratory_testing.md) section for instructions on how to test
+CAPTCHA behavior in the GraphQL API.

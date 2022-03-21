@@ -82,7 +82,7 @@ These features can help provide visibility into GitLab and audit what is happeni
 
 These features can also help with compliance requirements:
 
-- [**Email all users of a project, group, or entire server**](../tools/email.md)
+- [**Email all users of a project, group, or entire server**](../user/admin_area/email_from_gitlab.md)
   (for instances): An administrator can email groups of users based on project
   or group membership, or email everyone using the GitLab instance. These emails
   are great for scheduled maintenance or upgrades.

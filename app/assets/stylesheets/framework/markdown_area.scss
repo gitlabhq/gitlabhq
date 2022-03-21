@@ -72,7 +72,6 @@
     @include media-breakpoint-down(xs) {
       .nav-item {
         flex: 1;
-        border-bottom: 1px solid $border-color;
       }
 
       .gl-tab-nav-item {
@@ -84,7 +83,8 @@
         width: 100%;
         display: flex;
         flex-wrap: wrap;
-        margin-top: $gl-padding-8;
+        padding-top: $gl-padding-8;
+        border-top: 1px solid $border-color;
       }
     }
   }

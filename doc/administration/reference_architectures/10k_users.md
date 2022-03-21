@@ -1455,10 +1455,12 @@ To configure the Praefect nodes, on each one:
 ### Configure Gitaly
 
 The [Gitaly](../gitaly/index.md) server nodes that make up the cluster have
-requirements that are dependent on data, specifically the number of projects
-and those projects' sizes. It's recommended that a Gitaly Cluster stores
-no more than 5 TB of data on each node. Depending on your
-repository storage requirements, you may require additional Gitaly Clusters.
+requirements that are dependent on data and load.
+
+NOTE:
+The Reference Architecture specs have been designed with good headroom in mind
+but for Gitaly, increased specs or additional
+Gitaly Cluster arrays may be required for notably large data sets or load.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs

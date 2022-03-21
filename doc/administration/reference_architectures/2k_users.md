@@ -397,11 +397,13 @@ are supported and can be added if needed.
 
 ## Configure Gitaly
 
-[Gitaly](../gitaly/index.md) server node requirements are dependent on data,
-specifically the number of projects and those projects' sizes. It's recommended
-that a Gitaly server node stores no more than 5TB of data. Although this
-reference architecture includes a single Gitaly server node, you may require
-additional nodes depending on your repository storage requirements.
+[Gitaly](../gitaly/index.md) server node requirements are dependent on data size,
+specifically the number of projects and those projects' sizes.
+
+NOTE:
+The Reference Architecture specs have been designed with good headroom in mind
+but for Gitaly, increased specs or switching to Gitaly Cluster
+may be required for notably large data sets or load.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs

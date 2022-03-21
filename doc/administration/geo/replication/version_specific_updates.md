@@ -10,6 +10,14 @@ Review this page for update instructions for your version. These steps
 accompany the [general steps](updating_the_geo_sites.md#general-update-steps)
 for updating Geo sites.
 
+## Updating to 14.9
+
+**DO NOT** update to GitLab 14.9.0. 
+
+We've discovered an issue with Geo's CI verification feature that may [cause job traces to be lost](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6664). This issue will be fixed in the next patch release.
+
+If you have already updated to GitLab 14.9.0, you can disable the feature causing the issue by [disabling the `geo_job_artifact_replication` feature flag](../../feature_flags.md#how-to-enable-and-disable-features-behind-flags).
+
 ## Updating to 14.2 through 14.7
 
 There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)

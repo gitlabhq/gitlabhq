@@ -76,7 +76,7 @@ tier. Users can continue to access the features in a paid tier without sharing u
 
 #### Features available in 14.1 and later
 
-1. [Email from GitLab](../../tools/email.md).
+1. [Email from GitLab](../../user/admin_area/email_from_gitlab.md).
 
 #### Features available in 14.4 and later
 

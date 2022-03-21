@@ -1811,6 +1811,9 @@ msgstr ""
 msgid "About this feature"
 msgstr ""
 
+msgid "About your company"
+msgstr ""
+
 msgid "Abuse Reports"
 msgstr ""
 
@@ -16780,6 +16783,9 @@ msgid "GitLab Support Bot"
 msgstr ""
 
 msgid "GitLab Team Member"
+msgstr ""
+
+msgid "GitLab Ultimate trial"
 msgstr ""
 
 msgid "GitLab User"
@@ -37976,6 +37982,9 @@ msgstr ""
 msgid "This deployment is not waiting for approvals."
 msgstr ""
 
+msgid "This deployment job does not run automatically and must be started manually, but you do not have access to this job's protected environment. The job can only be started by a project member allowed to deploy to the environment."
+msgstr ""
+
 msgid "This device has already been registered with us."
 msgstr ""
 
@@ -38136,6 +38145,9 @@ msgid "This job deploys to the protected environment \"%{environment}\" which re
 msgstr ""
 
 msgid "This job does not have a trace."
+msgstr ""
+
+msgid "This job does not run automatically and must be started manually, but you do not have access to it."
 msgstr ""
 
 msgid "This job has been canceled"
@@ -39430,6 +39442,9 @@ msgid "Try again"
 msgstr ""
 
 msgid "Try again?"
+msgstr ""
+
+msgid "Try all GitLab features for free for 30 days. No credit card required."
 msgstr ""
 
 msgid "Try all GitLab has to offer for 30 days."
@@ -41872,6 +41887,9 @@ msgid "Webhooks|Webhook was automatically disabled"
 msgstr ""
 
 msgid "Webhooks|Wiki page events"
+msgstr ""
+
+msgid "Website"
 msgstr ""
 
 msgid "Website:"

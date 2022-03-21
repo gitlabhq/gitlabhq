@@ -132,7 +132,8 @@ There are other additional predefined CI/CD variables you can also use:
 - `CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX`: the image prefix for pulling images through the
   dependency proxy from the direct group or subgroup that the project belongs to.
 
-`CI_DEPENDENCY_PROXY_SERVER` and `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
+`CI_DEPENDENCY_PROXY_SERVER`, `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`, and
+`CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX`
 include the server port. If you explicitly include the Dependency Proxy
 path, the port must be included, unless you have logged into the Dependency
 Proxy manually without including the port:

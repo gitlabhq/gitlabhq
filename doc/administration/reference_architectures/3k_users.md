@@ -1399,10 +1399,12 @@ the file of the same name on this server. If this is the first Omnibus node you 
 ### Configure Gitaly
 
 The [Gitaly](../gitaly/index.md) server nodes that make up the cluster have
-requirements that are dependent on data, specifically the number of projects
-and those projects' sizes. It's recommended that a Gitaly Cluster stores
-no more than 5 TB of data on each node. Depending on your
-repository storage requirements, you may require additional Gitaly Clusters.
+requirements that are dependent on data and load.
+
+NOTE:
+The Reference Architecture specs have been designed with good headroom in mind
+but for Gitaly, increased specs or additional
+Gitaly Cluster arrays may be required for notably large data sets or load.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -2157,6 +2159,7 @@ but with smaller performance requirements, several modifications can be consider
 - Reducing the node counts: Some node types do not need consensus and can run with fewer nodes (but more than one for redundancy). This will also lead to reduced performance.
   - GitLab Rails and Sidekiq: Stateless services don't have a minimum node count. Two are enough for redundancy.
   - Gitaly and Praefect: A quorum is not strictly necessary. Two Gitaly nodes and two Praefect nodes are enough for redundancy.
+  - PostgreSQL and PgBouncer: A quorum is not strictly necessary. Two PostgreSQL nodes and two PgBouncer nodes are enough for redundancy.
 - Running select components in reputable Cloud PaaS solutions: Select components of the GitLab setup can instead be run on Cloud Provider PaaS solutions. By doing this, additional dependent components can also be removed:
   - PostgreSQL: Can be run on reputable Cloud PaaS solutions such as Google Cloud SQL or Amazon RDS. In this setup, the PgBouncer and Consul nodes are no longer required:
     - Consul may still be desired if [Prometheus](../monitoring/prometheus/index.md) auto discovery is a requirement, otherwise you would need to [manually add scrape configurations](../monitoring/prometheus/index.md#adding-custom-scrape-configurations) for all nodes.

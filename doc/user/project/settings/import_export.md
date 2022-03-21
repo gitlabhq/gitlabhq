@@ -383,3 +383,17 @@ s = Gitlab::ImportExport::Saver.new(exportable: p, shared:p.import_export_shared
 s.send(:compress_and_save)
 s.send(:save_upload)
 ```
+
+### Import using the REST API fails when using a group access token
+
+[Group access tokens](../../group/settings/group_access_tokens.md)
+don't work for project or group import operations. When a group access token initiates an import,
+the import fails with this message:
+
+```plaintext
+Error adding importer user to Project members.
+Validation failed: User project bots cannot be added to other groups / projects
+```
+
+To use [Import REST APIs](../../../api/project_import_export.md),
+pass regular user account credentials such as [personal access tokens](../../profile/personal_access_tokens.md).

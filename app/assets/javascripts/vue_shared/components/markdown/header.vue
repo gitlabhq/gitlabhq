@@ -187,7 +187,7 @@ export default {
       <template #tabs-end>
         <div
           data-testid="md-header-toolbar"
-          :class="{ 'gl-display-none': previewMarkdown }"
+          :class="{ 'gl-display-none!': previewMarkdown }"
           class="md-header-toolbar gl-ml-auto gl-pb-3 gl-justify-content-center"
         >
           <toolbar-button

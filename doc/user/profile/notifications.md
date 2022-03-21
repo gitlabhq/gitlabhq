@@ -11,7 +11,7 @@ Stay informed about what's happening in GitLab with email notifications.
 You can receive updates about activity in issues, merge requests, epics, and designs.
 
 For the tool that GitLab administrators can use to send messages to users, read
-[Email from GitLab](../../tools/email.md).
+[Email from GitLab](../admin_area/email_from_gitlab.md).
 
 ## Who receives notifications
 
@@ -308,7 +308,7 @@ If you no longer wish to receive any email notifications:
    **Disabled**.
 
 On self-managed installations, even after doing this, your instance administrator
-[can still email you](../../tools/email.md).
+[can still email you](../admin_area/email_from_gitlab.md).
 To unsubscribe, select the unsubscribe link in one of these emails.
 
 ## Email headers you can use to filter email
