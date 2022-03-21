@@ -702,7 +702,10 @@ module.exports = {
       const incrementalCompilerMiddleware = incrementalCompiler.createMiddleware(devServer);
 
       if (incrementalCompilerMiddleware) {
-        middlewares.unshift(incrementalCompilerMiddleware);
+        middlewares.unshift({
+          name: 'incremental-compiler',
+          middleware: incrementalCompilerMiddleware,
+        });
       }
 
       return middlewares;

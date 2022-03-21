@@ -253,7 +253,7 @@
     "webpack-dev-server": "4.7.4",
     "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",
-    "yarn-deduplicate": "^3.1.0"
+    "yarn-deduplicate": "^4.0.0"
   },
   "blockedDependencies": {
     "bootstrap-vue": "https://docs.gitlab.com/ee/development/fe_guide/dependencies.html#bootstrapvue"

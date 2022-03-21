@@ -3626,12 +3626,12 @@ commander@7, commander@^7.0.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
 
-commander@^6.0.0, commander@^6.1.0, commander@^6.2.0:
+commander@^6.0.0, commander@^6.2.0:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
   integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
 
-commander@~9.0.0:
+commander@^9.0.0, commander@~9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-9.0.0.tgz#86d58f24ee98126568936bd1d3574e0308a99a40"
   integrity sha512-JJfP2saEKbQqvW+FI93OYUB4ByV5cizMpFMiiJI8xDbBvQvSkIk0VvQdn1CZ8mqAO8Loq2h0gYTYtDFUZUeERw==
@@ -12555,13 +12555,13 @@ yarn-check-webpack-plugin@^1.2.0:
   dependencies:
     chalk "^2.4.2"
 
-yarn-deduplicate@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/yarn-deduplicate/-/yarn-deduplicate-3.1.0.tgz#3018d93e95f855f236a215b591fe8bc4bcabba3e"
-  integrity sha512-q2VZ6ThNzQpGfNpkPrkmV7x5HT9MOhCUsTxVTzyyZB0eSXz1NTodHn+r29DlLb+peKk8iXxzdUVhQG9pI7moFw==
+yarn-deduplicate@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/yarn-deduplicate/-/yarn-deduplicate-4.0.0.tgz#0fcd11a83c2629ee41bc38a97d78fbd810c5825f"
+  integrity sha512-1sI617aM8WNplWA7O58peEq3gC14Ah/Ld55CF1aB2v4pTaxDpOgb+mTaWhIKzOCqJjwnaSqmYVrfgABUlc9bNA==
   dependencies:
     "@yarnpkg/lockfile" "^1.1.0"
-    commander "^6.1.0"
+    commander "^9.0.0"
     semver "^7.3.2"
 
 yn@3.1.1:

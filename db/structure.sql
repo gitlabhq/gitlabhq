@@ -29437,6 +29437,8 @@ CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid ON vulnerability_occ
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerability_occurrences USING btree (vulnerability_id);
 
+CREATE INDEX index_vulnerability_reads_common_finder_query ON vulnerability_reads USING btree (project_id, state, report_type, severity, vulnerability_id DESC);
+
 CREATE INDEX index_vulnerability_reads_on_cluster_agent_id ON vulnerability_reads USING btree (cluster_agent_id) WHERE (report_type = 7);
 
 CREATE INDEX index_vulnerability_reads_on_location_image ON vulnerability_reads USING btree (location_image) WHERE (report_type = ANY (ARRAY[2, 7]));

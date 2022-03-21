@@ -19,7 +19,6 @@ module SensitiveSerializableHash
   # In general, prefer NOT to use serializable_hash / to_json / as_json in favor
   # of serializers / entities instead which has an allowlist of attributes
   def serializable_hash(options = nil)
-    return super unless prevent_sensitive_fields_from_serializable_hash?
     return super if options && options[:unsafe_serialization_hash]
 
     options = options.try(:dup) || {}
@@ -36,11 +35,5 @@ module SensitiveSerializableHash
     end
 
     super(options)
-  end
-
-  private
-
-  def prevent_sensitive_fields_from_serializable_hash?
-    Feature.enabled?(:prevent_sensitive_fields_from_serializable_hash, default_enabled: :yaml)
   end
 end

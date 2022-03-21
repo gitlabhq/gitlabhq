@@ -105,7 +105,7 @@ There are also a number of [variables you can use to configure runner behavior](
 | `CI_RUNNER_EXECUTABLE_ARCH`              | all    | 10.6   | The OS/architecture of the GitLab Runner executable. Might not be the same as the environment of the executor. |
 | `CI_RUNNER_ID`                           | 8.10   | 0.5    | The unique ID of the runner being used. |
 | `CI_RUNNER_REVISION`                     | all    | 10.6   | The revision of the runner running the job. |
-| `CI_RUNNER_SHORT_TOKEN`                  | all    | 12.3   | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
+| `CI_RUNNER_SHORT_TOKEN`                  | all    | 12.3   | The runner's unique ID, used to authenticate new job requests. In [GitLab 14.9](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/2251) and later, the token contains a prefix, and the first 17 characters are used. Prior to 14.9, the first eight characters are used. |
 | `CI_RUNNER_TAGS`                         | 8.10   | 0.5    | A comma-separated list of the runner tags. |
 | `CI_RUNNER_VERSION`                      | all    | 10.6   | The version of the GitLab Runner running the job. |
 | `CI_SERVER_HOST`                         | 12.1   | all    | The host of the GitLab instance URL, without protocol or port. For example `gitlab.example.com`. |
