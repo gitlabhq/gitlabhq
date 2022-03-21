@@ -42,6 +42,16 @@ In GitLab 14.4, GitLab released an integrated error tracking backend that replac
 
 For additional background on this removal, please reference [Disable Integrated Error Tracking by Default](https://gitlab.com/groups/gitlab-org/-/epics/7580). If you have feedback please add a comment to [Feedback: Removal of Integrated Error Tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/355493).
 
+### Renamed 'user_email_lookup_limit' to 'search_rate_limit' API field
+
+WARNING:
+This feature was changed or removed in 14.9
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+We renamed the rate limit key from `user_email_lookup_limit` to `search_rate_limit`. Any API calls attempting to change the rate limits for `user_email_lookup_limit` should use `search_rate_limit` instead.
+
 ## 14.6
 
 ### Limit the number of triggered pipeline to 25K in free tier

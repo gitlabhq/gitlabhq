@@ -968,7 +968,7 @@ GEM
       httpclient
       json-jwt (>= 1.11.0)
       rack (>= 2.1.0)
-    rack-proxy (0.6.0)
+    rack-proxy (0.7.2)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -1605,7 +1605,7 @@ DEPENDENCIES
   rack-attack (~> 6.3.0)
   rack-cors (~> 1.0.6)
   rack-oauth2 (~> 1.16.0)
-  rack-proxy (~> 0.6.0)
+  rack-proxy (~> 0.7.2)
   rack-timeout (~> 0.5.1)
   rails (~> 6.1.4.6)
   rails-controller-testing
