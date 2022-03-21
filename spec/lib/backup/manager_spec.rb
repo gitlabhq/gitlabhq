@@ -28,7 +28,7 @@ RSpec.describe Backup::Manager do
     it 'calls the named task' do
       expect(task).to receive(:dump)
       expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... ')
-      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done')
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... done')
 
       subject.run_create_task('my_task')
     end
@@ -37,8 +37,7 @@ RSpec.describe Backup::Manager do
       let(:enabled) { false }
 
       it 'informs the user' do
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... ')
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: '[DISABLED]')
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... [DISABLED]')
 
         subject.run_create_task('my_task')
       end
@@ -48,8 +47,7 @@ RSpec.describe Backup::Manager do
       it 'informs the user' do
         stub_env('SKIP', 'my_task')
 
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... ')
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: '[SKIPPED]')
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... [SKIPPED]')
 
         subject.run_create_task('my_task')
       end
@@ -78,7 +76,7 @@ RSpec.describe Backup::Manager do
     it 'calls the named task' do
       expect(task).to receive(:restore)
       expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
-      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done').ordered
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... done').ordered
 
       subject.run_restore_task('my_task')
     end
@@ -87,8 +85,7 @@ RSpec.describe Backup::Manager do
       let(:enabled) { false }
 
       it 'informs the user' do
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: '[DISABLED]').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... [DISABLED]').ordered
 
         subject.run_restore_task('my_task')
       end
@@ -100,7 +97,7 @@ RSpec.describe Backup::Manager do
       it 'displays and waits for the user' do
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Watch out!').ordered
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... done').ordered
         expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
         expect(task).to receive(:restore)
 
@@ -124,7 +121,7 @@ RSpec.describe Backup::Manager do
 
       it 'displays and waits for the user' do
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... done').ordered
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Watch out!').ordered
         expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
         expect(task).to receive(:restore)
@@ -134,7 +131,7 @@ RSpec.describe Backup::Manager do
 
       it 'does not continue when the user quits' do
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... ').ordered
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'done').ordered
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring my task ... done').ordered
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Watch out!').ordered
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Quitting...').ordered
         expect(task).to receive(:restore)
@@ -170,7 +167,9 @@ RSpec.describe Backup::Manager do
 
     before do
       allow(ActiveRecord::Base.connection).to receive(:reconnect!)
+      allow(Gitlab::BackupLogger).to receive(:info)
       allow(Kernel).to receive(:system).and_return(true)
+      allow(YAML).to receive(:load_file).and_call_original
       allow(YAML).to receive(:load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
         .and_return(backup_information)
 
@@ -183,6 +182,20 @@ RSpec.describe Backup::Manager do
       subject.create # rubocop:disable Rails/SaveBang
 
       expect(Kernel).to have_received(:system).with(*tar_cmdline)
+    end
+
+    context 'tar fails' do
+      before do
+        expect(Kernel).to receive(:system).with(*tar_cmdline).and_return(false)
+      end
+
+      it 'logs a failure' do
+        expect do
+          subject.create # rubocop:disable Rails/SaveBang
+        end.to raise_error(Backup::Error, 'Backup failed')
+
+        expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{tar_file} failed")
+      end
     end
 
     context 'when BACKUP is set' do
@@ -248,6 +261,7 @@ RSpec.describe Backup::Manager do
       end
 
       before do
+        allow(Gitlab::BackupLogger).to receive(:info)
         allow(Dir).to receive(:chdir).and_yield
         allow(Dir).to receive(:glob).and_return(files)
         allow(FileUtils).to receive(:rm)
@@ -266,7 +280,7 @@ RSpec.describe Backup::Manager do
         end
 
         it 'prints a skipped message' do
-          expect(progress).to have_received(:puts).with('skipping')
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Deleting old backups ... [SKIPPED]')
         end
       end
 
@@ -290,7 +304,7 @@ RSpec.describe Backup::Manager do
         end
 
         it 'prints a done message' do
-          expect(progress).to have_received(:puts).with('done. (0 removed)')
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Deleting old backups ... done. (0 removed)')
         end
       end
 
@@ -307,7 +321,7 @@ RSpec.describe Backup::Manager do
         end
 
         it 'prints a done message' do
-          expect(progress).to have_received(:puts).with('done. (0 removed)')
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Deleting old backups ... done. (0 removed)')
         end
       end
 
@@ -348,7 +362,7 @@ RSpec.describe Backup::Manager do
         end
 
         it 'prints a done message' do
-          expect(progress).to have_received(:puts).with('done. (8 removed)')
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Deleting old backups ... done. (8 removed)')
         end
       end
 
@@ -372,11 +386,11 @@ RSpec.describe Backup::Manager do
         end
 
         it 'sets the correct removed count' do
-          expect(progress).to have_received(:puts).with('done. (7 removed)')
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Deleting old backups ... done. (7 removed)')
         end
 
         it 'prints the error from file that could not be removed' do
-          expect(progress).to have_received(:puts).with(a_string_matching(message))
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: a_string_matching(message))
         end
       end
     end
@@ -386,6 +400,7 @@ RSpec.describe Backup::Manager do
       let(:backup_filename) { File.basename(backup_file.path) }
 
       before do
+        allow(Gitlab::BackupLogger).to receive(:info)
         allow(subject).to receive(:tar_file).and_return(backup_filename)
 
         stub_backup_setting(
@@ -462,7 +477,7 @@ RSpec.describe Backup::Manager do
           it 'sets encryption attributes' do
             subject.create # rubocop:disable Rails/SaveBang
 
-            expect(progress).to have_received(:puts).with("done (encrypted with AES256)")
+            expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Uploading backup archive to remote storage directory ... done (encrypted with AES256)')
           end
         end
 
@@ -473,7 +488,7 @@ RSpec.describe Backup::Manager do
           it 'sets encryption attributes' do
             subject.create # rubocop:disable Rails/SaveBang
 
-            expect(progress).to have_received(:puts).with("done (encrypted with AES256)")
+            expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Uploading backup archive to remote storage directory ... done (encrypted with AES256)')
           end
         end
 
@@ -488,7 +503,7 @@ RSpec.describe Backup::Manager do
           it 'sets encryption attributes' do
             subject.create # rubocop:disable Rails/SaveBang
 
-            expect(progress).to have_received(:puts).with("done (encrypted with aws:kms)")
+            expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Uploading backup archive to remote storage directory ... done (encrypted with aws:kms)')
           end
         end
       end
@@ -570,6 +585,7 @@ RSpec.describe Backup::Manager do
       Rake.application.rake_require 'tasks/gitlab/shell'
       Rake.application.rake_require 'tasks/cache'
 
+      allow(Gitlab::BackupLogger).to receive(:info)
       allow(task1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'))
       allow(task2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'))
       allow(YAML).to receive(:load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
@@ -634,7 +650,10 @@ RSpec.describe Backup::Manager do
     end
 
     context 'when BACKUP variable is set to a correct file' do
+      let(:tar_cmdline) { %w{tar -xf 1451606400_2016_01_01_1.2.3_gitlab_backup.tar} }
+
       before do
+        allow(Gitlab::BackupLogger).to receive(:info)
         allow(Dir).to receive(:glob).and_return(
           [
             '1451606400_2016_01_01_1.2.3_gitlab_backup.tar'
@@ -649,8 +668,21 @@ RSpec.describe Backup::Manager do
       it 'unpacks the file' do
         subject.restore
 
-        expect(Kernel).to have_received(:system)
-          .with("tar", "-xf", "1451606400_2016_01_01_1.2.3_gitlab_backup.tar")
+        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+      end
+
+      context 'tar fails' do
+        before do
+          expect(Kernel).to receive(:system).with(*tar_cmdline).and_return(false)
+        end
+
+        it 'logs a failure' do
+          expect do
+            subject.restore
+          end.to raise_error(SystemExit)
+
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Unpacking backup failed')
+        end
       end
 
       context 'on version mismatch' do
@@ -680,7 +712,7 @@ RSpec.describe Backup::Manager do
 
           subject.restore
 
-          expect(progress).to have_received(:print).with('Deleting backups/tmp ... ')
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Deleting backups/tmp ... ')
         end
       end
     end
@@ -731,7 +763,7 @@ RSpec.describe Backup::Manager do
 
           subject.restore
 
-          expect(progress).to have_received(:print).with('Deleting backups/tmp ... ')
+          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Deleting backups/tmp ... ')
         end
       end
     end

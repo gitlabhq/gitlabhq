@@ -24,10 +24,6 @@ export default {
     prop: 'selectedGroup',
   },
   props: {
-    accessLevels: {
-      type: Object,
-      required: true,
-    },
     groupsFilter: {
       type: String,
       required: false,
@@ -57,13 +53,6 @@ export default {
     },
     isFetchResultEmpty() {
       return this.groups.length === 0;
-    },
-    defaultFetchOptions() {
-      return {
-        exclude_internal: true,
-        active: true,
-        min_access_level: this.accessLevels.Guest,
-      };
     },
   },
   watch: {
@@ -107,9 +96,13 @@ export default {
     fetchGroups() {
       switch (this.groupsFilter) {
         case GROUP_FILTERS.DESCENDANT_GROUPS:
-          return getDescendentGroups(this.parentGroupId, this.searchTerm, this.defaultFetchOptions);
+          return getDescendentGroups(
+            this.parentGroupId,
+            this.searchTerm,
+            this.$options.defaultFetchOptions,
+          );
         default:
-          return getGroups(this.searchTerm, this.defaultFetchOptions);
+          return getGroups(this.searchTerm, this.$options.defaultFetchOptions);
       }
     },
   },
@@ -117,6 +110,10 @@ export default {
     dropdownText: s__('GroupSelect|Select a group'),
     searchPlaceholder: s__('GroupSelect|Search groups'),
     emptySearchResult: s__('GroupSelect|No matching results'),
+  },
+  defaultFetchOptions: {
+    exclude_internal: true,
+    active: true,
   },
 };
 </script>

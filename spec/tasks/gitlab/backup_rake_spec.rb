@@ -199,18 +199,25 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         end
 
         it 'logs the progress to log file' do
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "[SKIPPED]")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... [SKIPPED]")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... done")
           expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "done").exactly(9).times
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... done")
 
           backup_tasks.each do |task|
             run_rake_task("gitlab:backup:#{task}:create")

@@ -112,11 +112,26 @@ you can reply to comments by sending an email.
 
 You can use [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md) in your email replies.
 
-## Who can edit comments
+## Edit a comment
 
 You can edit your own comment at any time.
-
 Anyone with at least the Maintainer role can also edit a comment made by someone else.
+
+To edit a comment:
+
+1. On the comment, select **Edit comment** (**{pencil}**).
+1. Make your edits.
+1. Select **Save changes**.
+
+### Editing a comment to add a mention
+
+By default, when you mention a user, GitLab [creates a to-do item](../todos.md#actions-that-create-to-do-items)
+for them, and sends them a [notification email](../profile/notifications.md).
+
+If you edit an existing comment to add a user mention that wasn't there before, GitLab:
+
+- Creates a to-do item for the mentioned user.
+- Does not send a notification email.
 
 ## Prevent comments by locking an issue
 

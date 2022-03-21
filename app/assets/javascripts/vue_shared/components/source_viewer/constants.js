@@ -109,3 +109,5 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   xquery: 'xquery',
   yaml: 'yaml',
 };
+
+export const LINES_PER_CHUNK = 70;

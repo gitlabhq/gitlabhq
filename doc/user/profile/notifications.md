@@ -21,10 +21,13 @@ that happen there.
 You might receive notifications for one of the following reasons:
 
 - You participate in an issue, merge request, epic, or design. You become a participant when you comment
-  or edit, or someone mentions you.
+  or edit, or someone mentions <sup>1</sup> you.
 - You've [enabled notifications in an issue, merge request, or epic](#notifications-on-issues-merge-requests-and-epics).
 - You've configured notifications for the [project](#change-level-of-project-notifications) or [group](#group-notifications).
 - You're subscribed to group or project pipeline notifications via the pipeline emails [integration](../project/integrations/overview.md).
+
+1. GitLab doesn't send a notification when
+   [a comment is edited to include a user mention](../discussions/index.md#editing-a-comment-to-add-a-mention).
 
 NOTE:
 Administrators can block notifications, preventing them from being sent.

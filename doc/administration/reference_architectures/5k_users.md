@@ -48,7 +48,7 @@ costly-to-operate environment by using the
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
-5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster). If Gitaly Sharded is desired, the same specs listed above for `Gitaly` should be used.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -1101,8 +1101,8 @@ The following IPs will be used as an example:
 In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being designated the primary, and failover occurs automatically if the primary node goes down.
 
 NOTE:
-Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster).
-For implementations with Gitaly Sharded, the same Gitaly specs should be used. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
+Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
+For implementations with sharded Gitaly, use the same Gitaly specs. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
 
 The recommended cluster setup includes the following components:
 
@@ -2201,7 +2201,7 @@ services where applicable):
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
-5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster). If Gitaly Sharded is desired, the same specs listed above for `Gitaly` should be used.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:

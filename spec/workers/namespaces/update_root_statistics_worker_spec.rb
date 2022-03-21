@@ -9,11 +9,9 @@ RSpec.describe Namespaces::UpdateRootStatisticsWorker do
     Projects::ProjectDeletedEvent.new(data: { project_id: 1, namespace_id: namespace_id })
   end
 
-  subject { consume_event(event) }
+  subject { consume_event(subscriber: described_class, event: event) }
 
-  def consume_event(event)
-    described_class.new.perform(event.class.name, event.data)
-  end
+  it_behaves_like 'subscribes to event'
 
   it 'enqueues ScheduleAggregationWorker' do
     expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async).with(namespace_id)

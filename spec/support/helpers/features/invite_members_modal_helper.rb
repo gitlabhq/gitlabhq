@@ -43,6 +43,18 @@ module Spec
 
             fill_in 'YYYY-MM-DD', with: expires_at.strftime('%Y-%m-%d') if expires_at
           end
+
+          def group_dropdown_selector
+            '[data-testid="group-select-dropdown"]'
+          end
+
+          def expect_to_have_group(group)
+            expect(page).to have_selector("[entity-id='#{group.id}']")
+          end
+
+          def expect_not_to_have_group(group)
+            expect(page).not_to have_selector("[entity-id='#{group.id}']")
+          end
         end
       end
     end

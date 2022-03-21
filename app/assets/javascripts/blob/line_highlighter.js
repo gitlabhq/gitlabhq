@@ -37,6 +37,7 @@ const LineHighlighter = function (options = {}) {
   options.fileHolderSelector = options.fileHolderSelector || '.file-holder';
   options.scrollFileHolder = options.scrollFileHolder || false;
   options.hash = options.hash || window.location.hash;
+  options.scrollBehavior = options.scrollBehavior || 'smooth';
 
   this.options = options;
   this._hash = options.hash;
@@ -74,6 +75,7 @@ LineHighlighter.prototype.highlightHash = function (newHash) {
         // Scroll to the first highlighted line on initial load
         // Add an offset of -100 for some context
         offset: -100,
+        behavior: this.options.scrollBehavior,
       });
     }
   }

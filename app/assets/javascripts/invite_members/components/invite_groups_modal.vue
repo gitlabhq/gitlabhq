@@ -155,7 +155,6 @@ export default {
     <template #select>
       <group-select
         v-model="groupToBeSharedWith"
-        :access-levels="accessLevels"
         :groups-filter="groupSelectFilter"
         :parent-group-id="groupSelectParentId"
         :invalid-groups="invalidGroups"
