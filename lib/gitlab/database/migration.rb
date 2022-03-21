@@ -33,15 +33,22 @@ module Gitlab
       # We use major version bumps to indicate significant changes and minor version bumps
       # to indicate backwards-compatible or otherwise minor changes (e.g. a Rails version bump).
       # However, this hasn't been strictly formalized yet.
-      MIGRATION_CLASSES = {
-        1.0 => Class.new(ActiveRecord::Migration[6.1]) do
-          include LockRetriesConcern
-          include Gitlab::Database::MigrationHelpers::V2
-        end
-      }.freeze
+
+      class V1_0 < ActiveRecord::Migration[6.1] # rubocop:disable Naming/ClassAndModuleCamelCase
+        include LockRetriesConcern
+        include Gitlab::Database::MigrationHelpers::V2
+      end
+
+      class V2_0 < V1_0 # rubocop:disable Naming/ClassAndModuleCamelCase
+        include Gitlab::Database::MigrationHelpers::RestrictGitlabSchema
+      end
 
       def self.[](version)
-        MIGRATION_CLASSES[version] || raise(ArgumentError, "Unknown migration version: #{version}")
+        version = version.to_s
+        name = "V#{version.tr('.', '_')}"
+        raise ArgumentError, "Unknown migration version: #{version}" unless const_defined?(name, false)
+
+        const_get(name, false)
       end
 
       # The current version to be used in new migrations

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Oauth::Jira::AuthorizationsController do
+RSpec.describe Oauth::JiraDvcs::AuthorizationsController do
   describe 'GET new' do
     it 'redirects to OAuth authorization with correct params' do
       get :new, params: { client_id: 'client-123', scope: 'foo', redirect_uri: 'http://example.com/' }
@@ -10,7 +10,7 @@ RSpec.describe Oauth::Jira::AuthorizationsController do
       expect(response).to redirect_to(oauth_authorization_url(client_id: 'client-123',
                                                               response_type: 'code',
                                                               scope: 'foo',
-                                                              redirect_uri: oauth_jira_callback_url))
+                                                              redirect_uri: oauth_jira_dvcs_callback_url))
     end
 
     it 'replaces the GitHub "repo" scope with "api"' do
@@ -19,7 +19,7 @@ RSpec.describe Oauth::Jira::AuthorizationsController do
       expect(response).to redirect_to(oauth_authorization_url(client_id: 'client-123',
                                                               response_type: 'code',
                                                               scope: 'api',
-                                                              redirect_uri: oauth_jira_callback_url))
+                                                              redirect_uri: oauth_jira_dvcs_callback_url))
     end
   end
 

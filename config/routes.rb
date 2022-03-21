@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
   # This prefixless path is required because Jira gets confused if we set it up with a path
   # More information: https://gitlab.com/gitlab-org/gitlab/issues/6752
-  scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
+  scope path: '/login/oauth', controller: 'oauth/jira_dvcs/authorizations', as: :oauth_jira_dvcs do
     get :authorize, action: :new
     get :callback
     post :access_token

@@ -212,6 +212,21 @@ RSpec.describe Projects::CommitController do
       end
     end
 
+    context 'when the revert commit is missing' do
+      it 'renders the 404 page' do
+        post(:revert,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: '1234567890'
+            })
+
+        expect(response).not_to be_successful
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'when the revert was successful' do
       it 'redirects to the commits page' do
         post(:revert,
@@ -262,6 +277,21 @@ RSpec.describe Projects::CommitController do
               namespace_id: project.namespace,
               project_id: project,
               id: master_pickable_commit.id
+            })
+
+        expect(response).not_to be_successful
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the cherry-pick commit is missing' do
+      it 'renders the 404 page' do
+        post(:cherry_pick,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: '1234567890'
             })
 
         expect(response).not_to be_successful

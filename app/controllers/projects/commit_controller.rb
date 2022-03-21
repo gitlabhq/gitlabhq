@@ -106,6 +106,8 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def revert
+    return render_404 unless @commit
+
     assign_change_commit_vars
 
     return render_404 if @start_branch.blank?
@@ -117,6 +119,8 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def cherry_pick
+    return render_404 unless @commit
+
     assign_change_commit_vars
 
     return render_404 if @start_branch.blank?

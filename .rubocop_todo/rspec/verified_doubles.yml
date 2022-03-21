@@ -295,7 +295,7 @@ RSpec/VerifiedDoubles:
     - spec/controllers/import/gitea_controller_spec.rb
     - spec/controllers/import/github_controller_spec.rb
     - spec/controllers/import/gitlab_controller_spec.rb
-    - spec/controllers/oauth/jira/authorizations_controller_spec.rb
+    - spec/controllers/oauth/jira_dvcs/authorizations_controller_spec.rb
     - spec/controllers/omniauth_callbacks_controller_spec.rb
     - spec/controllers/profiles/two_factor_auths_controller_spec.rb
     - spec/controllers/projects/blob_controller_spec.rb

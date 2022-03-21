@@ -4,7 +4,7 @@
 # flow routes for Jira DVCS integration.
 # See https://gitlab.com/gitlab-org/gitlab/issues/2381
 #
-class Oauth::Jira::AuthorizationsController < ApplicationController
+class Oauth::JiraDvcs::AuthorizationsController < ApplicationController
   skip_before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
 
@@ -17,7 +17,7 @@ class Oauth::Jira::AuthorizationsController < ApplicationController
     redirect_to oauth_authorization_path(client_id: params['client_id'],
                                          response_type: 'code',
                                          scope: normalize_scope(params['scope']),
-                                         redirect_uri: oauth_jira_callback_url)
+                                         redirect_uri: oauth_jira_dvcs_callback_url)
   end
 
   # 2. Handle the callback call as we were a Github Enterprise instance client.
@@ -33,7 +33,7 @@ class Oauth::Jira::AuthorizationsController < ApplicationController
   # 3. Rewire and adjust access_token request accordingly.
   def access_token
     # We have to modify request.parameters because Doorkeeper::Server reads params from there
-    request.parameters[:redirect_uri] = oauth_jira_callback_url
+    request.parameters[:redirect_uri] = oauth_jira_dvcs_callback_url
 
     strategy = Doorkeeper::Server.new(self).token_request('authorization_code')
     response = strategy.authorize
