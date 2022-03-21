@@ -1,0 +1,26 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "allOf": [
+      { "$ref": "../../../../../../spec/fixtures/api/schemas/public_api/v4/issue.json" },
+      {
+        "required" : [
+          "link_type",
+          "issue_link_id",
+          "link_created_at",
+          "link_updated_at"
+        ],
+        "properties" : {
+          "link_type": {
+             "type": "string",
+             "enum": ["relates_to", "blocks", "is_blocked_by"]
+          },
+          "issue_link_id": { "type": "integer" },
+          "link_created_at": { "type": "string" },
+          "link_updated_at": { "type": "string" }
+        }
+      }
+    ]
+  }
+}

@@ -33450,6 +33450,9 @@ msgstr ""
 msgid "SecurityReports|Remove project from dashboard"
 msgstr ""
 
+msgid "SecurityReports|Report has expired"
+msgstr ""
+
 msgid "SecurityReports|Scan details"
 msgstr ""
 
@@ -33493,6 +33496,9 @@ msgid "SecurityReports|The Vulnerability Report shows the results of the latest 
 msgstr ""
 
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
+msgstr ""
+
+msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkStart}expired%{helpPageLinkEnd}. Re-run the pipeline to generate a new security report."
 msgstr ""
 
 msgid "SecurityReports|There was an error adding the comment."

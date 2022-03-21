@@ -34,7 +34,7 @@ RSpec.describe API::IssueLinks do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
-        expect(response).to match_response_schema('public_api/v4/issue_links')
+        expect(response).to match_response_schema('public_api/v4/related_issues')
       end
 
       it 'returns multiple links without N + 1' do
