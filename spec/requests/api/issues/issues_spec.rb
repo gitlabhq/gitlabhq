@@ -554,6 +554,27 @@ RSpec.describe API::Issues do
         end
       end
 
+      context 'with incident issues' do
+        let_it_be(:incident) { create(:incident, project: project) }
+
+        it 'avoids N+1 queries' do
+          get api('/issues', user) # warm up
+
+          control = ActiveRecord::QueryRecorder.new do
+            get api('/issues', user)
+          end
+
+          create(:incident, project: project)
+          create(:incident, project: project)
+
+          expect do
+            get api('/issues', user)
+          end.not_to exceed_query_limit(control)
+          # 2 pre-existed issues + 3 incidents
+          expect(json_response.count).to eq(5)
+        end
+      end
+
       context 'filter by labels or label_name param' do
         context 'N+1' do
           let(:label_b) { create(:label, title: 'foo', project: project) }

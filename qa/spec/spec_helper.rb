@@ -105,6 +105,9 @@ RSpec.configure do |config|
   # show exception that triggers a retry if verbose_retry is set to true
   config.display_try_failure_messages = true
 
+  # This option allows to use shorthand aliases for adding :focus metadata - fit, fdescribe and fcontext
+  config.filter_run_when_matching :focus
+
   if ENV['CI'] && !QA::Runtime::Env.disable_rspec_retry?
     non_quarantine_retries = QA::Runtime::Env.ci_project_name =~ /staging|canary|production/ ? 3 : 2
     config.around do |example|

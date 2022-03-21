@@ -114,7 +114,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
         end
       end
 
-      %w[MOVED_PERMANENTLY FOUND TEMPORARY_REDIRECT].each do |code|
+      %w[MOVED_PERMANENTLY FOUND SEE_OTHER TEMPORARY_REDIRECT].each do |code|
         context "with a redirect status code #{code}" do
           let(:status) { HTTP::Status.const_get(code, false) }
 

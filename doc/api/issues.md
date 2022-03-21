@@ -165,6 +165,7 @@ Example response:
       "confidential": false,
       "discussion_locked": false,
       "issue_type": "issue",
+      "severity": "UNKNOWN",
       "_links":{
          "self":"http://gitlab.example.com/api/v4/projects/1/issues/76",
          "notes":"http://gitlab.example.com/api/v4/projects/1/issues/76/notes",
@@ -390,6 +391,7 @@ Example response:
       "confidential": false,
       "discussion_locked": false,
       "issue_type": "issue",
+      "severity": "UNKNOWN",
       "_links":{
          "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
          "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
@@ -598,6 +600,7 @@ Example response:
       "confidential": false,
       "discussion_locked": false,
       "issue_type": "issue",
+      "severity": "UNKNOWN",
       "_links":{
          "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
          "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
@@ -755,6 +758,7 @@ Example response:
   "confidential": false,
   "discussion_locked": false,
   "issue_type": "issue",
+  "severity": "UNKNOWN",
   "task_completion_status": {
     "count": 0,
     "completed_count": 0
@@ -917,6 +921,7 @@ Example response:
    "confidential": false,
    "discussion_locked": false,
    "issue_type": "issue",
+   "severity": "UNKNOWN",
    "_links": {
       "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
       "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -1064,6 +1069,7 @@ Example response:
    "confidential": false,
    "discussion_locked": false,
    "issue_type": "issue",
+   "severity": "UNKNOWN",
    "_links": {
       "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
       "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -1238,6 +1244,7 @@ Example response:
    "confidential": false,
    "discussion_locked": false,
    "issue_type": "issue",
+   "severity": "UNKNOWN",
    "_links": {
       "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
       "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -1421,6 +1428,7 @@ Example response:
   "confidential": false,
   "discussion_locked": false,
   "issue_type": "issue",
+  "severity": "UNKNOWN",
   "_links": {
     "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
     "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -1560,6 +1568,7 @@ Example response:
   "confidential":false,
   "discussion_locked":null,
   "issue_type":"issue",
+  "severity": "UNKNOWN",
   "web_url":"https://gitlab.example.com/namespace1/project2/-/issues/1",
   "time_stats":{
     "time_estimate":0,
@@ -1669,6 +1678,7 @@ Example response:
   "confidential": false,
   "discussion_locked": false,
   "issue_type": "issue",
+  "severity": "UNKNOWN",
   "_links": {
     "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
     "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -1797,6 +1807,7 @@ Example response:
   "confidential": false,
   "discussion_locked": false,
   "issue_type": "issue",
+  "severity": "UNKNOWN",
   "task_completion_status":{
      "count":0,
      "completed_count":0
@@ -1906,6 +1917,7 @@ Example response:
     "confidential": false,
     "discussion_locked": false,
     "issue_type": "issue",
+    "severity": "UNKNOWN",
     "task_completion_status":{
        "count":0,
        "completed_count":0
