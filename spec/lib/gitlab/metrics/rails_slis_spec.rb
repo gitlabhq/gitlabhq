@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
         }
       ]
 
-      possible_graphql_labels = ['graphql:foo', 'graphql:bar', 'graphql:unknown', 'graphql:anonymous'].map do |endpoint_id|
+      possible_graphql_labels = ['graphql:foo', 'graphql:bar', 'graphql:unknown'].map do |endpoint_id|
         {
           endpoint_id: endpoint_id,
           feature_category: nil,

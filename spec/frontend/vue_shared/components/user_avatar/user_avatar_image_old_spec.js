@@ -90,33 +90,38 @@ describe('User Avatar Image Component', () => {
     });
   });
 
-  describe('dynamic tooltip content', () => {
-    const props = PROVIDED_PROPS;
+  describe('Dynamic tooltip content', () => {
     const slots = {
       default: ['Action!'],
     };
 
-    beforeEach(() => {
-      wrapper = shallowMount(UserAvatarImage, {
-        propsData: { props },
-        slots,
+    describe('when `tooltipText` is provided and no default slot', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage, {
+          propsData: { ...PROVIDED_PROPS },
+        });
+      });
+
+      it('renders the tooltip with `tooltipText` as content', () => {
+        expect(wrapper.findComponent(GlTooltip).text()).toBe(PROVIDED_PROPS.tooltipText);
       });
     });
 
-    it('renders the tooltip slot', () => {
-      expect(wrapper.findComponent(GlTooltip).exists()).toBe(true);
-    });
+    describe('when `tooltipText` and default slot is provided', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage, {
+          propsData: { ...PROVIDED_PROPS },
+          slots,
+        });
+      });
 
-    it('renders the tooltip content', () => {
-      expect(wrapper.findComponent(GlTooltip).text()).toContain(slots.default[0]);
-    });
+      it('does not render `tooltipText` inside the tooltip', () => {
+        expect(wrapper.findComponent(GlTooltip).text()).not.toBe(PROVIDED_PROPS.tooltipText);
+      });
 
-    it('does not render tooltip data attributes on avatar image', () => {
-      const avatarImg = wrapper.find('img');
-
-      expect(avatarImg.attributes('title')).toBeFalsy();
-      expect(avatarImg.attributes('data-placement')).not.toBeDefined();
-      expect(avatarImg.attributes('data-container')).not.toBeDefined();
+      it('renders the content provided via default slot', () => {
+        expect(wrapper.findComponent(GlTooltip).text()).toContain(slots.default[0]);
+      });
     });
   });
 });

@@ -24,7 +24,7 @@ export default {
       canUseCrypto: AccessorUtilities.canUseCrypto(),
     };
   },
-  mounted() {
+  created() {
     window.addEventListener('message', this.handleWindowMessage);
   },
   beforeDestroy() {

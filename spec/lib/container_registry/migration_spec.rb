@@ -165,4 +165,18 @@ RSpec.describe ContainerRegistry::Migration do
       expect(described_class.target_plan).to eq(plan)
     end
   end
+
+  describe '.all_plans?' do
+    subject { described_class.all_plans? }
+
+    it { is_expected.to eq(true) }
+
+    context 'feature flag disabled' do
+      before do
+        stub_feature_flags(container_registry_migration_phase2_all_plans: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

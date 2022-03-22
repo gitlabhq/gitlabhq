@@ -4,6 +4,7 @@ exports[`GroupEmptyState given state BAD_QUERY passes the expected props to GlEm
 Object {
   "compact": true,
   "description": null,
+  "invertInDarkMode": true,
   "primaryButtonLink": "/path/to/settings",
   "primaryButtonText": "Verify configuration",
   "secondaryButtonLink": null,
@@ -31,6 +32,7 @@ exports[`GroupEmptyState given state CONNECTION_FAILED passes the expected props
 Object {
   "compact": true,
   "description": "We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating.",
+  "invertInDarkMode": true,
   "primaryButtonLink": "/path/to/settings",
   "primaryButtonText": "Verify configuration",
   "secondaryButtonLink": null,
@@ -47,6 +49,7 @@ exports[`GroupEmptyState given state FOO STATE passes the expected props to GlEm
 Object {
   "compact": true,
   "description": "An error occurred while loading the data. Please try again.",
+  "invertInDarkMode": true,
   "primaryButtonLink": null,
   "primaryButtonText": null,
   "secondaryButtonLink": null,
@@ -63,6 +66,7 @@ exports[`GroupEmptyState given state LOADING passes the expected props to GlEmpt
 Object {
   "compact": true,
   "description": "Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available.",
+  "invertInDarkMode": true,
   "primaryButtonLink": null,
   "primaryButtonText": null,
   "secondaryButtonLink": null,
@@ -79,6 +83,7 @@ exports[`GroupEmptyState given state NO_DATA passes the expected props to GlEmpt
 Object {
   "compact": true,
   "description": null,
+  "invertInDarkMode": true,
   "primaryButtonLink": null,
   "primaryButtonText": null,
   "secondaryButtonLink": null,
@@ -106,6 +111,7 @@ exports[`GroupEmptyState given state TIMEOUT passes the expected props to GlEmpt
 Object {
   "compact": true,
   "description": null,
+  "invertInDarkMode": true,
   "primaryButtonLink": null,
   "primaryButtonText": null,
   "secondaryButtonLink": null,
@@ -133,6 +139,7 @@ exports[`GroupEmptyState given state UNKNOWN_ERROR passes the expected props to 
 Object {
   "compact": true,
   "description": "An error occurred while loading the data. Please try again.",
+  "invertInDarkMode": true,
   "primaryButtonLink": null,
   "primaryButtonText": null,
   "secondaryButtonLink": null,

@@ -49,5 +49,9 @@ module ContainerRegistry
     def self.target_plan
       Plan.find_by_name(target_plan_name)
     end
+
+    def self.all_plans?
+      Feature.enabled?(:container_registry_migration_phase2_all_plans)
+    end
   end
 end

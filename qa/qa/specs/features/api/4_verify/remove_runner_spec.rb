@@ -20,7 +20,7 @@ module QA
       end
 
       # Removing a runner via the UI is covered by `spec/features/runners_spec.rb``
-      it 'removes the runner', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/355302', type: :investigating } do
+      it 'removes the runner', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/355302', type: :investigating }, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354828' do
         expect(runner.project.runners.size).to eq(1)
         expect(runner.project.runners.first[:description]).to eq(executor)
 

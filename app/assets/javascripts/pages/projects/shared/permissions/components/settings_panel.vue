@@ -590,7 +590,9 @@ export default {
           :help-path="packagesHelpPath"
           :label="$options.i18n.packagesLabel"
           :help-text="
-            s__('ProjectSettings|Every project can have its own space to store its packages.')
+            s__(
+              'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
+            )
           "
         >
           <gl-toggle

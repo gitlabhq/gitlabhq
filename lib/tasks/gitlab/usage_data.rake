@@ -51,6 +51,17 @@ namespace :gitlab do
       File.write(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH, banner + YAML.dump(all_includes).gsub(/ *$/m, ''))
     end
 
+    desc 'GitLab | UsageDataMetrics | Generate raw SQL metrics queries fixture for RSpec'
+    task generate_sql_metrics_fixture: :environment do
+      path = Rails.root.join('spec/fixtures/lib/gitlab/usage/sql_metrics_queries.json')
+
+      queries = Timecop.freeze(2021, 1, 1) do
+        Gitlab::Usage::ServicePingReport.for(output: :metrics_queries)
+      end
+
+      File.write(path, Gitlab::Json.pretty_generate(queries))
+    end
+
     def ci_template_includes_hash(source, template_directory = nil)
       Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_templates("lib/gitlab/ci/templates/#{template_directory}").map do |template|
         expanded_template_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.expand_template_name("#{template_directory}/#{template}")

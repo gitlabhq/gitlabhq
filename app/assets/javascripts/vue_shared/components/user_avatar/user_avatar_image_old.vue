@@ -100,11 +100,12 @@ export default {
       class="avatar"
     />
     <gl-tooltip
+      v-if="tooltipText || $slots.default"
       :target="() => $refs.userAvatarImage"
       :placement="tooltipPlacement"
       boundary="window"
     >
-      <slot> {{ tooltipText }}</slot>
+      <slot>{{ tooltipText }}</slot>
     </gl-tooltip>
   </span>
 </template>

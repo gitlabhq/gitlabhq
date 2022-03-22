@@ -18,7 +18,8 @@ RSpec.shared_context 'importable repositories' do
     stub_application_setting(container_registry_import_created_before: 1.day.ago)
     stub_feature_flags(
       container_registry_phase_2_deny_list: false,
-      container_registry_migration_limit_gitlab_org: false
+      container_registry_migration_limit_gitlab_org: false,
+      container_registry_migration_phase2_all_plans: false
     )
 
     Feature::FlipperGate.create!(

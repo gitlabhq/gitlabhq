@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Graphql::KnownOperations do
 
   describe "#from_query" do
     where(:query_string, :expected) do
-      "query { helloWorld }"         | described_class::ANONYMOUS
+      "query { helloWorld }"         | described_class::UNKNOWN
       "query fuzzyyy { helloWorld }" | described_class::UNKNOWN
       "query foo { helloWorld }"     | described_class::Operation.new("foo")
     end
@@ -35,13 +35,13 @@ RSpec.describe Gitlab::Graphql::KnownOperations do
 
   describe "#operations" do
     it "returns array of known operations" do
-      expect(subject.operations.map(&:name)).to match_array(%w(anonymous unknown foo bar))
+      expect(subject.operations.map(&:name)).to match_array(%w(unknown foo bar))
     end
   end
 
   describe "Operation#to_caller_id" do
     where(:query_string, :expected) do
-      "query { helloWorld }"         | "graphql:#{described_class::ANONYMOUS.name}"
+      "query { helloWorld }"         | "graphql:#{described_class::UNKNOWN.name}"
       "query foo { helloWorld }"     | "graphql:foo"
     end
 

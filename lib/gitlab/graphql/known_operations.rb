@@ -14,7 +14,6 @@ module Gitlab
         end
       end
 
-      ANONYMOUS = Operation.new("anonymous").freeze
       UNKNOWN = Operation.new("unknown").freeze
 
       def self.default
@@ -24,7 +23,7 @@ module Gitlab
       def initialize(operation_names)
         @operation_hash = operation_names
           .map { |name| Operation.new(name).freeze }
-          .concat([ANONYMOUS, UNKNOWN])
+          .concat([UNKNOWN])
           .index_by(&:name)
       end
 
@@ -32,7 +31,7 @@ module Gitlab
       def from_query(query)
         operation_name = query.selected_operation_name
 
-        return ANONYMOUS unless operation_name
+        return UNKNOWN unless operation_name
 
         @operation_hash[operation_name] || UNKNOWN
       end

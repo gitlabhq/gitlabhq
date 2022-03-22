@@ -9,7 +9,7 @@
       = link_to _('More information'), help_page_path('user/project/integrations/prometheus'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     - if @project
-      = render 'projects/settings/operations/configuration_banner', project: @project, service: service
+      = render 'shared/prometheus_configuration_banner', project: @project, integration: service, header_tag: :b, info_well_classes: 'gl-p-3 gl-mt-3'
 
     %b.gl-mb-3
       = s_('PrometheusService|Manual configuration')
