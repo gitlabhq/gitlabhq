@@ -12,9 +12,16 @@ const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
 
 initMembersApp(document.querySelector('.js-group-members-list-app'), {
   [MEMBER_TYPES.user]: {
-    tableFields: SHARED_FIELDS.concat(['source', 'granted']),
+    tableFields: SHARED_FIELDS.concat(['source', 'granted', 'userCreatedAt', 'lastActivityOn']),
     tableAttrs: { tr: { 'data-qa-selector': 'member_row' } },
-    tableSortableFields: ['account', 'granted', 'maxRole', 'lastSignIn'],
+    tableSortableFields: [
+      'account',
+      'granted',
+      'maxRole',
+      'lastSignIn',
+      'userCreatedAt',
+      'lastActivityOn',
+    ],
     requestFormatter: groupMemberRequestFormatter,
     filteredSearchBar: {
       show: true,

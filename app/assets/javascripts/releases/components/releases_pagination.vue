@@ -1,26 +1,24 @@
 <script>
 import { GlKeysetPagination } from '@gitlab/ui';
-import { mapActions, mapState } from 'vuex';
+import { isBoolean } from 'lodash';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 
 export default {
-  name: 'ReleasesPaginationGraphql',
+  name: 'ReleasesPagination',
   components: { GlKeysetPagination },
-  computed: {
-    ...mapState('index', ['pageInfo']),
-    showPagination() {
-      return this.pageInfo.hasPreviousPage || this.pageInfo.hasNextPage;
+  props: {
+    pageInfo: {
+      type: Object,
+      required: true,
+      validator: (info) => isBoolean(info.hasPreviousPage) && isBoolean(info.hasNextPage),
     },
   },
   methods: {
-    ...mapActions('index', ['fetchReleases']),
     onPrev(before) {
       historyPushState(buildUrlWithCurrentLocation(`?before=${before}`));
-      this.fetchReleases({ before });
     },
     onNext(after) {
       historyPushState(buildUrlWithCurrentLocation(`?after=${after}`));
-      this.fetchReleases({ after });
     },
   },
 };
@@ -28,8 +26,10 @@ export default {
 <template>
   <div class="gl-display-flex gl-justify-content-center">
     <gl-keyset-pagination
-      v-if="showPagination"
       v-bind="pageInfo"
+      :prev-text="__('Prev')"
+      :next-text="__('Next')"
+      v-on="$listeners"
       @prev="onPrev($event)"
       @next="onNext($event)"
     />

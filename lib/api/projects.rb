@@ -20,6 +20,7 @@ module API
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
         projects = projects.with_statistics if params[:statistics]
         projects = projects.joins(:statistics) if params[:order_by].include?('project_statistics') # rubocop: disable CodeReuse/ActiveRecord
+        projects = projects.created_by(current_user).imported.with_import_state if params[:imported]
 
         lang = params[:with_programming_language]
         projects = projects.with_programming_language(lang) if lang
@@ -125,6 +126,7 @@ module API
         optional :search_namespaces, type: Boolean, desc: "Include ancestor namespaces when matching search criteria"
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+        optional :imported, type: Boolean, default: false, desc: 'Limit by imported by authenticated user'
         optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'

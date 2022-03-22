@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe MemberUserEntity do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, last_activity_on: Date.today) }
   let_it_be(:emoji) { 'slight_smile' }
   let_it_be(:user_status) { create(:user_status, user: user, emoji: emoji) }
 
@@ -35,5 +35,13 @@ RSpec.describe MemberUserEntity do
 
   it 'correctly exposes `status.emoji`' do
     expect(entity_hash[:status][:emoji]).to match(emoji)
+  end
+
+  it 'correctly exposes `created_at`' do
+    expect(entity_hash[:created_at]).to be(user.created_at)
+  end
+
+  it 'correctly exposes `last_activity_on`' do
+    expect(entity_hash[:last_activity_on]).to be(user.last_activity_on)
   end
 end

@@ -1,140 +1,94 @@
-import { GlKeysetPagination } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { historyPushState } from '~/lib/utils/common_utils';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
-import createStore from '~/releases/stores';
-import createIndexModule from '~/releases/stores/modules/index';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
   historyPushState: jest.fn(),
 }));
 
-Vue.use(Vuex);
-
-describe('~/releases/components/releases_pagination.vue', () => {
+describe('releases_pagination.vue', () => {
+  const startCursor = 'startCursor';
+  const endCursor = 'endCursor';
   let wrapper;
-  let indexModule;
-
-  const cursors = {
-    startCursor: 'startCursor',
-    endCursor: 'endCursor',
-  };
-
-  const projectPath = 'my/project';
+  let onPrev;
+  let onNext;
 
   const createComponent = (pageInfo) => {
-    indexModule = createIndexModule({ projectPath });
+    onPrev = jest.fn();
+    onNext = jest.fn();
 
-    indexModule.state.pageInfo = pageInfo;
-
-    indexModule.actions.fetchReleases = jest.fn();
-
-    wrapper = mount(ReleasesPagination, {
-      store: createStore({
-        modules: {
-          index: indexModule,
-        },
-        featureFlags: {},
-      }),
+    wrapper = mountExtended(ReleasesPagination, {
+      propsData: {
+        pageInfo,
+      },
+      listeners: {
+        prev: onPrev,
+        next: onNext,
+      },
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  const findGlKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
-  const findPrevButton = () => findGlKeysetPagination().find('[data-testid="prevButton"]');
-  const findNextButton = () => findGlKeysetPagination().find('[data-testid="nextButton"]');
-
-  const expectDisabledPrev = () => {
-    expect(findPrevButton().attributes().disabled).toBe('disabled');
-  };
-  const expectEnabledPrev = () => {
-    expect(findPrevButton().attributes().disabled).toBe(undefined);
-  };
-  const expectDisabledNext = () => {
-    expect(findNextButton().attributes().disabled).toBe('disabled');
-  };
-  const expectEnabledNext = () => {
-    expect(findNextButton().attributes().disabled).toBe(undefined);
+  const singlePageInfo = {
+    hasPreviousPage: false,
+    hasNextPage: false,
+    startCursor,
+    endCursor,
   };
 
-  describe('when there is only one page of results', () => {
-    beforeEach(() => {
-      createComponent({
-        hasPreviousPage: false,
-        hasNextPage: false,
+  const onlyNextPageInfo = {
+    hasPreviousPage: false,
+    hasNextPage: true,
+    startCursor,
+    endCursor,
+  };
+
+  const onlyPrevPageInfo = {
+    hasPreviousPage: true,
+    hasNextPage: false,
+    startCursor,
+    endCursor,
+  };
+
+  const prevAndNextPageInfo = {
+    hasPreviousPage: true,
+    hasNextPage: true,
+    startCursor,
+    endCursor,
+  };
+
+  const findPrevButton = () => wrapper.findByTestId('prevButton');
+  const findNextButton = () => wrapper.findByTestId('nextButton');
+
+  describe.each`
+    description                                             | pageInfo               | prevEnabled | nextEnabled
+    ${'when there is only one page of results'}             | ${singlePageInfo}      | ${false}    | ${false}
+    ${'when there is a next page, but not a previous page'} | ${onlyNextPageInfo}    | ${false}    | ${true}
+    ${'when there is a previous page, but not a next page'} | ${onlyPrevPageInfo}    | ${true}     | ${false}
+    ${'when there is both a previous and next page'}        | ${prevAndNextPageInfo} | ${true}     | ${true}
+  `('component states', ({ description, pageInfo, prevEnabled, nextEnabled }) => {
+    describe(description, () => {
+      beforeEach(() => {
+        createComponent(pageInfo);
       });
-    });
 
-    it('does not render a GlKeysetPagination', () => {
-      expect(findGlKeysetPagination().exists()).toBe(false);
-    });
-  });
-
-  describe('when there is a next page, but not a previous page', () => {
-    beforeEach(() => {
-      createComponent({
-        hasPreviousPage: false,
-        hasNextPage: true,
+      it(`renders the "Prev" button as ${prevEnabled ? 'enabled' : 'disabled'}`, () => {
+        expect(findPrevButton().attributes().disabled).toBe(prevEnabled ? undefined : 'disabled');
       });
-    });
 
-    it('renders a disabled "Prev" button', () => {
-      expectDisabledPrev();
-    });
-
-    it('renders an enabled "Next" button', () => {
-      expectEnabledNext();
-    });
-  });
-
-  describe('when there is a previous page, but not a next page', () => {
-    beforeEach(() => {
-      createComponent({
-        hasPreviousPage: true,
-        hasNextPage: false,
+      it(`renders the "Next" button as ${nextEnabled ? 'enabled' : 'disabled'}`, () => {
+        expect(findNextButton().attributes().disabled).toBe(nextEnabled ? undefined : 'disabled');
       });
-    });
-
-    it('renders a enabled "Prev" button', () => {
-      expectEnabledPrev();
-    });
-
-    it('renders an disabled "Next" button', () => {
-      expectDisabledNext();
-    });
-  });
-
-  describe('when there is both a previous page and a next page', () => {
-    beforeEach(() => {
-      createComponent({
-        hasPreviousPage: true,
-        hasNextPage: true,
-      });
-    });
-
-    it('renders a enabled "Prev" button', () => {
-      expectEnabledPrev();
-    });
-
-    it('renders an enabled "Next" button', () => {
-      expectEnabledNext();
     });
   });
 
   describe('button behavior', () => {
     beforeEach(() => {
-      createComponent({
-        hasPreviousPage: true,
-        hasNextPage: true,
-        ...cursors,
-      });
+      createComponent(prevAndNextPageInfo);
     });
 
     describe('next button behavior', () => {
@@ -142,33 +96,29 @@ describe('~/releases/components/releases_pagination.vue', () => {
         findNextButton().trigger('click');
       });
 
-      it('calls fetchReleases with the correct after cursor', () => {
-        expect(indexModule.actions.fetchReleases.mock.calls).toEqual([
-          [expect.anything(), { after: cursors.endCursor }],
-        ]);
+      it('emits an "next" event with the "after" cursor', () => {
+        expect(onNext.mock.calls).toEqual([[endCursor]]);
       });
 
       it('calls historyPushState with the new URL', () => {
         expect(historyPushState.mock.calls).toEqual([
-          [expect.stringContaining(`?after=${cursors.endCursor}`)],
+          [expect.stringContaining(`?after=${endCursor}`)],
         ]);
       });
     });
 
-    describe('previous button behavior', () => {
+    describe('prev button behavior', () => {
       beforeEach(() => {
         findPrevButton().trigger('click');
       });
 
-      it('calls fetchReleases with the correct before cursor', () => {
-        expect(indexModule.actions.fetchReleases.mock.calls).toEqual([
-          [expect.anything(), { before: cursors.startCursor }],
-        ]);
+      it('emits an "prev" event with the "before" cursor', () => {
+        expect(onPrev.mock.calls).toEqual([[startCursor]]);
       });
 
       it('calls historyPushState with the new URL', () => {
         expect(historyPushState.mock.calls).toEqual([
-          [expect.stringContaining(`?before=${cursors.startCursor}`)],
+          [expect.stringContaining(`?before=${startCursor}`)],
         ]);
       });
     });

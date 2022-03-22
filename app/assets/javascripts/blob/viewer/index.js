@@ -17,8 +17,6 @@ import eventHub from '../../notes/event_hub';
 
 const loadRichBlobViewer = (type) => {
   switch (type) {
-    case 'balsamiq':
-      return import(/* webpackChunkName: 'balsamiq_viewer' */ '../balsamiq_viewer');
     case 'notebook':
       return import(/* webpackChunkName: 'notebook_viewer' */ '../notebook_viewer');
     case 'openapi':

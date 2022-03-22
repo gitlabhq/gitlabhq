@@ -85,8 +85,11 @@ module API
       end
       expose :mr_default_target_self, if: -> (project) { project.forked? }
 
+      expose :import_url, if: -> (project, options) { Ability.allowed?(options[:current_user], :admin_project, project) } do |project|
+        project[:import_url]
+      end
+      expose :import_type, if: -> (project, options) { Ability.allowed?(options[:current_user], :admin_project, project) }
       expose :import_status
-
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] } do |project|
         project.import_state&.last_error
       end

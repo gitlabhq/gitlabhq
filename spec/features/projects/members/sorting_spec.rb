@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Projects > Members > Sorting', :js do
   include Spec::Support::Helpers::Features::MembersHelpers
 
-  let(:maintainer) { create(:user, name: 'John Doe') }
-  let(:developer) { create(:user, name: 'Mary Jane', last_sign_in_at: 5.days.ago) }
+  let(:maintainer) { create(:user, name: 'John Doe', created_at: 5.days.ago, last_activity_on: Date.today) }
+  let(:developer) { create(:user, name: 'Mary Jane', created_at: 1.day.ago, last_sign_in_at: 5.days.ago, last_activity_on: Date.today - 5) }
   let(:project) { create(:project, namespace: maintainer.namespace, creator: maintainer) }
 
   before do
@@ -40,6 +40,42 @@ RSpec.describe 'Projects > Members > Sorting', :js do
     expect(second_row).to have_content(developer.name)
 
     expect_sort_by('Max role', :desc)
+  end
+
+  it 'sorts by user created on ascending' do
+    visit_members_list(sort: :oldest_created_user)
+
+    expect(first_row.text).to have_content(maintainer.name)
+    expect(second_row.text).to have_content(developer.name)
+
+    expect_sort_by('Created on', :asc)
+  end
+
+  it 'sorts by user created on descending' do
+    visit_members_list(sort: :recent_created_user)
+
+    expect(first_row.text).to have_content(developer.name)
+    expect(second_row.text).to have_content(maintainer.name)
+
+    expect_sort_by('Created on', :desc)
+  end
+
+  it 'sorts by last activity ascending' do
+    visit_members_list(sort: :oldest_last_activity)
+
+    expect(first_row.text).to have_content(developer.name)
+    expect(second_row.text).to have_content(maintainer.name)
+
+    expect_sort_by('Last activity', :asc)
+  end
+
+  it 'sorts by last activity descending' do
+    visit_members_list(sort: :recent_last_activity)
+
+    expect(first_row.text).to have_content(maintainer.name)
+    expect(second_row.text).to have_content(developer.name)
+
+    expect_sort_by('Last activity', :desc)
   end
 
   it 'sorts by access granted ascending' do

@@ -5550,9 +5550,6 @@ msgstr ""
 msgid "Badges|Your badges"
 msgstr ""
 
-msgid "Balsamiq file could not be loaded."
-msgstr ""
-
 msgid "BambooService|Atlassian Bamboo"
 msgstr ""
 
@@ -27875,9 +27872,6 @@ msgid "Please select a file"
 msgstr ""
 
 msgid "Please select a group"
-msgstr ""
-
-msgid "Please select a group."
 msgstr ""
 
 msgid "Please select a valid target branch"

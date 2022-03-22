@@ -11,8 +11,6 @@ itself: # project
     - has_external_wiki
     - hidden
     - import_source
-    - import_type
-    - import_url
     - jobs_cache_index
     - last_repository_check_at
     - last_repository_check_failed
@@ -63,6 +61,8 @@ itself: # project
     - empty_repo
     - forks_count
     - http_url_to_repo
+    - import_status
+    - import_url
     - name_with_namespace
     - open_issues_count
     - owner

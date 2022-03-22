@@ -656,7 +656,9 @@ class Project < ApplicationRecord
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
 
+  scope :created_by, -> (user) { where(creator: user) }
   scope :imported_from, -> (type) { where(import_type: type) }
+  scope :imported, -> { where.not(import_type: nil) }
   scope :with_tracing_enabled, -> { joins(:tracing_setting) }
   scope :with_enabled_error_tracking, -> { joins(:error_tracking_setting).where(project_error_tracking_settings: { enabled: true }) }
 

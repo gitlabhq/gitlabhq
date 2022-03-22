@@ -35,7 +35,6 @@ class Blob < SimpleDelegator
 
     BlobViewer::Image,
     BlobViewer::Sketch,
-    BlobViewer::Balsamiq,
 
     BlobViewer::Video,
     BlobViewer::Audio,

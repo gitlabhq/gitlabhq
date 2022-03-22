@@ -4631,6 +4631,7 @@ Input type: `TodosMarkAllDoneInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodosmarkalldoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtodosmarkalldonetargetid"></a>`targetId` | [`TodoableID`](#todoableid) | Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported. If argument is omitted, all pending to-do items of the current user are marked as done. |
 
 #### Fields
 

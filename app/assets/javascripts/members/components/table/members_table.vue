@@ -5,6 +5,7 @@ import MembersTableCell from 'ee_else_ce/members/components/table/members_table_
 import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import initUserPopovers from '~/user_popovers';
+import UserDate from '~/vue_shared/components/user_date.vue';
 import {
   FIELD_KEY_ACTIONS,
   FIELDS,
@@ -40,6 +41,7 @@ export default {
     RemoveGroupLinkModal,
     RemoveMemberModal,
     ExpirationDatepicker,
+    UserDate,
     LdapOverrideConfirmationModal: () =>
       import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
   },
@@ -285,6 +287,14 @@ export default {
         <members-table-cell #default="{ permissions }" :member="member">
           <expiration-datepicker :permissions="permissions" :member="member" />
         </members-table-cell>
+      </template>
+
+      <template #cell(userCreatedAt)="{ item: member }">
+        <user-date :date="member.user.createdAt" />
+      </template>
+
+      <template #cell(lastActivityOn)="{ item: member }">
+        <user-date :date="member.user.lastActivityOn" />
       </template>
 
       <template #cell(actions)="{ item: member }">

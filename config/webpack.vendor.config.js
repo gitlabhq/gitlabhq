@@ -28,7 +28,6 @@ module.exports = {
       'jquery/dist/jquery.slim.js',
       'pdfjs-dist/build/pdf',
       'pdfjs-dist/build/pdf.worker.min',
-      'sql.js',
       'core-js',
       'echarts',
       'lodash',

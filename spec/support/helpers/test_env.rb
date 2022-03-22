@@ -41,7 +41,6 @@ module TestEnv
     'pages-deploy-target'                => '7975be0',
     'audio'                              => 'c3c21fd',
     'video'                              => '8879059',
-    'add-balsamiq-file'                  => 'b89b56d',
     'crlf-diff'                          => '5938907',
     'conflict-start'                     => '824be60',
     'conflict-resolvable'                => '1450cd6',

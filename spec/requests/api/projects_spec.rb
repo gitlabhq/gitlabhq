@@ -683,6 +683,33 @@ RSpec.describe API::Projects do
       end
     end
 
+    context 'and imported=true' do
+      before do
+        other_user = create(:user)
+        # imported project by other user
+        create(:project, creator: other_user, import_type: 'github', import_url: 'http://foo.com')
+        # project created by current user directly instead of importing
+        create(:project)
+        project.update_attribute(:import_url, 'http://user:password@host/path')
+        project.update_attribute(:import_type, 'github')
+      end
+
+      it 'returns only imported projects owned by current user' do
+        get api('/projects?imported=true', user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |p| p['id'] }).to eq [project.id]
+      end
+
+      it 'does not expose import credentials' do
+        get api('/projects?imported=true', user)
+
+        expect(json_response.first['import_url']).to eq 'http://host/path'
+      end
+    end
+
     context 'when authenticated as a different user' do
       it_behaves_like 'projects response' do
         let(:filter) { {} }

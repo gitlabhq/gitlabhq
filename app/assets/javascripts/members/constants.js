@@ -9,6 +9,8 @@ export const FIELD_KEY_GRANTED = 'granted';
 export const FIELD_KEY_INVITED = 'invited';
 export const FIELD_KEY_REQUESTED = 'requested';
 export const FIELD_KEY_MAX_ROLE = 'maxRole';
+export const FIELD_KEY_USER_CREATED_AT = 'userCreatedAt';
+export const FIELD_KEY_LAST_ACTIVITY_ON = 'lastActivityOn';
 export const FIELD_KEY_EXPIRATION = 'expiration';
 export const FIELD_KEY_LAST_SIGN_IN = 'lastSignIn';
 export const FIELD_KEY_ACTIONS = 'actions';
@@ -65,6 +67,22 @@ export const FIELDS = [
     label: __('Expiration'),
     thClass: 'col-expiration',
     tdClass: 'col-expiration',
+  },
+  {
+    key: FIELD_KEY_USER_CREATED_AT,
+    label: __('Created on'),
+    sort: {
+      asc: 'oldest_created_user',
+      desc: 'recent_created_user',
+    },
+  },
+  {
+    key: FIELD_KEY_LAST_ACTIVITY_ON,
+    label: __('Last activity'),
+    sort: {
+      asc: 'oldest_last_activity',
+      desc: 'recent_last_activity',
+    },
   },
   {
     key: FIELD_KEY_LAST_SIGN_IN,

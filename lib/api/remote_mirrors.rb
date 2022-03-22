@@ -25,6 +25,18 @@ module API
           with: Entities::RemoteMirror
       end
 
+      desc 'Get a single remote mirror' do
+        success Entities::RemoteMirror
+      end
+      params do
+        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
+      end
+      get ':id/remote_mirrors/:mirror_id' do
+        mirror = user_project.remote_mirrors.find(params[:mirror_id])
+
+        present mirror, with: Entities::RemoteMirror
+      end
+
       desc 'Create remote mirror for a project' do
         success Entities::RemoteMirror
       end

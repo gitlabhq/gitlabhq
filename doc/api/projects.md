@@ -49,6 +49,7 @@ GET /projects
 | `archived`                                 | boolean  | **{dotted-circle}** No | Limit by archived status. |
 | `id_after`                                 | integer  | **{dotted-circle}** No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                                | integer  | **{dotted-circle}** No | Limit results to projects with IDs less than the specified ID. |
+| `imported`                                 | boolean  | **{dotted-circle}** No | Limit results to projects which were imported from external systems by current user. |
 | `last_activity_after`                      | datetime | **{dotted-circle}** No | Limit results to projects with last_activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `last_activity_before`                     | datetime | **{dotted-circle}** No | Limit results to projects with last_activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                               | boolean  | **{dotted-circle}** No | Limit by projects that the current user is a member of. |

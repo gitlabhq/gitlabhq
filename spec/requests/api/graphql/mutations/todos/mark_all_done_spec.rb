@@ -50,6 +50,37 @@ RSpec.describe 'Marking all todos done' do
     expect(updated_todo_ids).to contain_exactly(global_id_of(todo1), global_id_of(todo3))
   end
 
+  context 'when target_id is given', :aggregate_failures do
+    let_it_be(:target) { create(:issue, project: project) }
+    let_it_be(:target_todo1) { create(:todo, user: current_user, author: author, state: :pending, target: target) }
+    let_it_be(:target_todo2) { create(:todo, user: current_user, author: author, state: :pending, target: target) }
+
+    let(:input) { { 'targetId' => target.to_global_id.to_s } }
+
+    it 'marks all pending todos for the target as done' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(target_todo1.reload.state).to eq('done')
+      expect(target_todo2.reload.state).to eq('done')
+
+      expect(todo1.reload.state).to eq('pending')
+      expect(todo3.reload.state).to eq('pending')
+
+      updated_todo_ids = mutation_response['todos'].map { |todo| todo['id'] }
+      expect(updated_todo_ids).to contain_exactly(global_id_of(target_todo1), global_id_of(target_todo2))
+    end
+
+    context 'when target does not exist' do
+      let(:input) { { 'targetId' => "gid://gitlab/Issue/#{non_existing_record_id}" } }
+
+      it 'returns an error' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(graphql_errors).to include(a_hash_including('message' => include('Resource not available')))
+      end
+    end
+  end
+
   it 'behaves as expected if there are no todos for the requesting user' do
     post_graphql_mutation(mutation, current_user: other_user2)
 

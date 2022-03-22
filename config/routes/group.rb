@@ -99,7 +99,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       delete :leave, on: :collection
     end
 
-    resources :group_links, only: [:create, :update, :destroy], constraints: { id: /\d+|:id/ }
+    resources :group_links, only: [:update, :destroy], constraints: { id: /\d+|:id/ }
 
     resources :uploads, only: [:create] do
       collection do

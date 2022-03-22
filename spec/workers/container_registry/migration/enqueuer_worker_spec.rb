@@ -31,7 +31,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         end
 
         it 're-enqueues the worker' do
-          expect(ContainerRegistry::Migration::EnqueuerWorker).to receive(:perform_async)
+          expect(described_class).to receive(:perform_async)
 
           subject
         end
@@ -43,7 +43,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         end
 
         it 'does not re-enqueue the worker' do
-          expect(ContainerRegistry::Migration::EnqueuerWorker).not_to receive(:perform_async)
+          expect(described_class).not_to receive(:perform_async)
 
           subject
         end
@@ -59,10 +59,11 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
           next_qualified_repository
         end
 
-        expect(worker).to receive(:log_extra_metadata_on_done)
-          .with(:container_repository_id, container_repository.id)
-        expect(worker).to receive(:log_extra_metadata_on_done)
-          .with(:import_type, 'next')
+        expect_log_extra_metadata(
+          import_type: 'next',
+          container_repository_id: container_repository.id,
+          container_repository_path: container_repository.path
+        )
 
         subject
 
@@ -77,7 +78,11 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         allow(ContainerRegistry::Migration).to receive(:enabled?).and_return(false)
       end
 
-      it_behaves_like 'no action'
+      it_behaves_like 'no action' do
+        before do
+          expect_log_extra_metadata(migration_enabled: false)
+        end
+      end
     end
 
     context 'above capacity' do
@@ -87,7 +92,11 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         allow(ContainerRegistry::Migration).to receive(:capacity).and_return(1)
       end
 
-      it_behaves_like 'no action'
+      it_behaves_like 'no action' do
+        before do
+          expect_log_extra_metadata(below_capacity: false, max_capacity_setting: 1)
+        end
+      end
 
       it 'does not re-enqueue the worker' do
         expect(ContainerRegistry::Migration::EnqueuerWorker).not_to receive(:perform_async)
@@ -102,7 +111,11 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         allow(ContainerRegistry::Migration).to receive(:enqueue_waiting_time).and_return(1.hour)
       end
 
-      it_behaves_like 'no action'
+      it_behaves_like 'no action' do
+        before do
+          expect_log_extra_metadata(waiting_time_passed: false, current_waiting_time_setting: 1.hour)
+        end
+      end
     end
 
     context 'when an aborted import is available' do
@@ -117,10 +130,11 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
           next_aborted_repository
         end
 
-        expect(worker).to receive(:log_extra_metadata_on_done)
-          .with(:container_repository_id, aborted_repository.id)
-        expect(worker).to receive(:log_extra_metadata_on_done)
-          .with(:import_type, 'retry')
+        expect_log_extra_metadata(
+          import_type: 'retry',
+          container_repository_id: aborted_repository.id,
+          container_repository_path: aborted_repository.path
+        )
 
         subject
 
@@ -129,6 +143,28 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
       end
 
       it_behaves_like 're-enqueuing based on capacity'
+
+      context 'when an error occurs' do
+        it 'does not abort that migration' do
+          method = worker.method(:next_aborted_repository)
+          allow(worker).to receive(:next_aborted_repository) do
+            next_aborted_repository = method.call
+            allow(next_aborted_repository).to receive(:retry_aborted_migration).and_raise(StandardError)
+            next_aborted_repository
+          end
+
+          expect_log_extra_metadata(
+            import_type: 'retry',
+            container_repository_id: aborted_repository.id,
+            container_repository_path: aborted_repository.path
+          )
+
+          subject
+
+          expect(aborted_repository.reload).to be_import_aborted
+          expect(container_repository.reload).to be_default
+        end
+      end
     end
 
     context 'when no repository qualifies' do
@@ -147,6 +183,14 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
       end
 
       it 'skips the repository' do
+        expect_log_extra_metadata(
+          import_type: 'next',
+          container_repository_id: container_repository.id,
+          container_repository_path: container_repository.path,
+          tags_count_too_high: true,
+          max_tags_count_setting: 2
+        )
+
         subject
 
         expect(container_repository.reload).to be_import_skipped
@@ -163,15 +207,26 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
       end
 
       it 'aborts the import' do
+        expect_log_extra_metadata(
+          import_type: 'next',
+          container_repository_id: container_repository.id,
+          container_repository_path: container_repository.path
+        )
+
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
           instance_of(StandardError),
-          next_repository_id: container_repository.id,
-          next_aborted_repository_id: nil
+          next_repository_id: container_repository.id
         )
 
         subject
 
         expect(container_repository.reload).to be_import_aborted
+      end
+    end
+
+    def expect_log_extra_metadata(metadata)
+      metadata.each do |key, value|
+        expect(worker).to receive(:log_extra_metadata_on_done).with(key, value)
       end
     end
   end

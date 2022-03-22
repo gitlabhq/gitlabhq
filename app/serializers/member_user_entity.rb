@@ -5,6 +5,9 @@ class MemberUserEntity < UserEntity
   unexpose :state
   unexpose :status_tooltip_html
 
+  expose :created_at
+  expose :last_activity_on
+
   expose :avatar_url do |user|
     user.avatar_url(size: Member::AVATAR_SIZE, only_path: false)
   end

@@ -926,4 +926,64 @@ RSpec.describe Member do
       end
     end
   end
+
+  describe '.sort_by_attribute' do
+    let_it_be(:user1) { create(:user, created_at: Date.today, last_sign_in_at: Date.today, last_activity_on: Date.today, name: 'Alpha') }
+    let_it_be(:user2) { create(:user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, last_activity_on: Date.today - 1, name: 'Omega') }
+    let_it_be(:user3) { create(:user, created_at: Date.today - 2, name: 'Beta') }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:member1) { create(:group_member, :reporter, group: group, user: user1) }
+    let_it_be(:member2) { create(:group_member, :developer, group: group, user: user2) }
+    let_it_be(:member3) { create(:group_member, :maintainer, group: group, user: user3) }
+
+    it 'sort users in ascending order by access-level' do
+      expect(described_class.sort_by_attribute('access_level_asc')).to eq([member1, member2, member3])
+    end
+
+    it 'sort users in descending order by access-level' do
+      expect(described_class.sort_by_attribute('access_level_desc')).to eq([member3, member2, member1])
+    end
+
+    context 'when sort by recent_sign_in' do
+      subject { described_class.sort_by_attribute('recent_sign_in') }
+
+      it 'sorts users by recent sign-in time' do
+        expect(subject.first).to eq(member1)
+        expect(subject.second).to eq(member2)
+      end
+
+      it 'pushes users who never signed in to the end' do
+        expect(subject.third).to eq(member3)
+      end
+    end
+
+    context 'when sort by oldest_sign_in' do
+      subject { described_class.sort_by_attribute('oldest_sign_in') }
+
+      it 'sorts users by the oldest sign-in time' do
+        expect(subject.first).to eq(member2)
+        expect(subject.second).to eq(member1)
+      end
+
+      it 'pushes users who never signed in to the end' do
+        expect(subject.third).to eq(member3)
+      end
+    end
+
+    it 'sorts users in descending order by their creation time' do
+      expect(described_class.sort_by_attribute('recent_created_user')).to eq([member1, member2, member3])
+    end
+
+    it 'sorts users in ascending order by their creation time' do
+      expect(described_class.sort_by_attribute('oldest_created_user')).to eq([member3, member2, member1])
+    end
+
+    it 'sort users by recent last activity' do
+      expect(described_class.sort_by_attribute('recent_last_activity')).to eq([member1, member2, member3])
+    end
+
+    it 'sort users by oldest last activity' do
+      expect(described_class.sort_by_attribute('oldest_last_activity')).to eq([member3, member2, member1])
+    end
+  end
 end

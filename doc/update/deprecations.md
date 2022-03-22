@@ -38,6 +38,25 @@ For deprecation reviewers (Technical Writers only):
 
 ## 14.9
 
+### Background upload for object storage
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+To reduce the overall complexity and maintenance burden of GitLab's [object storage feature](https://docs.gitlab.com/ee/administration/object_storage.html), support for using `background_upload` to upload files is deprecated and will be fully removed in GitLab 15.0.
+
+This impacts a small subset of object storage providers:
+
+- **OpenStack** Customers using OpenStack need to change their configuration to use the S3 API instead of Swift.
+- **RackSpace** Customers using RackSpace-based object storage need to migrate data to a different provider.
+
+GitLab will publish additional guidance to assist affected customers in migrating.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ### Deprecate support for Debian 9
 
 Long term service and support (LTSS) for [Debian 9 Stretch ends in July 2022](https://wiki.debian.org/LTS). Therefore, we will longer support the Debian 9 distribution for the GitLab package. Users can upgrade to Debian 10 or Debian 11.

@@ -62,7 +62,7 @@ RSpec.shared_examples 'it uploads and commits a new image file' do |drop: false|
 
     visit(project_blob_path(project, 'upload_image/logo_sample.svg'))
 
-    expect(page).to have_css('.file-content img')
+    expect(page).to have_css('.file-holder img')
   end
 end
 

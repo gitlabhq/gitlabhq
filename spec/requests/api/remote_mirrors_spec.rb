@@ -26,6 +26,26 @@ RSpec.describe API::RemoteMirrors do
     end
   end
 
+  describe 'GET /projects/:id/remote_mirrors/:mirror_id' do
+    let(:route) { "/projects/#{project.id}/remote_mirrors/#{mirror.id}" }
+    let(:mirror) { project.remote_mirrors.first }
+
+    it 'requires `admin_remote_mirror` permission' do
+      get api(route, developer)
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    it 'returns at remote mirror' do
+      project.add_maintainer(user)
+
+      get api(route, user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to match_response_schema('remote_mirror')
+    end
+  end
+
   describe 'POST /projects/:id/remote_mirrors' do
     let(:route) { "/projects/#{project.id}/remote_mirrors" }
 
@@ -75,11 +95,11 @@ RSpec.describe API::RemoteMirrors do
   end
 
   describe 'PUT /projects/:id/remote_mirrors/:mirror_id' do
-    let(:route) { ->(id) { "/projects/#{project.id}/remote_mirrors/#{id}" } }
+    let(:route) { "/projects/#{project.id}/remote_mirrors/#{mirror.id}" }
     let(:mirror) { project.remote_mirrors.first }
 
     it 'requires `admin_remote_mirror` permission' do
-      put api(route[mirror.id], developer)
+      put api(route, developer)
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
@@ -87,7 +107,7 @@ RSpec.describe API::RemoteMirrors do
     it 'updates a remote mirror' do
       project.add_maintainer(user)
 
-      put api(route[mirror.id], user), params: {
+      put api(route, user), params: {
         enabled: '0',
         only_protected_branches: 'true',
         keep_divergent_refs: 'true'
