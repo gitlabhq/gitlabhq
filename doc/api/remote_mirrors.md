@@ -136,3 +136,23 @@ Example response:
     "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git"
 }
 ```
+
+## Delete a remote mirror
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82778) in GitLab 14.10.
+
+Delete a remote mirror.
+
+```plaintext
+DELETE /projects/:id/remote_mirrors/:mirror_id
+```
+
+| Attribute   | Type    | Required   | Description       |
+| :---------- | :-----  | :--------- |:------------------|
+| `mirror_id` | Integer | yes        | Remote mirror ID. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486"
+```

@@ -99,4 +99,44 @@ RSpec.describe API::RemoteMirrors do
       expect(json_response['keep_divergent_refs']).to eq(true)
     end
   end
+
+  describe 'DELETE /projects/:id/remote_mirrors/:mirror_id' do
+    let(:route) { ->(id) { "/projects/#{project.id}/remote_mirrors/#{id}" } }
+    let(:mirror) { project.remote_mirrors.first }
+
+    it 'requires `admin_remote_mirror` permission' do
+      expect { delete api(route[mirror.id], developer) }.not_to change { project.remote_mirrors.count }
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    context 'when the user is a maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'returns 404 for non existing id' do
+        delete api(route[non_existing_record_id], user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns bad request if the update service fails' do
+        expect_next_instance_of(Projects::UpdateService) do |service|
+          expect(service).to receive(:execute).and_return(status: :error, message: 'message')
+        end
+
+        expect { delete api(route[mirror.id], user) }.not_to change { project.remote_mirrors.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({ 'message' => 'message' })
+      end
+
+      it 'deletes a remote mirror' do
+        expect { delete api(route[mirror.id], user) }.to change { project.remote_mirrors.count }.from(1).to(0)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+  end
 end

@@ -14918,6 +14918,9 @@ msgstr ""
 msgid "Everything you need to create a GitLab Pages site using Jekyll"
 msgstr ""
 
+msgid "Everything you need to create a GitLab Pages site using Middleman"
+msgstr ""
+
 msgid "Everything you need to create a GitLab Pages site using plain HTML"
 msgstr ""
 
@@ -23915,9 +23918,6 @@ msgstr ""
 msgid "Mi"
 msgstr ""
 
-msgid "Middleman project with Static Site Editor support"
-msgstr ""
-
 msgid "Migrated %{success_count}/%{total_count} files."
 msgstr ""
 
@@ -29491,6 +29491,9 @@ msgstr ""
 msgid "ProjectTemplates|Pages/Jekyll"
 msgstr ""
 
+msgid "ProjectTemplates|Pages/Middleman"
+msgstr ""
+
 msgid "ProjectTemplates|Pages/Plain HTML"
 msgstr ""
 
@@ -29507,9 +29510,6 @@ msgid "ProjectTemplates|Serverless Framework/JS"
 msgstr ""
 
 msgid "ProjectTemplates|Spring"
-msgstr ""
-
-msgid "ProjectTemplates|Static Site Editor/Middleman"
 msgstr ""
 
 msgid "ProjectTemplates|Tencent Serverless Framework/NextjsSSR"
@@ -32195,9 +32195,6 @@ msgstr ""
 msgid "Runners|Select your preferred option here. In the next step, you can choose the capacity for your runner in the AWS CloudFormation console."
 msgstr ""
 
-msgid "Runners|Shared runners are available to every project in a GitLab instance. If you want a runner to build only specific projects, restrict the project in the table below. After you restrict a runner to a project, you cannot change it back to a shared runner."
-msgstr ""
-
 msgid "Runners|Show runner installation and registration instructions"
 msgstr ""
 
@@ -32238,9 +32235,6 @@ msgid "Runners|This runner has never contacted this instance"
 msgstr ""
 
 msgid "Runners|This runner is associated with specific projects."
-msgstr ""
-
-msgid "Runners|This runner is available to all groups and projects in your GitLab instance."
 msgstr ""
 
 msgid "Runners|This runner is available to all projects and subgroups in a group."

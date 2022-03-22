@@ -107,6 +107,21 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
       ).once
     end
 
+    context 'when the data is a Gitlab::DataBuilder::Pipeline' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:data) { ::Gitlab::DataBuilder::Pipeline.new(pipeline) }
+
+      it 'can log the request payload' do
+        stub_full_request(project_hook.url, method: :post)
+
+        # we call this with force to ensure that the logs are written inline,
+        # which tests that we can serialize the data to the DB correctly.
+        service = described_class.new(project_hook, data, :push_hooks, force: true)
+
+        expect { service.execute }.to change(::WebHookLog, :count).by(1)
+      end
+    end
+
     context 'when auth credentials are present' do
       let_it_be(:url) {'https://example.org'}
       let_it_be(:project_hook) { create(:project_hook, url: 'https://demo:demo@example.org/') }

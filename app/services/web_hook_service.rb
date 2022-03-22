@@ -36,7 +36,7 @@ class WebHookService
 
   def initialize(hook, data, hook_name, uniqueness_token = nil, force: false)
     @hook = hook
-    @data = data
+    @data = data.to_h
     @hook_name = hook_name.to_s
     @uniqueness_token = uniqueness_token
     @force = force
@@ -70,9 +70,6 @@ class WebHookService
                end
 
     log_execution(
-      trigger: hook_name,
-      url: hook.url,
-      request_data: data,
       response: response,
       execution_duration: Gitlab::Metrics::System.monotonic_time - start_time
     )
@@ -86,9 +83,6 @@ class WebHookService
          Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError => e
     execution_duration = Gitlab::Metrics::System.monotonic_time - start_time
     log_execution(
-      trigger: hook_name,
-      url: hook.url,
-      request_data: data,
       response: InternalErrorResponse.new,
       execution_duration: execution_duration,
       error_message: e.to_s
@@ -139,14 +133,14 @@ class WebHookService
     make_request(post_url, basic_auth)
   end
 
-  def log_execution(trigger:, url:, request_data:, response:, execution_duration:, error_message: nil)
+  def log_execution(response:, execution_duration:, error_message: nil)
     category = response_category(response)
     log_data = {
-      trigger: trigger,
-      url: url,
+      trigger: hook_name,
+      url: hook.url,
       execution_duration: execution_duration,
       request_headers: build_headers,
-      request_data: request_data,
+      request_data: data,
       response_headers: format_response_headers(response),
       response_body: safe_response_body(response),
       response_status: response.code,
