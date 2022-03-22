@@ -11,7 +11,6 @@ Style/OpenStructUse:
   - lib/gitlab/git/diff_collection.rb
   - lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb
   - lib/gitlab/testing/request_inspector_middleware.rb
-  - lib/mattermost/session.rb
   - spec/factories/go_module_versions.rb
   - spec/factories/wiki_pages.rb
   - spec/graphql/mutations/branches/create_spec.rb

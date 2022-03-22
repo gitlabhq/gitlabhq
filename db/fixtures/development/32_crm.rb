@@ -29,7 +29,7 @@ class Gitlab::Seeder::Crm
         group_id: group.id,
         first_name: first_name,
         last_name: last_name,
-        email: "#{first_name}.#{last_name}@example.org",
+        email: "#{first_name}.#{last_name}-#{index}@example.org",
         organization_id: organization_id
       )
 

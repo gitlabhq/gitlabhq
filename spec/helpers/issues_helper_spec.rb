@@ -368,6 +368,16 @@ RSpec.describe IssuesHelper do
     end
   end
 
+  describe '#issues_form_data' do
+    it 'returns expected result' do
+      expected = {
+        new_issue_path: new_project_issue_path(project)
+      }
+
+      expect(helper.issues_form_data(project)).to include(expected)
+    end
+  end
+
   describe '#issue_manual_ordering_class' do
     context 'when sorting by relative position' do
       before do

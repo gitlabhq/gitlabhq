@@ -665,6 +665,7 @@ protected_environments:
 - project
 - group
 - deploy_access_levels
+- approval_rules
 deploy_access_levels:
 - protected_environment
 - user

@@ -70,8 +70,10 @@ shared_examples 'issuable link creation' do
         expect(issuable_link_class.find_by!(target: issuable3)).to have_attributes(source: issuable, link_type: 'relates_to')
       end
 
-      it 'returns success status' do
-        is_expected.to eq(status: :success)
+      it 'returns success status and created links', :aggregate_failures do
+        expect(subject.keys).to match_array([:status, :created_references])
+        expect(subject[:status]).to eq(:success)
+        expect(subject[:created_references].map(&:target_id)).to match_array([issuable2.id, issuable3.id])
       end
 
       it 'creates notes' do

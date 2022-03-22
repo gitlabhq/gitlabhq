@@ -61,8 +61,9 @@ class Group < Namespace
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
-  has_many :organizations, class_name: 'CustomerRelations::Organization', inverse_of: :group
-  has_many :contacts, class_name: 'CustomerRelations::Contact', inverse_of: :group
+  # AR defaults to nullify when trying to delete via has_many associations unless we set dependent: :delete_all
+  has_many :organizations, class_name: 'CustomerRelations::Organization', inverse_of: :group, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :contacts, class_name: 'CustomerRelations::Contact', inverse_of: :group, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :cluster_groups, class_name: 'Clusters::Group'
   has_many :clusters, through: :cluster_groups, class_name: 'Clusters::Cluster'

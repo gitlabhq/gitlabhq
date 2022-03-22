@@ -5,6 +5,7 @@ module API
     class UserWithAdmin < UserPublic
       expose :admin?, as: :is_admin
       expose :note
+      expose :namespace_id
     end
   end
 end

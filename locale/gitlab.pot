@@ -9424,9 +9424,6 @@ msgstr ""
 msgid "Confirm new password"
 msgstr ""
 
-msgid "Confirm remove avatar"
-msgstr ""
-
 msgid "Confirm user"
 msgstr ""
 
@@ -22703,6 +22700,9 @@ msgstr ""
 msgid "Manual"
 msgstr ""
 
+msgid "Manual iteration cadences are deprecated. Only automatic iteration cadences are allowed."
+msgstr ""
+
 msgid "ManualOrdering|Couldn't save the order of the issues"
 msgstr ""
 
@@ -30947,6 +30947,9 @@ msgstr ""
 msgid "Remove time estimate"
 msgstr ""
 
+msgid "Remove topic avatar"
+msgstr ""
+
 msgid "Remove user"
 msgstr ""
 
@@ -39156,6 +39159,9 @@ msgstr ""
 msgid "Topic avatar"
 msgstr ""
 
+msgid "Topic avatar for %{name} will be removed. This cannot be undone."
+msgstr ""
+
 msgid "Topic name"
 msgstr ""
 
@@ -39247,6 +39253,9 @@ msgid "TransferGroup|Cannot update the path because there are projects under thi
 msgstr ""
 
 msgid "TransferGroup|Database is not supported."
+msgstr ""
+
+msgid "TransferGroup|Group contains contacts/organizations and you don't have enough permissions to move them to the new root group."
 msgstr ""
 
 msgid "TransferGroup|Group contains projects with NPM packages."

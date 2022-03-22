@@ -37,7 +37,7 @@ module Gitlab
 
         def serialize_root(exportable_path = @exportable_path)
           attributes = exportable.as_json(
-            relations_schema.merge(include: nil, preloads: nil))
+            relations_schema.merge(include: nil, preloads: nil, unsafe: true))
 
           json_writer.write_attributes(exportable_path, attributes)
         end

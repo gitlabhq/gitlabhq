@@ -8,6 +8,8 @@ class CustomerRelations::IssueContact < ApplicationRecord
 
   validate :contact_belongs_to_root_group
 
+  BATCH_DELETE_SIZE = 1_000
+
   def self.find_contact_ids_by_emails(issue_id, emails)
     raise ArgumentError, "Cannot lookup more than #{MAX_PLUCK} emails" if emails.length > MAX_PLUCK
 
@@ -17,9 +19,17 @@ class CustomerRelations::IssueContact < ApplicationRecord
   end
 
   def self.delete_for_project(project_id)
-    joins(:issue)
-      .where(issues: { project_id: project_id })
-      .delete_all
+    loop do
+      deleted_records = joins(:issue).where(issues: { project_id: project_id }).limit(BATCH_DELETE_SIZE).delete_all
+      break if deleted_records == 0
+    end
+  end
+
+  def self.delete_for_group(group)
+    loop do
+      deleted_records = joins(issue: :project).where(projects: { namespace: group.self_and_descendants }).limit(BATCH_DELETE_SIZE).delete_all
+      break if deleted_records == 0
+    end
   end
 
   private

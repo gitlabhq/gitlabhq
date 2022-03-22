@@ -83,19 +83,21 @@ RSpec.describe API::Users do
 
     describe 'GET /users/' do
       context 'when unauthenticated' do
-        it "does not contain the note of users" do
+        it "does not contain certain fields" do
           get api("/users"), params: { username: user.username }
 
           expect(json_response.first).not_to have_key('note')
+          expect(json_response.first).not_to have_key('namespace_id')
         end
       end
 
       context 'when authenticated' do
         context 'as a regular user' do
-          it 'does not contain the note of users' do
+          it 'does not contain certain fields' do
             get api("/users", user), params: { username: user.username }
 
             expect(json_response.first).not_to have_key('note')
+            expect(json_response.first).not_to have_key('namespace_id')
           end
         end
 
@@ -154,6 +156,7 @@ RSpec.describe API::Users do
             get api("/user", user)
 
             expect(json_response).not_to have_key('note')
+            expect(json_response).not_to have_key('namespace_id')
           end
         end
       end
@@ -382,6 +385,15 @@ RSpec.describe API::Users do
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(response).to include_pagination_headers
+      end
+
+      it "users contain the `namespace_id` field" do
+        get api("/users", admin)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to match_response_schema('public_api/v4/user/admins')
+        expect(json_response.size).to eq(2)
+        expect(json_response.map { |u| u['namespace_id'] }).to include(user.namespace_id, admin.namespace_id)
       end
 
       it "returns an array of external users" do
@@ -695,6 +707,14 @@ RSpec.describe API::Users do
 
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['highest_role']).to be(0)
+      end
+
+      it 'includes the `namespace_id` field' do
+        get api("/users/#{user.id}", admin)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to match_response_schema('public_api/v4/user/admin')
+        expect(json_response['namespace_id']).to eq(user.namespace_id)
       end
 
       if Gitlab.ee?

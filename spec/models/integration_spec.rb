@@ -1021,4 +1021,54 @@ RSpec.describe Integration do
       )
     end
   end
+
+  describe 'boolean_accessor' do
+    let(:klass) do
+      Class.new(Integration) do
+        boolean_accessor :test_value
+      end
+    end
+
+    let(:integration) { klass.new(properties: { test_value: input }) }
+
+    where(:input, :method_result, :predicate_method_result) do
+      true     | true  | true
+      false    | false | false
+      1        | true  | true
+      0        | false | false
+      '1'      | true  | true
+      '0'      | false | false
+      'true'   | true  | true
+      'false'  | false | false
+      'foobar' | nil   | false
+      ''       | nil   | false
+      nil      | nil   | false
+      'on'     | true  | true
+      'off'    | false | false
+      'yes'    | true  | true
+      'no'     | false | false
+      'n'      | false | false
+      'y'      | true  | true
+      't'      | true  | true
+      'f'      | false | false
+    end
+
+    with_them do
+      it 'has the correct value' do
+        expect(integration).to have_attributes(
+          test_value: be(method_result),
+          test_value?: be(predicate_method_result)
+        )
+      end
+    end
+
+    it 'returns values when initialized without input' do
+      integration = klass.new
+
+      expect(integration).to have_attributes(
+        test_value: be(nil),
+        test_value?: be(false)
+      )
+    end
+  end
 end

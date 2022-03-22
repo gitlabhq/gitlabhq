@@ -1,20 +1,46 @@
 import $ from 'jquery';
 
 import IssuableForm from '~/issuable/issuable_form';
-
-function createIssuable() {
-  const instance = new IssuableForm($(document.createElement('form')));
-
-  instance.titleField = $(document.createElement('input'));
-
-  return instance;
-}
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 describe('IssuableForm', () => {
   let instance;
 
+  const createIssuable = (form) => {
+    instance = new IssuableForm(form);
+  };
+
   beforeEach(() => {
-    instance = createIssuable();
+    setFixtures(`
+      <form>
+        <input name="[title]" />
+      </form>
+    `);
+    createIssuable($('form'));
+  });
+
+  describe('initAutosave', () => {
+    it('creates autosave with the searchTerm included', () => {
+      setWindowLocation('https://gitlab.test/foo?bar=true');
+      const autosave = instance.initAutosave();
+
+      expect(autosave.key.includes('bar=true')).toBe(true);
+    });
+
+    it("creates autosave fields without the searchTerm if it's an issue new form", () => {
+      setFixtures(`
+        <form data-new-issue-path="/issues/new">
+          <input name="[title]" />
+        </form>
+      `);
+      createIssuable($('form'));
+
+      setWindowLocation('https://gitlab.test/issues/new?bar=true');
+
+      const autosave = instance.initAutosave();
+
+      expect(autosave.key.includes('bar=true')).toBe(false);
+    });
   });
 
   describe('removeWip', () => {

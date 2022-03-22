@@ -26,7 +26,8 @@
     "can_create_group",
     "can_create_project",
     "two_factor_enabled",
-    "external"
+    "external",
+    "namespace_id"
   ],
   "properties": {
     "$ref": "full.json"

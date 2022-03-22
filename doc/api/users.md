@@ -99,6 +99,8 @@ GET /users?exclude_external=true
 
 ### For admins
 
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+
 ```plaintext
 GET /users
 ```
@@ -151,7 +153,8 @@ GET /users
     "external": false,
     "private_profile": false,
     "current_sign_in_ip": "196.165.1.102",
-    "last_sign_in_ip": "172.127.2.22"
+    "last_sign_in_ip": "172.127.2.22",
+    "namespace_id": 1
   },
   {
     "id": 2,
@@ -185,7 +188,8 @@ GET /users
     "external": false,
     "private_profile": false,
     "current_sign_in_ip": "10.165.1.102",
-    "last_sign_in_ip": "172.127.2.22"
+    "last_sign_in_ip": "172.127.2.22",
+    "namespace_id": 2
   }
 ]
 ```
@@ -300,6 +304,8 @@ Parameters:
 
 ### For admin
 
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+
 ```plaintext
 GET /users/:id
 ```
@@ -355,7 +361,8 @@ Example Responses:
   "last_sign_in_ip": "172.127.2.22",
   "plan": "gold",
   "trial": true,
-  "sign_in_count": 1337
+  "sign_in_count": 1337,
+  "namespace_id": 1
 }
 ```
 
@@ -403,6 +410,8 @@ GET /users/:id?with_custom_attributes=true
 ```
 
 ## User creation
+
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
 Creates a new user. Note only administrators can create new
 users. Either `password`, `reset_password`, or `force_random_password`
@@ -458,6 +467,8 @@ Parameters:
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
 ## User modification
+
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
 Modifies an existing user. Only administrators can change attributes of a user.
 
@@ -583,6 +594,8 @@ GET /user
 
 ## List current user (for admins)
 
+> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+
 ```plaintext
 GET /user
 ```
@@ -632,7 +645,8 @@ Parameters:
   "private_profile": false,
   "commit_email": "john-codes@example.com",
   "current_sign_in_ip": "196.165.1.102",
-  "last_sign_in_ip": "172.127.2.22"
+  "last_sign_in_ip": "172.127.2.22",
+  "namespace_id": 1
 }
 ```
 

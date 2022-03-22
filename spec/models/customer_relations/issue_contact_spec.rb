@@ -92,4 +92,16 @@ RSpec.describe CustomerRelations::IssueContact do
       expect { described_class.delete_for_project(project.id) }.to change { described_class.count }.by(-3)
     end
   end
+
+  describe '.delete_for_group' do
+    let(:project_for_root_group) { create(:project, group: group) }
+
+    it 'destroys all issue_contacts for projects in group and subgroups' do
+      create_list(:issue_customer_relations_contact, 2, :for_issue, issue: create(:issue, project: project))
+      create_list(:issue_customer_relations_contact, 2, :for_issue, issue: create(:issue, project: project_for_root_group))
+      create(:issue_customer_relations_contact)
+
+      expect { described_class.delete_for_group(group) }.to change { described_class.count }.by(-4)
+    end
+  end
 end

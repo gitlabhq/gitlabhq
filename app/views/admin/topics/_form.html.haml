@@ -27,7 +27,7 @@
         = topic_icon(@topic, alt: _('Topic avatar'), class: 'avatar topic-avatar s90')
     = render 'shared/choose_avatar_button', f: f
     - if @topic.avatar?
-      .js-remove-topic-avatar{ data: { path: admin_topic_avatar_path(@topic) } }
+      .js-remove-topic-avatar{ data: { path: admin_topic_avatar_path(@topic), name: @topic.name } }
 
   - if @topic.new_record?
     .form-actions

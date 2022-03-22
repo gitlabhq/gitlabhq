@@ -435,6 +435,7 @@ protected_branches: :gitlab_main
 protected_branch_merge_access_levels: :gitlab_main
 protected_branch_push_access_levels: :gitlab_main
 protected_branch_unprotect_access_levels: :gitlab_main
+protected_environment_approval_rules: :gitlab_main
 protected_environment_deploy_access_levels: :gitlab_main
 protected_environments: :gitlab_main
 protected_tag_create_access_levels: :gitlab_main

@@ -50,4 +50,32 @@ RSpec.describe CustomerRelations::Organization, type: :model do
       expect(described_class.find_by_name(group.id, 'TEST')).to eq([organiztion1])
     end
   end
+
+  describe '#self.move_to_root_group' do
+    let!(:old_root_group) { create(:group) }
+    let!(:organizations) { create_list(:organization, 4, group: old_root_group) }
+    let!(:new_root_group) { create(:group) }
+    let!(:contact1) { create(:contact, group: new_root_group, organization: organizations[0]) }
+    let!(:contact2) { create(:contact, group: new_root_group, organization: organizations[1]) }
+
+    let!(:dupe_organization1) { create(:organization, group: new_root_group, name: organizations[1].name) }
+    let!(:dupe_organization2) { create(:organization, group: new_root_group, name: organizations[3].name.upcase) }
+
+    before do
+      old_root_group.update!(parent: new_root_group)
+      CustomerRelations::Organization.move_to_root_group(old_root_group)
+    end
+
+    it 'moves organizations with unique names and deletes the rest' do
+      expect(organizations[0].reload.group_id).to eq(new_root_group.id)
+      expect(organizations[2].reload.group_id).to eq(new_root_group.id)
+      expect { organizations[1].reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { organizations[3].reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'updates contact.organization_id for dupes and leaves the rest untouched' do
+      expect(contact1.reload.organization_id).to eq(organizations[0].id)
+      expect(contact2.reload.organization_id).to eq(dupe_organization1.id)
+    end
+  end
 end

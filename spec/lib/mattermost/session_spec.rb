@@ -35,6 +35,12 @@ RSpec.describe Mattermost::Session, type: :request do
       it 'makes a request to the oauth uri' do
         expect { subject.with_session }.to raise_error(::Mattermost::NoSessionError)
       end
+
+      it 'returns nill on calling a non exisitng method on request' do
+        return_value = subject.request.method_missing("non_existing_method", "something") do
+        end
+        expect(return_value).to be(nil)
+      end
     end
 
     context 'with oauth_uri' do

@@ -2,8 +2,6 @@
 
 module IssuableLinks
   class DestroyService < BaseService
-    include IncidentManagement::UsageData
-
     attr_reader :link, :current_user, :source, :target
 
     def initialize(link, user)
@@ -40,6 +38,10 @@ module IssuableLinks
 
     def not_found_message
       'No Issue Link found'
+    end
+
+    def track_event
+      # no op
     end
   end
 end

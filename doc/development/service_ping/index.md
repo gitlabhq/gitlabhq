@@ -598,6 +598,9 @@ To upload payload manually:
 1. Select **Choose file** and choose the file from p5.
 1. Select **Upload**.
 
+The uploaded file is encrypted and sent using secure [HTTPS protocol](https://en.wikipedia.org/wiki/HTTPS). HTTPS creates a secure 
+communication channel between web browser and the server, and protects transmitted data against man-in-the-middle attacks.
+
 ## Monitoring
 
 Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
