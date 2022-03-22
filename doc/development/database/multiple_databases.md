@@ -15,34 +15,14 @@ To scale GitLab, the we are
 database for CI/CD tables was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64289)
 in GitLab 14.1. This feature is still under development, and is not ready for production use.
 
-### Development setup
+### Configure single database
 
-By default, GitLab is configured to use only one main database. To
-opt-in to use a main database, and CI database, modify the
-`config/database.yml` file to have a `main` and a `ci` database
-configurations.
-
-You can set this up using [GDK](#gdk-configuration) or by
-[manually configuring `config/database.yml`](#manually-set-up-the-cicd-database).
-
-#### GDK configuration
-
-If you are using GDK, you can follow the following steps:
+By default, GDK is configured to run with multiple databases. To configure GDK to use a single database:
 
 1. On the GDK root directory, run:
 
    ```shell
-   gdk config set gitlab.rails.databases.ci.enabled true
-   ```
-
-1. Open your `gdk.yml`, and confirm that it has the following lines:
-
-   ```yaml
-   gitlab:
-     rails:
-       databases:
-         ci:
-           enabled: true
+   gdk config set gitlab.rails.databases.ci.enabled false
    ```
 
 1. Reconfigure GDK:
@@ -51,99 +31,7 @@ If you are using GDK, you can follow the following steps:
    gdk reconfigure
    ```
 
-1. [Create the new CI/CD database](#create-the-new-database).
-
-#### Manually set up the CI/CD database
-
-You can manually edit `config/database.yml` to split the databases.
-To do so, consider a `config/database.yml` file like the example below:
-
-```yaml
-development:
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_development
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-
-test: &test
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_test
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-```
-
-Edit it to split the databases into `main` and `ci`:
-
-```yaml
-development:
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_development
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-  ci:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_development_ci
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-
-test: &test
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_test
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-  ci:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_test_ci
-    host: /path/to/gdk/postgresql
-    pool: 10
-    prepared_statements: false
-    variables:
-      statement_timeout: 120s
-```
-
-Next, [create the new CI/CD database](#create-the-new-database).
-
-#### Create the new database
-
-After configuring GitLab for the two databases, create the new CI/CD database:
-
-1. Create the new `ci:` database, load the DB schema into the `ci:` database,
-   and run any pending migrations:
-
-    ```shell
-    bundle exec rails db:create db:schema:load:ci db:migrate
-    ```
-
-1. Restart GDK:
-
-    ```shell
-    gdk restart
-    ```
+To switch back to using multiple databases, set `gitlab.rails.databases.ci.enabled` to `true` and run `gdk reconfigure`.
 
 <!--
 NOTE: The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references

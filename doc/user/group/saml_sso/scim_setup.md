@@ -150,7 +150,7 @@ The following diagram is a general outline on what happens when you add users to
 
 ```mermaid
 graph TD
-  A[Add User to SCIM app] -->|IdP sends user info to GitLab| B(GitLab: Does the email exists?)
+  A[Add User to SCIM app] -->|IdP sends user info to GitLab| B(GitLab: Does the email exist?)
   B -->|No| C[GitLab creates user with SCIM identity]
   B -->|Yes| D[GitLab sends message back 'Email exists']
 ```

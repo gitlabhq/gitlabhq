@@ -243,6 +243,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `enable`                                | Enable or disable GitLab Pages on the current system. |
 | `external_http`                         | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`. |
 | `external_https`                        | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`. |
+| `server_shutdown_timeout`               | GitLab Pages server shutdown timeout in seconds (default: 30s). |
 | `gitlab_client_http_timeout`            | GitLab API HTTP client connection timeout in seconds (default: 10s). |
 | `gitlab_client_jwt_expiry`              | JWT Token expiry time in seconds (default: 30s). |
 | `gitlab_cache_expiry`                   | The maximum time a domain's configuration is stored in the cache (default: 600s). |
