@@ -39,7 +39,13 @@ export default {
   },
   computed: {
     primaryAction() {
-      return { text: this.primaryText, attributes: { variant: this.primaryVariant } };
+      return {
+        text: this.primaryText,
+        attributes: {
+          variant: this.primaryVariant,
+          'data-qa-selector': 'confirm_ok_button',
+        },
+      };
     },
     cancelAction() {
       return this.hideCancel ? null : this.$options.cancelAction;

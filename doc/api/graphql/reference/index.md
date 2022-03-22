@@ -4305,7 +4305,7 @@ Input type: `SavedReplyUpdateInput`
 
 ### `Mutation.scanExecutionPolicyCommit`
 
-Commits the `policy_yaml` content to the assigned security policy project for the given project(`project_path`).
+Commits the `policy_yaml` content to the assigned security policy project for the given project (`full_path`).
 
 Input type: `ScanExecutionPolicyCommitInput`
 
@@ -4314,10 +4314,11 @@ Input type: `ScanExecutionPolicyCommitInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationscanexecutionpolicycommitclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationscanexecutionpolicycommitfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project. |
 | <a id="mutationscanexecutionpolicycommitname"></a>`name` | [`String`](#string) | Name of the policy. If the name is null, the `name` field from `policy_yaml` is used. |
 | <a id="mutationscanexecutionpolicycommitoperationmode"></a>`operationMode` | [`MutationOperationMode!`](#mutationoperationmode) | Changes the operation mode. |
 | <a id="mutationscanexecutionpolicycommitpolicyyaml"></a>`policyYaml` | [`String!`](#string) | YAML snippet of the policy. |
-| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
 
 #### Fields
 

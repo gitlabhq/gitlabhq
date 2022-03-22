@@ -779,12 +779,12 @@ The new security approvals feature is similar to vulnerability check. For exampl
 ### `CI_BUILD_*` predefined variables
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 16.0
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in GitLab 9.0, and will be removed in GitLab 15.0. If you still use these variables, be sure to change to the replacement [predefined variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html) which are functionally identical:
+The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in GitLab 9.0, and will be removed in GitLab 16.0. If you still use these variables, be sure to change to the replacement [predefined variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html) which are functionally identical:
 
 | Removed variable      | Replacement variable    |
 | --------------------- |------------------------ |
@@ -801,7 +801,7 @@ The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in G
 | `CI_BUILD_TOKEN`      | `CI_JOB_TOKEN`          |
 | `CI_BUILD_TRIGGERED`  | `CI_PIPELINE_TRIGGERED` |
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+**Planned removal milestone: 16.0 (2023-04-22)**
 
 ### `fixup!` commit messages setting draft status of associated Merge Request
 
