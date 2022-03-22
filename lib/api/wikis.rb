@@ -48,7 +48,7 @@ module API
           optional :version, type: String, desc: 'The version hash of a wiki page'
           optional :render_html, type: Boolean, default: false, desc: 'Render content to HTML'
         end
-        get ':id/wikis/:slug' do
+        get ':id/wikis/:slug', urgency: :low do
           authorize! :read_wiki, container
 
           present wiki_page(params[:version]), with: Entities::WikiPage, render_html: params[:render_html]

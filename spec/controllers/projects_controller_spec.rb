@@ -473,28 +473,6 @@ RSpec.describe ProjectsController do
         end
       end
     end
-
-    context 'with new_project_sast_enabled', :experiment do
-      let(:params) do
-        {
-          path: 'foo',
-          description: 'bar',
-          namespace_id: user.namespace.id,
-          initialize_with_sast: '1'
-        }
-      end
-
-      it 'tracks an event on project creation' do
-        expect(experiment(:new_project_sast_enabled)).to track(:created,
-          property: 'blank',
-          checked: true,
-          project: an_instance_of(Project),
-          namespace: user.namespace
-        ).on_next_instance.with_context(user: user)
-
-        post :create, params: { project: params }
-      end
-    end
   end
 
   describe 'GET edit' do

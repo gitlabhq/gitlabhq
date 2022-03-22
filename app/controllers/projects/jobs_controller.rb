@@ -18,6 +18,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_create_proxy_build!, only: :proxy_websocket_authorize
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :push_jobs_table_vue, only: [:index]
+  before_action :push_jobs_table_vue_search, only: [:index]
 
   before_action do
     push_frontend_feature_flag(:infinitely_collapsible_sections, @project, default_enabled: :yaml)
@@ -268,5 +269,9 @@ class Projects::JobsController < Projects::ApplicationController
 
   def push_jobs_table_vue
     push_frontend_feature_flag(:jobs_table_vue, @project, default_enabled: :yaml)
+  end
+
+  def push_jobs_table_vue_search
+    push_frontend_feature_flag(:jobs_table_vue_search, @project, default_enabled: :yaml)
   end
 end

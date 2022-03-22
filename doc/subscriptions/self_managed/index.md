@@ -144,8 +144,8 @@ Service data helps GitLab improve the product experience and provide proactive s
 Most data is categorized as optional and can be disabled. Data that is categorized as
 operational, like number of issues, pipelines, merge requests, and version, is not configurable.
 
-Please see our [service usage privacy page](https://about.gitlab.com/handbook/legal/privacy/services-usage-data/)
-for details on what information is collected.
+See our [service usage privacy page](https://about.gitlab.com/handbook/legal/privacy/services-usage-data/)
+for details about what information is collected.
 
 #### Quarterly subscription reconciliation
 
@@ -268,22 +268,22 @@ instance, ensure you're purchasing enough seats to
 If you are an administrator, you can view the status of your subscription:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **License**.
+1. On the left sidebar, select **Subscription**.
 
-The **License** page includes the following details:
+The **Subscription** page includes the following details:
 
 - Licensee
 - Plan
 - When it was uploaded, started, and when it expires
 
-It also displays the following important statistics:
+It also displays the following information:
 
 | Field              | Description |
 |:-------------------|:------------|
 | Users in License   | The number of users you've paid for in the current license loaded on the system. The number does not change unless you [add seats](#add-seats-to-a-subscription) during your current subscription period. |
 | Billable users     | The daily count of billable users on your system. The count may change as you block or add users to your instance. |
 | Maximum users      | The highest number of billable users on your system during the term of the loaded license. |
-| Users over license | Calculated as `Maximum users` - `Users in License` for the current license term. This number incurs a retroactive charge that needs to be paid for at renewal. |
+| Users over license | Calculated as `Maximum users` - `Users in License` for the current license term. This number incurs a retroactive charge that must be paid before renewal. |
 
 ## Export your license usage
 
@@ -295,7 +295,7 @@ If you are an administrator, you can export your license usage into a CSV:
 1. On the left sidebar, select **Subscription**.
 1. In the top right, select **Export license usage file**.
 
-This file contains all the information GitLab needs to manually process quarterly reconciliations or renewals. If your instance is firewalled or air-gapped, you can provide GitLab with this information.
+This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or air-gapped, you must provide GitLab with this information.
 
 The **License Usage** CSV includes the following details:
 

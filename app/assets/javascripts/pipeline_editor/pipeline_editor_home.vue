@@ -60,6 +60,7 @@ export default {
       currentTab: CREATE_TAB,
       scrollToCommitForm: false,
       shouldLoadNewBranch: false,
+      showDrawer: false,
       showSwitchBranchModal: false,
     };
   },
@@ -72,8 +73,14 @@ export default {
     closeBranchModal() {
       this.showSwitchBranchModal = false;
     },
+    closeDrawer() {
+      this.showDrawer = false;
+    },
     handleConfirmSwitchBranch() {
       this.showSwitchBranchModal = true;
+    },
+    openDrawer() {
+      this.showDrawer = true;
     },
     switchBranch() {
       this.showSwitchBranchModal = false;
@@ -122,7 +129,10 @@ export default {
       :ci-file-content="ciFileContent"
       :commit-sha="commitSha"
       :is-new-ci-config-file="isNewCiConfigFile"
+      :show-drawer="showDrawer"
       v-on="$listeners"
+      @open-drawer="openDrawer"
+      @close-drawer="closeDrawer"
       @set-current-tab="setCurrentTab"
       @walkthrough-popover-cta-clicked="setScrollToCommitForm"
     />
@@ -137,6 +147,10 @@ export default {
       @scrolled-to-commit-form="setScrollToCommitForm(false)"
       v-on="$listeners"
     />
-    <pipeline-editor-drawer />
+    <pipeline-editor-drawer
+      :is-visible="showDrawer"
+      v-on="$listeners"
+      @close-drawer="closeDrawer"
+    />
   </div>
 </template>

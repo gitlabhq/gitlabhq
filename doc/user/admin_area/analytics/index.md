@@ -15,5 +15,5 @@ Administrators have access to instance-wide analytics:
 
 There are several kinds of statistics:
 
-- [DevOps Reports](dev_ops_report.md): Provides an overview of your entire instance's feature usage.
+- [DevOps Reports](dev_ops_reports.md): Provides an overview of your entire instance's feature usage.
 - [Usage Trends](usage_trends.md): Shows how much data your instance contains, and how that is changing.

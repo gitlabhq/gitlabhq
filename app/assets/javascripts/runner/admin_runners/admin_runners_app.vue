@@ -1,9 +1,9 @@
 <script>
 import { GlBadge, GlLink } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { formatNumber } from '~/locale';
+import { fetchPolicies } from '~/lib/graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -37,7 +37,7 @@ import { captureException } from '../sentry_utils';
 
 const runnersCountSmartQuery = {
   query: runnersAdminCountQuery,
-  fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+  fetchPolicy: fetchPolicies.NETWORK_ONLY,
   update(data) {
     return data?.runners?.count;
   },
@@ -78,10 +78,7 @@ export default {
   apollo: {
     runners: {
       query: runnersAdminQuery,
-      // Runners can be updated by users directly in this list.
-      // A "cache and network" policy prevents outdated filtered
-      // results.
-      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
       variables() {
         return this.variables;
       },
@@ -224,9 +221,19 @@ export default {
       }
       return '';
     },
+    refetchFilteredCounts() {
+      this.$apollo.queries.allRunnersCount.refetch();
+      this.$apollo.queries.instanceRunnersCount.refetch();
+      this.$apollo.queries.groupRunnersCount.refetch();
+      this.$apollo.queries.projectRunnersCount.refetch();
+    },
+    onToggledPaused() {
+      // When a runner is Paused, the tab count can
+      // become stale, refetch outdated counts.
+      this.refetchFilteredCounts();
+    },
     onDeleted({ message }) {
       this.$root.$toast?.show(message);
-      this.$apollo.queries.runners.refetch();
     },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
@@ -289,6 +296,7 @@ export default {
           <runner-actions-cell
             :runner="runner"
             :edit-url="runner.editAdminUrl"
+            @toggledPaused="onToggledPaused"
             @deleted="onDeleted"
           />
         </template>

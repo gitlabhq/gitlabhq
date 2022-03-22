@@ -105,7 +105,8 @@ namespace :admin do
   resources :projects, only: [:index]
 
   resources :usage_trends, only: :index
-  resource :dev_ops_report, controller: 'dev_ops_report', only: :show
+  resource :dev_ops_reports, controller: 'dev_ops_report', only: :show
+  get 'dev_ops_report', to: redirect('admin/dev_ops_reports')
   resources :cohorts, only: :index
 
   scope(path: 'projects/*namespace_id',

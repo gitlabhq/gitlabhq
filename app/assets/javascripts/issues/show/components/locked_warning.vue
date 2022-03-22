@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlLink } from '@gitlab/ui';
+import { GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const alertMessage = __(
@@ -11,6 +11,7 @@ export default {
   components: {
     GlSprintf,
     GlLink,
+    GlAlert,
   },
   computed: {
     currentPath() {
@@ -21,7 +22,7 @@ export default {
 </script>
 
 <template>
-  <div class="alert alert-danger">
+  <gl-alert variant="danger" class="gl-mb-5" :dismissible="false">
     <gl-sprintf :message="$options.alertMessage">
       <template #link="{ content }">
         <gl-link :href="currentPath" target="_blank" rel="nofollow">
@@ -29,5 +30,5 @@ export default {
         </gl-link>
       </template>
     </gl-sprintf>
-  </div>
+  </gl-alert>
 </template>

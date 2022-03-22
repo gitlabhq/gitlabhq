@@ -146,6 +146,10 @@ describe('RunnerPauseButton', () => {
         it('The button does not have a loading state', () => {
           expect(findBtn().props('loading')).toBe(false);
         });
+
+        it('The button emits toggledPaused', () => {
+          expect(wrapper.emitted('toggledPaused')).toHaveLength(1);
+        });
       });
 
       describe('When update fails', () => {

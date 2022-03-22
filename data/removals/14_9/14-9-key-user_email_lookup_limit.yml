@@ -1,9 +1,0 @@
-- name: "Renamed 'user_email_lookup_limit' to 'search_rate_limit' API field"
-  announcement_milestone: "14.9"
-  announcement_date: "2022-03-22"
-  removal_milestone: "14.9"
-  removal_date: "2022-03-22"
-  breaking_change: true
-  reporter: fzimmer
-  body: |
-    We renamed the rate limit key from `user_email_lookup_limit` to `search_rate_limit`. Any API calls attempting to change the rate limits for `user_email_lookup_limit` should use `search_rate_limit` instead.

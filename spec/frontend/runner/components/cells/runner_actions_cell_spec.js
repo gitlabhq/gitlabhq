@@ -100,6 +100,16 @@ describe('RunnerActionsCell', () => {
       expect(findDeleteBtn().props('runner')).toEqual(mockRunner);
     });
 
+    it('Emits toggledPaused events', () => {
+      createComponent();
+
+      expect(wrapper.emitted('toggledPaused')).toBe(undefined);
+
+      findRunnerPauseBtn().vm.$emit('toggledPaused');
+
+      expect(wrapper.emitted('toggledPaused')).toHaveLength(1);
+    });
+
     it('Emits delete events', () => {
       const value = { name: 'Runner' };
 

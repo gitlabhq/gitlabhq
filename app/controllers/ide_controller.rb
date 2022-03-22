@@ -18,6 +18,8 @@ class IdeController < ApplicationController
 
   feature_category :web_ide
 
+  urgency :low
+
   def index
     Gitlab::UsageDataCounters::WebIdeCounter.increment_views_count
   end

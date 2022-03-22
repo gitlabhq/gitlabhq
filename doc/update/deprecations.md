@@ -134,6 +134,20 @@ Since it isn't used in the context of GitLab (the product), `htpasswd` authentic
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 
+### user_email_lookup_limit API field
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `user_email_lookup_limit` [API field](https://docs.gitlab.com/ee/api/settings.html) is deprecated and will be removed in GitLab 15.0. Until GitLab 15.0, `user_email_lookup_limit` is aliased to `search_rate_limit` and existing workflows will continue to work.
+
+Any API calls attempting to change the rate limits for `user_email_lookup_limit` should use `search_rate_limit` instead.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
 ## 14.8
 
 ### Changes to the `CI_JOB_JWT`

@@ -1,26 +1,34 @@
 <script>
 import { GlAlert, GlSkeletonLoader, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import createFlash from '~/flash';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import JobsFilteredSearch from '../filtered_search/jobs_filtered_search.vue';
 import eventHub from './event_hub';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
 import JobsTable from './jobs_table.vue';
 import JobsTableEmptyState from './jobs_table_empty_state.vue';
 import JobsTableTabs from './jobs_table_tabs.vue';
+import { RAW_TEXT_WARNING } from './constants';
 
 export default {
   i18n: {
     errorMsg: __('There was an error fetching the jobs for your project.'),
     loadingAriaLabel: __('Loading'),
   },
+  filterSearchBoxStyles:
+    'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-gray-900 gl-border-gray-100 gl-border-b',
   components: {
     GlAlert,
     GlSkeletonLoader,
+    JobsFilteredSearch,
     JobsTable,
     JobsTableEmptyState,
     JobsTableTabs,
     GlIntersectionObserver,
     GlLoadingIcon,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     fullPath: {
       default: '',
@@ -54,18 +62,36 @@ export default {
       hasError: false,
       isAlertDismissed: false,
       scope: null,
-      firstLoad: true,
+      infiniteScrollingTriggered: false,
+      filterSearchTriggered: false,
     };
   },
   computed: {
+    loading() {
+      return this.$apollo.queries.jobs.loading;
+    },
     shouldShowAlert() {
       return this.hasError && !this.isAlertDismissed;
     },
+    // Show when on All tab with no jobs
+    // Show only when not loading and filtered search has not been triggered
+    // So we don't show empty state when results are empty on a filtered search
     showEmptyState() {
-      return this.jobs.list.length === 0 && !this.scope;
+      return (
+        this.jobs.list.length === 0 && !this.scope && !this.loading && !this.filterSearchTriggered
+      );
     },
     hasNextPage() {
       return this.jobs?.pageInfo?.hasNextPage;
+    },
+    showLoadingSpinner() {
+      return this.loading && this.infiniteScrollingTriggered;
+    },
+    showSkeletonLoader() {
+      return this.loading && !this.showLoadingSpinner;
+    },
+    showFilteredSearch() {
+      return this.glFeatures?.jobsTableVueSearch && !this.scope;
     },
   },
   mounted() {
@@ -79,16 +105,38 @@ export default {
       this.$apollo.queries.jobs.refetch({ statuses: this.scope });
     },
     fetchJobsByStatus(scope) {
-      this.firstLoad = true;
+      this.infiniteScrollingTriggered = false;
 
       this.scope = scope;
 
       this.$apollo.queries.jobs.refetch({ statuses: scope });
     },
-    fetchMoreJobs() {
-      this.firstLoad = false;
+    filterJobsBySearch(filters) {
+      this.infiniteScrollingTriggered = false;
+      this.filterSearchTriggered = true;
 
-      if (!this.$apollo.queries.jobs.loading) {
+      // Eventually there will be more tokens available
+      // this code is written to scale for those tokens
+      filters.forEach((filter) => {
+        // Raw text input in filtered search does not have a type
+        // when a user enters raw text we alert them that it is
+        // not supported and we do not make an additional API call
+        if (!filter.type) {
+          createFlash({
+            message: RAW_TEXT_WARNING,
+            type: 'warning',
+          });
+        }
+
+        if (filter.type === 'status') {
+          this.$apollo.queries.jobs.refetch({ statuses: filter.value.data });
+        }
+      });
+    },
+    fetchMoreJobs() {
+      if (!this.loading) {
+        this.infiniteScrollingTriggered = true;
+
         this.$apollo.queries.jobs.fetchMore({
           variables: {
             fullPath: this.fullPath,
@@ -115,7 +163,13 @@ export default {
 
     <jobs-table-tabs @fetchJobsByStatus="fetchJobsByStatus" />
 
-    <div v-if="$apollo.loading && firstLoad" class="gl-mt-5">
+    <jobs-filtered-search
+      v-if="showFilteredSearch"
+      :class="$options.filterSearchBoxStyles"
+      @filterJobsBySearch="filterJobsBySearch"
+    />
+
+    <div v-if="showSkeletonLoader" class="gl-mt-5">
       <gl-skeleton-loader :width="1248" :height="73">
         <circle cx="748.031" cy="37.7193" r="15.0307" />
         <circle cx="787.241" cy="37.7193" r="15.0307" />
@@ -138,7 +192,7 @@ export default {
 
     <gl-intersection-observer v-if="hasNextPage" @appear="fetchMoreJobs">
       <gl-loading-icon
-        v-if="$apollo.loading"
+        v-if="showLoadingSpinner"
         size="md"
         :aria-label="$options.i18n.loadingAriaLabel"
       />

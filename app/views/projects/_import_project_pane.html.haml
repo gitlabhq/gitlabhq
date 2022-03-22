@@ -3,8 +3,9 @@
 
 .project-import
   .form-group.import-btn-container.clearfix
-    %h5
+    %h5.gl-display-flex
       = _("Import project from")
+      = link_to _('History'), import_history_index_path, class: 'gl-link gl-ml-auto gl-font-weight-normal'
     .import-buttons
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body', qa_selector: 'gitlab_import_button' } }

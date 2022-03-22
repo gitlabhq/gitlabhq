@@ -1918,3 +1918,5 @@ export const CIJobConnectionExistingCache = {
   ],
   statuses: 'PENDING',
 };
+
+export const mockFailedSearchToken = { type: 'status', value: { data: 'FAILED', operator: '=' } };

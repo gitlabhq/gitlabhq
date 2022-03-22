@@ -6321,6 +6321,9 @@ msgstr ""
 msgid "BulkImport|%{feature} (require v%{version})"
 msgstr ""
 
+msgid "BulkImport|Destination"
+msgstr ""
+
 msgid "BulkImport|Existing groups"
 msgstr ""
 
@@ -6363,10 +6366,16 @@ msgstr ""
 msgid "BulkImport|New group"
 msgstr ""
 
+msgid "BulkImport|No additional information provided."
+msgstr ""
+
 msgid "BulkImport|No history is available"
 msgstr ""
 
 msgid "BulkImport|No parent"
+msgstr ""
+
+msgid "BulkImport|Project import history"
 msgstr ""
 
 msgid "BulkImport|Re-import creates a new group. It does not sync with the existing group."
@@ -6381,7 +6390,13 @@ msgstr ""
 msgid "BulkImport|Showing %{start}-%{end} of %{total} matching filter \"%{filter}\" from %{link}"
 msgstr ""
 
+msgid "BulkImport|Source"
+msgstr ""
+
 msgid "BulkImport|Source group"
+msgstr ""
+
+msgid "BulkImport|Template / File-based import / GitLab Migration"
 msgstr ""
 
 msgid "BulkImport|To new group"
@@ -6394,6 +6409,9 @@ msgid "BulkImport|You have no groups to import"
 msgstr ""
 
 msgid "BulkImport|Your imported groups will appear here."
+msgstr ""
+
+msgid "BulkImport|Your imported projects will appear here."
 msgstr ""
 
 msgid "BulkImport|expected an associated Group but has an associated Project"
@@ -16128,9 +16146,6 @@ msgstr ""
 msgid "Framework successfully deleted"
 msgstr ""
 
-msgid "Free"
-msgstr ""
-
 msgid "Free Trial of GitLab.com Ultimate"
 msgstr ""
 
@@ -21372,6 +21387,9 @@ msgstr ""
 msgid "Jobs|Create CI/CD configuration file"
 msgstr ""
 
+msgid "Jobs|Filter jobs"
+msgstr ""
+
 msgid "Jobs|Job is stuck. Check runners."
 msgstr ""
 
@@ -21379,6 +21397,12 @@ msgid "Jobs|Jobs are the building blocks of a GitLab CI/CD pipeline. Each job ha
 msgstr ""
 
 msgid "Jobs|No jobs to show"
+msgstr ""
+
+msgid "Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens."
+msgstr ""
+
+msgid "Jobs|Status"
 msgstr ""
 
 msgid "Jobs|Use jobs to automate your tasks"
@@ -21408,13 +21432,22 @@ msgstr ""
 msgid "Job|Cancel"
 msgstr ""
 
+msgid "Job|Canceled"
+msgstr ""
+
 msgid "Job|Complete Raw"
+msgstr ""
+
+msgid "Job|Created"
 msgstr ""
 
 msgid "Job|Download"
 msgstr ""
 
 msgid "Job|Erase job log and artifacts"
+msgstr ""
+
+msgid "Job|Failed"
 msgstr ""
 
 msgid "Job|Finished at"
@@ -21432,7 +21465,25 @@ msgstr ""
 msgid "Job|Keep"
 msgstr ""
 
+msgid "Job|Manual"
+msgstr ""
+
+msgid "Job|Passed"
+msgstr ""
+
+msgid "Job|Pending"
+msgstr ""
+
+msgid "Job|Preparing"
+msgstr ""
+
 msgid "Job|Retry"
+msgstr ""
+
+msgid "Job|Running"
+msgstr ""
+
+msgid "Job|Scheduled"
 msgstr ""
 
 msgid "Job|Scroll to bottom"
@@ -21442,6 +21493,9 @@ msgid "Job|Scroll to top"
 msgstr ""
 
 msgid "Job|Show complete raw"
+msgstr ""
+
+msgid "Job|Skipped"
 msgstr ""
 
 msgid "Job|Status"
@@ -21466,6 +21520,9 @@ msgid "Job|This job is stuck because you don't have any active runners online or
 msgstr ""
 
 msgid "Job|This job is stuck because you don't have any active runners that can run this job."
+msgstr ""
+
+msgid "Job|Waiting for resource"
 msgstr ""
 
 msgid "Job|allowed to fail"
@@ -32910,6 +32967,9 @@ msgstr ""
 msgid "SecurityConfiguration|Immediately begin risk analysis and remediation with application security features. Start with SAST and Secret Detection, available to all plans. Upgrade to Ultimate to get all features, including:"
 msgstr ""
 
+msgid "SecurityConfiguration|Learn more about vulnerability training"
+msgstr ""
+
 msgid "SecurityConfiguration|Manage corpus"
 msgstr ""
 
@@ -43783,6 +43843,9 @@ msgid "ciReport|Loading Code Quality report"
 msgstr ""
 
 msgid "ciReport|Manage licenses"
+msgstr ""
+
+msgid "ciReport|Manually Added"
 msgstr ""
 
 msgid "ciReport|New"

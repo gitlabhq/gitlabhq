@@ -86,6 +86,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    showDrawer: {
+      type: Boolean,
+      required: true,
+    },
   },
   apollo: {
     appStatus: {
@@ -157,7 +161,7 @@ export default {
       @click="setCurrentTab($options.tabConstants.CREATE_TAB)"
     >
       <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
-      <ci-editor-header />
+      <ci-editor-header :show-drawer="showDrawer" v-on="$listeners" />
       <text-editor :commit-sha="commitSha" :value="ciFileContent" v-on="$listeners" />
     </editor-tab>
     <editor-tab

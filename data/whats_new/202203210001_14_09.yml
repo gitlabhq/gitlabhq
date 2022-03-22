@@ -30,7 +30,7 @@
   gitlab-com: true
   packages: [Premium, Ultimate]
   url: 'https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html#approve-or-reject-a-deployment'
-  image_url: 'https://about.gitlab.com/images/unreleased/release-deployment-approval.mp4'
+  image_url: 'https://about.gitlab.com/images/growth/release.png'
   published_at: 2022-03-22
   release: 14.9
 - title: "New design for the Environments Page"

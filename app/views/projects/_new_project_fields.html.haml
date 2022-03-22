@@ -64,15 +64,14 @@
       .form-text.text-muted
         = s_('ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.')
 
-  - experiment(:new_project_sast_enabled, user: current_user) do |e|
-    - e.variant(:candidate) do
-      = render 'new_project_initialize_with_sast', experiment_name: e.name, track_label: track_label, checked: true, with_free_badge: false
-    - e.variant(:unchecked_candidate) do
-      = render 'new_project_initialize_with_sast', experiment_name: e.name, track_label: track_label, checked: false, with_free_badge: false
-    - e.variant(:free_indicator) do
-      = render 'new_project_initialize_with_sast', experiment_name: e.name, track_label: track_label, checked: true, with_free_badge: true
-    - e.variant(:unchecked_free_indicator) do
-      = render 'new_project_initialize_with_sast', experiment_name: e.name, track_label: track_label, checked: false, with_free_badge: true
+  .form-group
+    .form-check.gl-mb-3
+      = check_box_tag 'project[initialize_with_sast]', '1', false, class: 'form-check-input', data: { qa_selector: 'initialize_with_sast_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' }
+      = label_tag 'project[initialize_with_sast]', class: 'form-check-label' do
+        = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
+      .form-text.text-muted
+        = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
+        = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 
 = f.submit _('Create project'), class: "btn gl-button btn-confirm", data: { qa_selector: 'project_create_button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }
 = link_to _('Cancel'), dashboard_projects_path, class: 'btn gl-button btn-default btn-cancel', data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }

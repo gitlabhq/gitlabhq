@@ -224,13 +224,9 @@ If you need your Review App to stay up for a longer time, you can
 `review-deploy` job to update the "latest deployed at" time.
 
 The `review-cleanup` job that automatically runs in scheduled
-pipelines (and is manual in merge request) stops stale Review Apps after 5 days,
+pipelines stops stale Review Apps after 5 days,
 deletes their environment after 6 days, and cleans up any dangling Helm releases
 and Kubernetes resources after 7 days.
-
-The `review-gcp-cleanup` job that automatically runs in scheduled pipelines
-(and is manual in merge request) removes any dangling GCP network resources
-that were not removed along with the Kubernetes resources.
 
 ## Cluster configuration
 

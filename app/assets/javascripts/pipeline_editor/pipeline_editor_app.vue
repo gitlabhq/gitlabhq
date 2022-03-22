@@ -388,7 +388,7 @@ export default {
       @createEmptyConfigFile="setNewEmptyCiConfigFile"
       @refetchContent="refetchContent"
     />
-    <div v-else class="gl-pr-10">
+    <div v-else>
       <pipeline-editor-messages
         :failure-type="failureType"
         :failure-reasons="failureReasons"

@@ -18,6 +18,8 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
     push_frontend_feature_flag(:improved_emoji_picker, @project, default_enabled: :yaml)
   end
 
+  urgency :low, [:index]
+
   def index
     @snippet_counts = ::Snippets::CountService
       .new(current_user, project: @project)

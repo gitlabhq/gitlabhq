@@ -1611,10 +1611,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-qa-patterns
-      when: manual
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 

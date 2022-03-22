@@ -15,7 +15,7 @@ RSpec.describe 'DevOps Report page', :js do
     end
 
     it 'has dismissable intro callout' do
-      visit admin_dev_ops_report_path
+      visit admin_dev_ops_reports_path
 
       expect(page).to have_content 'Introducing Your DevOps Report'
 
@@ -32,13 +32,13 @@ RSpec.describe 'DevOps Report page', :js do
       end
 
       it 'shows empty state' do
-        visit admin_dev_ops_report_path
+        visit admin_dev_ops_reports_path
 
         expect(page).to have_text('Service ping is off')
       end
 
       it 'hides the intro callout' do
-        visit admin_dev_ops_report_path
+        visit admin_dev_ops_reports_path
 
         expect(page).not_to have_content 'Introducing Your DevOps Report'
       end
@@ -48,7 +48,7 @@ RSpec.describe 'DevOps Report page', :js do
       it 'shows empty state' do
         stub_application_setting(usage_ping_enabled: true)
 
-        visit admin_dev_ops_report_path
+        visit admin_dev_ops_reports_path
 
         expect(page).to have_content('Data is still calculating')
       end
@@ -59,7 +59,7 @@ RSpec.describe 'DevOps Report page', :js do
         stub_application_setting(usage_ping_enabled: true)
         create(:dev_ops_report_metric)
 
-        visit admin_dev_ops_report_path
+        visit admin_dev_ops_reports_path
 
         expect(page).to have_selector('[data-testid="devops-score-app"]')
       end

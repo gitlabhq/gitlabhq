@@ -235,9 +235,11 @@ describe('AdminRunnersApp', () => {
     const mockRunner = runnersData.data.runners.nodes[0];
     const { id: graphqlId, shortSha } = mockRunner;
     const id = getIdFromGraphQLId(graphqlId);
+    const COUNT_QUERIES = 7; // Smart queries that display a filtered count of runners
+    const FILTERED_COUNT_QUERIES = 4; // Smart queries that display a count of runners in tabs
 
     beforeEach(async () => {
-      mockRunnersQuery.mockClear();
+      mockRunnersCountQuery.mockClear();
 
       createComponent({ mountFn: mountExtended });
       showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
@@ -252,12 +254,18 @@ describe('AdminRunnersApp', () => {
       expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${id}`);
     });
 
+    it('When runner is paused or unpaused, some data is refetched', async () => {
+      expect(mockRunnersCountQuery).toHaveBeenCalledTimes(COUNT_QUERIES);
+
+      findRunnerActionsCell().vm.$emit('toggledPaused');
+
+      expect(mockRunnersCountQuery).toHaveBeenCalledTimes(COUNT_QUERIES + FILTERED_COUNT_QUERIES);
+
+      expect(showToast).toHaveBeenCalledTimes(0);
+    });
+
     it('When runner is deleted, data is refetched and a toast message is shown', async () => {
-      expect(mockRunnersQuery).toHaveBeenCalledTimes(1);
-
       findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
-
-      expect(mockRunnersQuery).toHaveBeenCalledTimes(2);
 
       expect(showToast).toHaveBeenCalledTimes(1);
       expect(showToast).toHaveBeenCalledWith('Runner deleted');

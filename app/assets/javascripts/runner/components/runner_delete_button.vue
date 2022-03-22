@@ -126,6 +126,11 @@ export default {
               id: this.runner.id,
             },
           },
+          update: (cache) => {
+            // Remove deleted runner from the cache
+            const cacheId = cache.identify(this.runner);
+            cache.evict({ id: cacheId });
+          },
         });
         if (errors && errors.length) {
           throw new Error(errors.join(' '));

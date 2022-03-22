@@ -10,6 +10,8 @@ Devise.omniauth_providers.map(&:downcase).each do |provider|
 end
 
 namespace :import do
+  resources :history, only: [:index], controller: :history
+
   resources :available_namespaces, only: [:index], controller: :available_namespaces
 
   namespace :url do

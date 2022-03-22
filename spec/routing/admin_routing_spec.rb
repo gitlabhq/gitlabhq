@@ -134,10 +134,17 @@ RSpec.describe Admin::HealthCheckController, "routing" do
   end
 end
 
-# admin_dev_ops_report GET    /admin/dev_ops_report(.:format) admin/dev_ops_report#show
+# admin_dev_ops_reports GET    /admin/dev_ops_reports(.:format) admin/dev_ops_report#show
 RSpec.describe Admin::DevOpsReportController, "routing" do
   it "to #show" do
-    expect(get("/admin/dev_ops_report")).to route_to('admin/dev_ops_report#show')
+    expect(get("/admin/dev_ops_reports")).to route_to('admin/dev_ops_report#show')
+  end
+
+  describe 'admin devops reports' do
+    include RSpec::Rails::RequestExampleGroup
+    it 'redirects from /admin/dev_ops_report to /admin/dev_ops_reports' do
+      expect(get("/admin/dev_ops_report")).to redirect_to(admin_dev_ops_reports_path)
+    end
   end
 end
 

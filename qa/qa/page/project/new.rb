@@ -13,15 +13,12 @@ module QA
 
         view 'app/views/projects/_new_project_fields.html.haml' do
           element :initialize_with_readme_checkbox
+          element :initialize_with_sast_checkbox
           element :project_name
           element :project_path
           element :project_description
           element :project_create_button
           element :visibility_radios
-        end
-
-        view 'app/views/projects/_new_project_initialize_with_sast.html.haml' do
-          element :initialize_with_sast_checkbox
         end
 
         view 'app/views/projects/project_templates/_template.html.haml' do
