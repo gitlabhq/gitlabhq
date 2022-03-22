@@ -137,8 +137,6 @@ The following variables are known as "persisted":
 - `CI_JOB_ID`
 - `CI_JOB_TOKEN`
 - `CI_JOB_STARTED_AT`
-- `CI_BUILD_ID`
-- `CI_BUILD_TOKEN`
 - `CI_REGISTRY_USER`
 - `CI_REGISTRY_PASSWORD`
 - `CI_REPOSITORY_URL`

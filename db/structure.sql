@@ -15794,7 +15794,7 @@ CREATE TABLE import_export_uploads (
     export_file text,
     group_id bigint,
     remote_import_url text,
-    CONSTRAINT check_58f0d37481 CHECK ((char_length(remote_import_url) <= 512))
+    CONSTRAINT check_58f0d37481 CHECK ((char_length(remote_import_url) <= 2048))
 );
 
 CREATE SEQUENCE import_export_uploads_id_seq

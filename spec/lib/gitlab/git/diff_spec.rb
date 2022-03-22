@@ -161,6 +161,52 @@ EOT
         expect(diff).not_to have_binary_notice
       end
     end
+
+    context 'when diff contains invalid characters' do
+      let(:bad_string) { [0xae].pack("C*") }
+      let(:bad_string_two) { [0x89].pack("C*") }
+
+      let(:diff) { described_class.new(@raw_diff_hash.merge({ diff: bad_string })) }
+      let(:diff_two) { described_class.new(@raw_diff_hash.merge({ diff: bad_string_two })) }
+
+      context 'when replace_invalid_utf8_chars is true' do
+        it 'will convert invalid characters and not cause an encoding error' do
+          expect(diff.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
+          expect(diff_two.diff).to include(Gitlab::EncodingHelper::UNICODE_REPLACEMENT_CHARACTER)
+
+          expect { Oj.dump(diff) }.not_to raise_error(EncodingError)
+          expect { Oj.dump(diff_two) }.not_to raise_error(EncodingError)
+        end
+
+        context 'when the diff is binary' do
+          let(:project) { create(:project, :repository) }
+
+          it 'will not try to replace characters' do
+            expect(Gitlab::EncodingHelper).not_to receive(:encode_utf8_with_replacement_character?)
+            expect(binary_diff(project).diff).not_to be_empty
+          end
+        end
+
+        context 'when convert_diff_to_utf8_with_replacement_symbol feature flag is disabled' do
+          before do
+            stub_feature_flags(convert_diff_to_utf8_with_replacement_symbol: false)
+          end
+
+          it 'will not try to convert invalid characters' do
+            expect(Gitlab::EncodingHelper).not_to receive(:encode_utf8_with_replacement_character?)
+          end
+        end
+      end
+
+      context 'when replace_invalid_utf8_chars is false' do
+        let(:not_replaced_diff) { described_class.new(@raw_diff_hash.merge({ diff: bad_string, replace_invalid_utf8_chars: false }) ) }
+        let(:not_replaced_diff_two) { described_class.new(@raw_diff_hash.merge({ diff: bad_string_two, replace_invalid_utf8_chars: false }) ) }
+
+        it 'will not try to convert invalid characters' do
+          expect(Gitlab::EncodingHelper).not_to receive(:encode_utf8_with_replacement_character?)
+        end
+      end
+    end
   end
 
   describe 'straight diffs' do
@@ -255,12 +301,11 @@ EOT
     let(:project) { create(:project, :repository) }
 
     it 'fake binary message when it detects binary' do
-      # Rugged will not detect this as binary, but we can fake it
       diff_message = "Binary files files/images/icn-time-tracking.pdf and files/images/icn-time-tracking.pdf differ\n"
-      binary_diff = described_class.between(project.repository, 'add-pdf-text-binary', 'add-pdf-text-binary^').first
 
-      expect(binary_diff.diff).not_to be_empty
-      expect(binary_diff.json_safe_diff).to eq(diff_message)
+      diff = binary_diff(project)
+      expect(diff.diff).not_to be_empty
+      expect(diff.json_safe_diff).to eq(diff_message)
     end
 
     it 'leave non-binary diffs as-is' do
@@ -373,5 +418,10 @@ EOT
       expect(diff.diff).to eq('')
       expect(diff.line_count).to eq(0)
     end
+  end
+
+  def binary_diff(project)
+    # rugged will not detect this as binary, but we can fake it
+    described_class.between(project.repository, 'add-pdf-text-binary', 'add-pdf-text-binary^').first
   end
 end

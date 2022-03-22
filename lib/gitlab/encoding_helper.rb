@@ -15,6 +15,8 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab_git/merge_requests/77#note_4754193
     ENCODING_CONFIDENCE_THRESHOLD = 50
 
+    UNICODE_REPLACEMENT_CHARACTER = "�"
+
     def encode!(message)
       message = force_encode_utf8(message)
       return message if message.valid_encoding?
@@ -63,6 +65,10 @@ module Gitlab
       return message if message.valid_encoding?
 
       message.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
+    end
+
+    def encode_utf8_with_replacement_character(data)
+      encode_utf8(data, replace: UNICODE_REPLACEMENT_CHARACTER)
     end
 
     def encode_utf8(message, replace: "")

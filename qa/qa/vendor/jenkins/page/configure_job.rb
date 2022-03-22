@@ -15,6 +15,7 @@ module QA
 
           def configure(scm_url:)
             set_git_source_code_management_url(scm_url)
+            set_git_branches_to_build("*/#{Runtime::Env.default_branch}")
             click_build_when_change_is_pushed_to_gitlab
             set_publish_status_to_gitlab
 
@@ -29,6 +30,10 @@ module QA
           def set_git_source_code_management_url(repository_url)
             select_git_source_code_management
             set_repository_url(repository_url)
+          end
+
+          def set_git_branches_to_build(branches)
+            find('.setting-name', text: "Branch Specifier (blank for 'any')").find(:xpath, "..").find('input').set branches
           end
 
           def click_build_when_change_is_pushed_to_gitlab

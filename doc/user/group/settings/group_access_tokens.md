@@ -24,6 +24,8 @@ Group access tokens are similar to [project access tokens](../../project/setting
 and [personal access tokens](../../profile/personal_access_tokens.md), except they are
 associated with a group rather than a project or user.
 
+In self-managed instances, group access tokens are subject to the same [maximum lifetime limits](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens) as personal access tokens if the limit is set. 
+
 You can use group access tokens:
 
 - On GitLab SaaS if you have the Premium license tier or higher. Group access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
@@ -45,7 +47,7 @@ To create a group access token:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
-1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC.
+1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC. An instance-wide [maximum lifetime](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-group-access-token).
 1. Select  **Create group access token**.

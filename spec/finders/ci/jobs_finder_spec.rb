@@ -7,9 +7,9 @@ RSpec.describe Ci::JobsFinder, '#execute' do
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:project) { create(:project, :private, public_builds: false) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:job_1) { create(:ci_build) }
-  let_it_be(:job_2) { create(:ci_build, :running) }
-  let_it_be(:job_3) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
+  let_it_be(:pending_job) { create(:ci_build, :pending) }
+  let_it_be(:running_job) { create(:ci_build, :running) }
+  let_it_be(:successful_job) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
 
   let(:params) { {} }
 
@@ -17,7 +17,7 @@ RSpec.describe Ci::JobsFinder, '#execute' do
     subject { described_class.new(current_user: admin, params: params).execute }
 
     it 'returns all jobs' do
-      expect(subject).to match_array([job_1, job_2, job_3])
+      expect(subject).to match_array([pending_job, running_job, successful_job])
     end
 
     context 'non admin user' do
@@ -37,7 +37,7 @@ RSpec.describe Ci::JobsFinder, '#execute' do
     end
 
     context 'scope is present' do
-      let(:jobs) { [job_1, job_2, job_3] }
+      let(:jobs) { [pending_job, running_job, successful_job] }
 
       where(:scope, :index) do
         [
@@ -55,11 +55,11 @@ RSpec.describe Ci::JobsFinder, '#execute' do
     end
 
     context 'scope is an array' do
-      let(:jobs) { [job_1, job_2, job_3] }
-      let(:params) {{ scope: ['running'] }}
+      let(:jobs) { [pending_job, running_job, successful_job, canceled_job] }
+      let(:params) {{ scope: %w'running success' }}
 
       it 'filters by the job statuses in the scope' do
-        expect(subject).to match_array([job_2])
+        expect(subject).to contain_exactly(running_job, successful_job)
       end
     end
   end
@@ -73,7 +73,7 @@ RSpec.describe Ci::JobsFinder, '#execute' do
       end
 
       it 'returns jobs for the specified project' do
-        expect(subject).to match_array([job_3])
+        expect(subject).to match_array([successful_job])
       end
     end
 
@@ -99,7 +99,7 @@ RSpec.describe Ci::JobsFinder, '#execute' do
   context 'when pipeline is present' do
     before_all do
       project.add_maintainer(user)
-      job_3.update!(retried: true)
+      successful_job.update!(retried: true)
     end
 
     let_it_be(:job_4) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
@@ -122,7 +122,7 @@ RSpec.describe Ci::JobsFinder, '#execute' do
       let(:params) { { include_retried: true } }
 
       it 'returns retried jobs' do
-        expect(subject).to match_array([job_3, job_4])
+        expect(subject).to match_array([successful_job, job_4])
       end
     end
   end

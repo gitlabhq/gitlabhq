@@ -49,7 +49,7 @@ module QA
           error_code = 404 if Nokogiri::HTML.parse(page.html).xpath("//img").map { |t| t[:alt] }.first.eql?('404')
 
           # 500 error page in header surrounded by newlines, try to match
-          five_hundred_test = Nokogiri::HTML.parse(page.html).xpath("//h1").map.first
+          five_hundred_test = Nokogiri::HTML.parse(page.html).xpath("//h1/text()").map.first
           unless five_hundred_test.nil?
             error_code = 500 if five_hundred_test.text.include?('500')
           end
