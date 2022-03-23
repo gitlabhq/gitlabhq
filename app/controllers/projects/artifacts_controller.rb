@@ -5,6 +5,8 @@ class Projects::ArtifactsController < Projects::ApplicationController
   include RendersBlob
   include SendFileUpload
 
+  urgency :low, [:browse, :file, :latest_succeeded]
+
   layout 'project'
   before_action :authorize_read_build!
   before_action :authorize_update_build!, only: [:keep]

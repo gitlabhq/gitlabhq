@@ -1137,16 +1137,15 @@ RSpec.describe ProjectsController do
     context 'when gitaly is unavailable' do
       before do
         expect_next_instance_of(TagsFinder) do |finder|
-          allow(finder).to receive(:execute).and_raise(Gitlab::Git::CommandError)
+          allow(finder).to receive(:execute).and_raise(Gitlab::Git::CommandError, 'something went wrong')
         end
       end
 
-      it 'gets an empty list of tags' do
+      it 'responds with 503 error' do
         get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
 
-        expect(json_response["Branches"]).to include("master")
-        expect(json_response["Tags"]).to eq([])
-        expect(json_response["Commits"]).to include("123456")
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+        expect(json_response['error']).to eq 'Unable to load refs'
       end
     end
 

@@ -161,7 +161,7 @@ export default {
           >
         </template>
         <template #row-details="{ item }">
-          <pre>{{ item.failures }}</pre>
+          <pre><code>{{ item.failures }}</code></pre>
         </template>
       </gl-table>
       <pagination-bar

@@ -3,6 +3,8 @@
 module Projects
   module Pipelines
     class TestsController < Projects::Pipelines::ApplicationController
+      urgency :low, [:show, :summary]
+
       before_action :authorize_read_build!
       before_action :builds, only: [:show]
 

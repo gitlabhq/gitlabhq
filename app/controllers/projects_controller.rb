@@ -298,12 +298,7 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if find_tags && @repository.tag_count.nonzero?
-      tags = begin
-        TagsFinder.new(@repository, refs_params).execute
-      rescue Gitlab::Git::CommandError
-        []
-      end
-
+      tags = TagsFinder.new(@repository, refs_params).execute
       options['Tags'] = tags.take(100).map(&:name)
     end
 
@@ -314,6 +309,8 @@ class ProjectsController < Projects::ApplicationController
     end
 
     render json: options.to_json
+  rescue Gitlab::Git::CommandError
+    render json: { error: _('Unable to load refs') }, status: :service_unavailable
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

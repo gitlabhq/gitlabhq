@@ -37,5 +37,7 @@ export default {
 </script>
 <template>
   <gl-loading-icon v-if="loading" size="md" />
-  <pre v-else>{{ error || s__('BulkImport|No additional information provided.') }}</pre>
+  <pre
+    v-else
+  ><code>{{ error || s__('BulkImport|No additional information provided.') }}</code></pre>
 </template>

@@ -39720,6 +39720,9 @@ msgstr ""
 msgid "Unable to load file contents. Try again later."
 msgstr ""
 
+msgid "Unable to load refs"
+msgstr ""
+
 msgid "Unable to load the diff"
 msgstr ""
 

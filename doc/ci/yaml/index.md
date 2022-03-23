@@ -395,13 +395,13 @@ When no rules evaluate to true, the pipeline does not run.
 ```yaml
 workflow:
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /-draft$/
+    - if: $CI_COMMIT_TITLE =~ /-draft$/
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-In this example, pipelines run if the commit message does not have `-drafts` in it
+In this example, pipelines run if the commit title (first line of the commit message) does not end with `-draft`
 and the pipeline is for either:
 
 - A merge request

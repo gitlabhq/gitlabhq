@@ -27,6 +27,7 @@ describe('formatIssueInput', () => {
       labelIds: ['gid://gitlab/GroupLabel/5', 'gid://gitlab/GroupLabel/44'],
       assigneeIds: ['gid://gitlab/User/55'],
       milestoneId: 'gid://gitlab/Milestone/66',
+      weight: 1,
     });
   });
 });
