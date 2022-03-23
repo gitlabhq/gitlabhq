@@ -38,6 +38,31 @@ For deprecation reviewers (Technical Writers only):
 
 ## 14.9
 
+### Background upload for object storage
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+To reduce the overall complexity and maintenance burden of GitLab's [object storage feature](https://docs.gitlab.com/ee/administration/object_storage.html), support for using `background_upload` to upload files is deprecated and will be fully removed in GitLab 15.0.
+
+This impacts a small subset of object storage providers:
+
+- **OpenStack** Customers using OpenStack need to change their configuration to use the S3 API instead of Swift.
+- **RackSpace** Customers using RackSpace-based object storage need to migrate data to a different provider.
+
+GitLab will publish additional guidance to assist affected customers in migrating.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### Deprecate support for Debian 9
+
+Long term service and support (LTSS) for [Debian 9 Stretch ends in July 2022](https://wiki.debian.org/LTS). Therefore, we will longer support the Debian 9 distribution for the GitLab package. Users can upgrade to Debian 10 or Debian 11.
+
+**Planned removal milestone: 15.1 (2022-06-22)**
+
 ### GitLab Pages running as daemon
 
 In 15.0, support for daemon mode for GitLab Pages will be removed.
@@ -106,6 +131,20 @@ changes to your code, settings, or workflow.
 The Container Registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
 
 Since it isn't used in the context of GitLab (the product), `htpasswd` authentication will be deprecated in GitLab 14.9 and removed in GitLab 15.0.
+
+**Planned removal milestone: 15.0 (2022-05-22)**
+
+### user_email_lookup_limit API field
+
+WARNING:
+This feature will be changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `user_email_lookup_limit` [API field](https://docs.gitlab.com/ee/api/settings.html) is deprecated and will be removed in GitLab 15.0. Until GitLab 15.0, `user_email_lookup_limit` is aliased to `search_rate_limit` and existing workflows will continue to work.
+
+Any API calls attempting to change the rate limits for `user_email_lookup_limit` should use `search_rate_limit` instead.
 
 **Planned removal milestone: 15.0 (2022-05-22)**
 

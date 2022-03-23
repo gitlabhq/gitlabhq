@@ -22,7 +22,7 @@ RSpec.describe Ci::DeletedObject, :aggregate_failures do
         expect(deleted_artifact.file_store).to eq(artifact.file_store)
         expect(deleted_artifact.store_dir).to eq(artifact.file.store_dir.to_s)
         expect(deleted_artifact.file_identifier).to eq(artifact.file_identifier)
-        expect(deleted_artifact.pick_up_at).to eq(artifact.expire_at)
+        expect(deleted_artifact.pick_up_at).to be_like_time(artifact.expire_at)
       end
     end
 
