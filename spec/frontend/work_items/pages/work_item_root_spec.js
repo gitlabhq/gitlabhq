@@ -1,108 +1,78 @@
 import Vue from 'vue';
+import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
-import ItemTitle from '~/work_items/components/item_title.vue';
-import { resolvers } from '~/work_items/graphql/resolvers';
-import { workItemQueryResponse, updateWorkItemMutationResponse } from '../mock_data';
+import WorkItemTitle from '~/work_items/components/work_item_title.vue';
+import { i18n } from '~/work_items/constants';
+import { workItemQueryResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
 const WORK_ITEM_ID = '1';
-const WORK_ITEM_GID = `gid://gitlab/WorkItem/${WORK_ITEM_ID}`;
 
 describe('Work items root component', () => {
-  const mockUpdatedTitle = 'Updated title';
   let wrapper;
-  let fakeApollo;
 
-  const findTitle = () => wrapper.findComponent(ItemTitle);
+  const successHandler = jest.fn().mockResolvedValue({ data: workItemQueryResponse });
 
-  const createComponent = ({ queryResponse = workItemQueryResponse } = {}) => {
-    fakeApollo = createMockApollo(
-      [[updateWorkItemMutation, jest.fn().mockResolvedValue(updateWorkItemMutationResponse)]],
-      resolvers,
-      {
-        possibleTypes: {
-          LocalWorkItemWidget: ['LocalTitleWidget'],
-        },
-      },
-    );
-    fakeApollo.clients.defaultClient.cache.writeQuery({
-      query: workItemQuery,
-      variables: {
-        id: WORK_ITEM_GID,
-      },
-      data: queryResponse,
-    });
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
 
+  const createComponent = ({ handler = successHandler } = {}) => {
     wrapper = shallowMount(WorkItemsRoot, {
+      apolloProvider: createMockApollo([[workItemQuery, handler]]),
       propsData: {
         id: WORK_ITEM_ID,
       },
-      apolloProvider: fakeApollo,
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
-    fakeApollo = null;
   });
 
-  it('renders the title', () => {
-    createComponent();
-
-    expect(findTitle().exists()).toBe(true);
-    expect(findTitle().props('initialTitle')).toBe('Test');
-  });
-
-  it('updates the title when it is edited', async () => {
-    createComponent();
-    jest.spyOn(wrapper.vm.$apollo, 'mutate');
-
-    await findTitle().vm.$emit('title-changed', mockUpdatedTitle);
-
-    expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-      mutation: updateWorkItemMutation,
-      variables: {
-        input: {
-          id: WORK_ITEM_GID,
-          title: mockUpdatedTitle,
-        },
-      },
-    });
-  });
-
-  describe('tracking', () => {
-    let trackingSpy;
-
+  describe('when loading', () => {
     beforeEach(() => {
-      trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
-
       createComponent();
     });
 
-    afterEach(() => {
-      unmockTracking();
+    it('renders WorkItemTitle in loading state', () => {
+      createComponent();
+
+      expect(findWorkItemTitle().props('loading')).toBe(true);
+    });
+  });
+
+  describe('when loaded', () => {
+    beforeEach(() => {
+      createComponent();
+      return waitForPromises();
     });
 
-    it('tracks item title updates', async () => {
-      await findTitle().vm.$emit('title-changed', mockUpdatedTitle);
-
-      await waitForPromises();
-
-      expect(trackingSpy).toHaveBeenCalledTimes(1);
-      expect(trackingSpy).toHaveBeenCalledWith('workItems:show', undefined, {
-        action: 'updated_title',
-        category: 'workItems:show',
-        label: 'item_title',
-        property: '[type_work_item]',
-      });
+    it('does not render WorkItemTitle in loading state', () => {
+      expect(findWorkItemTitle().props('loading')).toBe(false);
     });
+  });
+
+  it('shows an error message when the work item query was unsuccessful', async () => {
+    const errorHandler = jest.fn().mockRejectedValue('Oops');
+    createComponent({ handler: errorHandler });
+    await waitForPromises();
+
+    expect(errorHandler).toHaveBeenCalled();
+    expect(findAlert().text()).toBe(i18n.fetchError);
+  });
+
+  it('shows an error message when WorkItemTitle emits an `error` event', async () => {
+    createComponent();
+
+    findWorkItemTitle().vm.$emit('error', i18n.updateError);
+    await waitForPromises();
+
+    expect(findAlert().text()).toBe(i18n.updateError);
   });
 });

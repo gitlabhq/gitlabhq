@@ -30,7 +30,7 @@ module QA
 
         errors = ["Correlation Id: #{correlation_id}"]
         errors << "Sentry Url: #{sentry_uri}&query=correlation_id%3A%22#{correlation_id}%22" if sentry_uri
-        errors << "Kibana Url: #{kibana_uri}app/discover#/?_a=(query:(language:kuery,query:'json.correlation_id%20:%20#{correlation_id}'))" if kibana_uri
+        errors << "Kibana Url: #{kibana_uri}app/discover#/?_a=(query:(language:kuery,query:'json.correlation_id%20:%20#{correlation_id}'))&_g=(time:(from:now-24h%2Fh,to:now))" if kibana_uri
 
         errors.join("\n")
       end

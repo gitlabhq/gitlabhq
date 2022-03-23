@@ -35056,9 +35056,6 @@ msgstr ""
 msgid "Something went wrong while updating assignees"
 msgstr ""
 
-msgid "Something went wrong while updating work item. Please try again"
-msgstr ""
-
 msgid "Something went wrong while updating your list settings"
 msgstr ""
 
@@ -42387,6 +42384,9 @@ msgid "WorkItem|Something went wrong when fetching the work item. Please try aga
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
+msgstr ""
+
+msgid "WorkItem|Something went wrong while updating the work item. Please try again."
 msgstr ""
 
 msgid "WorkItem|Type"

@@ -1,9 +1,11 @@
 <script>
-import SharedDeleteAction from './shared/shared_delete_action.vue';
+import { GlDropdownItem } from '@gitlab/ui';
+import { s__ } from '~/locale';
+import eventHub, { EVENT_OPEN_DELETE_USER_MODAL } from '../modals/delete_user_modal_event_hub';
 
 export default {
   components: {
-    SharedDeleteAction,
+    GlDropdownItem,
   },
   props: {
     username: {
@@ -20,17 +22,32 @@ export default {
       default: () => [],
     },
   },
+  methods: {
+    onClick() {
+      const { username, paths, userDeletionObstacles } = this;
+      eventHub.$emit(EVENT_OPEN_DELETE_USER_MODAL, {
+        username,
+        blockPath: paths.block,
+        deletePath: paths.delete,
+        userDeletionObstacles,
+        i18n: {
+          title: s__('AdminUsers|Delete User %{username}?'),
+          primaryButtonLabel: s__('AdminUsers|Delete user'),
+          messageBody: s__(`AdminUsers|You are about to permanently delete the user %{username}. Issues, merge requests,
+                            and groups linked to them will be transferred to a system-wide "Ghost-user". To avoid data loss,
+                            consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd},
+                            it cannot be undone or recovered.`),
+        },
+      });
+    },
+  },
 };
 </script>
 
 <template>
-  <shared-delete-action
-    modal-type="delete"
-    :username="username"
-    :paths="paths"
-    :delete-path="paths.delete"
-    :user-deletion-obstacles="userDeletionObstacles"
-  >
-    <slot></slot>
-  </shared-delete-action>
+  <gl-dropdown-item @click="onClick">
+    <span class="gl-text-red-500">
+      <slot></slot>
+    </span>
+  </gl-dropdown-item>
 </template>

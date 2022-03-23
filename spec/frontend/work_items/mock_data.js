@@ -6,6 +6,7 @@ export const workItemQueryResponse = {
     workItemType: {
       __typename: 'WorkItemType',
       id: 'work-item-type-1',
+      name: 'Task',
     },
     widgets: {
       __typename: 'LocalWorkItemWidgetConnection',
@@ -31,6 +32,7 @@ export const updateWorkItemMutationResponse = {
         workItemType: {
           __typename: 'WorkItemType',
           id: 'work-item-type-1',
+          name: 'Task',
         },
         widgets: {
           __typename: 'LocalWorkItemWidgetConnection',
@@ -73,6 +75,7 @@ export const createWorkItemMutationResponse = {
         workItemType: {
           __typename: 'WorkItemType',
           id: 'work-item-type-1',
+          name: 'Task',
         },
       },
     },

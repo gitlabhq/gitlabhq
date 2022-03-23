@@ -23,12 +23,16 @@ export function createApolloProvider() {
       id: 'gid://gitlab/WorkItem/1',
     },
     data: {
-      localWorkItem: {
-        __typename: 'LocalWorkItem',
+      workItem: {
+        __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
-        type: 'FEATURE',
         // eslint-disable-next-line @gitlab/require-i18n-strings
         title: 'Test Work Item',
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'work-item-type-1',
+          name: 'Type', // eslint-disable-line @gitlab/require-i18n-strings
+        },
         widgets: {
           __typename: 'LocalWorkItemWidgetConnection',
           nodes: [],

@@ -1,6 +1,8 @@
 import { GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import eventHub, {
+  EVENT_OPEN_DELETE_USER_MODAL,
+} from '~/admin/users/components/modals/delete_user_modal_event_hub';
 import DeleteUserModal from '~/admin/users/components/modals/delete_user_modal.vue';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
 import ModalStub from './stubs/modal_stub';
@@ -9,7 +11,7 @@ const TEST_DELETE_USER_URL = 'delete-url';
 const TEST_BLOCK_USER_URL = 'block-url';
 const TEST_CSRF = 'csrf';
 
-describe('User Operation confirmation modal', () => {
+describe('Delete user modal', () => {
   let wrapper;
   let formSubmitSpy;
 
@@ -27,28 +29,36 @@ describe('User Operation confirmation modal', () => {
   const getMethodParam = () => new FormData(findForm().element).get('_method');
   const getFormAction = () => findForm().attributes('action');
   const findUserDeletionObstaclesList = () => wrapper.findComponent(UserDeletionObstaclesList);
+  const findMessageUsername = () => wrapper.findByTestId('message-username');
+  const findConfirmUsername = () => wrapper.findByTestId('confirm-username');
 
+  const emitOpenModalEvent = (modalData) => {
+    return eventHub.$emit(EVENT_OPEN_DELETE_USER_MODAL, modalData);
+  };
   const setUsername = (username) => {
-    findUsernameInput().vm.$emit('input', username);
+    return findUsernameInput().vm.$emit('input', username);
   };
 
   const username = 'username';
   const badUsername = 'bad_username';
-  const userDeletionObstacles = '["schedule1", "policy1"]';
+  const userDeletionObstacles = ['schedule1', 'policy1'];
 
-  const createComponent = (props = {}, stubs = {}) => {
-    wrapper = shallowMount(DeleteUserModal, {
+  const mockModalData = {
+    username,
+    blockPath: TEST_BLOCK_USER_URL,
+    deletePath: TEST_DELETE_USER_URL,
+    userDeletionObstacles,
+    i18n: {
+      title: 'Modal for %{username}',
+      primaryButtonLabel: 'Delete user',
+      messageBody: 'Delete %{username} or rather %{strongStart}block user%{strongEnd}?',
+    },
+  };
+
+  const createComponent = (stubs = {}) => {
+    wrapper = shallowMountExtended(DeleteUserModal, {
       propsData: {
-        username,
-        title: 'title',
-        content: 'content',
-        action: 'action',
-        secondaryAction: 'secondaryAction',
-        deleteUserUrl: TEST_DELETE_USER_URL,
-        blockUserUrl: TEST_BLOCK_USER_URL,
         csrfToken: TEST_CSRF,
-        userDeletionObstacles,
-        ...props,
       },
       stubs: {
         GlModal: ModalStub,
@@ -68,7 +78,7 @@ describe('User Operation confirmation modal', () => {
 
   it('renders modal with form included', () => {
     createComponent();
-    expect(wrapper.element).toMatchSnapshot();
+    expect(findForm().element).toMatchSnapshot();
   });
 
   describe('on created', () => {
@@ -83,11 +93,11 @@ describe('User Operation confirmation modal', () => {
   });
 
   describe('with incorrect username', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
-      setUsername(badUsername);
+      emitOpenModalEvent(mockModalData);
 
-      await nextTick();
+      return setUsername(badUsername);
     });
 
     it('shows incorrect username', () => {
@@ -101,11 +111,11 @@ describe('User Operation confirmation modal', () => {
   });
 
   describe('with correct username', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
-      setUsername(username);
+      emitOpenModalEvent(mockModalData);
 
-      await nextTick();
+      return setUsername(username);
     });
 
     it('shows correct username', () => {
@@ -117,11 +127,9 @@ describe('User Operation confirmation modal', () => {
       expect(findSecondaryButton().attributes('disabled')).toBeFalsy();
     });
 
-    describe('when primary action is submitted', () => {
-      beforeEach(async () => {
-        findPrimaryButton().vm.$emit('click');
-
-        await nextTick();
+    describe('when primary action is clicked', () => {
+      beforeEach(() => {
+        return findPrimaryButton().vm.$emit('click');
       });
 
       it('clears the input', () => {
@@ -136,11 +144,9 @@ describe('User Operation confirmation modal', () => {
       });
     });
 
-    describe('when secondary action is submitted', () => {
-      beforeEach(async () => {
-        findSecondaryButton().vm.$emit('click');
-
-        await nextTick();
+    describe('when secondary action is clicked', () => {
+      beforeEach(() => {
+        return findSecondaryButton().vm.$emit('click');
       });
 
       it('has correct form attributes and calls submit', () => {
@@ -154,22 +160,23 @@ describe('User Operation confirmation modal', () => {
 
   describe("when user's name has leading and trailing whitespace", () => {
     beforeEach(() => {
-      createComponent(
-        {
-          username: ' John Smith ',
-        },
-        { GlSprintf },
-      );
+      createComponent({ GlSprintf });
+      return emitOpenModalEvent({ ...mockModalData, username: ' John Smith ' });
     });
 
     it("displays user's name without whitespace", () => {
-      expect(wrapper.element).toMatchSnapshot();
+      expect(findMessageUsername().text()).toBe('John Smith');
+      expect(findConfirmUsername().text()).toBe('John Smith');
+    });
+
+    it('passes user name without whitespace to the obstacles', () => {
+      expect(findUserDeletionObstaclesList().props()).toMatchObject({
+        userName: 'John Smith',
+      });
     });
 
     it("shows enabled buttons when user's name is entered without whitespace", async () => {
-      setUsername('John Smith');
-
-      await nextTick();
+      await setUsername('John Smith');
 
       expect(findPrimaryButton().attributes('disabled')).toBeUndefined();
       expect(findSecondaryButton().attributes('disabled')).toBeUndefined();
@@ -177,17 +184,20 @@ describe('User Operation confirmation modal', () => {
   });
 
   describe('Related user-deletion-obstacles list', () => {
-    it('does NOT render the list when user has no related obstacles', () => {
-      createComponent({ userDeletionObstacles: '[]' });
+    it('does NOT render the list when user has no related obstacles', async () => {
+      createComponent();
+      await emitOpenModalEvent({ ...mockModalData, userDeletionObstacles: [] });
+
       expect(findUserDeletionObstaclesList().exists()).toBe(false);
     });
 
-    it('renders the list when user has related obstalces', () => {
+    it('renders the list when user has related obstalces', async () => {
       createComponent();
+      await emitOpenModalEvent(mockModalData);
 
       const obstacles = findUserDeletionObstaclesList();
       expect(obstacles.exists()).toBe(true);
-      expect(obstacles.props('obstacles')).toEqual(JSON.parse(userDeletionObstacles));
+      expect(obstacles.props('obstacles')).toEqual(userDeletionObstacles);
     });
   });
 });

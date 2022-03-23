@@ -1,18 +1,9 @@
-#import './widget.fragment.graphql'
+#import "./work_item.fragment.graphql"
 
 mutation workItemUpdate($input: WorkItemUpdateInput!) {
   workItemUpdate(input: $input) {
     workItem {
-      id
-      title
-      workItemType {
-        id
-      }
-      widgets @client {
-        nodes {
-          ...WidgetBase
-        }
-      }
+      ...WorkItem
     }
   }
 }

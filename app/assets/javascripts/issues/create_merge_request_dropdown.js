@@ -43,7 +43,7 @@ export default class CreateMergeRequestDropdown {
     this.refInput = this.wrapperEl.querySelector('.js-ref');
     this.refMessage = this.wrapperEl.querySelector('.js-ref-message');
     this.unavailableButton = this.wrapperEl.querySelector('.unavailable');
-    this.unavailableButtonSpinner = this.unavailableButton.querySelector('.gl-spinner');
+    this.unavailableButtonSpinner = this.unavailableButton.querySelector('.js-create-mr-spinner');
     this.unavailableButtonText = this.unavailableButton.querySelector('.text');
 
     this.branchCreated = false;
@@ -462,10 +462,10 @@ export default class CreateMergeRequestDropdown {
 
   setUnavailableButtonState(isLoading = true) {
     if (isLoading) {
-      this.unavailableButtonSpinner.classList.remove('hide');
+      this.unavailableButtonSpinner.classList.remove('gl-display-none');
       this.unavailableButtonText.textContent = __('Checking branch availability...');
     } else {
-      this.unavailableButtonSpinner.classList.add('hide');
+      this.unavailableButtonSpinner.classList.add('gl-display-none');
       this.unavailableButtonText.textContent = __('New branch unavailable');
     }
   }

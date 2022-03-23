@@ -6,7 +6,6 @@ import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import createFlash from '~/flash';
 import Description from '~/issues/show/components/description.vue';
 import TaskList from '~/task_list';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
@@ -315,15 +314,6 @@ describe('Description component', () => {
         await nextTick();
 
         expect(findWorkItemDetailModal().props('visible')).toBe(false);
-      });
-
-      it('shows error on error', async () => {
-        const message = 'I am error';
-
-        await findTaskLink().trigger('click');
-        findWorkItemDetailModal().vm.$emit('error', message);
-
-        expect(createFlash).toHaveBeenCalledWith({ message });
       });
 
       it('tracks when opened', async () => {

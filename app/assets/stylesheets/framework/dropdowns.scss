@@ -503,6 +503,7 @@
 
         &.dropdown-menu-user-link::before {
           top: 50%;
+          transform: translateY(-50%);
         }
       }
 

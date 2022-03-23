@@ -48,6 +48,7 @@ module InviteMembersHelper
   def common_invite_modal_dataset(source)
     dataset = {
       id: source.id,
+      root_id: source&.root_ancestor&.id,
       name: source.name,
       default_access_level: Gitlab::Access::GUEST
     }

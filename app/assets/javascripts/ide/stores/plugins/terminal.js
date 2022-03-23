@@ -3,10 +3,10 @@ import terminalModule from '../modules/terminal';
 
 function getPathsFromData(el) {
   return {
-    webTerminalSvgPath: el.dataset.eeWebTerminalSvgPath,
-    webTerminalHelpPath: el.dataset.eeWebTerminalHelpPath,
-    webTerminalConfigHelpPath: el.dataset.eeWebTerminalConfigHelpPath,
-    webTerminalRunnersHelpPath: el.dataset.eeWebTerminalRunnersHelpPath,
+    webTerminalSvgPath: el.dataset.webTerminalSvgPath,
+    webTerminalHelpPath: el.dataset.webTerminalHelpPath,
+    webTerminalConfigHelpPath: el.dataset.webTerminalConfigHelpPath,
+    webTerminalRunnersHelpPath: el.dataset.webTerminalRunnersHelpPath,
   };
 }
 

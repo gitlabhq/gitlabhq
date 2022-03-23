@@ -234,9 +234,6 @@ export default {
     closeWorkItemDetailModal() {
       this.workItemId = null;
     },
-    handleWorkItemDetailModalError(message) {
-      createFlash({ message });
-    },
     handleCreateTask(description) {
       this.$emit('updateDescription', description);
       this.closeCreateTaskModal();
@@ -298,7 +295,6 @@ export default {
       :visible="showWorkItemDetailModal"
       :work-item-id="workItemId"
       @close="closeWorkItemDetailModal"
-      @error="handleWorkItemDetailModalError"
     />
     <template v-if="workItemsEnabled">
       <gl-tooltip v-for="item in taskButtons" :key="item" :target="item">

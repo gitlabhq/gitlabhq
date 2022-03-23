@@ -1,14 +1,15 @@
 <script>
-import { GlModal, GlLoadingIcon } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { GlAlert, GlModal } from '@gitlab/ui';
+import { i18n } from '../constants';
 import workItemQuery from '../graphql/work_item.query.graphql';
-import ItemTitle from './item_title.vue';
+import WorkItemTitle from './work_item_title.vue';
 
 export default {
+  i18n,
   components: {
+    GlAlert,
     GlModal,
-    GlLoadingIcon,
-    ItemTitle,
+    WorkItemTitle,
   },
   props: {
     visible: {
@@ -23,6 +24,7 @@ export default {
   },
   data() {
     return {
+      error: undefined,
       workItem: {},
     };
   },
@@ -34,23 +36,17 @@ export default {
           id: this.workItemId,
         };
       },
-      update(data) {
-        return data.workItem;
-      },
       skip() {
         return !this.workItemId;
       },
       error() {
-        this.$emit(
-          'error',
-          s__('WorkItem|Something went wrong when fetching the work item. Please try again.'),
-        );
+        this.error = this.$options.i18n.fetchError;
       },
     },
   },
   computed: {
-    workItemTitle() {
-      return this.workItem?.title;
+    workItemType() {
+      return this.workItem.workItemType?.name;
     },
   },
 };
@@ -58,7 +54,16 @@ export default {
 
 <template>
   <gl-modal hide-footer modal-id="work-item-detail-modal" :visible="visible" @hide="$emit('close')">
-    <gl-loading-icon v-if="$apollo.queries.workItem.loading" size="md" />
-    <item-title v-else class="gl-m-0!" :initial-title="workItemTitle" />
+    <gl-alert v-if="error" variant="danger" @dismiss="error = false">
+      {{ error }}
+    </gl-alert>
+
+    <work-item-title
+      :loading="$apollo.queries.workItem.loading"
+      :work-item-id="workItem.id"
+      :work-item-title="workItem.title"
+      :work-item-type="workItemType"
+      @error="error = $event"
+    />
   </gl-modal>
 </template>

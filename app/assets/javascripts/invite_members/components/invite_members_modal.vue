@@ -44,6 +44,10 @@ export default {
       type: String,
       required: true,
     },
+    rootId: {
+      type: String,
+      required: true,
+    },
     isProject: {
       type: Boolean,
       required: true,
@@ -290,6 +294,8 @@ export default {
     :submit-disabled="inviteDisabled"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
+    :new-users-to-invite="newUsersToInvite"
+    :root-group-id="rootId"
     @reset="resetFields"
     @submit="sendInvite"
     @access-level="onAccessLevelUpdate"

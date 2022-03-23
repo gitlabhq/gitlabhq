@@ -1,8 +1,11 @@
 import Vue from 'vue';
+import { GlToast } from '@gitlab/ui';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 
 import IntegrationForm from './components/integration_form.vue';
 import { createStore } from './store';
+
+Vue.use(GlToast);
 
 function parseBooleanInData(data) {
   const result = {};

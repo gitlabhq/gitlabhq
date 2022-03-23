@@ -6,10 +6,10 @@ import { SET_BRANCH_WORKING_REFERENCE } from '~/ide/stores/mutation_types';
 import createTerminalPlugin from '~/ide/stores/plugins/terminal';
 
 const TEST_DATASET = {
-  eeWebTerminalSvgPath: `${TEST_HOST}/web/terminal/svg`,
-  eeWebTerminalHelpPath: `${TEST_HOST}/web/terminal/help`,
-  eeWebTerminalConfigHelpPath: `${TEST_HOST}/web/terminal/config/help`,
-  eeWebTerminalRunnersHelpPath: `${TEST_HOST}/web/terminal/runners/help`,
+  webTerminalSvgPath: `${TEST_HOST}/web/terminal/svg`,
+  webTerminalHelpPath: `${TEST_HOST}/web/terminal/help`,
+  webTerminalConfigHelpPath: `${TEST_HOST}/web/terminal/config/help`,
+  webTerminalRunnersHelpPath: `${TEST_HOST}/web/terminal/runners/help`,
 };
 Vue.use(Vuex);
 
@@ -40,10 +40,10 @@ describe('ide/stores/extend', () => {
 
   it('dispatches terminal/setPaths', () => {
     expect(store.dispatch).toHaveBeenCalledWith('terminal/setPaths', {
-      webTerminalSvgPath: TEST_DATASET.eeWebTerminalSvgPath,
-      webTerminalHelpPath: TEST_DATASET.eeWebTerminalHelpPath,
-      webTerminalConfigHelpPath: TEST_DATASET.eeWebTerminalConfigHelpPath,
-      webTerminalRunnersHelpPath: TEST_DATASET.eeWebTerminalRunnersHelpPath,
+      webTerminalSvgPath: TEST_DATASET.webTerminalSvgPath,
+      webTerminalHelpPath: TEST_DATASET.webTerminalHelpPath,
+      webTerminalConfigHelpPath: TEST_DATASET.webTerminalConfigHelpPath,
+      webTerminalRunnersHelpPath: TEST_DATASET.webTerminalRunnersHelpPath,
     });
   });
 
