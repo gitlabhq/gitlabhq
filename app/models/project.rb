@@ -2832,6 +2832,10 @@ class Project < ApplicationRecord
     pending_delete? || hidden?
   end
 
+  def work_items_feature_flag_enabled?
+    group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self, default_enabled: :yaml)
+  end
+
   private
 
   # overridden in EE

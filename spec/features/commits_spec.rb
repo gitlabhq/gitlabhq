@@ -10,6 +10,7 @@ RSpec.describe 'Commits' do
     before do
       sign_in(user)
       stub_ci_pipeline_to_return_yaml_file
+      stub_feature_flags(pipeline_tabs_vue: false)
     end
 
     let(:creator) { create(:user, developer_projects: [project]) }
@@ -93,6 +94,7 @@ RSpec.describe 'Commits' do
 
         context 'Download artifacts', :js do
           before do
+            stub_feature_flags(pipeline_tabs_vue: false)
             create(:ci_job_artifact, :archive, file: artifacts_file, job: build)
           end
 
@@ -122,6 +124,7 @@ RSpec.describe 'Commits' do
 
       context "when logged as reporter", :js do
         before do
+          stub_feature_flags(pipeline_tabs_vue: false)
           project.add_reporter(user)
           create(:ci_job_artifact, :archive, file: artifacts_file, job: build)
           visit builds_project_pipeline_path(project, pipeline)

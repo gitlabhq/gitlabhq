@@ -3,6 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe BulkImport, type: :model do
+  let_it_be(:created_bulk_import) { create(:bulk_import, :created) }
+  let_it_be(:started_bulk_import) { create(:bulk_import, :started) }
+  let_it_be(:finished_bulk_import) { create(:bulk_import, :finished) }
+  let_it_be(:failed_bulk_import) { create(:bulk_import, :failed) }
+  let_it_be(:stale_created_bulk_import) { create(:bulk_import, :created, created_at: 3.days.ago) }
+  let_it_be(:stale_started_bulk_import) { create(:bulk_import, :started, created_at: 3.days.ago) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:user).required }
     it { is_expected.to have_one(:configuration) }
@@ -16,9 +23,15 @@ RSpec.describe BulkImport, type: :model do
     it { is_expected.to define_enum_for(:source_type).with_values(%i[gitlab]) }
   end
 
+  describe '.stale scope' do
+    subject { described_class.stale }
+
+    it { is_expected.to contain_exactly(stale_created_bulk_import, stale_started_bulk_import) }
+  end
+
   describe '.all_human_statuses' do
     it 'returns all human readable entity statuses' do
-      expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed')
+      expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed', 'timeout')
     end
   end
 

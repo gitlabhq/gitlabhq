@@ -8011,6 +8011,62 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#work_items_feature_flag_enabled?' do
+    shared_examples 'project checking work_items feature flag' do
+      context 'when work_items FF is disabled globally' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when work_items FF is enabled for the project' do
+        before do
+          stub_feature_flags(work_items: project)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when work_items FF is enabled globally' do
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    subject { project.work_items_feature_flag_enabled? }
+
+    context 'when a project does not belong to a group' do
+      let_it_be(:project) { create(:project, namespace: namespace) }
+
+      it_behaves_like 'project checking work_items feature flag'
+    end
+
+    context 'when project belongs to a group' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: root_group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      it_behaves_like 'project checking work_items feature flag'
+
+      context 'when work_items FF is enabled for the root group' do
+        before do
+          stub_feature_flags(work_items: root_group)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when work_items FF is enabled for the group' do
+        before do
+          stub_feature_flags(work_items: group)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
   describe 'serialization' do
     let(:object) { build(:project) }
 

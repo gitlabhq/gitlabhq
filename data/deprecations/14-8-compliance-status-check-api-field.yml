@@ -14,12 +14,12 @@
     - Requests that have the `status` field set to `approved`.
 
     Beginning in GitLab 15.0, status checks will only be updated to a passing state if the `status` field is both present
-    and set to `pass`. Requests that:
+    and set to `passed`. Requests that:
 
     - Do not contain the `status` field will be rejected with a `422` error. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338827).
-    - Contain any value other than `pass` will cause the status check to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/339039).
+    - Contain any value other than `passed` will cause the status check to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/339039).
 
-    To align with this change, API calls to list external status checks will also return the value of `pass` rather than
+    To align with this change, API calls to list external status checks will also return the value of `passed` rather than
     `approved` for status checks that have passed.
 # The following items are not published on the docs page, but may be used in the future.
   stage: "Manage"

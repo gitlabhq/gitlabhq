@@ -203,9 +203,7 @@ module MergeRequestsHelper
   end
 
   def award_emoji_merge_request_api_path(merge_request)
-    if Feature.enabled?(:improved_emoji_picker, merge_request.project, default_enabled: :yaml)
-      api_v4_projects_merge_requests_award_emoji_path(id: merge_request.project.id, merge_request_iid: merge_request.iid)
-    end
+    api_v4_projects_merge_requests_award_emoji_path(id: merge_request.project.id, merge_request_iid: merge_request.iid)
   end
 
   private

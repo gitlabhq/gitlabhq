@@ -3248,4 +3248,46 @@ RSpec.describe Group do
       it_behaves_like 'no effective expiration interval'
     end
   end
+
+  describe '#work_items_feature_flag_enabled?' do
+    let_it_be(:root_group) { create(:group) }
+    let_it_be(:group) { create(:group, parent: root_group) }
+    let_it_be(:project) { create(:project, group: group) }
+
+    subject { group.work_items_feature_flag_enabled? }
+
+    context 'when work_items FF is enabled for the root group' do
+      before do
+        stub_feature_flags(work_items: root_group)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when work_items FF is enabled for the group' do
+      before do
+        stub_feature_flags(work_items: group)
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'when root_group is the actor' do
+        it 'is not enabled if the FF is enabled for a child' do
+          expect(root_group).not_to be_work_items_feature_flag_enabled
+        end
+      end
+    end
+
+    context 'when work_items FF is disabled globally' do
+      before do
+        stub_feature_flags(work_items: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when work_items FF is enabled globally' do
+      it { is_expected.to be_truthy }
+    end
+  end
 end

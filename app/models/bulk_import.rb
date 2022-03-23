@@ -16,10 +16,13 @@ class BulkImport < ApplicationRecord
 
   enum source_type: { gitlab: 0 }
 
+  scope :stale, -> { where('created_at < ?', 8.hours.ago).where(status: [0, 1]) }
+
   state_machine :status, initial: :created do
     state :created, value: 0
     state :started, value: 1
     state :finished, value: 2
+    state :timeout, value: 3
     state :failed, value: -1
 
     event :start do
@@ -28,6 +31,11 @@ class BulkImport < ApplicationRecord
 
     event :finish do
       transition started: :finished
+    end
+
+    event :cleanup_stale do
+      transition created: :timeout
+      transition started: :timeout
     end
 
     event :fail_op do

@@ -12,7 +12,7 @@ module Resolvers
 
     def resolve(id:)
       work_item = authorized_find!(id: id)
-      return unless Feature.enabled?(:work_items, work_item.project, default_enabled: :yaml)
+      return unless work_item.project.work_items_feature_flag_enabled?
 
       work_item
     end

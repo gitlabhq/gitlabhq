@@ -26,7 +26,7 @@ describe('SetStatusModalWrapper', () => {
     defaultEmoji,
   };
 
-  const createComponent = (props = {}, improvedEmojiPicker = false) => {
+  const createComponent = (props = {}) => {
     return shallowMount(SetStatusModalWrapper, {
       propsData: {
         ...defaultProps,
@@ -35,19 +35,15 @@ describe('SetStatusModalWrapper', () => {
       mocks: {
         $toast,
       },
-      provide: {
-        glFeatures: { improvedEmojiPicker },
-      },
     });
   };
 
   const findModal = () => wrapper.find(GlModal);
   const findFormField = (field) => wrapper.find(`[name="user[status][${field}]"]`);
   const findClearStatusButton = () => wrapper.find('.js-clear-user-status-button');
-  const findNoEmojiPlaceholder = () => wrapper.find('.js-no-emoji-placeholder');
-  const findToggleEmojiButton = () => wrapper.find('.js-toggle-emoji-menu');
   const findAvailabilityCheckbox = () => wrapper.find(GlFormCheckbox);
   const findClearStatusAtMessage = () => wrapper.find('[data-testid="clear-status-at-message"]');
+  const getEmojiPicker = () => wrapper.findComponent(EmojiPicker);
 
   const initModal = async ({ mockOnUpdateSuccess = true, mockOnUpdateFailure = true } = {}) => {
     const modal = findModal();
@@ -95,28 +91,12 @@ describe('SetStatusModalWrapper', () => {
       expect(findClearStatusButton().isVisible()).toBe(true);
     });
 
-    it('clicking the toggle emoji button displays the emoji list', () => {
-      expect(wrapper.vm.showEmojiMenu).not.toHaveBeenCalled();
-      findToggleEmojiButton().trigger('click');
-      expect(wrapper.vm.showEmojiMenu).toHaveBeenCalled();
-    });
-
     it('displays the clear status at dropdown', () => {
       expect(wrapper.find('[data-testid="clear-status-at-dropdown"]').exists()).toBe(true);
     });
 
     it('does not display the clear status at message', () => {
       expect(findClearStatusAtMessage().exists()).toBe(false);
-    });
-  });
-
-  describe('improvedEmojiPicker is true', () => {
-    const getEmojiPicker = () => wrapper.findComponent(EmojiPicker);
-
-    beforeEach(async () => {
-      await initEmojiMock();
-      wrapper = createComponent({}, true);
-      return initModal();
     });
 
     it('renders emoji picker dropdown with custom positioning', () => {
@@ -147,10 +127,6 @@ describe('SetStatusModalWrapper', () => {
     it('hides the clear status button', () => {
       expect(findClearStatusButton().isVisible()).toBe(false);
     });
-
-    it('shows the placeholder emoji', () => {
-      expect(findNoEmojiPlaceholder().isVisible()).toBe(true);
-    });
   });
 
   describe('with no currentEmoji set', () => {
@@ -162,22 +138,6 @@ describe('SetStatusModalWrapper', () => {
 
     it('does not set the hidden status emoji field', () => {
       expect(findFormField('emoji').element.value).toBe('');
-    });
-
-    it('hides the placeholder emoji', () => {
-      expect(findNoEmojiPlaceholder().isVisible()).toBe(false);
-    });
-
-    describe('with no currentMessage set', () => {
-      beforeEach(async () => {
-        await initEmojiMock();
-        wrapper = createComponent({ currentEmoji: '', currentMessage: '' });
-        return initModal();
-      });
-
-      it('shows the placeholder emoji', () => {
-        expect(findNoEmojiPlaceholder().isVisible()).toBe(true);
-      });
     });
   });
 

@@ -151,7 +151,7 @@ RSpec.describe BulkImports::Entity, type: :model do
 
   describe '.all_human_statuses' do
     it 'returns all human readable entity statuses' do
-      expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed')
+      expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed', 'timeout')
     end
   end
 

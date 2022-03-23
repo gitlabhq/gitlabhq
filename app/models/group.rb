@@ -815,6 +815,15 @@ class Group < Namespace
     ].compact.min
   end
 
+  def work_items_feature_flag_enabled?
+    actors = [root_ancestor]
+    actors << self if root_ancestor != self
+
+    actors.any? do |actor|
+      Feature.enabled?(:work_items, actor, default_enabled: :yaml)
+    end
+  end
+
   private
 
   def max_member_access(user_ids)

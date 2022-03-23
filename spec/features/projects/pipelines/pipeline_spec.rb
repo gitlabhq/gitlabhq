@@ -15,6 +15,7 @@ RSpec.describe 'Pipeline', :js do
   before do
     sign_in(user)
     project.add_role(user, role)
+    stub_feature_flags(pipeline_tabs_vue: false)
   end
 
   shared_context 'pipeline builds' do
@@ -356,6 +357,7 @@ RSpec.describe 'Pipeline', :js do
 
     context 'page tabs' do
       before do
+        stub_feature_flags(pipeline_tabs_vue: false)
         visit_pipeline
       end
 
@@ -388,6 +390,7 @@ RSpec.describe 'Pipeline', :js do
       let(:pipeline) { create(:ci_pipeline, :with_test_reports, :with_report_results, project: project) }
 
       before do
+        stub_feature_flags(pipeline_tabs_vue: false)
         visit_pipeline
         wait_for_requests
       end
@@ -924,6 +927,7 @@ RSpec.describe 'Pipeline', :js do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
+      stub_feature_flags(pipeline_tabs_vue: false)
       visit builds_project_pipeline_path(project, pipeline)
     end
 
@@ -944,6 +948,10 @@ RSpec.describe 'Pipeline', :js do
     end
 
     context 'page tabs' do
+      before do
+        stub_feature_flags(pipeline_tabs_vue: false)
+      end
+
       it 'shows Pipeline, Jobs and DAG tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
@@ -1014,6 +1022,10 @@ RSpec.describe 'Pipeline', :js do
   end
 
   describe 'GET /:project/-/pipelines/:id/failures' do
+    before do
+      stub_feature_flags(pipeline_tabs_vue: false)
+    end
+
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: '1234') }
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
@@ -1139,6 +1151,7 @@ RSpec.describe 'Pipeline', :js do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
+      stub_feature_flags(pipeline_tabs_vue: false)
       visit dag_project_pipeline_path(project, pipeline)
     end
 

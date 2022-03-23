@@ -87,8 +87,7 @@ describe('noteActions', () => {
     });
 
     it('should render emoji link', () => {
-      expect(wrapper.find('.js-add-award').exists()).toBe(true);
-      expect(wrapper.find('.js-add-award').attributes('data-position')).toBe('right');
+      expect(wrapper.find('[data-testid="note-emoji-button"]').exists()).toBe(true);
     });
 
     describe('actions dropdown', () => {

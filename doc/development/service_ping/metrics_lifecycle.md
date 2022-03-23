@@ -95,6 +95,12 @@ To remove a metric:
    used to test the [`UsageDataController#create`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/3760ef28/spec/controllers/usage_data_controller_spec.rb#L75)
    endpoint, and assure that test suite does not fail when metric that you wish to remove is not included into test payload.
 
+1. Remove data from Redis
+
+   For [Ordinary Redis](implement.md#ordinary-redis-counters) counters remove data stored in Redis.
+
+   - Add a migration to remove the data from Redis for the related Redis keys. For more details, see [this MR example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82604/diffs).
+
 1. Create an issue in the
    [GitLab Data Team project](https://gitlab.com/gitlab-data/analytics/-/issues).
    Ask for confirmation that the metric is not referred to in any SiSense dashboards and

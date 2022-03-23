@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.9.1 (2022-03-23)
+
+### Fixed (1 change)
+
+- [Fix backups not working when feature_flags table does not exist](gitlab-org/gitlab@4cc3cd6cf6eb256a9837ef92a6fdb4991cd1642c) ([merge request](gitlab-org/gitlab!83388))
+
+### Changed (1 change)
+
+- [Alias user_email_lookup_limit to search_rate_limit](gitlab-org/gitlab@424c277fc4c994df60ea68acb8988537526108e4) ([merge request](gitlab-org/gitlab!83388))
+
 ## 14.9.0 (2022-03-21)
 
 ### Added (119 changes)

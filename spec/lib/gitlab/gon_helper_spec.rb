@@ -64,6 +64,34 @@ RSpec.describe Gitlab::GonHelper do
     end
   end
 
+  describe '#push_force_frontend_feature_flag' do
+    let(:gon) { class_double('Gon') }
+
+    before do
+      skip_feature_flags_yaml_validation
+
+      allow(helper)
+        .to receive(:gon)
+        .and_return(gon)
+    end
+
+    it 'pushes a feature flag to the frontend with the provided value' do
+      expect(gon)
+        .to receive(:push)
+        .with({ features: { 'myFeatureFlag' => true } }, true)
+
+      helper.push_force_frontend_feature_flag(:my_feature_flag, true)
+    end
+
+    it 'pushes a disabled feature flag if provided value is nil' do
+      expect(gon)
+        .to receive(:push)
+        .with({ features: { 'myFeatureFlag' => false } }, true)
+
+      helper.push_force_frontend_feature_flag(:my_feature_flag, nil)
+    end
+  end
+
   describe '#default_avatar_url' do
     it 'returns an absolute URL' do
       url = helper.default_avatar_url

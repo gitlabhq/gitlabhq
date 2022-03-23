@@ -77,8 +77,6 @@ module SnippetsHelper
   end
 
   def project_snippets_award_api_path(snippet)
-    if Feature.enabled?(:improved_emoji_picker, snippet.project, default_enabled: :yaml)
-      api_v4_projects_snippets_award_emoji_path(id: snippet.project.id, snippet_id: snippet.id)
-    end
+    api_v4_projects_snippets_award_emoji_path(id: snippet.project.id, snippet_id: snippet.id)
   end
 end

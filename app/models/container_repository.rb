@@ -14,6 +14,7 @@ class ContainerRepository < ApplicationRecord
   ACTIVE_MIGRATION_STATES = %w[pre_importing importing].freeze
   MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
   ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
+  SKIPPABLE_MIGRATION_STATES = (ABORTABLE_MIGRATION_STATES + %w[import_aborted]).freeze
 
   IRRECONCILABLE_MIGRATIONS_STATUSES = %w[import_in_progress pre_import_in_progress pre_import_canceled import_canceled].freeze
 
@@ -35,7 +36,7 @@ class ContainerRepository < ApplicationRecord
 
   enum status: { delete_scheduled: 0, delete_failed: 1 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
-  enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3, migration_canceled: 4 }
+  enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3, migration_canceled: 4, not_found: 5 }
 
   delegate :client, :gitlab_api_client, to: :registry
 
@@ -137,7 +138,7 @@ class ContainerRepository < ApplicationRecord
     end
 
     event :skip_import do
-      transition ABORTABLE_MIGRATION_STATES.map(&:to_sym) => :import_skipped
+      transition SKIPPABLE_MIGRATION_STATES.map(&:to_sym) => :import_skipped
     end
 
     event :retry_pre_import do
@@ -182,6 +183,12 @@ class ContainerRepository < ApplicationRecord
       container_repository.migration_aborted_in_state = container_repository.migration_state
       container_repository.migration_aborted_at = Time.zone.now
       container_repository.migration_retries_count += 1
+    end
+
+    after_transition any => :import_aborted do |container_repository|
+      if container_repository.retried_too_many_times?
+        container_repository.skip_import(reason: :too_many_retries)
+      end
     end
 
     before_transition import_aborted: any do |container_repository|
@@ -310,9 +317,16 @@ class ContainerRepository < ApplicationRecord
     try_count = 0
     begin
       try_count += 1
-      return true if yield == :ok
 
-      abort_import
+      case yield
+      when :ok
+        return true
+      when :not_found
+        skip_import(reason: :not_found)
+      else
+        abort_import
+      end
+
       false
     rescue TooManyImportsError
       if try_count <= ::ContainerRegistry::Migration.start_max_retries
@@ -323,6 +337,10 @@ class ContainerRepository < ApplicationRecord
         false
       end
     end
+  end
+
+  def retried_too_many_times?
+    migration_retries_count >= ContainerRegistry::Migration.max_retries
   end
 
   def last_import_step_done_at

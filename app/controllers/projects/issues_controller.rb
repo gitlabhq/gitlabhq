@@ -37,7 +37,6 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:vue_issues_list, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:contacts_autocomplete, project&.group, default_enabled: :yaml)
@@ -48,7 +47,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:confidential_notes, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_issue_discussions, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:work_items, project&.group, default_enabled: :yaml)
+    push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

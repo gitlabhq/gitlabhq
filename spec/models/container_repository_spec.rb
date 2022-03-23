@@ -302,6 +302,19 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         expect(repository.migration_aborted_in_state).to eq('importing')
         expect(repository).to be_import_aborted
       end
+
+      context 'above the max retry limit' do
+        before do
+          stub_application_setting(container_registry_import_max_retries: 1)
+        end
+
+        it 'skips the migration' do
+          expect { subject }.to change { repository.migration_skipped_at }
+
+          expect(repository.reload).to be_import_skipped
+          expect(repository.migration_skipped_reason).to eq('too_many_retries')
+        end
+      end
     end
 
     describe '#skip_import' do
@@ -309,7 +322,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
       subject { repository.skip_import(reason: :too_many_retries) }
 
-      it_behaves_like 'transitioning from allowed states', ContainerRepository::ABORTABLE_MIGRATION_STATES
+      it_behaves_like 'transitioning from allowed states', ContainerRepository::SKIPPABLE_MIGRATION_STATES
 
       it 'sets migration_skipped_at and migration_skipped_reason' do
         expect { subject }.to change { repository.reload.migration_skipped_at }
@@ -1119,6 +1132,17 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       end
     end
 
+    context 'not found response' do
+      let(:response) { :not_found }
+
+      it 'aborts the migration' do
+        expect(subject).to eq(false)
+
+        expect(container_repository).to be_import_skipped
+        expect(container_repository.reload.migration_skipped_reason).to eq('not_found')
+      end
+    end
+
     context 'other response' do
       let(:response) { :error }
 
@@ -1133,6 +1157,30 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       it 'raises an error' do
         expect { container_repository.try_import }.to raise_error(ArgumentError)
       end
+    end
+  end
+
+  describe '#retried_too_many_times?' do
+    subject { repository.retried_too_many_times? }
+
+    before do
+      stub_application_setting(container_registry_import_max_retries: 3)
+    end
+
+    context 'migration_retries_count is equal or greater than max_retries' do
+      before do
+        repository.update_column(:migration_retries_count, 3)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'migration_retries_count is lower than max_retries' do
+      before do
+        repository.update_column(:migration_retries_count, 2)
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 

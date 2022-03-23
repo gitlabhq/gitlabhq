@@ -241,7 +241,8 @@ The configuration options are the same as for configuring
 
 ##### Microsoft Graph
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
+> - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 
 Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
 Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth2 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
@@ -262,6 +263,22 @@ Graph API instead of IMAP. Follow the [documentation in the incoming email secti
    'poll_interval': 60  # Optional
   }
   ```
+
+For Microsoft Cloud for US Government or [other Azure deployments](https://docs.microsoft.com/en-us/graph/deployments), configure the `azure_ad_endpoint` and `graph_endpoint` settings.
+
+- Example for Microsoft Cloud for US Government:
+
+```ruby
+  gitlab_rails['service_desk_email_inbox_options'] = {
+   'azure_ad_endpoint': 'https://login.microsoftonline.us',
+   'graph_endpoint': 'https://graph.microsoft.us',
+   'tenant_id': '<YOUR-TENANT-ID>',
+   'client_id': '<YOUR-CLIENT-ID>',
+   'client_secret': '<YOUR-CLIENT-SECRET>',
+   'poll_interval': 60  # Optional
+  }
+}
+```
 
 The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
 

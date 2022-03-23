@@ -34269,9 +34269,6 @@ msgstr ""
 msgid "Set what should be replicated by this secondary site."
 msgstr ""
 
-msgid "SetStatusModal|Add status emoji"
-msgstr ""
-
 msgid "SetStatusModal|An indicator appears next to your name and avatar"
 msgstr ""
 
