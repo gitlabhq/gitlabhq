@@ -7,6 +7,7 @@ import {
   I18N,
   TH_CREATED_AT_TEST_ID,
   TH_SEVERITY_TEST_ID,
+  TH_ESCALATION_STATUS_TEST_ID,
   TH_PUBLISHED_TEST_ID,
   TH_INCIDENT_SLA_TEST_ID,
   trackIncidentCreateNewOptions,
@@ -294,11 +295,12 @@ describe('Incidents List', () => {
     const noneSort = 'none';
 
     it.each`
-      description        | selector                   | initialSort | firstSort   | nextSort
-      ${'creation date'} | ${TH_CREATED_AT_TEST_ID}   | ${descSort} | ${ascSort}  | ${descSort}
-      ${'severity'}      | ${TH_SEVERITY_TEST_ID}     | ${noneSort} | ${descSort} | ${ascSort}
-      ${'publish date'}  | ${TH_PUBLISHED_TEST_ID}    | ${noneSort} | ${descSort} | ${ascSort}
-      ${'due date'}      | ${TH_INCIDENT_SLA_TEST_ID} | ${noneSort} | ${ascSort}  | ${descSort}
+      description        | selector                        | initialSort | firstSort   | nextSort
+      ${'creation date'} | ${TH_CREATED_AT_TEST_ID}        | ${descSort} | ${ascSort}  | ${descSort}
+      ${'severity'}      | ${TH_SEVERITY_TEST_ID}          | ${noneSort} | ${descSort} | ${ascSort}
+      ${'status'}        | ${TH_ESCALATION_STATUS_TEST_ID} | ${noneSort} | ${descSort} | ${ascSort}
+      ${'publish date'}  | ${TH_PUBLISHED_TEST_ID}         | ${noneSort} | ${descSort} | ${ascSort}
+      ${'due date'}      | ${TH_INCIDENT_SLA_TEST_ID}      | ${noneSort} | ${ascSort}  | ${descSort}
     `(
       'updates sort with new direction when sorting by $description',
       async ({ selector, initialSort, firstSort, nextSort }) => {

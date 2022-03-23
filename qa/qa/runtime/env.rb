@@ -37,6 +37,14 @@ module QA
         ENV['QA_PRAEFECT_REPOSITORY_STORAGE']
       end
 
+      def interception_enabled?
+        enabled?(ENV['INTERCEPT_REQUESTS'], default: true)
+      end
+
+      def can_intercept?
+        browser == :chrome && interception_enabled?
+      end
+
       def ci_job_url
         ENV['CI_JOB_URL']
       end

@@ -16,12 +16,16 @@ module QA
         Waiter.wait_until(log: false) do
           finished_all_ajax_requests? && (!skip_finished_loading_check ? finished_loading?(wait: 1) : true)
         end
+        QA::Support::PageErrorChecker.log_request_errors(Capybara.page) if QA::Runtime::Env.can_intercept?
       rescue Repeater::WaitExceededError
         raise $!, 'Page did not fully load. This could be due to an unending async request or loading icon.'
       end
 
       def finished_all_ajax_requests?
-        Capybara.page.evaluate_script('window.pendingRequests || window.pendingRailsUJSRequests || 0').zero? # rubocop:disable Style/NumericPredicate
+        requests = %w[window.pendingRequests window.pendingRailsUJSRequests 0]
+        requests.unshift('(window.Interceptor && window.Interceptor.activeFetchRequests)') if Runtime::Env.can_intercept?
+        script = requests.join(' || ')
+        Capybara.page.evaluate_script(script).zero? # rubocop:disable Style/NumericPredicate
       end
 
       def finished_loading?(wait: DEFAULT_MAX_WAIT_TIME)

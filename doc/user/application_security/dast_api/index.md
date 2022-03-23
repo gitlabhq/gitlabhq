@@ -391,8 +391,8 @@ By default, the DAST API scanner uses the Postman file to resolve Postman variab
 is set in a GitLab CI environment variable `DAST_API_POSTMAN_COLLECTION_VARIABLES`, then the JSON
 file takes precedence to get Postman variable values.
 
-Although Postman can export environment variables into a JSON file, the format is not compatible
-with the JSON expected by `DAST_API_POSTMAN_COLLECTION_VARIABLES`.
+WARNING:
+Although Postman can export environment variables into a JSON file, the format is not compatible with the JSON expected by `DAST_API_POSTMAN_COLLECTION_VARIABLES`.
 
 Here is an example of using `DAST_API_POSTMAN_COLLECTION_VARIABLES`:
 

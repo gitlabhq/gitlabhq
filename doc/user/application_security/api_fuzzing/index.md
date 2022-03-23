@@ -345,8 +345,8 @@ By default, the API fuzzer uses the Postman file to resolve Postman variable val
 is set in a GitLab CI/CD variable `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`, then the JSON
 file takes precedence to get Postman variable values.
 
-Although Postman can export environment variables into a JSON file, the format is not compatible
-with the JSON expected by `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`.
+WARNING:
+Although Postman can export environment variables into a JSON file, the format is not compatible with the JSON expected by `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`.
 
 Here is an example of using `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`:
 

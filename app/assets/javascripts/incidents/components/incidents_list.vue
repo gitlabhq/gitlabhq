@@ -33,6 +33,7 @@ import {
   TH_CREATED_AT_TEST_ID,
   TH_INCIDENT_SLA_TEST_ID,
   TH_SEVERITY_TEST_ID,
+  TH_ESCALATION_STATUS_TEST_ID,
   TH_PUBLISHED_TEST_ID,
   INCIDENT_DETAILS_PATH,
   trackIncidentCreateNewOptions,
@@ -67,8 +68,11 @@ export default {
     {
       key: 'escalationStatus',
       label: s__('IncidentManagement|Status'),
-      thClass: `${thClass} gl-w-eighth gl-pointer-events-none`,
-      tdClass,
+      thClass: `${thClass} gl-w-eighth`,
+      tdClass: `${tdClass} sortable-cell`,
+      actualSortKey: 'ESCALATION_STATUS',
+      sortable: true,
+      thAttr: TH_ESCALATION_STATUS_TEST_ID,
     },
     {
       key: 'createdAt',

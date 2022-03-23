@@ -194,6 +194,8 @@ module QA
         def initialize(instance, page_class)
           @session_address = Runtime::Address.new(instance, page_class)
           @page_class = page_class
+
+          Session.enable_interception if Runtime::Env.can_intercept?
         end
 
         def url
@@ -253,6 +255,27 @@ module QA
           visit(url)
           reset_session!
           @network_conditions_configured = false
+        end
+
+        def self.enable_interception
+          script = File.read("#{__dir__}/script_extensions/interceptor.js")
+          command = {
+            cmd: 'Page.addScriptToEvaluateOnNewDocument',
+            params: {
+              source: script
+            }
+          }
+          @interceptor_script_params = Capybara.current_session.driver.browser.send(:bridge).send_command(command)
+        end
+
+        def self.disable_interception
+          return unless @interceptor_script_params
+
+          command = {
+            cmd: 'Page.removeScriptToEvaluateOnNewDocument',
+            params: @interceptor_script_params
+          }
+          Capybara.current_session.driver.browser.send(:bridge).send_command(command)
         end
 
         private
