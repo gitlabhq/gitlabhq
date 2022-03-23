@@ -725,7 +725,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
 
           expect(builds_names).to eq ['build:1', 'build:2', 'test:1', 'test:2']
 
-          Ci::Build.retry(pipeline.builds.find_by(name: 'test:2'), user).reset.success!
+          Ci::RetryJobService.new(pipeline.project, user).execute(pipeline.builds.find_by(name: 'test:2'))[:job].reset.success!
 
           expect(builds_names).to eq ['build:1', 'build:2', 'test:1', 'test:2',
                                       'test:2', 'deploy:1', 'deploy:2']
@@ -1111,11 +1111,11 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
     end
 
     def enqueue_scheduled(name)
-      builds.scheduled.find_by(name: name).enqueue_scheduled
+      builds.scheduled.find_by(name: name).enqueue!
     end
 
     def retry_build(name)
-      Ci::Build.retry(builds.find_by(name: name), user)
+      Ci::RetryJobService.new(project, user).execute(builds.find_by(name: name))
     end
 
     def manual_actions

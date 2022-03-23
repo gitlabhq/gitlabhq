@@ -21,18 +21,19 @@ export const I18N_GROUP_RUNNER_DESCRIPTION = s__(
 );
 export const I18N_PROJECT_RUNNER_DESCRIPTION = s__('Runners|Associated with one or more projects');
 
-// Status
-export const I18N_ONLINE_RUNNER_TIMEAGO_DESCRIPTION = s__(
+// Status tooltips
+export const I18N_ONLINE_TIMEAGO_TOOLTIP = s__(
   'Runners|Runner is online; last contact was %{timeAgo}',
 );
-export const I18N_NEVER_CONTACTED_RUNNER_DESCRIPTION = s__(
-  'Runners|This runner has never contacted this instance',
+export const I18N_NEVER_CONTACTED_TOOLTIP = s__('Runners|Runner has never contacted this instance');
+export const I18N_OFFLINE_TIMEAGO_TOOLTIP = s__(
+  'Runners|Runner is offline; last contact was %{timeAgo}',
 );
-export const I18N_OFFLINE_RUNNER_TIMEAGO_DESCRIPTION = s__(
-  'Runners|No recent contact from this runner; last contact was %{timeAgo}',
+export const I18N_STALE_TIMEAGO_TOOLTIP = s__(
+  'Runners|Runner is stale; last contact was %{timeAgo}',
 );
-export const I18N_STALE_RUNNER_DESCRIPTION = s__(
-  'Runners|No contact from this runner in over 3 months',
+export const I18N_STALE_NEVER_CONTACTED_TOOLTIP = s__(
+  'Runners|Runner is stale; it has never contacted this instance',
 );
 
 // Actions

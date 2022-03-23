@@ -36,6 +36,12 @@ For deprecation reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
 
+View deprecations by the product versions in which they were announced.
+
+Each deprecation has a **planned removal milestone** and indicates whether it is a breaking change.
+
+Most of the deprecations are **planned for removal in 15.0**, and many of them are **breaking changes**.
+
 ## 14.9
 
 ### Background upload for object storage

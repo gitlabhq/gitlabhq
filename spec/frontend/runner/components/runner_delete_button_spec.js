@@ -29,6 +29,8 @@ jest.mock('~/runner/sentry_utils');
 
 describe('RunnerDeleteButton', () => {
   let wrapper;
+  let apolloProvider;
+  let apolloCache;
   let runnerDeleteHandler;
 
   const findBtn = () => wrapper.findComponent(GlButton);
@@ -43,13 +45,16 @@ describe('RunnerDeleteButton', () => {
     wrapper = mountFn(RunnerDeleteButton, {
       propsData: {
         runner: {
+          // We need typename so that cache.identify works
+          // eslint-disable-next-line no-underscore-dangle
+          __typename: mockRunner.__typename,
           id: mockRunner.id,
           shortSha: mockRunner.shortSha,
           ...runner,
         },
         ...propsData,
       },
-      apolloProvider: createMockApollo([[runnerDeleteMutation, runnerDeleteHandler]]),
+      apolloProvider,
       directives: {
         GlTooltip: createMockDirective(),
         GlModal: createMockDirective(),
@@ -72,6 +77,11 @@ describe('RunnerDeleteButton', () => {
         },
       });
     });
+    apolloProvider = createMockApollo([[runnerDeleteMutation, runnerDeleteHandler]]);
+    apolloCache = apolloProvider.defaultClient.cache;
+
+    jest.spyOn(apolloCache, 'evict');
+    jest.spyOn(apolloCache, 'gc');
 
     createComponent();
   });
@@ -149,6 +159,13 @@ describe('RunnerDeleteButton', () => {
       expect(deleted[0][0].message).toMatch(`#${mockRunnerId}`);
       expect(deleted[0][0].message).toMatch(`${mockRunner.shortSha}`);
     });
+
+    it('evicts runner from apollo cache', () => {
+      expect(apolloCache.evict).toHaveBeenCalledWith({
+        id: apolloCache.identify(mockRunner),
+      });
+      expect(apolloCache.gc).toHaveBeenCalled();
+    });
   });
 
   describe('When update fails', () => {
@@ -198,6 +215,11 @@ describe('RunnerDeleteButton', () => {
 
       it('error is shown to the user', () => {
         expect(createAlert).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not evict runner from apollo cache', () => {
+        expect(apolloCache.evict).not.toHaveBeenCalled();
+        expect(apolloCache.gc).not.toHaveBeenCalled();
       });
     });
   });

@@ -38,7 +38,7 @@ read the [Introduction to CI/CD with GitLab](introduction/index.md).
   <iframe src="https://www.youtube.com/embed/ljth1Q5oJoo" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
-## GitLab CI/CD concepts
+## Concepts
 
 GitLab CI/CD uses a number of concepts to describe and run your build and deploy.
 
@@ -53,7 +53,7 @@ GitLab CI/CD uses a number of concepts to describe and run your build and deploy
 | [Pipeline efficiency](pipelines/pipeline_efficiency.md) | Configure your pipelines to run quickly and efficiently.                       |
 | [Test cases](test_cases/index.md)                       | Create testing scenarios.                                                      |
 
-## GitLab CI/CD configuration
+## Configuration
 
 GitLab CI/CD supports numerous configuration options:
 
@@ -72,7 +72,7 @@ GitLab CI/CD supports numerous configuration options:
 Certain operations can only be performed according to the
 [user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.
 
-## GitLab CI/CD features
+## Features
 
 GitLab CI/CD features, grouped by DevOps stage, include:
 
@@ -110,7 +110,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [License Compliance](../user/compliance/license_compliance/index.md) **(ULTIMATE)**             | Search your project dependencies for their licenses.                                                                           |
 | [Security Test reports](../user/application_security/index.md) **(ULTIMATE)**                   | Check for app vulnerabilities.                                                                                                 |
 
-## GitLab CI/CD examples
+## Examples
 
 See the [CI/CD examples](examples/index.md) page for example project code and tutorials for
 using GitLab CI/CD with various:
@@ -119,7 +119,7 @@ using GitLab CI/CD with various:
 - Languages
 - Platforms
 
-## GitLab CI/CD Administration
+## Administration
 
 You can change the default behavior of GitLab CI/CD for:
 
@@ -136,7 +136,7 @@ Learn more about GitLab CI/CD:
 
 - [Why you might choose GitLab CI/CD](https://about.gitlab.com/blog/2016/10/17/gitlab-ci-oohlala/).
 - [Reasons you might migrate from another platform](https://about.gitlab.com/blog/2016/07/22/building-our-web-app-on-gitlab-ci/).
-- [5 Teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/)
+- [Five teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/).
 - If you use VS Code to edit your GitLab CI/CD configuration, the
   [GitLab Workflow VS Code extension](../user/project/repository/vscode.md) helps you
   [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)

@@ -95,7 +95,7 @@ return to the instrumentation and update it.
 
 1. Add the metric instrumentation class to `lib/gitlab/usage/metrics/instrumentations/`.
 1. Add the metric logic in the instrumentation class.
-1. Run the [metrics YAML generator](metrics_dictionary.md#metrics-definition-and-validation).
+1. Run the [metrics YAML generator](metrics_dictionary.md#create-a-new-metric-definition).
 1. Use the metric name suggestion to select a suitable metric name.
 1. Update the metric's YAML definition with the correct `key_path`.
 

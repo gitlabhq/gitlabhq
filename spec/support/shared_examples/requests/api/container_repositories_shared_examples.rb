@@ -145,8 +145,10 @@ RSpec.shared_examples 'reconciling migration_state' do
   context 'native response' do
     let(:status) { 'native' }
 
-    it 'raises an error' do
-      expect { subject }.to raise_error(described_class::NativeImportError)
+    it 'finishes the import' do
+      expect { subject }
+        .to change { repository.reload.migration_state }.to('import_done')
+        .and change { repository.reload.migration_skipped_reason }.to('native_import')
     end
   end
 

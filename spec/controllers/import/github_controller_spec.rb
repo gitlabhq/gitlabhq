@@ -293,6 +293,22 @@ RSpec.describe Import::GithubController do
   end
 
   describe "GET realtime_changes" do
+    let(:user) { create(:user) }
+
     it_behaves_like 'a GitHub-ish import controller: GET realtime_changes'
+
+    before do
+      assign_session_token(provider)
+    end
+
+    it 'includes stats in response' do
+      create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo')
+
+      get :realtime_changes
+
+      expect(json_response[0]).to include('stats')
+      expect(json_response[0]['stats']).to include('fetched')
+      expect(json_response[0]['stats']).to include('imported')
+    end
   end
 end

@@ -1663,7 +1663,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
               expect(upstream_pipeline.reload).to be_failed
 
               Sidekiq::Testing.inline! do
-                new_job = Ci::Build.retry(job, project.users.first)
+                new_job = Ci::RetryJobService.new(project, project.users.first).execute(job)[:job]
 
                 expect(downstream_pipeline.reload).to be_running
                 expect(upstream_pipeline.reload).to be_running
@@ -1684,7 +1684,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
               expect(upstream_pipeline.reload).to be_success
 
               Sidekiq::Testing.inline! do
-                new_job = Ci::Build.retry(job, project.users.first)
+                new_job = Ci::RetryJobService.new(project, project.users.first).execute(job)[:job]
 
                 expect(downstream_pipeline.reload).to be_running
                 expect(upstream_pipeline.reload).to be_running
@@ -1715,7 +1715,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
                 expect(upstream_of_upstream_pipeline.reload).to be_failed
 
                 Sidekiq::Testing.inline! do
-                  new_job = Ci::Build.retry(job, project.users.first)
+                  new_job = Ci::RetryJobService.new(project, project.users.first).execute(job)[:job]
 
                   expect(downstream_pipeline.reload).to be_running
                   expect(upstream_pipeline.reload).to be_running
@@ -2583,8 +2583,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
         build.drop
         project.add_developer(user)
-
-        Ci::Build.retry(build, user)
+        ::Ci::RetryJobService.new(project, user).execute(build)[:job]
       end
 
       # We are changing a state: created > failed > running
@@ -4688,7 +4687,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         project.add_developer(user)
 
         retried_build.cancel!
-        ::Ci::Build.retry(retried_build, user)
+        Ci::RetryJobService.new(project, user).execute(retried_build)[:job]
       end
 
       it 'does not include retried builds' do

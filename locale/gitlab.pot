@@ -21000,6 +21000,9 @@ msgstr ""
 msgid "Iterations|Iteration scheduling will be handled automatically"
 msgstr ""
 
+msgid "Iterations|Iterations are a way to track issues over a period of time, allowing teams to also track velocity and volatility metrics."
+msgstr ""
+
 msgid "Iterations|Move incomplete issues to the next iteration"
 msgstr ""
 
@@ -21013,6 +21016,9 @@ msgid "Iterations|No closed iterations."
 msgstr ""
 
 msgid "Iterations|No iteration cadences to show."
+msgstr ""
+
+msgid "Iterations|No iterations found"
 msgstr ""
 
 msgid "Iterations|No iterations in cadence."
@@ -25164,9 +25170,6 @@ msgid "No issues found"
 msgstr ""
 
 msgid "No iteration"
-msgstr ""
-
-msgid "No iterations found"
 msgstr ""
 
 msgid "No iterations to show"
@@ -32141,15 +32144,6 @@ msgstr ""
 msgid "Runners|New registration token generated!"
 msgstr ""
 
-msgid "Runners|New runner, has not contacted yet"
-msgstr ""
-
-msgid "Runners|No contact from this runner in over 3 months"
-msgstr ""
-
-msgid "Runners|No recent contact from this runner; last contact was %{timeAgo}"
-msgstr ""
-
 msgid "Runners|No spot. Default choice for Windows Shell executor."
 msgstr ""
 
@@ -32234,16 +32228,28 @@ msgstr ""
 msgid "Runners|Runner cannot be deleted, please contact your administrator"
 msgstr ""
 
-msgid "Runners|Runner is offline, last contact was %{runner_contact} ago"
+msgid "Runners|Runner has never contacted this instance"
 msgstr ""
 
-msgid "Runners|Runner is online, last contact was %{runner_contact} ago"
+msgid "Runners|Runner is offline; last contact was %{runner_contact} ago"
+msgstr ""
+
+msgid "Runners|Runner is offline; last contact was %{timeAgo}"
+msgstr ""
+
+msgid "Runners|Runner is online; last contact was %{runner_contact} ago"
 msgstr ""
 
 msgid "Runners|Runner is online; last contact was %{timeAgo}"
 msgstr ""
 
-msgid "Runners|Runner is paused, last contact was %{runner_contact} ago"
+msgid "Runners|Runner is stale; it has never contacted this instance"
+msgstr ""
+
+msgid "Runners|Runner is stale; last contact was %{runner_contact} ago"
+msgstr ""
+
+msgid "Runners|Runner is stale; last contact was %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Runner registration"
@@ -32295,9 +32301,6 @@ msgid "Runners|The new view gives you more space and better visibility into your
 msgstr ""
 
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
-msgstr ""
-
-msgid "Runners|This runner has never contacted this instance"
 msgstr ""
 
 msgid "Runners|This runner is associated with specific projects."
@@ -44821,9 +44824,6 @@ msgid "my-awesome-group"
 msgstr ""
 
 msgid "my-channel"
-msgstr ""
-
-msgid "n/a"
 msgstr ""
 
 msgid "need attention"

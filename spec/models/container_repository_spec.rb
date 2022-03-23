@@ -122,6 +122,16 @@ RSpec.describe ContainerRepository, :aggregate_failures do
           expect(repository).to be_import_aborted
         end
       end
+
+      context 'already imported' do
+        it 'finishes the import' do
+          expect(repository).to receive(:migration_pre_import).and_return(:already_imported)
+
+          expect { subject }
+            .to change { repository.reload.migration_state }.to('import_done')
+            .and change { repository.reload.migration_skipped_reason }.to('native_import')
+        end
+      end
     end
 
     shared_examples 'transitioning to importing', skip_import_success: true do
@@ -149,6 +159,16 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
           expect(repository.migration_aborted_in_state).to eq('importing')
           expect(repository).to be_import_aborted
+        end
+      end
+
+      context 'already imported' do
+        it 'finishes the import' do
+          expect(repository).to receive(:migration_import).and_return(:already_imported)
+
+          expect { subject }
+            .to change { repository.reload.migration_state }.to('import_done')
+            .and change { repository.reload.migration_skipped_reason }.to('native_import')
         end
       end
     end

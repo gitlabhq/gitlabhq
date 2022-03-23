@@ -44,6 +44,11 @@ module Spec
             fill_in 'YYYY-MM-DD', with: expires_at.strftime('%Y-%m-%d') if expires_at
           end
 
+          def click_groups_tab
+            expect(page).to have_link 'Groups'
+            click_link "Groups"
+          end
+
           def group_dropdown_selector
             '[data-testid="group-select-dropdown"]'
           end

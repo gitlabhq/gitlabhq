@@ -78,10 +78,13 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def retry
-    return respond_422 unless @build.retryable?
+    response = Ci::RetryJobService.new(project, current_user).execute(@build)
 
-    build = Ci::Build.retry(@build, current_user)
-    redirect_to build_path(build)
+    if response.success?
+      redirect_to build_path(response[:job])
+    else
+      respond_422
+    end
   end
 
   def play

@@ -115,36 +115,37 @@ export default {
       // should only change back if the operation fails.
       this.deleting = true;
       try {
-        const {
-          data: {
-            runnerDelete: { errors },
-          },
-        } = await this.$apollo.mutate({
+        await this.$apollo.mutate({
           mutation: runnerDeleteMutation,
           variables: {
             input: {
               id: this.runner.id,
             },
           },
-          update: (cache) => {
+          update: (cache, { data }) => {
+            const { errors } = data.runnerDelete;
+
+            if (errors?.length) {
+              this.onError(new Error(errors.join(' ')));
+              return;
+            }
+
+            this.$emit('deleted', {
+              message: sprintf(I18N_DELETED_TOAST, { name: this.runnerName }),
+            });
+
             // Remove deleted runner from the cache
             const cacheId = cache.identify(this.runner);
             cache.evict({ id: cacheId });
+            cache.gc();
           },
         });
-        if (errors && errors.length) {
-          throw new Error(errors.join(' '));
-        } else {
-          this.$emit('deleted', {
-            message: sprintf(I18N_DELETED_TOAST, { name: this.runnerName }),
-          });
-        }
       } catch (e) {
-        this.deleting = false;
         this.onError(e);
       }
     },
     onError(error) {
+      this.deleting = false;
       const { message } = error;
 
       createAlert({ message });

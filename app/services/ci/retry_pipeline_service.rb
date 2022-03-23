@@ -13,7 +13,7 @@ module Ci
       builds_relation(pipeline).find_each do |build|
         next unless can_be_retried?(build)
 
-        Ci::RetryBuildService.new(project, current_user).clone!(build)
+        Ci::RetryJobService.new(project, current_user).clone!(build)
       end
 
       pipeline.processables.latest.skipped.find_each do |skipped|

@@ -515,7 +515,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET realtime_changes' do
 
     get :realtime_changes
 
-    expect(json_response).to eq([{ "id" => project.id, "import_status" => project.import_status }])
+    expect(json_response).to match([a_hash_including({ "id" => project.id, "import_status" => project.import_status })])
     expect(Integer(response.headers['Poll-Interval'])).to be > -1
   end
 end

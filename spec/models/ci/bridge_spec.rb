@@ -30,6 +30,12 @@ RSpec.describe Ci::Bridge do
     expect(bridge).to have_one(:downstream_pipeline)
   end
 
+  describe '#retryable?' do
+    it 'returns false' do
+      expect(bridge.retryable?).to eq(false)
+    end
+  end
+
   describe '#tags' do
     it 'only has a bridge tag' do
       expect(bridge.tags).to eq [:bridge]

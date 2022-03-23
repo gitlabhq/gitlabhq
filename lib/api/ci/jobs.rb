@@ -114,11 +114,14 @@ module API
 
           build = find_build!(params[:job_id])
           authorize!(:update_build, build)
-          break forbidden!('Job is not retryable') unless build.retryable?
 
-          build = ::Ci::Build.retry(build, current_user)
+          response = ::Ci::RetryJobService.new(@project, current_user).execute(build)
 
-          present build, with: Entities::Ci::Job
+          if response.success?
+            present response[:job], with: Entities::Ci::Job
+          else
+            forbidden!('Job is not retryable')
+          end
         end
 
         desc 'Erase job (remove artifacts and the trace)' do

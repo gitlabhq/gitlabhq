@@ -57,16 +57,16 @@ module Ci
       end
     end
 
-    def self.retry(bridge, current_user)
-      raise NotImplementedError
-    end
-
     def self.with_preloads
       preload(
         :metadata,
         downstream_pipeline: [project: [:route, { namespace: :route }]],
         project: [:namespace]
       )
+    end
+
+    def retryable?
+      false
     end
 
     def inherit_status_from_downstream!(pipeline)

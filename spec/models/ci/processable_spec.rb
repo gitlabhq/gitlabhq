@@ -14,6 +14,100 @@ RSpec.describe Ci::Processable do
     it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
   end
 
+  describe '#retryable' do
+    shared_examples_for 'retryable processable' do
+      context 'when processable is successful' do
+        before do
+          processable.success!
+        end
+
+        it { is_expected.to be_retryable }
+      end
+
+      context 'when processable is failed' do
+        before do
+          processable.drop!
+        end
+
+        it { is_expected.to be_retryable }
+      end
+
+      context 'when processable is canceled' do
+        before do
+          processable.cancel!
+        end
+
+        it { is_expected.to be_retryable }
+      end
+    end
+
+    shared_examples_for 'non-retryable processable' do
+      context 'when processable is skipped' do
+        before do
+          processable.skip!
+        end
+
+        it { is_expected.not_to be_retryable }
+      end
+
+      context 'when processable is degenerated' do
+        before do
+          processable.degenerate!
+        end
+
+        it { is_expected.not_to be_retryable }
+      end
+
+      context 'when a canceled processable has been retried already' do
+        before do
+          project.add_developer(create(:user))
+          processable.cancel!
+          processable.update!(retried: true)
+        end
+
+        it { is_expected.not_to be_retryable }
+      end
+    end
+
+    context 'when the processable is a build' do
+      subject(:processable) { create(:ci_build, pipeline: pipeline) }
+
+      context 'when the processable is retryable' do
+        it_behaves_like 'retryable processable'
+
+        context 'when deployment is rejected' do
+          before do
+            processable.drop!(:deployment_rejected)
+          end
+
+          it { is_expected.not_to be_retryable }
+        end
+
+        context 'when build is waiting for deployment approval' do
+          subject { build_stubbed(:ci_build, :manual, environment: 'production') }
+
+          before do
+            create(:deployment, :blocked, deployable: subject)
+          end
+
+          it { is_expected.not_to be_retryable }
+        end
+      end
+
+      context 'when the processable is non-retryable' do
+        it_behaves_like 'non-retryable processable'
+
+        context 'when processable is running' do
+          before do
+            processable.run!
+          end
+
+          it { is_expected.not_to be_retryable }
+        end
+      end
+    end
+  end
+
   describe '#aggregated_needs_names' do
     let(:with_aggregated_needs) { pipeline.processables.select_with_aggregated_needs(project) }
 

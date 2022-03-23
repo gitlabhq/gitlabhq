@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RetryBuildService do
+RSpec.describe Ci::RetryJobService do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
@@ -17,7 +17,7 @@ RSpec.describe Ci::RetryBuildService do
                              name: 'test')
   end
 
-  let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline, stage_id: stage.id) }
+  let_it_be_with_refind(:build) { create(:ci_build, :success, pipeline: pipeline, stage_id: stage.id) }
 
   let(:user) { developer }
 
@@ -30,7 +30,7 @@ RSpec.describe Ci::RetryBuildService do
     project.add_reporter(reporter)
   end
 
-  clone_accessors = described_class.clone_accessors.without(described_class.extra_accessors)
+  clone_accessors = ::Ci::Build.clone_accessors.without(::Ci::Build.extra_accessors)
 
   reject_accessors =
     %i[id status user token token_encrypted coverage trace runner
@@ -92,6 +92,10 @@ RSpec.describe Ci::RetryBuildService do
       create(:ci_job_variable, :dotenv_source, job: build)
       create(:ci_build_need, build: build)
       create(:terraform_state_version, build: build)
+    end
+
+    before do
+      build.update!(retried: false, status: :success)
     end
 
     describe 'clone accessors' do
@@ -156,8 +160,8 @@ RSpec.describe Ci::RetryBuildService do
         Ci::Build.attribute_aliases.keys.map(&:to_sym) +
         Ci::Build.reflect_on_all_associations.map(&:name) +
         [:tag_list, :needs_attributes, :job_variables_attributes] -
-        # ee-specific accessors should be tested in ee/spec/services/ci/retry_build_service_spec.rb instead
-        described_class.extra_accessors -
+        # ee-specific accessors should be tested in ee/spec/services/ci/retry_job_service_spec.rb instead
+        Ci::Build.extra_accessors -
         [:dast_site_profiles_build, :dast_scanner_profiles_build] # join tables
 
       current_accessors.uniq!
@@ -170,7 +174,7 @@ RSpec.describe Ci::RetryBuildService do
   describe '#execute' do
     let(:new_build) do
       travel_to(1.second.from_now) do
-        service.execute(build)
+        service.execute(build)[:job]
       end
     end
 
@@ -248,7 +252,7 @@ RSpec.describe Ci::RetryBuildService do
 
         context 'when build has scheduling_type' do
           it 'does not call populate_scheduling_type!' do
-            expect_any_instance_of(Ci::Pipeline).not_to receive(:ensure_scheduling_type!)
+            expect_any_instance_of(Ci::Pipeline).not_to receive(:ensure_scheduling_type!) # rubocop: disable RSpec/AnyInstanceOf
 
             expect(new_build.scheduling_type).to eq('stage')
           end
@@ -285,6 +289,18 @@ RSpec.describe Ci::RetryBuildService do
       it 'raises an error' do
         expect { service.execute(build) }
           .to raise_error Gitlab::Access::AccessDeniedError
+      end
+
+      context 'when the job is not retryable' do
+        let(:build) { create(:ci_build, :created, pipeline: pipeline) }
+
+        it 'returns a ServiceResponse error' do
+          response = service.execute(build)
+
+          expect(response).to be_a(ServiceResponse)
+          expect(response).to be_error
+          expect(response.message).to eq("Job cannot be retried")
+        end
       end
     end
   end

@@ -85,7 +85,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         c2: 'skipped'
       )
 
-      new_a1 = Ci::RetryBuildService.new(project, user).clone!(a1)
+      new_a1 = Ci::RetryJobService.new(project, user).clone!(a1)
       new_a1.enqueue!
       check_jobs_statuses(
         a1: 'pending',
@@ -172,7 +172,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         c2: 'skipped'
       )
 
-      new_a1 = Ci::RetryBuildService.new(project, user).clone!(a1)
+      new_a1 = Ci::RetryJobService.new(project, user).clone!(a1)
       new_a1.enqueue!
       check_jobs_statuses(
         a1: 'pending',

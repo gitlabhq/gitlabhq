@@ -256,9 +256,4 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
       end
     end
   end
-
-  def click_groups_tab
-    expect(page).to have_link 'Groups'
-    click_link "Groups"
-  end
 end

@@ -1,13 +1,12 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { formatDate, getTimeago, durationTimeFormatted } from '~/lib/utils/datetime_utility';
 
 export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   components: { GlIcon },
-  mixins: [timeagoMixin],
   props: {
     pipeline: {
       type: Object,
@@ -28,30 +27,19 @@ export default {
       return this.pipeline.flags.stuck;
     },
     durationFormatted() {
-      const date = new Date(this.duration * 1000);
-
-      let hh = date.getUTCHours();
-      let mm = date.getUTCMinutes();
-      let ss = date.getSeconds();
-
-      // left pad
-      if (hh < 10) {
-        hh = `0${hh}`;
-      }
-      if (mm < 10) {
-        mm = `0${mm}`;
-      }
-      if (ss < 10) {
-        ss = `0${ss}`;
-      }
-
-      return `${hh}:${mm}:${ss}`;
+      return durationTimeFormatted(this.duration);
     },
     showInProgress() {
       return !this.duration && !this.finishedTime && !this.skipped;
     },
     showSkipped() {
       return !this.duration && !this.finishedTime && this.skipped;
+    },
+    timeFormatted() {
+      return getTimeago().format(this.finishedTime);
+    },
+    tooltipTitle() {
+      return formatDate(this.finishedTime);
     },
   },
 };
@@ -85,12 +73,12 @@ export default {
 
       <time
         v-gl-tooltip
-        :title="tooltipTitle(finishedTime)"
+        :title="tooltipTitle"
         :datetime="finishedTime"
         data-placement="top"
         data-container="body"
       >
-        {{ timeFormatted(finishedTime) }}
+        {{ timeFormatted }}
       </time>
     </p>
   </div>

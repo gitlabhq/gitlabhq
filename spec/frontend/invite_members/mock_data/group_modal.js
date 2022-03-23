@@ -1,5 +1,6 @@
 export const propsData = {
   id: '1',
+  rootId: '1',
   name: 'test name',
   isProject: false,
   invalidGroups: [],

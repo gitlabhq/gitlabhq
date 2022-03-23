@@ -21,7 +21,6 @@ class ContainerRepository < ApplicationRecord
   MIGRATION_PHASE_1_STARTED_AT = Date.new(2021, 11, 4).freeze
 
   TooManyImportsError = Class.new(StandardError)
-  NativeImportError = Class.new(StandardError)
 
   belongs_to :project
 
@@ -36,7 +35,7 @@ class ContainerRepository < ApplicationRecord
 
   enum status: { delete_scheduled: 0, delete_failed: 1 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
-  enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3, migration_canceled: 4, not_found: 5 }
+  enum migration_skipped_reason: { not_in_plan: 0, too_many_retries: 1, too_many_tags: 2, root_namespace_in_deny_list: 3, migration_canceled: 4, not_found: 5, native_import: 6 }
 
   delegate :client, :gitlab_api_client, to: :registry
 
@@ -295,7 +294,7 @@ class ContainerRepository < ApplicationRecord
   def reconcile_import_status(status)
     case status
     when 'native'
-      raise NativeImportError
+      finish_import_as_native
     when *IRRECONCILABLE_MIGRATIONS_STATUSES
       nil
     when 'import_complete'
@@ -323,6 +322,8 @@ class ContainerRepository < ApplicationRecord
         return true
       when :not_found
         skip_import(reason: :not_found)
+      when :already_imported
+        finish_import_as_native
       else
         abort_import
       end
@@ -508,6 +509,13 @@ class ContainerRepository < ApplicationRecord
   def self.find_by_path(path)
     self.find_by(project: path.repository_project,
                   name: path.repository_name)
+  end
+
+  private
+
+  def finish_import_as_native
+    self.migration_skipped_reason = :native_import
+    finish_import
   end
 end
 

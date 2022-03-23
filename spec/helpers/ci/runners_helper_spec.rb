@@ -10,24 +10,31 @@ RSpec.describe Ci::RunnersHelper do
   end
 
   describe '#runner_status_icon', :clean_gitlab_redis_cache do
-    it "returns - not contacted yet" do
+    it "returns online text" do
+      runner = create(:ci_runner, contacted_at: 1.second.ago)
+      expect(helper.runner_status_icon(runner)).to include("is online")
+    end
+
+    it "returns never contacted" do
       runner = create(:ci_runner)
-      expect(helper.runner_status_icon(runner)).to include("not contacted yet")
+      expect(helper.runner_status_icon(runner)).to include("never contacted")
     end
 
     it "returns offline text" do
-      runner = create(:ci_runner, contacted_at: 1.day.ago, active: true)
-      expect(helper.runner_status_icon(runner)).to include("Runner is offline")
+      runner = create(:ci_runner, contacted_at: 1.day.ago)
+      expect(helper.runner_status_icon(runner)).to include("is offline")
     end
 
-    it "returns online text" do
-      runner = create(:ci_runner, contacted_at: 1.second.ago, active: true)
-      expect(helper.runner_status_icon(runner)).to include("Runner is online")
+    it "returns stale text" do
+      runner = create(:ci_runner, created_at: 4.months.ago, contacted_at: 4.months.ago)
+      expect(helper.runner_status_icon(runner)).to include("is stale")
+      expect(helper.runner_status_icon(runner)).to include("last contact was")
     end
 
-    it "returns paused text" do
-      runner = create(:ci_runner, contacted_at: 1.second.ago, active: false)
-      expect(helper.runner_status_icon(runner)).to include("Runner is paused")
+    it "returns stale text, when runner never contacted" do
+      runner = create(:ci_runner, created_at: 4.months.ago)
+      expect(helper.runner_status_icon(runner)).to include("is stale")
+      expect(helper.runner_status_icon(runner)).to include("never contacted")
     end
   end
 
