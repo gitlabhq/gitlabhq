@@ -10,9 +10,7 @@ GitLab Packages allows organizations to use GitLab as a private repository
 for a variety of common package managers. Users are able to build and publish
 packages, which can be easily consumed as a dependency in downstream projects.
 
-The Packages feature allows GitLab to act as a repository for the following:
-
-The Package Registry supports the following formats:
+The Packages feature allows GitLab to act as a repository and supports the following formats:
 
 | Package type                                                      | GitLab version |
 |-------------------------------------------------------------------|----------------|

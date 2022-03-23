@@ -32856,6 +32856,9 @@ msgstr ""
 msgid "Secure Files"
 msgstr ""
 
+msgid "Secure Files|File did not match the provided checksum"
+msgstr ""
+
 msgid "Secure token that identifies an external storage request."
 msgstr ""
 

@@ -50,7 +50,7 @@ module Gitlab
 
       def alt_usage_data(value = nil, fallback: FALLBACK, &block)
         if block_given?
-          { alt_usage_data_block: "non-SQL usage data block" }
+          { alt_usage_data_block: block.to_s }
         else
           { alt_usage_data_value: value }
         end
@@ -58,9 +58,9 @@ module Gitlab
 
       def redis_usage_data(counter = nil, &block)
         if block_given?
-          { redis_usage_data_block: "non-SQL usage data block" }
+          { redis_usage_data_block: block.to_s }
         elsif counter.present?
-          { redis_usage_data_counter: counter.to_s }
+          { redis_usage_data_counter: counter }
         end
       end
 
@@ -73,15 +73,6 @@ module Gitlab
 
       def epics_deepest_relationship_level
         { epics_deepest_relationship_level: 0 }
-      end
-
-      # Do not include Devise omniauth providers for consistency between local and CI-run specs
-      def auth_providers
-        AuthenticationEvent::STATIC_PROVIDERS
-      end
-
-      def omniauth_provider_names
-        []
       end
     end
   end
