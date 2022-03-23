@@ -20,7 +20,7 @@ GET groups/:id/access_tokens
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens"
@@ -44,6 +44,41 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
+## Get a group access token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
+
+Get a [group access token](../user/group/settings/group_access_tokens.md) by ID.
+
+```plaintext
+GET groups/:id/access_tokens/:token_id
+```
+
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| `id` | integer or string | yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `token_id` | integer or string | yes | ID of the group access token |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"
+```
+
+```json
+{
+   "user_id" : 141,
+   "scopes" : [
+      "api"
+   ],
+   "name" : "token",
+   "expires_at" : "2021-01-31",
+   "id" : 42,
+   "active" : true,
+   "created_at" : "2021-01-20T22:11:48.151Z",
+   "revoked" : false,
+   "access_level": 40
+}
+```
+
 ## Create a group access token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
@@ -56,11 +91,11 @@ POST groups/:id/access_tokens
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `name` | String | yes | The name of the group access token  |
+| `id` | integer or string | yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `name` | String | yes | Name of the group access token  |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token) |
 | `access_level` | Integer | no | A valid access level. Default value is 40 (Maintainer). Other allowed values are 10 (Guest), 20 (Reporter), and 30 (Developer). |
-| `expires_at` | Date | no | The token expires at midnight UTC on that date |
+| `expires_at` | Date | no | Token expires at midnight UTC on that date |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -99,8 +134,8 @@ DELETE groups/:id/access_tokens/:token_id
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | The ID of the group access token |
+| `id` | integer or string | yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `token_id` | integer or string | yes | ID of the group access token |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"

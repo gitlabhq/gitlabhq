@@ -729,6 +729,19 @@ Do not use **Reporter permissions**. A user who is assigned the Reporter role ha
 
 Use title case for **Repository Mirroring**.
 
+## respectively
+
+Avoid **respectively** and be more precise instead.
+
+Use:
+
+- To create a user, select **Create user**. For an existing user, select **Save changes**.
+
+Instead of:
+
+- Select **Create user** or **Save changes** if you created a new user or
+  edited an existing one respectively.
+
 ## roles
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.

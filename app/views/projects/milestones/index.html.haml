@@ -1,24 +1,36 @@
 - page_title _('Milestones')
 - add_page_specific_style 'page_bundles/milestone'
 
-.top-area
-  = render 'shared/milestones_filter', counts: milestone_counts(@project.milestones)
+- if @milestone_states.any? { |name, count| count > 0 }
+  .top-area
+    = render 'shared/milestones_filter', counts: @milestone_states
 
-  .nav-controls
-    = render 'shared/milestones/search_form'
-    = render 'shared/milestones_sort_dropdown'
-    - if can?(current_user, :admin_milestone, @project)
-      = link_to new_project_milestone_path(@project), class: 'gl-button btn btn-confirm', data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone') do
-        = _('New milestone')
+    .nav-controls
+      = render 'shared/milestones/search_form'
+      = render 'shared/milestones_sort_dropdown'
+      - if can?(current_user, :admin_milestone, @project)
+        = link_to new_project_milestone_path(@project), class: 'gl-button btn btn-confirm', data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone') do
+          = _('New milestone')
 
-- if @milestones.blank?
-  = render 'shared/empty_states/milestones'
+  - if @milestones.blank?
+    = render 'shared/empty_states/milestones_tab' do
+      - if can?(current_user, :admin_milestone, @project)
+        .text-center
+          = link_to new_project_milestone_path(@project), class: 'gl-button btn btn-confirm', data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone') do
+            = _('New milestone')
+
+  - else
+    .milestones
+      #js-delete-milestone-modal
+      #promote-milestone-modal
+
+      %ul.content-list
+        = render @milestones
+
+      = paginate @milestones, theme: 'gitlab'
 - else
-  .milestones
-    #js-delete-milestone-modal
-    #promote-milestone-modal
-
-    %ul.content-list
-      = render @milestones
-
-    = paginate @milestones, theme: 'gitlab'
+  = render 'shared/empty_states/milestones' do
+    - if can?(current_user, :admin_milestone, @project)
+      .text-center
+        = link_to new_project_milestone_path(@project), class: 'gl-button btn btn-confirm', data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone') do
+          = _('New milestone')

@@ -27,6 +27,28 @@ module API
           present paginate(tokens), with: Entities::ResourceAccessToken, resource: resource
         end
 
+        desc 'Get an access token for the specified resource by ID' do
+          detail 'This feature was introduced in GitLab 14.10.'
+        end
+        params do
+          requires :id, type: String, desc: "The #{source_type} ID"
+          requires :token_id, type: String, desc: "The ID of the token"
+        end
+        get ":id/access_tokens/:token_id" do
+          resource = find_source(source_type, params[:id])
+
+          next unauthorized! unless current_user.can?(:read_resource_access_tokens, resource)
+
+          token = find_token(resource, params[:token_id])
+
+          if token.nil?
+            next not_found!("Could not find #{source_type} access token with token_id: #{params[:token_id]}")
+          end
+
+          resource.members.load
+          present token, with: Entities::ResourceAccessToken, resource: resource
+        end
+
         desc 'Revoke a resource access token' do
           detail 'This feature was introduced in GitLab 13.9.'
         end

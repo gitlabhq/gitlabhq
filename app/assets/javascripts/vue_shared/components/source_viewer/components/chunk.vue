@@ -93,9 +93,9 @@ export default {
           </a>
         </div>
         <div
-          v-safe-html="content"
           class="gl-white-space-pre-wrap! gl-text-transparent"
           data-testid="content"
+          v-text="content"
         ></div>
       </div>
     </gl-intersection-observer>

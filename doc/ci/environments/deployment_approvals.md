@@ -15,7 +15,7 @@ This feature is in a [Beta](../../policy/alpha-beta-support.md#beta-features) st
 
 It may be useful to require additional approvals before deploying to certain protected environments (for example, production). This pre-deployment approval requirement is useful to accommodate testing, security, or compliance processes that must happen before each deployment.
 
-When a protected environment requires one or more approvals, all deployments to that environment become blocked and wait for the required approvals before running.
+When a protected environment requires one or more approvals, all deployments to that environment become blocked and wait for the required approvals from the `Allowed to Deploy` list before running.
 
 NOTE:
 See the [epic](https://gitlab.com/groups/gitlab-org/-/epics/6832) for planned features.

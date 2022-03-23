@@ -730,6 +730,11 @@ Refer to the documentation for your SAML Identity Provider for information on ho
 
 The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML.
 
+## Link SAML identity for an existing user
+
+A user can manually link their SAML identity to an existing GitLab account by following the steps in 
+[Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
+
 ## Configuring Group SAML on a self-managed GitLab instance **(PREMIUM SELF)**
 
 For information on the GitLab.com implementation, please see the [SAML SSO for GitLab.com groups page](../user/group/saml_sso).

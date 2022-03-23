@@ -538,6 +538,20 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
         subject
       end
     end
+
+    describe '#sample_background_migrations' do
+      it 'delegates to the migration runner with a default sample duration' do
+        expect(::Gitlab::Database::Migrations::Runner).to receive_message_chain(:background_migrations, :run_jobs).with(for_duration: 30.minutes)
+
+        run_rake_task('gitlab:db:migration_testing:sample_background_migrations')
+      end
+
+      it 'delegates to the migration runner with a configured sample duration' do
+        expect(::Gitlab::Database::Migrations::Runner).to receive_message_chain(:background_migrations, :run_jobs).with(for_duration: 100.seconds)
+
+        run_rake_task('gitlab:db:migration_testing:sample_background_migrations', '[100]')
+      end
+    end
   end
 
   describe '#execute_batched_migrations' do

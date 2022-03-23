@@ -17,6 +17,10 @@ module Gitlab
             Runner.new(direction: :down, migrations: migrations_for_down, result_dir: BASE_RESULT_DIR.join('down'))
           end
 
+          def background_migrations
+            TestBackgroundRunner.new(result_dir: BASE_RESULT_DIR.join('background_migrations'))
+          end
+
           def migration_context
             @migration_context ||= ApplicationRecord.connection.migration_context
           end

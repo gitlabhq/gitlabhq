@@ -1,8 +1,8 @@
 ---
 type: reference
 description: "Automatic Let's Encrypt SSL certificates for GitLab Pages."
-stage: Release
-group: Release
+stage: Create
+group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 

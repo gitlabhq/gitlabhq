@@ -21,7 +21,7 @@ The readiness probe checks whether the Sidekiq workers are ready to process jobs
 GET /readiness
 ```
 
-Assuming you set up Sidekiq's address and port to be `localhost` and `8092` respectively,
+If you set Sidekiq's address as `localhost` and port as `8092`,
 here's an example request:
 
 ```shell
@@ -44,7 +44,7 @@ Checks whether the Sidekiq cluster is running.
 GET /liveness
 ```
 
-Assuming you set up Sidekiq's address and port to be `localhost` and `8092` respectively,
+If you set Sidekiq's address as `localhost` and port as `8092`,
 here's an example request:
 
 ```shell

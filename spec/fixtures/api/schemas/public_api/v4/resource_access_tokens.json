@@ -1,0 +1,4 @@
+{
+  "type": "array",
+  "items": { "$ref": "resource_access_token.json" }
+}

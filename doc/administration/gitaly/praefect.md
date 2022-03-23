@@ -619,7 +619,7 @@ Note the following:
   environment variable so that the Gitaly certificate is trusted. For example:
 
    ```shell
-   sudo SSL_CERT_DIR=/etc/gitlab/trusted_certs /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
+   sudo SSL_CERT_DIR=/etc/gitlab/trusted-certs /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
    ```
 
 - You can configure Praefect servers with both an unencrypted listening address

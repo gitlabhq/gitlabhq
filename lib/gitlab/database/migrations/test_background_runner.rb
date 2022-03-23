@@ -4,12 +4,10 @@ module Gitlab
   module Database
     module Migrations
       class TestBackgroundRunner
-        # TODO - build a rake task to call this method, and support it in the gitlab-com-database-testing project.
-        # Until then, we will inject a migration with a very high timestamp during database testing
-        # that calls this class to run jobs
-        # See https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing/-/issues/41 for details
+        attr_reader :result_dir
 
-        def initialize
+        def initialize(result_dir:)
+          @result_dir = result_dir
           @job_coordinator = Gitlab::BackgroundMigration.coordinator_for_database(Gitlab::Database::MAIN_DATABASE_NAME)
         end
 
@@ -24,17 +22,29 @@ module Gitlab
           # without .to_f, we do integer division
           # For example, 3.minutes / 2 == 1.minute whereas 3.minutes / 2.to_f == (1.minute + 30.seconds)
           duration_per_migration_type = for_duration / jobs_to_run.count.to_f
-          jobs_to_run.each do |_migration_name, jobs|
+          jobs_to_run.each do |migration_name, jobs|
             run_until = duration_per_migration_type.from_now
-            jobs.shuffle.each do |j|
-              break if run_until <= Time.current
 
-              run_job(j)
-            end
+            run_jobs_for_migration(migration_name: migration_name, jobs: jobs, run_until: run_until)
           end
         end
 
         private
+
+        def run_jobs_for_migration(migration_name:, jobs:, run_until:)
+          per_background_migration_result_dir = File.join(@result_dir, migration_name)
+
+          instrumentation = Instrumentation.new(result_dir: per_background_migration_result_dir)
+          batch_names = (1..).each.lazy.map { |i| "batch_#{i}"}
+
+          jobs.shuffle.each do |j|
+            break if run_until <= Time.current
+
+            instrumentation.observe(version: nil, name: batch_names.next, connection: ActiveRecord::Migration.connection) do
+              run_job(j)
+            end
+          end
+        end
 
         def run_job(job)
           Gitlab::BackgroundMigration.perform(job.args[0], job.args[1])

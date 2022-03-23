@@ -24091,6 +24091,9 @@ msgstr ""
 msgid "Milestones|Completed Issues (closed)"
 msgstr ""
 
+msgid "Milestones|Create a milestone to better track your issues and merge requests. %{learn_more_link}"
+msgstr ""
+
 msgid "Milestones|Delete milestone"
 msgstr ""
 
@@ -24107,6 +24110,9 @@ msgid "Milestones|Milestone %{milestoneTitle} was not found"
 msgstr ""
 
 msgid "Milestones|Ongoing Issues (open and assigned)"
+msgstr ""
+
+msgid "Milestones|Organize issues and merge requests into a cohesive group, and set an optional start and due dates. %{learn_more_link}"
 msgstr ""
 
 msgid "Milestones|Project Milestone"
@@ -24127,10 +24133,19 @@ msgstr ""
 msgid "Milestones|Reopen Milestone"
 msgstr ""
 
+msgid "Milestones|There are no closed milestones"
+msgstr ""
+
+msgid "Milestones|There are no open milestones"
+msgstr ""
+
 msgid "Milestones|This action cannot be reversed."
 msgstr ""
 
 msgid "Milestones|Unstarted Issues (open and unassigned)"
+msgstr ""
+
+msgid "Milestones|Use milestones to track issues and merge requests over a fixed period of time"
 msgstr ""
 
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
@@ -25206,9 +25221,6 @@ msgid "No messages were logged"
 msgstr ""
 
 msgid "No milestone"
-msgstr ""
-
-msgid "No milestones to show"
 msgstr ""
 
 msgid "No namespace"

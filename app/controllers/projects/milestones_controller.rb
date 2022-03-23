@@ -26,6 +26,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
+        @milestone_states = Milestone.states_count(@project)
         # We need to show group milestones in the JSON response
         # so that people can filter by and assign group milestones,
         # but we don't need to show them on the project milestones page itself.

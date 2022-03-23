@@ -24,34 +24,6 @@ RSpec.describe TimeboxesHelper do
     end
   end
 
-  describe '#milestone_counts' do
-    let(:project) { create(:project) }
-    let(:counts) { helper.milestone_counts(project.milestones) }
-
-    context 'when there are milestones' do
-      it 'returns the correct counts' do
-        create_list(:active_milestone, 2, project: project)
-        create(:closed_milestone, project: project)
-
-        expect(counts).to eq(opened: 2, closed: 1, all: 3)
-      end
-    end
-
-    context 'when there are only milestones of one type' do
-      it 'returns the correct counts' do
-        create_list(:active_milestone, 2, project: project)
-
-        expect(counts).to eq(opened: 2, closed: 0, all: 2)
-      end
-    end
-
-    context 'when there are no milestones' do
-      it 'returns the correct counts' do
-        expect(counts).to eq(opened: 0, closed: 0, all: 0)
-      end
-    end
-  end
-
   describe "#group_milestone_route" do
     let(:group) { build_stubbed(:group) }
     let(:subgroup) { build_stubbed(:group, parent: group, name: "Test Subgrp") }

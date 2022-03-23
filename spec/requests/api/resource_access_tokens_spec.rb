@@ -29,6 +29,8 @@ RSpec.describe API::ResourceAccessTokens do
           token_ids = json_response.map { |token| token['id'] }
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(response).to match_response_schema('public_api/v4/resource_access_tokens')
           expect(token_ids).to match_array(access_tokens.pluck(:id))
         end
 
@@ -125,6 +127,103 @@ RSpec.describe API::ResourceAccessTokens do
 
         it "returns 401" do
           get_tokens
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    context "GET #{source_type}s/:id/access_tokens/:token_id" do
+      subject(:get_token) { get api("/#{source_type}s/#{resource_id}/access_tokens/#{token_id}", user) }
+
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:token) { create(:personal_access_token, user: project_bot) }
+      let_it_be(:resource_id) { resource.id }
+      let_it_be(:token_id) { token.id }
+
+      before do
+        if source_type == 'project'
+          resource.add_maintainer(project_bot)
+        else
+          resource.add_owner(project_bot)
+        end
+      end
+
+      context "when the user has valid permissions" do
+        it "gets the #{source_type} access token from the #{source_type}" do
+          get_token
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/resource_access_token')
+
+          expect(json_response["name"]).to eq(token.name)
+          expect(json_response["scopes"]).to eq(token.scopes)
+
+          if source_type == 'project'
+            expect(json_response["access_level"]).to eq(resource.team.max_member_access(token.user.id))
+          else
+            expect(json_response["access_level"]).to eq(resource.max_member_access_for_user(token.user))
+          end
+
+          expect(json_response["expires_at"]).to eq(token.expires_at.to_date.iso8601)
+        end
+
+        context "when using #{source_type} access token to GET other #{source_type} access token" do
+          let_it_be(:other_project_bot) { create(:user, :project_bot) }
+          let_it_be(:other_token) { create(:personal_access_token, user: other_project_bot) }
+          let_it_be(:token_id) { other_token.id }
+
+          before do
+            resource.add_maintainer(other_project_bot)
+          end
+
+          it "gets the #{source_type} access token from the #{source_type}" do
+            get_token
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('public_api/v4/resource_access_token')
+
+            expect(json_response["name"]).to eq(other_token.name)
+            expect(json_response["scopes"]).to eq(other_token.scopes)
+
+            if source_type == 'project'
+              expect(json_response["access_level"]).to eq(resource.team.max_member_access(other_token.user.id))
+            else
+              expect(json_response["access_level"]).to eq(resource.max_member_access_for_user(other_token.user))
+            end
+
+            expect(json_response["expires_at"]).to eq(other_token.expires_at.to_date.iso8601)
+          end
+        end
+
+        context "when attempting to get a non-existent #{source_type} access token" do
+          let_it_be(:token_id) { non_existing_record_id }
+
+          it "does not get the token, and returns 404" do
+            get_token
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(response.body).to include("Could not find #{source_type} access token with token_id: #{token_id}")
+          end
+        end
+
+        context "when attempting to get a token that does not belong to the specified #{source_type}" do
+          let_it_be(:resource_id) { other_resource.id }
+
+          it "does not get the token, and returns 404" do
+            get_token
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(response.body).to include("Could not find #{source_type} access token with token_id: #{token_id}")
+          end
+        end
+      end
+
+      context "when the user does not have valid permissions" do
+        let_it_be(:user) { user_non_priviledged }
+
+        it "returns 401" do
+          get_token
 
           expect(response).to have_gitlab_http_status(:unauthorized)
         end

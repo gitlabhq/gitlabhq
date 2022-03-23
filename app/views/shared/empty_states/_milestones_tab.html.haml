@@ -1,0 +1,17 @@
+- learn_more_path = local_assigns.fetch(:learn_more_path, help_page_path('user/project/milestones/index'))
+- learn_more_link = link_to _('Learn more.'), learn_more_path
+- closed_tab_selected = params[:state] == 'closed'
+
+.row.empty-state
+  .col-12
+    .svg-content
+      = image_tag 'illustrations/milestone_burndown_chart.svg'
+  .col-12
+    .text-content
+      - if closed_tab_selected
+        %h4.text-center= s_('Milestones|There are no closed milestones')
+      - else
+        %h4.text-center= s_('Milestones|There are no open milestones')
+        %p.state-description
+          = s_('Milestones|Create a milestone to better track your issues and merge requests. %{learn_more_link}').html_safe % { learn_more_link: learn_more_link }
+        = yield
