@@ -134,6 +134,12 @@ RSpec.describe GraphqlController do
 
         post :execute
       end
+
+      it "assigns username in ApplicationContext" do
+        post :execute
+
+        expect(Gitlab::ApplicationContext.current).to include('meta.user' => user.username)
+      end
     end
 
     context 'when user uses an API token' do
@@ -189,6 +195,12 @@ RSpec.describe GraphqlController do
         expect(assigns(:context)[:is_sessionless_user]).to be true
       end
 
+      it "assigns username in ApplicationContext" do
+        subject
+
+        expect(Gitlab::ApplicationContext.current).to include('meta.user' => user.username)
+      end
+
       it 'calls the track api when trackable method' do
         agent = 'vs-code-gitlab-workflow/3.11.1 VSCode/1.52.1 Node.js/12.14.1 (darwin; x64)'
         request.env['HTTP_USER_AGENT'] = agent
@@ -221,6 +233,12 @@ RSpec.describe GraphqlController do
         post :execute
 
         expect(assigns(:context)[:is_sessionless_user]).to be false
+      end
+
+      it "does not assign a username in ApplicationContext" do
+        subject
+
+        expect(Gitlab::ApplicationContext.current.key?('meta.user')).to be false
       end
     end
 

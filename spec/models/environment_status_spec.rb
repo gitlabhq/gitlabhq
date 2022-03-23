@@ -34,6 +34,13 @@ RSpec.describe EnvironmentStatus do
     subject { environment_status.deployment }
 
     it { is_expected.to eq(deployment) }
+
+    context 'multiple deployments' do
+      it {
+        new_deployment = create(:deployment, :succeed, environment: deployment.environment, sha: deployment.sha )
+        is_expected.to eq(new_deployment)
+      }
+    end
   end
 
   # $ git diff --stat pages-deploy-target...pages-deploy

@@ -260,6 +260,8 @@
   - ".gitlab/ci/**/*"
   - "*_VERSION"
   - "scripts/rspec_helpers.sh"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
@@ -314,10 +316,11 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  - "data/whats_new/*.yml"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
@@ -338,7 +341,6 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  - "data/whats_new/*.yml"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -349,6 +351,8 @@
   - "{,ee/,jh/}rubocop/**/*"
   - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
@@ -369,13 +373,14 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  - "data/whats_new/*.yml"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # .code-patterns + .backstage-patterns + .qa-patterns
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
@@ -396,7 +401,6 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
-  - "data/whats_new/*.yml"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -410,6 +414,8 @@
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
 .setup-test-env-patterns: &setup-test-env-patterns

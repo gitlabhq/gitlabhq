@@ -1,16 +1,10 @@
 <script>
-import {
-  GlSafeHtmlDirective as SafeHtml,
-  GlModal,
-  GlModalDirective,
-  GlPopover,
-  GlButton,
-} from '@gitlab/ui';
+import { GlSafeHtmlDirective as SafeHtml, GlModal, GlTooltip, GlModalDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import createFlash from '~/flash';
-import { __, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import TaskList from '~/task_list';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -25,9 +19,8 @@ export default {
   },
   components: {
     GlModal,
-    GlPopover,
     CreateWorkItem,
-    GlButton,
+    GlTooltip,
     WorkItemDetailModal,
   },
   mixins: [animateMixin, glFeatureFlagMixin(), Tracking.mixin()],
@@ -216,9 +209,11 @@ export default {
         this.taskButtons.push(button.id);
         button.innerHTML = `
           <svg data-testid="ellipsis_v-icon" role="img" aria-hidden="true" class="dropdown-icon gl-icon s14">
-            <use href="${gon.sprite_icons}#ellipsis_v"></use>
+            <use href="${gon.sprite_icons}#doc-new"></use>
           </svg>
         `;
+        button.setAttribute('aria-label', s__('WorkItem|Convert to work item'));
+        button.addEventListener('click', () => this.openCreateTaskModal(button.id));
         item.prepend(button);
       });
     },
@@ -245,9 +240,6 @@ export default {
     handleCreateTask(description) {
       this.$emit('updateDescription', description);
       this.closeCreateTaskModal();
-    },
-    focusButton() {
-      this.$refs.convertButton[0].$el.focus();
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji', 'copy-code'] },
@@ -309,23 +301,9 @@ export default {
       @error="handleWorkItemDetailModalError"
     />
     <template v-if="workItemsEnabled">
-      <gl-popover
-        v-for="item in taskButtons"
-        :key="item"
-        :target="item"
-        placement="top"
-        triggers="focus"
-        @shown="focusButton"
-      >
-        <gl-button
-          ref="convertButton"
-          variant="link"
-          data-testid="convert-to-task"
-          class="gl-text-gray-900! gl-text-decoration-none! gl-outline-0!"
-          @click="openCreateTaskModal(item)"
-          >{{ s__('WorkItem|Convert to work item') }}</gl-button
-        >
-      </gl-popover>
+      <gl-tooltip v-for="item in taskButtons" :key="item" :target="item">
+        {{ s__('WorkItem|Convert to work item') }}
+      </gl-tooltip>
     </template>
   </div>
 </template>

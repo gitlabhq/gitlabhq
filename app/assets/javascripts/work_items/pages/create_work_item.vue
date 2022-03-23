@@ -87,10 +87,7 @@ export default {
       return this.selectedWorkItemType?.name || s__('WorkItem|Type');
     },
     formOptions() {
-      return [
-        { value: null, text: s__('WorkItem|Please select work item type') },
-        ...this.workItemTypes,
-      ];
+      return [{ value: null, text: s__('WorkItem|Select type') }, ...this.workItemTypes];
     },
     isButtonDisabled() {
       return this.title.trim().length === 0 || !this.selectedWorkItemType;

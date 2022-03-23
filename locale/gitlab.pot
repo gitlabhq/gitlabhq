@@ -42374,7 +42374,7 @@ msgstr ""
 msgid "WorkItem|New Task"
 msgstr ""
 
-msgid "WorkItem|Please select work item type"
+msgid "WorkItem|Select type"
 msgstr ""
 
 msgid "WorkItem|Something went wrong when creating a work item. Please try again"

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { nextTick } from 'vue';
 import '~/behaviors/markdown/render_gfm';
-import { GlPopover, GlModal } from '@gitlab/ui';
+import { GlTooltip, GlModal } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -29,9 +29,9 @@ describe('Description component', () => {
   const findGfmContent = () => wrapper.find('[data-testid="gfm-content"]');
   const findTextarea = () => wrapper.find('[data-testid="textarea"]');
   const findTaskActionButtons = () => wrapper.findAll('.js-add-task');
-  const findConvertToTaskButton = () => wrapper.find('[data-testid="convert-to-task"]');
+  const findConvertToTaskButton = () => wrapper.find('.js-add-task');
 
-  const findPopovers = () => wrapper.findAllComponents(GlPopover);
+  const findTooltips = () => wrapper.findAllComponents(GlTooltip);
   const findModal = () => wrapper.findComponent(GlModal);
   const findCreateWorkItem = () => wrapper.findComponent(CreateWorkItem);
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
@@ -51,7 +51,6 @@ describe('Description component', () => {
             hide: hideModal,
           },
         }),
-        GlPopover,
       },
     });
   }
@@ -254,9 +253,9 @@ describe('Description component', () => {
         expect(findTaskActionButtons()).toHaveLength(3);
       });
 
-      it('renders a list of popovers corresponding to checkboxes in description HTML', () => {
-        expect(findPopovers()).toHaveLength(3);
-        expect(findPopovers().at(0).props('target')).toBe(
+      it('renders a list of tooltips corresponding to checkboxes in description HTML', () => {
+        expect(findTooltips()).toHaveLength(3);
+        expect(findTooltips().at(0).props('target')).toBe(
           findTaskActionButtons().at(0).attributes('id'),
         );
       });
@@ -265,20 +264,18 @@ describe('Description component', () => {
         expect(findModal().props('visible')).toBe(false);
       });
 
-      it('opens a modal when a button on popover is clicked and displays correct title', async () => {
-        findConvertToTaskButton().vm.$emit('click');
-        expect(showModal).toHaveBeenCalled();
-        await nextTick();
+      it('opens a modal when a button is clicked and displays correct title', async () => {
+        await findConvertToTaskButton().trigger('click');
         expect(findCreateWorkItem().props('initialTitle').trim()).toBe('todo 1');
       });
 
-      it('closes the modal on `closeCreateTaskModal` event', () => {
-        findConvertToTaskButton().vm.$emit('click');
+      it('closes the modal on `closeCreateTaskModal` event', async () => {
+        await findConvertToTaskButton().trigger('click');
         findCreateWorkItem().vm.$emit('closeModal');
         expect(hideModal).toHaveBeenCalled();
       });
 
-      it('emits `updateDescription` on `onCreate` event', async () => {
+      it('emits `updateDescription` on `onCreate` event', () => {
         const newDescription = `<p>New description</p>`;
         findCreateWorkItem().vm.$emit('onCreate', newDescription);
         expect(hideModal).toHaveBeenCalled();

@@ -36,6 +36,20 @@ RSpec.describe Mutations::Environments::CanaryIngress::Update do
       it 'returns no errors' do
         expect(subject[:errors]).to be_empty
       end
+
+      context 'with certificate_based_clusters disabled' do
+        before do
+          stub_feature_flags(certificate_based_clusters: false)
+        end
+
+        it 'returns notice about feature removal' do
+          expect(subject[:errors]).to match_array([
+            'This endpoint was deactivated as part of the certificate-based' \
+            'kubernetes integration removal. See Epic:' \
+            'https://gitlab.com/groups/gitlab-org/configure/-/epics/8'
+          ])
+        end
+      end
     end
 
     context 'when service encounters a problem' do

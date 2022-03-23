@@ -10,6 +10,10 @@ RSpec.describe 'Database schema' do
   let(:tables) { connection.tables }
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
+  IGNORED_INDEXES_ON_FKS = {
+    issues: %w[work_item_type_id]
+  }.with_indifferent_access.freeze
+
   # List of columns historically missing a FK, don't add more columns
   # See: https://docs.gitlab.com/ee/development/foreign_keys.html#naming-foreign-keys
   IGNORED_FK_COLUMNS = {
@@ -115,6 +119,7 @@ RSpec.describe 'Database schema' do
               columns.first.chomp
             end
             foreign_keys_columns = all_foreign_keys.map(&:column)
+            required_indexed_columns = foreign_keys_columns - ignored_index_columns(table)
 
             # Add the primary key column to the list of indexed columns because
             # postgres and mysql both automatically create an index on the primary
@@ -122,7 +127,7 @@ RSpec.describe 'Database schema' do
             # automatically generated indexes (like the primary key index).
             first_indexed_column.push(primary_key_column)
 
-            expect(first_indexed_column.uniq).to include(*foreign_keys_columns)
+            expect(first_indexed_column.uniq).to include(*required_indexed_columns)
           end
         end
 
@@ -305,8 +310,12 @@ RSpec.describe 'Database schema' do
     @models_by_table_name ||= ApplicationRecord.descendants.reject(&:abstract_class).group_by(&:table_name)
   end
 
-  def ignored_fk_columns(column)
-    IGNORED_FK_COLUMNS.fetch(column, [])
+  def ignored_fk_columns(table)
+    IGNORED_FK_COLUMNS.fetch(table, [])
+  end
+
+  def ignored_index_columns(table)
+    IGNORED_INDEXES_ON_FKS.fetch(table, [])
   end
 
   def ignored_limit_enums(model)
