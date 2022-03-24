@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.7.6 (2022-03-24)
+
+### Added (1 change)
+
+- [Detect and fix artifacts with backfilled expire_at](gitlab-org/gitlab@92938348905581798fa669051a61c107d082d908) ([merge request](gitlab-org/gitlab!83054))
+
+### Changed (2 changes)
+
+- [Enable feature flags to resume artifact removal on self-managed](gitlab-org/gitlab@45e4aba7099e0b6963674d192dc87edfe9ff8cdb) ([merge request](gitlab-org/gitlab!83054))
+- [Remove runners token prefix feature flags](gitlab-org/gitlab@d57e7e1966cac500ba830dca7843cb315a34a4e4) ([merge request](gitlab-org/gitlab!82121))
+
 ## 14.7.5 (2022-03-09)
 
 ### Fixed (1 change)
