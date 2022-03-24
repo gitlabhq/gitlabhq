@@ -1306,4 +1306,16 @@ RSpec.describe ApplicationSetting do
       end
     end
   end
+
+  describe '#database_grafana_api_key' do
+    it 'is encrypted' do
+      subject.database_grafana_api_key = 'somesecret'
+
+      aggregate_failures do
+        expect(subject.encrypted_database_grafana_api_key).to be_present
+        expect(subject.encrypted_database_grafana_api_key_iv).to be_present
+        expect(subject.encrypted_database_grafana_api_key).not_to eq(subject.database_grafana_api_key)
+      end
+    end
+  end
 end

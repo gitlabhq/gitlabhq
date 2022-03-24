@@ -10309,7 +10309,7 @@ msgstr ""
 msgid "Could not upload your designs as one or more files uploaded are not supported."
 msgstr ""
 
-msgid "Couldn't assign policy to project"
+msgid "Couldn't assign policy to project or group"
 msgstr ""
 
 msgid "Country"

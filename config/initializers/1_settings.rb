@@ -990,6 +990,14 @@ Settings.prometheus['enabled'] ||= false
 Settings.prometheus['server_address'] ||= nil
 
 #
+# Arkose settings
+#
+Settings['arkose'] ||= Settingslogic.new({})
+Settings.arkose['public_key'] ||= ENV['ARKOSE_LABS_PUBLIC_KEY']
+Settings.arkose['private_key'] ||= ENV['ARKOSE_LABS_PRIVATE_KEY']
+Settings.arkose['verify_url'] ||= ENV['ARKOSE_LABS_VERIFY_URL']
+
+#
 # Shutdown settings
 #
 Settings['shutdown'] ||= Settingslogic.new({})
