@@ -60,7 +60,7 @@ To configure your Auto DevOps project to use the GitLab agent:
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
 1. From the certificate-based clusters section, open the cluster that serves the same environment scope.
 1. Select the **Details** tab and disable the cluster.
-1. To activate the changes, on the left sidebar, select **CI/CD > Variables > Run pipeline**.
+1. To activate the changes, on the left sidebar, select **CI/CD > Pipelines** and then **Run pipeline**.
 
 For an example, [view this project](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service).
 

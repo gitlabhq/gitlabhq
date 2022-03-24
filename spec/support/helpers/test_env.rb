@@ -80,7 +80,8 @@ module TestEnv
     'compare-with-merge-head-source'     => 'f20a03d',
     'compare-with-merge-head-target'     => '2f1e176',
     'trailers'                           => 'f0a5ed6',
-    'add_commit_with_5mb_subject'        => '8cf8e80'
+    'add_commit_with_5mb_subject'        => '8cf8e80',
+    'blame-on-renamed'                   => '32c33da'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

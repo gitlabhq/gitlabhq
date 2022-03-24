@@ -67,7 +67,9 @@ module IssuableLinks
       target_issuables.map do |referenced_object|
         link = relate_issuables(referenced_object)
 
-        unless link.valid?
+        if link.valid?
+          after_create_for(link)
+        else
           @errors << _("%{ref} cannot be added: %{error}") % {
             ref: referenced_object.to_reference,
             error: link.errors.messages.values.flatten.to_sentence
@@ -143,7 +145,15 @@ module IssuableLinks
       # no-op
     end
 
+    # Override on child classes to perform
+    # actions when the service is executed.
     def track_event
+      # no-op
+    end
+
+    # Override on child classes to
+    # perform actions for each object created.
+    def after_create_for(_link)
       # no-op
     end
   end

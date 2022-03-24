@@ -564,7 +564,7 @@ to receive sub-addressed mail.
 
 To enable sub-addressing:
 
-1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/).
+1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/2.0.5).
 1. In PowerShell, run the following commands:
 
    ```powershell

@@ -1179,7 +1179,7 @@ production: &base
   ## Backup settings
   backup:
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
-    # gitaly_backup_path: # Path of the gitaly-backup binary (default: searches $PATH)
+    # gitaly_backup_path: /home/git/gitaly/_build/bin/gitaly-backup # Path of the gitaly-backup binary (default: searches $PATH)
     # archive_permissions: 0640 # Permissions for the resulting backup.tar file (default: 0600)
     # keep_time: 604800   # default: 0 (forever) (in seconds)
     # pg_schema: public     # default: nil, it means that all schemas will be backed up

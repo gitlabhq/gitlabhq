@@ -264,3 +264,15 @@ Feature.disable(:dependency_proxy_for_private_groups)
 # Re-enable the authentication
 Feature.enable(:dependency_proxy_for_private_groups)
 ```
+
+## Using the dependency proxy behind a proxy
+ 
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines:
+
+   ```ruby
+   gitlab_workhorse['env'] = {
+    "http_proxy" => "http://USERNAME:PASSWORD@example.com:8080",
+    "https_proxy" => "http://USERNAME:PASSWORD@example.com:8080"
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.

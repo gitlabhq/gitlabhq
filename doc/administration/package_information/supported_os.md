@@ -27,7 +27,7 @@ The following lists the currently supported OSs and their possible EOL dates.
 | SLES 12          | GitLab EE 9.0.0                | x86_64          | Oct 2027      | <https://www.suse.com/lifecycle/>                            |
 | Ubuntu 18.04     | GitLab CE / GitLab EE 10.7.0   | amd64           | April 2023    | <https://wiki.ubuntu.com/Releases>                           |
 | Ubuntu 20.04     | GitLab CE / GitLab EE 13.2.0   | amd64, arm64    | April 2025    | <https://wiki.ubuntu.com/Releases>                           |
-| Amazon Linux 2   | GitLab CE / GitLab EE 14.9.0   | amd64, arm64    | June 2023     | <https://aws.amazon.com/amazon-linux-2/faqs>                 |
+| Amazon Linux 2   | GitLab CE / GitLab EE 14.9.0   | amd64, arm64    | June 2023     | <https://aws.amazon.com/amazon-linux-2/faqs/>                 |
 | Raspbian Buster  | GitLab CE 12.2.0               | armhf           | 2022          | <https://wiki.debian.org/DebianReleases#Production_Releases> |
 
 NOTE:

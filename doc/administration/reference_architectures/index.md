@@ -347,7 +347,7 @@ The following specific cloud provider services have been found to have issues in
 
 - [Azure Blob Storage](https://azure.microsoft.com/en-gb/services/storage/blobs/) has been found to have performance limits that can impact production use at certain times. For larger Reference Architectures the service may not be sufficient for production use and an alternative is recommended for use instead.
 - [Azure Database for PostgreSQL Server](https://azure.microsoft.com/en-gb/services/postgresql/#overview) (Single / Flexible) is not recommended for use due to notable performance issues or missing functionality.
-- [AWS Aurora Database](https://aws.amazon.com/rds/aurora) is not recommended due to compatibility issues.
+- [AWS Aurora Database](https://aws.amazon.com/rds/aurora/) is not recommended due to compatibility issues.
 
 NOTE:
 As a general rule we unfortunately don't recommend Azure Services at this time.

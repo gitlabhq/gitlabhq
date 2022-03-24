@@ -15,13 +15,13 @@ module Gitlab
       current_group = nil
 
       i = 0
-      blame.each do |commit, line|
+      blame.each do |commit, line, previous_path|
         commit = Commit.new(commit, project)
         commit.lazy_author # preload author
 
         if prev_sha != commit.sha
           groups << current_group if current_group
-          current_group = { commit: commit, lines: [] }
+          current_group = { commit: commit, lines: [], previous_path: previous_path }
         end
 
         current_group[:lines] << (highlight ? highlighted_lines[i].html_safe : line)

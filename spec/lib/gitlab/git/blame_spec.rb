@@ -71,5 +71,40 @@ RSpec.describe Gitlab::Git::Blame, :seed_helper do
         expect(data.first[:line]).to be_utf8
       end
     end
+
+    context "renamed file" do
+      let(:project) { create(:project, :repository) }
+      let(:commit) { project.commit('blame-on-renamed') }
+      let(:path) { 'files/plain_text/renamed' }
+
+      let(:blame) { described_class.new(project.repository, commit.id, path) }
+
+      it do
+        data = []
+        blame.each do |commit, line, previous_path|
+          data << {
+            commit: commit,
+            line: line,
+            previous_path: previous_path
+          }
+        end
+
+        expect(data.size).to eq(5)
+
+        expect(data[0][:line]).to eq('Initial commit')
+        expect(data[0][:previous_path]).to be nil
+        expect(data[1][:line]).to eq('Initial commit')
+        expect(data[1][:previous_path]).to be nil
+
+        expect(data[2][:line]).to eq('Renamed as "filename"')
+        expect(data[2][:previous_path]).to eq('files/plain_text/initial-commit')
+
+        expect(data[3][:line]).to eq('Renamed as renamed')
+        expect(data[3][:previous_path]).to eq('files/plain_text/"filename"')
+
+        expect(data[4][:line]).to eq('Last edit, no rename')
+        expect(data[4][:previous_path]).to eq('files/plain_text/renamed')
+      end
+    end
   end
 end
