@@ -40,7 +40,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
             # COMMIT
             # SELECT next expired ci_job_artifacts
 
-            expect(log.count).to be_within(1).of(10)
+            expect(log.count).to be_within(1).of(11)
           end
         end
 
@@ -51,7 +51,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
 
           it 'performs the smallest number of queries for job_artifacts' do
             log = ActiveRecord::QueryRecorder.new { subject }
-            expect(log.count).to be_within(1).of(8)
+            expect(log.count).to be_within(1).of(9)
           end
 
           context 'with several locked-unknown artifact records' do

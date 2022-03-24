@@ -2781,6 +2781,6 @@ RSpec.describe Group do
 
     subject { group }
 
-    it_behaves_like 'it has a prefixable runners_token', :groups_runners_token_prefix
+    it_behaves_like 'it has a prefixable runners_token'
   end
 end
