@@ -7,7 +7,7 @@ FactoryBot.define do
     file_format { :zip }
 
     trait :expired do
-      expire_at { Date.yesterday }
+      expire_at { Time.current.yesterday.change(minute: 9) }
     end
 
     trait :locked do
