@@ -19,6 +19,10 @@ RSpec.shared_examples 'a deploy token creation service' do
       it 'returns a DeployToken' do
         expect(subject[:deploy_token]).to be_an_instance_of DeployToken
       end
+
+      it 'sets the creator_id as the id of the current_user' do
+        expect(subject[:deploy_token].read_attribute(:creator_id)).to eq(user.id)
+      end
     end
 
     context 'when expires at date is not passed' do

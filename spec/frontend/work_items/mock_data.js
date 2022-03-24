@@ -95,3 +95,12 @@ export const createWorkItemFromTaskMutationResponse = {
     },
   },
 };
+
+export const workItemTitleSubscriptionResponse = {
+  data: {
+    issuableTitleUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      title: 'new title',
+    },
+  },
+};

@@ -79,7 +79,7 @@ If you use Gitpod and you get an error about Jira not being able to access the d
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81126) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `jira_connect_oauth`. Disabled by default.
 
-GitLab for Jira users can authenticate with GitLab using GitLab OAuth. 
+GitLab for Jira users can authenticate with GitLab using GitLab OAuth.
 
 WARNING:
 This feature is not ready for production use. The feature flag should only be enabled in development.

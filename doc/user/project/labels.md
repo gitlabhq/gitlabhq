@@ -253,6 +253,35 @@ with the old labels are assigned to the new group label.
 
 The new group label has the same ID as the previous project label.
 
+## Promote a subgroup label to the parent group
+
+It's not possible to directly promote a group label to the parent group.
+To achieve this, use the following workaround.
+
+Prerequisites:
+
+- There must be a group that contains subgroups ("parent group").
+- There must be a subgroup in the parent group, that has a label you want to promote.
+- You must have at least the Reporter role for both groups.
+
+To "promote" the label to the parent group:
+
+1. In the parent group, [create a label](#create-a-group-label) with the same name as the original
+   one. We recommend making it a different color so you don't mistake the two while you're doing this.
+1. In the subgroup, [view its labels](#view-group-labels). You should see the two labels and where
+   they come from:
+
+   ![parent group and subgroup labels in the subgroup's label list](img/promote_to_parent_group_workaround_v14_10.png)
+
+1. Next to the subgroup label (the old one), select **Issues**, **Merge requests**, or **Epics**.
+1. Add the new label to issues, merge requests, and epics that have the old label.
+   To do it faster, use [bulk editing](issues/managing_issues.md#bulk-edit-issues-from-a-group).
+1. In the subgroup or the parent group, [delete the label](#delete-a-group-label) that belongs to
+   the lower-level group.
+
+You should now have a label in the parent group that is named the same as the old one, and added
+to the same issues, MRs, and epics.
+
 ## Generate default project labels
 
 If a project or its parent group has no labels, you can generate a default set of project

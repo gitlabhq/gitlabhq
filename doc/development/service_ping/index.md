@@ -598,7 +598,7 @@ To upload payload manually:
 1. Select **Choose file** and choose the file from p5.
 1. Select **Upload**.
 
-The uploaded file is encrypted and sent using secure [HTTPS protocol](https://en.wikipedia.org/wiki/HTTPS). HTTPS creates a secure 
+The uploaded file is encrypted and sent using secure [HTTPS protocol](https://en.wikipedia.org/wiki/HTTPS). HTTPS creates a secure
 communication channel between web browser and the server, and protects transmitted data against man-in-the-middle attacks.
 
 ## Monitoring

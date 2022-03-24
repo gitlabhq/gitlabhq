@@ -127,7 +127,7 @@ The flow of a PQL lead is as follows:
 1. Marketo does scoring and sends the form to Salesforce.
 1. Our Sales team uses Salesforce to connect to the leads.
 
-### Trial lead flow 
+### Trial lead flow
 
 #### Trial lead flow on GitLab.com
 
@@ -166,7 +166,7 @@ sequenceDiagram
     HostedPlans|CreateTrialService->create_trial_history#: Creates a record in trial_histories table
 ```
 
-### Hand raise lead flow 
+### Hand raise lead flow
 
 #### Hand raise flow on GitLab.com
 
@@ -196,4 +196,4 @@ sequenceDiagram
     Platypus->>Workato: [lead]
     Workato->>Marketo: [lead]
     Marketo->>Salesforce(SFDC): [lead]
-```      
+```

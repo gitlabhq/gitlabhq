@@ -14,18 +14,18 @@ instance entirely offline.
 NOTE:
 This guide assumes the server is Ubuntu 20.04 using the [Omnibus installation method](https://docs.gitlab.com/omnibus/) and will be running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
 This guide also assumes the server host resolves as `my-host.internal`, which you should replace with your
-server's FQDN, and that you have access to a different server with Internet access to download the required package files. 
+server's FQDN, and that you have access to a different server with Internet access to download the required package files.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video walkthrough of this process, see [Offline GitLab Installation: Downloading & Installing](https://www.youtube.com/watch?v=TJaq4ua2Prw).
 
 ### Download the GitLab package
 
-You should [manually download the GitLab package](../../update/package/index.md#upgrade-using-a-manually-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet. 
+You should [manually download the GitLab package](../../update/package/index.md#upgrade-using-a-manually-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet.
 
-If your offline environment has no local network access, you must manually transport across the relevant package files through physical media, such as a USB drive or writable DVD. 
+If your offline environment has no local network access, you must manually transport across the relevant package files through physical media, such as a USB drive or writable DVD.
 
-In Ubuntu, this can be performed on a server with Internet access using the following commands: 
+In Ubuntu, this can be performed on a server with Internet access using the following commands:
 
 ```shell
 # Download the bash script to prepare the repository
@@ -42,7 +42,7 @@ sudo cp /var/cache/apt/archives/*.deb /path/to/mount
 
 Prerequisites:
 
-- Before installing the GitLab package on your offline environment, ensure that you have installed all required dependencies first. 
+- Before installing the GitLab package on your offline environment, ensure that you have installed all required dependencies first.
 
 If you are using Ubuntu, you can install the dependency `.deb` packages you copied across with `dpkg`. Do not install the GitLab package yet.
 
@@ -202,7 +202,7 @@ done.
 ### Disable Version Check and Service Ping
 
 The Version Check and Service Ping services improve the GitLab user experience and ensure that
-users are on the most up-to-date instances of GitLab. These two services can be turned off for air-gapped 
+users are on the most up-to-date instances of GitLab. These two services can be turned off for air-gapped
 environments so that they do not attempt and fail to reach out to GitLab services.
 
 Learn more about [disabling usage statistics](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics).

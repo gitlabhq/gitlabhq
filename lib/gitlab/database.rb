@@ -271,6 +271,17 @@ module Gitlab
       db_config&.name || 'unknown'
     end
 
+    # Currently the database configuration can only be shared with `main:`
+    # If the `database_tasks: false` is being used
+    # This is to be refined: https://gitlab.com/gitlab-org/gitlab/-/issues/356580
+    def self.db_config_share_with(db_config)
+      if db_config.database_tasks?
+        nil # no sharing
+      else
+        'main' # share with `main:`
+      end
+    end
+
     def self.read_only?
       false
     end

@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 
 export default {
   props: {
-    initialTitle: {
+    title: {
       type: String,
       required: false,
       default: '',
@@ -19,11 +19,6 @@ export default {
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      title: this.initialTitle,
-    };
   },
   methods: {
     getSanitizedTitle(inputEl) {

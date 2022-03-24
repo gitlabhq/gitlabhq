@@ -87,6 +87,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :pipelines,
     :test_reports
   ]
+  urgency :low, [
+    :codequality_mr_diff_reports,
+    :codequality_reports,
+    :sast_reports,
+    :secret_detection_reports
+  ]
 
   def index
     @merge_requests = @issuables

@@ -18,7 +18,7 @@ in GitLab 14.5. It is expected to be
 [turned off by default in 15.0](../../../update/deprecations.md#certificate-based-integration-with-kubernetes)
 and removed in GitLab 15.6.
 
-If you are using the certificate-based integration, you should move to another workflow as soon as possible. 
+If you are using the certificate-based integration, you should move to another workflow as soon as possible.
 
 As a general rule, to migrate clusters that rely on GitLab CI/CD,
 you can use the [CI/CD workflow](../../clusters/agent/ci_cd_tunnel.md).

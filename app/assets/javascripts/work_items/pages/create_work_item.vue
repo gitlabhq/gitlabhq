@@ -189,11 +189,7 @@ export default {
   <form @submit.prevent="createWorkItem">
     <gl-alert v-if="error" variant="danger" @dismiss="error = null">{{ error }}</gl-alert>
     <div :class="{ 'gl-px-5': isModal }" data-testid="content">
-      <item-title
-        :initial-title="title"
-        data-testid="title-input"
-        @title-input="handleTitleInput"
-      />
+      <item-title :title="title" data-testid="title-input" @title-input="handleTitleInput" />
       <div>
         <gl-loading-icon
           v-if="$apollo.queries.workItemTypes.loading"

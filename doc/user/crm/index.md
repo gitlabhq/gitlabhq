@@ -188,7 +188,7 @@ When you move an issue, project, or group **within the same group hierarchy**,
 issues retain their contacts.
 
 When you move an issue or project and the **root group changes**,
-issues lose their contacts. 
+issues lose their contacts.
 
 When you move a group and its **root group changes**:
 

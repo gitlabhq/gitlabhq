@@ -14,7 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Renamed](https://gitlab.com/groups/gitlab-org/-/epics/7167) from "GitLab Kubernetes Agent" to "GitLab agent for Kubernetes" in GitLab 14.6.
 
 You can connect your Kubernetes cluster with GitLab to deploy, manage,
-and monitor your cloud-native solutions. 
+and monitor your cloud-native solutions.
 
 To connect a Kubernetes cluster to GitLab, you must first [install an agent in your cluster](install/index.md).
 

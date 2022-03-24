@@ -70,7 +70,7 @@ module Gitlab
       def system_usage_data
         issues_created_manually_from_alerts = count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue))
 
-        counts = {
+        {
           counts: {
             assignee_lists: count(List.assignee),
             ci_builds: count(::Ci::Build),
@@ -166,12 +166,6 @@ module Gitlab
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
         }
-
-        if Feature.disabled?(:merge_service_ping_instrumented_metrics, default_enabled: :yaml)
-          counts[:counts][:boards] = add_metric('CountBoardsMetric', time_frame: 'all')
-        end
-
-        counts
       end
       # rubocop: enable Metrics/AbcSize
 

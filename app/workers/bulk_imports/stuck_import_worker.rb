@@ -16,8 +16,15 @@ module BulkImports
       BulkImport.stale.find_each do |import|
         import.cleanup_stale
       end
-      BulkImports::Entity.stale.find_each do |import|
-        import.cleanup_stale
+
+      BulkImports::Entity.includes(:trackers).stale.find_each do |import| # rubocop: disable CodeReuse/ActiveRecord
+        ApplicationRecord.transaction do
+          import.cleanup_stale
+
+          import.trackers.find_each do |tracker|
+            tracker.cleanup_stale
+          end
+        end
       end
     end
   end

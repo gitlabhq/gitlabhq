@@ -7,10 +7,6 @@ module Groups
 
       before_action :authorize_admin_group!
 
-      before_action do
-        push_frontend_feature_flag(:integration_form_sections, group, default_enabled: :yaml)
-      end
-
       feature_category :integrations
 
       layout 'group_settings'

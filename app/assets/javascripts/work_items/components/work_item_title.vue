@@ -43,7 +43,7 @@ export default {
     },
   },
   methods: {
-    async updateWorkItem(updatedTitle) {
+    async updateTitle(updatedTitle) {
       if (updatedTitle === this.workItemTitle) {
         return;
       }
@@ -69,5 +69,5 @@ export default {
 
 <template>
   <gl-loading-icon v-if="loading" class="gl-mt-3" size="md" />
-  <item-title v-else :initial-title="workItemTitle" @title-changed="updateWorkItem" />
+  <item-title v-else :title="workItemTitle" @title-changed="updateTitle" />
 </template>

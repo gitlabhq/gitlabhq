@@ -61,7 +61,7 @@ describe('WorkItemTitle component', () => {
     });
 
     it('renders title', () => {
-      expect(findItemTitle().props('initialTitle')).toBe(workItemQueryResponse.workItem.title);
+      expect(findItemTitle().props('title')).toBe(workItemQueryResponse.workItem.title);
     });
   });
 

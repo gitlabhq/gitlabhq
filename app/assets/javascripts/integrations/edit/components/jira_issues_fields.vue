@@ -16,11 +16,6 @@ export default {
     JiraIssueCreationVulnerabilities: () =>
       import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
   },
-  inject: {
-    hasSections: {
-      default: false,
-    },
-  },
   props: {
     showJiraIssuesIntegration: {
       type: Boolean,
@@ -86,7 +81,6 @@ export default {
     },
   },
   i18n: {
-    sectionTitle: s__('JiraService|View Jira issues in GitLab'),
     sectionDescription: s__(
       'JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues.',
     ),
@@ -106,53 +100,44 @@ export default {
 
 <template>
   <div>
-    <gl-form-group
-      :label="hasSections ? null : $options.i18n.sectionTitle"
-      label-for="jira-issue-settings"
-    >
-      <div id="jira-issue-settings">
-        <p v-if="!hasSections">
-          {{ $options.i18n.sectionDescription }}
-        </p>
-        <template v-if="showJiraIssuesIntegration">
-          <input name="service[issues_enabled]" type="hidden" :value="enableJiraIssues || false" />
-          <gl-form-checkbox
-            v-model="enableJiraIssues"
-            :disabled="isInheriting"
-            data-qa-selector="service_jira_issues_enabled_checkbox"
-          >
-            {{ $options.i18n.enableCheckboxLabel }}
-            <template #help>
-              {{ $options.i18n.enableCheckboxHelp }}
-            </template>
-          </gl-form-checkbox>
-          <template v-if="enableJiraIssues">
-            <jira-issue-creation-vulnerabilities
-              :project-key="projectKey"
-              :initial-is-enabled="initialEnableJiraVulnerabilities"
-              :initial-issue-type-id="initialVulnerabilitiesIssuetype"
-              :show-full-feature="showJiraVulnerabilitiesIntegration"
-              data-testid="jira-for-vulnerabilities"
-              @request-jira-issue-types="$emit('request-jira-issue-types')"
-            />
-            <jira-upgrade-cta
-              v-if="!showJiraVulnerabilitiesIntegration"
-              class="gl-mt-2 gl-ml-6"
-              data-testid="ultimate-upgrade-cta"
-              show-ultimate-message
-              :upgrade-plan-path="upgradePlanPath"
-            />
-          </template>
+    <template v-if="showJiraIssuesIntegration">
+      <input name="service[issues_enabled]" type="hidden" :value="enableJiraIssues || false" />
+      <gl-form-checkbox
+        v-model="enableJiraIssues"
+        :disabled="isInheriting"
+        data-qa-selector="service_jira_issues_enabled_checkbox"
+      >
+        {{ $options.i18n.enableCheckboxLabel }}
+        <template #help>
+          {{ $options.i18n.enableCheckboxHelp }}
         </template>
+      </gl-form-checkbox>
+      <template v-if="enableJiraIssues">
+        <jira-issue-creation-vulnerabilities
+          :project-key="projectKey"
+          :initial-is-enabled="initialEnableJiraVulnerabilities"
+          :initial-issue-type-id="initialVulnerabilitiesIssuetype"
+          :show-full-feature="showJiraVulnerabilitiesIntegration"
+          data-testid="jira-for-vulnerabilities"
+          @request-jira-issue-types="$emit('request-jira-issue-types')"
+        />
         <jira-upgrade-cta
-          v-else
-          class="gl-mt-2"
-          data-testid="premium-upgrade-cta"
-          show-premium-message
+          v-if="!showJiraVulnerabilitiesIntegration"
+          class="gl-mt-2 gl-ml-6"
+          data-testid="ultimate-upgrade-cta"
+          show-ultimate-message
           :upgrade-plan-path="upgradePlanPath"
         />
-      </div>
-    </gl-form-group>
+      </template>
+    </template>
+    <jira-upgrade-cta
+      v-else
+      class="gl-mt-2"
+      data-testid="premium-upgrade-cta"
+      show-premium-message
+      :upgrade-plan-path="upgradePlanPath"
+    />
+
     <template v-if="showJiraIssuesIntegration">
       <gl-form-group
         :label="$options.i18n.projectKeyLabel"

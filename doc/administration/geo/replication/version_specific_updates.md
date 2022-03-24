@@ -12,7 +12,7 @@ for updating Geo sites.
 
 ## Updating to 14.9
 
-**DO NOT** update to GitLab 14.9.0. 
+**DO NOT** update to GitLab 14.9.0.
 
 We've discovered an issue with Geo's CI verification feature that may [cause job traces to be lost](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6664). This issue will be fixed in the next patch release.
 

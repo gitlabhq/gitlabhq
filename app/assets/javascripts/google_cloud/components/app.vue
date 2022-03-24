@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     feedbackUrl(template) {
-      return `https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/meta/-/issues/new?issuable_template=${template}`;
+      return `https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/feedback/-/issues/new?issuable_template=${template}`;
     },
   },
 };

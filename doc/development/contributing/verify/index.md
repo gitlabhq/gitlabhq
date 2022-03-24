@@ -55,7 +55,7 @@ and they serve us and our users well. Some examples of these principles are that
 - Feedback needs to be available when a user needs it and data can not disappear unexpectedly when engineers need it.
 - It all doesn’t matter if the platform is not secure and we
 are leaking credentials or secrets.
-- When a user provides a set of preconditions in a form of CI/CD configuration, the result should be deterministic each time a pipeline runs, because otherwise the platform might not be trustworthy. 
+- When a user provides a set of preconditions in a form of CI/CD configuration, the result should be deterministic each time a pipeline runs, because otherwise the platform might not be trustworthy.
 - If it is fast, simple to use and has a great UX it will serve our users well.
 
 ## Building things in Verify
@@ -189,8 +189,7 @@ Slack channel (GitLab team members only).
 After your merge request is merged by a maintainer, it is time to release it to
 users and the wider community. We usually do this with feature flags.
 While not every merge request needs a feature flag, most merge
-requests in Verify should have feature flags. [**TODO** link to docs about what
-needs a feature flag and what doesn’t].
+requests in Verify should have [feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
 
 If you already follow the advice on this page, you probably already have a
 few metrics and perhaps a few loggers added that make your new code observable

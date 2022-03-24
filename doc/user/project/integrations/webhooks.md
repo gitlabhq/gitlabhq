@@ -246,7 +246,7 @@ To view the table:
    - **Fails to connect** if it is temporarily disabled and will retry later.
   
    ![Badges on failing webhooks](img/failed_badges.png)
-   
+
 1. Select **Edit** for the webhook you want to view.
 
 The table includes the following details about each request:

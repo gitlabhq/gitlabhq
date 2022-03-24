@@ -125,11 +125,6 @@ Lint/StructNewOverride:
 Lint/UselessMethodDefinition:
   Enabled: false
 
-# Offense count: 13
-# Configuration parameters: IgnoredMethods.
-Metrics/CyclomaticComplexity:
-  Max: 25
-
 # Offense count: 14
 # Configuration parameters: IgnoredMethods.
 Metrics/PerceivedComplexity:

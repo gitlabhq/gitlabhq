@@ -6,8 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Make your first Git commit
 
-This tutorial is going to teach you a little bit about how Git works, and walk
-you through the steps of creating your own project and editing a file.
+This tutorial is going to teach you a little bit about how Git works. It walks
+you through the steps of creating your own project, editing a file, and
+committing changes to a Git repository from the command line.
 
 When you're done, you'll have a project where you can practice using Git.
 
@@ -245,15 +246,20 @@ to merge your branch.
 You did it! You updated the `README.md` file in your branch, and you merged those changes
 into the `main` branch.
 
-Let's look in the UI and confirm it.
+Let's look in the UI and confirm your changes. Go to your project.
 
-1. In your project, scroll down and view the `README.md` file.
-   Your changes should be visible.
-1. Above the list of files, select **History**.
-   Your commit and commit message should display.
+- Scroll down and view the contents of the `README.md` file.
+  Your changes should be visible.
+- Above the `README.md` file, view the text in the `Last commit` column.
+  Your commit message is displayed in this column:
 
-Now you can change back to your personal branch (`git checkout example-tutorial-branch`)
-and continue updating or even creating files. Type `git status` to view the status
+  ![Commit message](img/commit_message_v14_10.png)
+
+- Above the file list, select **History** to view your commit details.
+
+Now you can return to the command line and change back to your personal branch
+(`git checkout example-tutorial-branch`). You can continue updating files or
+creating new ones. Type `git status` to view the status
 of your changes and commit with abandon.
 
 Don't worry if you mess things up. Everything in Git can be reverted, and if you

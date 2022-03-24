@@ -1,6 +1,6 @@
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 
-export const workingExtension = {
+export const workingExtension = (shouldCollapse = true) => ({
   name: 'WidgetTestExtension',
   props: ['targetProjectFullPath'],
   expandEvent: 'test_expand_event',
@@ -10,6 +10,9 @@ export const workingExtension = {
     },
     statusIcon({ count }) {
       return count > 0 ? EXTENSION_ICONS.warning : EXTENSION_ICONS.success;
+    },
+    shouldCollapse() {
+      return shouldCollapse;
     },
   },
   methods: {
@@ -36,7 +39,7 @@ export const workingExtension = {
       ]);
     },
   },
-};
+});
 
 export const collapsedDataErrorExtension = {
   name: 'WidgetTestCollapsedErrorExtension',
@@ -99,7 +102,7 @@ export const fullDataErrorExtension = {
 };
 
 export const pollingExtension = {
-  ...workingExtension,
+  ...workingExtension(),
   enablePolling: true,
 };
 

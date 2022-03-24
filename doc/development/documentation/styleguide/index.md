@@ -686,7 +686,7 @@ For the heading text, **do not**:
 - Use words that might change in the future. Changing
   a heading changes its anchor URL, which affects other linked pages.
 - Repeat text from earlier headings. For example, instead of `Troubleshooting merge requests`,
-  use `Troubleshooting`. 
+  use `Troubleshooting`.
 - Use links.
 
 ### Anchor links

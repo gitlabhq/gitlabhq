@@ -46,6 +46,8 @@ describe('MrWidgetOptions', () => {
   let mock;
 
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
+  const findExtensionToggleButton = () =>
+    wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]');
 
   beforeEach(() => {
     gl.mrWidgetData = { ...mockData };
@@ -905,7 +907,7 @@ describe('MrWidgetOptions', () => {
     beforeEach(() => {
       pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
 
-      registerExtension(workingExtension);
+      registerExtension(workingExtension());
 
       createComponent();
     });
@@ -937,9 +939,7 @@ describe('MrWidgetOptions', () => {
     it('renders full data', async () => {
       await waitForPromises();
 
-      wrapper
-        .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
-        .trigger('click');
+      findExtensionToggleButton().trigger('click');
 
       await nextTick();
 
@@ -972,6 +972,24 @@ describe('MrWidgetOptions', () => {
     it('extension polling is not called if enablePolling flag is not passed', () => {
       // called one time due to parent component polling (mount)
       expect(pollRequest).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('expansion', () => {
+    it('hides collapse button', async () => {
+      registerExtension(workingExtension(false));
+      createComponent();
+      await waitForPromises();
+
+      expect(findExtensionToggleButton().exists()).toBe(false);
+    });
+
+    it('shows collapse button', async () => {
+      registerExtension(workingExtension(true));
+      createComponent();
+      await waitForPromises();
+
+      expect(findExtensionToggleButton().exists()).toBe(true);
     });
   });
 

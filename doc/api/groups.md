@@ -483,6 +483,8 @@ Example response:
 
 ## Details of a group
 
+> The `membership_lock` field was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82271) in GitLab 14.10.
+
 Get all details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is an administrator
 if the group is publicly accessible. With authentication, it returns the `runners_token`
@@ -711,6 +713,18 @@ the `marked_for_deletion_on` attribute:
   "id": 4,
   "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
   "marked_for_deletion_on": "2020-04-03",
+  ...
+}
+```
+
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+the `membership_lock` attribute:
+
+```json
+{
+  "id": 4,
+  "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
+  "membership_lock": false,
   ...
 }
 ```

@@ -49,7 +49,7 @@ The importer will create any new namespaces (groups) if they don't exist or in
 the case the namespace is taken, the repository will be imported under the user's
 namespace that started the import process.
 
-## Requirements for user-mapped contributions 
+## Requirements for user-mapped contributions
 
 For user contributions to be mapped, each user must complete the following before the project import:
 
@@ -83,7 +83,7 @@ For user contributions to be mapped, each user must complete the following befor
 
 ### If you have more than one Bitbucket account
 
-Be sure to sign in to the correct account. 
+Be sure to sign in to the correct account.
 
 If you've accidentally started the import process with the wrong account, follow these steps:
 

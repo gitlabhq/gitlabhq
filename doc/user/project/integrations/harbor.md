@@ -45,7 +45,7 @@ After the Harbor integration is activated:
 ## Secure your requests to the Harbor APIs
 
 For each API request through the Harbor integration, the credentials for your connection to the Harbor API use
-the `username:password` combination. The following are suggestions for safe use: 
+the `username:password` combination. The following are suggestions for safe use:
 
 - Use TLS on the Harbor APIs you connect to.
 - Follow the principle of least privilege (for access on Harbor) with your credentials.

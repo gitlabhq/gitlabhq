@@ -212,7 +212,7 @@ describe('Create work item component', () => {
     createComponent({
       props: { initialTitle },
     });
-    expect(findTitleInput().props('initialTitle')).toBe(initialTitle);
+    expect(findTitleInput().props('title')).toBe(initialTitle);
   });
 
   describe('when title input field has a text', () => {

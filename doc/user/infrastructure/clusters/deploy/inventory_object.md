@@ -23,7 +23,7 @@ gitops:
     default_namespace: my-ns
 ```
 
-The agent creates an inventory object for every item in the `manifest_projects` list. 
+The agent creates an inventory object for every item in the `manifest_projects` list.
 The inventory object is stored in the namespace you specify for `default_namespace`.
 
 The name and location of the inventory object is based on:
@@ -58,7 +58,7 @@ This action changes the location of the object in the cluster.
    inventory objects in the same namespace in the future.
 1. Ensure the value for `cli-utils.sigs.k8s.io/inventory-id` is unique. This value is used for objects
    tracked by this inventory object. Their `config.k8s.io/owning-inventory` annotation is set to this value.
-   
+
    The value doesn't have to match the `name` but it's convenient to set them to the same value.
 
 1. Save the file with the manifest files as a single logical group.

@@ -614,7 +614,7 @@ Possible solutions:
 ## Profiling Gitaly
 
 Gitaly exposes several of Golang's built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening
-on port `9236` of the GitLab server: 
+on port `9236` of the GitLab server:
 
 - Get a list of running `goroutines` and their backtraces:
 

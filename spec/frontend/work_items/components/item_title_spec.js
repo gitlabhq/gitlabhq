@@ -4,10 +4,10 @@ import ItemTitle from '~/work_items/components/item_title.vue';
 
 jest.mock('lodash/escape', () => jest.fn((fn) => fn));
 
-const createComponent = ({ initialTitle = 'Sample title', disabled = false } = {}) =>
+const createComponent = ({ title = 'Sample title', disabled = false } = {}) =>
   shallowMount(ItemTitle, {
     propsData: {
-      initialTitle,
+      title,
       disabled,
     },
   });

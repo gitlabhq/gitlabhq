@@ -66,7 +66,15 @@ export default {
       return this.loadingState === LOADING_STATES.expandedLoading;
     },
     isCollapsible() {
-      return !this.isLoadingSummary && this.loadingState !== LOADING_STATES.collapsedError;
+      if (!this.isLoadingSummary && this.loadingState !== LOADING_STATES.collapsedError) {
+        if (this.shouldCollapse) {
+          return this.shouldCollapse();
+        }
+
+        return true;
+      }
+
+      return false;
     },
     hasFullData() {
       return this.fullData.length > 0;
@@ -128,7 +136,7 @@ export default {
       }
     }),
     toggleCollapsed(e) {
-      if (!e?.target?.closest('.btn:not(.btn-icon),a')) {
+      if (this.isCollapsible && !e?.target?.closest('.btn:not(.btn-icon),a')) {
         this.isCollapsed = !this.isCollapsed;
 
         this.triggerRedisTracking();
@@ -226,7 +234,12 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="media gl-p-5 gl-cursor-pointer" @mousedown="onRowMouseDown" @mouseup="onRowMouseUp">
+    <div
+      :class="{ 'gl-cursor-pointer': isCollapsible }"
+      class="media gl-p-5"
+      @mousedown="onRowMouseDown"
+      @mouseup="onRowMouseUp"
+    >
       <status-icon
         :name="$options.label || $options.name"
         :is-loading="isLoadingSummary"

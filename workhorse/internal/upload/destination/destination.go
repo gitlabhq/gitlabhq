@@ -128,9 +128,14 @@ func Upload(ctx context.Context, reader io.Reader, size int64, opts *UploadOpts)
 	var uploadDestination consumer
 	var err error
 	switch {
-	case opts.IsLocal():
-		clientMode = "local"
+	// This case means Workhorse is acting as an upload proxy for Rails and buffers files
+	// to disk in a temporary location, see:
+	// https://docs.gitlab.com/ee/development/uploads/background.html#moving-disk-buffering-to-workhorse
+	case opts.IsLocalTempFile():
+		clientMode = "local_tempfile"
 		uploadDestination, err = fh.newLocalFile(ctx, opts)
+	// All cases below mean we are doing a direct upload to remote i.e. object storage, see:
+	// https://docs.gitlab.com/ee/development/uploads/background.html#moving-to-object-storage-and-direct-uploads
 	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsGoCloud():
 		clientMode = fmt.Sprintf("go_cloud:%s", opts.ObjectStorageConfig.Provider)
 		p := &objectstore.GoCloudObjectParams{
@@ -141,14 +146,14 @@ func Upload(ctx context.Context, reader io.Reader, size int64, opts *UploadOpts)
 		}
 		uploadDestination, err = objectstore.NewGoCloudObject(p)
 	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsAWS() && opts.ObjectStorageConfig.IsValid():
-		clientMode = "s3"
+		clientMode = "s3_client"
 		uploadDestination, err = objectstore.NewS3Object(
 			opts.RemoteTempObjectID,
 			opts.ObjectStorageConfig.S3Credentials,
 			opts.ObjectStorageConfig.S3Config,
 		)
 	case opts.IsMultipart():
-		clientMode = "multipart"
+		clientMode = "s3_multipart"
 		uploadDestination, err = objectstore.NewMultipart(
 			opts.PresignedParts,
 			opts.PresignedCompleteMultipart,
@@ -158,7 +163,7 @@ func Upload(ctx context.Context, reader io.Reader, size int64, opts *UploadOpts)
 			opts.PartSize,
 		)
 	default:
-		clientMode = "http"
+		clientMode = "presigned_put"
 		uploadDestination, err = objectstore.NewObject(
 			opts.PresignedPut,
 			opts.PresignedDelete,
@@ -195,15 +200,15 @@ func Upload(ctx context.Context, reader io.Reader, size int64, opts *UploadOpts)
 
 	logger := log.WithContextFields(ctx, log.Fields{
 		"copied_bytes":     fh.Size,
-		"is_local":         opts.IsLocal(),
+		"is_local":         opts.IsLocalTempFile(),
 		"is_multipart":     opts.IsMultipart(),
-		"is_remote":        !opts.IsLocal(),
+		"is_remote":        !opts.IsLocalTempFile(),
 		"remote_id":        opts.RemoteID,
 		"temp_file_prefix": opts.TempFilePrefix,
 		"client_mode":      clientMode,
 	})
 
-	if opts.IsLocal() {
+	if opts.IsLocalTempFile() {
 		logger = logger.WithField("local_temp_path", opts.LocalTempPath)
 	} else {
 		logger = logger.WithField("remote_temp_object", opts.RemoteTempObjectID)

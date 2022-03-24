@@ -335,6 +335,11 @@ msgid_plural "%d more comments"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d new license"
+msgid_plural "%d new licenses"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d open issue"
 msgid_plural "%d open issues"
 msgstr[0] ""
@@ -367,6 +372,11 @@ msgstr[1] ""
 
 msgid "%d project selected"
 msgid_plural "%d projects selected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d removed license"
+msgid_plural "%d removed licenses"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -10138,6 +10148,9 @@ msgstr ""
 msgid "Corpus Management|Are you sure you want to delete the corpus?"
 msgstr ""
 
+msgid "CorpusManagement|A corpus is used by fuzz testing to improve coverage. Corpus files can be manually created or auto-generated. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
 msgid "CorpusManagement|Actions"
 msgstr ""
 
@@ -10174,6 +10187,12 @@ msgstr ""
 msgid "CorpusManagement|Latest Job:"
 msgstr ""
 
+msgid "CorpusManagement|Manage your fuzz testing corpus files"
+msgstr ""
+
+msgid "CorpusManagement|New corpus"
+msgstr ""
+
 msgid "CorpusManagement|New upload"
 msgstr ""
 
@@ -10187,9 +10206,6 @@ msgid "CorpusManagement|To use this corpus, edit the corresponding YAML file"
 msgstr ""
 
 msgid "CorpusManagement|Total Size: %{totalSize}"
-msgstr ""
-
-msgid "CorpusMnagement|New corpus"
 msgstr ""
 
 msgid "Could not add admins as members"
@@ -21312,9 +21328,6 @@ msgstr ""
 msgid "JiraService|Using Jira for issue tracking?"
 msgstr ""
 
-msgid "JiraService|View Jira issues in GitLab"
-msgstr ""
-
 msgid "JiraService|Warning: All GitLab users with access to this GitLab project can view all issues from the Jira project you select."
 msgstr ""
 
@@ -22163,6 +22176,9 @@ msgstr ""
 msgid "License Compliance"
 msgstr ""
 
+msgid "License Compliance| Used by"
+msgstr ""
+
 msgid "License compliance"
 msgstr ""
 
@@ -22179,6 +22195,9 @@ msgid "LicenseCompliance|%{docLinkStart}License Approvals%{docLinkEnd} are activ
 msgstr ""
 
 msgid "LicenseCompliance|%{docLinkStart}License Approvals%{docLinkEnd} are inactive"
+msgstr ""
+
+msgid "LicenseCompliance|Acceptable for use in this project"
 msgstr ""
 
 msgid "LicenseCompliance|Acceptable license to be used in the project"
@@ -22241,6 +22260,11 @@ msgid_plural "LicenseCompliance|License Compliance detected %d new licenses and 
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "LicenseCompliance|License Compliance detected %d removed license"
+msgid_plural "LicenseCompliance|License Compliance detected %d removed licenses"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "LicenseCompliance|License Compliance detected no licenses for the source branch only"
 msgstr ""
 
@@ -22248,6 +22272,12 @@ msgid "LicenseCompliance|License Compliance detected no new licenses"
 msgstr ""
 
 msgid "LicenseCompliance|License name"
+msgstr ""
+
+msgid "LicenseCompliance|No policy matches this license"
+msgstr ""
+
+msgid "LicenseCompliance|Out-of-compliance with the project's policies and should be removed"
 msgstr ""
 
 msgid "LicenseCompliance|Remove license"
@@ -22263,6 +22293,9 @@ msgid "LicenseCompliance|There are currently no policies that match in this proj
 msgstr ""
 
 msgid "LicenseCompliance|This license already exists in this project."
+msgstr ""
+
+msgid "LicenseCompliance|Uncategorized"
 msgstr ""
 
 msgid "LicenseCompliance|You are about to remove the license, %{name}, from this project."
@@ -43841,6 +43874,15 @@ msgid "ciReport|IaC Scanning"
 msgstr ""
 
 msgid "ciReport|Investigate this vulnerability by creating an issue"
+msgstr ""
+
+msgid "ciReport|License Compliance"
+msgstr ""
+
+msgid "ciReport|License Compliance failed loading results"
+msgstr ""
+
+msgid "ciReport|License Compliance test metrics results are being parsed"
 msgstr ""
 
 msgid "ciReport|Load Performance"

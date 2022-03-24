@@ -310,8 +310,8 @@ To migrate back to local storage:
 > [In GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76504), we improved the performance of removing expired artifacts, introduced [with a flag](feature_flags.md) named `ci_destroy_all_expired_service`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to 
-[enable the feature flag](feature_flags.md) named `ci_destroy_all_expired_service`. The feature is not ready for 
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
+[enable the feature flag](feature_flags.md) named `ci_destroy_all_expired_service`. The feature is not ready for
 production use.
 On GitLab.com, this feature is not available.
 
@@ -641,4 +641,4 @@ WARNING: Uploading artifacts as "archive" to coordinator... POST https://gitlab.
 FATAL: invalid argument
 ```
 
-If a job artifact fails to upload with the above error when using consolidated object storage, make sure you are [using separate buckets](object_storage.md#use-separate-buckets) for each data type. 
+If a job artifact fails to upload with the above error when using consolidated object storage, make sure you are [using separate buckets](object_storage.md#use-separate-buckets) for each data type.

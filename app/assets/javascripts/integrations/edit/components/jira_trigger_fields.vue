@@ -62,11 +62,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: {
-    hasSections: {
-      default: false,
-    },
-  },
   props: {
     initialTriggerCommit: {
       type: Boolean,
@@ -138,17 +133,7 @@ export default {
 
 <template>
   <div>
-    <gl-form-group
-      :label="hasSections ? null : __('Trigger')"
-      label-for="service[trigger]"
-      :description="
-        hasSections
-          ? null
-          : s__(
-              'JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created.',
-            )
-      "
-    >
+    <div class="gl-mb-5">
       <input name="service[commit_events]" type="hidden" :value="triggerCommit || false" />
       <gl-form-checkbox v-model="triggerCommit" :disabled="isInheriting">
         {{ __('Commit') }}
@@ -162,7 +147,7 @@ export default {
       <gl-form-checkbox v-model="triggerMergeRequest" :disabled="isInheriting">
         {{ __('Merge request') }}
       </gl-form-checkbox>
-    </gl-form-group>
+    </div>
 
     <gl-form-group
       v-show="showTriggerSettings"

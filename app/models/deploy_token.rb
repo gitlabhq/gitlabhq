@@ -14,6 +14,8 @@ class DeployToken < ApplicationRecord
 
   default_value_for(:expires_at) { Forever.date }
 
+  belongs_to :user, foreign_key: :creator_id, optional: true
+
   has_many :project_deploy_tokens, inverse_of: :deploy_token
   has_many :projects, through: :project_deploy_tokens
 

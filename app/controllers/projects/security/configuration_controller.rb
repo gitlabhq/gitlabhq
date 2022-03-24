@@ -6,6 +6,7 @@ module Projects
       include SecurityAndCompliancePermissions
 
       feature_category :static_application_security_testing, [:show]
+      urgency :low, [:show]
 
       def show
         render_403 unless can?(current_user, :read_security_configuration, project)

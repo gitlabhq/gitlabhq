@@ -14256,7 +14256,8 @@ CREATE TABLE deploy_tokens (
     deploy_token_type smallint DEFAULT 2 NOT NULL,
     write_registry boolean DEFAULT false NOT NULL,
     read_package_registry boolean DEFAULT false NOT NULL,
-    write_package_registry boolean DEFAULT false NOT NULL
+    write_package_registry boolean DEFAULT false NOT NULL,
+    creator_id bigint
 );
 
 CREATE SEQUENCE deploy_tokens_id_seq
@@ -27373,6 +27374,8 @@ CREATE INDEX index_deploy_keys_projects_on_deploy_key_id ON deploy_keys_projects
 
 CREATE INDEX index_deploy_keys_projects_on_project_id ON deploy_keys_projects USING btree (project_id);
 
+CREATE INDEX index_deploy_tokens_on_creator_id ON deploy_tokens USING btree (creator_id);
+
 CREATE UNIQUE INDEX index_deploy_tokens_on_token ON deploy_tokens USING btree (token);
 
 CREATE INDEX index_deploy_tokens_on_token_and_expires_at_and_id ON deploy_tokens USING btree (token, expires_at, id) WHERE (revoked IS FALSE);
@@ -31326,6 +31329,9 @@ ALTER TABLE ONLY terraform_state_versions
 
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_6ee8249821 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY deploy_tokens
+    ADD CONSTRAINT fk_7082f8a288 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_7111b68cdb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

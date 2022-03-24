@@ -399,7 +399,7 @@ and `value` of identifiers and then overridden:
 ```
 
 If a vulnerability is found with a type `CWE` with a value of `703` then
-the vulnerability severity is overwritten to `Critical`. 
+the vulnerability severity is overwritten to `Critical`.
 
 #### Synthesize a custom configuration
 

@@ -79,9 +79,9 @@ To create a project in GitLab:
      from a different repository. Contact your GitLab administrator if this option is not available.
    - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
 
-- For a list of words that you cannot use as project names, see 
+- For a list of words that you cannot use as project names, see
   [reserved project and group names](../../user/reserved_names.md).
-- For a list of characters that you cannot use in project and group names, see 
+- For a list of characters that you cannot use in project and group names, see
   [limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names).
 
 ## Create a blank project
@@ -299,7 +299,7 @@ To delete a project:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) in GitLab 14.9. [Feature flag `project_owners_list_project_pending_deletion`](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) removed.
 
 When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
-projects within that group are not deleted immediately, but only after a delay. 
+projects within that group are not deleted immediately, but only after a delay.
 
 To view a list of all projects that are pending deletion:
 

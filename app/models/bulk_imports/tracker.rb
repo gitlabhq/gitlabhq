@@ -46,6 +46,7 @@ class BulkImports::Tracker < ApplicationRecord
     state :started, value: 1
     state :finished, value: 2
     state :enqueued, value: 3
+    state :timeout, value: 4
     state :failed, value: -1
     state :skipped, value: -2
 
@@ -75,6 +76,10 @@ class BulkImports::Tracker < ApplicationRecord
 
     event :fail_op do
       transition any => :failed
+    end
+
+    event :cleanup_stale do
+      transition [:created, :started] => :timeout
     end
   end
 end

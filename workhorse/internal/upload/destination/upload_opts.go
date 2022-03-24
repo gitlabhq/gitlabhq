@@ -70,8 +70,8 @@ func (s *UploadOpts) UseWorkhorseClientEnabled() bool {
 	return s.UseWorkhorseClient && s.ObjectStorageConfig.IsValid() && s.RemoteTempObjectID != ""
 }
 
-// IsLocal checks if the options require the writing of the file on disk
-func (s *UploadOpts) IsLocal() bool {
+// IsLocalTempFile checks if the options require the writing of a temporary file on disk
+func (s *UploadOpts) IsLocalTempFile() bool {
 	return s.LocalTempPath != ""
 }
 

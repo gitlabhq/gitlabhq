@@ -344,7 +344,7 @@ Content-Type: application/x-www-form-urlencoded
 X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
 ```
 
-### Example request body 
+### Example request body
 
 ```json
 {

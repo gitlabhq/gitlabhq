@@ -507,10 +507,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
 
     it 'gathers usage counts', :aggregate_failures do
-      stub_feature_flags(merge_service_ping_instrumented_metrics: false)
-
       count_data = subject[:counts]
-      expect(count_data[:boards]).to eq(1)
       expect(count_data[:projects]).to eq(4)
       expect(count_data.keys).to include(*UsageDataHelpers::COUNTS_KEYS)
       expect(UsageDataHelpers::COUNTS_KEYS - count_data.keys).to be_empty

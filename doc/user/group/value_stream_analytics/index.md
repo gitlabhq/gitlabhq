@@ -125,7 +125,7 @@ To view deployment metrics, you must have a
 [production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
 
 Value stream analytics shows the following deployment metrics for your group:  
- 
+
 - Deploys: The number of successful deployments in the date range.
 - Deployment Frequency: The average number of successful deployments per day in the date range.
 
@@ -190,19 +190,19 @@ Each stage of value stream analytics is further described in the table below.
 
 ## Example workflow
 
-This example shows a workflow through all seven stages in one day. 
+This example shows a workflow through all seven stages in one day.
 
-If a stage does not include a start and a stop time, its data is not included in the median time. 
+If a stage does not include a start and a stop time, its data is not included in the median time.
 In this example, milestones have been created and CI/CD for testing and setting environments is configured.
 
 - 09:00: Create issue. **Issue** stage starts.
-- 11:00: Add issue to a milestone, start work on the issue, and create a branch locally. 
-  **Issue** stage stops and **Plan** stage starts. 
+- 11:00: Add issue to a milestone, start work on the issue, and create a branch locally.
+  **Issue** stage stops and **Plan** stage starts.
 - 12:00: Make the first commit.
 - 12:30: Make the second commit to the branch that mentions the issue number.
   **Plan** stage stops and **Code** stage starts.
-- 14:00: Push branch and create a merge request that contains the 
-  [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically). 
+- 14:00: Push branch and create a merge request that contains the
+  [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically).
   **Code** stage stops and **Test** and **Review** stages start.
 - GitLab CI/CD takes 5 minutes to run scripts defined in [`.gitlab-ci.yml`](../../../ci/yaml/index.md).
 - 19:00: Merge the merge request. **Review** stage stops and **Staging** stage starts.
@@ -214,7 +214,7 @@ Value stream analytics records the following times for each stage:
 - **Plan**: 11:00 to 12:00: 1 hr
 - **Code**: 12:00 to 14:00: 2 hrs
 - **Test**: 5 minutes
-- **Review**: 14:00 to 19:00: 5 hrs 
+- **Review**: 14:00 to 19:00: 5 hrs
 - **Staging**: 19:00 to 19:30: 30 minutes
 
 There are some additional considerations for this example:

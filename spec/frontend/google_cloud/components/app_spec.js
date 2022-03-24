@@ -8,7 +8,7 @@ import GcpError from '~/google_cloud/components/errors/gcp_error.vue';
 import NoGcpProjects from '~/google_cloud/components/errors/no_gcp_projects.vue';
 
 const BASE_FEEDBACK_URL =
-  'https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/meta/-/issues/new';
+  'https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/feedback/-/issues/new';
 const SCREEN_COMPONENTS = {
   Home,
   ServiceAccountsForm,
