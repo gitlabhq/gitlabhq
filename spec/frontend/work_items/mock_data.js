@@ -1,22 +1,14 @@
 export const workItemQueryResponse = {
-  workItem: {
-    __typename: 'WorkItem',
-    id: '1',
-    title: 'Test',
-    workItemType: {
-      __typename: 'WorkItemType',
-      id: 'work-item-type-1',
-      name: 'Task',
-    },
-    widgets: {
-      __typename: 'LocalWorkItemWidgetConnection',
-      nodes: [
-        {
-          __typename: 'LocalTitleWidget',
-          type: 'TITLE',
-          contentText: 'Test',
-        },
-      ],
+  data: {
+    workItem: {
+      __typename: 'WorkItem',
+      id: 'gid://gitlab/WorkItem/1',
+      title: 'Test',
+      workItemType: {
+        __typename: 'WorkItemType',
+        id: 'gid://gitlab/WorkItems::Type/5',
+        name: 'Task',
+      },
     },
   },
 };
@@ -24,26 +16,15 @@ export const workItemQueryResponse = {
 export const updateWorkItemMutationResponse = {
   data: {
     workItemUpdate: {
-      __typename: 'LocalUpdateWorkItemPayload',
+      __typename: 'WorkItemUpdatePayload',
       workItem: {
-        __typename: 'LocalWorkItem',
-        id: '1',
+        __typename: 'WorkItem',
+        id: 'gid://gitlab/WorkItem/1',
         title: 'Updated title',
         workItemType: {
           __typename: 'WorkItemType',
-          id: 'work-item-type-1',
+          id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
-        },
-        widgets: {
-          __typename: 'LocalWorkItemWidgetConnection',
-          nodes: [
-            {
-              __typename: 'LocalTitleWidget',
-              type: 'TITLE',
-              enabled: true,
-              contentText: 'Updated title',
-            },
-          ],
         },
       },
     },
@@ -53,11 +34,11 @@ export const updateWorkItemMutationResponse = {
 export const projectWorkItemTypesQueryResponse = {
   data: {
     workspace: {
-      id: '1',
+      id: 'gid://gitlab/WorkItem/1',
       workItemTypes: {
         nodes: [
-          { id: 'work-item-1', name: 'Issue' },
-          { id: 'work-item-2', name: 'Incident' },
+          { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
+          { id: 'gid://gitlab/WorkItems::Type/2', name: 'Incident' },
         ],
       },
     },
@@ -70,11 +51,11 @@ export const createWorkItemMutationResponse = {
       __typename: 'WorkItemCreatePayload',
       workItem: {
         __typename: 'WorkItem',
-        id: '1',
+        id: 'gid://gitlab/WorkItem/1',
         title: 'Updated title',
         workItemType: {
           __typename: 'WorkItemType',
-          id: 'work-item-type-1',
+          id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
         },
       },

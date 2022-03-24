@@ -48,6 +48,7 @@ AllCops:
 
 Metrics/ParameterLists:
   Exclude:
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/356771
     - 'app/components/**/*'
 
 Cop/AvoidKeywordArgumentsInSidekiqWorkers:

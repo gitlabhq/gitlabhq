@@ -93,11 +93,11 @@ RSpec.describe FinderWithCrossProjectAccess do
       it 'checks the accessibility of the subject directly' do
         expect_access_check_on_result
 
-        finder.find_by!(id: result.id)
+        finder.find(result.id)
       end
 
       it 're-enables the check after the find failed' do
-        finder.find_by!(id: non_existing_record_id) rescue ActiveRecord::RecordNotFound
+        finder.find(non_existing_record_id) rescue ActiveRecord::RecordNotFound
 
         expect(finder.instance_variable_get(:@should_skip_cross_project_check))
           .to eq(false)

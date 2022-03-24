@@ -207,10 +207,14 @@ You can also look for the projects you [starred](../project/working_with_project
 You can **Explore** all public and internal projects available in GitLab.com, from which you can filter by visibility,
 through **Trending**, best rated with **Most stars**, or **All** of them.
 
-You can also sort them by **Name**, **Last created**, **Oldest created**, **Last updated**,
-**Oldest updated**, **Owner**, and choose to hide or show **archived projects**:
+You can also sort them by:
 
-![sort projects](img/sort_projects.png)
+- Name
+- Created date
+- Updated date
+- Owner
+
+You can also choose to hide or show archived projects.
 
 ## Groups
 
@@ -221,7 +225,7 @@ On the field **Filter by name**, type the group name you want to find, and GitLa
 filters them for you as you type.
 
 You can also **Explore** all public and internal groups available in GitLab.com,
-and sort them by **Last created**, **Oldest created**, **Last updated**, or **Oldest updated**.
+and sort them by **Name**, **Last created**, **Oldest created**, or **Updated date**.
 
 ## Issue boards
 

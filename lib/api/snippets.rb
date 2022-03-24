@@ -200,7 +200,7 @@ module API
       get ":id/user_agent_detail" do
         authenticated_as_admin!
 
-        snippet = Snippet.find_by_id!(params[:id])
+        snippet = Snippet.find(params[:id])
 
         break not_found!('UserAgentDetail') unless snippet.user_agent_detail
 

@@ -127,7 +127,7 @@ To search for a requirement:
 You can also sort the requirements list by:
 
 - Created date
-- Last updated
+- Updated date
 
 ## Allow requirements to be satisfied from a CI job
 

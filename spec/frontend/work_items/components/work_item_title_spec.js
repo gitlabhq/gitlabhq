@@ -22,13 +22,14 @@ describe('WorkItemTitle component', () => {
   const findItemTitle = () => wrapper.findComponent(ItemTitle);
 
   const createComponent = ({ loading = false, mutationHandler = mutationSuccessHandler } = {}) => {
+    const { id, title, workItemType } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemTitle, {
       apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
       propsData: {
         loading,
-        workItemId: workItemQueryResponse.workItem.id,
-        workItemTitle: workItemQueryResponse.workItem.title,
-        workItemType: workItemQueryResponse.workItem.workItemType.name,
+        workItemId: id,
+        workItemTitle: title,
+        workItemType: workItemType.name,
       },
     });
   };
@@ -61,7 +62,7 @@ describe('WorkItemTitle component', () => {
     });
 
     it('renders title', () => {
-      expect(findItemTitle().props('title')).toBe(workItemQueryResponse.workItem.title);
+      expect(findItemTitle().props('title')).toBe(workItemQueryResponse.data.workItem.title);
     });
   });
 
@@ -73,13 +74,18 @@ describe('WorkItemTitle component', () => {
 
       findItemTitle().vm.$emit('title-changed', title);
 
-      expect(mutationSuccessHandler).toHaveBeenCalledWith({ input: { id: '1', title } });
+      expect(mutationSuccessHandler).toHaveBeenCalledWith({
+        input: {
+          id: workItemQueryResponse.data.workItem.id,
+          title,
+        },
+      });
     });
 
     it('does not call a mutation when the title has not changed', () => {
       createComponent();
 
-      findItemTitle().vm.$emit('title-changed', workItemQueryResponse.workItem.title);
+      findItemTitle().vm.$emit('title-changed', workItemQueryResponse.data.workItem.title);
 
       expect(mutationSuccessHandler).not.toHaveBeenCalled();
     });

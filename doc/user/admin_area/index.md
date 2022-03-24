@@ -79,28 +79,29 @@ To access the Projects page:
 By default, all projects are listed, in reverse order of when they were last updated. For each
 project, the following information is listed:
 
-- Name.
-- Namespace.
-- Description.
-- Size, updated every 15 minutes at most.
+- Name
+- Namespace
+- Description
+- Size, updated every 15 minutes at most
 
 Projects can be edited or deleted.
 
 The list of projects can be sorted by:
 
-- Name.
-- Last created.
-- Oldest created.
-- Last updated.
-- Oldest updated.
-- Owner.
+- Updated date
+- Last created
+- Name
+- Most stars
+- Oldest created
+- Oldest updated
+- Largest repository
 
 A user can choose to hide or show archived projects in the list.
 
 In the **Filter by name** field, type the project name you want to find, and GitLab filters
 them as you type.
 
-Select from the **Namespace** dropdown to filter only projects in that namespace.
+To filter only projects in that namespace, select from the **Namespace** dropdown list.
 
 You can combine the filter options. For example, to list only public projects with `score` in their name:
 

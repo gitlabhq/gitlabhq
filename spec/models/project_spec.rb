@@ -1191,29 +1191,8 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     describe 'last_activity_date' do
-      it 'returns the creation date of the project\'s last event if present' do
-        new_event = create(:event, :closed, project: project, created_at: Time.current)
-
-        project.reload
-        expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
-      end
-
-      it 'returns the project\'s last update date if it has no events' do
-        expect(project.last_activity_date).to eq(project.updated_at)
-      end
-
-      it 'returns the most recent timestamp' do
-        project.update!(updated_at: nil,
-                       last_activity_at: timestamp,
-                       last_repository_updated_at: timestamp - 1.hour)
-
-        expect(project.last_activity_date).to be_like_time(timestamp)
-
-        project.update!(updated_at: timestamp,
-                       last_activity_at: timestamp - 1.hour,
-                       last_repository_updated_at: nil)
-
-        expect(project.last_activity_date).to be_like_time(timestamp)
+      it 'returns the project\'s last update date' do
+        expect(project.last_activity_date).to be_like_time(project.updated_at)
       end
     end
   end
@@ -1690,14 +1669,26 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '.sort_by_attribute' do
-    it 'reorders the input relation by start count desc' do
-      project1 = create(:project, star_count: 2)
-      project2 = create(:project, star_count: 1)
-      project3 = create(:project)
+    let_it_be(:project1) { create(:project, star_count: 2, updated_at: 1.minute.ago) }
+    let_it_be(:project2) { create(:project, star_count: 1) }
+    let_it_be(:project3) { create(:project, updated_at: 2.minutes.ago) }
 
+    it 'reorders the input relation by start count desc' do
       projects = described_class.sort_by_attribute(:stars_desc)
 
       expect(projects).to eq([project1, project2, project3])
+    end
+
+    it 'reorders the input relation by last activity desc' do
+      projects = described_class.sort_by_attribute(:latest_activity_desc)
+
+      expect(projects).to eq([project2, project1, project3])
+    end
+
+    it 'reorders the input relation by last activity asc' do
+      projects = described_class.sort_by_attribute(:latest_activity_asc)
+
+      expect(projects).to eq([project3, project1, project2])
     end
   end
 

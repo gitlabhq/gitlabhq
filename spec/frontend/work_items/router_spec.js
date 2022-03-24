@@ -37,7 +37,7 @@ describe('Work items router', () => {
   it('renders work item on `/1` route', async () => {
     await createComponent('/1');
 
-    expect(wrapper.find(WorkItemsRoot).exists()).toBe(true);
+    expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
   });
 
   it('renders create work item page on `/new` route', async () => {

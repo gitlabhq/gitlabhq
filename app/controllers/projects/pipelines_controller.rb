@@ -268,7 +268,7 @@ class Projects::PipelinesController < Projects::ApplicationController
                     project
                       .all_pipelines
                       .includes(builds: :tags, user: :status)
-                      .find_by!(id: params[:id])
+                      .find(params[:id])
                       .present(current_user: current_user)
                   end
   end

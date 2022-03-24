@@ -546,8 +546,8 @@ class Project < ApplicationRecord
         .or(arel_table[:storage_version].eq(nil)))
   end
 
-  # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
-  scope :sorted_by_activity, -> { reorder(Arel.sql("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC")) }
+  scope :sorted_by_updated_asc, -> { reorder(self.arel_table['updated_at'].asc) }
+  scope :sorted_by_updated_desc, -> { reorder(self.arel_table['updated_at'].desc) }
   scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
@@ -783,9 +783,9 @@ class Project < ApplicationRecord
         # pass a string to avoid AR adding the table name
         reorder('project_statistics.storage_size DESC, projects.id DESC')
       when 'latest_activity_desc'
-        reorder(self.arel_table['last_activity_at'].desc)
+        sorted_by_updated_desc
       when 'latest_activity_asc'
-        reorder(self.arel_table['last_activity_at'].asc)
+        sorted_by_updated_asc
       when 'stars_desc'
         sorted_by_stars_desc
       when 'stars_asc'
@@ -1404,7 +1404,7 @@ class Project < ApplicationRecord
   end
 
   def last_activity_date
-    [last_activity_at, last_repository_updated_at, updated_at].compact.max
+    updated_at
   end
 
   def project_id

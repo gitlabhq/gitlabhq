@@ -11,7 +11,7 @@ module DeployTokenMethods
   end
 
   def destroy_deploy_token(entity, params)
-    deploy_token = entity.deploy_tokens.find_by_id!(params[:token_id])
+    deploy_token = entity.deploy_tokens.find(params[:token_id])
 
     deploy_token.destroy
   end

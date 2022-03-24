@@ -16,14 +16,14 @@ describe('WorkItemDetail component', () => {
 
   Vue.use(VueApollo);
 
-  const successHandler = jest.fn().mockResolvedValue({ data: workItemQueryResponse });
+  const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
   const initialSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
 
   const createComponent = ({
-    workItemId = workItemQueryResponse.workItem.id,
+    workItemId = workItemQueryResponse.data.workItem.id,
     handler = successHandler,
     subscriptionHandler = initialSubscriptionHandler,
   } = {}) => {
@@ -93,7 +93,7 @@ describe('WorkItemDetail component', () => {
     createComponent();
 
     expect(initialSubscriptionHandler).toHaveBeenCalledWith({
-      issuableId: workItemQueryResponse.workItem.id,
+      issuableId: workItemQueryResponse.data.workItem.id,
     });
   });
 });

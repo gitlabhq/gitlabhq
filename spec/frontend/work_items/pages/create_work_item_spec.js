@@ -6,7 +6,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import ItemTitle from '~/work_items/components/item_title.vue';
-import { resolvers } from '~/work_items/graphql/resolvers';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_item_from_task.mutation.graphql';
@@ -46,14 +45,11 @@ describe('Create work item component', () => {
     queryHandler = querySuccessHandler,
     mutationHandler = createWorkItemSuccessHandler,
   } = {}) => {
-    fakeApollo = createMockApollo(
-      [
-        [projectWorkItemTypesQuery, queryHandler],
-        [createWorkItemMutation, mutationHandler],
-        [createWorkItemFromTaskMutation, mutationHandler],
-      ],
-      resolvers,
-    );
+    fakeApollo = createMockApollo([
+      [projectWorkItemTypesQuery, queryHandler],
+      [createWorkItemMutation, mutationHandler],
+      [createWorkItemFromTaskMutation, mutationHandler],
+    ]);
     wrapper = shallowMount(CreateWorkItem, {
       apolloProvider: fakeApollo,
       data() {

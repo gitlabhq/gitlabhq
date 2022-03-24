@@ -128,10 +128,6 @@ export default {
                   id,
                   title,
                   workItemType,
-                  widgets: {
-                    __typename: 'LocalWorkItemWidgetConnection',
-                    nodes: [],
-                  },
                 },
               },
             });

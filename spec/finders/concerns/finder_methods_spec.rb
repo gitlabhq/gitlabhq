@@ -30,6 +30,7 @@ RSpec.describe FinderMethods do
     authorized_project.add_developer(user)
   end
 
+  # rubocop:disable Rails/FindById
   describe '#find_by!' do
     it 'returns the project if the user has access' do
       expect(finder.find_by!(id: authorized_project.id)).to eq(authorized_project)
@@ -53,6 +54,7 @@ RSpec.describe FinderMethods do
       finder.find_by!(id: authorized_project.id)
     end
   end
+  # rubocop:enable Rails/FindById
 
   describe '#find' do
     it 'returns the project if the user has access' do

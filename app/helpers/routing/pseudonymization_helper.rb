@@ -5,7 +5,11 @@ module Routing
     class MaskHelper
       QUERY_PARAMS_TO_NOT_MASK = %w[
         scope
+        severity
+        sortBy
+        sortDesc
         state
+        tab
       ].freeze
 
       def initialize(request_object, group, project)

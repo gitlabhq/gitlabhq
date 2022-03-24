@@ -43,7 +43,6 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
   def be_search_context(project: nil, group: nil, snippets: [], ref: nil)
     group = project ? project.group : group
     snippets.compact!
-    ref = ref
 
     have_attributes(
       project: project,

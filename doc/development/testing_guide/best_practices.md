@@ -404,7 +404,7 @@ click_link _('UI testing docs')
 
 fill_in _('Search projects'), with: 'gitlab' # fill in text input with text
 
-select _('Last updated'), from: 'Sort by' # select an option from a select input
+select _('Updated date'), from: 'Sort by' # select an option from a select input
 
 check _('Checkbox label')
 uncheck _('Checkbox label')
@@ -465,8 +465,8 @@ expect(page).to have_checked_field _('Checkbox label')
 expect(page).to have_unchecked_field _('Radio input label')
 
 expect(page).to have_select _('Sort by')
-expect(page).to have_select _('Sort by'), selected: 'Last updated' # assert the option is selected
-expect(page).to have_select _('Sort by'), options: ['Last updated', 'Created date', 'Due date'] # assert an exact list of options
+expect(page).to have_select _('Sort by'), selected: 'Updated date' # assert the option is selected
+expect(page).to have_select _('Sort by'), options: ['Updated date', 'Created date', 'Due date'] # assert an exact list of options
 expect(page).to have_select _('Sort by'), with_options: ['Created date', 'Due date'] # assert a partial list of options
 
 expect(page).to have_text _('Some paragraph text.')
