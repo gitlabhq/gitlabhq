@@ -664,9 +664,6 @@ msgstr ""
 msgid "%{firstMilestoneName} + %{numberOfOtherMilestones} more"
 msgstr ""
 
-msgid "%{from_address} (reply to: %{reply_to_address})"
-msgstr ""
-
 msgid "%{gitlab_experience_text}. Don't worry, this information isn't shared outside of your self-managed GitLab instance."
 msgstr ""
 
@@ -33087,6 +33084,12 @@ msgstr ""
 msgid "SecurityOrchestration|%{branches} and %{lastBranch} %{plural}"
 msgstr ""
 
+msgid "SecurityOrchestration|%{scanners}"
+msgstr ""
+
+msgid "SecurityOrchestration|%{scanners} %{severities} in an open merge request targeting %{branches}."
+msgstr ""
+
 msgid "SecurityOrchestration|.yaml preview"
 msgstr ""
 
@@ -33100,6 +33103,9 @@ msgid "SecurityOrchestration|After dismissing the alert, the information will ne
 msgstr ""
 
 msgid "SecurityOrchestration|All policies"
+msgstr ""
+
+msgid "SecurityOrchestration|All scanners find"
 msgstr ""
 
 msgid "SecurityOrchestration|Allow all inbound traffic to all pods from all pods on ports 443/TCP."
@@ -33295,9 +33301,6 @@ msgid "SecurityOrchestration|Step 2: Policy details"
 msgstr ""
 
 msgid "SecurityOrchestration|Summary"
-msgstr ""
-
-msgid "SecurityOrchestration|The %{scanners} %{severities} in an open merge request targeting %{branches}."
 msgstr ""
 
 msgid "SecurityOrchestration|There was a problem creating the new security policy"

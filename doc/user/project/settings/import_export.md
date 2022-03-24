@@ -154,9 +154,9 @@ The default is `0` (unlimited).
 
 Imported users can be mapped by their public email addresses on self-managed instances, if an administrator (not an owner) does the import.
 
-- Public email addresses are not set by default. Users must
-[set it in their profiles](../../profile/index.md#set-your-public-email)
-for mapping to work correctly.
+- The project must be exported by a project or group member with the Owner role.
+- Public email addresses are not set by default. Users must [set it in their profiles](../../profile/index.md#set-your-public-email)
+  for mapping to work correctly.
 - For contributions to be mapped correctly, users must be an existing member of the namespace,
   or they can be added as a member of the project. Otherwise, a supplementary comment is left to mention that the original author and the MRs, notes, or issues that are owned by the importer.
 - Imported users are set as [direct members](../members/index.md)

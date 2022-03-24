@@ -103,10 +103,10 @@ The following API resources are available in the group context:
 | [Custom attributes](custom_attributes.md)                        | `/groups/:id/custom_attributes` (also available for projects and users) |
 | [Debian distributions](packages/debian_group_distributions.md)   | `/groups/:id/-/packages/debian` (also available for projects) |
 | [Deploy tokens](deploy_tokens.md)                                | `/groups/:id/deploy_tokens` (also available for projects and standalone) |
-| [Discussions](discussions.md) (threaded comments) **(ULTIMATE)** | `/groups/:id/epics/.../discussions` (also available for projects) |
-| [Epic issues](epic_issues.md) **(ULTIMATE)**                     | `/groups/:id/epics/.../issues` |
-| [Epic links](epic_links.md) **(ULTIMATE)**                       | `/groups/:id/epics/.../epics` |
-| [Epics](epics.md) **(ULTIMATE)**                                 | `/groups/:id/epics` |
+| [Discussions](discussions.md) (comments and threads)             | `/groups/:id/epics/.../discussions` (also available for projects) |
+| [Epic issues](epic_issues.md) **(PREMIUM)**                      | `/groups/:id/epics/.../issues` |
+| [Epic links](epic_links.md) **(PREMIUM)**                        | `/groups/:id/epics/.../epics` |
+| [Epics](epics.md) **(PREMIUM)**                                  | `/groups/:id/epics` |
 | [Groups](groups.md)                                              | `/groups`, `/groups/.../subgroups` |
 | [Group badges](group_badges.md)                                  | `/groups/:id/badges` |
 | [Group issue boards](group_boards.md)                            | `/groups/:id/boards` |

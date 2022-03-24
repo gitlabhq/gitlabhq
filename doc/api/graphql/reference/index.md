@@ -4380,7 +4380,7 @@ Input type: `SecurityPolicyProjectCreateInput`
 
 ### `Mutation.securityPolicyProjectUnassign`
 
-Unassigns the security policy project for the given project(`project_path`).
+Unassigns the security policy project for the given project (`full_path`).
 
 Input type: `SecurityPolicyProjectUnassignInput`
 
@@ -4389,7 +4389,8 @@ Input type: `SecurityPolicyProjectUnassignInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectunassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationsecuritypolicyprojectunassignfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project. |
+| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
 
 #### Fields
 

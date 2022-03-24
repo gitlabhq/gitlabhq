@@ -249,7 +249,7 @@ Avoid:
   [_explain why, not what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/).
 - Requesting maintainer reviews of merge requests with failed tests. If the tests are failing and you have to request a review, ensure you leave a comment with an explanation.
 - Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
-through Slack). If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
+through Slack). If you can't add a reviewer for a merge request, it's acceptable to `@` mention a maintainer in a comment. In all other cases, it's sufficient to add a reviewer or [request their attention](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) if they're already a reviewer.
 
 This saves reviewers time and helps authors catch mistakes earlier.
 
@@ -259,10 +259,8 @@ This saves reviewers time and helps authors catch mistakes earlier.
 that it meets all requirements, you should:
 
 - Click the Approve button.
-- `@` mention the author to generate a to-do notification, and advise them that their merge request has been reviewed and approved.
-- Request a review from a maintainer. Default to requests for a maintainer with [domain expertise](#domain-experts),
+- Request a review from a maintainer or [request their attention](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) if they're already a reviewer. Default to requests for a maintainer with [domain expertise](#domain-experts),
 however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.
-- Remove yourself as a reviewer.
 
 ### The responsibility of the maintainer
 
@@ -290,7 +288,7 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a reviewer, it is recommended that they are not also picked as the maintainer to ultimately approve and merge it.
 
 Maintainers should check before merging if the merge request is approved by the
-required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
+required approvers. If still awaiting further approvals from others, explain that in a comment and [request attention](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) from other reviewers as appropriate. Do not remove yourself as a reviewer.
 
 Maintainers must check before merging if the merge request is introducing new
 vulnerabilities, by inspecting the list in the merge request
@@ -312,14 +310,20 @@ After merging, a maintainer should stay as the reviewer listed on the merge requ
 
 ### Dogfooding the Reviewers feature
 
-On March 18th 2021, an updated process was put in place aimed at efficiently and consistently dogfooding the Reviewers feature.
+Replaced with [dogfooding the attention request feature](#dogfooding-the-attention-request-feature).
+
+### Dogfooding the attention request feature
+
+In March of 2022, an updated process was put in place aimed at efficiently and consistently dogfooding the
+[attention requests feature](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) under `Merge requests` -> `Need your attention`. This replaces previous guidance on [dogfooding the reviewers feature](#dogfooding-the-reviewers-feature).
 
 Here is a summary of the changes, also reflected in this section above.
 
-- Merge request authors and DRIs stay as Assignees
-- Authors request a review from Reviewers when they are expected to review
-- Reviewers remove themselves after they're done reviewing/approving
-- The last approver stays as Reviewer upon merging
+- Merge request authors and DRIs stay as assignees
+- Assignees request a review from reviewer(s) when they are expected to review
+- Reviewers stay assigned for the entire duration of the merge request
+- Reviewers request attention from the assignee or other reviewer(s) after they've done reviewing, depending on who needs to take action
+- Assignees request attention from the reviewer(s) when changes are made
 
 ## Best practices
 

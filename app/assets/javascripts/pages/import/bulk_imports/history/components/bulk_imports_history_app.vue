@@ -111,7 +111,7 @@ export default {
     },
 
     getFullDestinationUrl(params) {
-      return joinPaths(gon.relative_url_root || '', this.getDestinationUrl(params));
+      return joinPaths(gon.relative_url_root || '', '/', this.getDestinationUrl(params));
     },
   },
 
