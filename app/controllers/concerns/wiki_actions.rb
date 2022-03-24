@@ -223,7 +223,7 @@ module WikiActions
 
   def page
     strong_memoize(:page) do
-      wiki.find_page(*page_params)
+      wiki.find_page(*page_params, load_content: load_content?)
     end
   end
 
@@ -309,6 +309,13 @@ module WikiActions
 
   def send_wiki_file_blob(wiki, file_blob)
     send_blob(wiki.repository, file_blob)
+  end
+
+  def load_content?
+    return false if params[:action] == 'history'
+    return false if params[:action] == 'show' && Feature.enabled?(:wiki_async_load, container, default_enabled: :yaml)
+
+    true
   end
 end
 

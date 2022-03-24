@@ -56,8 +56,11 @@ module DeprecationToolkitEnv
   # In this case, we recommend to add a silence together with an issue to patch or update
   # the dependency causing the problem.
   # See https://gitlab.com/gitlab-org/gitlab/-/commit/aea37f506bbe036378998916d374966c031bf347#note_647515736
+  #
+  # - lib/gitlab/lazy.rb: https://gitlab.com/gitlab-org/gitlab/-/issues/356367
   def self.allowed_kwarg_warning_paths
     %w[
+        lib/gitlab/lazy.rb
       ]
   end
 

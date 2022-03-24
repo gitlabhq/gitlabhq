@@ -94,7 +94,7 @@ variables:
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"
 
-  DOCS_REVIEW_APPS_DOMAIN: "178.62.207.141.nip.io"
+  DOCS_REVIEW_APPS_DOMAIN: "35.193.151.162.nip.io"
   DOCS_GITLAB_REPO_SUFFIX: "ee"
 
   REVIEW_APPS_DOMAIN: "gitlab-review.app"

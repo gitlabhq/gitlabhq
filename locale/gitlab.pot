@@ -37131,6 +37131,12 @@ msgstr ""
 msgid "The content editor may change the markdown formatting style of the document, which may not match your original markdown style."
 msgstr ""
 
+msgid "The content for this wiki page failed to load. To fix this error, reload the page."
+msgstr ""
+
+msgid "The content for this wiki page failed to render."
+msgstr ""
+
 msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
 msgstr ""
 

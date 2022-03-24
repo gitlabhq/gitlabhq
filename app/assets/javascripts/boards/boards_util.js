@@ -121,7 +121,7 @@ export function formatIssueInput(issueInput, boardConfig) {
         : issueInput?.milestoneId,
     labelIds: [...labelIds, ...(labels?.map((l) => fullLabelId(l)) || [])],
     assigneeIds: [...assigneeIds, ...(assigneeId ? [fullUserId(assigneeId)] : [])],
-    weight,
+    weight: weight > -1 ? weight : undefined,
   };
 }
 

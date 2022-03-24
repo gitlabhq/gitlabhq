@@ -293,8 +293,7 @@ in the `handle_event` method of the subscriber worker.
 
 ## Testing
 
-A publisher doesn't must care what subscribed to the event being published. The publisher's
-responsibility is to ensure that the event is published correctly.
+The publisher's responsibility is to ensure that the event is published correctly.
 
 To test that an event has been published correctly, we can use the RSpec matcher `:publish_event`:
 
