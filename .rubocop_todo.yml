@@ -125,11 +125,6 @@ Lint/StructNewOverride:
 Lint/UselessMethodDefinition:
   Enabled: false
 
-# Offense count: 5
-# Configuration parameters: IgnoredMethods.
-Metrics/AbcSize:
-  Max: 61
-
 # Offense count: 13
 # Configuration parameters: IgnoredMethods.
 Metrics/CyclomaticComplexity:

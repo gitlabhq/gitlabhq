@@ -4,18 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Backup::Repositories do
   let(:progress) { spy(:stdout) }
-  let(:parallel_enqueue) { true }
-  let(:strategy) { spy(:strategy, parallel_enqueue?: parallel_enqueue) }
-  let(:max_concurrency) { 1 }
-  let(:max_storage_concurrency) { 1 }
+  let(:strategy) { spy(:strategy) }
   let(:destination) { 'repositories' }
 
   subject do
     described_class.new(
       progress,
-      strategy: strategy,
-      max_concurrency: max_concurrency,
-      max_storage_concurrency: max_storage_concurrency
+      strategy: strategy
     )
   end
 
@@ -51,139 +46,30 @@ RSpec.describe Backup::Repositories do
       it_behaves_like 'creates repository bundles'
     end
 
-    context 'no concurrency' do
-      it 'creates the expected number of threads' do
-        expect(Thread).not_to receive(:new)
+    describe 'command failure' do
+      it 'enqueue_project raises an error' do
+        allow(strategy).to receive(:enqueue).with(anything, Gitlab::GlRepository::PROJECT).and_raise(IOError)
 
-        expect(strategy).to receive(:start).with(:create, destination)
-        projects.each do |project|
-          expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-        end
-        expect(strategy).to receive(:finish!)
-
-        subject.dump(destination)
+        expect { subject.dump(destination) }.to raise_error(IOError)
       end
 
-      describe 'command failure' do
-        it 'enqueue_project raises an error' do
-          allow(strategy).to receive(:enqueue).with(anything, Gitlab::GlRepository::PROJECT).and_raise(IOError)
+      it 'project query raises an error' do
+        allow(Project).to receive_message_chain(:includes, :find_each).and_raise(ActiveRecord::StatementTimeout)
 
-          expect { subject.dump(destination) }.to raise_error(IOError)
-        end
-
-        it 'project query raises an error' do
-          allow(Project).to receive_message_chain(:includes, :find_each).and_raise(ActiveRecord::StatementTimeout)
-
-          expect { subject.dump(destination) }.to raise_error(ActiveRecord::StatementTimeout)
-        end
-      end
-
-      it 'avoids N+1 database queries' do
-        control_count = ActiveRecord::QueryRecorder.new do
-          subject.dump(destination)
-        end.count
-
-        create_list(:project, 2, :repository)
-
-        expect do
-          subject.dump(destination)
-        end.not_to exceed_query_limit(control_count)
+        expect { subject.dump(destination) }.to raise_error(ActiveRecord::StatementTimeout)
       end
     end
 
-    context 'concurrency with a strategy without parallel enqueueing support' do
-      let(:parallel_enqueue) { false }
-      let(:max_concurrency) { 2 }
-      let(:max_storage_concurrency) { 2 }
-
-      it 'enqueues all projects sequentially' do
-        expect(Thread).not_to receive(:new)
-
-        expect(strategy).to receive(:start).with(:create, destination)
-        projects.each do |project|
-          expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-        end
-        expect(strategy).to receive(:finish!)
-
+    it 'avoids N+1 database queries' do
+      control_count = ActiveRecord::QueryRecorder.new do
         subject.dump(destination)
-      end
-    end
+      end.count
 
-    [4, 10].each do |max_storage_concurrency|
-      context "max_storage_concurrency #{max_storage_concurrency}", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/241701' do
-        let(:storage_keys) { %w[default test_second_storage] }
-        let(:max_storage_concurrency) { max_storage_concurrency }
+      create_list(:project, 2, :repository)
 
-        before do
-          allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(storage_keys)
-        end
-
-        it 'creates the expected number of threads' do
-          expect(Thread).to receive(:new)
-            .exactly(storage_keys.length * (max_storage_concurrency + 1)).times
-            .and_call_original
-
-          expect(strategy).to receive(:start).with(:create, destination)
-          projects.each do |project|
-            expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-          end
-          expect(strategy).to receive(:finish!)
-
-          subject.dump(destination)
-        end
-
-        context 'with extra max concurrency' do
-          let(:max_concurrency) { 3 }
-
-          it 'creates the expected number of threads' do
-            expect(Thread).to receive(:new)
-              .exactly(storage_keys.length * (max_storage_concurrency + 1)).times
-              .and_call_original
-
-            expect(strategy).to receive(:start).with(:create, destination)
-            projects.each do |project|
-              expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-            end
-            expect(strategy).to receive(:finish!)
-
-            subject.dump(destination)
-          end
-        end
-
-        describe 'command failure' do
-          it 'enqueue_project raises an error' do
-            allow(strategy).to receive(:enqueue).and_raise(IOError)
-
-            expect { subject.dump(destination) }.to raise_error(IOError)
-          end
-
-          it 'project query raises an error' do
-            allow(Project).to receive_message_chain(:for_repository_storage, :includes, :find_each).and_raise(ActiveRecord::StatementTimeout)
-
-            expect { subject.dump(destination) }.to raise_error(ActiveRecord::StatementTimeout)
-          end
-
-          context 'misconfigured storages' do
-            let(:storage_keys) { %w[test_second_storage] }
-
-            it 'raises an error' do
-              expect { subject.dump(destination) }.to raise_error(Backup::Error, 'repositories.storages in gitlab.yml is misconfigured')
-            end
-          end
-        end
-
-        it 'avoids N+1 database queries' do
-          control_count = ActiveRecord::QueryRecorder.new do
-            subject.dump(destination)
-          end.count
-
-          create_list(:project, 2, :repository)
-
-          expect do
-            subject.dump(destination)
-          end.not_to exceed_query_limit(control_count)
-        end
-      end
+      expect do
+        subject.dump(destination)
+      end.not_to exceed_query_limit(control_count)
     end
   end
 

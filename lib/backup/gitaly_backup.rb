@@ -68,10 +68,6 @@ module Backup
       schedule_backup_job(repository, always_create: repo_type.project?)
     end
 
-    def parallel_enqueue?
-      false
-    end
-
     private
 
     # Schedule a new backup job through a non-blocking JSON based pipe protocol

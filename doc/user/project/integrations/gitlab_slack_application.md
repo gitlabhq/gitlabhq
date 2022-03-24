@@ -25,8 +25,6 @@ the [Slack App Directory](https://slack.com/apps).
 Clicking install takes you to the [GitLab Slack application landing page](https://gitlab.com/-/profile/slack/edit)
 where you can select a project to enable the GitLab Slack application for.
 
-![GitLab Slack application landing page](img/gitlab_slack_app_landing_page.png)
-
 ## Configuration
 
 Alternatively, you can configure the Slack application with a project's

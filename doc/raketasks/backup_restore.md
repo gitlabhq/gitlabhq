@@ -1813,12 +1813,7 @@ If this happens, examine the following:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333034) in GitLab 14.2.
 > - [Deployed behind a feature flag](../user/feature_flags.md), enabled by default.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-or-enable-gitaly-backup).
-
-There can be
-[risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/333034) in GitLab 14.10. [Feature flag `gitaly_backup`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83254) removed.
 
 The `gitaly-backup` binary is used by the backup Rake task to create and restore repository backups from Gitaly.
 `gitaly-backup` replaces the previous backup method that directly calls RPCs on Gitaly from GitLab.
@@ -1835,25 +1830,6 @@ If you have a specific reason to change the path, it can be configured in Omnibu
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect
-
-#### Disable or enable `gitaly-backup`
-
-`gitaly-backup` is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:gitaly_backup)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:gitaly_backup)
-```
 
 ### Incremental repository backups
 
