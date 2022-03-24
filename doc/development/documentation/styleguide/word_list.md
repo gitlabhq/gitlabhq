@@ -261,10 +261,16 @@ Do not use **Developer permissions**. A user who is assigned the Developer role 
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
-
 ## disallow
 
 Use **prevent** instead of **disallow**. ([Vale](../testing.md#vale) rule: [`Substitutions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Substitutions.yml))
+
+## downgrade
+
+To be more upbeat and precise, do not use **downgrade**. Focus instead on the action the user is taking.
+
+- For changing to earlier GitLab versions, use [**roll back**](#roll-back).
+- For changing to lower GitLab tiers, use **change the subscription tier**.
 
 ## dropdown list
 
@@ -748,6 +754,12 @@ Do not use **roles** and [**permissions**](#permissions) interchangeably. Each u
 
 Roles are not the same as [**access levels**](#access-level).
 
+## roll back
+
+Use **roll back** for changing a GitLab version to an earlier one.
+
+Do not use **roll back** for licensing or subscriptions. Use **change the subscription tier** instead.
+
 ## runner, runners
 
 Use lowercase for **runners**. These are the agents that run CI/CD jobs. See also [GitLab Runner](#gitlab-runner) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
@@ -933,6 +945,33 @@ Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) 
 ## type
 
 Do not use **type** if you can avoid it. Use **enter** instead.
+
+## update
+
+Use **update** for installing a newer **patch** version of the software only. For example:
+
+- Update GitLab from 14.9 to 14.9.1.
+
+Do not use **update** for any other case. Instead, use **upgrade**.
+
+## upgrade
+
+Use **upgrade** for:
+
+- Choosing a higher subscription tier (Premium or Ultimate).
+- Installing a newer **major** (13.0, 14.0) or **minor** (13.8, 14.5) version of GitLab.
+
+For example:
+
+- Upgrade to GitLab Ultimate.
+- Upgrade GitLab from 14.0 to 14.1.
+- Upgrade GitLab from 14.0 to 15.0.
+
+Use caution with the phrase **Upgrade GitLab** without any other text.
+Ensure the surrounding text clarifies whether
+you're talking about the product version or the subscription tier.
+
+See also [downgrade](#downgrade) and [roll back](#roll-back).
 
 ## useful
 

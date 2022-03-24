@@ -16,8 +16,12 @@ class Suggestion < ApplicationRecord
     note.latest_diff_file
   end
 
-  def project
+  def source_project
     noteable.source_project
+  end
+
+  def target_project
+    noteable.target_project
   end
 
   def branch

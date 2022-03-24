@@ -3,7 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Suggestions::CommitMessage do
-  def create_suggestion(file_path, new_line, to_content)
+  include ProjectForksHelper
+  using RSpec::Parameterized::TableSyntax
+
+  def create_suggestion(merge_request, file_path, new_line, to_content)
     position = Gitlab::Diff::Position.new(old_path: file_path,
                                           new_path: file_path,
                                           old_line: nil,
@@ -29,69 +32,111 @@ RSpec.describe Gitlab::Suggestions::CommitMessage do
     create(:project, :repository, path: 'project-1', name: 'Project_1')
   end
 
-  let_it_be(:merge_request) do
+  let_it_be(:forked_project) { fork_project(project, nil, repository: true) }
+
+  let_it_be(:merge_request_same_project) do
     create(:merge_request, source_project: project, target_project: project)
   end
 
-  let_it_be(:suggestion_set) do
-    suggestion1 = create_suggestion('files/ruby/popen.rb', 9, '*** SUGGESTION 1 ***')
-    suggestion2 = create_suggestion('files/ruby/popen.rb', 13, '*** SUGGESTION 2 ***')
-    suggestion3 = create_suggestion('files/ruby/regex.rb', 22, '*** SUGGESTION 3 ***')
+  let_it_be(:merge_request_from_fork) do
+    create(:merge_request, source_project: forked_project, target_project: project)
+  end
+
+  let_it_be(:suggestion_set_same_project) do
+    suggestion1 = create_suggestion(merge_request_same_project, 'files/ruby/popen.rb', 9, '*** SUGGESTION 1 ***')
+    suggestion2 = create_suggestion(merge_request_same_project, 'files/ruby/popen.rb', 13, '*** SUGGESTION 2 ***')
+    suggestion3 = create_suggestion(merge_request_same_project, 'files/ruby/regex.rb', 22, '*** SUGGESTION 3 ***')
+
+    Gitlab::Suggestions::SuggestionSet.new([suggestion1, suggestion2, suggestion3])
+  end
+
+  let_it_be(:suggestion_set_forked_project) do
+    suggestion1 = create_suggestion(merge_request_from_fork, 'files/ruby/popen.rb', 9, '*** SUGGESTION 1 ***')
+    suggestion2 = create_suggestion(merge_request_from_fork, 'files/ruby/popen.rb', 13, '*** SUGGESTION 2 ***')
+    suggestion3 = create_suggestion(merge_request_from_fork, 'files/ruby/regex.rb', 22, '*** SUGGESTION 3 ***')
 
     Gitlab::Suggestions::SuggestionSet.new([suggestion1, suggestion2, suggestion3])
   end
 
   describe '#message' do
-    before do
-      # Updating the suggestion_commit_message on a project shared across specs
-      # avoids recreating the repository for each spec.
-      project.update!(suggestion_commit_message: message)
-    end
+    where(:suggestion_set) { [ref(:suggestion_set_same_project), ref(:suggestion_set_forked_project)] }
 
-    context 'when a custom commit message is not specified' do
-      let(:expected_message) { 'Apply 3 suggestion(s) to 2 file(s)' }
+    with_them do
+      before do
+        # Updating the suggestion_commit_message on a project shared across specs
+        # avoids recreating the repository for each spec.
+        project.update!(suggestion_commit_message: message)
+        forked_project.update!(suggestion_commit_message: fork_message)
+      end
 
-      context 'and is nil' do
-        let(:message) { nil }
+      let(:fork_message) { nil }
 
-        it 'uses the default commit message' do
-          expect(described_class
-                   .new(user, suggestion_set)
-                   .message).to eq(expected_message)
+      context 'when a custom commit message is not specified' do
+        let(:expected_message) { 'Apply 3 suggestion(s) to 2 file(s)' }
+
+        context 'and is nil' do
+          let(:message) { nil }
+
+          it 'uses the default commit message' do
+            expect(described_class
+                    .new(user, suggestion_set)
+                    .message).to eq(expected_message)
+          end
+        end
+
+        context 'and is an empty string' do
+          let(:message) { '' }
+
+          it 'uses the default commit message' do
+            expect(described_class
+                    .new(user, suggestion_set)
+                    .message).to eq(expected_message)
+          end
+        end
+
+        context 'when a custom commit message is specified for forked project' do
+          let(:message) { nil }
+          let(:fork_message) { "I'm a sad message that will not be used :(" }
+
+          it 'uses the default commit message' do
+            expect(described_class
+                     .new(user, suggestion_set)
+                     .message).to eq(expected_message)
+          end
         end
       end
 
-      context 'and is an empty string' do
-        let(:message) { '' }
+      context 'when a custom commit message is specified' do
+        let(:message) { "i'm a project message. a user's custom message takes precedence over me :(" }
+        let(:custom_message) { "hello there! i'm a cool custom commit message." }
 
-        it 'uses the default commit message' do
-          expect(described_class
-                   .new(user, suggestion_set)
-                   .message).to eq(expected_message)
+        it 'shows the custom commit message' do
+          expect(Gitlab::Suggestions::CommitMessage
+                  .new(user, suggestion_set, custom_message)
+                  .message).to eq(custom_message)
         end
       end
-    end
 
-    context 'when a custom commit message is specified' do
-      let(:message) { "i'm a project message. a user's custom message takes precedence over me :(" }
-      let(:custom_message) { "hello there! i'm a cool custom commit message." }
+      context 'is specified and includes all placeholders' do
+        let(:message) do
+          '*** %{branch_name} %{files_count} %{file_paths} %{project_name} %{project_path} %{user_full_name} %{username} %{suggestions_count} ***'
+        end
 
-      it 'shows the custom commit message' do
-        expect(Gitlab::Suggestions::CommitMessage
-                 .new(user, suggestion_set, custom_message)
-                 .message).to eq(custom_message)
-      end
-    end
+        it 'generates a custom commit message' do
+          expect(Gitlab::Suggestions::CommitMessage
+                  .new(user, suggestion_set)
+                  .message).to eq('*** master 2 files/ruby/popen.rb, files/ruby/regex.rb Project_1 project-1 Test User test.user 3 ***')
+        end
 
-    context 'is specified and includes all placeholders' do
-      let(:message) do
-        '*** %{branch_name} %{files_count} %{file_paths} %{project_name} %{project_path} %{user_full_name} %{username} %{suggestions_count} ***'
-      end
+        context 'when a custom commit message is specified for forked project' do
+          let(:fork_message) { "I'm a sad message that will not be used :(" }
 
-      it 'generates a custom commit message' do
-        expect(Gitlab::Suggestions::CommitMessage
-                 .new(user, suggestion_set)
-                 .message).to eq('*** master 2 files/ruby/popen.rb, files/ruby/regex.rb Project_1 project-1 Test User test.user 3 ***')
+          it 'uses the target project commit message' do
+            expect(Gitlab::Suggestions::CommitMessage
+                    .new(user, suggestion_set)
+                    .message).to eq('*** master 2 files/ruby/popen.rb, files/ruby/regex.rb Project_1 project-1 Test User test.user 3 ***')
+          end
+        end
       end
     end
   end

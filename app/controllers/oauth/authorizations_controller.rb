@@ -37,9 +37,6 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   # limit scopes when signing in with GitLab
   def downgrade_scopes!
-    return unless Feature.enabled?(:omniauth_login_minimal_scopes, current_user,
-                                   default_enabled: :yaml)
-
     auth_type = params.delete('gl_auth_type')
     return unless auth_type == 'login'
 

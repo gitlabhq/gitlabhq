@@ -54,7 +54,7 @@ module Suggestions
         author_email: author&.email
       }
 
-      ::Files::MultiService.new(suggestion_set.project, current_user, params)
+      ::Files::MultiService.new(suggestion_set.source_project, current_user, params)
     end
 
     def commit_message

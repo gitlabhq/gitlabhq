@@ -9,8 +9,12 @@ module Gitlab
         @suggestions = suggestions
       end
 
-      def project
-        first_suggestion.project
+      def source_project
+        first_suggestion.source_project
+      end
+
+      def target_project
+        first_suggestion.target_project
       end
 
       def branch

@@ -29617,6 +29617,8 @@ CREATE INDEX tmp_index_issues_on_issue_type_and_id ON issues USING btree (issue_
 
 CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (state = 2);
 
+CREATE INDEX tmp_index_merge_requests_draft_and_status_leaky_regex ON merge_requests USING btree (id) WHERE ((draft = true) AND (state_id = 1) AND ((title)::text ~* '^\[draft\]|\(draft\)|draft:|draft|\[WIP\]|WIP:|WIP'::text) AND ((title)::text !~* '^(\[draft\]|\(draft\)|draft:|draft|\[WIP\]|WIP:|WIP)'::text));
+
 CREATE INDEX tmp_index_namespaces_empty_traversal_ids_with_child_namespaces ON namespaces USING btree (id) WHERE ((parent_id IS NOT NULL) AND (traversal_ids = '{}'::integer[]));
 
 CREATE INDEX tmp_index_namespaces_empty_traversal_ids_with_root_namespaces ON namespaces USING btree (id) WHERE ((parent_id IS NULL) AND (traversal_ids = '{}'::integer[]));

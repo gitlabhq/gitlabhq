@@ -16,11 +16,11 @@ SPECIALIZATIONS = {
 labels_to_add = helper.changes_by_category.each_with_object([]) do |(category, _changes), memo|
   label = SPECIALIZATIONS[category]
   next unless label
-  next if gitlab.mr_labels.include?(label)
+  next if helper.mr_labels.include?(label)
 
   # Don't override already-set scoped labels.
   label_scope = label.split('::')[0...-1].join('::')
-  next if !label_scope.empty? && gitlab.mr_labels.any? { |mr_label| mr_label.start_with?(label_scope) }
+  next if !label_scope.empty? && helper.has_scoped_label_with_scope?(label_scope)
 
   memo << label
 end
