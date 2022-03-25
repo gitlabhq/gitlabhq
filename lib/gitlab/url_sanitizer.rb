@@ -71,7 +71,10 @@ module Gitlab
         url.sub!("#{raw_credentials}@", '')
 
         user, _, password = raw_credentials.partition(':')
-        @credentials ||= { user: user.presence, password: password.presence }
+
+        @credentials ||= {}
+        @credentials[:user] = user.presence if @credentials[:user].blank?
+        @credentials[:password] = password.presence if @credentials[:password].blank?
       end
 
       url = Addressable::URI.parse(url)

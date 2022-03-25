@@ -12,14 +12,21 @@ class Import::BitbucketController < Import::BaseController
   rescue_from Bitbucket::Error::Unauthorized, with: :bitbucket_unauthorized
 
   def callback
-    response = oauth_client.auth_code.get_token(params[:code], redirect_uri: users_import_bitbucket_callback_url)
+    auth_state = session[:bitbucket_auth_state]
+    session[:bitbucket_auth_state] = nil
 
-    session[:bitbucket_token]         = response.token
-    session[:bitbucket_expires_at]    = response.expires_at
-    session[:bitbucket_expires_in]    = response.expires_in
-    session[:bitbucket_refresh_token] = response.refresh_token
+    if auth_state.blank? || !ActiveSupport::SecurityUtils.secure_compare(auth_state, params[:state])
+      go_to_bitbucket_for_permissions
+    else
+      response = oauth_client.auth_code.get_token(params[:code], redirect_uri: users_import_bitbucket_callback_url)
 
-    redirect_to status_import_bitbucket_url
+      session[:bitbucket_token]         = response.token
+      session[:bitbucket_expires_at]    = response.expires_at
+      session[:bitbucket_expires_in]    = response.expires_in
+      session[:bitbucket_refresh_token] = response.refresh_token
+
+      redirect_to status_import_bitbucket_url
+    end
   end
 
   def status
@@ -113,7 +120,9 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def go_to_bitbucket_for_permissions
-    redirect_to oauth_client.auth_code.authorize_url(redirect_uri: users_import_bitbucket_callback_url)
+    state = SecureRandom.base64(64)
+    session[:bitbucket_auth_state] = state
+    redirect_to oauth_client.auth_code.authorize_url(redirect_uri: users_import_bitbucket_callback_url, state: state)
   end
 
   def bitbucket_unauthorized(exception)

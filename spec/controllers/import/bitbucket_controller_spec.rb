@@ -26,31 +26,55 @@ RSpec.describe Import::BitbucketController do
       session[:oauth_request_token] = {}
     end
 
-    it "updates access token" do
-      expires_at = Time.current + 1.day
-      expires_in = 1.day
-      access_token = double(token: token,
-                            secret: secret,
-                            expires_at: expires_at,
-                            expires_in: expires_in,
-                            refresh_token: refresh_token)
-      allow_any_instance_of(OAuth2::Client)
-        .to receive(:get_token)
-        .with(hash_including(
-                'grant_type' => 'authorization_code',
-                'code' => code,
-                redirect_uri: users_import_bitbucket_callback_url),
-              {})
-        .and_return(access_token)
-      stub_omniauth_provider('bitbucket')
+    context "when auth state param is invalid" do
+      let(:random_key) { "pure_random"  }
+      let(:external_bitbucket_auth_url) { "http://fake.bitbucket.host/url" }
 
-      get :callback, params: { code: code }
+      it "redirects to external auth url" do
+        allow(SecureRandom).to receive(:base64).and_return(random_key)
+        allow_next_instance_of(OAuth2::Client) do |client|
+          allow(client).to receive_message_chain(:auth_code, :authorize_url)
+            .with(redirect_uri: users_import_bitbucket_callback_url, state: random_key)
+            .and_return(external_bitbucket_auth_url)
+        end
 
-      expect(session[:bitbucket_token]).to eq(token)
-      expect(session[:bitbucket_refresh_token]).to eq(refresh_token)
-      expect(session[:bitbucket_expires_at]).to eq(expires_at)
-      expect(session[:bitbucket_expires_in]).to eq(expires_in)
-      expect(controller).to redirect_to(status_import_bitbucket_url)
+        get :callback, params: { code: code, state: "invalid-token" }
+
+        expect(controller).to redirect_to(external_bitbucket_auth_url)
+      end
+    end
+
+    context "when auth state param is valid" do
+      before do
+        session[:bitbucket_auth_state] = 'state'
+      end
+
+      it "updates access token" do
+        expires_at = Time.current + 1.day
+        expires_in = 1.day
+        access_token = double(token: token,
+                              secret: secret,
+                              expires_at: expires_at,
+                              expires_in: expires_in,
+                              refresh_token: refresh_token)
+        allow_any_instance_of(OAuth2::Client)
+          .to receive(:get_token)
+          .with(hash_including(
+                  'grant_type' => 'authorization_code',
+                  'code' => code,
+                  redirect_uri: users_import_bitbucket_callback_url),
+                {})
+          .and_return(access_token)
+        stub_omniauth_provider('bitbucket')
+
+        get :callback, params: { code: code, state: 'state' }
+
+        expect(session[:bitbucket_token]).to eq(token)
+        expect(session[:bitbucket_refresh_token]).to eq(refresh_token)
+        expect(session[:bitbucket_expires_at]).to eq(expires_at)
+        expect(session[:bitbucket_expires_in]).to eq(expires_in)
+        expect(controller).to redirect_to(status_import_bitbucket_url)
+      end
     end
   end
 
@@ -59,46 +83,68 @@ RSpec.describe Import::BitbucketController do
       @repo = double(name: 'vim', slug: 'vim', owner: 'asd', full_name: 'asd/vim', clone_url: 'http://test.host/demo/url.git', 'valid?' => true)
       @invalid_repo = double(name: 'mercurialrepo', slug: 'mercurialrepo', owner: 'asd', full_name: 'asd/mercurialrepo', clone_url: 'http://test.host/demo/mercurialrepo.git', 'valid?' => false)
       allow(controller).to receive(:provider_url).and_return('http://demobitbucket.org')
-
-      assign_session_tokens
     end
 
-    it_behaves_like 'import controller status' do
-      before do
-        allow(controller).to receive(:provider_url).and_return('http://demobitbucket.org')
-      end
+    context "when token does not exists" do
+      let(:random_key) { "pure_random"  }
+      let(:external_bitbucket_auth_url) { "http://fake.bitbucket.host/url" }
 
-      let(:repo) { @repo }
-      let(:repo_id) { @repo.full_name }
-      let(:import_source) { @repo.full_name }
-      let(:provider_name) { 'bitbucket' }
-      let(:client_repos_field) { :repos }
-    end
-
-    it 'returns invalid repos' do
-      allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo, @invalid_repo])
-
-      get :status, format: :json
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['incompatible_repos'].length).to eq(1)
-      expect(json_response.dig("incompatible_repos", 0, "id")).to eq(@invalid_repo.full_name)
-      expect(json_response['provider_repos'].length).to eq(1)
-      expect(json_response.dig("provider_repos", 0, "id")).to eq(@repo.full_name)
-    end
-
-    context 'when filtering' do
-      let(:filter) { '<html>test</html>' }
-      let(:expected_filter) { 'test' }
-
-      subject { get :status, params: { filter: filter }, as: :json }
-
-      it 'passes sanitized filter param to bitbucket client' do
-        expect_next_instance_of(Bitbucket::Client) do |client|
-          expect(client).to receive(:repos).with(filter: expected_filter).and_return([@repo])
+      it 'redirects to authorize url with state included' do
+        allow(SecureRandom).to receive(:base64).and_return(random_key)
+        allow_next_instance_of(OAuth2::Client) do |client|
+          allow(client).to receive_message_chain(:auth_code, :authorize_url)
+            .with(redirect_uri: users_import_bitbucket_callback_url, state: random_key)
+            .and_return(external_bitbucket_auth_url)
         end
 
-        subject
+        get :status, format: :json
+
+        expect(controller).to redirect_to(external_bitbucket_auth_url)
+      end
+    end
+
+    context "when token is valid" do
+      before do
+        assign_session_tokens
+      end
+
+      it_behaves_like 'import controller status' do
+        before do
+          allow(controller).to receive(:provider_url).and_return('http://demobitbucket.org')
+        end
+
+        let(:repo) { @repo }
+        let(:repo_id) { @repo.full_name }
+        let(:import_source) { @repo.full_name }
+        let(:provider_name) { 'bitbucket' }
+        let(:client_repos_field) { :repos }
+      end
+
+      it 'returns invalid repos' do
+        allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo, @invalid_repo])
+
+        get :status, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['incompatible_repos'].length).to eq(1)
+        expect(json_response.dig("incompatible_repos", 0, "id")).to eq(@invalid_repo.full_name)
+        expect(json_response['provider_repos'].length).to eq(1)
+        expect(json_response.dig("provider_repos", 0, "id")).to eq(@repo.full_name)
+      end
+
+      context 'when filtering' do
+        let(:filter) { '<html>test</html>' }
+        let(:expected_filter) { 'test' }
+
+        subject { get :status, params: { filter: filter }, as: :json }
+
+        it 'passes sanitized filter param to bitbucket client' do
+          expect_next_instance_of(Bitbucket::Client) do |client|
+            expect(client).to receive(:repos).with(filter: expected_filter).and_return([@repo])
+          end
+
+          subject
+        end
       end
     end
   end
