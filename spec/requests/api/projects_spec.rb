@@ -3143,6 +3143,29 @@ RSpec.describe API::Projects do
       project2.add_developer(project2_user)
     end
 
+    it 'records the query', :request_store, :use_sql_query_cache do
+      post api("/projects/#{project.id}/import_project_members/#{project2.id}", user)
+
+      control_project = create(:project)
+      control_project.add_maintainer(user)
+      control_project.add_developer(create(:user))
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post api("/projects/#{project.id}/import_project_members/#{control_project.id}", user)
+      end
+
+      measure_project = create(:project)
+      measure_project.add_maintainer(user)
+      measure_project.add_developer(create(:user))
+      measure_project.add_developer(create(:user)) # make this 2nd one to find any n+1
+
+      unresolved_n_plus_ones = 21 # 21 queries added per member
+
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{measure_project.id}", user)
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+    end
+
     it 'returns 200 when it successfully imports members from another project' do
       expect do
         post api("/projects/#{project.id}/import_project_members/#{project2.id}", user)

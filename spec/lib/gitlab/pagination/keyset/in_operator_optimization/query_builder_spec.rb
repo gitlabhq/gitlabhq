@@ -239,7 +239,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
   end
 
   it 'raises error when unsupported scope is passed' do
-    scope = Issue.order(Issue.arel_table[:id].lower.desc)
+    scope = Issue.order(Arel::Nodes::NamedFunction.new('UPPER', [Issue.arel_table[:id]]))
 
     options = {
       scope: scope,

@@ -310,6 +310,76 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       end
     end
 
+    context 'NULLS order' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:issue1) { create(:issue, relative_position: nil) }
+      let_it_be(:issue2) { create(:issue, relative_position: 100) }
+      let_it_be(:issue3) { create(:issue, relative_position: 200) }
+      let_it_be(:issue4) { create(:issue, relative_position: nil) }
+      let_it_be(:issue5) { create(:issue, relative_position: 300) }
+
+      context 'when ascending NULLS LAST (ties broken by id DESC implicitly)' do
+        let(:ascending_nodes) { [issue2, issue3, issue5, issue4, issue1] }
+
+        where(:nodes) do
+          [
+            lazy { Issue.order(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')) },
+            lazy { Issue.order(Issue.arel_table[:relative_position].asc.nulls_last) }
+          ]
+        end
+
+        with_them do
+          it_behaves_like 'nodes are in ascending order'
+        end
+      end
+
+      context 'when descending NULLS LAST (ties broken by id DESC implicitly)' do
+        let(:descending_nodes) { [issue5, issue3, issue2, issue4, issue1] }
+
+        where(:nodes) do
+          [
+            lazy { Issue.order(::Gitlab::Database.nulls_last_order('relative_position', 'DESC')) },
+            lazy { Issue.order(Issue.arel_table[:relative_position].desc.nulls_last) }
+]
+        end
+
+        with_them do
+          it_behaves_like 'nodes are in descending order'
+        end
+      end
+
+      context 'when ascending NULLS FIRST with a tie breaker' do
+        let(:ascending_nodes) { [issue1, issue4, issue2, issue3, issue5] }
+
+        where(:nodes) do
+          [
+            lazy { Issue.order(::Gitlab::Database.nulls_first_order('relative_position', 'ASC')).order(id: :asc) },
+            lazy { Issue.order(Issue.arel_table[:relative_position].asc.nulls_first).order(id: :asc) }
+]
+        end
+
+        with_them do
+          it_behaves_like 'nodes are in ascending order'
+        end
+      end
+
+      context 'when descending NULLS FIRST with a tie breaker' do
+        let(:descending_nodes) { [issue1, issue4, issue5, issue3, issue2] }
+
+        where(:nodes) do
+          [
+            lazy { Issue.order(::Gitlab::Database.nulls_first_order('relative_position', 'DESC')).order(id: :asc) },
+            lazy { Issue.order(Issue.arel_table[:relative_position].desc.nulls_first).order(id: :asc) }
+]
+        end
+
+        with_them do
+          it_behaves_like 'nodes are in descending order'
+        end
+      end
+    end
+
     context 'when ordering by similarity' do
       let!(:project1) { create(:project, name: 'test') }
       let!(:project2) { create(:project, name: 'testing') }

@@ -611,7 +611,8 @@ module API
       params do
         requires :project_id, type: Integer, desc: 'The ID of the source project to import the members from.'
       end
-      post ":id/import_project_members/:project_id", feature_category: :experimentation_expansion do
+      post ":id/import_project_members/:project_id", feature_category: :projects do
+        ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/355916')
         authorize! :admin_project, user_project
 
         source_project = Project.find_by_id(params[:project_id])

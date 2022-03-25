@@ -441,6 +441,47 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       end
     end
 
+    context 'when ordering by the named function LOWER' do
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'title',
+            column_expression: Arel::Nodes::NamedFunction.new("LOWER", [table['title'].desc]),
+            order_expression: table['title'].lower.desc,
+            nullable: :not_nullable,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id',
+            column_expression: table['id'],
+            order_expression: table['id'].desc,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
+      end
+
+      let(:table_data) do
+        <<-SQL
+      VALUES (1,  'A')
+        SQL
+      end
+
+      let(:query) do
+        <<-SQL
+          SELECT id, title
+          FROM (#{table_data}) my_table (id, title)
+          ORDER BY #{order};
+        SQL
+      end
+
+      subject { run_query(query) }
+
+      it "uses downcased value for encoding and decoding a cursor" do
+        expect(order.cursor_attributes_for_node(subject.first)['title']).to eq("a")
+      end
+    end
+
     context 'when the passed cursor values do not match with the order definition' do
       let(:order) do
         Gitlab::Pagination::Keyset::Order.build([

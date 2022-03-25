@@ -256,11 +256,6 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         end
       end
 
-      # rubocop: disable RSpec/EmptyExampleGroup
-      context 'when ordering uses LOWER' do
-      end
-      # rubocop: enable RSpec/EmptyExampleGroup
-
       context 'when ordering by similarity' do
         let_it_be(:project1) { create(:project, name: 'test') }
         let_it_be(:project2) { create(:project, name: 'testing') }

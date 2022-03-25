@@ -99,6 +99,8 @@ module Gitlab
                                                        field_value.strftime('%Y-%m-%d %H:%M:%S.%N %Z')
                                                      elsif field_value.nil?
                                                        nil
+                                                     elsif lower_named_function?(column_definition)
+                                                       field_value.downcase
                                                      else
                                                        field_value.to_s
                                                      end
@@ -183,6 +185,10 @@ module Gitlab
         alias_method :to_sql, :to_s
 
         private
+
+        def lower_named_function?(column_definition)
+          column_definition.column_expression.is_a?(Arel::Nodes::NamedFunction) && column_definition.column_expression.name&.downcase == 'lower'
+        end
 
         def composite_row_comparison_possible?
           !column_definitions.one? &&

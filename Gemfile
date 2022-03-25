@@ -389,7 +389,7 @@ group :development, :test do
   gem 'knapsack', '~> 1.21.1'
   gem 'crystalball', '~> 0.7.0', require: false
 
-  gem 'simple_po_parser', '~> 1.1.2', require: false
+  gem 'simple_po_parser', '~> 1.1.6', require: false
 
   gem 'timecop', '~> 0.9.1'
 
