@@ -3819,6 +3819,9 @@ msgstr ""
 msgid "An error occurred previewing the blob"
 msgstr ""
 
+msgid "An error occurred when loading the user verification challenge. Refresh to try again."
+msgstr ""
+
 msgid "An error occurred when updating the title"
 msgstr ""
 
@@ -9174,6 +9177,9 @@ msgid "CompareRevisions|View open merge request"
 msgstr ""
 
 msgid "Complete"
+msgstr ""
+
+msgid "Complete verification to sign in."
 msgstr ""
 
 msgid "Completed"
@@ -39799,6 +39805,9 @@ msgid "Unable to update this epic at this time."
 msgstr ""
 
 msgid "Unable to update this issue at this time."
+msgstr ""
+
+msgid "Unable to verify the user"
 msgstr ""
 
 msgid "Unapprove a merge request"
