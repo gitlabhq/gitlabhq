@@ -1274,7 +1274,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       subject { described_class.ready_for_import }
 
       before do
-        stub_application_setting(container_registry_import_target_plan: root_group.actual_plan_name)
+        stub_application_setting(container_registry_import_target_plan: valid_container_repository.migration_plan)
       end
 
       it 'works' do

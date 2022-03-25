@@ -1,0 +1,19 @@
+- name: Quarantine E2E tests in Nightly that fail consistently
+  plugin:
+    name: gitlab
+    args:
+      threshold: 3
+      private_token: $QA_GITLAB_CI_TOKEN
+      project_id: gitlab-org/quality/nightly # https://gitlab.com/gitlab-org/quality/nightly/
+      target_project: gitlab-org/gitlab
+      failure_issue_labels: QA,Quality,found:nightly
+      failure_issue_prefix: "Failure in "
+      pwd: qa
+      timeout: 30
+      ref: master
+      environment:
+        name: nightly
+        pattern: 'pipeline: :nightly'
+      job_pattern: '^((?!quarantine).)*$'
+  actions:
+    - quarantine

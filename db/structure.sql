@@ -26472,6 +26472,8 @@ CREATE INDEX idx_container_repos_on_exp_cleanup_status_project_id_start_date ON 
 
 CREATE INDEX idx_container_repos_on_import_started_at_when_importing ON container_repositories USING btree (migration_import_started_at) WHERE (migration_state = 'importing'::text);
 
+CREATE INDEX idx_container_repos_on_migration_state_migration_plan_created ON container_repositories USING btree (migration_state, migration_plan, created_at);
+
 CREATE INDEX idx_container_repos_on_pre_import_done_at_when_pre_import_done ON container_repositories USING btree (migration_pre_import_done_at) WHERE (migration_state = 'pre_import_done'::text);
 
 CREATE INDEX idx_container_repos_on_pre_import_started_at_when_pre_importing ON container_repositories USING btree (migration_pre_import_started_at) WHERE (migration_state = 'pre_importing'::text);

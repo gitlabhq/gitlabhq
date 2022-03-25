@@ -154,15 +154,21 @@ RSpec.describe ContainerRegistry::Migration do
     end
   end
 
-  describe '.target_plan' do
-    let_it_be(:plan) { create(:plan) }
+  describe '.target_plans' do
+    subject { described_class.target_plans }
 
-    before do
-      stub_application_setting(container_registry_import_target_plan: plan.name)
+    where(:target_plan, :result) do
+      'free'     | described_class::FREE_TIERS
+      'premium'  | described_class::PREMIUM_TIERS
+      'ultimate' | described_class::ULTIMATE_TIERS
     end
 
-    it 'returns the matching application_setting' do
-      expect(described_class.target_plan).to eq(plan)
+    with_them do
+      before do
+        stub_application_setting(container_registry_import_target_plan: target_plan)
+      end
+
+      it { is_expected.to eq(result) }
     end
   end
 
