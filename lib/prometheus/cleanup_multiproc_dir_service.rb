@@ -2,22 +2,17 @@
 
 module Prometheus
   class CleanupMultiprocDirService
-    include Gitlab::Utils::StrongMemoize
+    def initialize(metrics_dir)
+      @metrics_dir = metrics_dir
+    end
 
     def execute
-      FileUtils.rm_rf(old_metrics) if old_metrics
-    end
+      return if @metrics_dir.blank?
 
-    private
+      files_to_delete = Dir[File.join(@metrics_dir, '*.db')]
+      return if files_to_delete.blank?
 
-    def old_metrics
-      strong_memoize(:old_metrics) do
-        Dir[File.join(multiprocess_files_dir, '*.db')] if multiprocess_files_dir
-      end
-    end
-
-    def multiprocess_files_dir
-      ::Prometheus::Client.configuration.multiprocess_files_dir
+      FileUtils.rm_rf(files_to_delete)
     end
   end
 end

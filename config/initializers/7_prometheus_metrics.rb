@@ -4,7 +4,7 @@ PUMA_EXTERNAL_METRICS_SERVER = Gitlab::Utils.to_boolean(ENV['PUMA_EXTERNAL_METRI
 require Rails.root.join('metrics_server', 'metrics_server') if PUMA_EXTERNAL_METRICS_SERVER
 
 # Keep separate directories for separate processes
-def prometheus_default_multiproc_dir
+def metrics_temp_dir
   return unless Rails.env.development? || Rails.env.test?
 
   if Gitlab::Runtime.sidekiq?
@@ -16,20 +16,22 @@ def prometheus_default_multiproc_dir
   end
 end
 
+def prometheus_metrics_dir
+  ENV['prometheus_multiproc_dir'] || metrics_temp_dir
+end
+
 def puma_metrics_server_process?
   Prometheus::PidProvider.worker_id == 'puma_master'
 end
 
-def sidekiq_metrics_server_process?
-  Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0')
-end
-
-if puma_metrics_server_process? || sidekiq_metrics_server_process?
+if puma_metrics_server_process?
   # The following is necessary to ensure stale Prometheus metrics don't accumulate over time.
-  # It needs to be done as early as here to ensure metrics files aren't deleted.
-  # After we hit our app in `warmup`, first metrics and corresponding files already being created,
-  # for example in `lib/gitlab/metrics/requests_rack_middleware.rb`.
-  Prometheus::CleanupMultiprocDirService.new.execute
+  # It needs to be done as early as possible to ensure new metrics aren't being deleted.
+  #
+  # Note that this should not happen for Sidekiq. Since Sidekiq workers are spawned from the
+  # sidekiq-cluster script, we perform this cleanup in `sidekiq_cluster/cli.rb` instead,
+  # since it must happen prior to any worker processes or the metrics server starting up.
+  Prometheus::CleanupMultiprocDirService.new(prometheus_metrics_dir).execute
 
   ::Prometheus::Client.reinitialize_on_pid_change(force: true)
 end
@@ -37,7 +39,7 @@ end
 ::Prometheus::Client.configure do |config|
   config.logger = Gitlab::AppLogger
 
-  config.multiprocess_files_dir = ENV['prometheus_multiproc_dir'] || prometheus_default_multiproc_dir
+  config.multiprocess_files_dir = prometheus_metrics_dir
 
   config.pid_provider = ::Prometheus::PidProvider.method(:worker_id)
 end

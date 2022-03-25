@@ -84,7 +84,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
     end
 
     FileUtils.mkdir_p(@metrics_dir, mode: 0700)
-    ::Prometheus::CleanupMultiprocDirService.new.execute if @wipe_metrics_dir
+    ::Prometheus::CleanupMultiprocDirService.new(@metrics_dir).execute if @wipe_metrics_dir
 
     # We need to `warmup: true` since otherwise the sampler and exporter threads enter
     # a race where not all Prometheus db files will be visible to the exporter, resulting
