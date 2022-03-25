@@ -103,6 +103,8 @@ ports:
     onOpen: ignore
   - port: 9000  # object_store / minio
     onOpen: ignore
+  - port: 9122  # gitlab-shell
+    onOpen: ignore
 
 vscode:
   extensions:

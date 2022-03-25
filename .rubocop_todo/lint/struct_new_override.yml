@@ -1,0 +1,6 @@
+---
+Lint/StructNewOverride:
+  Exclude:
+    - 'app/presenters/sentry_error_presenter.rb'
+    - 'app/serializers/environment_serializer.rb'
+    - 'lib/gitlab/ci/pipeline/duration.rb'
