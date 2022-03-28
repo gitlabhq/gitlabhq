@@ -2,16 +2,12 @@
 - add_to_breadcrumbs _('Kubernetes Clusters'), clusterable.index_path
 - breadcrumb_title _('Create a cluster')
 - page_title _('Create a Kubernetes cluster')
-- provider = params[:provider]
+- docs_mode = true
 
 = render_gcp_signup_offer
 
 .gl-md-display-flex.gl-mt-3
   .gl-w-quarter.gl-xs-w-full.gl-flex-shrink-0.gl-md-mr-5
-    = render 'sidebar', is_connect_page: false
+    = render 'sidebar', docs_mode: docs_mode, is_connect_page: false
   .gl-w-full
-    = render 'clusters/clusters/cloud_providers/cloud_provider_selector'
-
-    - if ['aws', 'gcp'].include?(provider)
-      .gl-p-5.gl-border-1.gl-border-t-solid.gl-border-gray-100
-        = render "clusters/clusters/#{provider}/new"
+    = render 'clusters/clusters/cloud_providers/cloud_provider_selector', docs_mode: docs_mode

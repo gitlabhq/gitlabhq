@@ -341,3 +341,11 @@ export function renderImage(state, node) {
 export function renderPlayable(state, node) {
   renderImage(state, node);
 }
+
+export function renderCodeBlock(state, node) {
+  state.write(`\`\`\`${node.attrs.language || ''}\n`);
+  state.text(node.textContent, false);
+  state.ensureNewLine();
+  state.write('```');
+  state.closeBlock(node);
+}

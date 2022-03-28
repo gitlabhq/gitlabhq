@@ -329,11 +329,6 @@ RSpec.configure do |config|
       stub_feature_flags(disable_anonymous_search: false)
       stub_feature_flags(disable_anonymous_project_search: false)
 
-      # Disable the refactored top nav search until there is functionality
-      # Can be removed once all existing functionality has been replicated
-      # For more information check https://gitlab.com/gitlab-org/gitlab/-/issues/339348
-      stub_feature_flags(new_header_search: false)
-
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

@@ -22,7 +22,14 @@ module Banzai
         doc.xpath(xpath).each do |node|
           diagram_type = node.parent['lang']
           img_tag = Nokogiri::HTML::DocumentFragment.parse(%(<img src="#{create_image_src(diagram_type, diagram_format, node.content)}"/>))
-          node.parent.replace(img_tag)
+          img_tag = img_tag.children.first
+
+          unless img_tag.nil?
+            img_tag.set_attribute('data-diagram', node.parent['lang'])
+            img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(node.content)}")
+
+            node.parent.replace(img_tag)
+          end
         end
 
         doc

@@ -14,7 +14,7 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :authorize_create_cluster!, only: [:new, :connect, :authorize_aws_role]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :update_applications_status, only: [:cluster_status]
-  before_action :ensure_feature_enabled!, except: :index
+  before_action :ensure_feature_enabled!, except: [:index, :new_cluster_docs]
 
   helper_method :token_in_session
 

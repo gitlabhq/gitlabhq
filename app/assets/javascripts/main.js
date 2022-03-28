@@ -127,7 +127,7 @@ function deferredInitialisation() {
               // In case the user started searching before we bootstrapped, let's pass the search along.
               const initialSearchValue = searchInputBox.value;
               await initHeaderSearchApp(initialSearchValue);
-              searchInputBox.focus();
+              document.querySelector('#search').focus();
             })
             .catch(() => {});
         } else {

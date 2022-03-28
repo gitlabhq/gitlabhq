@@ -7822,9 +7822,6 @@ msgstr ""
 msgid "ClusterAgents|Access tokens"
 msgstr ""
 
-msgid "ClusterAgents|Actions"
-msgstr ""
-
 msgid "ClusterAgents|Add an agent configuration file to %{linkStart}this repository%{linkEnd} and select it, or create a new one to register with GitLab:"
 msgstr ""
 
@@ -7879,16 +7876,22 @@ msgstr ""
 msgid "ClusterAgents|Configuration"
 msgstr ""
 
+msgid "ClusterAgents|Connect a cluster"
+msgstr ""
+
+msgid "ClusterAgents|Connect a cluster (agent)"
+msgstr ""
+
+msgid "ClusterAgents|Connect a cluster (certificate - deprecated)"
+msgstr ""
+
+msgid "ClusterAgents|Connect a cluster (deprecated)"
+msgstr ""
+
 msgid "ClusterAgents|Connect a cluster through an agent"
 msgstr ""
 
 msgid "ClusterAgents|Connect existing cluster"
-msgstr ""
-
-msgid "ClusterAgents|Connect with a certificate"
-msgstr ""
-
-msgid "ClusterAgents|Connect with an agent"
 msgstr ""
 
 msgid "ClusterAgents|Connect with the GitLab Agent"
@@ -7906,7 +7909,13 @@ msgstr ""
 msgid "ClusterAgents|Copy token"
 msgstr ""
 
-msgid "ClusterAgents|Create a new cluster"
+msgid "ClusterAgents|Create a cluster"
+msgstr ""
+
+msgid "ClusterAgents|Create a cluster (certificate - deprecated)"
+msgstr ""
+
+msgid "ClusterAgents|Create a cluster (deprecated)"
 msgstr ""
 
 msgid "ClusterAgents|Create agent access token"
@@ -8287,6 +8296,9 @@ msgid "ClusterIntegration|Could not load subnetworks"
 msgstr ""
 
 msgid "ClusterIntegration|Create Kubernetes cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Create a Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Creating Kubernetes cluster"

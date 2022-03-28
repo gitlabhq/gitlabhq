@@ -222,11 +222,11 @@ RSpec.describe 'Clusters', :js do
     visit project_clusters_path(project)
 
     click_button(class: 'dropdown-toggle-split')
-    click_link 'Create a new cluster'
+    click_link 'Create a cluster (certificate - deprecated)'
   end
 
   def visit_connect_cluster_page
     click_button(class: 'dropdown-toggle-split')
-    click_link 'Connect with a certificate'
+    click_link 'Connect a cluster (certificate - deprecated)'
   end
 end

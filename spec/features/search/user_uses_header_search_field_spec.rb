@@ -17,12 +17,15 @@ RSpec.describe 'User uses header search field', :js do
   end
 
   before do
+    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit).and_return(1000)
+    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit_unauthenticated).and_return(1000)
     sign_in(user)
   end
 
   shared_examples 'search field examples' do
     before do
       visit(url)
+      wait_for_all_requests
     end
 
     it 'starts searching by pressing the enter key' do
@@ -37,7 +40,6 @@ RSpec.describe 'User uses header search field', :js do
       before do
         find('#search')
         find('body').native.send_keys('s')
-
         wait_for_all_requests
       end
 
@@ -49,6 +51,7 @@ RSpec.describe 'User uses header search field', :js do
     context 'when clicking the search field' do
       before do
         page.find('#search').click
+        wait_for_all_requests
       end
 
       it 'shows category search dropdown', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/250285' do
@@ -59,7 +62,7 @@ RSpec.describe 'User uses header search field', :js do
         let!(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 
         it 'shows assigned issues' do
-          find('.search-input-container .dropdown-menu').click_link('Issues assigned to me')
+          find('[data-testid="header-search-dropdown-menu"]').click_link('Issues assigned to me')
 
           expect(page).to have_selector('.issues-list .issue')
           expect_tokens([assignee_token(user.name)])
@@ -67,7 +70,7 @@ RSpec.describe 'User uses header search field', :js do
         end
 
         it 'shows created issues' do
-          find('.search-input-container .dropdown-menu').click_link("Issues I've created")
+          find('[data-testid="header-search-dropdown-menu"]').click_link("Issues I've created")
 
           expect(page).to have_selector('.issues-list .issue')
           expect_tokens([author_token(user.name)])
@@ -79,7 +82,7 @@ RSpec.describe 'User uses header search field', :js do
         let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignees: [user]) }
 
         it 'shows assigned merge requests' do
-          find('.search-input-container .dropdown-menu').click_link('Merge requests assigned to me')
+          find('[data-testid="header-search-dropdown-menu"]').click_link('Merge requests assigned to me')
 
           expect(page).to have_selector('.mr-list .merge-request')
           expect_tokens([assignee_token(user.name)])
@@ -87,7 +90,7 @@ RSpec.describe 'User uses header search field', :js do
         end
 
         it 'shows created merge requests' do
-          find('.search-input-container .dropdown-menu').click_link("Merge requests I've created")
+          find('[data-testid="header-search-dropdown-menu"]').click_link("Merge requests I've created")
 
           expect(page).to have_selector('.mr-list .merge-request')
           expect_tokens([author_token(user.name)])
@@ -150,10 +153,9 @@ RSpec.describe 'User uses header search field', :js do
 
       it 'displays search options' do
         fill_in_search('test')
-
-        expect(page).to have_selector(scoped_search_link('test'))
-        expect(page).to have_selector(scoped_search_link('test', group_id: group.id))
-        expect(page).to have_selector(scoped_search_link('test', project_id: project.id, group_id: group.id))
+        expect(page).to have_selector(scoped_search_link('test', search_code: true))
+        expect(page).to have_selector(scoped_search_link('test', group_id: group.id, search_code: true))
+        expect(page).to have_selector(scoped_search_link('test', project_id: project.id, group_id: group.id, search_code: true))
       end
     end
 
@@ -165,10 +167,9 @@ RSpec.describe 'User uses header search field', :js do
 
       it 'displays search options' do
         fill_in_search('test')
-
-        expect(page).to have_selector(scoped_search_link('test'))
-        expect(page).not_to have_selector(scoped_search_link('test', group_id: project.namespace_id))
-        expect(page).to have_selector(scoped_search_link('test', project_id: project.id))
+        expect(page).to have_selector(scoped_search_link('test', search_code: true, repository_ref: 'master'))
+        expect(page).not_to have_selector(scoped_search_link('test', search_code: true, group_id: project.namespace_id, repository_ref: 'master'))
+        expect(page).to have_selector(scoped_search_link('test', search_code: true, project_id: project.id, repository_ref: 'master'))
       end
 
       it 'displays a link to project merge requests' do
@@ -217,7 +218,6 @@ RSpec.describe 'User uses header search field', :js do
 
     it 'displays search options' do
       fill_in_search('test')
-
       expect(page).to have_selector(scoped_search_link('test'))
       expect(page).to have_selector(scoped_search_link('test', group_id: group.id))
       expect(page).not_to have_selector(scoped_search_link('test', project_id: project.id))
@@ -248,18 +248,20 @@ RSpec.describe 'User uses header search field', :js do
     end
   end
 
-  def scoped_search_link(term, project_id: nil, group_id: nil)
+  def scoped_search_link(term, project_id: nil, group_id: nil, search_code: nil, repository_ref: nil)
     # search_path will accept group_id and project_id but the order does not match
     # what is expected in the href, so the variable must be built manually
     href = search_path(search: term)
+    href.concat("&nav_source=navbar")
     href.concat("&project_id=#{project_id}") if project_id
     href.concat("&group_id=#{group_id}") if group_id
-    href.concat("&nav_source=navbar")
+    href.concat("&search_code=true") if search_code
+    href.concat("&repository_ref=#{repository_ref}") if repository_ref
 
-    ".dropdown a[href='#{href}']"
+    "[data-testid='header-search-dropdown-menu'] a[href='#{href}']"
   end
 
   def dashboard_search_options_popup_menu
-    "div[data-testid='dashboard-search-options']"
+    "[data-testid='header-search-dropdown-menu'] .header-search-dropdown-content"
   end
 end

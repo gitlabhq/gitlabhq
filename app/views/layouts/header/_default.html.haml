@@ -40,7 +40,7 @@
             - search_menu_item = top_nav_search_menu_item_attrs
             %li.nav-item.header-search-new.d-none.d-lg-block.m-auto
               - unless current_controller?(:search)
-                - if Feature.enabled?(:new_header_search)
+                - if Feature.enabled?(:new_header_search, default_enabled: :yaml)
                   = render 'layouts/header_search'
                 - else
                   = render 'layouts/search'

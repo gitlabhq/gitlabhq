@@ -20,8 +20,8 @@ RSpec.describe 'Group AWS EKS Cluster', :js do
     before do
       visit group_clusters_path(group)
 
-      click_button 'Actions'
-      click_link 'Create a new cluster'
+      click_button(class: 'dropdown-toggle-split')
+      click_link 'Create a cluster (deprecated)'
     end
 
     context 'when user creates a cluster on AWS EKS' do

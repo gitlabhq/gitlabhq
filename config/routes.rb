@@ -237,6 +237,7 @@ Rails.application.routes.draw do
     resources :clusters, only: [:index, :new, :show, :update, :destroy] do
       collection do
         get  :connect
+        get  :new_cluster_docs
         post :create_user
         post :create_gcp
         post :create_aws

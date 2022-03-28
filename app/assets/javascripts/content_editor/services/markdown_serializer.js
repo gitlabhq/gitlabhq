@@ -13,6 +13,7 @@ import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
 import Division from '../extensions/division';
+import Diagram from '../extensions/diagram';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
 import FigureCaption from '../extensions/figure_caption';
@@ -48,6 +49,7 @@ import Video from '../extensions/video';
 import WordBreak from '../extensions/word_break';
 import {
   isPlainURL,
+  renderCodeBlock,
   renderHardBreak,
   renderTable,
   renderTableCell,
@@ -130,13 +132,8 @@ const defaultSerializerConfig = {
       }
     },
     [BulletList.name]: defaultMarkdownSerializer.nodes.bullet_list,
-    [CodeBlockHighlight.name]: (state, node) => {
-      state.write(`\`\`\`${node.attrs.language || ''}\n`);
-      state.text(node.textContent, false);
-      state.ensureNewLine();
-      state.write('```');
-      state.closeBlock(node);
-    },
+    [CodeBlockHighlight.name]: renderCodeBlock,
+    [Diagram.name]: renderCodeBlock,
     [Division.name]: (state, node) => {
       if (node.attrs.className?.includes('js-markdown-code')) {
         state.renderInline(node);

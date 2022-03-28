@@ -15,6 +15,7 @@ import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
+import Diagram from '../extensions/diagram';
 import Division from '../extensions/division';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
@@ -100,6 +101,7 @@ export const createContentEditor = ({
     Details,
     DetailsContent,
     Document,
+    Diagram,
     Division,
     Dropcursor,
     Emoji,
