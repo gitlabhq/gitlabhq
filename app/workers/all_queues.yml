@@ -2587,15 +2587,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: namespaces_invite_team_email
-  :worker_name: Namespaces::InviteTeamEmailWorker
-  :feature_category: :experimentation_activation
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: namespaces_onboarding_issue_created
   :worker_name: Namespaces::OnboardingIssueCreatedWorker
   :feature_category: :onboarding

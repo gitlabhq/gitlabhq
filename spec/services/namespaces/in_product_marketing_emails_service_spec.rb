@@ -183,7 +183,7 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     expect(
       Users::InProductMarketingEmail.where(
         user: user,
-        track: Users::InProductMarketingEmail.tracks[:create],
+        track: Users::InProductMarketingEmail::ACTIVE_TRACKS[:create],
         series: 0
       )
     ).to exist

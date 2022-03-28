@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SSHPublicKey, lib: true do
+RSpec.describe Gitlab::SSHPublicKey, lib: true, fips_mode: false do
   let(:key) { attributes_for(:rsa_key_2048)[:key] }
   let(:public_key) { described_class.new(key) }
 
@@ -19,6 +19,17 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
       it { expect(described_class.technology(name).name).to eq(name) }
       it { expect(described_class.technology(name.to_s).name).to eq(name) }
     end
+
+    context 'FIPS mode', :fips_mode do
+      where(:name) do
+        [:rsa, :ecdsa, :ed25519, :ecdsa_sk, :ed25519_sk]
+      end
+
+      with_them do
+        it { expect(described_class.technology(name).name).to eq(name) }
+        it { expect(described_class.technology(name.to_s).name).to eq(name) }
+      end
+    end
   end
 
   describe '.supported_types' do
@@ -26,6 +37,14 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
       expect(described_class.supported_types).to eq(
         [:rsa, :dsa, :ecdsa, :ed25519, :ecdsa_sk, :ed25519_sk]
       )
+    end
+
+    context 'FIPS mode', :fips_mode do
+      it 'returns array with the names of supported technologies' do
+        expect(described_class.supported_types).to eq(
+          [:rsa, :dsa, :ecdsa, :ed25519, :ecdsa_sk, :ed25519_sk]
+        )
+      end
     end
   end
 
@@ -45,6 +64,24 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
       it { expect(described_class.supported_sizes(name)).to eq(sizes) }
       it { expect(described_class.supported_sizes(name.to_s)).to eq(sizes) }
     end
+
+    context 'FIPS mode', :fips_mode do
+      where(:name, :sizes) do
+        [
+          [:rsa, [3072, 4096]],
+          [:dsa, []],
+          [:ecdsa, [256, 384, 521]],
+          [:ed25519, [256]],
+          [:ecdsa_sk, [256]],
+          [:ed25519_sk, [256]]
+        ]
+      end
+
+      with_them do
+        it { expect(described_class.supported_sizes(name)).to eq(sizes) }
+        it { expect(described_class.supported_sizes(name.to_s)).to eq(sizes) }
+      end
+    end
   end
 
   describe '.supported_algorithms' do
@@ -59,6 +96,21 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
         sk-ssh-ed25519@openssh.com
         )
       )
+    end
+
+    context 'FIPS mode', :fips_mode do
+      it 'returns all supported algorithms' do
+        expect(described_class.supported_algorithms).to eq(
+          %w(
+          ssh-rsa
+          ssh-dss
+          ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521
+          ssh-ed25519
+          sk-ecdsa-sha2-nistp256@openssh.com
+          sk-ssh-ed25519@openssh.com
+          )
+        )
+      end
     end
   end
 
@@ -78,6 +130,26 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true do
       it "returns all supported algorithms for #{params[:name]}" do
         expect(described_class.supported_algorithms_for_name(name)).to eq(algorithms)
         expect(described_class.supported_algorithms_for_name(name.to_s)).to eq(algorithms)
+      end
+    end
+
+    context 'FIPS mode', :fips_mode do
+      where(:name, :algorithms) do
+        [
+          [:rsa, %w(ssh-rsa)],
+          [:dsa, %w(ssh-dss)],
+          [:ecdsa, %w(ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521)],
+          [:ed25519, %w(ssh-ed25519)],
+          [:ecdsa_sk, %w(sk-ecdsa-sha2-nistp256@openssh.com)],
+          [:ed25519_sk, %w(sk-ssh-ed25519@openssh.com)]
+        ]
+      end
+
+      with_them do
+        it "returns all supported algorithms for #{params[:name]}" do
+          expect(described_class.supported_algorithms_for_name(name)).to eq(algorithms)
+          expect(described_class.supported_algorithms_for_name(name.to_s)).to eq(algorithms)
+        end
       end
     end
   end

@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures do
+RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures, :clean_gitlab_redis_shared_state do
+  include ExclusiveLeaseHelpers
+
   let_it_be_with_reload(:container_repository) { create(:container_repository, created_at: 2.days.ago) }
 
   let(:worker) { described_class.new }
@@ -221,6 +223,21 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
         subject
 
         expect(container_repository.reload).to be_import_aborted
+      end
+    end
+
+    context 'with the exclusive lease taken' do
+      let(:lease_key) { worker.send(:lease_key) }
+
+      before do
+        stub_exclusive_lease_taken(lease_key, timeout: 1.hour)
+      end
+
+      it 'does not perform' do
+        expect(worker).not_to receive(:runnable?)
+        expect(worker).not_to receive(:re_enqueue_if_capacity)
+
+        subject
       end
     end
 

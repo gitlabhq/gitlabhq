@@ -239,7 +239,7 @@ RSpec.shared_examples 'application settings examples' do
 
   describe '#allowed_key_types' do
     it 'includes all key types by default' do
-      expect(setting.allowed_key_types).to contain_exactly(*described_class::SUPPORTED_KEY_TYPES)
+      expect(setting.allowed_key_types).to contain_exactly(*Gitlab::SSHPublicKey.supported_types)
     end
 
     it 'excludes disabled key types' do

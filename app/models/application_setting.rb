@@ -387,7 +387,7 @@ class ApplicationSetting < ApplicationRecord
   validates :invisible_captcha_enabled,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
-  SUPPORTED_KEY_TYPES.each do |type|
+  Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
 

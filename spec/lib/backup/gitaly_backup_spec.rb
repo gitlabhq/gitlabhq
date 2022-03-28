@@ -88,6 +88,12 @@ RSpec.describe Backup::GitalyBackup do
         expect { subject.finish! }.to raise_error(::Backup::Error, 'gitaly-backup exit status 1')
       end
 
+      it 'raises when gitaly_backup_path is not set' do
+        stub_backup_setting(gitaly_backup_path: nil)
+
+        expect { subject.start(:create, destination) }.to raise_error(::Backup::Error, 'gitaly-backup binary not found and gitaly_backup_path is not configured')
+      end
+
       context 'feature flag incremental_repository_backup disabled' do
         before do
           stub_feature_flags(incremental_repository_backup: false)
@@ -247,6 +253,12 @@ RSpec.describe Backup::GitalyBackup do
 
       subject.start(:restore, destination)
       expect { subject.finish! }.to raise_error(::Backup::Error, 'gitaly-backup exit status 1')
+    end
+
+    it 'raises when gitaly_backup_path is not set' do
+      stub_backup_setting(gitaly_backup_path: nil)
+
+      expect { subject.start(:restore, destination) }.to raise_error(::Backup::Error, 'gitaly-backup binary not found and gitaly_backup_path is not configured')
     end
   end
 end

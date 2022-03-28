@@ -2505,6 +2505,9 @@ msgstr ""
 msgid "AdminArea|Included Free in license"
 msgstr ""
 
+msgid "AdminArea|Instance OAuth applications"
+msgstr ""
+
 msgid "AdminArea|Latest groups"
 msgstr ""
 
@@ -2517,6 +2520,9 @@ msgstr ""
 msgid "AdminArea|Maintainer"
 msgstr ""
 
+msgid "AdminArea|Manage applications for your instance that can use GitLab as an %{docs_link_start}OAuth provider%{docs_link_end}."
+msgstr ""
+
 msgid "AdminArea|Minimal access"
 msgstr ""
 
@@ -2527,6 +2533,9 @@ msgid "AdminArea|New project"
 msgstr ""
 
 msgid "AdminArea|New user"
+msgstr ""
+
+msgid "AdminArea|No applications found"
 msgstr ""
 
 msgid "AdminArea|Owner"
@@ -19229,9 +19238,6 @@ msgstr ""
 msgid "InProductMarketing|GitHub Enterprise projects to GitLab"
 msgstr ""
 
-msgid "InProductMarketing|GitLab is better with teammates to help out!"
-msgstr ""
-
 msgid "InProductMarketing|GitLab is infrastructure agnostic (supporting GCP, AWS, Azure, OpenShift, VMWare, On Prem, Bare Metal, and more), offering a consistent workflow experience – irrespective of the environment."
 msgstr ""
 
@@ -19308,15 +19314,6 @@ msgid "InProductMarketing|Invite your team now"
 msgstr ""
 
 msgid "InProductMarketing|Invite your team today to build better code (and processes) together"
-msgstr ""
-
-msgid "InProductMarketing|Invite your teammates to GitLab"
-msgstr ""
-
-msgid "InProductMarketing|Invite your teammates to help"
-msgstr ""
-
-msgid "InProductMarketing|Invite your teammates today and build better code together. You can even assign tasks to new teammates such as setting up CI/CD, to help get projects up and running."
 msgstr ""
 
 msgid "InProductMarketing|It's all in the stats"
@@ -22242,9 +22239,6 @@ msgstr ""
 msgid "LicenseCompliance|Learn more about %{linkStart}License Approvals%{linkEnd}"
 msgstr ""
 
-msgid "LicenseCompliance|License Approvals"
-msgstr ""
-
 msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only"
 msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only"
 msgstr[0] ""
@@ -22311,6 +22305,9 @@ msgid "LicenseCompliance|This license already exists in this project."
 msgstr ""
 
 msgid "LicenseCompliance|Uncategorized"
+msgstr ""
+
+msgid "LicenseCompliance|Update approvals"
 msgstr ""
 
 msgid "LicenseCompliance|You are about to remove the license, %{name}, from this project."
@@ -36358,6 +36355,11 @@ msgstr ""
 msgid "SuperSonics|To activate your subscription, connect to GitLab servers through the %{linkStart}Cloud Licensing%{linkEnd} service, a hassle-free way to manage your subscription."
 msgstr ""
 
+msgid "SuperSonics|User in subscription"
+msgid_plural "SuperSonics|Users in subscription"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SuperSonics|Users in subscription"
 msgstr ""
 
@@ -36497,12 +36499,6 @@ msgid "System Hooks Help"
 msgstr ""
 
 msgid "System Info"
-msgstr ""
-
-msgid "System OAuth applications"
-msgstr ""
-
-msgid "System OAuth applications don't belong to any user and can only be managed by admins"
 msgstr ""
 
 msgid "System default (%{default})"

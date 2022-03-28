@@ -15,16 +15,24 @@ module Gitlab
       Technology.new(:ed25519_sk, SSHData::PublicKey::SKED25519, [256], %w(sk-ssh-ed25519@openssh.com))
     ].freeze
 
+    def self.technologies
+      if Gitlab::FIPS.enabled?
+        Gitlab::FIPS::SSH_KEY_TECHNOLOGIES
+      else
+        TECHNOLOGIES
+      end
+    end
+
     def self.technology(name)
-      TECHNOLOGIES.find { |tech| tech.name.to_s == name.to_s }
+      technologies.find { |tech| tech.name.to_s == name.to_s }
     end
 
     def self.technology_for_key(key)
-      TECHNOLOGIES.find { |tech| key.instance_of?(tech.key_class) }
+      technologies.find { |tech| key.instance_of?(tech.key_class) }
     end
 
     def self.supported_types
-      TECHNOLOGIES.map(&:name)
+      technologies.map(&:name)
     end
 
     def self.supported_sizes(name)
@@ -32,7 +40,7 @@ module Gitlab
     end
 
     def self.supported_algorithms
-      TECHNOLOGIES.flat_map { |tech| tech.supported_algorithms }
+      technologies.flat_map { |tech| tech.supported_algorithms }
     end
 
     def self.supported_algorithms_for_name(name)

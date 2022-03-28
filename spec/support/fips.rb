@@ -3,10 +3,22 @@
 
 RSpec.configure do |config|
   config.around(:each, :fips_mode) do |example|
-    prior_value = ENV["FIPS_MODE"]
-    ENV["FIPS_MODE"] = "true"
+    set_fips_mode(true) do
+      example.run
+    end
+  end
 
-    example.run
+  config.around(:each, fips_mode: false) do |example|
+    set_fips_mode(false) do
+      example.run
+    end
+  end
+
+  def set_fips_mode(value)
+    prior_value = ENV["FIPS_MODE"]
+    ENV["FIPS_MODE"] = value.to_s
+
+    yield
 
     ENV["FIPS_MODE"] = prior_value
   end

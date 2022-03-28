@@ -309,6 +309,36 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  context 'reading usage quotas' do
+    %w(maintainer owner).each do |role|
+      context "with #{role}" do
+        let(:current_user) { send(role) }
+
+        it { is_expected.to be_allowed(:read_usage_quotas) }
+      end
+    end
+
+    %w(guest reporter developer anonymous).each do |role|
+      context "with #{role}" do
+        let(:current_user) { send(role) }
+
+        it { is_expected.to be_disallowed(:read_usage_quotas) }
+      end
+    end
+
+    context 'with an admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed(:read_usage_quotas) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect_disallowed(:read_usage_quotas) }
+      end
+    end
+  end
+
   it_behaves_like 'clusterable policies' do
     let_it_be(:clusterable) { create(:project, :repository) }
     let_it_be(:cluster) do

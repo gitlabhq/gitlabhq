@@ -57,7 +57,7 @@
       %span.form-text.text-muted#custom_http_clone_url_root_help_block
         = _('Replaces the clone URL root.')
 
-    - ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+    - Gitlab::SSHPublicKey.supported_types.each do |type|
       - field_name = :"#{type}_key_restriction"
       .form-group
         = f.label field_name, "#{type.upcase} SSH keys", class: 'label-bold'

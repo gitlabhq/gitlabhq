@@ -66,68 +66,48 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
 
         let(:query) { base_query.merge(page: 1, per_page: 2) }
 
-        context 'when the api_kaminari_count_with_limit feature flag is unset' do
-          it_behaves_like 'paginated response'
-          it_behaves_like 'response with pagination headers'
-        end
-
-        context 'when the api_kaminari_count_with_limit feature flag is disabled' do
+        context 'when resources count is less than MAX_COUNT_LIMIT' do
           before do
-            stub_feature_flags(api_kaminari_count_with_limit: false)
+            stub_const("::Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT", 4)
           end
 
           it_behaves_like 'paginated response'
           it_behaves_like 'response with pagination headers'
         end
 
-        context 'when the api_kaminari_count_with_limit feature flag is enabled' do
+        context 'when resources count is more than MAX_COUNT_LIMIT' do
           before do
-            stub_feature_flags(api_kaminari_count_with_limit: true)
+            stub_const("::Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT", 2)
           end
 
-          context 'when resources count is less than MAX_COUNT_LIMIT' do
-            before do
-              stub_const("::Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT", 4)
-            end
+          it_behaves_like 'paginated response'
 
-            it_behaves_like 'paginated response'
-            it_behaves_like 'response with pagination headers'
-          end
-
-          context 'when resources count is more than MAX_COUNT_LIMIT' do
-            before do
-              stub_const("::Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT", 2)
-            end
-
-            it_behaves_like 'paginated response'
-
-            it 'does not return the X-Total and X-Total-Pages headers' do
-              expect_no_header('X-Total')
-              expect_no_header('X-Total-Pages')
-              expect_header('X-Per-Page', '2')
-              expect_header('X-Page', '1')
-              expect_header('X-Next-Page', '2')
-              expect_header('X-Prev-Page', '')
-
-              expect_header('Link', anything) do |_key, val|
-                expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-                expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
-                expect(val).not_to include('rel="last"')
-                expect(val).not_to include('rel="prev"')
-              end
-
-              subject.paginate(resource)
-            end
-          end
-
-          it 'does not return the total headers when excluding them' do
+          it 'does not return the X-Total and X-Total-Pages headers' do
             expect_no_header('X-Total')
             expect_no_header('X-Total-Pages')
             expect_header('X-Per-Page', '2')
             expect_header('X-Page', '1')
+            expect_header('X-Next-Page', '2')
+            expect_header('X-Prev-Page', '')
 
-            paginator.paginate(resource, exclude_total_headers: true)
+            expect_header('Link', anything) do |_key, val|
+              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
+              expect(val).not_to include('rel="last"')
+              expect(val).not_to include('rel="prev"')
+            end
+
+            subject.paginate(resource)
           end
+        end
+
+        it 'does not return the total headers when excluding them' do
+          expect_no_header('X-Total')
+          expect_no_header('X-Total-Pages')
+          expect_header('X-Per-Page', '2')
+          expect_header('X-Page', '1')
+
+          paginator.paginate(resource, exclude_total_headers: true)
         end
 
         context 'when resource already paginated' do

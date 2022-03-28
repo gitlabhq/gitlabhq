@@ -1,36 +1,51 @@
-- page_title _("Applications")
+- page_title s_('AdminArea|Instance OAuth applications')
+
 %h3.page-title
-  = _('System OAuth applications')
+  = s_('AdminArea|Instance OAuth applications')
 %p.light
-  = _('System OAuth applications don\'t belong to any user and can only be managed by admins')
-%hr
-%p= link_to _('New application'), new_admin_application_path, class: 'gl-button btn btn-confirm'
-.table-responsive
-  %table.table
-    %thead
-      %tr
-        %th
-          = _('Name')
-        %th
-          = _('Callback URL')
-        %th
-          = _('Clients')
-        %th
-          = _('Trusted')
-        %th
-          = _('Confidential')
-        %th
-        %th
-    %tbody.oauth-applications
-      - @applications.each do |application|
-        %tr{ :id => "application_#{application.id}" }
-          %td= link_to application.name, admin_application_path(application)
-          %td= application.redirect_uri
-          %td= @application_counts[application.id].to_i
-          %td= application.trusted? ? _('Yes'): _('No')
-          %td= application.confidential? ? _('Yes'): _('No')
-          %td= link_to 'Edit', edit_admin_application_path(application), class: 'gl-button btn btn-link'
-          %td= render 'delete_form', application: application
+  - docs_link_path = help_page_path('integration/oauth_provider')
+  - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer nofollow">'.html_safe % { url: docs_link_path }
+  = s_('AdminArea|Manage applications for your instance that can use GitLab as an %{docs_link_start}OAuth provider%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
+
+- if @applications.empty?
+  %section.empty-state.gl-text-center.gl-display-flex.gl-flex-direction-column
+    .svg-content.svg-150
+      = image_tag 'illustrations/empty-state/empty-admin-apps.svg', class: 'gl-max-w-full'
+
+    .gl-max-w-full.gl-m-auto
+      %h1.h4.gl-font-size-h-display= s_('AdminArea|No applications found')
+      = link_to _('New application'), new_admin_application_path, class: 'btn gl-button btn-confirm'
+
+- else
+  %hr
+  %p= link_to _('New application'), new_admin_application_path, class: 'gl-button btn btn-confirm'
+
+  .table-responsive
+    %table.b-table.gl-table.gl-w-full{ role: 'table' }
+      %thead
+        %tr
+          %th
+            = _('Name')
+          %th
+            = _('Callback URL')
+          %th
+            = _('Clients')
+          %th
+            = _('Trusted')
+          %th
+            = _('Confidential')
+          %th
+          %th
+      %tbody.oauth-applications
+        - @applications.each do |application|
+          %tr{ id: "application_#{application.id}" }
+            %td= link_to application.name, admin_application_path(application)
+            %td= application.redirect_uri
+            %td= @application_counts[application.id].to_i
+            %td= application.trusted? ? _('Yes'): _('No')
+            %td= application.confidential? ? _('Yes'): _('No')
+            %td= link_to 'Edit', edit_admin_application_path(application), class: 'gl-button btn btn-link'
+            %td= render 'delete_form', application: application
 
 = paginate @applications, theme: 'gitlab'
 

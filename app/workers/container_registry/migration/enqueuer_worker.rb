@@ -6,17 +6,24 @@ module ContainerRegistry
       include ApplicationWorker
       include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
       include Gitlab::Utils::StrongMemoize
+      include ExclusiveLeaseGuard
+
+      DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
 
       data_consistency :always
       feature_category :container_registry
       urgency :low
-      deduplicate :until_executed, including_scheduled: true
+      deduplicate :until_executing, including_scheduled: true
       idempotent!
 
       def perform
-        return unless runnable?
+        re_enqueue = false
+        try_obtain_lease do
+          break unless runnable?
 
-        re_enqueue_if_capacity if handle_aborted_migration || handle_next_migration
+          re_enqueue = handle_aborted_migration || handle_next_migration
+        end
+        re_enqueue_if_capacity if re_enqueue
       end
 
       private
@@ -142,6 +149,16 @@ module ContainerRegistry
       def log_repository(repository)
         log_extra_metadata_on_done(:container_repository_id, repository&.id)
         log_extra_metadata_on_done(:container_repository_path, repository&.path)
+      end
+
+      # used by ExclusiveLeaseGuard
+      def lease_key
+        'container_registry:migration:enqueuer_worker'
+      end
+
+      # used by ExclusiveLeaseGuard
+      def lease_timeout
+        DEFAULT_LEASE_TIMEOUT
       end
     end
   end

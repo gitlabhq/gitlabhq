@@ -724,6 +724,10 @@ class ProjectPolicy < BasePolicy
     enable :create_resource_access_tokens
   end
 
+  rule { can?(:admin_project) }.policy do
+    enable :read_usage_quotas
+  end
+
   rule { can?(:project_bot_access) }.policy do
     prevent :create_resource_access_tokens
   end

@@ -100,6 +100,8 @@ module Backup
     end
 
     def bin_path
+      raise Error, 'gitaly-backup binary not found and gitaly_backup_path is not configured' unless Gitlab.config.backup.gitaly_backup_path.present?
+
       File.absolute_path(Gitlab.config.backup.gitaly_backup_path)
     end
   end

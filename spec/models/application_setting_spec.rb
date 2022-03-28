@@ -512,12 +512,8 @@ RSpec.describe ApplicationSetting do
     end
 
     context 'key restrictions' do
-      it 'supports all key types' do
-        expect(described_class::SUPPORTED_KEY_TYPES).to eq(Gitlab::SSHPublicKey.supported_types)
-      end
-
       it 'does not allow all key types to be disabled' do
-        described_class::SUPPORTED_KEY_TYPES.each do |type|
+        Gitlab::SSHPublicKey.supported_types.each do |type|
           setting["#{type}_key_restriction"] = described_class::FORBIDDEN_KEY_VALUE
         end
 
@@ -526,15 +522,23 @@ RSpec.describe ApplicationSetting do
       end
 
       where(:type) do
-        described_class::SUPPORTED_KEY_TYPES
+        Gitlab::SSHPublicKey.supported_types
       end
 
       with_them do
         let(:field) { :"#{type}_key_restriction" }
 
-        it { is_expected.to validate_presence_of(field) }
-        it { is_expected.to allow_value(*KeyRestrictionValidator.supported_key_restrictions(type)).for(field) }
-        it { is_expected.not_to allow_value(128).for(field) }
+        shared_examples 'key validations' do
+          it { is_expected.to validate_presence_of(field) }
+          it { is_expected.to allow_value(*KeyRestrictionValidator.supported_key_restrictions(type)).for(field) }
+          it { is_expected.not_to allow_value(128).for(field) }
+        end
+
+        it_behaves_like 'key validations'
+
+        context 'FIPS mode', :fips_mode do
+          it_behaves_like 'key validations'
+        end
       end
     end
 

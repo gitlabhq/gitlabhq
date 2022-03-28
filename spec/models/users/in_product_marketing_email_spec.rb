@@ -19,13 +19,6 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to([:track, :series]).with_message('has already been sent') }
   end
 
-  describe '.tracks' do
-    it 'has an entry for every track' do
-      tracks = [Namespaces::InviteTeamEmailService::TRACK, Namespaces::InProductMarketingEmailsService::TRACKS.keys].flatten
-      expect(tracks).to match_array(described_class.tracks.keys.map(&:to_sym))
-    end
-  end
-
   describe '.without_track_and_series' do
     let_it_be(:user) { create(:user) }
 
@@ -133,6 +126,17 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
           save_cta_click
         end
       end
+    end
+  end
+
+  describe '.ACTIVE_TRACKS' do
+    it 'has an entry for every track' do
+      tracks = Namespaces::InProductMarketingEmailsService::TRACKS.keys
+      expect(tracks).to match_array(described_class::ACTIVE_TRACKS.keys.map(&:to_sym))
+    end
+
+    it 'does not include INACTIVE_TRACK_NAMES' do
+      expect(described_class::ACTIVE_TRACKS.keys).not_to include(*described_class::INACTIVE_TRACK_NAMES)
     end
   end
 end

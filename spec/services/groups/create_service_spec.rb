@@ -263,43 +263,6 @@ RSpec.describe Groups::CreateService, '#execute' do
     end
   end
 
-  describe 'invite team email' do
-    let(:service) { described_class.new(user, group_params) }
-
-    before do
-      allow(Namespaces::InviteTeamEmailWorker).to receive(:perform_in)
-    end
-
-    it 'is sent' do
-      group = service.execute
-      delay = Namespaces::InviteTeamEmailService::DELIVERY_DELAY_IN_MINUTES
-      expect(Namespaces::InviteTeamEmailWorker).to have_received(:perform_in).with(delay, group.id, user.id)
-    end
-
-    context 'when group has not been persisted' do
-      let(:service) { described_class.new(user, group_params.merge(name: '<script>alert("Attack!")</script>')) }
-
-      it 'not sent' do
-        expect(Namespaces::InviteTeamEmailWorker).not_to receive(:perform_in)
-        service.execute
-      end
-    end
-
-    context 'when group is not root' do
-      let(:parent_group) { create :group }
-      let(:service) { described_class.new(user, group_params.merge(parent_id: parent_group.id)) }
-
-      before do
-        parent_group.add_owner(user)
-      end
-
-      it 'not sent' do
-        expect(Namespaces::InviteTeamEmailWorker).not_to receive(:perform_in)
-        service.execute
-      end
-    end
-  end
-
   describe 'logged_out_marketing_header experiment', :experiment do
     let(:service) { described_class.new(user, group_params) }
 

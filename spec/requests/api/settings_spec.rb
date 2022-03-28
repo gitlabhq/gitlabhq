@@ -91,7 +91,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         end
       end
 
-      it "updates application settings" do
+      it "updates application settings", fips_mode: false do
         put api("/application/settings", admin),
           params: {
             default_ci_config_path: 'debian/salsa-ci.yml',
@@ -284,6 +284,55 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['hashed_storage_enabled']).to eq(true)
+    end
+
+    context 'SSH key restriction settings', :fips_mode do
+      let(:settings) do
+        {
+          dsa_key_restriction: -1,
+          ecdsa_key_restriction: 256,
+          ecdsa_sk_key_restriction: 256,
+          ed25519_key_restriction: 256,
+          ed25519_sk_key_restriction: 256,
+          rsa_key_restriction: 3072
+        }
+      end
+
+      it 'allows updating the settings' do
+        put api("/application/settings", admin), params: settings
+
+        expect(response).to have_gitlab_http_status(:ok)
+        settings.each do |attribute, value|
+          expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
+
+      it 'does not allow DSA keys' do
+        put api("/application/settings", admin), params: { dsa_key_restriction: 1024 }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'does not allow short RSA key values' do
+        put api("/application/settings", admin), params: { rsa_key_restriction: 2048 }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'does not allow unrestricted key lengths' do
+        types = %w(dsa_key_restriction
+                   ecdsa_key_restriction
+                   ecdsa_sk_key_restriction
+                   ed25519_key_restriction
+                   ed25519_sk_key_restriction
+                   rsa_key_restriction)
+
+        types.each do |type|
+          put api("/application/settings", admin), params: { type => 0 }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
     end
 
     context 'external policy classification settings' do

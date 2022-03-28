@@ -315,23 +315,29 @@ limiting responses](#rate-limiting-responses).
 The following table describes the rate limits for GitLab.com, both before and
 after the limits change in January, 2021:
 
-| Rate limit                                                                | Before 2021-02-12             | From 2021-02-12               | From 2022-02-03                         |
-|:--------------------------------------------------------------------------|:------------------------------|:------------------------------|:----------------------------------------|
-| **Protected paths** (for a given **IP address**)                          | **10** requests per minute    | **10** requests per minute    | **10** requests per minute              |
-| **Raw endpoint** traffic (for a given **project, commit, and file path**) | **300** requests per minute   | **300** requests per minute   | **300** requests per minute             |
-| **Unauthenticated** traffic (from a given **IP address**)                 | **500** requests per minute   | **500** requests per minute   | **500** requests per minute             |
-| **Authenticated** API traffic (for a given **user**)                      | **2,000** requests per minute | **2,000** requests per minute | **2,000** requests per minute           |
-| **Authenticated** non-API HTTP traffic (for a given **user**)             | **1,000** requests per minute | **1,000** requests per minute | **1,000** requests per minute           |
-| **All** traffic (from a given **IP address**)                             | **2,000** requests per minute | **2,000** requests per minute | **2,000** requests per minute           |
-| **Issue creation**                                                        | **300** requests per minute   | **300** requests per minute   | **300** requests per minute             |
-| **Note creation** (on issues and merge requests)                          | **300** requests per minute   | **60** requests per minute    | **60** requests per minute              |
-| **Advanced, project, and group search** API (for a given **IP address**)  |                               | **10** requests per minute    | **10** requests per minute              |
-| **GitLab Pages** requests (for a given **IP address**)                    |                               |                               | **1000** requests per **50 seconds**    |
-| **GitLab Pages** requests (for a given **GitLab Pages domain**)           |                               |                               | **5000** requests per **10 seconds**    |
+| Rate limit                                                                | From 2021-02-12               | From 2022-02-03                         |
+|:--------------------------------------------------------------------------|:------------------------------|:----------------------------------------|
+| **Protected paths** (for a given **IP address**)                          | **10** requests per minute    | **10** requests per minute              |
+| **Raw endpoint** traffic (for a given **project, commit, and file path**) | **300** requests per minute   | **300** requests per minute             |
+| **Unauthenticated** traffic (from a given **IP address**)                 | **500** requests per minute   | **500** requests per minute             |
+| **Authenticated** API traffic (for a given **user**)                      | **2,000** requests per minute | **2,000** requests per minute           |
+| **Authenticated** non-API HTTP traffic (for a given **user**)             | **1,000** requests per minute | **1,000** requests per minute           |
+| **All** traffic (from a given **IP address**)                             | **2,000** requests per minute | **2,000** requests per minute           |
+| **Issue creation**                                                        | **300** requests per minute   | **300** requests per minute             |
+| **Note creation** (on issues and merge requests)                          | **60** requests per minute    | **60** requests per minute              |
+| **Advanced, project, and group search** API (for a given **IP address**)  | **10** requests per minute    | **10** requests per minute              |
+| **GitLab Pages** requests (for a given **IP address**)                    |                               | **1000** requests per **50 seconds**    |
+| **GitLab Pages** requests (for a given **GitLab Pages domain**)           |                               | **5000** requests per **10 seconds**    |
 
 More details are available on the rate limits for [protected
 paths](#protected-paths-throttle) and [raw
 endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
+
+GitLab can rate-limit requests at several layers. The rate limits listed here
+are configured in the application. These limits are the most
+restrictive per IP address. To learn more about the rate limiting
+for GitLab.com, read our runbook page
+[Overview of rate limits for GitLab.com](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/rate-limiting).
 
 ### Rate limiting responses
 

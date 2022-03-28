@@ -182,7 +182,7 @@ module API
       optional :group_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for group runners, in seconds'
       optional :project_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for project runners, in seconds'
 
-      ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+      Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",
                  type: Integer,
                  values: KeyRestrictionValidator.supported_key_restrictions(type),

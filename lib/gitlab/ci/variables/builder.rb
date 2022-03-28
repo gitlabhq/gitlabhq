@@ -24,8 +24,8 @@ module Gitlab
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
             variables.concat(secret_instance_variables)
-            variables.concat(secret_group_variables(environment: environment, ref: job.git_ref))
-            variables.concat(secret_project_variables(environment: environment, ref: job.git_ref))
+            variables.concat(secret_group_variables(environment: environment))
+            variables.concat(secret_project_variables(environment: environment))
             variables.concat(job.trigger_request.user_variables) if job.trigger_request
             variables.concat(pipeline.variables)
             variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
@@ -75,21 +75,21 @@ module Gitlab
           end
         end
 
-        def secret_group_variables(environment:, ref:)
-          if memoize_secret_variables?
-            memoized_secret_group_variables(environment: environment)
-          else
-            return [] unless project.group
-
-            project.group.ci_variables_for(ref, project, environment: environment)
+        def secret_group_variables(environment:)
+          strong_memoize_with(:secret_group_variables, environment) do
+            group_variables_builder
+              .secret_variables(
+                environment: environment,
+                protected_ref: protected_ref?)
           end
         end
 
-        def secret_project_variables(environment:, ref:)
-          if memoize_secret_variables?
-            memoized_secret_project_variables(environment: environment)
-          else
-            project.ci_variables_for(ref: ref, environment: environment)
+        def secret_project_variables(environment:)
+          strong_memoize_with(:secret_project_variables, environment) do
+            project_variables_builder
+              .secret_variables(
+                environment: environment,
+                protected_ref: protected_ref?)
           end
         end
 
@@ -120,24 +120,6 @@ module Gitlab
           end
         end
 
-        def memoized_secret_project_variables(environment:)
-          strong_memoize_with(:secret_project_variables, environment) do
-            project_variables_builder
-              .secret_variables(
-                environment: environment,
-                protected_ref: protected_ref?)
-          end
-        end
-
-        def memoized_secret_group_variables(environment:)
-          strong_memoize_with(:secret_group_variables, environment) do
-            group_variables_builder
-              .secret_variables(
-                environment: environment,
-                protected_ref: protected_ref?)
-          end
-        end
-
         def ci_node_total_value(job)
           parallel = job.options&.dig(:parallel)
           parallel = parallel.dig(:total) if parallel.is_a?(Hash)
@@ -147,14 +129,6 @@ module Gitlab
         def protected_ref?
           strong_memoize(:protected_ref) do
             project.protected_for?(pipeline.jobs_git_ref)
-          end
-        end
-
-        def memoize_secret_variables?
-          strong_memoize(:memoize_secret_variables) do
-            ::Feature.enabled?(:ci_variables_builder_memoize_secret_variables,
-              project,
-              default_enabled: :yaml)
           end
         end
 

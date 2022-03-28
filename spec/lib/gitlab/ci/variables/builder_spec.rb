@@ -278,6 +278,14 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
   end
 
   shared_examples "secret CI variables" do
+    let(:protected_variable_item) do
+      Gitlab::Ci::Variables::Collection::Item.fabricate(protected_variable)
+    end
+
+    let(:unprotected_variable_item) do
+      Gitlab::Ci::Variables::Collection::Item.fabricate(unprotected_variable)
+    end
+
     context 'when ref is branch' do
       context 'when ref is protected' do
         before do
@@ -338,96 +346,72 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
     let_it_be(:protected_variable) { create(:ci_instance_variable, protected: true) }
     let_it_be(:unprotected_variable) { create(:ci_instance_variable, protected: false) }
 
-    let(:protected_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(protected_variable) }
-    let(:unprotected_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(unprotected_variable) }
-
     include_examples "secret CI variables"
   end
 
   describe '#secret_group_variables' do
-    subject { builder.secret_group_variables(ref: job.git_ref, environment: job.expanded_environment_name) }
+    subject { builder.secret_group_variables(environment: job.expanded_environment_name) }
 
     let_it_be(:protected_variable) { create(:ci_group_variable, protected: true, group: group) }
     let_it_be(:unprotected_variable) { create(:ci_group_variable, protected: false, group: group) }
 
-    context 'with ci_variables_builder_memoize_secret_variables disabled' do
-      before do
-        stub_feature_flags(ci_variables_builder_memoize_secret_variables: false)
-      end
+    include_examples "secret CI variables"
 
-      let(:protected_variable_item) { protected_variable }
-      let(:unprotected_variable_item) { unprotected_variable }
+    context 'variables memoization' do
+      let_it_be(:scoped_variable) { create(:ci_group_variable, group: group, environment_scope: 'scoped') }
 
-      include_examples "secret CI variables"
-    end
+      let(:environment) { job.expanded_environment_name }
+      let(:scoped_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(scoped_variable) }
 
-    context 'with ci_variables_builder_memoize_secret_variables enabled' do
-      before do
-        stub_feature_flags(ci_variables_builder_memoize_secret_variables: true)
-      end
+      context 'with protected environments' do
+        it 'memoizes the result by environment' do
+          expect(pipeline.project)
+            .to receive(:protected_for?)
+            .with(pipeline.jobs_git_ref)
+            .once.and_return(true)
 
-      let(:protected_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(protected_variable) }
-      let(:unprotected_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(unprotected_variable) }
+          expect_next_instance_of(described_class::Group) do |group_variables_builder|
+            expect(group_variables_builder)
+              .to receive(:secret_variables)
+              .with(environment: 'production', protected_ref: true)
+              .once
+              .and_call_original
+          end
 
-      include_examples "secret CI variables"
-
-      context 'variables memoization' do
-        let_it_be(:scoped_variable) { create(:ci_group_variable, group: group, environment_scope: 'scoped') }
-
-        let(:ref) { job.git_ref }
-        let(:environment) { job.expanded_environment_name }
-        let(:scoped_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(scoped_variable) }
-
-        context 'with protected environments' do
-          it 'memoizes the result by environment' do
-            expect(pipeline.project)
-              .to receive(:protected_for?)
-              .with(pipeline.jobs_git_ref)
-              .once.and_return(true)
-
-            expect_next_instance_of(described_class::Group) do |group_variables_builder|
-              expect(group_variables_builder)
-                .to receive(:secret_variables)
-                .with(environment: 'production', protected_ref: true)
-                .once
-                .and_call_original
-            end
-
-            2.times do
-              expect(builder.secret_group_variables(ref: ref, environment: 'production'))
-                .to contain_exactly(unprotected_variable_item, protected_variable_item)
-            end
+          2.times do
+            expect(builder.secret_group_variables(environment: 'production'))
+              .to contain_exactly(unprotected_variable_item, protected_variable_item)
           end
         end
+      end
 
-        context 'with unprotected environments' do
-          it 'memoizes the result by environment' do
-            expect(pipeline.project)
-              .to receive(:protected_for?)
-              .with(pipeline.jobs_git_ref)
-              .once.and_return(false)
+      context 'with unprotected environments' do
+        it 'memoizes the result by environment' do
+          expect(pipeline.project)
+            .to receive(:protected_for?)
+            .with(pipeline.jobs_git_ref)
+            .once.and_return(false)
 
-            expect_next_instance_of(described_class::Group) do |group_variables_builder|
-              expect(group_variables_builder)
-                .to receive(:secret_variables)
-                .with(environment: nil, protected_ref: false)
-                .once
-                .and_call_original
+          expect_next_instance_of(described_class::Group) do |group_variables_builder|
+            expect(group_variables_builder)
+              .to receive(:secret_variables)
+              .with(environment: nil, protected_ref: false)
+              .once
+              .and_call_original
 
-              expect(group_variables_builder)
-                .to receive(:secret_variables)
-                .with(environment: 'scoped', protected_ref: false)
-                .once
-                .and_call_original
-            end
+            expect(group_variables_builder)
+              .to receive(:secret_variables)
+              .with(environment: 'scoped', protected_ref: false)
+              .once
+              .and_call_original
+          end
 
-            2.times do
-              expect(builder.secret_group_variables(ref: 'other', environment: nil))
-                .to contain_exactly(unprotected_variable_item)
+          2.times do
+            expect(builder.secret_group_variables(environment: nil))
+              .to contain_exactly(unprotected_variable_item)
 
-              expect(builder.secret_group_variables(ref: 'other', environment: 'scoped'))
-                .to contain_exactly(unprotected_variable_item, scoped_variable_item)
-            end
+            expect(builder.secret_group_variables(environment: 'scoped'))
+              .to contain_exactly(unprotected_variable_item, scoped_variable_item)
           end
         end
       end
@@ -438,87 +422,66 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
     let_it_be(:protected_variable) { create(:ci_variable, protected: true, project: project) }
     let_it_be(:unprotected_variable) { create(:ci_variable, protected: false, project: project) }
 
-    let(:ref) { job.git_ref }
     let(:environment) { job.expanded_environment_name }
 
-    subject { builder.secret_project_variables(ref: ref, environment: environment) }
+    subject { builder.secret_project_variables(environment: environment) }
 
-    context 'with ci_variables_builder_memoize_secret_variables disabled' do
-      before do
-        stub_feature_flags(ci_variables_builder_memoize_secret_variables: false)
-      end
+    include_examples "secret CI variables"
 
-      let(:protected_variable_item) { protected_variable }
-      let(:unprotected_variable_item) { unprotected_variable }
+    context 'variables memoization' do
+      let_it_be(:scoped_variable) { create(:ci_variable, project: project, environment_scope: 'scoped') }
 
-      include_examples "secret CI variables"
-    end
+      let(:scoped_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(scoped_variable) }
 
-    context 'with ci_variables_builder_memoize_secret_variables enabled' do
-      before do
-        stub_feature_flags(ci_variables_builder_memoize_secret_variables: true)
-      end
+      context 'with protected environments' do
+        it 'memoizes the result by environment' do
+          expect(pipeline.project)
+            .to receive(:protected_for?)
+            .with(pipeline.jobs_git_ref)
+            .once.and_return(true)
 
-      let(:protected_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(protected_variable) }
-      let(:unprotected_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(unprotected_variable) }
+          expect_next_instance_of(described_class::Project) do |project_variables_builder|
+            expect(project_variables_builder)
+              .to receive(:secret_variables)
+              .with(environment: 'production', protected_ref: true)
+              .once
+              .and_call_original
+          end
 
-      include_examples "secret CI variables"
-
-      context 'variables memoization' do
-        let_it_be(:scoped_variable) { create(:ci_variable, project: project, environment_scope: 'scoped') }
-
-        let(:scoped_variable_item) { Gitlab::Ci::Variables::Collection::Item.fabricate(scoped_variable) }
-
-        context 'with protected environments' do
-          it 'memoizes the result by environment' do
-            expect(pipeline.project)
-              .to receive(:protected_for?)
-              .with(pipeline.jobs_git_ref)
-              .once.and_return(true)
-
-            expect_next_instance_of(described_class::Project) do |project_variables_builder|
-              expect(project_variables_builder)
-                .to receive(:secret_variables)
-                .with(environment: 'production', protected_ref: true)
-                .once
-                .and_call_original
-            end
-
-            2.times do
-              expect(builder.secret_project_variables(ref: ref, environment: 'production'))
-                .to contain_exactly(unprotected_variable_item, protected_variable_item)
-            end
+          2.times do
+            expect(builder.secret_project_variables(environment: 'production'))
+              .to contain_exactly(unprotected_variable_item, protected_variable_item)
           end
         end
+      end
 
-        context 'with unprotected environments' do
-          it 'memoizes the result by environment' do
-            expect(pipeline.project)
-              .to receive(:protected_for?)
-              .with(pipeline.jobs_git_ref)
-              .once.and_return(false)
+      context 'with unprotected environments' do
+        it 'memoizes the result by environment' do
+          expect(pipeline.project)
+            .to receive(:protected_for?)
+            .with(pipeline.jobs_git_ref)
+            .once.and_return(false)
 
-            expect_next_instance_of(described_class::Project) do |project_variables_builder|
-              expect(project_variables_builder)
-                .to receive(:secret_variables)
-                .with(environment: nil, protected_ref: false)
-                .once
-                .and_call_original
+          expect_next_instance_of(described_class::Project) do |project_variables_builder|
+            expect(project_variables_builder)
+              .to receive(:secret_variables)
+              .with(environment: nil, protected_ref: false)
+              .once
+              .and_call_original
 
-              expect(project_variables_builder)
-                .to receive(:secret_variables)
-                .with(environment: 'scoped', protected_ref: false)
-                .once
-                .and_call_original
-            end
+            expect(project_variables_builder)
+              .to receive(:secret_variables)
+              .with(environment: 'scoped', protected_ref: false)
+              .once
+              .and_call_original
+          end
 
-            2.times do
-              expect(builder.secret_project_variables(ref: 'other', environment: nil))
-                .to contain_exactly(unprotected_variable_item)
+          2.times do
+            expect(builder.secret_project_variables(environment: nil))
+              .to contain_exactly(unprotected_variable_item)
 
-              expect(builder.secret_project_variables(ref: 'other', environment: 'scoped'))
-                .to contain_exactly(unprotected_variable_item, scoped_variable_item)
-            end
+            expect(builder.secret_project_variables(environment: 'scoped'))
+              .to contain_exactly(unprotected_variable_item, scoped_variable_item)
           end
         end
       end
