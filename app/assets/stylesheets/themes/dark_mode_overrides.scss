@@ -48,7 +48,7 @@
     }
 
     > a:hover {
-      background-color: var(--indigo-900-alpha-008);
+      background-color: var(--nav-active-bg);
     }
 
     &.active {
@@ -56,7 +56,7 @@
 
       &:not(.fly-out-top-item) {
         > a:not(.has-sub-items) {
-          background-color: var(--indigo-900-alpha-008);
+          background-color: var(--nav-active-bg);
         }
       }
     }

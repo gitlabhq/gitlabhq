@@ -9,7 +9,6 @@ body.gl-dark {
   --gray-900: #fafafa;
   --green-100: #0d532a;
   --green-700: #91d4a8;
-  --indigo-900-alpha-008: rgba(235, 235, 250, 0.08);
   --gl-text-color: #fafafa;
   --border-color: #4f4f4f;
   --black: #fff;
@@ -1739,7 +1738,6 @@ body.gl-dark {
   --indigo-800: #d1d1f0;
   --indigo-900: #ebebfa;
   --indigo-950: #f7f7ff;
-  --indigo-900-alpha-008: rgba(235, 235, 250, 0.08);
   --purple-50: #232150;
   --purple-100: #2f2a6b;
   --purple-200: #453894;
@@ -1769,7 +1767,7 @@ body.gl-dark {
   box-shadow: none;
 }
 .nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
-  background-color: var(--indigo-900-alpha-008);
+  background-color: var(--nav-active-bg);
 }
 body.gl-dark {
   --gl-theme-accent: #868686;
@@ -1972,7 +1970,6 @@ body.gl-dark {
   --indigo-800: #d1d1f0;
   --indigo-900: #ebebfa;
   --indigo-950: #f7f7ff;
-  --indigo-900-alpha-008: rgba(235, 235, 250, 0.08);
   --purple-50: #232150;
   --purple-100: #2f2a6b;
   --purple-200: #453894;

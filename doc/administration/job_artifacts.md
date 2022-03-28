@@ -307,19 +307,19 @@ To migrate back to local storage:
 
 ## Expiring artifacts
 
-> [In GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76504), we improved the performance of removing expired artifacts, introduced [with a flag](feature_flags.md) named `ci_destroy_all_expired_service`. Disabled by default.
+> - [In GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76504), we improved the performance of removing expired artifacts. However, due to a bug with potential data loss, we paused removal of expired artifacts. Removal of expired artifacts was put behind a [feature flag](feature_flags.md) named `ci_destroy_all_expired_service`. Disabled by default.
+> - In GitLab 14.8 and later, the bug is fixed and we have resumed the removal of expired artifacts. We are preparing backports for GitLab 14.6 and 14.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
+On self-managed GitLab 14.6 and 14.7, this feature is not available. To make it available, ask an administrator to
 [enable the feature flag](feature_flags.md) named `ci_destroy_all_expired_service`. The feature is not ready for
 production use.
-On GitLab.com, this feature is not available.
 
-### Removing expired job artifacts on GitLab self-managed instances
+### Removing expired job artifacts on GitLab 14.6 and 14.7 self-managed instances
 
 In the process of migrating old artifacts for our SaaS customers, we are working to resolve any potential unrecoverable data loss for self-managed customers for artifacts that they may not want deleted yet. Before we can use the more performant way of cleaning up expired artifacts, we need to do some remediation to make sure customers don't lose their data, which is part of our effort in [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/7097).
 
-Two options are available:
+Two options are available for GitLab 14.6 and GitLab 14.7 self-managed instances:
 
 - If you don't need any artifacts created before 2020-06-23, an Administrator can enable the worker for removing expired CI/CD artifacts:
 
