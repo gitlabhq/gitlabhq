@@ -24,8 +24,6 @@
 
 .single-db-rspec:
   extends: .single-db
-  variables:
-    GITLAB_USE_MODEL_LOAD_BALANCING: "false"
 
 .rspec-base:
   extends:
@@ -387,8 +385,6 @@ db:migrate-from-previous-major-version:
     SETUP_DB: "false"
     PROJECT_TO_CHECKOUT: "gitlab-foss"
     TAG_TO_CHECKOUT: "v13.12.9"
-    # FIXME: make this job work with `GITLAB_USE_MODEL_LOAD_BALANCING: true`, see https://gitlab.com/gitlab-org/gitlab/-/issues/355573
-    GITLAB_USE_MODEL_LOAD_BALANCING: "false"
   before_script:
     - !reference [.default-before_script, before_script]
     - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'

@@ -251,9 +251,6 @@ RSpec.describe Gitlab::Database do
     end
 
     it 'does return a valid schema depending on a base model used', :request_store do
-      # This is currently required as otherwise the `Ci::Build.connection` == `Project.connection`
-      # ENV due to lib/gitlab/database/load_balancing/setup.rb:93
-      stub_env('GITLAB_USE_MODEL_LOAD_BALANCING', '1')
       # FF due to lib/gitlab/database/load_balancing/configuration.rb:92
       stub_feature_flags(force_no_sharing_primary_model: true)
 

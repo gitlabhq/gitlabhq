@@ -123,7 +123,7 @@ To create a new project and add its README to your profile:
 1. For **Project Configuration**, ensure **Initialize repository with a README** is selected.
 1. Select **Create project**.
 1. Create a README file inside this project. The file can be any valid [README or index file](../project/repository/index.md#readme-and-index-files).
-1. Populate the README file with [Markdown](../markdown.md).
+1. Populate the README file with [Markdown](../markdown.md), or another [supported markup language](../project/repository/index.md#supported-markup-languages).
 
 GitLab displays the contents of your README below your contribution graph.
 

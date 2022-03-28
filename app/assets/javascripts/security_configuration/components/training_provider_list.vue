@@ -3,6 +3,7 @@ import {
   GlAlert,
   GlTooltipDirective,
   GlCard,
+  GlFormRadio,
   GlToggle,
   GlLink,
   GlSkeletonLoader,
@@ -44,6 +45,7 @@ export default {
   components: {
     GlAlert,
     GlCard,
+    GlFormRadio,
     GlToggle,
     GlLink,
     GlSkeletonLoader,
@@ -79,6 +81,9 @@ export default {
     };
   },
   computed: {
+    primaryProviderId() {
+      return this.securityTrainingProviders.find(({ isPrimary }) => isPrimary)?.id;
+    },
     enabledProviders() {
       return this.securityTrainingProviders.filter(({ isEnabled }) => isEnabled);
     },
@@ -256,31 +261,19 @@ export default {
                   {{ __('Learn more.') }}
                 </gl-link>
               </p>
-              <!-- Note: The following `div` and it's content will be replaced by 'GlFormRadio' once https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1720#note_857342988 is resolved -->
-              <div
-                class="gl-form-radio custom-control custom-radio"
-                data-testid="primary-provider-radio"
+              <gl-form-radio
+                :checked="primaryProviderId"
+                :disabled="!provider.isEnabled"
+                :value="provider.id"
+                @change="setPrimaryProvider(provider)"
               >
-                <input
-                  :id="`security-training-provider-${provider.id}`"
-                  type="radio"
-                  :checked="provider.isPrimary"
-                  class="custom-control-input"
-                  :disabled="!provider.isEnabled"
-                  @change="setPrimaryProvider(provider)"
-                />
-                <label
-                  class="custom-control-label"
-                  :for="`security-training-provider-${provider.id}`"
-                >
-                  {{ $options.i18n.primaryTraining }}
-                </label>
+                {{ $options.i18n.primaryTraining }}
                 <gl-icon
                   v-gl-tooltip="$options.i18n.primaryTrainingDescription"
                   name="information-o"
                   class="gl-ml-2 gl-cursor-help"
                 />
-              </div>
+              </gl-form-radio>
             </div>
           </div>
         </gl-card>
