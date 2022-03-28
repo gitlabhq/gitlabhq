@@ -48,7 +48,7 @@ module Gitlab
 
         begin
           update_batch(sub_batch, base_type_id)
-        rescue ActiveRecord::StatementTimeout => e
+        rescue ActiveRecord::StatementTimeout, ActiveRecord::QueryCanceled => e
           update_attempt += 1
 
           if update_attempt <= MAX_UPDATE_RETRIES

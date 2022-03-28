@@ -101,7 +101,11 @@ flawfinder-sast:
     - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.c'
+        - '**/*.cc'
         - '**/*.cpp'
+        - '**/*.c++'
+        - '**/*.cp'
+        - '**/*.cxx'
 
 kubesec-sast:
   extends: .sast-analyzer
