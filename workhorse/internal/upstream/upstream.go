@@ -243,6 +243,7 @@ func (u *upstream) updateGeoProxyFields(geoProxyURL *url.URL) {
 		u.Version,
 		geoProxyRoundTripper,
 		proxypkg.WithCustomHeaders(geoProxyWorkhorseHeaders),
+		proxypkg.WithForcedTargetHostHeader(),
 	)
 	u.geoProxyCableRoute = u.wsRoute(`^/-/cable\z`, geoProxyUpstream)
 	u.geoProxyRoute = u.route("", "", geoProxyUpstream, withGeoProxy())

@@ -73,7 +73,6 @@
 - internationalization
 - jenkins_importer
 - kubernetes_management
-- license
 - license_compliance
 - logging
 - memory
@@ -94,6 +93,7 @@
 - privacy_control_center
 - product_analytics
 - projects
+- provision
 - purchase
 - quality_management
 - redis
@@ -120,7 +120,6 @@
 - subgroups
 - team_planning
 - tracing
-- usage_ping
 - users
 - utilization
 - value_stream_management

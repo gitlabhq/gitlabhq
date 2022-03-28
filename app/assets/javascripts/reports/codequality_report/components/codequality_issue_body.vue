@@ -34,7 +34,7 @@ export default {
       return `${this.severityLabel} - ${this.issue.name}`;
     },
     issueSeverity() {
-      return this.issue.severity.toLowerCase();
+      return this.issue.severity?.toLowerCase();
     },
     isStatusSuccess() {
       return this.status === STATUS_SUCCESS;

@@ -51,6 +51,7 @@ describe('code quality issue body issue body', () => {
       ${'blocker'}  | ${'text-danger-800'}    | ${'severity-critical'}
       ${'unknown'}  | ${'text-secondary-400'} | ${'severity-unknown'}
       ${'invalid'}  | ${'text-secondary-400'} | ${'severity-unknown'}
+      ${undefined}  | ${'text-secondary-400'} | ${'severity-unknown'}
     `(
       'renders correct icon for "$severity" severity rating',
       ({ severity, iconClass, iconName }) => {

@@ -121,6 +121,7 @@ module Projects
     # Overridden in EE
     def post_update_hooks(project)
       move_pages(project)
+      ensure_personal_project_owner_membership(project)
     end
 
     # Overridden in EE
@@ -150,6 +151,19 @@ module Projects
     def update_repository_configuration(full_path)
       project.set_full_path(gl_full_path: full_path)
       project.track_project_repository
+    end
+
+    def ensure_personal_project_owner_membership(project)
+      # In case of personal projects, we want to make sure that
+      # a membership record with `OWNER` access level exists for the owner of the namespace.
+      return unless project.personal?
+
+      namespace_owner = project.namespace.owner
+      existing_membership_record = project.member(namespace_owner)
+
+      return if existing_membership_record.present? && existing_membership_record.access_level == Gitlab::Access::OWNER
+
+      project.add_owner(namespace_owner)
     end
 
     def refresh_permissions

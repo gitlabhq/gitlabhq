@@ -853,11 +853,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             subject { request_job(id: job.id) }
 
             it_behaves_like 'storing arguments in the application context for the API' do
-              let(:expected_params) { { user: user.username, project: project.full_path, client_id: "user/#{user.id}" } }
+              let(:expected_params) { { user: user.username, project: project.full_path, client_id: "runner/#{runner.id}", job_id: job.id, pipeline_id: job.pipeline_id } }
             end
 
-            it_behaves_like 'not executing any extra queries for the application context', 3 do
-              # Extra queries: User, Project, Route
+            it_behaves_like 'not executing any extra queries for the application context', 4 do
+              # Extra queries: User, Project, Route, Runner
               let(:subject_proc) { proc { request_job(id: job.id) } }
             end
           end

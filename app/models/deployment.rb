@@ -14,8 +14,8 @@ class Deployment < ApplicationRecord
 
   ARCHIVABLE_OFFSET = 50_000
 
-  belongs_to :project, required: true
-  belongs_to :environment, required: true
+  belongs_to :project, optional: false
+  belongs_to :environment, optional: false
   belongs_to :cluster, class_name: 'Clusters::Cluster', optional: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true, optional: true # rubocop:disable Cop/PolymorphicAssociations

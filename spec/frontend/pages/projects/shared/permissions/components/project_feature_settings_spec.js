@@ -3,15 +3,17 @@ import { shallowMount } from '@vue/test-utils';
 import ProjectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 
 describe('Project Feature Settings', () => {
+  const defaultOptions = [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [4, 4],
+    [5, 5],
+  ];
+
   const defaultProps = {
     name: 'Test',
-    options: [
-      [1, 1],
-      [2, 2],
-      [3, 3],
-      [4, 4],
-      [5, 5],
-    ],
+    options: defaultOptions,
     value: 1,
     disabledInput: false,
     showToggle: true,
@@ -110,15 +112,25 @@ describe('Project Feature Settings', () => {
       },
     );
 
-    it('should emit the change when a new option is selected', () => {
+    it('should emit the change when a new option is selected', async () => {
       wrapper = mountComponent();
 
       expect(wrapper.emitted('change')).toBeUndefined();
 
-      wrapper.findAll('option').at(1).trigger('change');
+      await wrapper.findAll('option').at(1).setSelected();
 
       expect(wrapper.emitted('change')).toHaveLength(1);
       expect(wrapper.emitted('change')[0]).toEqual([2]);
+    });
+
+    it('value of select matches prop `value` if options are modified', async () => {
+      wrapper = mountComponent();
+
+      await wrapper.setProps({ value: 0, options: [[0, 0]] });
+      expect(wrapper.find('select').element.selectedIndex).toBe(0);
+
+      await wrapper.setProps({ value: 2, options: defaultOptions });
+      expect(wrapper.find('select').element.selectedIndex).toBe(1);
     });
   });
 });

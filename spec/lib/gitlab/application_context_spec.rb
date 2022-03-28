@@ -146,7 +146,8 @@ RSpec.describe Gitlab::ApplicationContext do
       where(:provided_options, :client) do
         [:remote_ip]                 | :remote_ip
         [:remote_ip, :runner]        | :runner
-        [:remote_ip, :runner, :user] | :user
+        [:remote_ip, :runner, :user] | :runner
+        [:remote_ip, :user]          | :user
       end
 
       with_them do
@@ -193,6 +194,16 @@ RSpec.describe Gitlab::ApplicationContext do
         context = described_class.new(runner: runner)
 
         expect(result(context)).to include(project: nil)
+      end
+    end
+
+    context 'when using job context' do
+      let_it_be(:job) { create(:ci_build, :pending, :queued, user: user, project: project) }
+
+      it 'sets expected values' do
+        context = described_class.new(job: job)
+
+        expect(result(context)).to include(job_id: job.id, project: project.full_path, pipeline_id: job.pipeline_id)
       end
     end
   end

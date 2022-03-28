@@ -1,19 +1,11 @@
 ---
-stage: Create
-group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: howto
+redirect_to: '../tutorials/make_your_first_git_commit.md'
+remove_date: '2022-06-26'
 ---
 
-# How to create a branch **(FREE)**
+This document was moved to [another location](../tutorials/make_your_first_git_commit.md).
 
-A branch is an independent line of development in a [project](../user/project/index.md).
-
-When you create a branch (in your [terminal](start-using-git.md#create-a-branch) or with
-[the web interface](../user/project/repository/web_editor.md#create-a-new-branch)),
-you are creating a snapshot of a certain branch, usually the main branch,
-at its current state. From there, you can start to make your own changes without
-affecting the main codebase. The history of your changes is tracked in your branch.
-
-When your changes are ready, you then merge them into the rest of the codebase with a
-[merge request](../user/project/merge_requests/creating_merge_requests.md).
+<!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

@@ -245,26 +245,26 @@ epics:
 
 | Event                  | Sent to |
 |------------------------|---------|
-| Change milestone issue | Subscribers, participants mentioned, and Custom notification level with this event selected. |
-| Change milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected. |
+| Change milestone issue | Subscribers and participants mentioned. |
+| Change milestone merge request | Subscribers and participants mentioned. |
 | Close epic             |         |
 | Close issue            |         |
 | Close merge request    |         |
-| Due issue              | Participants and Custom notification level with this event selected. |
 | Failed pipeline        | The author of the pipeline. |
 | Fixed pipeline         | The author of the pipeline. Enabled by default. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1._ |
+| Issue due              | Participants and Custom notification level with this event selected. |
 | Merge merge request    |         |
 | Merge when pipeline succeeds | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. Custom notification level is ignored for Author, Watchers and Subscribers. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4._ |
 | Merge request [marked as ready](../project/merge_requests/drafts.md) | Watchers and participants. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15332) in GitLab 13.10._ |
-| New comment            | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
 | New epic               |         |
 | New issue              |         |
 | New merge request      |         |
+| New note               | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
 | Push to merge request  | Participants and Custom notification level with this event selected. |
 | Reassign issue         | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
 | Reassign merge request | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
-| Remove milestone issue | Subscribers, participants mentioned, and Custom notification level with this event selected. |
-| Remove milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected. |
+| Remove milestone issue | Subscribers and participants mentioned. |
+| Remove milestone merge request | Subscribers and participants mentioned. |
 | Reopen epic            |         |
 | Reopen issue           |         |
 | Reopen merge request   |         |

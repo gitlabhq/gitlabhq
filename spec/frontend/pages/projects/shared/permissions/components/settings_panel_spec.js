@@ -1,6 +1,6 @@
 import { GlSprintf, GlToggle } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import projectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
+import ProjectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 import settingsPanel from '~/pages/projects/shared/permissions/components/settings_panel.vue';
 import {
   featureAccessLevel,
@@ -21,6 +21,7 @@ const defaultProps = {
     wikiAccessLevel: 20,
     snippetsAccessLevel: 20,
     operationsAccessLevel: 20,
+    metricsDashboardAccessLevel: 20,
     pagesAccessLevel: 10,
     analyticsAccessLevel: 20,
     containerRegistryAccessLevel: 20,
@@ -75,7 +76,7 @@ describe('Settings Panel', () => {
   const findLFSFeatureToggle = () => findLFSSettingsRow().find(GlToggle);
   const findRepositoryFeatureProjectRow = () => wrapper.find({ ref: 'repository-settings' });
   const findRepositoryFeatureSetting = () =>
-    findRepositoryFeatureProjectRow().find(projectFeatureSetting);
+    findRepositoryFeatureProjectRow().find(ProjectFeatureSetting);
   const findProjectVisibilitySettings = () => wrapper.find({ ref: 'project-visibility-settings' });
   const findIssuesSettingsRow = () => wrapper.find({ ref: 'issues-settings' });
   const findAnalyticsRow = () => wrapper.find({ ref: 'analytics-settings' });
@@ -106,7 +107,11 @@ describe('Settings Panel', () => {
       'input[name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"]',
     );
   const findMetricsVisibilitySettings = () => wrapper.find({ ref: 'metrics-visibility-settings' });
+  const findMetricsVisibilityInput = () =>
+    findMetricsVisibilitySettings().findComponent(ProjectFeatureSetting);
   const findOperationsSettings = () => wrapper.find({ ref: 'operations-settings' });
+  const findOperationsVisibilityInput = () =>
+    findOperationsSettings().findComponent(ProjectFeatureSetting);
   const findConfirmDangerButton = () => wrapper.findComponent(ConfirmDanger);
 
   afterEach(() => {
@@ -595,7 +600,7 @@ describe('Settings Panel', () => {
   });
 
   describe('Metrics dashboard', () => {
-    it('should show the metrics dashboard access toggle', () => {
+    it('should show the metrics dashboard access select', () => {
       wrapper = mountComponent();
 
       expect(findMetricsVisibilitySettings().exists()).toBe(true);
@@ -610,23 +615,51 @@ describe('Settings Panel', () => {
     });
 
     it.each`
-      scenario                                                                          | selectedOption                                | selectedOptionLabel
-      ${{ currentSettings: { visibilityLevel: visibilityOptions.PRIVATE } }}            | ${String(featureAccessLevel.PROJECT_MEMBERS)} | ${'Only Project Members'}
-      ${{ currentSettings: { operationsAccessLevel: featureAccessLevel.NOT_ENABLED } }} | ${String(featureAccessLevel.NOT_ENABLED)}     | ${'Enable feature to choose access level'}
+      before                                | after
+      ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.EVERYONE}
+      ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.PROJECT_MEMBERS}
+      ${featureAccessLevel.EVERYONE}        | ${featureAccessLevel.PROJECT_MEMBERS}
+      ${featureAccessLevel.EVERYONE}        | ${featureAccessLevel.NOT_ENABLED}
+      ${featureAccessLevel.PROJECT_MEMBERS} | ${featureAccessLevel.NOT_ENABLED}
     `(
-      'should disable the metrics visibility dropdown when #scenario',
-      ({ scenario, selectedOption, selectedOptionLabel }) => {
-        wrapper = mountComponent(scenario, mount);
+      'when updating Operations Settings access level from `$before` to `$after`, Metric Dashboard access is updated to `$after` as well',
+      async ({ before, after }) => {
+        wrapper = mountComponent({
+          currentSettings: { operationsAccessLevel: before, metricsDashboardAccessLevel: before },
+        });
 
-        const select = findMetricsVisibilitySettings().find('select');
-        const option = select.find('option');
+        await findOperationsVisibilityInput().vm.$emit('change', after);
 
-        expect(select.attributes('disabled')).toBe('disabled');
-        expect(select.element.value).toBe(selectedOption);
-        expect(option.attributes('value')).toBe(selectedOption);
-        expect(option.text()).toBe(selectedOptionLabel);
+        expect(findMetricsVisibilityInput().props('value')).toBe(after);
       },
     );
+
+    it('when updating Operations Settings access level from `10` to `20`, Metric Dashboard access is not increased', async () => {
+      wrapper = mountComponent({
+        currentSettings: {
+          operationsAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
+          metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
+        },
+      });
+
+      await findOperationsVisibilityInput().vm.$emit('change', featureAccessLevel.EVERYONE);
+
+      expect(findMetricsVisibilityInput().props('value')).toBe(featureAccessLevel.PROJECT_MEMBERS);
+    });
+
+    it('should reduce Metrics visibility level when visibility is set to private', async () => {
+      wrapper = mountComponent({
+        currentSettings: {
+          visibilityLevel: visibilityOptions.PUBLIC,
+          operationsAccessLevel: featureAccessLevel.EVERYONE,
+          metricsDashboardAccessLevel: featureAccessLevel.EVERYONE,
+        },
+      });
+
+      await findProjectVisibilityLevelInput().setValue(visibilityOptions.PRIVATE);
+
+      expect(findMetricsVisibilityInput().props('value')).toBe(featureAccessLevel.PROJECT_MEMBERS);
+    });
   });
 
   describe('Analytics', () => {

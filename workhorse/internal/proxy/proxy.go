@@ -19,11 +19,18 @@ type Proxy struct {
 	reverseProxy           *httputil.ReverseProxy
 	AllowResponseBuffering bool
 	customHeaders          map[string]string
+	forceTargetHostHeader  bool
 }
 
 func WithCustomHeaders(customHeaders map[string]string) func(*Proxy) {
 	return func(proxy *Proxy) {
 		proxy.customHeaders = customHeaders
+	}
+}
+
+func WithForcedTargetHostHeader() func(*Proxy) {
+	return func(proxy *Proxy) {
+		proxy.forceTargetHostHeader = true
 	}
 }
 
@@ -41,6 +48,17 @@ func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper, op
 
 	for _, option := range options {
 		option(&p)
+	}
+
+	if p.forceTargetHostHeader {
+		// because of https://github.com/golang/go/issues/28168, the
+		// upstream won't receive the expected Host header unless this
+		// is forced in the Director func here
+		previousDirector := p.reverseProxy.Director
+		p.reverseProxy.Director = func(request *http.Request) {
+			previousDirector(request)
+			request.Host = request.URL.Host
+		}
 	}
 
 	return &p

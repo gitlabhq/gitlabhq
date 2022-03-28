@@ -250,7 +250,7 @@ Let's look in the UI and confirm your changes. Go to your project.
 
 - Scroll down and view the contents of the `README.md` file.
   Your changes should be visible.
-- Above the `README.md` file, view the text in the `Last commit` column.
+- Above the `README.md` file, view the text in the **Last commit** column.
   Your commit message is displayed in this column:
 
   ![Commit message](img/commit_message_v14_10.png)
