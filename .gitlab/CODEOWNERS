@@ -2,11 +2,11 @@
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
 # As described in https://docs.gitlab.com/ee/user/project/code_owners.html
 
-[Backend]
+^[Backend]
 *.rb @gitlab-org/maintainers/rails-backend
 *.rake @gitlab-org/maintainers/rails-backend
 
-[Frontend]
+^[Frontend]
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend
 *.js @gitlab-org/maintainers/frontend
 /app/assets/ @gitlab-org/maintainers/frontend
@@ -16,7 +16,7 @@
 /spec/frontend_integration/ @gitlab-org/maintainers/frontend
 /ee/spec/frontend_integration/ @gitlab-org/maintainers/frontend
 
-[Database]
+^[Database]
 /db/ @gitlab-org/maintainers/database
 /ee/db/ @gitlab-org/maintainers/database
 /lib/gitlab/background_migration/ @gitlab-org/maintainers/database
@@ -28,7 +28,7 @@
 /ee/app/finders/ @gitlab-org/maintainers/database
 /rubocop/rubocop-migrations.yml @gitlab-org/maintainers/database
 
-[Engineering Productivity]
+^[Engineering Productivity]
 /.gitlab-ci.yml @gl-quality/eng-prod
 /.gitlab/ci/ @gl-quality/eng-prod
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
@@ -43,33 +43,33 @@ Dangerfile @gl-quality/eng-prod
 /scripts/review_apps/seed-dast-test-data.sh @dappelt @ngeorge1 @gl-quality/eng-prod
 .editorconfig @gl-quality/eng-prod
 
-[Backend Static Code Analysis]
+^[Backend Static Code Analysis]
 .rubocop*.yml @dstull @splattael @gl-quality/eng-prod
 .rubocop_todo.yml @dstull @splattael @gl-quality/eng-prod
 .rubocop_todo/ @dstull @splattael @gl-quality/eng-prod
 /rubocop/ @dstull @splattael @gl-quality/eng-prod
 /spec/rubocop/ @dstull @splattael @gl-quality/eng-prod
 
-[End-to-end]
+^[End-to-end]
 /qa/ @gl-quality
 
-[LDAP]
+^[LDAP]
 /ee/lib/ee/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/auth/ldap/ @dblessing @mkozono
 
-[Templates]
+^[Templates]
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
 /lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @sethgitlab @thiagocsf
 /lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/protect/container-security-backend
 
-[Project Alias]
+^[Project Alias]
 /ee/app/models/project_alias.rb @patrickbajao
 /ee/lib/api/project_aliases.rb @patrickbajao
 
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
-[Threat Insights]
+^[Threat Insights]
 /app/finders/security/ @gitlab-org/secure/threat-insights-backend-team
 /app/models/vulnerability.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/app/finders/security/ @gitlab-org/secure/threat-insights-backend-team
@@ -83,7 +83,7 @@ Dangerfile @gl-quality/eng-prod
 /ee/spec/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/spec/presenters/projects/security/ @gitlab-org/secure/threat-insights-backend-team
 
-[Secure]
+^[Secure]
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/parsers/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
 /ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be
@@ -92,7 +92,7 @@ Dangerfile @gl-quality/eng-prod
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
 /ee/app/services/app_sec/dast/ @gitlab-org/secure/dynamic-analysis-be
 
-[Container Security]
+^[Container Security]
 /ee/app/views/projects/threat_monitoring/** @gitlab-org/protect/container-security-frontend
 /ee/app/views/projects/security/policies/** @gitlab-org/protect/container-security-frontend
 /ee/spec/views/projects/security/policies/** @gitlab-org/protect/container-security-frontend
@@ -127,13 +127,13 @@ Dangerfile @gl-quality/eng-prod
 /ee/lib/gitlab/usage_data_counters/network_policy_counter.rb @gitlab-org/protect/container-security-backend
 /ee/spec/lib/gitlab/usage_data_counters/network_policy_counter_spec.rb @gitlab-org/protect/container-security-backend
 
-[Code Owners]
+^[Code Owners]
 /ee/lib/gitlab/code_owners.rb @reprazent @kerrizor @garyh
 /ee/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
 /ee/spec/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
 /doc/user/project/code_owners.md @reprazent @kerrizor @garyh
 
-[Merge Requests]
+^[Merge Requests]
 /app/controllers/projects/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor
 /app/models/merge_request.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
 /app/services/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
@@ -165,13 +165,13 @@ Dangerfile @gl-quality/eng-prod
 /spec/frontend/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
 
 
-[Product Intelligence]
+^[Product Intelligence]
 /ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
 /ee/lib/ee/gitlab/usage_data.rb @gitlab-org/growth/product-intelligence/engineers
 /lib/gitlab/usage_data.rb @gitlab-org/growth/product_intelligence/engineers
 /lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
 
-[Growth Experiments]
+^[Growth Experiments]
 /app/experiments/ @gitlab-org/growth/experiment-devs
 /app/models/experiment.rb @gitlab-org/growth/experiment-devs
 /app/models/experiment_subject.rb @gitlab-org/growth/experiment-devs
@@ -186,16 +186,16 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/experimentation_logger.rb @gitlab-org/growth/experiment-devs
 /ee/spec/requests/api/experiments_spec.rb @gitlab-org/growth/experiment-devs
 
-[Legal]
+^[Legal]
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers
 
-[Workhorse]
+^[Workhorse]
 /workhorse/ @jacobvosmaer-gitlab @nick.thomas @nolith @patrickbajao
 
-[Application Security]
+^[Application Security]
 /lib/gitlab/content_security_policy/ @gitlab-com/gl-security/appsec
 
-[Gitaly]
+^[Gitaly]
 lib/gitlab/git_access.rb @proglottis @toon @zj-gitlab
 lib/gitlab/git_access_*.rb @proglottis @toon @zj-gitlab
 ee/lib/ee/gitlab/git_access.rb @proglottis @toon @zj-gitlab
@@ -203,13 +203,13 @@ ee/lib/ee/gitlab/git_access_*.rb @proglottis @toon @zj-gitlab
 ee/lib/ee/gitlab/checks/** @proglottis @toon @zj-gitlab
 lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 
-[Documentation Directories]
+^[Documentation Directories]
 .markdownlint.yml @marcel.amirault @eread @aqualls @cnorris
 /doc/.markdownlint @marcel.amirault @eread @aqualls @cnorris
 /doc/ @gl-docsteam
 /doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
 
-[Documentation Pages]
+^[Documentation Pages]
 /doc/administration/application_settings_cache.md @marcel.amirault
 /doc/administration/audit_event_streaming.md @eread
 /doc/administration/audit_events.md @eread

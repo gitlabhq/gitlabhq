@@ -11226,10 +11226,10 @@ msgstr ""
 msgid "DAST Configuration"
 msgstr ""
 
-msgid "DAST Scans"
+msgid "DAST profile not found: %{name}"
 msgstr ""
 
-msgid "DAST profile not found: %{name}"
+msgid "DAST profiles"
 msgstr ""
 
 msgid "DNS"
@@ -11376,6 +11376,9 @@ msgstr ""
 msgid "DastProfiles|Could not update the site profile. Please try again."
 msgstr ""
 
+msgid "DastProfiles|DAST profile library"
+msgstr ""
+
 msgid "DastProfiles|Debug messages"
 msgstr ""
 
@@ -11428,9 +11431,6 @@ msgid "DastProfiles|Hide debug messages"
 msgstr ""
 
 msgid "DastProfiles|Include debug messages in the DAST console output."
-msgstr ""
-
-msgid "DastProfiles|Manage DAST scans"
 msgstr ""
 
 msgid "DastProfiles|Manage profiles"
@@ -14242,6 +14242,9 @@ msgstr ""
 msgid "Environments|Environments are places where code gets deployed, such as staging or production."
 msgstr ""
 
+msgid "Environments|How do I create an environment?"
+msgstr ""
+
 msgid "Environments|Install Elastic Stack on your cluster to enable advanced querying capabilities such as full text search."
 msgstr ""
 
@@ -14255,9 +14258,6 @@ msgid "Environments|Learn more about stopping environments"
 msgstr ""
 
 msgid "Environments|Logs from %{start} to %{end}."
-msgstr ""
-
-msgid "Environments|More information"
 msgstr ""
 
 msgid "Environments|New environment"
@@ -14341,7 +14341,10 @@ msgstr ""
 msgid "Environments|Updated"
 msgstr ""
 
-msgid "Environments|You don't have any environments right now"
+msgid "Environments|You don't have any environments."
+msgstr ""
+
+msgid "Environments|You don't have any stopped environments."
 msgstr ""
 
 msgid "Environments|by %{avatar}"
@@ -33039,10 +33042,10 @@ msgstr ""
 msgid "SecurityConfiguration|Manage corpus files used as seed inputs with coverage-guided fuzzing."
 msgstr ""
 
-msgid "SecurityConfiguration|Manage profiles for use by DAST scans."
+msgid "SecurityConfiguration|Manage profiles"
 msgstr ""
 
-msgid "SecurityConfiguration|Manage scans"
+msgid "SecurityConfiguration|Manage profiles for use by DAST scans."
 msgstr ""
 
 msgid "SecurityConfiguration|More scan types, including Container Scanning, DAST, Dependency Scanning, Fuzzing, and Licence Compliance"

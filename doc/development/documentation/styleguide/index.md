@@ -746,7 +746,7 @@ We include guidance for links in these categories:
 - Use inline link Markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. Do not use `[Text][identifier]` reference-style links.
 
-- Use [meaningful anchor text](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
+- Use meaningful anchor text.
   For example, instead of writing something like `Read more about merge requests [here](LINK)`,
   write `Read more about [merge requests](LINK)`.
 

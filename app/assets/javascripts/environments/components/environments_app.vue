@@ -253,7 +253,7 @@ export default {
         @change="resetPolling"
       />
     </template>
-    <empty-state v-else :help-path="helpPagePath" />
+    <empty-state v-else :help-path="helpPagePath" :scope="scope" />
     <gl-pagination
       align="center"
       :total-items="totalItems"

@@ -84,16 +84,38 @@ namespace :gitlab do
 
     desc 'GitLab | DB | Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
-      # Check if we have existing db tables
-      # The schema_migrations table will still exist if drop_tables was called
-      if ActiveRecord::Base.connection.tables.count > 1
-        Rake::Task['db:migrate'].invoke
+      databases_with_tasks = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
+
+      databases_loaded = []
+
+      if databases_with_tasks.size == 1
+        next unless databases_with_tasks.first.name == 'main'
+
+        connection = Gitlab::Database.database_base_models['main'].connection
+        databases_loaded << configure_database(connection)
       else
-        # Add post-migrate paths to ensure we mark all migrations as up
-        Gitlab::Database.add_post_migrate_path_to_rails(force: true)
-        Rake::Task['db:structure:load'].invoke
-        Rake::Task['db:seed_fu'].invoke
+        Gitlab::Database.database_base_models.each do |name, model|
+          next unless databases_with_tasks.any? { |db_with_tasks| db_with_tasks.name == name }
+
+          databases_loaded << configure_database(model.connection, database_name: name)
+        end
       end
+
+      Rake::Task['db:seed_fu'].invoke if databases_loaded.present? && databases_loaded.all?
+    end
+
+    def configure_database(connection, database_name: nil)
+      database_name = ":#{database_name}" if database_name
+      load_database = connection.tables.count <= 1
+
+      if load_database
+        Gitlab::Database.add_post_migrate_path_to_rails(force: true)
+        Rake::Task["db:schema:load#{database_name}"].invoke
+      else
+        Rake::Task["db:migrate#{database_name}"].invoke
+      end
+
+      load_database
     end
 
     desc 'GitLab | DB | Run database migrations and print `unattended_migrations_completed` if action taken'

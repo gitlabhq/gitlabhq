@@ -88,14 +88,14 @@ the merge request list page:
 
 To view a list of merge requests that need your attention:
 
-1. On the top bar, select **Merge requests**. (**{merge-request}**)
+1. On the top bar, select **Merge requests** (**{merge-request}**).
 1. Select **Attention requests**.
 
 To request attention from another user:
 
 1. Go to the merge request.
 1. On the right sidebar, identify the user you want to request attention from.
-1. Next to the user's name, select **Request attention**, and the appearance
+1. Next to the user's name, select **Request attention** (**{attention}**), and the appearance
    of the icon changes:
 
    ![Attention request toggle](img/attention_request_sidebar_v14_10.png)
@@ -104,13 +104,12 @@ To request attention from another user:
 
 If your attention was requested as an assignee or reviewer, it's removed when you:
 
-- You manually remove the attention request by selecting **Remove attention request** (**{attention-solid}**).
+- Manually remove the attention request by selecting **Remove attention request** (**{attention-solid}**).
 - Approve the merge request.
 - Add a new user as an assignee or reviewer.
 - Request the attention of a different assignee or reviewer.
 - Remove yourself (or are removed by someone else) as an assignee or reviewer.
 - Merge or close the merge request.
-- Manually remove the attention request by selecting **Remove attention request**. (**{attention-solid}**)
 
 If you are both the assignee and a reviewer on a merge request, you receive
 only one attention request, which is synced across both duties. If the

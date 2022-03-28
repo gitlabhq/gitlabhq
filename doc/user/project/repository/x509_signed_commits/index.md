@@ -88,7 +88,7 @@ If you have the correct version, you can proceed to configure Git.
 Configure Git to use your key for signing:
 
 ```shell
-signingkey = $( gpgsm --list-secret-keys | egrep '(key usage|ID)' | grep -B 1 digitalSignature | awk '/ID/ {print $2}' )
+signingkey=$( gpgsm --list-secret-keys | egrep '(key usage|ID)' | grep -B 1 digitalSignature | awk '/ID/ {print $2}' )
 git config --global user.signingkey $signingkey
 git config --global gpg.format x509
 ```

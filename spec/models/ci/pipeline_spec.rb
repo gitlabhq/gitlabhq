@@ -4713,6 +4713,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#has_expired_test_reports?' do
+    subject { pipeline_with_test_report.has_expired_test_reports? }
+
+    let(:pipeline_with_test_report) { create(:ci_pipeline, :with_test_reports) }
+
+    context 'when artifacts are not expired' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when artifacts are expired' do
+      before do
+        pipeline_with_test_report.job_artifacts.first.update!(expire_at: Date.yesterday)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :ci_pipeline }
   end

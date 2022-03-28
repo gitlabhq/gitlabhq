@@ -71,7 +71,7 @@ GitLab Docs is built with a combination of external:
 
 - [Schema.org](https://schema.org/)
 - [Google Analytics](https://marketingplatform.google.com/about/analytics/)
-- [Google Tag Manager](https://developers.google.com/tag-manager/)
+- [Google Tag Manager](https://developers.google.com/tag-platform/tag-manager)
 
 ## Global navigation
 

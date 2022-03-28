@@ -27,6 +27,7 @@ RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task
       stub_const("BUILD_ARTIFACTS_SIZE_REFRESH_ENQUEUE_BATCH_SIZE", 2)
 
       stub_request(:get, csv_url).to_return(status: 200, body: csv_body)
+      allow(Kernel).to receive(:sleep).with(1)
     end
 
     context 'when given a list of space-separated IDs through rake argument' do
@@ -34,6 +35,14 @@ RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task
         expect { run_rake_task(rake_task, csv_url) }.to output(/Done/).to_stdout
 
         expect(Projects::BuildArtifactsSizeRefresh.all.map(&:project)).to match_array([project_1, project_2, project_3])
+      end
+
+      it 'inserts refreshes in batches with a sleep' do
+        expect(Projects::BuildArtifactsSizeRefresh).to receive(:enqueue_refresh).with([project_1, project_2]).ordered
+        expect(Kernel).to receive(:sleep).with(1)
+        expect(Projects::BuildArtifactsSizeRefresh).to receive(:enqueue_refresh).with([project_3]).ordered
+
+        run_rake_task(rake_task, csv_url)
       end
     end
 

@@ -375,6 +375,30 @@ For example, for installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY=1
 ```
 
+#### Incremental repository backups
+
+> Introduced in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `incremental_repository_backup`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `incremental_repository_backup`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Incremental backups can be faster than full backups because they only pack changes since the last backup into the backup
+bundle for each repository. There must be an existing backup to create an incremental backup from and this backup will be overwritten. You can use the `BACKUP=timestamp_of_backup` option to choose which backup will be used.
+
+To create an incremental backup, run:
+
+```shell
+sudo gitlab-backup create INCREMENTAL=yes
+```
+
+Incremental backups can also be created from [an untarred backup](#skipping-tar-creation) by using `SKIP=tar`:
+
+```shell
+sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
+```
+
 #### Uploading backups to a remote (cloud) storage
 
 You can let the backup script upload (using the [Fog library](http://fog.io/))
@@ -1830,22 +1854,3 @@ If you have a specific reason to change the path, it can be configured in Omnibu
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect
-
-### Incremental repository backups
-
-> Introduced in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `incremental_repository_backup`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `incremental_repository_backup`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-Incremental backups can be faster than full backups because they only pack changes since the last backup into the backup
-bundle for each repository. Because incremental backups require access to the previous backup, you can't use incremental
-backups with tar files.
-
-To create an incremental backup, run:
-
-```shell
-sudo gitlab-backup create SKIP=tar INCREMENTAL=yes
-```

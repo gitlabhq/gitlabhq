@@ -1285,6 +1285,12 @@ module Ci
       end
     end
 
+    def has_expired_test_reports?
+      strong_memoize(:artifacts_expired) do
+        !has_reports?(::Ci::JobArtifact.test_reports.not_expired)
+      end
+    end
+
     private
 
     def add_message(severity, content)

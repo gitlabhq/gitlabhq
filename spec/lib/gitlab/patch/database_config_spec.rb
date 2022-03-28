@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Patch::LegacyDatabaseConfig do
+RSpec.describe Gitlab::Patch::DatabaseConfig do
   it 'module is included' do
     expect(Rails::Application::Configuration).to include(described_class)
   end

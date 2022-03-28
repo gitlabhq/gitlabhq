@@ -49,7 +49,7 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 ### Visual design
 
 Check visual design properties using your browser's _elements inspector_ ([Chrome](https://developer.chrome.com/docs/devtools/css/),
-[Firefox](https://developer.mozilla.org/en-US/docs/Tools/Page_Inspector/How_to/Open_the_Inspector)).
+[Firefox](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/open_the_inspector/index.html)).
 
 - Use recommended [colors](https://design.gitlab.com/product-foundations/colors/)
   and [typography](https://design.gitlab.com/product-foundations/type-fundamentals/).
@@ -66,7 +66,7 @@ Check visual design properties using your browser's _elements inspector_ ([Chrom
 
 Check states using your browser's _styles inspector_ to toggle CSS pseudo-classes
 like `:hover` and others ([Chrome](https://developer.chrome.com/docs/devtools/css/reference/#pseudo-class),
-[Firefox](https://developer.mozilla.org/en-US/docs/Tools/Page_Inspector/How_to/Examine_and_edit_CSS#viewing_common_pseudo-classes)).
+[Firefox](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/examine_and_edit_css/index.html#viewing-common-pseudo-classes)).
 
 - Account for all applicable states ([error](https://design.gitlab.com/content/error-messages),
   rest, loading, focus, hover, selected, disabled).
@@ -78,7 +78,7 @@ like `:hover` and others ([Chrome](https://developer.chrome.com/docs/devtools/cs
 ### Responsive
 
 Check responsive behavior using your browser's _responsive mode_ ([Chrome](https://developer.chrome.com/docs/devtools/device-mode/#viewport),
-[Firefox](https://developer.mozilla.org/en-US/docs/Tools/Responsive_Design_Mode)).
+[Firefox](https://firefox-source-docs.mozilla.org/devtools-user/responsive_design_mode/index.html)).
 
 - Account for resizing, collapsing, moving, or wrapping of elements across
   all breakpoints (even if larger viewports are prioritized).

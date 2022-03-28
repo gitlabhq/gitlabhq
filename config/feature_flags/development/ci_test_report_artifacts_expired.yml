@@ -1,0 +1,8 @@
+---
+name: ci_test_report_artifacts_expired
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83113
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356773
+milestone: '14.10'
+type: development
+group: group::pipeline insights
+default_enabled: false

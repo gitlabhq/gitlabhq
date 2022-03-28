@@ -19,7 +19,9 @@ module Backup
       @progress = progress
 
       force = ENV['force'] == 'yes'
-      incremental = Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
+      @incremental = Feature.feature_flags_available? &&
+        Feature.enabled?(:incremental_repository_backup, default_enabled: :yaml) &&
+        Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
 
       @definitions = definitions || {
         'db' => TaskDefinition.new(
@@ -30,8 +32,7 @@ module Backup
         'repositories' => TaskDefinition.new(
           destination_path: 'repositories',
           destination_optional: true,
-          task: Repositories.new(progress,
-                                 strategy: repository_backup_strategy(incremental))
+          task: Repositories.new(progress, strategy: repository_backup_strategy)
         ),
         'uploads' => TaskDefinition.new(
           destination_path: 'uploads.tar.gz',
@@ -69,6 +70,12 @@ module Backup
     end
 
     def create
+      if incremental?
+        unpack
+        read_backup_information
+        verify_backup_version
+      end
+
       @definitions.keys.each do |task_name|
         run_create_task(task_name)
       end
@@ -87,7 +94,7 @@ module Backup
       puts_time "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
            "and are not included in this backup. You will need these files to restore a backup.\n" \
            "Please back them up manually.".color(:red)
-      puts_time "Backup task is done."
+      puts_time "Backup #{backup_id} is done."
     end
 
     def run_create_task(task_name)
@@ -168,6 +175,10 @@ module Backup
     end
 
     private
+
+    def incremental?
+      @incremental
+    end
 
     def read_backup_information
       @backup_information ||= YAML.load_file(File.join(backup_path, MANIFEST_NAME))
@@ -338,8 +349,15 @@ module Backup
           puts_time 'Found more than one backup:'
           # print list of available backups
           puts_time " " + available_timestamps.join("\n ")
-          puts_time 'Please specify which one you want to restore:'
-          puts_time 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
+
+          if incremental?
+            puts_time 'Please specify which one you want to create an incremental backup for:'
+            puts_time 'rake gitlab:backup:create INCREMENTAL=true BACKUP=timestamp_of_backup'
+          else
+            puts_time 'Please specify which one you want to restore:'
+            puts_time 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
+          end
+
           exit 1
         end
 
@@ -437,11 +455,15 @@ module Backup
     end
 
     def tar_file
-      @tar_file ||= if ENV['BACKUP'].present?
-                      File.basename(ENV['BACKUP']) + FILE_NAME_SUFFIX
-                    else
-                      "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}#{FILE_NAME_SUFFIX}"
-                    end
+      @tar_file ||= "#{backup_id}#{FILE_NAME_SUFFIX}"
+    end
+
+    def backup_id
+      @backup_id ||= if ENV['BACKUP'].present?
+                       File.basename(ENV['BACKUP'])
+                     else
+                       "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"
+                     end
     end
 
     def create_attributes
@@ -477,10 +499,10 @@ module Backup
       Gitlab.config.backup.upload.connection&.provider&.downcase == 'google'
     end
 
-    def repository_backup_strategy(incremental)
+    def repository_backup_strategy
       max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
       max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
-      Backup::GitalyBackup.new(progress, incremental: incremental, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
+      Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
     end
 
     def puts_time(msg)

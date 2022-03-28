@@ -56,12 +56,12 @@ export const DAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/das
   anchor: 'enable-dast',
 });
 
-export const DAST_PROFILES_NAME = __('DAST Scans');
+export const DAST_PROFILES_NAME = __('DAST profiles');
 export const DAST_PROFILES_DESCRIPTION = s__(
   'SecurityConfiguration|Manage profiles for use by DAST scans.',
 );
 export const DAST_PROFILES_HELP_PATH = helpPagePath('user/application_security/dast/index');
-export const DAST_PROFILES_CONFIG_TEXT = s__('SecurityConfiguration|Manage scans');
+export const DAST_PROFILES_CONFIG_TEXT = s__('SecurityConfiguration|Manage profiles');
 
 export const SECRET_DETECTION_NAME = __('Secret Detection');
 export const SECRET_DETECTION_DESCRIPTION = __(

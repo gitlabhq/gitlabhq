@@ -145,6 +145,7 @@ RSpec.describe Backup::Manager do
   end
 
   describe '#create' do
+    let(:incremental_env) { 'false' }
     let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz task2.tar.gz} }
     let(:tar_file) { '1546300800_2019_01_01_12.3_gitlab_backup.tar' }
     let(:tar_system_options) { { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
@@ -166,6 +167,7 @@ RSpec.describe Backup::Manager do
     end
 
     before do
+      stub_env('INCREMENTAL', incremental_env)
       allow(ActiveRecord::Base.connection).to receive(:reconnect!)
       allow(Gitlab::BackupLogger).to receive(:info)
       allow(Kernel).to receive(:system).and_return(true)
@@ -558,6 +560,158 @@ RSpec.describe Backup::Manager do
 
         it 'loads the provider' do
           expect { subject.create }.not_to raise_error # rubocop:disable Rails/SaveBang
+        end
+      end
+    end
+
+    context 'incremental' do
+      let(:incremental_env) { 'true' }
+      let(:gitlab_version) { Gitlab::VERSION }
+      let(:tar_file) { "1546300800_2019_01_01_#{gitlab_version}_gitlab_backup.tar" }
+      let(:backup_information) do
+        {
+          backup_created_at: Time.zone.parse('2019-01-01'),
+          gitlab_version: gitlab_version
+        }
+      end
+
+      context 'when there are no backup files in the directory' do
+        before do
+          allow(Dir).to receive(:glob).and_return([])
+        end
+
+        it 'fails the operation and prints an error' do
+          expect { subject.create }.to raise_error SystemExit # rubocop:disable Rails/SaveBang
+          expect(progress).to have_received(:puts)
+            .with(a_string_matching('No backups found'))
+        end
+      end
+
+      context 'when there are two backup files in the directory and BACKUP variable is not set' do
+        before do
+          allow(Dir).to receive(:glob).and_return(
+            [
+              '1451606400_2016_01_01_1.2.3_gitlab_backup.tar',
+              '1451520000_2015_12_31_gitlab_backup.tar'
+            ]
+          )
+        end
+
+        it 'prints the list of available backups' do
+          expect { subject.create }.to raise_error SystemExit # rubocop:disable Rails/SaveBang
+          expect(progress).to have_received(:puts)
+            .with(a_string_matching('1451606400_2016_01_01_1.2.3\n 1451520000_2015_12_31'))
+        end
+
+        it 'fails the operation and prints an error' do
+          expect { subject.create }.to raise_error SystemExit # rubocop:disable Rails/SaveBang
+          expect(progress).to have_received(:puts)
+            .with(a_string_matching('Found more than one backup'))
+        end
+      end
+
+      context 'when BACKUP variable is set to a non-existing file' do
+        before do
+          allow(Dir).to receive(:glob).and_return(
+            [
+              '1451606400_2016_01_01_gitlab_backup.tar'
+            ]
+          )
+          allow(File).to receive(:exist?).and_return(false)
+
+          stub_env('BACKUP', 'wrong')
+        end
+
+        it 'fails the operation and prints an error' do
+          expect { subject.create }.to raise_error SystemExit # rubocop:disable Rails/SaveBang
+          expect(File).to have_received(:exist?).with('wrong_gitlab_backup.tar')
+          expect(progress).to have_received(:puts)
+            .with(a_string_matching('The backup file wrong_gitlab_backup.tar does not exist'))
+        end
+      end
+
+      context 'when BACKUP variable is set to a correct file' do
+        let(:tar_cmdline) { %w{tar -xf 1451606400_2016_01_01_1.2.3_gitlab_backup.tar} }
+
+        before do
+          allow(Gitlab::BackupLogger).to receive(:info)
+          allow(Dir).to receive(:glob).and_return(
+            [
+              '1451606400_2016_01_01_1.2.3_gitlab_backup.tar'
+            ]
+          )
+          allow(File).to receive(:exist?).and_return(true)
+          allow(Kernel).to receive(:system).and_return(true)
+
+          stub_env('BACKUP', '/ignored/path/1451606400_2016_01_01_1.2.3')
+        end
+
+        it 'unpacks the file' do
+          subject.create # rubocop:disable Rails/SaveBang
+
+          expect(Kernel).to have_received(:system).with(*tar_cmdline)
+        end
+
+        context 'tar fails' do
+          before do
+            expect(Kernel).to receive(:system).with(*tar_cmdline).and_return(false)
+          end
+
+          it 'logs a failure' do
+            expect do
+              subject.create # rubocop:disable Rails/SaveBang
+            end.to raise_error(SystemExit)
+
+            expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Unpacking backup failed')
+          end
+        end
+
+        context 'on version mismatch' do
+          let(:backup_information) do
+            {
+              backup_created_at: Time.zone.parse('2019-01-01'),
+              gitlab_version: "not #{gitlab_version}"
+            }
+          end
+
+          it 'stops the process' do
+            expect { subject.create }.to raise_error SystemExit # rubocop:disable Rails/SaveBang
+            expect(progress).to have_received(:puts)
+              .with(a_string_matching('GitLab version mismatch'))
+          end
+        end
+      end
+
+      context 'when there is a non-tarred backup in the directory' do
+        before do
+          allow(Dir).to receive(:glob).and_return(
+            [
+              'backup_information.yml'
+            ]
+          )
+          allow(File).to receive(:exist?).and_return(true)
+        end
+
+        it 'selects the non-tarred backup to restore from' do
+          subject.create # rubocop:disable Rails/SaveBang
+
+          expect(progress).to have_received(:puts)
+            .with(a_string_matching('Non tarred backup found '))
+        end
+
+        context 'on version mismatch' do
+          let(:backup_information) do
+            {
+              backup_created_at: Time.zone.parse('2019-01-01'),
+              gitlab_version: "not #{gitlab_version}"
+            }
+          end
+
+          it 'stops the process' do
+            expect { subject.create }.to raise_error SystemExit # rubocop:disable Rails/SaveBang
+            expect(progress).to have_received(:puts)
+              .with(a_string_matching('GitLab version mismatch'))
+          end
         end
       end
     end

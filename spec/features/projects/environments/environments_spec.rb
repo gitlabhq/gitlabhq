@@ -70,7 +70,7 @@ RSpec.describe 'Environments page', :js do
         it 'shows no environments' do
           visit_environments(project, scope: 'stopped')
 
-          expect(page).to have_content('You don\'t have any environments right now')
+          expect(page).to have_content(s_('Environments|You don\'t have any stopped environments.'))
         end
       end
 
@@ -99,7 +99,7 @@ RSpec.describe 'Environments page', :js do
         it 'shows no environments' do
           visit_environments(project, scope: 'available')
 
-          expect(page).to have_content('You don\'t have any environments right now')
+          expect(page).to have_content(s_('Environments|You don\'t have any environments.'))
         end
       end
 
@@ -120,7 +120,7 @@ RSpec.describe 'Environments page', :js do
     end
 
     it 'does not show environments and counters are set to zero' do
-      expect(page).to have_content('You don\'t have any environments right now')
+      expect(page).to have_content(s_('Environments|You don\'t have any environments.'))
 
       expect(page).to have_link("#{_('Available')} 0")
       expect(page).to have_link("#{_('Stopped')} 0")

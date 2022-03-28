@@ -23,9 +23,13 @@ module Projects
       def show
         respond_to do |format|
           format.json do
-            render json: TestSuiteSerializer
-              .new(project: project, current_user: @current_user)
-              .represent(test_suite, details: true)
+            if Feature.enabled?(:ci_test_report_artifacts_expired, project, default_enabled: :yaml) && pipeline.has_expired_test_reports?
+              render json: { errors: 'Test report artifacts have expired' }, status: :not_found
+            else
+              render json: TestSuiteSerializer
+                .new(project: project, current_user: @current_user)
+                .represent(test_suite, details: true)
+            end
           end
         end
       end

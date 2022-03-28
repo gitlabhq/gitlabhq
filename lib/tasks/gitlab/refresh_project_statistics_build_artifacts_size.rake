@@ -28,11 +28,14 @@ namespace :gitlab do
         projects = Project.where(id: ids)
         Projects::BuildArtifactsSizeRefresh.enqueue_refresh(projects)
 
+        # Take a short break to allow replication to catch up
+        Kernel.sleep(1)
+
         imported += projects.size
         missing += ids.size - projects.size
         puts "#{imported}/#{project_ids.size} (missing projects: #{missing})"
       end
-      puts 'Done.'.green
+      puts 'Done.'
     else
       puts 'Project IDs must be listed in the CSV under the header PROJECT_ID'.red
     end

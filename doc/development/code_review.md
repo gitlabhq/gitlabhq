@@ -154,7 +154,7 @@ Using checklists improves quality in software engineering. This checklist is a s
 
 ##### Quality
 
-See the [test engineering process](https://about.gitlab.com/handbook/engineering/quality/test-engineering/) for further quality guidelines.
+See the [test engineering process](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-engineering/) for further quality guidelines.
 
 1. I have self-reviewed this MR per [code review guidelines](code_review.md).
 1. For the code that this change impacts, I believe that the automated tests ([Testing Guide](testing_guide/index.md)) validate functionality that is highly important to users (including consideration of [all test levels](testing_guide/testing_levels.md)).

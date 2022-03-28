@@ -69,18 +69,19 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/handle_malformed_strings')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/runtime')
-    require_dependency Rails.root.join('lib/gitlab/patch/legacy_database_config')
+    require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
 
     config.exceptions_app = Gitlab::ExceptionsApp.new(Rails.public_path)
 
-    # To be removed in 15.0
-    # This preload is needed to convert legacy `database.yml`
-    # from `production: adapter: postgresql`
-    # into a `production: main: adapter: postgresql`
-    unless Gitlab::Utils.to_boolean(ENV['SKIP_DATABASE_CONFIG_VALIDATION'], default: false)
-      config.class.prepend(::Gitlab::Patch::LegacyDatabaseConfig)
-    end
+    # This preload is required to:
+    #
+    # 1. Convert legacy `database.yml`;
+    # 2. Include Geo post-deployment migrations settings;
+    #
+    # TODO: In 15.0, this preload can be wrapped in a Gitlab.ee block
+    #       since we don't need to convert legacy `database.yml` anymore.
+    config.class.prepend(::Gitlab::Patch::DatabaseConfig)
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

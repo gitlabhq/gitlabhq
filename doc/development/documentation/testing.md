@@ -189,7 +189,7 @@ English language. Vale's configuration is stored in the
 [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) file located in the root
 directory of projects.
 
-Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/) that extend any of
+Vale supports creating [custom tests](https://docs.errata.ai/vale/styles) that extend any of
 several types of checks, which we store in the `.linting/vale/styles/gitlab` directory in the
 documentation directory of projects.
 
