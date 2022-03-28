@@ -104,6 +104,13 @@ if merge_approval_rule.save
 end
 ```
 
+### Data volume considerations
+
+Because every audit event is persisted to the database, consider the amount of data we expect to generate, and the rate of generation, for new
+audit events. For new audit events that will produce a lot of data in the database, consider adding a
+[streaming-only audit event](#event-streaming) instead. If you have questions about this, feel free to ping
+`@gitlab-org/manage/compliance/backend` in an issue or merge request.
+
 ## Audit Event instrumentation flows
 
 The two ways we can instrument audit events have different flows.
@@ -185,5 +192,8 @@ All events where the entity is a `Group` or `Project` are recorded in the audit 
 - `Group`, events are streamed to the group's root ancestor's event streaming destinations.
 - `Project`, events are streamed to the project's root ancestor's event streaming destinations.
 
+You can add streaming-only events that are not stored in the GitLab database. This is primarily intended to be used for actions that generate
+a large amount of data. See [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76719/diffs#d56e47632f0384722d411ed3ab5b15e947bd2265_26_36)
+for an example.
 This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/epics/5925) for updates on feature
 development.
