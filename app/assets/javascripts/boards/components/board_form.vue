@@ -48,7 +48,7 @@ export default {
     fullPath: {
       default: '',
     },
-    rootPath: {
+    boardBaseUrl: {
       default: '',
     },
   },
@@ -209,7 +209,7 @@ export default {
       if (this.isDeleteForm) {
         try {
           await this.deleteBoard();
-          visitUrl(this.rootPath);
+          visitUrl(this.boardBaseUrl);
         } catch {
           this.setError({ message: this.$options.i18n.deleteErrorMessage });
         } finally {

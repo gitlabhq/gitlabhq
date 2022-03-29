@@ -10,12 +10,6 @@ export default {
   directives: {
     GlTooltip,
   },
-  props: {
-    issueBoardsContentSelector: {
-      type: String,
-      required: true,
-    },
-  },
   data() {
     return {
       isFullscreen: false,
@@ -25,7 +19,7 @@ export default {
     toggleFocusMode() {
       hide(this.$refs.toggleFocusModeButton);
 
-      const issueBoardsContent = document.querySelector(this.issueBoardsContentSelector);
+      const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
       issueBoardsContent.classList.toggle('is-focused');
 
       this.isFullscreen = !this.isFullscreen;

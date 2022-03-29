@@ -41,17 +41,7 @@ export default {
     confidential: __('Confidential'),
   },
   components: { BoardFilteredSearch },
-  inject: ['isSignedIn', 'releasesFetchPath'],
-  props: {
-    fullPath: {
-      type: String,
-      required: true,
-    },
-    boardType: {
-      type: String,
-      required: true,
-    },
-  },
+  inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'boardType'],
   computed: {
     isGroupBoard() {
       return this.boardType === BoardType.group;

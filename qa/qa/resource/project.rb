@@ -295,13 +295,6 @@ module QA
         merge_requests.find { |mr| mr[:title] == title }
       end
 
-      def runners(tag_list: nil)
-        url = tag_list ? "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}" : api_runners_path
-        response = get(request_url(url, per_page: '100'))
-
-        parse_body(response)
-      end
-
       def registry_repositories
         response = get(request_url(api_registry_repositories_path))
         parse_body(response)

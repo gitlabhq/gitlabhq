@@ -11,8 +11,7 @@ type: reference, api
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `ci_secure_files`.
-The feature is not ready for production use.
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `ci_secure_files`. Limited to 100 secure files per project. The feature is not ready for production use. 
 
 ## List project secure files
 

@@ -62,7 +62,7 @@ describe('BoardForm', () => {
         };
       },
       provide: {
-        rootPath: 'root',
+        boardBaseUrl: 'root',
       },
       mocks: {
         $apollo: {

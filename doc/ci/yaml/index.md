@@ -2620,9 +2620,11 @@ Multiple runners must exist, or a single runner must be configured to run multip
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**:
+**Possible inputs**: An array of hashes of variables:
 
-- A numeric value from `2` to `50`.
+- The variable names can use only numbers, letters, and underscores (`_`).
+- The values must be either a string, or an array of strings.
+- The number of permutations cannot exceed 50.
 
 **Example of `parallel:matrix`**:
 

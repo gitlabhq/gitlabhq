@@ -46,11 +46,12 @@ module QA
       end
 
       def remove_via_api!
-        runners = project.runners(tag_list: @tags)
+        runners = list_of_runners(tag_list: @tags)
 
         return if runners.blank?
 
         this_runner = runners.find { |runner| runner[:description] == name }
+
         unless this_runner
           raise "Project #{project.path_with_namespace} does not have a runner with a description matching #{name} #{"or tags #{@tags}" if @tags&.any?}. Runners available: #{runners}"
         end
@@ -62,6 +63,16 @@ module QA
         Service::DockerRun::GitlabRunner.new(name).remove!
       end
 
+      def list_of_runners(tag_list: nil)
+        url = tag_list ? "#{api_post_path}?tag_list=#{tag_list.compact.join(',')}" : api_post_path
+        response = get(request_url(url, per_page: '100'))
+
+        # Capturing 500 error code responses to log this issue better. We can consider cleaning it up once https://gitlab.com/gitlab-org/gitlab/-/issues/331753 is addressed.
+        raise "Response returned a #{response.code} error code. #{response.body}" if response.code == Support::API::HTTP_STATUS_SERVER_ERROR
+
+        parse_body(response)
+      end
+
       def api_delete_path
         "/runners/#{id}"
       end
@@ -70,6 +81,7 @@ module QA
       end
 
       def api_post_path
+        "/runners"
       end
 
       def api_post_body

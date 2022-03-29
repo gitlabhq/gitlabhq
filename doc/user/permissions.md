@@ -161,7 +161,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Rename project                                                                                                                            |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Share (invite) projects with groups                                                                                                       |          |          |           | ✓ (*7*)    | ✓ (*7*)  |
 | [Projects](project/index.md):<br>View 2FA status of members                                                                                                                |          |          |           | ✓          | ✓        |
-| [Projects](project/index.md):<br>Administer project compliance frameworks                                                                                                  |          |          |           |            | ✓        |
+| [Projects](project/index.md):<br>Assign project to a compliance framework                                                                                                  |          |          |           |            | ✓        |
 | [Projects](project/index.md):<br>Archive project                                                                                                                           |          |          |           |            | ✓        |
 | [Projects](project/index.md):<br>Change project visibility level                                                                                                           |          |          |           |            | ✓        |
 | [Projects](project/index.md):<br>Delete project                                                                                                                            |          |          |           |            | ✓        |
@@ -407,7 +407,7 @@ The following table lists group permissions available for each role:
 | List group deploy tokens                                                                |       |          |           | ✓          | ✓     |
 | Manage [group push rules](group/index.md#group-push-rules)                              |       |          |           | ✓          | ✓     |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |
-| Administer project compliance frameworks                                                |       |          |           |            | ✓     |
+| Create and manage compliance frameworks                                                |       |          |           |            | ✓     |
 | Create/Delete group deploy tokens                                                       |       |          |           |            | ✓     |
 | Change group visibility level                                                           |       |          |           |            | ✓     |
 | Delete group                                                                            |       |          |           |            | ✓     |

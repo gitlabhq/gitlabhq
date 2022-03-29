@@ -16,6 +16,7 @@ module BoardsHelper
       bulk_update_path: @bulk_issues_path,
       can_update: can_update?.to_s,
       can_admin_list: can_admin_list?.to_s,
+      can_admin_board: can_admin_board?.to_s,
       time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s,
       parent: current_board_parent.model_name.param_key,
       group_id: group_id,
@@ -23,7 +24,11 @@ module BoardsHelper
       labels_fetch_path: labels_fetch_path,
       labels_manage_path: labels_manage_path,
       releases_fetch_path: releases_fetch_path,
-      board_type: board.to_type
+      board_type: board.to_type,
+      has_scope: board.scoped?.to_s,
+      has_missing_boards: has_missing_boards?.to_s,
+      multiple_boards_available: multiple_boards_available?.to_s,
+      board_base_url: board_base_url
     }
   end
 
@@ -85,6 +90,11 @@ module BoardsHelper
     current_board_parent.multiple_issue_boards_available?
   end
 
+  # Boards are hidden when extra boards were created but the license does not allow multiple boards
+  def has_missing_boards?
+    !multiple_boards_available? && current_board_parent.boards.size > 1
+  end
+
   def current_board_path(board)
     @current_board_path ||= if board.group_board?
                               group_board_path(current_board_parent, board)
@@ -107,6 +117,10 @@ module BoardsHelper
 
   def can_admin_list?
     can?(current_user, :admin_issue_board_list, current_board_parent)
+  end
+
+  def can_admin_board?
+    can?(current_user, :admin_issue_board, current_board_parent)
   end
 
   def can_admin_issue?

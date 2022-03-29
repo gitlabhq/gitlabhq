@@ -40,36 +40,20 @@ export default {
   directives: {
     GlModalDirective,
   },
-  inject: ['fullPath'],
+  inject: [
+    'boardBaseUrl',
+    'fullPath',
+    'canAdminBoard',
+    'multipleIssueBoardsAvailable',
+    'hasMissingBoards',
+    'scopedIssueBoardFeatureEnabled',
+    'weights',
+  ],
   props: {
     throttleDuration: {
       type: Number,
       default: 200,
       required: false,
-    },
-    boardBaseUrl: {
-      type: String,
-      required: true,
-    },
-    hasMissingBoards: {
-      type: Boolean,
-      required: true,
-    },
-    canAdminBoard: {
-      type: Boolean,
-      required: true,
-    },
-    multipleIssueBoardsAvailable: {
-      type: Boolean,
-      required: true,
-    },
-    scopedIssueBoardFeatureEnabled: {
-      type: Boolean,
-      required: true,
-    },
-    weights: {
-      type: Array,
-      required: true,
     },
   },
   data() {

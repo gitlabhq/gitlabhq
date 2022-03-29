@@ -105,16 +105,16 @@ describe('BoardsSelector', () => {
       apolloProvider: fakeApollo,
       propsData: {
         throttleDuration,
+      },
+      attachTo: document.body,
+      provide: {
+        fullPath: '',
         boardBaseUrl: `${TEST_HOST}/board/base/url`,
         hasMissingBoards: false,
         canAdminBoard: true,
         multipleIssueBoardsAvailable: true,
         scopedIssueBoardFeatureEnabled: true,
         weights: [],
-      },
-      attachTo: document.body,
-      provide: {
-        fullPath: '',
       },
     });
   };

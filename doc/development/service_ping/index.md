@@ -582,7 +582,8 @@ ServicePing::SubmitService.new(skip_db_write: true).execute
 
 ## Manually upload Service Ping payload
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7388) in GitLab 14.8 with a flag named `admin_application_settings_service_usage_data_center`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7388) in GitLab 14.8 with a flag named `admin_application_settings_service_usage_data_center`. Disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83265) in GitLab 14.10.
 
 Service Ping payload can be uploaded to GitLab even if your application instance doesn't have access to the internet,
 or you don't have Service Ping [cron job](#how-service-ping-works) enabled.

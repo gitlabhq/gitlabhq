@@ -7,6 +7,8 @@ RSpec.describe 'dev rake tasks' do
     Rake.application.rake_require 'tasks/gitlab/setup'
     Rake.application.rake_require 'tasks/gitlab/shell'
     Rake.application.rake_require 'tasks/dev'
+    Rake.application.rake_require 'active_record/railties/databases'
+    Rake.application.rake_require 'tasks/gitlab/db'
   end
 
   describe 'setup' do
@@ -35,6 +37,37 @@ RSpec.describe 'dev rake tasks' do
       expect(Rails.application).to receive(:eager_load!)
 
       load_task
+    end
+  end
+
+  describe 'copy_db:ci' do
+    before do
+      skip_if_multiple_databases_not_setup
+
+      configurations = instance_double(ActiveRecord::DatabaseConfigurations)
+      allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
+      allow(configurations).to receive(:configs_for).with(env_name: Rails.env, name: 'ci').and_return(ci_configuration)
+    end
+
+    subject(:load_task) { run_rake_task('dev:setup_ci_db') }
+
+    let(:ci_configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'ci', database: '__test_db_ci') }
+
+    it 'creates the database from main' do
+      expect(ApplicationRecord.connection).to receive(:create_database).with(
+        ci_configuration.database,
+        template: ApplicationRecord.connection_db_config.database
+      )
+
+      run_rake_task('dev:copy_db:ci')
+    end
+
+    context 'when the database already exists' do
+      it 'prints out a warning' do
+        expect(ApplicationRecord.connection).to receive(:create_database).and_raise(ActiveRecord::DatabaseAlreadyExists)
+
+        expect { run_rake_task('dev:copy_db:ci') }.to output(/Database '#{ci_configuration.database}' already exists/).to_stderr
+      end
     end
   end
 end
