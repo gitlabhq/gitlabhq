@@ -39,6 +39,9 @@ To install the agent in your cluster:
 
 You must register an agent with GitLab.
 
+FLAG:
+In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
 Prerequisites:
 
 - For a [GitLab CI/CD workflow](../ci_cd_tunnel.md), ensure that
@@ -48,8 +51,7 @@ To register an agent with GitLab:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. From the left sidebar, select **Infrastructure > Kubernetes clusters**.
-1. Select **Actions**.
-1. From the **Select an agent** dropdown list:
+1. Select **Connect a cluster (agent)**.
    - If you want to create a configuration with CI/CD defaults, type a name for the agent.
    - If you already have an [agent configuration file](#create-an-agent-configuration-file), select it from the list.
 1. Select **Register an agent**.

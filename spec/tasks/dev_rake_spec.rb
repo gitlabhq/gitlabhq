@@ -17,7 +17,9 @@ RSpec.describe 'dev rake tasks' do
     it 'sets up the development environment', :aggregate_failures do
       expect(Rake::Task['gitlab:setup']).to receive(:invoke)
 
+      expect(connections).to all(receive(:execute).with('SET statement_timeout TO 0'))
       expect(connections).to all(receive(:execute).with('ANALYZE'))
+      expect(connections).to all(receive(:execute).with('RESET statement_timeout'))
 
       expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
 

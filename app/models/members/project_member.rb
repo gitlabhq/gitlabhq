@@ -82,10 +82,6 @@ class ProjectMember < Member
     source
   end
 
-  def owner?
-    project.owner == user
-  end
-
   def notifiable_options
     { project: project }
   end
@@ -132,7 +128,10 @@ class ProjectMember < Member
   end
 
   def post_create_hook
-    unless owner?
+    # The creator of a personal project gets added as a `ProjectMember`
+    # with `OWNER` access during creation of a personal project,
+    # but we do not want to trigger notifications to the same person who created the personal project.
+    unless project.personal_namespace_holder?(user)
       event_service.join_project(self.project, self.user)
       run_after_commit_or_now { notification_service.new_project_member(self) }
     end

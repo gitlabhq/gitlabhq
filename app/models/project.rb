@@ -899,6 +899,18 @@ class Project < ApplicationRecord
     association(:namespace).loaded?
   end
 
+  def personal_namespace_holder?(user)
+    return false unless personal?
+    return false unless user
+
+    # We do not want to use a check like `project.team.owner?(user)`
+    # here because that would depend upon the state of the `project_authorizations` cache,
+    # and also perform the check across multiple `owners` of the project, but our intention
+    # is to check if the user is the "holder" of the personal namespace, so need to make this
+    # check against only a single user (ie, namespace.owner).
+    namespace.owner == user
+  end
+
   def project_setting
     super.presence || build_project_setting
   end

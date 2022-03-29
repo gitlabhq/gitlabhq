@@ -6,7 +6,7 @@ module API
     integrations = Helpers::IntegrationsHelpers.integrations
     integration_classes = Helpers::IntegrationsHelpers.integration_classes
 
-    if Rails.env.development?
+    if Gitlab.dev_or_test_env?
       integrations['mock-ci'] = [
         {
           required: true,

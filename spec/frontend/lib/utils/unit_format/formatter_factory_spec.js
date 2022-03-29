@@ -31,10 +31,15 @@ describe('unit_format/formatter_factory', () => {
       expect(formatNumber(12.345, 4)).toBe('12.3450');
     });
 
-    it('formats a large integer with a length limit', () => {
+    it('formats a large integer with a max length - using legacy positional argument', () => {
       expect(formatNumber(10 ** 7, undefined)).toBe('10,000,000');
       expect(formatNumber(10 ** 7, undefined, 9)).toBe('1.00e+7');
       expect(formatNumber(10 ** 7, undefined, 10)).toBe('10,000,000');
+    });
+
+    it('formats a large integer with a max length', () => {
+      expect(formatNumber(10 ** 7, undefined, { maxLength: 9 })).toBe('1.00e+7');
+      expect(formatNumber(10 ** 7, undefined, { maxLength: 10 })).toBe('10,000,000');
     });
 
     describe('formats with a different locale', () => {
@@ -92,7 +97,7 @@ describe('unit_format/formatter_factory', () => {
       expect(formatSuffix(-1000000)).toBe('-1,000,000pop.');
     });
 
-    it('formats a floating point nugative number', () => {
+    it('formats a floating point negative number', () => {
       expect(formatSuffix(-0.1)).toBe('-0.1pop.');
       expect(formatSuffix(-0.1, 0)).toBe('-0pop.');
       expect(formatSuffix(-0.1, 2)).toBe('-0.10pop.');
@@ -108,9 +113,19 @@ describe('unit_format/formatter_factory', () => {
       expect(formatSuffix(10 ** 10)).toBe('10,000,000,000pop.');
     });
 
-    it('formats a large integer with a length limit', () => {
+    it('formats using a unit separator', () => {
+      expect(formatSuffix(10, 0, { unitSeparator: ' ' })).toBe('10 pop.');
+      expect(formatSuffix(10, 0, { unitSeparator: ' x ' })).toBe('10 x pop.');
+    });
+
+    it('formats a large integer with a max length - using legacy positional argument', () => {
       expect(formatSuffix(10 ** 7, undefined, 10)).toBe('1.00e+7pop.');
       expect(formatSuffix(10 ** 10, undefined, 10)).toBe('1.00e+10pop.');
+    });
+
+    it('formats a large integer with a max length', () => {
+      expect(formatSuffix(10 ** 7, undefined, { maxLength: 10 })).toBe('1.00e+7pop.');
+      expect(formatSuffix(10 ** 10, undefined, { maxLength: 10 })).toBe('1.00e+10pop.');
     });
   });
 
@@ -143,6 +158,10 @@ describe('unit_format/formatter_factory', () => {
         expect(formatGibibytes(10 ** 10)).toBe('10GB');
         expect(formatGibibytes(10 ** 11)).toBe('100GB');
       });
+
+      it('formats bytes using a unit separator', () => {
+        expect(formatGibibytes(1, 0, { unitSeparator: ' ' })).toBe('1 B');
+      });
     });
 
     describe('scaled format with offset', () => {
@@ -172,6 +191,19 @@ describe('unit_format/formatter_factory', () => {
         expect(formatGigaBytes(10 ** 7)).toBe('10PB');
         expect(formatGigaBytes(10 ** 8)).toBe('100PB');
         expect(formatGigaBytes(10 ** 9)).toBe('1EB');
+      });
+
+      it('formats bytes using a unit separator', () => {
+        expect(formatGigaBytes(1, undefined, { unitSeparator: ' ' })).toBe('1 GB');
+      });
+
+      it('formats long byte numbers with max length - using legacy positional argument', () => {
+        expect(formatGigaBytes(1, 8, 7)).toBe('1.00e+0GB');
+      });
+
+      it('formats long byte numbers with max length', () => {
+        expect(formatGigaBytes(1, 8)).toBe('1.00000000GB');
+        expect(formatGigaBytes(1, 8, { maxLength: 7 })).toBe('1.00e+0GB');
       });
 
       it('formatting of too large numbers is not suported', () => {
@@ -216,6 +248,10 @@ describe('unit_format/formatter_factory', () => {
         expect(formatMilligrams(-100)).toBe('-100mg');
         expect(formatMilligrams(-(10 ** 4))).toBe('-10g');
       });
+
+      it('formats using a unit separator', () => {
+        expect(formatMilligrams(1, undefined, { unitSeparator: ' ' })).toBe('1 mg');
+      });
     });
   });
 
@@ -253,6 +289,10 @@ describe('unit_format/formatter_factory', () => {
         expect(formatScaledBin(10 * 1024 ** 3)).toBe('10GiB');
         expect(formatScaledBin(100 * 1024 ** 3)).toBe('100GiB');
       });
+
+      it('formats using a unit separator', () => {
+        expect(formatScaledBin(1, undefined, { unitSeparator: ' ' })).toBe('1 B');
+      });
     });
 
     describe('scaled format with offset', () => {
@@ -286,6 +326,10 @@ describe('unit_format/formatter_factory', () => {
         expect(formatGibibytes(1 * 1024 ** 3)).toBe('1EiB');
         expect(formatGibibytes(10 * 1024 ** 3)).toBe('10EiB');
         expect(formatGibibytes(100 * 1024 ** 3)).toBe('100EiB');
+      });
+
+      it('formats using a unit separator', () => {
+        expect(formatGibibytes(1, undefined, { unitSeparator: ' ' })).toBe('1 GiB');
       });
 
       it('formatting of too large numbers is not suported', () => {

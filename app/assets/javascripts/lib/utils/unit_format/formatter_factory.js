@@ -5,7 +5,7 @@ import { formatNumber } from '~/locale';
  *
  * @param {Number} number to be converted
  *
- * @param {options.maxCharLength} Max output char length at the
+ * @param {options.maxLength} Max output char length at the
  * expense of precision, if the output is longer than this,
  * the formatter switches to using exponential notation.
  *
@@ -16,14 +16,33 @@ import { formatNumber } from '~/locale';
  * `formatNumber` such as `valueFactor`, `unit` and `style`.
  *
  */
-const formatNumberNormalized = (value, { maxCharLength, valueFactor = 1, ...options }) => {
+const formatNumberNormalized = (value, { maxLength, valueFactor = 1, ...options }) => {
   const formatted = formatNumber(value * valueFactor, options);
 
-  if (maxCharLength !== undefined && formatted.length > maxCharLength) {
+  if (maxLength !== undefined && formatted.length > maxLength) {
     // 123456 becomes 1.23e+8
     return value.toExponential(2);
   }
   return formatted;
+};
+
+/**
+ * This function converts the old positional arguments into an options
+ * object.
+ *
+ * This is done so we can support legacy fractionDigits and maxLength as positional
+ * arguments, as well as the better options object.
+ *
+ * @param {Object|Number} options
+ * @returns {Object} options given to the formatter
+ */
+const getFormatterArguments = (options) => {
+  if (typeof options === 'object' && options !== null) {
+    return options;
+  }
+  return {
+    maxLength: options,
+  };
 };
 
 /**
@@ -40,7 +59,9 @@ const scaledFormatter = (units, unitFactor = 1000) => {
     return new RangeError(`unitFactor cannot have the value 0.`);
   }
 
-  return (value, fractionDigits) => {
+  return (value, fractionDigits, options) => {
+    const { maxLength, unitSeparator = '' } = getFormatterArguments(options);
+
     if (value === null) {
       return '';
     }
@@ -66,11 +87,13 @@ const scaledFormatter = (units, unitFactor = 1000) => {
     }
 
     const unit = units[scale];
+    const length = maxLength !== undefined ? maxLength - unit.length : undefined;
 
     return `${formatNumberNormalized(num, {
+      maxLength: length,
       maximumFractionDigits: fractionDigits,
       minimumFractionDigits: fractionDigits,
-    })}${unit}`;
+    })}${unitSeparator}${unit}`;
   };
 };
 
@@ -78,14 +101,16 @@ const scaledFormatter = (units, unitFactor = 1000) => {
  * Returns a function that formats a number as a string.
  */
 export const numberFormatter = (style = 'decimal', valueFactor = 1) => {
-  return (value, fractionDigits, maxCharLength) => {
-    return `${formatNumberNormalized(value, {
-      maxCharLength,
+  return (value, fractionDigits, options) => {
+    const { maxLength } = getFormatterArguments(options);
+
+    return formatNumberNormalized(value, {
+      maxLength,
       valueFactor,
       style,
       maximumFractionDigits: fractionDigits,
       minimumFractionDigits: fractionDigits,
-    })}`;
+    });
   };
 };
 
@@ -93,15 +118,16 @@ export const numberFormatter = (style = 'decimal', valueFactor = 1) => {
  * Returns a function that formats a number as a string with a suffix.
  */
 export const suffixFormatter = (unit = '', valueFactor = 1) => {
-  return (value, fractionDigits, maxCharLength) => {
-    const length = maxCharLength !== undefined ? maxCharLength - unit.length : undefined;
+  return (value, fractionDigits, options) => {
+    const { maxLength, unitSeparator = '' } = getFormatterArguments(options);
 
+    const length = maxLength !== undefined ? maxLength - unit.length : undefined;
     return `${formatNumberNormalized(value, {
-      maxCharLength: length,
+      maxLength: length,
       valueFactor,
       maximumFractionDigits: fractionDigits,
       minimumFractionDigits: fractionDigits,
-    })}${unit}`;
+    })}${unitSeparator}${unit}`;
   };
 };
 

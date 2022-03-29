@@ -726,6 +726,33 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#personal_namespace_holder?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:namespace_user) { create(:user) }
+    let_it_be(:admin_user) { create(:user, :admin) }
+    let_it_be(:personal_project) { create(:project, namespace: namespace_user.namespace) }
+    let_it_be(:group_project) { create(:project, group: group) }
+    let_it_be(:another_user) { create(:user) }
+    let_it_be(:group_owner_user) { create(:user).tap { |user| group.add_owner(user) } }
+
+    where(:project, :user, :result) do
+      ref(:personal_project)      | ref(:namespace_user)   | true
+      ref(:personal_project)      | ref(:admin_user)       | false
+      ref(:personal_project)      | ref(:another_user)     | false
+      ref(:personal_project)      | nil                    | false
+      ref(:group_project)         | ref(:namespace_user)   | false
+      ref(:group_project)         | ref(:group_owner_user) | false
+      ref(:group_project)         | ref(:another_user)     | false
+      ref(:group_project)         | nil                    | false
+      ref(:group_project)         | nil                    | false
+      ref(:group_project)         | ref(:admin_user)       | false
+    end
+
+    with_them do
+      it { expect(project.personal_namespace_holder?(user)).to eq(result) }
+    end
+  end
+
   describe '#default_pipeline_lock' do
     let(:project) { build_stubbed(:project) }
 

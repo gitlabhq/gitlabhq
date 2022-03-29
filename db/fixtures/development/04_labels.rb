@@ -37,13 +37,15 @@ class Gitlab::Seeder::ProjectLabels
 end
 
 Gitlab::Seeder.quiet do
-  puts "\nGenerating group labels"
-  Group.all.find_each do |group|
-    Gitlab::Seeder::GroupLabels.new(group).seed!
+  label_per_group = 10
+  puts "\nGenerating group labels: #{Group.not_mass_generated.count * label_per_group}"
+  Group.not_mass_generated.find_each do |group|
+    Gitlab::Seeder::GroupLabels.new(group, label_per_group: label_per_group).seed!
   end
 
-  puts "\nGenerating project labels"
+  label_per_project = 5
+  puts "\nGenerating project labels: #{Project.not_mass_generated.count * label_per_project}"
   Project.not_mass_generated.find_each do |project|
-    Gitlab::Seeder::ProjectLabels.new(project).seed!
+    Gitlab::Seeder::ProjectLabels.new(project, label_per_project: label_per_project).seed!
   end
 end

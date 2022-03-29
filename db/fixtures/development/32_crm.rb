@@ -41,7 +41,7 @@ end
 Gitlab::Seeder.quiet do
   puts "\nGenerating group crm organizations and contacts"
 
-  Group.where('parent_id IS NULL').first(10).each do |group|
+  Group.not_mass_generated.where('parent_id IS NULL').first(10).each do |group|
     Gitlab::Seeder::Crm.new(group).seed!
   end
 end
