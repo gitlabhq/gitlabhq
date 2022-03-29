@@ -109,7 +109,7 @@ module.exports = (path, options = {}) => {
   return {
     clearMocks: true,
     testMatch,
-    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql'],
+    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql', 'yaml'],
     moduleNameMapper,
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
@@ -127,6 +127,7 @@ module.exports = (path, options = {}) => {
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
       '^.+\\.js$': 'babel-jest',
       '^.+\\.vue$': 'vue-jest',
+      '^.+\\.yml$': './spec/frontend/__helpers__/yaml_transformer.js',
       '^.+\\.(md|zip|png)$': 'jest-raw-loader',
     },
     transformIgnorePatterns: [

@@ -1,0 +1,22 @@
+{
+  "variables": {
+    "DEPLOY_ENVIRONMENT": {
+      "value": "staging",
+      "description": "The deployment target. Change this variable to 'canary' or 'production' if needed."
+    }
+  },
+  "gitlab-ci-variables-string": {
+    "stage": "test",
+    "script": ["true"],
+    "variables": {
+      "TEST_VAR": "String variable"
+    }
+  },
+  "gitlab-ci-variables-integer": {
+    "stage": "test",
+    "script": ["true"],
+    "variables": {
+      "canonical": 685230
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "gitlab-ci-retry-object-unknown-when": {
+    "stage": "test",
+    "script": "rspec",
+    "retry": {
+      "when": "gitlab-ci-retry-object-unknown-when"
+    }
+  }
+}

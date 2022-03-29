@@ -1,0 +1,75 @@
+{
+  "deploy to production 1": {
+    "stage": "deploy",
+    "script": "git push production HEAD: master",
+    "environment": "production"
+  },
+  "deploy to production 2": {
+    "stage": "deploy",
+    "script": "git push production HEAD:master",
+    "environment": {
+      "name": "production"
+    }
+  },
+  "deploy to production 3": {
+    "stage": "deploy",
+    "script": "git push production HEAD:master",
+    "environment": {
+      "name": "production",
+      "url": "https://prod.example.com"
+    }
+  },
+  "review_app 1": {
+    "stage": "deploy",
+    "script": "make deploy-app",
+    "environment": {
+      "name": "review/$CI_COMMIT_REF_NAME",
+      "url": "https://$CI_ENVIRONMENT_SLUG.example.com",
+      "on_stop": "stop_review_app"
+    }
+  },
+  "stop_review_app": {
+    "stage": "deploy",
+    "variables": {
+      "GIT_STRATEGY": "none"
+    },
+    "script": "make delete-app",
+    "when": "manual",
+    "environment": {
+      "name": "review/$CI_COMMIT_REF_NAME",
+      "action": "stop"
+    }
+  },
+  "review_app 2": {
+    "script": "deploy-review-app",
+    "environment": {
+      "name": "review/$CI_COMMIT_REF_NAME",
+      "auto_stop_in": "1 day"
+    }
+  },
+  "deploy 1": {
+    "stage": "deploy",
+    "script": "make deploy-app",
+    "environment": {
+      "name": "production",
+      "kubernetes": {
+        "namespace": "production"
+      }
+    }
+  },
+  "deploy 2": {
+    "script": "echo",
+    "environment": {
+      "name": "customer-portal",
+      "deployment_tier": "production"
+    }
+  },
+  "deploy as review app": {
+    "stage": "deploy",
+    "script": "make deploy",
+    "environment": {
+      "name": "review/$CI_COMMIT_REF_NAME",
+      "url": "https://$CI_ENVIRONMENT_SLUG.example.com/"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+# Covers https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74164
+
+# test for workflow:rules:changes and workflow:rules:exists
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      exists:
+        - Dockerfile
+      changes:
+        - Dockerfile
+      variables:
+        IS_A_FEATURE: 'true'
+      when: always

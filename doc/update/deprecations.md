@@ -1315,12 +1315,12 @@ In milestone 15.0, we will remove the `pipelines` attribute from the API respons
 ### REST and GraphQL API Runner status will not return `paused`
 
 WARNING:
-This feature will be changed or removed in 15.0
+This feature will be changed or removed in 16.0
 as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-The GitLab Runner REST and GraphQL API endpoints will not return `paused` or `active` as a status in GitLab 15.0.
+The GitLab Runner REST and GraphQL API endpoints will not return `paused` or `active` as a status in GitLab 16.0.
 
 A runner's status will only relate to runner contact status, such as:
 `online`, `offline`, or `not_connected`. Status `paused` or `active` will no longer appear.
@@ -1328,7 +1328,7 @@ A runner's status will only relate to runner contact status, such as:
 When checking if a runner is `paused`, API users are advised to check the boolean attribute
 `paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
 
-**Planned removal milestone: 15.0 (2022-05-22)**
+**Planned removal milestone: 16.0 (2023-04-22)**
 
 ### Support for SLES 12 SP2
 

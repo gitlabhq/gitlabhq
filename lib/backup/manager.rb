@@ -389,7 +389,8 @@ module Backup
     end
 
     def skipped?(item)
-      backup_information[:skipped] && backup_information[:skipped].include?(item)
+      ENV.fetch('SKIP', '').include?(item) ||
+        backup_information[:skipped] && backup_information[:skipped].include?(item)
     end
 
     def enabled_task?(task_name)

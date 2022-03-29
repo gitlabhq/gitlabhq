@@ -117,7 +117,7 @@ module Import
         error: exception.response_body
       )
 
-      error(_('Import failed due to a GitHub error: %{original}') % { original: exception.response_body }, :unprocessable_entity)
+      error(_('Import failed due to a GitHub error: %{original} (HTTP %{code})') % { original: exception.response_body, code: exception.response_status }, :unprocessable_entity)
     end
 
     def log_and_return_error(message, translated_message, http_status)

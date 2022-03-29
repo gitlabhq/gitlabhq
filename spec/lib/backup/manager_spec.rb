@@ -228,6 +228,20 @@ RSpec.describe Backup::Manager do
       end
     end
 
+    context 'when SKIP env is set' do
+      let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz} }
+
+      before do
+        stub_env('SKIP', 'task2')
+      end
+
+      it 'executes tar' do
+        subject.create # rubocop:disable Rails/SaveBang
+
+        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+      end
+    end
+
     context 'when the destination is optional' do
       let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz} }
       let(:definitions) do

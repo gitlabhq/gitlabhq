@@ -18864,7 +18864,7 @@ msgstr ""
 msgid "Import and export rate limits"
 msgstr ""
 
-msgid "Import failed due to a GitHub error: %{original}"
+msgid "Import failed due to a GitHub error: %{original} (HTTP %{code})"
 msgstr ""
 
 msgid "Import from"

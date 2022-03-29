@@ -1,0 +1,24 @@
+{
+  "test-job": {
+    "stage": "build",
+    "cache": [
+      {
+        "key": {
+          "files": ["Gemfile.lock"]
+        },
+        "paths": ["vendor/ruby"]
+      },
+      {
+        "key": {
+          "files": ["yarn.lock"]
+        },
+        "paths": [".yarn-cache/"]
+      }
+    ],
+    "script": [
+      "bundle install --path=vendor",
+      "yarn install --cache-folder .yarn-cache",
+      "echo Run tests..."
+    ]
+  }
+}

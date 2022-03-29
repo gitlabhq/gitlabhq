@@ -1,0 +1,54 @@
+{
+  "default": {
+    "image": "ruby:2.4",
+    "before_script": ["echo Hello World"]
+  },
+  "variables": {
+    "DOMAIN": "example.com",
+    "WEBHOOK_URL": "https://my-webhook.example.com"
+  },
+  "rubocop": {
+    "inherit": {
+      "default": false,
+      "variables": false
+    },
+    "script": "bundle exec rubocop"
+  },
+  "rspec": {
+    "inherit": {
+      "default": ["image"],
+      "variables": ["WEBHOOK_URL"]
+    },
+    "script": "bundle exec rspec"
+  },
+  "capybara": {
+    "inherit": {
+      "variables": false
+    },
+    "script": "bundle exec capybara"
+  },
+  "karma": {
+    "inherit": {
+      "default": true,
+      "variables": ["DOMAIN"]
+    },
+    "script": "karma"
+  },
+  "inherit literally all": {
+    "inherit": {
+      "default": [
+        "after_script",
+        "artifacts",
+        "before_script",
+        "cache",
+        "image",
+        "interruptible",
+        "retry",
+        "services",
+        "tags",
+        "timeout"
+      ]
+    },
+    "script": "true"
+  }
+}

@@ -34,11 +34,11 @@ RSpec.describe Import::GithubService do
         subject.execute(access_params, :github)
       end
 
-      it 'returns an error' do
+      it 'returns an error with message and code' do
         result = subject.execute(access_params, :github)
 
         expect(result).to include(
-          message: 'Import failed due to a GitHub error: Not Found',
+          message: 'Import failed due to a GitHub error: Not Found (HTTP 404)',
           status: :error,
           http_status: :unprocessable_entity
         )

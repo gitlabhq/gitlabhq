@@ -1,0 +1,60 @@
+{
+  "gitlab-ci-retry-int": {
+    "stage": "test",
+    "script": "rspec",
+    "retry": 2
+  },
+  "gitlab-ci-retry-object-no-max": {
+    "stage": "test",
+    "script": "rspec",
+    "retry": {
+      "when": "runner_system_failure"
+    }
+  },
+  "gitlab-ci-retry-object-single-when": {
+    "stage": "test",
+    "script": "rspec",
+    "retry": {
+      "max": 2,
+      "when": "runner_system_failure"
+    }
+  },
+  "gitlab-ci-retry-object-multiple-when": {
+    "stage": "test",
+    "script": "rspec",
+    "retry": {
+      "max": 2,
+      "when": ["runner_system_failure", "stuck_or_timeout_failure"]
+    }
+  },
+  "gitlab-ci-retry-object-multiple-when-dupes": {
+    "stage": "test",
+    "script": "rspec",
+    "retry": {
+      "max": 2,
+      "when": ["runner_system_failure", "runner_system_failure"]
+    }
+  },
+  "gitlab-ci-retry-object-all-when": {
+    "stage": "test",
+    "script": "rspec",
+    "retry": {
+      "max": 2,
+      "when": [
+        "always",
+        "unknown_failure",
+        "script_failure",
+        "api_failure",
+        "stuck_or_timeout_failure",
+        "runner_system_failure",
+        "runner_unsupported",
+        "stale_schedule",
+        "job_execution_timeout",
+        "archived_failure",
+        "unmet_prerequisites",
+        "scheduler_failure",
+        "data_integrity_failure"
+      ]
+    }
+  }
+}

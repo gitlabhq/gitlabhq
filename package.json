@@ -206,6 +206,8 @@
     "@types/jest": "^26.0.24",
     "@vue/test-utils": "1.3.0",
     "acorn": "^6.3.0",
+    "ajv": "^8.10.0",
+    "ajv-formats": "^2.1.1",
     "axios-mock-adapter": "^1.15.0",
     "babel-jest": "^26.5.2",
     "babel-plugin-dynamic-import-node": "^2.3.3",

@@ -1,0 +1,13 @@
+{
+  "gitlab-ci-release-assets-links-empty": {
+    "script": "dostuff",
+    "stage": "deploy",
+    "release": {
+      "description": "Created using the release-cli $EXTRA_DESCRIPTION",
+      "tag_name": "$CI_COMMIT_TAG",
+      "assets": {
+        "links": []
+      }
+    }
+  }
+}

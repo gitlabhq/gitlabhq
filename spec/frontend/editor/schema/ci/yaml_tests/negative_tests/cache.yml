@@ -1,0 +1,15 @@
+# Covers https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70779
+stages:
+  - prepare
+
+# invalid cache:when value
+job1:
+  stage: prepare
+  cache:
+    when: 0
+
+# invalid cache:when value
+job2:
+  stage: prepare
+  cache:
+    when: 'never'

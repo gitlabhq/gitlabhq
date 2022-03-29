@@ -1,0 +1,12 @@
+{
+  "default": {
+    "secrets": {
+      "DATABASE_PASSWORD": {
+        "vault": "production/db/password"
+      }
+    },
+    "environment": {
+      "name": "test"
+    }
+  }
+}
