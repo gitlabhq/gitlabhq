@@ -23451,9 +23451,6 @@ msgstr ""
 msgid "Merge request dependencies"
 msgstr ""
 
-msgid "Merge request diff sha parameter is required for the merge quick action."
-msgstr ""
-
 msgid "Merge request events"
 msgstr ""
 
@@ -37140,6 +37137,9 @@ msgid "The URL should start with http:// or https://"
 msgstr ""
 
 msgid "The URLs for connecting to Elasticsearch. For clustering, add the URLs separated by commas."
+msgstr ""
+
+msgid "The `/merge` quick action requires the SHA of the head of the branch."
 msgstr ""
 
 msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."

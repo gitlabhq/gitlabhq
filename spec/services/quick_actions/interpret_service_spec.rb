@@ -800,7 +800,7 @@ RSpec.describe QuickActions::InterpretService do
         let(:project) { repository_project }
         let(:service) { described_class.new(project, developer, {}) }
 
-        it_behaves_like 'failed command', 'Merge request diff sha parameter is required for the merge quick action.' do
+        it_behaves_like 'failed command', 'The `/merge` quick action requires the SHA of the head of the branch.' do
           let(:content) { "/merge" }
           let(:issuable) { merge_request }
         end

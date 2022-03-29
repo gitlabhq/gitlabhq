@@ -11,6 +11,7 @@ import {
   GlModalDirective,
 } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import getStatesQuery from '../graphql/queries/get_states.query.graphql';
 import addDataToState from '../graphql/mutations/add_data_to_state.mutation.graphql';
 import lockState from '../graphql/mutations/lock_state.mutation.graphql';
 import removeState from '../graphql/mutations/remove_state.mutation.graphql';
@@ -148,7 +149,7 @@ export default {
           variables: {
             stateID: this.state.id,
           },
-          refetchQueries: () => ['getStates'],
+          refetchQueries: () => [{ query: getStatesQuery }],
           awaitRefetchQueries: true,
           notifyOnNetworkStatusChange: true,
         })

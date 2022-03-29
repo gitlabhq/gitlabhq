@@ -1,4 +1,5 @@
 const agent = {
+  __typename: 'ClusterAgent',
   id: 'agent-id',
   name: 'agent-name',
   webPath: 'agent-webPath',

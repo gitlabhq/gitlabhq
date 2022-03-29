@@ -102,7 +102,7 @@ export const destroyIntegrationResponse = {
     httpIntegrationDestroy: {
       errors: [],
       integration: {
-        __typename: 'AlertManagementIntegration',
+        __typename: 'AlertManagementHttpIntegration',
         id: '37',
         type: 'HTTP',
         active: true,

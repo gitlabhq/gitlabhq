@@ -124,9 +124,9 @@ module Gitlab
 
           config[:storage] = storages
 
-          internal_socket_dir = options[:internal_socket_dir] || File.join(gitaly_dir, 'internal_sockets')
-          FileUtils.mkdir(internal_socket_dir) unless File.exist?(internal_socket_dir)
-          config[:internal_socket_dir] = internal_socket_dir
+          runtime_dir = options[:runtime_dir] || File.join(gitaly_dir, 'run')
+          FileUtils.mkdir(runtime_dir) unless File.exist?(runtime_dir)
+          config[:runtime_dir] = runtime_dir
 
           config[:'gitaly-ruby'] = { dir: File.join(gitaly_dir, 'ruby') } if gitaly_ruby
           config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }

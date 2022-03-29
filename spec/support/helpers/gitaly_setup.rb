@@ -267,7 +267,7 @@ module GitalySetup
       { 'default' => repos_path },
       force: true,
       options: {
-        internal_socket_dir: File.join(gitaly_dir, "internal_gitaly2"),
+        runtime_dir: File.join(gitaly_dir, "run2"),
         gitaly_socket: "gitaly2.socket",
         config_filename: "gitaly2.config.toml"
       }

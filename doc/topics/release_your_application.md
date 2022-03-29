@@ -64,3 +64,8 @@ Use GitLab [Releases](../user/project/releases/index.md) to plan, build, and del
 ### Feature flags
 
 Use [feature flags](../operations/feature_flags.md) to control and strategically rollout application deployments.
+
+## Deploy to Google Cloud
+
+GitLab [Cloud Seed](../cloud_seed/index.md) is an open-source Incubation Engineering program that 
+enables you to set up deployment credentials and deploy your application to Google Cloud Run with minimal friction.

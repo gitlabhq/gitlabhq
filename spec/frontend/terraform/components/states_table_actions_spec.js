@@ -9,6 +9,8 @@ import StateActions from '~/terraform/components/states_table_actions.vue';
 import lockStateMutation from '~/terraform/graphql/mutations/lock_state.mutation.graphql';
 import removeStateMutation from '~/terraform/graphql/mutations/remove_state.mutation.graphql';
 import unlockStateMutation from '~/terraform/graphql/mutations/unlock_state.mutation.graphql';
+import getStatesQuery from '~/terraform/graphql/queries/get_states.query.graphql';
+import { getStatesResponse } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -49,6 +51,7 @@ describe('StatesTableActions', () => {
         [lockStateMutation, lockResponse],
         [removeStateMutation, removeResponse],
         [unlockStateMutation, unlockResponse],
+        [getStatesQuery, jest.fn().mockResolvedValue(getStatesResponse)],
       ],
       {
         Mutation: {

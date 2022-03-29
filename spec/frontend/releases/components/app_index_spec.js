@@ -150,7 +150,8 @@ describe('app_index.vue', () => {
           expect(findEmptyState().exists()).toBe(emptyState);
         });
 
-        it(`${toDescription(flashMessage)} show a flash message`, () => {
+        it(`${toDescription(flashMessage)} show a flash message`, async () => {
+          await waitForPromises();
           if (flashMessage) {
             expect(createFlash).toHaveBeenCalledWith({
               message: ReleasesIndexApp.i18n.errorMessage,

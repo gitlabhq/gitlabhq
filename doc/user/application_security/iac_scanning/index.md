@@ -41,9 +41,10 @@ GitLab IaC scanning supports a variety of IaC configuration files. Our IaC secur
 | Google Deployment Manager                | [KICS](https://kics.io/)         | 14.5                          |
 | Kubernetes                               | [KICS](https://kics.io/)         | 14.5                          |
 | OpenAPI                                  | [KICS](https://kics.io/)         | 14.5                          |
-| Terraform                                | [KICS](https://kics.io/)         | 14.5                          |
+| Terraform <sup>2</sup>                   | [KICS](https://kics.io/)         | 14.5                          |
 
 1. IaC scanning can analyze Azure Resource Manager templates in JSON format. If you write templates in the [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) language, you must use [the bicep CLI](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to convert your Bicep files into JSON before GitLab IaC scanning can analyze them.
+1. Terraform modules in a custom registry are not scanned for vulnerabilities. You can follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/357004) for the proposed feature. 
 
 ### Making IaC analyzers available to all GitLab tiers
 

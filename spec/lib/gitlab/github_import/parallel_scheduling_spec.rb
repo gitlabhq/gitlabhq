@@ -295,25 +295,6 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         importer.parallel_import
       end
     end
-
-    context 'when FF is disabled' do
-      before do
-        stub_feature_flags(spread_parallel_import: false)
-      end
-
-      it 'imports data in parallel' do
-        expect(importer)
-          .to receive(:each_object_to_import)
-          .and_yield(object)
-
-        expect(worker_class)
-          .to receive(:perform_async)
-          .with(project.id, { title: 'Foo' }, an_instance_of(String))
-
-        expect(importer.parallel_import)
-          .to be_an_instance_of(Gitlab::JobWaiter)
-      end
-    end
   end
 
   describe '#each_object_to_import' do
