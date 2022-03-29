@@ -332,7 +332,7 @@ PUT --form "paused=true" /runners/:runner_id
 
 # --or--
 
-# Deprecated: removal planned in 15.0
+# Deprecated: removal planned in 16.0
 PUT --form "active=false" /runners/:runner_id
 ```
 
@@ -346,7 +346,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 # --or--
 
-# Deprecated: removal planned in 15.0
+# Deprecated: removal planned in 16.0
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
 ```

@@ -576,7 +576,6 @@ severities
 sharded
 sharding
 shfmt
-Shibboleth
 Shimo
 Shopify
 Sidekiq

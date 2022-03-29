@@ -1121,7 +1121,7 @@ host localhost          # Give your setup a name (here: override localhost)
     hostname 127.0.0.1; # Your server name or IP
 ```
 
-You also need to change the corresponding options (for example, `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
+You also need to change the corresponding options (for example, `ssh_user`, `ssh_host`, `admin_uri`) in the `config/gitlab.yml` file.
 
 ### Additional Markup Styles
 

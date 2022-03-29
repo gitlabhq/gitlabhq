@@ -81,6 +81,7 @@ module QA
 
         return puts "\nNothing to download!" if files_list.empty?
 
+        FileUtils.mkdir_p('tmp/')
         files_list.each do |file_name|
           local_path = "tmp/#{file_name.split('/').last}"
           Runtime::Logger.info("Downloading #{file_name} to #{local_path}")

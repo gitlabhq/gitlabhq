@@ -3,7 +3,7 @@ import { GlButton, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { isString } from 'lodash';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
-import ProjectAvatar from '~/vue_shared/components/deprecated_project_avatar/default.vue';
+import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 
 export default {
   name: 'ProjectListItem',
@@ -22,6 +22,9 @@ export default {
     matcher: { type: String, required: false, default: '' },
   },
   computed: {
+    projectAvatarUrl() {
+      return this.project.avatar_url || this.project.avatarUrl;
+    },
     projectNameWithNamespace() {
       return this.project.nameWithNamespace || this.project.name_with_namespace;
     },
@@ -49,7 +52,11 @@ export default {
       class="gl-display-flex gl-align-items-center gl-flex-wrap project-namespace-name-container"
     >
       <gl-icon v-if="selected" class="js-selected-icon" name="mobile-issue-close" />
-      <project-avatar class="gl-flex-shrink-0 js-project-avatar" :project="project" :size="32" />
+      <project-avatar
+        :project-avatar-url="projectAvatarUrl"
+        :project-name="projectNameWithNamespace"
+        class="gl-mr-3"
+      />
       <div
         v-if="truncatedNamespace"
         :title="projectNameWithNamespace"

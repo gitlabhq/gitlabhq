@@ -45052,9 +45052,6 @@ msgstr ""
 msgid "project access tokens"
 msgstr ""
 
-msgid "project avatar"
-msgstr ""
-
 msgid "project bots cannot be added to other groups / projects"
 msgstr ""
 
